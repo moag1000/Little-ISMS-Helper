@@ -42,13 +42,15 @@
     <div class="row">
         <div class="col-md-8">
             {# Workflow Information #}
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h2 class="mb-0">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.section.information'|trans({}, 'workflows') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.section.information'|trans({}, 'workflows') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="row mb-0">
                         <dt class="col-sm-3">{{ 'workflow.field.name'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-9">{{ workflow.name }}</dd>
@@ -78,17 +80,19 @@
                         <dd class="col-sm-9">{{ workflow.updatedAt|date('d.m.Y H:i') }}</dd>
                         {% endif %}
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Workflow Steps #}
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h2 class="mb-0">
-                        <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'workflow.section.steps'|trans({}, 'workflows') }} ({{ workflow.steps|length }})
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0">
+                            <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'workflow.section.steps'|trans({}, 'workflows') }} ({{ workflow.steps|length }})
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if workflow.steps|length > 0 %}
                         <ul class="list-group">
                             {% for step in workflow.steps %}
@@ -123,17 +127,19 @@
                             <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.message.no_steps'|trans({}, 'workflows') }}
                         </p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Recent Instances #}
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="mb-0">
-                        <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'workflow.section.recent_instances'|trans({}, 'workflows') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0">
+                            <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'workflow.section.recent_instances'|trans({}, 'workflows') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if recent_instances|length > 0 %}
                         {% embed '_components/_table.html.twig' with {
                             'class': 'table-hover',
@@ -184,19 +190,21 @@
                             <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.message.no_instances'|trans({}, 'workflows') }}
                         </p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-4">
             {# Actions #}
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0">
-                        <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'workflow.section.actions'|trans({}, 'workflows') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0">
+                            <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'workflow.section.actions'|trans({}, 'workflows') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="d-grid gap-2">
                         <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="btn btn-primary">
                             <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'workflow.action.edit'|trans({}, 'workflows') }}
@@ -219,17 +227,19 @@
                             </button>
                         </form>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Statistics #}
-            <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h2 class="mb-0">
-                        <i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'workflow.section.statistics'|trans({}, 'workflows') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-info text-white">
+                        <h2 class="mb-0">
+                            <i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'workflow.section.statistics'|trans({}, 'workflows') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="row mb-0">
                         <dt class="col-sm-6">{{ 'workflow.stats.steps'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-6 text-end"><strong>{{ workflow.steps|length }}</strong></dd>
@@ -237,8 +247,8 @@
                         <dt class="col-sm-6">{{ 'workflow.stats.total_instances'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-6 text-end"><strong>{{ recent_instances|length }}</strong></dd>
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

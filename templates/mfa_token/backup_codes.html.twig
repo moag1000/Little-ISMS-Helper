@@ -25,33 +25,37 @@
                 </p>
             </div>
 
-            <div class="card border-warning mb-4"
-                 data-controller="backup-codes"
-                 data-backup-codes-codes-value="{{ backup_codes|json_encode }}"
-                 data-backup-codes-user-email-value="{{ mfa_token.user.email }}"
-                 data-backup-codes-device-name-value="{{ mfa_token.deviceName }}"
-                 data-backup-codes-title-text-value="{{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}"
-                 data-backup-codes-user-label-value="{{ 'mfa_token.field.user'|trans({}, 'mfa') }}"
-                 data-backup-codes-device-label-value="{{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}"
-                 data-backup-codes-generated-label-value="{{ 'common.generated'|trans({}, 'messages') }}"
-                 data-backup-codes-warning-title-value="{{ 'mfa_token.backup_codes.warning'|trans({}, 'mfa') }}"
-                 data-backup-codes-warning-text-value="{{ 'mfa_token.backup_codes.warning_text'|trans({}, 'mfa') }}"
-                 data-backup-codes-codes-label-value="{{ 'mfa_token.backup_codes.codes'|trans({}, 'mfa') }}"
-                 data-backup-codes-usage-title-value="{{ 'mfa_token.backup_codes.usage_title'|trans({}, 'mfa') }}"
-                 data-backup-codes-usage1-value="{{ 'mfa_token.backup_codes.usage_1'|trans({}, 'mfa') }}"
-                 data-backup-codes-usage2-value="{{ 'mfa_token.backup_codes.usage_2'|trans({}, 'mfa') }}"
-                 data-backup-codes-usage3-value="{{ 'mfa_token.backup_codes.usage_3'|trans({}, 'mfa') }}"
-                 data-backup-codes-usage4-value="{{ 'mfa_token.backup_codes.usage_4'|trans({}, 'mfa') }}"
-                 data-backup-codes-copied-text-value="{{ 'common.copied'|trans({}, 'messages') }}"
-                 data-backup-codes-downloaded-text-value="{{ 'common.downloaded'|trans({}, 'messages') }}"
-                 data-backup-codes-copy-failed-text-value="{{ 'common.copy_failed'|trans({}, 'messages') }}">
-                <div class="card-header bg-warning">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="mb-0 h3">{{ 'mfa_token.backup_codes.codes'|trans({}, 'mfa') }}</h2>
-                        {% include '_components/_badge.html.twig' with { variant: 'dark', content: backup_codes|length ~ ' ' ~ 'mfa_token.backup_codes.codes_count'|trans({}, 'mfa') } %}
+            {% embed '_components/_card.html.twig' with { 'class': 'border-warning mb-4' } %}
+                {% block card_attrs %}
+                    data-controller="backup-codes"
+                    data-backup-codes-codes-value="{{ backup_codes|json_encode }}"
+                    data-backup-codes-user-email-value="{{ mfa_token.user.email }}"
+                    data-backup-codes-device-name-value="{{ mfa_token.deviceName }}"
+                    data-backup-codes-title-text-value="{{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}"
+                    data-backup-codes-user-label-value="{{ 'mfa_token.field.user'|trans({}, 'mfa') }}"
+                    data-backup-codes-device-label-value="{{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}"
+                    data-backup-codes-generated-label-value="{{ 'common.generated'|trans({}, 'messages') }}"
+                    data-backup-codes-warning-title-value="{{ 'mfa_token.backup_codes.warning'|trans({}, 'mfa') }}"
+                    data-backup-codes-warning-text-value="{{ 'mfa_token.backup_codes.warning_text'|trans({}, 'mfa') }}"
+                    data-backup-codes-codes-label-value="{{ 'mfa_token.backup_codes.codes'|trans({}, 'mfa') }}"
+                    data-backup-codes-usage-title-value="{{ 'mfa_token.backup_codes.usage_title'|trans({}, 'mfa') }}"
+                    data-backup-codes-usage1-value="{{ 'mfa_token.backup_codes.usage_1'|trans({}, 'mfa') }}"
+                    data-backup-codes-usage2-value="{{ 'mfa_token.backup_codes.usage_2'|trans({}, 'mfa') }}"
+                    data-backup-codes-usage3-value="{{ 'mfa_token.backup_codes.usage_3'|trans({}, 'mfa') }}"
+                    data-backup-codes-usage4-value="{{ 'mfa_token.backup_codes.usage_4'|trans({}, 'mfa') }}"
+                    data-backup-codes-copied-text-value="{{ 'common.copied'|trans({}, 'messages') }}"
+                    data-backup-codes-downloaded-text-value="{{ 'common.downloaded'|trans({}, 'messages') }}"
+                    data-backup-codes-copy-failed-text-value="{{ 'common.copy_failed'|trans({}, 'messages') }}"
+                {% endblock %}
+                {% block card_header %}
+                    <div class="card-header bg-warning">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h2 class="mb-0 h3">{{ 'mfa_token.backup_codes.codes'|trans({}, 'mfa') }}</h2>
+                            {% include '_components/_badge.html.twig' with { variant: 'dark', content: backup_codes|length ~ ' ' ~ 'mfa_token.backup_codes.codes_count'|trans({}, 'mfa') } %}
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
+                {% endblock %}
+                {% block card_body %}
                     <div class="alert alert-info">
                         <strong><i class="bi bi-person" aria-hidden="true"></i> {{ 'mfa_token.field.user'|trans({}, 'mfa') }}:</strong> {{ mfa_token.user.email }}<br>
                         <strong><i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}:</strong> {{ mfa_token.deviceName }}<br>
@@ -86,11 +90,11 @@
                             <i class="bi bi-download" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.download'|trans({}, 'mfa') }}
                         </button>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <h3 class="h5"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.usage_title'|trans({}, 'mfa') }}</h3>
                     <ul>
                         <li>{{ 'mfa_token.backup_codes.usage_1'|trans({}, 'mfa') }}</li>
@@ -103,8 +107,8 @@
                         <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                         {{ 'mfa_token.backup_codes.regenerate_warning'|trans({}, 'mfa') }}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 {% endblock %}

@@ -30,15 +30,17 @@
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h2>{{ 'bc_exercises.section.details'|trans({}, 'bc_exercises') }}</h2>
-            <div>
-                <span class="badge badge-{{ bc_exercise.exerciseType }}">{{ bc_exercise.exerciseType }}</span>
-                <span class="badge badge-{{ bc_exercise.status }}">{{ bc_exercise.status }}</span>
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2>{{ 'bc_exercises.section.details'|trans({}, 'bc_exercises') }}</h2>
+                <div>
+                    <span class="badge badge-{{ bc_exercise.exerciseType }}">{{ bc_exercise.exerciseType }}</span>
+                    <span class="badge badge-{{ bc_exercise.status }}">{{ bc_exercise.status }}</span>
+                </div>
             </div>
-        </div>
-        <div class="card-body">
+        {% endblock %}
+        {% block card_body %}
             {% if bc_exercise.status == 'completed' %}
                 {% set effectiveness = bc_exercise.getEffectivenessScore() %}
                 <div class="alert alert-{{ effectiveness >= 80 ? 'success' : (effectiveness >= 60 ? 'info' : 'warning') }}">
@@ -163,7 +165,7 @@
                 </ul>
             </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

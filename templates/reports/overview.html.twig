@@ -21,13 +21,15 @@
     <div class="row">
         {# License Report Card #}
         <div class="col-lg-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="card-title mb-0">
-                        <i class="bi bi-file-text me-2" aria-hidden="true"></i>Lizenzreport
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="card-title mb-0">
+                            <i class="bi bi-file-text me-2" aria-hidden="true"></i>Lizenzreport
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p class="card-text">
                         Vollständige Übersicht aller verwendeten Third-Party-Lizenzen und deren Compliance-Status für kommerzielle Nutzung.
                     </p>
@@ -58,26 +60,30 @@
                             <i class="bi bi-calendar me-1" aria-hidden="true"></i>Letzte Aktualisierung: {{ license_stats.updated_at }}
                         </small>
                     {% endif %}
-                </div>
-                <div class="card-footer bg-light">
-                    <div class="d-grid gap-2">
-                        <a href="{{ path('app_licenses') }}" class="btn btn-primary">
-                            <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>Lizenzreport öffnen
-                        </a>
+                {% endblock %}
+                {% block card_footer %}
+                    <div class="card-footer bg-light">
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('app_licenses') }}" class="btn btn-primary">
+                                <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>Lizenzreport öffnen
+                            </a>
+                        </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Security Report Card #}
         <div class="col-lg-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header bg-danger text-white">
-                    <h2 class="card-title mb-0">
-                        <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>Security Audit Report
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header bg-danger text-white">
+                        <h2 class="card-title mb-0">
+                            <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>Security Audit Report
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p class="card-text">
                         Automatisierte Sicherheitsanalyse basierend auf OWASP Top 10 Security Risks mit detaillierten Findings und Empfehlungen.
                     </p>
@@ -112,28 +118,32 @@
                             </li>
                         </ul>
                     </div>
-                </div>
-                <div class="card-footer bg-light">
-                    <div class="d-grid gap-2">
-                        <a href="{{ path('app_security_report') }}" class="btn btn-danger">
-                            <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>Security Reports öffnen
-                        </a>
+                {% endblock %}
+                {% block card_footer %}
+                    <div class="card-footer bg-light">
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('app_security_report') }}" class="btn btn-danger">
+                                <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>Security Reports öffnen
+                            </a>
+                        </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Information & Actions #}
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title mb-0">
-                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>Report-Generierung
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="card-title mb-0">
+                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>Report-Generierung
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row">
                         <div class="col-md-6 mb-3 mb-md-0">
                             <h3><i class="bi bi-file-text me-2" aria-hidden="true"></i>Lizenzreport aktualisieren</h3>
@@ -154,8 +164,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 

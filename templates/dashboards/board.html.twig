@@ -29,170 +29,192 @@
     {# Executive RAG Status Overview #}
     <div class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="card h-100 {% if dashboard.rag_status.security == 'green' %}border-success{% elseif dashboard.rag_status.security == 'amber' %}border-warning{% else %}border-danger{% endif %}">
-                <div class="card-body text-center">
-                    <div class="mb-2">
-                        {% include '_components/_badge.html.twig' with {
-                            variant: dashboard.rag_status.security == 'green' ? 'success' : (dashboard.rag_status.security == 'amber' ? 'warning' : 'danger'),
-                            icon: dashboard.rag_status.security == 'green' ? 'bi-check-circle' : (dashboard.rag_status.security == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
-                            pill: true,
-                            class: 'fs-5 px-3 py-2'
-                        } %}
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 ' ~ (dashboard.rag_status.security == 'green' ? 'border-success' : (dashboard.rag_status.security == 'amber' ? 'border-warning' : 'border-danger')) } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="mb-2">
+                            {% include '_components/_badge.html.twig' with {
+                                variant: dashboard.rag_status.security == 'green' ? 'success' : (dashboard.rag_status.security == 'amber' ? 'warning' : 'danger'),
+                                icon: dashboard.rag_status.security == 'green' ? 'bi-check-circle' : (dashboard.rag_status.security == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
+                                pill: true,
+                                class: 'fs-5 px-3 py-2'
+                            } %}
+                        </div>
+                        <h5 class="mb-1">{{ 'board.rag.security'|trans({}, 'dashboards') }}</h5>
+                        <small class="text-muted">{{ dashboard.rag_details.security }}</small>
                     </div>
-                    <h5 class="mb-1">{{ 'board.rag.security'|trans({}, 'dashboards') }}</h5>
-                    <small class="text-muted">{{ dashboard.rag_details.security }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card h-100 {% if dashboard.rag_status.compliance == 'green' %}border-success{% elseif dashboard.rag_status.compliance == 'amber' %}border-warning{% else %}border-danger{% endif %}">
-                <div class="card-body text-center">
-                    <div class="mb-2">
-                        {% include '_components/_badge.html.twig' with {
-                            variant: dashboard.rag_status.compliance == 'green' ? 'success' : (dashboard.rag_status.compliance == 'amber' ? 'warning' : 'danger'),
-                            icon: dashboard.rag_status.compliance == 'green' ? 'bi-check-circle' : (dashboard.rag_status.compliance == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
-                            pill: true,
-                            class: 'fs-5 px-3 py-2'
-                        } %}
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 ' ~ (dashboard.rag_status.compliance == 'green' ? 'border-success' : (dashboard.rag_status.compliance == 'amber' ? 'border-warning' : 'border-danger')) } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="mb-2">
+                            {% include '_components/_badge.html.twig' with {
+                                variant: dashboard.rag_status.compliance == 'green' ? 'success' : (dashboard.rag_status.compliance == 'amber' ? 'warning' : 'danger'),
+                                icon: dashboard.rag_status.compliance == 'green' ? 'bi-check-circle' : (dashboard.rag_status.compliance == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
+                                pill: true,
+                                class: 'fs-5 px-3 py-2'
+                            } %}
+                        </div>
+                        <h5 class="mb-1">{{ 'board.rag.compliance'|trans({}, 'dashboards') }}</h5>
+                        <small class="text-muted">{{ dashboard.rag_details.compliance }}</small>
                     </div>
-                    <h5 class="mb-1">{{ 'board.rag.compliance'|trans({}, 'dashboards') }}</h5>
-                    <small class="text-muted">{{ dashboard.rag_details.compliance }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card h-100 {% if dashboard.rag_status.risk == 'green' %}border-success{% elseif dashboard.rag_status.risk == 'amber' %}border-warning{% else %}border-danger{% endif %}">
-                <div class="card-body text-center">
-                    <div class="mb-2">
-                        {% include '_components/_badge.html.twig' with {
-                            variant: dashboard.rag_status.risk == 'green' ? 'success' : (dashboard.rag_status.risk == 'amber' ? 'warning' : 'danger'),
-                            icon: dashboard.rag_status.risk == 'green' ? 'bi-check-circle' : (dashboard.rag_status.risk == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
-                            pill: true,
-                            class: 'fs-5 px-3 py-2'
-                        } %}
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 ' ~ (dashboard.rag_status.risk == 'green' ? 'border-success' : (dashboard.rag_status.risk == 'amber' ? 'border-warning' : 'border-danger')) } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="mb-2">
+                            {% include '_components/_badge.html.twig' with {
+                                variant: dashboard.rag_status.risk == 'green' ? 'success' : (dashboard.rag_status.risk == 'amber' ? 'warning' : 'danger'),
+                                icon: dashboard.rag_status.risk == 'green' ? 'bi-check-circle' : (dashboard.rag_status.risk == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
+                                pill: true,
+                                class: 'fs-5 px-3 py-2'
+                            } %}
+                        </div>
+                        <h5 class="mb-1">{{ 'board.rag.risk'|trans({}, 'dashboards') }}</h5>
+                        <small class="text-muted">{{ dashboard.rag_details.risk }}</small>
                     </div>
-                    <h5 class="mb-1">{{ 'board.rag.risk'|trans({}, 'dashboards') }}</h5>
-                    <small class="text-muted">{{ dashboard.rag_details.risk }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card h-100 {% if dashboard.rag_status.operations == 'green' %}border-success{% elseif dashboard.rag_status.operations == 'amber' %}border-warning{% else %}border-danger{% endif %}">
-                <div class="card-body text-center">
-                    <div class="mb-2">
-                        {% include '_components/_badge.html.twig' with {
-                            variant: dashboard.rag_status.operations == 'green' ? 'success' : (dashboard.rag_status.operations == 'amber' ? 'warning' : 'danger'),
-                            icon: dashboard.rag_status.operations == 'green' ? 'bi-check-circle' : (dashboard.rag_status.operations == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
-                            pill: true,
-                            class: 'fs-5 px-3 py-2'
-                        } %}
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 ' ~ (dashboard.rag_status.operations == 'green' ? 'border-success' : (dashboard.rag_status.operations == 'amber' ? 'border-warning' : 'border-danger')) } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="mb-2">
+                            {% include '_components/_badge.html.twig' with {
+                                variant: dashboard.rag_status.operations == 'green' ? 'success' : (dashboard.rag_status.operations == 'amber' ? 'warning' : 'danger'),
+                                icon: dashboard.rag_status.operations == 'green' ? 'bi-check-circle' : (dashboard.rag_status.operations == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
+                                pill: true,
+                                class: 'fs-5 px-3 py-2'
+                            } %}
+                        </div>
+                        <h5 class="mb-1">{{ 'board.rag.operations'|trans({}, 'dashboards') }}</h5>
+                        <small class="text-muted">{{ dashboard.rag_details.operations }}</small>
                     </div>
-                    <h5 class="mb-1">{{ 'board.rag.operations'|trans({}, 'dashboards') }}</h5>
-                    <small class="text-muted">{{ dashboard.rag_details.operations }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Key Metrics with Trends #}
     <div class="row g-3 mb-4">
         <div class="col-md-2">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <h3 class="mb-0">{{ dashboard.metrics.overall_compliance }}%</h3>
-                    <small class="text-muted d-block">{{ 'board.metric.compliance'|trans({}, 'dashboards') }}</small>
-                    {% if dashboard.trends.compliance > 0 %}
-                        <small class="text-success"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.compliance }}%</small>
-                    {% elseif dashboard.trends.compliance < 0 %}
-                        <small class="text-danger"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.compliance }}%</small>
-                    {% else %}
-                        <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0%</small>
-                    {% endif %}
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0">{{ dashboard.metrics.overall_compliance }}%</h3>
+                        <small class="text-muted d-block">{{ 'board.metric.compliance'|trans({}, 'dashboards') }}</small>
+                        {% if dashboard.trends.compliance > 0 %}
+                            <small class="text-success"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.compliance }}%</small>
+                        {% elseif dashboard.trends.compliance < 0 %}
+                            <small class="text-danger"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.compliance }}%</small>
+                        {% else %}
+                            <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0%</small>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <h3 class="mb-0">{{ dashboard.metrics.total_risks }}</h3>
-                    <small class="text-muted d-block">{{ 'board.metric.risks'|trans({}, 'dashboards') }}</small>
-                    {% if dashboard.trends.risks > 0 %}
-                        <small class="text-danger"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.risks }}</small>
-                    {% elseif dashboard.trends.risks < 0 %}
-                        <small class="text-success"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.risks }}</small>
-                    {% else %}
-                        <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0</small>
-                    {% endif %}
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0">{{ dashboard.metrics.total_risks }}</h3>
+                        <small class="text-muted d-block">{{ 'board.metric.risks'|trans({}, 'dashboards') }}</small>
+                        {% if dashboard.trends.risks > 0 %}
+                            <small class="text-danger"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.risks }}</small>
+                        {% elseif dashboard.trends.risks < 0 %}
+                            <small class="text-success"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.risks }}</small>
+                        {% else %}
+                            <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0</small>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <h3 class="mb-0 {% if dashboard.metrics.critical_risks > 0 %}text-danger{% endif %}">{{ dashboard.metrics.critical_risks }}</h3>
-                    <small class="text-muted d-block">{{ 'board.metric.critical'|trans({}, 'dashboards') }}</small>
-                    {% if dashboard.trends.critical > 0 %}
-                        <small class="text-danger"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.critical }}</small>
-                    {% elseif dashboard.trends.critical < 0 %}
-                        <small class="text-success"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.critical }}</small>
-                    {% else %}
-                        <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0</small>
-                    {% endif %}
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0 {% if dashboard.metrics.critical_risks > 0 %}text-danger{% endif %}">{{ dashboard.metrics.critical_risks }}</h3>
+                        <small class="text-muted d-block">{{ 'board.metric.critical'|trans({}, 'dashboards') }}</small>
+                        {% if dashboard.trends.critical > 0 %}
+                            <small class="text-danger"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.critical }}</small>
+                        {% elseif dashboard.trends.critical < 0 %}
+                            <small class="text-success"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.critical }}</small>
+                        {% else %}
+                            <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0</small>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <h3 class="mb-0">{{ dashboard.metrics.incidents_ytd }}</h3>
-                    <small class="text-muted d-block">{{ 'board.metric.incidents'|trans({}, 'dashboards') }}</small>
-                    {% if dashboard.trends.incidents > 0 %}
-                        <small class="text-danger"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.incidents }}</small>
-                    {% elseif dashboard.trends.incidents < 0 %}
-                        <small class="text-success"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.incidents }}</small>
-                    {% else %}
-                        <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0</small>
-                    {% endif %}
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0">{{ dashboard.metrics.incidents_ytd }}</h3>
+                        <small class="text-muted d-block">{{ 'board.metric.incidents'|trans({}, 'dashboards') }}</small>
+                        {% if dashboard.trends.incidents > 0 %}
+                            <small class="text-danger"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.incidents }}</small>
+                        {% elseif dashboard.trends.incidents < 0 %}
+                            <small class="text-success"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.incidents }}</small>
+                        {% else %}
+                            <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0</small>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <h3 class="mb-0">{{ dashboard.metrics.controls_implemented }}%</h3>
-                    <small class="text-muted d-block">{{ 'board.metric.controls'|trans({}, 'dashboards') }}</small>
-                    {% if dashboard.trends.controls > 0 %}
-                        <small class="text-success"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.controls }}%</small>
-                    {% elseif dashboard.trends.controls < 0 %}
-                        <small class="text-danger"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.controls }}%</small>
-                    {% else %}
-                        <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0%</small>
-                    {% endif %}
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0">{{ dashboard.metrics.controls_implemented }}%</h3>
+                        <small class="text-muted d-block">{{ 'board.metric.controls'|trans({}, 'dashboards') }}</small>
+                        {% if dashboard.trends.controls > 0 %}
+                            <small class="text-success"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.controls }}%</small>
+                        {% elseif dashboard.trends.controls < 0 %}
+                            <small class="text-danger"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.controls }}%</small>
+                        {% else %}
+                            <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0%</small>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <h3 class="mb-0">{{ dashboard.metrics.audits_completed }}</h3>
-                    <small class="text-muted d-block">{{ 'board.metric.audits'|trans({}, 'dashboards') }}</small>
-                    <small class="text-muted">{{ 'board.of_planned'|trans({'%count%': dashboard.metrics.audits_planned}, 'dashboards') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0">{{ dashboard.metrics.audits_completed }}</h3>
+                        <small class="text-muted d-block">{{ 'board.metric.audits'|trans({}, 'dashboards') }}</small>
+                        <small class="text-muted">{{ 'board.of_planned'|trans({'%count%': dashboard.metrics.audits_planned}, 'dashboards') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row g-4">
         {# Executive Summary #}
         <div class="col-lg-8">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-file-text me-2" aria-hidden="true"></i>
-                        {{ 'board.section.executive_summary'|trans({}, 'dashboards') }}
-                    </h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-file-text me-2" aria-hidden="true"></i>
+                            {{ 'board.section.executive_summary'|trans({}, 'dashboards') }}
+                        </h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="mb-4">
                         <h6 class="text-muted mb-2">{{ 'board.summary.security_posture'|trans({}, 'dashboards') }}</h6>
                         <p class="mb-0">{{ dashboard.executive_summary.security_posture }}</p>
@@ -221,20 +243,22 @@
                             <p class="text-success mb-0"><i class="bi bi-check-circle me-1" aria-hidden="true"></i>{{ 'board.no_concerns'|trans({}, 'dashboards') }}</p>
                         {% endif %}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Upcoming Milestones #}
         <div class="col-lg-4">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-flag me-2" aria-hidden="true"></i>
-                        {{ 'board.section.milestones'|trans({}, 'dashboards') }}
-                    </h5>
-                </div>
-                <div class="card-body p-0">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100', 'noPadding': true } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-flag me-2" aria-hidden="true"></i>
+                            {{ 'board.section.milestones'|trans({}, 'dashboards') }}
+                        </h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if dashboard.milestones|length > 0 %}
                         <div class="list-group list-group-flush">
                             {% for milestone in dashboard.milestones %}
@@ -255,23 +279,25 @@
                     {% else %}
                         <p class="text-muted text-center py-4 mb-0">{{ 'board.no_milestones'|trans({}, 'dashboards') }}</p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row g-4 mt-2">
         {# Items Requiring Board Attention #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="bi bi-exclamation-circle text-danger me-2" aria-hidden="true"></i>
-                        {{ 'board.section.attention_required'|trans({}, 'dashboards') }}
-                    </h5>
-                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: dashboard.attention_items|length } %}
-                </div>
-                <div class="card-body p-0">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100', 'noPadding': true } %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-exclamation-circle text-danger me-2" aria-hidden="true"></i>
+                            {{ 'board.section.attention_required'|trans({}, 'dashboards') }}
+                        </h5>
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: dashboard.attention_items|length } %}
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if dashboard.attention_items|length > 0 %}
                         <div class="list-group list-group-flush">
                             {% for item in dashboard.attention_items %}
@@ -295,20 +321,22 @@
                             <i class="bi bi-check-circle me-2" aria-hidden="true"></i>{{ 'board.no_attention_items'|trans({}, 'dashboards') }}
                         </p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Budget & Resource Overview #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-currency-euro me-2" aria-hidden="true"></i>
-                        {{ 'board.section.resources'|trans({}, 'dashboards') }}
-                    </h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-currency-euro me-2" aria-hidden="true"></i>
+                            {{ 'board.section.resources'|trans({}, 'dashboards') }}
+                        </h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row text-center mb-4">
                         <div class="col-6">
                             <h4 class="mb-0">{{ dashboard.resources.fte_security }}</h4>
@@ -337,22 +365,24 @@
                     {% else %}
                         <p class="text-muted mb-0">{{ 'board.no_initiatives'|trans({}, 'dashboards') }}</p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Quarterly Comparison #}
     <div class="row g-4 mt-2">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-graph-up me-2" aria-hidden="true"></i>
-                        {{ 'board.section.quarterly_comparison'|trans({}, 'dashboards') }}
-                    </h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-graph-up me-2" aria-hidden="true"></i>
+                            {{ 'board.section.quarterly_comparison'|trans({}, 'dashboards') }}
+                        </h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="table-responsive">
                         <table class="table table-bordered mb-0">
                             <thead class="table-light">
@@ -394,8 +424,8 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

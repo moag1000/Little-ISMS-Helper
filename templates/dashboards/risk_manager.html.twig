@@ -29,64 +29,76 @@
     {# Summary Cards #}
     <div class="row g-3 mb-4">
         <div class="col-md-2">
-            <div class="card h-100 border-primary">
-                <div class="card-body text-center">
-                    <h3 class="mb-0">{{ dashboard.summary.total_risks }}</h3>
-                    <small class="text-muted">{{ 'risk_manager.kpi.total_risks'|trans({}, 'dashboards') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-primary' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0">{{ dashboard.summary.total_risks }}</h3>
+                        <small class="text-muted">{{ 'risk_manager.kpi.total_risks'|trans({}, 'dashboards') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card h-100 border-danger">
-                <div class="card-body text-center">
-                    <h3 class="mb-0 text-danger">{{ dashboard.summary.high_critical }}</h3>
-                    <small class="text-muted">{{ 'risk_manager.kpi.high_critical'|trans({}, 'dashboards') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-danger' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0 text-danger">{{ dashboard.summary.high_critical }}</h3>
+                        <small class="text-muted">{{ 'risk_manager.kpi.high_critical'|trans({}, 'dashboards') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card h-100 border-success">
-                <div class="card-body text-center">
-                    <h3 class="mb-0 text-success">{{ dashboard.summary.treated_percentage }}%</h3>
-                    <small class="text-muted">{{ 'risk_manager.kpi.treated'|trans({}, 'dashboards') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-success' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0 text-success">{{ dashboard.summary.treated_percentage }}%</h3>
+                        <small class="text-muted">{{ 'risk_manager.kpi.treated'|trans({}, 'dashboards') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card h-100 border-warning">
-                <div class="card-body text-center">
-                    <h3 class="mb-0 {% if dashboard.summary.overdue_treatments > 0 %}text-warning{% endif %}">{{ dashboard.summary.overdue_treatments }}</h3>
-                    <small class="text-muted">{{ 'risk_manager.kpi.overdue'|trans({}, 'dashboards') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-warning' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0 {% if dashboard.summary.overdue_treatments > 0 %}text-warning{% endif %}">{{ dashboard.summary.overdue_treatments }}</h3>
+                        <small class="text-muted">{{ 'risk_manager.kpi.overdue'|trans({}, 'dashboards') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card h-100 {% if dashboard.summary.appetite_status == 'compliant' %}border-success{% else %}border-danger{% endif %}">
-                <div class="card-body text-center">
-                    <h3 class="mb-0">
-                        {% if dashboard.summary.appetite_status == 'compliant' %}
-                            <span class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'status.compliant'|trans({}, 'dashboards') }}</span>
-                        {% else %}
-                            <span class="text-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'status.breach'|trans({}, 'dashboards') }}</span>
-                        {% endif %}
-                    </h3>
-                    <small class="text-muted">{{ 'risk_manager.kpi.appetite_status'|trans({}, 'dashboards') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 ' ~ (dashboard.summary.appetite_status == 'compliant' ? 'border-success' : 'border-danger') } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0">
+                            {% if dashboard.summary.appetite_status == 'compliant' %}
+                                <span class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'status.compliant'|trans({}, 'dashboards') }}</span>
+                            {% else %}
+                                <span class="text-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'status.breach'|trans({}, 'dashboards') }}</span>
+                            {% endif %}
+                        </h3>
+                        <small class="text-muted">{{ 'risk_manager.kpi.appetite_status'|trans({}, 'dashboards') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row g-4">
         {# Treatment Pipeline #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-funnel me-2" aria-hidden="true"></i>
-                        {{ 'risk_manager.section.treatment_pipeline'|trans({}, 'dashboards') }}
-                    </h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-funnel me-2" aria-hidden="true"></i>
+                            {{ 'risk_manager.section.treatment_pipeline'|trans({}, 'dashboards') }}
+                        </h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row text-center mb-3">
                         <div class="col">
                             <div class="p-2 bg-light rounded">
@@ -116,20 +128,22 @@
                         </div>
                         {% endif %}
                     {% endfor %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Risk Appetite #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>
-                        {{ 'risk_manager.section.risk_appetite'|trans({}, 'dashboards') }}
-                    </h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>
+                            {{ 'risk_manager.section.risk_appetite'|trans({}, 'dashboards') }}
+                        </h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="text-center mb-3">
                         <div class="display-5 {% if dashboard.risk_appetite.compliance_score >= 80 %}text-success{% elseif dashboard.risk_appetite.compliance_score >= 60 %}text-warning{% else %}text-danger{% endif %}">
                             {{ dashboard.risk_appetite.compliance_score }}%
@@ -146,22 +160,24 @@
                         </div>
                         {% endfor %}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row g-4 mt-2">
         {# Risks by Category #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-tags me-2" aria-hidden="true"></i>
-                        {{ 'risk_manager.section.by_category'|trans({}, 'dashboards') }}
-                    </h5>
-                </div>
-                <div class="card-body p-0">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100', 'noPadding': true } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-tags me-2" aria-hidden="true"></i>
+                            {{ 'risk_manager.section.by_category'|trans({}, 'dashboards') }}
+                        </h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
                             <thead class="table-light">
@@ -184,23 +200,25 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Risk Forecast #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="bi bi-graph-up-arrow me-2" aria-hidden="true"></i>
-                        {{ 'risk_manager.section.forecast'|trans({}, 'dashboards') }}
-                    </h5>
-                    <a href="{{ path('app_analytics_risk_forecast') }}" class="btn btn-sm btn-outline-primary">
-                        {{ 'action.view_details'|trans({}, 'dashboards') }}
-                    </a>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-graph-up-arrow me-2" aria-hidden="true"></i>
+                            {{ 'risk_manager.section.forecast'|trans({}, 'dashboards') }}
+                        </h5>
+                        <a href="{{ path('app_analytics_risk_forecast') }}" class="btn btn-sm btn-outline-primary">
+                            {{ 'action.view_details'|trans({}, 'dashboards') }}
+                        </a>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="mb-3">
                         <strong>{{ 'risk_manager.velocity.label'|trans({}, 'dashboards') }}:</strong>
                         {% if dashboard.risk_velocity.trend == 'increasing' %}
@@ -219,23 +237,25 @@
                         {% include '_components/_badge.html.twig' with { variant: 'secondary', content: '~' ~ month.total ~ ' ' ~ 'risks'|trans({}, 'dashboards') } %}
                     </div>
                     {% endfor %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row g-4 mt-2">
         {# Untreated Risks #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="bi bi-exclamation-diamond text-warning me-2" aria-hidden="true"></i>
-                        {{ 'risk_manager.section.untreated_risks'|trans({}, 'dashboards') }}
-                    </h5>
-                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: dashboard.untreated_risks|length } %}
-                </div>
-                <div class="card-body p-0">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100', 'noPadding': true } %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-exclamation-diamond text-warning me-2" aria-hidden="true"></i>
+                            {{ 'risk_manager.section.untreated_risks'|trans({}, 'dashboards') }}
+                        </h5>
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: dashboard.untreated_risks|length } %}
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if dashboard.untreated_risks|length > 0 %}
                     <div class="list-group list-group-flush">
                         {% for risk in dashboard.untreated_risks %}
@@ -258,21 +278,23 @@
                         <i class="bi bi-check-circle me-2" aria-hidden="true"></i>{{ 'risk_manager.all_treated'|trans({}, 'dashboards') }}
                     </p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Overdue Treatments #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="bi bi-clock-history text-danger me-2" aria-hidden="true"></i>
-                        {{ 'risk_manager.section.overdue_treatments'|trans({}, 'dashboards') }}
-                    </h5>
-                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: dashboard.overdue_treatments|length } %}
-                </div>
-                <div class="card-body p-0">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100', 'noPadding': true } %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clock-history text-danger me-2" aria-hidden="true"></i>
+                            {{ 'risk_manager.section.overdue_treatments'|trans({}, 'dashboards') }}
+                        </h5>
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: dashboard.overdue_treatments|length } %}
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if dashboard.overdue_treatments|length > 0 %}
                     <div class="list-group list-group-flush">
                         {% for treatment in dashboard.overdue_treatments %}
@@ -292,8 +314,8 @@
                         <i class="bi bi-check-circle me-2" aria-hidden="true"></i>{{ 'risk_manager.no_overdue'|trans({}, 'dashboards') }}
                     </p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

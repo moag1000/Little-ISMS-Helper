@@ -41,71 +41,84 @@
 </div>
 
 {# Framework Selection #}
-<div class="card mb-4">
-    <h2>{{ 'compliance.section.framework_selection'|trans({}, 'compliance') }}</h2>
-
-    <form method="get" class="mt-md" data-controller="ui-actions">
-        <div class="form-group">
-            <label for="framework">{{ 'compliance.field.select_framework'|trans({}, 'compliance') }}</label>
-            <select name="framework" id="framework" class="form-select"
-                    data-action="change->ui-actions#autoSubmit"
-                    aria-label="{{ 'compliance.field.select_framework'|trans({}, 'compliance') }}">
-                <option value="">{{ 'compliance.option.all_frameworks'|trans({}, 'compliance') }}</option>
-                {% for framework in frameworks %}
-                    <option value="{{ framework.id }}" {% if selectedFramework and selectedFramework.id == framework.id %}selected{% endif %}>
-                        {{ framework.name }}
-                    </option>
-                {% endfor %}
-            </select>
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2 class="mb-0">{{ 'compliance.section.framework_selection'|trans({}, 'compliance') }}</h2>
         </div>
-    </form>
-</div>
+    {% endblock %}
+    {% block card_body %}
+        <form method="get" class="mt-md" data-controller="ui-actions">
+            <div class="form-group">
+                <label for="framework">{{ 'compliance.field.select_framework'|trans({}, 'compliance') }}</label>
+                <select name="framework" id="framework" class="form-select"
+                        data-action="change->ui-actions#autoSubmit"
+                        aria-label="{{ 'compliance.field.select_framework'|trans({}, 'compliance') }}">
+                    <option value="">{{ 'compliance.option.all_frameworks'|trans({}, 'compliance') }}</option>
+                    {% for framework in frameworks %}
+                        <option value="{{ framework.id }}" {% if selectedFramework and selectedFramework.id == framework.id %}selected{% endif %}>
+                            {{ framework.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    {% endblock %}
+{% endembed %}
 
 {# Gap Analysis by Severity #}
 <div class="module-grid mb-4">
-    <div class="card card-border-left-danger">
-        <div class="fs-2-mb-sm"><i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i></div>
-        <h2>{{ 'compliance.severity.critical'|trans({}, 'compliance') }}</h2>
-        <div class="mt-2">
-            <strong class="fs-15-danger">{{ gaps|filter(g => g.severity == 'critical')|length }}</strong>
-        </div>
-        <p class="text-muted-mt-xs">
-            {{ 'compliance.description.critical_gaps'|trans({}, 'compliance') }}
-        </p>
-    </div>
+    {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'danger' } %}
+        {% block card_body %}
+            <div class="fs-2-mb-sm"><i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i></div>
+            <h2>{{ 'compliance.severity.critical'|trans({}, 'compliance') }}</h2>
+            <div class="mt-2">
+                <strong class="fs-15-danger">{{ gaps|filter(g => g.severity == 'critical')|length }}</strong>
+            </div>
+            <p class="text-muted-mt-xs">
+                {{ 'compliance.description.critical_gaps'|trans({}, 'compliance') }}
+            </p>
+        {% endblock %}
+    {% endembed %}
 
-    <div class="card card-border-left-warning">
-        <div class="fs-2-mb-sm">🟡</div>
-        <h2>{{ 'compliance.severity.high'|trans({}, 'compliance') }}</h2>
-        <div class="mt-2">
-            <strong class="fs-15-warning">{{ gaps|filter(g => g.severity == 'high')|length }}</strong>
-        </div>
-        <p class="text-muted-mt-xs">
-            {{ 'compliance.description.high_gaps'|trans({}, 'compliance') }}
-        </p>
-    </div>
+    {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'warning' } %}
+        {% block card_body %}
+            <div class="fs-2-mb-sm"><i class="bi bi-circle-fill text-warning" aria-hidden="true"></i></div>
+            <h2>{{ 'compliance.severity.high'|trans({}, 'compliance') }}</h2>
+            <div class="mt-2">
+                <strong class="fs-15-warning">{{ gaps|filter(g => g.severity == 'high')|length }}</strong>
+            </div>
+            <p class="text-muted-mt-xs">
+                {{ 'compliance.description.high_gaps'|trans({}, 'compliance') }}
+            </p>
+        {% endblock %}
+    {% endembed %}
 
-    <div class="card card-border-left-info">
-        <div class="fs-2-mb-sm">🔵</div>
-        <h2>{{ 'compliance.severity.medium'|trans({}, 'compliance') }}</h2>
-        <div class="mt-2">
-            <strong class="fs-15-info">{{ gaps|filter(g => g.severity == 'medium')|length }}</strong>
-        </div>
-        <p class="text-muted-mt-xs">
-            {{ 'compliance.description.medium_gaps'|trans({}, 'compliance') }}
-        </p>
-    </div>
+    {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info' } %}
+        {% block card_body %}
+            <div class="fs-2-mb-sm"><i class="bi bi-circle-fill text-info" aria-hidden="true"></i></div>
+            <h2>{{ 'compliance.severity.medium'|trans({}, 'compliance') }}</h2>
+            <div class="mt-2">
+                <strong class="fs-15-info">{{ gaps|filter(g => g.severity == 'medium')|length }}</strong>
+            </div>
+            <p class="text-muted-mt-xs">
+                {{ 'compliance.description.medium_gaps'|trans({}, 'compliance') }}
+            </p>
+        {% endblock %}
+    {% endembed %}
 
-    <div class="card card-border-left-secondary">
-        <div class="fs-2-mb-sm">⚪</div>
-        <h2>{{ 'compliance.severity.low'|trans({}, 'compliance') }}</h2>
-        <div class="mt-2">
-            <strong class="fs-4">{{ gaps|filter(g => g.severity == 'low')|length }}</strong>
-        </div>
-        <p class="text-muted-mt-xs">
-            {{ 'compliance.description.low_gaps'|trans({}, 'compliance') }}
-        </p>
-    </div>
+    {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'secondary' } %}
+        {% block card_body %}
+            <div class="fs-2-mb-sm"><i class="bi bi-circle text-secondary" aria-hidden="true"></i></div>
+            <h2>{{ 'compliance.severity.low'|trans({}, 'compliance') }}</h2>
+            <div class="mt-2">
+                <strong class="fs-4">{{ gaps|filter(g => g.severity == 'low')|length }}</strong>
+            </div>
+            <p class="text-muted-mt-xs">
+                {{ 'compliance.description.low_gaps'|trans({}, 'compliance') }}
+            </p>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 {# Gaps Table #}

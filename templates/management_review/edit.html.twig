@@ -29,13 +29,15 @@
 
     <div class="row">
         <div class="col-lg-10 col-xl-9 mx-auto">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="h5 mb-0">
-                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'management_review.edit'|trans({}, 'management_review') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="h5 mb-0">
+                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'management_review.edit'|trans({}, 'management_review') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="alert alert-info mb-4" role="alert">
                         <h3 class="alert-heading h6">
                             <i class="bi bi-info-circle-fill" aria-hidden="true"></i> {{ 'management_review.iso_requirement'|trans({}, 'management_review') }}
@@ -94,15 +96,17 @@
                     </div>
 
                     {{ form_end(form) }}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Metadata Card #}
-            <div class="card mt-4">
-                <div class="card-header bg-light">
-                    <h2 class="h5 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="h5 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="row mb-0">
                         <dt class="col-sm-3 text-muted">{{ 'common.created_at'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-9">{{ review.createdAt|date('d.m.Y H:i') }}</dd>
@@ -113,8 +117,8 @@
                         <dt class="col-sm-3 text-muted">{{ 'common.id'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-9"><code>{{ review.id }}</code></dd>
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

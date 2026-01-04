@@ -59,11 +59,13 @@
     </div>
     {% endif %}
 
-    <div class="card">
-        <div class="card-header">
-            <h2>{{ 'bc_exercises.page.header'|trans({}, 'bc_exercises') }} ({{ bc_exercises|length }})</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2>{{ 'bc_exercises.page.header'|trans({}, 'bc_exercises') }} ({{ bc_exercises|length }})</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if bc_exercises|length > 0 %}
             {% embed '_components/_table.html.twig' with {
                 'wrapperClass': 'card-body',
@@ -104,8 +106,8 @@
             {% else %}
             <p>{{ 'bc_exercises.message.no_exercises'|trans({}, 'bc_exercises') }}. <a href="{{ path('app_bc_exercise_new') }}">{{ 'bc_exercises.message.schedule_first'|trans({}, 'bc_exercises') }}</a>.</p>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>

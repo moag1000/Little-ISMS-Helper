@@ -30,13 +30,15 @@
     <div class="row">
         {# Main Info #}
         <div class="col-md-8">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'scheduled_report.details.title'|trans({}, 'scheduled_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'scheduled_report.details.title'|trans({}, 'scheduled_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <strong>{{ 'scheduled_report.form.report_type'|trans({}, 'scheduled_reports') }}:</strong><br>
@@ -82,17 +84,19 @@
                         <p class="text-muted mb-0">{{ report.description }}</p>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Recipients #}
-            <div class="card shadow-sm mb-4">
-                <div class="card-header">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-envelope" aria-hidden="true"></i> {{ 'scheduled_report.recipients.title'|trans({}, 'scheduled_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-envelope" aria-hidden="true"></i> {{ 'scheduled_report.recipients.title'|trans({}, 'scheduled_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if report.recipients|length > 0 %}
                     <ul class="list-group list-group-flush">
                         {% for email in report.recipients %}
@@ -104,18 +108,20 @@
                     {% else %}
                     <p class="text-muted mb-0">{{ 'scheduled_report.recipients.empty'|trans({}, 'scheduled_reports') }}</p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Last Run Info #}
             {% if report.lastRunAt %}
-            <div class="card shadow-sm mb-4">
-                <div class="card-header">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'scheduled_report.last_run.title'|trans({}, 'scheduled_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'scheduled_report.last_run.title'|trans({}, 'scheduled_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row">
                         <div class="col-md-4">
                             <strong>{{ 'scheduled_report.last_run.time'|trans({}, 'scheduled_reports') }}:</strong><br>
@@ -134,63 +140,69 @@
                             {{ report.lastRunMessage|default('-') }}
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
         </div>
 
         {# Sidebar #}
         <div class="col-md-4">
             {# Status Card #}
-            <div class="card shadow-sm mb-4 {% if report.active %}border-success{% else %}border-secondary{% endif %}">
-                <div class="card-header {% if report.active %}bg-success text-white{% else %}bg-secondary text-white{% endif %}">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-{% if report.active %}check-circle{% else %}pause-circle{% endif %}" aria-hidden="true"></i>
-                        {{ 'scheduled_report.status.label'|trans({}, 'scheduled_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body text-center">
-                    <h3 class="{% if report.active %}text-success{% else %}text-secondary{% endif %}">
-                        {% if report.active %}
-                        {{ 'scheduled_report.status.active'|trans({}, 'scheduled_reports') }}
-                        {% else %}
-                        {{ 'scheduled_report.status.inactive'|trans({}, 'scheduled_reports') }}
-                        {% endif %}
-                    </h3>
-
-                    {% if report.active and report.nextRunAt %}
-                    <p class="mb-2">
-                        <strong>{{ 'scheduled_report.next_run'|trans({}, 'scheduled_reports') }}:</strong><br>
-                        {{ report.nextRunAt|date('Y-m-d H:i') }}
-                        {% if report.isDue() %}
-                        {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark', content: 'scheduled_report.status.due'|trans({}, 'scheduled_reports') } %}
-                        {% endif %}
-                    </p>
-                    {% endif %}
-
-                    <hr>
-
-                    <form action="{{ path('app_scheduled_report_toggle', {id: report.id}) }}" method="post" class="d-inline">
-                        <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ report.id) }}">
-                        <button type="submit" class="btn {% if report.active %}btn-outline-danger{% else %}btn-success{% endif %}">
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4 ' ~ (report.active ? 'border-success' : 'border-secondary') } %}
+                {% block card_header %}
+                    <div class="card-header {% if report.active %}bg-success text-white{% else %}bg-secondary text-white{% endif %}">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-{% if report.active %}check-circle{% else %}pause-circle{% endif %}" aria-hidden="true"></i>
+                            {{ 'scheduled_report.status.label'|trans({}, 'scheduled_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="{% if report.active %}text-success{% else %}text-secondary{% endif %}">
                             {% if report.active %}
-                            <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'scheduled_report.action.deactivate'|trans({}, 'scheduled_reports') }}
+                            {{ 'scheduled_report.status.active'|trans({}, 'scheduled_reports') }}
                             {% else %}
-                            <i class="bi bi-play-circle" aria-hidden="true"></i> {{ 'scheduled_report.action.activate'|trans({}, 'scheduled_reports') }}
+                            {{ 'scheduled_report.status.inactive'|trans({}, 'scheduled_reports') }}
                             {% endif %}
-                        </button>
-                    </form>
-                </div>
-            </div>
+                        </h3>
+
+                        {% if report.active and report.nextRunAt %}
+                        <p class="mb-2">
+                            <strong>{{ 'scheduled_report.next_run'|trans({}, 'scheduled_reports') }}:</strong><br>
+                            {{ report.nextRunAt|date('Y-m-d H:i') }}
+                            {% if report.isDue() %}
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark', content: 'scheduled_report.status.due'|trans({}, 'scheduled_reports') } %}
+                            {% endif %}
+                        </p>
+                        {% endif %}
+
+                        <hr>
+
+                        <form action="{{ path('app_scheduled_report_toggle', {id: report.id}) }}" method="post" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ report.id) }}">
+                            <button type="submit" class="btn {% if report.active %}btn-outline-danger{% else %}btn-success{% endif %}">
+                                {% if report.active %}
+                                <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'scheduled_report.action.deactivate'|trans({}, 'scheduled_reports') }}
+                                {% else %}
+                                <i class="bi bi-play-circle" aria-hidden="true"></i> {{ 'scheduled_report.action.activate'|trans({}, 'scheduled_reports') }}
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Actions Card #}
-            <div class="card shadow-sm mb-4">
-                <div class="card-header">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'scheduled_report.actions.title'|trans({}, 'scheduled_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'scheduled_report.actions.title'|trans({}, 'scheduled_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="d-grid gap-2">
                         <a href="{{ path('app_scheduled_report_preview', {id: report.id}) }}" class="btn btn-outline-info">
                             <i class="bi bi-download" aria-hidden="true"></i> {{ 'scheduled_report.action.preview'|trans({}, 'scheduled_reports') }}
@@ -214,17 +226,19 @@
                             </button>
                         </form>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Metadata #}
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-clock" aria-hidden="true"></i> {{ 'scheduled_report.metadata.title'|trans({}, 'scheduled_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-clock" aria-hidden="true"></i> {{ 'scheduled_report.metadata.title'|trans({}, 'scheduled_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <small class="text-muted">
                         <strong>{{ 'scheduled_report.metadata.created'|trans({}, 'scheduled_reports') }}:</strong><br>
                         {{ report.createdAt|date('Y-m-d H:i') }}
@@ -237,8 +251,8 @@
                         {{ report.updatedAt|date('Y-m-d H:i') }}
                         {% endif %}
                     </small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

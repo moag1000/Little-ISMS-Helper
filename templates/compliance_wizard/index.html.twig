@@ -33,17 +33,19 @@
         </div>
         {% for key, wizard in available_wizards %}
         <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 border-{{ wizard.color }} wizard-card">
-                <div class="card-header bg-{{ wizard.color }} bg-opacity-10 border-{{ wizard.color }}">
-                    <div class="d-flex align-items-center">
-                        <i class="{{ wizard.icon }} fs-3 text-{{ wizard.color }} me-3"></i>
-                        <div>
-                            <h3 class="card-title h5 mb-0">{{ wizard.name }}</h3>
-                            {% include '_components/_badge.html.twig' with { variant: wizard.color, content: wizard.code } %}
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-' ~ wizard.color ~ ' wizard-card' } %}
+                {% block card_header %}
+                    <div class="card-header bg-{{ wizard.color }} bg-opacity-10 border-{{ wizard.color }}">
+                        <div class="d-flex align-items-center">
+                            <i class="{{ wizard.icon }} fs-3 text-{{ wizard.color }} me-3"></i>
+                            <div>
+                                <h3 class="card-title h5 mb-0">{{ wizard.name }}</h3>
+                                {% include '_components/_badge.html.twig' with { variant: wizard.color, content: wizard.code } %}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body">
+                {% endblock %}
+                {% block card_body %}
                     <p class="card-text text-muted">{{ wizard.description|trans }}</p>
 
                     <div class="mb-3">
@@ -70,13 +72,15 @@
                         <i class="bi bi-list-check me-1" aria-hidden="true"></i>
                         {{ wizard.categories|length }} {{ 'wizard.categories_count'|trans }}
                     </div>
-                </div>
-                <div class="card-footer bg-transparent border-{{ wizard.color }}">
-                    <a href="{{ path('app_compliance_wizard_start', {wizard: key}) }}" class="btn btn-{{ wizard.color }} w-100">
-                        <i class="bi bi-play-circle me-1" aria-hidden="true"></i>{{ 'wizard.start_wizard'|trans }}
-                    </a>
-                </div>
-            </div>
+                {% endblock %}
+                {% block card_footer %}
+                    <div class="card-footer bg-transparent border-{{ wizard.color }}">
+                        <a href="{{ path('app_compliance_wizard_start', {wizard: key}) }}" class="btn btn-{{ wizard.color }} w-100">
+                            <i class="bi bi-play-circle me-1" aria-hidden="true"></i>{{ 'wizard.start_wizard'|trans }}
+                        </a>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         {% endfor %}
     </div>
@@ -93,17 +97,19 @@
         </div>
         {% for key, wizard in unavailable_wizards %}
         <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 border-secondary opacity-75">
-                <div class="card-header bg-secondary bg-opacity-10">
-                    <div class="d-flex align-items-center">
-                        <i class="{{ wizard.icon }} fs-3 text-secondary me-3"></i>
-                        <div>
-                            <h3 class="card-title h5 mb-0 text-muted">{{ wizard.name }}</h3>
-                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: wizard.code } %}
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-secondary opacity-75' } %}
+                {% block card_header %}
+                    <div class="card-header bg-secondary bg-opacity-10">
+                        <div class="d-flex align-items-center">
+                            <i class="{{ wizard.icon }} fs-3 text-secondary me-3"></i>
+                            <div>
+                                <h3 class="card-title h5 mb-0 text-muted">{{ wizard.name }}</h3>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: wizard.code } %}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body">
+                {% endblock %}
+                {% block card_body %}
                     <div class="alert alert-warning py-2 mb-3">
                         <small>
                             <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>
@@ -113,13 +119,15 @@
                             {% endfor %}
                         </small>
                     </div>
-                </div>
-                <div class="card-footer bg-transparent">
-                    <a href="{{ path('admin_modules_index') }}" class="btn btn-outline-secondary btn-sm w-100">
-                        <i class="bi bi-gear me-1" aria-hidden="true"></i>{{ 'wizard.activate_modules'|trans }}
-                    </a>
-                </div>
-            </div>
+                {% endblock %}
+                {% block card_footer %}
+                    <div class="card-footer bg-transparent">
+                        <a href="{{ path('admin_modules_index') }}" class="btn btn-outline-secondary btn-sm w-100">
+                            <i class="bi bi-gear me-1" aria-hidden="true"></i>{{ 'wizard.activate_modules'|trans }}
+                        </a>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         {% endfor %}
     </div>
@@ -128,8 +136,8 @@
     {# Info Section #}
     <div class="row mt-4">
         <div class="col-12">
-            <div class="card bg-light border-0">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'bg-light border-0' } %}
+                {% block card_body %}
                     <h4 class="h6 mb-3">
                         <i class="bi bi-info-circle text-info me-2" aria-hidden="true"></i>{{ 'wizard.how_it_works'|trans }}
                     </h4>
@@ -162,8 +170,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

@@ -119,11 +119,13 @@
 
         {# Management Reports #}
         <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 shadow-sm border-dark">
-                <div class="card-header bg-dark text-white">
-                    <h2 class="mb-0"><i class="bi bi-graph-up-arrow" aria-hidden="true"></i> {{ 'reports.management.title'|trans({}, 'reports') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm border-dark' } %}
+                {% block card_header %}
+                    <div class="card-header bg-dark text-white">
+                        <h2 class="mb-0"><i class="bi bi-graph-up-arrow" aria-hidden="true"></i> {{ 'reports.management.title'|trans({}, 'reports') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p class="text-muted">{{ 'reports.management.description'|trans({}, 'reports') }}</p>
                     <ul class="small mb-3">
                         <li>{{ 'reports.management.features.feature_1'|trans({}, 'reports') }}</li>
@@ -131,24 +133,28 @@
                         <li>{{ 'reports.management.features.feature_3'|trans({}, 'reports') }}</li>
                         <li>{{ 'reports.management.features.feature_4'|trans({}, 'reports') }}</li>
                     </ul>
-                </div>
-                <div class="card-footer bg-light">
-                    <div class="d-grid">
-                        <a href="{{ path('app_management_reports') }}" class="btn btn-sm btn-dark">
-                            <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'reports.management.view_all'|trans({}, 'reports') }}
-                        </a>
+                {% endblock %}
+                {% block card_footer %}
+                    <div class="card-footer bg-light">
+                        <div class="d-grid">
+                            <a href="{{ path('app_management_reports') }}" class="btn btn-sm btn-dark">
+                                <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'reports.management.view_all'|trans({}, 'reports') }}
+                            </a>
+                        </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Scheduled Reports #}
         <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 shadow-sm border-secondary">
-                <div class="card-header bg-secondary text-white">
-                    <h2 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'reports.scheduled.title'|trans({}, 'reports') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm border-secondary' } %}
+                {% block card_header %}
+                    <div class="card-header bg-secondary text-white">
+                        <h2 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'reports.scheduled.title'|trans({}, 'reports') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p class="text-muted">{{ 'reports.scheduled.description'|trans({}, 'reports') }}</p>
                     <ul class="small mb-3">
                         <li>{{ 'reports.scheduled.features.feature_1'|trans({}, 'reports') }}</li>
@@ -156,15 +162,17 @@
                         <li>{{ 'reports.scheduled.features.feature_3'|trans({}, 'reports') }}</li>
                         <li>{{ 'reports.scheduled.features.feature_4'|trans({}, 'reports') }}</li>
                     </ul>
-                </div>
-                <div class="card-footer bg-light">
-                    <div class="d-grid">
-                        <a href="{{ path('app_scheduled_report_index') }}" class="btn btn-sm btn-secondary">
-                            <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'reports.scheduled.manage'|trans({}, 'reports') }}
-                        </a>
+                {% endblock %}
+                {% block card_footer %}
+                    <div class="card-footer bg-light">
+                        <div class="d-grid">
+                            <a href="{{ path('app_scheduled_report_index') }}" class="btn btn-sm btn-secondary">
+                                <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'reports.scheduled.manage'|trans({}, 'reports') }}
+                            </a>
+                        </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 

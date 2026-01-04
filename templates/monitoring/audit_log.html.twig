@@ -16,16 +16,18 @@
     {# Statistics #}
     <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card border-primary">
-                <div class="card-body text-center">
-                    <div class="card-title text-muted fw-bold">{{ 'audit_log.stats.total_entries'|trans({}, 'audit_log') }}</div>
-                    <p class="display-6 text-primary">{{ statistics.total }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'border-primary' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="card-title text-muted fw-bold">{{ 'audit_log.stats.total_entries'|trans({}, 'audit_log') }}</div>
+                        <p class="display-6 text-primary">{{ statistics.total }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card border-success">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-success' } %}
+                {% block card_body %}
                     <div class="card-title text-muted fw-bold">{{ 'audit_log.stats.top_actions'|trans({}, 'audit_log') }}</div>
                     {% for stat in statistics.action_stats|slice(0, 5) %}
                         <div class="d-flex justify-content-between">
@@ -33,12 +35,12 @@
                             <span>{{ stat.count }}</span>
                         </div>
                     {% endfor %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card border-info">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-info' } %}
+                {% block card_body %}
                     <div class="card-title text-muted fw-bold">{{ 'audit_log.stats.top_entities'|trans({}, 'audit_log') }}</div>
                     {% for stat in statistics.entity_stats|slice(0, 5) %}
                         <div class="d-flex justify-content-between">
@@ -46,19 +48,21 @@
                             {% include '_components/_badge.html.twig' with { variant: 'info', content: stat.count } %}
                         </div>
                     {% endfor %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Quick Filters #}
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'audit_log.section.quick_filters'|trans({}, 'audit_log') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'audit_log.section.quick_filters'|trans({}, 'audit_log') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="btn-group btn-group-sm" role="group">
                 <a href="{{ path('monitoring_audit_log', {filter: 'all'}) }}"
                    class="btn btn-sm {{ current_filter == 'all' ? 'btn-primary' : 'btn-outline-primary' }}">
@@ -77,17 +81,19 @@
                     {{ 'audit_log.filter.quick.critical_actions'|trans({}, 'audit_log') }}
                 </a>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Audit Log Entries #}
-    <div class="card">
-        <div class="card-header bg-success text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'audit_log.section.entries'|trans({}, 'audit_log') }} ({{ logs|length }})
-            </h2>
-        </div>
-        <div class="card-body p-0">
+    {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
+        {% block card_header %}
+            <div class="card-header bg-success text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'audit_log.section.entries'|trans({}, 'audit_log') }} ({{ logs|length }})
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if logs|length > 0 %}
                 {% embed '_components/_table.html.twig' with {
                     'class': 'table-hover mb-0',
@@ -193,8 +199,8 @@
                     <p class="mt-2">{{ 'audit_log.message.no_entries_filtered'|trans({}, 'audit_log') }}</p>
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Info Box #}
     <div class="alert alert-info mt-4">

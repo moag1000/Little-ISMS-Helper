@@ -32,255 +32,275 @@
 </div>
 
 {# Control Description #}
-<div class="card mb-4">
-    <h2>{{ 'soa.section.description'|trans({}, 'soa') }}</h2>
-    <p class="text-light-mt-sm-lh">
-        {{ control.description }}
-    </p>
-</div>
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_body %}
+        <h2>{{ 'soa.section.description'|trans({}, 'soa') }}</h2>
+        <p class="text-light-mt-sm-lh">
+            {{ control.description }}
+        </p>
+    {% endblock %}
+{% endembed %}
 
 {# Applicability Status #}
-<div class="card mb-4">
-    <h2>{{ 'soa.section.applicability_status'|trans({}, 'soa') }}</h2>
-    <div class="stats-grid mt-2 grid-responsive-200">
-        <div class="stat-item">
-            <strong class="fs-4">
-                {% if control.applicable %}
-                    {% include '_components/_badge.html.twig' with { variant: 'success', size: 'lg', content: '✓ ' ~ 'soa.value.yes'|trans({}, 'soa') } %}
-                    <span class="visually-hidden">{{ 'soa.table.applicable'|trans({}, 'soa') }}</span>
-                {% else %}
-                    {% include '_components/_badge.html.twig' with { variant: 'secondary', size: 'lg', class: 'badge-neutral-lg', content: '✗ ' ~ 'soa.status.not_applicable'|trans({}, 'soa') } %}
-                {% endif %}
-            </strong>
-            <span>{{ 'soa.field.applicable'|trans({}, 'soa') }}</span>
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_body %}
+        <h2>{{ 'soa.section.applicability_status'|trans({}, 'soa') }}</h2>
+        <div class="stats-grid mt-2 grid-responsive-200">
+            <div class="stat-item">
+                <strong class="fs-4">
+                    {% if control.applicable %}
+                        {% include '_components/_badge.html.twig' with { variant: 'success', size: 'lg', content: '✓ ' ~ 'soa.value.yes'|trans({}, 'soa') } %}
+                        <span class="visually-hidden">{{ 'soa.table.applicable'|trans({}, 'soa') }}</span>
+                    {% else %}
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', size: 'lg', class: 'badge-neutral-lg', content: '✗ ' ~ 'soa.status.not_applicable'|trans({}, 'soa') } %}
+                    {% endif %}
+                </strong>
+                <span>{{ 'soa.field.applicable'|trans({}, 'soa') }}</span>
+            </div>
+
+            {% if control.applicable %}
+            <div class="stat-item">
+                <strong class="fs-4">
+                    {% if control.implementationStatus == 'implemented' %}
+                        {% include '_components/_badge.html.twig' with { variant: 'success', size: 'lg', icon: 'bi-check-circle', content: 'soa.status.implemented'|trans({}, 'soa') } %}
+                    {% elseif control.implementationStatus == 'in_progress' %}
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', size: 'lg', icon: 'bi-arrow-clockwise', content: 'soa.status.in_progress'|trans({}, 'soa') } %}
+                    {% elseif control.implementationStatus == 'not_started' %}
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', size: 'lg', icon: 'bi-pause-circle', content: 'soa.status.not_started'|trans({}, 'soa') } %}
+                    {% else %}
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', size: 'lg', class: 'badge-neutral-lg', content: 'soa.value.na'|trans({}, 'soa') } %}
+                    {% endif %}
+                </strong>
+                <span>{{ 'soa.table.implementation_status'|trans({}, 'soa') }}</span>
+            </div>
+
+            <div class="stat-item">
+                <strong class="fs-4">{{ control.implementationPercentage }}%</strong>
+                <span>{{ 'soa.field.implementation_percentage'|trans({}, 'soa') }}</span>
+            </div>
+            {% endif %}
         </div>
 
         {% if control.applicable %}
-        <div class="stat-item">
-            <strong class="fs-4">
-                {% if control.implementationStatus == 'implemented' %}
-                    {% include '_components/_badge.html.twig' with { variant: 'success', size: 'lg', icon: 'bi-check-circle', content: 'soa.status.implemented'|trans({}, 'soa') } %}
-                {% elseif control.implementationStatus == 'in_progress' %}
-                    {% include '_components/_badge.html.twig' with { variant: 'warning', size: 'lg', icon: 'bi-arrow-clockwise', content: 'soa.status.in_progress'|trans({}, 'soa') } %}
-                {% elseif control.implementationStatus == 'not_started' %}
-                    {% include '_components/_badge.html.twig' with { variant: 'danger', size: 'lg', icon: 'bi-pause-circle', content: 'soa.status.not_started'|trans({}, 'soa') } %}
-                {% else %}
-                    {% include '_components/_badge.html.twig' with { variant: 'secondary', size: 'lg', class: 'badge-neutral-lg', content: 'soa.value.na'|trans({}, 'soa') } %}
-                {% endif %}
-            </strong>
-            <span>{{ 'soa.table.implementation_status'|trans({}, 'soa') }}</span>
-        </div>
-
-        <div class="stat-item">
-            <strong class="fs-4">{{ control.implementationPercentage }}%</strong>
-            <span>{{ 'soa.field.implementation_percentage'|trans({}, 'soa') }}</span>
+        <div class="progress mt-3 progress-lg">
+            <div class="progress-bar" style="width: {{ control.implementationPercentage }}%; font-size: 1rem;">
+                {{ control.implementationPercentage }}%
+            </div>
         </div>
         {% endif %}
-    </div>
-
-    {% if control.applicable %}
-    <div class="progress mt-3 progress-lg">
-        <div class="progress-bar" style="width: {{ control.implementationPercentage }}%; font-size: 1rem;">
-            {{ control.implementationPercentage }}%
-        </div>
-    </div>
-    {% endif %}
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Justification #}
-<div class="card mb-4">
-    <h2>{{ 'soa.section.justification'|trans({}, 'soa') }}</h2>
-    {% if control.justification %}
-        <div class="info-box mt-2 bg-light">
-            <p class="ws-pre-wrap-lh">{{ control.justification }}</p>
-        </div>
-    {% else %}
-        <p class="text-muted mt-sm">
-            {{ 'soa.message.no_justification'|trans({}, 'soa') }}
-        </p>
-    {% endif %}
-</div>
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_body %}
+        <h2>{{ 'soa.section.justification'|trans({}, 'soa') }}</h2>
+        {% if control.justification %}
+            <div class="info-box mt-2 bg-light">
+                <p class="ws-pre-wrap-lh">{{ control.justification }}</p>
+            </div>
+        {% else %}
+            <p class="text-muted mt-sm">
+                {{ 'soa.message.no_justification'|trans({}, 'soa') }}
+            </p>
+        {% endif %}
+    {% endblock %}
+{% endembed %}
 
 {% if control.applicable %}
 {# Implementation Details #}
-<div class="card mb-4">
-    <h2>{{ 'soa.section.implementation_details'|trans({}, 'soa') }}</h2>
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_body %}
+        <h2>{{ 'soa.section.implementation_details'|trans({}, 'soa') }}</h2>
 
-    <div class="form-group mt-3">
-        <h2 class="fs-1 mb-sm">{{ 'soa.section.implementation_notes'|trans({}, 'soa') }}</h2>
-        {% if control.implementationNotes %}
-            <div class="info-box bg-light">
-                <p class="ws-pre-wrap-lh">{{ control.implementationNotes }}</p>
+        <div class="form-group mt-3">
+            <h2 class="fs-1 mb-sm">{{ 'soa.section.implementation_notes'|trans({}, 'soa') }}</h2>
+            {% if control.implementationNotes %}
+                <div class="info-box bg-light">
+                    <p class="ws-pre-wrap-lh">{{ control.implementationNotes }}</p>
+                </div>
+            {% else %}
+                <p class="text-muted">
+                    {{ 'soa.message.no_implementation_notes'|trans({}, 'soa') }}
+                </p>
+            {% endif %}
+        </div>
+
+        <div class="stats-grid mt-3 grid-responsive-250">
+            <div class="stat-item">
+                <strong>
+                    {% if control.responsiblePerson %}
+                        {{ control.responsiblePerson }}
+                    {% else %}
+                        <span class="text-muted">{{ 'soa.field.unassigned'|trans({}, 'soa') }}</span>
+                    {% endif %}
+                </strong>
+                <span>{{ 'soa.field.responsible_person'|trans({}, 'soa') }}</span>
             </div>
-        {% else %}
-            <p class="text-muted">
-                {{ 'soa.message.no_implementation_notes'|trans({}, 'soa') }}
-            </p>
-        {% endif %}
-    </div>
 
-    <div class="stats-grid mt-3 grid-responsive-250">
-        <div class="stat-item">
-            <strong>
-                {% if control.responsiblePerson %}
-                    {{ control.responsiblePerson }}
-                {% else %}
-                    <span class="text-muted">{{ 'soa.field.unassigned'|trans({}, 'soa') }}</span>
-                {% endif %}
-            </strong>
-            <span>{{ 'soa.field.responsible_person'|trans({}, 'soa') }}</span>
+            <div class="stat-item">
+                <strong>
+                    {% if control.targetDate %}
+                        {{ control.targetDate|date('d.m.Y') }}
+                    {% else %}
+                        <span class="text-muted">{{ 'soa.field.not_set'|trans({}, 'soa') }}</span>
+                    {% endif %}
+                </strong>
+                <span>{{ 'soa.field.target_date'|trans({}, 'soa') }}</span>
+            </div>
         </div>
-
-        <div class="stat-item">
-            <strong>
-                {% if control.targetDate %}
-                    {{ control.targetDate|date('d.m.Y') }}
-                {% else %}
-                    <span class="text-muted">{{ 'soa.field.not_set'|trans({}, 'soa') }}</span>
-                {% endif %}
-            </strong>
-            <span>{{ 'soa.field.target_date'|trans({}, 'soa') }}</span>
-        </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Data Reuse: Protected Assets #}
 {% if control.protectedAssets is defined and control.protectedAssets|length > 0 %}
-<div class="card mb-4">
-    <h2><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'soa.section.data_reuse_protected_assets'|trans({'%count%': control.protectedAssets|length}, 'soa') }}</h2>
-    <div class="alert alert-info mt-2">
-        <strong>{{ 'soa.label.control_coverage'|trans({}, 'soa') }}</strong> {{ 'soa.message.control_coverage'|trans({'%count%': control.protectedAssets|length, '%value%': control.protectedAssetValue}, 'soa') }}
-        {% if control.highRiskAssetCount > 0 %}
-            <br><strong><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ control.highRiskAssetCount }}</strong> {{ 'soa.message.high_risk_assets'|trans({}, 'soa') }}
-        {% endif %}
-    </div>
-    <div class="data-reuse-list">
-        {% for asset in control.protectedAssets %}
-            <div class="data-reuse-item">
-                <strong>{{ asset.name }}</strong>
-                {% include '_components/_badge.html.twig' with { variant: 'info', content: asset.assetType } %}
-                <small>{{ 'soa.field.cia'|trans({}, 'soa') }}: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
-            </div>
-        {% endfor %}
-    </div>
-</div>
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_body %}
+        <h2><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'soa.section.data_reuse_protected_assets'|trans({'%count%': control.protectedAssets|length}, 'soa') }}</h2>
+        <div class="alert alert-info mt-2">
+            <strong>{{ 'soa.label.control_coverage'|trans({}, 'soa') }}</strong> {{ 'soa.message.control_coverage'|trans({'%count%': control.protectedAssets|length, '%value%': control.protectedAssetValue}, 'soa') }}
+            {% if control.highRiskAssetCount > 0 %}
+                <br><strong><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ control.highRiskAssetCount }}</strong> {{ 'soa.message.high_risk_assets'|trans({}, 'soa') }}
+            {% endif %}
+        </div>
+        <div class="data-reuse-list">
+            {% for asset in control.protectedAssets %}
+                <div class="data-reuse-item">
+                    <strong>{{ asset.name }}</strong>
+                    {% include '_components/_badge.html.twig' with { variant: 'info', content: asset.assetType } %}
+                    <small>{{ 'soa.field.cia'|trans({}, 'soa') }}: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
+                </div>
+            {% endfor %}
+        </div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Data Reuse: Related Risks #}
 {% if control.risks is defined and control.risks|length > 0 %}
-<div class="card mb-4">
-    <h2><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'soa.section.data_reuse_related_risks'|trans({'%count%': control.risks|length}, 'soa') }}</h2>
-    <p class="text-light">{{ 'soa.message.related_risks_info'|trans({}, 'soa') }}</p>
-    <div class="data-reuse-list">
-        {% for risk in control.risks %}
-            <div class="data-reuse-item">
-                <strong>{{ risk.title }}</strong>
-                <span class="{{ badge_score(risk.inherentRiskLevel, 16, 9) }}">
-                    {{ 'soa.field.risk_level'|trans({}, 'soa') }}: {{ risk.inherentRiskLevel }}
-                </span>
-                <small>{{ 'soa.field.status'|trans({}, 'soa') }}: {{ risk.status|upper }}</small>
-            </div>
-        {% endfor %}
-    </div>
-</div>
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_body %}
+        <h2><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'soa.section.data_reuse_related_risks'|trans({'%count%': control.risks|length}, 'soa') }}</h2>
+        <p class="text-light">{{ 'soa.message.related_risks_info'|trans({}, 'soa') }}</p>
+        <div class="data-reuse-list">
+            {% for risk in control.risks %}
+                <div class="data-reuse-item">
+                    <strong>{{ risk.title }}</strong>
+                    <span class="{{ badge_score(risk.inherentRiskLevel, 16, 9) }}">
+                        {{ 'soa.field.risk_level'|trans({}, 'soa') }}: {{ risk.inherentRiskLevel }}
+                    </span>
+                    <small>{{ 'soa.field.status'|trans({}, 'soa') }}: {{ risk.status|upper }}</small>
+                </div>
+            {% endfor %}
+        </div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Data Reuse: Related Incidents #}
 {% if control.incidents is defined and control.incidents|length > 0 %}
-<div class="card mb-4">
-    <h2><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'soa.section.data_reuse_related_incidents'|trans({'%count%': control.incidents|length}, 'soa') }}</h2>
-    <div class="alert alert-warning">
-        <strong><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ control.incidents|length }} {{ 'soa.label.incidents'|trans({}, 'soa') }}</strong> {{ 'soa.message.related_incidents_count'|trans({}, 'soa') }}
-        {% if control.isReviewNeeded %}
-            <br><strong>👉 {{ 'soa.label.review_required'|trans({}, 'soa') }}</strong> {{ 'soa.message.review_required'|trans({}, 'soa') }}
-        {% endif %}
-    </div>
-    <div class="data-reuse-list">
-        {% for incident in control.incidents %}
-            <div class="data-reuse-item">
-                <strong>{{ incident.title }}</strong>
-                <span class="{{ badge_severity(incident.severity) }}">
-                    {{ incident.severity|upper }}
-                </span>
-                <small>{{ incident.detectedAt|date('Y-m-d') }}</small>
-            </div>
-        {% endfor %}
-    </div>
-</div>
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_body %}
+        <h2><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'soa.section.data_reuse_related_incidents'|trans({'%count%': control.incidents|length}, 'soa') }}</h2>
+        <div class="alert alert-warning">
+            <strong><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ control.incidents|length }} {{ 'soa.label.incidents'|trans({}, 'soa') }}</strong> {{ 'soa.message.related_incidents_count'|trans({}, 'soa') }}
+            {% if control.isReviewNeeded %}
+                <br><strong>{{ 'soa.label.review_required'|trans({}, 'soa') }}</strong> {{ 'soa.message.review_required'|trans({}, 'soa') }}
+            {% endif %}
+        </div>
+        <div class="data-reuse-list">
+            {% for incident in control.incidents %}
+                <div class="data-reuse-item">
+                    <strong>{{ incident.title }}</strong>
+                    <span class="{{ badge_severity(incident.severity) }}">
+                        {{ incident.severity|upper }}
+                    </span>
+                    <small>{{ incident.detectedAt|date('Y-m-d') }}</small>
+                </div>
+            {% endfor %}
+        </div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Data Reuse: Training Coverage #}
 {% if control.trainings is defined and control.trainings|length > 0 %}
-<div class="card mb-4">
-    <h2>🎓 Training Coverage ({{ control.trainings|length }})</h2>
-    <div class="alert {{ control.hasTrainingCoverage ? 'alert-success' : 'alert-warning' }}">
-        <strong>Status: {{ control.trainingStatus|upper }}</strong>
-        {% if not control.hasTrainingCoverage %}
-            <br><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Keine abgeschlossenen Trainings für dieses Control.
-        {% endif %}
-    </div>
-    <div class="data-reuse-list">
-        {% for training in control.trainings %}
-            <div class="data-reuse-item">
-                <strong>{{ training.title }}</strong>
-                <span class="{{ badge_status(training.status) }}">{{ training.status|upper }}</span>
-                {% if training.completionDate %}
-                    <small>Abgeschlossen: {{ training.completionDate|date('Y-m-d') }}</small>
-                {% endif %}
-            </div>
-        {% endfor %}
-    </div>
-</div>
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_body %}
+        <h2>Training Coverage ({{ control.trainings|length }})</h2>
+        <div class="alert {{ control.hasTrainingCoverage ? 'alert-success' : 'alert-warning' }}">
+            <strong>Status: {{ control.trainingStatus|upper }}</strong>
+            {% if not control.hasTrainingCoverage %}
+                <br><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Keine abgeschlossenen Trainings für dieses Control.
+            {% endif %}
+        </div>
+        <div class="data-reuse-list">
+            {% for training in control.trainings %}
+                <div class="data-reuse-item">
+                    <strong>{{ training.title }}</strong>
+                    <span class="{{ badge_status(training.status) }}">{{ training.status|upper }}</span>
+                    {% if training.completionDate %}
+                        <small>Abgeschlossen: {{ training.completionDate|date('Y-m-d') }}</small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Control Effectiveness Score #}
 {% if control.applicable and control.implementationPercentage == 100 %}
-<div class="card mb-4">
-    <h2>📊 Control Effectiveness</h2>
-    <div class="stats-grid grid-responsive-200">
-        <div class="stat-item">
-            <strong style="font-size: 2rem; color: {{ control.effectivenessScore >= 80 ? 'var(--color-success)' : (control.effectivenessScore >= 50 ? 'var(--color-warning)' : 'var(--color-danger)') }}">
-                {{ control.effectivenessScore|number_format(1) }}%
-            </strong>
-            <span>Effectiveness Score</span>
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_body %}
+        <h2>Control Effectiveness</h2>
+        <div class="stats-grid grid-responsive-200">
+            <div class="stat-item">
+                <strong style="font-size: 2rem; color: {{ control.effectivenessScore >= 80 ? 'var(--color-success)' : (control.effectivenessScore >= 50 ? 'var(--color-warning)' : 'var(--color-danger)') }}">
+                    {{ control.effectivenessScore|number_format(1) }}%
+                </strong>
+                <span>Effectiveness Score</span>
+            </div>
         </div>
-    </div>
-    <p class="text-light-mt-sm">
-        Basierend auf Incident-Analyse nach Control-Implementierung.
-    </p>
-</div>
+        <p class="text-light-mt-sm">
+            Basierend auf Incident-Analyse nach Control-Implementierung.
+        </p>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Metadata #}
-<div class="card">
-    <h2>{{ 'soa.section.metadata'|trans({}, 'soa') }}</h2>
-    <div class="stats-grid mt-2 grid-responsive-250">
-        <div class="stat-item">
-            <strong>{{ control.createdAt|date('d.m.Y H:i') }}</strong>
-            <span>{{ 'soa.field.created_at'|trans({}, 'soa') }}</span>
-        </div>
+{% embed '_components/_card.html.twig' %}
+    {% block card_body %}
+        <h2>{{ 'soa.section.metadata'|trans({}, 'soa') }}</h2>
+        <div class="stats-grid mt-2 grid-responsive-250">
+            <div class="stat-item">
+                <strong>{{ control.createdAt|date('d.m.Y H:i') }}</strong>
+                <span>{{ 'soa.field.created_at'|trans({}, 'soa') }}</span>
+            </div>
 
-        <div class="stat-item">
-            <strong>{{ control.updatedAt|date('d.m.Y H:i') }}</strong>
-            <span>{{ 'soa.field.updated_at'|trans({}, 'soa') }}</span>
-        </div>
+            <div class="stat-item">
+                <strong>{{ control.updatedAt|date('d.m.Y H:i') }}</strong>
+                <span>{{ 'soa.field.updated_at'|trans({}, 'soa') }}</span>
+            </div>
 
-        {% if control.lastReviewDate %}
-        <div class="stat-item">
-            <strong>{{ control.lastReviewDate|date('d.m.Y') }}</strong>
-            <span>{{ 'soa.field.last_review'|trans({}, 'soa') }}</span>
-        </div>
-        {% endif %}
+            {% if control.lastReviewDate %}
+            <div class="stat-item">
+                <strong>{{ control.lastReviewDate|date('d.m.Y') }}</strong>
+                <span>{{ 'soa.field.last_review'|trans({}, 'soa') }}</span>
+            </div>
+            {% endif %}
 
-        {% if control.nextReviewDate %}
-        <div class="stat-item">
-            <strong>{{ control.nextReviewDate|date('d.m.Y') }}</strong>
-            <span>{{ 'soa.field.next_review'|trans({}, 'soa') }}</span>
+            {% if control.nextReviewDate %}
+            <div class="stat-item">
+                <strong>{{ control.nextReviewDate|date('d.m.Y') }}</strong>
+                <span>{{ 'soa.field.next_review'|trans({}, 'soa') }}</span>
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Action Buttons #}
 <div class="d-flex gap-2 mt-4">

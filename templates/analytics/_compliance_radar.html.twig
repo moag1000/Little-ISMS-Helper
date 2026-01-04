@@ -8,28 +8,29 @@
 #}
 {% trans_default_domain 'analytics' %}
 
-<div class="card analytics-card radar-card {{ expanded is defined and expanded ? 'expanded' : '' }}"
-     data-controller="radar-chart"
-     data-radar-chart-url-value="{{ path('app_analytics_compliance_radar_data') }}">
-    <div class="card-header">
-        <h2 class="card-title">
-            <i class="bi bi-diagram-3 text-success" aria-hidden="true"></i>
-            {{ 'analytics.card.compliance_radar'|trans({}, 'analytics') }}
-        </h2>
-        <div class="card-actions">
-            <button class="btn btn-sm btn-outline-secondary"
-                    data-action="click->radar-chart#refresh"
-                    title="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}">
-                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-secondary"
-                    data-action="click->radar-chart#exportImage"
-                    title="{{ 'analytics.action.export_png'|trans({}, 'analytics') }}">
-                <i class="bi bi-image" aria-hidden="true"></i>
-            </button>
+{% embed '_components/_card.html.twig' with { 'class': 'analytics-card radar-card' ~ (expanded is defined and expanded ? ' expanded' : '') } %}
+    {% block card_attrs %}data-controller="radar-chart" data-radar-chart-url-value="{{ path('app_analytics_compliance_radar_data') }}"{% endblock %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2 class="card-title">
+                <i class="bi bi-diagram-3 text-success" aria-hidden="true"></i>
+                {{ 'analytics.card.compliance_radar'|trans({}, 'analytics') }}
+            </h2>
+            <div class="card-actions">
+                <button class="btn btn-sm btn-outline-secondary"
+                        data-action="click->radar-chart#refresh"
+                        title="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}">
+                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary"
+                        data-action="click->radar-chart#exportImage"
+                        title="{{ 'analytics.action.export_png'|trans({}, 'analytics') }}">
+                    <i class="bi bi-image" aria-hidden="true"></i>
+                </button>
+            </div>
         </div>
-    </div>
-    <div class="card-body">
+    {% endblock %}
+    {% block card_body %}
         {# Loading State #}
         <div class="radar-loading d-none" data-radar-chart-target="loading">
             <div class="spinner-border text-primary" role="status">
@@ -74,5 +75,5 @@
                 {% endembed %}
             </div>
         </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}

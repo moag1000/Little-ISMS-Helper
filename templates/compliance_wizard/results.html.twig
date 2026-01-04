@@ -21,8 +21,8 @@
     {# Header with Score #}
     <div class="row mb-4">
         <div class="col-lg-8">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-0 shadow-sm' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h1 class="h3 mb-1">{{ result.framework_name }}</h1>
@@ -46,22 +46,24 @@
                             </span>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body d-flex flex-column justify-content-center">
-                    <div class="d-grid gap-2">
-                        <a href="{{ path('app_compliance_wizard_export_pdf', {wizard: wizard}) }}" class="btn btn-primary">
-                            <i class="bi bi-file-pdf me-2" aria-hidden="true"></i>{{ 'wizard.export_pdf'|trans }}
-                        </a>
-                        <a href="{{ path('app_compliance_wizard_start', {wizard: wizard}) }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>{{ 'wizard.run_again'|trans }}
-                        </a>
+            {% embed '_components/_card.html.twig' with { 'class': 'border-0 shadow-sm h-100' } %}
+                {% block card_body %}
+                    <div class="d-flex flex-column justify-content-center h-100">
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('app_compliance_wizard_export_pdf', {wizard: wizard}) }}" class="btn btn-primary">
+                                <i class="bi bi-file-pdf me-2" aria-hidden="true"></i>{{ 'wizard.export_pdf'|trans }}
+                            </a>
+                            <a href="{{ path('app_compliance_wizard_start', {wizard: wizard}) }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>{{ 'wizard.run_again'|trans }}
+                            </a>
+                        </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
@@ -97,23 +99,25 @@
     <div class="row">
         {% for key, category in result.categories %}
         <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 {% if category.score >= 80 %}border-success{% elseif category.score >= 60 %}border-warning{% else %}border-danger{% endif %}">
-                <div class="card-header d-flex justify-content-between align-items-center
-                    {% if category.score >= 80 %}bg-success bg-opacity-10
-                    {% elseif category.score >= 60 %}bg-warning bg-opacity-10
-                    {% else %}bg-danger bg-opacity-10{% endif %}">
-                    <div class="d-flex align-items-center">
-                        <i class="{{ category.icon|default('bi-check-circle') }} me-2"></i>
-                        <span class="fw-semibold">{{ category.name|trans }}</span>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 ' ~ (category.score >= 80 ? 'border-success' : (category.score >= 60 ? 'border-warning' : 'border-danger')) } %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center
+                        {% if category.score >= 80 %}bg-success bg-opacity-10
+                        {% elseif category.score >= 60 %}bg-warning bg-opacity-10
+                        {% else %}bg-danger bg-opacity-10{% endif %}">
+                        <div class="d-flex align-items-center">
+                            <i class="{{ category.icon|default('bi-check-circle') }} me-2"></i>
+                            <span class="fw-semibold">{{ category.name|trans }}</span>
+                        </div>
+                        <span class="badge
+                            {% if category.score >= 80 %}bg-success
+                            {% elseif category.score >= 60 %}bg-warning text-dark
+                            {% else %}bg-danger{% endif %}">
+                            {{ category.score }}%
+                        </span>
                     </div>
-                    <span class="badge
-                        {% if category.score >= 80 %}bg-success
-                        {% elseif category.score >= 60 %}bg-warning text-dark
-                        {% else %}bg-danger{% endif %}">
-                        {{ category.score }}%
-                    </span>
-                </div>
-                <div class="card-body">
+                {% endblock %}
+                {% block card_body %}
                     {# Progress Bar #}
                     <div class="progress mb-3" style="height: 8px;">
                         <div class="progress-bar
@@ -174,13 +178,15 @@
                         </ul>
                     </div>
                     {% endif %}
-                </div>
-                <div class="card-footer bg-transparent">
-                    <a href="{{ path('app_compliance_wizard_category', {wizard: wizard, category: key}) }}" class="btn btn-sm btn-outline-secondary w-100">
-                        <i class="bi bi-eye me-1" aria-hidden="true"></i>{{ 'wizard.view_details'|trans }}
-                    </a>
-                </div>
-            </div>
+                {% endblock %}
+                {% block card_footer %}
+                    <div class="card-footer bg-transparent">
+                        <a href="{{ path('app_compliance_wizard_category', {wizard: wizard, category: key}) }}" class="btn btn-sm btn-outline-secondary w-100">
+                            <i class="bi bi-eye me-1" aria-hidden="true"></i>{{ 'wizard.view_details'|trans }}
+                        </a>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         {% endfor %}
     </div>

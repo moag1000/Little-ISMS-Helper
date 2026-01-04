@@ -9,77 +9,79 @@
         <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">{{ 'risk.matrix.back_to_risks'|trans({}, 'risk') }}</a>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h2>{{ 'risk.matrix.header'|trans({}, 'risk') }}</h2>
-            <p>{{ 'risk.matrix.description'|trans({}, 'risk') }}</p>
-        </div>
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2>{{ 'risk.matrix.header'|trans({}, 'risk') }}</h2>
+                <p>{{ 'risk.matrix.description'|trans({}, 'risk') }}</p>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            <div data-controller="riskmatrix"
+                 data-riskmatrix-risks-value="{{ risks|json_encode|e('html_attr') }}">
 
-        <div class="card-body"
-             data-controller="riskmatrix"
-             data-riskmatrix-risks-value="{{ risks|json_encode|e('html_attr') }}">
+                <div class="risk-matrix-container">
+                    <div class="matrix-wrapper">
+                        <div class="y-label-vertical">{{ 'risk.matrix.impact'|trans({}, 'risk') }}</div>
 
-            <div class="risk-matrix-container">
-                <div class="matrix-wrapper">
-                    <div class="y-label-vertical">{{ 'risk.matrix.impact'|trans({}, 'risk') }}</div>
-
-                    <div class="y-axis-labels">
-                        {% for i in 5..1 %}
-                            <div class="axis-label">{{ i }}</div>
-                        {% endfor %}
-                    </div>
-
-                    <div>
-                        <div class="risk-matrix">
-                            {% for impact in 5..1 %}
-                                {% for probability in 1..5 %}
-                                    {% set score = probability * impact %}
-                                    {# ISO 27001 compliant thresholds: 20/12/6 #}
-                                    {% set level = score >= 20 ? 'critical' : (score >= 12 ? 'high' : (score >= 6 ? 'medium' : 'low')) %}
-                                    <div class="matrix-cell risk-{{ level }}"
-                                         data-probability="{{ probability }}"
-                                         data-impact="{{ impact }}"
-                                         title="{{ 'risk.matrix.cell_title'|trans({'%probability%': probability, '%impact%': impact, '%score%': score}, 'risk') }}">
-                                        <span class="cell-score">{{ score }}</span>
-                                    </div>
-                                {% endfor %}
-                            {% endfor %}
-                        </div>
-
-                        <div class="x-axis-labels">
-                            {% for i in 1..5 %}
+                        <div class="y-axis-labels">
+                            {% for i in 5..1 %}
                                 <div class="axis-label">{{ i }}</div>
                             {% endfor %}
                         </div>
 
-                        <div class="x-label-horizontal">{{ 'risk.matrix.probability'|trans({}, 'risk') }}</div>
-                    </div>
-                </div>
-            </div>
+                        <div>
+                            <div class="risk-matrix">
+                                {% for impact in 5..1 %}
+                                    {% for probability in 1..5 %}
+                                        {% set score = probability * impact %}
+                                        {# ISO 27001 compliant thresholds: 20/12/6 #}
+                                        {% set level = score >= 20 ? 'critical' : (score >= 12 ? 'high' : (score >= 6 ? 'medium' : 'low')) %}
+                                        <div class="matrix-cell risk-{{ level }}"
+                                             data-probability="{{ probability }}"
+                                             data-impact="{{ impact }}"
+                                             title="{{ 'risk.matrix.cell_title'|trans({'%probability%': probability, '%impact%': impact, '%score%': score}, 'risk') }}">
+                                            <span class="cell-score">{{ score }}</span>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
 
-            <div class="matrix-legend">
-                <h3>{{ 'risk.matrix.legend_title'|trans({}, 'risk') }}</h3>
-                <div class="legend-items" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; margin-top: 1rem;">
-                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
-                        <span class="legend-color risk-critical" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
-                        <span style="display: inline-block;">{{ 'risk.matrix.level.critical'|trans({}, 'risk') }}</span>
+                            <div class="x-axis-labels">
+                                {% for i in 1..5 %}
+                                    <div class="axis-label">{{ i }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="x-label-horizontal">{{ 'risk.matrix.probability'|trans({}, 'risk') }}</div>
+                        </div>
                     </div>
-                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
-                        <span class="legend-color risk-high" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
-                        <span style="display: inline-block;">{{ 'risk.matrix.level.high'|trans({}, 'risk') }}</span>
-                    </div>
-                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
-                        <span class="legend-color risk-medium" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
-                        <span style="display: inline-block;">{{ 'risk.matrix.level.medium'|trans({}, 'risk') }}</span>
-                    </div>
-                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
-                        <span class="legend-color risk-low" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
-                        <span style="display: inline-block;">{{ 'risk.matrix.level.low'|trans({}, 'risk') }}</span>
+                </div>
+
+                <div class="matrix-legend">
+                    <h3>{{ 'risk.matrix.legend_title'|trans({}, 'risk') }}</h3>
+                    <div class="legend-items" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; margin-top: 1rem;">
+                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
+                            <span class="legend-color risk-critical" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
+                            <span style="display: inline-block;">{{ 'risk.matrix.level.critical'|trans({}, 'risk') }}</span>
+                        </div>
+                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
+                            <span class="legend-color risk-high" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
+                            <span style="display: inline-block;">{{ 'risk.matrix.level.high'|trans({}, 'risk') }}</span>
+                        </div>
+                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
+                            <span class="legend-color risk-medium" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
+                            <span style="display: inline-block;">{{ 'risk.matrix.level.medium'|trans({}, 'risk') }}</span>
+                        </div>
+                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
+                            <span class="legend-color risk-low" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
+                            <span style="display: inline-block;">{{ 'risk.matrix.level.low'|trans({}, 'risk') }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>

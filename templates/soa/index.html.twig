@@ -112,35 +112,37 @@
         {% set applicable_controls = cat_controls|filter(c => c.applicable) %}
         {% set implemented_controls = applicable_controls|filter(c => c.implementationStatus == 'implemented') %}
 
-        <div class="card">
-            <div class="fs-2-mb-sm">{{ icon }}</div>
-            <h2>{{ ('soa.category.' ~ category)|trans }} {{ 'soa.label.controls'|trans({}, 'soa') }}</h2>
-            <div class="stats-grid mt-2">
-                <div class="stat-item">
-                    <strong>{{ cat_controls|length }}</strong>
-                    <span>{{ 'soa.kpi.total_controls'|trans({}, 'soa') }}</span>
+        {% embed '_components/_card.html.twig' %}
+            {% block card_body %}
+                <div class="fs-2-mb-sm">{{ icon }}</div>
+                <h2>{{ ('soa.category.' ~ category)|trans }} {{ 'soa.label.controls'|trans({}, 'soa') }}</h2>
+                <div class="stats-grid mt-2">
+                    <div class="stat-item">
+                        <strong>{{ cat_controls|length }}</strong>
+                        <span>{{ 'soa.kpi.total_controls'|trans({}, 'soa') }}</span>
+                    </div>
+                    <div class="stat-item">
+                        <strong>{{ applicable_controls|length }}</strong>
+                        <span>{{ 'soa.kpi.applicable_controls'|trans({}, 'soa') }}</span>
+                    </div>
+                    <div class="stat-item">
+                        <strong>{{ implemented_controls|length }}</strong>
+                        <span>{{ 'soa.kpi.implemented_controls'|trans({}, 'soa') }}</span>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <strong>{{ applicable_controls|length }}</strong>
-                    <span>{{ 'soa.kpi.applicable_controls'|trans({}, 'soa') }}</span>
-                </div>
-                <div class="stat-item">
-                    <strong>{{ implemented_controls|length }}</strong>
-                    <span>{{ 'soa.kpi.implemented_controls'|trans({}, 'soa') }}</span>
-                </div>
-            </div>
 
-            {% set impl_percentage = applicable_controls|length > 0 ? (implemented_controls|length / applicable_controls|length * 100)|round : 0 %}
-            <div class="progress mt-2">
-                <div class="progress-bar" style="width: {{ impl_percentage }}%">
-                    {{ impl_percentage }}%
+                {% set impl_percentage = applicable_controls|length > 0 ? (implemented_controls|length / applicable_controls|length * 100)|round : 0 %}
+                <div class="progress mt-2">
+                    <div class="progress-bar" style="width: {{ impl_percentage }}%">
+                        {{ impl_percentage }}%
+                    </div>
                 </div>
-            </div>
 
-            <div class="mt-2">
-                <a href="{{ path('app_soa_by_category', {category: category}) }}" class="btn btn-sm">{{ 'soa.action.view_details'|trans({}, 'soa') }}</a>
-            </div>
-        </div>
+                <div class="mt-2">
+                    <a href="{{ path('app_soa_by_category', {category: category}) }}" class="btn btn-sm">{{ 'soa.action.view_details'|trans({}, 'soa') }}</a>
+                </div>
+            {% endblock %}
+        {% endembed %}
     {% endfor %}
 </div>
 

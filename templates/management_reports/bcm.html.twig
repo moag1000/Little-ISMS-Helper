@@ -27,54 +27,56 @@
     {# BC Plans Summary #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card text-center h-100 bg-primary text-white">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-primary text-white' } %}
+                {% block card_body %}
                     <i class="bi bi-file-earmark-text fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ report.bc_plans.total }}</h3>
                     <small>{{ 'management_reports.bcm.total_plans'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card text-center h-100 bg-success text-white">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-success text-white' } %}
+                {% block card_body %}
                     <i class="bi bi-check-circle fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ report.bc_plans.active }}</h3>
                     <small>{{ 'management_reports.bcm.active_plans'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card text-center h-100 bg-warning text-dark">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-warning text-dark' } %}
+                {% block card_body %}
                     <i class="bi bi-hourglass-split fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ report.bc_plans.draft }}</h3>
                     <small>{{ 'management_reports.bcm.draft_plans'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card text-center h-100 bg-info text-white">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-info text-white' } %}
+                {% block card_body %}
                     <i class="bi bi-search fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ report.bc_plans.review }}</h3>
                     <small>{{ 'management_reports.bcm.review_plans'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row">
         {# BC Exercises #}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header bg-info text-white">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                        {{ 'management_reports.bcm.exercises'|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
+                {% block card_header %}
+                    <div class="card-header bg-info text-white">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                            {{ 'management_reports.bcm.exercises'|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row text-center mb-3">
                         <div class="col-6">
                             <h4 class="text-primary">{{ report.exercises.total }}</h4>
@@ -96,20 +98,22 @@
                         {{ 'management_reports.bcm.exercises_warning'|trans({}, 'management_reports') }}
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Business Processes #}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header bg-secondary text-white">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
-                        {{ 'management_reports.bcm.business_processes'|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
+                {% block card_header %}
+                    <div class="card-header bg-secondary text-white">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                            {{ 'management_reports.bcm.business_processes'|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row text-center">
                         <div class="col-6">
                             <h4 class="text-primary">{{ report.business_processes.total }}</h4>
@@ -120,20 +124,22 @@
                             <small class="text-muted">{{ 'management_reports.bcm.critical_processes'|trans({}, 'management_reports') }}</small>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# BIA Summary #}
-    <div class="card shadow-sm mb-4">
-        <div class="card-header bg-primary text-white">
-            <h3 class="h5 mb-0">
-                <i class="bi bi-clipboard-data" aria-hidden="true"></i>
-                {{ 'management_reports.bcm.bia_summary'|trans({}, 'management_reports') }}
-            </h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h3 class="h5 mb-0">
+                    <i class="bi bi-clipboard-data" aria-hidden="true"></i>
+                    {{ 'management_reports.bcm.bia_summary'|trans({}, 'management_reports') }}
+                </h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row mb-4">
                 <div class="col-md-3 text-center">
                     <div class="border rounded p-3 h-100">
@@ -163,8 +169,8 @@
 
             <div class="row">
                 <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' %}
+                        {% block card_body %}
                             <h5>{{ 'management_reports.bcm.rto_rpo_coverage'|trans({}, 'management_reports') }}</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span>{{ 'management_reports.bcm.processes_with_rto'|trans({}, 'management_reports') }}</span>
@@ -179,8 +185,8 @@
                                     {{ bia.coverage }}% {{ 'management_reports.bcm.coverage'|trans({}, 'management_reports') }}
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-md-6">
                     {% if bia.coverage < 80 %}
@@ -200,19 +206,21 @@
                     {% endif %}
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# BC Plans Table #}
     {% if report.bc_plans.plans|length > 0 %}
-    <div class="card shadow-sm mb-4">
-        <div class="card-header">
-            <h3 class="h5 mb-0">
-                <i class="bi bi-list-check" aria-hidden="true"></i>
-                {{ 'management_reports.bcm.plans_overview'|trans({}, 'management_reports') }}
-            </h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h3 class="h5 mb-0">
+                    <i class="bi bi-list-check" aria-hidden="true"></i>
+                    {{ 'management_reports.bcm.plans_overview'|trans({}, 'management_reports') }}
+                </h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="table-responsive">
                 <table class="table table-sm table-hover">
                     <thead>
@@ -242,8 +250,8 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Report Generated Info #}

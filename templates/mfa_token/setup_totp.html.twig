@@ -14,11 +14,13 @@
 
     <div class="row">
         <div class="col-lg-8">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0"><i class="bi bi-qr-code" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.step1'|trans({}, 'mfa') }}</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0"><i class="bi bi-qr-code" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.step1'|trans({}, 'mfa') }}</h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p class="lead">{{ 'mfa_token.setup_totp.scan_instructions'|trans({}, 'mfa') }}</p>
 
                     <div class="text-center mb-4">
@@ -53,20 +55,24 @@
                         <strong><i class="bi bi-person" aria-hidden="true"></i> {{ 'mfa_token.field.user'|trans({}, 'mfa') }}:</strong> {{ user.email }}<br>
                         <strong><i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}:</strong> {{ mfa_token.deviceName }}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
-            <div class="card mb-4"
-                 data-controller="mfa-setup"
-                 data-mfa-setup-verify-url-value="{{ path('admin_mfa_verify', {id: mfa_token.id}) }}"
-                 data-mfa-setup-success-redirect-value="{{ path('admin_mfa_show', {id: mfa_token.id}) }}"
-                 data-mfa-setup-verifying-text-value="{{ 'common.verifying'|trans({}, 'messages') }}..."
-                 data-mfa-setup-verify-button-text-value="{{ 'mfa_token.setup_totp.verify_button'|trans({}, 'mfa') }}"
-                 data-mfa-setup-error-text-value="{{ 'common.error'|trans({}, 'messages') }}">
-                <div class="card-header bg-success text-white">
-                    <h3 class="mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.step2'|trans({}, 'mfa') }}</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_attrs %}
+                    data-controller="mfa-setup"
+                    data-mfa-setup-verify-url-value="{{ path('admin_mfa_verify', {id: mfa_token.id}) }}"
+                    data-mfa-setup-success-redirect-value="{{ path('admin_mfa_show', {id: mfa_token.id}) }}"
+                    data-mfa-setup-verifying-text-value="{{ 'common.verifying'|trans({}, 'messages') }}..."
+                    data-mfa-setup-verify-button-text-value="{{ 'mfa_token.setup_totp.verify_button'|trans({}, 'mfa') }}"
+                    data-mfa-setup-error-text-value="{{ 'common.error'|trans({}, 'messages') }}"
+                {% endblock %}
+                {% block card_header %}
+                    <div class="card-header bg-success text-white">
+                        <h3 class="mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.step2'|trans({}, 'mfa') }}</h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p class="lead">{{ 'mfa_token.setup_totp.verify_instructions'|trans({}, 'mfa') }}</p>
 
                     <form data-action="submit->mfa-setup#verify">
@@ -94,28 +100,32 @@
                             <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.verify_button'|trans({}, 'mfa') }}
                         </button>
                     </form>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-lg-4">
-            <div class="card border-warning"
-                 data-controller="backup-codes"
-                 data-backup-codes-codes-value="{{ backup_codes|json_encode }}"
-                 data-backup-codes-user-email-value="{{ user.email }}"
-                 data-backup-codes-device-name-value="{{ mfa_token.deviceName }}"
-                 data-backup-codes-title-text-value="{{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}"
-                 data-backup-codes-user-label-value="{{ 'mfa_token.field.user'|trans({}, 'mfa') }}"
-                 data-backup-codes-device-label-value="{{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}"
-                 data-backup-codes-generated-label-value="{{ 'common.date'|trans({}, 'messages') }}"
-                 data-backup-codes-warning-title-value="{{ 'mfa_token.backup_codes.warning'|trans({}, 'mfa') }}"
-                 data-backup-codes-warning-text-value="{{ 'mfa_token.backup_codes.warning_text'|trans({}, 'mfa') }}"
-                 data-backup-codes-codes-label-value="{{ 'mfa_token.backup_codes.codes'|trans({}, 'mfa') }}"
-                 data-backup-codes-copied-text-value="{{ 'common.copied'|trans({}, 'messages') }}">
-                <div class="card-header bg-warning">
-                    <h3 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-warning' } %}
+                {% block card_attrs %}
+                    data-controller="backup-codes"
+                    data-backup-codes-codes-value="{{ backup_codes|json_encode }}"
+                    data-backup-codes-user-email-value="{{ user.email }}"
+                    data-backup-codes-device-name-value="{{ mfa_token.deviceName }}"
+                    data-backup-codes-title-text-value="{{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}"
+                    data-backup-codes-user-label-value="{{ 'mfa_token.field.user'|trans({}, 'mfa') }}"
+                    data-backup-codes-device-label-value="{{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}"
+                    data-backup-codes-generated-label-value="{{ 'common.date'|trans({}, 'messages') }}"
+                    data-backup-codes-warning-title-value="{{ 'mfa_token.backup_codes.warning'|trans({}, 'mfa') }}"
+                    data-backup-codes-warning-text-value="{{ 'mfa_token.backup_codes.warning_text'|trans({}, 'mfa') }}"
+                    data-backup-codes-codes-label-value="{{ 'mfa_token.backup_codes.codes'|trans({}, 'mfa') }}"
+                    data-backup-codes-copied-text-value="{{ 'common.copied'|trans({}, 'messages') }}"
+                {% endblock %}
+                {% block card_header %}
+                    <div class="card-header bg-warning">
+                        <h3 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}</h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="alert alert-danger">
                         <strong><i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.warning'|trans({}, 'mfa') }}</strong>
                         <p class="mb-0 small">{{ 'mfa_token.backup_codes.warning_text'|trans({}, 'mfa') }}</p>
@@ -143,8 +153,8 @@
                             <i class="bi bi-printer" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.print'|trans({}, 'mfa') }}
                         </button>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 {% endblock %}

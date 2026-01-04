@@ -13,13 +13,15 @@
     </div>
 
     {# Role Selection #}
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'role.compare.select_roles'|trans }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'role.compare.select_roles'|trans }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <form method="get">
                 <div class="row g-3">
                     <div class="col-md-10">
@@ -44,18 +46,20 @@
                     </div>
                 </div>
             </form>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {% if roles|length > 0 %}
         {# Comparison Matrix #}
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h3 class="mb-0">
-                    <i class="bi bi-table" aria-hidden="true"></i> {{ 'role.compare.permission_matrix'|trans }}
-                </h3>
-            </div>
-            <div class="card-body p-0">
+        {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
+            {% block card_header %}
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-table" aria-hidden="true"></i> {{ 'role.compare.permission_matrix'|trans }}
+                    </h3>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 {% embed '_components/_table.html.twig' with {
                     'class': 'table-bordered table-hover mb-0',
                     'theadClass': 'sticky-top',
@@ -106,12 +110,12 @@
                         {% endfor %}
                     {% endblock %}
                 {% endembed %}
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
 
         {# Legend #}
-        <div class="card mt-4">
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+            {% block card_body %}
                 <h4>{{ 'role.compare.legend_title'|trans }}</h4>
                 <div class="d-flex gap-4">
                     <div>
@@ -123,8 +127,8 @@
                         {{ 'role.compare.no_permission'|trans }}
                     </div>
                 </div>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% else %}
         <div class="alert alert-info">
             <i class="bi bi-info-circle" aria-hidden="true"></i>

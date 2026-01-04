@@ -30,35 +30,37 @@
     {% if crisis_teams|length == 0 %}
         <div class="alert alert-info">{{ 'crisis_team.empty'|trans({}, 'crisis_team') }}</div>
     {% else %}
-        <div class="card">
-            {% embed '_components/_table.html.twig' with {
-                'noMargin': true
-            } %}
-                {% block table_head %}
-                    <tr>
-                        <th scope="col">{{ 'crisis_team.field.team_name'|trans({}, 'crisis_team') }}</th>
-                        <th scope="col">{{ 'crisis_team.field.team_type'|trans({}, 'crisis_team') }}</th>
-                        <th scope="col">{{ 'crisis_team.field.team_leader'|trans({}, 'crisis_team') }}</th>
-                        <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                    </tr>
-                {% endblock %}
-                {% block table_body %}
-                    {% for team in crisis_teams %}
-                        <tr class="{{ team.isActive ? '' : 'table-secondary' }}">
-                            <td><strong>{{ team.teamName }}</strong></td>
-                            <td>{% include '_components/_badge.html.twig' with { variant: 'primary', content: ('crisis_team.type.' ~ team.teamType)|trans({}, 'crisis_team') } %}</td>
-                            <td>{{ team.teamLeader ? team.teamLeader.email : 'not_assigned'|trans({}, 'messages') }}</td>
-                            <td>
-                                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                                    <a href="{{ path('app_crisis_team_show', {id: team.id}) }}" class="btn btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
-                                    <a href="{{ path('app_crisis_team_edit', {id: team.id}) }}" class="btn btn-outline-secondary" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
-                                </div>
-                            </td>
+        {% embed '_components/_card.html.twig' %}
+            {% block card_body %}
+                {% embed '_components/_table.html.twig' with {
+                    'noMargin': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col">{{ 'crisis_team.field.team_name'|trans({}, 'crisis_team') }}</th>
+                            <th scope="col">{{ 'crisis_team.field.team_type'|trans({}, 'crisis_team') }}</th>
+                            <th scope="col">{{ 'crisis_team.field.team_leader'|trans({}, 'crisis_team') }}</th>
+                            <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                         </tr>
-                    {% endfor %}
-                {% endblock %}
-            {% endembed %}
-        </div>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for team in crisis_teams %}
+                            <tr class="{{ team.isActive ? '' : 'table-secondary' }}">
+                                <td><strong>{{ team.teamName }}</strong></td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'primary', content: ('crisis_team.type.' ~ team.teamType)|trans({}, 'crisis_team') } %}</td>
+                                <td>{{ team.teamLeader ? team.teamLeader.email : 'not_assigned'|trans({}, 'messages') }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+                                        <a href="{{ path('app_crisis_team_show', {id: team.id}) }}" class="btn btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
+                                        <a href="{{ path('app_crisis_team_edit', {id: team.id}) }}" class="btn btn-outline-secondary" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 </div>
 {% endblock %}

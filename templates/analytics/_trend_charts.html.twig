@@ -9,29 +9,29 @@
 #}
 {% trans_default_domain 'analytics' %}
 
-<div class="card analytics-card trend-card {{ expanded is defined and expanded ? 'expanded' : '' }}"
-     data-controller="trend-chart"
-     data-trend-chart-url-value="{{ path('app_analytics_trends_data') }}"
-     data-trend-chart-locale-value="{{ app.request.locale }}">
-    <div class="card-header">
-        <h2 class="card-title">
-            <i class="bi bi-graph-up-arrow text-info" aria-hidden="true"></i>
-            {{ 'analytics.card.trend_analysis'|trans({}, 'analytics') }}
-        </h2>
-        <div class="card-actions">
-            <button class="btn btn-sm btn-outline-secondary"
-                    data-action="click->trend-chart#refresh"
-                    title="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}">
-                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-secondary"
-                    data-action="click->trend-chart#exportImage"
-                    title="{{ 'analytics.action.export_png'|trans({}, 'analytics') }}">
-                <i class="bi bi-image" aria-hidden="true"></i>
-            </button>
+{% embed '_components/_card.html.twig' with { 'class': 'analytics-card trend-card' ~ (expanded is defined and expanded ? ' expanded' : '') } %}
+    {% block card_attrs %}data-controller="trend-chart" data-trend-chart-url-value="{{ path('app_analytics_trends_data') }}" data-trend-chart-locale-value="{{ app.request.locale }}"{% endblock %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2 class="card-title">
+                <i class="bi bi-graph-up-arrow text-info" aria-hidden="true"></i>
+                {{ 'analytics.card.trend_analysis'|trans({}, 'analytics') }}
+            </h2>
+            <div class="card-actions">
+                <button class="btn btn-sm btn-outline-secondary"
+                        data-action="click->trend-chart#refresh"
+                        title="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}">
+                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary"
+                        data-action="click->trend-chart#exportImage"
+                        title="{{ 'analytics.action.export_png'|trans({}, 'analytics') }}">
+                    <i class="bi bi-image" aria-hidden="true"></i>
+                </button>
+            </div>
         </div>
-    </div>
-    <div class="card-body">
+    {% endblock %}
+    {% block card_body %}
         {# Loading State #}
         <div class="trend-loading d-none" data-trend-chart-target="loading">
             <div class="spinner-border text-primary" role="status">
@@ -129,5 +129,5 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}

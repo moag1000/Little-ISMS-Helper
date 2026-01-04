@@ -17,16 +17,18 @@
     {# Activity Statistics #}
     <div class="row mb-4">
         <div class="col-md-6">
-            <div class="card border-primary">
-                <div class="card-body text-center">
-                    <h2 class="card-title text-muted">{{ 'user.activity.total'|trans({}, 'user') }}</h2>
-                    <p class="display-6 text-primary">{{ total_activities }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'primary' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="card-title text-muted">{{ 'user.activity.total'|trans({}, 'user') }}</h2>
+                        <p class="display-6 text-primary">{{ total_activities }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-6">
-            <div class="card border-info">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info' } %}
+                {% block card_body %}
                     <h2 class="card-title text-muted">{{ 'user.activity.by_action'|trans({}, 'user') }}</h2>
                     {% for action, count in action_counts %}
                         <div class="d-flex justify-content-between">
@@ -34,19 +36,21 @@
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: count } %}
                         </div>
                     {% endfor %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Activity Timeline #}
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'user.activity.timeline'|trans({}, 'user') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'user.activity.timeline'|trans({}, 'user') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if activities_by_date|length > 0 %}
                 {% for date, daily_activities in activities_by_date|reverse %}
                     <div class="mb-4">
@@ -62,8 +66,8 @@
                                     <div class="timeline-marker">
                                         <small class="text-muted">{{ activity.createdAt|date('H:i:s') }}</small>
                                     </div>
-                                    <div class="card">
-                                        <div class="card-body py-2">
+                                    {% embed '_components/_card.html.twig' %}
+                                        {% block card_body %}
                                             <div class="d-flex justify-content-between align-items-start">
                                                 <div>
                                                     {% include '_components/_badge.html.twig' with { variant: 'primary', content: activity.action } %}
@@ -96,8 +100,8 @@
                                                     <pre class="mt-2 mb-0 small bg-light p-2 rounded">{{ activity.newValues }}</pre>
                                                 </details>
                                             {% endif %}
-                                        </div>
-                                    </div>
+                                        {% endblock %}
+                                    {% endembed %}
                                 </div>
                             {% endfor %}
                         </div>
@@ -109,12 +113,12 @@
                     {{ 'user.activity.no_activities'|trans({}, 'user') }}
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Filter Options #}
-    <div class="card mt-4">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+        {% block card_body %}
             <form method="get" class="row g-3" id="activity-filter-form" data-controller="ui-actions">
                 <div class="col-auto">
                     <label for="limit" class="col-form-label">{{ 'user.activity.filter.show_count'|trans({}, 'user') }}:</label>
@@ -130,8 +134,8 @@
                     </select>
                 </div>
             </form>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>

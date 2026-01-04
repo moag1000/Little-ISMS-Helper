@@ -18,17 +18,19 @@
     <div class="row">
         <div class="col-lg-8">
             {# Wizard Header #}
-            <div class="card mb-4 border-{{ config.color }}">
-                <div class="card-header bg-{{ config.color }} bg-opacity-10 border-{{ config.color }}">
-                    <div class="d-flex align-items-center">
-                        <i class="{{ config.icon }} fs-2 text-{{ config.color }} me-3"></i>
-                        <div>
-                            <h1 class="h3 mb-0">{{ config.name }}</h1>
-                            {% include '_components/_badge.html.twig' with { variant: config.color, content: config.code } %}
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-' ~ config.color } %}
+                {% block card_header %}
+                    <div class="card-header bg-{{ config.color }} bg-opacity-10 border-{{ config.color }}">
+                        <div class="d-flex align-items-center">
+                            <i class="{{ config.icon }} fs-2 text-{{ config.color }} me-3"></i>
+                            <div>
+                                <h1 class="h3 mb-0">{{ config.name }}</h1>
+                                {% include '_components/_badge.html.twig' with { variant: config.color, content: config.code } %}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body">
+                {% endblock %}
+                {% block card_body %}
                     <p class="lead">{{ config.description|trans }}</p>
 
                     <hr>
@@ -56,8 +58,8 @@
                         </div>
                         {% endfor %}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Missing Recommended Modules Warning #}
             {% if missing_recommended|length > 0 %}
@@ -92,28 +94,32 @@
         {# Sidebar #}
         <div class="col-lg-4">
             {# Active Modules #}
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="card-title h6 mb-0">
-                        <i class="bi bi-puzzle me-2" aria-hidden="true"></i>{{ 'wizard.active_modules'|trans }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="card-title h6 mb-0">
+                            <i class="bi bi-puzzle me-2" aria-hidden="true"></i>{{ 'wizard.active_modules'|trans }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p class="small text-muted mb-3">{{ 'wizard.data_sources_info'|trans }}</p>
                     {% for mod in active_modules %}
                         {% include '_components/_badge.html.twig' with { variant: 'success', class: 'me-1 mb-1', icon: 'bi-check-circle', content: mod } %}
                     {% endfor %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# What to expect #}
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title h6 mb-0">
-                        <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>{{ 'wizard.what_to_expect'|trans }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="card-title h6 mb-0">
+                            <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>{{ 'wizard.what_to_expect'|trans }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <ul class="list-unstyled mb-0">
                         <li class="mb-2">
                             <i class="bi bi-clock text-muted me-2" aria-hidden="true"></i>
@@ -132,8 +138,8 @@
                             <span class="small">{{ 'wizard.export_hint'|trans }}</span>
                         </li>
                     </ul>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

@@ -7,8 +7,8 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             {# Progress Bar #}
-            <div class="card mb-4">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h4 class="mb-0">{{ 'setup.complete.progress_title'|trans({}, 'setup') }}</h4>
                         <small class="text-muted">{{ 'setup.complete.step_of'|trans({'%current%': 11, '%total%': 11}, 'setup') }}</small>
@@ -16,131 +16,135 @@
                     <div class="progress" style="height: 10px;">
                         <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
-            <div class="card shadow-lg border-success">
-                <div class="card-header bg-success text-white">
-                    <h1 class="h3 mb-0">
-                        <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
-                        {{ 'setup.complete.title'|trans({}, 'setup') }}
-                    </h1>
-                </div>
-                <div class="card-body p-5 text-center">
-                    <div class="mb-4">
-                        <i class="bi bi-check-circle text-success" aria-hidden="true" style="font-size: 5rem;"></i>
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg border-success' } %}
+                {% block card_header %}
+                    <div class="card-header bg-success text-white">
+                        <h1 class="h3 mb-0">
+                            <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
+                            {{ 'setup.complete.title'|trans({}, 'setup') }}
+                        </h1>
                     </div>
+                {% endblock %}
+                {% block card_body %}
+                    <div class="p-5 text-center">
+                        <div class="mb-4">
+                            <i class="bi bi-check-circle text-success" aria-hidden="true" style="font-size: 5rem;"></i>
+                        </div>
 
-                    <h2 class="h3 mb-4">{{ 'setup.complete.system_ready'|trans({}, 'setup') }}</h2>
+                        <h2 class="h3 mb-4">{{ 'setup.complete.system_ready'|trans({}, 'setup') }}</h2>
 
-                    <p class="lead text-muted mb-4">
-                        {{ 'setup.complete.all_components_ready'|trans({}, 'setup') }}
-                    </p>
+                        <p class="lead text-muted mb-4">
+                            {{ 'setup.complete.all_components_ready'|trans({}, 'setup') }}
+                        </p>
 
-                    {# Statistics #}
-                    <div class="row g-3 mb-5">
-                        <div class="col-md-3">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <p class="h2 mb-0 text-primary">{{ statistics.active_modules }}</p>
-                                    <small class="text-muted">{{ 'setup.complete.stats.active_modules'|trans({}, 'setup') }}</small>
-                                </div>
+                        {# Statistics #}
+                        <div class="row g-3 mb-5">
+                            <div class="col-md-3">
+                                {% embed '_components/_card.html.twig' with { 'class': 'bg-light' } %}
+                                    {% block card_body %}
+                                        <p class="h2 mb-0 text-primary">{{ statistics.active_modules }}</p>
+                                        <small class="text-muted">{{ 'setup.complete.stats.active_modules'|trans({}, 'setup') }}</small>
+                                    {% endblock %}
+                                {% endembed %}
+                            </div>
+                            <div class="col-md-3">
+                                {% embed '_components/_card.html.twig' with { 'class': 'bg-light' } %}
+                                    {% block card_body %}
+                                        <p class="h2 mb-0 text-success">{{ statistics.total_modules }}</p>
+                                        <small class="text-muted">{{ 'setup.complete.stats.available_modules'|trans({}, 'setup') }}</small>
+                                    {% endblock %}
+                                {% endembed %}
+                            </div>
+                            <div class="col-md-3">
+                                {% embed '_components/_card.html.twig' with { 'class': 'bg-light' } %}
+                                    {% block card_body %}
+                                        <p class="h2 mb-0 text-info">{{ statistics.required_modules }}</p>
+                                        <small class="text-muted">{{ 'setup.complete.stats.core_modules'|trans({}, 'setup') }}</small>
+                                    {% endblock %}
+                                {% endembed %}
+                            </div>
+                            <div class="col-md-3">
+                                {% embed '_components/_card.html.twig' with { 'class': 'bg-light' } %}
+                                    {% block card_body %}
+                                        <p class="h2 mb-0 text-warning">{{ statistics.optional_modules }}</p>
+                                        <small class="text-muted">{{ 'setup.complete.stats.optional_modules'|trans({}, 'setup') }}</small>
+                                    {% endblock %}
+                                {% endembed %}
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <p class="h2 mb-0 text-success">{{ statistics.total_modules }}</p>
-                                    <small class="text-muted">{{ 'setup.complete.stats.available_modules'|trans({}, 'setup') }}</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <p class="h2 mb-0 text-info">{{ statistics.required_modules }}</p>
-                                    <small class="text-muted">{{ 'setup.complete.stats.core_modules'|trans({}, 'setup') }}</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <p class="h2 mb-0 text-warning">{{ statistics.optional_modules }}</p>
-                                    <small class="text-muted">{{ 'setup.complete.stats.optional_modules'|trans({}, 'setup') }}</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    {# Active Modules #}
-                    <div class="card bg-light mb-4 text-start">
-                        <div class="card-body">
-                            <h3 class="h5 mb-3">
-                                <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
-                                {{ 'setup.complete.activated_modules'|trans({}, 'setup') }}
-                            </h3>
-                            <div class="row g-2">
-                                {% for moduleKey in selected_modules %}
-                                    <div class="col-md-4">
-                                        {% include '_components/_badge.html.twig' with { variant: 'primary', content: moduleKey } %}
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-
-                    {# Next Steps #}
-                    <div class="card bg-info bg-opacity-10 border-info mb-4 text-start">
-                        <div class="card-body">
-                            <h3 class="h5 mb-3">
-                                <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
-                                {{ 'setup.complete.next_steps.title'|trans({}, 'setup') }}
-                            </h3>
-                            <ol class="mb-0">
-                                <li class="mb-2">{{ 'setup.complete.next_steps.explore_dashboard'|trans({}, 'setup') }}</li>
-                                <li class="mb-2">{{ 'setup.complete.next_steps.define_context'|trans({}, 'setup') }}</li>
-                                <li class="mb-2">{{ 'setup.complete.next_steps.capture_assets'|trans({}, 'setup') }}</li>
-                                <li class="mb-2">{{ 'setup.complete.next_steps.use_compliance'|trans({}, 'setup') }}</li>
-                                <li class="mb-2">{{ 'setup.complete.next_steps.add_modules'|trans({}, 'setup') }}</li>
-                            </ol>
-                        </div>
-                    </div>
-
-                    {# Actions #}
-                    <div class="d-grid gap-3">
-                        <a href="{{ path('app_welcome', {'_locale': app.request.locale}) }}" class="btn btn-lg btn-success">
-                            <i class="bi bi-rocket-takeoff me-2" aria-hidden="true"></i>
-                            {{ 'setup.complete.start_using'|trans({}, 'setup') }}
-                        </a>
-                        <div class="row g-2">
-                            <div class="col-md-6">
-                                <a href="{{ path('module_management_index', {'_locale': app.request.locale}) }}" class="btn btn-outline-primary w-100">
+                        {# Active Modules #}
+                        {% embed '_components/_card.html.twig' with { 'class': 'bg-light mb-4 text-start' } %}
+                            {% block card_body %}
+                                <h3 class="h5 mb-3">
                                     <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
-                                    {{ 'setup.manage_modules'|trans({}, 'setup') }}
-                                </a>
-                            </div>
-                            <div class="col-md-6">
-                                <a href="{{ path('app_context_index', {'_locale': app.request.locale}) }}" class="btn btn-outline-primary w-100">
-                                    <i class="bi bi-gear me-2" aria-hidden="true"></i>
-                                    {{ 'setup.complete.configure_context'|trans({}, 'setup') }}
-                                </a>
+                                    {{ 'setup.complete.activated_modules'|trans({}, 'setup') }}
+                                </h3>
+                                <div class="row g-2">
+                                    {% for moduleKey in selected_modules %}
+                                        <div class="col-md-4">
+                                            {% include '_components/_badge.html.twig' with { variant: 'primary', content: moduleKey } %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endblock %}
+                        {% endembed %}
+
+                        {# Next Steps #}
+                        {% embed '_components/_card.html.twig' with { 'class': 'bg-info bg-opacity-10 border-info mb-4 text-start' } %}
+                            {% block card_body %}
+                                <h3 class="h5 mb-3">
+                                    <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
+                                    {{ 'setup.complete.next_steps.title'|trans({}, 'setup') }}
+                                </h3>
+                                <ol class="mb-0">
+                                    <li class="mb-2">{{ 'setup.complete.next_steps.explore_dashboard'|trans({}, 'setup') }}</li>
+                                    <li class="mb-2">{{ 'setup.complete.next_steps.define_context'|trans({}, 'setup') }}</li>
+                                    <li class="mb-2">{{ 'setup.complete.next_steps.capture_assets'|trans({}, 'setup') }}</li>
+                                    <li class="mb-2">{{ 'setup.complete.next_steps.use_compliance'|trans({}, 'setup') }}</li>
+                                    <li class="mb-2">{{ 'setup.complete.next_steps.add_modules'|trans({}, 'setup') }}</li>
+                                </ol>
+                            {% endblock %}
+                        {% endembed %}
+
+                        {# Actions #}
+                        <div class="d-grid gap-3">
+                            <a href="{{ path('app_welcome', {'_locale': app.request.locale}) }}" class="btn btn-lg btn-success">
+                                <i class="bi bi-rocket-takeoff me-2" aria-hidden="true"></i>
+                                {{ 'setup.complete.start_using'|trans({}, 'setup') }}
+                            </a>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <a href="{{ path('module_management_index', {'_locale': app.request.locale}) }}" class="btn btn-outline-primary w-100">
+                                        <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
+                                        {{ 'setup.manage_modules'|trans({}, 'setup') }}
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="{{ path('app_context_index', {'_locale': app.request.locale}) }}" class="btn btn-outline-primary w-100">
+                                        <i class="bi bi-gear me-2" aria-hidden="true"></i>
+                                        {{ 'setup.complete.configure_context'|trans({}, 'setup') }}
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    {# Support Info #}
-                    <div class="alert alert-light mt-4 text-start" role="alert">
-                        <p class="h5 mb-2">
-                            <i class="bi bi-question-circle me-2" aria-hidden="true"></i>
-                            {{ 'setup.complete.help_documentation.title'|trans({}, 'setup') }}
-                        </p>
-                        <p class="mb-0 small">
-                            {{ 'setup.complete.help_documentation.description'|trans({}, 'setup') }}
-                        </p>
+                        {# Support Info #}
+                        <div class="alert alert-light mt-4 text-start" role="alert">
+                            <p class="h5 mb-2">
+                                <i class="bi bi-question-circle me-2" aria-hidden="true"></i>
+                                {{ 'setup.complete.help_documentation.title'|trans({}, 'setup') }}
+                            </p>
+                            <p class="mb-0 small">
+                                {{ 'setup.complete.help_documentation.description'|trans({}, 'setup') }}
+                            </p>
+                        </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

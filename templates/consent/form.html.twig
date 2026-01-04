@@ -35,22 +35,26 @@
                 </a>
             </div>
 
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0">{{ form.vars.data.id ? 'consent.edit'|trans({}, 'consent') : 'consent.new'|trans({}, 'consent') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0">{{ form.vars.data.id ? 'consent.edit'|trans({}, 'consent') : 'consent.new'|trans({}, 'consent') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'consent-form'}}) }}
 
                     {# Section 1: Data Subject #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0">
-                                <i class="bi bi-person" aria-hidden="true"></i>
-                                {{ 'consent.section.data_subject'|trans({}, 'consent') }}
-                            </h3>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                        {% block card_header %}
+                            <div class="card-header bg-light">
+                                <h3 class="mb-0">
+                                    <i class="bi bi-person" aria-hidden="true"></i>
+                                    {{ 'consent.section.data_subject'|trans({}, 'consent') }}
+                                </h3>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div class="row">
                                 <div class="col-md-8">
                                     {{ form_row(form.dataSubjectIdentifier) }}
@@ -59,18 +63,20 @@
                                     {{ form_row(form.identifierType) }}
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
 
                     {# Section 2: Processing Activity #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0">
-                                <i class="bi bi-gear" aria-hidden="true"></i>
-                                {{ 'consent.section.processing_activity'|trans({}, 'consent') }}
-                            </h3>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                        {% block card_header %}
+                            <div class="card-header bg-light">
+                                <h3 class="mb-0">
+                                    <i class="bi bi-gear" aria-hidden="true"></i>
+                                    {{ 'consent.section.processing_activity'|trans({}, 'consent') }}
+                                </h3>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div class="row">
                                 <div class="col-md-6">
                                     {{ form_row(form.processingActivity) }}
@@ -79,18 +85,20 @@
                                     {{ form_row(form.purposes) }}
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
 
                     {# Section 3: Consent Grant #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0">
-                                <i class="bi bi-check-circle" aria-hidden="true"></i>
-                                {{ 'consent.section.consent_grant'|trans({}, 'consent') }}
-                            </h3>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                        {% block card_header %}
+                            <div class="card-header bg-light">
+                                <h3 class="mb-0">
+                                    <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                    {{ 'consent.section.consent_grant'|trans({}, 'consent') }}
+                                </h3>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div class="row">
                                 <div class="col-md-4">
                                     {{ form_row(form.grantedAt) }}
@@ -107,60 +115,66 @@
                                     {{ form_row(form.consentText) }}
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
 
                     {# Section 4: Proof Documentation #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0">
-                                <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
-                                {{ 'consent.section.proof_documentation'|trans({}, 'consent') }}
-                            </h3>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                        {% block card_header %}
+                            <div class="card-header bg-light">
+                                <h3 class="mb-0">
+                                    <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                                    {{ 'consent.section.proof_documentation'|trans({}, 'consent') }}
+                                </h3>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div class="row">
                                 <div class="col-md-12">
                                     {{ form_row(form.proofDocument) }}
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
 
                     {# Section 5: Expiry #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0">
-                                <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                                {{ 'consent.section.expiry'|trans({}, 'consent') }}
-                            </h3>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                        {% block card_header %}
+                            <div class="card-header bg-light">
+                                <h3 class="mb-0">
+                                    <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                                    {{ 'consent.section.expiry'|trans({}, 'consent') }}
+                                </h3>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div class="row">
                                 <div class="col-md-6">
                                     {{ form_row(form.expiresAt) }}
                                     <small class="text-muted d-block">{{ 'consent.hint.expiry_optional'|trans({}, 'consent') }}</small>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
 
                     {# Section 6: Notes #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0">
-                                <i class="bi bi-sticky" aria-hidden="true"></i>
-                                {{ 'consent.section.notes'|trans({}, 'consent') }}
-                            </h3>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                        {% block card_header %}
+                            <div class="card-header bg-light">
+                                <h3 class="mb-0">
+                                    <i class="bi bi-sticky" aria-hidden="true"></i>
+                                    {{ 'consent.section.notes'|trans({}, 'consent') }}
+                                </h3>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div class="row">
                                 <div class="col-md-12">
                                     {{ form_row(form.notes) }}
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
 
                     {# Form Actions #}
                     <div class="d-flex justify-content-between align-items-center pt-3 border-top">
@@ -175,8 +189,8 @@
                     </div>
 
                     {{ form_end(form) }}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

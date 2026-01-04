@@ -24,14 +24,16 @@
 {# ISO 27005:2022 Section 8.4.4 - Risk Acceptance #}
 <div class="row">
     <div class="col-lg-8">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="mb-0">
-                    <i class="bi bi-shield-check" aria-hidden="true"></i>
-                    {{ 'risk.acceptance.request'|trans({}, 'risk') }}
-                </h2>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' %}
+            {% block card_header %}
+                <div class="card-header">
+                    <h2 class="mb-0">
+                        <i class="bi bi-shield-check" aria-hidden="true"></i>
+                        {{ 'risk.acceptance.request'|trans({}, 'risk') }}
+                    </h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 {# Risk Summary #}
                 <div class="alert alert-info mb-4">
                     <div class="alert-heading fw-bold">
@@ -85,20 +87,24 @@
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     </div>
 
     {# Sidebar: Approval Level Information #}
     <div class="col-lg-4">
-        <div class="card border-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }}">
-            <div class="card-header bg-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }}-subtle"><h2 class="mb-0">
-                    <i class="bi bi-shield-check" aria-hidden="true"></i>
-                    {{ 'risk.acceptance.required_approval_level'|trans({}, 'risk') }}
-                </h2>
-            </div>
-            <div class="card-body">
-                <div class="alert alert-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }} mb-3">
+        {% set approval_variant = required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') %}
+        {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ approval_variant } %}
+            {% block card_header %}
+                <div class="card-header bg-{{ approval_variant }}-subtle">
+                    <h2 class="mb-0">
+                        <i class="bi bi-shield-check" aria-hidden="true"></i>
+                        {{ 'risk.acceptance.required_approval_level'|trans({}, 'risk') }}
+                    </h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
+                <div class="alert alert-{{ approval_variant }} mb-3">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-{{ required_level == 'automatic' ? 'check-circle-fill' : (required_level == 'manager' ? 'person-fill' : 'person-badge-fill') }} fs-3 me-3" aria-hidden="true"></i>
                         <div>
@@ -134,8 +140,8 @@
                         ISO 27005:2022 Section 8.4.4 requires formal approval for risk acceptance based on residual risk level.
                     </p>
                 </div>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     </div>
 </div>
 {% endblock %}

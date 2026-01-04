@@ -53,12 +53,14 @@
         </div>
     {% endif %}
 
-    <div class="card">
-        <div class="card-header">
-            <h2>{{ 'document.details.title'|trans({}, 'document') }}</h2>
-            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: document.category|upper } %}
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2>{{ 'document.details.title'|trans({}, 'document') }}</h2>
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: document.category|upper } %}
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="detail-grid">
                 <div class="detail-item">
                     <span class="label">{{ 'document.label.type'|trans({}, 'document') }}</span>
@@ -105,7 +107,7 @@
                     <p>{{ document.entityType }} #{{ document.entityId }}</p>
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

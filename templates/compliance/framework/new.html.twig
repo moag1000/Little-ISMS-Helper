@@ -15,13 +15,15 @@
 
     <div class="row">
         <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h2 class="mb-0">
-                        {{ 'compliance.framework.field.details'|trans({}, 'compliance') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-success text-white">
+                        <h2 class="mb-0">
+                            {{ 'compliance.framework.field.details'|trans({}, 'compliance') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {{ form_start(form) }}
 
                     {% include '_components/_auto_form.html.twig' with {
@@ -63,14 +65,17 @@
                     </div>
 
                     {{ form_end(form) }}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-lg-4">
-            <div class="card">
-                <div class="card-header bg-info text-white"><h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.help'|trans({}, 'messages') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-info text-white">
+                        <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.help'|trans({}, 'messages') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <h3>{{ 'compliance.framework.help.code.title'|trans({}, 'compliance') }}</h3>
                     <p class="small text-muted">{{ 'compliance.framework.help.code.text'|trans({}, 'compliance') }}</p>
 
@@ -79,8 +84,8 @@
 
                     <h3>{{ 'compliance.framework.help.active.title'|trans({}, 'compliance') }}</h3>
                     <p class="small text-muted">{{ 'compliance.framework.help.active.text'|trans({}, 'compliance') }}</p>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

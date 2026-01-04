@@ -3,115 +3,118 @@
 {% block title %}Login - {{ parent() }}{% endblock %}
 
 {% block body %}
-<div class="card shadow-lg" style="max-width: 450px; width: 100%;">
-    <div class="card-body p-5">
-        <h1 class="h3 mb-4 text-center">{{ 'login.title'|trans({}, 'messages') }}</h1>
+{% embed '_components/_card.html.twig' with { 'class': 'shadow-lg', 'noPadding': true } %}
+    {% block card_attrs %}style="max-width: 450px; width: 100%;"{% endblock %}
+    {% block card_body %}
+        <div class="p-5">
+            <h1 class="h3 mb-4 text-center">{{ 'login.title'|trans({}, 'messages') }}</h1>
 
-        {% if error %}
-            <div class="alert alert-danger">
-                {{ error.messageKey|trans(error.messageData, 'security') }}
-            </div>
-        {% endif %}
+            {% if error %}
+                <div class="alert alert-danger">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
 
-        {% if app.user %}
-            <div class="alert alert-info">
-                {{ 'login.already_logged_in'|trans({'%user%': app.user.userIdentifier}, 'messages') }}
-                <a href="{{ path('app_home') }}">{{ 'common.to_home'|trans({}, 'messages') }}</a>
-            </div>
-        {% else %}
-            {# Local Login Form #}
-            <form method="post"
-                  action="{{ path('app_login') }}"
-                  novalidate
-                  data-controller="form-validation"
-                  data-action="submit->form-validation#handleSubmit">
-                <p class="form-required-legend">
-                    <span class="required">*</span> = {{ 'form.required_field'|trans({}, 'messages') }}
-                </p>
+            {% if app.user %}
+                <div class="alert alert-info">
+                    {{ 'login.already_logged_in'|trans({'%user%': app.user.userIdentifier}, 'messages') }}
+                    <a href="{{ path('app_home') }}">{{ 'common.to_home'|trans({}, 'messages') }}</a>
+                </div>
+            {% else %}
+                {# Local Login Form #}
+                <form method="post"
+                      action="{{ path('app_login') }}"
+                      novalidate
+                      data-controller="form-validation"
+                      data-action="submit->form-validation#handleSubmit">
+                    <p class="form-required-legend">
+                        <span class="required">*</span> = {{ 'form.required_field'|trans({}, 'messages') }}
+                    </p>
 
-                <div class="mb-3">
-                    <label for="username" class="form-label">
-                        {{ 'login.field.email'|trans({}, 'messages') }}
-                        <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
-                    </label>
-                    <input type="email"
-                           class="form-control"
-                           id="username"
-                           name="_username"
-                           value="{{ last_username }}"
-                           required
-                           aria-required="true"
-                           autofocus
-                           autocomplete="email"
-                           placeholder="{{ 'login.placeholder.email'|trans({}, 'messages') }}"
-                           aria-describedby="username-help">
-                    <small class="form-text text-muted" id="username-help">
-                        {{ 'login.help.email'|trans({}, 'messages') }}
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            {{ 'login.field.email'|trans({}, 'messages') }}
+                            <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
+                        </label>
+                        <input type="email"
+                               class="form-control"
+                               id="username"
+                               name="_username"
+                               value="{{ last_username }}"
+                               required
+                               aria-required="true"
+                               autofocus
+                               autocomplete="email"
+                               placeholder="{{ 'login.placeholder.email'|trans({}, 'messages') }}"
+                               aria-describedby="username-help">
+                        <small class="form-text text-muted" id="username-help">
+                            {{ 'login.help.email'|trans({}, 'messages') }}
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">
+                            {{ 'login.field.password'|trans({}, 'messages') }}
+                            <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
+                        </label>
+                        <input type="password"
+                               class="form-control"
+                               id="password"
+                               name="_password"
+                               required
+                               aria-required="true"
+                               autocomplete="current-password"
+                               placeholder="{{ 'login.placeholder.password'|trans({}, 'messages') }}">
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me">
+                        <label class="form-check-label" for="remember_me">
+                            {{ 'login.remember_me'|trans({}, 'messages') }}
+                        </label>
+                    </div>
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <button class="btn btn-primary w-100 mb-3" type="submit">
+                        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> {{ 'login.submit'|trans({}, 'messages') }}
+                    </button>
+                </form>
+
+                <hr class="my-4">
+
+                {# Azure OAuth Login #}
+                <div class="d-grid gap-2">
+                    <a href="{{ path('oauth_azure_connect') }}" class="btn btn-outline-primary">
+                        <svg width="20" height="20" class="me-2" viewBox="0 0 23 23">
+                            <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
+                            <path fill="#f35325" d="M1 1h10v10H1z"/>
+                            <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                            <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                            <path fill="#ffba08" d="M12 12h10v10H12z"/>
+                        </svg>
+                        {{ 'login.azure_oauth'|trans({}, 'messages') }}
+                    </a>
+
+                    <a href="{{ path('saml_login') }}" class="btn btn-outline-secondary">
+                        <svg width="20" height="20" class="me-2" viewBox="0 0 23 23">
+                            <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
+                            <path fill="#f35325" d="M1 1h10v10H1z"/>
+                            <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                            <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                            <path fill="#ffba08" d="M12 12h10v10H12z"/>
+                        </svg>
+                        {{ 'login.azure_saml'|trans({}, 'messages') }}
+                    </a>
+                </div>
+
+                <div class="text-center mt-4">
+                    <small class="text-muted">
+                        {{ 'login.no_account_message'|trans({}, 'messages') }}
                     </small>
                 </div>
-
-                <div class="mb-3">
-                    <label for="password" class="form-label">
-                        {{ 'login.field.password'|trans({}, 'messages') }}
-                        <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
-                    </label>
-                    <input type="password"
-                           class="form-control"
-                           id="password"
-                           name="_password"
-                           required
-                           aria-required="true"
-                           autocomplete="current-password"
-                           placeholder="{{ 'login.placeholder.password'|trans({}, 'messages') }}">
-                </div>
-
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me">
-                    <label class="form-check-label" for="remember_me">
-                        {{ 'login.remember_me'|trans({}, 'messages') }}
-                    </label>
-                </div>
-
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-                <button class="btn btn-primary w-100 mb-3" type="submit">
-                    <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> {{ 'login.submit'|trans({}, 'messages') }}
-                </button>
-            </form>
-
-            <hr class="my-4">
-
-            {# Azure OAuth Login #}
-            <div class="d-grid gap-2">
-                <a href="{{ path('oauth_azure_connect') }}" class="btn btn-outline-primary">
-                    <svg width="20" height="20" class="me-2" viewBox="0 0 23 23">
-                        <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
-                        <path fill="#f35325" d="M1 1h10v10H1z"/>
-                        <path fill="#81bc06" d="M12 1h10v10H12z"/>
-                        <path fill="#05a6f0" d="M1 12h10v10H1z"/>
-                        <path fill="#ffba08" d="M12 12h10v10H12z"/>
-                    </svg>
-                    {{ 'login.azure_oauth'|trans({}, 'messages') }}
-                </a>
-
-                <a href="{{ path('saml_login') }}" class="btn btn-outline-secondary">
-                    <svg width="20" height="20" class="me-2" viewBox="0 0 23 23">
-                        <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
-                        <path fill="#f35325" d="M1 1h10v10H1z"/>
-                        <path fill="#81bc06" d="M12 1h10v10H12z"/>
-                        <path fill="#05a6f0" d="M1 12h10v10H1z"/>
-                        <path fill="#ffba08" d="M12 12h10v10H12z"/>
-                    </svg>
-                    {{ 'login.azure_saml'|trans({}, 'messages') }}
-                </a>
-            </div>
-
-            <div class="text-center mt-4">
-                <small class="text-muted">
-                    {{ 'login.no_account_message'|trans({}, 'messages') }}
-                </small>
-            </div>
-        {% endif %}
-    </div>
-</div>
+            {% endif %}
+        </div>
+    {% endblock %}
+{% endembed %}
 {% endblock %}

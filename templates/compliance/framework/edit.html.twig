@@ -14,14 +14,16 @@
 
     <div class="row">
         <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header bg-warning">
-                    <h1 class="mb-0 h3">
-                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'compliance.framework.edit.heading'|trans({}, 'compliance') }}
-                        <small class="text-muted">{{ framework.name }}</small>
-                    </h1>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-warning">
+                        <h1 class="mb-0 h3">
+                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'compliance.framework.edit.heading'|trans({}, 'compliance') }}
+                            <small class="text-muted">{{ framework.name }}</small>
+                        </h1>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {{ form_start(form) }}
 
                     {% include '_components/_auto_form.html.twig' with {
@@ -63,14 +65,17 @@
                     </div>
 
                     {{ form_end(form) }}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-lg-4">
-            <div class="card mb-3">
-                <div class="card-header bg-secondary text-white"><h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.framework.info'|trans({}, 'compliance') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } %}
+                {% block card_header %}
+                    <div class="card-header bg-secondary text-white">
+                        <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.framework.info'|trans({}, 'compliance') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="row mb-0">
                         <dt class="col-sm-6">{{ 'common.created_at'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-6">{{ framework.createdAt|date('d.m.Y H:i') }}</dd>
@@ -81,14 +86,17 @@
                         <dt class="col-sm-6">{{ 'compliance.framework.field.requirements'|trans({}, 'compliance') }}</dt>
                         <dd class="col-sm-6">{% include '_components/_badge.html.twig' with { variant: 'info', content: framework.requirements|length } %}</dd>
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {% if is_granted('ROLE_ADMIN') %}
-            <div class="card border-danger">
-                <div class="card-header bg-danger text-white"><h2 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-danger' } %}
+                {% block card_header %}
+                    <div class="card-header bg-danger text-white">
+                        <h2 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <form method="post" action="{{ path('app_compliance_framework_delete', {id: framework.id}) }}"
                           data-controller="ui-actions"
                           data-action="submit->ui-actions#confirm"
@@ -98,8 +106,8 @@
                             <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                         </button>
                     </form>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
         </div>
     </div>

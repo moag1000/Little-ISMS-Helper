@@ -27,54 +27,56 @@
     {# Data Breach Summary #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card text-center h-100 bg-dark text-white">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-dark text-white' } %}
+                {% block card_body %}
                     <i class="bi bi-shield-exclamation fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ report.total_breaches }}</h3>
                     <small>{{ 'management_reports.gdpr.total_breaches'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card text-center h-100 bg-primary text-white">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-primary text-white' } %}
+                {% block card_body %}
                     <i class="bi bi-calendar fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ report.this_year }}</h3>
                     <small>{{ 'management_reports.gdpr.this_year'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card text-center h-100 bg-success text-white">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-success text-white' } %}
+                {% block card_body %}
                     <i class="bi bi-check-circle fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ report.notification_status.notified }}</h3>
                     <small>{{ 'management_reports.gdpr.notified'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card text-center h-100 bg-warning text-dark">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-warning text-dark' } %}
+                {% block card_body %}
                     <i class="bi bi-hourglass-split fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ report.notification_status.pending }}</h3>
                     <small>{{ 'management_reports.gdpr.pending_notification'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row">
         {# Severity Breakdown #}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header bg-dark text-white">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                        {{ 'management_reports.gdpr.by_severity'|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
+                {% block card_header %}
+                    <div class="card-header bg-dark text-white">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            {{ 'management_reports.gdpr.by_severity'|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'management_reports.severity.critical'|trans({}, 'management_reports') } %}
@@ -111,20 +113,22 @@
                             <div class="progress-bar bg-success" style="width: {{ report.total_breaches > 0 ? (report.by_severity.low / report.total_breaches * 100) : 0 }}%"></div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# GDPR Requirements #}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i>
-                        {{ 'management_reports.gdpr.requirements'|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            {{ 'management_reports.gdpr.requirements'|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="alert alert-info mb-3">
                         <strong>{{ 'management_reports.gdpr.article_33_34'|trans({}, 'management_reports') }}</strong>
                     </div>
@@ -142,8 +146,8 @@
                             <p class="mb-0 small text-muted">{{ 'management_reports.gdpr.documentation_description'|trans({}, 'management_reports') }}</p>
                         </li>
                     </ul>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
@@ -160,14 +164,16 @@
 
     {# Breaches Table #}
     {% if report.breaches|length > 0 %}
-    <div class="card shadow-sm mb-4">
-        <div class="card-header">
-            <h3 class="h5 mb-0">
-                <i class="bi bi-list" aria-hidden="true"></i>
-                {{ 'management_reports.gdpr.breach_list'|trans({}, 'management_reports') }}
-            </h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h3 class="h5 mb-0">
+                    <i class="bi bi-list" aria-hidden="true"></i>
+                    {{ 'management_reports.gdpr.breach_list'|trans({}, 'management_reports') }}
+                </h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="table-responsive">
                 <table class="table table-sm table-hover">
                     <thead>
@@ -211,8 +217,8 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% else %}
     <div class="alert alert-success mb-4">
         <h5><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'management_reports.gdpr.no_breaches_title'|trans({}, 'management_reports') }}</h5>
@@ -221,8 +227,8 @@
     {% endif %}
 
     {# Quick Links #}
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-4">
                     <a href="{{ path('app_data_breach_index') }}" class="btn btn-outline-dark btn-lg w-100">
@@ -240,8 +246,8 @@
                     </a>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Report Generated Info #}
     <div class="text-muted small text-end">

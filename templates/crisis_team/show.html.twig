@@ -18,13 +18,15 @@
             <a href="{{ path('app_crisis_team_index') }}" class="btn btn-outline-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
         </div>
     </div>
-    <div class="card"><div class="card-body">
-        <dl class="row">
-            <dt class="col-sm-3">{{ ('crisis_team.type.' ~ crisis_team.teamType)|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9">{% include '_components/_badge.html.twig' with { variant: 'primary', content: ('crisis_team.type.' ~ crisis_team.teamType)|trans({}, 'crisis_team') } %}</dd>
-            <dt class="col-sm-3">{{ 'crisis_team.field.is_active'|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9">{% include '_components/_badge.html.twig' with { variant: crisis_team.isActive ? 'success' : 'danger', content: crisis_team.isActive ? 'yes'|trans({}, 'messages') : 'no'|trans({}, 'messages') } %}</dd>
-            {% if crisis_team.teamLeader %}<dt class="col-sm-3">{{ 'crisis_team.field.team_leader'|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9">{{ crisis_team.teamLeader.email }}</dd>{% endif %}
-            {% if crisis_team.description %}<dt class="col-sm-3">{{ 'crisis_team.field.description'|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9">{{ crisis_team.description|nl2br }}</dd>{% endif %}
-        </dl>
-    </div></div>
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
+            <dl class="row">
+                <dt class="col-sm-3">{{ ('crisis_team.type.' ~ crisis_team.teamType)|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9">{% include '_components/_badge.html.twig' with { variant: 'primary', content: ('crisis_team.type.' ~ crisis_team.teamType)|trans({}, 'crisis_team') } %}</dd>
+                <dt class="col-sm-3">{{ 'crisis_team.field.is_active'|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9">{% include '_components/_badge.html.twig' with { variant: crisis_team.isActive ? 'success' : 'danger', content: crisis_team.isActive ? 'yes'|trans({}, 'messages') : 'no'|trans({}, 'messages') } %}</dd>
+                {% if crisis_team.teamLeader %}<dt class="col-sm-3">{{ 'crisis_team.field.team_leader'|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9">{{ crisis_team.teamLeader.email }}</dd>{% endif %}
+                {% if crisis_team.description %}<dt class="col-sm-3">{{ 'crisis_team.field.description'|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9">{{ crisis_team.description|nl2br }}</dd>{% endif %}
+            </dl>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

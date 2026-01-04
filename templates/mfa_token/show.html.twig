@@ -23,11 +23,13 @@
     <div class="row">
         <div class="col-lg-8">
             {# Token Details #}
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.details.title'|trans({}, 'mfa') }}</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.details.title'|trans({}, 'mfa') }}</h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'mfa_token.field.user'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
@@ -65,15 +67,17 @@
                             {% endif %}
                         </dd>
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Usage Statistics #}
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'mfa_token.usage.title'|trans({}, 'mfa') }}</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'mfa_token.usage.title'|trans({}, 'mfa') }}</h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'mfa_token.field.enrolled_at'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
@@ -110,16 +114,18 @@
                             </dd>
                         {% endif %}
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Backup Codes (if TOTP) #}
             {% if mfa_token.tokenType == 'totp' %}
-                <div class="card mb-4 border-warning">
-                    <div class="card-header bg-warning">
-                        <h3 class="mb-0"><i class="bi bi-key-fill" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}</h3>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-warning' } %}
+                    {% block card_header %}
+                        <div class="card-header bg-warning">
+                            <h3 class="mb-0"><i class="bi bi-key-fill" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}</h3>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
                                 <strong>{{ 'mfa_token.backup_codes.remaining'|trans({}, 'mfa') }}:</strong>
@@ -150,18 +156,20 @@
                         <p class="small text-muted mb-0">
                             {{ 'mfa_token.backup_codes.description'|trans({}, 'mfa') }}
                         </p>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         </div>
 
         <div class="col-lg-4">
             {# Actions #}
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="mb-0"><i class="bi bi-gear" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="mb-0"><i class="bi bi-gear" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="d-grid gap-2">
                         {% if mfa_token.isActive %}
                             <form method="post" action="{{ path('admin_mfa_disable', {id: mfa_token.id}) }}"
@@ -185,15 +193,17 @@
                             </button>
                         </form>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# System Information #}
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="mb-0"><i class="bi bi-database" aria-hidden="true"></i> {{ 'common.system_info'|trans({}, 'messages') }}</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="mb-0"><i class="bi bi-database" aria-hidden="true"></i> {{ 'common.system_info'|trans({}, 'messages') }}</h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="mb-0 small">
                         <dt>{{ 'common.id'|trans({}, 'messages') }}</dt>
                         <dd class="font-monospace">{{ mfa_token.id }}</dd>
@@ -206,8 +216,8 @@
                             <dd>{{ mfa_token.updatedAt|date('Y-m-d H:i:s') }}</dd>
                         {% endif %}
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 {% endblock %}

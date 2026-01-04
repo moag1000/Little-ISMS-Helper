@@ -9,85 +9,86 @@
 #}
 {% trans_default_domain 'analytics' %}
 
-<div class="card analytics-card heat-map-card {{ expanded is defined and expanded ? 'expanded' : '' }}"
-     data-controller="heat-map"
-     data-heat-map-url-value="{{ path('app_analytics_heat_map_data') }}">
-    <div class="card-header">
-        <h2 class="card-title">
-            <i class="bi bi-grid-3x3-gap text-danger" aria-hidden="true"></i>
-            {{ 'analytics.card.risk_heat_map'|trans({}, 'analytics') }}
-        </h2>
-        <div class="card-actions">
-            <button class="btn btn-sm btn-outline-secondary"
-                    data-action="click->heat-map#toggleFilters"
-                    title="{{ 'analytics.action.filter'|trans({}, 'analytics') }}">
-                <i class="bi bi-funnel" aria-hidden="true"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-secondary"
-                    data-action="click->heat-map#refresh"
-                    title="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}">
-                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-secondary"
-                    data-action="click->heat-map#exportImage"
-                    title="{{ 'analytics.action.export_png'|trans({}, 'analytics') }}">
-                <i class="bi bi-image" aria-hidden="true"></i>
-            </button>
+{% embed '_components/_card.html.twig' with { 'class': 'analytics-card heat-map-card' ~ (expanded is defined and expanded ? ' expanded' : '') } %}
+    {% block card_attrs %}data-controller="heat-map" data-heat-map-url-value="{{ path('app_analytics_heat_map_data') }}"{% endblock %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2 class="card-title">
+                <i class="bi bi-grid-3x3-gap text-danger" aria-hidden="true"></i>
+                {{ 'analytics.card.risk_heat_map'|trans({}, 'analytics') }}
+            </h2>
+            <div class="card-actions">
+                <button class="btn btn-sm btn-outline-secondary"
+                        data-action="click->heat-map#toggleFilters"
+                        title="{{ 'analytics.action.filter'|trans({}, 'analytics') }}">
+                    <i class="bi bi-funnel" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary"
+                        data-action="click->heat-map#refresh"
+                        title="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}">
+                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary"
+                        data-action="click->heat-map#exportImage"
+                        title="{{ 'analytics.action.export_png'|trans({}, 'analytics') }}">
+                    <i class="bi bi-image" aria-hidden="true"></i>
+                </button>
+            </div>
         </div>
-    </div>
 
-    {# Filter Panel #}
-    <div class="heat-map-filters d-none" data-heat-map-target="filters">
-        <div class="filter-group">
-            <label class="filter-label" for="heat-map-status-filter">
-                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'analytics.filter.status'|trans({}, 'analytics') }}
-            </label>
-            <select class="form-select form-select-sm"
-                    id="heat-map-status-filter"
-                    data-action="change->heat-map#applyFilters"
-                    data-heat-map-target="statusFilter">
-                <option value="">{{ 'analytics.filter.all'|trans({}, 'analytics') }}</option>
-                <option value="open">{{ 'risk.status.open'|trans({}, 'risk') }}</option>
-                <option value="in_progress">{{ 'risk.status.in_progress'|trans({}, 'risk') }}</option>
-                <option value="mitigated">{{ 'risk.status.mitigated'|trans({}, 'risk') }}</option>
-                <option value="closed">{{ 'risk.status.closed'|trans({}, 'risk') }}</option>
-            </select>
+        {# Filter Panel #}
+        <div class="heat-map-filters d-none" data-heat-map-target="filters">
+            <div class="filter-group">
+                <label class="filter-label" for="heat-map-status-filter">
+                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'analytics.filter.status'|trans({}, 'analytics') }}
+                </label>
+                <select class="form-select form-select-sm"
+                        id="heat-map-status-filter"
+                        data-action="change->heat-map#applyFilters"
+                        data-heat-map-target="statusFilter">
+                    <option value="">{{ 'analytics.filter.all'|trans({}, 'analytics') }}</option>
+                    <option value="open">{{ 'risk.status.open'|trans({}, 'risk') }}</option>
+                    <option value="in_progress">{{ 'risk.status.in_progress'|trans({}, 'risk') }}</option>
+                    <option value="mitigated">{{ 'risk.status.mitigated'|trans({}, 'risk') }}</option>
+                    <option value="closed">{{ 'risk.status.closed'|trans({}, 'risk') }}</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label" for="heat-map-category-filter">
+                    <i class="bi bi-tag" aria-hidden="true"></i> {{ 'analytics.filter.category'|trans({}, 'analytics') }}
+                </label>
+                <select class="form-select form-select-sm"
+                        id="heat-map-category-filter"
+                        data-action="change->heat-map#applyFilters"
+                        data-heat-map-target="categoryFilter">
+                    <option value="">{{ 'analytics.filter.all'|trans({}, 'analytics') }}</option>
+                    <option value="technical">{{ 'risk.category.technical'|trans({}, 'risk') }}</option>
+                    <option value="organizational">{{ 'risk.category.organizational'|trans({}, 'risk') }}</option>
+                    <option value="physical">{{ 'risk.category.physical'|trans({}, 'risk') }}</option>
+                    <option value="compliance">{{ 'compliance.title.transitive'|trans({}, 'compliance') }}</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label" for="heat-map-time-filter">
+                    <i class="bi bi-calendar" aria-hidden="true"></i> {{ 'analytics.filter.time'|trans({}, 'analytics') }}
+                </label>
+                <select class="form-select form-select-sm"
+                        id="heat-map-time-filter"
+                        data-action="change->heat-map#applyFilters"
+                        data-heat-map-target="timeFilter">
+                    <option value="">{{ 'analytics.filter.all'|trans({}, 'analytics') }}</option>
+                    <option value="30">{{ 'common.last_30_days'|trans({}, 'messages') }}</option>
+                    <option value="90">{{ 'common.last_90_days'|trans({}, 'messages') }}</option>
+                    <option value="365">{{ 'common.last_year'|trans({}, 'messages') }}</option>
+                </select>
+            </div>
+            <button class="btn btn-sm btn-outline-danger"
+                    data-action="click->heat-map#clearFilters">
+                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'analytics.action.reset_filters'|trans({}, 'analytics') }}
+            </button>
         </div>
-        <div class="filter-group">
-            <label class="filter-label" for="heat-map-category-filter">
-                <i class="bi bi-tag" aria-hidden="true"></i> {{ 'analytics.filter.category'|trans({}, 'analytics') }}
-            </label>
-            <select class="form-select form-select-sm"
-                    id="heat-map-category-filter"
-                    data-action="change->heat-map#applyFilters"
-                    data-heat-map-target="categoryFilter">
-                <option value="">{{ 'analytics.filter.all'|trans({}, 'analytics') }}</option>
-                <option value="technical">{{ 'risk.category.technical'|trans({}, 'risk') }}</option>
-                <option value="organizational">{{ 'risk.category.organizational'|trans({}, 'risk') }}</option>
-                <option value="physical">{{ 'risk.category.physical'|trans({}, 'risk') }}</option>
-                <option value="compliance">{{ 'compliance.title.transitive'|trans({}, 'compliance') }}</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label class="filter-label" for="heat-map-time-filter">
-                <i class="bi bi-calendar" aria-hidden="true"></i> {{ 'analytics.filter.time'|trans({}, 'analytics') }}
-            </label>
-            <select class="form-select form-select-sm"
-                    id="heat-map-time-filter"
-                    data-action="change->heat-map#applyFilters"
-                    data-heat-map-target="timeFilter">
-                <option value="">{{ 'analytics.filter.all'|trans({}, 'analytics') }}</option>
-                <option value="30">{{ 'common.last_30_days'|trans({}, 'messages') }}</option>
-                <option value="90">{{ 'common.last_90_days'|trans({}, 'messages') }}</option>
-                <option value="365">{{ 'common.last_year'|trans({}, 'messages') }}</option>
-            </select>
-        </div>
-        <button class="btn btn-sm btn-outline-danger"
-                data-action="click->heat-map#clearFilters">
-            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'analytics.action.reset_filters'|trans({}, 'analytics') }}
-        </button>
-    </div>
-    <div class="card-body">
+    {% endblock %}
+    {% block card_body %}
         {# Loading State #}
         <div class="heat-map-loading d-none" data-heat-map-target="loading">
             <div class="spinner-border text-primary" role="status">
@@ -145,5 +146,5 @@
                 {# Will be populated by JavaScript #}
             </div>
         </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}

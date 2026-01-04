@@ -36,99 +36,105 @@
 </div>
 
 {# Role Details #}
-<div class="card mb-4">
-    <h2>{{ 'role_management.section.details'|trans({}, 'role_management') }}</h2>
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_body %}
+        <h2>{{ 'role_management.section.details'|trans({}, 'role_management') }}</h2>
 
-    <div class="stats-grid mt-3 grid-responsive-250">
-        <div class="stat-item">
-            <strong>{{ role.name }}</strong>
-            <span>{{ 'role_management.field.name'|trans({}, 'role_management') }}</span>
+        <div class="stats-grid mt-3 grid-responsive-250">
+            <div class="stat-item">
+                <strong>{{ role.name }}</strong>
+                <span>{{ 'role_management.field.name'|trans({}, 'role_management') }}</span>
+            </div>
+
+            <div class="stat-item">
+                <strong>{{ role.users|length }}</strong>
+                <span>{{ 'role_management.field.users'|trans({}, 'role_management') }}</span>
+            </div>
+
+            <div class="stat-item">
+                <strong>{{ role.permissions|length }}</strong>
+                <span>{{ 'role_management.field.permissions'|trans({}, 'role_management') }}</span>
+            </div>
         </div>
 
-        <div class="stat-item">
-            <strong>{{ role.users|length }}</strong>
-            <span>{{ 'role_management.field.users'|trans({}, 'role_management') }}</span>
+        {% if role.description %}
+        <div class="mt-3">
+            <h2 class="h3-small">{{ 'role_management.field.description'|trans({}, 'role_management') }}</h2>
+            <div class="info-box bg-light">
+                <p class="pre-wrap">{{ role.description }}</p>
+            </div>
         </div>
-
-        <div class="stat-item">
-            <strong>{{ role.permissions|length }}</strong>
-            <span>{{ 'role_management.field.permissions'|trans({}, 'role_management') }}</span>
-        </div>
-    </div>
-
-    {% if role.description %}
-    <div class="mt-3">
-        <h2 class="h3-small">{{ 'role_management.field.description'|trans({}, 'role_management') }}</h2>
-        <div class="info-box bg-light">
-            <p class="pre-wrap">{{ role.description }}</p>
-        </div>
-    </div>
-    {% endif %}
-</div>
+        {% endif %}
+    {% endblock %}
+{% endembed %}
 
 {# Permissions #}
-<div class="card mb-4">
-    <h2>{{ 'role_management.section.permissions'|trans({}, 'role_management') }}</h2>
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_body %}
+        <h2>{{ 'role_management.section.permissions'|trans({}, 'role_management') }}</h2>
 
-    {% if role.permissions|length > 0 %}
-    <div class="table-container mt-3">
-        {% embed '_components/_table.html.twig' with {'noMargin': true, 'responsive': true} %}
-            {% block table_head %}
-                <tr>
-                    <th scope="col">{{ 'role_management.permission.name'|trans({}, 'role_management') }}</th>
-                    <th scope="col">{{ 'role_management.permission.resource'|trans({}, 'role_management') }}</th>
-                    <th scope="col">{{ 'role_management.permission.action'|trans({}, 'role_management') }}</th>
-                </tr>
-            {% endblock %}
-            {% block table_body %}
-                {% for permission in role.permissions %}
-                <tr>
-                    <td><strong>{{ permission.name }}</strong></td>
-                    <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: permission.resource } %}</td>
-                    <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: permission.action } %}</td>
-                </tr>
-                {% endfor %}
-            {% endblock %}
-        {% endembed %}
-    </div>
-    {% else %}
-    <p class="text-muted-mt-sm">
-        {{ 'role_management.message.no_permissions'|trans({}, 'role_management') }}
-    </p>
-    {% endif %}
-</div>
+        {% if role.permissions|length > 0 %}
+        <div class="table-container mt-3">
+            {% embed '_components/_table.html.twig' with {'noMargin': true, 'responsive': true} %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'role_management.permission.name'|trans({}, 'role_management') }}</th>
+                        <th scope="col">{{ 'role_management.permission.resource'|trans({}, 'role_management') }}</th>
+                        <th scope="col">{{ 'role_management.permission.action'|trans({}, 'role_management') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for permission in role.permissions %}
+                    <tr>
+                        <td><strong>{{ permission.name }}</strong></td>
+                        <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: permission.resource } %}</td>
+                        <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: permission.action } %}</td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        </div>
+        {% else %}
+        <p class="text-muted-mt-sm">
+            {{ 'role_management.message.no_permissions'|trans({}, 'role_management') }}
+        </p>
+        {% endif %}
+    {% endblock %}
+{% endembed %}
 
 {# Assigned Users #}
-<div class="card mb-4">
-    <h2>{{ 'role_management.section.users'|trans({}, 'role_management') }}</h2>
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_body %}
+        <h2>{{ 'role_management.section.users'|trans({}, 'role_management') }}</h2>
 
-    {% if role.users|length > 0 %}
-    <div class="table-container mt-3">
-        {% embed '_components/_table.html.twig' with {'noMargin': true, 'responsive': true} %}
-            {% block table_head %}
-                <tr>
-                    <th scope="col">{{ 'role_management.user.name'|trans({}, 'role_management') }}</th>
-                    <th scope="col">{{ 'role_management.user.email'|trans({}, 'role_management') }}</th>
-                    <th scope="col">{{ 'role_management.user.assigned_date'|trans({}, 'role_management') }}</th>
-                </tr>
-            {% endblock %}
-            {% block table_body %}
-                {% for user in role.users %}
-                <tr>
-                    <td><strong>{{ user.fullName }}</strong></td>
-                    <td>{{ user.email|default('-') }}</td>
-                    <td>{{ user.roleAssignedAt|date('d.m.Y H:i') }}</td>
-                </tr>
-                {% endfor %}
-            {% endblock %}
-        {% endembed %}
-    </div>
-    {% else %}
-    <p class="text-muted-mt-sm">
-        {{ 'role_management.message.no_users'|trans({}, 'role_management') }}
-    </p>
-    {% endif %}
-</div>
+        {% if role.users|length > 0 %}
+        <div class="table-container mt-3">
+            {% embed '_components/_table.html.twig' with {'noMargin': true, 'responsive': true} %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'role_management.user.name'|trans({}, 'role_management') }}</th>
+                        <th scope="col">{{ 'role_management.user.email'|trans({}, 'role_management') }}</th>
+                        <th scope="col">{{ 'role_management.user.assigned_date'|trans({}, 'role_management') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for user in role.users %}
+                    <tr>
+                        <td><strong>{{ user.fullName }}</strong></td>
+                        <td>{{ user.email|default('-') }}</td>
+                        <td>{{ user.roleAssignedAt|date('d.m.Y H:i') }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        </div>
+        {% else %}
+        <p class="text-muted-mt-sm">
+            {{ 'role_management.message.no_users'|trans({}, 'role_management') }}
+        </p>
+        {% endif %}
+    {% endblock %}
+{% endembed %}
 
 {# Action Buttons #}
 <div class="button-group mt-xl">
