@@ -207,12 +207,12 @@
                     <br><small class="text-muted">{{ incident.description|length > 60 ? incident.description|slice(0, 60) ~ '...' : incident.description }}</small>
                     {% endif %}
                     {% if incident.status == 'reported' %}
-                        <span class="badge bg-danger ms-2">{{ 'common.new'|trans({}, 'messages') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-2', content: 'common.new'|trans({}, 'messages') } %}
                     {% endif %}
                 </td>
                 <td>
                     {% if incident.category %}
-                        <span class="badge bg-secondary">{{ ('incident.category.' ~ incident.category)|trans({}, 'incident') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('incident.category.' ~ incident.category)|trans({}, 'incident') } %}
                     {% else %}
                         <span class="text-muted">-</span>
                     {% endif %}
@@ -224,9 +224,7 @@
                         'medium': 'info',
                         'low': 'success'
                     } %}
-                    <span class="badge bg-{{ severityColors[incident.severity] ?? 'secondary' }}">
-                        {{ ('incident.severity.' ~ incident.severity)|trans({}, 'incident') }}
-                    </span>
+                    {% include '_components/_badge.html.twig' with { variant: severityColors[incident.severity] ?? 'secondary', content: ('incident.severity.' ~ incident.severity)|trans({}, 'incident') } %}
                 </td>
                 <td>
                     {% set statusIcons = {
@@ -263,9 +261,7 @@
                 </td>
                 <td class="text-center">
                     {% if incident.dataBreachOccurred %}
-                        <span class="badge bg-danger" title="{{ 'incident.field.data_breach_occurred'|trans({}, 'incident') }}">
-                            <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'common.yes'|trans({}, 'messages') }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-shield-exclamation', title: 'incident.field.data_breach_occurred'|trans({}, 'incident'), content: 'common.yes'|trans({}, 'messages') } %}
                     {% else %}
                         <span class="text-muted">{{ 'common.no'|trans({}, 'messages') }}</span>
                     {% endif %}

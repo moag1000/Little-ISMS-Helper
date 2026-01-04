@@ -37,9 +37,7 @@
                             'completed': 'success',
                             'cancelled': 'danger'
                         } %}
-                        <span class="badge bg-{{ statusClass[review.status] ?? 'secondary' }} fs-6">
-                            {{ ('management_review.status.' ~ review.status)|trans({}, 'management_review') }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: statusClass[review.status] ?? 'secondary', class: 'fs-6', content: ('management_review.status.' ~ review.status)|trans({}, 'management_review') } %}
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -53,7 +51,7 @@
                         <div class="col-md-6">
                             <div class="text-muted small mb-2">
                                 <i class="bi bi-people" aria-hidden="true"></i> {{ 'management_review.field.participants'|trans({}, 'management_review') }}
-                                <span class="badge bg-primary">{{ review.participants|length }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'primary', content: review.participants|length } %}
                             </div>
                             {% if review.participants|length > 0 %}
                             <ul class="list-unstyled mb-0">

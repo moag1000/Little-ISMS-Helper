@@ -15,13 +15,9 @@
                 'rejected': 'danger',
                 'cancelled': 'secondary'
             } %}
-            <span class="badge bg-{{ statusColors[instance.status] ?? 'secondary' }}">
-                {{ ('workflow.status.' ~ instance.status)|trans({}, 'workflows') }}
-            </span>
+            {% include '_components/_badge.html.twig' with { variant: statusColors[instance.status] ?? 'secondary', content: ('workflow.status.' ~ instance.status)|trans({}, 'workflows') } %}
             {% if instance.overdue %}
-                <span class="badge bg-danger ms-1">
-                    {{ 'workflow.badge.overdue'|trans({}, 'workflows') }}
-                </span>
+                {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-1', content: 'workflow.badge.overdue'|trans({}, 'workflows') } %}
             {% endif %}
         </div>
     </div>
@@ -41,7 +37,7 @@
         <div class="row">
             <div class="col-md-3 mb-3">
                 <strong class="d-block text-muted">{{ 'workflow.field.workflow'|trans({}, 'workflows') }}</strong>
-                <span class="badge bg-info">{{ instance.workflow ? instance.workflow.name : '-' }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: instance.workflow ? instance.workflow.name : '-' } %}
             </div>
 
             <div class="col-md-3 mb-3">
@@ -143,9 +139,9 @@
                     <div>
                         <strong>{{ loop.index }}. {{ step.name }}</strong>
                         {% if isCurrentStep %}
-                            <span class="badge bg-primary ms-2">{{ 'workflow.badge.current'|trans({}, 'workflows') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'ms-2', content: 'workflow.badge.current'|trans({}, 'workflows') } %}
                         {% elseif isCompleted %}
-                            <span class="badge bg-success ms-2"><i class="bi bi-check" aria-hidden="true"></i> {{ 'workflow.badge.completed'|trans({}, 'workflows') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'success', class: 'ms-2', icon: 'bi-check', content: 'workflow.badge.completed'|trans({}, 'workflows') } %}
                         {% endif %}
                     </div>
                     {% if isCurrentStep and can_approve %}
@@ -205,13 +201,11 @@
                     <td>
                         {% set actionColor = entry.action == 'approved' ? 'success' : (entry.action == 'rejected' ? 'danger' : 'info') %}
                         {% set isAutoApproved = entry.action == 'auto_approved' or (entry.auto_progression is defined and entry.auto_progression) %}
-                        <span class="badge bg-{{ isAutoApproved ? 'success' : actionColor }}{% if isAutoApproved %} fairy-workflow-magic{% endif %}">
-                            {% if isAutoApproved %}
-                                <i class="bi bi-stars me-1" aria-hidden="true"></i>{{ 'workflow.action.auto_approved'|trans({}, 'workflows') }}
-                            {% else %}
-                                {{ entry.action|capitalize }}
-                            {% endif %}
-                        </span>
+                        {% if isAutoApproved %}
+                            {% include '_components/_badge.html.twig' with { variant: 'success', class: 'fairy-workflow-magic', icon: 'bi-stars', content: 'workflow.action.auto_approved'|trans({}, 'workflows') } %}
+                        {% else %}
+                            {% include '_components/_badge.html.twig' with { variant: actionColor, content: entry.action|capitalize } %}
+                        {% endif %}
                         {% if entry.step_name is defined %}
                             <small class="text-muted ms-1">({{ entry.step_name }})</small>
                         {% endif %}

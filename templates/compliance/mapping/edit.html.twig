@@ -26,8 +26,8 @@
 
     <div class="row">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     {{ form_start(form) }}
 
                     {% include '_components/_auto_form.html.twig' with {
@@ -68,15 +68,16 @@
                     </div>
 
                     {{ form_end(form) }}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-header"><h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.mapping.info.current'|trans({}, 'compliance') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.mapping.info.current'|trans({}, 'compliance') }}</h2></div>
+                {% endblock %}
+                {% block card_body %}
                     <p class="small">
                         <strong>{{ 'compliance.mapping.field.source'|trans({}, 'compliance') }}:</strong><br>
                         {{ mapping.sourceRequirement.framework.code }} - {{ mapping.sourceRequirement.requirementId }}
@@ -87,7 +88,7 @@
                     </p>
                     <p class="small">
                         <strong>{{ 'compliance.mapping.field.type'|trans({}, 'compliance') }}:</strong>
-                        <span class="badge bg-{{ mapping.mappingBadgeClass }}">{{ mapping.mappingType }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: mapping.mappingBadgeClass, content: mapping.mappingType } %}
                     </p>
                     {% if mapping.isAnalyzed %}
                         <p class="small">
@@ -95,8 +96,8 @@
                             <strong>{{ 'compliance.mapping.field.analysis_confidence'|trans({}, 'compliance') }}:</strong> {{ mapping.analysisConfidence }}%
                         </p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

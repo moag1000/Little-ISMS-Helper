@@ -75,13 +75,12 @@
                         {% else %}text-danger{% endif %}">
                         {{ result.overall_score }}%
                     </div>
-                    <span class="badge
-                        {% if result.status == 'compliant' %}bg-success
-                        {% elseif result.status == 'partial' %}bg-warning text-dark
-                        {% elseif result.status == 'in_progress' %}bg-info
-                        {% else %}bg-danger{% endif %}">
-                        {{ ('wizard.status.' ~ result.status)|trans }}
-                    </span>
+                    {% set status_variant = {
+                        'compliant': 'success',
+                        'partial': 'warning',
+                        'in_progress': 'info'
+                    }[result.status]|default('danger') %}
+                    {% include '_components/_badge.html.twig' with { variant: status_variant, content: ('wizard.status.' ~ result.status)|trans } %}
                     <div class="mt-3">
                         <small class="text-muted">
                             <i class="bi bi-flag text-danger me-1" aria-hidden="true"></i>
@@ -112,9 +111,7 @@
                             <th>{{ 'wizard.category'|trans }}</th>
                             {% for key, result in results %}
                             <th class="text-center" style="min-width: 120px;">
-                                <span class="badge bg-{{ available_wizards[key].color|default('secondary') }}">
-                                    {{ result.framework }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: available_wizards[key].color|default('secondary'), content: result.framework } %}
                             </th>
                             {% endfor %}
                         </tr>

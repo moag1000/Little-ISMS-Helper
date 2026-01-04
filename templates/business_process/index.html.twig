@@ -123,9 +123,7 @@
                                             'medium': 'info',
                                             'low': 'secondary'
                                         } %}
-                                        <span class="badge bg-{{ criticality_class[process.criticality] ?? 'secondary' }}">
-                                            {{ process.criticality|capitalize }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: criticality_class[process.criticality] ?? 'secondary', content: process.criticality|capitalize } %}
                                     </td>
                                     <td>{{ process.rto }}h</td>
                                     <td>{{ process.rpo }}h</td>

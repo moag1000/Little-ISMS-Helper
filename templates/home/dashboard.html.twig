@@ -237,7 +237,7 @@
                         <i class="bi bi-calendar-x" aria-hidden="true"></i>
                         {{ 'dashboard.overdue_reviews.title'|trans({}, 'dashboard') }}
                     </h3>
-                    <span class="badge bg-warning">{{ overdue_reviews|length }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: overdue_reviews|length } %}
                 </div>
                 <div class="widget-body p-3">
                     <p class="text-muted mb-3">
@@ -261,9 +261,11 @@
                                         {% endif %}
                                     </div>
                                 </div>
-                                <span class="badge bg-{{ risk.probability * risk.impact >= 20 ? 'danger' : (risk.probability * risk.impact >= 12 ? 'warning' : 'info') }} ms-2">
-                                    {{ risk.probability * risk.impact }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: risk.probability * risk.impact >= 20 ? 'danger' : (risk.probability * risk.impact >= 12 ? 'warning' : 'info'),
+                                    class: 'ms-2',
+                                    content: risk.probability * risk.impact
+                                } %}
                             </div>
                         </li>
                         {% endfor %}
@@ -290,7 +292,7 @@
                         <i class="bi bi-calendar-check" aria-hidden="true"></i>
                         {{ 'dashboard.upcoming_reviews.title'|trans({}, 'dashboard') }}
                     </h3>
-                    <span class="badge bg-info">{{ upcoming_reviews|length }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'info', content: upcoming_reviews|length } %}
                 </div>
                 <div class="widget-body p-3">
                     <p class="text-muted mb-3 small">
@@ -327,7 +329,7 @@
                         <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
                         {{ 'dashboard.overdue_treatment_plans.title'|trans({}, 'dashboard') }}
                     </h3>
-                    <span class="badge bg-danger">{{ overdue_treatment_plans|length }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: overdue_treatment_plans|length } %}
                 </div>
                 <div class="widget-body p-3">
                     <p class="text-muted mb-3 small">
@@ -355,9 +357,11 @@
                                              aria-valuemax="100"></div>
                                     </div>
                                 </div>
-                                <span class="badge bg-{{ plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : 'secondary') }} ms-2">
-                                    {{ ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan') }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : 'secondary'),
+                                    class: 'ms-2',
+                                    content: ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan')
+                                } %}
                             </div>
                         </li>
                         {% endfor %}
@@ -384,7 +388,7 @@
                         <i class="bi bi-clock-history" aria-hidden="true"></i>
                         {{ 'dashboard.approaching_treatment_plans.title'|trans({}, 'dashboard') }}
                     </h3>
-                    <span class="badge bg-warning">{{ approaching_treatment_plans|length }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: approaching_treatment_plans|length } %}
                 </div>
                 <div class="widget-body p-3">
                     <p class="text-muted mb-3 small">

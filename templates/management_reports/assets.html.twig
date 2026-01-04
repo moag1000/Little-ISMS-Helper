@@ -53,7 +53,7 @@
                         <div class="col-md-4 mb-2">
                             <div class="d-flex justify-content-between">
                                 <span>{{ type }}</span>
-                                <span class="badge bg-primary">{{ count }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'primary', content: count } %}
                             </div>
                             <div class="progress" style="height: 8px;">
                                 <div class="progress-bar" style="width: {{ report.total_assets > 0 ? (count / report.total_assets * 100) : 0 }}%"></div>
@@ -135,9 +135,7 @@
                             <td>{{ asset.assetType }}</td>
                             <td>
                                 {% set classification = asset.classification|default('Unclassified') %}
-                                <span class="badge {% if classification == 'Confidential' or classification == 'Restricted' %}bg-danger{% elseif classification == 'Internal' %}bg-warning text-dark{% else %}bg-success{% endif %}">
-                                    {{ classification }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: (classification == 'Confidential' or classification == 'Restricted') ? 'danger' : (classification == 'Internal' ? 'warning' : 'success'), content: classification } %}
                             </td>
                             <td>{{ asset.owner ? asset.owner.email : '-' }}</td>
                             <td>{{ asset.status|default('Active') }}</td>

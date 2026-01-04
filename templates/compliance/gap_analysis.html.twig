@@ -133,7 +133,7 @@
                 <br><small class="text-muted">{{ gap.requirement.name }}</small>
             </td>
             <td>
-                <span class="badge bg-info">{{ gap.framework.name }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: gap.framework.name } %}
             </td>
             <td>
                 {% set severityColors = {
@@ -142,9 +142,7 @@
                     'medium': 'info',
                     'low': 'secondary'
                 } %}
-                <span class="badge bg-{{ severityColors[gap.severity] ?? 'secondary' }}">
-                    {{ ('compliance.severity.' ~ gap.severity)|trans({}, 'compliance') }}
-                </span>
+                {% include '_components/_badge.html.twig' with { variant: severityColors[gap.severity] ?? 'secondary', content: ('compliance.severity.' ~ gap.severity)|trans({}, 'compliance') } %}
             </td>
             <td>
                 <small>{{ gap.description|default('-') }}</small>
@@ -156,9 +154,7 @@
                 {% if gap.targetDate %}
                     {{ gap.targetDate|date('d.m.Y') }}
                     {% if gap.targetDate < date() %}
-                        <span class="badge bg-danger ml-xs">
-                            {{ 'compliance.badge.overdue'|trans({}, 'compliance') }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'compliance.badge.overdue'|trans({}, 'compliance'), class: 'ml-xs' } %}
                     {% endif %}
                 {% else %}
                     <span class="text-muted">-</span>

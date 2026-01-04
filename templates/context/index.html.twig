@@ -409,7 +409,7 @@
                             <strong>{{ objective.title }}</strong>
                         </td>
                         <td>
-                            <span class="badge bg-secondary">{{ objective.category }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: objective.category } %}
                         </td>
                         <td>{{ objective.responsiblePerson }}</td>
                         <td>
@@ -423,9 +423,7 @@
                                 'not_started': 'warning',
                                 'delayed': 'danger'
                             } %}
-                            <span class="badge bg-{{ statusClasses[objective.status] ?? 'secondary' }}">
-                                {{ objective.status|replace({'_': ' '})|title }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: statusClasses[objective.status] ?? 'secondary', content: objective.status|replace({'_': ' '})|title } %}
                         </td>
                         <td>
                             <a href="{{ path('app_objective_show', {id: objective.id}) }}"

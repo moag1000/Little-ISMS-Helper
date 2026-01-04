@@ -112,7 +112,7 @@
                         {% if strategy != 'untreated' %}
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span>{{ ('risk.treatment.' ~ strategy)|trans({}, 'risk') }}</span>
-                            <span class="badge bg-secondary">{{ count }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: count } %}
                         </div>
                         {% endif %}
                     {% endfor %}
@@ -177,8 +177,8 @@
                                 <tr>
                                     <td>{{ category }}</td>
                                     <td class="text-center">{{ data.total }}</td>
-                                    <td class="text-center"><span class="badge bg-warning">{{ data.high }}</span></td>
-                                    <td class="text-center"><span class="badge bg-danger">{{ data.critical }}</span></td>
+                                    <td class="text-center">{% include '_components/_badge.html.twig' with { variant: 'warning', content: data.high } %}</td>
+                                    <td class="text-center">{% include '_components/_badge.html.twig' with { variant: 'danger', content: data.critical } %}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -216,7 +216,7 @@
                     {% for month in dashboard.risk_forecast.next_3_months %}
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span>{{ month.label }}</span>
-                        <span class="badge bg-secondary">~{{ month.total }} {{ 'risks'|trans({}, 'dashboards') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: '~' ~ month.total ~ ' ' ~ 'risks'|trans({}, 'dashboards') } %}
                     </div>
                     {% endfor %}
                 </div>
@@ -233,7 +233,7 @@
                         <i class="bi bi-exclamation-diamond text-warning me-2" aria-hidden="true"></i>
                         {{ 'risk_manager.section.untreated_risks'|trans({}, 'dashboards') }}
                     </h5>
-                    <span class="badge bg-warning">{{ dashboard.untreated_risks|length }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: dashboard.untreated_risks|length } %}
                 </div>
                 <div class="card-body p-0">
                     {% if dashboard.untreated_risks|length > 0 %}
@@ -245,9 +245,10 @@
                                     <h6 class="mb-1">{{ risk.title }}</h6>
                                     <small class="text-muted">{{ risk.category }}</small>
                                 </div>
-                                <span class="badge bg-{% if risk.level >= 16 %}danger{% elseif risk.level >= 12 %}warning{% else %}secondary{% endif %}">
-                                    {{ risk.level }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: risk.level >= 16 ? 'danger' : (risk.level >= 12 ? 'warning' : 'secondary'),
+                                    content: risk.level
+                                } %}
                             </div>
                         </a>
                         {% endfor %}
@@ -269,7 +270,7 @@
                         <i class="bi bi-clock-history text-danger me-2" aria-hidden="true"></i>
                         {{ 'risk_manager.section.overdue_treatments'|trans({}, 'dashboards') }}
                     </h5>
-                    <span class="badge bg-danger">{{ dashboard.overdue_treatments|length }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: dashboard.overdue_treatments|length } %}
                 </div>
                 <div class="card-body p-0">
                     {% if dashboard.overdue_treatments|length > 0 %}
@@ -281,7 +282,7 @@
                                     <h6 class="mb-1">{{ treatment.risk_title }}</h6>
                                     <small class="text-muted">{{ 'risk_manager.target_date'|trans({}, 'dashboards') }}: {{ treatment.target_date|date('d.m.Y') }}</small>
                                 </div>
-                                <span class="badge bg-danger">{{ treatment.days_overdue }} {{ 'days'|trans({}, 'dashboards') }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'danger', content: treatment.days_overdue ~ ' ' ~ 'days'|trans({}, 'dashboards') } %}
                             </div>
                         </div>
                         {% endfor %}

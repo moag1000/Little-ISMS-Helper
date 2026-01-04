@@ -123,7 +123,7 @@
                         <div class="col-md-4 mb-2">
                             <div class="d-flex justify-content-between">
                                 <span>{{ category }}</span>
-                                <span class="badge bg-secondary">{{ risks|length }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: risks|length } %}
                             </div>
                         </div>
                         {% endfor %}
@@ -169,11 +169,7 @@
                             <td>{{ risk.category }}</td>
                             <td><strong>{{ risk.riskScore }}</strong></td>
                             <td>
-                                {% if risk.riskScore >= 20 %}
-                                <span class="badge bg-danger">{{ 'management_reports.risk_level.critical'|trans({}, 'management_reports') }}</span>
-                                {% else %}
-                                <span class="badge bg-warning text-dark">{{ 'management_reports.risk_level.high'|trans({}, 'management_reports') }}</span>
-                                {% endif %}
+                                {% include '_components/_badge.html.twig' with { variant: risk.riskScore >= 20 ? 'danger' : 'warning', content: risk.riskScore >= 20 ? 'management_reports.risk_level.critical'|trans({}, 'management_reports') : 'management_reports.risk_level.high'|trans({}, 'management_reports') } %}
                             </td>
                             <td>{{ risk.treatmentStrategy|default('-') }}</td>
                             <td>{{ risk.riskOwner ? risk.riskOwner.email : '-' }}</td>
@@ -215,11 +211,7 @@
                             <td>{{ trend.month_name }}</td>
                             <td>{{ trend.new_risks }}</td>
                             <td>
-                                {% if trend.high_critical > 0 %}
-                                <span class="badge bg-danger">{{ trend.high_critical }}</span>
-                                {% else %}
-                                <span class="badge bg-success">0</span>
-                                {% endif %}
+                                {% include '_components/_badge.html.twig' with { variant: trend.high_critical > 0 ? 'danger' : 'success', content: trend.high_critical > 0 ? trend.high_critical : '0' } %}
                             </td>
                         </tr>
                         {% endfor %}

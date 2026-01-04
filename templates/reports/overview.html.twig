@@ -42,13 +42,9 @@
                                 <i class="bi bi-file-earmark-bar-graph text-primary me-2" aria-hidden="true"></i>
                                 <strong>Detaillierter Bericht</strong> - Compliance-Analyse
                                 {% if license_stats.exists %}
-                                    <span class="badge bg-success ms-2">
-                                        <i class="bi bi-check-circle me-1" aria-hidden="true"></i>Verfügbar
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'Verfügbar', class: 'ms-2' } %}
                                 {% else %}
-                                    <span class="badge bg-warning ms-2">
-                                        <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>Nicht generiert
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'Nicht generiert', class: 'ms-2' } %}
                                 {% endif %}
                             </li>
                             <li>
@@ -92,13 +88,9 @@
                                 <i class="bi bi-shield-lock text-danger me-2" aria-hidden="true"></i>
                                 <strong>OWASP Top 10:2025 RC1</strong> (Primary)
                                 {% if security_stats.owasp_2025.exists %}
-                                    <span class="badge bg-success ms-2">
-                                        <i class="bi bi-check-circle me-1" aria-hidden="true"></i>Verfügbar
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'Verfügbar', class: 'ms-2' } %}
                                 {% else %}
-                                    <span class="badge bg-warning ms-2">
-                                        <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>Nicht generiert
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'Nicht generiert', class: 'ms-2' } %}
                                 {% endif %}
                                 {% if security_stats.owasp_2025.updated_at %}
                                     <br>
@@ -109,13 +101,9 @@
                                 <i class="bi bi-shield-check text-danger me-2" aria-hidden="true"></i>
                                 <strong>OWASP Top 10:2021</strong> (Legacy)
                                 {% if security_stats.owasp_2021.exists %}
-                                    <span class="badge bg-success ms-2">
-                                        <i class="bi bi-check-circle me-1" aria-hidden="true"></i>Verfügbar
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'Verfügbar', class: 'ms-2' } %}
                                 {% else %}
-                                    <span class="badge bg-warning ms-2">
-                                        <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>Nicht generiert
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'Nicht generiert', class: 'ms-2' } %}
                                 {% endif %}
                                 {% if security_stats.owasp_2021.updated_at %}
                                     <br>

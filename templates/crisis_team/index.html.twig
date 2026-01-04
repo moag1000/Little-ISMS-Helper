@@ -46,7 +46,7 @@
                     {% for team in crisis_teams %}
                         <tr class="{{ team.isActive ? '' : 'table-secondary' }}">
                             <td><strong>{{ team.teamName }}</strong></td>
-                            <td><span class="badge bg-primary">{{ ('crisis_team.type.' ~ team.teamType)|trans({}, 'crisis_team') }}</span></td>
+                            <td>{% include '_components/_badge.html.twig' with { variant: 'primary', content: ('crisis_team.type.' ~ team.teamType)|trans({}, 'crisis_team') } %}</td>
                             <td>{{ team.teamLeader ? team.teamLeader.email : 'not_assigned'|trans({}, 'messages') }}</td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">

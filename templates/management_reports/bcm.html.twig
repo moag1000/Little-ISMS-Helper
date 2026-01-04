@@ -168,11 +168,11 @@
                             <h5>{{ 'management_reports.bcm.rto_rpo_coverage'|trans({}, 'management_reports') }}</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span>{{ 'management_reports.bcm.processes_with_rto'|trans({}, 'management_reports') }}</span>
-                                <span class="badge bg-primary">{{ bia.rto_defined }} / {{ bia.total_processes }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'primary', content: bia.rto_defined ~ ' / ' ~ bia.total_processes } %}
                             </div>
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span>{{ 'management_reports.bcm.processes_with_rpo'|trans({}, 'management_reports') }}</span>
-                                <span class="badge bg-primary">{{ bia.rpo_defined }} / {{ bia.total_processes }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'primary', content: bia.rpo_defined ~ ' / ' ~ bia.total_processes } %}
                             </div>
                             <div class="progress mt-3" style="height: 25px;">
                                 <div class="progress-bar bg-success" style="width: {{ bia.coverage }}%">
@@ -232,15 +232,8 @@
                                 </a>
                             </td>
                             <td>
-                                {% if plan.status == 'active' or plan.status == 'approved' %}
-                                <span class="badge bg-success">{{ plan.status }}</span>
-                                {% elseif plan.status == 'draft' %}
-                                <span class="badge bg-warning text-dark">{{ plan.status }}</span>
-                                {% elseif plan.status == 'review' %}
-                                <span class="badge bg-info">{{ plan.status }}</span>
-                                {% else %}
-                                <span class="badge bg-secondary">{{ plan.status }}</span>
-                                {% endif %}
+                                {% set statusVariant = (plan.status == 'active' or plan.status == 'approved') ? 'success' : (plan.status == 'draft' ? 'warning' : (plan.status == 'review' ? 'info' : 'secondary')) %}
+                                {% include '_components/_badge.html.twig' with { variant: statusVariant, content: plan.status } %}
                             </td>
                             <td>{{ plan.lastReviewDate ? plan.lastReviewDate|date('Y-m-d') : '-' }}</td>
                             <td>{{ plan.nextReviewDate ? plan.nextReviewDate|date('Y-m-d') : '-' }}</td>

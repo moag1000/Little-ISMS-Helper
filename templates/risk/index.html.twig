@@ -313,7 +313,7 @@
                     {% endif %}
                 </td>
                 <td>
-                    <span class="badge bg-secondary">{{ risk.threat }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: risk.threat } %}
                 </td>
                 <td class="text-center">
                     <span class="{{ badge_score(risk.probability) }}">
@@ -342,7 +342,7 @@
                 </td>
                 <td>
                     {% if risk.treatmentStrategy %}
-                        <span class="badge bg-info">{{ ('risk.index.treatment.' ~ risk.treatmentStrategy)|trans({}, 'risk') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'info', content: ('risk.index.treatment.' ~ risk.treatmentStrategy)|trans({}, 'risk') } %}
                     {% else %}
                         <span class="text-muted">{{ 'risk.index.table.not_defined'|trans({}, 'risk') }}</span>
                     {% endif %}
@@ -365,7 +365,7 @@
                             <i class="bi bi-truck" aria-hidden="true"></i> {{ 'risk.index.table.supplier'|trans({}, 'risk') }}
                         </a>
                     {% else %}
-                        <span class="badge bg-secondary">{{ 'risk.index.table.none'|trans({}, 'risk') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'risk.index.table.none'|trans({}, 'risk') } %}
                     {% endif %}
                 </td>
                 <td class="text-center">

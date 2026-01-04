@@ -121,10 +121,10 @@
                                     <td>{{ user.email }}</td>
                                     <td>
                                         {% for role in user.roles %}
-                                            <span class="badge bg-secondary">{{ role }}</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: role } %}
                                         {% endfor %}
                                         {% for customRole in user.customRoles %}
-                                            <span class="badge bg-info">{{ customRole.name }}</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'info', content: customRole.name } %}
                                         {% endfor %}
                                     </td>
                                     <td>
@@ -138,16 +138,12 @@
                                     </td>
                                     <td>
                                         {% if user.isActive %}
-                                            <span class="badge bg-success">
-                                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'user.status.active'|trans({}, 'user') }}
-                                            </span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'user.status.active'|trans({}, 'user') } %}
                                         {% else %}
-                                            <span class="badge bg-danger">
-                                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'user.status.inactive'|trans({}, 'user') }}
-                                            </span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle', content: 'user.status.inactive'|trans({}, 'user') } %}
                                         {% endif %}
                                         {% if not user.isVerified %}
-                                            <span class="badge bg-warning">{{ 'user.status.not_verified'|trans({}, 'user') }}</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'user.status.not_verified'|trans({}, 'user') } %}
                                         {% endif %}
                                     </td>
                                     <td>

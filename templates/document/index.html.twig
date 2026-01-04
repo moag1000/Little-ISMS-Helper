@@ -271,7 +271,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <span class="badge bg-secondary">{{ document.category|capitalize }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: document.category|capitalize } %}
                         </td>
                         <td>
                             {{ document.fileSizeFormatted }}

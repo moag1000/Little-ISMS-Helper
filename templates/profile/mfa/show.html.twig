@@ -29,13 +29,7 @@
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'mfa.field.token_type'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
-                            <span class="badge bg-primary">
-                                {% if mfa_token.tokenType == 'totp' %}
-                                    <i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa.token_type.totp'|trans({}, 'mfa') }}
-                                {% elseif mfa_token.tokenType == 'webauthn' %}
-                                    <i class="bi bi-key" aria-hidden="true"></i> {{ 'mfa.token_type.webauthn'|trans({}, 'mfa') }}
-                                {% endif %}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: 'primary', icon: mfa_token.tokenType == 'totp' ? 'bi-phone' : 'bi-key', content: mfa_token.tokenType == 'totp' ? 'mfa.token_type.totp'|trans({}, 'mfa') : 'mfa.token_type.webauthn'|trans({}, 'mfa') } %}
                         </dd>
 
                         <dt class="col-sm-4">{{ 'mfa.field.device_name'|trans({}, 'mfa') }}</dt>
@@ -47,25 +41,16 @@
                         <dt class="col-sm-4">{{ 'mfa.field.status'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             {% if mfa_token.isActive %}
-                                <span class="badge bg-success">
-                                    <i class="bi bi-check-circle" aria-hidden="true"></i>
-                                    {{ 'mfa.status.active'|trans({}, 'mfa') }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'mfa.status.active'|trans({}, 'mfa') } %}
                             {% else %}
-                                <span class="badge bg-secondary">
-                                    <i class="bi bi-dash-circle" aria-hidden="true"></i>
-                                    {{ 'mfa.status.inactive'|trans({}, 'mfa') }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', icon: 'bi-dash-circle', content: 'mfa.status.inactive'|trans({}, 'mfa') } %}
                             {% endif %}
                         </dd>
 
                         <dt class="col-sm-4">{{ 'mfa.field.is_primary'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             {% if mfa_token.isPrimary %}
-                                <span class="badge bg-warning">
-                                    <i class="bi bi-star-fill" aria-hidden="true"></i>
-                                    {{ 'mfa.is_primary'|trans({}, 'mfa') }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-star-fill', content: 'mfa.is_primary'|trans({}, 'mfa') } %}
                             {% else %}
                                 <span class="text-muted">{{ 'common.no'|trans({}, 'messages') }}</span>
                             {% endif %}
@@ -102,7 +87,7 @@
 
                         <dt class="col-sm-4">{{ 'mfa.usage_count'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
-                            <span class="badge bg-info">{{ mfa_token.usageCount }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'info', content: mfa_token.usageCount } %}
                             {{ 'mfa.usage.times'|trans({}, 'mfa') }}
                         </dd>
 
@@ -112,9 +97,7 @@
                                 <i class="bi bi-calendar-x" aria-hidden="true"></i>
                                 {{ mfa_token.expiresAt|date('d.m.Y H:i:s') }}
                                 {% if mfa_token.isExpired %}
-                                    <span class="badge bg-danger ms-2">
-                                        {{ 'mfa.status.expired'|trans({}, 'mfa') }}
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'mfa.status.expired'|trans({}, 'mfa'), class: 'ms-2' } %}
                                 {% endif %}
                             </dd>
                         {% endif %}
@@ -135,9 +118,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
                                 <strong>{{ 'mfa.backup_codes.remaining'|trans({}, 'mfa') }}:</strong>
-                                <span class="badge bg-{{ remaining_backup_codes > 2 ? 'success' : (remaining_backup_codes > 0 ? 'warning' : 'danger') }}">
-                                    {{ remaining_backup_codes }} / 10
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: remaining_backup_codes > 2 ? 'success' : (remaining_backup_codes > 0 ? 'warning' : 'danger'), content: remaining_backup_codes ~ ' / 10' } %}
                             </div>
                             <form method="post" action="{{ path('app_profile_mfa_regenerate_backup', {id: mfa_token.id}) }}"
                                   data-controller="ui-actions"

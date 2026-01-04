@@ -11,9 +11,10 @@
 
             <dt class="col-sm-4">{{ 'risk.field.status'|trans({}, 'risk') }}:</dt>
             <dd class="col-sm-8">
-                <span class="badge bg-{{ risk.status == 'closed' ? 'success' : 'warning' }}">
-                    {{ ('risk.modern.status.' ~ risk.status)|trans({}, 'risk') }}
-                </span>
+                {% include '_components/_badge.html.twig' with {
+                    variant: risk.status == 'closed' ? 'success' : 'warning',
+                    content: ('risk.modern.status.' ~ risk.status)|trans({}, 'risk')
+                } %}
             </dd>
 
             {% if risk.asset %}
@@ -85,7 +86,10 @@
             {{ 'risk.section.treatment'|trans({}, 'risk') }}
         </h6>
         <div class="mb-2">
-            <span class="badge bg-primary">{{ ('risk.treatment_strategy.' ~ risk.treatmentStrategy)|trans({}, 'risk') }}</span>
+            {% include '_components/_badge.html.twig' with {
+                variant: 'primary',
+                content: ('risk.treatment_strategy.' ~ risk.treatmentStrategy)|trans({}, 'risk')
+            } %}
         </div>
         {% if risk.treatmentDescription %}
         <p class="mb-0 small text-muted">{{ risk.treatmentDescription }}</p>

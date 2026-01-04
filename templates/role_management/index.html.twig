@@ -64,9 +64,7 @@
             <td>
                 <strong>{{ role.name }}</strong>
                 {% if role.systemRole %}
-                    <span class="badge bg-info ml-xs">
-                        {{ 'role_management.badge.system'|trans({}, 'role_management') }}
-                    </span>
+                    {% include '_components/_badge.html.twig' with { variant: 'info', class: 'ml-xs', content: 'role_management.badge.system'|trans({}, 'role_management') } %}
                 {% endif %}
             </td>
             <td>
@@ -75,16 +73,16 @@
                 </small>
             </td>
             <td class="text-center">
-                <span class="badge bg-secondary">{{ role.permissions|length }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: role.permissions|length } %}
             </td>
             <td class="text-center">
-                <span class="badge bg-info">{{ role.users|length }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: role.users|length } %}
             </td>
             <td class="text-center">
                 {% if role.systemRole %}
-                    <span class="badge bg-info">{{ 'role_management.type.system'|trans({}, 'role_management') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'info', content: 'role_management.type.system'|trans({}, 'role_management') } %}
                 {% else %}
-                    <span class="badge bg-secondary">{{ 'role_management.type.custom'|trans({}, 'role_management') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'role_management.type.custom'|trans({}, 'role_management') } %}
                 {% endif %}
             </td>
             <td class="text-center">

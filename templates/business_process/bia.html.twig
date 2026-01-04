@@ -159,7 +159,7 @@
             <h3>Empfohlener Verfügbarkeitswert für unterstützende Assets</h3>
             <p class="lead">
                 Basierend auf RTO {{ bia_data.rto }}h wird empfohlen:
-                <span class="badge bg-primary fs-5">{{ bia_data.suggested_availability }}/5</span>
+{% include '_components/_badge.html.twig' with { variant: 'primary', class: 'fs-5', content: bia_data.suggested_availability ~ '/5' } %}
             </p>
             <small class="text-muted">
                 Dieser Wert sollte bei der Asset-Bewertung berücksichtigt werden, um die Konsistenz zwischen BIA und Asset Management sicherzustellen.

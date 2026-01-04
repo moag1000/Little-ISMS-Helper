@@ -142,9 +142,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <span class="badge bg-info">
-                                        <i class="bi bi-people" aria-hidden="true"></i> {{ item.userCount }}
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'bi-people', content: item.userCount } %}
                                 </td>
                                 <td>
                                     {% if tenant.azureTenantId %}
@@ -155,13 +153,9 @@
                                 </td>
                                 <td>
                                     {% if tenant.isActive %}
-                                        <span class="badge bg-success">
-                                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'tenant.status.active'|trans({}, 'tenant') }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'tenant.status.active'|trans({}, 'tenant') } %}
                                     {% else %}
-                                        <span class="badge bg-secondary">
-                                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans({}, 'tenant') }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', icon: 'bi-x-circle', content: 'tenant.status.inactive'|trans({}, 'tenant') } %}
                                     {% endif %}
                                 </td>
                                 <td>

@@ -201,9 +201,7 @@
                                         'subjects_notified': 'success',
                                         'closed': 'dark'
                                     }[breach.status] %}
-                                    <span class="badge bg-{{ status_class }}">
-                                        {{ breach.status|replace({'_': ' '})|upper }}
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: status_class, content: breach.status|replace({'_': ' '})|upper } %}
                                 </td>
                                 <td>
                                     {% if breach.riskLevel %}
@@ -213,9 +211,7 @@
                                             'high': 'warning',
                                             'critical': 'danger'
                                         }[breach.riskLevel] %}
-                                        <span class="badge bg-{{ risk_class }}">
-                                            {{ breach.riskLevel|upper }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: risk_class, content: breach.riskLevel|upper } %}
                                     {% else %}
                                         <span class="text-muted">-</span>
                                     {% endif %}
@@ -231,17 +227,11 @@
                                     {% if breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}
                                         {% set hours = breach.hoursUntilAuthorityDeadline %}
                                         {% if hours < 0 %}
-                                            <span class="badge bg-danger">
-                                                OVERDUE {{ (hours * -1)|number_format }}h
-                                            </span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'OVERDUE ' ~ (hours * -1)|number_format ~ 'h' } %}
                                         {% elseif hours < 24 %}
-                                            <span class="badge bg-warning text-dark">
-                                                {{ hours|number_format }}h left
-                                            </span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark', content: hours|number_format ~ 'h left' } %}
                                         {% else %}
-                                            <span class="badge bg-info">
-                                                {{ hours|number_format }}h left
-                                            </span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'info', content: hours|number_format ~ 'h left' } %}
                                         {% endif %}
                                     {% elseif breach.supervisoryAuthorityNotifiedAt %}
                                         <i class="bi bi-check-circle text-success" aria-hidden="true" title="{{ 'data_breach.notified_at'|trans({'%date%': breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i')}, 'privacy') }}"></i>

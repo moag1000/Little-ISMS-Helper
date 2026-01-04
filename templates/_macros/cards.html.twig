@@ -127,7 +127,10 @@
                 {{ title }}
             </h3>
             {% if badge_text %}
-                <span class="badge {{ badge_class|default('bg-secondary') }}">{{ badge_text }}</span>
+                {% include '_components/_badge.html.twig' with {
+                    variant: badge_class|default('bg-secondary')|replace({'bg-': ''}),
+                    content: badge_text
+                } %}
             {% endif %}
             {% if actions %}
                 <div class="widget-actions">

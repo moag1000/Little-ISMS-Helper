@@ -19,11 +19,13 @@
         </a>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h2 class="mb-0">Cross-Framework Mappings ({{ mappings|length }})</h2>
-        </div>
-        <div class="card-body p-0">
+    {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="mb-0">Cross-Framework Mappings ({{ mappings|length }})</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if mappings is empty %}
                 <div class="alert alert-info m-3">
                     <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.no_items_found'|trans({}, 'messages') }}.
@@ -58,9 +60,7 @@
                                 <strong>{{ mapping.targetRequirement.requirementId }}</strong>
                             </td>
                             <td>
-                                <span class="badge bg-{{ mapping.mappingBadgeClass }}">
-                                    {{ mapping.mappingType }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: mapping.mappingBadgeClass, content: mapping.mappingType } %}
                             </td>
                             <td>
                                 <div class="progress" style="width: 100px; height: 20px;">
@@ -72,12 +72,10 @@
                                 </div>
                             </td>
                             <td>
-                                <span class="badge bg-secondary">{{ mapping.confidence }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: mapping.confidence } %}
                             </td>
                             <td>
-                                <span class="badge bg-{{ mapping.reviewStatusBadgeClass }}">
-                                    {{ mapping.reviewStatus }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: mapping.reviewStatusBadgeClass, content: mapping.reviewStatus } %}
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
@@ -96,7 +94,7 @@
                 {% endblock %}
             {% endembed %}
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

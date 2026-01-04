@@ -25,9 +25,7 @@
                 'auditor': 'danger',
                 'consultant': 'info'
             } %}
-            <span class="badge bg-{{ typeColors[person.personType] ?? 'secondary' }}">
-                {{ ('person.type.' ~ person.personType)|trans({}, 'people') }}
-            </span>
+            {% include '_components/_badge.html.twig' with { variant: typeColors[person.personType]|default('secondary'), content: ('person.type.' ~ person.personType)|trans({}, 'people') } %}
             {% if person.badgeId %}
                 <code class="ml-sm">{{ person.badgeId }}</code>
             {% endif %}

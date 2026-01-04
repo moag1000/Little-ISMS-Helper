@@ -80,7 +80,7 @@
                                 <strong>{{ entity }}</strong>
                             </td>
                             <td class="text-end">
-                                <span class="badge bg-primary">{{ count }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'primary', content: count } %}
                             </td>
                         </tr>
                     {% endfor %}

@@ -79,7 +79,7 @@
                         <dd class="col-sm-6">{{ framework.updatedAt ? framework.updatedAt|date('d.m.Y H:i') : '-' }}</dd>
 
                         <dt class="col-sm-6">{{ 'compliance.framework.field.requirements'|trans({}, 'compliance') }}</dt>
-                        <dd class="col-sm-6"><span class="badge bg-info">{{ framework.requirements|length }}</span></dd>
+                        <dd class="col-sm-6">{% include '_components/_badge.html.twig' with { variant: 'info', content: framework.requirements|length } %}</dd>
                     </dl>
                 </div>
             </div>

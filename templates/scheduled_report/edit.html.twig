@@ -18,13 +18,11 @@
         <h1 class="h2 mb-0">
             <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'scheduled_report.edit.title'|trans({}, 'scheduled_reports') }}
         </h1>
-        <span class="badge {% if report.active %}bg-success{% else %}bg-secondary{% endif %} fs-6">
-            {% if report.active %}
-            {{ 'scheduled_report.status.active'|trans({}, 'scheduled_reports') }}
-            {% else %}
-            {{ 'scheduled_report.status.inactive'|trans({}, 'scheduled_reports') }}
-            {% endif %}
-        </span>
+        {% include '_components/_badge.html.twig' with {
+            variant: report.active ? 'success' : 'secondary',
+            size: 'lg',
+            content: report.active ? 'scheduled_report.status.active'|trans({}, 'scheduled_reports') : 'scheduled_report.status.inactive'|trans({}, 'scheduled_reports')
+        } %}
     </div>
 
     <div class="card shadow-sm">
@@ -132,9 +130,9 @@
                 <div class="col-md-4">
                     <strong>{{ 'scheduled_report.last_run.status'|trans({}, 'scheduled_reports') }}:</strong><br>
                     {% if report.lastRunStatus == 1 %}
-                    <span class="badge bg-success">{{ 'scheduled_report.last_run.success'|trans({}, 'scheduled_reports') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'scheduled_report.last_run.success'|trans({}, 'scheduled_reports') } %}
                     {% else %}
-                    <span class="badge bg-danger">{{ 'scheduled_report.last_run.failed'|trans({}, 'scheduled_reports') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'scheduled_report.last_run.failed'|trans({}, 'scheduled_reports') } %}
                     {% endif %}
                 </div>
                 <div class="col-md-4">

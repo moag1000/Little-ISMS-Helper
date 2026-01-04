@@ -116,10 +116,12 @@
                 {% if label %}
                     <div class="sla-label">
                         {{ label }}
-                        <span class="badge bg-{{ colorClass }} ms-2">
-                            <i class="bi {{ statusIcon }}" aria-hidden="true"></i>
-                            {{ statusText }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with {
+                            variant: colorClass,
+                            icon: statusIcon,
+                            class: 'ms-2',
+                            content: statusText
+                        } %}
                     </div>
                 {% endif %}
 
@@ -184,15 +186,17 @@
                             'rejected': 'danger',
                             'cancelled': 'secondary'
                         } %}
-                        <span class="badge bg-{{ statusColors[workflowInstance.status] ?? 'secondary' }}">
-                            {{ ('workflow.status.' ~ workflowInstance.status)|trans({}, 'workflows') }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with {
+                            variant: statusColors[workflowInstance.status] ?? 'secondary',
+                            content: ('workflow.status.' ~ workflowInstance.status)|trans({}, 'workflows')
+                        } %}
 
                         {% if isOverdue %}
-                            <span class="badge bg-danger">
-                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                                {{ 'workflow.badge.overdue'|trans({}, 'workflows') }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with {
+                                variant: 'danger',
+                                icon: 'bi-exclamation-triangle',
+                                content: 'workflow.badge.overdue'|trans({}, 'workflows')
+                            } %}
                         {% endif %}
                     </div>
 

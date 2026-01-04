@@ -17,7 +17,7 @@
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
                     <div class="card-header bg-primary text-white d-flex justify-content-between"><h1 class="mb-0 h2">{{ objective.title }}</h1>
-                        <span class="badge bg-{{ objective.status == 'achieved' ? 'success' : 'info' }} fs-6">{{ ('objective.status.' ~ objective.status)|trans({}, 'objective') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: objective.status == 'achieved' ? 'success' : 'info', class: 'fs-6', content: ('objective.status.' ~ objective.status)|trans({}, 'objective') } %}
                     </div>
                 {% endblock %}
                 {% block card_body %}

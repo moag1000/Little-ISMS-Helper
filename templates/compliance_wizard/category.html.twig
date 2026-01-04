@@ -40,13 +40,12 @@
                                 {% else %}text-danger{% endif %}">
                                 {{ category.score }}%
                             </div>
-                            <span class="badge
-                                {% if category.status == 'compliant' %}bg-success
-                                {% elseif category.status == 'partial' %}bg-warning text-dark
-                                {% elseif category.status == 'in_progress' %}bg-info
-                                {% else %}bg-danger{% endif %}">
-                                {{ ('wizard.status.' ~ category.status)|trans }}
-                            </span>
+                            {% set status_variant = {
+                                'compliant': 'success',
+                                'partial': 'warning',
+                                'in_progress': 'info'
+                            }[category.status]|default('danger') %}
+                            {% include '_components/_badge.html.twig' with { variant: status_variant, content: ('wizard.status.' ~ category.status)|trans } %}
                         </div>
                     </div>
                 </div>
@@ -125,7 +124,7 @@
                                     <div class="small bg-light p-2 rounded mt-1">
                                         {% for detailKey, detailValue in item.details %}
                                             {% if detailValue is not iterable %}
-                                                <span class="badge bg-secondary me-1">{{ detailKey }}: {{ detailValue }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'me-1', content: detailKey ~ ': ' ~ detailValue } %}
                                             {% endif %}
                                         {% endfor %}
                                     </div>
@@ -179,12 +178,11 @@
                     <div class="border rounded p-3 h-100 {% if gap.priority == 'critical' %}border-danger{% elseif gap.priority == 'high' %}border-warning{% else %}border-secondary{% endif %}">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <strong>{{ gap.title|trans({}, 'wizard') }}</strong>
-                            <span class="badge
-                                {% if gap.priority == 'critical' %}bg-danger
-                                {% elseif gap.priority == 'high' %}bg-warning text-dark
-                                {% else %}bg-secondary{% endif %}">
-                                {{ gap.priority|default('medium') }}
-                            </span>
+                            {% set priority_variant = {
+                                'critical': 'danger',
+                                'high': 'warning'
+                            }[gap.priority]|default('secondary') %}
+                            {% include '_components/_badge.html.twig' with { variant: priority_variant, content: gap.priority|default('medium') } %}
                         </div>
                         {% if gap.description is defined %}
                             <p class="text-muted small mb-2">{{ gap.description|trans({}, 'wizard') }}</p>

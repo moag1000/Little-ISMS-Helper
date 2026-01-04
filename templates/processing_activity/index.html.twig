@@ -116,7 +116,7 @@
         {% block card_header %}
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h2 class="mb-0 h5"><i class="bi bi-table" aria-hidden="true"></i> {{ 'processing_activity.table.title'|trans({}, 'privacy')}}</h2>
-                <span class="badge bg-secondary">{{ processing_activities|length }} {{ 'processing_activity.table.items'|trans({}, 'privacy')}}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: processing_activities|length ~ ' ' ~ 'processing_activity.table.items'|trans({}, 'privacy') } %}
             </div>
         {% endblock %}
         {% block card_body %}
@@ -142,13 +142,13 @@
                                     <strong>{{ pa.name }}</strong><br>
                                     <small class="text-muted">
                                         {% if pa.processesSpecialCategories %}
-                                            <span class="badge bg-danger">{{ 'processing_activity.badge.special_categories'|trans({}, 'privacy') }}</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'processing_activity.badge.special_categories'|trans({}, 'privacy') } %}
                                         {% endif %}
                                         {% if pa.hasThirdCountryTransfer %}
-                                            <span class="badge bg-warning">{{ 'processing_activity.badge.third_country'|trans({}, 'privacy') }}</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'processing_activity.badge.third_country'|trans({}, 'privacy') } %}
                                         {% endif %}
                                         {% if pa.requiresDPIA and not pa.dpiaCompleted %}
-                                            <span class="badge bg-danger">{{ 'processing_activity.badge.dpia_required'|trans({}, 'privacy') }}</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'processing_activity.badge.dpia_required'|trans({}, 'privacy') } %}
                                         {% endif %}
                                     </small>
                                 </td>
@@ -169,7 +169,7 @@
                                             'high': 'warning',
                                             'critical': 'danger'
                                         }[pa.riskLevel] %}
-                                        <span class="badge bg-{{ risk_class }}">{{ ('processing_activity.risk_level.' ~ pa.riskLevel)|trans({}, 'privacy') }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('processing_activity.risk_level.' ~ pa.riskLevel)|trans({}, 'privacy') } %}
                                     {% else %}
                                         <span class="text-muted">—</span>
                                     {% endif %}
@@ -180,7 +180,7 @@
                                         'active': 'success',
                                         'archived': 'dark'
                                     }[pa.status] %}
-                                    <span class="badge bg-{{ status_class }}">{{ ('processing_activity.status.' ~ pa.status)|trans({}, 'privacy') }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: status_class, content: ('processing_activity.status.' ~ pa.status)|trans({}, 'privacy') } %}
                                 </td>
                                 <td>
                                     <div class="progress" style="height: 20px;">

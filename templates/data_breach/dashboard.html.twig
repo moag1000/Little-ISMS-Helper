@@ -91,16 +91,16 @@
                             </div>
                             <p class="mb-1">
                                 {% if item.type == 'overdue_authority_notification' %}
-                                    <span class="badge bg-danger">OVERDUE</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'OVERDUE' } %}
                                     Supervisory authority notification exceeded 72-hour deadline by {{ item.hours_overdue|number_format }} hours.
                                 {% elseif item.type == 'pending_authority_notification' %}
-                                    <span class="badge bg-warning text-dark">URGENT</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark', content: 'URGENT' } %}
                                     {{ item.hours_remaining|number_format }} hours remaining until 72-hour deadline.
                                 {% elseif item.type == 'pending_subject_notification' %}
-                                    <span class="badge bg-info">PENDING</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: 'PENDING' } %}
                                     Data subject notification required (Art. 34).
                                 {% elseif item.type == 'incomplete' %}
-                                    <span class="badge bg-secondary">{{ item.completeness }}%</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: item.completeness ~ '%' } %}
                                     Data breach documentation incomplete.
                                 {% endif %}
                             </p>
@@ -237,12 +237,12 @@
                                         'subjects_notified': 'success',
                                         'closed': 'dark'
                                     }[breach.status] %}
-                                    <span class="badge bg-{{ status_class }}">{{ breach.status|replace({'_': ' '})|upper }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: status_class, content: breach.status|replace({'_': ' '})|upper } %}
                                 </td>
                                 <td>
                                     {% if breach.riskLevel %}
                                         {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.riskLevel] %}
-                                        <span class="badge bg-{{ risk_class }}">{{ breach.riskLevel|upper }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: risk_class, content: breach.riskLevel|upper } %}
                                     {% else %}
                                         <span class="text-muted">-</span>
                                     {% endif %}

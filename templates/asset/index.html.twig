@@ -256,7 +256,7 @@
                         <br><small class="text-muted">{{ asset.description|length > 60 ? asset.description|slice(0, 60) ~ '...' : asset.description }}</small>
                     {% endif %}
                 </td>
-                <td><span class="badge bg-secondary">{{ asset.assetType }}</span></td>
+                <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: asset.assetType } %}</td>
                 <td>{{ asset.owner }}</td>
                 <td class="text-center">
                     {% if asset.dataClassification %}
@@ -295,9 +295,7 @@
                     {% endif %}
                 </td>
                 <td class="text-center">
-                    <span class="badge {{ asset.status == 'active' ? 'bg-success' : 'bg-secondary' }}">
-                        {{ ('asset.status.' ~ asset.status)|trans({}, 'asset') }}
-                    </span>
+                    {% include '_components/_badge.html.twig' with { variant: asset.status == 'active' ? 'success' : 'secondary', content: ('asset.status.' ~ asset.status)|trans({}, 'asset') } %}
                 </td>
                 <td class="text-center">
                     <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'asset.aria.actions_for_asset'|trans({'%name%': asset.name}, 'asset') }}">

@@ -57,7 +57,7 @@
                         </div>
 
                         <div class="mt-3">
-                            <span class="badge bg-secondary">{{ template.permissions|length }} Berechtigungen</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: template.permissions|length ~ ' Berechtigungen' } %}
                         </div>
                     </div>
                     <div class="card-footer">

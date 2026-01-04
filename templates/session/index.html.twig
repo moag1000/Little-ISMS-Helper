@@ -138,9 +138,9 @@
                                 {% set minutes_ago = 'now'|date('U') - session.lastActivityAt.timestamp %}
                                 {% set minutes = (minutes_ago / 60)|round %}
                                 {% if minutes < 1 %}
-                                    <span class="badge bg-success">{{ 'session.status.active_now'|trans({}, 'session') }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'session.status.active_now'|trans({}, 'session') } %}
                                 {% elseif minutes < 5 %}
-                                    <span class="badge bg-info">{{ 'session.status.minutes_ago'|trans({'%minutes%': minutes}, 'session') }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: 'session.status.minutes_ago'|trans({'%minutes%': minutes}, 'session') } %}
                                 {% elseif minutes < 60 %}
                                     <span class="text-muted">{{ 'session.status.minutes_ago'|trans({'%minutes%': minutes}, 'session') }}</span>
                                 {% else %}
@@ -151,7 +151,7 @@
                                 <small class="text-muted">{{ session.createdAt|date('d.m.Y H:i') }}</small>
                             </td>
                             <td>
-                                <span class="badge bg-secondary">{{ session.formattedDuration }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: session.formattedDuration } %}
                             </td>
                             <td class="text-end">
                                 <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">

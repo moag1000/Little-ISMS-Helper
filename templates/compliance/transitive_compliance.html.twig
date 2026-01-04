@@ -177,9 +177,7 @@
                                         {% set mapping = mapping_matrix[sourceFramework.id][targetFramework.id] ?? null %}
                                         {% if mapping and mapping.coverage > 0 %}
                                             {% set percentage = mapping.coverage|round %}
-                                            <span class="badge badge-lg bg-{% if percentage >= 75 %}success{% elseif percentage >= 50 %}warning{% else %}danger{% endif %}">
-                                                {{ percentage }}%
-                                            </span>
+                                            {% include '_components/_badge.html.twig' with { variant: percentage >= 75 ? 'success' : (percentage >= 50 ? 'warning' : 'danger'), content: percentage ~ '%', class: 'badge-lg' } %}
                                         {% else %}
                                             <span class="badge-matrix-zero">
                                                 0%

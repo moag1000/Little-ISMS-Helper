@@ -16,9 +16,7 @@
         <h1>
             {{ risk.title }}
             {% if isInherited is defined and isInherited %}
-                <span class="badge bg-info ms-2">
-                    <i class="bi bi-building" aria-hidden="true"></i> {{ 'corporate.inherited'|trans({}, 'tenant') }}
-                </span>
+                {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'bi-building', class: 'ms-2', content: 'corporate.inherited'|trans({}, 'tenant') } %}
             {% endif %}
         </h1>
         <div class="actions">
@@ -186,7 +184,7 @@
                     <h3>
                         <i class="bi bi-bullseye" aria-hidden="true"></i>
                         {{ 'risk.section.risk_subject'|trans({}, 'risk') }}
-                        <span class="badge bg-secondary ms-2">{{ risk.riskSubjectType|upper }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'ms-2', content: risk.riskSubjectType|upper } %}
                     </h3>
 
                     {% if risk.asset %}

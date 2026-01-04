@@ -179,9 +179,7 @@
                         'active': 'success',
                         'revoked': 'danger'
                     } %}
-                    <span class="badge bg-{{ statusColors[consent.status] ?? 'secondary' }}">
-                        {{ ('consent.status.' ~ consent.status)|trans({}, 'consent') }}
-                    </span>
+                    {% include '_components/_badge.html.twig' with { variant: statusColors[consent.status] ?? 'secondary', content: ('consent.status.' ~ consent.status)|trans({}, 'consent') } %}
                 </td>
                 <td>
                     {{ consent.grantedAt|date('d.m.Y H:i') }}
@@ -198,9 +196,7 @@
                 </td>
                 <td class="text-center">
                     {% if consent.verifiedBy %}
-                        <span class="badge bg-success" title="{{ 'consent.verified_by'|trans({}, 'consent') }}">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'common.yes'|trans({}, 'messages') }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', title: 'consent.verified_by'|trans({}, 'consent'), content: 'common.yes'|trans({}, 'messages') } %}
                     {% else %}
                         <span class="text-muted">{{ 'common.no'|trans({}, 'messages') }}</span>
                     {% endif %}

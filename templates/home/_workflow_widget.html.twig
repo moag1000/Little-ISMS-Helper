@@ -26,7 +26,7 @@
             {{ 'workflow.widget.title'|trans({}, 'workflows') }}
         </h3>
         {% if total_pending > 0 %}
-            <span class="badge bg-primary">{{ total_pending }}</span>
+            {% include '_components/_badge.html.twig' with { variant: 'primary', content: total_pending } %}
         {% endif %}
     </div>
 
@@ -92,8 +92,8 @@
                                     <div class="small mb-2">
                                         <i class="bi bi-person-badge" aria-hidden="true"></i>
                                         <span class="text-muted">{{ 'workflow.field.assignee'|trans({}, 'workflows') }}:</span>
-                                        <span class="badge bg-info-subtle text-info">{{ currentStep.approverRole }}</span>
-                                        <span class="badge bg-primary">{{ 'workflow.badge.my_task'|trans({}, 'workflows') }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'info-subtle', class: 'text-info', content: currentStep.approverRole } %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'primary', content: 'workflow.badge.my_task'|trans({}, 'workflows') } %}
                                     </div>
                                 {% endif %}
 

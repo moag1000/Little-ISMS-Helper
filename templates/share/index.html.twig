@@ -94,7 +94,7 @@
                                         <small class="text-muted">{{ action.description|trans({}, 'messages') }}</small>
                                     </div>
                                     {% if action.id == shareContext.suggestedAction %}
-                                    <span class="badge bg-success ms-auto">{{ 'share.suggested'|trans({}, 'messages') }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', class: 'ms-auto', content: 'share.suggested'|trans({}, 'messages') } %}
                                     {% endif %}
                                 </div>
                             </button>

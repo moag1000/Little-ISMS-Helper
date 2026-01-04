@@ -177,7 +177,7 @@
                         'subjects_notified': 'success',
                         'closed': 'secondary'
                     }[breach.status] %}
-                    <span class="badge bg-{{ status_class }}">{{ breach.status|replace({'_': ' '})|upper }}</span>
+                    <span class="badge badge-{{ status_class }}">{{ breach.status|replace({'_': ' '})|upper }}</span>
                 </td>
             </tr>
             <tr>
@@ -185,7 +185,7 @@
                 <td>
                     {% if breach.riskLevel %}
                         {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.riskLevel] %}
-                        <span class="badge bg-{{ risk_class }}">{{ breach.riskLevel|upper }}</span>
+                        <span class="badge badge-{{ risk_class }}">{{ breach.riskLevel|upper }}</span>
                     {% else %}
                         Not assessed
                     {% endif %}
@@ -249,7 +249,7 @@
         <p><strong>Security Incident:</strong> {{ breach.incident.referenceNumber }} - {{ breach.incident.title }}</p>
         <p><strong>Incident Severity:</strong>
             {% set sev_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.incident.severity] %}
-            <span class="badge bg-{{ sev_class }}">{{ breach.incident.severity|upper }}</span>
+            <span class="badge badge-{{ sev_class }}">{{ breach.incident.severity|upper }}</span>
         </p>
         {% if breach.processingActivity %}
             <p><strong>Processing Activity (VVT - Art. 30):</strong> {{ breach.processingActivity.name }}</p>
@@ -335,7 +335,7 @@
             {% if breach.riskLevel %}
                 <p><strong>Risk Level:</strong>
                     {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.riskLevel] %}
-                    <span class="badge bg-{{ risk_class }}">{{ breach.riskLevel|upper }}</span>
+                    <span class="badge badge-{{ risk_class }}">{{ breach.riskLevel|upper }}</span>
                 </p>
             {% endif %}
             {% if breach.riskAssessment %}

@@ -28,42 +28,42 @@
     <div class="row">
         <div class="col-md-8">
             {# Mapping Overview #}
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0">Mapping Overview</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0">Mapping Overview</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row">
                         <div class="col-md-5">
                             <p class="fw-bold text-muted">Source Requirement</p>
-                            <div class="card">
-                                <div class="card-body">
-                                    <span class="badge bg-secondary mb-2">{{ mapping.sourceRequirement.framework.code }}</span>
+                            {% embed '_components/_card.html.twig' %}
+                                {% block card_body %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: mapping.sourceRequirement.framework.code, class: 'mb-2' } %}
                                     <p class="fw-bold fs-5">{{ mapping.sourceRequirement.requirementId }}</p>
                                     <p>{{ mapping.sourceRequirement.title }}</p>
                                     <small class="text-muted">{{ mapping.sourceRequirement.description|u.truncate(150, '...') }}</small>
-                                </div>
-                            </div>
+                                {% endblock %}
+                            {% endembed %}
                         </div>
                         <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
                             <div>
                                 <i class="bi bi-arrow-right fs-1 text-primary" aria-hidden="true"></i>
                                 <br>
-                                <span class="badge bg-{{ mapping.mappingBadgeClass }} mt-2">
-                                    {{ mapping.finalPercentage }}%
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: mapping.mappingBadgeClass, content: mapping.finalPercentage ~ '%', class: 'mt-2' } %}
                             </div>
                         </div>
                         <div class="col-md-5">
                             <p class="fw-bold text-muted">Target Requirement</p>
-                            <div class="card">
-                                <div class="card-body">
-                                    <span class="badge bg-secondary mb-2">{{ mapping.targetRequirement.framework.code }}</span>
+                            {% embed '_components/_card.html.twig' %}
+                                {% block card_body %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: mapping.targetRequirement.framework.code, class: 'mb-2' } %}
                                     <p class="fw-bold fs-5">{{ mapping.targetRequirement.requirementId }}</p>
                                     <p>{{ mapping.targetRequirement.title }}</p>
                                     <small class="text-muted">{{ mapping.targetRequirement.description|u.truncate(150, '...') }}</small>
-                                </div>
-                            </div>
+                                {% endblock %}
+                            {% endembed %}
                         </div>
                     </div>
 
@@ -72,18 +72,18 @@
                     <div class="row">
                         <div class="col-md-4">
                             <strong>Mapping Type:</strong>
-                            <span class="badge bg-{{ mapping.mappingBadgeClass }}">{{ mapping.mappingType }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: mapping.mappingBadgeClass, content: mapping.mappingType } %}
                         </div>
                         <div class="col-md-4">
                             <strong>Confidence:</strong>
-                            <span class="badge bg-secondary">{{ mapping.confidence }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: mapping.confidence } %}
                         </div>
                         <div class="col-md-4">
                             <strong>Bidirectional:</strong>
                             {% if mapping.bidirectional %}
-                                <span class="badge bg-success">Yes</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Yes' } %}
                             {% else %}
-                                <span class="badge bg-secondary">No</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'No' } %}
                             {% endif %}
                         </div>
                     </div>
@@ -93,16 +93,18 @@
                         <p class="fw-bold">Mapping Rationale</p>
                         <p class="text-muted">{{ mapping.mappingRationale }}</p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Analysis Results #}
             {% if mapping.isAnalyzed %}
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h2 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> Quality Analysis</h2>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> Quality Analysis</h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         <div class="row">
                             <div class="col-md-3">
                                 <strong>Calculated %:</strong><br>
@@ -121,61 +123,65 @@
                                 <span class="h4">{{ mapping.qualityScore|default('-') }}</span>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
 
             {# Gap Items #}
             {% if mapping.gapItems|length > 0 %}
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h3 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Gap Items ({{ mapping.gapItems|length }})</h3>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h3 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Gap Items ({{ mapping.gapItems|length }})</h3>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         <ul class="list-group">
                             {% for gap in mapping.gapItems %}
                                 <li class="list-group-item">
                                     <div class="d-flex justify-content-between">
                                         <strong>{{ gap.gapType }}</strong>
-                                        <span class="badge bg-{{ gap.status == 'resolved' ? 'success' : 'warning' }}">
-                                            {{ gap.status }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: gap.status == 'resolved' ? 'success' : 'warning', content: gap.status } %}
                                     </div>
                                     <p class="mb-1 small">{{ gap.description }}</p>
                                     <small class="text-muted">Impact: {{ gap.percentageImpact }}%</small>
                                 </li>
                             {% endfor %}
                         </ul>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         </div>
 
         <div class="col-md-4">
             {# Transitive Compliance #}
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="mb-0">Transitive Fulfillment</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="mb-0">Transitive Fulfillment</h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p class="text-muted small">
                         If the source requirement is fulfilled, it contributes this much to the target:
                     </p>
                     <div class="text-center">
                         <h2 class="text-primary">{{ transitive_fulfillment }}%</h2>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Review Status #}
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="mb-0">Review Status</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="mb-0">Review Status</h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p>
                         <strong>Status:</strong>
-                        <span class="badge bg-{{ mapping.reviewStatusBadgeClass }}">{{ mapping.reviewStatus }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: mapping.reviewStatusBadgeClass, content: mapping.reviewStatus } %}
                     </p>
                     {% if mapping.reviewedBy %}
                         <p><strong>Reviewed By:</strong> {{ mapping.reviewedBy }}</p>
@@ -194,14 +200,15 @@
                             <i class="bi bi-graph-up-arrow" aria-hidden="true"></i> Run Analysis
                         </button>
                     </form>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Metadata #}
-            <div class="card mb-4">
-                <div class="card-header"><h5 class="mb-0">Metadata</h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header"><h5 class="mb-0">Metadata</h5></div>
+                {% endblock %}
+                {% block card_body %}
                     <p><small><strong>Verified By:</strong> {{ mapping.verifiedBy|default('-') }}</small></p>
                     <p><small><strong>Verification Date:</strong>
                         {% if mapping.verificationDate %}
@@ -215,14 +222,15 @@
                     {% if mapping.updatedAt %}
                         <p><small><strong>Updated:</strong> {{ mapping.updatedAt|date('Y-m-d H:i') }}</small></p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Delete #}
-            <div class="card border-danger">
-                <div class="card-header bg-danger text-white"><h5 class="mb-0">Danger Zone</h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-danger' } %}
+                {% block card_header %}
+                    <div class="card-header bg-danger text-white"><h5 class="mb-0">Danger Zone</h5></div>
+                {% endblock %}
+                {% block card_body %}
                     <form method="post" action="{{ path('app_compliance_mapping_delete', {id: mapping.id}) }}"
                           data-controller="ui-actions"
                           data-action="submit->ui-actions#confirm"
@@ -232,8 +240,8 @@
                             <i class="bi bi-trash" aria-hidden="true"></i> {{ 'compliance.action.delete_mapping'|trans({}, 'compliance') }}
                         </button>
                     </form>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

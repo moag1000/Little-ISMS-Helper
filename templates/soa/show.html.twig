@@ -46,11 +46,10 @@
         <div class="stat-item">
             <strong class="fs-4">
                 {% if control.applicable %}
-                    <span class="badge bg-success fs-12">✓ {{ 'soa.value.yes'|trans({}, 'soa') }}
-                        <span class="visually-hidden">{{ 'soa.table.applicable'|trans({}, 'soa') }}</span>
-                    </span>
+                    {% include '_components/_badge.html.twig' with { variant: 'success', size: 'lg', content: '✓ ' ~ 'soa.value.yes'|trans({}, 'soa') } %}
+                    <span class="visually-hidden">{{ 'soa.table.applicable'|trans({}, 'soa') }}</span>
                 {% else %}
-                    <span class="badge badge-neutral-lg">✗ {{ 'soa.status.not_applicable'|trans({}, 'soa') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', size: 'lg', class: 'badge-neutral-lg', content: '✗ ' ~ 'soa.status.not_applicable'|trans({}, 'soa') } %}
                 {% endif %}
             </strong>
             <span>{{ 'soa.field.applicable'|trans({}, 'soa') }}</span>
@@ -60,13 +59,13 @@
         <div class="stat-item">
             <strong class="fs-4">
                 {% if control.implementationStatus == 'implemented' %}
-                    <span class="badge bg-success fs-12"<><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'soa.status.implemented'|trans({}, 'soa') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'success', size: 'lg', icon: 'bi-check-circle', content: 'soa.status.implemented'|trans({}, 'soa') } %}
                 {% elseif control.implementationStatus == 'in_progress' %}
-                    <span class="badge bg-warning fs-12"<><i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'soa.status.in_progress'|trans({}, 'soa') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'warning', size: 'lg', icon: 'bi-arrow-clockwise', content: 'soa.status.in_progress'|trans({}, 'soa') } %}
                 {% elseif control.implementationStatus == 'not_started' %}
-                    <span class="badge bg-danger fs-12"><i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'soa.status.not_started'|trans({}, 'soa') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', size: 'lg', icon: 'bi-pause-circle', content: 'soa.status.not_started'|trans({}, 'soa') } %}
                 {% else %}
-                    <span class="badge badge-neutral-lg">{{ 'soa.value.na'|trans({}, 'soa') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', size: 'lg', class: 'badge-neutral-lg', content: 'soa.value.na'|trans({}, 'soa') } %}
                 {% endif %}
             </strong>
             <span>{{ 'soa.table.implementation_status'|trans({}, 'soa') }}</span>

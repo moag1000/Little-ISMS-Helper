@@ -140,11 +140,13 @@
 
     {# Module Dependencies - NEW! #}
     {% if framework.requiredModules|length > 0 %}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3>🔧 {{ 'compliance.required_modules'|trans({}, 'compliance') }}</h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h3>🔧 {{ 'compliance.required_modules'|trans({}, 'compliance') }}</h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <p class="text-muted mb-3">
                 {{ 'compliance.dashboard.modules_required_hint'|trans({}, 'compliance') }}
             </p>
@@ -177,8 +179,8 @@
                     {% endif %}
                 {% endfor %}
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Next Action Recommendation - NEW! #}
@@ -264,11 +266,13 @@
 
         {# Tab: Overview #}
         <div class="tab-content active" data-tab-content="overview">
-            <div class="card">
-                <div class="card-header">
-                    <h3>{{ 'compliance.framework_info'|trans({}, 'compliance') }}</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3>{{ 'compliance.framework_info'|trans({}, 'compliance') }}</h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="info-grid">
                         <div class="info-item">
                             <span class="label">{{ 'compliance.label.code'|trans({}, 'compliance') }}:</span>
@@ -290,29 +294,29 @@
                             <span class="label">{{ 'compliance.mandatory'|trans({}, 'compliance') }}:</span>
                             <span class="value">
                                 {% if framework.mandatory %}
-                                    <span class="badge bg-danger">{{ 'compliance.label.yes'|trans({}, 'compliance') }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'compliance.label.yes'|trans({}, 'compliance') } %}
                                 {% else %}
-                                    <span class="badge bg-success">{{ 'compliance.label.no'|trans({}, 'compliance') }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'compliance.label.no'|trans({}, 'compliance') } %}
                                 {% endif %}
                             </span>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Recommendations - Only if there are any #}
             {% if dashboard.recommendations is not empty %}
-                <div class="card">
-                    <div class="card-header">
-                        <h3>{{ 'compliance.recommendations'|trans({}, 'compliance') }}</h3>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h3>{{ 'compliance.recommendations'|trans({}, 'compliance') }}</h3>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         {% for recommendation in dashboard.recommendations %}
                             <div class="recommendation-item priority-{{ recommendation.priority }}">
                                 <div class="recommendation-header">
-                                    <span class="badge bg-{{ recommendation.priority == 'high' ? 'danger' : (recommendation.priority == 'medium' ? 'warning' : 'info') }}">
-                                        {{ recommendation.priority|upper }}
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: recommendation.priority == 'high' ? 'danger' : (recommendation.priority == 'medium' ? 'warning' : 'info'), content: recommendation.priority|upper } %}
                                     <strong>{{ recommendation.title }}</strong>
                                 </div>
                                 <p>{{ recommendation.description }}</p>
@@ -321,22 +325,25 @@
                                 </div>
                             </div>
                         {% endfor %}
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         </div>
 
         {# Tab: Requirements - Grouped by Type #}
         <div class="tab-content" data-tab-content="requirements">
-            <div class="card">
-                <div class="card-header">
-                    <h3>{{ 'compliance.tab.requirements'|trans({}, 'compliance') }}</h3>
-                    <div class="filter-toggle">
-                        <button class="btn btn-sm btn-secondary" data-action="click->toggle#toggleFilter">
-                            {{ 'compliance.filter'|trans({}, 'compliance') }}
-                        </button>
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3>{{ 'compliance.tab.requirements'|trans({}, 'compliance') }}</h3>
+                        <div class="filter-toggle">
+                            <button class="btn btn-sm btn-secondary" data-action="click->toggle#toggleFilter">
+                                {{ 'compliance.filter'|trans({}, 'compliance') }}
+                            </button>
+                        </div>
                     </div>
-                </div>
+                {% endblock %}
+                {% block card_body %}
 
                 {# Filter Panel - Hidden by Default #}
                 <div class="filter-panel d-none" data-toggle-target="filterPanel">
@@ -366,15 +373,11 @@
                                     <span class="requirement-id">{{ requirement.requirementId }}</span>
                                     <span class="requirement-title">{{ requirement.title }}</span>
                                     {% if requirement.hasDetailedRequirements() %}
-                                        <span class="badge bg-info">
-                                            {{ requirement.detailedRequirements|length }} Details
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'info', content: requirement.detailedRequirements|length ~ ' Details' } %}
                                     {% endif %}
                                 </div>
                                 <div class="requirement-status">
-                                    <span class="badge bg-{{ requirement.priority == 'critical' ? 'danger' : (requirement.priority == 'high' ? 'warning' : 'secondary') }}">
-                                        {{ requirement.priority|upper }}
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: requirement.priority == 'critical' ? 'danger' : (requirement.priority == 'high' ? 'warning' : 'secondary'), content: requirement.priority|upper } %}
                                     {% set fulfillment = fulfillments[requirement.id] %}
                                     <div class="progress-mini">
                                         <div class="progress-fill" style="width: {{ fulfillment.fulfillmentPercentage }}%; background: {{ fulfillment.fulfillmentPercentage >= 75 ? 'var(--color-success)' : (fulfillment.fulfillmentPercentage >= 50 ? 'var(--color-warning)' : 'var(--color-danger)') }};"></div>
@@ -411,16 +414,19 @@
                         </div>
                     {% endfor %}
                 </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Tab: Gaps - Only show critical information #}
         <div class="tab-content" data-tab-content="gaps">
-            <div class="card">
-                <div class="card-header">
-                    <h3>{{ 'compliance.gaps.title'|trans({}, 'compliance') }}</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3>{{ 'compliance.gaps.title'|trans({}, 'compliance') }}</h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if dashboard.gaps.total > 0 %}
                         {% for gap in dashboard.gaps.list %}
                             <div class="gap-item priority-{{ gap.priority }}">
@@ -429,9 +435,7 @@
                                         <span class="requirement-id">{{ gap.requirementId }}</span>
                                         <strong>{{ gap.title }}</strong>
                                     </div>
-                                    <span class="badge bg-{{ gap.priority == 'critical' ? 'danger' : 'warning' }}">
-                                        {{ gap.priority|upper }}
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: gap.priority == 'critical' ? 'danger' : 'warning', content: gap.priority|upper } %}
                                 </div>
                                 <div class="gap-progress">
                                     {% set gapFulfillment = fulfillments[gap.id] %}
@@ -450,17 +454,19 @@
                             <p class="text-muted">{{ 'compliance.gaps.none_description'|trans({}, 'compliance') }}</p>
                         </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Tab: Data Reuse #}
         <div class="tab-content" data-tab-content="data-reuse">
-            <div class="card">
-                <div class="card-header">
-                    <h3>{{ 'compliance.tab.data_reuse'|trans({}, 'compliance') }}</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3>{{ 'compliance.tab.data_reuse'|trans({}, 'compliance') }}</h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="value-highlight">
                         <div class="value-icon">💎</div>
                         <div class="value-content">
@@ -471,8 +477,8 @@
                     <a href="{{ path('app_compliance_data_reuse', {id: framework.id}) }}" class="btn btn-primary">
                         {{ 'compliance.data_reuse.show_details'|trans({}, 'compliance') }} →
                     </a>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

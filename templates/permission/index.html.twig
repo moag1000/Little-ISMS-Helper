@@ -70,7 +70,7 @@
             <div class="card-header bg-primary text-white">
                 <h2 class="mb-0">
                     <i class="bi bi-folder" aria-hidden="true"></i> {{ category|title }}
-                    <span class="badge bg-light text-dark">{{ permissions|length }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'light', content: permissions|length, class: 'text-dark' } %}
                 </h2>
             </div>
             <div class="card-body">
@@ -92,9 +92,9 @@
                                 <td>{{ permission.description }}</td>
                                 <td class="text-center">
                                     {% if permission.isSystemPermission %}
-                                        <span class="badge bg-info">System</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'info', content: 'System' } %}
                                     {% else %}
-                                        <span class="badge bg-secondary">Custom</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Custom' } %}
                                     {% endif %}
                                 </td>
                                 <td class="text-end">

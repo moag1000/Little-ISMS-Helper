@@ -24,7 +24,7 @@
                         <i class="{{ config.icon }} fs-2 text-{{ config.color }} me-3"></i>
                         <div>
                             <h1 class="h3 mb-0">{{ config.name }}</h1>
-                            <span class="badge bg-{{ config.color }}">{{ config.code }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: config.color, content: config.code } %}
                         </div>
                     </div>
                 </div>
@@ -45,9 +45,9 @@
                                 <div>
                                     <strong>{{ category.name|trans }}</strong>
                                     {% if category.clause is defined %}
-                                        <span class="badge bg-secondary ms-1">{{ category.clause }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'ms-1', content: category.clause } %}
                                     {% elseif category.article is defined %}
-                                        <span class="badge bg-secondary ms-1">Art. {{ category.article }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'ms-1', content: 'Art. ' ~ category.article } %}
                                     {% endif %}
                                     <br>
                                     <small class="text-muted">{{ category.checks|length }} {{ 'wizard.checks'|trans }}</small>
@@ -101,9 +101,7 @@
                 <div class="card-body">
                     <p class="small text-muted mb-3">{{ 'wizard.data_sources_info'|trans }}</p>
                     {% for mod in active_modules %}
-                        <span class="badge bg-success me-1 mb-1">
-                            <i class="bi bi-check-circle me-1" aria-hidden="true"></i>{{ mod }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: 'success', class: 'me-1 mb-1', icon: 'bi-check-circle', content: mod } %}
                     {% endfor %}
                 </div>
             </div>

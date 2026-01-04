@@ -100,11 +100,7 @@
                                     <td>{{ framework.name }}</td>
                                     <td><code>{{ framework.code }}</code></td>
                                     <td>
-                                        {% if framework.active %}
-                                        <span class="badge bg-success">{{ 'management_reports.compliance.active'|trans({}, 'management_reports') }}</span>
-                                        {% else %}
-                                        <span class="badge bg-secondary">{{ 'management_reports.compliance.inactive'|trans({}, 'management_reports') }}</span>
-                                        {% endif %}
+                                        {% include '_components/_badge.html.twig' with { variant: framework.active ? 'success' : 'secondary', content: framework.active ? 'management_reports.compliance.active'|trans({}, 'management_reports') : 'management_reports.compliance.inactive'|trans({}, 'management_reports') } %}
                                     </td>
                                 </tr>
                                 {% endfor %}

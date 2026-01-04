@@ -33,7 +33,7 @@
                 <div class="card-header bg-warning">
                     <div class="d-flex justify-content-between align-items-center">
                         <h2 class="mb-0">{{ 'mfa.backup_codes.codes'|trans({}, 'mfa') }}</h2>
-                        <span class="badge bg-dark">{{ backup_codes|length }} {{ 'mfa.backup_codes.codes_count'|trans({}, 'mfa') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'dark', content: backup_codes|length ~ ' ' ~ 'mfa.backup_codes.codes_count'|trans({}, 'mfa') } %}
                     </div>
                 </div>
                 <div class="card-body">
@@ -58,7 +58,7 @@
                             {% for code in backup_codes %}
                                 <div class="col-md-6 mb-2">
                                     <div class="bg-light p-3 rounded border">
-                                        <span class="badge bg-secondary me-2">{{ loop.index }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: loop.index, class: 'me-2' } %}
                                         <span class="font-monospace fw-bold">{{ code }}</span>
                                     </div>
                                 </div>

@@ -40,7 +40,7 @@
                             'rejected': 'danger',
                             'requires_revision': 'warning'
                         }[dpia.status] %}
-                        <span class="badge bg-{{ status_class }}">{{ ('dpia.status.' ~ dpia.status)|trans({}, 'privacy') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: status_class, content: ('dpia.status.' ~ dpia.status)|trans({}, 'privacy') } %}
                     </p>
                     <p><strong>{{ 'dpia.index.completeness'|trans({}, 'privacy') }}:</strong> {{ dpia.completenessPercentage }}%</p>
                     {% if dpia.conductor %}
@@ -130,13 +130,13 @@
                     {% if dpia.riskLevel %}
                         <p><strong>{{ 'dpia.show.field.initial_risk'|trans({}, 'privacy') }}:</strong>
                             {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[dpia.riskLevel] %}
-                            <span class="badge bg-{{ risk_class }}">{{ ('dpia.risk_level.' ~ dpia.riskLevel)|trans({}, 'privacy') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('dpia.risk_level.' ~ dpia.riskLevel)|trans({}, 'privacy') } %}
                         </p>
                     {% endif %}
                     {% if dpia.residualRiskLevel %}
                         <p><strong>{{ 'dpia.index.residual_risk'|trans({}, 'privacy') }}:</strong>
                             {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[dpia.residualRiskLevel] %}
-                            <span class="badge bg-{{ risk_class }}">{{ ('dpia.risk_level.' ~ dpia.residualRiskLevel)|trans({}, 'privacy') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('dpia.risk_level.' ~ dpia.residualRiskLevel)|trans({}, 'privacy') } %}
                         </p>
                         {% if dpia.isResidualRiskAcceptable %}
                             <p class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'dpia.show.risk.acceptable'|trans({}, 'privacy') }}</p>

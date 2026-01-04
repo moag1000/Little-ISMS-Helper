@@ -47,11 +47,13 @@
     {# Statistics Cards #}
     <div class="row mb-4">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="mb-0">📊 Gaps nach Typ</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0">📊 Gaps nach Typ</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if gap_stats_by_type is empty %}
                         <p class="text-muted">Keine Gap-Daten verfügbar</p>
                     {% else %}
@@ -80,16 +82,18 @@
                         </div>
                         {% endfor %}
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="mb-0">⚡ Gaps nach Priorität</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0">⚡ Gaps nach Priorität</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if gap_stats_by_priority is empty %}
                         <p class="text-muted">Keine Gap-Daten verfügbar</p>
                     {% else %}
@@ -118,18 +122,20 @@
                         </div>
                         {% endfor %}
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# High Priority Gaps #}
     {% if high_priority_gaps is not empty %}
-    <div class="card mb-4">
-        <div class="card-header bg-danger text-white">
-            <h3 class="mb-0">🔥 Critical & High Priority Gaps ({{ high_priority_gaps|length }})</h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-danger text-white">
+                <h3 class="mb-0">🔥 Critical & High Priority Gaps ({{ high_priority_gaps|length }})</h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover',
                 'noMargin': true,
@@ -159,23 +165,19 @@
                             </small>
                         </td>
                         <td>
-                            <span class="badge bg-light">{{ gap.gapTypeLabel }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'light', content: gap.gapTypeLabel } %}
                         </td>
                         <td>
-                            <span class="badge bg-{{ gap.priorityBadgeClass }}">
-                                {{ gap.priority|upper }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: gap.priorityBadgeClass, content: gap.priority|upper } %}
                         </td>
                         <td>
-                            <span class="badge bg-danger">-{{ gap.percentageImpact }}%</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: '-' ~ gap.percentageImpact ~ '%' } %}
                         </td>
                         <td>
-                            <span class="badge bg-info">{{ gap.estimatedEffort }}h</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'info', content: gap.estimatedEffort ~ 'h' } %}
                         </td>
                         <td>
-                            <span class="badge bg-{{ gap.statusBadgeClass }}">
-                                {{ gap.status }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: gap.statusBadgeClass, content: gap.status } %}
                         </td>
                         <td>
                             <a href="{{ path('app_mapping_quality_review', {id: gap.mapping.id}) }}" class="btn btn-sm btn-primary">
@@ -189,17 +191,19 @@
             {% if high_priority_gaps|length > 20 %}
                 <p class="text-muted text-center mb-0">... und {{ high_priority_gaps|length - 20 }} weitere</p>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Low Confidence Gaps #}
     {% if low_confidence_gaps is not empty %}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3 class="mb-0"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Low Confidence Gaps ({{ low_confidence_gaps|length }})</h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h3 class="mb-0"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Low Confidence Gaps ({{ low_confidence_gaps|length }})</h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <p class="text-muted">Diese Gaps haben niedrige Confidence-Scores und sollten manuell überprüft werden.</p>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover',
@@ -227,19 +231,17 @@
                             </small>
                         </td>
                         <td>
-                            <span class="badge bg-light">{{ gap.gapTypeLabel }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'light', content: gap.gapTypeLabel } %}
                             <small class="d-block text-muted">{{ gap.description|slice(0, 80) }}...</small>
                         </td>
                         <td>
-                            <span class="badge bg-{{ gap.priorityBadgeClass }}">
-                                {{ gap.priority }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: gap.priorityBadgeClass, content: gap.priority } %}
                         </td>
                         <td>
-                            <span class="badge bg-warning">{{ gap.confidence }}%</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: gap.confidence ~ '%' } %}
                         </td>
                         <td>
-                            <span class="badge bg-danger">-{{ gap.percentageImpact }}%</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: '-' ~ gap.percentageImpact ~ '%' } %}
                         </td>
                         <td>
                             <a href="{{ path('app_mapping_quality_review', {id: gap.mapping.id}) }}" class="btn btn-sm btn-primary">
@@ -253,8 +255,8 @@
             {% if low_confidence_gaps|length > 15 %}
                 <p class="text-muted text-center mb-0">... und {{ low_confidence_gaps|length - 15 }} weitere</p>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Empty State #}
@@ -281,11 +283,13 @@
     {% endif %}
 
     {# Action Buttons #}
-    <div class="card">
-        <div class="card-header">
-            <h3 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> Aktionen</h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header">
+                <h3 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> Aktionen</h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-4">
                     <h4><i class="bi bi-list-check" aria-hidden="true"></i> Priorisierung</h4>
@@ -312,7 +316,7 @@
                     </ul>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

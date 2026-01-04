@@ -154,13 +154,13 @@
                 <br><small class="text-muted">{{ comparison.framework1Requirement.title }}</small>
             </td>
             <td>
-                <span class="badge bg-info">{{ comparison.framework1Requirement.category }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: comparison.framework1Requirement.category } %}
             </td>
             <td class="text-center">
                 {% if comparison.mapped %}
-                    <span class="badge bg-success">✓ {{ 'compliance.badge.mapped'|trans({}, 'compliance') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'success', content: '✓ ' ~ ('compliance.badge.mapped'|trans({}, 'compliance')) } %}
                 {% else %}
-                    <span class="badge bg-secondary">- {{ 'compliance.badge.no_mapping'|trans({}, 'compliance') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: '- ' ~ ('compliance.badge.no_mapping'|trans({}, 'compliance')) } %}
                 {% endif %}
             </td>
             <td>
@@ -173,7 +173,7 @@
             </td>
             <td>
                 {% if comparison.framework2Requirement %}
-                    <span class="badge bg-info">{{ comparison.framework2Requirement.category }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'info', content: comparison.framework2Requirement.category } %}
                 {% else %}
                     <span class="text-muted">-</span>
                 {% endif %}
@@ -181,7 +181,7 @@
             <td class="text-center">
                 {% if comparison.matchQuality %}
                     {% set qualityColor = comparison.matchQuality >= 80 ? 'success' : (comparison.matchQuality >= 60 ? 'warning' : 'danger') %}
-                    <span class="badge bg-{{ qualityColor }}">{{ comparison.matchQuality }}%</span>
+                    {% include '_components/_badge.html.twig' with { variant: qualityColor, content: comparison.matchQuality ~ '%' } %}
                 {% else %}
                     <span class="text-muted">-</span>
                 {% endif %}

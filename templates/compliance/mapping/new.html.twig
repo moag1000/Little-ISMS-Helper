@@ -24,8 +24,8 @@
 
     <div class="row">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     {{ form_start(form) }}
 
                     {% include '_components/_auto_form.html.twig' with {
@@ -66,15 +66,16 @@
                     </div>
 
                     {{ form_end(form) }}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-4">
-            <div class="card bg-light">
-                <div class="card-header"><h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.mapping.help.types.title'|trans({}, 'compliance') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'bg-light' } %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.mapping.help.types.title'|trans({}, 'compliance') }}</h2></div>
+                {% endblock %}
+                {% block card_body %}
                     <ul class="small">
                         <li><strong>{{ 'compliance.mapping.help.types.weak'|trans({}, 'compliance') }}:</strong> {{ 'compliance.mapping.help.types.weak_desc'|trans({}, 'compliance') }}</li>
                         <li><strong>{{ 'compliance.mapping.help.types.partial'|trans({}, 'compliance') }}:</strong> {{ 'compliance.mapping.help.types.partial_desc'|trans({}, 'compliance') }}</li>
@@ -93,8 +94,8 @@
                     <p class="small">
                         {{ 'compliance.mapping.help.bidirectional.desc'|trans({}, 'compliance') }}
                     </p>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

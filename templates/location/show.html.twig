@@ -71,9 +71,7 @@
                     'secure': 'warning',
                     'high_security': 'danger'
                 } %}
-                <span class="badge bg-{{ securityColors[location.securityLevel] ?? 'secondary' }}">
-                    {{ ('location.security.' ~ location.securityLevel)|trans({}, 'locations') }}
-                </span>
+                {% include '_components/_badge.html.twig' with { variant: securityColors[location.securityLevel] ?? 'secondary', content: ('location.security.' ~ location.securityLevel)|trans({}, 'locations') } %}
             </strong>
             <span>{{ 'location.field.security_level'|trans({}, 'locations') }}</span>
         </div>
@@ -146,9 +144,7 @@
                         'secure': 'warning',
                         'high_security': 'danger'
                     } %}
-                    <span class="badge bg-{{ securityColors[child.securityLevel] ?? 'secondary' }}">
-                        {{ ('location.security.' ~ child.securityLevel)|trans({}, 'locations') }}
-                    </span>
+                    {% include '_components/_badge.html.twig' with { variant: securityColors[child.securityLevel] ?? 'secondary', content: ('location.security.' ~ child.securityLevel)|trans({}, 'locations') } %}
                 </td>
                 <td class="text-center">
                     <a href="{{ path('app_location_show', {id: child.id}) }}" class="btn btn-sm">
