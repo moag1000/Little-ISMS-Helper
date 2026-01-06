@@ -182,6 +182,167 @@
   - 80%+ Coverage für kritische Business-Logic
   - CI fails bei Coverage-Drop
 
+### 4. UI Component Consolidation
+
+#### Badge Component Migration ✅ ERLEDIGT
+- **Ziel**: Alle inline Badges zu `_badge.html.twig` Komponente migrieren
+- **Status**: ✅ Abgeschlossen (Januar 2026)
+- **Ergebnis**: 823 Badge-Komponenten, 544 von 547 migriert (99.5%)
+- **Verbleibend**: 1 Beispiel in Dokumentation, 2 mit JS data-Attributen
+
+#### Card Component Migration ✅ ERLEDIGT
+- **Ziel**: Alle inline Cards zu `_card.html.twig` Komponente migrieren
+- **Status**: ✅ Abgeschlossen (Januar 2026)
+- **Ergebnis**: 936 Card-Komponenten, 100% migriert
+- **Verbleibend**: 1 JS-generiertes HTML (nicht migrierbar)
+
+#### Slider Component ✅ ERLEDIGT
+- **Ziel**: Wiederverwendbare Slider-Komponente erstellen
+- **Status**: ✅ Abgeschlossen (Januar 2026)
+- **Features**:
+  - Min/Max Labels und direkte Eingabefelder
+  - Value Labels (Anzeige ≠ interner Wert, z.B. "Hoch" statt "3")
+  - Übersetzungsunterstützung
+  - Preset-Buttons mit Icons
+  - Dynamische Farbvarianten basierend auf Thresholds
+  - Progress Bar Integration
+
+#### Table Component Migration 🔄 AUSSTEHEND
+- **Ziel**: Alle inline Tables zu `_table.html.twig` Komponente migrieren
+- **Priorität**: Mittel
+- **Aufwand**: ~2 Tage
+- **Aktueller Stand**: 122 Komponenten, 32 inline (79% migriert)
+- **Betroffene Templates** (20 Dateien):
+  - `analytics/*.html.twig` (3 Dateien)
+  - `management_reports/*.html.twig` (6 Dateien)
+  - `dashboards/*.html.twig` (2 Dateien)
+  - `compliance_wizard/*.html.twig` (2 Dateien)
+  - `report_builder/*.html.twig` (2 Dateien)
+  - Weitere: `bcm/critical`, `asset/bcm_insights`, `workflow/instance_show`, etc.
+- **Erfolgskriterien**:
+  - Alle Tables nutzen Komponente
+  - Konsistente Hover/Striped/Responsive Optionen
+  - scope="col"/"row" automatisch gesetzt
+
+#### Empty State Component Migration 🔄 AUSSTEHEND
+- **Ziel**: Alle inline Empty States zu `_empty_state.html.twig` migrieren
+- **Priorität**: Niedrig
+- **Aufwand**: ~0.5 Tage
+- **Aktueller Stand**: 11 Komponenten, 5 inline (69% migriert)
+- **Betroffene Templates**:
+  - `audit_log/user_activity.html.twig`
+  - `compliance/requirement/index.html.twig`
+  - `data_breach/index.html.twig`
+  - `permission/index.html.twig`
+  - `pdf/data_reuse_insights_report.html.twig`
+- **Erfolgskriterien**:
+  - Konsistentes Design für "Keine Daten" Zustände
+  - Icon + Titel + Beschreibung + optionale Aktion
+
+#### Alert Component 📋 NEU ZU ERSTELLEN
+- **Ziel**: Wiederverwendbare Alert-Komponente erstellen
+- **Priorität**: Mittel
+- **Aufwand**: ~1-2 Tage
+- **Aktueller Stand**: 319 inline Alerts, keine Komponente
+- **Analyse der Patterns**:
+  - `alert-info`: 70 Verwendungen
+  - `alert-warning`: 46 Verwendungen
+  - `alert-danger`: 23 Verwendungen
+  - `alert-success`: 15 Verwendungen
+  - Mit `mb-*` Klassen: ~50 Verwendungen
+  - Dismissible: ~8 Verwendungen
+- **Geplante Features**:
+  - Varianten: info, warning, danger, success
+  - Icons: Automatisch basierend auf Variante
+  - Dismissible Option
+  - Margin-Klassen als Parameter
+  - Titel + Inhalt Struktur
+- **Erfolgskriterien**:
+  - Konsistente Alert-Darstellung
+  - Accessibility (role="alert", aria-live)
+  - Dark Mode Support
+
+#### Progress Bar Component 📋 OPTIONAL
+- **Ziel**: Wiederverwendbare Progress-Bar-Komponente
+- **Priorität**: Niedrig
+- **Aufwand**: ~0.5 Tage
+- **Aktueller Stand**: 282 inline Progress Bars
+- **Hinweis**: Viele sind dynamisch (JS-gesteuert), Migration komplex
+
+#### Modal Component Standardization 📋 OPTIONAL
+- **Ziel**: Konsistente Modal-Patterns
+- **Priorität**: Niedrig
+- **Aufwand**: ~1 Tag
+- **Aktueller Stand**: 283 Modals
+- **Hinweis**: Mix aus Bootstrap Modal und Custom CSS Modal Pattern
+
+### 5. UX Consolidation & Polish (Phase 8H)
+
+#### Detail-Group Component Migration 🔄 AUSSTEHEND
+- **Ziel**: Alle manuellen `detail-grid` CSS-Klassen zu `_detail_group.html.twig` migrieren
+- **Priorität**: Hoch
+- **Aufwand**: ~3-4 Tage
+- **Aktueller Stand**: 1 Komponenten-Verwendung, 108 manuelle detail-grid Klassen
+- **Vorteile**:
+  - Einheitliche Abstände und Darstellung
+  - Automatische Barrierefreiheit (ARIA)
+  - Konsistente Data Reuse Visualisierung (✦ Sparkle Icon)
+- **Betroffene Templates**:
+  - `*/show.html.twig` Templates (Asset, Risk, Incident, Control, etc.)
+  - `*/index.html.twig` mit Detail-Ansichten
+- **Erfolgskriterien**:
+  - 0 manuelle `detail-grid` Klassen
+  - Data Reuse ✦ Icon bei wiederverwendeten Feldern
+
+#### Style-Leak Bereinigung 🔄 AUSSTEHEND
+- **Ziel**: Inline `<style>` Blöcke in zentrale CSS-Dateien extrahieren
+- **Priorität**: Mittel
+- **Aufwand**: ~2-3 Tage
+- **Aktueller Stand**: 85 Templates mit `<style>` Blöcken
+- **Zu extrahierende Styles**:
+  - **Timeline-Styles**: NIS2-Timeline, Workflow-Timeline → `ui-components.css`
+  - **Audit-Log-Styles**: Änderungshistorie (`audit-log-item`) → bereits `_audit_timeline.html.twig`
+  - **CIA-Indikatoren**: C/I/A Badges mit Farbcodes → standardisieren
+  - **Risk-Matrix-Styles**: Farbcodierung für Risikostufen
+- **Betroffene Templates** (Top 15):
+  - `business_process/*.html.twig`
+  - `risk_treatment_plan/*.html.twig`
+  - `asset/show.html.twig`, `asset/qr_*.html.twig`
+  - `incident/show.html.twig`
+  - `context/index.html.twig`
+  - `license/*.html.twig`
+- **Erfolgskriterien**:
+  - < 20 Templates mit `<style>` Blöcken (nur PDF/Print)
+  - Alle wiederverwendbaren Styles in `ui-components.css`
+  - Dark Mode funktioniert überall
+
+#### Data Reuse Visualization 🔄 TEILWEISE ERLEDIGT
+- **Ziel**: Konsistente Anzeige des ✦ Sparkle Icons bei wiederverwendeten Daten
+- **Priorität**: Mittel
+- **Aufwand**: ~1 Tag
+- **Aktueller Stand**: 35 Verwendungen, aber nicht konsistent
+- **Verbesserungen**:
+  - Asset-Infos in Risiko-Ansicht mit ✦ markieren
+  - Control-Infos in SoA-Ansicht mit ✦ markieren
+  - Business-Process-Infos in BCM-Ansicht mit ✦ markieren
+- **Erfolgskriterien**:
+  - Alle wiederverwendeten Felder zeigen ✦ Icon
+  - Tooltip erklärt Datenherkunft
+
+#### Accessibility Polish (WCAG 2.1 AA) 🔄 AUSSTEHEND
+- **Ziel**: Feinschliff der Barrierefreiheit
+- **Priorität**: Mittel
+- **Aufwand**: ~1-2 Tage
+- **Aufgaben**:
+  - [ ] **Fokus-Management**: Nach Modal-Schließen Fokus zurück auf Auslöser
+  - [ ] **Status-Kontrast**: Badge-Farben im Dark Mode prüfen (≥ 4.5:1)
+  - [ ] **Interaktive Listen**: `aria-labels` für Icon-only Buttons in Tabellen
+  - [ ] **Skip-Links**: Überprüfen ob überall vorhanden
+- **Erfolgskriterien**:
+  - WAVE Tool zeigt 0 Errors
+  - Keyboard-Navigation funktioniert überall
+  - Screen Reader können alle Aktionen identifizieren
+
 ---
 
 ## Mittelfristig (1 Monat)
@@ -373,18 +534,20 @@
 
 ## Next Steps
 
-1. **Diese Woche**:
-   - ~~Bulk Delete Dialog Component erstellen~~ ✅ Bereits implementiert
-   - ~~Table Scope Attributes hinzufügen~~ ✅ Abgeschlossen
-   - Accessible Form Component Migration starten
-   - Test Coverage Analyse durchführen
+1. **UI Component Consolidation** (Priorität):
+   - ~~Badge Component Migration~~ ✅ 99.5% abgeschlossen
+   - ~~Card Component Migration~~ ✅ 100% abgeschlossen
+   - ~~Slider Component~~ ✅ Erstellt mit erweiterten Features
+   - [ ] Alert Component erstellen (`_alert.html.twig`)
+   - [ ] Table Component Migration (32 verbleibend → 0)
+   - [ ] Empty State Migration (5 verbleibend → 0)
 
-2. **Nächste Woche**:
-   - Erste 5 Forms migrieren
-   - Unit Tests für kritische Services schreiben
-   - Compliance Module UX Improvements reviewen
+2. **Quality Assurance**:
+   - ~~Test Coverage 26% → 60%~~ ✅ Erreicht
+   - [ ] Integration Tests für kritische Workflows
+   - [ ] Functional Tests für User Journeys
 
-3. **Monat 1**:
-   - Alle kurzfristigen Ziele abschließen
-   - Mit Workflow-Templates starten
-   - Compliance Framework Design finalisieren
+3. **Nächste Prioritäten**:
+   - Alert Component + Migration (~319 inline Alerts)
+   - Table Component Migration (~32 inline Tables)
+   - Progress Bar Component evaluieren
