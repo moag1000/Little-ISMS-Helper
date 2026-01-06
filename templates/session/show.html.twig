@@ -23,7 +23,7 @@
             {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'primary' } %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="card-title text-muted fw-semibold">Aktivitäten (7 Tage)</div>
+                        <div class="card-title text-muted fw-semibold">{{ 'session.activities_7_days'|trans({}, 'session') }}</div>
                         <p class="display-6 text-primary">{{ total_activities }}</p>
                     </div>
                 {% endblock %}
@@ -56,7 +56,7 @@
         {% block card_header %}
             <div class="card-header bg-info text-white">
                 <h2 class="mb-0">
-                    <i class="bi bi-geo-alt" aria-hidden="true"></i> IP-Adressen
+                    <i class="bi bi-geo-alt" aria-hidden="true"></i> {{ 'session.ip_addresses_title'|trans({}, 'session') }}
                 </h2>
             </div>
         {% endblock %}
@@ -116,7 +116,7 @@
             {% else %}
                 <div class="alert alert-info">
                     <i class="bi bi-info-circle" aria-hidden="true"></i>
-                    Keine Aktivitäten in den letzten 7 Tagen gefunden.
+                    {{ 'session.no_activities_7_days'|trans({}, 'session') }}
                 </div>
             {% endif %}
         {% endblock %}

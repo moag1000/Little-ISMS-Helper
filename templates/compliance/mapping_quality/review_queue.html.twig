@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mapping Review Queue{% endblock %}
+{% block title %}{{ 'compliance.mapping_quality.review_queue.title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -26,12 +26,12 @@
 <div class="container">
     <div class="page-header">
         <div>
-            <h1><i class="bi bi-list-check" aria-hidden="true"></i> Mapping Review Queue</h1>
-            <p class="text-muted">Mappings mit niedrigem Confidence für manuelle Überprüfung</p>
+            <h1><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'compliance.mapping_quality.review_queue.title'|trans({}, 'compliance') }}</h1>
+            <p class="text-muted">{{ 'compliance.mapping_quality.review_queue.subtitle'|trans({}, 'compliance') }}</p>
         </div>
         <div class="button-group">
             <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-secondary">
-                <span class="icon">←</span> Dashboard
+                <span class="icon">←</span> {{ 'compliance.mapping_quality.title'|trans({}, 'compliance') }}
             </a>
         </div>
     </div>
@@ -41,7 +41,7 @@
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header bg-warning">
-                <h2 class="mb-0"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Benötigt dringend Review ({{ mappings_requiring_review|length }})</h2>
+                <h2 class="mb-0"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'compliance.mapping_quality.needs_urgent_review'|trans({}, 'compliance') }} ({{ mappings_requiring_review|length }})</h2>
             </div>
         {% endblock %}
         {% block card_body %}
@@ -53,13 +53,13 @@
                 {% block table_head %}
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">Source → Target</th>
-                        <th scope="col" class="text-center">Alt %</th>
-                        <th scope="col" class="text-center">Berechnet %</th>
-                        <th scope="col" class="text-center">Confidence</th>
-                        <th scope="col" class="text-center">Quality</th>
-                        <th scope="col" class="text-center">Gaps</th>
-                        <th scope="col">Aktion</th>
+                        <th scope="col">{{ 'compliance.mapping_quality.column.source_target'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.old_percent'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.calculated_percent'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.confidence'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.quality'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.gaps'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.mapping_quality.column.action'|trans({}, 'compliance') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -122,7 +122,7 @@
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header">
-                <h3 class="mb-0"><i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i> Niedriges Confidence (<70) ({{ low_confidence_mappings|length }})</h3>
+                <h3 class="mb-0"><i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i> {{ 'compliance.mapping_quality.low_confidence'|trans({}, 'compliance') }} ({{ low_confidence_mappings|length }})</h3>
             </div>
         {% endblock %}
         {% block card_body %}
@@ -133,12 +133,12 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">Source → Target</th>
-                        <th scope="col" class="text-center">Berechnet %</th>
-                        <th scope="col" class="text-center">Confidence</th>
-                        <th scope="col" class="text-center">Similarity</th>
-                        <th scope="col" class="text-center">Review Status</th>
-                        <th scope="col">Aktion</th>
+                        <th scope="col">{{ 'compliance.mapping_quality.column.source_target'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.calculated_percent'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.confidence'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.similarity'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.review_status'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.mapping_quality.column.action'|trans({}, 'compliance') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -177,7 +177,7 @@
                 {% endblock %}
             {% endembed %}
             {% if low_confidence_mappings|length > 20 %}
-                <p class="text-muted text-center mb-0">... und {{ low_confidence_mappings|length - 20 }} weitere</p>
+                <p class="text-muted text-center mb-0">{{ 'compliance.mapping_quality.and_more'|trans({'%count%': low_confidence_mappings|length - 20}, 'compliance') }}</p>
             {% endif %}
         {% endblock %}
     {% endembed %}
@@ -188,11 +188,11 @@
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header">
-                <h3 class="mb-0">🔍 Große Diskrepanzen (≥20% Unterschied) ({{ discrepancies|length }})</h3>
+                <h3 class="mb-0">{{ 'compliance.mapping_quality.large_discrepancies'|trans({}, 'compliance') }} ({{ discrepancies|length }})</h3>
             </div>
         {% endblock %}
         {% block card_body %}
-            <p class="text-muted">Mappings wo der neu berechnete Prozentsatz stark vom ursprünglichen abweicht</p>
+            <p class="text-muted">{{ 'compliance.mapping_quality.discrepancies_desc'|trans({}, 'compliance') }}</p>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover',
                 'noMargin': true,
@@ -200,12 +200,12 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">Source → Target</th>
-                        <th scope="col" class="text-center">Original %</th>
-                        <th scope="col" class="text-center">Berechnet %</th>
-                        <th scope="col" class="text-center">Differenz</th>
-                        <th scope="col" class="text-center">Confidence</th>
-                        <th scope="col">Aktion</th>
+                        <th scope="col">{{ 'compliance.mapping_quality.column.source_target'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.original_percent'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.calculated_percent'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.difference'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.confidence'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.mapping_quality.column.action'|trans({}, 'compliance') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -243,7 +243,7 @@
                 {% endblock %}
             {% endembed %}
             {% if discrepancies|length > 15 %}
-                <p class="text-muted text-center mb-0">... und {{ discrepancies|length - 15 }} weitere</p>
+                <p class="text-muted text-center mb-0">{{ 'compliance.mapping_quality.and_more'|trans({'%count%': discrepancies|length - 15}, 'compliance') }}</p>
             {% endif %}
         {% endblock %}
     {% endembed %}
@@ -252,14 +252,14 @@
     {# Empty State #}
     {% if mappings_requiring_review is empty and low_confidence_mappings is empty and discrepancies is empty %}
     <div class="alert alert-success">
-        <h2><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Keine Mappings benötigen Review!</h2>
-        <p>Alle Mappings haben akzeptable Confidence-Scores oder wurden bereits reviewed.</p>
+        <h2><i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'compliance.mapping_quality.review_queue.no_review_needed.title'|trans({}, 'compliance') }}</h2>
+        <p>{{ 'compliance.mapping_quality.review_queue.no_review_needed.desc'|trans({}, 'compliance') }}</p>
         <hr>
-        <h3>Status:</h3>
+        <h3>{{ 'compliance.mapping_quality.review_queue.no_review_needed.status'|trans({}, 'compliance') }}</h3>
         <ul>
-            <li><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Alle Mappings mit niedrigem Confidence (<70) wurden geprüft</li>
-            <li><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Keine großen Diskrepanzen gefunden</li>
-            <li><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Review Queue ist leer</li>
+            <li><i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'compliance.mapping_quality.review_queue.no_review_needed.low_confidence_checked'|trans({}, 'compliance') }}</li>
+            <li><i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'compliance.mapping_quality.review_queue.no_review_needed.no_discrepancies'|trans({}, 'compliance') }}</li>
+            <li><i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'compliance.mapping_quality.review_queue.no_review_needed.queue_empty'|trans({}, 'compliance') }}</li>
         </ul>
         <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-primary mt-2">← {{ 'common.back'|trans({}, 'messages') }}</a>
     </div>

@@ -253,6 +253,10 @@ risk:
         submit_request: 'Antrag einreichen'
         required_approval_level: 'Erforderliche Genehmigungsstufe'
         approval_threshold_info: 'Risiken ab Score %threshold% erfordern Management-Genehmigung'
+        approval_levels:
+            automatic: 'Automatische Genehmigung'
+            manager: 'Manager-Genehmigung erforderlich'
+            executive: 'Geschäftsführungs-Genehmigung erforderlich'
     residual_assessment: Restrisiko-Bewertung
     status:
         open: Offen

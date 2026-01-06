@@ -1,8 +1,8 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block admin_title %}System Health{% endblock %}
+{% block admin_title %}{{ 'monitoring.health.title'|trans({}, 'monitoring') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">Systemüberwachung und Diagnose</p>
+    <p class="text-muted">{{ 'monitoring.subtitle'|trans({}, 'monitoring') }}</p>
 {% endblock %}
 
 {% block stylesheets %}
@@ -23,7 +23,7 @@
 {% block admin_content %}
     <div class="mb-3">
         <a href="{{ path('monitoring_health_json') }}" class="btn btn-outline-secondary" target="_blank">
-            <i class="bi bi-code-square" aria-hidden="true"></i> JSON API
+            <i class="bi bi-code-square" aria-hidden="true"></i> {{ 'monitoring.health.json_api'|trans({}, 'monitoring') }}
         </a>
     </div>
 
@@ -33,17 +33,17 @@
             <i class="bi bi-{{ overall_status == 'healthy' ? 'check-circle-fill' : (overall_status == 'warning' ? 'exclamation-triangle-fill' : 'x-circle-fill') }} fs-1 me-3" aria-hidden="true"></i>
             <div>
                 <h2 class="mb-1">
-                    System Status:
+                    {{ 'monitoring.health.system_status'|trans({}, 'monitoring') }}:
                     {% if overall_status == 'healthy' %}
-                        <strong>Healthy</strong>
+                        <strong>{{ 'monitoring.health.healthy'|trans({}, 'monitoring') }}</strong>
                     {% elseif overall_status == 'warning' %}
-                        <strong>Warning</strong>
+                        <strong>{{ 'monitoring.health.warning'|trans({}, 'monitoring') }}</strong>
                     {% else %}
-                        <strong>Error</strong>
+                        <strong>{{ 'monitoring.health.error'|trans({}, 'monitoring') }}</strong>
                     {% endif %}
                 </h2>
                 <p class="mb-0">
-                    Last checked: {{ 'now'|date('Y-m-d H:i:s') }}
+                    {{ 'monitoring.health.last_checked'|trans({}, 'monitoring') }}: {{ 'now'|date('Y-m-d H:i:s') }}
                 </p>
             </div>
         </div>
@@ -57,7 +57,7 @@
             {% set db_color = db_status == 'healthy' ? 'success' : 'danger' %}
             {% set db_content %}
                 <dl class="row mb-0">
-                    <dt class="col-sm-4">Status:</dt>
+                    <dt class="col-sm-4">{{ 'monitoring.database.status'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-8">
                         <span class="{{ badge_status(db_status) }}">
                             {{ db_status|upper }}
@@ -65,20 +65,20 @@
                     </dd>
 
                     {% if health_checks.database.response_time is defined %}
-                        <dt class="col-sm-4">Response Time:</dt>
+                        <dt class="col-sm-4">{{ 'monitoring.database.response_time'|trans({}, 'monitoring') }}:</dt>
                         <dd class="col-sm-8">{{ health_checks.database.response_time }}</dd>
 
-                        <dt class="col-sm-4">Driver:</dt>
+                        <dt class="col-sm-4">{{ 'monitoring.database.driver'|trans({}, 'monitoring') }}:</dt>
                         <dd class="col-sm-8"><code>{{ health_checks.database.driver }}</code></dd>
                     {% endif %}
 
                     {% if health_checks.database.error is defined %}
-                        <dt class="col-sm-4">Error:</dt>
+                        <dt class="col-sm-4">{{ 'monitoring.database.error'|trans({}, 'monitoring') }}:</dt>
                         <dd class="col-sm-8 text-danger">{{ health_checks.database.error }}</dd>
                     {% endif %}
                 </dl>
             {% endset %}
-            {{ cards.status_card('Database', 'database', db_status, db_color, db_content) }}
+            {{ cards.status_card('monitoring.card.database'|trans({}, 'monitoring'), 'database', db_status, db_color, db_content) }}
         </div>
 
         {# Disk Space #}
@@ -87,13 +87,13 @@
             {% set disk_color = disk_status == 'healthy' ? 'success' : 'warning' %}
             {% set disk_content %}
                 <dl class="row mb-3">
-                    <dt class="col-sm-4">Free:</dt>
+                    <dt class="col-sm-4">{{ 'monitoring.disk.free'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-8">{{ health_checks.disk.free }}</dd>
 
-                    <dt class="col-sm-4">Used:</dt>
+                    <dt class="col-sm-4">{{ 'monitoring.disk.used'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-8">{{ health_checks.disk.used }}</dd>
 
-                    <dt class="col-sm-4">Total:</dt>
+                    <dt class="col-sm-4">{{ 'monitoring.disk.total'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-8">{{ health_checks.disk.total }}</dd>
                 </dl>
 
@@ -115,12 +115,12 @@
                             data-action="click->autofix#fix"
                             data-autofix-action-param="optimize-disk"
                             data-autofix-url-value="{{ path('monitoring_health') }}">
-                        <i class="bi bi-tools" aria-hidden="true"></i> Optimize Disk Space
+                        <i class="bi bi-tools" aria-hidden="true"></i> {{ 'monitoring.action.optimize_disk'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-optimize-disk"></div>
                 {% endif %}
             {% endset %}
-            {{ cards.status_card('Disk Space', 'hdd', disk_status, disk_color, disk_content, disk_actions) }}
+            {{ cards.status_card('monitoring.card.disk_space'|trans({}, 'monitoring'), 'hdd', disk_status, disk_color, disk_content, disk_actions) }}
         </div>
 
         {# PHP Info #}
@@ -129,25 +129,25 @@
             {% set php_color = php_status == 'healthy' ? 'success' : 'danger' %}
             {% set php_content %}
                 <dl class="row mb-0">
-                    <dt class="col-sm-5">Version:</dt>
+                    <dt class="col-sm-5">{{ 'monitoring.php.version'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7"><code>{{ health_checks.php.version }}</code></dd>
 
-                    <dt class="col-sm-5">Memory Limit:</dt>
+                    <dt class="col-sm-5">{{ 'monitoring.php.memory_limit'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7"><code>{{ health_checks.php.memory_limit }}</code></dd>
 
-                    <dt class="col-sm-5">Max Execution:</dt>
+                    <dt class="col-sm-5">{{ 'monitoring.php.max_execution_time'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7"><code>{{ health_checks.php.max_execution_time }}s</code></dd>
 
-                    <dt class="col-sm-5">Extensions:</dt>
+                    <dt class="col-sm-5">{{ 'monitoring.php.extensions'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">
-                        {% include '_components/_badge.html.twig' with { variant: 'success', content: health_checks.php.loaded_extensions|length ~ ' loaded' } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'success', content: health_checks.php.loaded_extensions|length ~ ' ' ~ 'monitoring.php.loaded'|trans({}, 'monitoring') } %}
                         {% if health_checks.php.missing_extensions|length > 0 %}
-                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: health_checks.php.missing_extensions|length ~ ' missing' } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: health_checks.php.missing_extensions|length ~ ' ' ~ 'monitoring.php.missing'|trans({}, 'monitoring') } %}
                         {% endif %}
                     </dd>
 
                     {% if health_checks.php.missing_extensions|length > 0 %}
-                        <dt class="col-sm-5">Missing:</dt>
+                        <dt class="col-sm-5">{{ 'monitoring.php.missing'|trans({}, 'monitoring') }}:</dt>
                         <dd class="col-sm-7">
                             {% for ext in health_checks.php.missing_extensions %}
                                 <code class="text-danger">{{ ext }}</code>{% if not loop.last %}, {% endif %}
@@ -156,7 +156,7 @@
                     {% endif %}
                 </dl>
             {% endset %}
-            {{ cards.status_card('PHP', 'code-slash', php_status, php_color, php_content) }}
+            {{ cards.status_card('monitoring.card.php'|trans({}, 'monitoring'), 'code-slash', php_status, php_color, php_content) }}
         </div>
 
         {# Symfony Info #}
@@ -165,21 +165,21 @@
             {% set symfony_color = 'success' %}
             {% set symfony_content %}
                 <dl class="row mb-0">
-                    <dt class="col-sm-5">Version:</dt>
+                    <dt class="col-sm-5">{{ 'monitoring.symfony.version'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7"><code>{{ health_checks.symfony.version }}</code></dd>
 
-                    <dt class="col-sm-5">Environment:</dt>
+                    <dt class="col-sm-5">{{ 'monitoring.symfony.environment'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">
                         {% include '_components/_badge.html.twig' with { variant: health_checks.symfony.environment == 'prod' ? 'success' : 'warning', content: health_checks.symfony.environment|upper } %}
                     </dd>
 
-                    <dt class="col-sm-5">Debug Mode:</dt>
+                    <dt class="col-sm-5">{{ 'monitoring.symfony.debug'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">
-                        {% include '_components/_badge.html.twig' with { variant: health_checks.symfony.debug ? 'warning' : 'success', content: health_checks.symfony.debug ? 'ON' : 'OFF' } %}
+                        {% include '_components/_badge.html.twig' with { variant: health_checks.symfony.debug ? 'warning' : 'success', content: health_checks.symfony.debug ? 'monitoring.health.on'|trans({}, 'monitoring') : 'monitoring.health.off'|trans({}, 'monitoring') } %}
                     </dd>
                 </dl>
             {% endset %}
-            {{ cards.status_card('Symfony', 'gear', symfony_status, symfony_color, symfony_content) }}
+            {{ cards.status_card('monitoring.card.symfony'|trans({}, 'monitoring'), 'gear', symfony_status, symfony_color, symfony_content) }}
         </div>
 
         {# Cache #}
@@ -188,22 +188,22 @@
             {% set cache_color = cache_status == 'healthy' ? 'success' : 'danger' %}
             {% set cache_content %}
                 <dl class="row mb-0">
-                    <dt class="col-sm-4">Status:</dt>
+                    <dt class="col-sm-4">{{ 'monitoring.database.status'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-8">
                         <span class="{{ badge_status(health_checks.cache.status) }}">
                             {{ health_checks.cache.status|upper }}
                         </span>
                     </dd>
 
-                    <dt class="col-sm-4">Directory:</dt>
+                    <dt class="col-sm-4">{{ 'monitoring.cache.directory'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-8"><code class="small">{{ health_checks.cache.directory }}</code></dd>
 
-                    <dt class="col-sm-4">Writable:</dt>
+                    <dt class="col-sm-4">{{ 'monitoring.cache.writable'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-8">
                         {% if health_checks.cache.writable %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
                 </dl>
@@ -216,7 +216,7 @@
                                 data-action="click->autofix#fix"
                                 data-autofix-action-param="cache"
                                 data-autofix-url-value="{{ path('monitoring_health') }}">
-                            <i class="bi bi-wrench" aria-hidden="true"></i> Fix Permissions
+                            <i class="bi bi-wrench" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }}
                         </button>
                     {% endif %}
                     <button class="btn btn-sm btn-primary auto-fix-btn"
@@ -224,13 +224,13 @@
                             data-action="click->autofix#fix"
                             data-autofix-action-param="clear-cache"
                             data-autofix-url-value="{{ path('monitoring_health') }}">
-                        <i class="bi bi-trash" aria-hidden="true"></i> Clear Cache
+                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'monitoring.action.clear_cache'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-cache"></div>
                     <div id="fix-result-clear-cache"></div>
                 {% endif %}
             {% endset %}
-            {{ cards.status_card('Cache', 'lightning', cache_status, cache_color, cache_content, cache_actions) }}
+            {{ cards.status_card('monitoring.card.cache'|trans({}, 'monitoring'), 'lightning', cache_status, cache_color, cache_content, cache_actions) }}
         </div>
 
         {# Logs #}
@@ -239,22 +239,22 @@
             {% set logs_color = logs_status == 'healthy' ? 'success' : 'danger' %}
             {% set logs_content %}
                 <dl class="row mb-0">
-                    <dt class="col-sm-4">Status:</dt>
+                    <dt class="col-sm-4">{{ 'monitoring.database.status'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-8">
                         <span class="{{ badge_status(health_checks.logs.status) }}">
                             {{ health_checks.logs.status|upper }}
                         </span>
                     </dd>
 
-                    <dt class="col-sm-4">Directory:</dt>
+                    <dt class="col-sm-4">{{ 'monitoring.logs.directory'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-8"><code class="small">{{ health_checks.logs.directory }}</code></dd>
 
-                    <dt class="col-sm-4">Writable:</dt>
+                    <dt class="col-sm-4">{{ 'monitoring.logs.writable'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-8">
                         {% if health_checks.logs.writable %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
                 </dl>
@@ -267,7 +267,7 @@
                                 data-action="click->autofix#fix"
                                 data-autofix-action-param="logs"
                                 data-autofix-url-value="{{ path('monitoring_health') }}">
-                            <i class="bi bi-wrench" aria-hidden="true"></i> Fix Permissions
+                            <i class="bi bi-wrench" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }}
                         </button>
                     {% endif %}
                     <button class="btn btn-sm btn-warning auto-fix-btn"
@@ -275,21 +275,21 @@
                             data-action="click->autofix#fix"
                             data-autofix-action-param="clean-logs"
                             data-autofix-url-value="{{ path('monitoring_health') }}">
-                        <i class="bi bi-trash" aria-hidden="true"></i> Clean Old Logs
+                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'monitoring.action.clean_logs'|trans({}, 'monitoring') }}
                     </button>
                     <button class="btn btn-sm btn-info auto-fix-btn"
                             data-controller="autofix"
                             data-action="click->autofix#fix"
                             data-autofix-action-param="rotate-logs"
                             data-autofix-url-value="{{ path('monitoring_health') }}">
-                        <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Rotate Logs
+                        <i class="bi bi-arrow-repeat" aria-hidden="true"></i> {{ 'monitoring.action.rotate_logs'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-logs"></div>
                     <div id="fix-result-clean-logs"></div>
                     <div id="fix-result-rotate-logs"></div>
                 {% endif %}
             {% endset %}
-            {{ cards.status_card('Logs', 'file-text', logs_status, logs_color, logs_content, logs_actions) }}
+            {{ cards.status_card('monitoring.card.logs'|trans({}, 'monitoring'), 'file-text', logs_status, logs_color, logs_content, logs_actions) }}
         </div>
 
         {# File Permissions #}
@@ -299,23 +299,23 @@
             {% set perms_color = perms_status == 'healthy' ? 'success' : 'danger' %}
             {% set perms_content %}
                 <dl class="row mb-0">
-                    <dt class="col-sm-5">var/ Writable:</dt>
+                    <dt class="col-sm-5">var/ {{ 'monitoring.cache.writable'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.permissions.var_writable %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
 
-                    <dt class="col-sm-5">uploads/ Writable:</dt>
+                    <dt class="col-sm-5">uploads/ {{ 'monitoring.cache.writable'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.permissions.uploads_writable is null %}
                             <span class="text-muted">N/A</span>
                         {% elseif health_checks.permissions.uploads_writable %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
 
@@ -337,7 +337,7 @@
                                 data-action="click->autofix#fix"
                                 data-autofix-action-param="var-permissions"
                                 data-autofix-url-value="{{ path('monitoring_health') }}">
-                            <i class="bi bi-wrench" aria-hidden="true"></i> Fix var/ Permissions
+                            <i class="bi bi-wrench" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }} var/
                         </button>
                     {% endif %}
                     {% if health_checks.permissions.uploads_writable is not null and not health_checks.permissions.uploads_writable %}
@@ -346,14 +346,14 @@
                                 data-action="click->autofix#fix"
                                 data-autofix-action-param="uploads-permissions"
                                 data-autofix-url-value="{{ path('monitoring_health') }}">
-                            <i class="bi bi-wrench" aria-hidden="true"></i> Fix uploads/ Permissions
+                            <i class="bi bi-wrench" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }} uploads/
                         </button>
                     {% endif %}
                     <div id="fix-result-var-permissions"></div>
                     <div id="fix-result-uploads-permissions"></div>
                 {% endif %}
             {% endset %}
-            {{ cards.status_card('File Permissions', 'shield-lock', perms_status, perms_color, perms_content, perms_actions) }}
+            {{ cards.status_card('monitoring.card.file_permissions'|trans({}, 'monitoring'), 'shield-lock', perms_status, perms_color, perms_content, perms_actions) }}
         </div>
         {% endif %}
 
@@ -364,7 +364,7 @@
             {% set composer_color = composer_status == 'healthy' ? 'success' : 'danger' %}
             {% set composer_content %}
                 <dl class="row mb-0">
-                    <dt class="col-sm-5">Status:</dt>
+                    <dt class="col-sm-5">{{ 'monitoring.database.status'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">
                         <span class="{{ badge_status(health_checks.composer.status) }}">
                             {{ health_checks.composer.status|upper }}
@@ -374,18 +374,18 @@
                     <dt class="col-sm-5">composer.lock:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.composer.lock_exists %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.exists'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> Missing
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.php.missing'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
 
                     <dt class="col-sm-5">vendor/:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.composer.vendor_exists %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.exists'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> Missing
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.php.missing'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
 
@@ -400,12 +400,12 @@
                             data-action="click->autofix#fix"
                             data-autofix-action-param="composer-install"
                             data-autofix-url-value="{{ path('monitoring_health') }}">
-                        <i class="bi bi-download" aria-hidden="true"></i> Run Composer Install
+                        <i class="bi bi-download" aria-hidden="true"></i> {{ 'monitoring.action.composer_install'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-composer-install"></div>
                 {% endif %}
             {% endset %}
-            {{ cards.status_card('Composer', 'box-seam', composer_status, composer_color, composer_content, composer_actions) }}
+            {{ cards.status_card('monitoring.card.composer'|trans({}, 'monitoring'), 'box-seam', composer_status, composer_color, composer_content, composer_actions) }}
         </div>
         {% endif %}
 
@@ -419,18 +419,18 @@
                     <dt class="col-sm-5">.env File:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.environment.env_file_exists %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.exists'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> Missing
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.php.missing'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
 
                     <dt class="col-sm-5">.env.local File:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.environment.env_local_exists %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.exists'|trans({}, 'monitoring') }}
                         {% else %}
-                            <span class="text-muted">Not used</span>
+                            <span class="text-muted">{{ 'monitoring.health.not_used'|trans({}, 'monitoring') }}</span>
                         {% endif %}
                     </dd>
 
@@ -444,12 +444,12 @@
                     {% else %}
                         <dt class="col-sm-5">All Required Vars:</dt>
                         <dd class="col-sm-7">
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Present
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.present'|trans({}, 'monitoring') }}
                         </dd>
                     {% endif %}
                 </dl>
             {% endset %}
-            {{ cards.status_card('Environment', 'file-earmark-text', env_status, env_color, env_content) }}
+            {{ cards.status_card('monitoring.card.environment'|trans({}, 'monitoring'), 'file-earmark-text', env_status, env_color, env_content) }}
         </div>
         {% endif %}
 
@@ -463,13 +463,13 @@
                     <dt class="col-sm-5">OPcache:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.php_config.opcache_enabled %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Enabled
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.on'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-warning" aria-hidden="true"></i> Disabled
+                            <i class="bi bi-x-circle text-warning" aria-hidden="true"></i> {{ 'monitoring.health.off'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
 
-                    <dt class="col-sm-5">Memory Limit:</dt>
+                    <dt class="col-sm-5">{{ 'monitoring.php.memory_limit'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">
                         <code>{{ health_checks.php_config.memory_limit }}</code>
                         {% if health_checks.php_config.memory_sufficient %}
@@ -489,7 +489,7 @@
                     {% endif %}
                 </dl>
             {% endset %}
-            {{ cards.status_card('PHP Configuration', 'sliders', phpconf_status, phpconf_color, phpconf_content) }}
+            {{ cards.status_card('monitoring.card.php_config'|trans({}, 'monitoring'), 'sliders', phpconf_status, phpconf_color, phpconf_content) }}
         </div>
         {% endif %}
 
@@ -506,12 +506,12 @@
                     <dt class="col-sm-5">Save Path:</dt>
                     <dd class="col-sm-7"><code class="small">{{ health_checks.sessions.save_path }}</code></dd>
 
-                    <dt class="col-sm-5">Writable:</dt>
+                    <dt class="col-sm-5">{{ 'monitoring.cache.writable'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.sessions.writable %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
                 </dl>
@@ -523,12 +523,12 @@
                             data-action="click->autofix#fix"
                             data-autofix-action-param="session-permissions"
                             data-autofix-url-value="{{ path('monitoring_health') }}">
-                        <i class="bi bi-wrench" aria-hidden="true"></i> Fix Permissions
+                        <i class="bi bi-wrench" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-session-permissions"></div>
                 {% endif %}
             {% endset %}
-            {{ cards.status_card('Sessions', 'key', sessions_status, sessions_color, sessions_content, sessions_actions) }}
+            {{ cards.status_card('monitoring.card.sessions'|trans({}, 'monitoring'), 'key', sessions_status, sessions_color, sessions_content, sessions_actions) }}
         </div>
         {% endif %}
 
@@ -539,21 +539,21 @@
             {% set uploads_color = 'success' %}
             {% set uploads_content %}
                 <dl class="row mb-0">
-                    <dt class="col-sm-5">Directory:</dt>
+                    <dt class="col-sm-5">{{ 'monitoring.cache.directory'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7"><code class="small">{{ health_checks.uploads.directory }}</code></dd>
 
                     <dt class="col-sm-5">Current Size:</dt>
                     <dd class="col-sm-7">{{ health_checks.uploads.size }}</dd>
 
-                    <dt class="col-sm-5">Free Space:</dt>
+                    <dt class="col-sm-5">{{ 'monitoring.disk.free'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">{{ health_checks.uploads.free_space }}</dd>
 
-                    <dt class="col-sm-5">Writable:</dt>
+                    <dt class="col-sm-5">{{ 'monitoring.cache.writable'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.uploads.writable %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
                 </dl>
@@ -565,12 +565,12 @@
                             data-action="click->autofix#fix"
                             data-autofix-action-param="clean-uploads"
                             data-autofix-url-value="{{ path('monitoring_health') }}">
-                        <i class="bi bi-trash" aria-hidden="true"></i> Clean Old Uploads
+                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'monitoring.action.clean_uploads'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-clean-uploads"></div>
                 {% endif %}
             {% endset %}
-            {{ cards.status_card('Uploads', 'cloud-upload', uploads_status, uploads_color, uploads_content, uploads_actions) }}
+            {{ cards.status_card('monitoring.card.uploads'|trans({}, 'monitoring'), 'cloud-upload', uploads_status, uploads_color, uploads_content, uploads_actions) }}
         </div>
         {% endif %}
     </div>
@@ -580,7 +580,7 @@
         {% block card_header %}
             <div class="card-header bg-primary text-white">
                 <h2 class="mb-0">
-                    <i class="bi bi-link-45deg" aria-hidden="true"></i> Related Monitoring
+                    <i class="bi bi-link-45deg" aria-hidden="true"></i> {{ 'monitoring.related'|trans({}, 'monitoring') }}
                 </h2>
             </div>
         {% endblock %}
@@ -588,22 +588,22 @@
             <div class="row">
                 <div class="col-md-3 mb-2">
                     <a href="{{ path('monitoring_performance') }}" class="btn btn-outline-primary w-100">
-                        <i class="bi bi-speedometer" aria-hidden="true"></i> Performance Metrics
+                        <i class="bi bi-speedometer" aria-hidden="true"></i> {{ 'monitoring.performance.title'|trans({}, 'monitoring') }}
                     </a>
                 </div>
                 <div class="col-md-3 mb-2">
                     <a href="{{ path('monitoring_errors') }}" class="btn btn-outline-danger w-100">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Error Logs
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'monitoring.errors.title'|trans({}, 'monitoring') }}
                     </a>
                 </div>
                 <div class="col-md-3 mb-2">
                     <a href="{{ path('monitoring_audit_log') }}" class="btn btn-outline-info w-100">
-                        <i class="bi bi-journal-text" aria-hidden="true"></i> Audit Log
+                        <i class="bi bi-journal-text" aria-hidden="true"></i> {{ 'monitoring.audit_log.title'|trans({}, 'monitoring') }}
                     </a>
                 </div>
                 <div class="col-md-3 mb-2">
                     <button data-controller="ui-actions" data-action="ui-actions#reload" class="btn btn-outline-secondary w-100">
-                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Refresh
+                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'monitoring.refresh'|trans({}, 'monitoring') }}
                     </button>
                 </div>
             </div>

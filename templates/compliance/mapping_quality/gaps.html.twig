@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gap Overview{% endblock %}
+{% block title %}{{ 'compliance.mapping_quality.gaps.title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
         <div>
-            <h1>🔍 Gap-Übersicht</h1>
+            <h1>{{ 'compliance.mapping_quality.gaps.title'|trans({}, 'compliance') }}</h1>
             <p class="text-muted">{{ 'compliance.gaps.title_description'|trans({}, 'compliance') }}</p>
         </div>
         <div class="button-group">
             <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-secondary">
-                <span class="icon">←</span> Dashboard
+                <span class="icon">←</span> {{ 'compliance.mapping_quality.title'|trans({}, 'compliance') }}
             </a>
         </div>
     </div>
@@ -21,16 +21,16 @@
     <div class="alert alert-info">
         <div class="row">
             <div class="col-md-4">
-                <p class="fw-bold fs-5">📊 Total Gaps</p>
+                <p class="fw-bold fs-5">{{ 'compliance.mapping_quality.gaps.total_gaps'|trans({}, 'compliance') }}</p>
                 <p class="fw-bold fs-4">{{ remediation_effort.total_gaps }}</p>
             </div>
             <div class="col-md-4">
-                <p class="fw-bold"><i class="bi bi-clock" aria-hidden="true"></i> Geschätzter Aufwand</p>
-                <p class="fw-bold fs-4">{{ remediation_effort.total_effort }} Stunden</p>
-                <small class="text-muted">≈ {{ (remediation_effort.total_effort / 8)|round(1) }} Arbeitstage</small>
+                <p class="fw-bold"><i class="bi bi-clock" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.estimated_effort'|trans({}, 'compliance') }}</p>
+                <p class="fw-bold fs-4">{{ remediation_effort.total_effort }} {{ 'compliance.mapping_quality.gaps.hours'|trans({}, 'compliance') }}</p>
+                <small class="text-muted">≈ {{ (remediation_effort.total_effort / 8)|round(1) }} {{ 'compliance.mapping_quality.gaps.workdays'|trans({}, 'compliance') }}</small>
             </div>
             <div class="col-md-4">
-                <p class="fw-bold">📈 {{ 'compliance.gaps.by_priority'|trans({}, 'compliance') }}</p>
+                <p class="fw-bold">{{ 'compliance.gaps.by_priority'|trans({}, 'compliance') }}</p>
                 {% for priority in remediation_effort.by_priority %}
                     <div>
                         <span class="{{ badge_priority(priority.priority) }}">
@@ -50,12 +50,12 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="mb-0">📊 Gaps nach Typ</h2>
+                        <h2 class="mb-0">{{ 'compliance.mapping_quality.gaps.by_type'|trans({}, 'compliance') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
                     {% if gap_stats_by_type is empty %}
-                        <p class="text-muted">Keine Gap-Daten verfügbar</p>
+                        <p class="text-muted">{{ 'compliance.mapping_quality.no_gap_data'|trans({}, 'compliance') }}</p>
                     {% else %}
                         {% for stat in gap_stats_by_type %}
                         <div class="mb-3">
@@ -90,12 +90,12 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="mb-0">⚡ Gaps nach Priorität</h2>
+                        <h2 class="mb-0">{{ 'compliance.mapping_quality.gaps.by_priority'|trans({}, 'compliance') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
                     {% if gap_stats_by_priority is empty %}
-                        <p class="text-muted">Keine Gap-Daten verfügbar</p>
+                        <p class="text-muted">{{ 'compliance.mapping_quality.no_gap_data'|trans({}, 'compliance') }}</p>
                     {% else %}
                         {% for stat in gap_stats_by_priority %}
                         <div class="mb-3">
@@ -132,7 +132,7 @@
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header bg-danger text-white">
-                <h3 class="mb-0">🔥 Critical & High Priority Gaps ({{ high_priority_gaps|length }})</h3>
+                <h3 class="mb-0">{{ 'compliance.mapping_quality.gaps.critical_high'|trans({}, 'compliance') }} ({{ high_priority_gaps|length }})</h3>
             </div>
         {% endblock %}
         {% block card_body %}
@@ -143,13 +143,13 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">Mapping</th>
+                        <th scope="col">{{ 'compliance.field.mapping'|trans({}, 'compliance') }}</th>
                         <th scope="col">Gap Type</th>
-                        <th scope="col">Priority</th>
-                        <th scope="col">Impact</th>
-                        <th scope="col">Effort</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Aktion</th>
+                        <th scope="col">{{ 'compliance.field.priority'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.mapping_quality.gaps.total_impact'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'mapping_review.gap.effort'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.framework.field.status'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.mapping_quality.column.action'|trans({}, 'compliance') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -189,7 +189,7 @@
                 {% endblock %}
             {% endembed %}
             {% if high_priority_gaps|length > 20 %}
-                <p class="text-muted text-center mb-0">... und {{ high_priority_gaps|length - 20 }} weitere</p>
+                <p class="text-muted text-center mb-0">{{ 'compliance.mapping_quality.and_more'|trans({'%count%': high_priority_gaps|length - 20}, 'compliance') }}</p>
             {% endif %}
         {% endblock %}
     {% endembed %}
@@ -200,11 +200,11 @@
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header">
-                <h3 class="mb-0"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Low Confidence Gaps ({{ low_confidence_gaps|length }})</h3>
+                <h3 class="mb-0"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.low_confidence_gaps'|trans({}, 'compliance') }} ({{ low_confidence_gaps|length }})</h3>
             </div>
         {% endblock %}
         {% block card_body %}
-            <p class="text-muted">Diese Gaps haben niedrige Confidence-Scores und sollten manuell überprüft werden.</p>
+            <p class="text-muted">{{ 'compliance.mapping_quality.gaps.low_confidence_desc'|trans({}, 'compliance') }}</p>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover',
                 'noMargin': true,
@@ -212,12 +212,12 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">Mapping</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Priority</th>
-                        <th scope="col">Confidence</th>
-                        <th scope="col">Impact</th>
-                        <th scope="col">Aktion</th>
+                        <th scope="col">{{ 'compliance.field.mapping'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.framework.field.description'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.field.priority'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.mapping_quality.column.confidence'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.mapping_quality.gaps.total_impact'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.mapping_quality.column.action'|trans({}, 'compliance') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -253,7 +253,7 @@
                 {% endblock %}
             {% endembed %}
             {% if low_confidence_gaps|length > 15 %}
-                <p class="text-muted text-center mb-0">... und {{ low_confidence_gaps|length - 15 }} weitere</p>
+                <p class="text-muted text-center mb-0">{{ 'compliance.mapping_quality.and_more'|trans({'%count%': low_confidence_gaps|length - 15}, 'compliance') }}</p>
             {% endif %}
         {% endblock %}
     {% endembed %}
@@ -263,21 +263,21 @@
     {% if high_priority_gaps is empty and low_confidence_gaps is empty %}
         {% if remediation_effort.total_gaps == 0 %}
         <div class="alert alert-info">
-            <h4><i class="bi bi-info-circle text-info" aria-hidden="true"></i> Keine Gaps gefunden</h4>
-            <p>Es wurden noch keine Gap-Analysen durchgeführt.</p>
+            <h4><i class="bi bi-info-circle text-info" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.no_gaps_found.title'|trans({}, 'compliance') }}</h4>
+            <p>{{ 'compliance.mapping_quality.gaps.no_gaps_found.desc'|trans({}, 'compliance') }}</p>
             <hr>
-            <h4>Nächste Schritte:</h4>
+            <h4>{{ 'compliance.mapping_quality.gaps.no_gaps_found.next_steps'|trans({}, 'compliance') }}</h4>
             <ol>
-                <li>Führen Sie die Qualitätsanalyse aus: <code>php bin/console app:analyze-mapping-quality</code></li>
-                <li>Gaps werden automatisch während der Analyse identifiziert</li>
-                <li>Kehren Sie dann zu dieser Seite zurück</li>
+                <li>{{ 'compliance.mapping_quality.gaps.no_gaps_found.run_analysis'|trans({}, 'compliance')|raw }}</li>
+                <li>{{ 'compliance.mapping_quality.gaps.no_gaps_found.auto_identify'|trans({}, 'compliance') }}</li>
+                <li>{{ 'compliance.mapping_quality.gaps.no_gaps_found.return_here'|trans({}, 'compliance') }}</li>
             </ol>
             <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-primary mt-2">← {{ 'common.back'|trans({}, 'messages') }}</a>
         </div>
         {% else %}
         <div class="alert alert-success">
-            <h5><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Keine kritischen Gaps!</h5>
-            <p class="mb-0">Alle Gaps haben niedrige Priorität oder wurden bereits behoben.</p>
+            <h5><i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.no_critical_gaps.title'|trans({}, 'compliance') }}</h5>
+            <p class="mb-0">{{ 'compliance.mapping_quality.gaps.no_critical_gaps.desc'|trans({}, 'compliance') }}</p>
         </div>
         {% endif %}
     {% endif %}
@@ -286,28 +286,28 @@
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             <div class="card-header">
-                <h3 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> Aktionen</h3>
+                <h3 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.actions.title'|trans({}, 'compliance') }}</h3>
             </div>
         {% endblock %}
         {% block card_body %}
             <div class="row">
                 <div class="col-md-4">
-                    <h4><i class="bi bi-list-check" aria-hidden="true"></i> Priorisierung</h4>
+                    <h4><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.actions.prioritization'|trans({}, 'compliance') }}</h4>
                     <ol>
-                        <li>Critical Gaps zuerst ({{ gap_stats_by_priority[0].count ?? 0 }})</li>
-                        <li>High Priority Gaps ({{ gap_stats_by_priority[1].count ?? 0 }})</li>
-                        <li>Low Confidence Gaps überprüfen</li>
+                        <li>{{ 'compliance.mapping_quality.gaps.actions.critical_first'|trans({}, 'compliance') }} ({{ gap_stats_by_priority[0].count ?? 0 }})</li>
+                        <li>{{ 'compliance.mapping_quality.gaps.actions.high_priority'|trans({}, 'compliance') }} ({{ gap_stats_by_priority[1].count ?? 0 }})</li>
+                        <li>{{ 'compliance.mapping_quality.gaps.actions.check_low_confidence'|trans({}, 'compliance') }}</li>
                     </ol>
                 </div>
                 <div class="col-md-4">
-                    <h4><i class="bi bi-clock" aria-hidden="true"></i> Zeitplanung</h4>
+                    <h4><i class="bi bi-clock" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.actions.time_planning'|trans({}, 'compliance') }}</h4>
                     <p>
-                        <strong>Total:</strong> {{ remediation_effort.total_effort }} Stunden<br>
-                        <strong>≈ {{ (remediation_effort.total_effort / 8)|round(1) }} Tage</strong> bei einem 8h-Arbeitstag
+                        <strong>{{ 'compliance.mapping_quality.gaps.actions.total'|trans({}, 'compliance') }}</strong> {{ remediation_effort.total_effort }} {{ 'compliance.mapping_quality.gaps.hours'|trans({}, 'compliance') }}<br>
+                        <strong>≈ {{ (remediation_effort.total_effort / 8)|round(1) }}</strong> {{ 'compliance.mapping_quality.gaps.actions.days_at_8h'|trans({}, 'compliance') }}
                     </p>
                 </div>
                 <div class="col-md-4">
-                    <h4>📊 Tracking</h4>
+                    <h4>{{ 'compliance.mapping_quality.gaps.actions.tracking'|trans({}, 'compliance') }}</h4>
                     <p>{{ 'compliance.gaps.change_status_instruction'|trans({}, 'compliance') }}</p>
                     <ul>
                         <li>identified → planned</li>

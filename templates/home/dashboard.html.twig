@@ -431,7 +431,7 @@
                 <div class="widget-header">
                     <h3 class="widget-title">
                         <i class="bi bi-activity" aria-hidden="true"></i>
-                        Letzte Aktivitäten
+                        {{ 'dashboard.activity_feed.title'|trans({}, 'dashboard') }}
                     </h3>
                     <div class="widget-actions">
                         <button class="widget-action" title="{{ 'common.view_all'|trans({}, 'messages') }}" aria-label="{{ 'common.view_all'|trans({}, 'messages') }}">
@@ -451,7 +451,7 @@
                 <div class="widget-header">
                     <h3 class="widget-title">
                         <i class="bi bi-lightning" aria-hidden="true"></i>
-                        Schnellzugriff
+                        {{ 'dashboard.quick_actions.title'|trans({}, 'dashboard') }}
                     </h3>
                 </div>
                 <div class="quick-actions">
@@ -459,25 +459,25 @@
                         <div class="quick-action-icon" aria-hidden="true">
                             <i class="bi bi-plus-circle text-primary" aria-hidden="true"></i>
                         </div>
-                        <div class="quick-action-label">Neues Asset</div>
+                        <div class="quick-action-label">{{ 'dashboard.quick_actions.new_asset'|trans({}, 'dashboard') }}</div>
                     </a>
                     <a href="{{ path('app_risk_new') }}" class="quick-action-btn">
                         <div class="quick-action-icon" aria-hidden="true">
                             <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
                         </div>
-                        <div class="quick-action-label">Risiko erfassen</div>
+                        <div class="quick-action-label">{{ 'dashboard.quick_actions.new_risk'|trans({}, 'dashboard') }}</div>
                     </a>
                     <a href="{{ path('app_compliance_index') }}" class="quick-action-btn">
                         <div class="quick-action-icon" aria-hidden="true">
                             <i class="bi bi-shield-check text-success" aria-hidden="true"></i>
                         </div>
-                        <div class="quick-action-label">Maßnahmen</div>
+                        <div class="quick-action-label">{{ 'dashboard.quick_actions.controls'|trans({}, 'dashboard') }}</div>
                     </a>
                     <a href="{{ path('app_incident_new') }}" class="quick-action-btn">
                         <div class="quick-action-icon" aria-hidden="true">
                             <i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i>
                         </div>
-                        <div class="quick-action-label">Vorfall melden</div>
+                        <div class="quick-action-label">{{ 'dashboard.quick_actions.report_incident'|trans({}, 'dashboard') }}</div>
                     </a>
                 </div>
             </div>
