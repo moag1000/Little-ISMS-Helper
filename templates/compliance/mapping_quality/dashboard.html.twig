@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mapping Quality Dashboard{% endblock %}
+{% block title %}{{ 'compliance.mapping_quality.title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -18,15 +18,15 @@
 <div class="container">
     <div class="page-header">
         <div>
-            <h1>🔍 Mapping Quality Dashboard</h1>
-            <p class="text-muted">Automatisierte Qualitätsanalyse für Compliance-Mappings</p>
+            <h1>🔍 {{ 'compliance.mapping_quality.title'|trans({}, 'compliance') }}</h1>
+            <p class="text-muted">{{ 'compliance.mapping_quality.subtitle'|trans({}, 'compliance') }}</p>
         </div>
         <div class="button-group">
             <a href="{{ path('app_mapping_quality_review_queue') }}" class="btn btn-primary">
-                <span class="icon"><i class="bi bi-list-check" aria-hidden="true"></i></span> Review Queue
+                <span class="icon"><i class="bi bi-list-check" aria-hidden="true"></i></span> {{ 'compliance.mapping_quality.review_queue.title'|trans({}, 'compliance') }}
             </a>
             <a href="{{ path('app_mapping_quality_gaps') }}" class="btn btn-secondary">
-                <span class="icon">🔍</span> Gap-Übersicht
+                <span class="icon">🔍</span> {{ 'compliance.mapping_quality.gaps.title'|trans({}, 'compliance') }}
             </a>
             <a href="{{ path('app_compliance_index') }}" class="btn btn-secondary">
                 <span class="icon">←</span> {{ 'common.back'|trans({}, 'messages') }}
@@ -37,27 +37,27 @@
     {# Empty State for No Mappings #}
     {% if quality_stats.total_mappings == 0 %}
     <div class="alert alert-warning">
-        <p class="fw-bold fs-5"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Keine Mappings gefunden</p>
+        <p class="fw-bold fs-5"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'compliance.mapping_quality.no_mappings'|trans({}, 'compliance') }}</p>
         <p>{{ 'compliance.mapping_quality.no_mappings_found'|trans({}, 'compliance') }}</p>
         <hr>
-        <p class="fw-bold">Nächste Schritte:</p>
+        <p class="fw-bold">{{ 'compliance.mapping_quality.next_steps.title'|trans({}, 'compliance') }}:</p>
         <ol>
-            <li>Prüfen Sie ob Frameworks importiert sind: <code>php bin/console app:list-frameworks</code></li>
-            <li>Erstellen Sie Mappings: <code>php bin/console app:create-cross-framework-mappings</code></li>
-            <li>Kehren Sie dann hierher zurück</li>
+            <li>{{ 'compliance.mapping_quality.next_steps.check_frameworks'|trans({}, 'compliance')|raw }}</li>
+            <li>{{ 'compliance.mapping_quality.next_steps.create_mappings'|trans({}, 'compliance')|raw }}</li>
+            <li>{{ 'compliance.mapping_quality.next_steps.return_here'|trans({}, 'compliance') }}</li>
         </ol>
         <a href="{{ path('app_compliance_index') }}" class="btn btn-primary mt-2">← {{ 'common.back'|trans({}, 'messages') }}</a>
     </div>
     {% elseif quality_stats.analyzed_mappings == 0 %}
     <div class="alert alert-info">
-        <p class="fw-bold fs-5"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> Noch keine Analyse durchgeführt</p>
-        <p>{{ quality_stats.total_mappings }} Mappings gefunden, aber noch nicht analysiert.</p>
+        <p class="fw-bold fs-5"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> {{ 'compliance.mapping_quality.no_analysis_yet.title'|trans({}, 'compliance') }}</p>
+        <p>{{ 'compliance.mapping_quality.no_analysis_yet.found_not_analyzed'|trans({'%count%': quality_stats.total_mappings}, 'compliance') }}</p>
         <hr>
-        <p class="fw-bold">Analyse starten:</p>
+        <p class="fw-bold">{{ 'compliance.mapping_quality.no_analysis_yet.start_analysis'|trans({}, 'compliance') }}</p>
         <ol>
-            <li>Sanity Check durchführen: <code>php bin/console app:mapping-quality:sanity-check</code></li>
-            <li>Analyse starten: <code>php bin/console app:analyze-mapping-quality</code></li>
-            <li>Seite neu laden</li>
+            <li>{{ 'compliance.mapping_quality.no_analysis_yet.sanity_check'|trans({}, 'compliance')|raw }}</li>
+            <li>{{ 'compliance.mapping_quality.no_analysis_yet.run_analysis'|trans({}, 'compliance')|raw }}</li>
+            <li>{{ 'compliance.mapping_quality.no_analysis_yet.reload_page'|trans({}, 'compliance') }}</li>
         </ol>
     </div>
     {% endif %}
@@ -66,16 +66,16 @@
     {% if quality_stats.total_mappings > 0 %}
     <div class="row mb-4">
         <div class="col-md-3">
-            {{ cards.kpi_card('Total Mappings', quality_stats.total_mappings, null, null, 'primary') }}
+            {{ cards.kpi_card('compliance.stats.total_mappings'|trans({}, 'compliance'), quality_stats.total_mappings, null, null, 'primary') }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('Analysiert', quality_stats.analyzed_mappings, quality_stats.analysis_coverage ~ '%', null, 'success') }}
+            {{ cards.kpi_card('compliance.mapping_quality.progress.analyzed'|trans({}, 'compliance'), quality_stats.analyzed_mappings, quality_stats.analysis_coverage ~ '%', null, 'success') }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('Benötigt Review', quality_stats.requires_review, null, null, 'warning') }}
+            {{ cards.kpi_card('compliance.mapping_quality.needs_urgent_review'|trans({}, 'compliance'), quality_stats.requires_review, null, null, 'warning') }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('Mit Gaps', quality_stats.with_unresolved_gaps, null, null, 'danger') }}
+            {{ cards.kpi_card('compliance.mapping_quality.column.gaps'|trans({}, 'compliance'), quality_stats.with_unresolved_gaps, null, null, 'danger') }}
         </div>
     </div>
 
@@ -85,7 +85,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="mb-0">⭐ Durchschnittliche Qualität</h2>
+                        <h2 class="mb-0">{{ 'compliance.mapping_quality.avg_quality'|trans({}, 'compliance') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -106,7 +106,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h3 class="mb-0"><i class="bi bi-bullseye" aria-hidden="true"></i> Durchschnittliches Confidence</h3>
+                        <h3 class="mb-0"><i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'compliance.mapping_quality.avg_confidence'|trans({}, 'compliance') }}</h3>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -130,19 +130,18 @@
         {% block card_attrs %}id="batchAnalysisCard" data-controller="batch-analysis" data-batch-analysis-url-value="{{ path('app_mapping_quality_batch_analyze') }}" data-total-unanalyzed="{{ quality_stats.unanalyzed_mappings }}"{% endblock %}
         {% block card_header %}
             <div class="card-header {% if quality_stats.unanalyzed_mappings > 0 %}bg-info{% else %}bg-secondary{% endif %} text-white">
-                <h3 class="mb-0">🚀 Mapping-Analyse</h3>
+                <h3 class="mb-0">{{ 'compliance.mapping_quality.batch_analysis.title'|trans({}, 'compliance') }}</h3>
             </div>
         {% endblock %}
         {% block card_body %}
             {% if quality_stats.unanalyzed_mappings > 0 %}
             <p class="mb-3">
-                <strong>{{ quality_stats.unanalyzed_mappings }} Mappings</strong> warten auf Analyse.
-                Starten Sie die Analyse in kleineren Batches direkt hier in der UI.
+                {{ 'compliance.mapping_quality.batch_analysis.waiting'|trans({'%count%': quality_stats.unanalyzed_mappings}, 'compliance')|raw }}
             </p>
             {% else %}
             <p class="mb-3">
-                {% include '_components/_badge.html.twig' with { variant: 'success', class: 'me-2', content: '✓ Alle Mappings analysiert' } %}
-                Sie können eine Re-Analyse starten um die Qualitätswerte mit dem neuesten Algorithmus neu zu berechnen.
+                {% include '_components/_badge.html.twig' with { variant: 'success', class: 'me-2', content: '✓ ' ~ 'compliance.mapping_quality.batch_analysis.all_analyzed'|trans({}, 'compliance') } %}
+                {{ 'compliance.mapping_quality.batch_analysis.all_analyzed_desc'|trans({}, 'compliance') }}
             </p>
             {% endif %}
 
@@ -154,19 +153,19 @@
                                     data-action="click->batch-analysis#start"
                                     data-batch-analysis-count-param="10"
                                     data-batch-analysis-force-param="false">
-                                <i class="bi bi-play-circle" aria-hidden="true"></i> 10 analysieren
+                                <i class="bi bi-play-circle" aria-hidden="true"></i> {{ 'compliance.mapping_quality.batch_analysis.analyze_count'|trans({'%count%': 10}, 'compliance') }}
                             </button>
                             <button type="button" class="btn btn-outline-primary"
                                     data-action="click->batch-analysis#start"
                                     data-batch-analysis-count-param="25"
                                     data-batch-analysis-force-param="false">
-                                <i class="bi bi-play-circle" aria-hidden="true"></i> 25 analysieren
+                                <i class="bi bi-play-circle" aria-hidden="true"></i> {{ 'compliance.mapping_quality.batch_analysis.analyze_count'|trans({'%count%': 25}, 'compliance') }}
                             </button>
                             <button type="button" class="btn btn-outline-primary"
                                     data-action="click->batch-analysis#start"
                                     data-batch-analysis-count-param="50"
                                     data-batch-analysis-force-param="false">
-                                <i class="bi bi-play-circle" aria-hidden="true"></i> 50 analysieren
+                                <i class="bi bi-play-circle" aria-hidden="true"></i> {{ 'compliance.mapping_quality.batch_analysis.analyze_count'|trans({'%count%': 50}, 'compliance') }}
                             </button>
                         </div>
                         <div class="btn-group me-2" role="group" aria-label="{{ 'compliance.mapping_quality.full_analysis'|trans({}, 'compliance') }}">
@@ -174,7 +173,7 @@
                                     data-action="click->batch-analysis#start"
                                     data-batch-analysis-count-param="all"
                                     data-batch-analysis-force-param="false">
-                                <i class="bi bi-lightning-charge" aria-hidden="true"></i> Alle analysieren
+                                <i class="bi bi-lightning-charge" aria-hidden="true"></i> {{ 'compliance.mapping_quality.batch_analysis.analyze_all'|trans({}, 'compliance') }}
                             </button>
                         </div>
                         {% if quality_stats.analyzed_mappings > 0 %}
@@ -206,20 +205,20 @@
 
                 <div class="row text-center mb-3">
                     <div class="col-md-3">
-                        <small class="text-muted">Analysiert</small>
+                        <small class="text-muted">{{ 'compliance.mapping_quality.progress.analyzed'|trans({}, 'compliance') }}</small>
                         <div class="fw-bold h5" data-batch-analysis-target="analyzedCount">0</div>
                     </div>
                     <div class="col-md-3">
-                        <small class="text-muted">Verbleibend</small>
+                        <small class="text-muted">{{ 'compliance.mapping_quality.progress.remaining'|trans({}, 'compliance') }}</small>
                         <div class="fw-bold h5" data-batch-analysis-target="remainingCount">{{ quality_stats.unanalyzed_mappings }}</div>
                     </div>
                     <div class="col-md-3">
-                        <small class="text-muted">Fehler</small>
+                        <small class="text-muted">{{ 'compliance.mapping_quality.progress.errors'|trans({}, 'compliance') }}</small>
                         <div class="fw-bold h5 text-danger" data-batch-analysis-target="errorCount">0</div>
                     </div>
                     <div class="col-md-3">
-                        <small class="text-muted">Status</small>
-                        <div class="fw-bold h5 text-info" data-batch-analysis-target="statusText">Bereit</div>
+                        <small class="text-muted">{{ 'compliance.mapping_quality.progress.status'|trans({}, 'compliance') }}</small>
+                        <div class="fw-bold h5 text-info" data-batch-analysis-target="statusText">{{ 'compliance.mapping_quality.progress.ready'|trans({}, 'compliance') }}</div>
                     </div>
                 </div>
 
@@ -237,10 +236,10 @@
             <div data-batch-analysis-target="results" style="display: none;">
                 <hr>
                 <div class="alert alert-success">
-                    <p class="fw-bold"><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Analyse abgeschlossen!</p>
+                    <p class="fw-bold"><i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'compliance.mapping_quality.progress.complete'|trans({}, 'compliance') }}</p>
                     <p data-batch-analysis-target="resultsMessage"></p>
                     <button type="button" class="btn btn-primary mt-2" data-controller="ui-actions" data-action="ui-actions#reload">
-                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Seite neu laden
+                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'compliance.mapping_quality.progress.reload'|trans({}, 'compliance') }}
                     </button>
                 </div>
             </div>
@@ -253,7 +252,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h3 class="mb-0">📊 Confidence-Verteilung</h3>
+                        <h3 class="mb-0">{{ 'compliance.mapping_quality.charts.confidence_distribution'|trans({}, 'compliance') }}</h3>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -268,12 +267,12 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h3 class="mb-0">🔍 Gap-Statistiken nach Priorität</h3>
+                        <h3 class="mb-0">{{ 'compliance.mapping_quality.charts.gap_stats_priority'|trans({}, 'compliance') }}</h3>
                     </div>
                 {% endblock %}
                 {% block card_body %}
                     {% if gap_stats is empty %}
-                        <p class="text-muted text-center">Keine Gap-Daten verfügbar</p>
+                        <p class="text-muted text-center">{{ 'compliance.mapping_quality.no_gap_data'|trans({}, 'compliance') }}</p>
                     {% else %}
                         <div class="chart-container">
                             <canvas id="gapStatsChart"></canvas>
@@ -289,7 +288,7 @@
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header">
-                <h3 class="mb-0">🌍 Framework-Qualitätsvergleich (Top 10)</h3>
+                <h3 class="mb-0">{{ 'compliance.mapping_quality.framework_comparison'|trans({}, 'compliance') }}</h3>
             </div>
         {% endblock %}
         {% block card_body %}
@@ -300,13 +299,13 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">Source Framework</th>
-                        <th scope="col">Target Framework</th>
-                        <th scope="col" class="text-center">Mappings</th>
-                        <th scope="col" class="text-center">Ø Percentage</th>
-                        <th scope="col" class="text-center">Ø Quality</th>
-                        <th scope="col" class="text-center">Ø Confidence</th>
-                        <th scope="col" class="text-center">Review nötig</th>
+                        <th scope="col">{{ 'compliance.mapping_quality.column.source_framework'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.mapping_quality.column.target_framework'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.mappings'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.avg_percentage'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.avg_quality'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.avg_confidence'|trans({}, 'compliance') }}</th>
+                        <th scope="col" class="text-center">{{ 'compliance.mapping_quality.column.review_needed'|trans({}, 'compliance') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -352,37 +351,37 @@
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header bg-light">
-                <h2 class="mb-0"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> Wie funktioniert die Qualitätsanalyse?</h2>
+                <h2 class="mb-0"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> {{ 'compliance.mapping_quality.help.title'|trans({}, 'compliance') }}</h2>
             </div>
         {% endblock %}
         {% block card_body %}
             <div class="row">
                 <div class="col-md-4">
-                    <p class="fw-bold fs-5"><i class="bi bi-bullseye" aria-hidden="true"></i> Confidence Score</p>
-                    <p class="small">Misst die Zuverlässigkeit der automatischen Analyse:</p>
+                    <p class="fw-bold fs-5"><i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'compliance.mapping_quality.help.confidence_score.title'|trans({}, 'compliance') }}</p>
+                    <p class="small">{{ 'compliance.mapping_quality.help.confidence_score.desc'|trans({}, 'compliance') }}</p>
                     <ul class="small">
-                        <li><strong>High (≥80):</strong> Sehr zuverlässig, kann auto-approved werden</li>
-                        <li><strong>Medium (60-79):</strong> Gute Basis, optionale Review</li>
-                        <li><strong>Low (<60):</strong> Unsicher, manuelle Review erforderlich</li>
+                        <li>{{ 'compliance.mapping_quality.help.confidence_score.high'|trans({}, 'compliance')|raw }}</li>
+                        <li>{{ 'compliance.mapping_quality.help.confidence_score.medium'|trans({}, 'compliance')|raw }}</li>
+                        <li>{{ 'compliance.mapping_quality.help.confidence_score.low'|trans({}, 'compliance')|raw }}</li>
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <p class="fw-bold fs-5">⭐ Quality Score</p>
-                    <p class="small">Gesamtqualität des Mappings basierend auf:</p>
+                    <p class="fw-bold fs-5">{{ 'compliance.mapping_quality.help.quality_score.title'|trans({}, 'compliance') }}</p>
+                    <p class="small">{{ 'compliance.mapping_quality.help.quality_score.desc'|trans({}, 'compliance') }}</p>
                     <ul class="small">
-                        <li>Confidence (40%)</li>
-                        <li>Mapping Percentage (30%)</li>
-                        <li>Verification Status (30%)</li>
+                        <li>{{ 'compliance.mapping_quality.help.quality_score.confidence'|trans({}, 'compliance') }}</li>
+                        <li>{{ 'compliance.mapping_quality.help.quality_score.percentage'|trans({}, 'compliance') }}</li>
+                        <li>{{ 'compliance.mapping_quality.help.quality_score.verification'|trans({}, 'compliance') }}</li>
                     </ul>
-                    <p class="small mb-0"><strong>Ziel:</strong> Alle Mappings ≥75 Quality Score</p>
+                    <p class="small mb-0">{{ 'compliance.mapping_quality.help.quality_score.goal'|trans({}, 'compliance')|raw }}</p>
                 </div>
                 <div class="col-md-4">
-                    <p class="fw-bold fs-5">🔬 Similarity Metriken</p>
-                    <p class="small">Automatische Berechnung durch:</p>
+                    <p class="fw-bold fs-5">{{ 'compliance.mapping_quality.help.similarity.title'|trans({}, 'compliance') }}</p>
+                    <p class="small">{{ 'compliance.mapping_quality.help.similarity.desc'|trans({}, 'compliance') }}</p>
                     <ul class="small">
-                        <li><strong>Keyword Overlap (40%):</strong> Sicherheitsbegriffe</li>
-                        <li><strong>Textual Similarity (35%):</strong> Jaccard & Cosine</li>
-                        <li><strong>Structural Similarity (25%):</strong> Kategorie, Priorität</li>
+                        <li>{{ 'compliance.mapping_quality.help.similarity.keyword'|trans({}, 'compliance')|raw }}</li>
+                        <li>{{ 'compliance.mapping_quality.help.similarity.textual'|trans({}, 'compliance')|raw }}</li>
+                        <li>{{ 'compliance.mapping_quality.help.similarity.structural'|trans({}, 'compliance')|raw }}</li>
                     </ul>
                 </div>
             </div>
@@ -393,12 +392,12 @@
     {# Quick Actions - Show only if mappings exist #}
     {% if quality_stats.total_mappings > 0 %}
     <div class="alert alert-info">
-        <p class="fw-bold">🚀 Nächste Schritte</p>
+        <p class="fw-bold">{{ 'compliance.mapping_quality.next_actions.title'|trans({}, 'compliance') }}</p>
         <ul class="mb-0">
-            <li><a href="{{ path('app_mapping_quality_review_queue') }}">Review Queue ansehen</a> - Prüfen Sie Mappings mit niedrigem Confidence</li>
-            <li><a href="{{ path('app_mapping_quality_gaps') }}">Gap-Übersicht</a> - Identifizierte Lücken adressieren</li>
+            <li><a href="{{ path('app_mapping_quality_review_queue') }}">{{ 'compliance.mapping_quality.next_actions.review_queue'|trans({}, 'compliance') }}</a> - {{ 'compliance.mapping_quality.next_actions.review_queue_desc'|trans({}, 'compliance') }}</li>
+            <li><a href="{{ path('app_mapping_quality_gaps') }}">{{ 'compliance.mapping_quality.next_actions.gap_overview'|trans({}, 'compliance') }}</a> - {{ 'compliance.mapping_quality.next_actions.gap_overview_desc'|trans({}, 'compliance') }}</li>
             {% if quality_stats.unanalyzed_mappings > 0 %}
-            <li><strong>{{ quality_stats.unanalyzed_mappings }} Mappings noch nicht analysiert</strong> - Führen Sie <code>php bin/console app:analyze-mapping-quality</code> aus</li>
+            <li>{{ 'compliance.mapping_quality.next_actions.unanalyzed'|trans({'%count%': quality_stats.unanalyzed_mappings}, 'compliance')|raw }}</li>
             {% endif %}
         </ul>
     </div>

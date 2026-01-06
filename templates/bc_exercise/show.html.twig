@@ -44,7 +44,7 @@
             {% if bc_exercise.status == 'completed' %}
                 {% set effectiveness = bc_exercise.getEffectivenessScore() %}
                 <div class="alert alert-{{ effectiveness >= 80 ? 'success' : (effectiveness >= 60 ? 'info' : 'warning') }}">
-                    <strong>{{ 'bc_plans.message.readiness_score'|trans({'%score%': effectiveness}, 'bc_exercises') }}</strong>
+                    <strong>{{ 'bc_plans.message.readiness_score'|trans({'%score%': effectiveness}, 'bc_plans') }}</strong>
                 </div>
             {% endif %}
 

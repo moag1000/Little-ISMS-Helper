@@ -88,10 +88,10 @@
                         <td>{{ plan.lastTested ? plan.lastTested|date('Y-m-d') : ('bc_plans.message.never'|trans({}, 'bc_plans')) }}</td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                                <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}" class="btn btn-outline-primary" title="{{ 'action.view'|trans({}, 'messages') }}">
+                                <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}" class="btn btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}">
                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                 </a>
-                                <a href="{{ path('app_bc_plan_edit', {id: plan.id}) }}" class="btn btn-outline-secondary" title="{{ 'action.edit'|trans({}, 'messages') }}">
+                                <a href="{{ path('app_bc_plan_edit', {id: plan.id}) }}" class="btn btn-outline-secondary" title="{{ 'common.edit'|trans({}, 'messages') }}">
                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                 </a>
                             </div>

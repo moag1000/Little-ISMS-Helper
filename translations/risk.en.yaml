@@ -256,6 +256,10 @@ risk:
         submit_request: 'Submit Request'
         required_approval_level: 'Required Approval Level'
         approval_threshold_info: 'Approval Threshold Info'
+        approval_levels:
+            automatic: 'Automatic Approval'
+            manager: 'Manager Approval Required'
+            executive: 'Executive Approval Required'
     residual_assessment: 'Residual Assessment'
     status:
         open: Open

@@ -2,6 +2,9 @@ session:
     title: Sitzungen
     list: 'Aktive Sitzungen'
     show: Sitzungsdetails
+    activities_7_days: 'Aktivitäten (7 Tage)'
+    ip_addresses_title: 'IP-Adressen'
+    no_activities_7_days: 'Keine Aktivitäten in den letzten 7 Tagen gefunden.'
     user_name: Benutzername
     ip_address: IP-Adresse
     user_agent: 'User Agent'
