@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}DPIA Dashboard{% endblock %}
+{% block title %}{{ 'dpia.dashboard.title'|trans({}, 'privacy') }}{% endblock %}
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
@@ -15,19 +15,19 @@
     } %}
 
     {% include '_components/_page_header.html.twig' with {
-        title: 'DPIA Dashboard',
-        subtitle: 'Art. 35 GDPR Compliance Overview',
+        title: 'dpia.dashboard.title'|trans({}, 'privacy'),
+        subtitle: 'dpia.dashboard.subtitle'|trans({}, 'privacy'),
         icon: 'bi-speedometer2',
         actions: [
-            { label: 'View All DPIAs', url: path('app_dpia_index'), variant: 'primary', icon: 'bi-list' },
-            { label: 'New DPIA', url: path('app_dpia_new'), variant: 'success', icon: 'bi-plus-lg' }
+            { label: 'dpia.dashboard.view_all'|trans({}, 'privacy'), url: path('app_dpia_index'), variant: 'primary', icon: 'bi-list' },
+            { label: 'dpia.dashboard.new'|trans({}, 'privacy'), url: path('app_dpia_new'), variant: 'success', icon: 'bi-plus-lg' }
         ]
     } %}
 
     {# Overall Compliance Score #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}
         {% block card_body %}
-            <div class="text-muted mb-2 fw-semibold">Overall DPIA Compliance Score</div>
+            <div class="text-muted mb-2 fw-semibold">{{ 'dpia.dashboard.compliance_score'|trans({}, 'privacy') }}</div>
             {% set score = compliance_score.overall_score %}
             <div class="display-1 mb-0
                 {% if score >= 80 %}text-success
@@ -36,22 +36,22 @@
                 {{ score }}%
             </div>
             <p class="text-muted mt-2">
-                {{ compliance_score.approved_dpias }} of {{ compliance_score.total_dpias }} DPIAs approved
+                {{ 'dpia.dashboard.dpias_approved'|trans({'%approved%': compliance_score.approved_dpias, '%total%': compliance_score.total_dpias}, 'privacy') }}
                 {% if compliance_score.due_for_review > 0 %}
-                    · {{ compliance_score.due_for_review }} due for review
+                    · {{ 'dpia.dashboard.due_for_review'|trans({'%count%': compliance_score.due_for_review}, 'privacy') }}
                 {% endif %}
             </p>
             <div class="row mt-3">
                 <div class="col-md-4">
-                    <small class="text-muted">Completeness</small>
+                    <small class="text-muted">{{ 'dpia.dashboard.completeness'|trans({}, 'privacy') }}</small>
                     <div class="fs-4 fw-bold mb-0">{{ compliance_score.completeness_score }}%</div>
                 </div>
                 <div class="col-md-4">
-                    <small class="text-muted">Approval Rate</small>
+                    <small class="text-muted">{{ 'dpia.dashboard.approval_rate'|trans({}, 'privacy') }}</small>
                     <div class="fs-4 fw-bold mb-0">{{ compliance_score.approval_score }}%</div>
                 </div>
                 <div class="col-md-4">
-                    <small class="text-muted">Review Compliance</small>
+                    <small class="text-muted">{{ 'dpia.dashboard.review_compliance'|trans({}, 'privacy') }}</small>
                     <div class="fs-4 fw-bold mb-0">{{ compliance_score.review_compliance_score }}%</div>
                 </div>
             </div>
@@ -61,16 +61,16 @@
     {# Key Metrics #}
     <div class="row mb-4">
         <div class="col-md-3">
-            {{ cards.kpi_card('Total DPIAs', statistics.total, statistics.approved ~ ' approved', null, null, null) }}
+            {{ cards.kpi_card('dpia.dashboard.total_dpias'|trans({}, 'privacy'), statistics.total, statistics.approved ~ ' ' ~ 'dpia.dashboard.approved'|trans({}, 'privacy'), null, null, null) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('In Review', statistics.in_review, 'Awaiting approval', null, 'info', null) }}
+            {{ cards.kpi_card('dpia.dashboard.in_review'|trans({}, 'privacy'), statistics.in_review, 'dpia.dashboard.awaiting_approval'|trans({}, 'privacy'), null, 'info', null) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('High Risk', statistics.high_risk, 'Requires attention', null, 'danger', null) }}
+            {{ cards.kpi_card('dpia.dashboard.high_risk'|trans({}, 'privacy'), statistics.high_risk, 'dpia.dashboard.requires_attention'|trans({}, 'privacy'), null, 'danger', null) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('Completeness', statistics.completeness_rate ~ '%', null, statistics.completeness_rate, 'success', null) }}
+            {{ cards.kpi_card('dpia.dashboard.completeness'|trans({}, 'privacy'), statistics.completeness_rate ~ '%', null, statistics.completeness_rate, 'success', null) }}
         </div>
     </div>
 
@@ -79,11 +79,11 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
-                    <div class="card-header bg-warning text-dark"><h2 class="h5 mb-0"><i class="bi bi-exclamation-circle" aria-hidden="true"></i> Action Items</h2></div>
+                    <div class="card-header bg-warning text-dark"><h2 class="h5 mb-0"><i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ 'dpia.dashboard.action_items'|trans({}, 'privacy') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     {% if incomplete|length > 0 %}
-                        <h3 class="h6">Incomplete DPIAs ({{ incomplete|length }})</h3>
+                        <h3 class="h6">{{ 'dpia.dashboard.incomplete_dpias'|trans({'%count%': incomplete|length}, 'privacy') }}</h3>
                         <ul class="list-unstyled">
                             {% for dpia in incomplete|slice(0, 5) %}
                                 <li class="mb-2">
@@ -95,19 +95,19 @@
                     {% endif %}
 
                     {% if awaiting_dpo|length > 0 %}
-                        <h3 class="h6 mt-3">Awaiting DPO Consultation ({{ awaiting_dpo|length }})</h3>
+                        <h3 class="h6 mt-3">{{ 'dpia.dashboard.awaiting_dpo'|trans({'%count%': awaiting_dpo|length}, 'privacy') }}</h3>
                         <ul class="list-unstyled">
                             {% for dpia in awaiting_dpo|slice(0, 5) %}
                                 <li class="mb-2">
                                     <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">{{ dpia.referenceNumber }} - {{ dpia.title }}</a>
-                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: dpia.status|replace({'_': ' '})|upper } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: ('dpia.status.' ~ dpia.status)|trans({}, 'privacy') } %}
                                 </li>
                             {% endfor %}
                         </ul>
                     {% endif %}
 
                     {% if requires_supervisory|length > 0 %}
-                        <h3 class="h6 mt-3">Requires Supervisory Consultation ({{ requires_supervisory|length }})</h3>
+                        <h3 class="h6 mt-3">{{ 'dpia.dashboard.requires_supervisory'|trans({'%count%': requires_supervisory|length}, 'privacy') }}</h3>
                         <ul class="list-unstyled">
                             {% for dpia in requires_supervisory|slice(0, 5) %}
                                 <li class="mb-2">
@@ -119,7 +119,7 @@
                     {% endif %}
 
                     {% if due_for_review|length > 0 %}
-                        <h3 class="h6 mt-3">Due for Review ({{ due_for_review|length }})</h3>
+                        <h3 class="h6 mt-3">{{ 'dpia.dashboard.due_for_review_section'|trans({'%count%': due_for_review|length}, 'privacy') }}</h3>
                         <ul class="list-unstyled">
                             {% for dpia in due_for_review|slice(0, 5) %}
                                 <li class="mb-2">
@@ -131,7 +131,7 @@
                     {% endif %}
 
                     {% if incomplete|length == 0 and awaiting_dpo|length == 0 and requires_supervisory|length == 0 and due_for_review|length == 0 %}
-                        <p class="text-success mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> No action items - all compliant!</p>
+                        <p class="text-success mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'dpia.dashboard.no_action_items'|trans({}, 'privacy') }}</p>
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -141,7 +141,7 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
-                    <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> Statistics</h2></div>
+                    <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'dpia.dashboard.statistics'|trans({}, 'privacy') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     <h3 class="h6">{{ 'privacy.chart.by_status'|trans({}, 'privacy') }}</h3>
@@ -173,14 +173,14 @@
                                     }[level] %}
                                     <li class="mb-2">
                                         {% include '_components/_badge.html.twig' with { variant: risk_color, content: count } %}
-                                        {{ level|upper }}
+                                        {{ ('dpia.risk_level.' ~ level)|trans({}, 'privacy') }}
                                     </li>
                                 {% endif %}
                             {% endfor %}
                         </ul>
                     {% endif %}
 
-                    <h3 class="h6 mt-4">Residual Risk Distribution</h3>
+                    <h3 class="h6 mt-4">{{ 'dpia.dashboard.residual_risk_distribution'|trans({}, 'privacy') }}</h3>
                     {% if statistics.residual_risk_distribution %}
                         <ul class="list-unstyled">
                             {% for level, count in statistics.residual_risk_distribution %}
@@ -193,22 +193,22 @@
                                     }[level] %}
                                     <li class="mb-2">
                                         {% include '_components/_badge.html.twig' with { variant: risk_color, content: count } %}
-                                        {{ level|upper }}
+                                        {{ ('dpia.risk_level.' ~ level)|trans({}, 'privacy') }}
                                     </li>
                                 {% endif %}
                             {% endfor %}
                         </ul>
                     {% endif %}
 
-                    <h3 class="h6 mt-4">Compliance</h3>
+                    <h3 class="h6 mt-4">{{ 'dpia.dashboard.compliance'|trans({}, 'privacy') }}</h3>
                     <ul class="list-unstyled">
                         <li class="mb-2">
                             {% include '_components/_badge.html.twig' with { variant: 'warning', content: statistics.awaiting_dpo_consultation } %}
-                            Awaiting DPO (Art. 35(4))
+                            {{ 'dpia.dashboard.awaiting_dpo_art35'|trans({}, 'privacy') }}
                         </li>
                         <li class="mb-2">
                             {% include '_components/_badge.html.twig' with { variant: 'danger', content: statistics.requires_supervisory_consultation } %}
-                            Requires Supervisory (Art. 36)
+                            {{ 'dpia.dashboard.requires_supervisory_art36'|trans({}, 'privacy') }}
                         </li>
                     </ul>
                 {% endblock %}
@@ -218,7 +218,7 @@
             {% if high_risk|length > 0 %}
                 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                     {% block card_header %}
-                        <div class="card-header bg-danger text-white"><h2 class="h5 mb-0"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> High Risk DPIAs</h2></div>
+                        <div class="card-header bg-danger text-white"><h2 class="h5 mb-0"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ 'dpia.dashboard.high_risk_dpias'|trans({}, 'privacy') }}</h2></div>
                     {% endblock %}
                     {% block card_body %}
                         <ul class="list-unstyled">
@@ -233,7 +233,7 @@
                                         'high': 'warning',
                                         'critical': 'danger'
                                     }[dpia.riskLevel]|default('secondary') %}
-                                    {% include '_components/_badge.html.twig' with { variant: risk_variant, content: dpia.riskLevel|upper } %}
+                                    {% include '_components/_badge.html.twig' with { variant: risk_variant, content: ('dpia.risk_level.' ~ dpia.riskLevel)|trans({}, 'privacy') } %}
                                 </li>
                             {% endfor %}
                         </ul>

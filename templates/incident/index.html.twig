@@ -116,7 +116,7 @@
                 {% set count = allIncidents|filter(i => i.severity == severity)|length %}
                 <div class="col-md-3 mb-3">
                     <div class="severity-badge severity-{{ severity }}">
-                        <div class="severity-icon">{{ data.icon }}</div>
+                        <div class="severity-icon">{{ data.icon|raw }}</div>
                         <div class="severity-label">{{ data.label }}</div>
                         <div class="severity-count">{{ count }}</div>
                     </div>

@@ -775,15 +775,17 @@ Step 3: Zusammenfassung
 
 Basierend auf dem UX-Audit vom 01.01.2026: Konsolidierung der UI-Komponenten, CSS-Bereinigung und Accessibility-Verbesserungen.
 
-#### 🟢 Phase 8H.1: Detail-Group Komponente (Quick Win)
+#### 🔄 Phase 8H.1: Detail-Group & UI-Komponenten (Quick Win)
 
-**Status:** 🔄 Geplant
-**Effort:** 2-4 Stunden
+**Status:** 🚧 In Entwicklung
+**Effort:** 4-6 Stunden
 
 - [ ] `_components/_detail_group.html.twig` erstellen
 - [ ] Standardisierte Label-Wert-Paare für alle Detail-Ansichten
 - [ ] Migration der Hauptmodule (Asset, Risk, Control, Incident)
 - [ ] Einheitliche Darstellung von "Data Reuse" Quellen
+- [ ] **NEU:** Floating Action Toolbar für Bulk-Operations (Cyberpunk Style)
+- [ ] **NEU:** Skeleton Loading Pattern für Dashboard & Analytics (Perceived Performance)
 
 #### ✅ Phase 8H.2: Accessibility Deep Clean
 
@@ -831,7 +833,8 @@ Basierend auf dem UX-Audit vom 01.01.2026: Konsolidierung der UI-Komponenten, CS
 | 8D | Integration Marketplace | 📅 | Slack, Teams, JIRA Anbindungen |
 | 8E | White-Label Support | 📅 | Eigenes Branding für Kunden |
 | 8F | AI-Features | 📅 | Risk Scoring, Auto-Classification |
-| 8G | Interactive Help & Onboarding | 📅 | Fairy-Shortcuts, Guided Tours, Contextual Help |
+| 8G | Interactive Help & Onboarding | 📅 | Guided Tours, Contextual Help, Keyboard Shortcuts Overlay |
+| 8I | Enhanced Search & Navigation | 📅 | Command Palette Contextual Actions, Global Search Filters |
 
 ---
 
@@ -906,7 +909,7 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 
 ---
 
-**Stand:** 2026-01-01
-**Version:** 2.4
-**Letzte Änderung:** Phase 8H (UX Consolidation & Accessibility) als Priorität hinzugefügt
+**Stand:** 2026-01-07
+**Version:** 2.5
+**Letzte Änderung:** UI/UX Ergänzungen (Floating Toolbar, Skeleton Patterns, Command Palette Erweiterungen) hinzugefügt
 **Nächste Aktualisierung:** Nach Abschluss Phase 8H.1-8H.2

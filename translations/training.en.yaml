@@ -68,6 +68,8 @@ training:
         compliance_requirements: 'Compliance Requirements'
         materials: 'Training Materials and Documents'
         feedback: 'Participant Feedback and Evaluations'
+        attendee_count: 'Attendee Count'
+        completion_date: 'Completion Date'
     new_help: 'Plan a new training and inform the target audience in time.'
     edit_help: 'Edit details, schedule or target audience of this training.'
     participants_count: Participants

@@ -66,6 +66,8 @@ training:
         compliance_requirements: 'Compliance-Anforderungen'
         materials: 'Schulungsmaterialien und Unterlagen'
         feedback: 'Teilnehmer-Feedback und Bewertungen'
+        attendee_count: 'Anzahl Teilnehmer'
+        completion_date: 'Abschlussdatum'
     placeholder:
         title: 'z.B. ISO 27001 Awareness Training'
         description: 'Beschreiben Sie Inhalt und Ziele der Schulung...'

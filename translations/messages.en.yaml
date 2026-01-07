@@ -105,6 +105,7 @@ close: Close
 confirm: Confirm
 back: Back
 common:
+    please_select: 'Please select...'
     next: Next
     yes: 'Yes'
     no: 'No'

@@ -78,6 +78,7 @@ workflow:
         steps: Schritte
         instances: Instanzen
         active: Aktiv
+        is_active: 'Workflow ist aktiv'
         current_step: 'Aktueller Schritt'
         status: Status
         assignee: Zuständig
@@ -152,9 +153,14 @@ workflow:
         definitions: Definitionen
         edit: Bearbeiten
         new: Neu
+    placeholder:
+        name: 'z.B. Risikobewertungs-Workflow'
+        description: 'Beschreiben Sie den Zweck und die Verwendung dieses Workflows...'
     help:
         name: 'Eindeutiger Name für diese Workflow-Definition'
         description: 'Beschreibung des Zwecks und Verwendung dieses Workflows'
+        entity_type: 'Wählen Sie den Entitätstyp, für den dieser Workflow verwendet wird'
+        is_active: 'Deaktivierte Workflows können nicht gestartet werden'
         delete_warning: 'Warnung: Das Löschen einer Definition betrifft alle zugehörigen Workflow-Instanzen'
     info:
         steps_note_title: Workflow-Schritte
