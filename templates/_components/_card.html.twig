@@ -79,7 +79,11 @@
 {% endif %}
 
 {% if class is defined and class %}
-    {% set cardClasses = cardClasses|merge([class]) %}
+    {% if class is iterable %}
+        {% set cardClasses = cardClasses|merge(class) %}
+    {% else %}
+        {% set cardClasses = cardClasses|merge([class]) %}
+    {% endif %}
 {% endif %}
 
 {# Allow custom attributes on card div via block #}

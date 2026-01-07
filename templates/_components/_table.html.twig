@@ -99,7 +99,11 @@
     {% set tableClasses = tableClasses|merge(['mb-0']) %}
 {% endif %}
 {% if class is defined and class %}
-    {% set tableClasses = tableClasses|merge(class|split(' ')) %}
+    {% if class is iterable %}
+        {% set tableClasses = tableClasses|merge(class) %}
+    {% else %}
+        {% set tableClasses = tableClasses|merge(class|split(' ')) %}
+    {% endif %}
 {% endif %}
 
 {# Build thead classes #}
@@ -108,7 +112,11 @@
     {% set theadClasses = theadClasses|merge(['sticky-top']) %}
 {% endif %}
 {% if theadClass is defined and theadClass %}
-    {% set theadClasses = theadClasses|merge(theadClass|split(' ')) %}
+    {% if theadClass is iterable %}
+        {% set theadClasses = theadClasses|merge(theadClass) %}
+    {% else %}
+        {% set theadClasses = theadClasses|merge(theadClass|split(' ')) %}
+    {% endif %}
 {% endif %}
 
 {# Build wrapper classes #}
@@ -117,7 +125,11 @@
     {% set wrapperClasses = wrapperClasses|merge(['table-responsive']) %}
 {% endif %}
 {% if wrapperClass is defined and wrapperClass %}
-    {% set wrapperClasses = wrapperClasses|merge(wrapperClass|split(' ')) %}
+    {% if wrapperClass is iterable %}
+        {% set wrapperClasses = wrapperClasses|merge(wrapperClass) %}
+    {% else %}
+        {% set wrapperClasses = wrapperClasses|merge(wrapperClass|split(' ')) %}
+    {% endif %}
 {% endif %}
 
 {# Render table #}
