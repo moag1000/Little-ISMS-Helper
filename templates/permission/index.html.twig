@@ -13,41 +13,41 @@
     {# Statistics Cards #}
     <div class="row mb-4">
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'primary' } %}
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'primary', 'value': statistics.total } only %}
                 {% block card_body %}
                     <div class="text-center">
                         <div class="card-title text-muted fw-bold small text-uppercase">{{ 'permission.statistics.total'|trans({}, 'messages') }}</div>
-                        <p class="display-6 text-primary">{{ statistics.total }}</p>
+                        <p class="display-6 text-primary">{{ value }}</p>
                     </div>
                 {% endblock %}
             {% endembed %}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'success' } %}
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'success', 'value': statistics.system } only %}
                 {% block card_body %}
                     <div class="text-center">
                         <div class="card-title text-muted fw-bold small text-uppercase">{{ 'permission.statistics.system'|trans({}, 'messages') }}</div>
-                        <p class="display-6 text-success">{{ statistics.system }}</p>
+                        <p class="display-6 text-success">{{ value }}</p>
                     </div>
                 {% endblock %}
             {% endembed %}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info' } %}
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info', 'value': statistics.custom } only %}
                 {% block card_body %}
                     <div class="text-center">
                         <div class="card-title text-muted fw-bold small text-uppercase">{{ 'permission.statistics.custom'|trans({}, 'messages') }}</div>
-                        <p class="display-6 text-info">{{ statistics.custom }}</p>
+                        <p class="display-6 text-info">{{ value }}</p>
                     </div>
                 {% endblock %}
             {% endembed %}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'warning' } %}
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'warning', 'value': statistics.categories_count } only %}
                 {% block card_body %}
                     <div class="text-center">
                         <div class="card-title text-muted fw-bold small text-uppercase">{{ 'permission.statistics.categories'|trans({}, 'messages') }}</div>
-                        <p class="display-6 text-warning">{{ statistics.categories_count }}</p>
+                        <p class="display-6 text-warning">{{ value }}</p>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -55,7 +55,7 @@
     </div>
 
     {# Category Filter #}
-    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4', 'categories': categories, 'currentCategory': currentCategory } only %}
         {% block card_body %}
             <div class="btn-group btn-group-sm" role="group">
                 <a href="{{ path('permission_index') }}"
@@ -74,7 +74,7 @@
 
     {# Permissions by Category #}
     {% for category, permissions in groupedPermissions %}
-        {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% embed '_components/_card.html.twig' with { 'class': 'mb-4', 'category': category, 'permissions': permissions } only %}
             {% block card_header %}
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0">
