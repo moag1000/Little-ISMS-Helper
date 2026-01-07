@@ -84,7 +84,7 @@
                 </div>
             {% endblock %}
             {% block card_body %}
-                {% embed '_components/_table.html.twig' %}
+                {% embed '_components/_table.html.twig' with { 'noMargin': true, 'permissions': permissions } only %}
                     {% block table_head %}
                         <tr>
                             <th scope="col">{{ 'permission.action'|trans({}, 'messages') }}</th>
@@ -102,9 +102,9 @@
                                 <td>{{ permission.description }}</td>
                                 <td class="text-center">
                                     {% if permission.isSystemPermission %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'info', content: 'System' } %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'info', content: 'System' } only %}
                                     {% else %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Custom' } %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Custom' } only %}
                                     {% endif %}
                                 </td>
                                 <td class="text-end">
