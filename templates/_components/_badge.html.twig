@@ -29,7 +29,11 @@
     {% set badgeClasses = badgeClasses|merge(['rounded-pill']) %}
 {% endif %}
 {% if additionalClass %}
-    {% set badgeClasses = badgeClasses|merge([additionalClass]) %}
+    {% if additionalClass is iterable %}
+        {% set badgeClasses = badgeClasses|merge(additionalClass) %}
+    {% else %}
+        {% set badgeClasses = badgeClasses|merge([additionalClass]) %}
+    {% endif %}
 {% endif %}
 
 <span class="{{ badgeClasses|join(' ') }}"{% if title %} title="{{ title }}"{% endif %}>
