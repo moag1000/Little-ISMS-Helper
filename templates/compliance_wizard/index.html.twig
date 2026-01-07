@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'wizard' %}
 
-{% block title %}{{ 'wizard.title'|trans }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'wizard.title'|trans({}, 'wizard') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -10,13 +10,13 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h2 mb-1">
-                        <i class="bi bi-compass me-2" aria-hidden="true"></i>{{ 'wizard.title'|trans }}
+                        <i class="bi bi-compass me-2" aria-hidden="true"></i>{{ 'wizard.title'|trans({}, 'wizard') }}
                     </h1>
-                    <p class="text-muted mb-0">{{ 'wizard.subtitle'|trans }}</p>
+                    <p class="text-muted mb-0">{{ 'wizard.subtitle'|trans({}, 'wizard') }}</p>
                 </div>
                 {% if available_wizards|length > 1 %}
                 <a href="{{ path('app_compliance_wizard_compare') }}" class="btn btn-outline-primary">
-                    <i class="bi bi-columns-gap me-1" aria-hidden="true"></i>{{ 'wizard.compare_frameworks'|trans }}
+                    <i class="bi bi-columns-gap me-1" aria-hidden="true"></i>{{ 'wizard.compare_frameworks'|trans({}, 'wizard') }}
                 </a>
                 {% endif %}
             </div>
@@ -28,7 +28,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h2 class="h5 text-muted mb-3">
-                <i class="bi bi-check-circle text-success me-2" aria-hidden="true"></i>{{ 'wizard.available_wizards'|trans }}
+                <i class="bi bi-check-circle text-success me-2" aria-hidden="true"></i>{{ 'wizard.available_wizards'|trans({}, 'wizard') }}
             </h2>
         </div>
         {% for key, wizard in available_wizards %}
@@ -46,10 +46,10 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <p class="card-text text-muted">{{ wizard.description|trans }}</p>
+                    <p class="card-text text-muted">{{ wizard.description|trans({}, 'wizard') }}</p>
 
                     <div class="mb-3">
-                        <small class="text-muted d-block mb-1">{{ 'wizard.required_modules'|trans }}:</small>
+                        <small class="text-muted d-block mb-1">{{ 'wizard.required_modules'|trans({}, 'wizard') }}:</small>
                         {% for mod in wizard.required_modules %}
                             {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', class: 'me-1', content: mod } %}
                         {% endfor %}
@@ -57,7 +57,7 @@
 
                     {% if wizard.recommended_modules|default([])|length > 0 %}
                     <div class="mb-3">
-                        <small class="text-muted d-block mb-1">{{ 'wizard.recommended_modules'|trans }}:</small>
+                        <small class="text-muted d-block mb-1">{{ 'wizard.recommended_modules'|trans({}, 'wizard') }}:</small>
                         {% for mod in wizard.recommended_modules %}
                             {% if mod in active_modules %}
                                 {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', class: 'me-1', content: mod } %}
@@ -70,13 +70,13 @@
 
                     <div class="small text-muted">
                         <i class="bi bi-list-check me-1" aria-hidden="true"></i>
-                        {{ wizard.categories|length }} {{ 'wizard.categories_count'|trans }}
+                        {{ wizard.categories|length }} {{ 'wizard.categories_count'|trans({}, 'wizard') }}
                     </div>
                 {% endblock %}
                 {% block card_footer %}
                     <div class="card-footer bg-transparent border-{{ wizard.color }}">
                         <a href="{{ path('app_compliance_wizard_start', {wizard: key}) }}" class="btn btn-{{ wizard.color }} w-100">
-                            <i class="bi bi-play-circle me-1" aria-hidden="true"></i>{{ 'wizard.start_wizard'|trans }}
+                            <i class="bi bi-play-circle me-1" aria-hidden="true"></i>{{ 'wizard.start_wizard'|trans({}, 'wizard') }}
                         </a>
                     </div>
                 {% endblock %}
@@ -91,9 +91,9 @@
     <div class="row">
         <div class="col-12">
             <h2 class="h5 text-muted mb-3">
-                <i class="bi bi-lock text-secondary me-2" aria-hidden="true"></i>{{ 'wizard.unavailable_wizards'|trans }}
+                <i class="bi bi-lock text-secondary me-2" aria-hidden="true"></i>{{ 'wizard.unavailable_wizards'|trans({}, 'wizard') }}
             </h2>
-            <p class="text-muted small mb-3">{{ 'wizard.unavailable_hint'|trans }}</p>
+            <p class="text-muted small mb-3">{{ 'wizard.unavailable_hint'|trans({}, 'wizard') }}</p>
         </div>
         {% for key, wizard in unavailable_wizards %}
         <div class="col-md-6 col-lg-4 mb-4">
@@ -113,7 +113,7 @@
                     <div class="alert alert-warning py-2 mb-3">
                         <small>
                             <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>
-                            {{ 'wizard.missing_modules'|trans }}:
+                            {{ 'wizard.missing_modules'|trans({}, 'wizard') }}:
                             {% for mod in wizard.missing_modules %}
                                 <strong>{{ mod }}</strong>{% if not loop.last %}, {% endif %}
                             {% endfor %}
@@ -123,7 +123,7 @@
                 {% block card_footer %}
                     <div class="card-footer bg-transparent">
                         <a href="{{ path('admin_modules_index') }}" class="btn btn-outline-secondary btn-sm w-100">
-                            <i class="bi bi-gear me-1" aria-hidden="true"></i>{{ 'wizard.activate_modules'|trans }}
+                            <i class="bi bi-gear me-1" aria-hidden="true"></i>{{ 'wizard.activate_modules'|trans({}, 'wizard') }}
                         </a>
                     </div>
                 {% endblock %}
@@ -139,15 +139,15 @@
             {% embed '_components/_card.html.twig' with { 'class': 'bg-light border-0' } %}
                 {% block card_body %}
                     <h4 class="h6 mb-3">
-                        <i class="bi bi-info-circle text-info me-2" aria-hidden="true"></i>{{ 'wizard.how_it_works'|trans }}
+                        <i class="bi bi-info-circle text-info me-2" aria-hidden="true"></i>{{ 'wizard.how_it_works'|trans({}, 'wizard') }}
                     </h4>
                     <div class="row">
                         <div class="col-md-4 mb-3 mb-md-0">
                             <div class="d-flex">
                                 <div class="badge bg-primary rounded-circle me-2" style="width: 24px; height: 24px; line-height: 16px;">1</div>
                                 <div>
-                                    <strong>{{ 'wizard.step1_title'|trans }}</strong>
-                                    <p class="small text-muted mb-0">{{ 'wizard.step1_desc'|trans }}</p>
+                                    <strong>{{ 'wizard.step1_title'|trans({}, 'wizard') }}</strong>
+                                    <p class="small text-muted mb-0">{{ 'wizard.step1_desc'|trans({}, 'wizard') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -155,8 +155,8 @@
                             <div class="d-flex">
                                 <div class="badge bg-primary rounded-circle me-2" style="width: 24px; height: 24px; line-height: 16px;">2</div>
                                 <div>
-                                    <strong>{{ 'wizard.step2_title'|trans }}</strong>
-                                    <p class="small text-muted mb-0">{{ 'wizard.step2_desc'|trans }}</p>
+                                    <strong>{{ 'wizard.step2_title'|trans({}, 'wizard') }}</strong>
+                                    <p class="small text-muted mb-0">{{ 'wizard.step2_desc'|trans({}, 'wizard') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -164,8 +164,8 @@
                             <div class="d-flex">
                                 <div class="badge bg-primary rounded-circle me-2" style="width: 24px; height: 24px; line-height: 16px;">3</div>
                                 <div>
-                                    <strong>{{ 'wizard.step3_title'|trans }}</strong>
-                                    <p class="small text-muted mb-0">{{ 'wizard.step3_desc'|trans }}</p>
+                                    <strong>{{ 'wizard.step3_title'|trans({}, 'wizard') }}</strong>
+                                    <p class="small text-muted mb-0">{{ 'wizard.step3_desc'|trans({}, 'wizard') }}</p>
                                 </div>
                             </div>
                         </div>

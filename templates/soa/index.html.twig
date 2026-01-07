@@ -115,7 +115,7 @@
         {% embed '_components/_card.html.twig' %}
             {% block card_body %}
                 <div class="fs-2-mb-sm">{{ icon }}</div>
-                <h2>{{ ('soa.category.' ~ category)|trans }} {{ 'soa.label.controls'|trans({}, 'soa') }}</h2>
+                <h2>{{ ('soa.category.' ~ category)|trans({}, 'soa') }} {{ 'soa.label.controls'|trans({}, 'soa') }}</h2>
                 <div class="stats-grid mt-2">
                     <div class="stat-item">
                         <strong>{{ cat_controls|length }}</strong>

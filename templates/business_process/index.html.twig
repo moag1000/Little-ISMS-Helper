@@ -3,7 +3,7 @@
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'business_process.index.title'|trans }}{% endblock %}
+{% block title %}{{ 'business_process.index.title'|trans({}, 'business_process') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
@@ -15,9 +15,9 @@
     } %}
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>{{ 'business_process.index.page_title'|trans }}</h1>
+        <h1>{{ 'business_process.index.page_title'|trans({}, 'business_process') }}</h1>
         <a href="{{ path('app_business_process_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'business_process.index.new_process'|trans }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'business_process.index.new_process'|trans({}, 'business_process') }}
         </a>
     </div>
 
@@ -63,19 +63,19 @@
             <div class="col-md-3">
                 {% if currentTenant %}
                     {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant') %}
-                    {{ cards.kpi_card('business_process.index.stats.total'|trans, detailedStats.total, subtitle, null, null, null) }}
+                    {{ cards.kpi_card('business_process.index.stats.total'|trans({}, 'business_process'), detailedStats.total, subtitle, null, null, null) }}
                 {% else %}
-                    {{ cards.kpi_card('business_process.index.stats.total'|trans, detailedStats.total, 'business_process.index.stats.total_subtitle'|trans, null, null, null) }}
+                    {{ cards.kpi_card('business_process.index.stats.total'|trans({}, 'business_process'), detailedStats.total, 'business_process.index.stats.total_subtitle'|trans({}, 'business_process'), null, null, null) }}
                 {% endif %}
             </div>
             <div class="col-md-3">
-                {{ cards.kpi_card('business_process.index.stats.critical'|trans, stats.critical, 'business_process.index.stats.critical_subtitle'|trans, null, 'danger', 'border-danger') }}
+                {{ cards.kpi_card('business_process.index.stats.critical'|trans({}, 'business_process'), stats.critical, 'business_process.index.stats.critical_subtitle'|trans({}, 'business_process'), null, 'danger', 'border-danger') }}
             </div>
             <div class="col-md-3">
-                {{ cards.kpi_card('business_process.index.stats.avg_rto'|trans, stats.avg_rto ~ 'business_process.index.stats.rto_unit'|trans, 'business_process.index.stats.rto_subtitle'|trans, null, 'info', null) }}
+                {{ cards.kpi_card('business_process.index.stats.avg_rto'|trans({}, 'business_process'), stats.avg_rto ~ 'business_process.index.stats.rto_unit'|trans({}, 'business_process'), 'business_process.index.stats.rto_subtitle'|trans({}, 'business_process'), null, 'info', null) }}
             </div>
             <div class="col-md-3">
-                {{ cards.kpi_card('business_process.index.stats.with_risks'|trans, stats.processes_with_risks, 'business_process.index.stats.with_risks_subtitle'|trans, null, 'warning', null) }}
+                {{ cards.kpi_card('business_process.index.stats.with_risks'|trans({}, 'business_process'), stats.processes_with_risks, 'business_process.index.stats.with_risks_subtitle'|trans({}, 'business_process'), null, 'warning', null) }}
             </div>
         </div>
     </turbo-frame>
@@ -85,7 +85,7 @@
         {% embed '_components/_card.html.twig' %}
             {% block card_header %}
                 <div class="card-header">
-                    <h2 class="mb-0">{{ 'business_process.index.table.title'|trans }}</h2>
+                    <h2 class="mb-0">{{ 'business_process.index.table.title'|trans({}, 'business_process') }}</h2>
                 </div>
             {% endblock %}
             {% block card_body %}
@@ -94,14 +94,14 @@
                         {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                         {% block table_head %}
                             <tr>
-                                <th scope="col">{{ 'business_process.index.table.name'|trans }}</th>
-                                <th scope="col">{{ 'business_process.index.table.owner'|trans }}</th>
-                                <th scope="col">{{ 'business_process.index.table.criticality'|trans }}</th>
-                                <th scope="col">{{ 'business_process.index.table.rto'|trans }}</th>
-                                <th scope="col">{{ 'business_process.index.table.rpo'|trans }}</th>
-                                <th scope="col">{{ 'business_process.index.table.mtpd'|trans }}</th>
-                                <th scope="col">{{ 'business_process.index.table.impact_score'|trans }}</th>
-                                <th scope="col">{{ 'business_process.index.table.actions'|trans }}</th>
+                                <th scope="col">{{ 'business_process.index.table.name'|trans({}, 'business_process') }}</th>
+                                <th scope="col">{{ 'business_process.index.table.owner'|trans({}, 'business_process') }}</th>
+                                <th scope="col">{{ 'business_process.index.table.criticality'|trans({}, 'business_process') }}</th>
+                                <th scope="col">{{ 'business_process.index.table.rto'|trans({}, 'business_process') }}</th>
+                                <th scope="col">{{ 'business_process.index.table.rpo'|trans({}, 'business_process') }}</th>
+                                <th scope="col">{{ 'business_process.index.table.mtpd'|trans({}, 'business_process') }}</th>
+                                <th scope="col">{{ 'business_process.index.table.impact_score'|trans({}, 'business_process') }}</th>
+                                <th scope="col">{{ 'business_process.index.table.actions'|trans({}, 'business_process') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body_attrs %}id="business-processes-table-body"{% endblock %}

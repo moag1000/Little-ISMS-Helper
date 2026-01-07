@@ -105,6 +105,7 @@ close: Schließen
 confirm: Bestätigen
 back: Zurück
 common:
+    please_select: 'Bitte auswählen...'
     next: Weiter
     yes: 'Ja'
     no: 'Nein'

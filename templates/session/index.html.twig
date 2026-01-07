@@ -203,6 +203,6 @@
     {# Info Box #}
     <div class="alert alert-success mt-4">
         <i class="bi bi-check-circle" aria-hidden="true"></i>
-        {{ 'session.info_box'|trans({'%max_concurrent%': statistics.max_concurrent}, 'session') }}
+        {{ 'session.info_box'|trans({'%max_concurrent%': statistics.max_concurrent}, 'session')|raw }}
     </div>
 {% endblock %}
