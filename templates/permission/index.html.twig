@@ -79,7 +79,7 @@
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0">
                         <i class="bi bi-folder" aria-hidden="true"></i> {{ category|title }}
-                        {% include '_components/_badge.html.twig' with { variant: 'light', content: permissions|length, class: 'text-dark' } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'light', content: permissions|length, class: 'text-dark' } only %}
                     </h2>
                 </div>
             {% endblock %}
