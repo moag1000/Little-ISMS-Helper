@@ -236,7 +236,11 @@
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
                     <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                        {{ message|trans }}
+                        {% if message is iterable %}
+                            {{ message|join(', ') }}
+                        {% else %}
+                            {{ message|trans }}
+                        {% endif %}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                     </div>
                 {% endfor %}
