@@ -24,6 +24,7 @@ final class ComplianceImportUploadType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $maxSizeMb = (int) ($options['max_size_mb'] ?? 5);
         $builder
             ->add('format', ChoiceType::class, [
                 'label' => 'compliance_import.upload.format_label',
@@ -54,7 +55,7 @@ final class ComplianceImportUploadType extends AbstractType
                 'constraints' => [
                     new NotBlank(),
                     new FileConstraint(
-                        maxSize: '5M',
+                        maxSize: $maxSizeMb . 'M',
                         mimeTypes: [
                             'text/csv',
                             'text/plain',
@@ -81,6 +82,8 @@ final class ComplianceImportUploadType extends AbstractType
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'compliance_import_upload',
             'translation_domain' => 'compliance_import',
+            'max_size_mb' => 5,
         ]);
+        $resolver->setAllowedTypes('max_size_mb', 'int');
     }
 }

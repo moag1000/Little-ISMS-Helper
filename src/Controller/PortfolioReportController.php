@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\CompliancePolicyService;
 use App\Service\PortfolioReportService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -27,7 +28,19 @@ class PortfolioReportController extends AbstractController
     public function __construct(
         private readonly PortfolioReportService $portfolioReportService,
         private readonly TenantContext $tenantContext,
+        private readonly CompliancePolicyService $policy,
     ) {
+    }
+
+    /**
+     * @return array{green:int, yellow:int}
+     */
+    private function thresholds(): array
+    {
+        return [
+            'green' => $this->policy->getInt(CompliancePolicyService::KEY_PORTFOLIO_GREEN, 80),
+            'yellow' => $this->policy->getInt(CompliancePolicyService::KEY_PORTFOLIO_YELLOW, 50),
+        ];
     }
 
     #[Route('', name: 'app_management_reports_portfolio', methods: ['GET'])]
@@ -54,6 +67,7 @@ class PortfolioReportController extends AbstractController
             'tenant' => $tenant,
             'stichtag' => $stichtag,
             'vorperiode' => $vorperiode,
+            'thresholds' => $this->thresholds(),
         ]);
     }
 
@@ -82,6 +96,7 @@ class PortfolioReportController extends AbstractController
             'stichtag' => $stichtag,
             'vorperiode' => $vorperiode,
             'generated_at' => new DateTimeImmutable(),
+            'thresholds' => $this->thresholds(),
         ]);
     }
 

@@ -136,10 +136,10 @@
                                         {% if cell.count == 0 %}
                                             {% set cell_variant = 'secondary' %}
                                             {% set cell_icon = 'bi-slash-circle' %}
-                                        {% elseif cell.pct >= 80 %}
+                                        {% elseif cell.pct >= thresholds.green %}
                                             {% set cell_variant = 'success' %}
                                             {% set cell_icon = 'bi-check-circle-fill' %}
-                                        {% elseif cell.pct >= 50 %}
+                                        {% elseif cell.pct >= thresholds.yellow %}
                                             {% set cell_variant = 'warning' %}
                                             {% set cell_icon = 'bi-exclamation-triangle-fill' %}
                                         {% else %}

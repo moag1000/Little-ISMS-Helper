@@ -65,9 +65,9 @@
                             {% set cell = row.cells[framework.code] %}
                             {% set badge_class = 'badge-muted' %}
                             {% if cell.count > 0 %}
-                                {% if cell.pct >= 80 %}
+                                {% if cell.pct >= thresholds.green %}
                                     {% set badge_class = 'badge-success' %}
-                                {% elseif cell.pct >= 50 %}
+                                {% elseif cell.pct >= thresholds.yellow %}
                                     {% set badge_class = 'badge-warning' %}
                                 {% else %}
                                     {% set badge_class = 'badge-danger' %}

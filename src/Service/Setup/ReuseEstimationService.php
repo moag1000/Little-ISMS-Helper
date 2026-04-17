@@ -8,6 +8,7 @@ use App\Entity\ComplianceFramework;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Service\CompliancePolicyService;
 
 /**
  * Reuse Estimation Service (WS-8 — "Was hast du schon?"-Setup-Step).
@@ -28,14 +29,19 @@ use App\Repository\ComplianceRequirementRepository;
  */
 final class ReuseEstimationService
 {
-    public const FTE_DAYS_PER_REQUIREMENT = 0.3;
     public const MIN_MAPPING_PERCENTAGE_FOR_REUSE = 50;
 
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly ComplianceMappingRepository $mappingRepository,
+        private readonly CompliancePolicyService $policy,
     ) {
+    }
+
+    private function fteDaysPerRequirement(): float
+    {
+        return $this->policy->getFloat(CompliancePolicyService::KEY_REUSE_DAYS_PER_REQUIREMENT, 0.3);
     }
 
     /**
@@ -144,7 +150,7 @@ final class ReuseEstimationService
 
             $reusable = count($reusableTargets);
             $reusable = min($reusable, $totalRequirements); // cap sanity
-            $fteDays  = round($reusable * self::FTE_DAYS_PER_REQUIREMENT, 1);
+            $fteDays  = round($reusable * $this->fteDaysPerRequirement(), 1);
             $percent  = $totalRequirements > 0 ? round(($reusable / $totalRequirements) * 100, 1) : 0.0;
 
             $result[$newCode] = [

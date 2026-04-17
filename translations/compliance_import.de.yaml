@@ -43,6 +43,8 @@ compliance_import:
         col_percentage: "Abdeckung"
         col_status: "Status"
         commit: "Import bestätigen und Commit durchführen"
+        four_eyes_warning_title: "4-Augen-Prinzip empfohlen"
+        four_eyes_warning_body: "%rows% Zeilen überschreiten den Schwellwert (%threshold%). Bitte zweite Person zur Freigabe hinzuziehen."
         file_unreadable: "Die Datei konnte nicht gelesen werden."
         missing_header: "Pflicht-Spalte fehlt in der Kopfzeile:"
         col_count_mismatch: "Spaltenanzahl stimmt nicht mit der Kopfzeile überein."
