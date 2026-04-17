@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### ✨ Added
+
+#### Data-Reuse Plan v1.1 — WS-1 … WS-8 vollständig
+- **WS-1 Mapping-basierte Vererbung mit Review-Pflicht**
+  - `ComplianceInheritanceService` erstellt Vorschläge → `FulfillmentInheritanceLog`
+    (Status `pending_review`, niemals direkter Schreibzugriff auf den Erfüllungsgrad)
+  - Reviewer-Pflicht (bestätigen / ablehnen / überschreiben) mit
+    Mindestzeichenlänge laufzeitkonfigurierbar
+  - 4-Augen-Workflow für `implemented`-Transitions via `FourEyesApprovalService`
+  - Feature-Flag `COMPLIANCE_MAPPING_INHERITANCE_ENABLED` für Dark-Launch
+- **WS-2 Import Guardrails** mit konfigurierbaren Grenzwerten
+  (Upload-Limit MB, 4-Augen-Zeilenschwelle)
+- **WS-3 DORA-Lieferantenregister** — 14 Zusatzfelder am `Supplier`
+  (LEI, ICT-Kritikalität, Substituierbarkeit, Exit-Strategie, AV-Vertrag)
+- **WS-4 Portfolio-Ampel** mit konfigurierbaren Schwellwerten (Grün/Gelb)
+- **WS-5 Cross-Framework Mappings** — 461 Mappings über 22 Frameworks
+  (ISO 27001/27002/27005/27701/22301, NIS2, DORA, TISAX, BSI, C5, EU AI Act …)
+- **WS-6 Gap-Report + Quick-Wins** mit Aufwand-Perzentil & Min-Gap-Prozent
+  (konfigurierbar), pro-Requirement `adjustedEffortDays` Override
+- **WS-7 Scheduled Portfolio-Reports** (`ScheduledReport::TYPE_PORTFOLIO`)
+- **WS-8 Setup-Wizard: existierende Frameworks** mit Reuse-Heuristik
+  `daysPerRequirement` laufzeitkonfigurierbar
+- **Admin-Tool: Framework Loader-Fixer** (`/admin/loader-fixer`) —
+  idempotente Re-Exekution aller 22 Framework-Loader
+- **Admin-UI: Compliance-Policy-Einstellungen** (`/admin/compliance/settings`)
+  - 13 Laufzeit-Konfigurationsparameter (inheritance / four_eyes /
+    portfolio / setup / import / ui / gap_report)
+  - Werte in `system_settings` (Kategorie=compliance), YAML als Fallback
+  - Jede Änderung wird auditiert, pro-Key-Reset auf Default möglich
+- **7 Persona-Skills** (Junior-Implementer, ISB, CISO, Auditor, Senior-Consultant,
+  Risk-Owner, Compliance-Manager) für realistisches Tool-Feedback
+
+### 🔧 Changed
+- `ComplianceInheritanceService` und `FourEyesApprovalService` lesen
+  Schwellwerte jetzt zur Laufzeit über `CompliancePolicyService` —
+  Admin-Änderungen wirken sofort ohne Deployment
+- `ComplianceMapping` um `source`, `version`, `validFrom`, `validUntil`
+  erweitert (Versionierung von Mapping-Quellen)
+
 ### Planned
 - JWT Authentication for REST API
 - Advanced API filters and search
@@ -92,6 +131,107 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🐛 Fixed
 - Various CI test improvements for compliance wizard tests
+
+---
+
+## [2.7.0] - 2026-04-17
+
+### ✨ Added
+
+#### Phase 8J: Standards Compliance & UX Improvement (7 Sprints, 67+ Massnahmen)
+
+**Neue Entities & Features:**
+- DataSubjectRequest (GDPR Art. 15-22 Betroffenenrechte) — Entity, Service, Controller, Templates
+- ElementaryThreat (BSI 200-3, 47 Gefaehrdungen G 0.1-G 0.47)
+- KpiSnapshot (taegliche KPI-Snapshots, 30d daily + 12m monthly Retention, konfigurierbar)
+- RiskAggregationService (Portfolio-View, korrelierte Risiken, Heatmap)
+- BCMService (BIA-Analyse, Plan-Readiness, Exercise-Schedule)
+- GrundschutzCheckService (Baustein-Level Soll/Ist, Absicherungsstufen-Compliance)
+- Board One-Pager PDF (RAG-Status + Top-Risiken + Framework-Compliance auf einer Seite)
+- Connected Demo Data Command (ERP→Buchhaltung→2 verknuepfte Risiken)
+- Conditional Fields Stimulus Controller (Progressive Disclosure)
+
+**KPI-System (CISO/Board):**
+- ISMS Health Score (gewichtetes Composite aus 6 KPI-Kategorien)
+- Per-Framework Compliance % (jedes aktive Framework als eigene KPI-Zeile)
+- Risk Appetite Compliance Score, Residual Risk Exposure
+- MTTR nach Severity (Critical/High separat)
+- Control Reuse Ratio, Days Since Last Management Review
+- Oldest Overdue Item Age, Compliance Gaps by Priority
+- Implementation Readiness Checklist, Trend-Pfeile auf allen KPIs
+
+**Compliance-Kataloge:**
+- 3 neue Frameworks: NIS2UmsuCG (15 Req), BDSG (7 Req), EU AI Act (10 Req)
+- GDPR +7 Artikel, NIST CSF +17 Subcategories, GxP Subpart C + GAMP5/ICH/PIC/S
+- DiGAV 2020→2024 + BSI TR-03161, KRITIS→NIS2UmsuCG, CIS IG-Labels
+- 8 Frameworks im Setup Wizard hinzugefuegt (ISO 22301, SOC2, CIS, NIST CSF, etc.)
+
+**Onboarding & Navigation:**
+- First Steps Checklist auf Dashboard (5 Schritte, dismissbar)
+- ISO 9001→27001 Bridge Page + ISMS Glossar (20 Begriffe)
+- Modul-Presets im Setup ("ISO 27001 Starter" / "Vollstaendig")
+- Reports-Kategorie, Spezial-Dashboards, Hilfe & Ressourcen im Mega Menu
+- Rollen-bewusste Navigation (AUDITOR Read-Only, Audit-Log fuer ISB)
+- Granulare Modul-Sichtbarkeit (Item-Level)
+
+### 🔧 Changed
+
+**KPI-Berechnungen korrigiert:**
+- MTTR: korrekter Divisor + Minuten, Severity-Segmentierung
+- control_compliance: gewichtet (implemented*1.0 + partial*0.5)
+- risk_treatment_rate: nur mit echten Massnahmen (accept=formell, mitigate=mit Controls)
+- supplier_assessment_rate: N/A statt falsche 100%
+- asset_classification_rate: alle 3 CIA-Werte noetig (AND statt OR)
+- Count-basierte Thresholds normalisiert (%-basiert)
+- Raw Totals zu Detail-Level demoted
+
+**Form UX (90+ Felder mit Help-Texten):**
+- BCPlanType 23, SupplierType 22, BCExerciseType 22 Felder mit ISO-Referenzen
+- RiskType, IncidentType, ControlType, TrainingType, DataSubjectRequestType vervollstaendigt
+- Progressive Disclosure fuer ProcessingActivityType + RiskType GDPR-Sektion
+- Incident: reportedBy Auto-Fill, crossBorderImpact + treatmentStrategy optional
+- CIA/RTO/RPO/MTPD/Impact Skalen vollstaendig erklaert
+
+**BCM/Risk i18n:**
+- business_process/show, bcm/index, bc_exercise Templates komplett uebersetzt
+- Raw Status/Type Values in BCM Templates durch Translation Keys ersetzt
+- DataBreach Index: 25+ hardcoded English → Translations
+- Asset Chart Labels uebersetzt
+
+**Seeder & Kataloge:**
+- 7 Seeder idempotent, BSI Frameworks konsolidiert
+- NIS2 Title-Fixes, KRITIS→NIS2UmsuCG Rechtsgrundlage
+- TISAX 6.0.3→6.0.4, CIS v8→v8 IG1/IG2/IG3
+
+**Setup Wizard:**
+- Frameworks werden jetzt tatsaechlich geladen (war komplett broken)
+- Cross-Framework-Mappings nach Import generiert
+- Modul-Empfehlungs-Keys korrigiert, Debug-Variablen entfernt
+- Industrie-Checkboxen, Progress-Bars korrigiert, Login-Credentials angezeigt
+
+**Tenant/Context:**
+- "Organisation Context" → "Organisation Profile" (ISO-Namenskollision behoben)
+- ISMSContext Validierung: hardcoded German → Translations
+- Context ↔ Interested Parties Cross-Links
+- Completeness-Berechnung konsistent (Service statt Template)
+- Setup-Fortschritts-Checklist auf Tenant-Detailseite
+
+### 🐛 Fixed
+
+**Tenant-Isolation:** TenantFilter global aktiviert, 29 Caller gefixt
+**Security:** CSRF auf SearchController, WorkflowController, UserManagement, CorporateStructure, AdminModuleController; switch_user restricted; Open Redirect gefixt
+**Entity Cascades:** Risk/ComplianceRequirement/Document CASCADE→SET NULL
+**Runtime:** IncidentRiskFeedback params, Reflection entfernt, Rekursionsschutz
+**Incident Status-Mismatch:** Template + Controller korrigiert
+**Admin DB-Fix:** DataIntegrityService auf 95%+ (15 Entity-Typen, Status-Validierung, COUNT-Queries)
+
+**Package Updates:** stimulus-bundle 3.0, ux-turbo 3.0, ux-chartjs 3.0, migrations-bundle 4.0, monolog-bundle 4.0
+
+### 📚 Documentation
+- docs/ Cleanup: 115→73 aktive Docs (38 geloescht, 21 archiviert)
+- BSI-Specialist Skill + 8 Referenzdateien, alle Specialist-References aktualisiert
+- WCAG 2.1→2.2, NIS2UmsuCG, ISO 22313:2023, ISO 27701:2025
+- IMPROVEMENT_PROJECTS.md, FORM_UX_IMPROVEMENTS.md, KPI_IMPROVEMENT_PLAN.md
 
 ---
 
