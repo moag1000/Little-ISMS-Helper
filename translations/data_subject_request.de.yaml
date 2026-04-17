@@ -1,0 +1,205 @@
+# Data Subject Request translations (German)
+# DSGVO Artikel 15-22: Betroffenenrechte
+
+# Seitentitel
+dsr:
+    page:
+        index_title: "Betroffenenanfragen"
+        index_subtitle: "Verwaltung von DSGVO-Betroffenenrechten (Art. 15-22)"
+        new_title: "Neue Betroffenenanfrage"
+        new_subtitle: "Neue Betroffenenanfrage erfassen"
+        edit_title: "Betroffenenanfrage bearbeiten"
+        show_title: "Betroffenenanfrage #%id%"
+
+    # Breadcrumbs
+    breadcrumb:
+        privacy: "Datenschutz"
+        data_subject_requests: "Betroffenenanfragen"
+
+    # Antragsarten (DSGVO-Artikel)
+    type:
+        access: "Auskunftsrecht (Art. 15)"
+        rectification: "Recht auf Berichtigung (Art. 16)"
+        erasure: "Recht auf Loeschung (Art. 17)"
+        restriction: "Recht auf Einschraenkung (Art. 18)"
+        portability: "Recht auf Datenuebertragbarkeit (Art. 20)"
+        objection: "Widerspruchsrecht (Art. 21)"
+        automated_decision: "Automatisierte Entscheidungen (Art. 22)"
+
+    # Statusbezeichnungen
+    status:
+        received: "Eingegangen"
+        identity_verification: "Identitaetspruefung"
+        in_progress: "In Bearbeitung"
+        completed: "Abgeschlossen"
+        rejected: "Abgelehnt"
+        extended: "Verlaengert"
+        overdue: "Ueberfaellig"
+
+    # Verifizierungsmethoden
+    verification:
+        id_document: "Ausweisdokument"
+        email_verification: "E-Mail-Verifizierung"
+        account_login: "Konto-Anmeldung"
+        other: "Sonstige"
+
+    # Formularfelder
+    form:
+        title: "Betroffenenanfrage-Formular"
+        request_type: "Antragsart"
+        received_at: "Eingangsdatum"
+        description: "Beschreibung der Anfrage"
+        data_subject_name: "Name der betroffenen Person"
+        data_subject_email: "E-Mail-Adresse"
+        data_subject_identifier: "Kennung (Kunden-/Mitarbeiter-Nr.)"
+        identity_verified: "Identitaet verifiziert"
+        identity_verification_method: "Verifizierungsmethode"
+        assigned_to: "Zugewiesen an"
+        processing_activity: "Zugehoerige Verarbeitungstaetigkeit (VVT)"
+        notes: "Interne Notizen"
+        placeholder:
+            request_type: "-- Antragsart waehlen --"
+            description: "Beschreiben Sie, was die betroffene Person anfragt..."
+            data_subject_name: "Vollstaendiger Name der anfragenden Person"
+            data_subject_email: "email@beispiel.de"
+            data_subject_identifier: "z.B. Kundennummer, Mitarbeiternummer"
+            verification_method: "-- Verifizierungsmethode waehlen --"
+            assigned_to: "-- Benutzer zuweisen --"
+            processing_activity: "-- Mit Verarbeitungstaetigkeit verknuepfen --"
+            notes: "Interne Notizen (werden nicht mit der betroffenen Person geteilt)..."
+            response_description: "Beschreiben Sie, was zur Erfuellung der Anfrage unternommen wurde..."
+            rejection_reason: "Grund der Ablehnung (Art. 12(5))..."
+            extension_reason: "Grund fuer Fristverlaengerung (Komplexitaet, Anzahl der Anfragen)..."
+        help:
+            request_type: "Art. 15 Auskunft, Art. 16 Berichtigung, Art. 17 Loeschung, Art. 18 Einschraenkung, Art. 20 Datenuebertragbarkeit, Art. 21 Widerspruch, Art. 22 Automatisierte Entscheidung"
+            received_at: "Datum und Uhrzeit des Eingangs der Anfrage"
+            data_subject_identifier: "Beliebige Kennung zur Identifikation der Person in Ihren Systemen"
+            processing_activity: "Verknuepfung mit einer relevanten Verarbeitungstaetigkeit aus dem VVT"
+            notes: "Interne Notizen werden nicht mit der betroffenen Person geteilt"
+
+    # Abschnittueberschriften
+    section:
+        request_details: "Anfragedetails"
+        data_subject_info: "Informationen zur betroffenen Person"
+        identity_verification: "Identitaetspruefung"
+        assignment: "Zuweisung & Verknuepfungen"
+        internal_notes: "Interne Notizen"
+        response: "Antwortdetails"
+        actions: "Aktionen"
+        processing_activity: "Verarbeitungstaetigkeit"
+        metadata: "Metadaten"
+
+    # Feldbezeichnungen (Detailseite)
+    field:
+        request_type: "Antragsart"
+        status: "Status"
+        received_at: "Eingegangen"
+        deadline: "Frist"
+        original_deadline: "Urspruengliche Frist"
+        extended: "Verlaengert (Art. 12(3))"
+        completed_at: "Abgeschlossen"
+        assigned_to: "Zugewiesen an"
+        description: "Beschreibung"
+        name: "Name"
+        email: "E-Mail"
+        identifier: "Kennung"
+        identity_verified: "Identitaet verifiziert"
+        verification_method: "Verifizierungsmethode"
+        verified_at: "Verifiziert am"
+        response_description: "Antwort"
+        rejection_reason: "Ablehnungsgrund"
+        extension_reason: "Verlaengerungsgrund"
+        created_at: "Erstellt"
+        updated_at: "Zuletzt aktualisiert"
+
+    # Aktionen / Buttons
+    action:
+        new: "Neue Anfrage"
+        create: "Anfrage erstellen"
+        save: "Aenderungen speichern"
+        edit: "Bearbeiten"
+        view: "Anzeigen"
+        complete: "Als abgeschlossen markieren"
+        mark_complete: "Anfrage abschliessen"
+        reject: "Anfrage ablehnen"
+        reject_request: "Ablehnen (Art. 12(5))"
+        extend: "Frist verlaengern"
+        extend_deadline: "Auf 90 Tage verlaengern (Art. 12(3))"
+        delete: "Anfrage loeschen"
+
+    # Fristbezeichnungen
+    deadline:
+        overdue_days: "%days% Tage ueberfaellig"
+        remaining_days: "%days% Tage verbleibend"
+
+    # Warnungen
+    alert:
+        overdue_title: "Ueberfaellige Anfragen!"
+        overdue_text: "%count% Betroffenenanfrage(n) haben die gesetzliche Antwortfrist ueberschritten."
+        overdue_single: "Diese Anfrage ist %days% Tage ueberfaellig. Sofortiges Handeln gemaess DSGVO Art. 12(3) erforderlich."
+        view_overdue: "Ueberfaellige Anfragen anzeigen"
+        deadline_approaching: "Frist naehert sich"
+
+    # Flash-Meldungen
+    flash:
+        created: "Betroffenenanfrage erfolgreich erstellt."
+        updated: "Betroffenenanfrage erfolgreich aktualisiert."
+        completed: "Betroffenenanfrage als abgeschlossen markiert."
+        rejected: "Betroffenenanfrage abgelehnt."
+        extended: "Frist auf 90 Tage verlaengert."
+        deleted: "Betroffenenanfrage geloescht."
+        cannot_edit_terminal: "Eine abgeschlossene oder abgelehnte Anfrage kann nicht bearbeitet werden."
+        response_required: "Eine Antwortbeschreibung ist erforderlich, um die Anfrage abzuschliessen."
+        rejection_reason_required: "Ein Grund ist erforderlich, um die Anfrage abzulehnen."
+        extension_reason_required: "Ein Grund ist erforderlich, um die Frist zu verlaengern."
+
+    # KPI-Bezeichnungen
+    kpi:
+        total: "Anfragen gesamt"
+        in_progress: "Offene Anfragen"
+        overdue: "Ueberfaellig"
+        avg_response: "Durchschn. Bearbeitungszeit"
+        days: "Tage"
+
+    # Filterbezeichnungen
+    filter:
+        label: "Nach Status filtern"
+        all: "Alle"
+
+    # Tabellenkoepfe
+    table:
+        id: "ID"
+        type: "Art"
+        data_subject: "Betroffene Person"
+        status: "Status"
+        received: "Eingegangen"
+        deadline: "Frist"
+        assigned_to: "Zugewiesen an"
+        actions: "Aktionen"
+        unassigned: "Nicht zugewiesen"
+
+    # Badges
+    badge:
+        overdue: "UEBERFAELLIG"
+
+    # Labels
+    label:
+        "yes": "Ja"
+        "no": "Nein"
+
+    # Leerer Zustand
+    empty:
+        title: "Keine Betroffenenanfragen"
+        message: "Es wurden noch keine Betroffenenanfragen erfasst."
+
+    # Bestaetigungen
+    confirm:
+        delete: "Sind Sie sicher, dass Sie diese Betroffenenanfrage loeschen moechten? Diese Aktion kann nicht rueckgaengig gemacht werden."
+
+    # Info-Meldungen
+    info:
+        request_closed: "Diese Anfrage wurde geschlossen."
+
+    # Hilfetexte
+    help:
+        extend_deadline: "Art. 12(3) erlaubt eine Verlaengerung der Frist auf 90 Tage ab Eingang bei komplexen Anfragen oder hohem Anfragevolumen."

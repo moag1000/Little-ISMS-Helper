@@ -130,3 +130,38 @@ corporate:
     tooltip:
         security_score: '<strong>🔒 Sicherheitsbewertung (0-100)</strong><br><em>Frage: Wie gut ist die Informationssicherheit des Lieferanten?</em><br><br><strong>90-100</strong> = Exzellent (ISO 27001 zertifiziert)<br><strong>70-89</strong> = Gut (solide Sicherheitsmaßnahmen)<br><strong>50-69</strong> = Ausreichend (Verbesserungen nötig)<br><strong>30-49</strong> = Mangelhaft (erhöhtes Risiko)<br><strong>0-29</strong> = Kritisch (sofortige Maßnahmen!)<br><br><em>Tipp: Basiert auf letztem Sicherheitsaudit</em>'
         criticality: '<strong>⚡ Kritikalität des Lieferanten</strong><br><em>Frage: Wie wichtig ist dieser Lieferant für Ihr Unternehmen?</em><br><br><strong>Kritisch</strong> = Geschäftsunterbrechung bei Ausfall<br><strong>Hoch</strong> = Erhebliche Beeinträchtigung<br><strong>Mittel</strong> = Spürbare Auswirkungen<br><strong>Niedrig</strong> = Leicht ersetzbar<br><br><em>Tipp: Cloud-Provider, ERP-Anbieter sind meist kritisch</em>'
+
+    # ── WS-3 DORA ROI + DSGVO Art. 28 (2026-04-17) ─────────────────────────
+    field:
+        lei_code: 'LEI-Code (Legal Entity Identifier)'
+        ict_criticality: 'ICT-Kritikalität (DORA)'
+        ict_function_type: 'ICT-Funktionstyp'
+        substitutability: 'Substituierbarkeit'
+        has_subcontractors: 'Hat Subunternehmer'
+        subcontractor_chain: 'Subunternehmer-Kette'
+        processing_locations: 'Verarbeitungsstandorte (Länder)'
+        last_dora_audit_date: 'Letzte DORA-Prüfung'
+        has_exit_strategy: 'Exit-Strategie vorhanden'
+        exit_strategy_document: 'Exit-Strategie-Dokument'
+        gdpr_processor_status: 'Rolle nach DSGVO Art. 28'
+        gdpr_transfer_mechanism: 'Transfer-Mechanismus (Drittlandsübermittlung)'
+        gdpr_av_contract_signed: 'AV-Vertrag unterzeichnet'
+        gdpr_av_contract_date: 'AV-Vertrag Datum'
+    ict_criticality:
+        non_ict: 'Nicht-ICT-Dienst'
+        important: 'Wichtig'
+        critical: 'Kritisch'
+    substitutability:
+        easy: 'Leicht ersetzbar'
+        medium: 'Mittel'
+        hard: 'Schwer ersetzbar'
+    gdpr_processor_status:
+        controller: 'Verantwortlicher'
+        processor: 'Auftragsverarbeiter'
+        joint_controller: 'Gemeinsam Verantwortlicher'
+        none: 'Keine personenbezogenen Daten'
+    value:
+        na: '— nicht zutreffend —'
+    section:
+        dora: 'DORA Register of Information (Art. 28)'
+        privacy: 'Datenschutz (DSGVO Art. 28)'

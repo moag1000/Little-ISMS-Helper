@@ -1,0 +1,47 @@
+portfolio_report:
+    title: 'Cross-Framework Portfolio'
+
+    header:
+        tenant: 'Mandant'
+        stichtag: 'Stichtag'
+        vorperiode: 'Vorperiode'
+        generated_at: 'Erstellt am'
+
+    action:
+        download_pdf: 'Als PDF exportieren'
+
+    form:
+        stichtag: 'Stichtag'
+        stichtag_help: 'Bewertungsstichtag für die Portfolio-Matrix (Format JJJJ-MM-TT).'
+        vorperiode: 'Vorperiode (optional)'
+        vorperiode_help: 'Vergleichsstichtag für Delta-Anzeige. Aktuell: Delta 0, solange keine Snapshot-Historie vorhanden.'
+        update: 'Aktualisieren'
+
+    matrix:
+        title: 'Abdeckungsmatrix nach NIST CSF-Funktion'
+        caption: 'Portfolio-Matrix: Durchschnittliche Erfüllung je NIST-CSF-Funktion und Compliance-Framework.'
+        function: 'NIST-CSF-Funktion'
+        no_frameworks: 'Es sind keine aktiven Compliance-Frameworks hinterlegt.'
+        legend_title: 'Legende'
+        legend: 'Grün ≥ 80 %, Gelb 50–79 %, Rot < 50 %, Grau = keine zugeordneten Anforderungen. n = Anzahl zugeordneter Anforderungen; Gap-Anzeige = Anforderungen < 100 %.'
+
+    category:
+        govern: 'Govern (GV) – Steuerung'
+        identify: 'Identify (ID) – Identifizieren'
+        protect: 'Protect (PR) – Schützen'
+        detect: 'Detect (DE) – Detektieren'
+        respond: 'Respond (RS) – Reagieren'
+        recover: 'Recover (RC) – Wiederherstellen'
+
+    cell:
+        aria: 'Kategorie %category%, Framework %framework%: %pct% Prozent Erfüllung über %count% Anforderungen, %gaps% mit Lücken.'
+        na: 'n/a'
+        count_tooltip: 'Anzahl zugeordneter Anforderungen'
+        gaps_tooltip: 'Anforderungen unter 100 %'
+        gaps_short: 'Gaps'
+
+    pdf:
+        footer: 'Vertraulich – Cross-Framework Portfolio Report | Little ISMS Helper'
+
+    flash:
+        no_tenant: 'Es ist kein Mandant für den Portfolio-Report aktiv.'

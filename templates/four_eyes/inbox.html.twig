@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'four_eyes.inbox.title'|trans({}, 'four_eyes') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <h1 class="h3 mb-3">{{ 'four_eyes.inbox.title'|trans({}, 'four_eyes') }}</h1>
+    <p class="text-muted">{{ 'four_eyes.inbox.lead'|trans({}, 'four_eyes') }}</p>
+
+    {% if requests is empty %}
+        <div class="alert alert-success" role="status">
+            <i class="bi bi-check-circle" aria-hidden="true"></i>
+            {{ 'four_eyes.inbox.empty'|trans({}, 'four_eyes') }}
+        </div>
+    {% else %}
+        <div class="list-group">
+            {% for r in requests %}
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-start gap-3">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="badge bg-info text-dark">
+                                    {{ ('four_eyes.action.' ~ r.actionType)|trans({}, 'four_eyes') }}
+                                </span>
+                                <strong>#{{ r.id }}</strong>
+                                <span class="text-muted">·</span>
+                                <small class="text-muted">
+                                    {{ 'four_eyes.requested_by'|trans({}, 'four_eyes') }}
+                                    {{ r.requestedBy.fullName|default(r.requestedBy.email) }}
+                                </small>
+                            </div>
+                            <div class="small">
+                                {{ 'four_eyes.expires_at'|trans({}, 'four_eyes') }}: {{ r.expiresAt|date('Y-m-d H:i') }}
+                            </div>
+                            <pre class="small bg-light p-2 mt-2 mb-0">{{ r.payload|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                        </div>
+                        <div class="d-flex flex-column gap-2">
+                            <form method="post" action="{{ path('app_four_eyes_approve', { id: r.id }) }}">
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    <i class="bi bi-check-lg" aria-hidden="true"></i>
+                                    {{ 'four_eyes.approve'|trans({}, 'four_eyes') }}
+                                </button>
+                            </form>
+                            <button type="button" class="btn btn-outline-danger btn-sm"
+                                    data-bs-toggle="modal" data-bs-target="#reject-{{ r.id }}">
+                                <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                {{ 'four_eyes.reject'|trans({}, 'four_eyes') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="reject-{{ r.id }}" tabindex="-1"
+                     aria-labelledby="reject-{{ r.id }}-label" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <form method="post" class="modal-content"
+                              action="{{ path('app_four_eyes_reject', { id: r.id }) }}">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="reject-{{ r.id }}-label">
+                                    {{ 'four_eyes.reject_modal.title'|trans({}, 'four_eyes') }}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <label class="form-label">{{ 'four_eyes.reject_modal.reason'|trans({}, 'four_eyes') }}</label>
+                                <textarea name="reason" class="form-control" rows="3" minlength="20" required></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    {{ 'common.cancel'|trans({}, 'messages') }}
+                                </button>
+                                <button type="submit" class="btn btn-danger">
+                                    {{ 'four_eyes.reject'|trans({}, 'four_eyes') }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+# Cross-Framework Mapping EU-DORA (2022/2554) <-> ISO/IEC 27005:2022
+# License: CC-BY 4.0
+# Source: EBA/EIOPA/ESMA Final Report on RTS on ICT Risk Management Framework (JC 2024 29, 17 July 2024). ISO 27005:2022 as risk-management reference.
+# Curator: Senior-GRC-Consultant (2026-04-17)
+# Scope: DORA Art. 5-9 (ICT risk management lifecycle) maps to ISO 27005 process clauses 5-10.
+# Columns: see fixtures/mappings/README.md
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+DORA,Art.5,ISO27005,5,85,partial,high,true,"ICT governance and risk management framework — ISO 27005 Clause 5 describes the overall risk-management process; DORA binds that to the management body for ICT resilience.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.5,ISO27005,6,85,partial,high,false,"Context establishment (Clause 6) is the starting point DORA Art.5 implicitly requires for scope, criteria and stakeholders.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.6,ISO27005,7,95,full,high,true,"ICT risk management — ISO 27005 Clause 7 risk assessment covers identification, analysis and evaluation as DORA Art.6 prescribes.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.6,ISO27005,7.2,90,partial,high,false,"Risk identification (Clause 7.2) directly supports DORA Art.6(2) — continuous identification of sources of ICT risk.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.6,ISO27005,7.3,90,partial,high,false,"Risk analysis (Clause 7.3) implements DORA Art.6 requirement to assess likelihood and impact of ICT disruption scenarios.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.6,ISO27005,7.4,90,partial,high,false,"Risk evaluation (Clause 7.4) aligns with DORA Art.6 requirement to compare risks against risk-acceptance criteria of the management body.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.7,ISO27005,7.2,80,partial,high,false,"Identification of ICT supported business functions and assets — 27005 Clause 7.2 asset identification is the method DORA relies on.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.8,ISO27005,8,90,partial,high,true,"Protection and prevention — ISO 27005 Clause 8 risk treatment selects and applies the controls DORA Art.8 demands (segregation, access, encryption).",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.8,ISO27005,8.2,85,partial,high,false,"Risk treatment options (8.2) — DORA Art.8 prescribes modification of risk through preventive controls.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.8,ISO27005,8.3,85,partial,high,false,"Residual risk acceptance (8.3) — DORA requires explicit acceptance by the management body of any ICT residual risk.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.9,ISO27005,10,90,partial,high,true,"Detection and monitoring — ISO 27005 Clause 10 risk monitoring and review is the process layer for DORA Art.9 continuous detection of anomalous ICT activity.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.17,ISO27005,9,80,partial,high,true,"Communication and consultation (Clause 9) supports the incident-learning communications DORA Art.17 expects across organisational levels.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.28,ISO27005,6,75,partial,medium,false,"Context establishment covers identifying third-party risks in the ICT supply chain, which DORA Art.28 elevates to named register obligations.",its_register_of_information_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.28,ISO27005,7,75,partial,medium,false,"Risk assessment (Clause 7) extends to third-party ICT risks — DORA Art.28 adds register-specific evidence (LEI, substitutability, subcontracting).",its_register_of_information_2024,2026-04-17,Senior-GRC-Consultant

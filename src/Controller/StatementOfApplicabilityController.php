@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Form\ControlType;
 use App\Repository\ControlRepository;
 use App\Service\SoAReportService;
+use App\Service\TagFilterService;
 use App\Service\WorkflowAutoProgressionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +27,8 @@ class StatementOfApplicabilityController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly SoAReportService $soaReportService,
         private readonly Security $security,
-        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService
+        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
+        private readonly TagFilterService $tagFilterService
     ) {}
     #[Route('/soa/', name: 'app_soa_index')]
     public function index(Request $request): Response
@@ -63,6 +65,12 @@ class StatementOfApplicabilityController extends AbstractController
                 'hasSubsidiaries' => false,
                 'currentView' => 'own'
             ];
+        }
+
+        // WS-5: framework-tag filter via ?tag=NIS2
+        $tagFilter = $request->query->get('tag');
+        if (is_string($tagFilter) && $tagFilter !== '') {
+            $controls = $this->tagFilterService->filterByTagName($controls, Control::class, $tagFilter);
         }
 
         $stats = $this->controlRepository->getImplementationStats();

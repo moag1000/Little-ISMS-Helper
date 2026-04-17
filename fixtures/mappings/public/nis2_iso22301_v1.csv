@@ -1,0 +1,18 @@
+# Cross-Framework Mapping NIS2 Art. 21.2.c <-> ISO 22301:2019 (+ 22313:2020 guidance)
+# License: CC-BY 4.0
+# Source: ENISA NIS2 Implementation Guidance (2024) on business continuity and crisis management.
+# Curator: Senior-GRC-Consultant (2026-04-17)
+# Scope: NIS2 BC/crisis/backup provisions map to ISO 22301 BCMS clauses 4-10 and 8.2/8.4.
+# Columns: see fixtures/mappings/README.md
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+NIS2,Art.21.2.c,ISO-22301,8.2,90,partial,high,true,"Business continuity (backup management, disaster recovery, crisis management) — ISO 22301 Clause 8.2 BIA is the prerequisite analysis.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.c,ISO-22301,8.3,90,partial,high,false,"Business continuity strategies and solutions (Clause 8.3) — NIS2 requires defined strategies.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.c,ISO-22301,8.4,95,full,high,true,"Business continuity plans and procedures (Clause 8.4) — direct operational deliverable of NIS2 Art.21.2.c.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.c,ISO-22301,8.4.2,85,partial,high,false,"Incident response structure — NIS2 crisis management hook.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.c,ISO-22301,8.4.5,85,partial,high,false,"Recovery — NIS2 demands restoration capability.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.c,ISO-22301,8.5,80,partial,high,false,"Exercise programme (Clause 8.5) — NIS2 Art.21.2.f effectiveness assessment feeds BCMS testing.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.b,ISO-22301,8.4.2,80,partial,high,true,"Incident handling lifecycle — ISO 22301 Clause 8.4.2 response structure.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.23,ISO-22301,8.4.3,75,partial,high,false,"Reporting obligations — ISO 22301 Clause 8.4.3 warning and communication provides the communication plan.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.f,ISO-22301,9.1,80,partial,high,true,"Effectiveness assessment — Clause 9.1 monitoring, measurement, analysis and evaluation.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.f,ISO-22301,9.3,75,partial,high,false,"Management review (9.3) — reported to management body per NIS2 Art.20.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant

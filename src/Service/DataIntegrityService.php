@@ -18,6 +18,8 @@ use App\Repository\ProcessingActivityRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\LocationRepository;
 use App\Repository\PersonRepository;
+use App\Repository\DataSubjectRequestRepository;
+use App\Repository\KpiSnapshotRepository;
 
 /**
  * Comprehensive data integrity checker for tenant isolation and data consistency
@@ -47,7 +49,9 @@ class DataIntegrityService
         private readonly ProcessingActivityRepository $processingActivityRepository,
         private readonly SupplierRepository $supplierRepository,
         private readonly LocationRepository $locationRepository,
-        private readonly PersonRepository $personRepository
+        private readonly PersonRepository $personRepository,
+        private readonly ?DataSubjectRequestRepository $dataSubjectRequestRepository = null,
+        private readonly ?KpiSnapshotRepository $kpiSnapshotRepository = null
     ) {
     }
 
@@ -71,7 +75,7 @@ class DataIntegrityService
      */
     public function findAllOrphanedEntities(): array
     {
-        return [
+        $orphaned = [
             'assets' => $this->assetRepository->createQueryBuilder('e')
                 ->where('e.tenant IS NULL')
                 ->getQuery()->getResult(),
@@ -112,6 +116,17 @@ class DataIntegrityService
                 ->where('e.tenant IS NULL')
                 ->getQuery()->getResult(),
         ];
+
+        if ($this->dataSubjectRequestRepository !== null) {
+            $orphaned['data_subject_requests'] = $this->dataSubjectRequestRepository->createQueryBuilder('e')
+                ->where('e.tenant IS NULL')->getQuery()->getResult();
+        }
+        if ($this->kpiSnapshotRepository !== null) {
+            $orphaned['kpi_snapshots'] = $this->kpiSnapshotRepository->createQueryBuilder('e')
+                ->where('e.tenant IS NULL')->getQuery()->getResult();
+        }
+
+        return $orphaned;
     }
 
     /**
@@ -191,6 +206,34 @@ class DataIntegrityService
                     'field' => 'title',
                     'value' => $group[0]->getTitle(),
                 ];
+            }
+        }
+
+        // Incident duplicates by title
+        $incidentsByTenant = [];
+        foreach ($this->incidentRepository->findAll() as $incident) {
+            if ($incident->getTenant()) {
+                $key = $incident->getTenant()->getId() . '_' . strtolower(trim($incident->getTitle()));
+                $incidentsByTenant[$key][] = $incident;
+            }
+        }
+        foreach ($incidentsByTenant as $group) {
+            if (count($group) > 1) {
+                $duplicates['incidents'][] = $group;
+            }
+        }
+
+        // Document duplicates by title
+        $docsByTenant = [];
+        foreach ($this->documentRepository->findAll() as $doc) {
+            if ($doc->getTenant() && $doc->getTitle()) {
+                $key = $doc->getTenant()->getId() . '_' . strtolower(trim($doc->getTitle()));
+                $docsByTenant[$key][] = $doc;
+            }
+        }
+        foreach ($docsByTenant as $group) {
+            if (count($group) > 1) {
+                $duplicates['documents'][] = $group;
             }
         }
 
@@ -347,6 +390,29 @@ class DataIntegrityService
             $missing['bc_plans_without_process'] = $bcPlansWithoutProcesses;
         }
 
+        // Trainings without participants assigned
+        $trainingsWithoutParticipants = [];
+        foreach ($this->trainingRepository->findAll() as $training) {
+            if (empty($training->getParticipants())) {
+                $trainingsWithoutParticipants[] = $training;
+            }
+        }
+        if (count($trainingsWithoutParticipants) > 0) {
+            $missing['trainings_without_participants'] = $trainingsWithoutParticipants;
+        }
+
+        // DataSubjectRequests without assignee
+        if ($this->dataSubjectRequestRepository !== null) {
+            $unassignedDsr = $this->dataSubjectRequestRepository->createQueryBuilder('d')
+                ->where('d.assignedTo IS NULL')
+                ->andWhere('d.status NOT IN (:terminal)')
+                ->setParameter('terminal', ['completed', 'rejected'])
+                ->getQuery()->getResult();
+            if (count($unassignedDsr) > 0) {
+                $missing['dsr_without_assignee'] = $unassignedDsr;
+            }
+        }
+
         return $missing;
     }
 
@@ -382,6 +448,76 @@ class DataIntegrityService
             }
         }
 
+        // Risk status validation
+        $validRiskStatuses = ['identified', 'assessed', 'treated', 'monitored', 'closed', 'accepted'];
+        $invalidRiskStatuses = $this->riskRepository->createQueryBuilder('r')
+            ->where('r.status NOT IN (:valid)')->setParameter('valid', $validRiskStatuses)
+            ->getQuery()->getResult();
+        if (count($invalidRiskStatuses) > 0) {
+            $inconsistent['invalid_risk_status'] = $invalidRiskStatuses;
+        }
+
+        // Risk: accept without formal acceptance
+        $unacceptedAccepts = array_filter($risks, fn($r) => $r->getTreatmentStrategy() === 'accept' && !$r->isFormallyAccepted());
+        if (count($unacceptedAccepts) > 0) {
+            $inconsistent['accept_without_formal'] = array_values($unacceptedAccepts);
+        }
+
+        // Incident status validation
+        $validIncidentStatuses = ['reported', 'in_investigation', 'in_resolution', 'resolved', 'closed'];
+        $invalidIncidentStatuses = $this->incidentRepository->createQueryBuilder('i')
+            ->where('i.status NOT IN (:valid)')->setParameter('valid', $validIncidentStatuses)
+            ->getQuery()->getResult();
+        if (count($invalidIncidentStatuses) > 0) {
+            $inconsistent['invalid_incident_status'] = $invalidIncidentStatuses;
+        }
+
+        // DataSubjectRequest checks
+        if ($this->dataSubjectRequestRepository !== null) {
+            $validDsrStatuses = ['received', 'identity_verification', 'in_progress', 'completed', 'rejected', 'extended'];
+            $invalidDsr = $this->dataSubjectRequestRepository->createQueryBuilder('d')
+                ->where('d.status NOT IN (:valid)')->setParameter('valid', $validDsrStatuses)
+                ->getQuery()->getResult();
+            if (count($invalidDsr) > 0) {
+                $inconsistent['invalid_dsr_status'] = $invalidDsr;
+            }
+
+            $allDsr = $this->dataSubjectRequestRepository->findAll();
+            $overdueOpen = array_filter($allDsr, fn($d) =>
+                $d->getEffectiveDeadline() !== null &&
+                $d->getEffectiveDeadline() < new \DateTimeImmutable() &&
+                !in_array($d->getStatus(), ['completed', 'rejected'])
+            );
+            if (count($overdueOpen) > 0) {
+                $inconsistent['overdue_data_subject_requests'] = array_values($overdueOpen);
+            }
+
+            $completedNoResponse = array_filter($allDsr, fn($d) =>
+                $d->getStatus() === 'completed' && empty($d->getResponseDescription())
+            );
+            if (count($completedNoResponse) > 0) {
+                $inconsistent['completed_dsr_without_response'] = array_values($completedNoResponse);
+            }
+        }
+
+        // KpiSnapshot with empty data
+        if ($this->kpiSnapshotRepository !== null) {
+            $emptySnapshots = array_filter(
+                $this->kpiSnapshotRepository->findAll(),
+                fn($s) => empty($s->getKpiData())
+            );
+            if (count($emptySnapshots) > 0) {
+                $inconsistent['empty_kpi_snapshots'] = array_values($emptySnapshots);
+            }
+        }
+
+        // Documents without owner (now nullable after schema change)
+        $docsWithoutOwner = $this->documentRepository->createQueryBuilder('d')
+            ->where('d.user IS NULL')->getQuery()->getResult();
+        if (count($docsWithoutOwner) > 0) {
+            $inconsistent['documents_without_owner'] = $docsWithoutOwner;
+        }
+
         return $inconsistent;
     }
 
@@ -396,50 +532,27 @@ class DataIntegrityService
         foreach ($tenants as $tenant) {
             $counts[$tenant->getId()] = [
                 'tenant' => $tenant,
-                'assets' => count($this->assetRepository->findByTenant($tenant)),
-                'risks' => count($this->riskRepository->findByTenant($tenant)),
-                'incidents' => count($this->incidentRepository->findByTenant($tenant)),
-                'audits' => count($this->auditRepository->createQueryBuilder('a')
-                    ->where('a.tenant = :tenant')
-                    ->setParameter('tenant', $tenant)
-                    ->getQuery()->getResult()),
-                'documents' => count($this->documentRepository->createQueryBuilder('d')
-                    ->where('d.tenant = :tenant')
-                    ->setParameter('tenant', $tenant)
-                    ->getQuery()->getResult()),
-                'trainings' => count($this->trainingRepository->createQueryBuilder('t')
-                    ->where('t.tenant = :tenant')
-                    ->setParameter('tenant', $tenant)
-                    ->getQuery()->getResult()),
-                'business_processes' => count($this->businessProcessRepository->createQueryBuilder('bp')
-                    ->where('bp.tenant = :tenant')
-                    ->setParameter('tenant', $tenant)
-                    ->getQuery()->getResult()),
-                'bc_plans' => count($this->bcPlanRepository->createQueryBuilder('bc')
-                    ->where('bc.tenant = :tenant')
-                    ->setParameter('tenant', $tenant)
-                    ->getQuery()->getResult()),
-                'data_breaches' => count($this->dataBreachRepository->createQueryBuilder('db')
-                    ->where('db.tenant = :tenant')
-                    ->setParameter('tenant', $tenant)
-                    ->getQuery()->getResult()),
-                'processing_activities' => count($this->processingActivityRepository->createQueryBuilder('pa')
-                    ->where('pa.tenant = :tenant')
-                    ->setParameter('tenant', $tenant)
-                    ->getQuery()->getResult()),
-                'suppliers' => count($this->supplierRepository->createQueryBuilder('s')
-                    ->where('s.tenant = :tenant')
-                    ->setParameter('tenant', $tenant)
-                    ->getQuery()->getResult()),
-                'locations' => count($this->locationRepository->createQueryBuilder('l')
-                    ->where('l.tenant = :tenant')
-                    ->setParameter('tenant', $tenant)
-                    ->getQuery()->getResult()),
-                'people' => count($this->personRepository->createQueryBuilder('p')
-                    ->where('p.tenant = :tenant')
-                    ->setParameter('tenant', $tenant)
-                    ->getQuery()->getResult()),
+                'assets' => (int) $this->assetRepository->createQueryBuilder('a')->select('COUNT(a.id)')->where('a.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
+                'risks' => (int) $this->riskRepository->createQueryBuilder('r')->select('COUNT(r.id)')->where('r.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
+                'incidents' => (int) $this->incidentRepository->createQueryBuilder('i')->select('COUNT(i.id)')->where('i.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
+                'audits' => (int) $this->auditRepository->createQueryBuilder('au')->select('COUNT(au.id)')->where('au.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
+                'documents' => (int) $this->documentRepository->createQueryBuilder('d')->select('COUNT(d.id)')->where('d.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
+                'trainings' => (int) $this->trainingRepository->createQueryBuilder('tr')->select('COUNT(tr.id)')->where('tr.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
+                'business_processes' => (int) $this->businessProcessRepository->createQueryBuilder('bp')->select('COUNT(bp.id)')->where('bp.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
+                'bc_plans' => (int) $this->bcPlanRepository->createQueryBuilder('bc')->select('COUNT(bc.id)')->where('bc.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
+                'data_breaches' => (int) $this->dataBreachRepository->createQueryBuilder('db')->select('COUNT(db.id)')->where('db.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
+                'processing_activities' => (int) $this->processingActivityRepository->createQueryBuilder('pa')->select('COUNT(pa.id)')->where('pa.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
+                'suppliers' => (int) $this->supplierRepository->createQueryBuilder('s')->select('COUNT(s.id)')->where('s.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
+                'locations' => (int) $this->locationRepository->createQueryBuilder('l')->select('COUNT(l.id)')->where('l.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
+                'people' => (int) $this->personRepository->createQueryBuilder('p')->select('COUNT(p.id)')->where('p.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
             ];
+
+            if ($this->dataSubjectRequestRepository !== null) {
+                $counts[$tenant->getId()]['data_subject_requests'] = (int) $this->dataSubjectRequestRepository->createQueryBuilder('dsr')->select('COUNT(dsr.id)')->where('dsr.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult();
+            }
+            if ($this->kpiSnapshotRepository !== null) {
+                $counts[$tenant->getId()]['kpi_snapshots'] = (int) $this->kpiSnapshotRepository->createQueryBuilder('ks')->select('COUNT(ks.id)')->where('ks.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult();
+            }
         }
 
         return $counts;

@@ -80,7 +80,7 @@
                         <td><a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a></td>
                         <td>{{ plan.businessProcess ? plan.businessProcess.name : '-' }}</td>
                         <td>{{ plan.planOwner }}</td>
-                        <td><span class="{{ badge_status(plan.status) }}">{{ plan.status|upper }}</span></td>
+                        <td><span class="{{ badge_status(plan.status) }}">{{ ('bc_plans.status.' ~ plan.status)|trans({}, 'bc_plans')|upper }}</span></td>
                         <td>
                             {% set readiness = plan.getReadinessScore() %}
                             {% include '_components/_badge.html.twig' with { variant: readiness >= 80 ? 'success' : (readiness >= 60 ? 'warning' : 'danger'), content: readiness ~ '%' } %}
@@ -101,7 +101,12 @@
                 {% endblock %}
             {% endembed %}
             {% else %}
-            <p>{{ 'bc_plans.message.no_plans'|trans({}, 'bc_plans') }} <a href="{{ path('app_bc_plan_new') }}">{{ 'bc_plans.message.create_first'|trans({}, 'bc_plans') }}</a>.</p>
+            {% include '_components/_empty_state.html.twig' with {
+                icon: 'bi-shield-check',
+                title: 'bc_plans.message.no_plans'|trans({}, 'bc_plans'),
+                description: 'bc_plans.message.create_first'|trans({}, 'bc_plans'),
+                action: { label: 'bc_plans.action.add_new'|trans({}, 'bc_plans'), url: path('app_bc_plan_new'), icon: 'bi-plus-circle' }
+            } %}
             {% endif %}
         {% endblock %}
     {% endembed %}

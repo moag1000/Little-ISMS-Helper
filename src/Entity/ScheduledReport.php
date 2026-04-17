@@ -31,6 +31,7 @@ class ScheduledReport
     public const TYPE_AUDIT = 'audit';
     public const TYPE_ASSETS = 'assets';
     public const TYPE_GDPR = 'gdpr';
+    public const TYPE_PORTFOLIO = 'portfolio';  // WS-7: cross-framework matrix
 
     public const SCHEDULE_DAILY = 'daily';
     public const SCHEDULE_WEEKLY = 'weekly';
@@ -474,5 +475,32 @@ class ScheduledReport
             6 => 'Saturday',
             7 => 'Sunday',
         ];
+    }
+
+    // ── WS-7: payload for portfolio reports (frameworks list) ──────────────
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $payload = null;
+
+    public function getPayload(): ?array
+    {
+        return $this->payload;
+    }
+
+    public function setPayload(?array $payload): self
+    {
+        $this->payload = $payload;
+        return $this;
+    }
+
+    /** @return list<string> */
+    public function getFrameworks(): array
+    {
+        return array_values(array_filter(array_map('strval', (array) ($this->payload['frameworks'] ?? []))));
+    }
+
+    public function setFrameworks(array $codes): self
+    {
+        $this->payload = array_merge($this->payload ?? [], ['frameworks' => array_values($codes)]);
+        return $this;
     }
 }

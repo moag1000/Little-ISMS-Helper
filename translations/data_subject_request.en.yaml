@@ -1,0 +1,205 @@
+# Data Subject Request translations (English)
+# GDPR Articles 15-22: Data Subject Rights
+
+# Page titles
+dsr:
+    page:
+        index_title: "Data Subject Requests"
+        index_subtitle: "Manage GDPR data subject rights requests (Art. 15-22)"
+        new_title: "New Data Subject Request"
+        new_subtitle: "Record a new data subject rights request"
+        edit_title: "Edit Data Subject Request"
+        show_title: "Data Subject Request #%id%"
+
+    # Breadcrumbs
+    breadcrumb:
+        privacy: "Privacy"
+        data_subject_requests: "Data Subject Requests"
+
+    # Request types (GDPR Articles)
+    type:
+        access: "Right of Access (Art. 15)"
+        rectification: "Right to Rectification (Art. 16)"
+        erasure: "Right to Erasure (Art. 17)"
+        restriction: "Right to Restriction (Art. 18)"
+        portability: "Right to Data Portability (Art. 20)"
+        objection: "Right to Object (Art. 21)"
+        automated_decision: "Automated Decision-Making (Art. 22)"
+
+    # Status labels
+    status:
+        received: "Received"
+        identity_verification: "Identity Verification"
+        in_progress: "In Progress"
+        completed: "Completed"
+        rejected: "Rejected"
+        extended: "Extended"
+        overdue: "Overdue"
+
+    # Verification methods
+    verification:
+        id_document: "ID Document"
+        email_verification: "Email Verification"
+        account_login: "Account Login"
+        other: "Other"
+
+    # Form labels
+    form:
+        title: "Data Subject Request Form"
+        request_type: "Request Type"
+        received_at: "Received At"
+        description: "Request Description"
+        data_subject_name: "Data Subject Name"
+        data_subject_email: "Email Address"
+        data_subject_identifier: "Identifier (Customer/Employee ID)"
+        identity_verified: "Identity Verified"
+        identity_verification_method: "Verification Method"
+        assigned_to: "Assigned To"
+        processing_activity: "Related Processing Activity (VVT)"
+        notes: "Internal Notes"
+        placeholder:
+            request_type: "-- Select request type --"
+            description: "Describe what the data subject is requesting..."
+            data_subject_name: "Full name of the requesting person"
+            data_subject_email: "email@example.com"
+            data_subject_identifier: "e.g. Customer ID, Employee ID"
+            verification_method: "-- Select verification method --"
+            assigned_to: "-- Assign to user --"
+            processing_activity: "-- Link to processing activity --"
+            notes: "Internal notes (not shared with the data subject)..."
+            response_description: "Describe what was done to fulfill the request..."
+            rejection_reason: "Reason for rejection (Art. 12(5))..."
+            extension_reason: "Reason for extending deadline (complexity, number of requests)..."
+        help:
+            request_type: "Art. 15 Access, Art. 16 Rectification, Art. 17 Erasure, Art. 18 Restriction, Art. 20 Data Portability, Art. 21 Objection, Art. 22 Automated Decision-Making"
+            received_at: "Date and time the request was received"
+            data_subject_identifier: "Any identifier to locate the person in your systems"
+            processing_activity: "Link to a relevant processing activity from the VVT"
+            notes: "Internal notes are not shared with the data subject"
+
+    # Section headings
+    section:
+        request_details: "Request Details"
+        data_subject_info: "Data Subject Information"
+        identity_verification: "Identity Verification"
+        assignment: "Assignment & Links"
+        internal_notes: "Internal Notes"
+        response: "Response Details"
+        actions: "Actions"
+        processing_activity: "Processing Activity"
+        metadata: "Metadata"
+
+    # Field labels (show page)
+    field:
+        request_type: "Request Type"
+        status: "Status"
+        received_at: "Received"
+        deadline: "Deadline"
+        original_deadline: "Original deadline"
+        extended: "Extended (Art. 12(3))"
+        completed_at: "Completed"
+        assigned_to: "Assigned To"
+        description: "Description"
+        name: "Name"
+        email: "Email"
+        identifier: "Identifier"
+        identity_verified: "Identity Verified"
+        verification_method: "Verification Method"
+        verified_at: "Verified At"
+        response_description: "Response"
+        rejection_reason: "Rejection Reason"
+        extension_reason: "Extension Reason"
+        created_at: "Created"
+        updated_at: "Last Updated"
+
+    # Actions / Buttons
+    action:
+        new: "New Request"
+        create: "Create Request"
+        save: "Save Changes"
+        edit: "Edit"
+        view: "View"
+        complete: "Mark as Completed"
+        mark_complete: "Complete Request"
+        reject: "Reject Request"
+        reject_request: "Reject (Art. 12(5))"
+        extend: "Extend Deadline"
+        extend_deadline: "Extend to 90 Days (Art. 12(3))"
+        delete: "Delete Request"
+
+    # Deadline labels
+    deadline:
+        overdue_days: "%days% days overdue"
+        remaining_days: "%days% days remaining"
+
+    # Alerts
+    alert:
+        overdue_title: "Overdue Requests!"
+        overdue_text: "%count% data subject request(s) have exceeded the legal response deadline."
+        overdue_single: "This request is %days% days overdue. Immediate action required per GDPR Art. 12(3)."
+        view_overdue: "View overdue requests"
+        deadline_approaching: "Deadline Approaching"
+
+    # Flash messages
+    flash:
+        created: "Data subject request created successfully."
+        updated: "Data subject request updated successfully."
+        completed: "Data subject request marked as completed."
+        rejected: "Data subject request rejected."
+        extended: "Deadline extended to 90 days."
+        deleted: "Data subject request deleted."
+        cannot_edit_terminal: "Cannot edit a completed or rejected request."
+        response_required: "Response description is required to complete the request."
+        rejection_reason_required: "A reason is required to reject the request."
+        extension_reason_required: "A reason is required to extend the deadline."
+
+    # KPI labels
+    kpi:
+        total: "Total Requests"
+        in_progress: "Open Requests"
+        overdue: "Overdue"
+        avg_response: "Avg. Response Time"
+        days: "days"
+
+    # Filter labels
+    filter:
+        label: "Filter by status"
+        all: "All"
+
+    # Table headers
+    table:
+        id: "ID"
+        type: "Type"
+        data_subject: "Data Subject"
+        status: "Status"
+        received: "Received"
+        deadline: "Deadline"
+        assigned_to: "Assigned To"
+        actions: "Actions"
+        unassigned: "Unassigned"
+
+    # Badges
+    badge:
+        overdue: "OVERDUE"
+
+    # Labels
+    label:
+        "yes": "Yes"
+        "no": "No"
+
+    # Empty state
+    empty:
+        title: "No Data Subject Requests"
+        message: "No data subject requests have been recorded yet."
+
+    # Confirmations
+    confirm:
+        delete: "Are you sure you want to delete this data subject request? This action cannot be undone."
+
+    # Info messages
+    info:
+        request_closed: "This request has been closed."
+
+    # Help texts
+    help:
+        extend_deadline: "Art. 12(3) allows extending the deadline to 90 days from receipt for complex requests or high volume of requests."

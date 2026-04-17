@@ -1,0 +1,18 @@
+# Cross-Framework Mapping KRITIS (BSIG §8a/§8b + KRITIS-Dachgesetz) <-> NIS2 (EU 2022/2555)
+# License: CC-BY 4.0
+# Source: BSI KRITIS-Pflichten plus NIS2-Umsetzung (Stand 2025).
+# Curator: Senior-GRC-Consultant (rewritten 2026-04-17 for loader-native IDs).
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+KRITIS,KRITIS-8a-1.1,NIS2,NIS2-21.1,95,full,high,true,"Appropriate organisational and technical precautions — NIS2 Art.21.1 overall risk-management obligation.",bsi_kritis_nis2_mapping_2025,2026-04-17,Senior-GRC-Consultant
+KRITIS,KRITIS-8a-1.2,NIS2,NIS2-21.2.a,95,full,high,true,"State of the art security — Art.21.2.a risk-management policies and state-of-the-art.",bsi_kritis_nis2_mapping_2025,2026-04-17,Senior-GRC-Consultant
+KRITIS,KRITIS-8a-1.3,NIS2,NIS2-21.2.a,90,partial,high,false,"IT security concept — Art.21.2.a written risk-management framework.",bsi_kritis_nis2_mapping_2025,2026-04-17,Senior-GRC-Consultant
+KRITIS,KRITIS-8a-1a.1,NIS2,NIS2-21.2.b,90,partial,high,true,"Attack detection systems — Art.21.2.b incident handling detection layer.",bsi_kritis_nis2_mapping_2025,2026-04-17,Senior-GRC-Consultant
+KRITIS,KRITIS-8a-3.1,NIS2,NIS2-21.2.f,85,partial,high,true,"Biennial security audit — Art.21.2.f effectiveness assessment cycle.",bsi_kritis_nis2_mapping_2025,2026-04-17,Senior-GRC-Consultant
+KRITIS,KRITIS-8a-3.4,NIS2,NIS2-21.2.a,80,partial,high,false,"ISO 27001 certification alternative — accepted evidence of Art.21.2.a.",bsi_kritis_nis2_mapping_2025,2026-04-17,Senior-GRC-Consultant
+KRITIS,KRITIS-8b-4.1,NIS2,NIS2-23.1,95,full,high,true,"Reporting significant IT security incidents — NIS2 Art.23.1 early warning.",bsi_kritis_nis2_mapping_2025,2026-04-17,Senior-GRC-Consultant
+KRITIS,KRITIS-8b-4.2,NIS2,NIS2-23.2,90,partial,high,true,"Incident classification criteria — Art.23.2 classification thresholds.",bsi_kritis_nis2_mapping_2025,2026-04-17,Senior-GRC-Consultant
+KRITIS,KRITIS-8b-4.3,NIS2,NIS2-23.3,95,full,high,true,"3-tier incident reporting — Art.23.3 notification obligations.",bsi_kritis_nis2_mapping_2025,2026-04-17,Senior-GRC-Consultant
+KRITIS,KRITIS-8b-4.4,NIS2,NIS2-23.5,90,partial,high,false,"Detailed incident information — Art.23.5 final report content.",bsi_kritis_nis2_mapping_2025,2026-04-17,Senior-GRC-Consultant
+KRITIS,KRITIS-8b-5.1,NIS2,NIS2-23.3,80,partial,high,false,"BSI incident information sharing — Art.23.3 authority coordination.",bsi_kritis_nis2_mapping_2025,2026-04-17,Senior-GRC-Consultant
+KRITIS,KRITIS-14.1,NIS2,NIS2-25.1,80,partial,high,false,"Penalty framework — NIS2 Art.25/34 fines.",bsi_kritis_nis2_mapping_2025,2026-04-17,Senior-GRC-Consultant

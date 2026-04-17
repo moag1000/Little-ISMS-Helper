@@ -234,6 +234,17 @@
     {% endblock %}
 {% endembed %}
 
+{# WS-5 Bulk tag actions bar (polymorphic) #}
+{% if is_granted('TAG_APPLY') %}
+    {% include '_components/_bulk_actions_bar.html.twig' with {
+        entity_class:   'App\\Entity\\Risk',
+        action_urls: {
+            tag_add: path('admin_tag_bulk_apply', {entityClass: 'Risk'}),
+        },
+        available_tags: available_tags(),
+    } only %}
+{% endif %}
+
 {# Risks Table or Empty State #}
 {% if risks|length == 0 %}
     {% include '_components/_empty_state.html.twig' with {

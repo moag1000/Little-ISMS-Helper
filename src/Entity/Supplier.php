@@ -16,6 +16,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Repository\SupplierRepository;
+use App\Entity\Document;
 use App\Entity\Tenant;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -740,4 +741,91 @@ class Supplier
             'overall_compliant' => $this->hasISO27001 && $this->hasDPA && !$this->isAssessmentOverdue()
         ];
     }
+
+    // ── WS-3: DORA ROI + DSGVO Art. 28 fields ────────────────────────────────
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $leiCode = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $ictCriticality = null;  // non_ict|important|critical
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $ictFunctionType = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $substitutability = null;  // easy|medium|hard
+
+    #[ORM\Column]
+    private bool $hasSubcontractors = false;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $subcontractorChain = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $processingLocations = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $lastDoraAuditDate = null;
+
+    #[ORM\Column]
+    private bool $hasExitStrategy = false;
+
+    #[ORM\ManyToOne(targetEntity: Document::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Document $exitStrategyDocument = null;
+
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $gdprProcessorStatus = null;  // controller|processor|joint_controller|none
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $gdprTransferMechanism = null;
+
+    #[ORM\Column]
+    private bool $gdprAvContractSigned = false;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $gdprAvContractDate = null;
+
+    public function getLeiCode(): ?string { return $this->leiCode; }
+    public function setLeiCode(?string $v): self { $this->leiCode = $v; return $this; }
+
+    public function getIctCriticality(): ?string { return $this->ictCriticality; }
+    public function setIctCriticality(?string $v): self { $this->ictCriticality = $v; return $this; }
+
+    public function getIctFunctionType(): ?string { return $this->ictFunctionType; }
+    public function setIctFunctionType(?string $v): self { $this->ictFunctionType = $v; return $this; }
+
+    public function getSubstitutability(): ?string { return $this->substitutability; }
+    public function setSubstitutability(?string $v): self { $this->substitutability = $v; return $this; }
+
+    public function hasSubcontractors(): bool { return $this->hasSubcontractors; }
+    public function setHasSubcontractors(bool $v): self { $this->hasSubcontractors = $v; return $this; }
+
+    public function getSubcontractorChain(): ?array { return $this->subcontractorChain; }
+    public function setSubcontractorChain(?array $v): self { $this->subcontractorChain = $v; return $this; }
+
+    public function getProcessingLocations(): ?array { return $this->processingLocations; }
+    public function setProcessingLocations(?array $v): self { $this->processingLocations = $v; return $this; }
+
+    public function getLastDoraAuditDate(): ?\DateTimeInterface { return $this->lastDoraAuditDate; }
+    public function setLastDoraAuditDate(?\DateTimeInterface $v): self { $this->lastDoraAuditDate = $v; return $this; }
+
+    public function hasExitStrategy(): bool { return $this->hasExitStrategy; }
+    public function setHasExitStrategy(bool $v): self { $this->hasExitStrategy = $v; return $this; }
+
+    public function getExitStrategyDocument(): ?Document { return $this->exitStrategyDocument; }
+    public function setExitStrategyDocument(?Document $d): self { $this->exitStrategyDocument = $d; return $this; }
+
+    public function getGdprProcessorStatus(): ?string { return $this->gdprProcessorStatus; }
+    public function setGdprProcessorStatus(?string $v): self { $this->gdprProcessorStatus = $v; return $this; }
+
+    public function getGdprTransferMechanism(): ?string { return $this->gdprTransferMechanism; }
+    public function setGdprTransferMechanism(?string $v): self { $this->gdprTransferMechanism = $v; return $this; }
+
+    public function getGdprAvContractSigned(): bool { return $this->gdprAvContractSigned; }
+    public function setGdprAvContractSigned(bool $v): self { $this->gdprAvContractSigned = $v; return $this; }
+
+    public function getGdprAvContractDate(): ?\DateTimeInterface { return $this->gdprAvContractDate; }
+    public function setGdprAvContractDate(?\DateTimeInterface $v): self { $this->gdprAvContractDate = $v; return $this; }
 }

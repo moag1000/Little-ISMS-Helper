@@ -1,0 +1,16 @@
+# Cross-Framework Mapping TISAX (VDA ISA 6.0.4) <-> ISO 22301:2019 (+ 22313:2020 guidance)
+# License: CC-BY 4.0
+# Source: VDA ISA 6.0.4 availability and BCM provisions.
+# Curator: Senior-GRC-Consultant (rewritten 2026-04-17 for loader-native IDs).
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+TISAX,BCM-1.1,ISO-22301,8.4,95,full,high,true,"Planning Information Security Continuity — directly corresponds to ISO 22301 Clause 8.4 Business Continuity Plans.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,BCM-1.1,ISO-22301,8.2,85,partial,high,false,"BIA prerequisite — Clause 8.2.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,BCM-1.1,ISO-22301,8.3,85,partial,high,false,"Continuity strategies — Clause 8.3.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,BCM-1.2,ISO-22301,8.4.5,90,partial,high,true,"Implementing continuity — Clause 8.4.5 recovery capability.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,BCM-1.2,ISO-22301,8.5,85,partial,high,true,"Exercise programme (Clause 8.5) — TISAX requires testing of BC plans.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,OPS-1.3,ISO-22301,8.2,75,partial,high,false,"Capacity management supports BIA output — availability planning.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INC-1.4,ISO-22301,8.4.3,80,partial,high,true,"Response to incidents — Clause 8.4.3 warning and communication.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-1.1,ISO-22301,5.1,75,partial,medium,false,"Information security policy — leadership and commitment (Clause 5.1).",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-5.1,ISO-22301,6.1,85,partial,high,true,"Risk assessment feeds BCMS risk treatment (Clause 6.1).",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-5.2,ISO-22301,8.3,80,partial,high,true,"Risk treatment — continuity strategies as treatment option.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant

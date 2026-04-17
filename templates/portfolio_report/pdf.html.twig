@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|default('de') }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'portfolio_report.title'|trans({}, 'portfolio_report') }} - {{ tenant.name }}</title>
+    <style>
+        body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 10pt; margin: 0; padding: 20px; color: #0f172a; }
+        .header { border-bottom: 3px solid #0ea5e9; padding-bottom: 10px; margin-bottom: 20px; }
+        .header h1 { margin: 0 0 6px 0; font-size: 18pt; color: #0f172a; }
+        .header .meta { font-size: 9pt; color: #475569; }
+        .header .meta strong { color: #0f172a; }
+
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { padding: 6px 8px; border: 1px solid #cbd5e1; text-align: center; font-size: 9pt; }
+        thead th { background: #0f172a; color: #f1f5f9; }
+        tbody th { background: #f1f5f9; text-align: left; color: #0f172a; }
+
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 10px; font-size: 9pt; font-weight: bold; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-danger  { background: #fecaca; color: #991b1b; }
+        .badge-muted   { background: #e2e8f0; color: #475569; }
+
+        .cell-meta { font-size: 8pt; color: #64748b; margin-top: 4px; }
+        .cell-gaps { color: #b91c1c; }
+
+        .legend { font-size: 8pt; color: #475569; margin-top: 12px; padding: 8px; background: #f8fafc; border-left: 3px solid #0ea5e9; }
+
+        .footer { margin-top: 30px; text-align: center; font-size: 8pt; color: #64748b; border-top: 1px solid #cbd5e1; padding-top: 8px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ 'portfolio_report.title'|trans({}, 'portfolio_report') }}</h1>
+        <div class="meta">
+            <strong>{{ 'portfolio_report.header.tenant'|trans({}, 'portfolio_report') }}:</strong> {{ tenant.name }}
+            &nbsp;|&nbsp;
+            <strong>{{ 'portfolio_report.header.stichtag'|trans({}, 'portfolio_report') }}:</strong> {{ stichtag|date('Y-m-d') }}
+            {% if vorperiode %}
+                &nbsp;|&nbsp;
+                <strong>{{ 'portfolio_report.header.vorperiode'|trans({}, 'portfolio_report') }}:</strong> {{ vorperiode|date('Y-m-d') }}
+            {% endif %}
+            &nbsp;|&nbsp;
+            <strong>{{ 'portfolio_report.header.generated_at'|trans({}, 'portfolio_report') }}:</strong> {{ generated_at|date('Y-m-d H:i') }}
+        </div>
+    </div>
+
+    {% if matrix.frameworks|length == 0 %}
+        <p>{{ 'portfolio_report.matrix.no_frameworks'|trans({}, 'portfolio_report') }}</p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">{{ 'portfolio_report.matrix.function'|trans({}, 'portfolio_report') }}</th>
+                    {% for framework in matrix.frameworks %}
+                        <th scope="col" title="{{ framework.name }}">{{ framework.code }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in matrix.rows %}
+                    <tr>
+                        <th scope="row">{{ ('portfolio_report.category.' ~ row.category|lower)|trans({}, 'portfolio_report') }}</th>
+                        {% for framework in matrix.frameworks %}
+                            {% set cell = row.cells[framework.code] %}
+                            {% set badge_class = 'badge-muted' %}
+                            {% if cell.count > 0 %}
+                                {% if cell.pct >= 80 %}
+                                    {% set badge_class = 'badge-success' %}
+                                {% elseif cell.pct >= 50 %}
+                                    {% set badge_class = 'badge-warning' %}
+                                {% else %}
+                                    {% set badge_class = 'badge-danger' %}
+                                {% endif %}
+                            {% endif %}
+                            <td>
+                                {% if cell.count == 0 %}
+                                    <span class="badge badge-muted">{{ 'portfolio_report.cell.na'|trans({}, 'portfolio_report') }}</span>
+                                {% else %}
+                                    <span class="badge {{ badge_class }}">{{ cell.pct }}%</span>
+                                    <div class="cell-meta">
+                                        n={{ cell.count }}
+                                        {% if cell.gaps > 0 %}
+                                            <span class="cell-gaps">&nbsp;&middot; {{ cell.gaps }} {{ 'portfolio_report.cell.gaps_short'|trans({}, 'portfolio_report') }}</span>
+                                        {% endif %}
+                                        {% if cell.delta != 0 %}
+                                            &middot; {{ cell.delta > 0 ? '+' : '' }}{{ cell.delta }}
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="legend">
+            <strong>{{ 'portfolio_report.matrix.legend_title'|trans({}, 'portfolio_report') }}:</strong>
+            {{ 'portfolio_report.matrix.legend'|trans({}, 'portfolio_report') }}
+        </div>
+    {% endif %}
+
+    <div class="footer">
+        {{ 'portfolio_report.pdf.footer'|trans({}, 'portfolio_report') }}
+    </div>
+</body>
+</html>

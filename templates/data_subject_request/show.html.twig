@@ -1,0 +1,308 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'data_subject_request' %}
+
+{% block title %}{{ 'dsr.page.show_title'|trans({'%id%': dsr.id}, 'data_subject_request') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'dsr.breadcrumb.privacy'|trans({}, 'data_subject_request'), icon: 'bi-shield-lock' },
+            { label: 'dsr.breadcrumb.data_subject_requests'|trans({}, 'data_subject_request'), url: path('app_data_subject_request_index') },
+            { label: '#' ~ dsr.id }
+        ]
+    } only %}
+
+    {% include '_components/_page_header.html.twig' with {
+        title: dsr.dataSubjectName,
+        subtitle: ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') ~ ' (' ~ dsr.gdprArticle ~ ')',
+        icon: 'bi-person-raised-hand',
+        actions: [
+            { label: 'common.back_to_list'|trans({}, 'messages'), url: path('app_data_subject_request_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+        ]
+    } only %}
+
+    {# Overdue Warning #}
+    {% if dsr.overdue %}
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+            <strong>{{ 'dsr.alert.overdue_title'|trans({}, 'data_subject_request') }}</strong>
+            {{ 'dsr.alert.overdue_single'|trans({'%days%': dsr.daysUntilDeadline|abs}, 'data_subject_request') }}
+        </div>
+    {% elseif dsr.status not in ['completed', 'rejected'] and dsr.daysUntilDeadline <= 7 %}
+        <div class="alert alert-warning" role="alert">
+            <i class="bi bi-clock" aria-hidden="true"></i>
+            <strong>{{ 'dsr.alert.deadline_approaching'|trans({}, 'data_subject_request') }}</strong>
+            {{ 'dsr.deadline.remaining_days'|trans({'%days%': dsr.daysUntilDeadline}, 'data_subject_request') }}
+        </div>
+    {% endif %}
+
+    <div class="row">
+        {# Left Column: Details #}
+        <div class="col-lg-8">
+            {# Status & Request Info #}
+            {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'dsr.section.request_details'|trans({}, 'data_subject_request') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>{{ 'dsr.field.request_type'|trans({}, 'data_subject_request') }}:</strong><br>
+                                <span class="badge bg-info">{{ ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') }}</span>
+                                <small class="text-muted ms-1">({{ dsr.gdprArticle }})</small>
+                            </p>
+                            <p><strong>{{ 'dsr.field.status'|trans({}, 'data_subject_request') }}:</strong><br>
+                                {% set status_class = {
+                                    'received': 'secondary',
+                                    'identity_verification': 'info',
+                                    'in_progress': 'primary',
+                                    'completed': 'success',
+                                    'rejected': 'danger',
+                                    'extended': 'warning'
+                                }[dsr.status]|default('secondary') %}
+                                {% include '_components/_badge.html.twig' with { variant: status_class, content: ('dsr.status.' ~ dsr.status)|trans({}, 'data_subject_request') } only %}
+                            </p>
+                            <p><strong>{{ 'dsr.field.received_at'|trans({}, 'data_subject_request') }}:</strong> {{ dsr.receivedAt|date('Y-m-d H:i') }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>{{ 'dsr.field.deadline'|trans({}, 'data_subject_request') }}:</strong>
+                                <span class="{% if dsr.overdue %}text-danger fw-bold{% elseif dsr.daysUntilDeadline <= 7 %}text-warning{% endif %}">
+                                    {{ dsr.effectiveDeadline|date('Y-m-d') }}
+                                </span>
+                                {% if dsr.extendedDeadlineAt %}
+                                    <br><small class="text-muted">{{ 'dsr.field.original_deadline'|trans({}, 'data_subject_request') }}: {{ dsr.deadlineAt|date('Y-m-d') }}</small>
+                                    <br><small class="text-warning">{{ 'dsr.field.extended'|trans({}, 'data_subject_request') }}</small>
+                                {% endif %}
+                            </p>
+                            {% if dsr.completedAt %}
+                                <p><strong>{{ 'dsr.field.completed_at'|trans({}, 'data_subject_request') }}:</strong> {{ dsr.completedAt|date('Y-m-d H:i') }}</p>
+                            {% endif %}
+                            {% if dsr.assignedTo %}
+                                <p><strong>{{ 'dsr.field.assigned_to'|trans({}, 'data_subject_request') }}:</strong> {{ dsr.assignedTo.firstName }} {{ dsr.assignedTo.lastName }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <hr>
+                    <p><strong>{{ 'dsr.field.description'|trans({}, 'data_subject_request') }}:</strong></p>
+                    <p>{{ dsr.description|nl2br }}</p>
+                {% endblock %}
+            {% endembed %}
+
+            {# Data Subject Information #}
+            {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0"><i class="bi bi-person" aria-hidden="true"></i> {{ 'dsr.section.data_subject_info'|trans({}, 'data_subject_request') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p><strong>{{ 'dsr.field.name'|trans({}, 'data_subject_request') }}:</strong><br>{{ dsr.dataSubjectName }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>{{ 'dsr.field.email'|trans({}, 'data_subject_request') }}:</strong><br>
+                                {% if dsr.dataSubjectEmail %}
+                                    {{ dsr.dataSubjectEmail }}
+                                {% else %}
+                                    <span class="text-muted">&mdash;</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>{{ 'dsr.field.identifier'|trans({}, 'data_subject_request') }}:</strong><br>
+                                {% if dsr.dataSubjectIdentifier %}
+                                    {{ dsr.dataSubjectIdentifier }}
+                                {% else %}
+                                    <span class="text-muted">&mdash;</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                {% endblock %}
+            {% endembed %}
+
+            {# Identity Verification #}
+            {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'dsr.section.identity_verification'|trans({}, 'data_subject_request') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <p><strong>{{ 'dsr.field.identity_verified'|trans({}, 'data_subject_request') }}:</strong>
+                        {% if dsr.identityVerified %}
+                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'dsr.label.yes'|trans({}, 'data_subject_request') } only %}
+                        {% else %}
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'dsr.label.no'|trans({}, 'data_subject_request') } only %}
+                        {% endif %}
+                    </p>
+                    {% if dsr.identityVerificationMethod %}
+                        <p><strong>{{ 'dsr.field.verification_method'|trans({}, 'data_subject_request') }}:</strong>
+                            {{ ('dsr.verification.' ~ dsr.identityVerificationMethod)|trans({}, 'data_subject_request') }}
+                        </p>
+                    {% endif %}
+                    {% if dsr.identityVerifiedAt %}
+                        <p><strong>{{ 'dsr.field.verified_at'|trans({}, 'data_subject_request') }}:</strong> {{ dsr.identityVerifiedAt|date('Y-m-d H:i') }}</p>
+                    {% endif %}
+                {% endblock %}
+            {% endembed %}
+
+            {# Response / Rejection / Extension Details #}
+            {% if dsr.responseDescription or dsr.rejectionReason or dsr.extensionReason %}
+                {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="mb-0"><i class="bi bi-reply" aria-hidden="true"></i> {{ 'dsr.section.response'|trans({}, 'data_subject_request') }}</h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        {% if dsr.responseDescription %}
+                            <p><strong>{{ 'dsr.field.response_description'|trans({}, 'data_subject_request') }}:</strong></p>
+                            <p>{{ dsr.responseDescription|nl2br }}</p>
+                        {% endif %}
+                        {% if dsr.rejectionReason %}
+                            <p><strong>{{ 'dsr.field.rejection_reason'|trans({}, 'data_subject_request') }}:</strong></p>
+                            <p class="text-danger">{{ dsr.rejectionReason|nl2br }}</p>
+                        {% endif %}
+                        {% if dsr.extensionReason %}
+                            <p><strong>{{ 'dsr.field.extension_reason'|trans({}, 'data_subject_request') }}:</strong></p>
+                            <p class="text-warning">{{ dsr.extensionReason|nl2br }}</p>
+                        {% endif %}
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+
+            {# Internal Notes #}
+            {% if dsr.notes %}
+                {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="mb-0"><i class="bi bi-journal-text" aria-hidden="true"></i> {{ 'dsr.section.internal_notes'|trans({}, 'data_subject_request') }}</h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <p>{{ dsr.notes|nl2br }}</p>
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+        </div>
+
+        {# Right Column: Actions #}
+        <div class="col-lg-4">
+            {# Quick Actions #}
+            {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0"><i class="bi bi-lightning" aria-hidden="true"></i> {{ 'dsr.section.actions'|trans({}, 'data_subject_request') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    {% if dsr.status not in ['completed', 'rejected'] %}
+                        <a href="{{ path('app_data_subject_request_edit', {id: dsr.id}) }}" class="btn btn-outline-primary w-100 mb-2">
+                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'dsr.action.edit'|trans({}, 'data_subject_request') }}
+                        </a>
+
+                        {# Complete Action #}
+                        <hr>
+                        <h6>{{ 'dsr.action.mark_complete'|trans({}, 'data_subject_request') }}</h6>
+                        <form method="post" action="{{ path('app_data_subject_request_complete', {id: dsr.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('complete' ~ dsr.id) }}">
+                            <div class="mb-2">
+                                <textarea name="response_description" class="form-control" rows="3"
+                                    placeholder="{{ 'dsr.form.placeholder.response_description'|trans({}, 'data_subject_request') }}"
+                                    required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100 mb-2">
+                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'dsr.action.complete'|trans({}, 'data_subject_request') }}
+                            </button>
+                        </form>
+
+                        {# Reject Action #}
+                        <hr>
+                        <h6>{{ 'dsr.action.reject_request'|trans({}, 'data_subject_request') }}</h6>
+                        <form method="post" action="{{ path('app_data_subject_request_reject', {id: dsr.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ dsr.id) }}">
+                            <div class="mb-2">
+                                <textarea name="rejection_reason" class="form-control" rows="3"
+                                    placeholder="{{ 'dsr.form.placeholder.rejection_reason'|trans({}, 'data_subject_request') }}"
+                                    required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-danger w-100 mb-2">
+                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'dsr.action.reject'|trans({}, 'data_subject_request') }}
+                            </button>
+                        </form>
+
+                        {# Extend Deadline Action (only if not already extended) #}
+                        {% if dsr.extendedDeadlineAt is null %}
+                            <hr>
+                            <h6>{{ 'dsr.action.extend_deadline'|trans({}, 'data_subject_request') }}</h6>
+                            <p class="text-muted small">{{ 'dsr.help.extend_deadline'|trans({}, 'data_subject_request') }}</p>
+                            <form method="post" action="{{ path('app_data_subject_request_extend', {id: dsr.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('extend' ~ dsr.id) }}">
+                                <div class="mb-2">
+                                    <textarea name="extension_reason" class="form-control" rows="3"
+                                        placeholder="{{ 'dsr.form.placeholder.extension_reason'|trans({}, 'data_subject_request') }}"
+                                        required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-warning w-100 mb-2">
+                                    <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'dsr.action.extend'|trans({}, 'data_subject_request') }}
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center text-muted py-3">
+                            <i class="bi bi-check-circle fs-1" aria-hidden="true"></i>
+                            <p class="mt-2">{{ 'dsr.info.request_closed'|trans({}, 'data_subject_request') }}</p>
+                        </div>
+                    {% endif %}
+
+                    {# Delete Action (always visible for ROLE_MANAGER) #}
+                    {% if is_granted('ROLE_MANAGER') %}
+                        <hr>
+                        <form method="post" action="{{ path('app_data_subject_request_delete', {id: dsr.id}) }}"
+                              onsubmit="return confirm('{{ 'dsr.confirm.delete'|trans({}, 'data_subject_request')|e('js') }}');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ dsr.id) }}">
+                            <button type="submit" class="btn btn-outline-danger w-100">
+                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'dsr.action.delete'|trans({}, 'data_subject_request') }}
+                            </button>
+                        </form>
+                    {% endif %}
+                {% endblock %}
+            {% endembed %}
+
+            {# Linked Processing Activity #}
+            {% if dsr.processingActivity %}
+                {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="mb-0"><i class="bi bi-diagram-2" aria-hidden="true"></i> {{ 'dsr.section.processing_activity'|trans({}, 'data_subject_request') }}</h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <p>{{ dsr.processingActivity.name }}</p>
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+
+            {# Metadata #}
+            {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'dsr.section.metadata'|trans({}, 'data_subject_request') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <p><strong>{{ 'dsr.field.created_at'|trans({}, 'data_subject_request') }}:</strong><br>{{ dsr.createdAt|date('Y-m-d H:i') }}</p>
+                    {% if dsr.updatedAt %}
+                        <p><strong>{{ 'dsr.field.updated_at'|trans({}, 'data_subject_request') }}:</strong><br>{{ dsr.updatedAt|date('Y-m-d H:i') }}</p>
+                    {% endif %}
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+</div>
+{% endblock %}

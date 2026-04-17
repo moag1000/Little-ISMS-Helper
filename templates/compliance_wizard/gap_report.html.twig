@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'gap_report' %}
+
+{% block title %}{{ 'gap_report.title'|trans({}, 'gap_report') }} - {{ config.name }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {# Breadcrumb #}
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_compliance_wizard_index') }}">{{ 'wizard.title'|trans({}, 'wizard') }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}">{{ config.name }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'gap_report.title'|trans({}, 'gap_report') }}</li>
+        </ol>
+    </nav>
+
+    {# Header + summary #}
+    <div class="d-flex justify-content-between align-items-start flex-wrap mb-4">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-rulers me-2" aria-hidden="true"></i>{{ 'gap_report.title'|trans({}, 'gap_report') }}
+            </h1>
+            <p class="text-muted mb-0">{{ config.name }}</p>
+        </div>
+        <div class="btn-group" role="group" aria-label="{{ 'gap_report.sort_label'|trans({}, 'gap_report') }}">
+            <a href="{{ path('app_compliance_wizard_gap_report', {wizard: wizard, sort: 'effort'}) }}"
+               class="btn btn-sm {{ sort == 'effort' ? 'btn-primary' : 'btn-outline-primary' }}"
+               aria-pressed="{{ sort == 'effort' ? 'true' : 'false' }}">
+                <i class="bi bi-sort-numeric-down me-1" aria-hidden="true"></i>{{ 'gap_report.sort.effort'|trans({}, 'gap_report') }}
+            </a>
+            <a href="{{ path('app_compliance_wizard_gap_report', {wizard: wizard, sort: 'quick-wins'}) }}"
+               class="btn btn-sm {{ sort == 'quick-wins' ? 'btn-primary' : 'btn-outline-primary' }}"
+               aria-pressed="{{ sort == 'quick-wins' ? 'true' : 'false' }}">
+                <i class="bi bi-lightning-charge me-1" aria-hidden="true"></i>{{ 'gap_report.sort.quick_wins'|trans({}, 'gap_report') }}
+            </a>
+        </div>
+    </div>
+
+    {% include 'compliance_wizard/_gap_report_body.html.twig' with {
+        wizard: wizard,
+        effort_table: effort_table,
+        total_effort_days: total_effort_days,
+        quick_wins: quick_wins,
+        effort_estimated_count: effort_estimated_count,
+        effort_unestimated_count: effort_unestimated_count,
+    } only %}
+
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>{{ 'gap_report.back_to_assessment'|trans({}, 'gap_report') }}
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -9,6 +9,7 @@ use App\Entity\Supplier;
 use App\Form\SupplierType;
 use App\Repository\SupplierRepository;
 use App\Service\SupplierService;
+use App\Service\TagFilterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -25,7 +26,8 @@ class SupplierController extends AbstractController
         private readonly SupplierService $supplierService,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly TagFilterService $tagFilterService
     ) {}
     #[Route('/supplier/', name: 'app_supplier_index')]
     #[IsGranted('ROLE_USER')]
@@ -76,6 +78,12 @@ class SupplierController extends AbstractController
             $detailedStats = $this->calculateDetailedStats($suppliers, $tenant);
         } else {
             $detailedStats = ['own' => count($suppliers), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($suppliers)];
+        }
+
+        // WS-5: framework-tag filter via ?tag=NIS2
+        $tagFilter = $request->query->get('tag');
+        if (is_string($tagFilter) && $tagFilter !== '') {
+            $suppliers = $this->tagFilterService->filterByTagName($suppliers, Supplier::class, $tagFilter);
         }
 
         return $this->render('supplier/index.html.twig', [

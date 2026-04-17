@@ -1,0 +1,71 @@
+tags:
+    admin:
+        page:
+            title: "Manage tags"
+            lead: "Framework tags and classification tags for assets, controls, risks and suppliers."
+        new:
+            title: "Create new tag"
+        edit:
+            title: 'Edit tag: %name%'
+        action:
+            new: "Create new tag"
+            save: "Save"
+            cancel: "Cancel"
+        actions: "Actions"
+        scope: "Visibility"
+        scope_global: "Global"
+        table:
+            caption: "List of all visible tags"
+        empty: "No tags yet. Create one to enable bulk classification across frameworks."
+        aria:
+            edit: 'Edit tag "%name%"'
+            delete: 'Delete tag "%name%"'
+        confirm:
+            delete: "Really delete this tag? Entity links remain in history."
+
+    form:
+        name: "Name"
+        type: "Type"
+        framework_code: "Framework code"
+        framework_code_help: "Optional: code of the linked framework (e.g. NIS2, DORA, ISO27001). Only relevant when type is 'Framework'."
+        color: "Color"
+        description: "Description"
+
+    type:
+        framework: "Framework"
+        classification: "Classification"
+        custom: "Custom"
+
+    color:
+        primary: "Blue"
+        secondary: "Grey"
+        success: "Green"
+        danger: "Red"
+        warning: "Yellow"
+        info: "Cyan"
+        dark: "Dark"
+
+    flash:
+        created: "Tag has been created."
+        updated: "Tag has been updated."
+        deleted: "Tag has been deleted."
+        csrf_invalid: "Security token invalid — please try again."
+
+    bulk:
+        selected: "selected"
+        actions: "Actions"
+        actions_menu: "Open bulk actions menu"
+        add_tag: "Add tag"
+        remove_tag: "Remove tag"
+        export: "Export"
+        pick_tags: "Pick tags"
+        no_tags_available: "No tags available — please create one in the admin area first."
+        apply: "Apply"
+        cancel: "Cancel"
+        clear_selection: "Clear selection"
+        aria:
+            select_tag: 'Select tag "%name%"'
+
+    filter:
+        label: "Framework tag"
+        all: "All"

@@ -1,0 +1,22 @@
+# Cross-Framework Mapping NIS2 Art. 21 <-> ISO/IEC 27005:2022
+# License: CC-BY 4.0
+# Source: ENISA NIS2 Implementation Guidance (2024), ISO 27005:2022 risk-management process clauses.
+# Curator: Senior-GRC-Consultant (2026-04-17)
+# Scope: NIS2 risk-management provisions map to ISO 27005 process clauses 5-10.
+# Columns: see fixtures/mappings/README.md
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+NIS2,Art.21.1,ISO27005,5,90,partial,high,true,"NIS2 Art.21.1 requires appropriate and proportionate technical, operational and organisational measures to manage risks — ISO 27005 Clause 5 defines the overall risk-management process.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.1,ISO27005,6,85,partial,high,false,"Context establishment (Clause 6) — NIS2 requires determining scope, criteria and stakeholders before control selection.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.1,ISO27005,7,95,full,high,true,"Risk assessment (Clause 7) — NIS2 Art.21.1 obligation to base measures on an all-hazards risk approach is implemented via 27005 identification/analysis/evaluation.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.1,ISO27005,7.2,90,partial,high,false,"Risk identification (Clause 7.2) — NIS2 demands identification of risks to network and information systems.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.1,ISO27005,7.3,85,partial,high,false,"Risk analysis (Clause 7.3) — likelihood and impact evaluation.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.1,ISO27005,7.4,85,partial,high,false,"Risk evaluation (Clause 7.4) — risks are compared against risk-acceptance criteria.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.1,ISO27005,8,95,full,high,true,"Risk treatment (Clause 8) — NIS2 proportionate measures are the treatment output; Annex to NIS2 Art.21.2 enumerates control domains.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.1,ISO27005,8.3,80,partial,high,false,"Residual risk acceptance (Clause 8.3) — management body per NIS2 Art.20 approves residual risk.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.a,ISO27005,8,80,partial,high,true,"Risk management policies — derived from risk treatment process (Clause 8).",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.a,ISO27005,9,75,partial,high,false,"Communication and consultation (Clause 9) — policies are communicated across the organisation.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.d,ISO27005,7.2,75,partial,high,false,"Supply-chain risk identification (Clause 7.2) — covers third-party risk sources.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.f,ISO27005,10,90,partial,high,true,"Monitoring and review (Clause 10) — NIS2 Art.21.2.f effectiveness assessment is the review loop.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.3,ISO27005,6,70,partial,high,false,"Contextual proportionality — NIS2 Art.21.3 exposure/size considerations map to 27005 context establishment.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.20,ISO27005,9,85,partial,high,true,"Management body accountability — Clause 9 communication informs the governance layer required by NIS2 Art.20.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant

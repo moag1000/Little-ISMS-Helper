@@ -105,6 +105,20 @@
         </div>
     </div>
 
+    {# Tenant Setup Progress #}
+    {% set hasOrgProfile = tenant.settings.organisation is defined and tenant.settings.organisation.name is defined %}
+    {% set orgSettings = tenant.settings.organisation|default({}) %}
+    {% set hasOrgData = orgSettings.industries is defined and orgSettings.industries is not empty %}
+
+    {% if not hasOrgData %}
+    <div class="alert alert-info mb-4">
+        <h6><i class="bi bi-list-check me-2" aria-hidden="true"></i>{{ 'tenant.setup_progress.title'|trans({}, 'tenant') }}</h6>
+        <ul class="list-unstyled mb-0">
+            <li>{{ hasOrgData ? '&#10003;' : '&#9744;' }} {{ 'tenant.setup_progress.org_profile'|trans({}, 'tenant') }}</li>
+        </ul>
+    </div>
+    {% endif %}
+
     {# Tab Navigation #}
     <ul class="nav nav-tabs mb-4" id="tenantTabs" role="tablist">
         <li class="nav-item" role="presentation">

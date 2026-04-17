@@ -1,0 +1,30 @@
+{# Compact card showing origin of an inheritance suggestion.
+ # Parameters:
+ #   log: FulfillmentInheritanceLog
+ #}
+{% set mapping = log.derivedFromMapping %}
+{% set source = mapping.sourceRequirement %}
+<div class="card border-info mb-2">
+    <div class="card-body p-2">
+        <div class="d-flex justify-content-between align-items-start gap-2">
+            <div>
+                <div class="small text-muted">{{ 'compliance_inheritance.source.label'|trans({}, 'compliance_inheritance') }}</div>
+                <strong>{{ source.framework.code }} · {{ source.requirementId }}</strong>
+                <div class="small">{{ source.title }}</div>
+            </div>
+            <div class="text-end">
+                <div><strong>{{ mapping.mappingPercentage }}%</strong> {{ 'compliance_inheritance.source.mapping'|trans({}, 'compliance_inheritance') }}</div>
+                <div class="small text-muted">
+                    {{ ('compliance_inheritance.confidence.' ~ mapping.confidence)|trans({}, 'compliance_inheritance') }}
+                </div>
+                <div class="small text-muted">v{{ mapping.version }}</div>
+            </div>
+        </div>
+        {% if mapping.mappingRationale %}
+            <p class="small mt-2 mb-0">{{ mapping.mappingRationale }}</p>
+        {% endif %}
+        <div class="small text-muted mt-1">
+            {{ 'compliance_inheritance.source.catalog'|trans({}, 'compliance_inheritance') }}: <code>{{ mapping.source }}</code>
+        </div>
+    </div>
+</div>

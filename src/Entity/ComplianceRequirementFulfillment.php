@@ -346,4 +346,44 @@ class ComplianceRequirementFulfillment
     {
         return $this->getComplianceScore() === 100;
     }
+
+    // ── WS-6: tenant-specific effort override (ISB MINOR-3) ────────────────
+    #[ORM\Column(nullable: true)]
+    private ?int $adjustedEffortDays = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $adjustedEffortReason = null;
+
+    public function getAdjustedEffortDays(): ?int
+    {
+        return $this->adjustedEffortDays;
+    }
+
+    public function setAdjustedEffortDays(?int $days): self
+    {
+        if ($days !== null) {
+            $days = max(0, min(999, $days));
+        }
+        $this->adjustedEffortDays = $days;
+        return $this;
+    }
+
+    public function getAdjustedEffortReason(): ?string
+    {
+        return $this->adjustedEffortReason;
+    }
+
+    public function setAdjustedEffortReason(?string $reason): self
+    {
+        $this->adjustedEffortReason = $reason;
+        return $this;
+    }
+
+    public function getEffectiveEffortDays(): ?int
+    {
+        if ($this->adjustedEffortDays !== null) {
+            return $this->adjustedEffortDays;
+        }
+        return $this->complianceRequirement?->getBaseEffortDays();
+    }
 }

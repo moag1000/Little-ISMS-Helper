@@ -1,0 +1,95 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'compliance_import.result.title'|trans({}, 'compliance_import') }}{% endblock %}
+
+{% block admin_title %}{{ 'compliance_import.wizard.title'|trans({}, 'compliance_import') }}{% endblock %}
+
+{% block admin_content %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
+            { label: 'compliance.manage_frameworks'|trans({}, 'compliance'), url: path('admin_compliance_index') },
+            { label: 'compliance_import.wizard.title'|trans({}, 'compliance_import'), url: path('admin_compliance_import_upload') },
+            { label: 'compliance_import.result.breadcrumb'|trans({}, 'compliance_import') }
+        ]
+    } only %}
+
+    {% include 'admin/compliance_import/_stepper.html.twig' with { active_step: active_step } only %}
+
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } only %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="h5 mb-0">
+                    <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                    {{ 'compliance_import.result.summary_title'|trans({}, 'compliance_import') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            <div class="row g-3" role="list" aria-label="{{ 'compliance_import.result.summary_aria'|trans({}, 'compliance_import') }}">
+                <div class="col-md-4" role="listitem">
+                    <div class="border rounded p-3 text-center">
+                        <div class="h2 mb-1 text-success">
+                            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ imported|default(0) }}
+                        </div>
+                        <div class="text-muted small">
+                            {{ 'compliance_import.result.imported'|trans({}, 'compliance_import') }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" role="listitem">
+                    <div class="border rounded p-3 text-center">
+                        <div class="h2 mb-1 text-primary">
+                            <i class="bi bi-arrow-repeat" aria-hidden="true"></i> {{ superseded|default(0) }}
+                        </div>
+                        <div class="text-muted small">
+                            {{ 'compliance_import.result.superseded'|trans({}, 'compliance_import') }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" role="listitem">
+                    <div class="border rounded p-3 text-center">
+                        <div class="h2 mb-1 {% if skipped|default(0) > 0 %}text-danger{% else %}text-muted{% endif %}">
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ skipped|default(0) }}
+                        </div>
+                        <div class="text-muted small">
+                            {{ 'compliance_import.result.skipped'|trans({}, 'compliance_import') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if errors is defined and errors|length > 0 %}
+                <div class="alert alert-warning mt-3" role="alert">
+                    <h3 class="h6">
+                        <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                        {{ 'compliance_import.result.errors_title'|trans({ '%count%': errors|length }, 'compliance_import') }}
+                    </h3>
+                    <ul class="mb-0 small">
+                        {% for err in errors|slice(0, 20) %}
+                            <li><code>{{ err }}</code></li>
+                        {% endfor %}
+                    </ul>
+                    {% if errors|length > 20 %}
+                        <p class="small text-muted mt-2 mb-0">
+                            {{ 'compliance_import.result.errors_truncated'|trans({ '%remaining%': errors|length - 20 }, 'compliance_import') }}
+                        </p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+
+    <div class="d-flex gap-2 justify-content-end">
+        <a href="{{ path('admin_compliance_import_upload') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+            {{ 'compliance_import.result.start_again'|trans({}, 'compliance_import') }}
+        </a>
+        <a href="{{ path('admin_compliance_index') }}" class="btn btn-primary">
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            {{ 'compliance_import.result.back_to_admin'|trans({}, 'compliance_import') }}
+        </a>
+    </div>
+</div>
+{% endblock %}

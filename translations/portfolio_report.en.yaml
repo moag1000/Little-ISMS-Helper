@@ -1,0 +1,47 @@
+portfolio_report:
+    title: 'Cross-Framework Portfolio'
+
+    header:
+        tenant: 'Tenant'
+        stichtag: 'Reporting date'
+        vorperiode: 'Previous period'
+        generated_at: 'Generated at'
+
+    action:
+        download_pdf: 'Export as PDF'
+
+    form:
+        stichtag: 'Reporting date'
+        stichtag_help: 'Assessment date for the portfolio matrix (format YYYY-MM-DD).'
+        vorperiode: 'Previous period (optional)'
+        vorperiode_help: 'Comparison date for delta display. Currently: delta 0 until snapshot history is available.'
+        update: 'Update'
+
+    matrix:
+        title: 'Coverage matrix by NIST CSF function'
+        caption: 'Portfolio matrix: average fulfillment per NIST CSF function and compliance framework.'
+        function: 'NIST CSF function'
+        no_frameworks: 'No active compliance frameworks are configured.'
+        legend_title: 'Legend'
+        legend: 'Green ≥ 80 %, yellow 50–79 %, red < 50 %, grey = no mapped requirements. n = number of mapped requirements; gap count = requirements below 100 %.'
+
+    category:
+        govern: 'Govern (GV)'
+        identify: 'Identify (ID)'
+        protect: 'Protect (PR)'
+        detect: 'Detect (DE)'
+        respond: 'Respond (RS)'
+        recover: 'Recover (RC)'
+
+    cell:
+        aria: 'Category %category%, framework %framework%: %pct% percent fulfillment across %count% requirements, %gaps% with gaps.'
+        na: 'n/a'
+        count_tooltip: 'Mapped requirements'
+        gaps_tooltip: 'Requirements below 100 %'
+        gaps_short: 'gaps'
+
+    pdf:
+        footer: 'Confidential – Cross-Framework Portfolio Report | Little ISMS Helper'
+
+    flash:
+        no_tenant: 'No tenant is active for the portfolio report.'

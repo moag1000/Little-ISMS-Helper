@@ -11,12 +11,14 @@ use App\Entity\ISMSContext;
 use App\Repository\ISMSContextRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ISMSContextService
 {
     public function __construct(
         private readonly ISMSContextRepository $ismsContextRepository,
         private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
         private readonly ?CorporateStructureService $corporateStructureService = null,
         private readonly ?Security $security = null
     ) {}
@@ -177,19 +179,19 @@ class ISMSContextService
         $errors = [];
 
         if (in_array($ismsContext->getOrganizationName(), [null, '', '0'], true)) {
-            $errors[] = 'Organisationsname ist erforderlich.';
+            $errors[] = $this->translator->trans('context.validation.organization_name_required', [], 'context');
         }
 
         if (in_array($ismsContext->getIsmsScope(), [null, '', '0'], true)) {
-            $errors[] = 'ISMS-Geltungsbereich ist erforderlich.';
+            $errors[] = $this->translator->trans('context.validation.isms_scope_required', [], 'context');
         }
 
         if (in_array($ismsContext->getIsmsPolicy(), [null, '', '0'], true)) {
-            $errors[] = 'ISMS-Richtlinie ist erforderlich.';
+            $errors[] = $this->translator->trans('context.validation.isms_policy_required', [], 'context');
         }
 
         if (in_array($ismsContext->getRolesAndResponsibilities(), [null, '', '0'], true)) {
-            $errors[] = 'Rollen und Verantwortlichkeiten sind erforderlich.';
+            $errors[] = $this->translator->trans('context.validation.roles_and_responsibilities_required', [], 'context');
         }
 
         return $errors;

@@ -1,0 +1,49 @@
+# Cross-Framework Mapping NIS2 Art. 21 Abs. 2 <-> ISO/IEC 27001:2022 Annex A
+# License: CC-BY 4.0
+# Source: ENISA NIS2 Implementation Guidance (2024), Annex C; cross-checked against BSI Kreuzreferenz v1.2 and ISO 27002:2022 implementation guidance.
+# Curator: Senior-GRC-Consultant (initial delivery 2026-04-17)
+# Total rows: 40 (curated sample for Sprint 1; full 110-row catalog to be delivered mid-Sprint 1)
+# File format: CSV with header, UTF-8, comma-separated, quoted strings where commas appear in rationale.
+# Columns: see fixtures/mappings/README.md
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+NIS2,Art.21.2.a,ISO27001,A.5.1,90,partial,high,true,"NIS2 Art.21.2.a fordert dokumentierte Risikomanagement-Policies; ISO 27001 A.5.1 (Policies for information security) deckt Dokumentations- und Freigabepflicht vollständig ab. Quelle: ENISA Annex C 2024, Zeile 21.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.a,ISO27001,A.5.2,70,partial,high,false,"A.5.2 (Roles and responsibilities) flankiert Policy-Umsetzung durch Rollenbezug; allein kein Ersatz für Policy-Inhalte.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.a,ISO27001,A.5.4,60,partial,medium,false,"A.5.4 (Management responsibilities) stellt Leitungsengagement sicher — ergänzend zu Policies, nicht ersetzend.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.b,ISO27001,A.5.24,95,full,high,true,"NIS2 Art.21.2.b (Incident handling) und A.5.24 (Planning and preparation) decken Vorbereitung des Incident-Lifecycle vollständig ab.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.b,ISO27001,A.5.25,85,partial,high,false,"A.5.25 (Assessment and decision) deckt Bewertungsphase des Incident-Handling — Teil des Gesamtflows.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.b,ISO27001,A.5.26,90,partial,high,false,"A.5.26 (Response to incidents) adressiert operative Reaktion; zentraler Baustein für Art.21.2.b.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.b,ISO27001,A.5.27,80,partial,high,false,"A.5.27 (Learning from incidents) erfüllt Reflektions- und Verbesserungsanteil des Art.21.2.b.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.b,ISO27001,A.5.28,70,partial,medium,false,"A.5.28 (Evidence collection) unterstützt Nachweisführung nach Vorfall — NIS2 Meldepflichten setzen Evidence voraus.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.b,ISO27001,A.6.8,65,partial,medium,false,"A.6.8 (Information security event reporting) deckt Melde-Mechanik — NIS2 setzt zusätzlich 24/72h-Fristen voraus.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.c,ISO27001,A.5.29,85,partial,high,true,"NIS2 Art.21.2.c (Business continuity, crisis management) und A.5.29 (Information security during disruption) haben überlappenden Schutzraum.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.c,ISO27001,A.5.30,90,partial,high,true,"A.5.30 (ICT readiness for business continuity) erfüllt ICT-Teil des BCM-Anspruchs aus Art.21.2.c.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.c,ISO27001,A.8.13,75,partial,high,false,"A.8.13 (Information backup) ist operative Basis für Recovery-Teil des BCM.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.c,ISO27001,A.8.14,70,partial,medium,false,"A.8.14 (Redundancy of information processing facilities) unterstützt Ausfallszenarien des BCM.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.d,ISO27001,A.5.19,90,partial,high,true,"NIS2 Art.21.2.d (Supply chain security) und A.5.19 (Information security in supplier relationships) adressieren gleichen Sachverhalt.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.d,ISO27001,A.5.20,85,partial,high,false,"A.5.20 (Addressing information security within supplier agreements) regelt vertragliche Anker der Supply-Chain-Security.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.d,ISO27001,A.5.21,80,partial,high,false,"A.5.21 (ICT supply chain) — Fokus auf ICT-Beschaffungskette, direkter Bezug zu NIS2.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.d,ISO27001,A.5.22,85,partial,high,false,"A.5.22 (Monitoring, review and change management of supplier services) erfüllt laufende Überwachungspflicht.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.d,ISO27001,A.5.23,70,partial,medium,false,"A.5.23 (Information security for use of cloud services) — Cloud-Zulieferer als Spezialfall der Supply Chain.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.e,ISO27001,A.8.25,85,partial,high,true,"NIS2 Art.21.2.e (Security in acquisition, development, maintenance) und A.8.25 (Secure development life cycle) — Kernbezug.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.e,ISO27001,A.8.26,75,partial,high,false,"A.8.26 (Application security requirements) erfüllt Anforderungs-Definitionsteil der Beschaffung.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.e,ISO27001,A.8.28,80,partial,high,false,"A.8.28 (Secure coding) — operative Basis für sichere Entwicklung.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.e,ISO27001,A.8.29,75,partial,high,false,"A.8.29 (Security testing in development and acceptance) erfüllt Prüfaspekt der Art.21.2.e.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.e,ISO27001,A.8.30,65,partial,medium,false,"A.8.30 (Outsourced development) — Schnittstelle zu Supply Chain, wenn Entwicklung fremdbezogen.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.e,ISO27001,A.8.32,70,partial,medium,false,"A.8.32 (Change management) sichert Wartungs-/Änderungsphase des Lebenszyklus.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.f,ISO27001,A.5.35,90,partial,high,true,"NIS2 Art.21.2.f (Policies/procedures to assess effectiveness) und A.5.35 (Independent review of information security) erfüllen Wirksamkeitsprüfung.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.f,ISO27001,A.5.36,85,partial,high,false,"A.5.36 (Compliance with policies, rules and standards) adressiert laufende Einhaltung.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.f,ISO27001,A.8.8,70,partial,medium,false,"A.8.8 (Management of technical vulnerabilities) ist operative Effektivitätsmessung gegen Schwachstellen.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.g,ISO27001,A.6.3,95,full,high,true,"NIS2 Art.21.2.g (Cyber hygiene, training) und A.6.3 (Information security awareness, education and training) direkt deckungsgleich.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.g,ISO27001,A.6.1,70,partial,high,false,"A.6.1 (Screening) Teil der personellen Hygiene — Einstellungsphase.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.g,ISO27001,A.6.2,65,partial,medium,false,"A.6.2 (Terms and conditions of employment) — vertraglicher Rahmen für Hygiene-Verpflichtung.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.h,ISO27001,A.8.24,95,full,high,true,"NIS2 Art.21.2.h (Cryptography/encryption) und A.8.24 (Use of cryptography) kongruent.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.h,ISO27001,A.5.17,80,partial,high,false,"A.5.17 (Authentication information) — kryptografische Absicherung von Credentials als Teilaspekt.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.i,ISO27001,A.5.9,70,partial,high,false,"NIS2 Art.21.2.i (HR security, access control, asset mgmt) — A.5.9 (Inventory of information and other associated assets) deckt Asset-Teil.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.i,ISO27001,A.5.15,85,partial,high,false,"A.5.15 (Access control) direkter Bezug zu Access-Control-Forderung.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.i,ISO27001,A.5.16,75,partial,high,false,"A.5.16 (Identity management) als technische Basis der Access Control.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.i,ISO27001,A.5.18,80,partial,high,false,"A.5.18 (Access rights) — Lifecycle der Zugriffsrechte, Teil von Art.21.2.i.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.i,ISO27001,A.6.5,70,partial,medium,false,"A.6.5 (Responsibilities after termination or change of employment) — HR-Sicherheits-Aspekt.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.j,ISO27001,A.8.5,90,partial,high,true,"NIS2 Art.21.2.j (MFA, secure communications) und A.8.5 (Secure authentication) erfüllen MFA-Anspruch.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.j,ISO27001,A.8.20,80,partial,high,false,"A.8.20 (Networks security) sichert Übertragungsteil der sicheren Kommunikation.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant
+NIS2,Art.21.2.j,ISO27001,A.8.21,75,partial,high,false,"A.8.21 (Security of network services) als Teilaspekt der secure communications.",enisa_nis2_annex_c_2024,2026-04-17,Senior-GRC-Consultant

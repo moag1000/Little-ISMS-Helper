@@ -1,0 +1,56 @@
+# Cross-Framework Mapping TISAX (VDA ISA 6.0.4) <-> ISO/IEC 27001:2022
+# License: CC-BY 4.0
+# Source: VDA ISA 6.0.4 catalogue cross-references to ISO 27001:2022 (April 2024 release).
+# Curator: Senior-GRC-Consultant (rewritten 2026-04-17 for loader-native IDs).
+# IDs follow the TISAX loader domain-prefix convention (ACC/BCM/CMP/COM/CRY/DEV/HRS/INC/INF/OPS/PHY/SUP).
+# Columns: see fixtures/mappings/README.md
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+TISAX,INF-1.1,ISO27001,A.5.1,95,full,high,true,"Information security policy — direct equivalent to A.5.1.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-1.2,ISO27001,A.5.1,90,partial,high,false,"Review of the information security policy — A.5.1 mandates planned-interval review.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-2.1,ISO27001,A.5.2,90,partial,high,true,"Management responsibility for information security — A.5.2 roles and responsibilities.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-3.1,ISO27001,A.5.9,95,full,high,true,"Inventory of assets — A.5.9 inventory of information and associated assets.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-3.2,ISO27001,A.5.9,85,partial,high,false,"Ownership of assets — owner documented per A.5.9.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-3.3,ISO27001,A.5.10,90,partial,high,true,"Acceptable use of assets — direct A.5.10.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-3.4,ISO27001,A.5.11,90,partial,high,true,"Return of assets — direct A.5.11.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-4.1,ISO27001,A.5.12,95,full,high,true,"Classification guidelines — A.5.12.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-4.2,ISO27001,A.5.13,95,full,high,true,"Labelling of information — A.5.13.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-5.1,ISO27001,6.1.2,90,partial,high,true,"Information security risk assessment — Clause 6.1.2.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-5.2,ISO27001,6.1.3,90,partial,high,true,"Information security risk treatment — Clause 6.1.3.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,HRS-1.1,ISO27001,A.6.1,95,full,high,true,"Screening — A.6.1.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,HRS-1.2,ISO27001,A.6.2,95,full,high,true,"Terms and conditions of employment — A.6.2.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,HRS-2.2,ISO27001,A.6.3,95,full,high,true,"Information security awareness, education and training — A.6.3.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,HRS-2.3,ISO27001,A.6.4,85,partial,high,true,"Disciplinary process — A.6.4.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,HRS-3.1,ISO27001,A.6.5,90,partial,high,true,"Termination responsibilities — A.6.5.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,PHY-1.1,ISO27001,A.7.1,95,full,high,true,"Physical security perimeter — A.7.1.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,ACC-1.1,ISO27001,A.5.15,95,full,high,true,"Access control policy — A.5.15.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,ACC-2.1,ISO27001,A.5.18,90,partial,high,true,"User registration and de-registration — A.5.18.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,ACC-2.2,ISO27001,A.5.18,85,partial,high,false,"User access provisioning — A.5.18.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,ACC-2.3,ISO27001,A.8.2,95,full,high,true,"Management of privileged access — A.8.2.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,ACC-3.1,ISO27001,A.5.17,90,partial,high,true,"Secret authentication information — A.5.17.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,ACC-3.2,ISO27001,A.8.5,95,full,high,true,"Secure log-on procedures — A.8.5.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,CRY-1.1,ISO27001,A.8.24,95,full,high,true,"Cryptographic policy — A.8.24.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,CRY-1.2,ISO27001,A.8.24,90,partial,high,false,"Key management — A.8.24 key-management subclause.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,OPS-1.1,ISO27001,A.5.37,85,partial,high,true,"Documented operating procedures — A.5.37.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,OPS-1.2,ISO27001,A.8.32,95,full,high,true,"Change management — A.8.32.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,COM-1.1,ISO27001,A.8.20,95,full,high,true,"Network controls — A.8.20.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,COM-1.2,ISO27001,A.8.21,90,partial,high,true,"Security of network services — A.8.21.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,COM-1.3,ISO27001,A.8.22,90,partial,high,true,"Segregation in networks — A.8.22.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,COM-2.1,ISO27001,A.5.14,90,partial,high,true,"Information transfer policies and procedures — A.5.14.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INC-1.1,ISO27001,A.5.24,95,full,high,true,"Responsibilities and procedures — A.5.24.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INC-1.2,ISO27001,A.6.8,90,partial,high,true,"Reporting of information security events — A.6.8.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INC-1.3,ISO27001,A.5.25,90,partial,high,true,"Assessment and decision on events — A.5.25.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INC-1.4,ISO27001,A.5.26,95,full,high,true,"Response to incidents — A.5.26.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INC-1.5,ISO27001,A.5.27,90,partial,high,true,"Learning from incidents — A.5.27.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INC-1.6,ISO27001,A.5.28,90,partial,high,true,"Evidence collection — A.5.28.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,SUP-1.1,ISO27001,A.5.19,95,full,high,true,"Supplier relationships — A.5.19.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,CMP-1.1,ISO27001,A.5.31,90,partial,high,true,"Legal and contractual requirements — A.5.31.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,CMP-1.4,ISO27001,A.5.34,90,partial,high,true,"Privacy and PII protection — A.5.34.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,BCM-1.1,ISO27001,A.5.29,90,partial,high,true,"Information security continuity — A.5.29.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,BCM-1.2,ISO27001,A.5.30,85,partial,high,true,"Implementing continuity — A.5.30 ICT readiness.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,DEV-2.1,ISO27001,A.8.25,90,partial,high,true,"Secure development policy — A.8.25.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,DEV-3.1,ISO27001,A.8.29,90,partial,high,true,"Security testing — A.8.29.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,PROTO-PARTS,ISO27001,A.5.12,80,partial,high,false,"Prototype Protection Proto Parts — maps to classification A.5.12 plus physical controls; AL3 extension of ISO scope.",vda_isa_6.0.4_al3,2026-04-17,Senior-GRC-Consultant
+TISAX,PROTO-VEHICLES,ISO27001,A.7.1,75,partial,high,false,"Prototype vehicles — physical perimeter + camouflage; AL3-specific.",vda_isa_6.0.4_al3,2026-04-17,Senior-GRC-Consultant
+TISAX,TEST-VEHICLES,ISO27001,A.7.9,75,partial,high,false,"Test vehicles on public roads — A.7.9 assets off-premises; AL3-specific.",vda_isa_6.0.4_al3,2026-04-17,Senior-GRC-Consultant
+TISAX,EVENTS-SHOOTINGS,ISO27001,A.5.14,70,partial,high,false,"Events and media shootings — information transfer controls (A.5.14) plus NDA; AL3.",vda_isa_6.0.4_al3,2026-04-17,Senior-GRC-Consultant

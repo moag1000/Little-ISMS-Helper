@@ -1,0 +1,43 @@
+# Cross-Framework Mapping EU-DORA (2022/2554) <-> ISO/IEC 27001:2022 Annex A
+# License: CC-BY 4.0
+# Source: EBA/EIOPA/ESMA Final Draft RTS/ITS on ICT Risk Management (2024), cross-checked against ISO 27002:2022 implementation guidance.
+# Curator: Senior-GRC-Consultant (initial delivery 2026-04-17)
+# Scope: Focus on Art. 5-14 (ICT risk management, incident handling, testing) + Art. 28-30 (third-party risk).
+# Columns: see fixtures/mappings/README.md
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+DORA,Art.5,ISO27001,5.1,85,partial,high,true,"DORA Art.5 ICT governance and risk management framework overlaps with ISO 27001 Clause 5.1 leadership and commitment. EBA-RTS binds the management body to the framework, matching top-management responsibility.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.5,ISO27001,A.5.1,80,partial,high,false,"Policies must be documented and approved — DORA Art.5 demands written framework, A.5.1 delivers the documentation requirement.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.5,ISO27001,A.5.4,75,partial,high,false,"DORA explicitly assigns accountability to the management body; A.5.4 management responsibilities is the ISO counterpart.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.6,ISO27001,6.1.2,90,partial,high,true,"DORA Art.6 ICT risk management requires identification, assessment and treatment — full overlap with ISO 27001 6.1.2 risk assessment process.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.6,ISO27001,A.5.7,80,partial,high,false,"Threat intelligence Art.6(2) maps to A.5.7 threat intelligence.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.7,ISO27001,A.8.1,85,partial,high,true,"ICT systems identification and classification — DORA Art.7 vs A.8.1 user endpoint devices plus A.5.9 inventory.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.7,ISO27001,A.5.9,90,partial,high,false,"Inventory of information and associated assets directly satisfies DORA Art.7 identification requirement.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.8,ISO27001,A.8.2,85,partial,high,true,"DORA Art.8 protection and prevention — privileged access management maps to A.8.2.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.8,ISO27001,A.8.24,80,partial,high,false,"Use of cryptography is part of Art.8 protection stack.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.8,ISO27001,A.8.5,80,partial,high,false,"Secure authentication / MFA operationalises DORA Art.8(3) access controls.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.9,ISO27001,A.5.25,90,partial,high,true,"Detection of anomalous activities — A.5.25 assessment and decision on information security events.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.9,ISO27001,A.8.16,85,partial,high,false,"Monitoring activities cover Art.9 continuous detection.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.10,ISO27001,A.5.29,95,full,high,true,"Response and recovery — A.5.29 information security during disruption is the ISO-side baseline.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.10,ISO27001,A.5.30,90,partial,high,false,"ICT readiness for business continuity, core of DORA Art.10.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.10,ISO27001,A.8.13,80,partial,high,false,"Information backup underpins Art.10 recovery capability.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.10,ISO27001,A.8.14,75,partial,high,false,"Redundancy of processing facilities supports DORA resilience targets.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.11,ISO27001,A.5.24,95,full,high,true,"ICT-related incident management process — direct map to A.5.24 incident response planning and preparation.",rts_classification_major_incidents_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.11,ISO27001,A.5.26,90,partial,high,false,"Response to incidents operationalises DORA Art.11 processes.",rts_classification_major_incidents_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.11,ISO27001,A.5.27,80,partial,high,false,"Learning from incidents satisfies DORA Art.11 continuous improvement obligation.",rts_classification_major_incidents_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.12,ISO27001,A.5.25,85,partial,high,true,"Classification of incidents — A.5.25 assessment and decision drives severity rating (DORA thresholds apply).",rts_classification_major_incidents_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.13,ISO27001,A.6.8,80,partial,high,false,"Reporting of major ICT incidents to authorities — A.6.8 information security event reporting provides the operational channel. Note: DORA adds 4h initial / 72h intermediate / 1-month final deadlines not in ISO.",rts_incident_reporting_content_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.13,ISO27001,A.5.28,70,partial,medium,false,"Evidence collection supports authority reporting workflow.",rts_incident_reporting_content_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.14,ISO27001,A.6.3,80,partial,high,false,"ICT-related security awareness and training — direct A.6.3 map.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.24,ISO27001,A.8.29,75,partial,high,true,"Digital operational resilience testing programme — A.8.29 security testing in development and acceptance provides the core ISO practice (DORA expands to TLPT for significant entities).",rts_tlpt_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.25,ISO27001,A.8.29,70,partial,medium,false,"Vulnerability assessments and scans — part of A.8.29.",rts_tlpt_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.26,ISO27001,A.8.29,65,partial,medium,false,"TLPT Threat-Led Penetration Testing — A.8.29 covers pen-test discipline; DORA prescribes red-team scope beyond ISO.",rts_tlpt_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.28,ISO27001,A.5.19,95,full,high,true,"Third-party ICT risk management principles — direct overlap with A.5.19 information security in supplier relationships.",its_register_of_information_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.28,ISO27001,A.5.20,90,partial,high,false,"Addressing information security within supplier agreements — core DORA Art.28 contractual requirement.",its_register_of_information_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.28,ISO27001,A.5.21,90,partial,high,false,"ICT supply chain — directly mapped.",its_register_of_information_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.28,ISO27001,A.5.22,85,partial,high,false,"Monitoring, review and change management of supplier services.",its_register_of_information_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.28,ISO27001,A.5.23,75,partial,high,false,"Cloud services as sub-category of third-party ICT services.",its_register_of_information_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.29,ISO27001,A.5.19,80,partial,high,false,"Register of information on ICT third-party providers — ISO lifecycle covers identification but not the DORA-specific ROI fields (LEI, substitutability, subcontracting chain).",its_register_of_information_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.30,ISO27001,A.5.20,85,partial,high,false,"Key contractual provisions for ICT services — direct bridge to A.5.20 content requirements.",its_register_of_information_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.30a,ISO27001,A.5.22,75,partial,high,false,"Subcontracting of ICT services supporting critical/important functions — monitoring the subcontracting chain aligns with A.5.22.",rts_subcontracting_2025_final_draft,2026-04-17,Senior-GRC-Consultant
+DORA,Art.45,ISO27001,A.5.7,80,partial,high,false,"Information sharing arrangements on cyber threat intelligence — A.5.7 coverage.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant

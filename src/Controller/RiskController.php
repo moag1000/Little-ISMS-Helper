@@ -17,6 +17,7 @@ use App\Service\RiskService;
 use App\Service\RiskAcceptanceWorkflowService;
 use App\Service\ExcelExportService;
 use App\Service\PdfExportService;
+use App\Service\TagFilterService;
 use App\Service\WorkflowAutoProgressionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,7 +41,8 @@ class RiskController extends AbstractController
         private readonly ExcelExportService $excelExportService,
         private readonly PdfExportService $pdfExportService,
         private readonly Security $security,
-        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService
+        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
+        private readonly TagFilterService $tagFilterService
     ) {}
     #[Route('/risk/', name: 'app_risk_index')]
     #[IsGranted('ROLE_USER')]
@@ -119,6 +121,12 @@ class RiskController extends AbstractController
 
         // Re-index array after filtering
         $risks = array_values($risks);
+
+        // WS-5: framework-tag filter via ?tag=NIS2
+        $tagFilter = $request->query->get('tag');
+        if (is_string($tagFilter) && $tagFilter !== '') {
+            $risks = $this->tagFilterService->filterByTagName($risks, Risk::class, $tagFilter);
+        }
 
         $treatmentStats = $this->riskRepository->countByTreatmentStrategy();
 

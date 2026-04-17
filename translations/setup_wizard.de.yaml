@@ -1,0 +1,52 @@
+existing_frameworks:
+    title: 'Was hast du schon? - Compliance-Portfolio'
+    header: 'Was hast du schon? (Portfolio-Baseline)'
+    description: 'Gib an, welche Frameworks in deiner Organisation bereits zertifiziert sind. Auf Basis der Cross-Framework-Mappings schätzen wir, wie viele Anforderungen der neu hinzugefügten Frameworks du wiederverwenden kannst.'
+    info:
+        title: 'Warum diese Abfrage?'
+        message: 'Eine bestehende ISO-27001-Zertifizierung kann 60–80 % der NIS2- oder DORA-Anforderungen abdecken. Diese Auswahl priorisiert die Ableitungsvorschläge (Review-pflichtig) nach dem Setup-Abschluss.'
+
+    already_certified:
+        label: 'Bereits zertifizierte Frameworks'
+        heading: 'Bereits vorhanden'
+        description: 'Frameworks, für die deine Organisation bereits zertifiziert ist oder die vollständig umgesetzt sind.'
+        help: 'Auswahl optional — dient als Basis für die Reuse-Prognose.'
+
+    newly_added:
+        label: 'Neu hinzuzufügende Frameworks'
+        heading: 'Neu hinzufügen'
+        description: 'Frameworks, die im Rahmen dieses Setups neu aufgenommen werden. Vorbelegt mit deiner Auswahl aus Schritt 8.'
+        help: 'Änderungen wirken nur auf diesen Reuse-Dialog — die Aktivierung erfolgt beim Setup-Abschluss.'
+
+    certification_dates:
+        label: 'Zertifizierungsdaten'
+        help: 'Internes Feld — nicht sichtbar.'
+
+    certification_date:
+        label: 'Zertifiziert seit'
+        help: 'Optional — wird im Audit-Trail dokumentiert.'
+
+    preview:
+        heading: 'Reuse-Prognose'
+        idle: 'Triff eine Auswahl, um die Prognose zu sehen.'
+        no_newly_added: 'Wähle mindestens ein neu hinzuzufügendes Framework rechts aus.'
+        no_sources: 'Keine Mappings gefunden'
+        error: 'Prognose konnte nicht geladen werden. Bitte versuche es erneut.'
+        aria_label: 'Vorschau der wiederverwendbaren Anforderungen'
+        caption: 'Geschätzt: %reusable% wiederverwendbare Anforderungen · %days% FTE-Tage gespart.'
+        total: 'Summe'
+        heuristic_note: 'Heuristik: 0,3 FTE-Tage pro wiederverwendbare Anforderung (≈2h Ersparnis vs. Neubewertung). Nur Mappings mit ≥ 50 % Abdeckung zählen.'
+        col:
+            framework: 'Framework'
+            requirements: 'Anforderungen'
+            reusable: 'Wiederverwendbar'
+            fte_days: 'FTE-Tage gespart'
+            sources: 'Abgeleitet aus'
+
+    actions:
+        skip: 'Überspringen'
+        save_next: 'Speichern & weiter'
+
+    flash:
+        saved: '%count% neue Frameworks für Reuse-Aktivierung gemerkt.'
+        skipped: 'Portfolio-Abfrage übersprungen — Reuse-Prognose nicht aktiv.'

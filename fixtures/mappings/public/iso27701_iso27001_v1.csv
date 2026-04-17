@@ -1,0 +1,38 @@
+# Cross-Framework Mapping ISO/IEC 27701:2019 <-> ISO/IEC 27001:2022
+# License: CC-BY 4.0
+# Source: ISO/IEC 27701:2019 Annex A/B normative references, plus ISO 27001:2022 transition guidance (BSI/ENISA).
+# Curator: Senior-GRC-Consultant (2026-04-17)
+# Note: ISO 27701:2019 extends ISO 27001 — mappings here reflect the PIMS-specific controls and the core management-system clauses.
+# Columns: see fixtures/mappings/README.md
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+ISO27701,5.2.1,ISO27001,4.1,95,full,high,true,"Understanding the organization and its context — PIMS extension re-uses 27001 Clause 4.1 verbatim.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,5.2.2,ISO27001,4.2,95,full,high,true,"Understanding needs and expectations of interested parties, PIMS extends to data subjects as interested party.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,5.3,ISO27001,4.3,95,full,high,true,"Scope of the PIMS — directly layered on 27001 Clause 4.3, PII scope added.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,5.3,ISO27001,5.1,95,full,high,true,"Leadership and commitment — identical ISO 27001 clause with PIMS obligations.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,5.4.1,ISO27001,6.1.1,95,full,high,true,"Risks and opportunities — PIMS-specific extension of 6.1.1.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,5.4.1,ISO27001,6.1.2,90,partial,high,false,"Risk assessment process — 27701 prescribes privacy-specific risk criteria (e.g. DPIA triggers).",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,5.4.1,ISO27001,6.1.3,90,partial,high,false,"Risk treatment — 27701 requires privacy risk treatment register.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,7.5.1,ISO27001,7.5,95,full,high,true,"Documented information — PIMS demands explicit PII-related documents (records of processing, DPIA, consent evidence).",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,9.1,ISO27001,9.1,90,partial,high,true,"Monitoring, measurement, analysis and evaluation.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,9.2,ISO27001,9.2,95,full,high,true,"Internal audit — 27701 audits PIMS in the same cadence.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,9.3,ISO27001,9.3,95,full,high,true,"Management review — identical to 27001.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.7.2.1,ISO27001,A.5.1,80,partial,high,false,"Identify and document purpose — backed by A.5.1 policies.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.7.2.2,ISO27001,A.5.31,75,partial,high,false,"Identify lawful basis — aligns with A.5.31 legal, statutory, regulatory requirements.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.7.2.3,ISO27001,A.5.1,70,partial,high,false,"Determine when and how consent is obtained — A.5.1 policy documentation vehicle.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.7.2.4,ISO27001,A.8.10,75,partial,high,false,"Obtain and record consent — A.8.10 information deletion and A.5.33 records protection adjacent; A.8.10 selected as primary operational link.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.7.2.5,ISO27001,A.5.34,85,partial,high,true,"Privacy impact assessment — direct correspondence with A.5.34 privacy and PII protection.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.7.3.1,ISO27001,A.5.34,80,partial,high,false,"Determining and fulfilling obligations to PII principals — A.5.34 is the umbrella control.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.7.4.1,ISO27001,A.8.12,80,partial,high,true,"Limit collection — A.8.12 data leakage prevention adjacent; A.8.3 information access restriction primary mapping.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.7.4.2,ISO27001,A.5.12,85,partial,high,false,"Limit processing — classification of information supports purpose-limitation.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.7.4.5,ISO27001,A.5.34,90,partial,high,true,"PII minimisation — direct A.5.34 privacy objective.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.7.4.7,ISO27001,A.8.10,95,full,high,true,"Retention — A.8.10 information deletion is the technical implementation of retention limits.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.7.4.8,ISO27001,A.8.10,95,full,high,true,"Disposal — A.8.10 information deletion.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.7.4.9,ISO27001,A.8.24,90,partial,high,true,"PII transmission controls — A.8.24 cryptography plus A.8.20 networks security.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.7.5.1,ISO27001,A.5.14,85,partial,high,false,"Identify basis for PII transfer between jurisdictions — A.5.14 information transfer provides baseline.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.7.5.2,ISO27001,A.5.14,80,partial,high,false,"Countries and international organisations to which PII can be transferred — A.5.14 documentation.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.8.2.1,ISO27001,A.5.20,85,partial,high,true,"Customer agreement — A.5.20 supplier agreements is the ISO analogue for controller/processor contracts.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.8.2.2,ISO27001,A.5.19,80,partial,high,false,"Organisations purposes — supplier relationship documentation per A.5.19.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.8.2.3,ISO27001,A.5.34,80,partial,high,false,"Marketing and advertising use — bound by A.5.34 privacy objectives.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.8.4.1,ISO27001,A.8.12,85,partial,high,true,"Temporary files — A.8.12 data leakage prevention as operational control.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant
+ISO27701,A.8.4.2,ISO27001,A.8.10,90,partial,high,true,"Return, transfer or disposal of PII — A.8.10 deletion.",iso_27701_2019_annex_a,2026-04-17,Senior-GRC-Consultant

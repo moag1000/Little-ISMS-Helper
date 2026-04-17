@@ -1,0 +1,19 @@
+# Cross-Framework Mapping BDSG (2018/2024) <-> GDPR (2016/679)
+# License: CC-BY 4.0
+# Source: BfDI orientation paper plus BDSG 2024 amendment (AI Act carve-outs, §26 updates).
+# Curator: Senior-GRC-Consultant (2026-04-17)
+# Note: BDSG concretises GDPR opening clauses for Germany; most sections reference GDPR articles directly.
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+BDSG,§1,GDPR,Art.2,95,full,high,true,"Scope — BDSG §1 aligned with GDPR Art.2 material scope, extended to non-automated processing.",bfdi_bdsg_gdpr_mapping_2024,2026-04-17,Senior-GRC-Consultant
+BDSG,§4,GDPR,Art.6,85,partial,high,true,"Video surveillance lawful basis — GDPR Art.6 opening clause.",bfdi_bdsg_gdpr_mapping_2024,2026-04-17,Senior-GRC-Consultant
+BDSG,§22,GDPR,Art.9,95,full,high,true,"Processing of special categories — German opening clause to Art.9.",bfdi_bdsg_gdpr_mapping_2024,2026-04-17,Senior-GRC-Consultant
+BDSG,§26,GDPR,Art.88,95,full,high,true,"Employee data processing — BDSG §26 is the German opening clause under GDPR Art.88.",bfdi_bdsg_gdpr_mapping_2024,2026-04-17,Senior-GRC-Consultant
+BDSG,§31,GDPR,Art.22,85,partial,high,true,"Scoring and credit agencies — BDSG §31 concretises automated decision-making rules of Art.22.",bfdi_bdsg_gdpr_mapping_2024,2026-04-17,Senior-GRC-Consultant
+BDSG,§34,GDPR,Art.15,90,partial,high,true,"Right of access — BDSG §34 defines restrictions to Art.15 for specific contexts (e.g. journalism).",bfdi_bdsg_gdpr_mapping_2024,2026-04-17,Senior-GRC-Consultant
+BDSG,§35,GDPR,Art.17,90,partial,high,true,"Right to erasure — BDSG §35 defines exceptions in line with Art.17(3).",bfdi_bdsg_gdpr_mapping_2024,2026-04-17,Senior-GRC-Consultant
+BDSG,§38,GDPR,Art.37,95,full,high,true,"Appointment of DPO — BDSG §38 lowers GDPR Art.37 threshold (20 employees handling personal data).",bfdi_bdsg_gdpr_mapping_2024,2026-04-17,Senior-GRC-Consultant
+BDSG,§43,GDPR,Art.83,80,partial,high,true,"Administrative fines — BDSG §43 concretises GDPR Art.83 in the German enforcement context.",bfdi_bdsg_gdpr_mapping_2024,2026-04-17,Senior-GRC-Consultant
+BDSG,§45,GDPR,Art.4,85,partial,high,false,"Special provisions for processing in context of criminal matters — references GDPR definitions, maps via Art.4.",bfdi_bdsg_gdpr_mapping_2024,2026-04-17,Senior-GRC-Consultant
+BDSG,§48,GDPR,Art.6,80,partial,high,false,"Processing for purposes of criminal prosecution — conditional on Art.6(1)(e).",bfdi_bdsg_gdpr_mapping_2024,2026-04-17,Senior-GRC-Consultant
+BDSG,§64,GDPR,Art.32,80,partial,high,true,"Security of processing for criminal matters — aligned with GDPR Art.32.",bfdi_bdsg_gdpr_mapping_2024,2026-04-17,Senior-GRC-Consultant

@@ -1,0 +1,50 @@
+{#
+ # Bootstrap-based stepper for the Compliance-Mapping Import-Wizard (WS-2).
+ #
+ # Parameters:
+ #   - active_step: int (1, 2 or 3)
+ #
+ # A11y:
+ #   - <ol role="list"> with aria-label announcing the wizard.
+ #   - Active step marked with aria-current="step".
+ #   - Completed/upcoming states communicated via icon + text, not color.
+ #}
+{% set active_step = active_step|default(1) %}
+{% set steps = [
+    { key: 1, label: 'compliance_import.stepper.step1'|trans({}, 'compliance_import'), icon: 'bi-upload' },
+    { key: 2, label: 'compliance_import.stepper.step2'|trans({}, 'compliance_import'), icon: 'bi-eye' },
+    { key: 3, label: 'compliance_import.stepper.step3'|trans({}, 'compliance_import'), icon: 'bi-check2-circle' }
+] %}
+
+<nav class="mb-4" aria-label="{{ 'compliance_import.stepper.aria_label'|trans({}, 'compliance_import') }}">
+    <ol class="list-unstyled d-flex flex-wrap gap-2 mb-0 compliance-import-stepper" role="list">
+        {% for step in steps %}
+            {% set is_active = step.key == active_step %}
+            {% set is_done = step.key < active_step %}
+            {% set state_label = is_active
+                ? ('compliance_import.stepper.state.current'|trans({}, 'compliance_import'))
+                : (is_done
+                    ? ('compliance_import.stepper.state.done'|trans({}, 'compliance_import'))
+                    : ('compliance_import.stepper.state.upcoming'|trans({}, 'compliance_import'))) %}
+            <li class="flex-fill" {% if is_active %}aria-current="step"{% endif %}>
+                <div class="d-flex align-items-center p-2 border rounded
+                            {% if is_active %}border-primary bg-primary-subtle{% elseif is_done %}border-success{% else %}border-secondary-subtle{% endif %}">
+                    <span class="badge rounded-pill me-2
+                                 {% if is_active %}bg-primary{% elseif is_done %}bg-success{% else %}bg-secondary{% endif %}"
+                          aria-hidden="true">
+                        {% if is_done %}
+                            <i class="bi bi-check-lg"></i>
+                        {% else %}
+                            {{ step.key }}
+                        {% endif %}
+                    </span>
+                    <span class="fw-semibold">
+                        <i class="bi {{ step.icon }}" aria-hidden="true"></i>
+                        {{ step.label }}
+                    </span>
+                    <span class="visually-hidden"> — {{ state_label }}</span>
+                </div>
+            </li>
+        {% endfor %}
+    </ol>
+</nav>

@@ -1,0 +1,31 @@
+# === Import-Template für Cross-Framework-Mappings ===
+# Version: 1.0 (2026-04-17)
+# Verwenden mit: Admin -> Import -> Compliance-Mappings (WS-2 Import-Wizard)
+#
+# ANLEITUNG:
+# 1. Zeilen mit # am Anfang sind Kommentare und werden beim Import ignoriert.
+# 2. Erste Datenzeile ist die Kopfzeile mit den 12 Spaltennamen.
+# 3. Alle 12 Spalten sind PFLICHT. Leere Zellen in Pflichtfeldern führen zu Zeilen-Rejection mit Hinweis.
+# 4. Strings mit Komma oder Zeilenumbruch in doppelte Anführungszeichen setzen.
+# 5. Encoding: UTF-8.
+# 6. Separator: Komma (,). Dezimaltrennzeichen in Prozent: kein Dezimal, nur ganze Zahlen 0-150.
+#
+# SPALTEN-ERKLÄRUNG:
+# - source_framework / target_framework: Framework-Code, muss im System existieren (z.B. ISO27001, NIS2, DORA, TISAX).
+# - source_requirement_id / target_requirement_id: Requirement-ID wie im Framework-Katalog (z.B. A.5.1, Art.21.2.a).
+# - mapping_percentage: Ganze Zahl 0-150. 0-49 schwach, 50-99 teilweise, 100 voll, 101-150 übererfüllt.
+# - mapping_type: weak | partial | full | exceeds (konsistent mit mapping_percentage).
+# - confidence: low | medium | high. Bei transitiv hergeleiteten Mappings immer "low".
+# - bidirectional: true | false. Nur "true" wenn in BEIDE Richtungen >=75%.
+# - rationale: Mindestens 40 Zeichen. Empfohlenes 3-Teile-Schema:
+#     "Was gemappt wird. Warum (inhaltlicher Bezug). Quelle/Referenz."
+# - source_catalog: Herkunftsbezeichner. Beispiele:
+#     enisa_nis2_annex_c_2024, bsi_kreuzreferenz_v1.2, eba_dora_its_v1.0,
+#     consultant_<firma>_<branche>_<yyyymmdd>, manual_tenant_specific.
+# - validated_at: YYYY-MM-DD.
+# - validated_by: Rolle/Person/Firma.
+#
+# BEISPIEL-ZEILE (zum Anschauen, bitte ersetzen oder löschen):
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+NIS2,Art.21.2.a,ISO27001,A.5.1,90,partial,high,true,"NIS2 fordert dokumentierte Policies; A.5.1 deckt Dokumentations- und Freigabepflicht. Quelle: ENISA Annex C.",enisa_nis2_annex_c_2024,2026-04-17,Ihre-Firma-GmbH

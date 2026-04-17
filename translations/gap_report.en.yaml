@@ -1,0 +1,48 @@
+gap_report:
+    title: 'Gap Report & Effort Estimation'
+    back_to_assessment: 'Back to Assessment'
+    sort_label: 'Sorting'
+    unit:
+        person_days: 'Person-days'
+    error:
+        no_tenant: 'No tenant assigned — Gap Report not available.'
+    info:
+        no_estimates: 'No consultant effort estimations have been seeded for this framework yet. Run `app:compliance:seed-efforts` or edit values manually.'
+    sort:
+        effort: 'By Effort'
+        quick_wins: 'By Quick-Wins'
+    action:
+        open_full: 'Open full Gap Report'
+    summary:
+        total_effort: 'Remaining Total Effort'
+        quick_wins: 'Quick Wins'
+        quick_wins_hint: 'Low effort, high impact'
+        coverage: 'Estimated Requirements'
+        coverage_hint: '%unestimated% still without estimation'
+    budget:
+        title: 'Budget Simulator (person-days per quarter)'
+        help: 'Drag the slider to see which requirements fit the budget (cheapest first).'
+        placeholder: '0 of %total% person-days'
+    table:
+        requirement: 'Requirement'
+        category: 'Category'
+        priority: 'Priority'
+        fulfillment: 'Fulfillment'
+        base_effort: 'Effort (person-days)'
+        remaining_effort: 'Remaining (PD)'
+        quick_win: 'Quick Win'
+        quick_win_badge: 'Quick Win'
+        override_hint: 'Tenant-specific override active'
+        not_estimated: 'not estimated'
+        empty: 'No requirements exist for this framework.'
+    override:
+        title: 'Effort Override (person-days)'
+        help: 'Override the consultant baseline if your organization expects more or less effort. The change is audited.'
+        consultant_baseline: 'Consultant baseline'
+        no_baseline: 'No consultant baseline has been seeded for this requirement yet.'
+        days_label: 'Estimated effort (person-days)'
+        days_help: 'Leave empty to remove the override and fall back to the baseline (0-999).'
+        reason_label: 'Justification (required, min. 20 characters)'
+        reason_help: 'Document why the organization deviates from the consultant value (e.g. existing work already done, special complexity).'
+        save: 'Save override'
+        clear: 'Remove override'

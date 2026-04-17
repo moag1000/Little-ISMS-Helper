@@ -20,6 +20,12 @@
         {{ 'interested_party.iso_reference'|trans({}, 'interested_parties') }}
     </p>
 
+    <div class="alert alert-light mb-3">
+        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+        {{ 'interested_party.hint.clause_context'|trans({}, 'interested_parties') }}
+        <a href="{{ path('app_context_index') }}">{{ 'interested_party.link.isms_context'|trans({}, 'interested_parties') }}</a>
+    </div>
+
     {% if overdue_communications|length > 0 %}
     <div class="alert alert-warning">
         <h2 class="h4"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'interested_party.alert.overdue_communications'|trans({}, 'interested_parties') }}</h2>

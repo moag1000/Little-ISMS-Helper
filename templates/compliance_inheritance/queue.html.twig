@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'compliance_inheritance.queue.title'|trans({ '%framework%': framework.code }, 'compliance_inheritance') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h3">{{ 'compliance_inheritance.queue.title'|trans({ '%framework%': framework.code }, 'compliance_inheritance') }}</h1>
+            <p class="text-muted mb-0">
+                {{ 'compliance_inheritance.queue.subtitle'|trans({ '%count%': pending_count }, 'compliance_inheritance') }}
+            </p>
+        </div>
+        <div class="btn-group" role="group" aria-label="{{ 'compliance_inheritance.queue.filter'|trans({}, 'compliance_inheritance') }}">
+            <a href="{{ path('app_compliance_inheritance_queue', { frameworkCode: framework.code, status: 'pending' }) }}"
+               class="btn btn-outline-primary {% if status_filter == 'pending' %}active{% endif %}"
+               aria-pressed="{{ status_filter == 'pending' ? 'true' : 'false' }}">
+                {{ 'compliance_inheritance.queue.filter_pending'|trans({}, 'compliance_inheritance') }}
+            </a>
+            <a href="{{ path('app_compliance_inheritance_queue', { frameworkCode: framework.code, status: 'source_updated' }) }}"
+               class="btn btn-outline-warning {% if status_filter == 'source_updated' %}active{% endif %}"
+               aria-pressed="{{ status_filter == 'source_updated' ? 'true' : 'false' }}">
+                {{ 'compliance_inheritance.queue.filter_source_updated'|trans({}, 'compliance_inheritance') }}
+            </a>
+            <a href="{{ path('app_compliance_inheritance_queue', { frameworkCode: framework.code, status: 'all' }) }}"
+               class="btn btn-outline-secondary {% if status_filter == 'all' %}active{% endif %}"
+               aria-pressed="{{ status_filter == 'all' ? 'true' : 'false' }}">
+                {{ 'compliance_inheritance.queue.filter_all'|trans({}, 'compliance_inheritance') }}
+            </a>
+        </div>
+    </div>
+
+    <div aria-live="polite" class="visually-hidden"
+         data-controller="inheritance-queue"
+         data-inheritance-queue-count-value="{{ pending_count }}">
+        {{ 'compliance_inheritance.queue.aria_count'|trans({ '%count%': pending_count }, 'compliance_inheritance') }}
+    </div>
+
+    {% if logs is empty %}
+        <div class="alert alert-info" role="status">
+            {{ 'compliance_inheritance.queue.empty'|trans({}, 'compliance_inheritance') }}
+        </div>
+    {% else %}
+        <div class="list-group">
+            {% for log in logs %}
+                {% set req = log.fulfillment.requirement %}
+                {% set source = log.derivedFromMapping.sourceRequirement %}
+                <div class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between align-items-start gap-3">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                {{ include('_components/_fulfillment_inheritance_badge.html.twig', { log: log }) }}
+                                <strong>{{ req.requirementId }}</strong>
+                                <span class="text-muted">·</span>
+                                <span>{{ req.title }}</span>
+                            </div>
+                            <div class="small text-muted">
+                                {{ 'compliance_inheritance.queue.from'|trans({}, 'compliance_inheritance') }}
+                                {{ source.framework.code }} {{ source.requirementId }}
+                                · {{ 'compliance_inheritance.queue.mapping'|trans({}, 'compliance_inheritance') }} {{ log.derivedFromMapping.mappingPercentage }}%
+                                · {{ ('compliance_inheritance.confidence.' ~ log.derivedFromMapping.confidence)|trans({}, 'compliance_inheritance') }}
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="h5 mb-0">{{ log.suggestedPercentage }}%</div>
+                            <div class="small text-muted">{{ 'compliance_inheritance.queue.suggested'|trans({}, 'compliance_inheritance') }}</div>
+                        </div>
+                    </div>
+                    <details class="mt-2">
+                        <summary class="small">
+                            {{ 'compliance_inheritance.queue.open_review'|trans({}, 'compliance_inheritance') }}
+                        </summary>
+                        <div class="mt-3">
+                            {{ include('_components/_inheritance_review_panel.html.twig', {
+                                log: log,
+                                managers: managers|default([])
+                            }) }}
+                        </div>
+                    </details>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

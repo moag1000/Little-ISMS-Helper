@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'bcm' %}
 
-{% block title %}Business Continuity Management{% endblock %}
+{% block title %}{{ 'bcm.page.title'|trans({}, 'bcm') }}{% endblock %}
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
@@ -15,8 +15,8 @@
 
     <div class="page-header">
         <div>
-            <h1>Business Continuity Management</h1>
-            <p class="text-muted">Business Impact Analysis & Process Management</p>
+            <h1>{{ 'bcm.page.title'|trans({}, 'bcm') }}</h1>
+            <p class="text-muted">{{ 'bcm.page.subtitle'|trans({}, 'bcm') }}</p>
         </div>
         <div class="button-group">
             <a href="{{ path('app_bcm_data_reuse') }}" class="btn btn-secondary">
@@ -31,19 +31,19 @@
     {# KPI Overview Cards #}
     <div class="kpi-grid">
         <div class="col-auto">
-            {{ cards.kpi_card('Total Processes', stats.total, null, null, 'primary', null) }}
+            {{ cards.kpi_card('bcm.stats.total_processes'|trans({}, 'bcm'), stats.total, null, null, 'primary', null) }}
         </div>
         <div class="col-auto">
-            {{ cards.kpi_card('Critical Processes', stats.critical, null, null, 'danger', null) }}
+            {{ cards.kpi_card('bcm.stats.critical_processes'|trans({}, 'bcm'), stats.critical, null, null, 'danger', null) }}
         </div>
         <div class="col-auto">
-            {{ cards.kpi_card('High Priority', stats.high, null, null, 'warning', null) }}
+            {{ cards.kpi_card('bcm.stats.high_priority'|trans({}, 'bcm'), stats.high, null, null, 'warning', null) }}
         </div>
         <div class="col-auto">
-            {{ cards.kpi_card('Avg RTO', stats.avg_rto|number_format(1) ~ 'h', null, null, 'success', null) }}
+            {{ cards.kpi_card('bcm.stats.avg_rto'|trans({}, 'bcm'), stats.avg_rto|number_format(1) ~ 'h', null, null, 'success', null) }}
         </div>
         <div class="col-auto">
-            {{ cards.kpi_card('Avg MTPD', stats.avg_mtpd|number_format(1) ~ 'h', null, null, 'info', null) }}
+            {{ cards.kpi_card('bcm.stats.avg_mtpd'|trans({}, 'bcm'), stats.avg_mtpd|number_format(1) ~ 'h', null, null, 'info', null) }}
         </div>
     </div>
 
@@ -52,7 +52,7 @@
         {% block card_attrs %}data-controller="filter" data-filter-filterable-columns-value="{{ ['name', 'description', 'criticality']|json_encode }}"{% endblock %}
         {% block card_header %}
             <div class="card-header">
-                <h2>Business Processes</h2>
+                <h2>{{ 'bcm.section.business_processes'|trans({}, 'bcm') }}</h2>
                 <div class="filter-panel">
                     <input type="text"
                            class="search-input"
@@ -61,11 +61,11 @@
                            data-action="input->filter#filterRows">
 
                     <select class="filter-select" data-action="change->filter#filterByCategory">
-                        <option value="">All Criticality Levels</option>
-                        <option value="critical">Critical</option>
-                        <option value="high">High</option>
-                        <option value="medium">Medium</option>
-                        <option value="low">Low</option>
+                        <option value="">{{ 'bcm.filter.all_criticality'|trans({}, 'bcm') }}</option>
+                        <option value="critical">{{ 'bcm.criticality.critical'|trans({}, 'bcm') }}</option>
+                        <option value="high">{{ 'bcm.criticality.high'|trans({}, 'bcm') }}</option>
+                        <option value="medium">{{ 'bcm.criticality.medium'|trans({}, 'bcm') }}</option>
+                        <option value="low">{{ 'bcm.criticality.low'|trans({}, 'bcm') }}</option>
                     </select>
                 </div>
             </div>
@@ -77,15 +77,15 @@
         } %}
             {% block table_head %}
                 <tr>
-                    <th scope="col">Process Name</th>
-                    <th scope="col">Owner</th>
-                    <th scope="col">Criticality</th>
-                    <th scope="col">RTO</th>
-                    <th scope="col">RPO</th>
-                    <th scope="col">MTPD</th>
-                    <th scope="col">Impact</th>
-                    <th scope="col">Assets</th>
-                    <th scope="col" class="actions-column">Actions</th>
+                    <th scope="col">{{ 'bcm.table.process_name'|trans({}, 'bcm') }}</th>
+                    <th scope="col">{{ 'bcm.table.owner'|trans({}, 'bcm') }}</th>
+                    <th scope="col">{{ 'bcm.table.criticality'|trans({}, 'bcm') }}</th>
+                    <th scope="col">{{ 'bcm.table.rto'|trans({}, 'bcm') }}</th>
+                    <th scope="col">{{ 'bcm.table.rpo'|trans({}, 'bcm') }}</th>
+                    <th scope="col">{{ 'bcm.table.mtpd'|trans({}, 'bcm') }}</th>
+                    <th scope="col">{{ 'bcm.table.impact'|trans({}, 'bcm') }}</th>
+                    <th scope="col">{{ 'bcm.table.assets'|trans({}, 'bcm') }}</th>
+                    <th scope="col" class="actions-column">{{ 'common.actions'|trans({}, 'messages') }}</th>
                 </tr>
             {% endblock %}
             {% block table_body %}
@@ -106,7 +106,7 @@
                                 'medium': 'info',
                                 'low': 'success'
                             } %}
-                            {% include '_components/_badge.html.twig' with { variant: criticality_colors[process.criticality] ?? 'secondary', content: process.criticality|upper } %}
+                            {% include '_components/_badge.html.twig' with { variant: criticality_colors[process.criticality] ?? 'secondary', content: ('bcm.criticality.' ~ process.criticality)|trans({}, 'bcm')|upper } %}
                         </td>
                         <td>
                             <span class="metric-value">{{ process.rto }}h</span>
@@ -138,8 +138,13 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="9" class="text-center text-muted">
-                            No business processes defined yet. Start by adding your first critical process.
+                        <td colspan="9">
+                            {% include '_components/_empty_state.html.twig' with {
+                                icon: 'bi-diagram-3',
+                                title: 'bcm.empty.title'|trans({}, 'bcm'),
+                                description: 'bcm.empty.description'|trans({}, 'bcm'),
+                                action: { label: 'bcm.action.add_process'|trans({}, 'bcm'), url: path('app_business_process_new'), icon: 'bi-plus-circle' }
+                            } %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -156,7 +161,7 @@
     {% embed '_components/_card.html.twig' with {class: 'mt-lg'} %}
         {% block card_header %}
             <div class="card-header">
-                <h2>Understanding BCM & BIA</h2>
+                <h2>{{ 'bcm.section.understanding'|trans({}, 'bcm') }}</h2>
             </div>
         {% endblock %}
         {% block card_body %}

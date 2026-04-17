@@ -32,6 +32,37 @@ parameters:
     # NIS2 Art. 21.2: Audit logs must be retained for at least 12 months (365 days)
     app.audit_log_retention_days: 365  # 12 months minimum per NIS2
 
+    # WS-1 Feature Flag: dark-launch for mapping-based inheritance suggestions.
+    app.compliance.mapping_inheritance.enabled: '%env(bool:COMPLIANCE_MAPPING_INHERITANCE_ENABLED)%'
+
+    # Four-Eyes workflow expiry (WS-1 / Plan Anhang A). Tenant-policy can be tightened.
+    app.compliance.four_eyes.expiry_days: 7
+
+    # Inheritance review minimum text lengths (ISB MINOR-1 / MINOR-3).
+    app.compliance.review.min_comment_length: 20
+    app.compliance.review.min_override_reason_length: 20
+
+    # Significant-change threshold (%) for source-update propagation (ENT-2).
+    app.compliance.source_update.significant_change_threshold: 5
+
+    # Portfolio-report ampel thresholds (WS-4).
+    app.compliance.portfolio.threshold_green: 80
+    app.compliance.portfolio.threshold_yellow: 50
+
+    # Reuse estimation heuristic: average FTE days saved per reusable requirement (WS-8).
+    app.compliance.reuse_estimation.days_per_requirement: 0.3
+
+    # Import wizard guardrails (WS-2).
+    app.compliance.import.max_upload_mb: 5
+    app.compliance.import.four_eyes_row_threshold: 50
+
+    # Navigation badge polling (UI performance).
+    app.compliance.ui.inheritance_badge_poll_seconds: 60
+
+    # Gap-report quick-win thresholds (WS-6).
+    app.compliance.gap_report.quick_win_effort_percentile: 20
+    app.compliance.gap_report.quick_win_min_gap_percent: 10
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -54,6 +85,38 @@ services:
     App\Service\DataImportService:
         arguments:
             $projectDir: '%kernel.project_dir%'
+
+    # Runtime-configurable compliance policy (admin UI /admin/compliance/settings).
+    # YAML params remain as fallback defaults if no DB override is set.
+    App\Service\CompliancePolicyService:
+        arguments:
+            $defaults:
+                mapping_inheritance.enabled: '%app.compliance.mapping_inheritance.enabled%'
+                review.min_comment_length: '%app.compliance.review.min_comment_length%'
+                review.min_override_reason_length: '%app.compliance.review.min_override_reason_length%'
+                source_update.significant_change_threshold: '%app.compliance.source_update.significant_change_threshold%'
+                four_eyes.expiry_days: '%app.compliance.four_eyes.expiry_days%'
+                portfolio.threshold_green: '%app.compliance.portfolio.threshold_green%'
+                portfolio.threshold_yellow: '%app.compliance.portfolio.threshold_yellow%'
+                reuse_estimation.days_per_requirement: '%app.compliance.reuse_estimation.days_per_requirement%'
+                import.max_upload_mb: '%app.compliance.import.max_upload_mb%'
+                import.four_eyes_row_threshold: '%app.compliance.import.four_eyes_row_threshold%'
+                ui.inheritance_badge_poll_seconds: '%app.compliance.ui.inheritance_badge_poll_seconds%'
+                gap_report.quick_win_effort_percentile: '%app.compliance.gap_report.quick_win_effort_percentile%'
+                gap_report.quick_win_min_gap_percent: '%app.compliance.gap_report.quick_win_min_gap_percent%'
+
+    # WS-1 activation service: inject feature flag bound parameter
+    App\Service\ComplianceFrameworkActivationService:
+        arguments:
+            $inheritanceEnabled: '%app.compliance.mapping_inheritance.enabled%'
+
+    # WS-1 inheritance service + four-eyes: now read thresholds at runtime via
+    # CompliancePolicyService (admin-configurable). Autowiring covers the rest.
+
+    # WS-1 source-update listener: configurable significant-change threshold
+    App\EventListener\NotifyDerivedFulfillmentsListener:
+        arguments:
+            $significantChangeThreshold: '%app.compliance.source_update.significant_change_threshold%'
 
     # Configure Module Configuration Service
     App\Service\ModuleConfigurationService:

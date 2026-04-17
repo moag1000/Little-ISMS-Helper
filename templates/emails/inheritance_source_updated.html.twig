@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Source-Fulfillment geändert</title>
+</head>
+<body style="font-family: system-ui, -apple-system, sans-serif; color: #212529;">
+    <h2 style="color: #0d6efd;">Prüfung erforderlich: Source-Fulfillment geändert</h2>
+
+    <p>
+        Die folgende Source-Anforderung wurde aktualisiert und wirkt sich auf Ihre bestätigten Ableitungsvorschläge aus:
+    </p>
+
+    <table style="border-collapse: collapse; width: 100%; margin: 16px 0;">
+        <tr>
+            <td style="padding: 8px; border: 1px solid #dee2e6;"><strong>Anforderung</strong></td>
+            <td style="padding: 8px; border: 1px solid #dee2e6;">
+                {{ source_fulfillment.requirement.framework.code }} {{ source_fulfillment.requirement.requirementId }}
+                — {{ source_fulfillment.requirement.title }}
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #dee2e6;"><strong>Erfüllung vorher</strong></td>
+            <td style="padding: 8px; border: 1px solid #dee2e6;">{{ previous_percentage }}%</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #dee2e6;"><strong>Erfüllung aktuell</strong></td>
+            <td style="padding: 8px; border: 1px solid #dee2e6;">{{ current_percentage }}%</td>
+        </tr>
+    </table>
+
+    <h3>Betroffene Ableitungsvorschläge ({{ logs|length }})</h3>
+    <ul>
+        {% for log in logs %}
+            <li>
+                {{ log.fulfillment.requirement.framework.code }}
+                {{ log.fulfillment.requirement.requirementId }}
+                — {{ log.fulfillment.requirement.title }}
+                <br>
+                <small>
+                    Ihr letzter bestätigter Wert: {{ log.suggestedPercentage }}%
+                    · Status: <em>Quelle aktualisiert — erneute Prüfung nötig</em>
+                </small>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <p style="margin-top: 24px;">
+        Öffnen Sie die Compliance-Ansicht und prüfen Sie, ob der abgeleitete Wert weiterhin angemessen ist
+        oder manuell angepasst werden muss. Eskalation an den ISB erfolgt automatisch nach 14 Tagen.
+    </p>
+
+    <p style="font-size: 12px; color: #6c757d; margin-top: 32px;">
+        Diese Nachricht enthält nur aggregierte Information; keine personenbezogenen Daten.
+        Gesendet vom ISMS-Tool im Rahmen von WS-1 (Mapping-basierte Ableitungsvorschläge).
+    </p>
+</body>
+</html>

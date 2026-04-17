@@ -1,0 +1,184 @@
+{# Inline review panel for a single FulfillmentInheritanceLog.
+ # Parameters:
+ #   log: FulfillmentInheritanceLog
+ #   managers: list<User>  available four-eyes approvers (current user excluded)
+ #}
+<section class="border rounded p-3 mb-3" data-controller="inheritance-review"
+         aria-labelledby="ir-{{ log.id }}-heading">
+    <h3 id="ir-{{ log.id }}-heading" class="h5 mb-3 d-flex align-items-center gap-2">
+        {{ include('_components/_fulfillment_inheritance_badge.html.twig', { log: log }) }}
+        {{ 'compliance_inheritance.panel.title'|trans({}, 'compliance_inheritance') }}
+    </h3>
+
+    {{ include('_components/_inheritance_source_card.html.twig', { log: log }) }}
+
+    <div class="alert alert-info" role="note">
+        <strong>{{ 'compliance_inheritance.panel.suggested'|trans({}, 'compliance_inheritance') }}:</strong>
+        {{ log.suggestedPercentage }}%
+    </div>
+
+    {% if log.isPendingReview() %}
+    <form method="post"
+          action="{{ path('app_compliance_inheritance_confirm', { id: log.id, _locale: app.request.locale }) }}"
+          data-inheritance-review-target="confirmForm">
+        <div class="mb-3">
+            <label for="ir-{{ log.id }}-comment" class="form-label">
+                {{ 'compliance_inheritance.panel.comment_label'|trans({}, 'compliance_inheritance') }}
+                <span class="text-danger" aria-label="{{ 'common.required'|trans({}, 'messages') }}">*</span>
+            </label>
+            <textarea id="ir-{{ log.id }}-comment"
+                      name="comment"
+                      class="form-control"
+                      rows="3"
+                      minlength="20"
+                      required
+                      aria-describedby="ir-{{ log.id }}-counter"
+                      data-inheritance-review-target="comment"
+                      data-action="input->inheritance-review#updateCounter"></textarea>
+            <div id="ir-{{ log.id }}-counter" class="form-text"
+                 data-inheritance-review-target="counter"
+                 aria-live="polite">
+                {{ 'compliance_inheritance.panel.chars_hint'|trans({ '%min%': 20 }, 'compliance_inheritance') }}
+            </div>
+        </div>
+
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox"
+                   id="ir-{{ log.id }}-implement"
+                   name="request_implemented"
+                   value="1"
+                   data-inheritance-review-target="implementCheckbox"
+                   data-action="change->inheritance-review#toggleApproverSelect">
+            <label class="form-check-label" for="ir-{{ log.id }}-implement">
+                {{ 'compliance_inheritance.panel.request_implemented'|trans({}, 'compliance_inheritance') }}
+            </label>
+            <div class="form-text">{{ 'compliance_inheritance.panel.request_implemented_hint'|trans({}, 'compliance_inheritance') }}</div>
+        </div>
+
+        <div class="mb-3 d-none" data-inheritance-review-target="approverWrapper">
+            <label for="ir-{{ log.id }}-approver" class="form-label">
+                {{ 'compliance_inheritance.panel.approver_label'|trans({}, 'compliance_inheritance') }}
+            </label>
+            <select id="ir-{{ log.id }}-approver"
+                    name="four_eyes_approver_id"
+                    class="form-select">
+                <option value="">{{ 'compliance_inheritance.panel.approver_placeholder'|trans({}, 'compliance_inheritance') }}</option>
+                {% for manager in managers %}
+                    <option value="{{ manager.id }}">{{ manager.fullName|default(manager.email) }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <button type="submit" class="btn btn-primary"
+                    data-inheritance-review-target="confirmBtn"
+                    disabled>
+                <i class="bi bi-check-lg" aria-hidden="true"></i>
+                {{ 'compliance_inheritance.panel.confirm'|trans({ '%value%': log.suggestedPercentage }, 'compliance_inheritance') }}
+            </button>
+            <button type="button" class="btn btn-outline-warning"
+                    data-bs-toggle="modal"
+                    data-bs-target="#override-modal-{{ log.id }}">
+                <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                {{ 'compliance_inheritance.panel.override'|trans({}, 'compliance_inheritance') }}
+            </button>
+            <button type="button" class="btn btn-outline-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target="#reject-modal-{{ log.id }}">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+                {{ 'compliance_inheritance.panel.reject'|trans({}, 'compliance_inheritance') }}
+            </button>
+        </div>
+    </form>
+    {% else %}
+        <div class="alert alert-secondary mb-0">
+            {{ 'compliance_inheritance.panel.final_state'|trans({
+                '%status%': ('compliance_inheritance.status.' ~ log.reviewStatus)|trans({}, 'compliance_inheritance')
+            }, 'compliance_inheritance') }}
+            {% if log.reviewedAt %} · {{ log.reviewedAt|date('Y-m-d H:i') }}{% endif %}
+            {% if log.reviewedBy %} · {{ log.reviewedBy.fullName|default(log.reviewedBy.email) }}{% endif %}
+        </div>
+    {% endif %}
+</section>
+
+{# Reject modal #}
+<div class="modal fade" id="reject-modal-{{ log.id }}" tabindex="-1"
+     aria-labelledby="reject-modal-{{ log.id }}-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post" class="modal-content"
+              action="{{ path('app_compliance_inheritance_reject', { id: log.id, _locale: app.request.locale }) }}">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reject-modal-{{ log.id }}-label">
+                    {{ 'compliance_inheritance.reject.title'|trans({}, 'compliance_inheritance') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="reject-reason-{{ log.id }}" class="form-label">
+                    {{ 'compliance_inheritance.reject.reason_label'|trans({}, 'compliance_inheritance') }}
+                </label>
+                <textarea id="reject-reason-{{ log.id }}" name="reason" class="form-control" rows="3" required minlength="20"></textarea>
+                <div class="form-text">{{ 'compliance_inheritance.panel.chars_hint'|trans({ '%min%': 20 }, 'compliance_inheritance') }}</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {{ 'common.cancel'|trans({}, 'messages') }}
+                </button>
+                <button type="submit" class="btn btn-danger">
+                    {{ 'compliance_inheritance.reject.submit'|trans({}, 'compliance_inheritance') }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{# Override modal #}
+<div class="modal fade" id="override-modal-{{ log.id }}" tabindex="-1"
+     aria-labelledby="override-modal-{{ log.id }}-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post" class="modal-content"
+              action="{{ path('app_compliance_inheritance_override', { id: log.id, _locale: app.request.locale }) }}">
+            <div class="modal-header">
+                <h5 class="modal-title" id="override-modal-{{ log.id }}-label">
+                    {{ 'compliance_inheritance.override.title'|trans({}, 'compliance_inheritance') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="override-value-{{ log.id }}" class="form-label">
+                        {{ 'compliance_inheritance.override.value_label'|trans({}, 'compliance_inheritance') }}
+                    </label>
+                    <input id="override-value-{{ log.id }}" name="value" type="number"
+                           min="0" max="150" class="form-control" required
+                           value="{{ log.suggestedPercentage }}">
+                </div>
+                <div class="mb-3">
+                    <label for="override-reason-{{ log.id }}" class="form-label">
+                        {{ 'compliance_inheritance.override.reason_label'|trans({}, 'compliance_inheritance') }}
+                    </label>
+                    <textarea id="override-reason-{{ log.id }}" name="reason" class="form-control" rows="3" required minlength="20"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="override-approver-{{ log.id }}" class="form-label">
+                        {{ 'compliance_inheritance.override.approver_label'|trans({}, 'compliance_inheritance') }}
+                    </label>
+                    <select id="override-approver-{{ log.id }}" name="four_eyes_approver_id" class="form-select" required>
+                        <option value="">{{ 'compliance_inheritance.panel.approver_placeholder'|trans({}, 'compliance_inheritance') }}</option>
+                        {% for manager in managers %}
+                            <option value="{{ manager.id }}">{{ manager.fullName|default(manager.email) }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {{ 'common.cancel'|trans({}, 'messages') }}
+                </button>
+                <button type="submit" class="btn btn-warning">
+                    {{ 'compliance_inheritance.override.submit'|trans({}, 'compliance_inheritance') }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

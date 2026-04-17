@@ -1,0 +1,168 @@
+help:
+    iso9001_bridge:
+        title: "From ISO 9001 to ISO 27001 — Your Guide"
+        subtitle: "Leverage your QMS knowledge for your information security journey"
+        intro_title: "You know ISO 9001? Then you already know a lot!"
+        intro_text: "ISO 27001 builds on similar principles. Both standards share the High-Level Structure (HLS) and follow the PDCA cycle. Here you can see where your existing knowledge is directly applicable."
+
+        mapping_title: "Concept Mapping: 9001 → 27001"
+        col_9001: "What you know from 9001"
+        col_27001: "Called in 27001"
+        col_tool: "Where in the tool"
+        col_reference: "Standard Reference"
+
+        map:
+            context:
+                from: "Context of the Organization (4.1)"
+                to: "ISMS Context & Scope"
+                module: "Context Module"
+            process_map:
+                from: "Process Landscape"
+                to: "Statement of Applicability (SoA)"
+                module: "SoA Module"
+            risks:
+                from: "Risks & Opportunities (6.1)"
+                to: "Risk Assessment"
+                module: "Risk Module"
+            capa:
+                from: "CAPA (Corrective Actions)"
+                to: "Risk Treatment Plan"
+                module: "Treatment Plans"
+            audit:
+                from: "Internal Audit (9.2)"
+                to: "Internal ISMS Audit"
+                module: "Audit Module"
+            review:
+                from: "Management Review (9.3)"
+                to: "Management Review"
+                module: "Reviews Module"
+            infrastructure:
+                from: "Infrastructure (7.1.3)"
+                to: "Assets / Information Assets"
+                module: "Asset Module"
+            competence:
+                from: "Competence (7.2)"
+                to: "Awareness & Training"
+                module: "Training Module"
+            documents:
+                from: "Documented Information (7.5)"
+                to: "ISMS Documentation"
+                module: "Documents Module"
+            suppliers:
+                from: "Supplier Evaluation (8.4)"
+                to: "Supplier Security"
+                module: "Supplier Module"
+            nonconformity:
+                from: "Nonconformity (10.2)"
+                to: "Security Incident"
+                module: "Incident Module"
+
+        new_title: "What is NEW in ISO 27001?"
+        new_intro: "These concepts do not exist in ISO 9001 — they are specific to information security."
+
+        new:
+            cia:
+                title: "Confidentiality, Integrity, Availability (CIA)"
+                description: "In 9001 it is about quality, in 27001 it is about information security. Every piece of information is evaluated against these three protection goals."
+            controls:
+                title: "93 Controls (Annex A)"
+                description: "Like a catalog of best practices — from access controls to cryptography. There is no equivalent in 9001."
+            protection:
+                title: "Protection Requirements"
+                description: "How important is which information? Every asset is rated by confidentiality, integrity, and availability."
+            bcm:
+                title: "Business Continuity"
+                description: "What to do when everything fails? Emergency plans, recovery times, and exercises — prepared for the worst case."
+            gdpr:
+                title: "Data Protection (GDPR)"
+                description: "Complements ISO 27001 with the protection of personal data. Especially relevant for companies in the EU."
+
+        tip_title: "Getting Started Tip"
+        tip_text: "Start with the Context module and Assets — these areas are most familiar from 9001. From there, the new 27001 concepts will unfold step by step."
+
+    glossary:
+        title: "ISMS Glossary — Terms Explained Simply"
+        subtitle: "Information security terminology explained in plain language"
+        intro_title: "Quick term reference"
+        intro_text: "This glossary explains key information security terms. Where possible, you will find analogies to ISO 9001 to ease the transition."
+        search_placeholder: "Search term..."
+        all_categories: "All categories"
+        reset: "Reset"
+        no_results: "No matching term found. Please try a different search."
+        analogy_label: "9001 Analogy:"
+        tip_title: "Tip"
+        tip_text: "Use the search field above to quickly find a term. The category filter lets you browse by topic area."
+
+        category:
+            basics: "Basic Concepts"
+            risk: "Risk Management"
+            compliance: "Compliance & Audit"
+            bcm: "Business Continuity (BCM)"
+
+        term:
+            isms:
+                name: "ISMS"
+                definition: "Information Security Management System. The overall system of policies, processes, and measures to protect information."
+                analogy: "Like your QMS, but for information security instead of quality."
+            asset:
+                name: "Asset"
+                definition: "Information asset. Anything worth protecting for the organization: IT systems, data, software, but also people and locations."
+                analogy: "\"Infrastructure\" from Clause 7.1.3 — but broader in scope."
+            control:
+                name: "Control"
+                definition: "Security control/measure. A concrete protective action (e.g., \"access control\"). ISO 27001 Annex A defines 93 of them."
+            soa:
+                name: "SoA (Statement of Applicability)"
+                definition: "Statement of Applicability. A list of all 93 controls with justification for why each is applicable or not."
+                analogy: "Similar to the process landscape — shows what is in scope."
+            cia:
+                name: "CIA (Confidentiality, Integrity, Availability)"
+                definition: "Confidentiality, Integrity, Availability. The three protection goals of information security."
+            risk:
+                name: "Risk"
+                definition: "Combination of likelihood of occurrence and impact of damage."
+                analogy: "Risks and opportunities from Clause 6.1 — but with a formal assessment matrix."
+            inherent_risk:
+                name: "Inherent Risk"
+                definition: "The original risk BEFORE any measures are taken."
+            residual_risk:
+                name: "Residual Risk"
+                definition: "The remaining risk AFTER implementation of measures."
+            treatment_strategy:
+                name: "Treatment Strategy"
+                definition: "Risk treatment options: accept, mitigate (implement measures), transfer (e.g., insurance), avoid."
+            risk_appetite:
+                name: "Risk Appetite"
+                definition: "How much risk is the organization willing to tolerate?"
+            schutzbedarf:
+                name: "Protection Requirement (Schutzbedarf)"
+                definition: "BSI term: How worthy of protection is a piece of information? Categories: normal, high, very high."
+            compliance_framework:
+                name: "Compliance Framework"
+                definition: "A set of rules/standards that must be met (e.g., ISO 27001, TISAX, DORA, NIS2)."
+            audit:
+                name: "Audit"
+                definition: "Systematic review of whether requirements are fulfilled."
+                analogy: "Internal audit from Clause 9.2 — same methodology, different audit criteria."
+            management_review:
+                name: "Management Review"
+                definition: "Regular evaluation of the ISMS by top management."
+                analogy: "Management review from Clause 9.3 — practically identical."
+            dpia:
+                name: "DPIA (Data Protection Impact Assessment)"
+                definition: "Data Protection Impact Assessment. Required when there is high risk to personal data (GDPR Art. 35)."
+            vvt:
+                name: "RoPA (Records of Processing Activities)"
+                definition: "Mandatory documentation under GDPR Art. 30. Documents which personal data is processed, how, and why."
+            rto:
+                name: "RTO (Recovery Time Objective)"
+                definition: "Maximum time until a system must be restored."
+            rpo:
+                name: "RPO (Recovery Point Objective)"
+                definition: "Maximum tolerable data loss (in hours)."
+            mtpd:
+                name: "MTPD (Maximum Tolerable Period of Disruption)"
+                definition: "The absolute limit for how long a disruption can last."
+            bia:
+                name: "BIA (Business Impact Analysis)"
+                definition: "Analysis of which business processes are how critical."

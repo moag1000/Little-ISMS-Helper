@@ -1,0 +1,16 @@
+# Cross-Framework Mapping TISAX (VDA ISA 6.0.4) <-> ISO/IEC 27005:2022
+# License: CC-BY 4.0
+# Source: VDA ISA 6.0.4 risk chapter crosswalk.
+# Curator: Senior-GRC-Consultant (rewritten 2026-04-17 for loader-native IDs).
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+TISAX,INF-5.1,ISO27005,7,95,full,high,true,"Information security risk assessment — ISO 27005 Clause 7 covers identification, analysis and evaluation.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-5.1,ISO27005,7.2,90,partial,high,false,"Risk identification (Clause 7.2) — direct implementation of TISAX INF-5.1 asset/threat/vulnerability identification.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-5.1,ISO27005,7.3,85,partial,high,false,"Risk analysis (Clause 7.3) — likelihood and impact per TISAX matrix.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-5.1,ISO27005,7.4,85,partial,high,false,"Risk evaluation (Clause 7.4) — risks compared against TISAX AL2/AL3 thresholds.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-5.1,ISO27005,6,80,partial,high,false,"Context establishment (Clause 6) — TISAX requires defined scope and criteria.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-5.2,ISO27005,8,95,full,high,true,"Risk treatment plan — ISO 27005 Clause 8.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-5.2,ISO27005,8.2,85,partial,high,false,"Risk treatment options (Clause 8.2) — modify, retain, avoid, share.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-5.2,ISO27005,8.3,90,partial,high,true,"Residual risk acceptance (Clause 8.3) — formal acceptance required by TISAX.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-5.1,ISO27005,10,80,partial,high,true,"Risk monitoring and review (Clause 10) — TISAX requires periodic risk reviews.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+TISAX,INF-1.1,ISO27005,9,70,partial,medium,false,"Information security policy — Clause 9 communication and consultation as supporting discipline.",vda_isa_6.0.3_iso_crosswalk,2026-04-17,Senior-GRC-Consultant

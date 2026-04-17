@@ -373,4 +373,22 @@ class ComplianceRequirement
     {
         return !$this->detailedRequirements->isEmpty();
     }
+
+    // ── WS-6: consultant-seeded baseline effort in FTE-days (0..999) ───────
+    #[ORM\Column(nullable: true)]
+    private ?int $baseEffortDays = null;
+
+    public function getBaseEffortDays(): ?int
+    {
+        return $this->baseEffortDays;
+    }
+
+    public function setBaseEffortDays(?int $days): self
+    {
+        if ($days !== null) {
+            $days = max(0, min(999, $days));
+        }
+        $this->baseEffortDays = $days;
+        return $this;
+    }
 }

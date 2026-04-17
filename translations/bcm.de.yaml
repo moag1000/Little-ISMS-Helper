@@ -1,4 +1,7 @@
 bcm:
+    page:
+        title: 'Business Continuity Management'
+        subtitle: 'Business Impact Analyse & Prozessmanagement'
     title:
         asset_insights: Asset-Einblicke
         bcm_insights: BCM-Einblicke
@@ -27,6 +30,7 @@ bcm:
         asset_details: Asset-Details
         rto_legend: RTO-Legende
         critical_processes: 'Kritische Geschäftsprozesse'
+        understanding: 'BCM & BIA verstehen'
     field:
         confidentiality: Vertraulichkeit
         integrity: Integrität
@@ -58,12 +62,28 @@ bcm:
         benefit_compliance: 'Compliance: Automatische Verknüpfung mit Anforderungen'
         benefit_quality: 'Qualität: Geprüfte Daten aus validierter Quelle'
     stats:
+        total_processes: 'Prozesse gesamt'
         critical_processes: 'Kritische Prozesse'
         avg_rto: 'Durchschnittliches RTO'
+        avg_mtpd: 'Durchschnittliches MTPD'
         high_priority: 'Hohe Priorität'
     badge:
         immediate: Sofort
         urgent: Dringend
+    filter:
+        all_criticality: 'Alle Kritikalitätsstufen'
+    table:
+        process_name: 'Prozessname'
+        owner: 'Verantwortlicher'
+        criticality: 'Kritikalität'
+        rto: 'RTO'
+        rpo: 'RPO'
+        mtpd: 'MTPD'
+        impact: 'Impact'
+        assets: 'Assets'
+    empty:
+        title: 'Noch keine Geschäftsprozesse definiert'
+        description: 'Legen Sie Ihren ersten kritischen Prozess an, um zu beginnen.'
     rto:
         standard: Standard
         flexible: Flexibel

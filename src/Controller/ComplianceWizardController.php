@@ -2,9 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\ComplianceRequirementFulfillment;
+use App\Repository\ComplianceFrameworkRepository;
+use App\Service\AuditLogger;
 use App\Service\ComplianceWizardService;
+use App\Service\GapEffortCalculator;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,7 +39,11 @@ class ComplianceWizardController extends AbstractController
         private readonly ComplianceWizardService $wizardService,
         private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly TenantContext $tenantContext,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly ?GapEffortCalculator $gapEffortCalculator = null,
+        private readonly ?ComplianceFrameworkRepository $frameworkRepository = null,
+        private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?EntityManagerInterface $entityManager = null,
     ) {
     }
 
@@ -290,5 +299,134 @@ class ComplianceWizardController extends AbstractController
         }
 
         return $unavailable;
+    }
+
+    /**
+     * WS-6: Gap-Report with FTE estimates (`sort=effort|quick-wins`).
+     */
+    #[Route('/{wizard}/gap-report', name: 'app_compliance_wizard_gap_report', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr'])]
+    public function gapReport(string $wizard, Request $request): Response
+    {
+        if ($this->gapEffortCalculator === null || $this->frameworkRepository === null) {
+            throw $this->createNotFoundException('Gap report service not available.');
+        }
+        if (!$this->wizardService->isWizardAvailable($wizard)) {
+            return $this->redirectToRoute('app_compliance_wizard_index');
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $config = $this->wizardService->getWizardConfig($wizard);
+        $framework = $this->frameworkRepository->findOneBy(['code' => strtoupper((string) ($config['framework_code'] ?? $wizard))])
+            ?? $this->frameworkRepository->findOneBy(['code' => strtoupper($wizard)]);
+        if ($framework === null || $tenant === null) {
+            throw $this->createNotFoundException();
+        }
+
+        $sort = (string) $request->query->get('sort', GapEffortCalculator::SORT_REMAINING_EFFORT);
+        if (!in_array($sort, [GapEffortCalculator::SORT_REMAINING_EFFORT, GapEffortCalculator::SORT_QUICK_WINS], true)) {
+            $sort = GapEffortCalculator::SORT_REMAINING_EFFORT;
+        }
+
+        $rows = $this->gapEffortCalculator->calculate($tenant, $framework, $sort);
+        $summary = $this->gapEffortCalculator->calculateTotalEffort($tenant, $framework);
+
+        return $this->render('compliance_wizard/gap_report.html.twig', [
+            'wizard' => $wizard,
+            'config' => $config,
+            'framework' => $framework,
+            'rows' => $rows,
+            'summary' => $summary,
+            'sort' => $sort,
+        ]);
+    }
+
+    /**
+     * WS-6: Tenant-specific FTE override on a single fulfillment.
+     * Requires CSRF, min. 20-char reason, audit-log entry (ISO 27001 A.5.36).
+     */
+    #[Route('/fulfillment/{id}/override-effort', name: 'app_compliance_wizard_override_effort', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function overrideEffort(ComplianceRequirementFulfillment $fulfillment, Request $request): Response
+    {
+        if ($this->auditLogger === null || $this->entityManager === null) {
+            throw $this->createNotFoundException('Override service not available.');
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null || $fulfillment->getTenant()?->getId() !== $tenant->getId()) {
+            throw $this->createAccessDeniedException('Tenant mismatch.');
+        }
+
+        $token = (string) $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('override_effort_' . $fulfillment->getId(), $token)) {
+            $this->addFlash('danger', 'gap_report.flash.invalid_csrf');
+            return $this->redirect($request->headers->get('referer', $this->generateUrl('app_compliance_wizard_index')));
+        }
+
+        $days = (int) $request->request->get('days', 0);
+        $reason = trim((string) $request->request->get('reason', ''));
+        if ($days < 0 || $days > 999) {
+            $this->addFlash('danger', 'gap_report.flash.invalid_days');
+            return $this->redirect($request->headers->get('referer', $this->generateUrl('app_compliance_wizard_index')));
+        }
+        if (mb_strlen($reason) < 20) {
+            $this->addFlash('danger', 'gap_report.flash.reason_too_short');
+            return $this->redirect($request->headers->get('referer', $this->generateUrl('app_compliance_wizard_index')));
+        }
+
+        $oldDays = method_exists($fulfillment, 'getAdjustedEffortDays') ? $fulfillment->getAdjustedEffortDays() : null;
+        if (method_exists($fulfillment, 'setAdjustedEffortDays')) {
+            $fulfillment->setAdjustedEffortDays($days);
+        }
+        if (method_exists($fulfillment, 'setAdjustedEffortReason')) {
+            $fulfillment->setAdjustedEffortReason($reason);
+        }
+        $this->entityManager->flush();
+
+        $this->auditLogger->logCustom(
+            'compliance.fulfillment.effort_override',
+            'ComplianceRequirementFulfillment',
+            $fulfillment->getId(),
+            ['adjusted_effort_days' => $oldDays],
+            ['adjusted_effort_days' => $days, 'reason' => $reason],
+            sprintf('Effort override on fulfillment #%d: %s → %s days', $fulfillment->getId(), $oldDays ?? 'null', $days),
+        );
+
+        $this->addFlash('success', 'gap_report.flash.override_saved');
+        return $this->redirect($request->headers->get('referer', $this->generateUrl('app_compliance_wizard_index')));
+    }
+
+    /**
+     * WS-7: Compare-PDF export — renders multi-framework comparison as HTML (PDF-ready).
+     */
+    #[Route('/compare/export/pdf', name: 'app_compliance_wizard_compare_export_pdf', priority: 10)]
+    #[IsGranted('ROLE_MANAGER')]
+    public function compareExportPdf(Request $request): Response
+    {
+        $allowed = ['iso27001', 'nis2', 'dora', 'tisax', 'gdpr'];
+        $selected = array_values(array_intersect(
+            (array) $request->query->all('wizards'),
+            $allowed,
+        ));
+        if ($selected === []) {
+            $selected = ['iso27001', 'nis2', 'dora'];
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $results = [];
+        foreach ($selected as $wizard) {
+            if ($this->wizardService->isWizardAvailable($wizard)) {
+                $results[$wizard] = $this->wizardService->runAssessment($wizard, $tenant);
+            }
+        }
+
+        $html = $this->renderView('compliance_wizard/pdf/compare.html.twig', [
+            'wizards' => $selected,
+            'results' => $results,
+            'tenant' => $tenant,
+            'generated_at' => new \DateTimeImmutable(),
+        ]);
+
+        return new Response($html, Response::HTTP_OK, ['Content-Type' => 'text/html']);
     }
 }

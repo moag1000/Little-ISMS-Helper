@@ -1,0 +1,24 @@
+inbox:
+    title: 'Offene 4-Augen-Freigaben'
+    lead: 'Anfragen, die auf Ihre zweite Freigabe warten (Funktionstrennung nach ISO 27001 A.5.3).'
+    empty: 'Keine offenen Freigabe-Anfragen.'
+
+action:
+    inheritance_implement: 'Statusübergang „Umgesetzt“'
+    mapping_override: 'Mapping-Override'
+    bulk_tag_removal: 'Bulk-Tag-Entfernung'
+    import_large_commit: 'Großer Import-Commit'
+
+requested_by: 'Angefordert von'
+expires_at: 'Läuft ab am'
+
+approve: 'Freigeben'
+reject: 'Ablehnen'
+
+reject_modal:
+    title: 'Freigabe ablehnen'
+    reason: 'Begründung (mind. 20 Zeichen)'
+
+flash:
+    approved: 'Freigabe erteilt.'
+    rejected: 'Freigabe abgelehnt.'

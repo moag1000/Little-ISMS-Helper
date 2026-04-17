@@ -1,0 +1,48 @@
+gap_report:
+    title: 'Gap-Report & Aufwandsschätzung'
+    back_to_assessment: 'Zurück zum Assessment'
+    sort_label: 'Sortierung'
+    unit:
+        person_days: 'Personentage'
+    error:
+        no_tenant: 'Kein Mandant zugeordnet — Gap-Report nicht verfügbar.'
+    info:
+        no_estimates: 'Für dieses Framework liegen noch keine Consultant-Aufwandsschätzungen vor. Bitte führen Sie `app:compliance:seed-efforts` aus oder pflegen Sie die Werte manuell.'
+    sort:
+        effort: 'Nach Aufwand'
+        quick_wins: 'Nach Quick-Wins'
+    action:
+        open_full: 'Vollständigen Gap-Report öffnen'
+    summary:
+        total_effort: 'Verbleibender Gesamtaufwand'
+        quick_wins: 'Quick-Wins'
+        quick_wins_hint: 'Geringer Aufwand, hohe Wirkung'
+        coverage: 'Geschätzte Requirements'
+        coverage_hint: '%unestimated% noch ohne Schätzung'
+    budget:
+        title: 'Budget-Simulator (Personentage pro Quartal)'
+        help: 'Ziehen Sie den Schieberegler, um zu sehen, welche Requirements mit dem Budget abgedeckt werden können (günstigste zuerst).'
+        placeholder: '0 von %total% Personentagen'
+    table:
+        requirement: 'Requirement'
+        category: 'Kategorie'
+        priority: 'Priorität'
+        fulfillment: 'Erfüllung'
+        base_effort: 'Aufwand (Personentage)'
+        remaining_effort: 'Verbleibend (PT)'
+        quick_win: 'Quick-Win'
+        quick_win_badge: 'Quick-Win'
+        override_hint: 'Tenant-spezifischer Override aktiv'
+        not_estimated: 'nicht geschätzt'
+        empty: 'Keine Requirements für dieses Framework vorhanden.'
+    override:
+        title: 'Aufwands-Override (Personentage)'
+        help: 'Überschreiben Sie die Consultant-Baseline, wenn Ihre Organisation mehr oder weniger Aufwand erwartet. Die Änderung wird auditiert.'
+        consultant_baseline: 'Consultant-Baseline'
+        no_baseline: 'Für dieses Requirement wurde noch keine Consultant-Baseline hinterlegt.'
+        days_label: 'Geschätzter Aufwand (Personentage)'
+        days_help: 'Leer lassen, um den Override zu entfernen und zur Baseline zurückzukehren (0-999).'
+        reason_label: 'Begründung (Pflichtfeld, min. 20 Zeichen)'
+        reason_help: 'Dokumentieren Sie, warum die Organisation vom Consultant-Wert abweicht (z.B. vorhandene Vorarbeit, besondere Komplexität).'
+        save: 'Override speichern'
+        clear: 'Override entfernen'
