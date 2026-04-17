@@ -7,9 +7,11 @@ namespace App\Tests\Service;
 use App\Entity\FulfillmentInheritanceLog;
 use App\Entity\User;
 use App\Service\ComplianceInheritanceService;
+use App\Service\CompliancePolicyService;
 use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
+use ReflectionProperty;
 
 /**
  * Minimal contract-level tests for the inheritance service guard clauses.
@@ -92,6 +94,14 @@ final class ComplianceInheritanceServiceTest extends TestCase
             ->disableOriginalConstructor()
             ->onlyMethods([])
             ->getMock();
+
+        $policy = $this->createStub(CompliancePolicyService::class);
+        $policy->method('getInt')->willReturnCallback(
+            static fn (string $key, int $fallback = 0): int => $fallback,
+        );
+
+        $policyProp = new ReflectionProperty(ComplianceInheritanceService::class, 'policy');
+        $policyProp->setValue($service, $policy);
 
         return $service;
     }
