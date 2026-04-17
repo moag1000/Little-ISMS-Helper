@@ -11,6 +11,7 @@ use App\Form\Admin\ComplianceImportUploadType;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Service\CompliancePolicyService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -66,6 +67,7 @@ final class ComplianceImportController extends AbstractController
         private readonly ComplianceMappingRepository $mappingRepository,
         private readonly TranslatorInterface $translator,
         private readonly LoggerInterface $logger,
+        private readonly CompliancePolicyService $policy,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -92,7 +94,10 @@ final class ComplianceImportController extends AbstractController
     #[Route('/upload', name: 'upload', methods: ['GET', 'POST'])]
     public function upload(Request $request): Response
     {
-        $form = $this->createForm(ComplianceImportUploadType::class);
+        $maxSizeMb = $this->policy->getInt(CompliancePolicyService::KEY_IMPORT_MAX_UPLOAD_MB, 5);
+        $form = $this->createForm(ComplianceImportUploadType::class, null, [
+            'max_size_mb' => $maxSizeMb,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -182,6 +187,7 @@ final class ComplianceImportController extends AbstractController
         }
 
         $analysis = $this->analyseFile((string) $session['stored_path']);
+        $fourEyesThreshold = $this->policy->getInt(CompliancePolicyService::KEY_IMPORT_FOUR_EYES_ROW_THRESHOLD, 50);
 
         return $this->render('admin/compliance_import/preview.html.twig', [
             'active_step' => 2,
@@ -189,6 +195,8 @@ final class ComplianceImportController extends AbstractController
             'rows' => $analysis['rows'],
             'summary' => $analysis['summary'],
             'header_error' => $analysis['header_error'],
+            'four_eyes_threshold' => $fourEyesThreshold,
+            'requires_four_eyes' => count($analysis['rows']) >= $fourEyesThreshold,
         ]);
     }
 

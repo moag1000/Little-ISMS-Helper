@@ -113,10 +113,8 @@ services:
     # WS-1 inheritance service + four-eyes: now read thresholds at runtime via
     # CompliancePolicyService (admin-configurable). Autowiring covers the rest.
 
-    # WS-1 source-update listener: configurable significant-change threshold
-    App\EventListener\NotifyDerivedFulfillmentsListener:
-        arguments:
-            $significantChangeThreshold: '%app.compliance.source_update.significant_change_threshold%'
+    # WS-1 source-update listener: threshold now read at runtime via
+    # CompliancePolicyService (admin-configurable). Autowiring covers the rest.
 
     # Configure Module Configuration Service
     App\Service\ModuleConfigurationService:

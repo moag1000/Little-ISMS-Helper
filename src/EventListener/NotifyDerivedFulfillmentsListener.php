@@ -8,6 +8,7 @@ use App\Event\ComplianceRequirementFulfillmentUpdatedEvent;
 use App\Repository\FulfillmentInheritanceLogRepository;
 use App\Repository\UserRepository;
 use App\Service\ComplianceInheritanceService;
+use App\Service\CompliancePolicyService;
 use App\Service\EmailNotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -27,13 +28,14 @@ final class NotifyDerivedFulfillmentsListener
         private readonly EmailNotificationService $emailService,
         private readonly UserRepository $userRepository,
         private readonly LoggerInterface $logger,
-        private readonly int $significantChangeThreshold = 5,
+        private readonly CompliancePolicyService $policy,
     ) {
     }
 
     public function __invoke(ComplianceRequirementFulfillmentUpdatedEvent $event): void
     {
-        if (!$event->hasSignificantChange($this->significantChangeThreshold)) {
+        $threshold = $this->policy->getInt(CompliancePolicyService::KEY_SIGNIFICANT_CHANGE_THRESHOLD, 5);
+        if (!$event->hasSignificantChange($threshold)) {
             return;
         }
 

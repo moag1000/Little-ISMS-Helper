@@ -43,6 +43,8 @@ compliance_import:
         col_percentage: "Coverage"
         col_status: "Status"
         commit: "Confirm import and run commit"
+        four_eyes_warning_title: "Four-eyes approval recommended"
+        four_eyes_warning_body: "%rows% rows exceed threshold (%threshold%). A second reviewer should approve before commit."
         file_unreadable: "The file could not be read."
         missing_header: "Required header missing:"
         col_count_mismatch: "Column count does not match the header."

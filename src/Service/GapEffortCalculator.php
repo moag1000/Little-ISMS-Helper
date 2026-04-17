@@ -28,21 +28,21 @@ class GapEffortCalculator
     public const SORT_REMAINING_EFFORT = 'effort';
     public const SORT_QUICK_WINS = 'quick-wins';
 
-    /**
-     * Quick-Win threshold: bottom X % of effort distribution qualifies.
-     */
-    private const QUICK_WIN_EFFORT_PERCENTILE = 0.20;
-
-    /**
-     * A gap must still have this much remaining percentage to be worth
-     * flagging as a Quick-Win (otherwise it's already basically done).
-     */
-    private const QUICK_WIN_MIN_GAP_PCT = 10;
-
     public function __construct(
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
+        private readonly CompliancePolicyService $policy,
     ) {
+    }
+
+    private function quickWinEffortPercentile(): float
+    {
+        return $this->policy->getInt(CompliancePolicyService::KEY_QUICK_WIN_EFFORT_PERCENTILE, 20) / 100.0;
+    }
+
+    private function quickWinMinGapPct(): int
+    {
+        return $this->policy->getInt(CompliancePolicyService::KEY_QUICK_WIN_MIN_GAP_PERCENT, 10);
     }
 
     /**
@@ -184,26 +184,27 @@ class GapEffortCalculator
      */
     private function markQuickWins(array &$rows): void
     {
+        $minGap = $this->quickWinMinGapPct();
         // Only estimated gaps with real remaining effort qualify
         $candidates = array_filter(
             $rows,
             static fn (array $row): bool => $row['is_estimated']
                 && $row['remaining_effort_days'] > 0
-                && (100 - (int) $row['fulfillment_percentage']) >= self::QUICK_WIN_MIN_GAP_PCT,
+                && (100 - (int) $row['fulfillment_percentage']) >= $minGap,
         );
 
         if ($candidates === []) {
             return;
         }
 
-        // Sort by effort ascending, take the cheapest 20 %
+        // Sort by effort ascending, take the cheapest N %
         usort(
             $candidates,
             static fn (array $a, array $b): int
                 => $a['remaining_effort_days'] <=> $b['remaining_effort_days'],
         );
 
-        $bucketSize = max(1, (int) ceil(count($candidates) * self::QUICK_WIN_EFFORT_PERCENTILE));
+        $bucketSize = max(1, (int) ceil(count($candidates) * $this->quickWinEffortPercentile()));
         $quickWinRequirementIds = [];
         foreach (array_slice($candidates, 0, $bucketSize) as $candidate) {
             $requirementId = $candidate['requirement']->getId();

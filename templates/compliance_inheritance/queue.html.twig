@@ -32,7 +32,8 @@
 
     <div aria-live="polite" class="visually-hidden"
          data-controller="inheritance-queue"
-         data-inheritance-queue-count-value="{{ pending_count }}">
+         data-inheritance-queue-count-value="{{ pending_count }}"
+         data-inheritance-queue-interval-value="{{ poll_interval_ms|default(60000) }}">
         {{ 'compliance_inheritance.queue.aria_count'|trans({ '%count%': pending_count }, 'compliance_inheritance') }}
     </div>
 

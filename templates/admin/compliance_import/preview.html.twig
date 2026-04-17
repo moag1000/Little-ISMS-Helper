@@ -159,6 +159,21 @@
             {% endblock %}
         {% endembed %}
 
+        {% if requires_four_eyes|default(false) %}
+            <div class="alert alert-warning d-flex gap-2" role="note">
+                <i class="bi bi-exclamation-triangle mt-1" aria-hidden="true"></i>
+                <div>
+                    <strong>{{ 'compliance_import.preview.four_eyes_warning_title'|trans({}, 'compliance_import') }}</strong>
+                    <div class="small">
+                        {{ 'compliance_import.preview.four_eyes_warning_body'|trans({
+                            '%rows%': rows|length,
+                            '%threshold%': four_eyes_threshold,
+                        }, 'compliance_import') }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
         {# Action bar #}
         <div class="d-flex gap-2 justify-content-end">
             <form method="post" action="{{ path('admin_compliance_import_cancel') }}" class="d-inline">

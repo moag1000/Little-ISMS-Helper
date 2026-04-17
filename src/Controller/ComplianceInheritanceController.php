@@ -13,6 +13,7 @@ use App\Repository\UserRepository;
 use App\Security\Voter\ComplianceInheritanceVoter;
 use App\Service\ComplianceFrameworkActivationService;
 use App\Service\ComplianceInheritanceService;
+use App\Service\CompliancePolicyService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,6 +33,7 @@ final class ComplianceInheritanceController extends AbstractController
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly UserRepository $userRepository,
         private readonly TenantContext $tenantContext,
+        private readonly CompliancePolicyService $policy,
     ) {
     }
 
@@ -81,6 +83,7 @@ final class ComplianceInheritanceController extends AbstractController
             'status_filter' => $statusFilter,
             'pending_count' => $this->inheritanceService->getPendingReviewCount($tenant, $framework),
             'managers' => $this->loadManagers($current),
+            'poll_interval_ms' => $this->policy->getInt(CompliancePolicyService::KEY_INHERITANCE_BADGE_POLL, 60) * 1000,
         ]);
     }
 
