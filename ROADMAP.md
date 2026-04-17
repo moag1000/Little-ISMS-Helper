@@ -824,6 +824,53 @@ Basierend auf dem UX-Audit vom 01.01.2026: Konsolidierung der UI-Komponenten, CS
 
 ---
 
+### ✅ Phase 8J: Standards Compliance & UX Improvement (Abgeschlossen)
+
+**Status:** ✅ Abgeschlossen (Apr 2026)
+**Effort:** ~80+ Stunden
+
+Umfassende Qualitaetssicherung: Bugfixes (Tenant-Isolation, Security, KPI-Berechnungen, Setup Wizard), neue Features (DataSubjectRequest, ElementaryThreat, KPI Snapshots, Board One-Pager PDF, 10 strategische KPIs), Compliance-Katalog-Updates (NIS2UmsuCG, BDSG, EU AI Act, +8 Frameworks im Setup), WCAG 2.2 AA, Form UX (90+ Felder mit Help-Texten, Progressive Disclosure), Navigation (Phase 1-4+6), Onboarding (First Steps, 9001 Bridge, Glossar), Admin Panel DB-Fix (95%+), Tenant/Context Improvements. Package Updates auf Symfony UX 3.0.
+
+---
+
+### ✅ Phase 8DR: Data-Reuse Plan v1.1 (Abgeschlossen Apr 2026)
+
+**Zeitraum:** Abgeschlossen Apr 2026
+**Status:** ✅ Abgeschlossen
+**Grundlage:** [docs/DATA_REUSE_IMPROVEMENT_PLAN.md](docs/DATA_REUSE_IMPROVEMENT_PLAN.md)
+
+#### Überblick
+Umsetzung aller 8 Workstreams zur Behebung der Data-Reuse-Schwächen,
+aufgesetzt nach Audit durch Senior-Consultant + Compliance-Manager + ISB-Review
+(3 Major, 6 Minor, 4 Observation Findings).
+
+#### Ergebnis-Matrix
+
+| WS  | Thema                                    | Kern-Artefakt                                                           |
+|-----|------------------------------------------|-------------------------------------------------------------------------|
+| WS-1| Mapping-basierte Vererbung (Review-Pflicht) | `ComplianceInheritanceService`, `FulfillmentInheritanceLog`, 4-Augen  |
+| WS-2| Import-Wizard + Guardrails               | `ComplianceImportController`, CSV-Validator, 4-Augen ab 50 Zeilen       |
+| WS-3| DORA-Lieferantenregister                 | `Supplier` + 14 Felder (LEI, Kritikalität, Substituierbarkeit, Exit)    |
+| WS-4| Portfolio-Ampel                          | Konfigurierbare Grün/Gelb-Schwellwerte, Scheduled Report                 |
+| WS-5| Cross-Framework-Mappings                 | 461 Mappings / 22 Frameworks (ISO, NIS2, DORA, TISAX, BSI, C5, AI-Act)  |
+| WS-6| Gap-Report mit Quick-Wins                | `baseEffortDays`, Override via `adjustedEffortDays`, Perzentil-Logik    |
+| WS-7| Scheduled Portfolio-Reports              | `ScheduledReport::TYPE_PORTFOLIO` + JSON-Payload                         |
+| WS-8| Setup-Wizard existierende Frameworks     | `ExistingFrameworksController`, FTE-Reuse-Heuristik                      |
+
+#### Admin-Konfigurierbarkeit (NEU)
+- **`/admin/compliance/settings`** — 13 Laufzeit-Parameter
+  (inheritance, four_eyes, portfolio, setup, import, ui, gap_report)
+- **`/admin/loader-fixer`** — idempotente Re-Exekution aller 22 Framework-Loader
+- `CompliancePolicyService` liest aus `system_settings` (Kategorie=compliance),
+  YAML bleibt Fallback-Default
+- Alle Änderungen im Audit-Log, pro-Key-Reset möglich
+
+#### 7 neue Personas für Tool-Review
+- Junior-Implementer, ISB-Practitioner, CISO-Executive, External-Auditor,
+  Senior-Consultant, Business-Risk-Owner, Compliance-Manager (GRC-Head)
+
+---
+
 ### 📅 Phase 8B-8G: Geplante Features
 
 | Phase | Feature | Status | Beschreibung |
@@ -909,7 +956,7 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 
 ---
 
-**Stand:** 2026-01-07
-**Version:** 2.5
-**Letzte Änderung:** UI/UX Ergänzungen (Floating Toolbar, Skeleton Patterns, Command Palette Erweiterungen) hinzugefügt
-**Nächste Aktualisierung:** Nach Abschluss Phase 8H.1-8H.2
+**Stand:** 2026-04-17
+**Version:** 2.7
+**Letzte Aenderung:** Phase 8J Standards Compliance & UX Improvement (Bugfixes, neue Features, KPI-System, Onboarding, Katalog-Updates, WCAG 2.2 AA, Package Updates, Admin Panel Fixes, Tenant/Context Improvements)
+**Naechste Aktualisierung:** Nach Abschluss Phase 8H.1

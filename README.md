@@ -17,7 +17,7 @@
 [![Docker Image](https://img.shields.io/docker/v/moag2000/little-isms-helper?logo=docker&label=image)](https://hub.docker.com/r/moag2000/little-isms-helper)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![ISO 27001:2022](https://img.shields.io/badge/ISO-27001%3A2022-blue)](https://www.iso.org/standard/27001)
-[![WCAG 2.1 AA](https://img.shields.io/badge/WCAG-2.1%20AA-green)](https://www.w3.org/WAI/WCAG21/quickref/)
+[![WCAG 2.2 AA](https://img.shields.io/badge/WCAG-2.2%20AA-green)](https://www.w3.org/TR/WCAG22/)
 
 [Features](#-funktionen) • [Quick Start](#-quick-start-mit-docker) • [Dokumentation](#-dokumentation) • [Roadmap](#-roadmap) • [Contributing](#-beitragen)
 
@@ -44,8 +44,9 @@ Little ISMS Helper unterstützt Organisationen bei der **Implementierung und Ver
 | Feature | Beschreibung |
 |---------|--------------|
 | ✅ **ISO 27001:2022 konform** | Alle 93 Annex A Controls integriert |
-| 🔄 **Intelligente Datenwiederverwendung** | Einmal erfasst, mehrfach genutzt |
-| 📊 **Multi-Framework Support** | ISO 27001, TISAX, DORA, NIS2, BSI IT-Grundschutz |
+| 🔄 **Intelligente Datenwiederverwendung** | Mapping-basierte Vererbung mit Review-Pflicht (WS-1) |
+| 🔗 **Cross-Framework-Mappings** | 461 geprüfte Mappings über 22 Frameworks |
+| 📊 **Multi-Framework Support** | ISO 27001/27002/27005/27701/22301, TISAX, DORA, NIS2, BSI, C5, EU AI Act |
 | 🐳 **Docker-Ready** | Ein Befehl – alles läuft |
 | 🚀 **Modern & schnell** | Symfony 7.4, PHP 8.4, Progressive UI |
 | 🔓 **Open Architecture** | REST API für Integrationen |
@@ -211,10 +212,13 @@ Für Produktions-Deployments beachten Sie:
 
 ### 📋 Compliance Management
 - **93 ISO 27001:2022 Controls** - Vollständige Annex A Abdeckung
-- **Multi-Framework** - TISAX, DORA, NIS2, BSI IT-Grundschutz
+- **Multi-Framework** - 22 Frameworks (ISO, TISAX, DORA, NIS2, BSI, C5, EU AI Act)
+- **461 Cross-Framework-Mappings** - geprüfte Wiederverwendungspfade
+- **Mapping-basierte Vererbung** - Vorschläge mit 4-Augen-Review (WS-1)
 - **SoA PDF Export** - Professional ISO 27001 Reports
 - **Audit Management** - ISO 27001 Clause 9.2
 - **Management Review** - ISO 27001 Clause 9.3
+- **Admin-Policy-UI** - 13 Schwellwerte/Parameter laufzeitkonfigurierbar
 
 ### 🔐 Risk & Asset Management
 - **Risk Assessment** - 5x5 Matrix, ISO 27005 Guidance, GDPR Integration
@@ -254,7 +258,7 @@ Für Produktions-Deployments beachten Sie:
 - **Mega Menu Navigation** - Hierarchische, Multi-Column Navigation mit visuellen Icons
 - **Dark Mode** - Vollständige Theme-Unterstützung mit WCAG AA Kontrasten
 - **Complete i18n** - 3.290+ Übersetzungsschlüssel in 97 Domänen (DE/EN)
-- **WCAG 2.1 AA** - 100% Barrierefreiheit (Kontraste, ARIA, Keyboard Navigation)
+- **WCAG 2.2 AA** - Barrierefreiheit (Kontraste, ARIA, Keyboard Navigation, Focus Not Obscured, Target Size)
 - **Component System** - Wiederverwendbare Twig-Komponenten (Cards, Badges, Buttons)
 - **Responsive Design** - Mobile-First mit Bootstrap 5.3
 - **Cyberpunk Fairy Design** - Einzigartiger visueller Stil mit Gradients & Neon-Effekten
@@ -383,10 +387,11 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 ## 📊 Projekt-Statistiken
 
 - **Codezeilen:** ~43,600+ LOC
-- **Entities:** 39 Doctrine Entities
-- **Controllers:** 38 Controllers
-- **Templates:** 197 Twig Templates
-- **Translations:** 2,905 keys (DE + EN)
+- **Entities:** 52+ Doctrine Entities
+- **Controllers:** 68+ Controllers
+- **Services:** 65+ Business Logic Services
+- **Templates:** 420+ Twig Templates (WCAG 2.2 AA)
+- **Translations:** 3,500+ keys (DE + EN) in 115+ YAML files
 - **Tests:** 2528 tests (34 test files, 19,175 LOC)
 - **API Endpoints:** 30 REST Endpoints
 - **Report Types:** 11 (6 PDF + 5 Excel)
