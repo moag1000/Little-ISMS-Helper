@@ -1,0 +1,41 @@
+page:
+    title: 'Loader-Fixer'
+    lead: 'Führt die Framework-Requirement-Loader idempotent aus. Ergänzt fehlende Controls/Anforderungen aus aktualisierten Katalog-Versionen, ohne bestehende Einträge zu verändern.'
+
+hint:
+    heading: 'So wirkt der Fix'
+    body: 'Idempotent gepflegte Loader (BSI/GDPR/ISO 27701 u.a.) tragen nur neue Requirements nach. Loader mit altem Skip-Guard geben 0 hinzugefügt zurück — sicher zum wiederholten Ausführen.'
+
+table:
+    code: 'Framework-Code'
+    label: 'Name'
+    loaded: 'Aktuell geladen'
+    status: 'Status'
+    actions: 'Aktionen'
+
+status:
+    loaded: 'Geladen'
+    empty: 'Leer'
+    not_loaded: 'Nicht geladen'
+
+action:
+    run_one: 'Nachziehen'
+    run_all: 'Alle Loader nachziehen'
+    back: 'Zurück zur Übersicht'
+
+confirm:
+    all: 'Alle Framework-Loader idempotent erneut ausführen? Bestehende Anforderungen bleiben unverändert, nur fehlende werden ergänzt.'
+
+result:
+    title: 'Ergebnis Loader-Fixer'
+    total_added: '%total% Anforderung(en) ergänzt.'
+    ok: 'Erfolgreich'
+    failed: 'Fehler'
+    before: 'Vorher'
+    after: 'Nachher'
+    added: 'Ergänzt'
+
+flash:
+    invalid_csrf: 'Ungültiges CSRF-Token. Aktion abgebrochen.'
+    single: 'Loader %code%: %added% Anforderung(en) ergänzt, neu %after%.'
+    bulk: '%total% Anforderung(en) über %frameworks% Framework(s) ergänzt.'

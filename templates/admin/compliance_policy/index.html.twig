@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'compliance_policy.page.title'|trans({}, 'compliance_policy') }}{% endblock %}
+
+{% set groups = {
+    'inheritance': 'compliance_policy.group.inheritance',
+    'four_eyes': 'compliance_policy.group.four_eyes',
+    'portfolio': 'compliance_policy.group.portfolio',
+    'setup': 'compliance_policy.group.setup',
+    'import': 'compliance_policy.group.import',
+    'ui': 'compliance_policy.group.ui',
+    'gap_report': 'compliance_policy.group.gap_report'
+} %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+        <div>
+            <h1 class="h3">{{ 'compliance_policy.page.title'|trans({}, 'compliance_policy') }}</h1>
+            <p class="text-muted mb-0">{{ 'compliance_policy.page.lead'|trans({}, 'compliance_policy') }}</p>
+        </div>
+    </div>
+
+    <div class="alert alert-info d-flex gap-2" role="note">
+        <i class="bi bi-info-circle mt-1" aria-hidden="true"></i>
+        <div>
+            <strong>{{ 'compliance_policy.hint.heading'|trans({}, 'compliance_policy') }}</strong>
+            <div class="small">{{ 'compliance_policy.hint.body'|trans({}, 'compliance_policy') }}</div>
+        </div>
+    </div>
+
+    <form method="post" action="{{ path('admin_compliance_policy_index') }}" novalidate>
+        <input type="hidden" name="_token" value="{{ csrf_token('compliance_policy_update') }}">
+
+        {% for groupKey, groupLabel in groups %}
+            {% set groupDefs = defs|filter(def => def.group == groupKey) %}
+            {% if groupDefs|length > 0 %}
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h2 class="h6 mb-0">{{ groupLabel|trans({}, 'compliance_policy') }}</h2>
+                    </div>
+                    <div class="card-body">
+                        {% for key, def in groupDefs %}
+                            {% set fieldId = 'field_' ~ key|replace({'.': '_'}) %}
+                            {% set fieldName = key|replace({'.': '_'}) %}
+                            {% set value = current[key] ?? defaults[key] ?? '' %}
+                            {% set defaultValue = defaults[key] ?? '' %}
+                            {% set isOverride = current[key] is defined and current[key] != defaultValue %}
+
+                            <div class="row mb-3 align-items-center">
+                                <label for="{{ fieldId }}" class="col-md-5 col-form-label">
+                                    <code class="small text-muted d-block">{{ key }}</code>
+                                    {{ def.label }}
+                                </label>
+                                <div class="col-md-4">
+                                    {% if def.type == 'bool' %}
+                                        <div class="form-check form-switch">
+                                            <input type="hidden" name="{{ fieldName }}" value="0">
+                                            <input type="checkbox" class="form-check-input" role="switch"
+                                                   id="{{ fieldId }}" name="{{ fieldName }}" value="1"
+                                                   {% if value %}checked{% endif %}>
+                                            <label class="form-check-label" for="{{ fieldId }}">
+                                                {{ value ? 'compliance_policy.bool.on'|trans({}, 'compliance_policy')
+                                                         : 'compliance_policy.bool.off'|trans({}, 'compliance_policy') }}
+                                            </label>
+                                        </div>
+                                    {% else %}
+                                        <input type="number" class="form-control"
+                                               id="{{ fieldId }}" name="{{ fieldName }}"
+                                               value="{{ value }}"
+                                               {% if def.min is defined %}min="{{ def.min }}"{% endif %}
+                                               {% if def.max is defined %}max="{{ def.max }}"{% endif %}
+                                               {% if def.step is defined %}step="{{ def.step }}"{% else %}step="{{ def.type == 'float' ? '0.01' : '1' }}"{% endif %}>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-3 text-md-end">
+                                    <span class="small text-muted d-block">
+                                        {{ 'compliance_policy.default'|trans({}, 'compliance_policy') }}:
+                                        <strong>
+                                            {% if def.type == 'bool' %}
+                                                {{ defaultValue ? 'compliance_policy.bool.on'|trans({}, 'compliance_policy')
+                                                                : 'compliance_policy.bool.off'|trans({}, 'compliance_policy') }}
+                                            {% else %}
+                                                {{ defaultValue }}
+                                            {% endif %}
+                                        </strong>
+                                    </span>
+                                    {% if isOverride %}
+                                        <span class="badge bg-warning text-dark mt-1">
+                                            {{ 'compliance_policy.override'|trans({}, 'compliance_policy') }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <div class="d-flex justify-content-between">
+            <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">
+                {{ 'compliance_policy.action.cancel'|trans({}, 'compliance_policy') }}
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle" aria-hidden="true"></i>
+                {{ 'compliance_policy.action.save'|trans({}, 'compliance_policy') }}
+            </button>
+        </div>
+    </form>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h2 class="h6 mb-0">{{ 'compliance_policy.reset.heading'|trans({}, 'compliance_policy') }}</h2>
+        </div>
+        <div class="card-body">
+            <p class="small text-muted">{{ 'compliance_policy.reset.lead'|trans({}, 'compliance_policy') }}</p>
+            <div class="row g-2">
+                {% for key, def in defs %}
+                    <div class="col-md-6">
+                        <form method="post" action="{{ path('admin_compliance_policy_reset', {key: key}) }}"
+                              class="d-flex gap-2 align-items-center"
+                              onsubmit="return confirm('{{ 'compliance_policy.reset.confirm'|trans({}, 'compliance_policy')|e('js') }}');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('compliance_policy_reset_' ~ key) }}">
+                            <span class="small text-truncate flex-grow-1" title="{{ key }}">
+                                <code>{{ key }}</code>
+                            </span>
+                            <button type="submit" class="btn btn-sm btn-outline-warning">
+                                <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                                {{ 'compliance_policy.reset.action'|trans({}, 'compliance_policy') }}
+                            </button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
