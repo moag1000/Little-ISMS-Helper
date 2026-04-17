@@ -9,6 +9,7 @@ context:
         edit: 'Kontext bearbeiten'
         create: 'Kontext erfassen'
         create_now: 'Jetzt erstellen'
+        interested_parties_module: 'Interessierte Parteien verwalten'
     info:
         iso_clause: 'ISO 27001: Kontext der Organisation'
         iso_description: 'Klauseln 4.1–4.3: Externe/interne Themen, interessierte Parteien und Anwendungsbereich (Scope).'
@@ -141,5 +142,12 @@ context:
     empty:
         title: 'Noch kein ISMS‑Kontext definiert'
         description: 'Erfassen Sie zunächst den Organisationskontext gemäß ISO 27001 Klausel 4. Dies ist die Grundlage für Ihr Informationssicherheits‑Managementsystem.'
+    validation:
+        organization_name_required: 'Organisationsname ist erforderlich.'
+        isms_scope_required: 'ISMS-Geltungsbereich ist erforderlich.'
+        isms_policy_required: 'ISMS-Richtlinie ist erforderlich.'
+        roles_and_responsibilities_required: 'Rollen und Verantwortlichkeiten sind erforderlich.'
+    hint:
+        structured_parties: 'Nutzen Sie das Modul "Interessierte Parteien" fuer strukturierte Erfassung nach ISO 27001 Klausel 4.2'
     edit:
         title: Titel

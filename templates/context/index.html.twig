@@ -47,14 +47,8 @@
         </div>
     </div>
 
-    {# Calculate Stats #}
-    {% set hasScope = context.ismsScope ? true : false %}
-    {% set hasExclusions = context.scopeExclusions ? true : false %}
-    {% set hasParties = context.interestedParties ? true : false %}
-    {% set hasPolicy = context.ismsPolicy ? true : false %}
-    {% set hasRequirements = (context.legalRequirements or context.regulatoryRequirements or context.contractualObligations) ? true : false %}
-    {% set completeness = ((hasScope ? 1 : 0) + (hasParties ? 1 : 0) + (hasPolicy ? 1 : 0) + (hasRequirements ? 1 : 0)) %}
-    {% set completenessPercentage = (completeness / 4 * 100)|round %}
+    {# Use service-calculated completeness (more granular) #}
+    {% set completenessPercentage = completeness|default(0) %}
 
     {% set daysSinceReview = context.lastReviewDate ? ((date().diff(context.lastReviewDate).days)) : null %}
     {% set daysUntilReview = context.nextReviewDate ? ((date().diff(context.nextReviewDate).days * -1)) : null %}
@@ -248,6 +242,16 @@
                         <p class="small mt-2 mb-0">{{ 'context.message.no_interested_parties'|trans({}, 'context') }}</p>
                     </div>
                     {% endif %}
+                </div>
+                {# Link to structured Interested Parties module #}
+                <div class="col-12">
+                    <div class="mt-3">
+                        <a href="{{ path('app_interested_party_index') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-people me-1" aria-hidden="true"></i>
+                            {{ 'context.link.interested_parties_module'|trans({}, 'context') }}
+                        </a>
+                        <small class="text-muted ms-2">{{ 'context.hint.structured_parties'|trans({}, 'context') }}</small>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     {% if context.interestedPartiesRequirements %}
