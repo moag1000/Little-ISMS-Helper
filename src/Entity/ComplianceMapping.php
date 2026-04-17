@@ -157,9 +157,23 @@ class ComplianceMapping
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeInterface $reviewedAt = null;
 
+    // ── WS-1 MAJOR-2: mapping versioning for point-in-time reproducibility ──
+    #[ORM\Column(length: 100)]
+    private string $source = 'algorithm_generated_v1.0';
+
+    #[ORM\Column]
+    private int $version = 1;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?DateTimeInterface $validFrom = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeInterface $validUntil = null;
+
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
+        $this->validFrom = new DateTimeImmutable();
         $this->gapItems = new ArrayCollection();
     }
 
@@ -582,6 +596,60 @@ class ComplianceMapping
             }
         }
         return $count;
+    }
+
+    // ── WS-1 MAJOR-2 versioning accessors ───────────────────────────────────
+
+    public function getSource(): string
+    {
+        return $this->source;
+    }
+
+    public function setSource(string $source): static
+    {
+        $this->source = $source;
+        return $this;
+    }
+
+    public function getVersion(): int
+    {
+        return $this->version;
+    }
+
+    public function setVersion(int $version): static
+    {
+        $this->version = $version;
+        return $this;
+    }
+
+    public function getValidFrom(): ?DateTimeInterface
+    {
+        return $this->validFrom;
+    }
+
+    public function setValidFrom(DateTimeInterface $validFrom): static
+    {
+        $this->validFrom = $validFrom;
+        return $this;
+    }
+
+    public function getValidUntil(): ?DateTimeInterface
+    {
+        return $this->validUntil;
+    }
+
+    public function setValidUntil(?DateTimeInterface $validUntil): static
+    {
+        $this->validUntil = $validUntil;
+        return $this;
+    }
+
+    public function isValidAt(DateTimeInterface $point): bool
+    {
+        if ($this->validFrom === null || $this->validFrom > $point) {
+            return false;
+        }
+        return $this->validUntil === null || $this->validUntil > $point;
     }
 }
 

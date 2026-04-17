@@ -34,7 +34,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2>{{ 'bc_plans.section.details'|trans({}, 'bc_plans') }}</h2>
-                <span class="{{ badge_status(bc_plan.status) }}">{{ bc_plan.status }}</span>
+                <span class="{{ badge_status(bc_plan.status) }}">{{ ('bc_plans.status.' ~ bc_plan.status)|trans({}, 'bc_plans') }}</span>
             </div>
         {% endblock %}
         {% block card_body %}

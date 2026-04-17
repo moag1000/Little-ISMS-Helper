@@ -1,0 +1,71 @@
+tags:
+    admin:
+        page:
+            title: "Tags verwalten"
+            lead: "Framework-Tags und Klassifikations-Tags für Assets, Controls, Risiken und Lieferanten."
+        new:
+            title: "Neuen Tag anlegen"
+        edit:
+            title: 'Tag bearbeiten: %name%'
+        action:
+            new: "Neuen Tag anlegen"
+            save: "Speichern"
+            cancel: "Abbrechen"
+        actions: "Aktionen"
+        scope: "Sichtbarkeit"
+        scope_global: "Global"
+        table:
+            caption: "Liste aller sichtbaren Tags"
+        empty: "Noch keine Tags vorhanden. Lege einen neuen Tag an, um Bulk-Klassifikation über mehrere Frameworks zu nutzen."
+        aria:
+            edit: 'Tag "%name%" bearbeiten'
+            delete: 'Tag "%name%" löschen'
+        confirm:
+            delete: "Tag wirklich löschen? Die Zuordnung zu Entities bleibt in der Historie erhalten."
+
+    form:
+        name: "Name"
+        type: "Typ"
+        framework_code: "Framework-Code"
+        framework_code_help: "Optional: Code des zugehörigen Frameworks (z. B. NIS2, DORA, ISO27001). Nur bei Typ 'Framework' relevant."
+        color: "Farbe"
+        description: "Beschreibung"
+
+    type:
+        framework: "Framework"
+        classification: "Klassifikation"
+        custom: "Benutzerdefiniert"
+
+    color:
+        primary: "Blau"
+        secondary: "Grau"
+        success: "Grün"
+        danger: "Rot"
+        warning: "Gelb"
+        info: "Türkis"
+        dark: "Dunkel"
+
+    flash:
+        created: "Tag wurde erstellt."
+        updated: "Tag wurde aktualisiert."
+        deleted: "Tag wurde gelöscht."
+        csrf_invalid: "Sicherheits-Token ungültig — bitte erneut versuchen."
+
+    bulk:
+        selected: "ausgewählt"
+        actions: "Aktionen"
+        actions_menu: "Bulk-Aktionen Menü öffnen"
+        add_tag: "Tag hinzufügen"
+        remove_tag: "Tag entfernen"
+        export: "Exportieren"
+        pick_tags: "Tags auswählen"
+        no_tags_available: "Keine Tags verfügbar — bitte zuerst im Admin-Bereich anlegen."
+        apply: "Anwenden"
+        cancel: "Abbrechen"
+        clear_selection: "Auswahl aufheben"
+        aria:
+            select_tag: 'Tag "%name%" auswählen'
+
+    filter:
+        label: "Framework-Tag"
+        all: "Alle"

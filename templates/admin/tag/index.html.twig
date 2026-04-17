@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'tags.admin.page.title'|trans({}, 'tags') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+        <div>
+            <h1 class="h3">{{ 'tags.admin.page.title'|trans({}, 'tags') }}</h1>
+            <p class="text-muted mb-0">{{ 'tags.admin.page.lead'|trans({}, 'tags') }}</p>
+        </div>
+        <a href="{{ path('admin_tag_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle" aria-hidden="true"></i>
+            {{ 'tags.admin.action.new'|trans({}, 'tags') }}
+        </a>
+    </div>
+
+    {% if tags|length == 0 %}
+        <div class="alert alert-info" role="note">
+            {{ 'tags.admin.empty'|trans({}, 'tags') }}
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <caption class="visually-hidden">{{ 'tags.admin.table.caption'|trans({}, 'tags') }}</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ 'tags.form.name'|trans({}, 'tags') }}</th>
+                            <th scope="col">{{ 'tags.form.type'|trans({}, 'tags') }}</th>
+                            <th scope="col">{{ 'tags.form.framework_code'|trans({}, 'tags') }}</th>
+                            <th scope="col">{{ 'tags.admin.scope'|trans({}, 'tags') }}</th>
+                            <th scope="col" class="text-end">{{ 'tags.admin.actions'|trans({}, 'tags') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tag in tags %}
+                            <tr>
+                                <td>
+                                    <span class="badge bg-{{ tag.color }}">{{ tag.name }}</span>
+                                    {% if tag.description %}
+                                        <br><small class="text-muted">{{ tag.description }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>{{ ('tags.type.' ~ tag.type)|trans({}, 'tags') }}</td>
+                                <td>{{ tag.frameworkCode ?: '—' }}</td>
+                                <td>
+                                    {% if tag.tenant %}
+                                        <small class="text-muted">{{ tag.tenant.name }}</small>
+                                    {% else %}
+                                        <span class="badge bg-dark">{{ 'tags.admin.scope_global'|trans({}, 'tags') }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <a href="{{ path('admin_tag_edit', {id: tag.id}) }}" class="btn btn-sm btn-outline-secondary"
+                                       aria-label="{{ 'tags.admin.aria.edit'|trans({'%name%': tag.name}, 'tags') }}">
+                                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                                    </a>
+                                    <form method="post" action="{{ path('admin_tag_delete', {id: tag.id}) }}" class="d-inline"
+                                          onsubmit="return confirm('{{ 'tags.admin.confirm.delete'|trans({}, 'tags')|e('js') }}');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('tag_delete_' ~ tag.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                aria-label="{{ 'tags.admin.aria.delete'|trans({'%name%': tag.name}, 'tags') }}">
+                                            <i class="bi bi-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+existing_frameworks:
+    title: 'What do you already have? - Compliance Portfolio'
+    header: 'What do you already have? (Portfolio Baseline)'
+    description: 'Tell us which frameworks are already certified in your organization. Based on cross-framework mappings, we will estimate how many requirements of the newly added frameworks you can reuse.'
+    info:
+        title: 'Why this question?'
+        message: 'An existing ISO 27001 certification can cover 60–80% of NIS2 or DORA requirements. This selection prioritizes the (review-required) inheritance suggestions after setup completes.'
+
+    already_certified:
+        label: 'Already certified frameworks'
+        heading: 'Already in place'
+        description: 'Frameworks that your organization is already certified against or has fully implemented.'
+        help: 'Selection is optional — used as a baseline for the reuse forecast.'
+
+    newly_added:
+        label: 'Frameworks to add'
+        heading: 'Add new'
+        description: 'Frameworks being added as part of this setup. Pre-filled with your selection from step 8.'
+        help: 'Changes only affect this reuse dialog — activation happens at setup completion.'
+
+    certification_dates:
+        label: 'Certification dates'
+        help: 'Internal field — hidden.'
+
+    certification_date:
+        label: 'Certified since'
+        help: 'Optional — recorded in the audit trail.'
+
+    preview:
+        heading: 'Reuse Forecast'
+        idle: 'Make a selection to see the forecast.'
+        no_newly_added: 'Pick at least one framework to add on the right.'
+        no_sources: 'No mappings found'
+        error: 'Could not load forecast. Please try again.'
+        aria_label: 'Preview of reusable requirements'
+        caption: 'Estimated: %reusable% reusable requirements · %days% FTE days saved.'
+        total: 'Total'
+        heuristic_note: 'Heuristic: 0.3 FTE days per reusable requirement (~2h saved vs. fresh assessment). Only mappings with ≥ 50% coverage count.'
+        col:
+            framework: 'Framework'
+            requirements: 'Requirements'
+            reusable: 'Reusable'
+            fte_days: 'FTE days saved'
+            sources: 'Derived from'
+
+    actions:
+        skip: 'Skip'
+        save_next: 'Save & continue'
+
+    flash:
+        saved: '%count% new frameworks queued for reuse activation.'
+        skipped: 'Portfolio query skipped — reuse forecast not active.'

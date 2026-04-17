@@ -1,0 +1,31 @@
+# Cross-Framework Mapping SOC 2 Trust Services Criteria (2017 rev. 2022) <-> ISO/IEC 27001:2022
+# License: CC-BY 4.0
+# Source: AICPA TSC 2017 (rev. 2022) mapping to ISO 27001:2022.
+# Curator: Senior-GRC-Consultant (2026-04-17)
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+SOC2,CC1.1,ISO27001,5.1,90,partial,high,true,"COSO-principle 1: control environment — ISO Clause 5.1 leadership.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC1.2,ISO27001,A.5.2,85,partial,high,true,"Board independence and management oversight — A.5.2.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC1.3,ISO27001,A.5.2,85,partial,high,false,"Structures, reporting lines — A.5.2.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC2.1,ISO27001,A.5.1,85,partial,high,true,"Obtains quality information — Policies A.5.1.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC2.2,ISO27001,7.4,85,partial,high,false,"Internal communication — Clause 7.4 communication.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC3.1,ISO27001,6.1.2,90,partial,high,true,"Specifies objectives — Clause 6.1.2 risk assessment criteria.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC3.2,ISO27001,6.1.2,90,partial,high,false,"Identifies risks — Clause 6.1.2.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC3.4,ISO27001,A.8.32,85,partial,high,true,"Identifies changes — A.8.32 change management.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC5.1,ISO27001,A.5.3,90,partial,high,true,"Control activities — A.5.3 segregation of duties and control framework.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC6.1,ISO27001,A.5.15,95,full,high,true,"Logical access controls — A.5.15.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC6.2,ISO27001,A.5.18,90,partial,high,true,"User provisioning/deprovisioning — A.5.18.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC6.3,ISO27001,A.8.2,90,partial,high,false,"Privileged access — A.8.2.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC6.7,ISO27001,A.8.24,90,partial,high,true,"Transmission of confidential information — A.8.24.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC6.8,ISO27001,A.8.7,85,partial,high,true,"Malicious software — A.8.7.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC7.1,ISO27001,A.8.8,90,partial,high,true,"Detection of vulnerabilities — A.8.8.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC7.2,ISO27001,A.8.16,90,partial,high,true,"Monitoring anomalies — A.8.16.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC7.3,ISO27001,A.5.24,90,partial,high,true,"Evaluates security events — A.5.24/A.5.25.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC7.4,ISO27001,A.5.26,90,partial,high,true,"Responds to identified security incidents — A.5.26.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC7.5,ISO27001,A.5.27,85,partial,high,true,"Recovery from security incidents — A.5.27.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC8.1,ISO27001,A.8.32,90,partial,high,true,"Change management — A.8.32.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC9.1,ISO27001,A.5.29,85,partial,high,true,"Disruptive events handled — A.5.29.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,CC9.2,ISO27001,A.5.19,90,partial,high,true,"Vendors and business partners — A.5.19.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,A1.1,ISO27001,A.8.14,85,partial,high,true,"Availability — A.8.14 redundancy.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,C1.1,ISO27001,A.5.12,85,partial,high,true,"Confidentiality — A.5.12 classification.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant
+SOC2,P1.1,ISO27001,A.5.34,85,partial,high,true,"Privacy — A.5.34.",aicpa_tsc_2017_iso_mapping,2026-04-17,Senior-GRC-Consultant

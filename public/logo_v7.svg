@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <!-- Cyberpunk Neon Glühen (Optimiert für v7) -->
+    <filter id="neonGlow" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <!-- Magischer Sternenglanz -->
+    <filter id="starDust" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <!-- Cyberpunk Neon-Gradients (Vibrant v7) -->
+    <linearGradient id="wingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00f2ff;stop-opacity:1" /> <!-- Electric Cyan -->
+      <stop offset="100%" style="stop-color:#3d5afe;stop-opacity:0.9" /> <!-- Neon Blue -->
+    </linearGradient>
+    <linearGradient id="magicGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff00ff;stop-opacity:1" /> <!-- Neon Pink -->
+      <stop offset="100%" style="stop-color:#9d00ff;stop-opacity:1" /> <!-- Neon Purple -->
+    </linearGradient>
+    <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e0f7fa;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="auraGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ff00ff;stop-opacity:0.35" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  <!-- Hintergrund mit runden Ecken -->
+  <rect width="400" height="400" fill="#0f172a" rx="60"/>
+  <!-- Cyberpunk Aura -->
+  <circle cx="200" cy="180" r="170" fill="url(#auraGradient)"/>
+  <!-- Verspielte Flügel -->
+  <g opacity="1" filter="url(#neonGlow)">
+    <!-- Obere Flügel -->
+    <path d="M 195 175 Q 120 120 70 140 Q 40 160 195 185" fill="url(#wingGradient)" stroke="#ffffff" stroke-width="1.5"/>
+    <path d="M 205 175 Q 280 120 330 140 Q 360 160 205 185" fill="url(#wingGradient)" stroke="#ffffff" stroke-width="1.5"/>
+    <!-- Untere Flügel -->
+    <path d="M 195 190 Q 140 230 100 215 Q 80 200 195 190" fill="url(#magicGradient)" stroke="#ffffff" stroke-width="1"/>
+    <path d="M 205 190 Q 260 230 300 215 Q 320 200 205 190" fill="url(#magicGradient)" stroke="#ffffff" stroke-width="1"/>
+  </g>
+  <!-- Niedliche Fee -->
+  <g filter="url(#neonGlow)">
+    <!-- Körper -->
+    <path d="M 200 150 Q 220 150 220 180 Q 220 200 200 210 Q 180 200 180 180 Q 180 150 200 150" fill="url(#bodyGradient)" stroke="#00f2ff" stroke-width="2"/>
+    <!-- Kopf -->
+    <circle cx="200" cy="135" r="22" fill="url(#bodyGradient)" stroke="#00f2ff" stroke-width="2"/>
+    <!-- Kawaii Augen -->
+    <circle cx="192" cy="135" r="4" fill="#0f172a"/>
+    <circle cx="208" cy="135" r="4" fill="#0f172a"/>
+    <!-- Glanzpunkte -->
+    <circle cx="193" cy="133" r="1.5" fill="white"/>
+    <circle cx="209" cy="133" r="1.5" fill="white"/>
+    <!-- Mund -->
+    <path d="M 197 142 Q 200 145 203 142" fill="none" stroke="#0f172a" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Fühler -->
+    <path d="M 190 115 Q 185 100 195 90" fill="none" stroke="#ff00ff" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 210 115 Q 215 100 205 90" fill="none" stroke="#ff00ff" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Neon Sterne -->
+    <path d="M 195 85 L 197 90 L 202 91 L 198 94 L 199 99 L 195 96 L 191 99 L 192 94 L 188 91 L 193 90 Z" fill="#ffea00">
+        <animate attributeName="opacity" values="1;0.4;1" dur="1s" repeatCount="indefinite" />
+    </path>
+    <path d="M 205 85 L 207 90 L 212 91 L 208 94 L 209 99 L 205 96 L 201 99 L 202 94 L 198 91 L 203 90 Z" fill="#ffea00">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite" />
+    </path>
+    <!-- Zauberstab -->
+    <g>
+      <path d="M 180 180 L 135 150" stroke="#ff00ff" stroke-width="4" stroke-linecap="round" filter="url(#starDust)"/>
+      <path d="M 180 180 L 135 150" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+      <circle cx="135" cy="150" r="7" fill="#ffffff" filter="url(#neonGlow)">
+        <animate attributeName="r" values="7;10;7" dur="1.5s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="135" cy="150" r="5" fill="#00f2ff"/>
+      <path d="M 135 140 L 138 147 L 145 147 L 140 152 L 142 160 L 135 155 L 128 160 L 130 152 L 125 147 L 132 147 Z" fill="#ffea00" filter="url(#starDust)">
+        <animateTransform attributeName="transform" type="rotate" from="0 135 150" to="360 135 150" dur="3s" repeatCount="indefinite" />
+      </path>
+    </g>
+  </g>
+  <!-- NEU: Typografie v7 (Cyber-Tech-Stil) -->
+  <g text-anchor="middle" filter="url(#neonGlow)">
+    <!-- "Little" in Schreibschrift/Verspielt -->
+    <text x="145" y="325" font-family="'Comic Sans MS', 'Segoe Print', cursive, sans-serif" font-size="38" fill="#00f2ff" font-weight="bold">Little</text>
+    <!-- "ISMS" in Tech-Block-Schrift -->
+    <text x="255" y="325" font-family="'Segoe UI Black', 'Arial Black', sans-serif" font-size="34" fill="#ffffff" letter-spacing="1">ISMS</text>
+    <!-- "HELPER" in Monospace/Code-Stil -->
+    <text x="200" y="368" font-family="'Courier New', Courier, monospace" font-size="28" fill="#ff00ff" font-weight="900" letter-spacing="8">HELPER</text>
+  </g>
+  <!-- Dekorative Neon Nodes -->
+  <g opacity="0.9" filter="url(#starDust)">
+    <circle cx="60" cy="60" r="5" fill="#ffea00"/>
+    <circle cx="340" cy="60" r="5" fill="#39ff14"/>
+    <circle cx="340" cy="340" r="5" fill="#ff00ff"/>
+    <circle cx="60" cy="340" r="5" fill="#00f2ff"/>
+  </g>
+</svg>

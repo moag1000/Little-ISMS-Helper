@@ -12,6 +12,7 @@ use App\Repository\RiskRepository;
 use App\Service\AssetService;
 use App\Service\AssetQrCodeService;
 use App\Service\ProtectionRequirementService;
+use App\Service\TagFilterService;
 use App\Service\TenantContext;
 use App\Service\WorkflowAutoProgressionService;
 use App\Entity\User;
@@ -38,7 +39,8 @@ class AssetController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
         private readonly TenantContext $tenantContext,
-        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService
+        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
+        private readonly TagFilterService $tagFilterService
     ) {}
     #[Route('/asset/', name: 'app_asset_index')]
     #[IsGranted('ROLE_USER')]
@@ -101,6 +103,12 @@ class AssetController extends AbstractController
 
         // Re-index array after filtering to avoid gaps in keys
         $assets = array_values($assets);
+
+        // WS-5: framework-tag filter via ?tag=NIS2
+        $tagFilter = $request->query->get('tag');
+        if (is_string($tagFilter) && $tagFilter !== '') {
+            $assets = $this->tagFilterService->filterByTagName($assets, Asset::class, $tagFilter);
+        }
 
         $typeStats = $this->assetRepository->countByType();
 

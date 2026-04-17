@@ -1,16 +1,16 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'business_process' %}
 
 {% block title %}{{ business_process.name }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('app_business_process_index') }}">BCM</a></li>
-            <li class="breadcrumb-item active">{{ business_process.name }}</li>
-        </ol>
-    </nav>
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.bcm'|trans({}, 'nav'), url: path('app_business_process_index') },
+            { label: business_process.name }
+        ]
+    } %}
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>{{ business_process.name }}</h1>
@@ -38,7 +38,7 @@
         <div class="col-md-3">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
-                    <div class="h6 mb-2 text-muted">Kritikalität</div>
+                    <div class="h6 mb-2 text-muted">{{ 'business_process.show.criticality'|trans({}, 'business_process') }}</div>
                     <p class="h3">
                         {% set criticality_badge = {
                             'critical': 'danger',
@@ -46,7 +46,7 @@
                             'medium': 'info',
                             'low': 'success'
                         } %}
-                        {% include '_components/_badge.html.twig' with { variant: criticality_badge[business_process.criticality] ?? 'secondary', content: business_process.criticality|capitalize } %}
+                        {% include '_components/_badge.html.twig' with { variant: criticality_badge[business_process.criticality] ?? 'secondary', content: ('business_process.criticality.' ~ business_process.criticality)|trans({}, 'business_process') } %}
                     </p>
                 {% endblock %}
             {% endembed %}
@@ -54,16 +54,16 @@
         <div class="col-md-3">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
-                    <div class="h6 mb-2 text-muted">Business Impact Score</div>
+                    <div class="h6 mb-2 text-muted">{{ 'business_process.show.business_impact_score'|trans({}, 'business_process') }}</div>
                     <p class="h3">{{ metrics.business_impact_score }}/5</p>
-                    <small class="text-muted">Automatisch berechnet</small>
+                    <small class="text-muted">{{ 'business_process.show.auto_calculated'|trans({}, 'business_process') }}</small>
                 {% endblock %}
             {% endembed %}
         </div>
         <div class="col-md-3">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
-                    <div class="h6 mb-2 text-muted">Prozess-Risikolevel</div>
+                    <div class="h6 mb-2 text-muted">{{ 'business_process.show.process_risk_level'|trans({}, 'business_process') }}</div>
                     <p class="h3">
                         {% set risk_badge = {
                             'critical': 'danger',
@@ -72,16 +72,16 @@
                             'low': 'success',
                             'unknown': 'secondary'
                         } %}
-                        {% include '_components/_badge.html.twig' with { variant: risk_badge[metrics.process_risk_level] ?? 'secondary', content: metrics.process_risk_level|capitalize } %}
+                        {% include '_components/_badge.html.twig' with { variant: risk_badge[metrics.process_risk_level] ?? 'secondary', content: ('business_process.criticality.' ~ metrics.process_risk_level)|trans({}, 'business_process') } %}
                     </p>
-                    <small class="text-muted">{{ metrics.active_risks }} aktive Risiken</small>
+                    <small class="text-muted">{{ 'business_process.show.active_risks'|trans({'%count%': metrics.active_risks}, 'business_process') }}</small>
                 {% endblock %}
             {% endembed %}
         </div>
         <div class="col-md-3">
             {% embed '_components/_card.html.twig' with {borderColor: (not metrics.criticality_aligned) ? 'warning' : ''} %}
                 {% block card_body %}
-                    <div class="h6 mb-2 text-muted">Alignment-Status</div>
+                    <div class="h6 mb-2 text-muted">{{ 'business_process.show.alignment_status'|trans({}, 'business_process') }}</div>
                     <p class="h3">
                         {% if metrics.criticality_aligned %}
                             <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
@@ -91,9 +91,9 @@
                     </p>
                     <small class="text-muted">
                         {% if metrics.criticality_aligned %}
-                            BIA ↔ Risiko aligned
+                            {{ 'business_process.show.bia_risk_aligned'|trans({}, 'business_process') }}
                         {% else %}
-                            Überprüfung erforderlich
+                            {{ 'business_process.show.review_required'|trans({}, 'business_process') }}
                         {% endif %}
                     </small>
                 {% endblock %}
@@ -107,16 +107,16 @@
         <div class="card-header" data-controller="toggle">
             <ul class="nav nav-tabs card-header-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" data-action="click->toggle#switchTab" data-tab="general" href="#">Allgemein</a>
+                    <a class="nav-link active" data-action="click->toggle#switchTab" data-tab="general" href="#">{{ 'business_process.show.tab.general'|trans({}, 'business_process') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-action="click->toggle#switchTab" data-tab="bia" href="#">BIA Daten</a>
+                    <a class="nav-link" data-action="click->toggle#switchTab" data-tab="bia" href="#">{{ 'business_process.show.tab.bia_data'|trans({}, 'business_process') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-action="click->toggle#switchTab" data-tab="assets" href="#">Assets</a>
+                    <a class="nav-link" data-action="click->toggle#switchTab" data-tab="assets" href="#">{{ 'business_process.show.tab.assets'|trans({}, 'business_process') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-action="click->toggle#switchTab" data-tab="risks" href="#">Risiken</a>
+                    <a class="nav-link" data-action="click->toggle#switchTab" data-tab="risks" href="#">{{ 'business_process.show.tab.risks'|trans({}, 'business_process') }}</a>
                 </li>
             </ul>
         </div>
@@ -129,23 +129,23 @@
                 } %}
                     {% block table_body %}
                         <tr>
-                            <th scope="row" class="w-200px">Prozessverantwortlicher</th>
+                            <th scope="row" class="w-200px">{{ 'business_process.field.process_owner'|trans({}, 'business_process') }}</th>
                             <td>{{ business_process.processOwner }}</td>
                         </tr>
                         <tr>
-                            <th scope="row">Beschreibung</th>
+                            <th scope="row">{{ 'business_process.field.description'|trans({}, 'business_process') }}</th>
                             <td>{{ business_process.description ?? '-' }}</td>
                         </tr>
                         <tr>
-                            <th scope="row">Upstream-Abhängigkeiten</th>
+                            <th scope="row">{{ 'business_process.field.dependencies_upstream'|trans({}, 'business_process') }}</th>
                             <td>{{ business_process.dependenciesUpstream ?? '-' }}</td>
                         </tr>
                         <tr>
-                            <th scope="row">Downstream-Abhängigkeiten</th>
+                            <th scope="row">{{ 'business_process.field.dependencies_downstream'|trans({}, 'business_process') }}</th>
                             <td>{{ business_process.dependenciesDownstream ?? '-' }}</td>
                         </tr>
                         <tr>
-                            <th scope="row">Wiederherstellungsstrategie</th>
+                            <th scope="row">{{ 'business_process.field.recovery_strategy'|trans({}, 'business_process') }}</th>
                             <td>{{ business_process.recoveryStrategy ?? '-' }}</td>
                         </tr>
                     {% endblock %}
@@ -156,29 +156,29 @@
             <div class="tab-content d-none" data-tab-content="bia">
                 <div class="row">
                     <div class="col-md-6">
-                        <h2>Recovery-Ziele</h2>
+                        <h2>{{ 'business_process.show.recovery_objectives'|trans({}, 'business_process') }}</h2>
                         {% embed '_components/_table.html.twig' with {
                             'noMargin': true
                         } %}
                             {% block table_body %}
                                 <tr>
-                                    <th scope="row">RTO (Recovery Time Objective)</th>
-                                    <td>{{ business_process.rto }} Stunden</td>
+                                    <th scope="row">{{ 'business_process.show.rto'|trans({}, 'business_process') }}</th>
+                                    <td>{{ business_process.rto }} {{ 'business_process.show.hours'|trans({}, 'business_process') }}</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">RPO (Recovery Point Objective)</th>
-                                    <td>{{ business_process.rpo }} Stunden</td>
+                                    <th scope="row">{{ 'business_process.show.rpo'|trans({}, 'business_process') }}</th>
+                                    <td>{{ business_process.rpo }} {{ 'business_process.show.hours'|trans({}, 'business_process') }}</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">MTPD (Maximum Tolerable Period)</th>
-                                    <td>{{ business_process.mtpd }} Stunden</td>
+                                    <th scope="row">{{ 'business_process.show.mtpd'|trans({}, 'business_process') }}</th>
+                                    <td>{{ business_process.mtpd }} {{ 'business_process.show.hours'|trans({}, 'business_process') }}</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Empfohlenes RTO (basierend auf Risiken)</th>
+                                    <th scope="row">{{ 'business_process.show.suggested_rto'|trans({}, 'business_process') }}</th>
                                     <td>
-                                        {{ metrics.suggested_rto }} Stunden
+                                        {{ metrics.suggested_rto }} {{ 'business_process.show.hours'|trans({}, 'business_process') }}
                                         {% if metrics.suggested_rto != business_process.rto %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'Abweichung' } %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'business_process.show.deviation'|trans({}, 'business_process') } %}
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -186,29 +186,29 @@
                         {% endembed %}
                     </div>
                     <div class="col-md-6">
-                        <h2>Impact-Bewertung</h2>
+                        <h2>{{ 'business_process.show.impact_assessment'|trans({}, 'business_process') }}</h2>
                         {% embed '_components/_table.html.twig' with {
                             'noMargin': true
                         } %}
                             {% block table_body %}
                                 <tr>
-                                    <th scope="row">Reputationsschaden</th>
+                                    <th scope="row">{{ 'business_process.field.reputational_impact'|trans({}, 'business_process') }}</th>
                                     <td>{{ business_process.reputationalImpact }}/5</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Regulatorischer Impact</th>
+                                    <th scope="row">{{ 'business_process.field.regulatory_impact'|trans({}, 'business_process') }}</th>
                                     <td>{{ business_process.regulatoryImpact }}/5</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Operationaler Impact</th>
+                                    <th scope="row">{{ 'business_process.field.operational_impact'|trans({}, 'business_process') }}</th>
                                     <td>{{ business_process.operationalImpact }}/5</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Finanzieller Schaden/Stunde</th>
+                                    <th scope="row">{{ 'business_process.field.financial_impact_per_hour'|trans({}, 'business_process') }}</th>
                                     <td>{{ business_process.financialImpactPerHour ? (business_process.financialImpactPerHour|number_format(2, ',', '.') ~ ' €') : '-' }}</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Finanzieller Schaden/Tag</th>
+                                    <th scope="row">{{ 'business_process.field.financial_impact_per_day'|trans({}, 'business_process') }}</th>
                                     <td>{{ business_process.financialImpactPerDay ? (business_process.financialImpactPerDay|number_format(2, ',', '.') ~ ' €') : '-' }}</td>
                                 </tr>
                             {% endblock %}
@@ -219,7 +219,7 @@
                 {% if metrics.unmitigated_high_risks %}
                     <div class="alert alert-danger mt-3">
                         <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                        <strong>Warnung:</strong> Dieser Prozess hat unbehandelte Hochrisiken!
+                        <strong>{{ 'business_process.show.warning'|trans({}, 'business_process') }}:</strong> {{ 'business_process.show.unmitigated_high_risks'|trans({}, 'business_process') }}
                     </div>
                 {% endif %}
             </div>
@@ -232,10 +232,10 @@
                     } %}
                         {% block table_head %}
                             <tr>
-                                <th scope="col">Asset</th>
-                                <th scope="col">Typ</th>
-                                <th scope="col">CIA-Bewertung</th>
-                                <th scope="col">Status</th>
+                                <th scope="col">{{ 'business_process.show.asset'|trans({}, 'business_process') }}</th>
+                                <th scope="col">{{ 'business_process.show.type'|trans({}, 'business_process') }}</th>
+                                <th scope="col">{{ 'business_process.show.cia_rating'|trans({}, 'business_process') }}</th>
+                                <th scope="col">{{ 'business_process.show.status'|trans({}, 'business_process') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body %}
@@ -255,7 +255,7 @@
                     {% endembed %}
                 {% else %}
                     <div class="alert alert-info">
-                        Keine unterstützenden Assets verknüpft.
+                        {{ 'business_process.show.no_supporting_assets'|trans({}, 'business_process') }}
                     </div>
                 {% endif %}
             </turbo-frame>
@@ -268,11 +268,11 @@
                     } %}
                         {% block table_head %}
                             <tr>
-                                <th scope="col">Risiko</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Inherent Risk</th>
-                                <th scope="col">Residual Risk</th>
-                                <th scope="col">Behandlung</th>
+                                <th scope="col">{{ 'business_process.show.risk'|trans({}, 'business_process') }}</th>
+                                <th scope="col">{{ 'business_process.show.status'|trans({}, 'business_process') }}</th>
+                                <th scope="col">{{ 'business_process.show.inherent_risk'|trans({}, 'business_process') }}</th>
+                                <th scope="col">{{ 'business_process.show.residual_risk'|trans({}, 'business_process') }}</th>
+                                <th scope="col">{{ 'business_process.show.treatment'|trans({}, 'business_process') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body %}
@@ -293,7 +293,7 @@
                     {% endembed %}
                 {% else %}
                     <div class="alert alert-info">
-                        Keine Risiken verknüpft.
+                        {{ 'business_process.show.no_risks'|trans({}, 'business_process') }}
                     </div>
                 {% endif %}
             </turbo-frame>

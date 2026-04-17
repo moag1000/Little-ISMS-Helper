@@ -174,7 +174,145 @@ class SupplierType extends AbstractType
                 'widget' => 'single_text',
                 'required' => false,
             ])
+
+            // ── WS-3: DORA ROI (Register of Information) ─────────────────────
+            ->add('leiCode', TextType::class, [
+                'label' => 'supplier.field.lei_code',
+                'required' => false,
+                'attr' => ['maxlength' => 20, 'placeholder' => 'LEI (20 chars)'],
+            ])
+            ->add('ictCriticality', ChoiceType::class, [
+                'label' => 'supplier.field.ict_criticality',
+                'required' => false,
+                'placeholder' => 'supplier.value.na',
+                'choices' => [
+                    'supplier.ict_criticality.non_ict' => 'non_ict',
+                    'supplier.ict_criticality.important' => 'important',
+                    'supplier.ict_criticality.critical' => 'critical',
+                ],
+                'choice_translation_domain' => 'suppliers',
+            ])
+            ->add('ictFunctionType', TextType::class, [
+                'label' => 'supplier.field.ict_function_type',
+                'required' => false,
+                'attr' => ['maxlength' => 100, 'placeholder' => 'Cloud / SaaS / Managed Service'],
+            ])
+            ->add('substitutability', ChoiceType::class, [
+                'label' => 'supplier.field.substitutability',
+                'required' => false,
+                'placeholder' => 'supplier.value.na',
+                'choices' => [
+                    'supplier.substitutability.easy' => 'easy',
+                    'supplier.substitutability.medium' => 'medium',
+                    'supplier.substitutability.hard' => 'hard',
+                ],
+                'choice_translation_domain' => 'suppliers',
+            ])
+            ->add('hasSubcontractors', CheckboxType::class, [
+                'label' => 'supplier.field.has_subcontractors',
+                'required' => false,
+            ])
+            ->add('subcontractorChain', TextareaType::class, [
+                'label' => 'supplier.field.subcontractor_chain',
+                'required' => false,
+                'mapped' => false,
+                'attr' => ['rows' => 3, 'placeholder' => 'Provider A' . "\n" . 'Provider B' . "\n" . 'Provider C'],
+            ])
+            ->add('processingLocations', TextareaType::class, [
+                'label' => 'supplier.field.processing_locations',
+                'required' => false,
+                'mapped' => false,
+                'attr' => ['rows' => 2, 'placeholder' => 'DE, IE, US'],
+            ])
+            ->add('lastDoraAuditDate', DateType::class, [
+                'label' => 'supplier.field.last_dora_audit_date',
+                'widget' => 'single_text',
+                'required' => false,
+            ])
+            ->add('hasExitStrategy', CheckboxType::class, [
+                'label' => 'supplier.field.has_exit_strategy',
+                'required' => false,
+            ])
+
+            // ── WS-3: DSGVO Art. 28 processor fields ─────────────────────────
+            ->add('gdprProcessorStatus', ChoiceType::class, [
+                'label' => 'supplier.field.gdpr_processor_status',
+                'required' => false,
+                'placeholder' => 'supplier.value.na',
+                'choices' => [
+                    'supplier.gdpr_processor_status.controller' => 'controller',
+                    'supplier.gdpr_processor_status.processor' => 'processor',
+                    'supplier.gdpr_processor_status.joint_controller' => 'joint_controller',
+                    'supplier.gdpr_processor_status.none' => 'none',
+                ],
+                'choice_translation_domain' => 'suppliers',
+            ])
+            ->add('gdprTransferMechanism', TextType::class, [
+                'label' => 'supplier.field.gdpr_transfer_mechanism',
+                'required' => false,
+                'attr' => ['maxlength' => 50, 'placeholder' => 'SCC / Adequacy Decision / BCR'],
+            ])
+            ->add('gdprAvContractSigned', CheckboxType::class, [
+                'label' => 'supplier.field.gdpr_av_contract_signed',
+                'required' => false,
+            ])
+            ->add('gdprAvContractDate', DateType::class, [
+                'label' => 'supplier.field.gdpr_av_contract_date',
+                'widget' => 'single_text',
+                'required' => false,
+            ])
         ;
+
+        // Sync unmapped textareas back to JSON entity properties
+        $builder->addEventListener(
+            \Symfony\Component\Form\FormEvents::POST_SUBMIT,
+            static function (\Symfony\Component\Form\Event\PostSubmitEvent $event): void {
+                $form = $event->getForm();
+                $supplier = $form->getData();
+                if (!$supplier instanceof Supplier) {
+                    return;
+                }
+                if ($form->has('subcontractorChain')) {
+                    $raw = (string) ($form->get('subcontractorChain')->getData() ?? '');
+                    $list = array_values(array_filter(
+                        array_map('trim', preg_split('/\r?\n/', $raw) ?: []),
+                        static fn(string $v): bool => $v !== '',
+                    ));
+                    $supplier->setSubcontractorChain($list === [] ? null : $list);
+                }
+                if ($form->has('processingLocations')) {
+                    $raw = (string) ($form->get('processingLocations')->getData() ?? '');
+                    $list = array_values(array_filter(
+                        array_map('trim', preg_split('/[,;\r\n]+/', $raw) ?: []),
+                        static fn(string $v): bool => $v !== '',
+                    ));
+                    $supplier->setProcessingLocations($list === [] ? null : $list);
+                }
+            },
+        );
+    }
+
+    public function buildView(
+        \Symfony\Component\Form\FormView $view,
+        \Symfony\Component\Form\FormInterface $form,
+        array $options,
+    ): void {
+        $supplier = $form->getData();
+        if (!$supplier instanceof Supplier) {
+            return;
+        }
+        if ($form->has('subcontractorChain') && !$form->get('subcontractorChain')->getViewData()) {
+            $chain = $supplier->getSubcontractorChain();
+            if (is_array($chain) && $chain !== []) {
+                $view['subcontractorChain']->vars['value'] = implode("\n", array_map('strval', $chain));
+            }
+        }
+        if ($form->has('processingLocations') && !$form->get('processingLocations')->getViewData()) {
+            $locs = $supplier->getProcessingLocations();
+            if (is_array($locs) && $locs !== []) {
+                $view['processingLocations']->vars['value'] = implode(', ', array_map('strval', $locs));
+            }
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

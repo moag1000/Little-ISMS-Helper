@@ -1,0 +1,22 @@
+# Cross-Framework Mapping EU AI Act (Regulation (EU) 2024/1689) <-> ISO/IEC 27001:2022
+# License: CC-BY 4.0
+# Source: EU AI Act — published 13 June 2024 in OJEU, in force 1 August 2024. Phased application through 2 August 2027.
+# Crosswalk curated by Senior-GRC-Consultant (rewritten 2026-04-17 for loader-native IDs).
+# Quality note: AI-Act obligations extend well beyond the ISMS remit — pair with ISO/IEC 42001:2023 (AI MS).
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+EU-AI-ACT,AIACT-1,ISO27001,6.1.2,75,partial,medium,true,"AI risk classification — ISO Clause 6.1.2 risk-assessment process provides the generic risk discipline.",eu_ai_act_iso_crosswalk_2026_04,2026-04-17,Senior-GRC-Consultant
+EU-AI-ACT,AIACT-2,ISO27001,6.1.3,70,partial,medium,false,"High-risk AI requirements — Clause 6.1.3 risk treatment selects controls; AI Act adds fundamental-rights controls.",eu_ai_act_iso_crosswalk_2026_04,2026-04-17,Senior-GRC-Consultant
+EU-AI-ACT,AIACT-3,ISO27001,A.5.12,65,partial,medium,false,"Data governance — A.5.12 classification; AI Act imposes bias/representativeness analyses beyond ISO.",eu_ai_act_iso_crosswalk_2026_04,2026-04-17,Senior-GRC-Consultant
+EU-AI-ACT,AIACT-3,ISO27001,A.8.3,60,partial,medium,false,"Information access restriction supports data governance.",eu_ai_act_iso_crosswalk_2026_04,2026-04-17,Senior-GRC-Consultant
+EU-AI-ACT,AIACT-4,ISO27001,7.5,75,partial,medium,false,"Technical documentation — Clause 7.5 documented information; Annex IV adds AI-specific content.",eu_ai_act_iso_crosswalk_2026_04,2026-04-17,Senior-GRC-Consultant
+EU-AI-ACT,AIACT-5,ISO27001,A.5.1,65,partial,medium,false,"Transparency obligations — A.5.1 policy discipline for user-facing info.",eu_ai_act_iso_crosswalk_2026_04,2026-04-17,Senior-GRC-Consultant
+EU-AI-ACT,AIACT-6,ISO27001,A.5.2,60,partial,medium,false,"Human oversight — A.5.2 roles and responsibilities; AI Act requires independent review.",eu_ai_act_iso_crosswalk_2026_04,2026-04-17,Senior-GRC-Consultant
+EU-AI-ACT,AIACT-7,ISO27001,A.8.29,75,partial,medium,true,"Accuracy, robustness, cybersecurity — A.8.29 security testing; AI-specific adversarial robustness extra.",eu_ai_act_iso_crosswalk_2026_04,2026-04-17,Senior-GRC-Consultant
+EU-AI-ACT,AIACT-7,ISO27001,A.8.8,70,partial,medium,false,"Cybersecurity leg of Art.15 — A.8.8 vulnerability management.",eu_ai_act_iso_crosswalk_2026_04,2026-04-17,Senior-GRC-Consultant
+EU-AI-ACT,AIACT-8,ISO27001,9.2,70,partial,medium,false,"Conformity assessment — Clause 9.2 internal audit supports conformity evidence.",eu_ai_act_iso_crosswalk_2026_04,2026-04-17,Senior-GRC-Consultant
+EU-AI-ACT,AIACT-9,ISO27001,A.8.16,75,partial,medium,true,"Post-market monitoring — A.8.16 monitoring activities as baseline.",eu_ai_act_iso_crosswalk_2026_04,2026-04-17,Senior-GRC-Consultant
+EU-AI-ACT,AIACT-10,ISO27001,A.5.20,70,partial,medium,false,"GPAI model obligations — A.5.20 supplier agreements cover distribution contracts.",eu_ai_act_iso_crosswalk_2026_04,2026-04-17,Senior-GRC-Consultant
+EU-AI-ACT,AIACT-9,ISO27001,A.5.24,75,partial,medium,false,"Serious incident reporting — A.5.24 incident management.",eu_ai_act_iso_crosswalk_2026_04,2026-04-17,Senior-GRC-Consultant
+EU-AI-ACT,AIACT-1,ISO27001,A.5.7,65,partial,medium,false,"Threat intelligence for AI risk classification — A.5.7.",eu_ai_act_iso_crosswalk_2026_04,2026-04-17,Senior-GRC-Consultant
+EU-AI-ACT,AIACT-4,ISO27001,A.5.9,65,partial,medium,false,"Technical documentation inventory — A.5.9.",eu_ai_act_iso_crosswalk_2026_04,2026-04-17,Senior-GRC-Consultant

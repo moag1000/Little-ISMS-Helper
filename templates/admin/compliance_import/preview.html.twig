@@ -1,0 +1,182 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'compliance_import.preview.title'|trans({}, 'compliance_import') }}{% endblock %}
+
+{% block admin_title %}{{ 'compliance_import.wizard.title'|trans({}, 'compliance_import') }}{% endblock %}
+
+{% block admin_content %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
+            { label: 'compliance.manage_frameworks'|trans({}, 'compliance'), url: path('admin_compliance_index') },
+            { label: 'compliance_import.wizard.title'|trans({}, 'compliance_import'), url: path('admin_compliance_import_upload') },
+            { label: 'compliance_import.preview.breadcrumb'|trans({}, 'compliance_import') }
+        ]
+    } only %}
+
+    {% include 'admin/compliance_import/_stepper.html.twig' with { active_step: active_step } only %}
+
+    {% if header_error %}
+        {% set parts = header_error|split(':', 2) %}
+        <div class="alert alert-danger" role="alert">
+            <strong>
+                <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                {{ ('compliance_import.' ~ parts[0])|trans({}, 'compliance_import') }}
+            </strong>
+            {% if parts[1] is defined %}
+                <code>{{ parts[1] }}</code>
+            {% endif %}
+            <div class="mt-2">
+                <a href="{{ path('admin_compliance_import_upload') }}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                    {{ 'compliance_import.common.back_to_upload'|trans({}, 'compliance_import') }}
+                </a>
+            </div>
+        </div>
+    {% else %}
+        {# Summary chips #}
+        {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } only %}
+            {% block card_header %}
+                <div class="card-header">
+                    <h2 class="h5 mb-0">
+                        <i class="bi bi-clipboard-data" aria-hidden="true"></i>
+                        {{ 'compliance_import.preview.summary_title'|trans({}, 'compliance_import') }}
+                        <small class="text-muted ms-2">
+                            {{ session_info.original_name|default('') }}
+                        </small>
+                    </h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
+                <div class="d-flex flex-wrap gap-2" role="list" aria-label="{{ 'compliance_import.preview.summary_aria'|trans({}, 'compliance_import') }}">
+                    <div role="listitem">
+                        {% include '_components/_badge.html.twig' with {
+                            variant: 'success',
+                            icon: 'bi-plus-circle',
+                            content: ('compliance_import.status.new'|trans({}, 'compliance_import')) ~ ': ' ~ (summary.new|default(0))
+                        } only %}
+                    </div>
+                    <div role="listitem">
+                        {% include '_components/_badge.html.twig' with {
+                            variant: 'primary',
+                            icon: 'bi-arrow-repeat',
+                            content: ('compliance_import.status.update'|trans({}, 'compliance_import')) ~ ': ' ~ (summary.update|default(0))
+                        } only %}
+                    </div>
+                    <div role="listitem">
+                        {% include '_components/_badge.html.twig' with {
+                            variant: 'warning',
+                            icon: 'bi-exclamation-triangle',
+                            content: ('compliance_import.status.conflict'|trans({}, 'compliance_import')) ~ ': ' ~ (summary.conflict|default(0))
+                        } only %}
+                    </div>
+                    <div role="listitem">
+                        {% include '_components/_badge.html.twig' with {
+                            variant: 'danger',
+                            icon: 'bi-x-circle',
+                            content: ('compliance_import.status.error'|trans({}, 'compliance_import')) ~ ': ' ~ (summary.error|default(0))
+                        } only %}
+                    </div>
+                </div>
+            {% endblock %}
+        {% endembed %}
+
+        {# Rows table #}
+        {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } only %}
+            {% block card_header %}
+                <div class="card-header">
+                    <h2 class="h5 mb-0">
+                        <i class="bi bi-table" aria-hidden="true"></i>
+                        {{ 'compliance_import.preview.table_title'|trans({}, 'compliance_import') }}
+                    </h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
+                {% if rows is empty %}
+                    <p class="text-muted mb-0">
+                        {{ 'compliance_import.preview.empty'|trans({}, 'compliance_import') }}
+                    </p>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover align-middle"
+                               aria-label="{{ 'compliance_import.preview.table_aria'|trans({}, 'compliance_import') }}">
+                            <thead>
+                                <tr>
+                                    <th scope="col">{{ 'compliance_import.preview.col_line'|trans({}, 'compliance_import') }}</th>
+                                    <th scope="col">{{ 'compliance_import.preview.col_source'|trans({}, 'compliance_import') }}</th>
+                                    <th scope="col">{{ 'compliance_import.preview.col_target'|trans({}, 'compliance_import') }}</th>
+                                    <th scope="col">{{ 'compliance_import.preview.col_percentage'|trans({}, 'compliance_import') }}</th>
+                                    <th scope="col">{{ 'compliance_import.preview.col_status'|trans({}, 'compliance_import') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in rows %}
+                                    {% set status_variant = {
+                                        'new': 'success',
+                                        'update': 'primary',
+                                        'conflict': 'warning',
+                                        'error': 'danger'
+                                    }[row.status]|default('secondary') %}
+                                    {% set status_icon = {
+                                        'new': 'bi-plus-circle',
+                                        'update': 'bi-arrow-repeat',
+                                        'conflict': 'bi-exclamation-triangle',
+                                        'error': 'bi-x-circle'
+                                    }[row.status]|default('bi-question-circle') %}
+                                    <tr>
+                                        <th scope="row">{{ row.line }}</th>
+                                        <td>
+                                            <code>{{ row.source_framework }}</code>
+                                            <span class="text-muted">/</span>
+                                            <code>{{ row.source_requirement_id }}</code>
+                                        </td>
+                                        <td>
+                                            <code>{{ row.target_framework }}</code>
+                                            <span class="text-muted">/</span>
+                                            <code>{{ row.target_requirement_id }}</code>
+                                        </td>
+                                        <td>{{ row.percentage }}{% if row.percentage %} %{% endif %}</td>
+                                        <td>
+                                            {% include '_components/_badge.html.twig' with {
+                                                variant: status_variant,
+                                                icon: status_icon,
+                                                content: ('compliance_import.status.' ~ row.status)|trans({}, 'compliance_import'),
+                                                aria_label: ('compliance_import.status.' ~ row.status)|trans({}, 'compliance_import')
+                                            } only %}
+                                            {% if row.message %}
+                                                <div class="small text-muted mt-1">
+                                                    {{ row.message|trans({}, 'compliance_import') }}
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            {% endblock %}
+        {% endembed %}
+
+        {# Action bar #}
+        <div class="d-flex gap-2 justify-content-end">
+            <form method="post" action="{{ path('admin_compliance_import_cancel') }}" class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token('compliance_import_cancel') }}">
+                <button type="submit" class="btn btn-secondary">
+                    <i class="bi bi-x-circle" aria-hidden="true"></i>
+                    {{ 'compliance_import.common.cancel'|trans({}, 'compliance_import') }}
+                </button>
+            </form>
+            <form method="post" action="{{ path('admin_compliance_import_commit') }}" class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token('compliance_import_commit') }}">
+                <button type="submit" class="btn btn-primary"
+                        {% if rows is empty %}disabled aria-disabled="true"{% endif %}>
+                    <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                    {{ 'compliance_import.preview.commit'|trans({}, 'compliance_import') }}
+                </button>
+            </form>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

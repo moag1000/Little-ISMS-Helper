@@ -1,0 +1,76 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'compliance_import.upload.title'|trans({}, 'compliance_import') }}{% endblock %}
+
+{% block admin_title %}{{ 'compliance_import.wizard.title'|trans({}, 'compliance_import') }}{% endblock %}
+
+{% block admin_content %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
+            { label: 'compliance.manage_frameworks'|trans({}, 'compliance'), url: path('admin_compliance_index') },
+            { label: 'compliance_import.wizard.title'|trans({}, 'compliance_import') }
+        ]
+    } only %}
+
+    {% include 'admin/compliance_import/_stepper.html.twig' with { active_step: active_step } only %}
+
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } only %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="h5 mb-0">
+                    <i class="bi bi-upload" aria-hidden="true"></i>
+                    {{ 'compliance_import.upload.card_title'|trans({}, 'compliance_import') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            <p class="text-muted">
+                {{ 'compliance_import.upload.intro'|trans({}, 'compliance_import') }}
+            </p>
+
+            <div class="alert alert-info d-flex align-items-start gap-2" role="note">
+                <i class="bi bi-info-circle-fill mt-1" aria-hidden="true"></i>
+                <div>
+                    <strong>{{ 'compliance_import.upload.template_label'|trans({}, 'compliance_import') }}</strong>
+                    <div>
+                        <a href="{{ template_url }}" download
+                           aria-label="{{ 'compliance_import.upload.template_download_aria'|trans({}, 'compliance_import') }}">
+                            {{ 'compliance_import.upload.template_download'|trans({}, 'compliance_import') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {{ form_start(form, { attr: { 'novalidate': 'novalidate', 'aria-label': 'compliance_import.upload.form_aria'|trans({}, 'compliance_import') } }) }}
+                <div class="mb-3">
+                    {{ form_label(form.format, null, { label_attr: { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.format, { attr: { 'class': 'form-select' } }) }}
+                    <div id="compliance_import_format_help" class="form-text">
+                        {{ 'compliance_import.upload.format_help'|trans({}, 'compliance_import') }}
+                    </div>
+                    {{ form_errors(form.format) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.file, null, { label_attr: { 'class': 'form-label' } }) }}
+                    {{ form_widget(form.file, { attr: { 'class': 'form-control' } }) }}
+                    <div id="compliance_import_file_help" class="form-text">
+                        {{ 'compliance_import.upload.file_help'|trans({}, 'compliance_import') }}
+                    </div>
+                    {{ form_errors(form.file) }}
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end mt-4">
+                    <a href="{{ path('admin_compliance_index') }}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle" aria-hidden="true"></i>
+                        {{ 'compliance_import.common.cancel'|trans({}, 'compliance_import') }}
+                    </a>
+                    {{ form_widget(form.submit, { label: 'compliance_import.upload.submit'|trans({}, 'compliance_import') }) }}
+                </div>
+            {{ form_end(form) }}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}

@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ISMSContextServiceTest extends TestCase
 {
@@ -28,9 +29,13 @@ class ISMSContextServiceTest extends TestCase
         $this->corporateStructureService = $this->createMock(CorporateStructureService::class);
         $this->security = $this->createMock(Security::class);
 
+        $translator = $this->createMock(TranslatorInterface::class);
+        $translator->method('trans')->willReturnArgument(0);
+
         $this->service = new ISMSContextService(
             $this->contextRepository,
             $this->entityManager,
+            $translator,
             $this->corporateStructureService,
             $this->security
         );
@@ -285,10 +290,10 @@ class ISMSContextServiceTest extends TestCase
         $errors = $this->service->validateContext($context);
 
         $this->assertCount(4, $errors);
-        $this->assertStringContainsString('Organisationsname', $errors[0]);
-        $this->assertStringContainsString('ISMS-Geltungsbereich', $errors[1]);
-        $this->assertStringContainsString('ISMS-Richtlinie', $errors[2]);
-        $this->assertStringContainsString('Rollen', $errors[3]);
+        $this->assertStringContainsString('organization_name_required', $errors[0]);
+        $this->assertStringContainsString('isms_scope_required', $errors[1]);
+        $this->assertStringContainsString('isms_policy_required', $errors[2]);
+        $this->assertStringContainsString('roles_and_responsibilities_required', $errors[3]);
     }
 
     public function testValidateContextWithPartialFields(): void
@@ -304,9 +309,12 @@ class ISMSContextServiceTest extends TestCase
 
     public function testGetEffectiveContextWithoutCorporateService(): void
     {
+        $translator = $this->createMock(TranslatorInterface::class);
+        $translator->method('trans')->willReturnArgument(0);
         $simpleService = new ISMSContextService(
             $this->contextRepository,
             $this->entityManager,
+            $translator,
             null,
             $this->security
         );
@@ -381,9 +389,12 @@ class ISMSContextServiceTest extends TestCase
 
     public function testCanEditContextWithoutSecurity(): void
     {
+        $translator = $this->createMock(TranslatorInterface::class);
+        $translator->method('trans')->willReturnArgument(0);
         $simpleService = new ISMSContextService(
             $this->contextRepository,
             $this->entityManager,
+            $translator,
             $this->corporateStructureService,
             null
         );

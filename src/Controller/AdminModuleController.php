@@ -60,8 +60,13 @@ class AdminModuleController extends AbstractController
      */
     #[Route('/admin/modules/{moduleKey}/activate', name: 'admin_modules_activate', methods: ['POST'])]
     #[IsGranted('MODULE_MANAGE')]
-    public function activate(string $moduleKey): Response
+    public function activate(string $moduleKey, Request $request): Response
     {
+        if (!$this->isCsrfTokenValid('module_activate_' . $moduleKey, $request->request->get('_token'))) {
+            $this->addFlash('error', 'Invalid CSRF token');
+            return $this->redirectToRoute('admin_modules_index');
+        }
+
         $result = $this->moduleConfigurationService->activateModule($moduleKey);
 
         if ($result['success']) {
@@ -85,8 +90,13 @@ class AdminModuleController extends AbstractController
      */
     #[Route('/admin/modules/{moduleKey}/deactivate', name: 'admin_modules_deactivate', methods: ['POST'])]
     #[IsGranted('MODULE_MANAGE')]
-    public function deactivate(string $moduleKey): Response
+    public function deactivate(string $moduleKey, Request $request): Response
     {
+        if (!$this->isCsrfTokenValid('module_deactivate_' . $moduleKey, $request->request->get('_token'))) {
+            $this->addFlash('error', 'Invalid CSRF token');
+            return $this->redirectToRoute('admin_modules_index');
+        }
+
         $result = $this->moduleConfigurationService->deactivateModule($moduleKey);
 
         if ($result['success']) {
@@ -139,6 +149,11 @@ class AdminModuleController extends AbstractController
     #[IsGranted('MODULE_MANAGE')]
     public function importData(string $moduleKey, Request $request): Response
     {
+        if (!$this->isCsrfTokenValid('module_import_' . $moduleKey, $request->request->get('_token'))) {
+            $this->addFlash('error', 'Invalid CSRF token');
+            return $this->redirectToRoute('admin_modules_details', ['moduleKey' => $moduleKey]);
+        }
+
         $module = $this->moduleConfigurationService->getModule($moduleKey);
 
         if (!$module) {

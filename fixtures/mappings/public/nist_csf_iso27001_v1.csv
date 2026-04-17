@@ -1,0 +1,31 @@
+# Cross-Framework Mapping NIST Cybersecurity Framework 2.0 <-> ISO/IEC 27001:2022
+# License: CC-BY 4.0
+# Source: NIST CSF 2.0 Informative References (Feb 2024) mapping to ISO/IEC 27001:2022.
+# Curator: Senior-GRC-Consultant (2026-04-17)
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+NIST-CSF,GV.OC-01,ISO27001,4.1,90,partial,high,true,"Organizational context — Clause 4.1.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,GV.OC-02,ISO27001,4.2,90,partial,high,true,"Internal/external stakeholders — Clause 4.2.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,GV.RM-01,ISO27001,6.1.2,90,partial,high,true,"Risk management objectives — Clause 6.1.2.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,GV.RR-02,ISO27001,A.5.2,90,partial,high,true,"Roles, responsibilities, authorities — A.5.2.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,GV.PO-01,ISO27001,A.5.1,95,full,high,true,"Policy for cybersecurity — A.5.1.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,GV.SC-01,ISO27001,A.5.19,90,partial,high,true,"Supply chain risk management strategy — A.5.19.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,ID.AM-01,ISO27001,A.5.9,95,full,high,true,"Inventories of hardware — A.5.9 inventory of information and other associated assets.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,ID.AM-02,ISO27001,A.5.9,90,partial,high,false,"Software inventories — A.5.9.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,ID.AM-08,ISO27001,A.5.12,85,partial,high,true,"Systems, hardware, software, services classified — A.5.12.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,ID.RA-01,ISO27001,A.8.8,90,partial,high,true,"Vulnerabilities identified — A.8.8.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,ID.RA-02,ISO27001,A.5.7,85,partial,high,true,"Cyber-threat intelligence — A.5.7.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,PR.AA-01,ISO27001,A.5.16,95,full,high,true,"Identity management — A.5.16.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,PR.AA-03,ISO27001,A.8.5,95,full,high,true,"Users, services, hardware are authenticated — A.8.5.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,PR.AA-05,ISO27001,A.5.15,95,full,high,true,"Access permissions managed — A.5.15.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,PR.DS-01,ISO27001,A.8.24,90,partial,high,true,"Data-at-rest protected — A.8.24.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,PR.DS-02,ISO27001,A.8.24,90,partial,high,false,"Data-in-transit protected — A.8.24.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,PR.IR-01,ISO27001,A.8.20,90,partial,high,true,"Networks and environments protected — A.8.20.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,PR.PS-06,ISO27001,A.8.9,85,partial,high,true,"Secure configurations — A.8.9.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,DE.CM-01,ISO27001,A.8.16,95,full,high,true,"Networks and environments monitored — A.8.16.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,DE.CM-09,ISO27001,A.8.15,90,partial,high,true,"Logging — A.8.15.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,DE.AE-02,ISO27001,A.5.25,90,partial,high,true,"Anomalies/indicators analysed — A.5.25.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,RS.MA-01,ISO27001,A.5.24,95,full,high,true,"Incident management plan — A.5.24.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,RS.AN-03,ISO27001,A.5.28,85,partial,high,true,"Analysis performed to establish what happened — A.5.28 evidence collection.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,RC.RP-01,ISO27001,A.5.29,95,full,high,true,"Recovery plan executed — A.5.29.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant
+NIST-CSF,RC.CO-03,ISO27001,A.5.29,75,partial,high,false,"Public relations and communications management — A.5.29 crisis communication aspect.",nist_csf_2.0_informative_refs,2026-04-17,Senior-GRC-Consultant

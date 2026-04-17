@@ -1,0 +1,26 @@
+# Cross-Framework Mapping GDPR (2016/679) <-> ISO/IEC 27701:2019
+# License: CC-BY 4.0
+# Source: ISO 27701:2019 Annex D normative mapping to GDPR.
+# Curator: Senior-GRC-Consultant (rewritten 2026-04-17 for loader-native IDs).
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+GDPR,GDPR-5.1.a,ISO27701,27701-A.7.2.1,90,partial,high,true,"Lawfulness, fairness and transparency — Identify and document purpose.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-5.1.b,ISO27701,27701-A.7.2.1,90,partial,high,false,"Purpose limitation — Purpose specification and limitation (27701 A.7.2.1 v2025 alias).",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-5.1.c,ISO27701,27701-A.7.4.5,95,full,high,true,"Data minimisation — PII minimisation.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-5.1.e,ISO27701,27701-A.7.4.7,95,full,high,true,"Storage limitation — Retention.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-6,ISO27701,27701-A.7.2.2,95,full,high,true,"Lawfulness of processing — Identify lawful basis.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-9,ISO27701,27701-A.7.2.2,80,partial,high,false,"Special categories — extension of lawful basis analysis.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-12,ISO27701,27701-A.7.3.2,90,partial,high,true,"Transparent information — Privacy notices.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-13,ISO27701,27701-A.7.3.3,95,full,high,true,"Information when data is collected — Obligation to inform.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-14,ISO27701,27701-A.7.3.3,95,full,high,false,"Information where data not collected from data subject.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-15,ISO27701,27701-A.7.4.1,95,full,high,true,"Right of access — Right of access (27701 v2025 alias).",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-16,ISO27701,27701-A.7.4.2,95,full,high,true,"Right to rectification — Right to rectification.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-17,ISO27701,27701-A.7.4.3,95,full,high,true,"Right to erasure — Right to erasure (27701 v2025 alias).",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-18,ISO27701,27701-A.7.4.4,90,partial,high,true,"Right to restriction — Right to restriction of processing.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-20,ISO27701,27701-A.7.4.5,90,partial,high,true,"Right to data portability — Right to data portability.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-21,ISO27701,27701-A.7.3.5,90,partial,high,true,"Right to object — Provide mechanism to object.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-25,ISO27701,27701-A.7.4.2,85,partial,high,true,"Data protection by design and by default — De-identification and deletion.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-28,ISO27701,27701-8.3,95,full,high,true,"Processor obligations — Working with PII processors.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-30,ISO27701,27701-A.7.3.4,95,full,high,true,"Records of processing activities — Records related to processing PII.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-32,ISO27701,27701-8.2,85,partial,high,true,"Security of processing — PII protection impact assessment.",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant
+GDPR,GDPR-35,ISO27701,27701-6.1.2,95,full,high,true,"DPIA — PII protection impact assessment (Clause 6.1.2 / 8.2).",iso_27701_2019_annex_d,2026-04-17,Senior-GRC-Consultant

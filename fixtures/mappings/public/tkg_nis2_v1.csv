@@ -1,0 +1,16 @@
+# Cross-Framework Mapping TKG (TKG-Novelle 2024) <-> NIS2 (EU 2022/2555)
+# License: CC-BY 4.0
+# Source: BNetzA TKG-Kommentar zur NIS2-Integration (2024).
+# Curator: Senior-GRC-Consultant (rewritten 2026-04-17 for loader-native IDs).
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+TKG-2024,TKG-164.1,NIS2,NIS2-21.2.a,90,partial,high,true,"Sicherheit von Telekommunikationsnetzen — Sicherheitskonzept — NIS2 Art.21.2.a.",bnetza_tkg_nis2_mapping_2024,2026-04-17,Senior-GRC-Consultant
+TKG-2024,TKG-164.2,NIS2,NIS2-21.2.b,90,partial,high,true,"Sicherheitsmaßnahmen — Incident Handling — NIS2 Art.21.2.b.",bnetza_tkg_nis2_mapping_2024,2026-04-17,Senior-GRC-Consultant
+TKG-2024,TKG-165.1,NIS2,NIS2-23.1,95,full,high,true,"Meldepflicht Sicherheitsvorfälle — NIS2 Art.23.1.",bnetza_tkg_nis2_mapping_2024,2026-04-17,Senior-GRC-Consultant
+TKG-2024,TKG-165.2,NIS2,NIS2-23.2,95,full,high,true,"Unverzügliche Meldung — NIS2 24h Early Warning.",bnetza_tkg_nis2_mapping_2024,2026-04-17,Senior-GRC-Consultant
+TKG-2024,TKG-165.3,NIS2,NIS2-23.3,90,partial,high,true,"Detaillierte Meldungen — NIS2 Art.23.3 / Art.23.5.",bnetza_tkg_nis2_mapping_2024,2026-04-17,Senior-GRC-Consultant
+TKG-2024,TKG-166.1,NIS2,NIS2-25.1,85,partial,high,true,"Überwachung durch BNetzA — NIS2 Aufsichtsmaßnahmen.",bnetza_tkg_nis2_mapping_2024,2026-04-17,Senior-GRC-Consultant
+TKG-2024,TKG-167.1,NIS2,NIS2-23.3,85,partial,high,true,"Information der Öffentlichkeit — NIS2 Art.23.3.",bnetza_tkg_nis2_mapping_2024,2026-04-17,Senior-GRC-Consultant
+TKG-2024,TKG-167.2,NIS2,NIS2-21.2.d,90,partial,high,true,"Drittanbieter, Lieferkette — NIS2 Art.21.2.d.",bnetza_tkg_nis2_mapping_2024,2026-04-17,Senior-GRC-Consultant
+TKG-2024,TKSIV-1.1,NIS2,NIS2-21.2.c,80,partial,high,true,"Notfall-Pläne TK-Netz — NIS2 Art.21.2.c BCM.",bnetza_tkg_nis2_mapping_2024,2026-04-17,Senior-GRC-Consultant
+TKG-2024,TKSIV-2.1,NIS2,NIS2-21.2.j,85,partial,high,true,"Vertrauliche Kommunikation — NIS2 Art.21.2.j secure communications.",bnetza_tkg_nis2_mapping_2024,2026-04-17,Senior-GRC-Consultant

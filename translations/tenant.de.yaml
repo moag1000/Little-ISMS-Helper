@@ -92,8 +92,8 @@ tenant:
         deactivated: 'Mandant erfolgreich deaktiviert'
         error: 'Fehler beim Speichern des Mandanten'
         has_users: 'Mandant kann nicht gelöscht werden, da er noch Benutzer hat'
-        organisation_context_updated: 'Organisations-Kontext erfolgreich aktualisiert'
-        organisation_context_error: 'Fehler beim Aktualisieren des Organisations-Kontexts'
+        organisation_context_updated: 'Organisationsprofil erfolgreich aktualisiert'
+        organisation_context_error: 'Fehler beim Aktualisieren des Organisationsprofils'
     confirm:
         delete: 'Sind Sie sicher, dass Sie diesen Mandanten löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.'
         toggle: 'Möchten Sie den Status dieses Mandanten wirklich ändern?'
@@ -111,8 +111,8 @@ tenant:
         view_full: 'Vollständigen ISMS Kontext anzeigen'
         linked_to: 'Verknüpft mit Mandant'
     organisation_context:
-        title: Organisations-Kontext
-        header: 'Organisations-Kontext bearbeiten'
+        title: Organisationsprofil
+        header: 'Organisationsprofil bearbeiten'
         description: 'Bearbeiten Sie die Branchenzuordnung, Unternehmensgröße und Standort Ihrer Organisation. Diese Daten beeinflussen Compliance-Empfehlungen.'
         name_info: 'Der Organisationsname wird aus der Mandanten-Konfiguration übernommen.'
         current_config: 'Aktuelle Konfiguration'
@@ -122,10 +122,10 @@ tenant:
         last_modified: 'Zuletzt geändert'
         impact_warning:
             title: 'Hinweis zur Auswirkung'
-            message: 'Änderungen am Organisations-Kontext beeinflussen zukünftige Empfehlungen für Module und Compliance-Frameworks. Bereits aktivierte Module bleiben unverändert.'
+            message: 'Änderungen am Organisationsprofil beeinflussen zukünftige Empfehlungen für Module und Compliance-Frameworks. Bereits aktivierte Module bleiben unverändert.'
         info:
-            title: 'Über den Organisations-Kontext'
-            description: 'Der Organisations-Kontext bestimmt, welche regulatorischen Anforderungen für Ihre Organisation relevant sind.'
+            title: 'Über das Organisationsprofil'
+            description: 'Das Organisationsprofil bestimmt, welche regulatorischen Anforderungen für Ihre Organisation relevant sind.'
             industries: 'Mehrfachauswahl ermöglicht Konzernstrukturen mit verschiedenen Geschäftsfeldern'
             size: 'Unternehmensgröße beeinflusst NIS2 und andere größenabhängige Regulierungen'
             country: 'Standort bestimmt nationale Regulierungen (z.B. KRITIS, TKG für Deutschland)'
@@ -135,6 +135,11 @@ tenant:
             employee_count: 'Employee Count'
             country: Country
             description: Beschreibung
+    setup_progress:
+        title: 'Einrichtungsfortschritt'
+        org_profile: 'Organisationsprofil konfiguriert'
+        isms_context: 'ISMS-Kontext angelegt'
+        context_complete: 'ISMS-Kontext mindestens 50% ausgefuellt'
     link:
         view: 'Mandant anzeigen'
         back_to_tenant: 'Zurück zum Mandanten'

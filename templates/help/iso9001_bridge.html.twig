@@ -1,0 +1,307 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'help' %}
+
+{% block title %}{{ 'help.iso9001_bridge.title'|trans({}, 'help') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {# Breadcrumb Navigation #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.dashboard'|trans({}, 'nav'), url: path('app_dashboard') },
+            { label: 'help.iso9001_bridge.title'|trans({}, 'help') }
+        ]
+    } only %}
+
+    {# Page Header #}
+    {% include '_components/_page_header.html.twig' with {
+        title: 'help.iso9001_bridge.title'|trans({}, 'help'),
+        subtitle: 'help.iso9001_bridge.subtitle'|trans({}, 'help'),
+        icon: 'bi-signpost-2'
+    } only %}
+
+    {# Introduction Card #}
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex align-items-start">
+                <i class="bi bi-lightbulb-fill text-warning me-3 fs-3" aria-hidden="true"></i>
+                <div>
+                    <h5 class="card-title mb-2">{{ 'help.iso9001_bridge.intro_title'|trans({}, 'help') }}</h5>
+                    <p class="card-text mb-0">{{ 'help.iso9001_bridge.intro_text'|trans({}, 'help') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Mapping Table #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="bi bi-arrow-left-right me-2" aria-hidden="true"></i>
+                {{ 'help.iso9001_bridge.mapping_title'|trans({}, 'help') }}
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-3">{{ 'help.iso9001_bridge.col_9001'|trans({}, 'help') }}</th>
+                            <th>{{ 'help.iso9001_bridge.col_27001'|trans({}, 'help') }}</th>
+                            <th>{{ 'help.iso9001_bridge.col_tool'|trans({}, 'help') }}</th>
+                            <th>{{ 'help.iso9001_bridge.col_reference'|trans({}, 'help') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="ps-3">
+                                <i class="bi bi-building me-1 text-muted" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.context.from'|trans({}, 'help') }}
+                            </td>
+                            <td>{{ 'help.iso9001_bridge.map.context.to'|trans({}, 'help') }}</td>
+                            <td>
+                                <a href="{{ path('app_context_index') }}" class="text-decoration-none">
+                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    {{ 'help.iso9001_bridge.map.context.module'|trans({}, 'help') }}
+                                </a>
+                            </td>
+                            <td><span class="badge bg-secondary">ISO 27001 4.1-4.4</span></td>
+                        </tr>
+                        <tr>
+                            <td class="ps-3">
+                                <i class="bi bi-diagram-3 me-1 text-muted" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.process_map.from'|trans({}, 'help') }}
+                            </td>
+                            <td>{{ 'help.iso9001_bridge.map.process_map.to'|trans({}, 'help') }}</td>
+                            <td>
+                                <a href="{{ path('app_soa_index') }}" class="text-decoration-none">
+                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    {{ 'help.iso9001_bridge.map.process_map.module'|trans({}, 'help') }}
+                                </a>
+                            </td>
+                            <td><span class="badge bg-secondary">ISO 27001 6.1.3 d</span></td>
+                        </tr>
+                        <tr>
+                            <td class="ps-3">
+                                <i class="bi bi-exclamation-triangle me-1 text-muted" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.risks.from'|trans({}, 'help') }}
+                            </td>
+                            <td>{{ 'help.iso9001_bridge.map.risks.to'|trans({}, 'help') }}</td>
+                            <td>
+                                <a href="{{ path('app_risk_index') }}" class="text-decoration-none">
+                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    {{ 'help.iso9001_bridge.map.risks.module'|trans({}, 'help') }}
+                                </a>
+                            </td>
+                            <td><span class="badge bg-secondary">ISO 27001 6.1.2</span></td>
+                        </tr>
+                        <tr>
+                            <td class="ps-3">
+                                <i class="bi bi-tools me-1 text-muted" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.capa.from'|trans({}, 'help') }}
+                            </td>
+                            <td>{{ 'help.iso9001_bridge.map.capa.to'|trans({}, 'help') }}</td>
+                            <td>
+                                <a href="{{ path('app_risk_treatment_plan_index') }}" class="text-decoration-none">
+                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    {{ 'help.iso9001_bridge.map.capa.module'|trans({}, 'help') }}
+                                </a>
+                            </td>
+                            <td><span class="badge bg-secondary">ISO 27001 6.1.3</span></td>
+                        </tr>
+                        <tr>
+                            <td class="ps-3">
+                                <i class="bi bi-clipboard-check me-1 text-muted" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.audit.from'|trans({}, 'help') }}
+                            </td>
+                            <td>{{ 'help.iso9001_bridge.map.audit.to'|trans({}, 'help') }}</td>
+                            <td>
+                                <a href="{{ path('app_audit_index') }}" class="text-decoration-none">
+                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    {{ 'help.iso9001_bridge.map.audit.module'|trans({}, 'help') }}
+                                </a>
+                            </td>
+                            <td><span class="badge bg-secondary">ISO 27001 9.2</span></td>
+                        </tr>
+                        <tr>
+                            <td class="ps-3">
+                                <i class="bi bi-people me-1 text-muted" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.review.from'|trans({}, 'help') }}
+                            </td>
+                            <td>{{ 'help.iso9001_bridge.map.review.to'|trans({}, 'help') }}</td>
+                            <td>
+                                <a href="{{ path('app_management_review_index') }}" class="text-decoration-none">
+                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    {{ 'help.iso9001_bridge.map.review.module'|trans({}, 'help') }}
+                                </a>
+                            </td>
+                            <td><span class="badge bg-secondary">ISO 27001 9.3</span></td>
+                        </tr>
+                        <tr>
+                            <td class="ps-3">
+                                <i class="bi bi-hdd-stack me-1 text-muted" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.infrastructure.from'|trans({}, 'help') }}
+                            </td>
+                            <td>{{ 'help.iso9001_bridge.map.infrastructure.to'|trans({}, 'help') }}</td>
+                            <td>
+                                <a href="{{ path('app_asset_index') }}" class="text-decoration-none">
+                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    {{ 'help.iso9001_bridge.map.infrastructure.module'|trans({}, 'help') }}
+                                </a>
+                            </td>
+                            <td><span class="badge bg-secondary">ISO 27001 A.5.9</span></td>
+                        </tr>
+                        <tr>
+                            <td class="ps-3">
+                                <i class="bi bi-mortarboard me-1 text-muted" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.competence.from'|trans({}, 'help') }}
+                            </td>
+                            <td>{{ 'help.iso9001_bridge.map.competence.to'|trans({}, 'help') }}</td>
+                            <td>
+                                <a href="{{ path('app_training_index') }}" class="text-decoration-none">
+                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    {{ 'help.iso9001_bridge.map.competence.module'|trans({}, 'help') }}
+                                </a>
+                            </td>
+                            <td><span class="badge bg-secondary">ISO 27001 A.6.3</span></td>
+                        </tr>
+                        <tr>
+                            <td class="ps-3">
+                                <i class="bi bi-file-earmark-text me-1 text-muted" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.documents.from'|trans({}, 'help') }}
+                            </td>
+                            <td>{{ 'help.iso9001_bridge.map.documents.to'|trans({}, 'help') }}</td>
+                            <td>
+                                <a href="{{ path('app_document_index') }}" class="text-decoration-none">
+                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    {{ 'help.iso9001_bridge.map.documents.module'|trans({}, 'help') }}
+                                </a>
+                            </td>
+                            <td><span class="badge bg-secondary">ISO 27001 7.5</span></td>
+                        </tr>
+                        <tr>
+                            <td class="ps-3">
+                                <i class="bi bi-truck me-1 text-muted" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.suppliers.from'|trans({}, 'help') }}
+                            </td>
+                            <td>{{ 'help.iso9001_bridge.map.suppliers.to'|trans({}, 'help') }}</td>
+                            <td>
+                                <a href="{{ path('app_supplier_index') }}" class="text-decoration-none">
+                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    {{ 'help.iso9001_bridge.map.suppliers.module'|trans({}, 'help') }}
+                                </a>
+                            </td>
+                            <td><span class="badge bg-secondary">ISO 27001 A.5.19-5.22</span></td>
+                        </tr>
+                        <tr>
+                            <td class="ps-3">
+                                <i class="bi bi-shield-exclamation me-1 text-muted" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.nonconformity.from'|trans({}, 'help') }}
+                            </td>
+                            <td>{{ 'help.iso9001_bridge.map.nonconformity.to'|trans({}, 'help') }}</td>
+                            <td>
+                                <a href="{{ path('app_incident_index') }}" class="text-decoration-none">
+                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    {{ 'help.iso9001_bridge.map.nonconformity.module'|trans({}, 'help') }}
+                                </a>
+                            </td>
+                            <td><span class="badge bg-secondary">ISO 27001 A.5.24-5.28</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {# What is NEW in 27001 Section #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="bi bi-stars me-2" aria-hidden="true"></i>
+                {{ 'help.iso9001_bridge.new_title'|trans({}, 'help') }}
+            </h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted mb-4">{{ 'help.iso9001_bridge.new_intro'|trans({}, 'help') }}</p>
+
+            <div class="row g-3">
+                {# CIA Triad #}
+                <div class="col-md-6 col-xl-4">
+                    <div class="card h-100 border-info">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="bi bi-shield-lock text-info me-2" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.new.cia.title'|trans({}, 'help') }}
+                            </h6>
+                            <p class="card-text small mb-0">{{ 'help.iso9001_bridge.new.cia.description'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# 93 Controls #}
+                <div class="col-md-6 col-xl-4">
+                    <div class="card h-100 border-primary">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="bi bi-list-check text-primary me-2" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.new.controls.title'|trans({}, 'help') }}
+                            </h6>
+                            <p class="card-text small mb-0">{{ 'help.iso9001_bridge.new.controls.description'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Protection Requirements #}
+                <div class="col-md-6 col-xl-4">
+                    <div class="card h-100 border-warning">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="bi bi-bar-chart-steps text-warning me-2" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.new.protection.title'|trans({}, 'help') }}
+                            </h6>
+                            <p class="card-text small mb-0">{{ 'help.iso9001_bridge.new.protection.description'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Business Continuity #}
+                <div class="col-md-6 col-xl-4">
+                    <div class="card h-100 border-danger">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="bi bi-lightning-charge text-danger me-2" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.new.bcm.title'|trans({}, 'help') }}
+                            </h6>
+                            <p class="card-text small mb-0">{{ 'help.iso9001_bridge.new.bcm.description'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Data Protection / GDPR #}
+                <div class="col-md-6 col-xl-4">
+                    <div class="card h-100 border-success">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="bi bi-person-lock text-success me-2" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.new.gdpr.title'|trans({}, 'help') }}
+                            </h6>
+                            <p class="card-text small mb-0">{{ 'help.iso9001_bridge.new.gdpr.description'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Tip Box #}
+    <div class="alert alert-success mb-4">
+        <div class="d-flex align-items-start">
+            <i class="bi bi-check-circle-fill me-3 fs-4" aria-hidden="true"></i>
+            <div>
+                <strong>{{ 'help.iso9001_bridge.tip_title'|trans({}, 'help') }}</strong>
+                <p class="mb-0 mt-1">{{ 'help.iso9001_bridge.tip_text'|trans({}, 'help') }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

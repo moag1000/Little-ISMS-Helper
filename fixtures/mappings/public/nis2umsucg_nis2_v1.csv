@@ -1,0 +1,22 @@
+# Cross-Framework Mapping NIS2UmsuCG (DE-Umsetzung) <-> NIS2 (EU 2022/2555)
+# License: CC-BY 4.0
+# Source: NIS-2-Umsetzungs- und Cybersicherheitsstärkungsgesetz — Referentenentwurf 2024 + Kabinettsbeschluss 2025.
+# Curator: Senior-GRC-Consultant (rewritten 2026-04-17 for loader-native IDs; NIS2UMSUCG loader uses generic numeric IDs).
+# Note: High-level cross-reference; exact DE section numbers are abstracted in the loader as NIS2UMSUCG-N.
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+NIS2UMSUCG,NIS2UMSUCG-1,NIS2,NIS2-21.1,95,full,high,true,"Risk management obligation — direct transposition of NIS2 Art.21.1 into BSIG new.",nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant
+NIS2UMSUCG,NIS2UMSUCG-2,NIS2,NIS2-21.2.a,90,partial,high,true,"Risk management policies — NIS2 Art.21.2.a.",nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant
+NIS2UMSUCG,NIS2UMSUCG-3,NIS2,NIS2-21.2.b,90,partial,high,true,"Incident handling — NIS2 Art.21.2.b.",nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant
+NIS2UMSUCG,NIS2UMSUCG-4,NIS2,NIS2-21.2.c,90,partial,high,true,"Business continuity — NIS2 Art.21.2.c.",nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant
+NIS2UMSUCG,NIS2UMSUCG-5,NIS2,NIS2-21.2.d,90,partial,high,true,"Supply chain security — NIS2 Art.21.2.d.",nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant
+NIS2UMSUCG,NIS2UMSUCG-6,NIS2,NIS2-20.1,95,full,high,true,"Management body accountability — NIS2 Art.20.1 billigung.",nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant
+NIS2UMSUCG,NIS2UMSUCG-7,NIS2,NIS2-20.2,95,full,high,true,"Management training obligation — NIS2 Art.20.2 Schulungspflicht.",nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant
+NIS2UMSUCG,NIS2UMSUCG-8,NIS2,NIS2-23.1,95,full,high,true,"24h early warning — NIS2 Art.23.1.",nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant
+NIS2UMSUCG,NIS2UMSUCG-9,NIS2,NIS2-23.2,95,full,high,true,"72h incident report — NIS2 Art.23.2.",nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant
+NIS2UMSUCG,NIS2UMSUCG-10,NIS2,NIS2-23.3,95,full,high,true,"Final report — NIS2 Art.23.3.",nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant
+NIS2UMSUCG,NIS2UMSUCG-11,NIS2,NIS2-24.1,85,partial,high,true,"Registration obligation — NIS2 Art.24.",nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant
+NIS2UMSUCG,NIS2UMSUCG-12,NIS2,NIS2-25.1,85,partial,high,true,"Supervisory powers (BSI) — NIS2 Art.32 supervision.",nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant
+NIS2UMSUCG,NIS2UMSUCG-13,NIS2,NIS2-25.1,80,partial,high,false,"Administrative fines — NIS2 Art.34.",nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant
+NIS2UMSUCG,NIS2UMSUCG-14,NIS2,NIS2-21.2.f,85,partial,high,true,"Effectiveness assessment — NIS2 Art.21.2.f.",nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant
+NIS2UMSUCG,NIS2UMSUCG-15,NIS2,NIS2-22.1,85,partial,high,true,"Supply chain oversight — NIS2 Art.22.1 Commission oversight.",nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant

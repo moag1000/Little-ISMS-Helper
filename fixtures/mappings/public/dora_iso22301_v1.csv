@@ -1,0 +1,22 @@
+# Cross-Framework Mapping EU-DORA (2022/2554) <-> ISO 22301:2019 (+ 22313:2020 guidance)
+# License: CC-BY 4.0
+# Source: EBA/EIOPA/ESMA Final Report on RTS on ICT Risk Management Framework (JC 2024 29, 17 July 2024) — digital operational resilience.
+# Curator: Senior-GRC-Consultant (2026-04-17)
+# Scope: DORA Art. 10-12 (response, recovery, continuity) map directly to ISO 22301 BCMS structure; ISO 22313:2020 supplies implementation guidance.
+# Columns: see fixtures/mappings/README.md
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+DORA,Art.10,ISO-22301,8.4,95,full,high,true,"Response and recovery — ISO 22301 Clause 8.4 Business Continuity Plans directly satisfies DORA Art.10 obligation to have and maintain an ICT business continuity policy.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.10,ISO-22301,8.2,90,partial,high,false,"Business Impact Analysis (22301 Clause 8.2) underpins DORA Art.10 by identifying disruptive scenarios and recovery priorities.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.10,ISO-22301,8.3,90,partial,high,false,"Business continuity strategies and solutions (8.3) translate into DORA-required recovery plans and strategies.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.10,ISO-22301,8.4.5,85,partial,high,false,"Recovery (22301 Clause 8.4.5) is the operational execution of DORA Art.10 recovery objectives and capabilities.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.11,ISO-22301,8.4.2,90,partial,high,true,"Incident response structure (22301 Clause 8.4.2) corresponds to the DORA Art.11 ICT-related incident management process.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.11,ISO-22301,8.4.3,85,partial,high,false,"Warning and communication (22301 Clause 8.4.3) backs DORA Art.11 notification flows during an incident.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.11,ISO-22301,8.5,85,partial,high,false,"Exercise programme (22301 Clause 8.5) operationalises DORA Art.11 requirement that incident-handling processes be tested.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.12,ISO-22301,8.2,80,partial,high,true,"Classification and reporting of ICT-related incidents — 22301 Clause 8.2 BIA prioritisation informs DORA Art.12 classification criteria (impact, duration, reputational).",rts_classification_major_incidents_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.12,ISO-22301,9.1,80,partial,high,false,"Monitoring, measurement, analysis and evaluation (Clause 9.1) feed the DORA Art.12 classification evidence.",rts_classification_major_incidents_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.24,ISO-22301,8.5,85,partial,high,true,"Digital operational resilience testing programme — 22301 Clause 8.5 Exercise programme is the closest BCMS practice; DORA Art.24 extends to technical tests and TLPT for significant entities.",rts_tlpt_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.5,ISO-22301,5.1,85,partial,high,true,"ICT governance and risk management framework — 22301 Clause 5.1 Leadership and commitment applies identical Annex SL expectations to BCMS and ICT resilience.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.5,ISO-22301,6.1,80,partial,high,false,"Actions to address risks and opportunities (Clause 6.1) dovetail with DORA governance accountability for resilience risks.",eba_rts_ict_risk_2024_jc29,2026-04-17,Senior-GRC-Consultant
+DORA,Art.17,ISO-22301,10.1,80,partial,high,true,"ICT-related incident reporting and response — 22301 Clause 10.1 Nonconformity and corrective action covers the learning loop DORA Art.17 requires from incidents.",rts_classification_major_incidents_2024,2026-04-17,Senior-GRC-Consultant
+DORA,Art.18,ISO-22301,9.3,80,partial,high,false,"Reporting of major incidents to authorities — 22301 Clause 9.3 Management review documents the management-level awareness DORA expects before authority reporting.",rts_classification_major_incidents_2024,2026-04-17,Senior-GRC-Consultant

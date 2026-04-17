@@ -1,0 +1,206 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'portfolio_report' %}
+
+{% block title %}{{ 'portfolio_report.title'|trans({}, 'portfolio_report') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.reports'|trans({}, 'nav'), path: 'app_reports_index' },
+            { label: 'management_reports.title'|trans({}, 'management_reports'), path: 'app_management_reports' },
+            { label: 'portfolio_report.title'|trans({}, 'portfolio_report') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h1 class="h2 mb-1">
+                <i class="bi bi-grid-3x3-gap-fill text-primary" aria-hidden="true"></i>
+                {{ 'portfolio_report.title'|trans({}, 'portfolio_report') }}
+            </h1>
+            <p class="text-muted mb-0">
+                <i class="bi bi-building" aria-hidden="true"></i>
+                <strong>{{ tenant.name }}</strong>
+                <span class="mx-2">&middot;</span>
+                <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                {{ 'portfolio_report.header.stichtag'|trans({}, 'portfolio_report') }}:
+                <strong>{{ stichtag|date('Y-m-d') }}</strong>
+                {% if vorperiode %}
+                    <span class="mx-2">&middot;</span>
+                    <i class="bi bi-arrow-left-circle" aria-hidden="true"></i>
+                    {{ 'portfolio_report.header.vorperiode'|trans({}, 'portfolio_report') }}:
+                    <strong>{{ vorperiode|date('Y-m-d') }}</strong>
+                {% endif %}
+            </p>
+        </div>
+        <div class="btn-group">
+            <a href="{{ path('app_management_reports_portfolio_pdf', {
+                _locale: app.request.locale,
+                stichtag: stichtag|date('Y-m-d'),
+                vorperiode: vorperiode ? vorperiode|date('Y-m-d') : null
+            }) }}" class="btn btn-outline-danger">
+                <i class="bi bi-file-pdf" aria-hidden="true"></i>
+                {{ 'portfolio_report.action.download_pdf'|trans({}, 'portfolio_report') }}
+            </a>
+        </div>
+    </div>
+
+    {# Stichtag / Vorperiode Picker #}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" action="{{ path('app_management_reports_portfolio', { _locale: app.request.locale }) }}" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="portfolio_stichtag" class="form-label">
+                        <i class="bi bi-calendar-check" aria-hidden="true"></i>
+                        {{ 'portfolio_report.form.stichtag'|trans({}, 'portfolio_report') }}
+                    </label>
+                    <input type="date"
+                           class="form-control"
+                           id="portfolio_stichtag"
+                           name="stichtag"
+                           value="{{ stichtag|date('Y-m-d') }}"
+                           aria-describedby="portfolio_stichtag_help">
+                    <div id="portfolio_stichtag_help" class="form-text">
+                        {{ 'portfolio_report.form.stichtag_help'|trans({}, 'portfolio_report') }}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="portfolio_vorperiode" class="form-label">
+                        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+                        {{ 'portfolio_report.form.vorperiode'|trans({}, 'portfolio_report') }}
+                    </label>
+                    <input type="date"
+                           class="form-control"
+                           id="portfolio_vorperiode"
+                           name="vorperiode"
+                           value="{{ vorperiode ? vorperiode|date('Y-m-d') : '' }}"
+                           aria-describedby="portfolio_vorperiode_help">
+                    <div id="portfolio_vorperiode_help" class="form-text">
+                        {{ 'portfolio_report.form.vorperiode_help'|trans({}, 'portfolio_report') }}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                        {{ 'portfolio_report.form.update'|trans({}, 'portfolio_report') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {# Matrix #}
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h2 class="h5 mb-0">
+                <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                {{ 'portfolio_report.matrix.title'|trans({}, 'portfolio_report') }}
+            </h2>
+        </div>
+        <div class="card-body p-0">
+            {% if matrix.frameworks|length == 0 %}
+                <div class="alert alert-info mb-0 m-3">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    {{ 'portfolio_report.matrix.no_frameworks'|trans({}, 'portfolio_report') }}
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <caption class="visually-hidden">
+                            {{ 'portfolio_report.matrix.caption'|trans({}, 'portfolio_report') }}
+                        </caption>
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" class="text-nowrap">
+                                    {{ 'portfolio_report.matrix.function'|trans({}, 'portfolio_report') }}
+                                </th>
+                                {% for framework in matrix.frameworks %}
+                                    <th scope="col" class="text-nowrap text-center">
+                                        <span title="{{ framework.name }}">{{ framework.code }}</span>
+                                    </th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in matrix.rows %}
+                                <tr>
+                                    <th scope="row" class="text-nowrap">
+                                        <i class="bi bi-layers-half text-muted" aria-hidden="true"></i>
+                                        {{ ('portfolio_report.category.' ~ row.category|lower)|trans({}, 'portfolio_report') }}
+                                    </th>
+                                    {% for framework in matrix.frameworks %}
+                                        {% set cell = row.cells[framework.code] %}
+                                        {% set cell_variant = 'secondary' %}
+                                        {% set cell_icon = 'bi-dash-circle' %}
+                                        {% if cell.count == 0 %}
+                                            {% set cell_variant = 'secondary' %}
+                                            {% set cell_icon = 'bi-slash-circle' %}
+                                        {% elseif cell.pct >= 80 %}
+                                            {% set cell_variant = 'success' %}
+                                            {% set cell_icon = 'bi-check-circle-fill' %}
+                                        {% elseif cell.pct >= 50 %}
+                                            {% set cell_variant = 'warning' %}
+                                            {% set cell_icon = 'bi-exclamation-triangle-fill' %}
+                                        {% else %}
+                                            {% set cell_variant = 'danger' %}
+                                            {% set cell_icon = 'bi-x-circle-fill' %}
+                                        {% endif %}
+
+                                        {% set aria = 'portfolio_report.cell.aria'|trans({
+                                            '%category%': ('portfolio_report.category.' ~ row.category|lower)|trans({}, 'portfolio_report'),
+                                            '%framework%': framework.name,
+                                            '%pct%': cell.pct,
+                                            '%count%': cell.count,
+                                            '%gaps%': cell.gaps
+                                        }, 'portfolio_report') %}
+
+                                        <td class="text-center">
+                                            {% if cell.count == 0 %}
+                                                {% include '_components/_badge.html.twig' with {
+                                                    variant: 'secondary',
+                                                    icon: cell_icon,
+                                                    aria_label: aria,
+                                                    title: aria,
+                                                    content: 'portfolio_report.cell.na'|trans({}, 'portfolio_report')
+                                                } only %}
+                                            {% else %}
+                                                {% include '_components/_badge.html.twig' with {
+                                                    variant: cell_variant,
+                                                    icon: cell_icon,
+                                                    aria_label: aria,
+                                                    title: aria,
+                                                    content: cell.pct ~ '%'
+                                                } only %}
+                                                <div class="small text-muted mt-1">
+                                                    <span title="{{ 'portfolio_report.cell.count_tooltip'|trans({}, 'portfolio_report') }}">
+                                                        <i class="bi bi-list-ol" aria-hidden="true"></i> {{ cell.count }}
+                                                    </span>
+                                                    {% if cell.gaps > 0 %}
+                                                        <span class="ms-2 text-danger" title="{{ 'portfolio_report.cell.gaps_tooltip'|trans({}, 'portfolio_report') }}">
+                                                            <i class="bi bi-exclamation-diamond" aria-hidden="true"></i> {{ cell.gaps }}
+                                                        </span>
+                                                    {% endif %}
+                                                    {% if cell.delta != 0 %}
+                                                        <span class="ms-2 {{ cell.delta > 0 ? 'text-success' : 'text-danger' }}">
+                                                            {{ cell.delta > 0 ? '+' : '' }}{{ cell.delta }}
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-footer small text-muted">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            {{ 'portfolio_report.matrix.legend'|trans({}, 'portfolio_report') }}
+        </div>
+    </div>
+</div>
+{% endblock %}

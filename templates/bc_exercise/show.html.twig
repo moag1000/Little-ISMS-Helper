@@ -35,8 +35,8 @@
             <div class="card-header">
                 <h2>{{ 'bc_exercises.section.details'|trans({}, 'bc_exercises') }}</h2>
                 <div>
-                    <span class="badge badge-{{ bc_exercise.exerciseType }}">{{ bc_exercise.exerciseType }}</span>
-                    <span class="badge badge-{{ bc_exercise.status }}">{{ bc_exercise.status }}</span>
+                    <span class="badge badge-{{ bc_exercise.exerciseType }}">{{ ('bc_exercises.exercise_type.' ~ bc_exercise.exerciseType)|trans({}, 'bc_exercises') }}</span>
+                    <span class="badge badge-{{ bc_exercise.status }}">{{ ('bc_exercises.status.' ~ bc_exercise.status)|trans({}, 'bc_exercises') }}</span>
                 </div>
             </div>
         {% endblock %}

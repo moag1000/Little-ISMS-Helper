@@ -1,0 +1,26 @@
+# Cross-Framework Mapping CIS Controls v8.1 <-> ISO/IEC 27001:2022
+# License: CC-BY 4.0
+# Source: CIS Controls v8.1 (June 2024) mappings to ISO 27002:2022.
+# Curator: Senior-GRC-Consultant (2026-04-17)
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+CIS-CONTROLS,1,ISO27001,A.5.9,95,full,high,true,"Inventory and control of enterprise assets — A.5.9.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,2,ISO27001,A.5.9,90,partial,high,true,"Inventory and control of software assets — A.5.9 + A.8.19.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,3,ISO27001,A.5.12,90,partial,high,true,"Data protection (inventory, classification) — A.5.12.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,4,ISO27001,A.8.9,90,partial,high,true,"Secure configuration — A.8.9.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,5,ISO27001,A.5.18,90,partial,high,true,"Account management — A.5.18.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,6,ISO27001,A.5.15,95,full,high,true,"Access control management — A.5.15.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,7,ISO27001,A.8.8,95,full,high,true,"Continuous vulnerability management — A.8.8.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,8,ISO27001,A.8.15,95,full,high,true,"Audit log management — A.8.15.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,9,ISO27001,A.8.22,85,partial,high,true,"Email and web browser protections — A.8.22 + A.8.23.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,10,ISO27001,A.8.7,95,full,high,true,"Malware defenses — A.8.7.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,11,ISO27001,A.8.13,95,full,high,true,"Data recovery — A.8.13 backup.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,12,ISO27001,A.8.20,95,full,high,true,"Network infrastructure management — A.8.20/A.8.21.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,13,ISO27001,A.8.16,90,partial,high,true,"Network monitoring and defense — A.8.16.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,14,ISO27001,A.6.3,95,full,high,true,"Security awareness and skills training — A.6.3.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,15,ISO27001,A.5.19,95,full,high,true,"Service provider management — A.5.19.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,16,ISO27001,A.8.25,85,partial,high,true,"Application software security — A.8.25/A.8.28.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,17,ISO27001,A.5.24,95,full,high,true,"Incident response management — A.5.24.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,18,ISO27001,A.8.29,90,partial,high,true,"Penetration testing — A.8.29.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,8.1-governance,ISO27001,A.5.4,70,partial,medium,false,"v8.1 governance refinement — management responsibility (A.5.4).",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant
+CIS-CONTROLS,8.1-ai,ISO27001,A.8.26,60,partial,low,false,"v8.1 AI/ML guidance — A.8.26 application security requirements; EU AI Act-specific obligations not covered by ISO.",cis_controls_v8.1_iso_mapping,2026-04-17,Senior-GRC-Consultant

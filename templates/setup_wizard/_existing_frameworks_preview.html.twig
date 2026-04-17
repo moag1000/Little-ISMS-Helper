@@ -1,0 +1,91 @@
+{# WS-8 Reuse Preview Fragment — rendered via AJAX into #existing-frameworks-preview #}
+{% if estimates is empty %}
+    <div class="alert alert-light border">
+        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+        {{ 'existing_frameworks.preview.no_newly_added'|trans({}, 'setup_wizard') }}
+    </div>
+{% else %}
+    <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle"
+               aria-describedby="existing-frameworks-preview-summary">
+            <caption id="existing-frameworks-preview-summary" class="caption-top">
+                {{ 'existing_frameworks.preview.caption'|trans({
+                    '%reusable%': total_reusable,
+                    '%days%': total_fte_days_saved
+                }, 'setup_wizard') }}
+            </caption>
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">{{ 'existing_frameworks.preview.col.framework'|trans({}, 'setup_wizard') }}</th>
+                    <th scope="col" class="text-end">
+                        {{ 'existing_frameworks.preview.col.requirements'|trans({}, 'setup_wizard') }}
+                    </th>
+                    <th scope="col" class="text-end">
+                        {{ 'existing_frameworks.preview.col.reusable'|trans({}, 'setup_wizard') }}
+                    </th>
+                    <th scope="col" class="text-end">
+                        {{ 'existing_frameworks.preview.col.fte_days'|trans({}, 'setup_wizard') }}
+                    </th>
+                    <th scope="col">
+                        {{ 'existing_frameworks.preview.col.sources'|trans({}, 'setup_wizard') }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in estimates %}
+                    <tr>
+                        <th scope="row">
+                            <span class="fw-semibold">{{ row.name }}</span>
+                            <span class="text-muted small d-block">{{ row.code }}</span>
+                        </th>
+                        <td class="text-end">
+                            {{ row.delta_requirements }}
+                        </td>
+                        <td class="text-end">
+                            {% if row.estimated_reusable > 0 %}
+                                <span class="badge bg-success">
+                                    {{ row.estimated_reusable }}
+                                    <small class="ms-1">({{ row.reuse_percentage }}%)</small>
+                                </span>
+                            {% else %}
+                                <span class="text-muted">0</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            {% if row.estimated_fte_days_saved > 0 %}
+                                <span class="fw-bold text-primary">{{ row.estimated_fte_days_saved }}</span>
+                            {% else %}
+                                <span class="text-muted">0.0</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.sources is empty %}
+                                <span class="text-muted small">
+                                    {{ 'existing_frameworks.preview.no_sources'|trans({}, 'setup_wizard') }}
+                                </span>
+                            {% else %}
+                                {% for source in row.sources %}
+                                    <span class="badge bg-light text-dark border me-1">{{ source }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot class="table-light">
+                <tr>
+                    <th scope="row" colspan="2" class="text-end">
+                        {{ 'existing_frameworks.preview.total'|trans({}, 'setup_wizard') }}
+                    </th>
+                    <th scope="col" class="text-end">{{ total_reusable }}</th>
+                    <th scope="col" class="text-end">{{ total_fte_days_saved }}</th>
+                    <th scope="col"></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <p class="text-muted small mb-0">
+        <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+        {{ 'existing_frameworks.preview.heuristic_note'|trans({}, 'setup_wizard') }}
+    </p>
+{% endif %}

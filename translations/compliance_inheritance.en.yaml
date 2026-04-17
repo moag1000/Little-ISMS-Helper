@@ -1,0 +1,65 @@
+status:
+    pending_review: 'Review required'
+    source_updated: 'Source updated'
+    confirmed: 'Confirmed'
+    overridden: 'Overridden'
+    rejected: 'Rejected'
+    implemented: 'Implemented (4-eyes)'
+
+confidence:
+    high: 'High confidence'
+    medium: 'Medium confidence'
+    low: 'Low confidence (hypothesis)'
+
+queue:
+    title: 'Inheritance suggestions — %framework%'
+    subtitle: '%count% suggestions awaiting review'
+    filter: 'Filter'
+    filter_pending: 'Pending'
+    filter_source_updated: 'Source changed'
+    filter_all: 'All'
+    aria_count: '%count% suggestions awaiting your review.'
+    empty: 'No pending inheritance suggestions for this framework.'
+    from: 'derived from'
+    mapping: 'Mapping'
+    suggested: 'Suggested'
+    open_review: 'Open review panel'
+
+source:
+    label: 'Source'
+    mapping: 'Coverage'
+    catalog: 'Catalog'
+
+panel:
+    title: 'Review inheritance suggestion'
+    suggested: 'Suggested value'
+    comment_label: 'Reviewer comment (min. 20 characters)'
+    chars_hint: 'Minimum %min% characters.'
+    request_implemented: 'Request transition to "Implemented"'
+    request_implemented_hint: 'Requires a second approval (four-eyes, ISO 27001 A.5.3).'
+    approver_label: 'Second approver'
+    approver_placeholder: '— please select —'
+    confirm: 'Confirm suggestion (%value%%%)'
+    override: 'Override'
+    reject: 'Reject'
+    final_state: 'Status: %status%'
+
+reject:
+    title: 'Reject inheritance suggestion'
+    reason_label: 'Rejection reason'
+    submit: 'Reject'
+
+override:
+    title: 'Override suggestion'
+    value_label: 'New value (0–150)'
+    reason_label: 'Justification'
+    approver_label: 'Second approver (4-eyes)'
+    submit: 'Override with four-eyes approval'
+
+flash:
+    confirmed: 'Inheritance suggestion confirmed.'
+    rejected: 'Inheritance suggestion rejected.'
+    overridden: 'Suggestion overridden — awaiting four-eyes approval.'
+
+nav:
+    pending_badge_label: '%count% inheritance suggestions pending'

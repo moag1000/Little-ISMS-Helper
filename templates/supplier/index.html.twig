@@ -100,6 +100,17 @@
     </div>
     {% endif %}
 
+    {# WS-5 Bulk tag actions bar (polymorphic) #}
+    {% if is_granted('TAG_APPLY') %}
+        {% include '_components/_bulk_actions_bar.html.twig' with {
+            entity_class:   'App\\Entity\\Supplier',
+            action_urls: {
+                tag_add: path('admin_tag_bulk_apply', {entityClass: 'Supplier'}),
+            },
+            available_tags: available_tags(),
+        } only %}
+    {% endif %}
+
     {% embed '_components/_card.html.twig' %}
         {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/supplier"{% endblock %}
         {% block card_header %}

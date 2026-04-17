@@ -1,0 +1,39 @@
+# Cross-Framework Mapping BSI C5:2026 <-> ISO/IEC 27001:2022
+# License: CC-BY 4.0
+# Source: BSI C5:2026 final catalogue crosswalk (April 2026), validated against ISO 27002:2022 guidance.
+# Curator: Senior-GRC-Consultant (rewritten 2026-04-17 for loader-native IDs).
+# Scope: ORP policy domain plus C5:2026 specifics (Container, Supply-Chain, PQC, Cloud, AI).
+#
+source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by
+BSI-C5-2026,C5-2026-ORP-1.1,ISO27001,A.5.1,95,full,high,true,"Information security policy definition — A.5.1.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-ORP-1.2,ISO27001,A.5.1,90,partial,high,false,"Policy communication — A.5.1 acknowledgement requirement.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-ORP-1.3,ISO27001,A.5.1,90,partial,high,false,"Policy review — A.5.1 planned-interval review.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-CNT-1,ISO27001,A.8.8,80,partial,high,true,"Container image security — A.8.8 vulnerability management.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-CNT-2,ISO27001,A.8.16,80,partial,high,true,"Container runtime security — A.8.16 monitoring activities.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-CNT-3,ISO27001,A.8.20,85,partial,high,true,"Container orchestration security — A.8.20 networks security.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-CNT-4,ISO27001,A.8.19,80,partial,high,true,"Container registry security — A.8.19 software installation control.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-CNT-5,ISO27001,A.8.22,85,partial,high,true,"Container isolation — A.8.22 segregation of networks.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-CNT-6,ISO27001,A.8.20,80,partial,high,false,"Container network policies — A.8.20 network controls.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-SCS-1,ISO27001,A.5.21,95,full,high,true,"Software supply chain security — A.5.21 ICT supply chain.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-SCS-2,ISO27001,A.8.8,85,partial,high,false,"Third-party component vulnerabilities — A.8.8.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-SCS-3,ISO27001,A.5.19,90,partial,high,true,"Supplier security assessment — A.5.19.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-SCS-4,ISO27001,A.8.25,90,partial,high,true,"Secure software development — A.8.25.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-SCS-5,ISO27001,A.8.24,80,partial,high,true,"Code signing — A.8.24 cryptography.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-PQC-1,ISO27001,A.8.24,85,partial,high,true,"Post-Quantum Cryptography roadmap — A.8.24 cryptographic policy.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-PQC-2,ISO27001,A.8.24,80,partial,high,false,"Cryptographic agility — A.8.24.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-CFC-1,ISO27001,A.8.27,75,partial,high,false,"Trusted execution environments — A.8.27 secure architecture.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-CFC-2,ISO27001,A.8.24,80,partial,high,false,"Memory encryption — A.8.24 use of cryptography.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-ECS-1,ISO27001,A.8.22,90,partial,high,true,"Multi-tenant isolation — A.8.22.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-ECS-4,ISO27001,A.8.20,90,partial,high,false,"Network isolation — A.8.20.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-EUCS-1,ISO27001,A.5.36,85,partial,high,true,"EUCS Substantial compliance — A.5.36 compliance with standards.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-EUCS-2,ISO27001,A.5.14,85,partial,high,false,"EU data residency — A.5.14 information transfer jurisdiction.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-EUCS-3,ISO27001,A.5.14,85,partial,high,false,"Cross-border data transfer controls — A.5.14.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-NIS2-1,ISO27001,A.6.8,90,partial,high,true,"NIS2 incident reporting — A.6.8.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-NIS2-2,ISO27001,A.5.21,95,full,high,true,"Supply chain risk management (NIS2) — A.5.21.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-NIS2-3,ISO27001,A.5.4,85,partial,high,true,"Cybersecurity governance (NIS2) — A.5.4 management responsibilities.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-ISO-1,ISO27001,A.5.7,95,full,high,true,"Threat intelligence — A.5.7.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-ISO-2,ISO27001,A.5.23,95,full,high,true,"Cloud services security — A.5.23.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-AI-1,ISO27001,A.8.26,75,partial,medium,false,"AI model security — A.8.26 application security requirements; AI Act covers fuller scope.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-AI-2,ISO27001,A.5.12,75,partial,medium,false,"Training data security — A.5.12 classification + A.8.12 data leakage prevention.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-CSA-1,ISO27001,A.8.25,85,partial,high,true,"DevSecOps integration — A.8.25.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
+BSI-C5-2026,C5-2026-CSA-2,ISO27001,A.8.9,85,partial,high,true,"Infrastructure as Code security — A.8.9 configuration management.",bsi_c5_2026_iso_crosswalk,2026-04-17,Senior-GRC-Consultant
