@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'loader_fixer.result.title'|trans({}, 'loader_fixer') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h1 class="h3">{{ 'loader_fixer.result.title'|trans({}, 'loader_fixer') }}</h1>
+            <p class="text-muted mb-0">
+                {{ 'loader_fixer.result.total_added'|trans({ '%total%': total_added }, 'loader_fixer') }}
+            </p>
+        </div>
+        <a href="{{ path('admin_loader_fixer_index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i>
+            {{ 'loader_fixer.action.back'|trans({}, 'loader_fixer') }}
+        </a>
+    </div>
+
+    {% for code, r in results %}
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <code>{{ code }}</code>
+                    {% if r.success %}
+                        <span class="badge bg-success ms-2">
+                            <i class="bi bi-check-circle" aria-hidden="true"></i>
+                            {{ 'loader_fixer.result.ok'|trans({}, 'loader_fixer') }}
+                        </span>
+                    {% else %}
+                        <span class="badge bg-danger ms-2">
+                            <i class="bi bi-x-circle" aria-hidden="true"></i>
+                            {{ 'loader_fixer.result.failed'|trans({}, 'loader_fixer') }}
+                        </span>
+                    {% endif %}
+                </div>
+                <div class="small text-muted">
+                    {{ 'loader_fixer.result.before'|trans({}, 'loader_fixer') }}: <strong>{{ r.before }}</strong>
+                    &middot;
+                    {{ 'loader_fixer.result.after'|trans({}, 'loader_fixer') }}: <strong>{{ r.after }}</strong>
+                    &middot;
+                    {{ 'loader_fixer.result.added'|trans({}, 'loader_fixer') }}:
+                    <strong class="{% if r.added > 0 %}text-success{% endif %}">+{{ r.added }}</strong>
+                </div>
+            </div>
+            {% if r.output|trim is not empty %}
+                <div class="card-body p-2">
+                    <pre class="small bg-light p-2 mb-0"
+                         style="max-height: 200px; overflow: auto;">{{ r.output }}</pre>
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

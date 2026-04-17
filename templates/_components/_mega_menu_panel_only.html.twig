@@ -462,10 +462,22 @@
                                 <span class="mega-menu-link-title">{{ 'admin.nav.module_management'|trans({}, 'admin') }}</span>
                             </div>
                         </a></li>
-                        <li><a href="{{ path('admin_compliance_index') }}" class="{% if current_route starts with 'admin_compliance_' %}active{% endif %}" data-turbo-action="advance">
+                        <li><a href="{{ path('admin_compliance_index') }}" class="{% if current_route == 'admin_compliance_index' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-check-circle" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'admin.nav.compliance_management'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('admin_compliance_policy_index') }}" class="{% if current_route starts with 'admin_compliance_policy_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-sliders" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.compliance_policy'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('admin_loader_fixer_index') }}" class="{% if current_route starts with 'admin_loader_fixer' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.loader_fixer'|trans({}, 'admin') }}</span>
                             </div>
                         </a></li>
                     </ul>

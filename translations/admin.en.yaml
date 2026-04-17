@@ -26,6 +26,8 @@ admin:
         mfa: 'MFA Management'
         module_management: 'Module Management'
         compliance_management: 'Compliance Management'
+        compliance_policy: 'Compliance Policy Settings'
+        loader_fixer: 'Framework Loader Fixer'
         system_health: 'System Health'
         backup: Backup
         export: Export

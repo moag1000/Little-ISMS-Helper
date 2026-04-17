@@ -1,0 +1,28 @@
+compliance_policy:
+    page:
+        title: "Compliance-Policy-Einstellungen"
+        lead: "Laufzeit-Konfiguration für WS-1…WS-8. Werte überschreiben YAML-Defaults, wirken sofort."
+    hint:
+        heading: "Konfigurierbar ohne Deployment"
+        body: "Alle Werte werden in system_settings (Kategorie=compliance) gespeichert. Leeres DB-Feld = YAML-Default gilt. Jede Änderung wird auditiert."
+    group:
+        inheritance: "Mapping-Inheritance (WS-1)"
+        four_eyes: "4-Augen-Workflow (WS-1)"
+        portfolio: "Portfolio-Ampel (WS-4)"
+        setup: "Setup-Wizard (WS-8)"
+        import: "Import-Guardrails (WS-2)"
+        ui: "UI / Performance"
+        gap_report: "Gap-Report / Quick-Wins (WS-6)"
+    default: "Default"
+    override: "DB-Override aktiv"
+    bool:
+        on: "Aktiv"
+        off: "Inaktiv"
+    action:
+        save: "Einstellungen speichern"
+        cancel: "Abbrechen"
+    reset:
+        heading: "Auf Default zurücksetzen"
+        lead: "Entfernt den DB-Override, die YAML-Default wird wieder wirksam."
+        action: "Zurücksetzen"
+        confirm: "Wirklich auf Default zurücksetzen?"

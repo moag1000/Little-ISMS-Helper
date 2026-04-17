@@ -1,0 +1,28 @@
+compliance_policy:
+    page:
+        title: "Compliance Policy Settings"
+        lead: "Runtime configuration for WS-1…WS-8. Overrides YAML defaults, effective immediately."
+    hint:
+        heading: "Configurable without deployment"
+        body: "Values are stored in system_settings (category=compliance). Empty DB row = YAML default applies. Every change is audit-logged."
+    group:
+        inheritance: "Mapping Inheritance (WS-1)"
+        four_eyes: "Four-Eyes Workflow (WS-1)"
+        portfolio: "Portfolio Traffic Light (WS-4)"
+        setup: "Setup Wizard (WS-8)"
+        import: "Import Guardrails (WS-2)"
+        ui: "UI / Performance"
+        gap_report: "Gap Report / Quick Wins (WS-6)"
+    default: "Default"
+    override: "DB override active"
+    bool:
+        on: "On"
+        off: "Off"
+    action:
+        save: "Save settings"
+        cancel: "Cancel"
+    reset:
+        heading: "Reset to default"
+        lead: "Removes the DB override so the YAML default applies again."
+        action: "Reset"
+        confirm: "Really reset to default?"

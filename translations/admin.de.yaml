@@ -26,6 +26,8 @@ admin:
         mfa: 'MFA Verwaltung'
         module_management: Modul-Verwaltung
         compliance_management: Compliance-Verwaltung
+        compliance_policy: Compliance-Policy-Einstellungen
+        loader_fixer: Framework-Loader-Fixer
         system_health: System-Status
         backup: Backup
         export: Export

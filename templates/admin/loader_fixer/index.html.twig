@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'loader_fixer.page.title'|trans({}, 'loader_fixer') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+        <div>
+            <h1 class="h3">{{ 'loader_fixer.page.title'|trans({}, 'loader_fixer') }}</h1>
+            <p class="text-muted mb-0">{{ 'loader_fixer.page.lead'|trans({}, 'loader_fixer') }}</p>
+        </div>
+        <form method="post" action="{{ path('admin_loader_fixer_run_all') }}"
+              onsubmit="return confirm('{{ 'loader_fixer.confirm.all'|trans({}, 'loader_fixer')|e('js') }}');">
+            <input type="hidden" name="_token" value="{{ csrf_token('loader_fixer_run_all') }}">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                {{ 'loader_fixer.action.run_all'|trans({}, 'loader_fixer') }}
+            </button>
+        </form>
+    </div>
+
+    <div class="alert alert-info d-flex gap-2" role="note">
+        <i class="bi bi-info-circle mt-1" aria-hidden="true"></i>
+        <div>
+            <strong>{{ 'loader_fixer.hint.heading'|trans({}, 'loader_fixer') }}</strong>
+            <div class="small">{{ 'loader_fixer.hint.body'|trans({}, 'loader_fixer') }}</div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle" aria-label="{{ 'loader_fixer.page.title'|trans({}, 'loader_fixer') }}">
+            <thead>
+                <tr>
+                    <th scope="col">{{ 'loader_fixer.table.code'|trans({}, 'loader_fixer') }}</th>
+                    <th scope="col">{{ 'loader_fixer.table.label'|trans({}, 'loader_fixer') }}</th>
+                    <th scope="col" class="text-end">{{ 'loader_fixer.table.loaded'|trans({}, 'loader_fixer') }}</th>
+                    <th scope="col" class="text-center">{{ 'loader_fixer.table.status'|trans({}, 'loader_fixer') }}</th>
+                    <th scope="col" class="text-end">{{ 'loader_fixer.table.actions'|trans({}, 'loader_fixer') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <th scope="row"><code>{{ row.code }}</code></th>
+                        <td>{{ row.label }}</td>
+                        <td class="text-end"><strong>{{ row.loaded_count }}</strong></td>
+                        <td class="text-center">
+                            {% if not row.exists %}
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-dash-circle" aria-hidden="true"></i>
+                                    {{ 'loader_fixer.status.not_loaded'|trans({}, 'loader_fixer') }}
+                                </span>
+                            {% elseif row.loaded_count == 0 %}
+                                <span class="badge bg-warning text-dark">
+                                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                    {{ 'loader_fixer.status.empty'|trans({}, 'loader_fixer') }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                    {{ 'loader_fixer.status.loaded'|trans({}, 'loader_fixer') }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <form method="post" class="d-inline"
+                                  action="{{ path('admin_loader_fixer_run_one', { code: row.code }) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('loader_fixer_run_' ~ row.code) }}">
+                                <button type="submit" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                                    {{ 'loader_fixer.action.run_one'|trans({}, 'loader_fixer') }}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
