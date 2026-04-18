@@ -46,8 +46,14 @@ class TenantFilter extends SQLFilter
             return '';
         }
 
-        // Get the tenant ID parameter
-        $tenantId = $this->getParameter('tenant_id');
+        // Get the tenant ID parameter. If never set (background jobs, CLI,
+        // tests), skip filtering entirely — SQLFilter::getParameter throws
+        // InvalidArgumentException when the parameter is absent.
+        try {
+            $tenantId = $this->getParameter('tenant_id');
+        } catch (\InvalidArgumentException) {
+            return '';
+        }
 
         // If no tenant ID is set, don't filter (admin mode)
         if ($tenantId === 'null') {
