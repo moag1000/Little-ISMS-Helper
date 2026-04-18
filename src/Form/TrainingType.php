@@ -170,6 +170,7 @@ class TrainingType extends AbstractType
                 'attr' => [
                     'class' => 'form-select',
                     'size' => 5,
+                    'data-controller' => 'tom-select',
                 ],
                 'help' => 'training.help.covered_controls',
             ])
@@ -185,7 +186,7 @@ class TrainingType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'class' => 'form-select',
-                    'size' => 5,
+                    'data-controller' => 'tom-select',
                 ],
                 'help' => 'training.help.compliance_requirements',
             ])
