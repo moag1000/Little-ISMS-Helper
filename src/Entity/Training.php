@@ -70,7 +70,7 @@ class Training
     #[ORM\Column(length: 255)]
     #[Groups(['training:read', 'training:write'])]
     #[Assert\NotBlank(message: 'Training title is required')]
-    #[Assert\Length(max: 255, maxMessage: 'Title cannot exceed {{ limit }} characters')]
+    #[Assert\Length(max: 255, maxMessage: 'Title cannot exceed { limit } characters')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -80,7 +80,7 @@ class Training
     #[ORM\Column(length: 100)]
     #[Groups(['training:read', 'training:write'])]
     #[Assert\NotBlank(message: 'Training type is required')]
-    #[Assert\Length(max: 100, maxMessage: 'Training type cannot exceed {{ limit }} characters')]
+    #[Assert\Length(max: 100, maxMessage: 'Training type cannot exceed { limit } characters')]
     private ?string $trainingType = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
@@ -96,7 +96,7 @@ class Training
     #[ORM\Column(length: 100)]
     #[Groups(['training:read', 'training:write'])]
     #[Assert\NotBlank(message: 'Trainer name is required')]
-    #[Assert\Length(max: 100, maxMessage: 'Trainer name cannot exceed {{ limit }} characters')]
+    #[Assert\Length(max: 100, maxMessage: 'Trainer name cannot exceed { limit } characters')]
     private ?string $trainer = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -116,7 +116,7 @@ class Training
     #[Groups(['training:read', 'training:write'])]
     #[Assert\Choice(
         choices: ['in_person', 'online_live', 'e_learning', 'hybrid', 'workshop'],
-        message: 'Delivery method must be one of: {{ choices }}'
+        message: 'Delivery method must be one of: { choices }'
     )]
     private ?string $deliveryMethod = null;
 
@@ -129,7 +129,7 @@ class Training
     #[Assert\NotBlank(message: 'Status is required')]
     #[Assert\Choice(
         choices: ['planned', 'scheduled', 'in_progress', 'completed', 'cancelled'],
-        message: 'Status must be one of: {{ choices }}'
+        message: 'Status must be one of: { choices }'
     )]
     private ?string $status = 'planned';
 
@@ -561,8 +561,8 @@ public function __construct()
      * Effective trainer: prefer trainerUser.fullName, fall back to legacy string.
      */
     public function getEffectiveTrainer(): ?string
-    {{
-        return $this->{user_field}?->getFullName() ?? $this->{str_field};
-    }}
+    {
+        return $this->trainerUser?->getFullName() ?? $this->trainer;
+    }
 
 }

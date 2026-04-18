@@ -74,7 +74,7 @@ class Risk
     #[ORM\Column(length: 255)]
     #[Groups(['risk:read', 'risk:write'])]
     #[Assert\NotBlank(message: 'Risk title is required')]
-    #[Assert\Length(max: 255, maxMessage: 'Risk title cannot exceed {{ limit }} characters')]
+    #[Assert\Length(max: 255, maxMessage: 'Risk title cannot exceed { limit } characters')]
     private ?string $title = null;
 
     /**
@@ -196,31 +196,31 @@ class Risk
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
     #[Assert\NotNull(message: 'Probability is required')]
-    #[Assert\Range(notInRangeMessage: 'Probability must be between {{ min }} and {{ max }}', min: 1, max: 5)]
+    #[Assert\Range(notInRangeMessage: 'Probability must be between { min } and { max }', min: 1, max: 5)]
     private ?int $probability = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
     #[Assert\NotNull(message: 'Impact is required')]
-    #[Assert\Range(notInRangeMessage: 'Impact must be between {{ min }} and {{ max }}', min: 1, max: 5)]
+    #[Assert\Range(notInRangeMessage: 'Impact must be between { min } and { max }', min: 1, max: 5)]
     private ?int $impact = null;
 
     // Set default values for required fields
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\Range(notInRangeMessage: 'Residual probability must be between {{ min }} and {{ max }}', min: 1, max: 5)]
+    #[Assert\Range(notInRangeMessage: 'Residual probability must be between { min } and { max }', min: 1, max: 5)]
     private ?int $residualProbability = 1;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\Range(notInRangeMessage: 'Residual impact must be between {{ min }} and {{ max }}', min: 1, max: 5)]
+    #[Assert\Range(notInRangeMessage: 'Residual impact must be between { min } and { max }', min: 1, max: 5)]
     private ?int $residualImpact = 1;
 
     #[ORM\Column(length: 50, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
     #[Assert\Choice(
         choices: ['accept', 'mitigate', 'transfer', 'avoid'],
-        message: 'Treatment strategy must be one of: {{ choices }}'
+        message: 'Treatment strategy must be one of: { choices }'
     )]
     private ?string $treatmentStrategy = 'mitigate';
 
@@ -245,7 +245,7 @@ class Risk
     #[Assert\NotBlank(message: 'Status is required')]
     #[Assert\Choice(
         choices: ['identified', 'assessed', 'treated', 'monitored', 'closed', 'accepted'],
-        message: 'Status must be one of: {{ choices }}'
+        message: 'Status must be one of: { choices }'
     )]
     private ?string $status = 'identified';
 
@@ -1065,8 +1065,8 @@ class Risk
      * Effective acceptanceApprovedBy: prefer acceptanceApprovedByUser.fullName, fall back to legacy string.
      */
     public function getEffectiveAcceptanceApprovedBy(): ?string
-    {{
-        return $this->{user_field}?->getFullName() ?? $this->{str_field};
-    }}
+    {
+        return $this->acceptanceApprovedByUser?->getFullName() ?? $this->acceptanceApprovedBy;
+    }
 
 }
