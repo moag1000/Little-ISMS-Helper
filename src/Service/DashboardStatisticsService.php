@@ -13,6 +13,7 @@ use App\Repository\ControlRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
+use App\Repository\KpiThresholdConfigRepository;
 use App\Repository\ManagementReviewRepository;
 use App\Repository\RiskAppetiteRepository;
 use App\Repository\RiskRepository;
@@ -66,12 +67,155 @@ class DashboardStatisticsService
         private readonly ?ManagementReviewRepository $managementReviewRepository = null,
         private readonly ?ComplianceAnalyticsService $complianceAnalyticsService = null,
         private readonly ?RiskAppetiteRepository $riskAppetiteRepository = null,
+        private readonly ?KpiThresholdConfigRepository $thresholdConfigRepository = null,
     ) {
+    }
+
+    /**
+     * Per-tenant threshold override cache. Loaded on first status() call.
+     *
+     * @var array<string, array{good:int, warning:int}>|null
+     */
+    private ?array $thresholdOverrides = null;
+    private ?int $thresholdOverrideTenantId = null;
+
+    /**
+     * Tenant-aware getStatus — prefers override from kpi_threshold_config.
+     */
+    private function getStatusFor(string $kpiKey, int $value, int $goodDefault, int $warningDefault, ?Tenant $tenant): string
+    {
+        $good = $goodDefault;
+        $warning = $warningDefault;
+        if ($tenant instanceof Tenant && $this->thresholdConfigRepository !== null) {
+            if ($this->thresholdOverrideTenantId !== $tenant->getId() || $this->thresholdOverrides === null) {
+                $this->thresholdOverrides = $this->thresholdConfigRepository->getThresholdMap($tenant);
+                $this->thresholdOverrideTenantId = $tenant->getId();
+            }
+            if (isset($this->thresholdOverrides[$kpiKey])) {
+                $good = $this->thresholdOverrides[$kpiKey]['good'];
+                $warning = $this->thresholdOverrides[$kpiKey]['warning'];
+            }
+        }
+        if ($value >= $good) {
+            return 'good';
+        }
+        if ($value >= $warning) {
+            return 'warning';
+        }
+        return 'danger';
     }
 
     /**
      * @return array<string, int> Map of category => maxAcceptableRisk for the tenant (fallback: global).
      */
+    /**
+     * A10: Boolean readiness checklist. Each key is 1 if fulfilled, 0 otherwise.
+     *
+     * @return array<string, int>
+     */
+    private function buildReadinessChecklist(?Tenant $tenant): array
+    {
+        $checklist = [
+            'isms_scope_defined' => 0,
+            'isms_policy_approved' => 0,
+            'risk_assessment_performed' => 0,
+            'soa_generated' => 0,
+            'controls_80pct_implemented' => 0,
+            'management_review_within_year' => 0,
+            'internal_audit_within_year' => 0,
+            'audit_findings_resolved' => 0,
+        ];
+        if (!$tenant instanceof Tenant) {
+            return $checklist;
+        }
+
+        // ISMS scope/policy — at least one ISMSContext record marks scope defined
+        $contextCount = $this->entityManager()->getRepository(\App\Entity\ISMSContext::class)
+            ->count(['tenant' => $tenant]);
+        if ($contextCount > 0) {
+            $checklist['isms_scope_defined'] = 1;
+            $checklist['isms_policy_approved'] = 1;
+        }
+
+        // Risk assessment — at least one Risk exists
+        $riskCount = count($this->getAllAccessibleRisks($tenant));
+        if ($riskCount > 0) {
+            $checklist['risk_assessment_performed'] = 1;
+        }
+
+        // SoA — at least one control is marked as applicable (proxy)
+        $applicableControls = $this->controlRepository->findApplicableControls($tenant);
+        if (count($applicableControls) > 0) {
+            $checklist['soa_generated'] = 1;
+            $implemented = count(array_filter(
+                $applicableControls,
+                fn($c): bool => $c->getImplementationStatus() === 'implemented'
+            ));
+            $pct = (count($applicableControls) > 0) ? ($implemented / count($applicableControls)) : 0;
+            if ($pct >= 0.80) {
+                $checklist['controls_80pct_implemented'] = 1;
+            }
+        }
+
+        // Management review within last 365 days
+        if ($this->managementReviewRepository !== null) {
+            $latest = $this->managementReviewRepository->findLatest(1);
+            if (isset($latest[0]) && $latest[0]->getReviewDate() !== null) {
+                $days = (int) $latest[0]->getReviewDate()->diff(new \DateTime())->days;
+                if ($days <= 365) {
+                    $checklist['management_review_within_year'] = 1;
+                }
+            }
+        }
+
+        // Internal audit within last 365 days
+        if ($this->auditRepository !== null) {
+            $audits = $this->auditRepository->findBy(['tenant' => $tenant], ['actualDate' => 'DESC'], 1);
+            if (isset($audits[0]) && $audits[0]->getActualDate() !== null) {
+                $days = (int) $audits[0]->getActualDate()->diff(new \DateTime())->days;
+                if ($days <= 365) {
+                    $checklist['internal_audit_within_year'] = 1;
+                }
+            }
+        }
+
+        // Audit findings resolved — no open AuditFinding
+        $openFindings = $this->entityManager()->getRepository(\App\Entity\AuditFinding::class)
+            ->count(['tenant' => $tenant, 'status' => \App\Entity\AuditFinding::STATUS_OPEN]);
+        if ($openFindings === 0) {
+            $checklist['audit_findings_resolved'] = 1;
+        }
+
+        return $checklist;
+    }
+
+    private function entityManager(): \Doctrine\ORM\EntityManagerInterface
+    {
+        return $this->controlRepository->createQueryBuilder('c')->getEntityManager();
+    }
+
+    /**
+     * Count distinct frameworks that map to a given control via its requirements.
+     */
+    private function getFrameworkCountForControl(int $controlId): int
+    {
+        if ($this->complianceAnalyticsService === null) {
+            return 0;
+        }
+        // Use requirement repository through analytics service? No direct access —
+        // piggyback on getControlCoverageMatrix() once cached would be overkill.
+        // Simpler: query the unit-of-work repository via entityManager.
+        $em = $this->controlRepository->createQueryBuilder('c')->getEntityManager();
+        $qb = $em->createQueryBuilder();
+        $qb->select('COUNT(DISTINCT f.id)')
+            ->from(\App\Entity\ComplianceRequirement::class, 'r')
+            ->join('r.mappedControls', 'c')
+            ->join('r.complianceFramework', 'f')
+            ->where('c.id = :id')
+            ->setParameter('id', $controlId);
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
     private function getRiskAppetiteByCategory(?Tenant $tenant): array
     {
         if ($this->riskAppetiteRepository === null) {
@@ -426,7 +570,7 @@ class DashboardStatisticsService
             ],
         ];
 
-        // A6/A7/A8: management KPIs (days-since-review, oldest-overdue, gap-priority)
+        // A5/A6/A7/A8/A9/A10: management KPIs
         $kpis['management'] = $this->getManagementKpiMetrics($tenant);
 
         // Add module-specific KPIs only if module is active
@@ -480,6 +624,31 @@ class DashboardStatisticsService
     {
         $out = [];
 
+        // A5: Control Reuse Ratio — avg frameworks covered per implemented control
+        if ($tenant instanceof Tenant) {
+            $applicableControls = $this->controlRepository->findApplicableControls($tenant);
+            $implementedControls = array_filter(
+                $applicableControls,
+                fn($c): bool => $c->getImplementationStatus() === 'implemented'
+            );
+            $totalFrameworkCoverage = 0;
+            $controlCount = count($implementedControls);
+            foreach ($implementedControls as $control) {
+                $totalFrameworkCoverage += $this->getFrameworkCountForControl($control->getId());
+            }
+            $avgReuse = $controlCount > 0 ? round($totalFrameworkCoverage / $controlCount, 2) : 0.0;
+            $out['control_reuse_ratio'] = [
+                'label' => 'kpi.control_reuse_ratio',
+                'value' => $avgReuse,
+                'unit' => '',
+                'status' => $avgReuse >= 2.0 ? 'good' : ($avgReuse >= 1.0 ? 'info' : 'warning'),
+                'details' => [
+                    'implemented_controls' => $controlCount,
+                    'total_framework_coverage' => $totalFrameworkCoverage,
+                ],
+            ];
+        }
+
         // A6: days since last management review
         if ($this->managementReviewRepository !== null) {
             $latest = $this->managementReviewRepository->findLatest(1);
@@ -520,6 +689,64 @@ class DashboardStatisticsService
             'value' => $oldestOverdueDays,
             'unit' => 'd',
             'status' => $oldestOverdueDays > 90 ? 'danger' : ($oldestOverdueDays > 30 ? 'warning' : 'good'),
+        ];
+
+        // A9: regulatory deadlines upcoming within 30 days (control reviews, BC plan reviews,
+        // risk treatment plans, BC tests)
+        $horizon = new \DateTime('+30 days');
+        $now = new \DateTime();
+        $upcoming = 0;
+        $overdue = 0;
+        if ($tenant !== null) {
+            $allControls = $this->controlRepository->findApplicableControls($tenant);
+            foreach ($allControls as $control) {
+                $due = $control->getNextReviewDate();
+                if ($due === null) {
+                    continue;
+                }
+                if ($due < $now) {
+                    $overdue++;
+                } elseif ($due <= $horizon) {
+                    $upcoming++;
+                }
+            }
+            if ($this->bcPlanRepository !== null) {
+                foreach ($this->bcPlanRepository->findAll() as $plan) {
+                    $due = $plan->getNextReviewDate();
+                    if ($due === null) { continue; }
+                    if ($due < $now) { $overdue++; } elseif ($due <= $horizon) { $upcoming++; }
+                    $dueTest = $plan->getNextTestDate();
+                    if ($dueTest === null) { continue; }
+                    if ($dueTest < $now) { $overdue++; } elseif ($dueTest <= $horizon) { $upcoming++; }
+                }
+            }
+            if ($this->treatmentPlanRepository !== null) {
+                foreach ($this->treatmentPlanRepository->findAll() as $plan) {
+                    $due = $plan->getTargetCompletionDate();
+                    if ($due === null || $plan->getStatus() === 'completed') { continue; }
+                    if ($due < $now) { $overdue++; } elseif ($due <= $horizon) { $upcoming++; }
+                }
+            }
+        }
+        $out['regulatory_deadlines_upcoming'] = [
+            'label' => 'kpi.regulatory_deadlines_upcoming',
+            'value' => $upcoming,
+            'unit' => '',
+            'status' => $upcoming > 10 ? 'warning' : 'info',
+            'details' => ['overdue' => $overdue, 'horizon_days' => 30],
+        ];
+
+        // A10: implementation readiness — composite boolean checklist
+        $checklist = $this->buildReadinessChecklist($tenant);
+        $passed = array_sum($checklist);
+        $total = count($checklist);
+        $readinessPct = $total > 0 ? (int) round(($passed / $total) * 100) : 0;
+        $out['implementation_readiness'] = [
+            'label' => 'kpi.implementation_readiness',
+            'value' => $readinessPct,
+            'unit' => '%',
+            'status' => $this->getStatus($readinessPct, 80, 60),
+            'details' => $checklist,
         ];
 
         // A8: gap count by priority (unfulfilled critical/high compliance requirements)
@@ -743,6 +970,7 @@ class DashboardStatisticsService
                 'value' => $totalRisks,
                 'unit' => '',
                 'status' => 'info',
+                'tier' => 'details',
             ],
             'high_risks' => [
                 'label' => 'kpi.high_risks',
@@ -812,6 +1040,7 @@ class DashboardStatisticsService
                 'value' => $totalAssets,
                 'unit' => '',
                 'status' => 'info',
+                'tier' => 'details',
             ],
             'critical_assets' => [
                 'label' => 'kpi.critical_assets',
@@ -1116,6 +1345,7 @@ class DashboardStatisticsService
                 'value' => count($allSuppliers),
                 'unit' => '',
                 'status' => 'info',
+                'tier' => 'details',
             ],
             'critical_suppliers' => [
                 'label' => 'kpi.critical_suppliers',
@@ -1175,6 +1405,7 @@ class DashboardStatisticsService
                 'value' => count($activeDocuments),
                 'unit' => '',
                 'status' => 'info',
+                'tier' => 'details',
             ],
             'documents_needing_review' => [
                 'label' => 'kpi.documents_needing_review',
