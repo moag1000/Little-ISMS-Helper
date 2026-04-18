@@ -12,7 +12,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:load-kritis-requirements',
-    description: 'Load KRITIS (§ 8a BSIG) requirements for operators of critical infrastructures with ISMS data mappings'
+    description: 'Load KRITIS (BSIG + NIS2UmsuCG) requirements for operators of critical infrastructures with ISMS data mappings'
 )]
 class LoadKritisRequirementsCommand
 {
@@ -31,13 +31,13 @@ class LoadKritisRequirementsCommand
             $framework = new ComplianceFramework();
         }
         $framework->setCode('KRITIS')
-            ->setName('KRITIS § 8a BSIG - Kritische Infrastrukturen')
-            ->setDescription('German Critical Infrastructure regulations according to § 8a BSI Act (BSIG) with IT Security Act 2.0 requirements')
-            ->setVersion('2024')
+            ->setName('KRITIS (BSIG + NIS2UmsuCG)')
+            ->setDescription('German critical-infrastructure regulations: legacy § 8a BSIG requirements combined with the NIS2-Umsetzungsgesetz (NIS2UmsuCG, in force 2025-12-05) — BSI registration, sector supervision, expanded scope, fines up to 10M EUR / 2% of global turnover.')
+            ->setVersion('2025 (NIS2UmsuCG)')
             ->setApplicableIndustry('critical_infrastructure')
             ->setRegulatoryBody('BSI - Bundesamt für Sicherheit in der Informationstechnik')
             ->setMandatory(true)
-            ->setScopeDescription('Mandatory for operators of critical infrastructures in sectors: Energy, IT/Telecom, Transport, Health, Water, Food, Finance/Insurance, Government, Media, Waste Management')
+            ->setScopeDescription('Mandatory for essential and important entities per NIS2UmsuCG §§ 28, 29 (superseding KRITIS-Betreiber under § 8a BSIG). Sectors: Energy, Transport, Banking, Financial Market, Health, Water, Digital Infrastructure, ICT service management, Public Administration, Postal/Courier, Waste, Chemicals, Food, Manufacturing, Digital Providers, Research.')
             ->setActive(true);
 
         if ($isNew) {
