@@ -7,7 +7,9 @@ use App\Entity\Location;
 use App\Entity\Person;
 use App\Entity\Risk;
 use App\Entity\Supplier;
+use App\Entity\ThreatIntelligence;
 use App\Entity\User;
+use App\Entity\Vulnerability;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -126,6 +128,15 @@ class RiskType extends AbstractType
                 ],
                 'help' => 'risk.help.threat',
             ])
+            ->add('threatIntelligence', EntityType::class, [
+                'label' => 'risk.field.threat_intelligence',
+                'class' => ThreatIntelligence::class,
+                'choice_label' => fn(ThreatIntelligence $t): string => (string) ($t->getTitle() ?? ''),
+                'required' => false,
+                'placeholder' => 'risk.placeholder.threat_intelligence',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'risk.help.threat_intelligence',
+            ])
             ->add('vulnerability', TextareaType::class, [
                 'label' => 'risk.field.vulnerability',
                 'required' => false,
@@ -134,6 +145,15 @@ class RiskType extends AbstractType
                     'placeholder' => 'risk.placeholder.vulnerability',
                 ],
                 'help' => 'risk.help.vulnerability',
+            ])
+            ->add('linkedVulnerability', EntityType::class, [
+                'label' => 'risk.field.linked_vulnerability',
+                'class' => Vulnerability::class,
+                'choice_label' => fn(Vulnerability $v): string => ($v->getCveId() ?? '') . ' — ' . ($v->getTitle() ?? ''),
+                'required' => false,
+                'placeholder' => 'risk.placeholder.linked_vulnerability',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'risk.help.linked_vulnerability',
             ])
             // Risk Subject - At least one must be selected (Asset, Person, Location, or Supplier)
             ->add('asset', EntityType::class, [
@@ -223,7 +243,8 @@ class RiskType extends AbstractType
                     'risk.treatment.accept' => 'accept',
                     'risk.treatment.avoid' => 'avoid',
                 ],
-                'required' => true,
+                'placeholder' => 'risk.placeholder.treatment_strategy',
+                'required' => false,
                 'help' => 'risk.help.treatment',
                     'choice_translation_domain' => 'risk',
             ])

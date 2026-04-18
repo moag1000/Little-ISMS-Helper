@@ -93,7 +93,9 @@ risk:
         asset: 'Betroffenes Asset'
         description: Risikobeschreibung
         threat: Gefährdung
+        threat_intelligence: 'Verknüpfte Threat Intelligence'
         vulnerability: Schwachstelle
+        linked_vulnerability: 'Verknüpfte Schwachstelle (CVE)'
         involves_personal_data: 'Verarbeitet personenbezogene Daten'
         involves_special_category_data: 'Verarbeitet besondere Kategorien personenbezogener Daten'
         legal_basis: 'Rechtsgrundlage (DSGVO)'
@@ -183,7 +185,9 @@ risk:
         supplier: 'Der von diesem Risiko betroffene Lieferant'
         description: 'Detaillierte Beschreibung des Risikoszenarios und möglicher Folgen'
         threat: 'Die Bedrohung bzw. Gefährdung (z.B. Cyberangriff, Naturkatastrophe, menschliches Versagen)'
+        threat_intelligence: 'Verknüpfung zu strukturiertem Threat-Intelligence-Eintrag (optional, ergänzt Freitext).'
         vulnerability: 'Die Schwachstelle, die durch die Gefährdung ausgenutzt werden könnte'
+        linked_vulnerability: 'Verknüpfung zu einer erfassten Schwachstelle/CVE (optional, ergänzt Freitext).'
         gdpr_section: 'Gilt dieses Risiko für Verarbeitungen personenbezogener Daten? (DSGVO-relevant)'
         involves_personal_data: 'Werden personenbezogene Daten verarbeitet? (Name, E-Mail, IP-Adresse, etc.)'
         involves_special_category_data: 'Werden besondere Kategorien verarbeitet? (Art. 9 DSGVO: Gesundheit, biometrische Daten, etc.)'
@@ -297,12 +301,15 @@ risk:
     placeholder:
         title: 'z.B. Datenverlust durch Ransomware-Angriff'
         category: '-- Kategorie wählen --'
+        treatment_strategy: '-- Behandlungsstrategie wählen (später ergänzbar) --'
         legal_basis: '-- Rechtsgrundlage wählen --'
         processing_scale: '-- Verarbeitungsumfang wählen --'
         data_subject_impact: 'Beschreiben Sie die möglichen Auswirkungen auf betroffene Personen...'
         description: 'Detaillierte Beschreibung des Risikoszenarios...'
         threat: 'Beschreiben Sie die Bedrohung (z.B. Cyberangriff, Naturkatastrophe)...'
+        threat_intelligence: '-- Threat-Intelligence-Eintrag auswählen --'
         vulnerability: 'Beschreiben Sie die Schwachstelle, die ausgenutzt werden könnte...'
+        linked_vulnerability: '-- Schwachstelle/CVE auswählen --'
         asset: '-- Asset auswählen --'
         person: '-- Person auswählen --'
         location: '-- Standort auswählen --'
