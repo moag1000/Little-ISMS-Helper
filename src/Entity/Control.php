@@ -625,4 +625,31 @@ class Control
 
         return 'training_incomplete';
     }
+
+    /**
+     * Pattern A dual-state: preferred structured owner. Falls back to string responsiblePerson.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'responsible_person_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $responsiblePersonUser = null;
+
+    public function getResponsiblePersonUser(): ?User
+    {
+        return $this->responsiblePersonUser;
+    }
+
+    public function setResponsiblePersonUser(?User $responsiblePersonUser): static
+    {
+        $this->responsiblePersonUser = $responsiblePersonUser;
+        return $this;
+    }
+
+    /**
+     * Effective responsiblePerson: prefer responsiblePersonUser.fullName, fall back to legacy string.
+     */
+    public function getEffectiveResponsiblePerson(): ?string
+    {{
+        return $this->{user_field}?->getFullName() ?? $this->{str_field};
+    }}
+
 }

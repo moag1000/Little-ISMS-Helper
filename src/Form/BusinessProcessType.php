@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Asset;
+use App\Entity\User;
 use App\Entity\BusinessProcess;
 use App\Entity\Risk;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -32,8 +33,17 @@ class BusinessProcessType extends AbstractType
                 'attr' => ['class' => 'form-control', 'rows' => 4],
                 'required' => false,
             ])
-            ->add('processOwner', TextType::class, [
+            ->add('processOwnerUser', EntityType::class, [
                 'label' => 'business_process.field.process_owner',
+                'class' => User::class,
+                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
+                'required' => false,
+                'placeholder' => 'business_process.placeholder.process_owner_user',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'business_process.help.process_owner_user',
+            ])
+            ->add('processOwner', TextType::class, [
+                'label' => 'business_process.field.process_owner_legacy',
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [new NotBlank()],
             ])

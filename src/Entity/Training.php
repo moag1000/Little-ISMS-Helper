@@ -538,4 +538,31 @@ public function __construct()
         $this->tenant = $tenant;
         return $this;
     }
+
+    /**
+     * Pattern A dual-state: preferred structured owner. Falls back to string trainer.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'trainer_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $trainerUser = null;
+
+    public function getTrainerUser(): ?User
+    {
+        return $this->trainerUser;
+    }
+
+    public function setTrainerUser(?User $trainerUser): static
+    {
+        $this->trainerUser = $trainerUser;
+        return $this;
+    }
+
+    /**
+     * Effective trainer: prefer trainerUser.fullName, fall back to legacy string.
+     */
+    public function getEffectiveTrainer(): ?string
+    {{
+        return $this->{user_field}?->getFullName() ?? $this->{str_field};
+    }}
+
 }

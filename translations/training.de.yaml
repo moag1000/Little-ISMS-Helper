@@ -1,136 +1,146 @@
 training:
-    title: Schulungen
-    new: 'Neue Schulung'
-    edit: 'Schulung bearbeiten'
-    create: 'Schulung anlegen'
-    create_first: 'Erste Schulung anlegen'
+  title: Schulungen
+  new: Neue Schulung
+  edit: Schulung bearbeiten
+  create: Schulung anlegen
+  create_first: Erste Schulung anlegen
+  description: Beschreibung
+  minutes: Minuten
+  type_label: Typ
+  delivery_method: Durchführungsart
+  location: Ort
+  scheduled_date: Geplantes Datum
+  duration: Dauer
+  trainer: Trainer
+  target_audience: Zielgruppe
+  audience:
+    all_employees: Alle Mitarbeitenden
+    it_staff: IT‑Mitarbeitende
+    management: Management
+  participants: Teilnehmende
+  status_label: Status
+  status:
+    planned: Geplant
+    scheduled: Terminiert
+    in_progress: In Durchführung
+    completed: Abgeschlossen
+    cancelled: Abgesagt
+  mandatory: Verpflichtend
+  mandatory_label: Pflichtschulung
+  mandatory_training: Pflichtschulung
+  mandatory_info: Diese Schulung ist verpflichtend und muss von allen zugewiesenen
+    Personen absolviert werden.
+  statistics: Statistiken
+  stats:
+    total: Gesamt‑Schulungen
+    upcoming: Bevorstehend
+    completed: Abgeschlossen
+    mandatory: Pflichtschulungen
+  upcoming_trainings: Bevorstehende Schulungen
+  all_trainings: Alle Schulungen
+  no_trainings: Keine Schulungen vorhanden.
+  section:
+    basic_info: Basisinformationen
+    schedule: Termin & Ort
+    people: Trainer & Teilnehmende
+    controls: Zugeordnete Maßnahmen
+    materials: Materialien
+    status: Status
+  materials: Materialien
+  feedback: Feedback
+  covered_controls: Abgedeckte Maßnahmen
+  field:
+    title: Titel
     description: Beschreibung
-    minutes: Minuten
-    type_label: Typ
+    training_type: Schulungstyp
     delivery_method: Durchführungsart
+    scheduled_date: Geplantes Datum
+    duration: Dauer (Minuten)
     location: Ort
-    scheduled_date: 'Geplantes Datum'
-    duration: Dauer
     trainer: Trainer
     target_audience: Zielgruppe
-    audience:
-        all_employees: 'Alle Mitarbeitenden'
-        it_staff: IT‑Mitarbeitende
-        management: Management
     participants: Teilnehmende
-    status_label: Status
-    status:
-        planned: Geplant
-        scheduled: Terminiert
-        in_progress: 'In Durchführung'
-        completed: Abgeschlossen
-        cancelled: Abgesagt
+    status: Status
     mandatory: Verpflichtend
-    mandatory_label: Pflichtschulung
-    mandatory_training: Pflichtschulung
-    mandatory_info: 'Diese Schulung ist verpflichtend und muss von allen zugewiesenen Personen absolviert werden.'
-    statistics: Statistiken
-    stats:
-        total: Gesamt‑Schulungen
-        upcoming: Bevorstehend
-        completed: Abgeschlossen
-        mandatory: Pflichtschulungen
-    upcoming_trainings: 'Bevorstehende Schulungen'
-    all_trainings: 'Alle Schulungen'
-    no_trainings: 'Keine Schulungen vorhanden.'
-    section:
-        basic_info: Basisinformationen
-        schedule: 'Termin & Ort'
-        people: 'Trainer & Teilnehmende'
-        controls: 'Zugeordnete Maßnahmen'
-        materials: Materialien
-        status: Status
-    materials: Materialien
-    feedback: Feedback
-    covered_controls: 'Abgedeckte Maßnahmen'
-    field:
-        title: Titel
-        description: Beschreibung
-        training_type: Schulungstyp
-        delivery_method: Durchführungsart
-        scheduled_date: 'Geplantes Datum'
-        duration: 'Dauer (Minuten)'
-        location: Ort
-        trainer: Trainer
-        target_audience: Zielgruppe
-        participants: Teilnehmende
-        status: Status
-        mandatory: Verpflichtend
-        related_controls: 'Zugeordnete Maßnahmen'
-        covered_controls: 'Abgedeckte ISO 27001 Controls'
-        compliance_requirements: 'Compliance-Anforderungen'
-        materials: 'Schulungsmaterialien und Unterlagen'
-        feedback: 'Teilnehmer-Feedback und Bewertungen'
-        attendee_count: 'Anzahl Teilnehmer'
-        completion_date: 'Abschlussdatum'
-    placeholder:
-        title: 'z.B. ISO 27001 Awareness Training'
-        description: 'Beschreiben Sie Inhalt und Ziele der Schulung...'
-        duration: 'z.B. 60'
-        location: 'z.B. Konferenzraum A oder Zoom-Link'
-    help:
-        duration: 'Dauer in Minuten (15-480)'
-        participants: 'STRG gedrückt halten um mehrere Teilnehmer auszuwählen'
-        covered_controls: 'Welche ISO 27001 Controls werden durch diese Schulung adressiert?'
-        compliance_requirements: 'Welche Compliance-Anforderungen werden durch diese Schulung erfüllt? (z.B. DORA, TISAX, NIS2)'
-        materials: 'Links oder Beschreibungen von Schulungsmaterialien'
-        feedback: 'Feedback von Teilnehmern oder Trainer-Notizen'
-    validation:
-        title_required: 'Bitte geben Sie einen Titel ein'
-        date_required: 'Bitte wählen Sie ein Datum'
-    new_help: 'Planen Sie eine neue Schulung und informieren Sie die Zielgruppe rechtzeitig (ISO 27001 Klausel 7.2: Kompetenz).'
-    edit_help: 'Bearbeiten Sie Details, Termin oder Zielgruppe dieser Schulung (ISO 27001 Klausel 7.3: Bewusstsein).'
-    participants_count: 'Anzahl Teilnehmer'
-    confirm_delete: 'Schulung löschen bestätigen'
-    delete_warning: "Möchten Sie die Schulung '%title%' wirklich löschen?"
-    controls_help: 'Verknüpfen Sie ISO 27001 Anhang A Controls, die durch diese Schulung abgedeckt werden'
-    no_participants: 'Keine Teilnehmer zugewiesen'
-    type:
-        security_awareness: 'Security Awareness'
-        technical: 'Technisches Training'
-        compliance: 'Compliance Training'
-        emergency_drill: Notfallübung
-        phishing_simulation: Phishing-Simulation
-        data_protection: Datenschutz
-        cyber_security: 'Cyber Security'
-        other: Sonstiges
-    delivery_methods:
-        in_person: Präsenz
-        online_live: 'Online (Live)'
-        e_learning: 'E-Learning (Selbststudium)'
-        hybrid: Hybrid
-        workshop: Workshop
-    delivery:
-        in_person: Präsenz
-        online_live: 'Online (Live)'
-        e_learning: 'E-Learning (Selbststudium)'
-        hybrid: Hybrid
-        workshop: Workshop
-    target_audiences:
-        all_employees: 'Alle Mitarbeiter'
-        it_department: IT-Abteilung
-        management: Management
-        developers: Entwickler
-        hr: HR
-        contractors: 'Externe Dienstleister'
-        new_employees: 'Neue Mitarbeiter'
-        specific_departments: 'Spezifische Abteilungen'
-    statuses:
-        planned: Geplant
-        scheduled: Terminiert
-        in_progress: 'In Durchführung'
-        completed: Abgeschlossen
-        cancelled: Abgesagt
-    mandatory_options:
-        yes: 'Ja, verpflichtend'
-        no: 'Nein, optional'
-    compliance_coverage: 'Compliance-Abdeckung'
-    compliance_coverage_info: 'Diese Schulung deckt folgende Compliance-Anforderungen ab'
-    completion_rate: 'Abschlussquote'
-    attendee_count: 'Anzahl Teilnehmer'
-    completed_on: 'Abgeschlossen am'
+    related_controls: Zugeordnete Maßnahmen
+    covered_controls: Abgedeckte ISO 27001 Controls
+    compliance_requirements: Compliance-Anforderungen
+    materials: Schulungsmaterialien und Unterlagen
+    feedback: Teilnehmer-Feedback und Bewertungen
+    attendee_count: Anzahl Teilnehmer
+    completion_date: Abschlussdatum
+    trainer_legacy: Trainer (freitext, veraltet)
+  placeholder:
+    title: z.B. ISO 27001 Awareness Training
+    description: Beschreiben Sie Inhalt und Ziele der Schulung...
+    duration: z.B. 60
+    location: z.B. Konferenzraum A oder Zoom-Link
+    trainer_user: -- Trainer --
+  help:
+    duration: Dauer in Minuten (15-480)
+    participants: STRG gedrückt halten um mehrere Teilnehmer auszuwählen
+    covered_controls: Welche ISO 27001 Controls werden durch diese Schulung adressiert?
+    compliance_requirements: Welche Compliance-Anforderungen werden durch diese Schulung
+      erfüllt? (z.B. DORA, TISAX, NIS2)
+    materials: Links oder Beschreibungen von Schulungsmaterialien
+    feedback: Feedback von Teilnehmern oder Trainer-Notizen
+    trainer_user: Trainer aus der Benutzerverwaltung. Für externe Trainer das Legacy-Feld
+      nutzen.
+  validation:
+    title_required: Bitte geben Sie einen Titel ein
+    date_required: Bitte wählen Sie ein Datum
+  new_help: 'Planen Sie eine neue Schulung und informieren Sie die Zielgruppe rechtzeitig
+    (ISO 27001 Klausel 7.2: Kompetenz).'
+  edit_help: 'Bearbeiten Sie Details, Termin oder Zielgruppe dieser Schulung (ISO
+    27001 Klausel 7.3: Bewusstsein).'
+  participants_count: Anzahl Teilnehmer
+  confirm_delete: Schulung löschen bestätigen
+  delete_warning: Möchten Sie die Schulung '%title%' wirklich löschen?
+  controls_help: Verknüpfen Sie ISO 27001 Anhang A Controls, die durch diese Schulung
+    abgedeckt werden
+  no_participants: Keine Teilnehmer zugewiesen
+  type:
+    security_awareness: Security Awareness
+    technical: Technisches Training
+    compliance: Compliance Training
+    emergency_drill: Notfallübung
+    phishing_simulation: Phishing-Simulation
+    data_protection: Datenschutz
+    cyber_security: Cyber Security
+    other: Sonstiges
+  delivery_methods:
+    in_person: Präsenz
+    online_live: Online (Live)
+    e_learning: E-Learning (Selbststudium)
+    hybrid: Hybrid
+    workshop: Workshop
+  delivery:
+    in_person: Präsenz
+    online_live: Online (Live)
+    e_learning: E-Learning (Selbststudium)
+    hybrid: Hybrid
+    workshop: Workshop
+  target_audiences:
+    all_employees: Alle Mitarbeiter
+    it_department: IT-Abteilung
+    management: Management
+    developers: Entwickler
+    hr: HR
+    contractors: Externe Dienstleister
+    new_employees: Neue Mitarbeiter
+    specific_departments: Spezifische Abteilungen
+  statuses:
+    planned: Geplant
+    scheduled: Terminiert
+    in_progress: In Durchführung
+    completed: Abgeschlossen
+    cancelled: Abgesagt
+  mandatory_options:
+    'true': 'Ja, verpflichtend'
+    'false': 'Nein, optional'
+  compliance_coverage: Compliance-Abdeckung
+  compliance_coverage_info: Diese Schulung deckt folgende Compliance-Anforderungen
+    ab
+  completion_rate: Abschlussquote
+  attendee_count: Anzahl Teilnehmer
+  completed_on: Abgeschlossen am

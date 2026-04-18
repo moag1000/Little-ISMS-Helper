@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\ComplianceFramework;
+use App\Entity\User;
 use App\Entity\Training;
 use App\Entity\Control;
 use App\Entity\ComplianceRequirement;
@@ -93,8 +94,17 @@ class TrainingType extends AbstractType
                 ],
                 'help' => 'training.help.duration',
             ])
-            ->add('trainer', TextType::class, [
+            ->add('trainerUser', EntityType::class, [
                 'label' => 'training.field.trainer',
+                'class' => User::class,
+                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
+                'required' => false,
+                'placeholder' => 'training.placeholder.trainer_user',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'training.help.trainer_user',
+            ])
+            ->add('trainer', TextType::class, [
+                'label' => 'training.field.trainer_legacy',
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'training.placeholder.trainer',

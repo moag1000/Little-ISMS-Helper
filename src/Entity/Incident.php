@@ -1219,4 +1219,31 @@ class Incident
 
         return $count > 0 ? (int) round($totalScore / $count) : 0;
     }
+
+    /**
+     * Pattern A dual-state: preferred structured owner. Falls back to string reportedBy.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'reported_by_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $reportedByUser = null;
+
+    public function getReportedByUser(): ?User
+    {
+        return $this->reportedByUser;
+    }
+
+    public function setReportedByUser(?User $reportedByUser): static
+    {
+        $this->reportedByUser = $reportedByUser;
+        return $this;
+    }
+
+    /**
+     * Effective reportedBy: prefer reportedByUser.fullName, fall back to legacy string.
+     */
+    public function getEffectiveReportedBy(): ?string
+    {{
+        return $this->{user_field}?->getFullName() ?? $this->{str_field};
+    }}
+
 }

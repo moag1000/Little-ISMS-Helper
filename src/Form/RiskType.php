@@ -216,13 +216,13 @@ class RiskType extends AbstractType
                 'label' => 'risk.field.residual_probability',
                 'required' => false,
                 'attr' => ['min' => 1, 'max' => 5],
-                'help' => 'risk.help.probability',
+                'help' => 'risk.help.residual_probability',
             ])
             ->add('residualImpact', IntegerType::class, [
                 'label' => 'risk.field.residual_impact',
                 'required' => false,
                 'attr' => ['min' => 1, 'max' => 5],
-                'help' => 'risk.help.impact',
+                'help' => 'risk.help.residual_impact',
             ])
             ->add('riskOwner', EntityType::class, [
                 'label' => 'risk.field.risk_owner',
@@ -257,8 +257,17 @@ class RiskType extends AbstractType
                 ],
                 'help' => 'risk.help.treatment_description',
             ])
-            ->add('acceptanceApprovedBy', TextType::class, [
+            ->add('acceptanceApprovedByUser', EntityType::class, [
                 'label' => 'risk.field.acceptance_approved_by',
+                'class' => User::class,
+                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
+                'required' => false,
+                'placeholder' => 'risk.placeholder.acceptance_approved_by_user',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'risk.help.acceptance_approved_by_user',
+            ])
+            ->add('acceptanceApprovedBy', TextType::class, [
+                'label' => 'risk.field.acceptance_approved_by_legacy',
                 'required' => false,
                 'attr' => [
                     'maxlength' => 100,

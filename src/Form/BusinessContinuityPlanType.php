@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\BusinessContinuityPlan;
+use App\Entity\User;
 use App\Entity\BusinessProcess;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -37,9 +38,18 @@ class BusinessContinuityPlanType extends AbstractType
                 'attr' => ['rows' => 3],
                 'help' => 'bc_plans.help.description',
             ])
-            ->add('planOwner', TextType::class, [
+            ->add('planOwnerUser', EntityType::class, [
                 'label' => 'bc_plans.field.plan_owner',
-                'required' => true,
+                'class' => User::class,
+                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
+                'required' => false,
+                'placeholder' => 'bc_plans.placeholder.plan_owner_user',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'bc_plans.help.plan_owner_user',
+            ])
+            ->add('planOwner', TextType::class, [
+                'label' => 'bc_plans.field.plan_owner_legacy',
+                'required' => false,
                 'attr' => ['maxlength' => 100],
                 'help' => 'bc_plans.help.plan_owner',
             ])

@@ -1,135 +1,140 @@
 training:
-    title: Trainings
-    new: 'New Training'
-    edit: 'Edit Training'
-    create: 'Create Training'
-    create_first: 'Create first training'
+  title: Trainings
+  new: New Training
+  edit: Edit Training
+  create: Create Training
+  create_first: Create first training
+  description: Description
+  minutes: minutes
+  type: Type
+  type_label: Type
+  status_label: Status
+  delivery_method: Delivery Method
+  delivery:
+    online: Online
+    on_site: On site
+    hybrid: Hybrid
+  location: Location
+  scheduled_date: Scheduled Date
+  duration: Duration
+  trainer: Trainer
+  target_audience: Target Audience
+  audience:
+    all_employees: All Employees
+    it_staff: IT Staff
+    management: Management
+  participants: Participants
+  status: Status
+  status_values:
+    planned: Planned
+    in_progress: In Progress
+    completed: Completed
+    cancelled: Cancelled
+  mandatory: Mandatory
+  mandatory_label: Mandatory training
+  mandatory_training: Mandatory Training
+  mandatory_info: This training is mandatory and must be completed by all assigned
+    participants.
+  statistics: Statistics
+  stats:
+    total: Total Trainings
+    upcoming: Upcoming
+    completed: Completed
+    mandatory: Mandatory Trainings
+  upcoming_trainings: Upcoming Trainings
+  all_trainings: All Trainings
+  no_trainings: No trainings available.
+  section:
+    basic_info: Basic Information
+    schedule: Schedule & Location
+    people: Trainer & Participants
+    status: Status
+    controls: Linked Controls
+    materials: Materials
+  field:
+    title: Title
     description: Description
-    minutes: minutes
-    type: Type
-    type_label: Type
-    status_label: Status
-    delivery_method: 'Delivery Method'
-    delivery:
-        online: Online
-        on_site: 'On site'
-        hybrid: Hybrid
+    training_type: Training Type
+    delivery_method: Delivery Method
+    scheduled_date: Scheduled Date
+    duration: Duration (minutes)
     location: Location
-    scheduled_date: 'Scheduled Date'
-    duration: Duration
     trainer: Trainer
-    target_audience: 'Target Audience'
-    audience:
-        all_employees: 'All Employees'
-        it_staff: 'IT Staff'
-        management: Management
+    target_audience: Target Audience
     participants: Participants
     status: Status
-    status_values:
-        planned: Planned
-        in_progress: 'In Progress'
-        completed: Completed
-        cancelled: Cancelled
     mandatory: Mandatory
-    mandatory_label: 'Mandatory training'
-    mandatory_training: 'Mandatory Training'
-    mandatory_info: 'This training is mandatory and must be completed by all assigned participants.'
-    statistics: Statistics
-    stats:
-        total: 'Total Trainings'
-        upcoming: Upcoming
-        completed: Completed
-        mandatory: 'Mandatory Trainings'
-    upcoming_trainings: 'Upcoming Trainings'
-    all_trainings: 'All Trainings'
-    no_trainings: 'No trainings available.'
-    section:
-        basic_info: 'Basic Information'
-        schedule: 'Schedule & Location'
-        people: 'Trainer & Participants'
-        status: Status
-        controls: 'Linked Controls'
-        materials: Materials
-    field:
-        title: Title
-        description: Description
-        training_type: 'Training Type'
-        delivery_method: 'Delivery Method'
-        scheduled_date: 'Scheduled Date'
-        duration: 'Duration (minutes)'
-        location: Location
-        trainer: Trainer
-        target_audience: 'Target Audience'
-        participants: Participants
-        status: Status
-        mandatory: Mandatory
-        related_controls: 'Related Controls'
-        covered_controls: 'Covered ISO 27001 Controls'
-        compliance_requirements: 'Compliance Requirements'
-        materials: 'Training Materials and Documents'
-        feedback: 'Participant Feedback and Evaluations'
-        attendee_count: 'Attendee Count'
-        completion_date: 'Completion Date'
-    new_help: 'Plan a new training and inform the target audience in time.'
-    edit_help: 'Edit details, schedule or target audience of this training.'
-    participants_count: Participants
-    confirm_delete: 'Confirm Delete Training'
-    delete_warning: "Do you really want to delete the training '%title%'?"
-    controls_help: 'Controls Help'
-    no_participants: 'No Participants'
-    materials: Materials
-    feedback: Feedback
-    covered_controls: 'Covered Controls'
-    placeholder:
-        title: 'e.g. ISO 27001 Awareness Training'
-        description: 'Describe content and objectives of the training...'
-        duration: 'e.g. 60'
-        location: 'e.g. Conference Room A or Zoom link'
-    help:
-        duration: 'Duration in minutes (15-480)'
-        participants: 'Hold CTRL to select multiple participants'
-        covered_controls: 'Which ISO 27001 Controls are addressed by this training?'
-        compliance_requirements: 'Which compliance requirements are fulfilled by this training? (e.g. DORA, TISAX, NIS2)'
-        materials: 'Links or descriptions of training materials'
-        feedback: 'Feedback from participants or trainer notes'
-    validation:
-        title_required: 'Please enter a title'
-        date_required: 'Please select a date'
-    types:
-        security_awareness: 'Security Awareness'
-        technical: 'Technical Training'
-        compliance: 'Compliance Training'
-        emergency_drill: 'Emergency Drill'
-        phishing_simulation: 'Phishing Simulation'
-        data_protection: 'Data Protection'
-        cyber_security: 'Cyber Security'
-        other: Other
-    delivery_methods:
-        in_person: 'In-Person'
-        online_live: 'Online (Live)'
-        e_learning: 'E-Learning (Self-Study)'
-        hybrid: Hybrid
-        workshop: Workshop
-    target_audiences:
-        all_employees: 'All Employees'
-        it_department: 'IT Department'
-        management: Management
-        developers: Developers
-        hr: 'Human Resources'
-        contractors: 'External Contractors'
-        new_employees: 'New Employees'
-        specific_departments: 'Specific Departments'
-    statuses:
-        planned: Planned
-        confirmed: Confirmed
-        completed: Completed
-        cancelled: Cancelled
-        postponed: Postponed
-    mandatory_options:
-        yes: 'Yes, mandatory'
-        no: 'No, optional'
-    compliance_coverage: 'Compliance Coverage'
-    compliance_coverage_info: 'This training covers the following compliance requirements'
-    completion_rate: 'Completion Rate'
-    attendee_count: 'Attendee Count'
-    completed_on: 'Completed on'
+    related_controls: Related Controls
+    covered_controls: Covered ISO 27001 Controls
+    compliance_requirements: Compliance Requirements
+    materials: Training Materials and Documents
+    feedback: Participant Feedback and Evaluations
+    attendee_count: Attendee Count
+    completion_date: Completion Date
+    trainer_legacy: Trainer (free text, legacy)
+  new_help: Plan a new training and inform the target audience in time.
+  edit_help: Edit details, schedule or target audience of this training.
+  participants_count: Participants
+  confirm_delete: Confirm Delete Training
+  delete_warning: Do you really want to delete the training '%title%'?
+  controls_help: Controls Help
+  no_participants: No Participants
+  materials: Materials
+  feedback: Feedback
+  covered_controls: Covered Controls
+  placeholder:
+    title: e.g. ISO 27001 Awareness Training
+    description: Describe content and objectives of the training...
+    duration: e.g. 60
+    location: e.g. Conference Room A or Zoom link
+    trainer_user: -- Select trainer --
+  help:
+    duration: Duration in minutes (15-480)
+    participants: Hold CTRL to select multiple participants
+    covered_controls: Which ISO 27001 Controls are addressed by this training?
+    compliance_requirements: Which compliance requirements are fulfilled by this training?
+      (e.g. DORA, TISAX, NIS2)
+    materials: Links or descriptions of training materials
+    feedback: Feedback from participants or trainer notes
+    trainer_user: Trainer from user management. Use legacy field for external trainers.
+  validation:
+    title_required: Please enter a title
+    date_required: Please select a date
+  types:
+    security_awareness: Security Awareness
+    technical: Technical Training
+    compliance: Compliance Training
+    emergency_drill: Emergency Drill
+    phishing_simulation: Phishing Simulation
+    data_protection: Data Protection
+    cyber_security: Cyber Security
+    other: Other
+  delivery_methods:
+    in_person: In-Person
+    online_live: Online (Live)
+    e_learning: E-Learning (Self-Study)
+    hybrid: Hybrid
+    workshop: Workshop
+  target_audiences:
+    all_employees: All Employees
+    it_department: IT Department
+    management: Management
+    developers: Developers
+    hr: Human Resources
+    contractors: External Contractors
+    new_employees: New Employees
+    specific_departments: Specific Departments
+  statuses:
+    planned: Planned
+    confirmed: Confirmed
+    completed: Completed
+    cancelled: Cancelled
+    postponed: Postponed
+  mandatory_options:
+    'true': 'Yes, mandatory'
+    'false': 'No, optional'
+  compliance_coverage: Compliance Coverage
+  compliance_coverage_info: This training covers the following compliance requirements
+  completion_rate: Completion Rate
+  attendee_count: Attendee Count
+  completed_on: Completed on

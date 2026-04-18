@@ -754,4 +754,31 @@ class BusinessProcess
 
         return $totalLoss;
     }
+
+    /**
+     * Pattern A dual-state: preferred structured owner. Falls back to string processOwner.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'process_owner_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $processOwnerUser = null;
+
+    public function getProcessOwnerUser(): ?User
+    {
+        return $this->processOwnerUser;
+    }
+
+    public function setProcessOwnerUser(?User $processOwnerUser): static
+    {
+        $this->processOwnerUser = $processOwnerUser;
+        return $this;
+    }
+
+    /**
+     * Effective processOwner: prefer processOwnerUser.fullName, fall back to legacy string.
+     */
+    public function getEffectiveProcessOwner(): ?string
+    {{
+        return $this->{user_field}?->getFullName() ?? $this->{str_field};
+    }}
+
 }

@@ -835,4 +835,31 @@ class BusinessContinuityPlan
             default => null,
         };
     }
+
+    /**
+     * Pattern A dual-state: preferred structured owner. Falls back to string planOwner.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'plan_owner_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $planOwnerUser = null;
+
+    public function getPlanOwnerUser(): ?User
+    {
+        return $this->planOwnerUser;
+    }
+
+    public function setPlanOwnerUser(?User $planOwnerUser): static
+    {
+        $this->planOwnerUser = $planOwnerUser;
+        return $this;
+    }
+
+    /**
+     * Effective planOwner: prefer planOwnerUser.fullName, fall back to legacy string.
+     */
+    public function getEffectivePlanOwner(): ?string
+    {{
+        return $this->{user_field}?->getFullName() ?? $this->{str_field};
+    }}
+
 }

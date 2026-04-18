@@ -1,102 +1,116 @@
 bc_plans:
-    page:
-        title: Business-Continuity-Pläne
-        header: Business-Continuity-Pläne
-        subtitle: 'ISO 22301:2019 Business Continuity Management'
-    action:
-        add_new: 'Neuen BC‑Plan anlegen'
-    alert:
-        overdue_tests: '⚠️ Überfällige BC‑Plan‑Tests'
-        overdue_reviews: '⚠️ Überfällige BC‑Plan‑Reviews'
-    section:
-        details: 'BC‑Plan Details'
-        testing_review: 'Tests & Reviews'
-        review_notes: Review‑Notizen
-        communication_plan: Kommunikationsplan
-        alternative_site: Alternativstandort
-        related_risks: 'Zugehörige Risiken'
-        basic_info: Grundinformationen
-        team: BC-Team
-        activation: Aktivierung
-        communication: Kommunikation
-        backup_recovery: 'Backup und Wiederherstellung'
-        version_review: Versionsüberprüfung
-    table:
-        name: Name
-        business_process: Geschäftsprozess
-        owner: Verantwortlich
-        status: Status
-        readiness: Bereitschaft
-        last_tested: 'Zuletzt getestet'
-        actions: Aktionen
-    field:
-        business_process: Geschäftsprozess
-        plan_owner: Verantwortlich
-        version: Version
-        last_tested: 'Zuletzt getestet'
-        next_test: 'Nächster Test'
-        last_review: 'Letztes Review'
-        next_review: 'Nächstes Review'
-        address: Adresse
-        capacity: Kapazität
-        name: Name
-        description: Beschreibung
-        status: Status
-        bc_team: BC-Team
-        activation_criteria: Aktivierungskriterien
-        roles_and_responsibilities: 'Rollen und Verantwortlichkeiten'
-        roles_responsibilities: 'Rollen und Verantwortlichkeiten'
-        recovery_procedures: Wiederherstellungsverfahren
-        communication_plan: Kommunikationsplan
-        internal_communication: 'Interne Kommunikation'
-        external_communication: 'Externe Kommunikation'
-        alternative_site: Alternativstandort
-        alternative_site_address: 'Adresse Alternativstandort'
-        alternative_site_capacity: 'Kapazität Alternativstandort'
-        backup_procedures: Backup-Verfahren
-        restore_procedures: Wiederherstellungsverfahren
-        next_test_date: 'Datum nächster Test'
-        last_review_date: 'Datum letztes Review'
-        next_review_date: 'Datum nächstes Review'
-        review_notes: Review-Notizen
-    status:
-        draft: Entwurf
-        under_review: 'In Überprüfung'
-        active: Aktiv
-        archived: Archiviert
-    badge:
-        overdue: ÜBERFÄLLIG
-    message:
-        not_scheduled: 'Nicht geplant'
-        never: Nie
-        no_plans: 'Keine BC‑Pläne gefunden.'
-        create_first: 'Erstellen Sie Ihren ersten BC‑Plan'
-        readiness_score: 'Bereitschafts‑Score: %score%%'
-    help:
-        name: 'Eindeutige Bezeichnung des BC-Plans'
-        business_process: 'Geschäftsprozess, der durch diesen Plan geschützt wird (ISO 22301)'
-        description: 'Detaillierte Beschreibung des Plans und seines Umfangs'
-        plan_owner: 'Verantwortliche Person für die Pflege und Umsetzung des Plans'
-        status: 'Aktueller Status des Plans (Entwurf, Aktiv, Archiviert)'
-        bc_team: 'Personen, die bei Aktivierung des Plans einbezogen werden (BC-Team gemäß ISO 22301)'
-        activation_criteria: 'Bedingungen, unter denen dieser Plan aktiviert werden soll (z.B. Serverausfall > 4h)'
-        roles_responsibilities: 'Rollen und Verantwortlichkeiten der Teammitglieder während einer BC-Situation'
-        recovery_procedures: 'Schrittweise Verfahren zur Wiederherstellung des Geschäftsbetriebs'
-        communication_plan: 'Kommunikationsstrategie während der Kontinuitätssituation'
-        internal_communication: 'Kommunikation mit internen Stakeholdern (Mitarbeiter, Management)'
-        external_communication: 'Kommunikation mit externen Stakeholdern (Kunden, Lieferanten, Behörden)'
-        alternative_site: 'Alternativstandort für den Notbetrieb (falls physischer Standort nicht verfügbar)'
-        alternative_site_address: 'Vollständige Adresse des Alternativstandorts'
-        alternative_site_capacity: 'Kapazität und Ressourcen am Alternativstandort (Arbeitsplätze, Technik)'
-        backup_procedures: 'Verfahren zur Datensicherung (Backup-Strategie, Frequenz, Speicherorte)'
-        restore_procedures: 'Verfahren zur Datenwiederherstellung (Restore-Prozess, Priorisierung)'
-        version: 'Aktuelle Versionsnummer des BC-Plans'
-        last_tested: 'Datum des letzten BC-Plan-Tests (Übungen gemäß ISO 22301:2019 Klausel 8.5)'
-        next_test_date: 'Datum des nächsten geplanten BC-Plan-Tests'
-        last_review_date: 'Datum der letzten Planüberprüfung'
-        next_review_date: 'Datum der nächsten geplanten Überprüfung (mindestens jährlich gemäß ISO 22301)'
-        review_notes: 'Notizen aus der letzten Planüberprüfung (Änderungsbedarf, Verbesserungen)'
+  page:
+    title: Business-Continuity-Pläne
+    header: Business-Continuity-Pläne
+    subtitle: ISO 22301:2019 Business Continuity Management
+  action:
+    add_new: Neuen BC‑Plan anlegen
+  alert:
+    overdue_tests: ⚠️ Überfällige BC‑Plan‑Tests
+    overdue_reviews: ⚠️ Überfällige BC‑Plan‑Reviews
+  section:
+    details: BC‑Plan Details
+    testing_review: Tests & Reviews
+    review_notes: Review‑Notizen
+    communication_plan: Kommunikationsplan
+    alternative_site: Alternativstandort
+    related_risks: Zugehörige Risiken
+    basic_info: Grundinformationen
+    team: BC-Team
+    activation: Aktivierung
+    communication: Kommunikation
+    backup_recovery: Backup und Wiederherstellung
+    version_review: Versionsüberprüfung
+  table:
+    name: Name
+    business_process: Geschäftsprozess
+    owner: Verantwortlich
+    status: Status
+    readiness: Bereitschaft
+    last_tested: Zuletzt getestet
+    actions: Aktionen
+  field:
+    business_process: Geschäftsprozess
+    plan_owner: Verantwortlich
+    version: Version
+    last_tested: Zuletzt getestet
+    next_test: Nächster Test
+    last_review: Letztes Review
+    next_review: Nächstes Review
+    address: Adresse
+    capacity: Kapazität
+    name: Name
+    description: Beschreibung
+    status: Status
+    bc_team: BC-Team
+    activation_criteria: Aktivierungskriterien
+    roles_and_responsibilities: Rollen und Verantwortlichkeiten
+    roles_responsibilities: Rollen und Verantwortlichkeiten
+    recovery_procedures: Wiederherstellungsverfahren
+    communication_plan: Kommunikationsplan
+    internal_communication: Interne Kommunikation
+    external_communication: Externe Kommunikation
+    alternative_site: Alternativstandort
+    alternative_site_address: Adresse Alternativstandort
+    alternative_site_capacity: Kapazität Alternativstandort
+    backup_procedures: Backup-Verfahren
+    restore_procedures: Wiederherstellungsverfahren
+    next_test_date: Datum nächster Test
+    last_review_date: Datum letztes Review
+    next_review_date: Datum nächstes Review
+    review_notes: Review-Notizen
+    plan_owner_legacy: Verantwortlich (freitext, veraltet)
+  status:
+    draft: Entwurf
+    under_review: In Überprüfung
+    active: Aktiv
+    archived: Archiviert
+  badge:
+    overdue: ÜBERFÄLLIG
+  message:
+    not_scheduled: Nicht geplant
+    never: Nie
+    no_plans: Keine BC‑Pläne gefunden.
+    create_first: Erstellen Sie Ihren ersten BC‑Plan
+    readiness_score: 'Bereitschafts‑Score: %score%%'
+  help:
+    name: Eindeutige Bezeichnung des BC-Plans
+    business_process: Geschäftsprozess, der durch diesen Plan geschützt wird (ISO
+      22301)
+    description: Detaillierte Beschreibung des Plans und seines Umfangs
+    plan_owner: Verantwortliche Person für die Pflege und Umsetzung des Plans
+    status: Aktueller Status des Plans (Entwurf, Aktiv, Archiviert)
+    bc_team: Personen, die bei Aktivierung des Plans einbezogen werden (BC-Team gemäß
+      ISO 22301)
+    activation_criteria: Bedingungen, unter denen dieser Plan aktiviert werden soll
+      (z.B. Serverausfall > 4h)
+    roles_responsibilities: Rollen und Verantwortlichkeiten der Teammitglieder während
+      einer BC-Situation
+    recovery_procedures: Schrittweise Verfahren zur Wiederherstellung des Geschäftsbetriebs
+    communication_plan: Kommunikationsstrategie während der Kontinuitätssituation
+    internal_communication: Kommunikation mit internen Stakeholdern (Mitarbeiter,
+      Management)
+    external_communication: Kommunikation mit externen Stakeholdern (Kunden, Lieferanten,
+      Behörden)
+    alternative_site: Alternativstandort für den Notbetrieb (falls physischer Standort
+      nicht verfügbar)
+    alternative_site_address: Vollständige Adresse des Alternativstandorts
+    alternative_site_capacity: Kapazität und Ressourcen am Alternativstandort (Arbeitsplätze,
+      Technik)
+    backup_procedures: Verfahren zur Datensicherung (Backup-Strategie, Frequenz, Speicherorte)
+    restore_procedures: Verfahren zur Datenwiederherstellung (Restore-Prozess, Priorisierung)
+    version: Aktuelle Versionsnummer des BC-Plans
+    last_tested: Datum des letzten BC-Plan-Tests (Übungen gemäß ISO 22301:2019 Klausel
+      8.5)
+    next_test_date: Datum des nächsten geplanten BC-Plan-Tests
+    last_review_date: Datum der letzten Planüberprüfung
+    next_review_date: Datum der nächsten geplanten Überprüfung (mindestens jährlich
+      gemäß ISO 22301)
+    review_notes: Notizen aus der letzten Planüberprüfung (Änderungsbedarf, Verbesserungen)
+    plan_owner_user: Verantwortliche Person aus der Benutzerverwaltung.
+  placeholder:
+    plan_owner_user: -- Verantwortliche Person --
 bcm:
-    field:
-        activation_criteria: Aktivierungskriterien
-        recovery_plan: 'Wiederherstellung Plan'
+  field:
+    activation_criteria: Aktivierungskriterien
+    recovery_plan: Wiederherstellung Plan

@@ -1,244 +1,284 @@
 asset:
-    title: Title
-    preview:
-        title: 'Asset Information'
-    action:
-        bcm_insights: 'BCM insights'
-        create: 'Create asset'
-        update: 'Save changes'
-        view_critical: 'View Critical'
-        view_details: 'View Details'
-        qr_label: 'QR Label'
-        print_qr_label: 'Print QR code label'
-        print_all_labels: 'All QR Labels'
-    details:
-        title: 'Asset details'
-    section:
-        basic_info: 'Basic Information'
-        assignment: Assignment
-        financial: 'Financial Information'
-        classification: 'Classification & Status'
-        cia_values: 'CIA assessment (protection needs)'
-        policies: 'Policies & Instructions'
-        valuation: Valuation
-        compliance: Compliance
-        cia_triad: 'CIA triad'
-        handling_instructions: 'Handling instructions'
-        acceptable_use_policy: 'Acceptable use policy'
-        protection_analysis: 'Protection needs analysis'
-        protecting_controls: 'Protecting controls'
-        related_risks: 'Related risks'
-        related_incidents: 'Related incidents'
-        history: History
-        business_impact: 'Business Impact'
-        rto_analysis: 'Rto Analysis'
-        critical_assets: 'Critical Assets'
-        dependency_insights: 'Dependency Insights'
-    field:
-        name: Name
-        type: 'Asset type'
-        description: Description
-        owner: Owner
-        location: Location
-        acquisition_value: 'Acquisition value'
-        current_value: 'Current value'
-        confidentiality: Confidentiality
-        integrity: Integrity
-        availability: Availability
-        rto_category: 'RTO Category'
-        asset_count: 'Asset Count'
-        examples: Examples
-        asset_name: 'Asset Name'
-        business_criticality: 'Business Criticality'
-        rto: 'RTO (Recovery Time Objective)'
-        rpo: 'RPO (Recovery Point Objective)'
-        recovery_strategy: 'Recovery Strategy'
-        avg_rto: 'Average RTO'
-        monetary_value: 'Monetary Value'
-        classification: Classification
-        data_classification: 'Data Classification'
-        acceptable_use_policy: 'Acceptable Use Policy'
-        handling_instructions: 'Handling Instructions'
-        return_date: 'Return Date'
-        status: Status
-    help:
-        name: 'Unique name of the asset'
-        type: 'Category of the asset (hardware, software, data, etc.)'
-        description: 'Detailed description of the asset and its function'
-        owner: 'Responsible person for this asset'
-        location: 'Physical or logical location of the asset'
-        physical_location: 'Physical location from location management. Add new locations under Management → Locations.'
-        acquisition_value: 'Original purchase price or acquisition costs'
-        current_value: 'Estimated current market value'
-        confidentiality: 'Confidentiality: protection from unauthorized access (1=public, 2=internal, 3=confidential, 4=strictly confidential, 5=secret)'
-        integrity: 'Integrity: protection from unauthorized modification (1=low, 2=normal, 3=high, 4=very high, 5=critical — e.g. financial data, medical records)'
-        availability: 'Availability: reachability when needed (1=>24h downtime tolerable, 2=8h, 3=4h, 4=1h, 5=<15 min / 24×7)'
-        monetary_value: 'Estimated monetary value of the asset in EUR'
-        data_classification: 'Classification of data by protection requirements'
-        acceptable_use_policy: 'Guidelines for acceptable use of this asset'
-        handling_instructions: 'Special instructions for handling this asset'
-        return_date: 'Date of planned return (for temporarily assigned assets)'
-        status: 'Current usage status of the asset'
-    protection:
-        recommended: 'Recommended'
-        overall_level: 'Overall Protection Level'
-        data_reuse_info: 'This analysis uses data from BCM, risks and incidents for automated protection requirement recommendations.'
-    cia_help: 'Assess protection needs for confidentiality, integrity and availability (1=very low, 5=very high)'
-    tooltip:
-        acquisition_value: '<strong>Acquisition Value</strong><br>What did this asset cost when purchased/created?<br><br><em>Examples:</em><br>• Server: €10,000<br>• Laptop: €1,500<br>• Software license: €5,000/year'
-        current_value: '<strong>Current Book Value</strong><br>What is the asset worth today? (after depreciation)<br><br><em>Examples:</em><br>• 3-year-old server: ~€3,000<br>• Fully depreciated hardware: €1'
-        monetary_value: '<strong>💰 Damage Value (IMPORTANT!)</strong><br>What would it cost if this asset fails or is compromised?<br><br><em>Consider:</em><br>• Production loss per hour<br>• Data loss costs<br>• Reputation damage<br>• Contract penalties<br><br><em>This value is used for risk assessment!</em>'
-        confidentiality: '<strong>🔒 Confidentiality</strong><br><em>Question: Who may see this data?</em><br><br><strong>1</strong> = Public (website, press releases)<br><strong>2</strong> = Internal (all employees)<br><strong>3</strong> = Confidential (specific departments only)<br><strong>4</strong> = Strictly confidential (few people only)<br><strong>5</strong> = Secret (personal data, trade secrets)<br><br><em>Tip: For personal data, at least 4</em>'
-        integrity: '<strong>✓ Integrity</strong><br><em>Question: How bad would it be if data is wrong/manipulated?</em><br><br><strong>1</strong> = Doesn''t matter (drafts, notes)<br><strong>2</strong> = Annoying (internal docs)<br><strong>3</strong> = Problematic (reports, statistics)<br><strong>4</strong> = Serious (contracts, invoices)<br><strong>5</strong> = Catastrophic (financial data, medical records)<br><br><em>Tip: For accounting/finance, at least 4</em>'
-        availability: '<strong>⏱ Availability</strong><br><em>Question: How long can this asset be down?</em><br><br><strong>1</strong> = Several days OK (archive, documentation)<br><strong>2</strong> = 1-2 days OK (internal tools)<br><strong>3</strong> = Few hours (email, intranet)<br><strong>4</strong> = Max 4 hours (core business)<br><strong>5</strong> = Not at all (production, customer service)<br><br><em>Tip: What happens if it fails Monday morning?</em>'
-    label:
-        type: Type
-        owner: Owner
-        location: Location
-        status: Status
-        acquisition_value: 'Acquisition value'
-        current_value: 'Current value'
-        monetary_value: 'Monetary value'
-        total_value: 'Total value'
-        risks: Risks
-        data_classification: 'Data classification'
-        return_date: 'Return date'
-        confidentiality: Confidentiality
-        integrity: Integrity
-        availability: Availability
-        name: Name
-        classification: Classification
-    classification:
-        public: Public
-        internal: Internal
-        confidential: Confidential
-        secret: Secret
-        restricted: Restricted
-    confirm:
-        delete: 'Really delete this asset?'
-    warning:
-        delete_irreversible: 'Deleting this asset cannot be undone. Related links may be removed.'
-    modern:
-        breadcrumb: Assets
-        header:
-            title: 'Asset Management'
-            subtitle: 'Management of IT assets and information values according to ISO 27001'
-            action: { new: 'New Asset', export: Export }
-        kpi:
-            total: 'Total Assets'
-            critical: 'Critical Assets'
-            avg_cia: 'Avg. CIA Score'
-            with_risks: 'Assets with Risks'
-            unit: { out_of_5: '/ 5' }
-        chart:
-            type_distribution: 'Distribution by asset type'
-        empty:
-            title: 'No assets yet'
-            description: 'Create your first asset to start asset management. Assets are the foundation of your ISMS.'
-            action_create_first: 'Create first asset'
-        table:
-            title_all: 'All Assets'
-            caption: 'List of all assets with CIA rating, risks and controls'
-            search_placeholder: Search...
-            head: { name: Name, type: Type, confidentiality: Confidentiality, integrity: Integrity, availability: Availability, risks: Risks, controls: Controls, actions: Actions }
-    status:
-        active: Active
-        inactive: Inactive
-        in_use: 'In Use'
-        returned: Returned
-        retired: Retired
-        disposed: Disposed
-    placeholder:
-        name: 'e.g. Server-001 or Laptop Marketing'
-        description: 'Describe function and purpose of the asset...'
-        owner: 'Name of asset owner'
-        location: 'e.g. Server Room A or Office 201'
-        location_select: '-- Select location --'
-        data_classification: '-- Select classification --'
-        acceptable_use_policy: 'Describe usage guidelines...'
-        handling_instructions: 'Special handling instructions...'
-    type:
-        information: Information
-        software: Software
-        hardware: Hardware
-        service: Service
-        personnel: Personnel
-        physical: Physical
-        data: Data
-        network: Network
-        facility: Facility
-        other: Other
-        # Capitalized versions (as stored in database)
-        Information: Information
-        Software: Software
-        Hardware: Hardware
-        Service: Service
-        Personnel: Personnel
-        Physical: Physical
-        Data: Data
-        Network: Network
-        Facility: Facility
-        Other: Other
-    new: New
-    list:
-        title: Title
-    rto:
-        immediate: Immediate
-        urgent: Urgent
-        standard: Standard
-        flexible: Flexible
-    badge:
-        business_critical: 'Business Critical'
-    message:
-        no_critical_assets: 'No Critical Assets'
-        inherited_asset: 'This asset inherits values from a parent asset'
-    description:
-        bcm_insights: 'Bcm Insights'
-        critical_impact: 'Critical Impact'
-        high_impact: 'High Impact'
-        medium_impact: 'Medium Impact'
-        low_impact: 'Low Impact'
-        rto_analysis: 'Rto Analysis'
-        dependencies: Dependencies
-    stats:
-        total_assets: 'Total Assets'
-        critical_assets: 'Critical Assets'
-        high_risk_assets: 'High Risk Assets'
-        avg_rto: 'Avg Rto'
-        with_dependencies: 'With Dependencies'
-        avg_dependencies: 'Avg Dependencies'
-        single_points_failure: 'Single Points Failure'
-    impact:
-        critical: Critical
-        high: High
-        medium: Medium
-        low: Low
-    title.new: 'New Asset'
-    title.edit: 'Edit Asset'
-    title.bcm_insights: 'Bcm Insights'
-    aria:
-        risks_for_asset: '%count% risks for asset %name%'
-        view_asset: 'View asset %name%'
-        edit_asset: 'Edit asset %name%'
-        actions_for_asset: 'Actions for asset %name%'
-
-# QR Code Labels
-qr:
-    label:
-        title: 'Asset Label'
-    labels_sheet:
-        title: 'Asset QR Labels'
-        count: 'Labels'
-    button:
-        print: 'Print'
-        back: 'Back'
-        back_to_list: 'Back to List'
-    scan_for_details: 'Scan QR code for asset details'
-    printed_on: 'Printed on'
-    page: 'Page'
-    no_assets: 'No assets selected for printing'
-
-asset_management:
-    title: Title
+  title: Title
+  preview:
+    title: Asset Information
+  action:
+    bcm_insights: BCM insights
+    create: Create asset
+    update: Save changes
+    view_critical: View Critical
+    view_details: View Details
+    qr_label: QR Label
+    print_qr_label: Print QR code label
+    print_all_labels: All QR Labels
+  details:
+    title: Asset details
+  section:
+    basic_info: Basic Information
+    assignment: Assignment
+    financial: Financial Information
+    classification: Classification & Status
+    cia_values: CIA assessment (protection needs)
+    policies: Policies & Instructions
+    valuation: Valuation
+    compliance: Compliance
+    cia_triad: CIA triad
+    handling_instructions: Handling instructions
+    acceptable_use_policy: Acceptable use policy
+    protection_analysis: Protection needs analysis
+    protecting_controls: Protecting controls
+    related_risks: Related risks
+    related_incidents: Related incidents
+    history: History
+    business_impact: Business Impact
+    rto_analysis: Rto Analysis
+    critical_assets: Critical Assets
+    dependency_insights: Dependency Insights
+  field:
+    name: Name
+    type: Asset type
     description: Description
-    active_assets: 'Active Assets'
+    owner: Owner
+    location: Location
+    acquisition_value: Acquisition value
+    current_value: Current value
+    confidentiality: Confidentiality
+    integrity: Integrity
+    availability: Availability
+    rto_category: RTO Category
+    asset_count: Asset Count
+    examples: Examples
+    asset_name: Asset Name
+    business_criticality: Business Criticality
+    rto: RTO (Recovery Time Objective)
+    rpo: RPO (Recovery Point Objective)
+    recovery_strategy: Recovery Strategy
+    avg_rto: Average RTO
+    monetary_value: Monetary Value
+    classification: Classification
+    data_classification: Data Classification
+    acceptable_use_policy: Acceptable Use Policy
+    handling_instructions: Handling Instructions
+    return_date: Return Date
+    status: Status
+    owner_legacy: Owner (free text, legacy)
+  help:
+    name: Unique name of the asset
+    type: Category of the asset (hardware, software, data, etc.)
+    description: Detailed description of the asset and its function
+    owner: Responsible person for this asset
+    location: Physical or logical location of the asset
+    physical_location: Physical location from location management. Add new locations
+      under Management → Locations.
+    acquisition_value: Original purchase price or acquisition costs
+    current_value: Estimated current market value
+    confidentiality: 'Confidentiality: protection from unauthorized access (1=public,
+      2=internal, 3=confidential, 4=strictly confidential, 5=secret)'
+    integrity: 'Integrity: protection from unauthorized modification (1=low, 2=normal,
+      3=high, 4=very high, 5=critical — e.g. financial data, medical records)'
+    availability: 'Availability: reachability when needed (1=>24h downtime tolerable,
+      2=8h, 3=4h, 4=1h, 5=<15 min / 24×7)'
+    monetary_value: Estimated monetary value of the asset in EUR
+    data_classification: Classification of data by protection requirements
+    acceptable_use_policy: Guidelines for acceptable use of this asset
+    handling_instructions: Special instructions for handling this asset
+    return_date: Date of planned return (for temporarily assigned assets)
+    status: Current usage status of the asset
+    owner_user: Owner from user management. If not listed, enter free text in the
+      legacy field.
+  protection:
+    recommended: Recommended
+    overall_level: Overall Protection Level
+    data_reuse_info: This analysis uses data from BCM, risks and incidents for automated
+      protection requirement recommendations.
+  cia_help: Assess protection needs for confidentiality, integrity and availability
+    (1=very low, 5=very high)
+  tooltip:
+    acquisition_value: '<strong>Acquisition Value</strong><br>What did this asset
+      cost when purchased/created?<br><br><em>Examples:</em><br>• Server: €10,000<br>•
+      Laptop: €1,500<br>• Software license: €5,000/year'
+    current_value: '<strong>Current Book Value</strong><br>What is the asset worth
+      today? (after depreciation)<br><br><em>Examples:</em><br>• 3-year-old server:
+      ~€3,000<br>• Fully depreciated hardware: €1'
+    monetary_value: <strong>💰 Damage Value (IMPORTANT!)</strong><br>What would it
+      cost if this asset fails or is compromised?<br><br><em>Consider:</em><br>• Production
+      loss per hour<br>• Data loss costs<br>• Reputation damage<br>• Contract penalties<br><br><em>This
+      value is used for risk assessment!</em>
+    confidentiality: '<strong>🔒 Confidentiality</strong><br><em>Question: Who may
+      see this data?</em><br><br><strong>1</strong> = Public (website, press releases)<br><strong>2</strong>
+      = Internal (all employees)<br><strong>3</strong> = Confidential (specific departments
+      only)<br><strong>4</strong> = Strictly confidential (few people only)<br><strong>5</strong>
+      = Secret (personal data, trade secrets)<br><br><em>Tip: For personal data, at
+      least 4</em>'
+    integrity: '<strong>✓ Integrity</strong><br><em>Question: How bad would it be
+      if data is wrong/manipulated?</em><br><br><strong>1</strong> = Doesn''t matter
+      (drafts, notes)<br><strong>2</strong> = Annoying (internal docs)<br><strong>3</strong>
+      = Problematic (reports, statistics)<br><strong>4</strong> = Serious (contracts,
+      invoices)<br><strong>5</strong> = Catastrophic (financial data, medical records)<br><br><em>Tip:
+      For accounting/finance, at least 4</em>'
+    availability: '<strong>⏱ Availability</strong><br><em>Question: How long can this
+      asset be down?</em><br><br><strong>1</strong> = Several days OK (archive, documentation)<br><strong>2</strong>
+      = 1-2 days OK (internal tools)<br><strong>3</strong> = Few hours (email, intranet)<br><strong>4</strong>
+      = Max 4 hours (core business)<br><strong>5</strong> = Not at all (production,
+      customer service)<br><br><em>Tip: What happens if it fails Monday morning?</em>'
+  label:
+    type: Type
+    owner: Owner
+    location: Location
+    status: Status
+    acquisition_value: Acquisition value
+    current_value: Current value
+    monetary_value: Monetary value
+    total_value: Total value
+    risks: Risks
+    data_classification: Data classification
+    return_date: Return date
+    confidentiality: Confidentiality
+    integrity: Integrity
+    availability: Availability
+    name: Name
+    classification: Classification
+  classification:
+    public: Public
+    internal: Internal
+    confidential: Confidential
+    secret: Secret
+    restricted: Restricted
+  confirm:
+    delete: Really delete this asset?
+  warning:
+    delete_irreversible: Deleting this asset cannot be undone. Related links may be
+      removed.
+  modern:
+    breadcrumb: Assets
+    header:
+      title: Asset Management
+      subtitle: Management of IT assets and information values according to ISO 27001
+      action:
+        new: New Asset
+        export: Export
+    kpi:
+      total: Total Assets
+      critical: Critical Assets
+      avg_cia: Avg. CIA Score
+      with_risks: Assets with Risks
+      unit:
+        out_of_5: / 5
+    chart:
+      type_distribution: Distribution by asset type
+    empty:
+      title: No assets yet
+      description: Create your first asset to start asset management. Assets are the
+        foundation of your ISMS.
+      action_create_first: Create first asset
+    table:
+      title_all: All Assets
+      caption: List of all assets with CIA rating, risks and controls
+      search_placeholder: Search...
+      head:
+        name: Name
+        type: Type
+        confidentiality: Confidentiality
+        integrity: Integrity
+        availability: Availability
+        risks: Risks
+        controls: Controls
+        actions: Actions
+  status:
+    active: Active
+    inactive: Inactive
+    in_use: In Use
+    returned: Returned
+    retired: Retired
+    disposed: Disposed
+  placeholder:
+    name: e.g. Server-001 or Laptop Marketing
+    description: Describe function and purpose of the asset...
+    owner: Name of asset owner
+    location: e.g. Server Room A or Office 201
+    location_select: -- Select location --
+    data_classification: -- Select classification --
+    acceptable_use_policy: Describe usage guidelines...
+    handling_instructions: Special handling instructions...
+    owner_user: -- Select owner --
+  type:
+    information: Information
+    software: Software
+    hardware: Hardware
+    service: Service
+    personnel: Personnel
+    physical: Physical
+    data: Data
+    network: Network
+    facility: Facility
+    other: Other
+    Information: Information
+    Software: Software
+    Hardware: Hardware
+    Service: Service
+    Personnel: Personnel
+    Physical: Physical
+    Data: Data
+    Network: Network
+    Facility: Facility
+    Other: Other
+  new: New
+  list:
+    title: Title
+  rto:
+    immediate: Immediate
+    urgent: Urgent
+    standard: Standard
+    flexible: Flexible
+  badge:
+    business_critical: Business Critical
+  message:
+    no_critical_assets: No Critical Assets
+    inherited_asset: This asset inherits values from a parent asset
+  description:
+    bcm_insights: Bcm Insights
+    critical_impact: Critical Impact
+    high_impact: High Impact
+    medium_impact: Medium Impact
+    low_impact: Low Impact
+    rto_analysis: Rto Analysis
+    dependencies: Dependencies
+  stats:
+    total_assets: Total Assets
+    critical_assets: Critical Assets
+    high_risk_assets: High Risk Assets
+    avg_rto: Avg Rto
+    with_dependencies: With Dependencies
+    avg_dependencies: Avg Dependencies
+    single_points_failure: Single Points Failure
+  impact:
+    critical: Critical
+    high: High
+    medium: Medium
+    low: Low
+  title.new: New Asset
+  title.edit: Edit Asset
+  title.bcm_insights: Bcm Insights
+  aria:
+    risks_for_asset: '%count% risks for asset %name%'
+    view_asset: View asset %name%
+    edit_asset: Edit asset %name%
+    actions_for_asset: Actions for asset %name%
+qr:
+  label:
+    title: Asset Label
+  labels_sheet:
+    title: Asset QR Labels
+    count: Labels
+  button:
+    print: Print
+    back: Back
+    back_to_list: Back to List
+  scan_for_details: Scan QR code for asset details
+  printed_on: Printed on
+  page: Page
+  no_assets: No assets selected for printing
+asset_management:
+  title: Title
+  description: Description
+  active_assets: Active Assets
