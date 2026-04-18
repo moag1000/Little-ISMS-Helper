@@ -26,7 +26,8 @@ class AuditLogger
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly RequestStack $requestStack,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly ?AuditLogIntegrityService $integrityService = null,
     ) {}
 
     /**
@@ -138,6 +139,9 @@ class AuditLogger
         // Persist and flush the audit log immediately
         // This is necessary because we're in a Doctrine event listener (postPersist, postUpdate, etc.)
         // which runs AFTER the main flush(). Without this flush(), the audit log would never be saved.
+        // AUD-02: sign before persist (no-op if hmac secret not configured)
+        $this->integrityService?->sign($auditLog);
+
         $this->entityManager->persist($auditLog);
         $this->entityManager->flush();
     }

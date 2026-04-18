@@ -49,6 +49,19 @@ class AuditLog
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $userAgent = null;
 
+    /**
+     * AUD-02: HMAC-SHA256 signature over (entityType|entityId|action|userName|oldValues|newValues|createdAt|previousHash).
+     * Detects tampering and deletions; verified via `bin/console app:audit-log:verify`.
+     */
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $hmac = null;
+
+    /**
+     * AUD-02: Hash of the previous row (chain) — enables detection of deletions.
+     */
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $previousHmac = null;
+
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
@@ -177,5 +190,45 @@ class AuditLog
     public function getNewValuesArray(): ?array
     {
         return $this->newValues ? json_decode($this->newValues, true) : null;
+    }
+
+    public function getHmac(): ?string
+    {
+        return $this->hmac;
+    }
+
+    public function setHmac(?string $hmac): static
+    {
+        $this->hmac = $hmac;
+        return $this;
+    }
+
+    public function getPreviousHmac(): ?string
+    {
+        return $this->previousHmac;
+    }
+
+    public function setPreviousHmac(?string $previousHmac): static
+    {
+        $this->previousHmac = $previousHmac;
+        return $this;
+    }
+
+    /**
+     * Builds the canonical payload for HMAC signing — deterministic field order.
+     */
+    public function getSigningPayload(): string
+    {
+        return implode('|', [
+            (string) $this->entityType,
+            (string) $this->entityId,
+            (string) $this->action,
+            (string) $this->userName,
+            (string) $this->oldValues,
+            (string) $this->newValues,
+            (string) $this->description,
+            $this->createdAt?->format('Y-m-d\TH:i:s.uP') ?? '',
+            (string) $this->previousHmac,
+        ]);
     }
 }
