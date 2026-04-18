@@ -210,11 +210,45 @@ class InternalAudit
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
 
+    /**
+     * H-01: Structured findings (ISO 27001 Clause 10.1). Replaces free-text `findings`.
+     *
+     * @var Collection<int, AuditFinding>
+     */
+    #[ORM\OneToMany(targetEntity: AuditFinding::class, mappedBy: 'audit', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $structuredFindings;
+
 public function __construct()
     {
         $this->scopedAssets = new ArrayCollection();
         $this->auditedSubsidiaries = new ArrayCollection();
+        $this->structuredFindings = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
+    }
+
+    /** @return Collection<int, AuditFinding> */
+    public function getStructuredFindings(): Collection
+    {
+        return $this->structuredFindings;
+    }
+
+    public function addStructuredFinding(AuditFinding $finding): static
+    {
+        if (!$this->structuredFindings->contains($finding)) {
+            $this->structuredFindings->add($finding);
+            $finding->setAudit($this);
+        }
+        return $this;
+    }
+
+    public function removeStructuredFinding(AuditFinding $finding): static
+    {
+        if ($this->structuredFindings->removeElement($finding)) {
+            if ($finding->getAudit() === $this) {
+                $finding->setAudit(null);
+            }
+        }
+        return $this;
     }
 
     public function getId(): ?int
