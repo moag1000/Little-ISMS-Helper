@@ -125,8 +125,10 @@ dashboard:
         control_compliance_weighted: 'Control-Compliance (gewichtet)'
         controls_implemented: 'Controls implementiert'
         residual_risk_exposure: 'Residual Risk Exposure'
+        isms_health_score: 'ISMS Health Score'
     hint:
         weighted_compliance: 'Gewichtung: implementiert=1.0, teilweise=0.5, geplant=0'
+        isms_health_score: 'Zusammengesetzt: Compliance 40%, Risiken 25%, Incidents 20%, Asset-Klassifizierung 15%'
         total_risks: 'Risiken gesamt'
         high_risks: 'Hohe Risiken'
         critical_risks: 'Kritische Risiken'
