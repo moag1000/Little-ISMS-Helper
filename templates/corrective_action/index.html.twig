@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'corrective_action.page.title'|trans({}, 'audits') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <h1 class="h3 mb-4">{{ 'corrective_action.page.title'|trans({}, 'audits') }}</h1>
+
+    {% if overdue_count > 0 %}
+        <div class="alert alert-warning" role="alert">
+            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            {{ 'corrective_action.alert.overdue'|trans({'%count%': overdue_count}, 'audits') }}
+        </div>
+    {% endif %}
+
+    {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
+        {% block card_body %}
+            {% if actions is empty %}
+                <div class="alert alert-info m-3">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    {{ 'corrective_action.message.none'|trans({}, 'audits') }}
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th scope="col">{{ 'corrective_action.field.title'|trans({}, 'audits') }}</th>
+                            <th scope="col">{{ 'corrective_action.field.finding'|trans({}, 'audits') }}</th>
+                            <th scope="col">{{ 'corrective_action.field.status'|trans({}, 'audits') }}</th>
+                            <th scope="col">{{ 'corrective_action.field.responsible_person'|trans({}, 'audits') }}</th>
+                            <th scope="col">{{ 'corrective_action.field.planned_completion_date'|trans({}, 'audits') }}</th>
+                            <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for a in actions %}
+                            <tr>
+                                <td>{{ a.title }}</td>
+                                <td>{% if a.finding %}<a href="{{ path('app_audit_finding_show', {id: a.finding.id}) }}">{{ a.finding.findingNumber ?? '#' ~ a.finding.id }}</a>{% else %}—{% endif %}</td>
+                                <td><span class="badge bg-{{ a.status in ['verified_effective'] ? 'success' : (a.status == 'verified_ineffective' ? 'danger' : 'info') }}">{{ ('corrective_action.status.' ~ a.status)|trans({}, 'audits') }}</span></td>
+                                <td>{{ a.responsiblePerson ? a.responsiblePerson.fullName : '—' }}</td>
+                                <td>
+                                    {% if a.plannedCompletionDate %}
+                                        <span {% if a.isOverdue %}class="text-danger fw-bold"{% endif %}>
+                                            {{ a.plannedCompletionDate|date('Y-m-d') }}
+                                        </span>
+                                    {% else %}—{% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <a href="{{ path('app_corrective_action_show', {id: a.id}) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}

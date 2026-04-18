@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'corrective_action.page.edit'|trans({}, 'audits') }}: {{ action.title }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <h1 class="h3 mb-4">{{ 'corrective_action.page.edit'|trans({}, 'audits') }}: {{ action.title }}</h1>
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
+            {% include 'corrective_action/_form.html.twig' with {form: form} %}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}

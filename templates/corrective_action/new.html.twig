@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'corrective_action.page.new'|trans({}, 'audits') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <h1 class="h3 mb-4">{{ 'corrective_action.page.new'|trans({}, 'audits') }}</h1>
+    {% if finding %}
+        <p class="text-muted mb-3">
+            {{ 'corrective_action.message.for_finding'|trans({}, 'audits') }}:
+            <a href="{{ path('app_audit_finding_show', {id: finding.id}) }}">{{ finding.findingNumber ?? '#' ~ finding.id }} — {{ finding.title }}</a>
+        </p>
+    {% endif %}
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
+            {% include 'corrective_action/_form.html.twig' with {form: form} %}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}
