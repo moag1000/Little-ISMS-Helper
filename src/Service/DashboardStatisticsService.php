@@ -326,6 +326,28 @@ class DashboardStatisticsService
     }
 
     /**
+     * C4: Weighted compliance score (implemented=1.0, partially=0.5, planned/not=0).
+     * More honest KPI than counting only fully-implemented controls.
+     */
+    private function calculateWeightedComplianceScore(array $applicableControls): float
+    {
+        $total = count($applicableControls);
+        if ($total === 0) {
+            return 0.0;
+        }
+        $weighted = 0.0;
+        foreach ($applicableControls as $control) {
+            $status = $control->getImplementationStatus();
+            if ($status === 'implemented') {
+                $weighted += 1.0;
+            } elseif ($status === 'partially_implemented' || $status === 'partial') {
+                $weighted += 0.5;
+            }
+        }
+        return round(($weighted / $total) * 100, 1);
+    }
+
+    /**
      * Calculate compliance percentage
      *
      * @param int $implementedCount Number of implemented controls
@@ -408,6 +430,8 @@ class DashboardStatisticsService
         $totalControls = count($applicableControls);
         $compliancePercentage = $this->calculateCompliancePercentage($implementedControls, $totalControls);
 
+        $weighted = $this->calculateWeightedComplianceScore($applicableControls);
+
         return [
             'control_compliance' => [
                 'label' => 'kpi.control_compliance',
@@ -418,6 +442,13 @@ class DashboardStatisticsService
                     'implemented' => $implementedControls,
                     'total' => $totalControls,
                 ],
+            ],
+            'control_compliance_weighted' => [
+                'label' => 'kpi.control_compliance_weighted',
+                'value' => $weighted,
+                'unit' => '%',
+                'status' => $this->getStatus((int) round($weighted), 80, 60),
+                'details' => ['total' => $totalControls, 'note' => 'kpi.hint.weighted_compliance'],
             ],
             'controls_implemented' => [
                 'label' => 'kpi.controls_implemented',
@@ -443,6 +474,20 @@ class DashboardStatisticsService
         $criticalRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= 16));
         $treatedRisks = count(array_filter($allRisks, fn($r): bool => $r->getTreatmentStrategy() !== null && $r->getTreatmentStrategy() !== ''));
         $treatmentRate = $totalRisks > 0 ? round(($treatedRisks / $totalRisks) * 100) : 0;
+
+        // A3: Residual Risk Exposure — sum of all residual risk levels, plus counts by severity
+        $residualSum = 0;
+        $residualCritical = 0;
+        $residualHigh = 0;
+        foreach ($allRisks as $risk) {
+            $residual = $risk->getResidualRiskLevel();
+            $residualSum += $residual;
+            if ($residual >= 16) {
+                $residualCritical++;
+            } elseif ($residual >= 12) {
+                $residualHigh++;
+            }
+        }
 
         // Check for overdue treatment plans
         $overdueTreatments = 0;
@@ -478,6 +523,13 @@ class DashboardStatisticsService
                 'status' => $this->getStatus($treatmentRate, 90, 70),
                 'details' => ['treated' => $treatedRisks, 'total' => $totalRisks],
             ],
+            'residual_risk_exposure' => [
+                'label' => 'kpi.residual_risk_exposure',
+                'value' => $residualSum,
+                'unit' => '',
+                'status' => $residualCritical > 0 ? 'danger' : ($residualHigh > 0 ? 'warning' : 'good'),
+                'details' => ['critical' => $residualCritical, 'high' => $residualHigh, 'total' => $totalRisks],
+            ],
             'overdue_treatments' => [
                 'label' => 'kpi.overdue_treatments',
                 'value' => $overdueTreatments,
@@ -500,7 +552,7 @@ class DashboardStatisticsService
         $totalAssets = count($activeAssets);
         $criticalAssets = count(array_filter($activeAssets, fn($a): bool => $a->getConfidentialityValue() >= 4 || $a->getIntegrityValue() >= 4 || $a->getAvailabilityValue() >= 4
         ));
-        $classifiedAssets = count(array_filter($activeAssets, fn($a): bool => $a->getConfidentialityValue() > 0 || $a->getIntegrityValue() > 0 || $a->getAvailabilityValue() > 0
+        $classifiedAssets = count(array_filter($activeAssets, fn($a): bool => $a->getConfidentialityValue() > 0 && $a->getIntegrityValue() > 0 && $a->getAvailabilityValue() > 0
         ));
         $classificationRate = $totalAssets > 0 ? round(($classifiedAssets / $totalAssets) * 100) : 0;
 
@@ -760,9 +812,10 @@ class DashboardStatisticsService
             $criticalSuppliers,
             fn($s): bool => method_exists($s, 'getLastSecurityAssessment') && $s->getLastSecurityAssessment() !== null
         );
-        $assessmentRate = count($criticalSuppliers) > 0
+        $hasCriticalSuppliers = count($criticalSuppliers) > 0;
+        $assessmentRate = $hasCriticalSuppliers
             ? round((count($assessedSuppliers) / count($criticalSuppliers)) * 100)
-            : 100;
+            : null;
 
         // Check for overdue assessments (> 12 months)
         $overdueAssessments = count(array_filter(
@@ -789,8 +842,9 @@ class DashboardStatisticsService
             'supplier_assessment_rate' => [
                 'label' => 'kpi.supplier_assessment_rate',
                 'value' => $assessmentRate,
-                'unit' => '%',
-                'status' => $this->getStatus($assessmentRate, 90, 70),
+                'unit' => $hasCriticalSuppliers ? '%' : '',
+                'status' => $hasCriticalSuppliers ? $this->getStatus($assessmentRate, 90, 70) : 'info',
+                'na' => !$hasCriticalSuppliers,
             ],
             'overdue_assessments' => [
                 'label' => 'kpi.overdue_supplier_assessments',
