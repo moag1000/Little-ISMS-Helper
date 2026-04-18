@@ -35,6 +35,13 @@ tags:
         framework: "Framework"
         classification: "Klassifikation"
         custom: "Benutzerdefiniert"
+        scope: "Scope (in/out)"
+    scope:
+        label: "ISMS-Scope-Tag"
+        help: "Kennzeichnet Entities als in-scope oder out-of-scope gemäß ISO 27001 Klausel 4.3."
+        filter:
+            in_scope: "Im Scope"
+            out_of_scope: "Außerhalb Scope"
 
     color:
         primary: "Blau"
