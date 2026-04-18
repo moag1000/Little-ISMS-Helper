@@ -19,6 +19,7 @@ use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
 use App\Service\AssetService;
+use App\Service\ComplianceAnalyticsService;
 use App\Service\RiskService;
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -61,7 +62,8 @@ class DashboardStatisticsService
         private readonly ?SupplierRepository $supplierRepository = null,
         private readonly ?DocumentRepository $documentRepository = null,
         private readonly ?RiskTreatmentPlanRepository $treatmentPlanRepository = null,
-        private readonly ?ManagementReviewRepository $managementReviewRepository = null
+        private readonly ?ManagementReviewRepository $managementReviewRepository = null,
+        private readonly ?ComplianceAnalyticsService $complianceAnalyticsService = null,
     ) {
     }
 
@@ -377,9 +379,29 @@ class DashboardStatisticsService
         $tenant = $user?->getTenant();
         $activeModules = $this->moduleConfigurationService->getActiveModules();
 
+        $core = $this->getCoreKPIs($tenant);
+
         $kpis = [
-            'core' => $this->getCoreKPIs($tenant),
+            'core' => $core,
             'active_modules' => $activeModules,
+        ];
+
+        // A1: per-framework compliance (if analytics service available)
+        $perFramework = $this->getPerFrameworkKPIs();
+        if ($perFramework !== []) {
+            $kpis['per_framework'] = $perFramework;
+        }
+
+        // A4: composite ISMS health score (lightweight, no snapshots needed)
+        $healthScore = $this->calculateIsmsHealthScore($tenant, $core, $activeModules);
+        $kpis['health'] = [
+            'isms_health_score' => [
+                'label' => 'kpi.isms_health_score',
+                'value' => $healthScore['score'],
+                'unit' => '/100',
+                'status' => $this->getStatus((int) $healthScore['score'], 80, 60),
+                'details' => $healthScore['breakdown'],
+            ],
         ];
 
         // Add module-specific KPIs only if module is active
@@ -421,6 +443,104 @@ class DashboardStatisticsService
     /**
      * Get core KPIs (always shown)
      */
+    /**
+     * A4: Composite ISMS Health Score (0-100).
+     *
+     * Mixes four dimensions, weighted:
+     *  - Control compliance (weighted)   : 40%
+     *  - Risk exposure inverse            : 25% (fewer critical/high risks → higher score)
+     *  - Incident backlog inverse         : 20% (fewer open incidents → higher score)
+     *  - Asset classification rate        : 15%
+     *
+     * @return array{score: int, breakdown: array<string, float>}
+     */
+    private function calculateIsmsHealthScore(?Tenant $tenant, array $coreKpis, array $activeModules): array
+    {
+        $weightedCompliance = (float) ($coreKpis['control_compliance_weighted']['value'] ?? 0);
+
+        // Risk exposure component (invert; more critical = lower score)
+        $riskScore = 100.0;
+        if (in_array('risks', $activeModules, true)) {
+            $risks = $tenant ? $this->getAllAccessibleRisks($tenant) : $this->riskRepository->findAll();
+            $critical = count(array_filter($risks, fn($r): bool => $r->getResidualRiskLevel() >= 16));
+            $high = count(array_filter($risks, fn($r): bool => $r->getResidualRiskLevel() >= 12 && $r->getResidualRiskLevel() < 16));
+            $riskScore = max(0.0, 100.0 - ($critical * 15.0) - ($high * 5.0));
+        }
+
+        // Incident backlog component (open/total)
+        $incidentScore = 100.0;
+        if (in_array('incidents', $activeModules, true)) {
+            $incidents = $tenant ? $this->getAllAccessibleIncidents($tenant) : $this->incidentRepository->findAll();
+            $total = count($incidents);
+            $open = count(array_filter($incidents, fn($i): bool => $i->getStatus() === 'open'));
+            $incidentScore = $total > 0 ? max(0.0, 100.0 - (($open / $total) * 100.0)) : 100.0;
+        }
+
+        // Asset classification (recompute to avoid coupling to asset_management KPI shape)
+        $assetScore = 100.0;
+        if (in_array('assets', $activeModules, true)) {
+            $assets = $tenant ? $this->getAllAccessibleAssets($tenant) : [];
+            $active = array_filter($assets, fn($a): bool => $a->getStatus() === 'active');
+            $total = count($active);
+            if ($total > 0) {
+                $classified = count(array_filter($active, fn($a): bool => $a->getConfidentialityValue() > 0 && $a->getIntegrityValue() > 0 && $a->getAvailabilityValue() > 0));
+                $assetScore = round(($classified / $total) * 100, 1);
+            }
+        }
+
+        $score = ($weightedCompliance * 0.40)
+            + ($riskScore * 0.25)
+            + ($incidentScore * 0.20)
+            + ($assetScore * 0.15);
+
+        return [
+            'score' => (int) round($score),
+            'breakdown' => [
+                'compliance_weighted' => round($weightedCompliance, 1),
+                'risk_exposure' => round($riskScore, 1),
+                'incident_backlog' => round($incidentScore, 1),
+                'asset_classification' => round($assetScore, 1),
+            ],
+        ];
+    }
+
+    /**
+     * A1: Per-framework compliance percentage (surfaced from ComplianceAnalyticsService).
+     *
+     * @return array<string, array{label: string, value: int|float, unit: string, status: string, details: array}>
+     */
+    private function getPerFrameworkKPIs(): array
+    {
+        if ($this->complianceAnalyticsService === null) {
+            return [];
+        }
+        try {
+            $comparison = $this->complianceAnalyticsService->getFrameworkComparison();
+        } catch (\Throwable) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($comparison['frameworks'] ?? [] as $fw) {
+            if (($fw['applicable'] ?? 0) === 0) {
+                continue;
+            }
+            $pct = (float) ($fw['compliance_percentage'] ?? 0);
+            $result['framework_' . strtolower(str_replace(['-', ' '], '_', (string) $fw['code']))] = [
+                'label' => (string) $fw['name'],
+                'value' => $pct,
+                'unit' => '%',
+                'status' => $this->getStatus((int) round($pct), 80, 60),
+                'details' => [
+                    'fulfilled' => $fw['fulfilled'] ?? 0,
+                    'applicable' => $fw['applicable'] ?? 0,
+                    'mandatory' => $fw['mandatory'] ?? false,
+                ],
+            ];
+        }
+        return $result;
+    }
+
     private function getCoreKPIs(?Tenant $tenant): array
     {
         $applicableControls = $tenant
