@@ -858,8 +858,8 @@ class BusinessContinuityPlan
      * Effective planOwner: prefer planOwnerUser.fullName, fall back to legacy string.
      */
     public function getEffectivePlanOwner(): ?string
-    {{
-        return $this->{user_field}?->getFullName() ?? $this->{str_field};
-    }}
+    {
+        return $this->planOwnerUser?->getFullName() ?? $this->planOwner;
+    }
 
 }

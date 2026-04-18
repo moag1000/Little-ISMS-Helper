@@ -777,8 +777,8 @@ class BusinessProcess
      * Effective processOwner: prefer processOwnerUser.fullName, fall back to legacy string.
      */
     public function getEffectiveProcessOwner(): ?string
-    {{
-        return $this->{user_field}?->getFullName() ?? $this->{str_field};
-    }}
+    {
+        return $this->processOwnerUser?->getFullName() ?? $this->processOwner;
+    }
 
 }

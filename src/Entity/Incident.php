@@ -84,13 +84,13 @@ class Incident
     #[ORM\Column(length: 50)]
     #[Groups(['incident:read', 'incident:write'])]
     #[Assert\NotBlank(message: 'Incident number is required')]
-    #[Assert\Length(max: 50, maxMessage: 'Incident number cannot exceed {{ limit }} characters')]
+    #[Assert\Length(max: 50, maxMessage: 'Incident number cannot exceed { limit } characters')]
     private ?string $incidentNumber = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['incident:read', 'incident:write'])]
     #[Assert\NotBlank(message: 'Incident title is required')]
-    #[Assert\Length(max: 255, maxMessage: 'Title cannot exceed {{ limit }} characters')]
+    #[Assert\Length(max: 255, maxMessage: 'Title cannot exceed { limit } characters')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -101,7 +101,7 @@ class Incident
     #[ORM\Column(length: 100)]
     #[Groups(['incident:read', 'incident:write'])]
     #[Assert\NotBlank(message: 'Incident category is required')]
-    #[Assert\Length(max: 100, maxMessage: 'Category cannot exceed {{ limit }} characters')]
+    #[Assert\Length(max: 100, maxMessage: 'Category cannot exceed { limit } characters')]
     private ?string $category = null;
 
     #[ORM\Column(length: 50)]
@@ -109,7 +109,7 @@ class Incident
     #[Assert\NotBlank(message: 'Severity is required')]
     #[Assert\Choice(
         choices: ['low', 'medium', 'high', 'critical'],
-        message: 'Severity must be one of: {{ choices }}'
+        message: 'Severity must be one of: { choices }'
     )]
     private ?string $severity = null;
 
@@ -118,7 +118,7 @@ class Incident
     #[Assert\NotBlank(message: 'Status is required')]
     #[Assert\Choice(
         choices: ['reported', 'in_investigation', 'in_resolution', 'resolved', 'closed'],
-        message: 'Status must be one of: {{ choices }}'
+        message: 'Status must be one of: { choices }'
     )]
     private ?string $status = 'reported';
 
@@ -134,12 +134,12 @@ class Incident
     #[ORM\Column(length: 100)]
     #[Groups(['incident:read', 'incident:write'])]
     #[Assert\NotBlank(message: 'Reporter name is required')]
-    #[Assert\Length(max: 100, maxMessage: 'Reporter name cannot exceed {{ limit }} characters')]
+    #[Assert\Length(max: 100, maxMessage: 'Reporter name cannot exceed { limit } characters')]
     private ?string $reportedBy = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'Assignee name cannot exceed {{ limit }} characters')]
+    #[Assert\Length(max: 100, maxMessage: 'Assignee name cannot exceed { limit } characters')]
     private ?string $assignedTo = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -216,7 +216,7 @@ class Incident
     #[Groups(['incident:read', 'incident:write'])]
     #[Assert\Choice(
         choices: ['operational', 'security', 'privacy', 'availability'],
-        message: 'NIS2 category must be one of: {{ choices }}'
+        message: 'NIS2 category must be one of: { choices }'
     )]
     private ?string $nis2Category = null;
 
@@ -1242,8 +1242,8 @@ class Incident
      * Effective reportedBy: prefer reportedByUser.fullName, fall back to legacy string.
      */
     public function getEffectiveReportedBy(): ?string
-    {{
-        return $this->{user_field}?->getFullName() ?? $this->{str_field};
-    }}
+    {
+        return $this->reportedByUser?->getFullName() ?? $this->reportedBy;
+    }
 
 }
