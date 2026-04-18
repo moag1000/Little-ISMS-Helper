@@ -121,6 +121,9 @@ class AuditLogger
         $userName ??= $this->getCurrentUserName();
         $auditLog->setUserName($userName);
 
+        // ISB Sprint-2 gate: capture actor's highest role at time of action.
+        $auditLog->setActorRole($this->getCurrentActorRole());
+
         // Set request information if available
         if ($request instanceof Request) {
             $auditLog->setIpAddress($request->getClientIp());
@@ -159,6 +162,26 @@ class AuditLogger
 
         // For CLI operations (e.g., setup commands, migrations) or unauthenticated requests
         return 'system';
+    }
+
+    /**
+     * Highest-priority RBAC role held by the current user.
+     * Used as the actor_role column in AuditLog (ISB Sprint-2 gate).
+     * Returns null for system / CLI / unauthenticated contexts.
+     */
+    public function getCurrentActorRole(): ?string
+    {
+        $user = $this->security->getUser();
+        if (!$user instanceof User) {
+            return null;
+        }
+        $roles = $user->getRoles();
+        foreach (['ROLE_SUPER_ADMIN', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_AUDITOR', 'ROLE_USER'] as $candidate) {
+            if (in_array($candidate, $roles, true)) {
+                return $candidate;
+            }
+        }
+        return $roles[0] ?? null;
     }
 
     /**

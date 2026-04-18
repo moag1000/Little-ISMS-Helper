@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_user', columns: ['user_name'])]
 #[ORM\Index(name: 'idx_action', columns: ['action'])]
 #[ORM\Index(name: 'idx_created_at', columns: ['created_at'])]
+#[ORM\Index(name: 'idx_audit_actor_role', columns: ['actor_role'])]
 class AuditLog
 {
     #[ORM\Id]
@@ -30,6 +31,14 @@ class AuditLog
 
     #[ORM\Column(length: 100)]
     private ?string $userName = null;
+
+    /**
+     * ISB-Review Sprint-2 gate: actor's highest role at time of action.
+     * Values: ROLE_SUPER_ADMIN | ROLE_ADMIN | ROLE_MANAGER | ROLE_AUDITOR |
+     * ROLE_USER | null (pre-migration rows, or system actions).
+     */
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $actorRole = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $ipAddress = null;
@@ -113,6 +122,17 @@ class AuditLog
     public function setUserName(string $userName): static
     {
         $this->userName = $userName;
+        return $this;
+    }
+
+    public function getActorRole(): ?string
+    {
+        return $this->actorRole;
+    }
+
+    public function setActorRole(?string $actorRole): static
+    {
+        $this->actorRole = $actorRole;
         return $this;
     }
 
@@ -224,6 +244,7 @@ class AuditLog
             (string) $this->entityId,
             (string) $this->action,
             (string) $this->userName,
+            (string) $this->actorRole,
             (string) $this->oldValues,
             (string) $this->newValues,
             (string) $this->description,
