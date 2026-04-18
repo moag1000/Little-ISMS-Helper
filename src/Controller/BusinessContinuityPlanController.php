@@ -27,7 +27,8 @@ class BusinessContinuityPlanController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
-        $bcPlans = $this->businessContinuityPlanRepository->findAll();
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $bcPlans = $tenant ? $this->businessContinuityPlanRepository->findBy(['tenant' => $tenant]) : [];
         $overdueTests = $this->businessContinuityPlanRepository->findOverdueTests();
         $overdueReviews = $this->businessContinuityPlanRepository->findOverdueReviews();
         $activePlans = $this->businessContinuityPlanRepository->findActivePlans();

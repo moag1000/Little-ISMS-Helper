@@ -136,6 +136,34 @@ class CorporateStructureControllerTest extends WebTestCase
         $this->client->loginUser($user);
     }
 
+    /**
+     * Make a JSON request with CSRF protection.
+     *
+     * 'corporate_structure' is registered as a stateless CSRF token ID in
+     * config/packages/csrf.yaml. The SameOriginCsrfTokenManager validates
+     * these tokens using the Sec-Fetch-Site header (same-origin check),
+     * which is the recommended approach for JSON API endpoints.
+     *
+     * @param string $method HTTP method
+     * @param string $uri Request URI
+     * @param array $data Request body data (will be JSON-encoded)
+     */
+    private function jsonRequestWithCsrf(string $method, string $uri, array $data = []): void
+    {
+        $this->client->request(
+            $method,
+            $uri,
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_X_CSRF_TOKEN' => 'csrf-token',
+                'HTTP_SEC_FETCH_SITE' => 'same-origin',
+            ],
+            json_encode($data)
+        );
+    }
+
     // ========== TREE TESTS ==========
 
     public function testGetTreeRequiresAuthentication(): void
@@ -200,46 +228,25 @@ class CorporateStructureControllerTest extends WebTestCase
     public function testSetParentRequiresTenantId(): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->client->request(
-            'POST',
-            '/en/api/corporate-structure/set-parent',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode([])
-        );
+        $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/set-parent', []);
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
     public function testSetParentReturns404ForNonexistentTenant(): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->client->request(
-            'POST',
-            '/en/api/corporate-structure/set-parent',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['tenantId' => 999999])
-        );
+        $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/set-parent', ['tenantId' => 999999]);
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
     public function testSetParentRequiresValidGovernanceModel(): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->client->request(
-            'POST',
-            '/en/api/corporate-structure/set-parent',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode([
-                'tenantId' => $this->testTenant->getId(),
-                'parentId' => $this->parentTenant->getId(),
-                'governanceModel' => 'invalid'
-            ])
-        );
+        $this->jsonRequestWithCsrf('POST', '/en/api/corporate-structure/set-parent', [
+            'tenantId' => $this->testTenant->getId(),
+            'parentId' => $this->parentTenant->getId(),
+            'governanceModel' => 'invalid'
+        ]);
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
@@ -261,13 +268,10 @@ class CorporateStructureControllerTest extends WebTestCase
     public function testUpdateGovernanceModelRequiresValidModel(): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->client->request(
+        $this->jsonRequestWithCsrf(
             'PATCH',
             '/en/api/corporate-structure/governance-model/' . $this->testTenant->getId(),
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['governanceModel' => 'invalid'])
+            ['governanceModel' => 'invalid']
         );
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
@@ -396,13 +400,10 @@ class CorporateStructureControllerTest extends WebTestCase
     public function testSetScopeGovernanceRequiresValidModel(): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->client->request(
+        $this->jsonRequestWithCsrf(
             'POST',
             '/en/api/corporate-structure/' . $this->testTenant->getId() . '/governance/risks',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['governanceModel' => 'invalid'])
+            ['governanceModel' => 'invalid']
         );
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }

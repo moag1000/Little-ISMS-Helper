@@ -41,7 +41,7 @@ class ComplianceRequirement
     private string $requirementType = 'core'; // core, detailed, sub_requirement
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'detailedRequirements')]
-    #[ORM\JoinColumn(name: 'parent_requirement_id', nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'parent_requirement_id', nullable: true, onDelete: 'SET NULL')]
     private ?ComplianceRequirement $complianceRequirement = null;
 
     /**
@@ -374,6 +374,18 @@ class ComplianceRequirement
         return !$this->detailedRequirements->isEmpty();
     }
 
+    /**
+     * BSI IT-Grundschutz Anforderungstyp: 'basis', 'standard', 'hoch'
+     */
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $anforderungsTyp = null;
+
+    /**
+     * BSI IT-Grundschutz Absicherungsstufe: 'basis', 'standard', 'kern'
+     */
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $absicherungsStufe = null;
+
     // ── WS-6: consultant-seeded baseline effort in FTE-days (0..999) ───────
     #[ORM\Column(nullable: true)]
     private ?int $baseEffortDays = null;
@@ -389,6 +401,30 @@ class ComplianceRequirement
             $days = max(0, min(999, $days));
         }
         $this->baseEffortDays = $days;
+        return $this;
+    }
+
+    // BSI IT-Grundschutz fields
+
+    public function getAnforderungsTyp(): ?string
+    {
+        return $this->anforderungsTyp;
+    }
+
+    public function setAnforderungsTyp(?string $anforderungsTyp): static
+    {
+        $this->anforderungsTyp = $anforderungsTyp;
+        return $this;
+    }
+
+    public function getAbsicherungsStufe(): ?string
+    {
+        return $this->absicherungsStufe;
+    }
+
+    public function setAbsicherungsStufe(?string $absicherungsStufe): static
+    {
+        $this->absicherungsStufe = $absicherungsStufe;
         return $this;
     }
 }

@@ -27,7 +27,8 @@ class PersonController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
-        $persons = $this->personRepository->findAll();
+        $tenant = $this->security->getUser()?->getTenant();
+        $persons = $tenant ? $this->personRepository->findBy(['tenant' => $tenant]) : [];
         $statistics = $this->personRepository->getStatistics();
 
         return $this->render('person/index.html.twig', [

@@ -258,6 +258,12 @@ class BusinessContinuityPlan
     #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $reviewNotes = null;
 
+    /**
+     * BSI 200-4 BCM Phase: initiierung, analyse, konzeption, umsetzung, aufrechterhaltung
+     */
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $bsiPhase = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['bc_plan:read'])]
     private ?DateTimeInterface $createdAt = null;
@@ -800,5 +806,33 @@ class BusinessContinuityPlan
         }
 
         return (int)(($completed / $total) * 100);
+    }
+
+    // BSI 200-4 BCM Phase
+
+    public function getBsiPhase(): ?string
+    {
+        return $this->bsiPhase;
+    }
+
+    public function setBsiPhase(?string $bsiPhase): static
+    {
+        $this->bsiPhase = $bsiPhase;
+        return $this;
+    }
+
+    /**
+     * Get German label for BSI 200-4 BCM phase
+     */
+    public function getBsiPhaseLabel(): ?string
+    {
+        return match ($this->bsiPhase) {
+            'initiierung' => 'Initiierung',
+            'analyse' => 'Analyse (BIA & Risikoanalyse)',
+            'konzeption' => 'Konzeption (BCM-Strategien)',
+            'umsetzung' => 'Umsetzung (Notfallpläne)',
+            'aufrechterhaltung' => 'Aufrechterhaltung & Verbesserung',
+            default => null,
+        };
     }
 }

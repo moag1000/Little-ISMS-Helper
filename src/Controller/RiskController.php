@@ -80,7 +80,7 @@ class RiskController extends AbstractController
         } else {
             // Fallback for users without tenant (e.g., super admins)
             $risks = $this->riskRepository->findAll();
-            $highRisks = $this->riskRepository->findHighRisks();
+            $highRisks = [];
             $detailedStats = ['own' => count($risks), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($risks)];
             $inheritanceInfo = [
                 'hasParent' => false,
@@ -128,7 +128,7 @@ class RiskController extends AbstractController
             $risks = $this->tagFilterService->filterByTagName($risks, Risk::class, $tagFilter);
         }
 
-        $treatmentStats = $this->riskRepository->countByTreatmentStrategy();
+        $treatmentStats = $tenant ? $this->riskRepository->countByTreatmentStrategy($tenant) : [];
 
         return $this->render('risk/index.html.twig', [
             'risks' => $risks,

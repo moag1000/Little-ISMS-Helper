@@ -93,6 +93,28 @@ class BusinessProcess
     #[ORM\JoinTable(name: 'business_process_risk')]
     private Collection $identifiedRisks;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $mbco = null;
+
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $mbcoPercentage = null;
+
+    /**
+     * @var Collection<int, BusinessProcess>
+     */
+    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'dependentProcesses')]
+    #[ORM\JoinTable(name: 'business_process_dependencies',
+        joinColumns: [new ORM\JoinColumn(name: 'process_id', onDelete: 'CASCADE')],
+        inverseJoinColumns: [new ORM\JoinColumn(name: 'depends_on_id', onDelete: 'CASCADE')]
+    )]
+    private Collection $upstreamDependencies;
+
+    /**
+     * @var Collection<int, BusinessProcess>
+     */
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'upstreamDependencies')]
+    private Collection $dependentProcesses;
+
     /**
      * @var Collection<int, Incident>
      * CRITICAL-05: Incident ↔ BCM Integration (inverse side)
@@ -106,6 +128,8 @@ class BusinessProcess
         $this->supportingAssets = new ArrayCollection();
         $this->identifiedRisks = new ArrayCollection();
         $this->incidents = new ArrayCollection();
+        $this->upstreamDependencies = new ArrayCollection();
+        $this->dependentProcesses = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -632,6 +656,77 @@ class BusinessProcess
         usort($incidents, fn($a, $b): int => $b->getDetectedAt() <=> $a->getDetectedAt());
 
         return $incidents[0];
+    }
+
+    // MBCO and Process Dependency fields
+
+    public function getMbco(): ?string
+    {
+        return $this->mbco;
+    }
+
+    public function setMbco(?string $mbco): static
+    {
+        $this->mbco = $mbco;
+        return $this;
+    }
+
+    public function getMbcoPercentage(): ?int
+    {
+        return $this->mbcoPercentage;
+    }
+
+    public function setMbcoPercentage(?int $mbcoPercentage): static
+    {
+        $this->mbcoPercentage = $mbcoPercentage;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BusinessProcess>
+     */
+    public function getUpstreamDependencies(): Collection
+    {
+        return $this->upstreamDependencies;
+    }
+
+    public function addUpstreamDependency(self $process): static
+    {
+        if (!$this->upstreamDependencies->contains($process)) {
+            $this->upstreamDependencies->add($process);
+        }
+        return $this;
+    }
+
+    public function removeUpstreamDependency(self $process): static
+    {
+        $this->upstreamDependencies->removeElement($process);
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BusinessProcess>
+     */
+    public function getDependentProcesses(): Collection
+    {
+        return $this->dependentProcesses;
+    }
+
+    public function addDependentProcess(self $process): static
+    {
+        if (!$this->dependentProcesses->contains($process)) {
+            $this->dependentProcesses->add($process);
+            $process->addUpstreamDependency($this);
+        }
+        return $this;
+    }
+
+    public function removeDependentProcess(self $process): static
+    {
+        if ($this->dependentProcesses->removeElement($process)) {
+            $process->removeUpstreamDependency($this);
+        }
+        return $this;
     }
 
     /**

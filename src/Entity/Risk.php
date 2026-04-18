@@ -216,9 +216,8 @@ class Risk
     #[Assert\Range(notInRangeMessage: 'Residual impact must be between {{ min }} and {{ max }}', min: 1, max: 5)]
     private ?int $residualImpact = 1;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\NotBlank(message: 'Treatment strategy is required')]
     #[Assert\Choice(
         choices: ['accept', 'mitigate', 'transfer', 'avoid'],
         message: 'Treatment strategy must be one of: {{ choices }}'
@@ -284,6 +283,39 @@ class Risk
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['risk:read'])]
     private bool $formallyAccepted = false;
+
+    /**
+     * Custom review interval in days (overrides default from RiskReviewService).
+     */
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?int $reviewIntervalDays = null;
+
+    /**
+     * Risk Communication Plan (ISO 31000 Section 6.2)
+     * Structure: [{stakeholder: string, frequency: string, method: string, content: string}]
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?array $communicationPlan = null;
+
+    /**
+     * Link to ThreatIntelligence entity for structured threat data
+     */
+    #[ORM\ManyToOne(targetEntity: ThreatIntelligence::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[MaxDepth(1)]
+    private ?ThreatIntelligence $threatIntelligence = null;
+
+    /**
+     * Link to Vulnerability entity for structured vulnerability data
+     */
+    #[ORM\ManyToOne(targetEntity: Vulnerability::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[MaxDepth(1)]
+    private ?Vulnerability $linkedVulnerability = null;
 
     /**
      * @var Collection<int, Control>
@@ -962,6 +994,52 @@ class Risk
     public function setDataSubjectImpact(?string $dataSubjectImpact): static
     {
         $this->dataSubjectImpact = $dataSubjectImpact;
+        return $this;
+    }
+
+    // Review Interval, Communication Plan, Threat Intelligence, Vulnerability Getters/Setters
+
+    public function getReviewIntervalDays(): ?int
+    {
+        return $this->reviewIntervalDays;
+    }
+
+    public function setReviewIntervalDays(?int $reviewIntervalDays): static
+    {
+        $this->reviewIntervalDays = $reviewIntervalDays;
+        return $this;
+    }
+
+    public function getCommunicationPlan(): ?array
+    {
+        return $this->communicationPlan;
+    }
+
+    public function setCommunicationPlan(?array $communicationPlan): static
+    {
+        $this->communicationPlan = $communicationPlan;
+        return $this;
+    }
+
+    public function getThreatIntelligence(): ?ThreatIntelligence
+    {
+        return $this->threatIntelligence;
+    }
+
+    public function setThreatIntelligence(?ThreatIntelligence $threatIntelligence): static
+    {
+        $this->threatIntelligence = $threatIntelligence;
+        return $this;
+    }
+
+    public function getLinkedVulnerability(): ?Vulnerability
+    {
+        return $this->linkedVulnerability;
+    }
+
+    public function setLinkedVulnerability(?Vulnerability $linkedVulnerability): static
+    {
+        $this->linkedVulnerability = $linkedVulnerability;
         return $this;
     }
 }

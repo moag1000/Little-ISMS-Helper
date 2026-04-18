@@ -34,10 +34,12 @@ class RiskRepository extends ServiceEntityRepository
      * @param int $threshold Minimum risk score to consider as high risk (default: 12)
      * @return Risk[] Array of Risk entities sorted by severity
      */
-    public function findHighRisks(int $threshold = 12): array
+    public function findHighRisks(Tenant $tenant, int $threshold = 12): array
     {
         return $this->createQueryBuilder('r')
-            ->where('(r.probability * r.impact) >= :threshold')
+            ->where('r.tenant = :tenant')
+            ->andWhere('(r.probability * r.impact) >= :threshold')
+            ->setParameter('tenant', $tenant)
             ->setParameter('threshold', $threshold)
             ->orderBy('r.probability', 'DESC')
             ->addOrderBy('r.impact', 'DESC')
@@ -50,10 +52,12 @@ class RiskRepository extends ServiceEntityRepository
      *
      * @return array<array{treatmentStrategy: string, count: int}> Array of counts per strategy
      */
-    public function countByTreatmentStrategy(): array
+    public function countByTreatmentStrategy(Tenant $tenant): array
     {
         return $this->createQueryBuilder('r')
             ->select('r.treatmentStrategy, COUNT(r.id) as count')
+            ->where('r.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
             ->groupBy('r.treatmentStrategy')
             ->getQuery()
             ->getResult();
@@ -192,13 +196,19 @@ class RiskRepository extends ServiceEntityRepository
      * @param DateTimeInterface $asOf Date to check against (default: today)
      * @return Risk[] Array of risks with nextReviewDate <= asOf
      */
-    public function findDueForReview(DateTimeInterface $asOf = new DateTime()): array
+    public function findDueForReview(?Tenant $tenant = null, DateTimeInterface $asOf = new DateTime()): array
     {
-        return $this->createQueryBuilder('r')
+        $qb = $this->createQueryBuilder('r')
             ->where('r.nextReviewDate IS NOT NULL')
             ->andWhere('r.nextReviewDate <= :asOf')
-            ->setParameter('asOf', $asOf)
-            ->orderBy('r.nextReviewDate', 'ASC')
+            ->setParameter('asOf', $asOf);
+
+        if ($tenant !== null) {
+            $qb->andWhere('r.tenant = :tenant')
+                ->setParameter('tenant', $tenant);
+        }
+
+        return $qb->orderBy('r.nextReviewDate', 'ASC')
             ->getQuery()
             ->getResult();
     }

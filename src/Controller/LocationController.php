@@ -27,7 +27,8 @@ class LocationController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
-        $locations = $this->locationRepository->findAll();
+        $tenant = $this->security->getUser()?->getTenant();
+        $locations = $tenant ? $this->locationRepository->findBy(['tenant' => $tenant]) : [];
         $topLevel = $this->locationRepository->findTopLevel();
 
         return $this->render('location/index.html.twig', [

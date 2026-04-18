@@ -33,7 +33,7 @@ class CheckRiskReviewsHandler
 
         try {
             // Find risks due for review (e.g., nextReviewDate <= today)
-            $risksDueForReview = $this->riskRepository->findDueForReview(new DateTime());
+            $risksDueForReview = $this->riskRepository->findDueForReview(null, new DateTime());
 
             if (empty($risksDueForReview)) {
                 $this->logger->info('No risks due for review');
