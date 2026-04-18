@@ -177,6 +177,60 @@
                 </div>
             </div>
 
+            {% if inheritedProtection is defined and inheritedProtection %}
+                {% set ownC = asset.confidentialityValue ?? 0 %}
+                {% set ownI = asset.integrityValue ?? 0 %}
+                {% set ownA = asset.availabilityValue ?? 0 %}
+                {% set hasInc = inheritedProtection.confidentiality > ownC or inheritedProtection.integrity > ownI or inheritedProtection.availability > ownA %}
+                {% if hasInc %}
+                    <div class="detail-section">
+                        <h3>
+                            <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                            {{ 'asset.section.inherited_protection'|trans({}, 'asset') }}
+                        </h3>
+                        <div class="alert alert-warning" role="alert">
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            {{ 'asset.inherited_protection.warning'|trans({}, 'asset') }}
+                        </div>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th scope="col">{{ 'asset.inherited_protection.dimension'|trans({}, 'asset') }}</th>
+                                    <th scope="col">{{ 'asset.inherited_protection.own'|trans({}, 'asset') }}</th>
+                                    <th scope="col">{{ 'asset.inherited_protection.inherited'|trans({}, 'asset') }}</th>
+                                    <th scope="col">{{ 'asset.inherited_protection.driven_by'|trans({}, 'asset') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dim in ['confidentiality', 'integrity', 'availability'] %}
+                                    {% set own = {confidentiality: ownC, integrity: ownI, availability: ownA}[dim] %}
+                                    {% set inherited = attribute(inheritedProtection, dim) %}
+                                    {% set driver = inheritedProtection.drivenBy[dim] %}
+                                    <tr>
+                                        <td>{{ ('asset.field.' ~ dim)|trans({}, 'asset') }}</td>
+                                        <td>{{ own }}/5</td>
+                                        <td>
+                                            {% if inherited > own %}
+                                                <span class="badge bg-warning text-dark">{{ inherited }}/5 ↑</span>
+                                            {% else %}
+                                                {{ inherited }}/5
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if driver and driver.id != asset.id %}
+                                                <a href="{{ path('app_asset_show', {id: driver.id}) }}">{{ driver.name }}</a>
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            {% endif %}
+
             {% if asset.handlingInstructions %}
                 <div class="detail-section">
                     <h3>{{ 'asset.section.handling_instructions'|trans({}, 'asset') }}</h3>
