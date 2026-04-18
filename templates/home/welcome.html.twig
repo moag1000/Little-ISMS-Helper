@@ -4,20 +4,81 @@
 
 {% block body %}
 <div class="container-fluid welcome-page">
+    {# Urgent Tasks Alert (if any) - shown ABOVE hero for maximum visibility #}
+    {% if urgent_tasks|length > 0 %}
+        <div class="row justify-content-center mb-4" id="urgent-tasks">
+            <div class="col-lg-10 col-xl-8">
+                {% embed '_components/_card.html.twig' with {borderColor: 'warning', class: 'shadow-sm', urgent_tasks: urgent_tasks, total_urgent_count: total_urgent_count} only %}
+                    {% block card_header %}
+                        <div class="card-header bg-warning-subtle d-flex align-items-center">
+                            <i class="bi bi-bell-fill text-warning me-2" aria-hidden="true"></i>
+                            <h2 class="h5 mb-0">{{ 'welcome.urgent_tasks.title'|trans({}, 'welcome') }}</h2>
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark ms-auto', content: total_urgent_count } only %}
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <div class="row g-3">
+                            {% for task in urgent_tasks %}
+                                <div class="col-md-6">
+                                    <a href="{{ path(task.route) }}" class="text-decoration-none">
+                                        <div class="d-flex align-items-center p-3 rounded border border-{{ task.color }}-subtle bg-{{ task.color }}-subtle hover-lift">
+                                            <div class="flex-shrink-0 me-3">
+                                                {% include '_components/_badge.html.twig' with {
+                                                    variant: task.color,
+                                                    icon: task.icon,
+                                                    pill: true,
+                                                    class: 'p-2'
+                                                } only %}
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="fw-semibold text-dark">
+                                                    {{ task.title|trans({'%count%': task.count}, 'welcome') }}
+                                                </div>
+                                                <small class="text-muted">
+                                                    {{ 'welcome.urgent_tasks.click_to_view'|trans({}, 'welcome') }}
+                                                </small>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                {% include '_components/_badge.html.twig' with { variant: task.color, class: 'fs-6', content: task.count } only %}
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endblock %}
+                {% endembed %}
+            </div>
+        </div>
+    {% endif %}
+
     {# Hero Section with Logo #}
     <div class="row justify-content-center mb-5">
         <div class="col-lg-10 col-xl-8">
             <div class="welcome-hero text-center py-5">
                 <div class="welcome-logo mb-4">
                     <img src="{{ asset('logo.svg') }}"
-                         alt="Little ISMS Helper Logo"
+                         alt="{{ 'welcome.logo_alt'|trans({}, 'welcome') }}"
                          class="img-fluid"
                          style="max-height: 200px;">
                 </div>
                 <h1 class="h3 text-muted mb-3">{{ 'welcome.headline'|trans({}, 'welcome') }}</h1>
-                <p class="lead text-muted mb-4">
+                <p class="lead text-muted mb-2">
                     {{ 'welcome.tagline'|trans({}, 'welcome') }}
                 </p>
+
+                {# Dynamic Compliance Status Line #}
+                {% if overall_compliance is defined and overall_compliance > 0 %}
+                    <p class="lead text-muted mb-4">
+                        {{ 'welcome.hero.status'|trans({
+                            '%compliance%': overall_compliance,
+                            '%urgent%': total_urgent_count|default(0),
+                            '%risks%': risks_total|default(0)
+                        }, 'welcome') }}
+                    </p>
+                {% else %}
+                    <div class="mb-4"></div>
+                {% endif %}
 
                 {# Quick Action Buttons #}
                 <div class="d-flex justify-content-center gap-3 flex-wrap">
@@ -36,59 +97,11 @@
         </div>
     </div>
 
-    {# Urgent Tasks Alert (if any) #}
-    {% if urgent_tasks|length > 0 %}
-        <div class="row justify-content-center mb-5" id="urgent-tasks">
-            <div class="col-lg-10 col-xl-8">
-                {% embed '_components/_card.html.twig' with {borderColor: 'warning', class: 'shadow-sm'} %}
-                    {% block card_header %}
-                        <div class="card-header bg-warning-subtle d-flex align-items-center">
-                            <i class="bi bi-bell-fill text-warning me-2" aria-hidden="true"></i>
-                            <h2 class="h5 mb-0">{{ 'welcome.urgent_tasks.title'|trans({}, 'welcome') }}</h2>
-                            {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark ms-auto', content: total_urgent_count } %}
-                        </div>
-                    {% endblock %}
-                    {% block card_body %}
-                        <div class="row g-3">
-                            {% for task in urgent_tasks %}
-                                <div class="col-md-6">
-                                    <a href="{{ path(task.route) }}" class="text-decoration-none">
-                                        <div class="d-flex align-items-center p-3 rounded border border-{{ task.color }}-subtle bg-{{ task.color }}-subtle hover-lift">
-                                            <div class="flex-shrink-0 me-3">
-                                                {% include '_components/_badge.html.twig' with {
-                                                    variant: task.color,
-                                                    icon: task.icon,
-                                                    pill: true,
-                                                    class: 'p-2'
-                                                } %}
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <div class="fw-semibold text-dark">
-                                                    {{ task.title|trans({'%count%': task.count}, 'welcome') }}
-                                                </div>
-                                                <small class="text-muted">
-                                                    {{ 'welcome.urgent_tasks.click_to_view'|trans({}, 'welcome') }}
-                                                </small>
-                                            </div>
-                                            <div class="flex-shrink-0">
-                                                {% include '_components/_badge.html.twig' with { variant: task.color, class: 'fs-6', content: task.count } %}
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-            </div>
-        </div>
-    {% endif %}
-
     {# Compliance Wizards Section (only if incomplete) #}
     {% if compliance_wizards|length > 0 %}
         <div class="row justify-content-center mb-5" id="compliance-wizards">
             <div class="col-lg-10 col-xl-8">
-                {% embed '_components/_card.html.twig' with {borderColor: 'info', class: 'shadow-sm'} %}
+                {% embed '_components/_card.html.twig' with {borderColor: 'info', class: 'shadow-sm', compliance_wizards: compliance_wizards} only %}
                     {% block card_header %}
                         <div class="card-header bg-info-subtle d-flex align-items-center">
                             <i class="bi bi-magic text-info me-2" aria-hidden="true"></i>
@@ -126,7 +139,7 @@
                                                             class: 'text-danger',
                                                             icon: 'bi-exclamation-circle',
                                                             content: wizard.critical_gaps
-                                                        } %}
+                                                        } only %}
                                                     {% endif %}
                                                 </div>
                                             </div>
@@ -159,11 +172,11 @@
                                             variant: module.color ~ '-subtle',
                                             class: 'text-' ~ module.color ~ ' rounded-circle p-3',
                                             icon: module.icon
-                                        } %}
+                                        } only %}
                                     </div>
-                                    <h3 class="h6 mb-2 text-dark">{{ module.name }}</h3>
+                                    <h3 class="h6 mb-2 text-dark">{{ module.name_key|trans({}, 'welcome') }}</h3>
                                     {% if module.count is not null %}
-                                        {% include '_components/_badge.html.twig' with { variant: module.color, content: module.count } %}
+                                        {% include '_components/_badge.html.twig' with { variant: module.color, content: module.count } only %}
                                     {% endif %}
                                 </div>
                             </div>
@@ -200,12 +213,12 @@
             }]) %}
         {% endif %}
     {% endfor %}
-    {# Documents are always available (core module) #}
+    {# Documents quick action - route to new document upload #}
     {% set quick_actions = quick_actions|merge([{
-        'route': 'app_document_index',
-        'icon': 'bi-file-earmark-text',
+        'route': 'app_document_new',
+        'icon': 'bi-file-earmark-plus',
         'color': 'secondary',
-        'label': 'welcome.quick_actions.documents'
+        'label': 'welcome.quick_actions.new_document'
     }]) %}
 
     {% if quick_actions|length > 0 %}
@@ -232,7 +245,7 @@
     {# Skip Welcome Preference #}
     <div class="row justify-content-center mb-4">
         <div class="col-lg-10 col-xl-8">
-            {% embed '_components/_card.html.twig' with {variant: 'light', class: 'border-0'} %}
+            {% embed '_components/_card.html.twig' with {variant: 'light', class: 'border-0', skip_welcome: skip_welcome} only %}
                 {% block card_body %}
                     <form action="{{ path('app_welcome_preference') }}" method="post" class="d-flex align-items-center justify-content-center gap-3 flex-wrap py-1">
                         <input type="hidden" name="_token" value="{{ csrf_token('welcome_preference') }}">

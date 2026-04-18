@@ -3,6 +3,10 @@ welcome:
     title: "Willkommen"
     headline: "Little ISMS Helper"
     tagline: "Ihre webbasierte Komplettlösung für ISO 27001:2022 Compliance, Risikomanagement und Business Continuity"
+    logo_alt: "Little ISMS Helper Logo"
+
+    hero:
+        status: "Compliance: %compliance%% | %urgent% dringende Aufgaben | %risks% Risiken erfasst"
 
     action:
         dashboard: "Zum Dashboard"
@@ -19,6 +23,16 @@ welcome:
         pending_workflows: "%count% ausstehende Genehmigungen"
         overdue_workflows: "%count% überfällige Workflows"
 
+    module:
+        core: "Kern-ISMS"
+        assets: "Assets"
+        risks: "Risiken"
+        controls: "Controls"
+        incidents: "Vorfälle"
+        bcm: "BCM"
+        compliance: "Compliance"
+        audits: "Audits"
+
     modules:
         title: "Aktive Module"
 
@@ -33,7 +47,7 @@ welcome:
         new_asset: "Neues Asset"
         new_risk: "Risiko erfassen"
         report_incident: "Vorfall melden"
-        documents: "Dokumente"
+        new_document: "Neues Dokument"
 
     preference:
         skip_next_time: "Beim nächsten Login direkt zum Dashboard"
