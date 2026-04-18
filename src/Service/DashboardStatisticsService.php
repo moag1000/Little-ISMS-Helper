@@ -105,15 +105,18 @@ class DashboardStatisticsService
             $openIncidentCount = count($openIncidents);
         } else {
             // Fallback for users without tenant (admin view)
-            $activeAssets = $this->assetRepository->findActiveAssets();
-            $assetCount = count($activeAssets);
+            // Super admin fallback: no tenant context, return empty/zero
+            $activeAssets = [];
+            $assetCount = 0;
             $allAccessibleRisks = $this->riskRepository->findAll();
             $riskCount = count($allAccessibleRisks);
-            $openIncidentCount = count($this->incidentRepository->findOpenIncidents());
+            $openIncidentCount = 0;
         }
 
-        // Control statistics (controls are global, not tenant-specific)
-        $applicableControls = $this->controlRepository->findApplicableControls();
+        // Control statistics (tenant-scoped)
+        $applicableControls = $tenant
+            ? $this->controlRepository->findApplicableControls($tenant)
+            : [];
         $implementedControls = $this->countImplementedControls($applicableControls);
         $compliancePercentage = $this->calculateCompliancePercentage(
             $implementedControls,
@@ -153,7 +156,7 @@ class DashboardStatisticsService
      */
     private function countCriticalAssets(): int
     {
-        $activeAssets = $this->assetRepository->findActiveAssets();
+        $activeAssets = [];
 
         return count(array_filter(
             $activeAssets,
@@ -398,7 +401,9 @@ class DashboardStatisticsService
      */
     private function getCoreKPIs(?Tenant $tenant): array
     {
-        $applicableControls = $this->controlRepository->findApplicableControls();
+        $applicableControls = $tenant
+            ? $this->controlRepository->findApplicableControls($tenant)
+            : [];
         $implementedControls = $this->countImplementedControls($applicableControls);
         $totalControls = count($applicableControls);
         $compliancePercentage = $this->calculateCompliancePercentage($implementedControls, $totalControls);
@@ -489,7 +494,7 @@ class DashboardStatisticsService
     {
         $allAssets = $tenant
             ? $this->getAllAccessibleAssets($tenant)
-            : $this->assetRepository->findActiveAssets();
+            : [];
 
         $activeAssets = array_filter($allAssets, fn($a): bool => $a->getStatus() === 'active');
         $totalAssets = count($activeAssets);

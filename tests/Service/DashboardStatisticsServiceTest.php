@@ -6,12 +6,15 @@ use App\Entity\Asset;
 use App\Entity\Control;
 use App\Entity\Incident;
 use App\Entity\Risk;
+use App\Entity\Tenant;
+use App\Entity\User;
 use App\Repository\AssetRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
 use App\Service\DashboardStatisticsService;
 use App\Service\ModuleConfigurationService;
+use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -24,6 +27,7 @@ class DashboardStatisticsServiceTest extends TestCase
     private MockObject $controlRepository;
     private MockObject $security;
     private MockObject $moduleConfigurationService;
+    private MockObject $tenant;
     private DashboardStatisticsService $service;
 
     protected function setUp(): void
@@ -34,6 +38,16 @@ class DashboardStatisticsServiceTest extends TestCase
         $this->controlRepository = $this->createMock(ControlRepository::class);
         $this->security = $this->createMock(Security::class);
         $this->moduleConfigurationService = $this->createMock(ModuleConfigurationService::class);
+
+        // Create tenant mock
+        $this->tenant = $this->createMock(Tenant::class);
+        $this->tenant->method('getParent')->willReturn(null);
+        $this->tenant->method('getSubsidiaries')->willReturn(new ArrayCollection());
+
+        // Create user mock with tenant
+        $user = $this->createMock(User::class);
+        $user->method('getTenant')->willReturn($this->tenant);
+        $this->security->method('getUser')->willReturn($user);
 
         // Default: return empty active modules
         $this->moduleConfigurationService->method('getActiveModules')->willReturn([]);
@@ -50,9 +64,12 @@ class DashboardStatisticsServiceTest extends TestCase
 
     public function testGetDashboardStatisticsWithEmptyData(): void
     {
-        $this->assetRepository->method('findActiveAssets')->willReturn([]);
-        $this->riskRepository->method('findAll')->willReturn([]);
-        $this->incidentRepository->method('findOpenIncidents')->willReturn([]);
+        $this->assetRepository->method('findByTenant')->willReturn([]);
+        $this->assetRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
+        $this->riskRepository->method('findByTenant')->willReturn([]);
+        $this->riskRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
+        $this->incidentRepository->method('findByTenant')->willReturn([]);
+        $this->incidentRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
         $this->controlRepository->method('findApplicableControls')->willReturn([]);
 
         $stats = $this->service->getDashboardStatistics();
@@ -69,9 +86,12 @@ class DashboardStatisticsServiceTest extends TestCase
 
     public function testCompliancePercentageCalculation(): void
     {
-        $this->assetRepository->method('findActiveAssets')->willReturn([]);
-        $this->riskRepository->method('findAll')->willReturn([]);
-        $this->incidentRepository->method('findOpenIncidents')->willReturn([]);
+        $this->assetRepository->method('findByTenant')->willReturn([]);
+        $this->assetRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
+        $this->riskRepository->method('findByTenant')->willReturn([]);
+        $this->riskRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
+        $this->incidentRepository->method('findByTenant')->willReturn([]);
+        $this->incidentRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
 
         // 3 out of 4 controls implemented = 75%
         $implementedControl = $this->createMockControl('implemented');
@@ -98,15 +118,18 @@ class DashboardStatisticsServiceTest extends TestCase
         $normalAsset = $this->createMockAsset(3);
         $lowAsset = $this->createMockAsset(1);
 
-        $this->assetRepository->method('findActiveAssets')->willReturn([
+        $this->assetRepository->method('findByTenant')->willReturn([
             $criticalAsset,
             $veryHighAsset,
             $normalAsset,
             $lowAsset,
         ]);
+        $this->assetRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
 
-        $this->riskRepository->method('findAll')->willReturn([]);
-        $this->incidentRepository->method('findOpenIncidents')->willReturn([]);
+        $this->riskRepository->method('findByTenant')->willReturn([]);
+        $this->riskRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
+        $this->incidentRepository->method('findByTenant')->willReturn([]);
+        $this->incidentRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
         $this->controlRepository->method('findApplicableControls')->willReturn([]);
 
         $stats = $this->service->getDashboardStatistics();
@@ -122,14 +145,17 @@ class DashboardStatisticsServiceTest extends TestCase
         $mediumRisk = $this->createMockRisk(8);
         $lowRisk = $this->createMockRisk(4);
 
-        $this->assetRepository->method('findActiveAssets')->willReturn([]);
-        $this->riskRepository->method('findAll')->willReturn([
+        $this->assetRepository->method('findByTenant')->willReturn([]);
+        $this->assetRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
+        $this->riskRepository->method('findByTenant')->willReturn([
             $highRisk,
             $mediumHighRisk,
             $mediumRisk,
             $lowRisk,
         ]);
-        $this->incidentRepository->method('findOpenIncidents')->willReturn([]);
+        $this->riskRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
+        $this->incidentRepository->method('findByTenant')->willReturn([]);
+        $this->incidentRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
         $this->controlRepository->method('findApplicableControls')->willReturn([]);
 
         $stats = $this->service->getDashboardStatistics();
@@ -141,14 +167,22 @@ class DashboardStatisticsServiceTest extends TestCase
     public function testOpenIncidentsCounting(): void
     {
         $incident1 = $this->createMock(Incident::class);
-        $incident2 = $this->createMock(Incident::class);
+        $incident1->method('getStatus')->willReturn('open');
+        $incident1->method('getId')->willReturn(1);
 
-        $this->assetRepository->method('findActiveAssets')->willReturn([]);
-        $this->riskRepository->method('findAll')->willReturn([]);
-        $this->incidentRepository->method('findOpenIncidents')->willReturn([
+        $incident2 = $this->createMock(Incident::class);
+        $incident2->method('getStatus')->willReturn('open');
+        $incident2->method('getId')->willReturn(2);
+
+        $this->assetRepository->method('findByTenant')->willReturn([]);
+        $this->assetRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
+        $this->riskRepository->method('findByTenant')->willReturn([]);
+        $this->riskRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
+        $this->incidentRepository->method('findByTenant')->willReturn([
             $incident1,
             $incident2,
         ]);
+        $this->incidentRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
         $this->controlRepository->method('findApplicableControls')->willReturn([]);
 
         $stats = $this->service->getDashboardStatistics();
@@ -159,9 +193,12 @@ class DashboardStatisticsServiceTest extends TestCase
 
     public function testCompliancePercentageRounding(): void
     {
-        $this->assetRepository->method('findActiveAssets')->willReturn([]);
-        $this->riskRepository->method('findAll')->willReturn([]);
-        $this->incidentRepository->method('findOpenIncidents')->willReturn([]);
+        $this->assetRepository->method('findByTenant')->willReturn([]);
+        $this->assetRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
+        $this->riskRepository->method('findByTenant')->willReturn([]);
+        $this->riskRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
+        $this->incidentRepository->method('findByTenant')->willReturn([]);
+        $this->incidentRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
 
         // 1 out of 3 = 33.333... should round to 33
         $implementedControl = $this->createMockControl('implemented');
@@ -180,21 +217,40 @@ class DashboardStatisticsServiceTest extends TestCase
 
     public function testFullDashboardStatistics(): void
     {
-        // Setup comprehensive test data
-        $this->assetRepository->method('findActiveAssets')->willReturn([
-            $this->createMockAsset(5), // critical
-            $this->createMockAsset(4), // critical
-            $this->createMockAsset(3), // normal
-        ]);
+        $asset1 = $this->createMockAsset(5);
+        $asset1->method('getStatus')->willReturn('active');
+        $asset1->method('getId')->willReturn(1);
 
-        $this->riskRepository->method('findAll')->willReturn([
+        $asset2 = $this->createMockAsset(4);
+        $asset2->method('getStatus')->willReturn('active');
+        $asset2->method('getId')->willReturn(2);
+
+        $asset3 = $this->createMockAsset(3);
+        $asset3->method('getStatus')->willReturn('active');
+        $asset3->method('getId')->willReturn(3);
+
+        // Setup comprehensive test data
+        $this->assetRepository->method('findByTenant')->willReturn([
+            $asset1, // critical
+            $asset2, // critical
+            $asset3, // normal
+        ]);
+        $this->assetRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
+
+        $this->riskRepository->method('findByTenant')->willReturn([
             $this->createMockRisk(16), // high
             $this->createMockRisk(9),  // medium
         ]);
+        $this->riskRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
 
-        $this->incidentRepository->method('findOpenIncidents')->willReturn([
-            $this->createMock(Incident::class),
+        $incident1 = $this->createMock(Incident::class);
+        $incident1->method('getStatus')->willReturn('open');
+        $incident1->method('getId')->willReturn(1);
+
+        $this->incidentRepository->method('findByTenant')->willReturn([
+            $incident1,
         ]);
+        $this->incidentRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
 
         $this->controlRepository->method('findApplicableControls')->willReturn([
             $this->createMockControl('implemented'),
@@ -220,6 +276,8 @@ class DashboardStatisticsServiceTest extends TestCase
     {
         $asset = $this->createMock(Asset::class);
         $asset->method('getConfidentialityValue')->willReturn($confidentialityValue);
+        $asset->method('getStatus')->willReturn('active');
+        $asset->method('getId')->willReturn(random_int(100, 99999));
         return $asset;
     }
 
@@ -227,6 +285,7 @@ class DashboardStatisticsServiceTest extends TestCase
     {
         $risk = $this->createMock(Risk::class);
         $risk->method('getInherentRiskLevel')->willReturn($inherentRiskLevel);
+        $risk->method('getId')->willReturn(random_int(100, 99999));
         return $risk;
     }
 

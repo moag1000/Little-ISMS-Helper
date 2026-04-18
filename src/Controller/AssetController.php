@@ -110,7 +110,9 @@ class AssetController extends AbstractController
             $assets = $this->tagFilterService->filterByTagName($assets, Asset::class, $tagFilter);
         }
 
-        $typeStats = $this->assetRepository->countByType();
+        $typeStats = $tenant
+            ? $this->assetRepository->countByType($tenant)
+            : [];
 
         // Calculate BCM-based suggestions and risk count for each asset
         $assetRecommendations = [];

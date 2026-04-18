@@ -17,7 +17,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_USER')]
 class SearchController extends AbstractController
 {
     public function __construct(
@@ -73,9 +75,10 @@ class SearchController extends AbstractController
     public function assetPreview(int $id): Response
     {
         $asset = $this->assetRepository->find($id);
+        $tenant = $this->getUser()?->getTenant();
 
-        if (!$asset) {
-            return new Response('Asset nicht gefunden', Response::HTTP_NOT_FOUND);
+        if (!$asset || ($tenant && $asset->getTenant() !== $tenant)) {
+            return new Response('Not found', Response::HTTP_NOT_FOUND);
         }
 
         return $this->render('_previews/_asset_preview.html.twig', [
@@ -89,9 +92,10 @@ class SearchController extends AbstractController
     public function riskPreview(int $id): Response
     {
         $risk = $this->riskRepository->find($id);
+        $tenant = $this->getUser()?->getTenant();
 
-        if (!$risk) {
-            return new Response('Risiko nicht gefunden', Response::HTTP_NOT_FOUND);
+        if (!$risk || ($tenant && $risk->getTenant() !== $tenant)) {
+            return new Response('Not found', Response::HTTP_NOT_FOUND);
         }
 
         return $this->render('_previews/_risk_preview.html.twig', [
@@ -105,9 +109,10 @@ class SearchController extends AbstractController
     public function incidentPreview(int $id): Response
     {
         $incident = $this->incidentRepository->find($id);
+        $tenant = $this->getUser()?->getTenant();
 
-        if (!$incident) {
-            return new Response('Vorfall nicht gefunden', Response::HTTP_NOT_FOUND);
+        if (!$incident || ($tenant && $incident->getTenant() !== $tenant)) {
+            return new Response('Not found', Response::HTTP_NOT_FOUND);
         }
 
         return $this->render('_previews/_incident_preview.html.twig', [

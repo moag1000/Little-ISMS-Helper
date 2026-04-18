@@ -50,7 +50,7 @@ class Document
     private ?int $entityId = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'uploaded_by_id', nullable: false)]
+    #[ORM\JoinColumn(name: 'uploaded_by_id', nullable: true, onDelete: 'SET NULL')]
     private ?User $user = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]

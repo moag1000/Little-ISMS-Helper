@@ -4,6 +4,7 @@ namespace App\Service;
 
 use DateTime;
 use App\Repository\ControlRepository;
+use App\Service\TenantContext;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -19,7 +20,8 @@ class SoAReportService
 {
     public function __construct(
         private readonly ControlRepository $controlRepository,
-        private readonly PdfExportService $pdfExportService
+        private readonly PdfExportService $pdfExportService,
+        private readonly TenantContext $tenantContext
     ) {
     }
 
@@ -39,9 +41,10 @@ class SoAReportService
      */
     public function generateSoAReport(array $options = []): string
     {
-        $controls = $this->controlRepository->findAllInIsoOrder();
-        $stats = $this->controlRepository->getImplementationStats();
-        $categoryStats = $this->controlRepository->countByCategory();
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $controls = $tenant ? $this->controlRepository->findAllInIsoOrder($tenant) : [];
+        $stats = $tenant ? $this->controlRepository->getImplementationStats($tenant) : ['total' => 0, 'implemented' => 0, 'in_progress' => 0, 'not_started' => 0, 'not_applicable' => 0];
+        $categoryStats = $tenant ? $this->controlRepository->countByCategory($tenant) : [];
 
         // Group controls by category for better PDF structure
         $controlsByCategory = $this->groupControlsByCategory($controls);
@@ -165,7 +168,10 @@ class SoAReportService
      */
     public function getSoAStatistics(): array
     {
-        return $this->controlRepository->getImplementationStats();
+        $tenant = $this->tenantContext->getCurrentTenant();
+        return $tenant
+            ? $this->controlRepository->getImplementationStats($tenant)
+            : ['total' => 0, 'implemented' => 0, 'in_progress' => 0, 'not_started' => 0, 'not_applicable' => 0];
     }
 
     /**
@@ -175,7 +181,10 @@ class SoAReportService
      */
     public function getCategoryStatistics(): array
     {
-        return $this->controlRepository->countByCategory();
+        $tenant = $this->tenantContext->getCurrentTenant();
+        return $tenant
+            ? $this->controlRepository->countByCategory($tenant)
+            : [];
     }
 
     /**
@@ -201,7 +210,8 @@ class SoAReportService
      */
     public function getControlsRequiringAttention(): array
     {
-        $allControls = $this->controlRepository->findAllInIsoOrder();
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $allControls = $tenant ? $this->controlRepository->findAllInIsoOrder($tenant) : [];
         $requiresAttention = [];
 
         foreach ($allControls as $allControl) {

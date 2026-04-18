@@ -170,25 +170,25 @@ class Risk
      * At least one subject must be associated with each risk
      */
     #[ORM\ManyToOne(inversedBy: 'risks')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk:read', 'risk:write'])]
     #[MaxDepth(1)]
     private ?Asset $asset = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk:read', 'risk:write'])]
     #[MaxDepth(1)]
     private ?Person $person = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk:read', 'risk:write'])]
     #[MaxDepth(1)]
     private ?Location $location = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk:read', 'risk:write'])]
     #[MaxDepth(1)]
     private ?Supplier $supplier = null;

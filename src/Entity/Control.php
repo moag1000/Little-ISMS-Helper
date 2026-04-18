@@ -61,6 +61,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(BooleanFilter::class, properties: ['applicable'])]
 #[ApiFilter(OrderFilter::class, properties: ['controlId', 'category', 'implementationPercentage', 'targetDate'])]
 #[ApiFilter(DateFilter::class, properties: ['targetDate', 'lastReviewDate'])]
+#[ORM\HasLifecycleCallbacks]
 class Control
 {
     #[ORM\Id]
@@ -386,6 +387,12 @@ class Control
     {
         $this->updatedAt = $updatedAt;
         return $this;
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     /**

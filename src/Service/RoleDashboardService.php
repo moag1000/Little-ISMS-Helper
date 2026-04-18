@@ -660,7 +660,10 @@ class RoleDashboardService
 
     private function getEvidenceStatus(): array
     {
-        $controls = $this->controlRepository->findApplicableControls();
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $controls = $tenant
+            ? $this->controlRepository->findApplicableControls($tenant)
+            : [];
         $total = count($controls);
 
         // Controls with evidence (having linked documents or reviews)

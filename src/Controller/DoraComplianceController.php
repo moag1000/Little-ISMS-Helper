@@ -145,7 +145,8 @@ class DoraComplianceController extends AbstractController
         $treatmentRate = $totalIctRisks > 0 ? round(($treatedIctRisks / $totalIctRisks) * 100) : 100;
 
         // ICT Assets inventory (Art. 8)
-        $allAssets = $this->assetRepository->findActiveAssets();
+        $tenant = $this->getUser()?->getTenant();
+        $allAssets = $tenant ? $this->assetRepository->findActiveAssets($tenant) : [];
         $ictAssets = array_filter($allAssets, function ($asset) {
             $type = strtolower($asset->getType() ?? '');
             $category = strtolower($asset->getCategory() ?? '');
@@ -173,7 +174,9 @@ class DoraComplianceController extends AbstractController
         $ictControls = $this->controlRepository->findBy(['category' => ['access_control', 'cryptography', 'network_security', 'operations_security', 'system_acquisition']]);
         if (count($ictControls) === 0) {
             // Fallback: get all applicable controls
-            $ictControls = $this->controlRepository->findApplicableControls();
+            $ictControls = $tenant
+                ? $this->controlRepository->findApplicableControls($tenant)
+                : [];
         }
         $implementedControls = count(array_filter($ictControls, fn($c) => $c->getImplementationStatus() === 'implemented'));
         $controlImplementationRate = count($ictControls) > 0 ? round(($implementedControls / count($ictControls)) * 100) : 0;
@@ -390,10 +393,13 @@ class DoraComplianceController extends AbstractController
         // Information sharing is mostly organizational/process based
         // This can be tracked through documented processes and controls
 
+        $tenant = $this->getUser()?->getTenant();
         $infoSharingControls = $this->controlRepository->findBy(['category' => 'information_sharing']);
         if (count($infoSharingControls) === 0) {
             // Look for controls with information sharing in name
-            $allControls = $this->controlRepository->findApplicableControls();
+            $allControls = $tenant
+                ? $this->controlRepository->findApplicableControls($tenant)
+                : [];
             $infoSharingControls = array_filter($allControls, function ($c) {
                 $name = strtolower($c->getName() ?? '');
                 return str_contains($name, 'information sharing') || str_contains($name, 'threat intelligence');
