@@ -96,7 +96,9 @@ risk:
         asset: Asset
         description: Description
         threat: Threat
+        threat_intelligence: 'Linked threat intelligence'
         vulnerability: Vulnerability
+        linked_vulnerability: 'Linked vulnerability (CVE)'
         involves_personal_data: 'Involves Personal Data'
         involves_special_category_data: 'Involves Special Category Data'
         legal_basis: 'Legal Basis'
@@ -186,7 +188,9 @@ risk:
         supplier: 'The supplier affected by this risk'
         description: 'Detailed description of the risk scenario and possible consequences'
         threat: 'The threat or hazard (e.g., cyberattack, natural disaster, human error)'
+        threat_intelligence: 'Link to a structured Threat Intelligence entry (optional, complements free text).'
         vulnerability: 'The vulnerability that could be exploited by the threat'
+        linked_vulnerability: 'Link to a tracked vulnerability/CVE (optional, complements free text).'
         gdpr_section: 'Does this risk apply to processing of personal data? (GDPR-relevant)'
         involves_personal_data: 'Is personal data being processed? (Name, email, IP address, etc.)'
         involves_special_category_data: 'Are special categories processed? (Art. 9 GDPR: Health, biometric data, etc.)'
@@ -300,12 +304,15 @@ risk:
     placeholder:
         title: 'e.g. Data loss due to ransomware attack'
         category: '-- Select category --'
+        treatment_strategy: '-- Select treatment strategy (can be added later) --'
         legal_basis: '-- Select legal basis --'
         processing_scale: '-- Select processing scale --'
         data_subject_impact: 'Describe the potential impact on data subjects...'
         description: 'Detailed description of the risk scenario...'
         threat: 'Describe the threat (e.g., cyberattack, natural disaster)...'
+        threat_intelligence: '-- Select a threat intelligence entry --'
         vulnerability: 'Describe the vulnerability that could be exploited...'
+        linked_vulnerability: '-- Select a vulnerability/CVE --'
         asset: '-- Select asset --'
         person: '-- Select person --'
         location: '-- Select location --'

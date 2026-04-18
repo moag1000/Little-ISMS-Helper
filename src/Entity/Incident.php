@@ -309,6 +309,17 @@ class Incident
     #[MaxDepth(1)]
     private Collection $affectedBusinessProcesses;
 
+    /**
+     * @var Collection<int, Vulnerability>
+     * VUL-01: Incident ↔ Vulnerability Integration
+     * Links incidents to the vulnerabilities that were exploited or related.
+     */
+    #[ORM\ManyToMany(targetEntity: Vulnerability::class, inversedBy: 'incidents')]
+    #[ORM\JoinTable(name: 'incident_vulnerability')]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[MaxDepth(1)]
+    private Collection $relatedVulnerabilities;
+
     public function __construct()
     {
         $this->relatedControls = new ArrayCollection();
@@ -316,6 +327,7 @@ class Incident
         $this->realizedRisks = new ArrayCollection();
         $this->failedControls = new ArrayCollection();
         $this->affectedBusinessProcesses = new ArrayCollection();
+        $this->relatedVulnerabilities = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
         $this->detectedAt = new DateTimeImmutable();
     }
@@ -696,6 +708,28 @@ class Incident
     public function removeAffectedBusinessProcess(BusinessProcess $businessProcess): static
     {
         $this->affectedBusinessProcesses->removeElement($businessProcess);
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Vulnerability>
+     */
+    public function getRelatedVulnerabilities(): Collection
+    {
+        return $this->relatedVulnerabilities;
+    }
+
+    public function addRelatedVulnerability(Vulnerability $vulnerability): static
+    {
+        if (!$this->relatedVulnerabilities->contains($vulnerability)) {
+            $this->relatedVulnerabilities->add($vulnerability);
+        }
+        return $this;
+    }
+
+    public function removeRelatedVulnerability(Vulnerability $vulnerability): static
+    {
+        $this->relatedVulnerabilities->removeElement($vulnerability);
         return $this;
     }
 
