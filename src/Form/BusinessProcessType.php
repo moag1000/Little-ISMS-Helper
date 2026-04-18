@@ -172,7 +172,9 @@ class BusinessProcessType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'label' => 'business_process.field.supporting_assets',
-                'attr' => ['class' => 'form-select', 'size' => 5],
+                'attr' => ['class' => 'form-select', 'size' => 5,
+                    'data-controller' => 'tom-select',
+                ],
                 'help' => 'business_process.help.supporting_assets',
             ])
             ->add('identifiedRisks', EntityType::class, [
@@ -181,7 +183,9 @@ class BusinessProcessType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'label' => 'business_process.field.identified_risks',
-                'attr' => ['class' => 'form-select', 'size' => 5],
+                'attr' => ['class' => 'form-select', 'size' => 5,
+                    'data-controller' => 'tom-select',
+                ],
                 'help' => 'business_process.help.identified_risks',
             ])
         ;

@@ -169,6 +169,7 @@ class ControlType extends AbstractType
                 'attr' => [
                     'class' => 'form-select',
                     'size' => 5,
+                    'data-controller' => 'tom-select',
                 ],
                 'help' => 'control.help.protected_assets',
             ]);

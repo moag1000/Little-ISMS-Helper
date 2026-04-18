@@ -42,6 +42,17 @@ return [
     'sortablejs' => [
         'version' => '1.15.3',
     ],
-    // Bootstrap Icons removed from importmap due to AssetMapper issue #52620
-    // Icons are now loaded via CDN in base.html.twig
+    'tom-select' => [
+        'version' => '2.6.0',
+    ],
+    '@orchidjs/sifter' => [
+        'version' => '1.1.0',
+    ],
+    '@orchidjs/unicode-variants' => [
+        'version' => '1.1.2',
+    ],
+    'tom-select/dist/css/tom-select.default.min.css' => [
+        'version' => '2.6.0',
+        'type' => 'css',
+    ],
 ];
