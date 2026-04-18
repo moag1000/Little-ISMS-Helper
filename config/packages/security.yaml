@@ -61,7 +61,7 @@ security:
                 samesite: 'lax'
 
             # Allow user impersonation (for admins)
-            switch_user: true
+            switch_user: { role: ROLE_ALLOWED_TO_SWITCH }
 
     # Role hierarchy - higher roles inherit permissions from lower roles
     role_hierarchy:

@@ -60,10 +60,12 @@ class IncidentRepository extends ServiceEntityRepository
      *
      * @return Incident[] Array of open Incident entities
      */
-    public function findOpenIncidents(): array
+    public function findOpenIncidents(Tenant $tenant): array
     {
         return $this->createQueryBuilder('i')
-            ->where('i.status IN (:statuses)')
+            ->where('i.tenant = :tenant')
+            ->andWhere('i.status IN (:statuses)')
+            ->setParameter('tenant', $tenant)
             ->setParameter('statuses', ['open', 'investigating', 'in_progress'])
             ->orderBy('i.severity', 'DESC')
             ->addOrderBy('i.detectedAt', 'DESC')
@@ -76,10 +78,12 @@ class IncidentRepository extends ServiceEntityRepository
      *
      * @return array<array{category: string, count: int}> Array of counts per category
      */
-    public function countByCategory(): array
+    public function countByCategory(Tenant $tenant): array
     {
         return $this->createQueryBuilder('i')
             ->select('i.category, COUNT(i.id) as count')
+            ->where('i.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
             ->groupBy('i.category')
             ->getQuery()
             ->getResult();
@@ -90,10 +94,12 @@ class IncidentRepository extends ServiceEntityRepository
      *
      * @return array<array{severity: string, count: int}> Array of counts per severity
      */
-    public function countBySeverity(): array
+    public function countBySeverity(Tenant $tenant): array
     {
         return $this->createQueryBuilder('i')
             ->select('i.severity, COUNT(i.id) as count')
+            ->where('i.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
             ->groupBy('i.severity')
             ->getQuery()
             ->getResult();

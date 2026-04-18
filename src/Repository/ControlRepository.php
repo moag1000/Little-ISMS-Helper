@@ -36,9 +36,11 @@ class ControlRepository extends ServiceEntityRepository
      *
      * @return Control[] Array of Control entities in ISO 27001 natural order
      */
-    public function findAllInIsoOrder(): array
+    public function findAllInIsoOrder(Tenant $tenant): array
     {
         return $this->createQueryBuilder('c')
+            ->where('c.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
             ->orderBy('LENGTH(c.controlId)', 'ASC')
             ->addOrderBy('c.controlId', 'ASC')
             ->getQuery()
@@ -67,10 +69,12 @@ class ControlRepository extends ServiceEntityRepository
      *
      * @return Control[] Array of applicable Control entities
      */
-    public function findApplicableControls(): array
+    public function findApplicableControls(Tenant $tenant): array
     {
         return $this->createQueryBuilder('c')
-            ->where('c.applicable = :applicable')
+            ->where('c.tenant = :tenant')
+            ->andWhere('c.applicable = :applicable')
+            ->setParameter('tenant', $tenant)
             ->setParameter('applicable', true)
             ->orderBy('c.controlId', 'ASC')
             ->getQuery()
@@ -82,10 +86,12 @@ class ControlRepository extends ServiceEntityRepository
      *
      * @return array<array{category: string, total: int, applicable: int}> Array with total and applicable counts per category
      */
-    public function countByCategory(): array
+    public function countByCategory(Tenant $tenant): array
     {
         return $this->createQueryBuilder('c')
             ->select('c.category, COUNT(c.id) as total, SUM(CASE WHEN c.applicable = true THEN 1 ELSE 0 END) as applicable')
+            ->where('c.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
             ->groupBy('c.category')
             ->orderBy('c.category', 'ASC')
             ->getQuery()
@@ -97,11 +103,13 @@ class ControlRepository extends ServiceEntityRepository
      *
      * @return array{total: int, implemented: int, in_progress: int, not_started: int, not_applicable: int} Control statistics
      */
-    public function getImplementationStats(): array
+    public function getImplementationStats(Tenant $tenant): array
     {
         $rawStats = $this->createQueryBuilder('c')
             ->select('c.implementationStatus, COUNT(c.id) as count')
-            ->where('c.applicable = :applicable')
+            ->where('c.tenant = :tenant')
+            ->andWhere('c.applicable = :applicable')
+            ->setParameter('tenant', $tenant)
             ->setParameter('applicable', true)
             ->groupBy('c.implementationStatus')
             ->getQuery()
@@ -129,7 +137,9 @@ class ControlRepository extends ServiceEntityRepository
         // Add not applicable controls
         $notApplicableCount = $this->createQueryBuilder('c')
             ->select('COUNT(c.id)')
-            ->where('c.applicable = :applicable')
+            ->where('c.tenant = :tenant')
+            ->andWhere('c.applicable = :applicable')
+            ->setParameter('tenant', $tenant)
             ->setParameter('applicable', false)
             ->getQuery()
             ->getSingleScalarResult();
@@ -289,14 +299,16 @@ class ControlRepository extends ServiceEntityRepository
      * @param array $controlIds Array of control ID strings
      * @return Control[] Array of matching Control entities
      */
-    public function findByControlIds(array $controlIds): array
+    public function findByControlIds(Tenant $tenant, array $controlIds): array
     {
         if (empty($controlIds)) {
             return [];
         }
 
         return $this->createQueryBuilder('c')
-            ->where('c.controlId IN (:controlIds)')
+            ->where('c.tenant = :tenant')
+            ->andWhere('c.controlId IN (:controlIds)')
+            ->setParameter('tenant', $tenant)
             ->setParameter('controlIds', $controlIds)
             ->orderBy('LENGTH(c.controlId)', 'ASC')
             ->addOrderBy('c.controlId', 'ASC')

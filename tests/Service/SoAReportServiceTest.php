@@ -3,31 +3,37 @@
 namespace App\Tests\Service;
 
 use App\Entity\Control;
+use App\Entity\Tenant;
 use App\Repository\ControlRepository;
 use App\Service\PdfExportService;
 use App\Service\SoAReportService;
+use App\Service\TenantContext;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Response;
-use Twig\Environment;
 
 class SoAReportServiceTest extends TestCase
 {
     private MockObject $controlRepository;
     private MockObject $pdfExportService;
-    private MockObject $twig;
+    private MockObject $tenantContext;
+    private MockObject $tenant;
     private SoAReportService $service;
 
     protected function setUp(): void
     {
         $this->controlRepository = $this->createMock(ControlRepository::class);
         $this->pdfExportService = $this->createMock(PdfExportService::class);
-        $this->twig = $this->createMock(Environment::class);
+        $this->tenantContext = $this->createMock(TenantContext::class);
+
+        // Create tenant mock and configure tenantContext to return it
+        $this->tenant = $this->createMock(Tenant::class);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
 
         $this->service = new SoAReportService(
             $this->controlRepository,
             $this->pdfExportService,
-            $this->twig
+            $this->tenantContext
         );
     }
 

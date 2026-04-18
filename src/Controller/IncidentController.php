@@ -96,7 +96,7 @@ class IncidentController extends AbstractController
         } else {
             // Fallback for users without tenant (e.g., super admins)
             $allIncidents = $this->incidentRepository->findAll();
-            $openIncidents = $this->incidentRepository->findOpenIncidents();
+            $openIncidents = [];
             $inheritanceInfo = [
                 'hasParent' => false,
                 'hasSubsidiaries' => false,
@@ -129,8 +129,12 @@ class IncidentController extends AbstractController
         $allIncidents = array_values($allIncidents);
         $openIncidents = array_values($openIncidents);
 
-        $categoryStats = $this->incidentRepository->countByCategory();
-        $severityStats = $this->incidentRepository->countBySeverity();
+        $categoryStats = $tenant
+            ? $this->incidentRepository->countByCategory($tenant)
+            : [];
+        $severityStats = $tenant
+            ? $this->incidentRepository->countBySeverity($tenant)
+            : [];
 
         // Calculate detailed statistics based on origin
         if ($tenant) {

@@ -42,8 +42,12 @@ class WorkflowController extends AbstractController
     {
         $referer = $request->headers->get('referer');
 
-        // If referer exists and is NOT the workflow instance page itself, redirect back
-        if ($referer && !str_contains($referer, '/workflow/instance/' . $workflowInstance->getId())) {
+        // If referer exists, is on the same host, and is NOT the workflow instance page itself, redirect back
+        $expectedHost = $request->getSchemeAndHttpHost();
+        if ($referer
+            && str_starts_with($referer, $expectedHost . '/')
+            && !str_contains($referer, '/workflow/instance/' . $workflowInstance->getId())
+        ) {
             return $this->redirect($referer);
         }
 

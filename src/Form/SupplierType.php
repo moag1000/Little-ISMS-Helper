@@ -21,6 +21,7 @@ class SupplierType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'supplier.field.name',
+                'help' => 'supplier.help.name',
                 'required' => true,
                 'attr' => [
                     'maxlength' => 255,
@@ -29,6 +30,7 @@ class SupplierType extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'supplier.field.description',
+                'help' => 'supplier.help.description',
                 'required' => false,
                 'attr' => [
                     'rows' => 3,
@@ -37,6 +39,7 @@ class SupplierType extends AbstractType
             ])
             ->add('contactPerson', TextType::class, [
                 'label' => 'supplier.field.contact_person',
+                'help' => 'supplier.help.contact_person',
                 'required' => false,
                 'attr' => [
                     'maxlength' => 100,
@@ -45,6 +48,7 @@ class SupplierType extends AbstractType
             ])
             ->add('email', EmailType::class, [
                 'label' => 'supplier.field.email',
+                'help' => 'supplier.help.email',
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'supplier.placeholder.email',
@@ -52,6 +56,7 @@ class SupplierType extends AbstractType
             ])
             ->add('phone', TextType::class, [
                 'label' => 'supplier.field.phone',
+                'help' => 'supplier.help.phone',
                 'required' => false,
                 'attr' => [
                     'maxlength' => 50,
@@ -60,6 +65,7 @@ class SupplierType extends AbstractType
             ])
             ->add('address', TextareaType::class, [
                 'label' => 'supplier.field.address',
+                'help' => 'supplier.help.address',
                 'required' => false,
                 'attr' => [
                     'rows' => 2,
@@ -68,6 +74,7 @@ class SupplierType extends AbstractType
             ])
             ->add('serviceProvided', TextareaType::class, [
                 'label' => 'supplier.field.service_provided',
+                'help' => 'supplier.help.service_provided',
                 'required' => true,
                 'attr' => [
                     'rows' => 3,
@@ -76,6 +83,7 @@ class SupplierType extends AbstractType
             ])
             ->add('criticality', ChoiceType::class, [
                 'label' => 'supplier.field.criticality',
+                'help' => 'supplier.help.criticality',
                 'choices' => [
                     'supplier.criticality.critical' => 'critical',
                     'supplier.criticality.high' => 'high',
@@ -87,6 +95,7 @@ class SupplierType extends AbstractType
             ])
             ->add('status', ChoiceType::class, [
                 'label' => 'supplier.field.status',
+                'help' => 'supplier.help.status',
                 'choices' => [
                     'supplier.status.active' => 'active',
                     'supplier.status.inactive' => 'inactive',
@@ -98,6 +107,7 @@ class SupplierType extends AbstractType
             ])
             ->add('securityScore', IntegerType::class, [
                 'label' => 'supplier.field.security_score',
+                'help' => 'supplier.help.security_score',
                 'required' => false,
                 'attr' => [
                     'min' => 0,
@@ -107,16 +117,19 @@ class SupplierType extends AbstractType
             ])
             ->add('lastSecurityAssessment', DateType::class, [
                 'label' => 'supplier.field.last_security_assessment',
+                'help' => 'supplier.help.last_assessment',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('nextAssessmentDate', DateType::class, [
                 'label' => 'supplier.field.next_assessment_date',
+                'help' => 'supplier.help.next_assessment',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('assessmentFindings', TextareaType::class, [
                 'label' => 'supplier.field.assessment_findings',
+                'help' => 'supplier.help.assessment_findings',
                 'required' => false,
                 'attr' => [
                     'rows' => 4,
@@ -125,6 +138,7 @@ class SupplierType extends AbstractType
             ])
             ->add('nonConformities', TextareaType::class, [
                 'label' => 'supplier.field.non_conformities',
+                'help' => 'supplier.help.non_conformities',
                 'required' => false,
                 'attr' => [
                     'rows' => 3,
@@ -133,16 +147,19 @@ class SupplierType extends AbstractType
             ])
             ->add('contractStartDate', DateType::class, [
                 'label' => 'supplier.field.contract_start_date',
+                'help' => 'supplier.help.contract_start',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('contractEndDate', DateType::class, [
                 'label' => 'supplier.field.contract_end_date',
+                'help' => 'supplier.help.contract_end',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('securityRequirements', TextareaType::class, [
                 'label' => 'supplier.field.security_requirements',
+                'help' => 'supplier.help.security_requirements',
                 'required' => false,
                 'attr' => [
                     'rows' => 4,
@@ -151,14 +168,17 @@ class SupplierType extends AbstractType
             ])
             ->add('hasISO27001', CheckboxType::class, [
                 'label' => 'supplier.field.has_iso27001',
+                'help' => 'supplier.help.has_iso27001',
                 'required' => false,
             ])
             ->add('hasISO22301', CheckboxType::class, [
                 'label' => 'supplier.field.has_iso22301',
+                'help' => 'supplier.help.has_iso22301',
                 'required' => false,
             ])
             ->add('certifications', TextareaType::class, [
                 'label' => 'supplier.field.certifications',
+                'help' => 'supplier.help.certifications',
                 'required' => false,
                 'attr' => [
                     'rows' => 2,
@@ -167,10 +187,12 @@ class SupplierType extends AbstractType
             ])
             ->add('hasDPA', CheckboxType::class, [
                 'label' => 'supplier.field.has_dpa',
+                'help' => 'supplier.help.has_dpa',
                 'required' => false,
             ])
             ->add('dpaSignedDate', DateType::class, [
                 'label' => 'supplier.field.dpa_signed_date',
+                'help' => 'supplier.help.dpa_signed',
                 'widget' => 'single_text',
                 'required' => false,
             ])

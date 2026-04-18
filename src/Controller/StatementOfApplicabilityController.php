@@ -59,7 +59,7 @@ class StatementOfApplicabilityController extends AbstractController
                 'currentView' => $view
             ];
         } else {
-            $controls = $this->controlRepository->findAllInIsoOrder();
+            $controls = [];
             $inheritanceInfo = [
                 'hasParent' => false,
                 'hasSubsidiaries' => false,
@@ -73,8 +73,12 @@ class StatementOfApplicabilityController extends AbstractController
             $controls = $this->tagFilterService->filterByTagName($controls, Control::class, $tagFilter);
         }
 
-        $stats = $this->controlRepository->getImplementationStats();
-        $categoryStats = $this->controlRepository->countByCategory();
+        $stats = $tenant
+            ? $this->controlRepository->getImplementationStats($tenant)
+            : ['total' => 0, 'implemented' => 0, 'in_progress' => 0, 'not_started' => 0, 'not_applicable' => 0];
+        $categoryStats = $tenant
+            ? $this->controlRepository->countByCategory($tenant)
+            : [];
 
         // Calculate detailed statistics based on origin
         if ($tenant) {
@@ -105,7 +109,11 @@ class StatementOfApplicabilityController extends AbstractController
     #[Route('/soa/report/export', name: 'app_soa_export')]
     public function export(Request $request): Response
     {
-        $controls = $this->controlRepository->findAllInIsoOrder();
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+        $controls = $tenant
+            ? $this->controlRepository->findAllInIsoOrder($tenant)
+            : [];
 
         // Close session to prevent blocking other requests
         $request->getSession()->save();

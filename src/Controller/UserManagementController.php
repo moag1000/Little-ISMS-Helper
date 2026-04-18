@@ -141,6 +141,11 @@ class UserManagementController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::VIEW_ALL);
 
+        if (!$this->isCsrfTokenValid('bulk_actions', $request->request->get('_token'))) {
+            $this->addFlash('error', 'Invalid CSRF token');
+            return $this->redirectToRoute('user_management_index');
+        }
+
         $action = $request->request->get('action');
         $userIds = $request->request->all('user_ids') ?? [];
 

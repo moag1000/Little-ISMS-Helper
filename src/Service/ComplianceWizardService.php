@@ -358,9 +358,13 @@ class ComplianceWizardService
 
         if (empty($controlIds)) {
             // Check all applicable controls
-            $controls = $this->controlRepository->findApplicableControls();
+            $controls = $tenant
+                ? $this->controlRepository->findApplicableControls($tenant)
+                : [];
         } else {
-            $controls = $this->controlRepository->findByControlIds($controlIds);
+            $controls = $tenant
+                ? $this->controlRepository->findByControlIds($tenant, $controlIds)
+                : [];
         }
 
         $totalControls = count($controls);

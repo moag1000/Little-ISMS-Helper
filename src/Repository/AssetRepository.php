@@ -31,10 +31,12 @@ class AssetRepository extends ServiceEntityRepository
      *
      * @return Asset[] Array of active Asset entities
      */
-    public function findActiveAssets(): array
+    public function findActiveAssets(Tenant $tenant): array
     {
         return $this->createQueryBuilder('a')
-            ->where('a.status = :status')
+            ->where('a.tenant = :tenant')
+            ->andWhere('a.status = :status')
+            ->setParameter('tenant', $tenant)
             ->setParameter('status', 'active')
             ->orderBy('a.name', 'ASC')
             ->getQuery()
@@ -46,11 +48,13 @@ class AssetRepository extends ServiceEntityRepository
      *
      * @return array<array{assetType: string, count: int}> Array of counts per asset type
      */
-    public function countByType(): array
+    public function countByType(Tenant $tenant): array
     {
         return $this->createQueryBuilder('a')
             ->select('a.assetType, COUNT(a.id) as count')
-            ->where('a.status = :status')
+            ->where('a.tenant = :tenant')
+            ->andWhere('a.status = :status')
+            ->setParameter('tenant', $tenant)
             ->setParameter('status', 'active')
             ->groupBy('a.assetType')
             ->getQuery()

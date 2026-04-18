@@ -152,7 +152,10 @@ class HomeController extends AbstractController
         $activities = [];
 
         // Beispiel-Aktivitäten (später durch echte Daten ersetzen)
-        $recentAssets = array_slice($this->assetRepository->findActiveAssets(), 0, 3);
+        $tenant = $this->getUser()?->getTenant();
+        $recentAssets = $tenant
+            ? array_slice($this->assetRepository->findActiveAssets($tenant), 0, 3)
+            : [];
         foreach ($recentAssets as $recentAsset) {
             $createdAt = $recentAsset->getCreatedAt();
             if ($createdAt) {
