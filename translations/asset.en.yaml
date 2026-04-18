@@ -62,6 +62,7 @@ asset:
     return_date: Return Date
     status: Status
     owner_legacy: Owner (free text, legacy)
+    depends_on: Dependencies (upstream)
   help:
     name: Unique name of the asset
     type: Category of the asset (hardware, software, data, etc.)
@@ -86,6 +87,8 @@ asset:
     status: Current usage status of the asset
     owner_user: Owner from user management. If not listed, enter free text in the
       legacy field.
+    depends_on: 'Assets this one depends on. BSI 3.6 Maximumprinzip: highest CIA values
+      are inherited.'
   protection:
     recommended: Recommended
     overall_level: Overall Protection Level
