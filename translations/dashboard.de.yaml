@@ -1,174 +1,175 @@
 dashboard:
-    title: 'ISMS Dashboard'
-    subtitle: 'Überblick über Ihr Informationssicherheits-Managementsystem'
-    action:
-        customize: 'Anpassen'
-        role_dashboards: 'Rollen-Dashboards'
-    role:
-        ciso: 'CISO-Dashboard'
-        risk_manager: 'Risikomanager'
-        auditor: 'Auditor'
-        board: 'Vorstand'
-    stats:
-        registered_assets: 'Registrierte Assets'
-        critical: 'kritisch'
-        identified_risks: 'Identifizierte Risiken'
-        high: 'hoch'
-        security_controls: 'Sicherheitsmaßnahmen'
-        implemented: 'implementiert'
-        open_incidents: 'Offene Vorfälle'
-        in_progress: 'In Bearbeitung'
-    chart:
-        risk_distribution: 'Risikoverteilung'
-        assets_by_category: 'Assets nach Kategorie'
-        asset_count: 'Anzahl Assets'
-    kpis: Kennzahlen
-    compliance_status: Compliance-Status
-    implementation_status: Implementierungsstatus
-    quick_access: Schnellzugriff
-    next_steps: 'Nächste Schritte'
-    success:
-        settings_imported: 'Dashboard-Einstellungen erfolgreich importiert!'
-    error:
-        import_failed: 'Fehler beim Importieren der Einstellungen. Bitte überprüfen Sie'
+  title: ISMS Dashboard
+  subtitle: Überblick über Ihr Informationssicherheits-Managementsystem
+  action:
+    customize: Anpassen
+    role_dashboards: Rollen-Dashboards
+  role:
+    ciso: CISO-Dashboard
+    risk_manager: Risikomanager
+    auditor: Auditor
+    board: Vorstand
+  stats:
+    registered_assets: Registrierte Assets
+    critical: kritisch
+    identified_risks: Identifizierte Risiken
+    high: hoch
+    security_controls: Sicherheitsmaßnahmen
+    implemented: implementiert
+    open_incidents: Offene Vorfälle
+    in_progress: In Bearbeitung
+  chart:
+    risk_distribution: Risikoverteilung
+    assets_by_category: Assets nach Kategorie
+    asset_count: Anzahl Assets
+  kpis: Kennzahlen
+  compliance_status: Compliance-Status
+  implementation_status: Implementierungsstatus
+  quick_access: Schnellzugriff
+  next_steps: Nächste Schritte
+  success:
+    settings_imported: Dashboard-Einstellungen erfolgreich importiert!
+  error:
+    import_failed: Fehler beim Importieren der Einstellungen. Bitte überprüfen Sie
+  overdue_reviews:
+    title: Überfällige Risikobewertungen
+    description: '%count% Risiken erfordern eine Überprüfung (ISO 27001:2022 Clause
+      6.1.3.d)'
+    last_review: Letzte Überprüfung
+    never_reviewed: Noch nie überprüft
+    view_all: Alle %count% anzeigen
+  upcoming_reviews:
+    title: Anstehende Risikobewertungen
+    description: Risiken, die in den nächsten 30 Tagen überprüft werden müssen
+  overdue_treatment_plans:
+    title: Überfällige Behandlungspläne
+    description: '%count% Behandlungspläne sind überfällig (ISO 27001:2022 Clause
+      6.1.3)'
+    due_date: Fälligkeitsdatum
+    days_overdue: Tage überfällig
+    view_all: Weitere %count% anzeigen
+  approaching_treatment_plans:
+    title: Nahende Deadlines
+    description: Behandlungspläne mit Fälligkeitsdatum in den nächsten 7 Tagen
+    days_remaining: Tage verbleibend
+  activity:
+    minutes_ago: vor %count% Minuten
+    hours_ago: vor %count% Stunden
+    days_ago: vor %count% Tagen
+    recently: kürzlich
+    asset_added: Asset hinzugefügt
+    risk_identified: Risiko identifiziert
+    new_risk: Neues Risiko
+    system: System
+    security_team: Security-Team
+  widget:
     overdue_reviews:
-        title: 'Überfällige Risikobewertungen'
-        description: '%count% Risiken erfordern eine Überprüfung (ISO 27001:2022 Clause 6.1.3.d)'
-        last_review: 'Letzte Überprüfung'
-        never_reviewed: 'Noch nie überprüft'
-        view_all: 'Alle %count% anzeigen'
-    upcoming_reviews:
-        title: 'Anstehende Risikobewertungen'
-        description: 'Risiken, die in den nächsten 30 Tagen überprüft werden müssen'
-    overdue_treatment_plans:
-        title: 'Überfällige Behandlungspläne'
-        description: '%count% Behandlungspläne sind überfällig (ISO 27001:2022 Clause 6.1.3)'
-        due_date: Fälligkeitsdatum
-        days_overdue: 'Tage überfällig'
-        view_all: 'Weitere %count% anzeigen'
-    approaching_treatment_plans:
-        title: 'Nahende Deadlines'
-        description: 'Behandlungspläne mit Fälligkeitsdatum in den nächsten 7 Tagen'
-        days_remaining: 'Tage verbleibend'
-    activity:
-        minutes_ago: 'vor %count% Minuten'
-        hours_ago: 'vor %count% Stunden'
-        days_ago: 'vor %count% Tagen'
-        recently: 'kürzlich'
-        asset_added: 'Asset hinzugefügt'
-        risk_identified: 'Risiko identifiziert'
-        new_risk: 'Neues Risiko'
-        system: 'System'
-        security_team: 'Security-Team'
-    widget:
-        overdue_reviews:
-            title: 'Überfällige Prüfungen'
-            risks: 'Risiken'
-            bc_plans: 'BC-Pläne'
-            vvt: 'VVT'
-            dpias: 'DSFAs'
-            due: 'Fällig'
-            test_overdue: 'Test überfällig'
-            review_overdue: 'Prüfung überfällig'
-            breach_alert: '%count% Datenschutzverletzung(en) mit 72h-Frist!'
-            breach_alert_desc: 'DSGVO Art. 33 erfordert Meldung an die Aufsichtsbehörde innerhalb von 72 Stunden.'
-            view_breaches: 'Datenschutzverletzungen anzeigen'
-            breach_overdue: '%hours%h überfällig - sofortige Meldung erforderlich!'
-            breach_remaining: '%hours%h verbleibend bis zur Meldepflicht'
-            more_items: '%count% weitere Einträge...'
-            all_good: 'Alles aktuell!'
-            all_good_desc: 'Keine überfälligen Prüfungen. Ihr ISMS ist auf dem neuesten Stand.'
-            manage: 'Verwalten'
-
-    # Management KPIs Section
-    management_kpis:
-        title: 'Management-Kennzahlen'
-        subtitle: 'Modul-basierte KPIs für Managementberichte'
-        core:
-            title: 'Kern-ISMS'
-            icon: 'bi-shield-check'
-        risk_management:
-            title: 'Risikomanagement'
-            icon: 'bi-exclamation-triangle'
-        asset_management:
-            title: 'Asset-Management'
-            icon: 'bi-server'
-        incident_management:
-            title: 'Incident-Management'
-            icon: 'bi-fire'
-        business_continuity:
-            title: 'Business Continuity'
-            icon: 'bi-diagram-3'
-        training:
-            title: 'Schulungen'
-            icon: 'bi-mortarboard'
-        audits:
-            title: 'Audits'
-            icon: 'bi-clipboard-check'
-        supplier_management:
-            title: 'Lieferanten-Management'
-            icon: 'bi-building'
-        documentation:
-            title: 'Dokumentation'
-            icon: 'bi-file-text'
-        no_data: 'Keine Daten verfügbar'
-        view_details: 'Details anzeigen'
-        status:
-            good: 'Gut'
-            warning: 'Warnung'
-            danger: 'Kritisch'
-            info: 'Info'
-
-    # KPI Labels (for management dashboard)
-    kpi:
-        control_compliance: 'Control-Compliance'
-        control_compliance_weighted: 'Control-Compliance (gewichtet)'
-        controls_implemented: 'Controls implementiert'
-        residual_risk_exposure: 'Residual Risk Exposure'
-        isms_health_score: 'ISMS Health Score'
-    hint:
-        weighted_compliance: 'Gewichtung: implementiert=1.0, teilweise=0.5, geplant=0'
-        isms_health_score: 'Zusammengesetzt: Compliance 40%, Risiken 25%, Incidents 20%, Asset-Klassifizierung 15%'
-        total_risks: 'Risiken gesamt'
-        high_risks: 'Hohe Risiken'
-        critical_risks: 'Kritische Risiken'
-        risk_treatment_rate: 'Behandlungsrate'
-        overdue_treatments: 'Überfällige Behandlungen'
-        total_assets: 'Assets gesamt'
-        critical_assets: 'Kritische Assets'
-        asset_classification_rate: 'Klassifizierungsrate'
-        open_incidents: 'Offene Incidents'
-        resolved_incidents_ytd: 'Gelöste Incidents (YTD)'
-        mttr: 'MTTR'
-        overdue_incidents: 'Überfällige Incidents'
-        critical_processes: 'Kritische Prozesse'
-        bia_coverage: 'BIA-Abdeckung'
-        active_bc_plans: 'Aktive BC-Pläne'
-        bc_exercises_ytd: 'BC-Übungen (YTD)'
-        training_completion_rate: 'Abschlussrate'
-        overdue_trainings: 'Überfällige Schulungen'
-        audits_completed_ytd: 'Audits abgeschlossen (YTD)'
-        planned_audits: 'Geplante Audits'
-        open_audit_findings: 'Offene Feststellungen'
-        total_suppliers: 'Lieferanten gesamt'
-        critical_suppliers: 'Kritische Lieferanten'
-        supplier_assessment_rate: 'Bewertungsrate'
-        overdue_supplier_assessments: 'Überfällige Bewertungen'
-        total_documents: 'Dokumente gesamt'
-        documents_needing_review: 'Prüfung erforderlich'
-        documents_without_owner: 'Ohne Eigentümer'
-
-    # Quick Actions
-    quick_actions:
-        title: 'Schnellaktionen'
-        new_asset: 'Neues Asset'
-        new_risk: 'Risiko erfassen'
-        controls: 'Maßnahmen'
-        report_incident: 'Vorfall melden'
-
-    # Last Updated
-    last_updated: 'Daten vom: %time% Uhr'
-
-    # Activity Feed
-    activity_feed:
-        title: 'Letzte Aktivitäten'
+      title: Überfällige Prüfungen
+      risks: Risiken
+      bc_plans: BC-Pläne
+      vvt: VVT
+      dpias: DSFAs
+      due: Fällig
+      test_overdue: Test überfällig
+      review_overdue: Prüfung überfällig
+      breach_alert: '%count% Datenschutzverletzung(en) mit 72h-Frist!'
+      breach_alert_desc: DSGVO Art. 33 erfordert Meldung an die Aufsichtsbehörde innerhalb
+        von 72 Stunden.
+      view_breaches: Datenschutzverletzungen anzeigen
+      breach_overdue: '%hours%h überfällig - sofortige Meldung erforderlich!'
+      breach_remaining: '%hours%h verbleibend bis zur Meldepflicht'
+      more_items: '%count% weitere Einträge...'
+      all_good: Alles aktuell!
+      all_good_desc: Keine überfälligen Prüfungen. Ihr ISMS ist auf dem neuesten Stand.
+      manage: Verwalten
+  management_kpis:
+    title: Management-Kennzahlen
+    subtitle: Modul-basierte KPIs für Managementberichte
+    core:
+      title: Kern-ISMS
+      icon: bi-shield-check
+    risk_management:
+      title: Risikomanagement
+      icon: bi-exclamation-triangle
+    asset_management:
+      title: Asset-Management
+      icon: bi-server
+    incident_management:
+      title: Incident-Management
+      icon: bi-fire
+    business_continuity:
+      title: Business Continuity
+      icon: bi-diagram-3
+    training:
+      title: Schulungen
+      icon: bi-mortarboard
+    audits:
+      title: Audits
+      icon: bi-clipboard-check
+    supplier_management:
+      title: Lieferanten-Management
+      icon: bi-building
+    documentation:
+      title: Dokumentation
+      icon: bi-file-text
+    no_data: Keine Daten verfügbar
+    view_details: Details anzeigen
+    status:
+      good: Gut
+      warning: Warnung
+      danger: Kritisch
+      info: Info
+  kpi:
+    control_compliance: Control-Compliance
+    control_compliance_weighted: Control-Compliance (gewichtet)
+    controls_implemented: Controls implementiert
+    residual_risk_exposure: Residual Risk Exposure
+    isms_health_score: ISMS Health Score
+    risk_appetite_compliance: Risiko-Appetit Compliance
+    mttr_critical: MTTR (Kritisch)
+    mttr_high: MTTR (Hoch)
+    days_since_management_review: Tage seit letztem Management-Review
+    oldest_overdue_item_age: Ältester überfälliger Eintrag
+    gap_count_critical: Kritische Compliance-Lücken
+    gap_count_high: Hohe Compliance-Lücken
+  hint:
+    weighted_compliance: 'Gewichtung: implementiert=1.0, teilweise=0.5, geplant=0'
+    isms_health_score: 'Zusammengesetzt: Compliance 40%, Risiken 25%, Incidents 20%,
+      Asset-Klassifizierung 15%'
+    total_risks: Risiken gesamt
+    high_risks: Hohe Risiken
+    critical_risks: Kritische Risiken
+    risk_treatment_rate: Behandlungsrate
+    overdue_treatments: Überfällige Behandlungen
+    total_assets: Assets gesamt
+    critical_assets: Kritische Assets
+    asset_classification_rate: Klassifizierungsrate
+    open_incidents: Offene Incidents
+    resolved_incidents_ytd: Gelöste Incidents (YTD)
+    mttr: MTTR
+    overdue_incidents: Überfällige Incidents
+    critical_processes: Kritische Prozesse
+    bia_coverage: BIA-Abdeckung
+    active_bc_plans: Aktive BC-Pläne
+    bc_exercises_ytd: BC-Übungen (YTD)
+    training_completion_rate: Abschlussrate
+    overdue_trainings: Überfällige Schulungen
+    audits_completed_ytd: Audits abgeschlossen (YTD)
+    planned_audits: Geplante Audits
+    open_audit_findings: Offene Feststellungen
+    total_suppliers: Lieferanten gesamt
+    critical_suppliers: Kritische Lieferanten
+    supplier_assessment_rate: Bewertungsrate
+    overdue_supplier_assessments: Überfällige Bewertungen
+    total_documents: Dokumente gesamt
+    documents_needing_review: Prüfung erforderlich
+    documents_without_owner: Ohne Eigentümer
+  quick_actions:
+    title: Schnellaktionen
+    new_asset: Neues Asset
+    new_risk: Risiko erfassen
+    controls: Maßnahmen
+    report_incident: Vorfall melden
+  last_updated: 'Daten vom: %time% Uhr'
+  activity_feed:
+    title: Letzte Aktivitäten
