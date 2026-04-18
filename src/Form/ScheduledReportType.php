@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\ScheduledReport;
+use App\Service\Mail\RecipientFilter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -18,6 +19,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ScheduledReportType extends AbstractType
 {
+    public function __construct(
+        private readonly RecipientFilter $recipientFilter,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -107,20 +113,63 @@ class ScheduledReportType extends AbstractType
             }
         });
 
-        // Parse recipientsText to recipients array on submit
+        // Parse recipientsText to recipients array on submit, then enforce the
+        // ISB MINOR-4 tenant + role gate (DSGVO Art. 32, ISO 27001 A.5.34).
+        // Priority 10 → runs BEFORE Symfony's ValidationListener so that the
+        // entity-level Assert\NotBlank on `recipients` sees the parsed list.
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event): void {
             $report = $event->getData();
             $form = $event->getForm();
 
-            if ($report instanceof ScheduledReport) {
-                $recipientsText = $form->get('recipientsText')->getData();
-                $recipients = array_filter(
-                    array_map('trim', preg_split('/[\n,;]+/', $recipientsText)),
-                    fn($email) => filter_var($email, FILTER_VALIDATE_EMAIL)
-                );
-                $report->setRecipients(array_values($recipients));
+            if (!$report instanceof ScheduledReport) {
+                return;
             }
-        });
+
+            $recipientsText = (string) $form->get('recipientsText')->getData();
+            if ($recipientsText === '' && $form->get('recipientsText')->getViewData() !== null) {
+                $recipientsText = (string) $form->get('recipientsText')->getViewData();
+            }
+            $candidates = array_values(array_filter(
+                array_map('trim', preg_split('/[\n,;]+/', $recipientsText) ?: []),
+                static fn($email) => filter_var($email, FILTER_VALIDATE_EMAIL) !== false,
+            ));
+
+            $tenantId = $report->getTenantId();
+            $accepted = [];
+
+            foreach ($candidates as $email) {
+                if ($tenantId === null) {
+                    // Without a tenant we cannot validate; keep the email so the
+                    // parent NotBlank still passes but the service-layer filter
+                    // will reject at send time.
+                    $accepted[] = $email;
+                    continue;
+                }
+
+                $reason = $this->recipientFilter->validateSingle($email, $tenantId);
+                if ($reason === null) {
+                    $accepted[] = $email;
+                    continue;
+                }
+
+                $key = match ($reason) {
+                    RecipientFilter::REASON_ROLE_TOO_LOW => 'form.recipient.role_too_low',
+                    RecipientFilter::REASON_CROSS_TENANT => 'form.recipient.cross_tenant_forbidden',
+                    RecipientFilter::REASON_INACTIVE => 'form.recipient.inactive',
+                    default => 'form.recipient.unknown_user',
+                };
+
+                $form->get('recipientsText')->addError(
+                    new \Symfony\Component\Form\FormError(
+                        $key,
+                        null,
+                        ['{email}' => $email],
+                    ),
+                );
+            }
+
+            $report->setRecipients($accepted);
+        }, 10);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

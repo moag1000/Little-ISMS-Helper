@@ -123,6 +123,13 @@ class ScheduledReport
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $updatedAt = null;
 
+    /**
+     * ISB MINOR-4: timestamp of the most recent successful
+     * Symfony-mailer TLS pre-flight before a send attempt.
+     */
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $tlsVerifiedAt = null;
+
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
@@ -359,6 +366,17 @@ class ScheduledReport
     public function setUpdatedAt(?DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    public function getTlsVerifiedAt(): ?DateTimeInterface
+    {
+        return $this->tlsVerifiedAt;
+    }
+
+    public function setTlsVerifiedAt(?DateTimeInterface $tlsVerifiedAt): static
+    {
+        $this->tlsVerifiedAt = $tlsVerifiedAt;
         return $this;
     }
 

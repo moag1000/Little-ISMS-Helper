@@ -176,6 +176,12 @@ services:
     # Configure Restore Service
     App\Service\RestoreService: ~
 
+    # ISB MINOR-4: Mailer TLS pre-flight check. DSN must be injected
+    # explicitly because %env()% cannot be autowired into a scalar arg.
+    App\Service\Mail\MailerTlsChecker:
+        arguments:
+            $mailerDsn: '%env(MAILER_DSN)%'
+
     # Configure Health Auto Fix Service
     App\Service\HealthAutoFixService:
         arguments:
