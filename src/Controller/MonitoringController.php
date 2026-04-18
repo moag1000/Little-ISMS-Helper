@@ -8,6 +8,7 @@ use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use App\Repository\AuditLogRepository;
 use App\Service\HealthAutoFixService;
+use App\Service\SchemaHealthService;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,7 +22,7 @@ class MonitoringController extends AbstractController
 {
     #[Route('/admin/monitoring/health', name: 'monitoring_health', methods: ['GET'])]
     #[IsGranted('MONITORING_VIEW')]
-    public function health(Connection $connection): Response
+    public function health(Connection $connection, SchemaHealthService $schemaHealth): Response
     {
         // Perform health checks
         $healthChecks = [];
@@ -253,10 +254,44 @@ class MonitoringController extends AbstractController
             }
         }
 
+        // Schema validation (equivalent to doctrine:schema:validate)
+        $schema = $schemaHealth->validate();
+        $healthChecks['schema'] = [
+            'status' => $schema['overall_status'],
+            'mapping_in_sync' => $schema['mapping_in_sync'],
+            'database_in_sync' => $schema['database_in_sync'],
+            'mapping_error_count' => array_sum(array_map('count', $schema['mapping_errors'])),
+            'pending_sql_count' => count($schema['pending_sql']),
+        ];
+        if ($schema['overall_status'] === 'error' && $overallStatus !== 'error') {
+            $overallStatus = 'error';
+        } elseif ($schema['overall_status'] === 'warning' && $overallStatus === 'healthy') {
+            $overallStatus = 'warning';
+        }
+
         return $this->render('monitoring/health.html.twig', [
             'health_checks' => $healthChecks,
             'overall_status' => $overallStatus,
+            'schema_detail' => $schema,
         ]);
+    }
+
+    #[Route('/admin/monitoring/health/schema/update', name: 'monitoring_health_schema_update', methods: ['POST'])]
+    #[IsGranted('MONITORING_MANAGE')]
+    public function schemaUpdate(Request $request, SchemaHealthService $schemaHealth): JsonResponse
+    {
+        if (!$this->isCsrfTokenValid('monitoring_schema_update', (string) $request->request->get('_token'))) {
+            return $this->json([
+                'success' => false,
+                'error' => 'invalid_csrf',
+            ], 400);
+        }
+
+        $user = $this->getUser();
+        $actor = method_exists($user, 'getEmail') ? ($user->getEmail() ?? 'admin') : 'admin';
+        $result = $schemaHealth->applyUpdate($actor);
+
+        return $this->json($result, $result['success'] ? 200 : 500);
     }
     #[Route('/admin/monitoring/health/json', name: 'monitoring_health_json', methods: ['GET'])]
     #[IsGranted('MONITORING_VIEW')]

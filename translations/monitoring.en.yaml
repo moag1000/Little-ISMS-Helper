@@ -44,6 +44,17 @@ monitoring:
         response_time: 'Response Time'
         driver: Driver
         error: Error
+    schema:
+        title: 'Doctrine Schema Validation'
+        mapping: 'Entity mapping'
+        database: 'Database schema'
+        in_sync: 'in sync'
+        errors: 'mapping errors'
+        pending: 'pending DDL statements'
+        show_mapping_errors: 'Show mapping errors'
+        show_pending_sql: 'Show pending SQL'
+        apply_update: 'Apply schema update (force)'
+        confirm_update: 'Schema update will run DDL against the live database. Continue?'
     disk:
         title: Disk
         free: Free

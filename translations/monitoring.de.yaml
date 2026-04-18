@@ -44,6 +44,17 @@ monitoring:
         response_time: Antwortzeit
         driver: Treiber
         error: Fehler
+    schema:
+        title: "Doctrine-Schema-Validierung"
+        mapping: "Entity-Mapping"
+        database: "Datenbank-Schema"
+        in_sync: "synchron"
+        errors: "Mapping-Fehler"
+        pending: "offene DDL-Statements"
+        show_mapping_errors: "Mapping-Fehler anzeigen"
+        show_pending_sql: "Ausstehende SQL-Statements anzeigen"
+        apply_update: "Schema-Update anwenden (force)"
+        confirm_update: "Schema-Update führt DDL gegen die Live-DB aus. Fortfahren?"
     disk:
         title: Festplatte
         free: Frei
