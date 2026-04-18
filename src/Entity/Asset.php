@@ -77,7 +77,7 @@ class Asset
     #[ORM\Column(length: 255)]
     #[Groups(['asset:read', 'asset:write', 'risk:read'])]
     #[Assert\NotBlank(message: 'Asset name is required')]
-    #[Assert\Length(max: 255, maxMessage: 'Asset name cannot exceed {{ limit }} characters')]
+    #[Assert\Length(max: 255, maxMessage: 'Asset name cannot exceed { limit } characters')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -87,20 +87,20 @@ class Asset
     #[ORM\Column(length: 100)]
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotBlank(message: 'Asset type is required')]
-    #[Assert\Length(max: 100, maxMessage: 'Asset type cannot exceed {{ limit }} characters')]
+    #[Assert\Length(max: 100, maxMessage: 'Asset type cannot exceed { limit } characters')]
     private ?string $assetType = null;
 
     #[ORM\Column(length: 100)]
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotBlank(message: 'Asset owner is required')]
-    #[Assert\Length(max: 100, maxMessage: 'Owner cannot exceed {{ limit }} characters')]
+    #[Assert\Length(max: 100, maxMessage: 'Owner cannot exceed { limit } characters')]
     private ?string $owner = null;
 
     // Legacy field - kept for backward compatibility
     // @deprecated Use $physicalLocation instead
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['asset:read', 'asset:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'Location cannot exceed {{ limit }} characters')]
+    #[Assert\Length(max: 100, maxMessage: 'Location cannot exceed { limit } characters')]
     private ?string $location = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
@@ -114,19 +114,19 @@ class Asset
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotNull(message: 'Confidentiality value is required')]
-    #[Assert\Range(notInRangeMessage: 'Confidentiality value must be between {{ min }} and {{ max }}', min: 1, max: 5)]
+    #[Assert\Range(notInRangeMessage: 'Confidentiality value must be between { min } and { max }', min: 1, max: 5)]
     private ?int $confidentialityValue = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotNull(message: 'Integrity value is required')]
-    #[Assert\Range(notInRangeMessage: 'Integrity value must be between {{ min }} and {{ max }}', min: 1, max: 5)]
+    #[Assert\Range(notInRangeMessage: 'Integrity value must be between { min } and { max }', min: 1, max: 5)]
     private ?int $integrityValue = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotNull(message: 'Availability value is required')]
-    #[Assert\Range(notInRangeMessage: 'Availability value must be between {{ min }} and {{ max }}', min: 1, max: 5)]
+    #[Assert\Range(notInRangeMessage: 'Availability value must be between { min } and { max }', min: 1, max: 5)]
     private ?int $availabilityValue = null;
 
     // Phase 6F: ISO 27001 Compliance Fields
@@ -149,7 +149,7 @@ class Asset
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\Choice(
         choices: ['public', 'internal', 'confidential', 'restricted'],
-        message: 'Data classification must be one of: {{ choices }}'
+        message: 'Data classification must be one of: { choices }'
     )]
     private ?string $dataClassification = null;
 
@@ -179,7 +179,7 @@ class Asset
     #[Assert\NotBlank(message: 'Status is required')]
     #[Assert\Choice(
         choices: ['active', 'inactive', 'in_use', 'returned', 'retired', 'disposed'],
-        message: 'Status must be one of: {{ choices }}'
+        message: 'Status must be one of: { choices }'
     )]
     private ?string $status = 'active';
 
@@ -215,11 +215,31 @@ class Asset
     #[MaxDepth(1)]
     private Collection $protectingControls;
 
+    /**
+     * BSI 3.6: Assets this asset depends on (upstream).
+     * Schutzbedarfsvererbung uses Maximumprinzip along this graph.
+     *
+     * @var Collection<int, Asset>
+     */
+    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'dependentAssets')]
+    #[ORM\JoinTable(name: 'asset_dependencies')]
+    #[ORM\JoinColumn(name: 'dependent_asset_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'depends_on_asset_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $dependsOn;
+
+    /**
+     * @var Collection<int, Asset>
+     */
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'dependsOn')]
+    private Collection $dependentAssets;
+
     public function __construct()
     {
         $this->risks = new ArrayCollection();
         $this->incidents = new ArrayCollection();
         $this->protectingControls = new ArrayCollection();
+        $this->dependsOn = new ArrayCollection();
+        $this->dependentAssets = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -592,8 +612,33 @@ class Asset
      * Effective owner: prefer ownerUser.fullName, fall back to legacy string.
      */
     public function getEffectiveOwner(): ?string
-    {{
-        return $this->{user_field}?->getFullName() ?? $this->{str_field};
-    }}
+    {
+        return $this->ownerUser?->getFullName() ?? $this->owner;
+    }
 
+    /** @return Collection<int, Asset> */
+    public function getDependsOn(): Collection
+    {
+        return $this->dependsOn;
+    }
+
+    public function addDependsOn(Asset $asset): static
+    {
+        if ($asset !== $this && !$this->dependsOn->contains($asset)) {
+            $this->dependsOn->add($asset);
+        }
+        return $this;
+    }
+
+    public function removeDependsOn(Asset $asset): static
+    {
+        $this->dependsOn->removeElement($asset);
+        return $this;
+    }
+
+    /** @return Collection<int, Asset> */
+    public function getDependentAssets(): Collection
+    {
+        return $this->dependentAssets;
+    }
 }

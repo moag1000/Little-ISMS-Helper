@@ -79,6 +79,21 @@ class AssetType extends AbstractType
                 ],
                 'help' => 'asset.help.physical_location',
             ])
+            ->add('dependsOn', EntityType::class, [
+                'label' => 'asset.field.depends_on',
+                'class' => Asset::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'required' => false,
+                'query_builder' => static function ($repo) {
+                    return $repo->createQueryBuilder('a')->orderBy('a.name', 'ASC');
+                },
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'asset.help.depends_on',
+            ])
             ->add('acquisitionValue', NumberType::class, [
                 'label' => 'asset.field.acquisition_value',
                 'required' => false,

@@ -62,6 +62,7 @@ asset:
     return_date: Rückgabedatum
     status: Status
     owner_legacy: Verantwortlich (freitext, veraltet)
+    depends_on: Abhängigkeiten (Upstream)
   help:
     name: Eindeutiger Name des Assets
     type: Kategorie des Assets (Hardware, Software, Daten, etc.)
@@ -86,6 +87,8 @@ asset:
     status: Aktueller Nutzungsstatus des Assets
     owner_user: Verantwortliche Person aus der Benutzerverwaltung. Wenn nicht in der
       Liste, im Legacy-Feld Text eintragen.
+    depends_on: 'Assets, von denen dieser Asset abhängt. BSI 3.6 Maximumprinzip: höchste
+      CIA-Werte werden vererbt.'
   protection:
     recommended: Empfohlen
     overall_level: Gesamtschutzbedarf
