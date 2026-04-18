@@ -122,7 +122,11 @@ dashboard:
     # KPI Labels (for management dashboard)
     kpi:
         control_compliance: 'Control Compliance'
+        control_compliance_weighted: 'Control Compliance (weighted)'
         controls_implemented: 'Controls Implemented'
+        residual_risk_exposure: 'Residual Risk Exposure'
+    hint:
+        weighted_compliance: 'Weighting: implemented=1.0, partial=0.5, planned=0'
         total_risks: 'Total Risks'
         high_risks: 'High Risks'
         critical_risks: 'Critical Risks'
