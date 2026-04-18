@@ -30,17 +30,21 @@ final class LoadIso27005RequirementsCommand
     {
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'ISO27005']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('ISO27005')
-                ->setName('ISO/IEC 27005:2022 - Information Security Risk Management')
-                ->setDescription('Guidance for information security risk management, aligned with ISO 27001:2022. Primary risk-management reference for ISMS, NIS2, DORA, TISAX.')
-                ->setVersion('2022')
-                ->setApplicableIndustry('all_sectors')
-                ->setRegulatoryBody('ISO/IEC')
-                ->setMandatory(false)
-                ->setScopeDescription('Provides normative risk-management process applicable to any ISMS.')
-                ->setActive(true);
+        }
+        $framework->setCode('ISO27005')
+            ->setName('ISO/IEC 27005:2022 - Information Security Risk Management')
+            ->setDescription('Guidance for information security risk management, aligned with ISO 27001:2022. Primary risk-management reference for ISMS, NIS2, DORA, TISAX.')
+            ->setVersion('2022')
+            ->setApplicableIndustry('all_sectors')
+            ->setRegulatoryBody('ISO/IEC')
+            ->setMandatory(false)
+            ->setScopeDescription('Provides normative risk-management process applicable to any ISMS.')
+            ->setActive(true);
+
+        if ($isNew) {
             $this->entityManager->persist($framework);
             $io->text('Created ISO 27005 framework');
         }

@@ -24,18 +24,21 @@ class LoadNis2RequirementsCommand
         // Create or get NIS2 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'NIS2']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('NIS2')
-                ->setName('NIS2 Directive (EU 2022/2555)')
-                ->setDescription('Directive on measures for a high common level of cybersecurity across the Union')
-                ->setVersion('2022/2555')
-                ->setApplicableIndustry('all')
-                ->setRegulatoryBody('European Union')
-                ->setMandatory(true)
-                ->setScopeDescription('Applies to essential and important entities in critical sectors (energy, transport, banking, health, digital infrastructure, etc.)')
-                ->setActive(true);
+        }
+        $framework->setCode('NIS2')
+            ->setName('NIS2 Directive (EU 2022/2555)')
+            ->setDescription('Directive on measures for a high common level of cybersecurity across the Union')
+            ->setVersion('2022/2555')
+            ->setApplicableIndustry('all')
+            ->setRegulatoryBody('European Union')
+            ->setMandatory(true)
+            ->setScopeDescription('Applies to essential and important entities in critical sectors (energy, transport, banking, health, digital infrastructure, etc.)')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         }
         $requirements = $this->getNis2Requirements();

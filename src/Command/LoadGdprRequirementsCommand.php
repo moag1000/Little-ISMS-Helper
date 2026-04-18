@@ -26,18 +26,21 @@ class LoadGdprRequirementsCommand
         // Create or get GDPR framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'GDPR']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('GDPR')
-                ->setName('GDPR (General Data Protection Regulation)')
-                ->setDescription('EU regulation on data protection and privacy')
-                ->setVersion('2016/679')
-                ->setApplicableIndustry('all_sectors')
-                ->setRegulatoryBody('European Union')
-                ->setMandatory(true)
-                ->setScopeDescription('Applies to all organizations processing personal data of EU residents')
-                ->setActive(true);
+        }
+        $framework->setCode('GDPR')
+            ->setName('GDPR (General Data Protection Regulation)')
+            ->setDescription('EU regulation on data protection and privacy')
+            ->setVersion('2016/679')
+            ->setApplicableIndustry('all_sectors')
+            ->setRegulatoryBody('European Union')
+            ->setMandatory(true)
+            ->setScopeDescription('Applies to all organizations processing personal data of EU residents')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         } else {
             // Framework exists - check if requirements are already loaded
@@ -46,6 +49,9 @@ class LoadGdprRequirementsCommand
                 ->findBy(['complianceFramework' => $framework]);
 
             if ($existingRequirements !== []) {
+                // Persist updated metadata before early return so re-runs refresh it.
+                $framework->setUpdatedAt(new DateTimeImmutable());
+                $this->entityManager->flush();
                 $symfonyStyle->warning(sprintf(
                     'Framework GDPR already has %d requirements loaded. Skipping to avoid duplicates.',
                     count($existingRequirements)
@@ -55,7 +61,6 @@ class LoadGdprRequirementsCommand
 
             // Framework exists but has no requirements - update timestamp
             $framework->setUpdatedAt(new DateTimeImmutable());
-            $this->entityManager->persist($framework);
         }
         try {
             $this->entityManager->beginTransaction();

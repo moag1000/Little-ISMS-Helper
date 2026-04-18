@@ -26,18 +26,21 @@ class LoadBsiItGrundschutzRequirementsCommand
         // Create or get BSI IT-Grundschutz framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'BSI_GRUNDSCHUTZ']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('BSI_GRUNDSCHUTZ')
-                ->setName('BSI IT-Grundschutz')
-                ->setDescription('German information security standard by the Federal Office for Information Security (BSI)')
-                ->setVersion('Edition 2023')
-                ->setApplicableIndustry('all_sectors')
-                ->setRegulatoryBody('BSI (Bundesamt für Sicherheit in der Informationstechnik)')
-                ->setMandatory(false)
-                ->setScopeDescription('Comprehensive IT security standard applicable to organizations of all sizes in Germany')
-                ->setActive(true);
+        }
+        $framework->setCode('BSI_GRUNDSCHUTZ')
+            ->setName('BSI IT-Grundschutz')
+            ->setDescription('German information security standard by the Federal Office for Information Security (BSI)')
+            ->setVersion('Edition 2023')
+            ->setApplicableIndustry('all_sectors')
+            ->setRegulatoryBody('BSI (Bundesamt für Sicherheit in der Informationstechnik)')
+            ->setMandatory(false)
+            ->setScopeDescription('Comprehensive IT security standard applicable to organizations of all sizes in Germany')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         } else {
             // Framework exists - check if requirements are already loaded
@@ -46,6 +49,9 @@ class LoadBsiItGrundschutzRequirementsCommand
                 ->findBy(['complianceFramework' => $framework]);
 
             if ($existingRequirements !== []) {
+                // Persist updated metadata before early return so re-runs refresh it.
+                $framework->setUpdatedAt(new DateTimeImmutable());
+                $this->entityManager->flush();
                 $symfonyStyle->warning(sprintf(
                     'Framework BSI IT-Grundschutz already has %d requirements loaded. Skipping to avoid duplicates.',
                     count($existingRequirements)
@@ -55,7 +61,6 @@ class LoadBsiItGrundschutzRequirementsCommand
 
             // Framework exists but has no requirements - update timestamp
             $framework->setUpdatedAt(new DateTimeImmutable());
-            $this->entityManager->persist($framework);
         }
         try {
             $this->entityManager->beginTransaction();

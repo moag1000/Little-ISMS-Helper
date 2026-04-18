@@ -35,18 +35,21 @@ class LoadC52026RequirementsCommand
         // Create or get C5:2026 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'BSI-C5-2026']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('BSI-C5-2026')
-                ->setName('BSI C5:2026 - Cloud Computing Compliance Criteria Catalogue')
-                ->setDescription('German Federal Office for Information Security (BSI) criteria catalogue for secure cloud computing, C5:2026 final release. Adds requirements for container management, supply chain security, post-quantum cryptography readiness, and EUCS Substantial alignment.')
-                ->setVersion('2026')
-                ->setApplicableIndustry('cloud_services')
-                ->setRegulatoryBody('BSI - Bundesamt für Sicherheit in der Informationstechnik')
-                ->setMandatory(false)
-                ->setScopeDescription('Cloud service providers and cloud customers in Germany. Mandatory from January 1, 2027. Aligned with EUCS Substantial, ISO 27001:2022, NIS2, CSA CCM v4.')
-                ->setActive(true);
+        }
+        $framework->setCode('BSI-C5-2026')
+            ->setName('BSI C5:2026 - Cloud Computing Compliance Criteria Catalogue')
+            ->setDescription('German Federal Office for Information Security (BSI) criteria catalogue for secure cloud computing, C5:2026 final release. Adds requirements for container management, supply chain security, post-quantum cryptography readiness, and EUCS Substantial alignment.')
+            ->setVersion('2026')
+            ->setApplicableIndustry('cloud_services')
+            ->setRegulatoryBody('BSI - Bundesamt für Sicherheit in der Informationstechnik')
+            ->setMandatory(false)
+            ->setScopeDescription('Cloud service providers and cloud customers in Germany. Mandatory from January 1, 2027. Aligned with EUCS Substantial, ISO 27001:2022, NIS2, CSA CCM v4.')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         }
         $requirements = $this->getC52026Requirements();

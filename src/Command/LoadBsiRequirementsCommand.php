@@ -24,18 +24,21 @@ class LoadBsiRequirementsCommand
         // Create or get BSI framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'BSI-Grundschutz']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('BSI-Grundschutz')
-                ->setName('BSI IT-Grundschutz')
-                ->setDescription('BSI IT-Grundschutz: Comprehensive IT security standard with building blocks (Bausteine) for organization, infrastructure, systems, and applications')
-                ->setVersion('2023')
-                ->setApplicableIndustry('all')
-                ->setRegulatoryBody('BSI (Bundesamt für Sicherheit in der Informationstechnik)')
-                ->setMandatory(false)
-                ->setScopeDescription('IT-Grundschutz methodology covering ISMS, BCM, infrastructure, networks, systems, applications, and security concepts')
-                ->setActive(true);
+        }
+        $framework->setCode('BSI-Grundschutz')
+            ->setName('BSI IT-Grundschutz')
+            ->setDescription('BSI IT-Grundschutz: Comprehensive IT security standard with building blocks (Bausteine) for organization, infrastructure, systems, and applications')
+            ->setVersion('2023')
+            ->setApplicableIndustry('all')
+            ->setRegulatoryBody('BSI (Bundesamt für Sicherheit in der Informationstechnik)')
+            ->setMandatory(false)
+            ->setScopeDescription('IT-Grundschutz methodology covering ISMS, BCM, infrastructure, networks, systems, applications, and security concepts')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         }
         $requirements = $this->getBsiRequirements();

@@ -31,19 +31,21 @@ class LoadNistCsfRequirementsCommand
         // Create or get NIST CSF framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'NIST-CSF']);
-
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('NIST-CSF')
-                ->setName('NIST Cybersecurity Framework 2.0')
-                ->setDescription('Framework for improving critical infrastructure cybersecurity')
-                ->setVersion('2.0')
-                ->setApplicableIndustry('all')
-                ->setRegulatoryBody('NIST (National Institute of Standards and Technology)')
-                ->setMandatory(false)
-                ->setScopeDescription('Voluntary framework to help organizations manage cybersecurity risks')
-                ->setActive(true);
+        }
+        $framework->setCode('NIST-CSF')
+            ->setName('NIST Cybersecurity Framework 2.0')
+            ->setDescription('Framework for improving critical infrastructure cybersecurity')
+            ->setVersion('2.0')
+            ->setApplicableIndustry('all')
+            ->setRegulatoryBody('NIST (National Institute of Standards and Technology)')
+            ->setMandatory(false)
+            ->setScopeDescription('Voluntary framework to help organizations manage cybersecurity risks')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
             $symfonyStyle->text('✓ Created framework');
         } else {

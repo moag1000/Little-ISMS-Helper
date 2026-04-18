@@ -31,19 +31,21 @@ class LoadCisControlsRequirementsCommand
         // Create or get CIS Controls framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'CIS-CONTROLS']);
-
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('CIS-CONTROLS')
-                ->setName('CIS Controls v8')
-                ->setDescription('Center for Internet Security Critical Security Controls')
-                ->setVersion('8')
-                ->setApplicableIndustry('all')
-                ->setRegulatoryBody('CIS (Center for Internet Security)')
-                ->setMandatory(false)
-                ->setScopeDescription('Best practices for cybersecurity defense with prioritized set of actions')
-                ->setActive(true);
+        }
+        $framework->setCode('CIS-CONTROLS')
+            ->setName('CIS Controls v8')
+            ->setDescription('Center for Internet Security Critical Security Controls')
+            ->setVersion('8')
+            ->setApplicableIndustry('all')
+            ->setRegulatoryBody('CIS (Center for Internet Security)')
+            ->setMandatory(false)
+            ->setScopeDescription('Best practices for cybersecurity defense with prioritized set of actions')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
             $symfonyStyle->text('✓ Created framework');
         } else {

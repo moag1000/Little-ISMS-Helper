@@ -24,18 +24,21 @@ class LoadTisaxRequirementsCommand
         // Create or get TISAX framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'TISAX']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('TISAX')
-                ->setName('TISAX (Trusted Information Security Assessment Exchange)')
-                ->setDescription('Information security assessment standard for the automotive industry based on VDA ISA')
-                ->setVersion('6.0.2')
-                ->setApplicableIndustry('automotive')
-                ->setRegulatoryBody('VDA (Verband der Automobilindustrie)')
-                ->setMandatory(false)
-                ->setScopeDescription('Comprehensive information security assessment for automotive supply chain')
-                ->setActive(true);
+        }
+        $framework->setCode('TISAX')
+            ->setName('TISAX (Trusted Information Security Assessment Exchange)')
+            ->setDescription('Information security assessment standard for the automotive industry based on VDA ISA 6.0.4 (2024).')
+            ->setVersion('6.0.4')
+            ->setApplicableIndustry('automotive')
+            ->setRegulatoryBody('VDA (Verband der Automobilindustrie) / ENX Association')
+            ->setMandatory(false)
+            ->setScopeDescription('Comprehensive information security assessment for automotive supply chain (VDA ISA 6.0.4)')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         }
         $requirements = $this->getTisaxRequirements();
