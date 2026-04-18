@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Control;
+use App\Entity\User;
 use App\Entity\Asset;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -121,8 +122,17 @@ class ControlType extends AbstractType
                 ],
                 'help' => 'control.help.implementation_notes',
             ])
-            ->add('responsiblePerson', TextType::class, [
+            ->add('responsiblePersonUser', EntityType::class, [
                 'label' => 'control.field.responsible_person',
+                'class' => User::class,
+                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
+                'required' => false,
+                'placeholder' => 'control.placeholder.responsible_person_user',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'control.help.responsible_person_user',
+            ])
+            ->add('responsiblePerson', TextType::class, [
+                'label' => 'control.field.responsible_person_legacy',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',

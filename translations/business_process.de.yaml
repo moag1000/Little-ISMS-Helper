@@ -1,139 +1,180 @@
 business_process:
-    new: 'Neuer Geschäftsprozess'
-    edit: 'Geschäftsprozess bearbeiten'
-    success:
-        created: 'Geschäftsprozess erfolgreich erstellt.'
-        updated: 'Geschäftsprozess erfolgreich aktualisiert.'
-        deleted: 'Geschäftsprozess erfolgreich gelöscht.'
-    section:
-        basic_info: Grundinformationen
-        recovery_objectives: 'Wiederherstellungsziele (RTO/RPO/MTPD)'
-        financial_impact: 'Finanzielle Auswirkungen'
-        impact_assessment: 'Business Impact Analyse (BIA)'
-        dependencies: 'Abhängigkeiten und Schnittstellen'
-        recovery: Wiederherstellungsstrategie
-        supporting_resources: 'Unterstützende Ressourcen und Assets'
-    field:
-        name: Prozessname
-        process_owner: Prozessverantwortlicher
-        description: Prozessbeschreibung
-        criticality: 'Kritikalität (niedrig, mittel, hoch, kritisch)'
-        rto: 'RTO - Wiederherstellungszeit (in Stunden)'
-        rpo: 'RPO - Datenverlusttoleranz (in Stunden)'
-        mtpd: 'MTPD - Max. Unterbrechungsdauer (in Stunden)'
-        financial_impact_per_hour: 'Finanzieller Schaden pro Stunde Ausfall'
-        financial_impact_per_day: 'Finanzieller Schaden pro Tag Ausfall'
-        reputational_impact: 'Auswirkungen auf Reputation und Marke'
-        regulatory_impact: 'Regulatorische und Compliance-Auswirkungen'
-        operational_impact: 'Operative Auswirkungen auf Geschäftstätigkeit'
-        dependencies_upstream: 'Vorgelagerte Abhängigkeiten (was braucht dieser Prozess?)'
-        dependencies_downstream: 'Nachgelagerte Abhängigkeiten (wer ist abhängig von diesem Prozess?)'
-        recovery_strategy: 'Wiederherstellungsstrategie (ISO 22301:2019 Klausel 8.4)'
-        supporting_assets: 'Unterstützende Assets und Ressourcen'
-        identified_risks: 'Identifizierte Risiken für diesen Prozess'
-    help:
-        name: 'Eindeutiger Name des Geschäftsprozesses (z.B. "Kundenauftragsabwicklung")'
-        process_owner: 'Verantwortlicher für den Prozess (fachlicher und strategischer Eigentümer)'
-        description: 'Detaillierte Beschreibung: Was macht der Prozess? Welche Inputs/Outputs gibt es?'
-        criticality: 'Geschäftskritikalität: Wie wichtig ist dieser Prozess für das Unternehmen?'
-        rto: 'Recovery Time Objective (ISO 22301): In welcher Zeit muss der Prozess nach Ausfall wiederhergestellt sein?'
-        rpo: 'Recovery Point Objective (ISO 22301): Wie viel Datenverlust ist tolerierbar (in Zeit gemessen)?'
-        mtpd: 'Maximum Tolerable Period of Disruption: Maximale Zeit, die der Prozess unterbrochen sein darf'
-        financial_impact_per_hour: 'Direkter und indirekter finanzieller Schaden bei einem Ausfall von 1 Stunde (in EUR)'
-        financial_impact_per_day: 'Kumulierter finanzieller Schaden bei einem Ausfall von 1 Tag (in EUR)'
-        reputational_impact: 'Auswirkungen auf Image, Marke, Kundenvertrauen bei Prozessausfall'
-        regulatory_impact: 'Regulatorische Konsequenzen (Bußgelder, Meldepflichten) bei Prozessausfall'
-        operational_impact: 'Auswirkungen auf andere Geschäftsprozesse und Betriebsabläufe'
-        dependencies_upstream: 'Welche Prozesse, Systeme oder Dienstleistungen benötigt dieser Prozess zur Funktionsfähigkeit?'
-        dependencies_downstream: 'Welche anderen Prozesse oder Bereiche sind von diesem Prozess abhängig?'
-        recovery_strategy: 'Strategie zur Wiederherstellung nach ISO 22301:2019 (z.B. Backup-Site, manuelle Prozesse, alternative Lieferanten)'
-        supporting_assets: 'Verknüpfte IT-Assets, Infrastruktur und Ressourcen, die den Prozess unterstützen'
-        identified_risks: 'Verknüpfte Risiken, die diesen Prozess gefährden könnten'
-    tooltip:
-        criticality: '<strong>Geschäftskritikalität (ISO 22301)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>Niedrig</strong></td><td>Ausfall &lt; 72h tolerierbar</td></tr><tr><td><strong>Mittel</strong></td><td>Ausfall 24-72h tolerierbar</td></tr><tr><td><strong>Hoch</strong></td><td>Ausfall 4-24h tolerierbar</td></tr><tr><td><strong>Kritisch</strong></td><td>Ausfall &lt; 4h kritisch</td></tr></table>'
-        rto: '<strong>RTO - Recovery Time Objective</strong><br>⏱️ <em>Eingabe in Stunden</em><br><br>Maximale Zeit bis zur Wiederherstellung (ISO 22301)<br><br><em>Beispiele:</em><br>• E-Mail: 4h<br>• ERP-System: 8h<br>• Archiv: 72h'
-        rpo: '<strong>RPO - Recovery Point Objective</strong><br>⏱️ <em>Eingabe in Stunden</em><br><br>Maximaler akzeptabler Datenverlust<br><br><em>Beispiele:</em><br>• Finanzdaten: 0 (Echtzeit)<br>• ERP: 1<br>• Archiv: 24'
-        mtpd: '<strong>MTPD - Maximum Tolerable Period of Disruption</strong><br>⏱️ <em>Eingabe in Stunden</em><br><br>Maximale Unterbrechungsdauer bevor irreversible Schäden entstehen<br><br><em>Hinweis:</em> MTPD muss &gt; RTO sein!'
-        reputational_impact: '<strong>Reputationsauswirkung (BIA)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Keine Außenwirkung</td></tr><tr><td><strong>2</strong></td><td>Intern bekannt</td></tr><tr><td><strong>3</strong></td><td>Lokale Medien</td></tr><tr><td><strong>4</strong></td><td>Nationale Medien</td></tr><tr><td><strong>5</strong></td><td>Internationale Aufmerksamkeit</td></tr></table>'
-        regulatory_impact: '<strong>Regulatorische Auswirkung (BIA)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Keine Aufsicht</td></tr><tr><td><strong>2</strong></td><td>Hinweis/Empfehlung</td></tr><tr><td><strong>3</strong></td><td>Formelle Mängelanzeige</td></tr><tr><td><strong>4</strong></td><td>Bußgeld/Sanktion</td></tr><tr><td><strong>5</strong></td><td>Lizenzentzug möglich</td></tr></table>'
-        operational_impact: '<strong>Operative Auswirkung (BIA)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Keine anderen Prozesse betroffen</td></tr><tr><td><strong>2</strong></td><td>1-2 Prozesse eingeschränkt</td></tr><tr><td><strong>3</strong></td><td>Abteilung eingeschränkt</td></tr><tr><td><strong>4</strong></td><td>Mehrere Abteilungen betroffen</td></tr><tr><td><strong>5</strong></td><td>Gesamtbetrieb gefährdet</td></tr></table>'
-    placeholder:
-        rto: 'z.B. 4 (Stunden)'
-        rpo: 'z.B. 2 (Stunden)'
-        mtpd: 'z.B. 24 (Stunden)'
-    empty:
-        title: 'Noch keine Geschäftsprozesse vorhanden'
-        description: 'Erstellen Sie Ihren ersten Geschäftsprozess, um mit der Business-Impact-Analyse zu beginnen.'
-    action:
-        create: 'Prozess erstellen'
-    impact_level:
-        very_low: 'Sehr niedrig'
-        low: Niedrig
-        medium: Mittel
-        high: Hoch
-        very_high: 'Sehr hoch'
-    index:
-        title: 'Business Continuity Management'
-        page_title: 'Business Continuity Management (BCM)'
-        new_process: 'Neuer Geschäftsprozess'
-        stats:
-            total: 'Gesamt'
-            total_subtitle: 'Geschäftsprozesse'
-            critical: 'Kritisch'
-            critical_subtitle: 'Höchste Priorität'
-            avg_rto: 'Ø RTO'
-            rto_unit: 'h'
-            rto_subtitle: 'Recovery Time Objective'
-            with_risks: 'Mit Risiken'
-            with_risks_subtitle: 'Aktive Risiken'
-        table:
-            title: 'Geschäftsprozesse'
-            name: 'Name'
-            owner: 'Verantwortlicher'
-            criticality: 'Kritikalität'
-            rto: 'RTO'
-            rpo: 'RPO'
-            mtpd: 'MTPD'
-            impact_score: 'Impact Score'
-            actions: 'Aktionen'
-        loading: 'Lädt...'
-    criticality:
-        critical: 'Kritisch'
-        high: 'Hoch'
-        medium: 'Mittel'
-        low: 'Niedrig'
-        unknown: 'Unbekannt'
-    show:
-        criticality: 'Kritikalität'
-        business_impact_score: 'Business Impact Score'
-        auto_calculated: 'Automatisch berechnet'
-        process_risk_level: 'Prozess-Risikolevel'
-        active_risks: '%count% aktive Risiken'
-        alignment_status: 'Alignment-Status'
-        bia_risk_aligned: 'BIA ↔ Risiko aligned'
-        review_required: 'Überprüfung erforderlich'
-        tab:
-            general: 'Allgemein'
-            bia_data: 'BIA Daten'
-            assets: 'Assets'
-            risks: 'Risiken'
-        recovery_objectives: 'Recovery-Ziele'
-        rto: 'RTO (Recovery Time Objective)'
-        rpo: 'RPO (Recovery Point Objective)'
-        mtpd: 'MTPD (Maximum Tolerable Period)'
-        suggested_rto: 'Empfohlenes RTO (basierend auf Risiken)'
-        hours: 'Stunden'
-        deviation: 'Abweichung'
-        impact_assessment: 'Impact-Bewertung'
-        warning: 'Warnung'
-        unmitigated_high_risks: 'Dieser Prozess hat unbehandelte Hochrisiken!'
-        asset: 'Asset'
-        type: 'Typ'
-        cia_rating: 'CIA-Bewertung'
-        status: 'Status'
-        no_supporting_assets: 'Keine unterstützenden Assets verknüpft.'
-        risk: 'Risiko'
-        inherent_risk: 'Inhärentes Risiko'
-        residual_risk: 'Restrisiko'
-        treatment: 'Behandlung'
-        no_risks: 'Keine Risiken verknüpft.'
+  new: Neuer Geschäftsprozess
+  edit: Geschäftsprozess bearbeiten
+  success:
+    created: Geschäftsprozess erfolgreich erstellt.
+    updated: Geschäftsprozess erfolgreich aktualisiert.
+    deleted: Geschäftsprozess erfolgreich gelöscht.
+  section:
+    basic_info: Grundinformationen
+    recovery_objectives: Wiederherstellungsziele (RTO/RPO/MTPD)
+    financial_impact: Finanzielle Auswirkungen
+    impact_assessment: Business Impact Analyse (BIA)
+    dependencies: Abhängigkeiten und Schnittstellen
+    recovery: Wiederherstellungsstrategie
+    supporting_resources: Unterstützende Ressourcen und Assets
+  field:
+    name: Prozessname
+    process_owner: Prozessverantwortlicher
+    description: Prozessbeschreibung
+    criticality: Kritikalität (niedrig, mittel, hoch, kritisch)
+    rto: RTO - Wiederherstellungszeit (in Stunden)
+    rpo: RPO - Datenverlusttoleranz (in Stunden)
+    mtpd: MTPD - Max. Unterbrechungsdauer (in Stunden)
+    financial_impact_per_hour: Finanzieller Schaden pro Stunde Ausfall
+    financial_impact_per_day: Finanzieller Schaden pro Tag Ausfall
+    reputational_impact: Auswirkungen auf Reputation und Marke
+    regulatory_impact: Regulatorische und Compliance-Auswirkungen
+    operational_impact: Operative Auswirkungen auf Geschäftstätigkeit
+    dependencies_upstream: Vorgelagerte Abhängigkeiten (was braucht dieser Prozess?)
+    dependencies_downstream: Nachgelagerte Abhängigkeiten (wer ist abhängig von diesem
+      Prozess?)
+    recovery_strategy: Wiederherstellungsstrategie (ISO 22301:2019 Klausel 8.4)
+    supporting_assets: Unterstützende Assets und Ressourcen
+    identified_risks: Identifizierte Risiken für diesen Prozess
+    process_owner_legacy: Prozesseigentümer (freitext, veraltet)
+  help:
+    name: Eindeutiger Name des Geschäftsprozesses (z.B. "Kundenauftragsabwicklung")
+    process_owner: Verantwortlicher für den Prozess (fachlicher und strategischer
+      Eigentümer)
+    description: 'Detaillierte Beschreibung: Was macht der Prozess? Welche Inputs/Outputs
+      gibt es?'
+    criticality: 'Geschäftskritikalität: Wie wichtig ist dieser Prozess für das Unternehmen?'
+    rto: 'Recovery Time Objective (ISO 22301): In welcher Zeit muss der Prozess nach
+      Ausfall wiederhergestellt sein?'
+    rpo: 'Recovery Point Objective (ISO 22301): Wie viel Datenverlust ist tolerierbar
+      (in Zeit gemessen)?'
+    mtpd: 'Maximum Tolerable Period of Disruption: Maximale Zeit, die der Prozess
+      unterbrochen sein darf'
+    financial_impact_per_hour: Direkter und indirekter finanzieller Schaden bei einem
+      Ausfall von 1 Stunde (in EUR)
+    financial_impact_per_day: Kumulierter finanzieller Schaden bei einem Ausfall von
+      1 Tag (in EUR)
+    reputational_impact: Auswirkungen auf Image, Marke, Kundenvertrauen bei Prozessausfall
+    regulatory_impact: Regulatorische Konsequenzen (Bußgelder, Meldepflichten) bei
+      Prozessausfall
+    operational_impact: Auswirkungen auf andere Geschäftsprozesse und Betriebsabläufe
+    dependencies_upstream: Welche Prozesse, Systeme oder Dienstleistungen benötigt
+      dieser Prozess zur Funktionsfähigkeit?
+    dependencies_downstream: Welche anderen Prozesse oder Bereiche sind von diesem
+      Prozess abhängig?
+    recovery_strategy: Strategie zur Wiederherstellung nach ISO 22301:2019 (z.B. Backup-Site,
+      manuelle Prozesse, alternative Lieferanten)
+    supporting_assets: Verknüpfte IT-Assets, Infrastruktur und Ressourcen, die den
+      Prozess unterstützen
+    identified_risks: Verknüpfte Risiken, die diesen Prozess gefährden könnten
+    process_owner_user: Prozesseigentümer aus der Benutzerverwaltung.
+  tooltip:
+    criticality: <strong>Geschäftskritikalität (ISO 22301)</strong><br><table class="table
+      table-sm table-borderless mb-0 mt-1"><tr><td><strong>Niedrig</strong></td><td>Ausfall
+      &lt; 72h tolerierbar</td></tr><tr><td><strong>Mittel</strong></td><td>Ausfall
+      24-72h tolerierbar</td></tr><tr><td><strong>Hoch</strong></td><td>Ausfall 4-24h
+      tolerierbar</td></tr><tr><td><strong>Kritisch</strong></td><td>Ausfall &lt;
+      4h kritisch</td></tr></table>
+    rto: '<strong>RTO - Recovery Time Objective</strong><br>⏱️ <em>Eingabe in Stunden</em><br><br>Maximale
+      Zeit bis zur Wiederherstellung (ISO 22301)<br><br><em>Beispiele:</em><br>• E-Mail:
+      4h<br>• ERP-System: 8h<br>• Archiv: 72h'
+    rpo: '<strong>RPO - Recovery Point Objective</strong><br>⏱️ <em>Eingabe in Stunden</em><br><br>Maximaler
+      akzeptabler Datenverlust<br><br><em>Beispiele:</em><br>• Finanzdaten: 0 (Echtzeit)<br>•
+      ERP: 1<br>• Archiv: 24'
+    mtpd: <strong>MTPD - Maximum Tolerable Period of Disruption</strong><br>⏱️ <em>Eingabe
+      in Stunden</em><br><br>Maximale Unterbrechungsdauer bevor irreversible Schäden
+      entstehen<br><br><em>Hinweis:</em> MTPD muss &gt; RTO sein!
+    reputational_impact: <strong>Reputationsauswirkung (BIA)</strong><br><table class="table
+      table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Keine
+      Außenwirkung</td></tr><tr><td><strong>2</strong></td><td>Intern bekannt</td></tr><tr><td><strong>3</strong></td><td>Lokale
+      Medien</td></tr><tr><td><strong>4</strong></td><td>Nationale Medien</td></tr><tr><td><strong>5</strong></td><td>Internationale
+      Aufmerksamkeit</td></tr></table>
+    regulatory_impact: <strong>Regulatorische Auswirkung (BIA)</strong><br><table
+      class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Keine
+      Aufsicht</td></tr><tr><td><strong>2</strong></td><td>Hinweis/Empfehlung</td></tr><tr><td><strong>3</strong></td><td>Formelle
+      Mängelanzeige</td></tr><tr><td><strong>4</strong></td><td>Bußgeld/Sanktion</td></tr><tr><td><strong>5</strong></td><td>Lizenzentzug
+      möglich</td></tr></table>
+    operational_impact: <strong>Operative Auswirkung (BIA)</strong><br><table class="table
+      table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Keine
+      anderen Prozesse betroffen</td></tr><tr><td><strong>2</strong></td><td>1-2 Prozesse
+      eingeschränkt</td></tr><tr><td><strong>3</strong></td><td>Abteilung eingeschränkt</td></tr><tr><td><strong>4</strong></td><td>Mehrere
+      Abteilungen betroffen</td></tr><tr><td><strong>5</strong></td><td>Gesamtbetrieb
+      gefährdet</td></tr></table>
+  placeholder:
+    rto: z.B. 4 (Stunden)
+    rpo: z.B. 2 (Stunden)
+    mtpd: z.B. 24 (Stunden)
+    process_owner_user: -- Prozesseigentümer --
+  empty:
+    title: Noch keine Geschäftsprozesse vorhanden
+    description: Erstellen Sie Ihren ersten Geschäftsprozess, um mit der Business-Impact-Analyse
+      zu beginnen.
+  action:
+    create: Prozess erstellen
+  impact_level:
+    very_low: Sehr niedrig
+    low: Niedrig
+    medium: Mittel
+    high: Hoch
+    very_high: Sehr hoch
+  index:
+    title: Business Continuity Management
+    page_title: Business Continuity Management (BCM)
+    new_process: Neuer Geschäftsprozess
+    stats:
+      total: Gesamt
+      total_subtitle: Geschäftsprozesse
+      critical: Kritisch
+      critical_subtitle: Höchste Priorität
+      avg_rto: Ø RTO
+      rto_unit: h
+      rto_subtitle: Recovery Time Objective
+      with_risks: Mit Risiken
+      with_risks_subtitle: Aktive Risiken
+    table:
+      title: Geschäftsprozesse
+      name: Name
+      owner: Verantwortlicher
+      criticality: Kritikalität
+      rto: RTO
+      rpo: RPO
+      mtpd: MTPD
+      impact_score: Impact Score
+      actions: Aktionen
+    loading: Lädt...
+  criticality:
+    critical: Kritisch
+    high: Hoch
+    medium: Mittel
+    low: Niedrig
+    unknown: Unbekannt
+  show:
+    criticality: Kritikalität
+    business_impact_score: Business Impact Score
+    auto_calculated: Automatisch berechnet
+    process_risk_level: Prozess-Risikolevel
+    active_risks: '%count% aktive Risiken'
+    alignment_status: Alignment-Status
+    bia_risk_aligned: BIA ↔ Risiko aligned
+    review_required: Überprüfung erforderlich
+    tab:
+      general: Allgemein
+      bia_data: BIA Daten
+      assets: Assets
+      risks: Risiken
+    recovery_objectives: Recovery-Ziele
+    rto: RTO (Recovery Time Objective)
+    rpo: RPO (Recovery Point Objective)
+    mtpd: MTPD (Maximum Tolerable Period)
+    suggested_rto: Empfohlenes RTO (basierend auf Risiken)
+    hours: Stunden
+    deviation: Abweichung
+    impact_assessment: Impact-Bewertung
+    warning: Warnung
+    unmitigated_high_risks: Dieser Prozess hat unbehandelte Hochrisiken!
+    asset: Asset
+    type: Typ
+    cia_rating: CIA-Bewertung
+    status: Status
+    no_supporting_assets: Keine unterstützenden Assets verknüpft.
+    risk: Risiko
+    inherent_risk: Inhärentes Risiko
+    residual_risk: Restrisiko
+    treatment: Behandlung
+    no_risks: Keine Risiken verknüpft.

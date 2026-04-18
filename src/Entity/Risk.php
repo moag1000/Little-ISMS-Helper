@@ -1042,4 +1042,31 @@ class Risk
         $this->linkedVulnerability = $linkedVulnerability;
         return $this;
     }
+
+    /**
+     * Pattern A dual-state: preferred structured owner. Falls back to string acceptanceApprovedBy.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'acceptance_approved_by_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $acceptanceApprovedByUser = null;
+
+    public function getAcceptanceApprovedByUser(): ?User
+    {
+        return $this->acceptanceApprovedByUser;
+    }
+
+    public function setAcceptanceApprovedByUser(?User $acceptanceApprovedByUser): static
+    {
+        $this->acceptanceApprovedByUser = $acceptanceApprovedByUser;
+        return $this;
+    }
+
+    /**
+     * Effective acceptanceApprovedBy: prefer acceptanceApprovedByUser.fullName, fall back to legacy string.
+     */
+    public function getEffectiveAcceptanceApprovedBy(): ?string
+    {{
+        return $this->{user_field}?->getFullName() ?? $this->{str_field};
+    }}
+
 }

@@ -569,4 +569,31 @@ class Asset
     {
         return $this->physicalLocation?->getName() ?? $this->location;
     }
+
+    /**
+     * Pattern A dual-state: preferred structured owner. Falls back to string owner.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'owner_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $ownerUser = null;
+
+    public function getOwnerUser(): ?User
+    {
+        return $this->ownerUser;
+    }
+
+    public function setOwnerUser(?User $ownerUser): static
+    {
+        $this->ownerUser = $ownerUser;
+        return $this;
+    }
+
+    /**
+     * Effective owner: prefer ownerUser.fullName, fall back to legacy string.
+     */
+    public function getEffectiveOwner(): ?string
+    {{
+        return $this->{user_field}?->getFullName() ?? $this->{str_field};
+    }}
+
 }

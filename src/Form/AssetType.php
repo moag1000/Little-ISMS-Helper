@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Asset;
 use App\Entity\Location;
+use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -49,9 +50,18 @@ class AssetType extends AbstractType
                 'required' => true,
                 'choice_translation_domain' => 'asset',
             ])
-            ->add('owner', TextType::class, [
+            ->add('ownerUser', EntityType::class, [
                 'label' => 'asset.field.owner',
-                'required' => true,
+                'class' => User::class,
+                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
+                'required' => false,
+                'placeholder' => 'asset.placeholder.owner_user',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'asset.help.owner_user',
+            ])
+            ->add('owner', TextType::class, [
+                'label' => 'asset.field.owner_legacy',
+                'required' => false,
                 'attr' => [
                     'maxlength' => 100,
                     'placeholder' => 'asset.placeholder.owner',

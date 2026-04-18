@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Asset;
+use App\Entity\User;
 use App\Entity\Incident;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -84,9 +85,18 @@ class IncidentType extends AbstractType
                 'input' => 'datetime_immutable',
                 'required' => false,
             ])
-            ->add('reportedBy', TextType::class, [
+            ->add('reportedByUser', EntityType::class, [
                 'label' => 'incident.field.reported_by',
-                'required' => true,
+                'class' => User::class,
+                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
+                'required' => false,
+                'placeholder' => 'incident.placeholder.reported_by_user',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'incident.help.reported_by_user',
+            ])
+            ->add('reportedBy', TextType::class, [
+                'label' => 'incident.field.reported_by_legacy',
+                'required' => false,
                 'attr' => [
                     'maxlength' => 100,
                     'placeholder' => 'incident.placeholder.reported_by',
