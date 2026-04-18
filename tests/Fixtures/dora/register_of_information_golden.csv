@@ -1,0 +1,4 @@
+﻿entity_lei,ict_third_party_service_provider_lei,ict_third_party_service_provider_name,nace_code,country_of_head_office,ict_function_type,ict_criticality,substitutability,data_processing_locations,has_subcontractors,subcontractor_chain_depth,subcontractor_chain,has_exit_strategy,exit_strategy_document_ref,last_dora_audit_date,gdpr_processor_status,gdpr_transfer_mechanism,gdpr_av_contract_signed,gdpr_av_contract_date
+,529900T8BM49AURSDO55,"Acme Cloud Services Ltd",62.01,IE,Cloud,critical,hard,DE|IE|US,Y,2,"Sub A|Sub B",Y,,2024-11-01,processor,SCC,Y,2024-02-15
+,5299003DGCJQ7L6U8V17,"Small Vendor GmbH",62.02,DE,,important,medium,,N,0,,N,,,processor,,N,
+,,"Legacy Supplier",,,,,,,N,0,,N,,,,,N,

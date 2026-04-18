@@ -204,6 +204,18 @@ class SupplierType extends AbstractType
                 'required' => false,
                 'attr' => ['maxlength' => 20, 'placeholder' => 'LEI (20 chars)'],
             ])
+            ->add('naceCode', TextType::class, [
+                'label' => 'supplier.field.nace_code',
+                'help' => 'supplier.help.nace_code',
+                'required' => false,
+                'attr' => ['maxlength' => 10, 'placeholder' => 'z.B. 62.01'],
+            ])
+            ->add('countryOfHeadOffice', TextType::class, [
+                'label' => 'supplier.field.country_of_head_office',
+                'help' => 'supplier.help.country_of_head_office',
+                'required' => false,
+                'attr' => ['maxlength' => 2, 'placeholder' => 'DE'],
+            ])
             ->add('ictCriticality', ChoiceType::class, [
                 'label' => 'supplier.field.ict_criticality',
                 'help' => 'supplier.help.ict_criticality',

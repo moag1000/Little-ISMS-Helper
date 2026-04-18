@@ -15,7 +15,12 @@
                     </h1>
                     <p class="text-muted mb-0">{{ 'dora.dashboard.subtitle'|trans }}</p>
                 </div>
-                <div>
+                <div class="d-flex gap-2">
+                    <a href="{{ path('app_dora_register_export_csv') }}"
+                       class="btn btn-outline-primary"
+                       aria-label="{{ 'dora.register_export.aria'|trans }}">
+                        <i class="bi bi-download me-1" aria-hidden="true"></i>{{ 'dora.register_export.button'|trans }}
+                    </a>
                     <a href="{{ path('app_compliance_wizard_assess', {wizard: 'dora'}) }}" class="btn btn-outline-info">
                         <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i>{{ 'dora.run_wizard'|trans }}
                     </a>
