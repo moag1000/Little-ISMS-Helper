@@ -251,4 +251,34 @@ class AuditLogRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * AUD-02: Latest signed HMAC (by id), used as previousHmac for the next row.
+     */
+    public function findLatestSignedHmac(): ?string
+    {
+        $result = $this->createQueryBuilder('a')
+            ->select('a.hmac')
+            ->where('a.hmac IS NOT NULL')
+            ->orderBy('a.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return is_array($result) ? ($result['hmac'] ?? null) : null;
+    }
+
+    /**
+     * AUD-02: Signed rows in insertion order for chain verification.
+     *
+     * @return iterable<AuditLog>
+     */
+    public function findAllSignedOrdered(): iterable
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.hmac IS NOT NULL')
+            ->orderBy('a.id', 'ASC')
+            ->getQuery()
+            ->toIterable();
+    }
 }

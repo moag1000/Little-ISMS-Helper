@@ -32,6 +32,11 @@ parameters:
     # NIS2 Art. 21.2: Audit logs must be retained for at least 12 months (365 days)
     app.audit_log_retention_days: 365  # 12 months minimum per NIS2
 
+    # AUD-02: HMAC-SHA256 key for audit-log integrity (tamper detection).
+    # Production: set APP_AUDIT_HMAC_KEY to a ≥32-byte random secret.
+    # Empty value disables signing (rows persisted without hmac, verify reports disabled).
+    app.audit_log_hmac_key: '%env(default::APP_AUDIT_HMAC_KEY)%'
+
     # WS-1 Feature Flag: dark-launch for mapping-based inheritance suggestions.
     app.compliance.mapping_inheritance.enabled: '%env(bool:COMPLIANCE_MAPPING_INHERITANCE_ENABLED)%'
 
@@ -147,6 +152,11 @@ services:
     App\Command\AuditLogCleanupCommand:
         arguments:
             $retentionDays: '%app.audit_log_retention_days%'
+
+    # AUD-02: Audit-Log integrity (HMAC chain)
+    App\Service\AuditLogIntegrityService:
+        arguments:
+            $hmacSecret: '%app.audit_log_hmac_key%'
 
     # Configure Document Controller
     App\Controller\DocumentController:
