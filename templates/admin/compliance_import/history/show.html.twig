@@ -1,0 +1,247 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'compliance_import.history.detail.title'|trans({ '%filename%': session.originalFilename }, 'compliance_import') }}{% endblock %}
+
+{% block admin_title %}{{ 'compliance_import.history.title'|trans({}, 'compliance_import') }}{% endblock %}
+
+{% block admin_content %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
+            { label: 'compliance_import.history.title'|trans({}, 'compliance_import'), url: path('admin_import_history_index') },
+            { label: session.originalFilename }
+        ]
+    } only %}
+
+    {# Session meta #}
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-3', session: session } only %}
+        {% block card_header %}
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h2 class="h5 mb-0">
+                    <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                    {{ session.originalFilename }}
+                </h2>
+                <a href="{{ path('admin_import_history_index') }}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                    {{ 'compliance_import.history.back_to_list'|trans({}, 'compliance_import') }}
+                </a>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            <dl class="row mb-0">
+                <dt class="col-sm-3">{{ 'compliance_import.history.col_hash'|trans({}, 'compliance_import') }}</dt>
+                <dd class="col-sm-9"><code>{{ session.fileSha256 }}</code></dd>
+
+                <dt class="col-sm-3">{{ 'compliance_import.history.detail.format'|trans({}, 'compliance_import') }}</dt>
+                <dd class="col-sm-9"><code>{{ session.format }}</code></dd>
+
+                <dt class="col-sm-3">{{ 'compliance_import.history.detail.size'|trans({}, 'compliance_import') }}</dt>
+                <dd class="col-sm-9">{{ session.fileSizeBytes }} B</dd>
+
+                <dt class="col-sm-3">{{ 'compliance_import.history.col_uploader'|trans({}, 'compliance_import') }}</dt>
+                <dd class="col-sm-9">
+                    {% if session.uploadedBy %}{{ session.uploadedBy.email }}{% else %}<span class="text-muted">—</span>{% endif %}
+                </dd>
+
+                <dt class="col-sm-3">{{ 'compliance_import.history.detail.uploaded_at'|trans({}, 'compliance_import') }}</dt>
+                <dd class="col-sm-9">{{ session.uploadedAt|date('Y-m-d H:i:s') }}</dd>
+
+                <dt class="col-sm-3">{{ 'compliance_import.history.col_committed_at'|trans({}, 'compliance_import') }}</dt>
+                <dd class="col-sm-9">
+                    {% if session.committedAt %}
+                        {{ session.committedAt|date('Y-m-d H:i:s') }}
+                    {% else %}
+                        <span class="text-muted">—</span>
+                    {% endif %}
+                </dd>
+
+                <dt class="col-sm-3">{{ 'compliance_import.history.col_status'|trans({}, 'compliance_import') }}</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-secondary">
+                        {{ ('compliance_import.history.status.' ~ session.status)|trans({}, 'compliance_import') }}
+                    </span>
+                </dd>
+
+                <dt class="col-sm-3">{{ 'compliance_import.history.detail.counters'|trans({}, 'compliance_import') }}</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-success">{{ 'compliance_import.history.col_imported'|trans({}, 'compliance_import') }}: {{ session.rowCountImported }}</span>
+                    <span class="badge bg-primary">{{ 'compliance_import.history.col_superseded'|trans({}, 'compliance_import') }}: {{ session.rowCountSuperseded }}</span>
+                    <span class="badge bg-warning">{{ 'compliance_import.history.col_skipped'|trans({}, 'compliance_import') }}: {{ session.rowCountSkipped }}</span>
+                    <span class="badge bg-secondary">{{ 'compliance_import.history.col_total'|trans({}, 'compliance_import') }}: {{ session.rowCountTotal }}</span>
+                </dd>
+            </dl>
+        {% endblock %}
+    {% endembed %}
+
+    {# Filter / search #}
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-3', session: session, filter: filter, is_search: is_search } only %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="h6 mb-0">
+                    <i class="bi bi-funnel" aria-hidden="true"></i>
+                    {{ 'compliance_import.history.filter.title'|trans({}, 'compliance_import') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            <form method="get" class="row g-2 align-items-end">
+                <div class="col-md-3">
+                    <label for="filter-decision" class="form-label">
+                        {{ 'compliance_import.history.filter.decision'|trans({}, 'compliance_import') }}
+                    </label>
+                    <select id="filter-decision" name="decision" class="form-select form-select-sm">
+                        <option value="">{{ 'compliance_import.history.filter.all'|trans({}, 'compliance_import') }}</option>
+                        {% for d in ['import', 'update', 'merge', 'skip', 'error'] %}
+                            <option value="{{ d }}" {% if filter.decision == d %}selected{% endif %}>
+                                {{ ('compliance_import.history.decision.' ~ d)|trans({}, 'compliance_import') }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="filter-target-entity" class="form-label">
+                        {{ 'compliance_import.history.filter.target_entity'|trans({}, 'compliance_import') }}
+                    </label>
+                    <input id="filter-target-entity" type="text" name="target_entity_type"
+                           value="{{ filter.target_entity_type }}"
+                           class="form-control form-control-sm"
+                           placeholder="ComplianceMapping">
+                </div>
+                <div class="col-md-3">
+                    <label for="filter-search-id" class="form-label">
+                        {{ 'compliance_import.history.filter.search'|trans({}, 'compliance_import') }}
+                    </label>
+                    <input id="filter-search-id" type="number" min="1" name="search_entity_id"
+                           value="{{ filter.search_entity_id }}"
+                           class="form-control form-control-sm"
+                           placeholder="123">
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        <i class="bi bi-search" aria-hidden="true"></i>
+                        {{ 'compliance_import.history.filter.apply'|trans({}, 'compliance_import') }}
+                    </button>
+                    <a href="{{ path('admin_import_history_show', { id: session.id }) }}"
+                       class="btn btn-sm btn-outline-secondary">
+                        {{ 'compliance_import.history.filter.reset'|trans({}, 'compliance_import') }}
+                    </a>
+                </div>
+            </form>
+            {% if is_search %}
+                <div class="alert alert-info mt-3 mb-0" role="note">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    {{ 'compliance_import.history.filter.search_active'|trans({
+                        '%type%': filter.target_entity_type,
+                        '%id%': filter.search_entity_id
+                    }, 'compliance_import') }}
+                </div>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+
+    {# Events table #}
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-3', session: session, events: events, total: total, page: page, page_count: page_count, filter: filter, is_search: is_search } only %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="h6 mb-0">
+                    <i class="bi bi-list-ol" aria-hidden="true"></i>
+                    {{ 'compliance_import.history.detail.events_title'|trans({ '%count%': total }, 'compliance_import') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            {% if events is empty %}
+                <p class="text-muted mb-0">
+                    {{ 'compliance_import.history.detail.events_empty'|trans({}, 'compliance_import') }}
+                </p>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle"
+                           aria-label="{{ 'compliance_import.history.detail.events_aria'|trans({}, 'compliance_import') }}">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'compliance_import.history.detail.line'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col">{{ 'compliance_import.history.detail.decision'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col">{{ 'compliance_import.history.detail.target'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col">{{ 'compliance_import.history.detail.before'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col">{{ 'compliance_import.history.detail.after'|trans({}, 'compliance_import') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for event in events %}
+                                {% set variant = {
+                                    'import': 'success',
+                                    'update': 'primary',
+                                    'merge': 'info',
+                                    'skip': 'warning',
+                                    'error': 'danger'
+                                }[event.decision]|default('secondary') %}
+                                <tr>
+                                    <td>{{ event.lineNumber }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ variant }}">
+                                            {{ ('compliance_import.history.decision.' ~ event.decision)|trans({}, 'compliance_import') }}
+                                        </span>
+                                        {% if event.errorMessage %}
+                                            <div class="small text-muted mt-1">{{ event.errorMessage }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if event.targetEntityType %}
+                                            <code>{{ event.targetEntityType }}</code>
+                                            {% if event.targetEntityId %}
+                                                <span class="text-muted">#</span><code>{{ event.targetEntityId }}</code>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if event.beforeState %}
+                                            <details>
+                                                <summary class="small">{{ 'compliance_import.history.detail.show_json'|trans({}, 'compliance_import') }}</summary>
+                                                <pre class="small mb-0">{{ event.beforeState }}</pre>
+                                            </details>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if event.afterState %}
+                                            <details>
+                                                <summary class="small">{{ 'compliance_import.history.detail.show_json'|trans({}, 'compliance_import') }}</summary>
+                                                <pre class="small mb-0">{{ event.afterState }}</pre>
+                                            </details>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if not is_search and page_count > 1 %}
+                    <nav aria-label="{{ 'compliance_import.history.detail.events_pagination_aria'|trans({}, 'compliance_import') }}">
+                        <ul class="pagination">
+                            {% for p in 1..page_count %}
+                                <li class="page-item {% if p == page %}active{% endif %}">
+                                    <a class="page-link"
+                                       href="{{ path('admin_import_history_show', {
+                                           id: session.id,
+                                           page: p,
+                                           decision: filter.decision,
+                                           target_entity_type: filter.target_entity_type
+                                       }) }}">{{ p }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}

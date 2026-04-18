@@ -11,11 +11,15 @@ use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\FulfillmentInheritanceLog;
+use App\Entity\ImportRowEvent;
+use App\Entity\ImportSession;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
+use App\Repository\ImportRowEventRepository;
 use App\Service\ComplianceInheritanceService;
 use App\Service\GapEffortCalculator;
+use App\Service\Import\ImportSessionRecorder;
 use App\Service\PortfolioReportService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -314,6 +318,65 @@ final class ComplianceReuseJourneyTest extends KernelTestCase
             'Gap report total effort must be within a sane cap (<10000 person-days).',
         );
         self::assertGreaterThan(0, $totals['estimated_count']);
+
+        // ── Step 7 — ISB MINOR-1 per-row audit trail retrievable ─────────────
+        // Simulate a tiny import for one of the existing mappings and verify
+        // the ImportRowEvent is queryable via findByTarget().
+        // Reload tenant + actor after the earlier em->clear().
+        $tenantReloaded = $this->em->getRepository(Tenant::class)->find($this->tenant->getId());
+        $actorReloaded = $this->em->getRepository(User::class)->find($this->actor->getId());
+        self::assertInstanceOf(Tenant::class, $tenantReloaded);
+        self::assertInstanceOf(User::class, $actorReloaded);
+
+        $sampleMapping = $this->em->getRepository(ComplianceMapping::class)
+            ->findOneBy(['source' => 'e2e_reuse_journey_test']);
+        self::assertInstanceOf(
+            ComplianceMapping::class,
+            $sampleMapping,
+            'Expected at least one e2e-seeded ComplianceMapping to exist.',
+        );
+
+        /** @var ImportSessionRecorder $recorder */
+        $recorder = self::getContainer()->get(ImportSessionRecorder::class);
+        $fixtureDir = sys_get_temp_dir() . '/lih-e2e-import-' . bin2hex(random_bytes(3));
+        if (!is_dir($fixtureDir)) {
+            mkdir($fixtureDir, 0700, true);
+        }
+        $fixtureFile = $fixtureDir . '/e2e-minor1.csv';
+        file_put_contents($fixtureFile, "source_framework\nISO27001\n");
+
+        $importSession = $recorder->openSession(
+            $fixtureFile,
+            ImportSession::FORMAT_CSV,
+            'e2e-minor1.csv',
+            $actorReloaded,
+            $tenantReloaded,
+        );
+        $recorder->recordRow(
+            $importSession, 1, ImportRowEvent::DECISION_IMPORT,
+            'ComplianceMapping', $sampleMapping->getId(),
+            null,
+            ['mapping_percentage' => $sampleMapping->getMappingPercentage()],
+            ['source_framework' => 'ISO27001'],
+            null,
+        );
+        $recorder->closeSession($importSession, ImportSession::STATUS_COMMITTED);
+
+        /** @var ImportRowEventRepository $eventRepo */
+        $eventRepo = $this->em->getRepository(ImportRowEvent::class);
+        $matches = $eventRepo->findByTarget('ComplianceMapping', (int) $sampleMapping->getId());
+        self::assertNotEmpty(
+            $matches,
+            'ISB MINOR-1: findByTarget() must return the recorded ImportRowEvent.',
+        );
+        self::assertSame(
+            1,
+            $matches[0]->getLineNumber(),
+            'ISB MINOR-1: line number must be preserved on the row event.',
+        );
+
+        @unlink($fixtureFile);
+        @rmdir($fixtureDir);
     }
 
     // ── helpers ──────────────────────────────────────────────────────────────

@@ -7,6 +7,8 @@ namespace App\Service\Import;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
+use App\Entity\ImportRowEvent;
+use App\Entity\ImportSession;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
@@ -175,10 +177,18 @@ final class BsiProfileXmlImporter
     /**
      * Persist mappings to the DB. Returns the same shape as the CSV commit path.
      *
+     * ISB MINOR-1: when the caller passes an $importSession + $recorder,
+     * every parsed <mapping> emits one ImportRowEvent with before / after
+     * state + decision so auditors can answer "how did mapping X:Y come
+     * into being on date Z".
+     *
      * @return array{imported: int, superseded: int, skipped: int, errors: list<string>}
      */
-    public function import(string $path): array
-    {
+    public function import(
+        string $path,
+        ?ImportSessionRecorder $recorder = null,
+        ?ImportSession $importSession = null,
+    ): array {
         $imported = 0;
         $superseded = 0;
         $skipped = 0;
@@ -202,22 +212,44 @@ final class BsiProfileXmlImporter
             $lineNo++;
 
             $parsed = $this->extractMappingData($mapping);
+            $sourceRow = [
+                'source_framework' => $parsed['source_framework'],
+                'source_requirement_id' => $parsed['source_requirement_id'],
+                'target_framework' => $parsed['target_framework'],
+                'target_requirement_id' => $parsed['target_requirement_id'],
+                'percentage' => $parsed['percentage_raw'],
+                'confidence' => $parsed['confidence'],
+                'rationale' => $parsed['rationale'],
+            ];
+
             if ($parsed['error'] !== null) {
                 $errors[] = sprintf('Mapping %d: %s', $lineNo, $parsed['error']);
                 $skipped++;
+                $this->recordIfEnabled(
+                    $recorder, $importSession, $lineNo,
+                    ImportRowEvent::DECISION_ERROR,
+                    null, null, null, null, $sourceRow,
+                    $parsed['error'],
+                );
                 continue;
             }
 
             $sourceFramework = $this->getFramework($parsed['source_framework'], $frameworkCache);
             $targetFramework = $this->getFramework($parsed['target_framework'], $frameworkCache);
             if ($sourceFramework === null || $targetFramework === null) {
-                $errors[] = sprintf(
+                $errMsg = sprintf(
                     'Mapping %d: framework not found (%s -> %s)',
                     $lineNo,
                     $parsed['source_framework'],
                     $parsed['target_framework'],
                 );
+                $errors[] = $errMsg;
                 $skipped++;
+                $this->recordIfEnabled(
+                    $recorder, $importSession, $lineNo,
+                    ImportRowEvent::DECISION_ERROR,
+                    null, null, null, null, $sourceRow, $errMsg,
+                );
                 continue;
             }
 
@@ -231,8 +263,14 @@ final class BsiProfileXmlImporter
                 if ($targetReq === null) {
                     $missing[] = sprintf('target=%s:%s', $targetFramework->getCode(), $parsed['target_requirement_id']);
                 }
-                $errors[] = sprintf('Mapping %d: %s', $lineNo, implode(', ', $missing));
+                $errMsg = sprintf('Mapping %d: %s', $lineNo, implode(', ', $missing));
+                $errors[] = $errMsg;
                 $skipped++;
+                $this->recordIfEnabled(
+                    $recorder, $importSession, $lineNo,
+                    ImportRowEvent::DECISION_ERROR,
+                    null, null, null, null, $sourceRow, $errMsg,
+                );
                 continue;
             }
 
@@ -242,7 +280,15 @@ final class BsiProfileXmlImporter
                 'source' => self::SOURCE_CATALOG_TAG,
             ]);
 
+            $beforeState = null;
             if ($existing instanceof ComplianceMapping) {
+                $beforeState = [
+                    'mapping_percentage' => $existing->getMappingPercentage(),
+                    'confidence' => $existing->getConfidence(),
+                    'rationale' => $existing->getMappingRationale(),
+                    'version' => $existing->getVersion(),
+                    'valid_from' => $existing->getValidFrom()?->format(DATE_ATOM),
+                ];
                 $existing->setValidUntil(new DateTimeImmutable());
                 $superseded++;
             }
@@ -260,6 +306,26 @@ final class BsiProfileXmlImporter
 
             $this->entityManager->persist($new);
             $imported++;
+
+            // Flush so the new mapping gets an ID we can record on the event.
+            $this->entityManager->flush();
+
+            $afterState = [
+                'mapping_percentage' => $new->getMappingPercentage(),
+                'confidence' => $new->getConfidence(),
+                'rationale' => $new->getMappingRationale(),
+                'version' => $new->getVersion(),
+                'valid_from' => $new->getValidFrom()?->format(DATE_ATOM),
+            ];
+
+            $this->recordIfEnabled(
+                $recorder, $importSession, $lineNo,
+                $existing instanceof ComplianceMapping
+                    ? ImportRowEvent::DECISION_UPDATE
+                    : ImportRowEvent::DECISION_IMPORT,
+                'ComplianceMapping', $new->getId(),
+                $beforeState, $afterState, $sourceRow, null,
+            );
         }
 
         $this->entityManager->flush();
@@ -270,6 +336,40 @@ final class BsiProfileXmlImporter
             'skipped' => $skipped,
             'errors' => $errors,
         ];
+    }
+
+    /**
+     * @param array<string, mixed>|null $beforeState
+     * @param array<string, mixed>|null $afterState
+     * @param array<string, mixed>|null $sourceRow
+     */
+    private function recordIfEnabled(
+        ?ImportSessionRecorder $recorder,
+        ?ImportSession $session,
+        int $lineNumber,
+        string $decision,
+        ?string $targetEntityType,
+        ?int $targetEntityId,
+        ?array $beforeState,
+        ?array $afterState,
+        ?array $sourceRow,
+        ?string $errorMessage,
+    ): void {
+        if ($recorder === null || $session === null) {
+            return;
+        }
+
+        $recorder->recordRow(
+            $session,
+            $lineNumber,
+            $decision,
+            $targetEntityType,
+            $targetEntityId,
+            $beforeState,
+            $afterState,
+            $sourceRow,
+            $errorMessage,
+        );
     }
 
     /**

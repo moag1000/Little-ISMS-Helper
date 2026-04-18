@@ -1,0 +1,121 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'compliance_import.history.title'|trans({}, 'compliance_import') }}{% endblock %}
+
+{% block admin_title %}{{ 'compliance_import.history.title'|trans({}, 'compliance_import') }}{% endblock %}
+
+{% block admin_content %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
+            { label: 'compliance.manage_frameworks'|trans({}, 'compliance'), url: path('admin_compliance_index') },
+            { label: 'compliance_import.history.title'|trans({}, 'compliance_import') }
+        ]
+    } only %}
+
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-3', sessions: sessions, total: total, page: page, page_count: page_count } only %}
+        {% block card_header %}
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h2 class="h5 mb-0">
+                    <i class="bi bi-clock-history" aria-hidden="true"></i>
+                    {{ 'compliance_import.history.title'|trans({}, 'compliance_import') }}
+                </h2>
+                <a href="{{ path('admin_compliance_import_upload') }}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-upload" aria-hidden="true"></i>
+                    {{ 'compliance_import.wizard.title'|trans({}, 'compliance_import') }}
+                </a>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            {% if sessions is empty %}
+                <p class="text-muted mb-0">
+                    {{ 'compliance_import.history.empty'|trans({}, 'compliance_import') }}
+                </p>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle"
+                           aria-label="{{ 'compliance_import.history.table_aria'|trans({}, 'compliance_import') }}">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'compliance_import.history.col_filename'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col">{{ 'compliance_import.history.col_hash'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col">{{ 'compliance_import.history.col_uploader'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col">{{ 'compliance_import.history.col_committed_at'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col" class="text-end">{{ 'compliance_import.history.col_imported'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col" class="text-end">{{ 'compliance_import.history.col_superseded'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col" class="text-end">{{ 'compliance_import.history.col_skipped'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col">{{ 'compliance_import.history.col_status'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col" class="text-end">{{ 'compliance_import.history.col_actions'|trans({}, 'compliance_import') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for session in sessions %}
+                                {% set status_variant = {
+                                    'committed': 'success',
+                                    'preview': 'warning',
+                                    'cancelled': 'secondary'
+                                }[session.status]|default('secondary') %}
+                                <tr>
+                                    <td>
+                                        <code>{{ session.originalFilename }}</code>
+                                        <div class="small text-muted">{{ session.format }}</div>
+                                    </td>
+                                    <td>
+                                        <code title="{{ session.fileSha256 }}">{{ session.shortHash }}</code>
+                                    </td>
+                                    <td>
+                                        {% if session.uploadedBy %}
+                                            {{ session.uploadedBy.email }}
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if session.committedAt %}
+                                            {{ session.committedAt|date('Y-m-d H:i') }}
+                                        {% else %}
+                                            {{ session.uploadedAt|date('Y-m-d H:i') }}
+                                            <div class="small text-muted">
+                                                ({{ 'compliance_import.history.uploaded'|trans({}, 'compliance_import') }})
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">{{ session.rowCountImported }}</td>
+                                    <td class="text-end">{{ session.rowCountSuperseded }}</td>
+                                    <td class="text-end">{{ session.rowCountSkipped }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ status_variant }}">
+                                            {{ ('compliance_import.history.status.' ~ session.status)|trans({}, 'compliance_import') }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{{ path('admin_import_history_show', { id: session.id }) }}"
+                                           class="btn btn-sm btn-outline-secondary">
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                            {{ 'compliance_import.history.view_detail'|trans({}, 'compliance_import') }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if page_count > 1 %}
+                    <nav aria-label="{{ 'compliance_import.history.pagination_aria'|trans({}, 'compliance_import') }}">
+                        <ul class="pagination">
+                            {% for p in 1..page_count %}
+                                <li class="page-item {% if p == page %}active{% endif %}">
+                                    <a class="page-link"
+                                       href="{{ path('admin_import_history_index', { page: p }) }}">{{ p }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}

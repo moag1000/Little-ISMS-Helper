@@ -524,6 +524,12 @@
                                 <span class="mega-menu-link-title">{{ 'admin.nav.import'|trans({}, 'admin') }}</span>
                             </div>
                         </a></li>
+                        <li><a href="{{ path('admin_import_history_index') }}" class="{% if current_route starts with 'admin_import_history_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-clock-history" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.compliance_import_history'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
                         <li><a href="{{ path('admin_data_repair_index') }}" class="{% if current_route starts with 'admin_data_repair' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-tools" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
