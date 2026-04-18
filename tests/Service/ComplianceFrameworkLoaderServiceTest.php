@@ -105,7 +105,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
 
         $expectedCodes = [
             'TISAX', 'DORA', 'NIS2', 'BSI_GRUNDSCHUTZ', 'GDPR',
-            'ISO27001', 'ISO27701', 'ISO27701_2025', 'BSI-C5', 'BSI-C5-2025',
+            'ISO27001', 'ISO27701', 'ISO27701_2025', 'BSI-C5', 'BSI-C5-2026',
             'KRITIS', 'KRITIS-HEALTH', 'DIGAV', 'TKG-2024', 'GXP'
         ];
 
@@ -119,7 +119,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         $frameworks = $this->service->getAvailableFrameworks();
 
         $mandatoryCodes = ['DORA', 'NIS2', 'GDPR', 'KRITIS', 'KRITIS-HEALTH', 'DIGAV', 'TKG-2024', 'GXP'];
-        $optionalCodes = ['TISAX', 'BSI_GRUNDSCHUTZ', 'ISO27001', 'ISO27701', 'ISO27701_2025', 'BSI-C5', 'BSI-C5-2025'];
+        $optionalCodes = ['TISAX', 'BSI_GRUNDSCHUTZ', 'ISO27001', 'ISO27701', 'ISO27701_2025', 'BSI-C5', 'BSI-C5-2026'];
 
         foreach ($frameworks as $framework) {
             if (in_array($framework['code'], $mandatoryCodes)) {
