@@ -107,7 +107,10 @@ class DataSubjectRequestType extends AbstractType
                 ],
                 'placeholder' => 'dsr.form.placeholder.verification_method',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-depends-on' => 'data_subject_request_identityVerified',
+                ],
             ])
 
             // ================================================================
@@ -157,6 +160,9 @@ class DataSubjectRequestType extends AbstractType
         $resolver->setDefaults([
             'data_class' => DataSubjectRequest::class,
             'translation_domain' => 'data_subject_request',
+            'attr' => [
+                'data-controller' => 'conditional-fields',
+            ],
         ]);
     }
 }

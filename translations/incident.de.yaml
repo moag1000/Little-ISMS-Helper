@@ -186,6 +186,7 @@ incident:
         estimated_financial_impact: 'Geschätzter finanzieller Schaden in EUR'
         national_authority: 'Zuständige nationale Behörde (z.B. BSI in Deutschland)'
         data_breach_occurred: 'Kennzeichnen Sie dies als Datenschutzverletzung, wenn personenbezogene Daten betroffen sind (DSGVO Art. 33)'
+        resolution_after_investigation: 'Typischerweise erst nach Abschluss der Untersuchung ausfüllen'
     category:
         data_breach: Datenschutzverletzung
         security_incident: Sicherheitsvorfall
