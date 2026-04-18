@@ -304,6 +304,15 @@ compliance:
             low: Niedrig
         view_page_note: 'Klicken Sie auf eine Anforderung, um Details und Umsetzungsstatus anzuzeigen'
         filter_by_framework: 'Nach Framework filtern'
+        filter_by_absicherungs_stufe: 'Nach Absicherungsstufe filtern'
+        filter_by_anforderungs_typ: 'Nach Anforderungstyp filtern'
+        all_frameworks: 'Alle Frameworks'
+        all_stufen: 'Alle Stufen'
+        all_typen: 'Alle Typen'
+        absicherungs_stufe:
+            basis: 'Basis-Absicherung'
+            standard: 'Standard-Absicherung'
+            kern: 'Kern-Absicherung'
         tooltip:
             applicable: 'Aktivieren Sie dies, wenn diese Anforderung für Ihre Organisation gilt. Nicht aktivierte Anforderungen werden nicht zur Compliance-Quote gezählt.'
             save: 'Speichern Sie Ihre Änderungen und kehren Sie zu dieser Seite zurück. Sie sehen eine Erfolgsmeldung und können weiter bearbeiten.'

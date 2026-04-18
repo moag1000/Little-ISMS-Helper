@@ -304,6 +304,15 @@ compliance:
             low: Low
         view_page_note: 'Click on a requirement to view details and implementation status'
         filter_by_framework: 'Filter by Framework'
+        filter_by_absicherungs_stufe: 'Filter by Protection Level'
+        filter_by_anforderungs_typ: 'Filter by Requirement Type'
+        all_frameworks: 'All Frameworks'
+        all_stufen: 'All Levels'
+        all_typen: 'All Types'
+        absicherungs_stufe:
+            basis: 'Basic Protection'
+            standard: 'Standard Protection'
+            kern: 'Core Protection'
         tooltip:
             applicable: 'Check if this requirement applies to your organization. Unchecked requirements won''t count towards compliance percentage.'
             save: 'Save your changes and return to this page. You''ll see a success message and can continue editing.'
