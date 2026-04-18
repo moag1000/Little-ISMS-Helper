@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bsi-profile version="1.0" source="bsi_grundschutz_2023">
+  <metadata>
+    <profile-name>Baseline Protection - Critical Infrastructure Sample</profile-name>
+    <created>2026-04-17</created>
+  </metadata>
+  <mappings>
+    <mapping>
+      <source framework="BSI_GRUNDSCHUTZ" requirement="CON.1.A1"/>
+      <target framework="ISO27001" requirement="A.5.23"/>
+      <percentage>80</percentage>
+      <confidence>high</confidence>
+      <rationale>BSI CON.1.A1 (Cloud usage policy) closely aligns with ISO 27001 A.5.23 (Information security for use of cloud services).</rationale>
+    </mapping>
+    <mapping>
+      <source framework="BSI_GRUNDSCHUTZ" requirement="CON.2.A1"/>
+      <target framework="ISO27001" requirement="A.5.9"/>
+      <percentage>70</percentage>
+      <confidence>medium</confidence>
+      <rationale>BSI CON.2.A1 (data protection coordination) partially covers ISO 27001 A.5.9 (inventory of information and other associated assets).</rationale>
+    </mapping>
+    <mapping>
+      <source framework="BSI_GRUNDSCHUTZ" requirement="ORP.1.A1"/>
+      <target framework="ISO27001" requirement="A.5.2"/>
+      <percentage>90</percentage>
+      <confidence>high</confidence>
+      <rationale>BSI ORP.1.A1 (definition of information security roles) directly maps to ISO 27001 A.5.2 (information security roles and responsibilities).</rationale>
+    </mapping>
+    <mapping>
+      <source framework="BSI_GRUNDSCHUTZ" requirement="OPS.1.1.3.A1"/>
+      <target framework="ISO27001" requirement="A.8.8"/>
+      <percentage>85</percentage>
+      <confidence>high</confidence>
+      <rationale>BSI OPS.1.1.3.A1 (patch management concept) aligns with ISO 27001 A.8.8 (management of technical vulnerabilities).</rationale>
+    </mapping>
+  </mappings>
+</bsi-profile>

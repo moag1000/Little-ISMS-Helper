@@ -7,6 +7,7 @@ use Exception;
 use DateTimeImmutable;
 use App\Entity\Supplier;
 use App\Form\SupplierType;
+use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\SupplierRepository;
 use App\Service\SupplierService;
 use App\Service\TagFilterService;
@@ -27,7 +28,8 @@ class SupplierController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
-        private readonly TagFilterService $tagFilterService
+        private readonly TagFilterService $tagFilterService,
+        private readonly ComplianceFrameworkRepository $complianceFrameworkRepository
     ) {}
     #[Route('/supplier/', name: 'app_supplier_index')]
     #[IsGranted('ROLE_USER')]
@@ -198,11 +200,23 @@ class SupplierController extends AbstractController
             $canEdit = true;
         }
 
+        // Detect which compliance frameworks are active for this tenant
+        // (cross-framework badges + conditional DORA tab visibility)
+        $doraFramework = $this->complianceFrameworkRepository->findOneBy(['code' => 'DORA', 'active' => true]);
+        $gdprFramework = $this->complianceFrameworkRepository->findOneBy(['code' => 'GDPR', 'active' => true]);
+        $iso27001Framework = $this->complianceFrameworkRepository->findOneBy(['code' => 'ISO27001', 'active' => true]);
+
         return $this->render('supplier/show.html.twig', [
             'supplier' => $supplier,
             'isInherited' => $isInherited,
             'canEdit' => $canEdit,
             'currentTenant' => $tenant,
+            'isDoraActive' => $doraFramework !== null,
+            'isGdprActive' => $gdprFramework !== null,
+            'isIso27001Active' => $iso27001Framework !== null,
+            'doraFramework' => $doraFramework,
+            'gdprFramework' => $gdprFramework,
+            'iso27001Framework' => $iso27001Framework,
         ]);
     }
     #[Route('/supplier/{id}/edit', name: 'app_supplier_edit', requirements: ['id' => '\d+'])]

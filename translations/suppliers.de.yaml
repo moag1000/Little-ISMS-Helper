@@ -141,6 +141,56 @@ supplier:
             critical: 'Kritisches Risiko – sofortige Maßnahmen erforderlich'
             high: 'Hohes Risiko – Überprüfung erforderlich'
             acceptable: 'Akzeptables Risikoniveau'
+    tab:
+        master_data: Stammdaten
+        contracts: 'Verträge & Dokumente'
+        dora: DORA-Registrierung
+        privacy: Datenschutz
+    frameworks:
+        label: 'Relevante Frameworks'
+        aria_label: 'Anwendbare Compliance-Frameworks für diesen Lieferanten'
+        iso27001_tooltip: 'ISO 27001:2022 Anhang A Kontrollen A.5.19–A.5.22 (Lieferantenbeziehungen)'
+        dora_tooltip: 'EU DORA Art. 28 – Register of Information für ICT-Drittdienstleister'
+        gdpr_tooltip: 'DSGVO Art. 28 – Auftragsverarbeitung'
+    dora:
+        section_heading: 'DORA Register of Information (Art. 28)'
+        section_description: 'Pflichtangaben nach EU Digital Operational Resilience Act für ICT-Drittdienstleister.'
+        field:
+            lei_code: 'LEI-Code (Legal Entity Identifier)'
+            ict_criticality: 'ICT-Kritikalität'
+            ict_function_type: 'ICT-Funktionstyp'
+            substitutability: 'Substituierbarkeit'
+            has_subcontractors: 'Hat Subunternehmer'
+            subcontractor_chain: 'Subunternehmer-Kette'
+            processing_locations: 'Verarbeitungsstandorte (Länder)'
+            last_dora_audit_date: 'Letzte DORA-Prüfung'
+            has_exit_strategy: 'Exit-Strategie vorhanden'
+            exit_strategy_document: 'Exit-Strategie-Dokument'
+        ict_criticality:
+            non_ict: 'Nicht-ICT-Dienst'
+            important: Wichtig
+            critical: Kritisch
+        substitutability:
+            easy: 'Leicht ersetzbar'
+            medium: Mittel
+            hard: 'Schwer ersetzbar'
+        advanced:
+            subcontractors_title: 'Subunternehmer & Verarbeitungsorte'
+            exit_strategy_title: 'Exit-Strategie'
+            auto_expanded: 'Pflichtfeld für kritische ICT-Dienste'
+    gdpr:
+        section_heading: 'Datenschutz (DSGVO Art. 28)'
+        section_description: 'Pflichtangaben zur Auftragsverarbeitung nach DSGVO Art. 28.'
+        field:
+            gdpr_processor_status: 'Rolle nach DSGVO Art. 28'
+            gdpr_transfer_mechanism: 'Transfer-Mechanismus (Drittlandsübermittlung)'
+            gdpr_av_contract_signed: 'AV-Vertrag unterzeichnet'
+            gdpr_av_contract_date: 'AV-Vertrag Datum'
+        processor_status:
+            controller: Verantwortlicher
+            processor: Auftragsverarbeiter
+            joint_controller: 'Gemeinsam Verantwortlicher'
+            none: 'Keine personenbezogenen Daten'
 corporate:
     stats:
         standalone: Eigenständig

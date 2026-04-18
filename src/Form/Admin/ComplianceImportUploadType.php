@@ -16,9 +16,9 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 /**
  * Upload form for the compliance mapping import wizard (WS-2, Step 1).
  *
- * Accepts a CSV file and the desired format. In v1 only `csv_generic_v1`
- * is supported; further formats (BSI-Profile, Verinice, NIST-CSF) will be
- * added through the same wizard entry point.
+ * Accepts a CSV or BSI-Profile-XML file and the desired format. Currently
+ * supported: `csv_generic_v1`, `bsi_profile_xml_v1`. Further formats
+ * (Verinice, NIST-CSF) will be added through the same wizard entry point.
  */
 final class ComplianceImportUploadType extends AbstractType
 {
@@ -31,6 +31,7 @@ final class ComplianceImportUploadType extends AbstractType
                 'translation_domain' => 'compliance_import',
                 'choices' => [
                     'compliance_import.upload.format.csv_generic_v1' => 'csv_generic_v1',
+                    'compliance_import.upload.format.bsi_profile_xml_v1' => 'bsi_profile_xml_v1',
                 ],
                 'choice_translation_domain' => 'compliance_import',
                 'help' => 'compliance_import.upload.format_help',
@@ -48,7 +49,7 @@ final class ComplianceImportUploadType extends AbstractType
                 'mapped' => false,
                 'required' => true,
                 'attr' => [
-                    'accept' => '.csv,text/csv',
+                    'accept' => '.csv,text/csv,.xml,application/xml,text/xml',
                     'id' => 'compliance_import_file',
                     'aria-describedby' => 'compliance_import_file_help',
                 ],
@@ -61,6 +62,8 @@ final class ComplianceImportUploadType extends AbstractType
                             'text/plain',
                             'application/csv',
                             'application/vnd.ms-excel',
+                            'application/xml',
+                            'text/xml',
                         ],
                         mimeTypesMessage: 'compliance_import.upload.file_type_error',
                     ),

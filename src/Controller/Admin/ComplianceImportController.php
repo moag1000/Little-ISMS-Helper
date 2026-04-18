@@ -12,6 +12,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\CompliancePolicyService;
+use App\Service\Import\BsiProfileXmlImporter;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -58,7 +59,9 @@ final class ComplianceImportController extends AbstractController
     ];
 
     private const SESSION_KEY = 'compliance_import.preview';
-    private const SUPPORTED_FORMATS = ['csv_generic_v1'];
+    private const FORMAT_CSV = 'csv_generic_v1';
+    private const FORMAT_BSI_XML = 'bsi_profile_xml_v1';
+    private const SUPPORTED_FORMATS = [self::FORMAT_CSV, self::FORMAT_BSI_XML];
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -68,6 +71,7 @@ final class ComplianceImportController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly LoggerInterface $logger,
         private readonly CompliancePolicyService $policy,
+        private readonly BsiProfileXmlImporter $bsiProfileXmlImporter,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -137,7 +141,8 @@ final class ComplianceImportController extends AbstractController
             }
 
             $sessionId = bin2hex(random_bytes(12));
-            $storedName = $sessionId . '.csv';
+            $extension = $format === self::FORMAT_BSI_XML ? 'xml' : 'csv';
+            $storedName = $sessionId . '.' . $extension;
 
             try {
                 $file->move($uploadDir, $storedName);
@@ -186,7 +191,8 @@ final class ComplianceImportController extends AbstractController
             return $this->redirectToRoute('admin_compliance_import_upload');
         }
 
-        $analysis = $this->analyseFile((string) $session['stored_path']);
+        $format = (string) ($session['format'] ?? self::FORMAT_CSV);
+        $analysis = $this->dispatchAnalyse($format, (string) $session['stored_path']);
         $fourEyesThreshold = $this->policy->getInt(CompliancePolicyService::KEY_IMPORT_FOUR_EYES_ROW_THRESHOLD, 50);
 
         return $this->render('admin/compliance_import/preview.html.twig', [
@@ -224,9 +230,10 @@ final class ComplianceImportController extends AbstractController
             return $this->redirectToRoute('admin_compliance_import_upload');
         }
 
-        $result = $this->importFile((string) $session['stored_path']);
+        $format = (string) ($session['format'] ?? self::FORMAT_CSV);
+        $result = $this->dispatchImport($format, (string) $session['stored_path']);
 
-        // Remove CSV file + session record after commit.
+        // Remove uploaded file + session record after commit.
         @unlink((string) $session['stored_path']);
         $request->getSession()->remove(self::SESSION_KEY);
 
@@ -278,6 +285,32 @@ final class ComplianceImportController extends AbstractController
         ));
 
         return $this->redirectToRoute('admin_compliance_import_upload');
+    }
+
+    /**
+     * Dispatch the analyse step to the correct importer based on session format.
+     *
+     * @return array{rows: list<array<string, mixed>>, summary: array<string, int>, header_error: ?string}
+     */
+    private function dispatchAnalyse(string $format, string $path): array
+    {
+        return match ($format) {
+            self::FORMAT_BSI_XML => $this->bsiProfileXmlImporter->analyse($path),
+            default => $this->analyseFile($path),
+        };
+    }
+
+    /**
+     * Dispatch the commit step to the correct importer based on session format.
+     *
+     * @return array{imported: int, superseded: int, skipped: int, errors: list<string>}
+     */
+    private function dispatchImport(string $format, string $path): array
+    {
+        return match ($format) {
+            self::FORMAT_BSI_XML => $this->bsiProfileXmlImporter->import($path),
+            default => $this->importFile($path),
+        };
     }
 
     /**

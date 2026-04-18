@@ -40,6 +40,50 @@
         </div>
     </div>
 
+    {# ── Cross-framework badge bar (WS-3 UX improvement) ─────────────────── #}
+    <div class="framework-badge-bar mb-3" aria-label="{{ 'supplier.frameworks.aria_label'|trans({}, 'suppliers') }}">
+        <span class="text-muted me-2">
+            <i class="bi bi-shield-check" aria-hidden="true"></i>
+            {{ 'supplier.frameworks.label'|trans({}, 'suppliers') }}:
+        </span>
+
+        {% if isIso27001Active is defined and isIso27001Active %}
+            {% if iso27001Framework %}
+                <a href="{{ path('app_compliance_framework_show', {id: iso27001Framework.id}) }}"
+                   class="text-decoration-none me-1"
+                   title="{{ 'supplier.frameworks.iso27001_tooltip'|trans({}, 'suppliers') }}">
+                    {% include '_components/_badge.html.twig' with { variant: 'primary', icon: 'bi-shield-lock', content: 'ISO 27001 A.5.19–A.5.22' } %}
+                </a>
+            {% else %}
+                {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'me-1', icon: 'bi-shield-lock', content: 'ISO 27001 A.5.19–A.5.22' } %}
+            {% endif %}
+        {% endif %}
+
+        {% if isDoraActive is defined and isDoraActive %}
+            {% if doraFramework %}
+                <a href="{{ path('app_compliance_framework_show', {id: doraFramework.id}) }}"
+                   class="text-decoration-none me-1"
+                   title="{{ 'supplier.frameworks.dora_tooltip'|trans({}, 'suppliers') }}">
+                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-bank', content: 'DORA Art. 28' } %}
+                </a>
+            {% else %}
+                {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'me-1', icon: 'bi-bank', content: 'DORA Art. 28' } %}
+            {% endif %}
+        {% endif %}
+
+        {% if isGdprActive is defined and isGdprActive %}
+            {% if gdprFramework %}
+                <a href="{{ path('app_compliance_framework_show', {id: gdprFramework.id}) }}"
+                   class="text-decoration-none me-1"
+                   title="{{ 'supplier.frameworks.gdpr_tooltip'|trans({}, 'suppliers') }}">
+                    {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'bi-person-lock', content: 'GDPR Art. 28' } %}
+                </a>
+            {% else %}
+                {% include '_components/_badge.html.twig' with { variant: 'info', class: 'me-1', icon: 'bi-person-lock', content: 'GDPR Art. 28' } %}
+            {% endif %}
+        {% endif %}
+    </div>
+
     {% if isInherited is defined and isInherited %}
         <div class="alert alert-info mb-3">
             <div class="d-flex align-items-start">
@@ -52,6 +96,7 @@
         </div>
     {% endif %}
 
+    {# ── Header summary card (always visible above tabs) ──────────────────── #}
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -69,166 +114,431 @@
                 - {{ riskScore > 70 ? ('supplier.risk.message.critical'|trans({}, 'suppliers')) : (riskScore > 50 ? ('supplier.risk.message.high'|trans({}, 'suppliers')) : ('supplier.risk.message.acceptable'|trans({}, 'suppliers'))) }}
             </div>
 
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <span class="label">{{ 'supplier.field.service_provided'|trans({}, 'suppliers') }}:</span>
-                    <span class="value">{{ supplier.serviceProvided }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">{{ 'supplier.field.criticality'|trans({}, 'suppliers') }}:</span>
-                    <span class="value">{{ supplier.criticality|upper }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">{{ 'supplier.field.status'|trans({}, 'suppliers') }}:</span>
-                    <span class="value">{{ supplier.status }}</span>
-                </div>
-            </div>
-
-            {% if supplier.description %}
-                <div class="detail-section">
-                    <h3>{{ 'supplier.section.description'|trans({}, 'suppliers') }}</h3>
-                    <p>{{ supplier.description }}</p>
-                </div>
-            {% endif %}
-
-            <div class="detail-section">
-                <h3>{{ 'supplier.section.contact_info'|trans({}, 'suppliers') }}</h3>
-                <div class="detail-grid">
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.contact_person'|trans({}, 'suppliers') }}:</span>
-                        <span class="value">{{ supplier.contactPerson ?? ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.email'|trans({}, 'suppliers') }}:</span>
-                        <span class="value">{{ supplier.email ?? ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.phone'|trans({}, 'suppliers') }}:</span>
-                        <span class="value">{{ supplier.phone ?? ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
-                    </div>
-                </div>
-                {% if supplier.address %}
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.address'|trans({}, 'suppliers') }}:</span>
-                        <span class="value">{{ supplier.address }}</span>
-                    </div>
+            {# ── Tab navigation (Bootstrap 5.3 with full a11y) ────────────── #}
+            <ul class="nav nav-tabs mb-3" id="supplierTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active"
+                            id="tab-master-data"
+                            data-bs-toggle="tab"
+                            data-bs-target="#pane-master-data"
+                            type="button"
+                            role="tab"
+                            aria-controls="pane-master-data"
+                            aria-selected="true">
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        {{ 'supplier.tab.master_data'|trans({}, 'suppliers') }}
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link"
+                            id="tab-contracts"
+                            data-bs-toggle="tab"
+                            data-bs-target="#pane-contracts"
+                            type="button"
+                            role="tab"
+                            aria-controls="pane-contracts"
+                            aria-selected="false">
+                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                        {{ 'supplier.tab.contracts'|trans({}, 'suppliers') }}
+                    </button>
+                </li>
+                {% if isDoraActive is defined and isDoraActive %}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link"
+                            id="tab-dora"
+                            data-bs-toggle="tab"
+                            data-bs-target="#pane-dora"
+                            type="button"
+                            role="tab"
+                            aria-controls="pane-dora"
+                            aria-selected="false">
+                        <i class="bi bi-bank" aria-hidden="true"></i>
+                        {{ 'supplier.tab.dora'|trans({}, 'suppliers') }}
+                        {% if supplier.ictCriticality == 'critical' %}
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-1', size: 'sm', content: 'supplier.dora.ict_criticality.critical'|trans({}, 'suppliers') } %}
+                        {% endif %}
+                    </button>
+                </li>
                 {% endif %}
-            </div>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link"
+                            id="tab-privacy"
+                            data-bs-toggle="tab"
+                            data-bs-target="#pane-privacy"
+                            type="button"
+                            role="tab"
+                            aria-controls="pane-privacy"
+                            aria-selected="false">
+                        <i class="bi bi-person-lock" aria-hidden="true"></i>
+                        {{ 'supplier.tab.privacy'|trans({}, 'suppliers') }}
+                    </button>
+                </li>
+            </ul>
 
-            <div class="detail-section">
-                <h3>{{ 'supplier.section.security_assessment'|trans({}, 'suppliers') }}</h3>
-                <div class="detail-grid">
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.security_score'|trans({}, 'suppliers') }}:</span>
-                        <span class="value">{{ supplier.securityScore ?? ('supplier.value.not_assessed'|trans({}, 'suppliers')) }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.last_assessment'|trans({}, 'suppliers') }}:</span>
-                        <span class="value">{{ supplier.lastSecurityAssessment ? supplier.lastSecurityAssessment|date('Y-m-d') : ('supplier.value.never'|trans({}, 'suppliers')) }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.next_assessment'|trans({}, 'suppliers') }}:</span>
-                        <span class="value {{ supplier.isAssessmentOverdue() ? 'text-danger' : '' }}">
-                            {{ supplier.nextAssessmentDate ? supplier.nextAssessmentDate|date('Y-m-d') : ('supplier.value.not_scheduled'|trans({}, 'suppliers')) }}
-                            {{ supplier.isAssessmentOverdue() ? ('supplier.badge.overdue'|trans({}, 'suppliers')) : '' }}
-                        </span>
-                    </div>
-                </div>
+            <div class="tab-content" id="supplierTabsContent">
 
-                {% if supplier.assessmentFindings %}
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.assessment_findings'|trans({}, 'suppliers') }}:</span>
-                        <span class="value">{{ supplier.assessmentFindings }}</span>
-                    </div>
-                {% endif %}
+                {# ─────────────── Tab 1: Master Data (Stammdaten) ──────── #}
+                <div class="tab-pane fade show active"
+                     id="pane-master-data"
+                     role="tabpanel"
+                     aria-labelledby="tab-master-data"
+                     tabindex="0">
 
-                {% if supplier.nonConformities %}
-                    <div class="alert alert-warning">
-                        <strong>{{ 'supplier.field.non_conformities'|trans({}, 'suppliers') }}:</strong>
-                        <p>{{ supplier.nonConformities }}</p>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">{{ 'supplier.field.service_provided'|trans({}, 'suppliers') }}:</span>
+                            <span class="value">{{ supplier.serviceProvided }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">{{ 'supplier.field.criticality'|trans({}, 'suppliers') }}:</span>
+                            <span class="value">{{ supplier.criticality|upper }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">{{ 'supplier.field.status'|trans({}, 'suppliers') }}:</span>
+                            <span class="value">{{ supplier.status }}</span>
+                        </div>
                     </div>
-                {% endif %}
-            </div>
 
-            <div class="detail-section">
-                <h3>{{ 'supplier.section.certifications_compliance'|trans({}, 'suppliers') }}</h3>
-                <div class="detail-grid">
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.iso27001_certified'|trans({}, 'suppliers') }}:</span>
-                        <span class="value">{{ supplier.hasISO27001 ? ('supplier.value.yes'|trans({}, 'suppliers')) : ('supplier.value.no'|trans({}, 'suppliers')) }}</span>
+                    {% if supplier.description %}
+                        <div class="detail-section">
+                            <h3>{{ 'supplier.section.description'|trans({}, 'suppliers') }}</h3>
+                            <p>{{ supplier.description }}</p>
+                        </div>
+                    {% endif %}
+
+                    <div class="detail-section">
+                        <h3>{{ 'supplier.section.contact_info'|trans({}, 'suppliers') }}</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.contact_person'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.contactPerson ?? ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.email'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.email ?? ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.phone'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.phone ?? ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
+                            </div>
+                        </div>
+                        {% if supplier.address %}
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.address'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.address }}</span>
+                            </div>
+                        {% endif %}
                     </div>
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.iso22301_certified'|trans({}, 'suppliers') }}:</span>
-                        <span class="value">{{ supplier.hasISO22301 ? ('supplier.value.yes'|trans({}, 'suppliers')) : ('supplier.value.no'|trans({}, 'suppliers')) }}</span>
+
+                    <div class="detail-section">
+                        <h3>{{ 'supplier.section.security_assessment'|trans({}, 'suppliers') }}</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.security_score'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.securityScore ?? ('supplier.value.not_assessed'|trans({}, 'suppliers')) }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.last_assessment'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.lastSecurityAssessment ? supplier.lastSecurityAssessment|date('Y-m-d') : ('supplier.value.never'|trans({}, 'suppliers')) }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.next_assessment'|trans({}, 'suppliers') }}:</span>
+                                <span class="value {{ supplier.isAssessmentOverdue() ? 'text-danger' : '' }}">
+                                    {{ supplier.nextAssessmentDate ? supplier.nextAssessmentDate|date('Y-m-d') : ('supplier.value.not_scheduled'|trans({}, 'suppliers')) }}
+                                    {{ supplier.isAssessmentOverdue() ? ('supplier.badge.overdue'|trans({}, 'suppliers')) : '' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        {% if supplier.assessmentFindings %}
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.assessment_findings'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.assessmentFindings }}</span>
+                            </div>
+                        {% endif %}
+
+                        {% if supplier.nonConformities %}
+                            <div class="alert alert-warning">
+                                <strong>{{ 'supplier.field.non_conformities'|trans({}, 'suppliers') }}:</strong>
+                                <p>{{ supplier.nonConformities }}</p>
+                            </div>
+                        {% endif %}
                     </div>
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.dpa'|trans({}, 'suppliers') }}:</span>
-                        <span class="value">{{ supplier.hasDPA ? ('supplier.value.signed'|trans({}, 'suppliers')) : ('supplier.value.not_signed'|trans({}, 'suppliers')) }}</span>
-                    </div>
-                    {% if supplier.dpaSignedDate %}
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.dpa_signed_date'|trans({}, 'suppliers') }}:</span>
-                        <span class="value">{{ supplier.dpaSignedDate|date('Y-m-d') }}</span>
+
+                    {% if supplier.supportedAssets|length > 0 %}
+                    <div class="detail-section">
+                        <h3>{{ 'supplier.section.related_assets'|trans({}, 'suppliers') }} ({{ supplier.supportedAssets|length }})</h3>
+                        <ul>
+                            {% for asset in supplier.supportedAssets %}
+                            <li><a href="{{ path('app_asset_show', {id: asset.id}) }}">{{ asset.name }}</a></li>
+                            {% endfor %}
+                        </ul>
                     </div>
                     {% endif %}
-                </div>
-                {% if supplier.certifications %}
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.other_certifications'|trans({}, 'suppliers') }}:</span>
-                        <span class="value">{{ supplier.certifications }}</span>
-                    </div>
-                {% endif %}
-            </div>
 
-            <div class="detail-section">
-                <h3>{{ 'supplier.section.contract_info'|trans({}, 'suppliers') }}</h3>
-                <div class="detail-grid">
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.contract_start'|trans({}, 'suppliers') }}:</span>
-                        <span class="value">{{ supplier.contractStartDate ? supplier.contractStartDate|date('Y-m-d') : ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
+                    {% if supplier.identifiedRisks|length > 0 %}
+                    <div class="detail-section">
+                        <h3>{{ 'supplier.section.related_risks'|trans({}, 'suppliers') }} ({{ supplier.identifiedRisks|length }})</h3>
+                        <ul>
+                            {% for risk in supplier.identifiedRisks %}
+                            <li><a href="{{ path('app_risk_show', {id: risk.id}) }}">{{ risk.title }}</a></li>
+                            {% endfor %}
+                        </ul>
                     </div>
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.contract_end'|trans({}, 'suppliers') }}:</span>
-                        <span class="value">{{ supplier.contractEndDate ? supplier.contractEndDate|date('Y-m-d') : ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
-                    </div>
-                </div>
-                {% if supplier.securityRequirements %}
-                    <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.security_requirements'|trans({}, 'suppliers') }}:</span>
-                        <span class="value">{{ supplier.securityRequirements }}</span>
-                    </div>
-                {% endif %}
-            </div>
-
-            {% if supplier.supportedAssets|length > 0 %}
-            <div class="detail-section">
-                <h3>{{ 'supplier.section.related_assets'|trans({}, 'suppliers') }} ({{ supplier.supportedAssets|length }})</h3>
-                <ul>
-                    {% for asset in supplier.supportedAssets %}
-                    <li><a href="{{ path('app_asset_show', {id: asset.id}) }}">{{ asset.name }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-
-            {% if supplier.identifiedRisks|length > 0 %}
-            <div class="detail-section">
-                <h3>{{ 'supplier.section.related_risks'|trans({}, 'suppliers') }} ({{ supplier.identifiedRisks|length }})</h3>
-                <ul>
-                    {% for risk in supplier.identifiedRisks %}
-                    <li><a href="{{ path('app_risk_show', {id: risk.id}) }}">{{ risk.title }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-
-            <div class="detail-section">
-                <p class="text-muted">
-                    {{ 'common.created_at'|trans({}, 'messages') }}: {{ supplier.createdAt|date('Y-m-d H:i') }}
-                    {% if supplier.updatedAt %}
-                        | {{ 'common.updated_at'|trans({}, 'messages') }}: {{ supplier.updatedAt|date('Y-m-d H:i') }}
                     {% endif %}
-                </p>
+
+                    <div class="detail-section">
+                        <p class="text-muted">
+                            {{ 'common.created_at'|trans({}, 'messages') }}: {{ supplier.createdAt|date('Y-m-d H:i') }}
+                            {% if supplier.updatedAt %}
+                                | {{ 'common.updated_at'|trans({}, 'messages') }}: {{ supplier.updatedAt|date('Y-m-d H:i') }}
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                {# ─────────────── Tab 2: Contracts & Documents ─────────── #}
+                <div class="tab-pane fade"
+                     id="pane-contracts"
+                     role="tabpanel"
+                     aria-labelledby="tab-contracts"
+                     tabindex="0">
+
+                    <div class="detail-section">
+                        <h3>{{ 'supplier.section.certifications_compliance'|trans({}, 'suppliers') }}</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.iso27001_certified'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.hasISO27001 ? ('supplier.value.yes'|trans({}, 'suppliers')) : ('supplier.value.no'|trans({}, 'suppliers')) }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.iso22301_certified'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.hasISO22301 ? ('supplier.value.yes'|trans({}, 'suppliers')) : ('supplier.value.no'|trans({}, 'suppliers')) }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.dpa'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.hasDPA ? ('supplier.value.signed'|trans({}, 'suppliers')) : ('supplier.value.not_signed'|trans({}, 'suppliers')) }}</span>
+                            </div>
+                            {% if supplier.dpaSignedDate %}
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.dpa_signed_date'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.dpaSignedDate|date('Y-m-d') }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% if supplier.certifications %}
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.other_certifications'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.certifications }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="detail-section">
+                        <h3>{{ 'supplier.section.contract_info'|trans({}, 'suppliers') }}</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.contract_start'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.contractStartDate ? supplier.contractStartDate|date('Y-m-d') : ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.contract_end'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.contractEndDate ? supplier.contractEndDate|date('Y-m-d') : ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
+                            </div>
+                        </div>
+                        {% if supplier.securityRequirements %}
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.security_requirements'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.securityRequirements }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {# ─────────────── Tab 3: DORA (conditional) ────────────── #}
+                {% if isDoraActive is defined and isDoraActive %}
+                {% set isCriticalIct = supplier.ictCriticality == 'critical' %}
+                <div class="tab-pane fade"
+                     id="pane-dora"
+                     role="tabpanel"
+                     aria-labelledby="tab-dora"
+                     tabindex="0">
+
+                    <div class="alert {{ isCriticalIct ? 'alert-danger' : 'alert-info' }}">
+                        <i class="bi bi-bank me-1" aria-hidden="true"></i>
+                        <strong>{{ 'supplier.dora.section_heading'|trans({}, 'suppliers') }}</strong>
+                        <p class="mb-0">{{ 'supplier.dora.section_description'|trans({}, 'suppliers') }}</p>
+                    </div>
+
+                    <dl class="row">
+                        <dt class="col-sm-4">{{ 'supplier.dora.field.lei_code'|trans({}, 'suppliers') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if supplier.leiCode %}
+                                <code>{{ supplier.leiCode }}</code>
+                            {% else %}
+                                <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">{{ 'supplier.dora.field.ict_criticality'|trans({}, 'suppliers') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if supplier.ictCriticality %}
+                                {% set critVariant = supplier.ictCriticality == 'critical' ? 'danger' : (supplier.ictCriticality == 'important' ? 'warning' : 'secondary') %}
+                                {% include '_components/_badge.html.twig' with { variant: critVariant, content: ('supplier.dora.ict_criticality.' ~ supplier.ictCriticality)|trans({}, 'suppliers') } %}
+                            {% else %}
+                                <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">{{ 'supplier.dora.field.ict_function_type'|trans({}, 'suppliers') }}</dt>
+                        <dd class="col-sm-8">{{ supplier.ictFunctionType ?: ('supplier.value.na'|trans({}, 'suppliers')) }}</dd>
+
+                        <dt class="col-sm-4">{{ 'supplier.dora.field.substitutability'|trans({}, 'suppliers') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if supplier.substitutability %}
+                                {{ ('supplier.dora.substitutability.' ~ supplier.substitutability)|trans({}, 'suppliers') }}
+                            {% else %}
+                                <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">{{ 'supplier.dora.field.last_dora_audit_date'|trans({}, 'suppliers') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if supplier.lastDoraAuditDate %}
+                                {{ supplier.lastDoraAuditDate|date('Y-m-d') }}
+                            {% else %}
+                                <span class="text-muted">{{ 'supplier.value.never'|trans({}, 'suppliers') }}</span>
+                            {% endif %}
+                        </dd>
+                    </dl>
+
+                    {# ── Progressive disclosure: subcontractors + exit strategy ──
+                       Auto-expanded when ictCriticality == 'critical' per DORA RTS on
+                       concentration risk. Details element is keyboard accessible.
+                    #}
+                    <details class="mb-3" {{ isCriticalIct ? 'open' : '' }}>
+                        <summary class="h5 mb-2" style="cursor: pointer;">
+                            <i class="bi bi-diagram-3 me-1" aria-hidden="true"></i>
+                            {{ 'supplier.dora.advanced.subcontractors_title'|trans({}, 'suppliers') }}
+                            {% if isCriticalIct %}
+                                {% include '_components/_badge.html.twig' with { variant: 'danger', size: 'sm', class: 'ms-2', content: 'supplier.dora.advanced.auto_expanded'|trans({}, 'suppliers') } %}
+                            {% endif %}
+                        </summary>
+                        <dl class="row mt-3">
+                            <dt class="col-sm-4">{{ 'supplier.dora.field.has_subcontractors'|trans({}, 'suppliers') }}</dt>
+                            <dd class="col-sm-8">
+                                {% if supplier.hasSubcontractors %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'supplier.value.yes'|trans({}, 'suppliers') } %}
+                                {% else %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'supplier.value.no'|trans({}, 'suppliers') } %}
+                                {% endif %}
+                            </dd>
+
+                            <dt class="col-sm-4">{{ 'supplier.dora.field.subcontractor_chain'|trans({}, 'suppliers') }}</dt>
+                            <dd class="col-sm-8">
+                                {% if supplier.subcontractorChain is iterable and supplier.subcontractorChain|length > 0 %}
+                                    <ul class="mb-0">
+                                        {% for sub in supplier.subcontractorChain %}
+                                            <li>{{ sub is iterable ? (sub.name ?? sub|json_encode) : sub }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>
+                                {% endif %}
+                            </dd>
+
+                            <dt class="col-sm-4">{{ 'supplier.dora.field.processing_locations'|trans({}, 'suppliers') }}</dt>
+                            <dd class="col-sm-8">
+                                {% if supplier.processingLocations is iterable and supplier.processingLocations|length > 0 %}
+                                    {% for loc in supplier.processingLocations %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'light', class: 'me-1 border', content: loc } %}
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>
+                                {% endif %}
+                            </dd>
+                        </dl>
+                    </details>
+
+                    <details class="mb-3" {{ isCriticalIct ? 'open' : '' }}>
+                        <summary class="h5 mb-2" style="cursor: pointer;">
+                            <i class="bi bi-box-arrow-right me-1" aria-hidden="true"></i>
+                            {{ 'supplier.dora.advanced.exit_strategy_title'|trans({}, 'suppliers') }}
+                            {% if isCriticalIct %}
+                                {% include '_components/_badge.html.twig' with { variant: 'danger', size: 'sm', class: 'ms-2', content: 'supplier.dora.advanced.auto_expanded'|trans({}, 'suppliers') } %}
+                            {% endif %}
+                        </summary>
+                        <dl class="row mt-3">
+                            <dt class="col-sm-4">{{ 'supplier.dora.field.has_exit_strategy'|trans({}, 'suppliers') }}</dt>
+                            <dd class="col-sm-8">
+                                {% if supplier.hasExitStrategy %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'supplier.value.yes'|trans({}, 'suppliers') } %}
+                                {% else %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-exclamation-triangle', content: 'supplier.value.no'|trans({}, 'suppliers') } %}
+                                {% endif %}
+                            </dd>
+
+                            <dt class="col-sm-4">{{ 'supplier.dora.field.exit_strategy_document'|trans({}, 'suppliers') }}</dt>
+                            <dd class="col-sm-8">
+                                {% if supplier.exitStrategyDocument %}
+                                    <a href="{{ path('app_document_show', {id: supplier.exitStrategyDocument.id}) }}">
+                                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                                        {{ supplier.exitStrategyDocument.title }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>
+                                {% endif %}
+                            </dd>
+                        </dl>
+                    </details>
+                </div>
+                {% endif %}
+
+                {# ─────────────── Tab 4: Privacy (GDPR Art. 28) ────────── #}
+                <div class="tab-pane fade"
+                     id="pane-privacy"
+                     role="tabpanel"
+                     aria-labelledby="tab-privacy"
+                     tabindex="0">
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-person-lock me-1" aria-hidden="true"></i>
+                        <strong>{{ 'supplier.gdpr.section_heading'|trans({}, 'suppliers') }}</strong>
+                        <p class="mb-0">{{ 'supplier.gdpr.section_description'|trans({}, 'suppliers') }}</p>
+                    </div>
+
+                    <dl class="row">
+                        <dt class="col-sm-4">{{ 'supplier.gdpr.field.gdpr_processor_status'|trans({}, 'suppliers') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if supplier.gdprProcessorStatus %}
+                                {{ ('supplier.gdpr.processor_status.' ~ supplier.gdprProcessorStatus)|trans({}, 'suppliers') }}
+                            {% else %}
+                                <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">{{ 'supplier.gdpr.field.gdpr_transfer_mechanism'|trans({}, 'suppliers') }}</dt>
+                        <dd class="col-sm-8">{{ supplier.gdprTransferMechanism ?: ('supplier.value.na'|trans({}, 'suppliers')) }}</dd>
+
+                        <dt class="col-sm-4">{{ 'supplier.gdpr.field.gdpr_av_contract_signed'|trans({}, 'suppliers') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if supplier.gdprAvContractSigned %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'supplier.value.signed'|trans({}, 'suppliers') } %}
+                            {% else %}
+                                {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-exclamation-triangle', content: 'supplier.value.not_signed'|trans({}, 'suppliers') } %}
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">{{ 'supplier.gdpr.field.gdpr_av_contract_date'|trans({}, 'suppliers') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if supplier.gdprAvContractDate %}
+                                {{ supplier.gdprAvContractDate|date('Y-m-d') }}
+                            {% else %}
+                                <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
             </div>
         {% endblock %}
     {% endembed %}
@@ -237,5 +547,11 @@
 <style>
 .text-danger { color: #dc2626; font-weight: bold; }
 .text-muted { color: #6b7280; font-size: 0.875rem; }
+.framework-badge-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; }
+.framework-badge-bar .badge { font-size: 0.85rem; }
+dl.row dt { font-weight: 600; color: #374151; }
+dl.row dd { margin-bottom: 0.75rem; }
+details > summary { list-style: revert; padding: 0.5rem 0; }
+details[open] > summary { margin-bottom: 0.5rem; }
 </style>
 {% endblock %}
