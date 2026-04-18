@@ -7,12 +7,18 @@ namespace App\Controller\Admin;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
+use App\Entity\ImportRowEvent;
+use App\Entity\ImportSession;
+use App\Entity\User;
 use App\Form\Admin\ComplianceImportUploadType;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Repository\ImportSessionRepository;
 use App\Service\CompliancePolicyService;
 use App\Service\Import\BsiProfileXmlImporter;
+use App\Service\Import\ImportSessionRecorder;
+use App\Service\TenantContext;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -72,6 +78,9 @@ final class ComplianceImportController extends AbstractController
         private readonly LoggerInterface $logger,
         private readonly CompliancePolicyService $policy,
         private readonly BsiProfileXmlImporter $bsiProfileXmlImporter,
+        private readonly ImportSessionRecorder $importSessionRecorder,
+        private readonly ImportSessionRepository $importSessionRepository,
+        private readonly TenantContext $tenantContext,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -159,12 +168,37 @@ final class ComplianceImportController extends AbstractController
                 return $this->redirectToRoute('admin_compliance_import_upload');
             }
 
+            // ISB MINOR-1: create the persistent ImportSession header so the
+            // full audit trail (file hash + per-row events) is queryable
+            // even after the Symfony session expires.
+            $tenant = $this->tenantContext->getCurrentTenant();
+            $importSessionId = null;
+            if ($tenant !== null) {
+                /** @var User|null $user */
+                $user = $this->getUser();
+                try {
+                    $importSession = $this->importSessionRecorder->openSession(
+                        $uploadDir . '/' . $storedName,
+                        $format,
+                        $file->getClientOriginalName(),
+                        $user instanceof User ? $user : null,
+                        $tenant,
+                    );
+                    $importSessionId = $importSession->getId();
+                } catch (\Throwable $exception) {
+                    $this->logger->error('Compliance-Import ImportSession open failed', [
+                        'error' => $exception->getMessage(),
+                    ]);
+                }
+            }
+
             $request->getSession()->set(self::SESSION_KEY, [
                 'id' => $sessionId,
                 'format' => $format,
                 'original_name' => $file->getClientOriginalName(),
                 'stored_path' => $uploadDir . '/' . $storedName,
                 'created_at' => (new DateTimeImmutable())->format(DATE_ATOM),
+                'import_session_id' => $importSessionId,
             ]);
 
             return $this->redirectToRoute('admin_compliance_import_preview');
@@ -231,7 +265,25 @@ final class ComplianceImportController extends AbstractController
         }
 
         $format = (string) ($session['format'] ?? self::FORMAT_CSV);
-        $result = $this->dispatchImport($format, (string) $session['stored_path']);
+
+        $importSession = null;
+        if (isset($session['import_session_id']) && is_int($session['import_session_id'])) {
+            $importSession = $this->importSessionRepository->find($session['import_session_id']);
+        }
+
+        $result = $this->dispatchImport($format, (string) $session['stored_path'], $importSession);
+
+        // Finalise the per-row audit trail (counts + committedAt timestamp).
+        if ($importSession instanceof ImportSession) {
+            try {
+                $this->importSessionRecorder->closeSession($importSession, ImportSession::STATUS_COMMITTED);
+            } catch (\Throwable $exception) {
+                $this->logger->error('Compliance-Import ImportSession close failed', [
+                    'error' => $exception->getMessage(),
+                    'session_id' => $importSession->getId(),
+                ]);
+            }
+        }
 
         // Remove uploaded file + session record after commit.
         @unlink((string) $session['stored_path']);
@@ -273,8 +325,26 @@ final class ComplianceImportController extends AbstractController
         }
 
         $session = $request->getSession()->get(self::SESSION_KEY);
-        if (is_array($session) && is_file($session['stored_path'] ?? '')) {
-            @unlink((string) $session['stored_path']);
+        if (is_array($session)) {
+            if (is_file($session['stored_path'] ?? '')) {
+                @unlink((string) $session['stored_path']);
+            }
+            if (isset($session['import_session_id']) && is_int($session['import_session_id'])) {
+                $importSession = $this->importSessionRepository->find($session['import_session_id']);
+                if ($importSession instanceof ImportSession) {
+                    try {
+                        $this->importSessionRecorder->closeSession(
+                            $importSession,
+                            ImportSession::STATUS_CANCELLED,
+                        );
+                    } catch (\Throwable $exception) {
+                        $this->logger->error('Compliance-Import ImportSession cancel failed', [
+                            'error' => $exception->getMessage(),
+                            'session_id' => $importSession->getId(),
+                        ]);
+                    }
+                }
+            }
         }
         $request->getSession()->remove(self::SESSION_KEY);
 
@@ -305,11 +375,15 @@ final class ComplianceImportController extends AbstractController
      *
      * @return array{imported: int, superseded: int, skipped: int, errors: list<string>}
      */
-    private function dispatchImport(string $format, string $path): array
+    private function dispatchImport(string $format, string $path, ?ImportSession $importSession): array
     {
         return match ($format) {
-            self::FORMAT_BSI_XML => $this->bsiProfileXmlImporter->import($path),
-            default => $this->importFile($path),
+            self::FORMAT_BSI_XML => $this->bsiProfileXmlImporter->import(
+                $path,
+                $importSession !== null ? $this->importSessionRecorder : null,
+                $importSession,
+            ),
+            default => $this->importFile($path, $importSession),
         };
     }
 
@@ -458,9 +532,13 @@ final class ComplianceImportController extends AbstractController
     /**
      * Execute the real import. Mirrors ImportMappingCsvCommand::execute().
      *
+     * ISB MINOR-1: when $importSession is supplied, one ImportRowEvent is
+     * emitted per CSV row, so auditors can retrieve the full provenance of
+     * a mapping via ImportRowEventRepository::findByTarget().
+     *
      * @return array{imported: int, superseded: int, skipped: int, errors: list<string>}
      */
-    private function importFile(string $path): array
+    private function importFile(string $path, ?ImportSession $importSession): array
     {
         $imported = 0;
         $superseded = 0;
@@ -507,9 +585,16 @@ final class ComplianceImportController extends AbstractController
                 continue;
             }
 
+            $rawRow = $this->buildRawRow($headers, $row);
+
             if (count($row) !== count($headers)) {
-                $errors[] = sprintf('Line %d: column count mismatch', $lineNo);
+                $errMsg = sprintf('Line %d: column count mismatch', $lineNo);
+                $errors[] = $errMsg;
                 $skipped++;
+                $this->recordRowEventIfEnabled(
+                    $importSession, $lineNo, ImportRowEvent::DECISION_ERROR,
+                    null, null, null, null, $rawRow, $errMsg,
+                );
                 continue;
             }
 
@@ -518,13 +603,18 @@ final class ComplianceImportController extends AbstractController
             $sourceFramework = $this->getFramework((string) $data['source_framework'], $frameworkCache);
             $targetFramework = $this->getFramework((string) $data['target_framework'], $frameworkCache);
             if ($sourceFramework === null || $targetFramework === null) {
-                $errors[] = sprintf(
+                $errMsg = sprintf(
                     'Line %d: framework not found (%s -> %s)',
                     $lineNo,
                     $data['source_framework'],
                     $data['target_framework']
                 );
+                $errors[] = $errMsg;
                 $skipped++;
+                $this->recordRowEventIfEnabled(
+                    $importSession, $lineNo, ImportRowEvent::DECISION_ERROR,
+                    null, null, null, null, $data, $errMsg,
+                );
                 continue;
             }
 
@@ -538,8 +628,13 @@ final class ComplianceImportController extends AbstractController
                 if ($targetReq === null) {
                     $missing[] = sprintf('target=%s:%s', $targetFramework->getCode(), $data['target_requirement_id']);
                 }
-                $errors[] = sprintf('Line %d: %s', $lineNo, implode(', ', $missing));
+                $errMsg = sprintf('Line %d: %s', $lineNo, implode(', ', $missing));
+                $errors[] = $errMsg;
                 $skipped++;
+                $this->recordRowEventIfEnabled(
+                    $importSession, $lineNo, ImportRowEvent::DECISION_ERROR,
+                    null, null, null, null, $data, $errMsg,
+                );
                 continue;
             }
 
@@ -549,7 +644,16 @@ final class ComplianceImportController extends AbstractController
                 'source' => $data['source_catalog'],
             ]);
 
+            $beforeState = null;
             if ($existing instanceof ComplianceMapping) {
+                $beforeState = [
+                    'mapping_percentage' => $existing->getMappingPercentage(),
+                    'mapping_type' => $existing->getMappingType(),
+                    'confidence' => $existing->getConfidence(),
+                    'rationale' => $existing->getMappingRationale(),
+                    'version' => $existing->getVersion(),
+                    'valid_from' => $existing->getValidFrom()?->format(DATE_ATOM),
+                ];
                 $existing->setValidUntil(new DateTimeImmutable());
                 $superseded++;
             }
@@ -568,6 +672,33 @@ final class ComplianceImportController extends AbstractController
 
             $this->entityManager->persist($mapping);
             $imported++;
+
+            // Flush so the new mapping has an id before we reference it on
+            // the audit row event.
+            $this->entityManager->flush();
+
+            $afterState = [
+                'mapping_percentage' => $mapping->getMappingPercentage(),
+                'mapping_type' => $mapping->getMappingType(),
+                'confidence' => $mapping->getConfidence(),
+                'rationale' => $mapping->getMappingRationale(),
+                'version' => $mapping->getVersion(),
+                'valid_from' => $mapping->getValidFrom()?->format(DATE_ATOM),
+            ];
+
+            $this->recordRowEventIfEnabled(
+                $importSession,
+                $lineNo,
+                $existing instanceof ComplianceMapping
+                    ? ImportRowEvent::DECISION_UPDATE
+                    : ImportRowEvent::DECISION_IMPORT,
+                'ComplianceMapping',
+                $mapping->getId(),
+                $beforeState,
+                $afterState,
+                $data,
+                null,
+            );
         }
         fclose($handle);
 
@@ -579,6 +710,55 @@ final class ComplianceImportController extends AbstractController
             'skipped' => $skipped,
             'errors' => $errors,
         ];
+    }
+
+    /**
+     * @param list<string>      $headers
+     * @param list<string|null> $row
+     *
+     * @return array<string, mixed>
+     */
+    private function buildRawRow(array $headers, array $row): array
+    {
+        $raw = [];
+        foreach ($headers as $idx => $key) {
+            $raw[$key] = $row[$idx] ?? null;
+        }
+
+        return $raw;
+    }
+
+    /**
+     * @param array<string, mixed>|null $beforeState
+     * @param array<string, mixed>|null $afterState
+     * @param array<string, mixed>|null $rawRow
+     */
+    private function recordRowEventIfEnabled(
+        ?ImportSession $importSession,
+        int $lineNumber,
+        string $decision,
+        ?string $targetEntityType,
+        ?int $targetEntityId,
+        ?array $beforeState,
+        ?array $afterState,
+        ?array $rawRow,
+        ?string $errorMessage,
+    ): void {
+        if ($importSession === null) {
+            return;
+        }
+
+        $this->importSessionRecorder->recordRow(
+            $importSession,
+            $lineNumber,
+            $decision,
+            $targetEntityType,
+            $targetEntityId,
+            $beforeState,
+            $afterState,
+            $rawRow,
+            $errorMessage,
+        );
     }
 
     /**
