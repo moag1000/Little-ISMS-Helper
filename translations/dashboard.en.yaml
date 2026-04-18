@@ -1,174 +1,173 @@
 dashboard:
-    title: 'ISMS Dashboard'
-    subtitle: 'Overview of your Information Security Management System'
-    action:
-        customize: 'Customize'
-        role_dashboards: 'Role Dashboards'
-    role:
-        ciso: 'CISO Dashboard'
-        risk_manager: 'Risk Manager'
-        auditor: 'Auditor'
-        board: 'Board'
-    stats:
-        registered_assets: 'Registered Assets'
-        critical: 'critical'
-        identified_risks: 'Identified Risks'
-        high: 'high'
-        security_controls: 'Security Controls'
-        implemented: 'implemented'
-        open_incidents: 'Open Incidents'
-        in_progress: 'In Progress'
-    chart:
-        risk_distribution: 'Risk Distribution'
-        assets_by_category: 'Assets by Category'
-        asset_count: 'Asset Count'
-    kpis: 'Key Performance Indicators'
-    compliance_status: 'Compliance Status'
-    implementation_status: 'Implementation Status'
-    quick_access: 'Quick Access'
-    next_steps: 'Next Steps'
-    success:
-        settings_imported: 'Dashboard settings successfully imported!'
-    error:
-        import_failed: 'Error importing settings. Please check the file.'
+  title: ISMS Dashboard
+  subtitle: Overview of your Information Security Management System
+  action:
+    customize: Customize
+    role_dashboards: Role Dashboards
+  role:
+    ciso: CISO Dashboard
+    risk_manager: Risk Manager
+    auditor: Auditor
+    board: Board
+  stats:
+    registered_assets: Registered Assets
+    critical: critical
+    identified_risks: Identified Risks
+    high: high
+    security_controls: Security Controls
+    implemented: implemented
+    open_incidents: Open Incidents
+    in_progress: In Progress
+  chart:
+    risk_distribution: Risk Distribution
+    assets_by_category: Assets by Category
+    asset_count: Asset Count
+  kpis: Key Performance Indicators
+  compliance_status: Compliance Status
+  implementation_status: Implementation Status
+  quick_access: Quick Access
+  next_steps: Next Steps
+  success:
+    settings_imported: Dashboard settings successfully imported!
+  error:
+    import_failed: Error importing settings. Please check the file.
+  overdue_reviews:
+    title: Overdue Risk Reviews
+    description: '%count% risks require review (ISO 27001:2022 Clause 6.1.3.d)'
+    last_review: Last Review
+    never_reviewed: Never Reviewed
+    view_all: View All %count%
+  upcoming_reviews:
+    title: Upcoming Risk Reviews
+    description: Risks that need to be reviewed within the next 30 days
+  overdue_treatment_plans:
+    title: Overdue Treatment Plans
+    description: '%count% treatment plans are overdue (ISO 27001:2022 Clause 6.1.3)'
+    due_date: Due Date
+    days_overdue: days overdue
+    view_all: View %count% more
+  approaching_treatment_plans:
+    title: Approaching Deadlines
+    description: Treatment plans with deadlines within the next 7 days
+    days_remaining: days remaining
+  activity:
+    minutes_ago: '%count% minutes ago'
+    hours_ago: '%count% hours ago'
+    days_ago: '%count% days ago'
+    recently: recently
+    asset_added: Asset added
+    risk_identified: Risk identified
+    new_risk: New risk
+    system: System
+    security_team: Security Team
+  widget:
     overdue_reviews:
-        title: 'Overdue Risk Reviews'
-        description: '%count% risks require review (ISO 27001:2022 Clause 6.1.3.d)'
-        last_review: 'Last Review'
-        never_reviewed: 'Never Reviewed'
-        view_all: 'View All %count%'
-    upcoming_reviews:
-        title: 'Upcoming Risk Reviews'
-        description: 'Risks that need to be reviewed within the next 30 days'
-    overdue_treatment_plans:
-        title: 'Overdue Treatment Plans'
-        description: '%count% treatment plans are overdue (ISO 27001:2022 Clause 6.1.3)'
-        due_date: 'Due Date'
-        days_overdue: 'days overdue'
-        view_all: 'View %count% more'
-    approaching_treatment_plans:
-        title: 'Approaching Deadlines'
-        description: 'Treatment plans with deadlines within the next 7 days'
-        days_remaining: 'days remaining'
-    activity:
-        minutes_ago: '%count% minutes ago'
-        hours_ago: '%count% hours ago'
-        days_ago: '%count% days ago'
-        recently: recently
-        asset_added: 'Asset added'
-        risk_identified: 'Risk identified'
-        new_risk: 'New risk'
-        system: System
-        security_team: 'Security Team'
-    widget:
-        overdue_reviews:
-            title: 'Overdue Reviews'
-            risks: 'Risks'
-            bc_plans: 'BC Plans'
-            vvt: 'VVT'
-            dpias: 'DPIAs'
-            due: 'Due'
-            test_overdue: 'Test overdue'
-            review_overdue: 'Review overdue'
-            breach_alert: '%count% data breach(es) with 72h deadline!'
-            breach_alert_desc: 'GDPR Art. 33 requires notification to supervisory authority within 72 hours.'
-            view_breaches: 'View data breaches'
-            breach_overdue: '%hours%h overdue - immediate notification required!'
-            breach_remaining: '%hours%h remaining until notification deadline'
-            more_items: '%count% more items...'
-            all_good: 'All up to date!'
-            all_good_desc: 'No overdue reviews. Your ISMS is current.'
-            manage: 'Manage'
-
-    # Management KPIs Section
-    management_kpis:
-        title: 'Management KPIs'
-        subtitle: 'Module-based KPIs for management reports'
-        core:
-            title: 'Core ISMS'
-            icon: 'bi-shield-check'
-        risk_management:
-            title: 'Risk Management'
-            icon: 'bi-exclamation-triangle'
-        asset_management:
-            title: 'Asset Management'
-            icon: 'bi-server'
-        incident_management:
-            title: 'Incident Management'
-            icon: 'bi-fire'
-        business_continuity:
-            title: 'Business Continuity'
-            icon: 'bi-diagram-3'
-        training:
-            title: 'Training'
-            icon: 'bi-mortarboard'
-        audits:
-            title: 'Audits'
-            icon: 'bi-clipboard-check'
-        supplier_management:
-            title: 'Supplier Management'
-            icon: 'bi-building'
-        documentation:
-            title: 'Documentation'
-            icon: 'bi-file-text'
-        no_data: 'No data available'
-        view_details: 'View details'
-        status:
-            good: 'Good'
-            warning: 'Warning'
-            danger: 'Critical'
-            info: 'Info'
-
-    # KPI Labels (for management dashboard)
-    kpi:
-        control_compliance: 'Control Compliance'
-        control_compliance_weighted: 'Control Compliance (weighted)'
-        controls_implemented: 'Controls Implemented'
-        residual_risk_exposure: 'Residual Risk Exposure'
-        isms_health_score: 'ISMS Health Score'
-    hint:
-        weighted_compliance: 'Weighting: implemented=1.0, partial=0.5, planned=0'
-        isms_health_score: 'Composite: Compliance 40%, Risk 25%, Incidents 20%, Asset Classification 15%'
-        total_risks: 'Total Risks'
-        high_risks: 'High Risks'
-        critical_risks: 'Critical Risks'
-        risk_treatment_rate: 'Treatment Rate'
-        overdue_treatments: 'Overdue Treatments'
-        total_assets: 'Total Assets'
-        critical_assets: 'Critical Assets'
-        asset_classification_rate: 'Classification Rate'
-        open_incidents: 'Open Incidents'
-        resolved_incidents_ytd: 'Resolved Incidents (YTD)'
-        mttr: 'MTTR'
-        overdue_incidents: 'Overdue Incidents'
-        critical_processes: 'Critical Processes'
-        bia_coverage: 'BIA Coverage'
-        active_bc_plans: 'Active BC Plans'
-        bc_exercises_ytd: 'BC Exercises (YTD)'
-        training_completion_rate: 'Completion Rate'
-        overdue_trainings: 'Overdue Trainings'
-        audits_completed_ytd: 'Audits Completed (YTD)'
-        planned_audits: 'Planned Audits'
-        open_audit_findings: 'Open Findings'
-        total_suppliers: 'Total Suppliers'
-        critical_suppliers: 'Critical Suppliers'
-        supplier_assessment_rate: 'Assessment Rate'
-        overdue_supplier_assessments: 'Overdue Assessments'
-        total_documents: 'Total Documents'
-        documents_needing_review: 'Needing Review'
-        documents_without_owner: 'Without Owner'
-
-    # Quick Actions
-    quick_actions:
-        title: 'Quick Actions'
-        new_asset: 'New Asset'
-        new_risk: 'Record Risk'
-        controls: 'Controls'
-        report_incident: 'Report Incident'
-
-    # Last Updated
-    last_updated: 'Data as of: %time%'
-
-    # Activity Feed
-    activity_feed:
-        title: 'Recent Activities'
+      title: Overdue Reviews
+      risks: Risks
+      bc_plans: BC Plans
+      vvt: VVT
+      dpias: DPIAs
+      due: Due
+      test_overdue: Test overdue
+      review_overdue: Review overdue
+      breach_alert: '%count% data breach(es) with 72h deadline!'
+      breach_alert_desc: GDPR Art. 33 requires notification to supervisory authority
+        within 72 hours.
+      view_breaches: View data breaches
+      breach_overdue: '%hours%h overdue - immediate notification required!'
+      breach_remaining: '%hours%h remaining until notification deadline'
+      more_items: '%count% more items...'
+      all_good: All up to date!
+      all_good_desc: No overdue reviews. Your ISMS is current.
+      manage: Manage
+  management_kpis:
+    title: Management KPIs
+    subtitle: Module-based KPIs for management reports
+    core:
+      title: Core ISMS
+      icon: bi-shield-check
+    risk_management:
+      title: Risk Management
+      icon: bi-exclamation-triangle
+    asset_management:
+      title: Asset Management
+      icon: bi-server
+    incident_management:
+      title: Incident Management
+      icon: bi-fire
+    business_continuity:
+      title: Business Continuity
+      icon: bi-diagram-3
+    training:
+      title: Training
+      icon: bi-mortarboard
+    audits:
+      title: Audits
+      icon: bi-clipboard-check
+    supplier_management:
+      title: Supplier Management
+      icon: bi-building
+    documentation:
+      title: Documentation
+      icon: bi-file-text
+    no_data: No data available
+    view_details: View details
+    status:
+      good: Good
+      warning: Warning
+      danger: Critical
+      info: Info
+  kpi:
+    control_compliance: Control Compliance
+    control_compliance_weighted: Control Compliance (weighted)
+    controls_implemented: Controls Implemented
+    residual_risk_exposure: Residual Risk Exposure
+    isms_health_score: ISMS Health Score
+    risk_appetite_compliance: Risk Appetite Compliance
+    mttr_critical: MTTR (Critical)
+    mttr_high: MTTR (High)
+    days_since_management_review: Days since last management review
+    oldest_overdue_item_age: Oldest overdue item age
+    gap_count_critical: Critical compliance gaps
+    gap_count_high: High compliance gaps
+  hint:
+    weighted_compliance: 'Weighting: implemented=1.0, partial=0.5, planned=0'
+    isms_health_score: 'Composite: Compliance 40%, Risk 25%, Incidents 20%, Asset
+      Classification 15%'
+    total_risks: Total Risks
+    high_risks: High Risks
+    critical_risks: Critical Risks
+    risk_treatment_rate: Treatment Rate
+    overdue_treatments: Overdue Treatments
+    total_assets: Total Assets
+    critical_assets: Critical Assets
+    asset_classification_rate: Classification Rate
+    open_incidents: Open Incidents
+    resolved_incidents_ytd: Resolved Incidents (YTD)
+    mttr: MTTR
+    overdue_incidents: Overdue Incidents
+    critical_processes: Critical Processes
+    bia_coverage: BIA Coverage
+    active_bc_plans: Active BC Plans
+    bc_exercises_ytd: BC Exercises (YTD)
+    training_completion_rate: Completion Rate
+    overdue_trainings: Overdue Trainings
+    audits_completed_ytd: Audits Completed (YTD)
+    planned_audits: Planned Audits
+    open_audit_findings: Open Findings
+    total_suppliers: Total Suppliers
+    critical_suppliers: Critical Suppliers
+    supplier_assessment_rate: Assessment Rate
+    overdue_supplier_assessments: Overdue Assessments
+    total_documents: Total Documents
+    documents_needing_review: Needing Review
+    documents_without_owner: Without Owner
+  quick_actions:
+    title: Quick Actions
+    new_asset: New Asset
+    new_risk: Record Risk
+    controls: Controls
+    report_incident: Report Incident
+  last_updated: 'Data as of: %time%'
+  activity_feed:
+    title: Recent Activities

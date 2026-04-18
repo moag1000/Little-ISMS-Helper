@@ -14,6 +14,7 @@ use App\Repository\DocumentRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\ManagementReviewRepository;
+use App\Repository\RiskAppetiteRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\SupplierRepository;
@@ -64,7 +65,28 @@ class DashboardStatisticsService
         private readonly ?RiskTreatmentPlanRepository $treatmentPlanRepository = null,
         private readonly ?ManagementReviewRepository $managementReviewRepository = null,
         private readonly ?ComplianceAnalyticsService $complianceAnalyticsService = null,
+        private readonly ?RiskAppetiteRepository $riskAppetiteRepository = null,
     ) {
+    }
+
+    /**
+     * @return array<string, int> Map of category => maxAcceptableRisk for the tenant (fallback: global).
+     */
+    private function getRiskAppetiteByCategory(?Tenant $tenant): array
+    {
+        if ($this->riskAppetiteRepository === null) {
+            return [];
+        }
+        $appetites = $this->riskAppetiteRepository->findAllActiveForTenant($tenant);
+        $map = [];
+        foreach ($appetites as $appetite) {
+            $category = $appetite->getCategory();
+            $max = $appetite->getMaxAcceptableRisk();
+            if ($category !== null && $max !== null) {
+                $map[$category] = $max;
+            }
+        }
+        return $map;
     }
 
     /**
@@ -404,6 +426,9 @@ class DashboardStatisticsService
             ],
         ];
 
+        // A6/A7/A8: management KPIs (days-since-review, oldest-overdue, gap-priority)
+        $kpis['management'] = $this->getManagementKpiMetrics($tenant);
+
         // Add module-specific KPIs only if module is active
         if (in_array('risks', $activeModules, true)) {
             $kpis['risk_management'] = $this->getRiskManagementKPIs($tenant);
@@ -443,6 +468,87 @@ class DashboardStatisticsService
     /**
      * Get core KPIs (always shown)
      */
+    /**
+     * A6/A7/A8: Management-level KPIs.
+     *  A6 days_since_management_review
+     *  A7 oldest_overdue_item_age (days)
+     *  A8 gap_count_critical / gap_count_high (unfulfilled critical/high requirements)
+     *
+     * @return array<string, array>
+     */
+    private function getManagementKpiMetrics(?Tenant $tenant): array
+    {
+        $out = [];
+
+        // A6: days since last management review
+        if ($this->managementReviewRepository !== null) {
+            $latest = $this->managementReviewRepository->findLatest(1);
+            $daysSince = null;
+            if (isset($latest[0]) && $latest[0]->getReviewDate() !== null) {
+                $reviewDate = $latest[0]->getReviewDate();
+                $daysSince = (int) $reviewDate->diff(new \DateTime())->days;
+            }
+            $out['days_since_management_review'] = [
+                'label' => 'kpi.days_since_management_review',
+                'value' => $daysSince,
+                'unit' => $daysSince === null ? '' : 'd',
+                // ISO 27001 requires yearly review → >365d = danger, >270d = warning
+                'status' => $daysSince === null
+                    ? 'info'
+                    : ($daysSince > 365 ? 'danger' : ($daysSince > 270 ? 'warning' : 'good')),
+                'na' => $daysSince === null,
+            ];
+        }
+
+        // A7: oldest overdue item across risk reviews and treatment plans
+        $oldestOverdueDays = 0;
+        if ($tenant !== null && $this->treatmentPlanRepository !== null) {
+            $plans = $this->treatmentPlanRepository->findAll();
+            $now = new \DateTime();
+            foreach ($plans as $plan) {
+                $target = $plan->getTargetCompletionDate();
+                if ($target !== null && $target < $now && $plan->getStatus() !== 'completed') {
+                    $days = (int) $target->diff($now)->days;
+                    if ($days > $oldestOverdueDays) {
+                        $oldestOverdueDays = $days;
+                    }
+                }
+            }
+        }
+        $out['oldest_overdue_item_age'] = [
+            'label' => 'kpi.oldest_overdue_item_age',
+            'value' => $oldestOverdueDays,
+            'unit' => 'd',
+            'status' => $oldestOverdueDays > 90 ? 'danger' : ($oldestOverdueDays > 30 ? 'warning' : 'good'),
+        ];
+
+        // A8: gap count by priority (unfulfilled critical/high compliance requirements)
+        if ($this->complianceAnalyticsService !== null) {
+            try {
+                $gap = $this->complianceAnalyticsService->getGapAnalysis();
+                $byPriority = $gap['by_priority'] ?? [];
+                $critical = (int) ($byPriority['critical'] ?? 0);
+                $high = (int) ($byPriority['high'] ?? 0);
+                $out['gap_count_critical'] = [
+                    'label' => 'kpi.gap_count_critical',
+                    'value' => $critical,
+                    'unit' => '',
+                    'status' => $critical === 0 ? 'good' : ($critical > 5 ? 'danger' : 'warning'),
+                ];
+                $out['gap_count_high'] = [
+                    'label' => 'kpi.gap_count_high',
+                    'value' => $high,
+                    'unit' => '',
+                    'status' => $high === 0 ? 'good' : ($high > 10 ? 'warning' : 'info'),
+                ];
+            } catch (\Throwable) {
+                // gap analysis optional
+            }
+        }
+
+        return $out;
+    }
+
     /**
      * A4: Composite ISMS Health Score (0-100).
      *
@@ -596,9 +702,13 @@ class DashboardStatisticsService
         $treatmentRate = $totalRisks > 0 ? round(($treatedRisks / $totalRisks) * 100) : 0;
 
         // A3: Residual Risk Exposure — sum of all residual risk levels, plus counts by severity
+        // A2: Risk Appetite Compliance — count risks exceeding their category's appetite
         $residualSum = 0;
         $residualCritical = 0;
         $residualHigh = 0;
+        $appetiteByCategory = $this->getRiskAppetiteByCategory($tenant);
+        $appetiteApplicable = 0;
+        $appetiteExceeded = 0;
         foreach ($allRisks as $risk) {
             $residual = $risk->getResidualRiskLevel();
             $residualSum += $residual;
@@ -607,7 +717,17 @@ class DashboardStatisticsService
             } elseif ($residual >= 12) {
                 $residualHigh++;
             }
+            $category = $risk->getCategory();
+            if ($category !== null && isset($appetiteByCategory[$category])) {
+                $appetiteApplicable++;
+                if ($residual > $appetiteByCategory[$category]) {
+                    $appetiteExceeded++;
+                }
+            }
         }
+        $appetitePct = $appetiteApplicable > 0
+            ? round((($appetiteApplicable - $appetiteExceeded) / $appetiteApplicable) * 100, 1)
+            : null;
 
         // Check for overdue treatment plans
         $overdueTreatments = 0;
@@ -649,6 +769,16 @@ class DashboardStatisticsService
                 'unit' => '',
                 'status' => $residualCritical > 0 ? 'danger' : ($residualHigh > 0 ? 'warning' : 'good'),
                 'details' => ['critical' => $residualCritical, 'high' => $residualHigh, 'total' => $totalRisks],
+            ],
+            'risk_appetite_compliance' => [
+                'label' => 'kpi.risk_appetite_compliance',
+                'value' => $appetitePct,
+                'unit' => $appetitePct === null ? '' : '%',
+                'status' => $appetitePct === null
+                    ? 'info'
+                    : ($appetitePct >= 90 ? 'good' : ($appetitePct >= 70 ? 'warning' : 'danger')),
+                'na' => $appetitePct === null,
+                'details' => ['applicable' => $appetiteApplicable, 'exceeded' => $appetiteExceeded],
             ],
             'overdue_treatments' => [
                 'label' => 'kpi.overdue_treatments',
@@ -719,15 +849,30 @@ class DashboardStatisticsService
         );
 
         $mttrHours = 0;
+        // C2: MTTR segmented by severity (critical/high/medium/low)
+        $mttrBySeverity = ['critical' => [], 'high' => [], 'medium' => [], 'low' => []];
         if (count($resolvedThisYear) > 0) {
             $totalHours = 0;
+            $validCount = 0;
             foreach ($resolvedThisYear as $incident) {
                 if ($incident->getDetectedAt() !== null && $incident->getResolvedAt() !== null) {
                     $diff = $incident->getDetectedAt()->diff($incident->getResolvedAt());
-                    $totalHours += ($diff->days * 24) + $diff->h;
+                    $hours = ($diff->days * 24) + $diff->h;
+                    $totalHours += $hours;
+                    $validCount++;
+                    $sev = $incident->getSeverity();
+                    if (isset($mttrBySeverity[$sev])) {
+                        $mttrBySeverity[$sev][] = $hours;
+                    }
                 }
             }
-            $mttrHours = round($totalHours / count($resolvedThisYear));
+            if ($validCount > 0) {
+                $mttrHours = round($totalHours / $validCount);
+            }
+        }
+        $mttrSeverityAvg = [];
+        foreach ($mttrBySeverity as $sev => $vals) {
+            $mttrSeverityAvg[$sev] = $vals === [] ? null : (int) round(array_sum($vals) / count($vals));
         }
 
         // Count overdue incidents (open > 7 days)
@@ -754,6 +899,25 @@ class DashboardStatisticsService
                 'value' => $mttrHours,
                 'unit' => 'h',
                 'status' => $mttrHours > 72 ? 'warning' : 'good',
+                'details' => $mttrSeverityAvg,
+            ],
+            'mttr_critical' => [
+                'label' => 'kpi.mttr_critical',
+                'value' => $mttrSeverityAvg['critical'],
+                'unit' => $mttrSeverityAvg['critical'] === null ? '' : 'h',
+                'status' => $mttrSeverityAvg['critical'] === null
+                    ? 'info'
+                    : ($mttrSeverityAvg['critical'] > 24 ? 'danger' : 'good'),
+                'na' => $mttrSeverityAvg['critical'] === null,
+            ],
+            'mttr_high' => [
+                'label' => 'kpi.mttr_high',
+                'value' => $mttrSeverityAvg['high'],
+                'unit' => $mttrSeverityAvg['high'] === null ? '' : 'h',
+                'status' => $mttrSeverityAvg['high'] === null
+                    ? 'info'
+                    : ($mttrSeverityAvg['high'] > 72 ? 'warning' : 'good'),
+                'na' => $mttrSeverityAvg['high'] === null,
             ],
             'overdue_incidents' => [
                 'label' => 'kpi.overdue_incidents',
