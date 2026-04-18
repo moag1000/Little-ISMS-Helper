@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'kpi_threshold.page.edit'|trans({}, 'admin') }}: {{ config.kpiKey }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <h1 class="h3 mb-4">{{ 'kpi_threshold.page.edit'|trans({}, 'admin') }}: <code>{{ config.kpiKey }}</code></h1>
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
+            {% include 'admin/kpi_threshold/_form.html.twig' with {form: form} %}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}

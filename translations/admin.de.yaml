@@ -27,6 +27,7 @@ admin:
         module_management: Modul-Verwaltung
         compliance_management: Compliance-Verwaltung
         compliance_policy: Compliance-Policy-Einstellungen
+        compliance_import_history: Compliance-Import-Historie
         loader_fixer: Framework-Loader-Fixer
         system_health: System-Status
         backup: Backup
@@ -421,3 +422,46 @@ setup:
 
     section:
         overview: Übersicht
+
+kpi_threshold:
+    page:
+        title: 'KPI-Schwellwerte'
+        subtitle: 'Mandantenspezifische Good/Warning-Grenzen für KPI-Statusfarben (überschreibt Defaults).'
+        new: 'Neuer Schwellwert'
+        edit: 'Schwellwert bearbeiten'
+    action:
+        new: 'Neuer Schwellwert'
+    field:
+        kpi_key: 'KPI'
+        good_threshold: 'Good-Schwelle (≥)'
+        warning_threshold: 'Warning-Schwelle (≥)'
+        updated_at: 'Aktualisiert'
+    placeholder:
+        kpi_key: '-- KPI auswählen --'
+    help:
+        kpi_key: 'Welche KPI soll eine abweichende Schwelle erhalten?'
+        good_threshold: 'Ab diesem Wert gilt die KPI als "good" (grün). 0-100.'
+        warning_threshold: 'Ab diesem Wert gilt die KPI als "warning" (gelb). Darunter: "danger". 0-100.'
+    hint:
+        thresholds: 'Good-Schwelle muss ≥ Warning-Schwelle sein. Werte unterhalb Warning werden als "danger" eingestuft.'
+    key:
+        control_compliance: 'Control-Compliance'
+        control_compliance_weighted: 'Control-Compliance (gewichtet)'
+        risk_treatment_rate: 'Risiko-Behandlungsrate'
+        asset_classification_rate: 'Asset-Klassifizierungsrate'
+        training_completion_rate: 'Schulungs-Abschlussrate'
+        supplier_assessment_rate: 'Lieferanten-Bewertungsrate'
+        bia_coverage: 'BIA-Abdeckung'
+        implementation_readiness: 'ISMS Implementation-Readiness'
+        isms_health_score: 'ISMS Health Score'
+    flash:
+        created: 'Schwellwert erstellt.'
+        updated: 'Schwellwert aktualisiert.'
+        deleted: 'Schwellwert gelöscht.'
+        duplicate_key: 'Für diesen KPI existiert bereits ein Schwellwert.'
+        good_below_warning: 'Good-Schwelle muss ≥ Warning-Schwelle sein.'
+        no_tenant: 'Kein Mandant zugeordnet.'
+    message:
+        no_configs: 'Keine Schwellwerte konfiguriert — Defaults werden verwendet.'
+    confirm:
+        delete: 'Schwellwert wirklich löschen? Danach gelten wieder die Defaults.'
