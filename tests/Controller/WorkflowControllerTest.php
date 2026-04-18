@@ -166,6 +166,7 @@ class WorkflowControllerTest extends WebTestCase
 
         // Create workflow instance
         $this->testInstance = new WorkflowInstance();
+        $this->testInstance->setTenant($this->testTenant);
         $this->testInstance->setWorkflow($this->testWorkflow);
         $this->testInstance->setEntityType('Risk');
         $this->testInstance->setEntityId(1);
