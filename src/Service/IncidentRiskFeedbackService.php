@@ -157,13 +157,7 @@ class IncidentRiskFeedbackService
         try {
             $workflow = $this->workflowService->startWorkflow(
                 entityType: 'Risk',
-                entityId: $risk->getId(),
-                initiatedBy: $user,
-                triggerReason: sprintf(
-                    'Automatic re-evaluation triggered by incident %s (severity: %s)',
-                    $incident->getIncidentNumber(),
-                    $incident->getSeverity()
-                )
+                entityId: $risk->getId()
             );
 
             if ($workflow) {

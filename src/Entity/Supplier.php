@@ -742,6 +742,23 @@ class Supplier
         ];
     }
 
+    // ── BCM Supplier fields ────────────────────────────────────────────────
+
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $supplierRto = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $supplierRecoveryCapability = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $alternativeSupplier = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $bcmAssessmentDate = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $bcmAssessmentResult = null;
+
     // ── WS-3: DORA ROI + DSGVO Art. 28 fields ────────────────────────────────
 
     #[ORM\Column(length: 20, nullable: true)]
@@ -828,4 +845,61 @@ class Supplier
 
     public function getGdprAvContractDate(): ?\DateTimeInterface { return $this->gdprAvContractDate; }
     public function setGdprAvContractDate(?\DateTimeInterface $v): self { $this->gdprAvContractDate = $v; return $this; }
+
+    // BCM Supplier Getters/Setters
+
+    public function getSupplierRto(): ?int
+    {
+        return $this->supplierRto;
+    }
+
+    public function setSupplierRto(?int $supplierRto): static
+    {
+        $this->supplierRto = $supplierRto;
+        return $this;
+    }
+
+    public function getSupplierRecoveryCapability(): ?string
+    {
+        return $this->supplierRecoveryCapability;
+    }
+
+    public function setSupplierRecoveryCapability(?string $supplierRecoveryCapability): static
+    {
+        $this->supplierRecoveryCapability = $supplierRecoveryCapability;
+        return $this;
+    }
+
+    public function getAlternativeSupplier(): ?string
+    {
+        return $this->alternativeSupplier;
+    }
+
+    public function setAlternativeSupplier(?string $alternativeSupplier): static
+    {
+        $this->alternativeSupplier = $alternativeSupplier;
+        return $this;
+    }
+
+    public function getBcmAssessmentDate(): ?\DateTimeImmutable
+    {
+        return $this->bcmAssessmentDate;
+    }
+
+    public function setBcmAssessmentDate(?\DateTimeImmutable $bcmAssessmentDate): static
+    {
+        $this->bcmAssessmentDate = $bcmAssessmentDate;
+        return $this;
+    }
+
+    public function getBcmAssessmentResult(): ?string
+    {
+        return $this->bcmAssessmentResult;
+    }
+
+    public function setBcmAssessmentResult(?string $bcmAssessmentResult): static
+    {
+        $this->bcmAssessmentResult = $bcmAssessmentResult;
+        return $this;
+    }
 }

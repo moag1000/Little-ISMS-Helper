@@ -71,6 +71,10 @@ class CorporateStructureController extends AbstractController
     #[Route('/api/corporate-structure/set-parent', name: 'api_corporate_structure_set_parent', methods: ['POST'])]
     public function setParent(Request $request): JsonResponse
     {
+        if (!$this->isCsrfTokenValid('corporate_structure', $request->headers->get('X-CSRF-Token'))) {
+            return $this->json(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true);
 
         $tenantId = $data['tenantId'] ?? null;
@@ -157,6 +161,10 @@ class CorporateStructureController extends AbstractController
     #[Route('/api/corporate-structure/governance-model/{id}', name: 'api_corporate_structure_governance_model', methods: ['PATCH'])]
     public function updateGovernanceModel(Tenant $tenant, Request $request): JsonResponse
     {
+        if (!$this->isCsrfTokenValid('corporate_structure', $request->headers->get('X-CSRF-Token'))) {
+            return $this->json(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true);
         $governanceModel = $data['governanceModel'] ?? null;
 
@@ -281,8 +289,12 @@ class CorporateStructureController extends AbstractController
      * Propagate ISMS context changes to subsidiaries
      */
     #[Route('/api/corporate-structure/propagate-context/{id}', name: 'api_corporate_structure_propagate_context', methods: ['POST'])]
-    public function propagateContext(Tenant $tenant): JsonResponse
+    public function propagateContext(Tenant $tenant, Request $request): JsonResponse
     {
+        if (!$this->isCsrfTokenValid('corporate_structure', $request->headers->get('X-CSRF-Token'))) {
+            return $this->json(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         $context = $this->corporateStructureService->getEffectiveISMSContext($tenant);
 
         if (!$context instanceof ISMSContext) {
@@ -345,6 +357,10 @@ class CorporateStructureController extends AbstractController
     #[Route('/api/corporate-structure/{tenantId}/governance/{scope}', name: 'api_corporate_structure_set_scope_governance', methods: ['POST'])]
     public function setScopeGovernance(int $tenantId, string $scope, Request $request): JsonResponse
     {
+        if (!$this->isCsrfTokenValid('corporate_structure', $request->headers->get('X-CSRF-Token'))) {
+            return $this->json(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         $tenant = $this->tenantRepository->find($tenantId);
         if (!$tenant) {
             return $this->json(['error' => 'Tenant not found'], Response::HTTP_NOT_FOUND);
@@ -400,8 +416,12 @@ class CorporateStructureController extends AbstractController
      * Delete governance rule for specific scope
      */
     #[Route('/api/corporate-structure/{tenantId}/governance/{scope}/{scopeId}', name: 'api_corporate_structure_delete_scope_governance', methods: ['DELETE'])]
-    public function deleteScopeGovernance(int $tenantId, string $scope, ?string $scopeId = null): JsonResponse
+    public function deleteScopeGovernance(int $tenantId, string $scope, Request $request, ?string $scopeId = null): JsonResponse
     {
+        if (!$this->isCsrfTokenValid('corporate_structure', $request->headers->get('X-CSRF-Token'))) {
+            return $this->json(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         $tenant = $this->tenantRepository->find($tenantId);
         if (!$tenant) {
             return $this->json(['error' => 'Tenant not found'], Response::HTTP_NOT_FOUND);

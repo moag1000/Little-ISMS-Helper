@@ -27,7 +27,8 @@ class ChangeRequestController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
-        $changeRequests = $this->changeRequestRepository->findAll();
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $changeRequests = $tenant ? $this->changeRequestRepository->findBy(['tenant' => $tenant]) : [];
         $statistics = $this->changeRequestRepository->getStatistics();
         $pendingApproval = $this->changeRequestRepository->findPendingApproval();
         $overdue = $this->changeRequestRepository->findOverdue();

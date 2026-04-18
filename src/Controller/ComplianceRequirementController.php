@@ -165,7 +165,7 @@ class ComplianceRequirementController extends AbstractController
     public function delete(Request $request, ComplianceRequirement $complianceRequirement): Response
     {
         if ($this->isCsrfTokenValid('delete'.$complianceRequirement->getId(), $request->request->get('_token'))) {
-            $frameworkId = $complianceRequirement->getFramework()->id;
+            $frameworkId = $complianceRequirement->getFramework()?->getId();
 
             $this->entityManager->remove($complianceRequirement);
             $this->entityManager->flush();

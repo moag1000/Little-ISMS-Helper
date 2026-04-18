@@ -10,7 +10,6 @@ use App\Repository\RiskAppetiteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
-use ReflectionClass;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use DateTimeImmutable;
 
@@ -422,8 +421,18 @@ class WorkflowAutoProgressionService
         WorkflowInstance $workflowInstance,
         WorkflowStep $step,
         User $user,
-        object $entity
+        object $entity,
+        int $depth = 0
     ): void {
+        if ($depth >= 20) {
+            $this->logger->warning('Auto-progression recursion limit reached', [
+                'workflow_instance_id' => $workflowInstance->getId(),
+                'step_id' => $step->getId(),
+                'depth' => $depth,
+            ]);
+            return;
+        }
+
         // Add to approval history
         $workflowInstance->addApprovalHistoryEntry([
             'step_id' => $step->getId(),
@@ -441,22 +450,16 @@ class WorkflowAutoProgressionService
         $workflowInstance->addCompletedStep($step->getId());
 
         // Move to next step using WorkflowService
-        // We'll use reflection to access the private method temporarily
-        $reflection = new ReflectionClass($this->workflowService);
-        $method = $reflection->getMethod('moveToNextStep');
-        $method->setAccessible(true);
-        $nextStep = $method->invoke($this->workflowService, $workflowInstance);
+        $nextStep = $this->workflowService->moveToNextStep($workflowInstance);
 
         // Handle next step (could also auto-progress if notification step)
         if ($nextStep instanceof WorkflowStep) {
             // Check if next step can also auto-progress (e.g., notification steps)
             if ($this->canAutoProgress($nextStep, $entity)) {
-                $this->autoApproveStep($workflowInstance, $nextStep, $user, $entity);
+                $this->autoApproveStep($workflowInstance, $nextStep, $user, $entity, $depth + 1);
             } else {
                 // Send assignment notification for next step
-                $handleMethod = $reflection->getMethod('handleStepAssignment');
-                $handleMethod->setAccessible(true);
-                $handleMethod->invoke($this->workflowService, $workflowInstance, $nextStep);
+                $this->workflowService->handleStepAssignment($workflowInstance, $nextStep);
             }
         } else {
             // Workflow completed - check for feedback loops

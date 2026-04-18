@@ -224,7 +224,7 @@ class WorkflowService
      * @return WorkflowStep|null The next step, or null if workflow is complete
      * @throws DateMalformedStringException
      */
-    private function moveToNextStep(WorkflowInstance $workflowInstance): ?WorkflowStep
+    public function moveToNextStep(WorkflowInstance $workflowInstance): ?WorkflowStep
     {
         $workflow = $workflowInstance->getWorkflow();
         $currentStep = $workflowInstance->getCurrentStep();
@@ -255,7 +255,7 @@ class WorkflowService
     /**
      * Handle step assignment - send notifications or auto-progress notification steps
      */
-    private function handleStepAssignment(WorkflowInstance $workflowInstance, WorkflowStep $workflowStep): void
+    public function handleStepAssignment(WorkflowInstance $workflowInstance, WorkflowStep $workflowStep): void
     {
         if ($workflowStep->getStepType() === 'notification') {
             // Auto-progress notification steps
@@ -423,7 +423,12 @@ class WorkflowService
      */
     public function getPendingApprovals(User $user): array
     {
-        $instances = $this->workflowInstanceRepository->findBy(['status' => 'in_progress']);
+        $tenant = $user->getTenant();
+        $criteria = ['status' => 'in_progress'];
+        if ($tenant !== null) {
+            $criteria['tenant'] = $tenant;
+        }
+        $instances = $this->workflowInstanceRepository->findBy($criteria);
         $pending = [];
 
         foreach ($instances as $instance) {

@@ -136,14 +136,21 @@ class RiskRepositoryTest extends TestCase
         $method = new \ReflectionMethod($this->repository, 'findHighRisks');
         $parameters = $method->getParameters();
 
-        // Should have one optional parameter: threshold
-        $this->assertCount(1, $parameters);
-        $this->assertEquals('threshold', $parameters[0]->getName());
-        $this->assertTrue($parameters[0]->isOptional());
-        $this->assertEquals(12, $parameters[0]->getDefaultValue());
+        // Should have two parameters: tenant (required), threshold (optional)
+        $this->assertCount(2, $parameters);
+
+        // First parameter: tenant
+        $this->assertEquals('tenant', $parameters[0]->getName());
+        $this->assertEquals(Tenant::class, $parameters[0]->getType()->getName());
+        $this->assertFalse($parameters[0]->isOptional());
+
+        // Second parameter: threshold (optional, default 12)
+        $this->assertEquals('threshold', $parameters[1]->getName());
+        $this->assertTrue($parameters[1]->isOptional());
+        $this->assertEquals(12, $parameters[1]->getDefaultValue());
 
         // Verify parameter type
-        $paramType = $parameters[0]->getType();
+        $paramType = $parameters[1]->getType();
         $this->assertNotNull($paramType);
         $this->assertEquals('int', $paramType->getName());
 
@@ -161,8 +168,11 @@ class RiskRepositoryTest extends TestCase
         $method = new \ReflectionMethod($this->repository, 'countByTreatmentStrategy');
         $parameters = $method->getParameters();
 
-        // Should not require any parameters
-        $this->assertCount(0, $parameters);
+        // Should have one required parameter: tenant
+        $this->assertCount(1, $parameters);
+        $this->assertEquals('tenant', $parameters[0]->getName());
+        $this->assertEquals(Tenant::class, $parameters[0]->getType()->getName());
+        $this->assertFalse($parameters[0]->isOptional());
 
         // Verify return type is array
         $returnType = $method->getReturnType();
@@ -438,8 +448,8 @@ class RiskRepositoryTest extends TestCase
         $findHighRisksParams = $findHighRisksMethod->getParameters();
         $findHighRisksByTenantParams = $findHighRisksByTenantMethod->getParameters();
 
-        // Get threshold parameter from each method
-        $threshold1 = $findHighRisksParams[0]->getDefaultValue();
+        // Get threshold parameter from each method (index 1 for both since tenant is index 0)
+        $threshold1 = $findHighRisksParams[1]->getDefaultValue();
         $threshold2 = $findHighRisksByTenantParams[1]->getDefaultValue();
 
         // Both should default to 12
