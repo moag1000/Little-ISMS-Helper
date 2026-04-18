@@ -69,34 +69,6 @@ class HomeController extends AbstractController
         // Get module-aware management KPIs for expanded dashboard
         $managementKpis = $this->dashboardStatisticsService->getManagementKPIs();
 
-        // Build KPIs array for template
-        $kpis = [
-            [
-                'name' => $this->translator->trans('kpi.registered_assets'),
-                'value' => $stats['assetCount'],
-                'unit' => $this->translator->trans('kpi.unit_pieces'),
-                'icon' => '🖥️',
-            ],
-            [
-                'name' => $this->translator->trans('kpi.identified_risks'),
-                'value' => $stats['riskCount'],
-                'unit' => $this->translator->trans('kpi.unit_pieces'),
-                'icon' => '⚠️',
-            ],
-            [
-                'name' => $this->translator->trans('kpi.open_incidents'),
-                'value' => $stats['openIncidentCount'],
-                'unit' => $this->translator->trans('kpi.unit_pieces'),
-                'icon' => '🚨',
-            ],
-            [
-                'name' => $this->translator->trans('kpi.compliance_status'),
-                'value' => $stats['compliancePercentage'],
-                'unit' => $this->translator->trans('kpi.unit_percent'),
-                'icon' => '✅',
-            ],
-        ];
-
         // Activity Feed Daten
         $activities = $this->getRecentActivities();
 
@@ -130,8 +102,35 @@ class HomeController extends AbstractController
         // Compliance Wizard Status (quick overview for dashboard)
         $complianceSummary = $this->complianceWizardService->getOverallComplianceSummary($tenant);
 
+        // Risk distribution by inherent risk level (real data for chart)
+        $risksByLevel = ['critical' => 0, 'high' => 0, 'medium' => 0, 'low' => 0];
+        $allRisks = $tenant instanceof Tenant
+            ? $this->riskRepository->findByTenant($tenant)
+            : [];
+        foreach ($allRisks as $risk) {
+            $level = $risk->getInherentRiskLevel();
+            if ($level >= 20) {
+                $risksByLevel['critical']++;
+            } elseif ($level >= 12) {
+                $risksByLevel['high']++;
+            } elseif ($level >= 6) {
+                $risksByLevel['medium']++;
+            } else {
+                $risksByLevel['low']++;
+            }
+        }
+
+        // Assets grouped by type (real data for chart)
+        $assetsByType = [];
+        $allAssets = $tenant instanceof Tenant
+            ? $this->assetRepository->findActiveAssets($tenant)
+            : [];
+        foreach ($allAssets as $asset) {
+            $type = $asset->getAssetType() ?? 'unknown';
+            $assetsByType[$type] = ($assetsByType[$type] ?? 0) + 1;
+        }
+
         return $this->render('home/dashboard.html.twig', [
-            'kpis' => $kpis,
             'stats' => $stats,
             'management_kpis' => $managementKpis,
             'activities' => $activities,
@@ -144,6 +143,8 @@ class HomeController extends AbstractController
             'overdue_workflows' => $overdueWorkflows,
             'upcoming_workflow_deadlines' => $upcomingDeadlines,
             'compliance_summary' => $complianceSummary,
+            'risks_by_level' => $risksByLevel,
+            'assets_by_type' => $assetsByType,
         ]);
     }
 
@@ -181,11 +182,14 @@ class HomeController extends AbstractController
                 'title' => $this->translator->trans('dashboard.activity.asset_added', [], 'dashboard'),
                 'description' => $recentAsset->getName(),
                 'time' => $timeAgo,
+                'timestamp' => $createdAt ? $createdAt->getTimestamp() : 0,
                 'user' => $recentAsset->getOwner() ?? $this->translator->trans('dashboard.activity.system', [], 'dashboard'),
             ];
         }
 
-        $recentRisks = array_slice($this->riskRepository->findAll(), 0, 3);
+        $recentRisks = $tenant
+            ? array_slice($this->riskRepository->findByTenant($tenant), 0, 3)
+            : [];
         foreach ($recentRisks as $recentRisk) {
             $createdAt = $recentRisk->getCreatedAt();
             if ($createdAt) {
@@ -211,12 +215,13 @@ class HomeController extends AbstractController
                 'title' => $this->translator->trans('dashboard.activity.risk_identified', [], 'dashboard'),
                 'description' => $recentRisk->getDescription() ?? $this->translator->trans('dashboard.activity.new_risk', [], 'dashboard'),
                 'time' => $timeAgo,
+                'timestamp' => $createdAt ? $createdAt->getTimestamp() : 0,
                 'user' => $this->translator->trans('dashboard.activity.security_team', [], 'dashboard'),
             ];
         }
 
-        // Nach Zeit sortieren (neueste zuerst)
-        usort($activities, fn(array $a, array $b): int => strcmp($b['time'], $a['time']));
+        // Sort by timestamp descending (newest first)
+        usort($activities, fn(array $a, array $b): int => ($b['timestamp'] ?? 0) - ($a['timestamp'] ?? 0));
 
         return array_slice($activities, 0, 10);
     }

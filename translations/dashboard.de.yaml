@@ -160,6 +160,9 @@ dashboard:
         controls: 'Maßnahmen'
         report_incident: 'Vorfall melden'
 
+    # Last Updated
+    last_updated: 'Daten vom: %time% Uhr'
+
     # Activity Feed
     activity_feed:
         title: 'Letzte Aktivitäten'

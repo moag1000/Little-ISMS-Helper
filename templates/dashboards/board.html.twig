@@ -387,11 +387,11 @@
                         <table class="table table-bordered mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th>{{ 'board.table.metric'|trans({}, 'dashboards') }}</th>
-                                    <th class="text-center">Q{{ dashboard.quarterly.previous_quarter }}</th>
-                                    <th class="text-center">Q{{ dashboard.quarterly.current_quarter }}</th>
-                                    <th class="text-center">{{ 'board.table.change'|trans({}, 'dashboards') }}</th>
-                                    <th class="text-center">{{ 'board.table.target'|trans({}, 'dashboards') }}</th>
+                                    <th scope="col">{{ 'board.table.metric'|trans({}, 'dashboards') }}</th>
+                                    <th scope="col" class="text-center">Q{{ dashboard.quarterly.previous_quarter }}</th>
+                                    <th scope="col" class="text-center">Q{{ dashboard.quarterly.current_quarter }}</th>
+                                    <th scope="col" class="text-center">{{ 'board.table.change'|trans({}, 'dashboards') }}</th>
+                                    <th scope="col" class="text-center">{{ 'board.table.target'|trans({}, 'dashboards') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -427,6 +427,11 @@
                 {% endblock %}
             {% endembed %}
         </div>
+    </div>
+
+    {# Last Updated Timestamp #}
+    <div class="text-muted text-end small mt-3">
+        {{ 'dashboard.last_updated'|trans({'%time%': 'now'|date('H:i')}, 'dashboard') }}
     </div>
 </div>
 {% endblock %}

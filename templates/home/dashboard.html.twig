@@ -105,6 +105,7 @@
          data-dashboard-customizer-target="widget">
         {# Assets Card #}
         <div class="col-lg-3 col-md-6">
+            <a href="{{ path('app_asset_index') }}" class="text-decoration-none">
             {{ cards.stat_card(
                 'bi bi-server',
                 'bg-primary',
@@ -114,10 +115,12 @@
                 stats.assets_critical|default(0) ~ ' ' ~ 'dashboard.stats.critical'|trans({}, 'dashboard'),
                 'positive'
             ) }}
+            </a>
         </div>
 
         {# Risks Card #}
         <div class="col-lg-3 col-md-6">
+            <a href="{{ path('app_risk_index') }}" class="text-decoration-none">
             {{ cards.stat_card(
                 'bi bi-exclamation-triangle',
                 'bg-warning',
@@ -127,10 +130,12 @@
                 stats.risks_high|default(0) ~ ' ' ~ 'dashboard.stats.high'|trans({}, 'dashboard'),
                 'negative'
             ) }}
+            </a>
         </div>
 
         {# Controls Card #}
         <div class="col-lg-3 col-md-6">
+            <a href="{{ path('app_compliance_index') }}" class="text-decoration-none">
             {{ cards.stat_card(
                 'bi bi-shield-check',
                 'bg-success',
@@ -140,10 +145,12 @@
                 stats.compliance_percentage|default(0) ~ '% ' ~ 'dashboard.stats.implemented'|trans({}, 'dashboard'),
                 'positive'
             ) }}
+            </a>
         </div>
 
         {# Incidents Card #}
         <div class="col-lg-3 col-md-6">
+            <a href="{{ path('app_incident_index') }}" class="text-decoration-none">
             {{ cards.stat_card(
                 'bi bi-exclamation-circle',
                 'bg-danger',
@@ -153,11 +160,12 @@
                 'dashboard.stats.in_progress'|trans({}, 'dashboard'),
                 ''
             ) }}
+            </a>
         </div>
     </div>
 
     {# Management KPIs Row (if available) #}
-    {% if management_kpis is defined and management_kpis|length > 1 %}
+    {% if management_kpis is defined and management_kpis|length > 0 %}
     <div class="row mb-4">
         <div class="col-12">
             {% include 'home/_management_kpis_widget.html.twig' with {
@@ -166,6 +174,32 @@
         </div>
     </div>
     {% endif %}
+
+    {# Quick Actions Row #}
+    <div class="row mb-4"
+         data-widget-id="quick-actions"
+         data-dashboard-customizer-target="widget">
+        <div class="col-12">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span class="text-muted small me-2">
+                    <i class="bi bi-lightning" aria-hidden="true"></i>
+                    {{ 'dashboard.quick_actions.title'|trans({}, 'dashboard') }}:
+                </span>
+                <a href="{{ path('app_asset_new') }}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'dashboard.quick_actions.new_asset'|trans({}, 'dashboard') }}
+                </a>
+                <a href="{{ path('app_risk_new') }}" class="btn btn-sm btn-outline-warning">
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dashboard.quick_actions.new_risk'|trans({}, 'dashboard') }}
+                </a>
+                <a href="{{ path('app_compliance_index') }}" class="btn btn-sm btn-outline-success">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'dashboard.quick_actions.controls'|trans({}, 'dashboard') }}
+                </a>
+                <a href="{{ path('app_incident_new') }}" class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ 'dashboard.quick_actions.report_incident'|trans({}, 'dashboard') }}
+                </a>
+            </div>
+        </div>
+    </div>
 
     {# Charts and Activity Row #}
     <div class="row">
@@ -189,7 +223,7 @@
                 <div class="chart-container">
                     <canvas data-controller="chart"
                             data-chart-type-value="doughnut"
-                            data-chart-data-value='{"labels":["{{ 'risk.level.high'|trans({}, 'messages') }}","{{ 'risk.level.medium'|trans({}, 'messages') }}","{{ 'risk.level.low'|trans({}, 'messages') }}","{{ 'risk.level.very_low'|trans({}, 'messages') }}"],"datasets":[{"data":[{{ stats.risks_high|default(0) }},{{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 2 }},{{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 3 }},{{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 6 }}],"backgroundColor":["#dc3545","#ffc107","#17a2b8","#28a745"]}]}'
+                            data-chart-data-value='{"labels":["{{ 'risk.level.critical'|trans({}, 'messages') }}","{{ 'risk.level.high'|trans({}, 'messages') }}","{{ 'risk.level.medium'|trans({}, 'messages') }}","{{ 'risk.level.low'|trans({}, 'messages') }}"],"datasets":[{"data":[{{ risks_by_level.critical|default(0) }},{{ risks_by_level.high|default(0) }},{{ risks_by_level.medium|default(0) }},{{ risks_by_level.low|default(0) }}],"backgroundColor":["#6f42c1","#dc3545","#ffc107","#28a745"]}]}'
                             data-chart-options-value='{"plugins":{"legend":{"position":"bottom"}}}'></canvas>
                 </div>
             </div>
@@ -205,9 +239,15 @@
                     </h3>
                 </div>
                 <div class="chart-container">
+                    {% set asset_labels = [] %}
+                    {% set asset_values = [] %}
+                    {% for type, count in assets_by_type|default({}) %}
+                        {% set asset_labels = asset_labels|merge([type]) %}
+                        {% set asset_values = asset_values|merge([count]) %}
+                    {% endfor %}
                     <canvas data-controller="chart"
                             data-chart-type-value="bar"
-                            data-chart-data-value='{"labels":["Hardware","Software","Daten","Personal","Services"],"datasets":[{"label":"Anzahl Assets","data":[{{ (stats.assets_total|default(0) * 0.3)|round }},{{ (stats.assets_total|default(0) * 0.25)|round }},{{ (stats.assets_total|default(0) * 0.2)|round }},{{ (stats.assets_total|default(0) * 0.15)|round }},{{ (stats.assets_total|default(0) * 0.1)|round }}],"backgroundColor":"rgba(102, 126, 234, 0.7)","borderColor":"rgba(102, 126, 234, 1)","borderWidth":1}]}'
+                            data-chart-data-value='{"labels":{{ asset_labels|json_encode|raw }},"datasets":[{"label":"{{ 'dashboard.chart.asset_count'|trans({}, 'dashboard') }}","data":{{ asset_values|json_encode|raw }},"backgroundColor":"rgba(102, 126, 234, 0.7)","borderColor":"rgba(102, 126, 234, 1)","borderWidth":1}]}'
                             data-chart-options-value='{"scales":{"y":{"beginAtZero":true}}}'></canvas>
                 </div>
             </div>
@@ -444,44 +484,12 @@
                 } %}
             </div>
 
-            {# Quick Actions Widget #}
-            <div class="widget-card"
-                 data-widget-id="quick-actions"
-                 data-dashboard-customizer-target="widget">
-                <div class="widget-header">
-                    <h3 class="widget-title">
-                        <i class="bi bi-lightning" aria-hidden="true"></i>
-                        {{ 'dashboard.quick_actions.title'|trans({}, 'dashboard') }}
-                    </h3>
-                </div>
-                <div class="quick-actions">
-                    <a href="{{ path('app_asset_new') }}" class="quick-action-btn">
-                        <div class="quick-action-icon" aria-hidden="true">
-                            <i class="bi bi-plus-circle text-primary" aria-hidden="true"></i>
-                        </div>
-                        <div class="quick-action-label">{{ 'dashboard.quick_actions.new_asset'|trans({}, 'dashboard') }}</div>
-                    </a>
-                    <a href="{{ path('app_risk_new') }}" class="quick-action-btn">
-                        <div class="quick-action-icon" aria-hidden="true">
-                            <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
-                        </div>
-                        <div class="quick-action-label">{{ 'dashboard.quick_actions.new_risk'|trans({}, 'dashboard') }}</div>
-                    </a>
-                    <a href="{{ path('app_compliance_index') }}" class="quick-action-btn">
-                        <div class="quick-action-icon" aria-hidden="true">
-                            <i class="bi bi-shield-check text-success" aria-hidden="true"></i>
-                        </div>
-                        <div class="quick-action-label">{{ 'dashboard.quick_actions.controls'|trans({}, 'dashboard') }}</div>
-                    </a>
-                    <a href="{{ path('app_incident_new') }}" class="quick-action-btn">
-                        <div class="quick-action-icon" aria-hidden="true">
-                            <i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i>
-                        </div>
-                        <div class="quick-action-label">{{ 'dashboard.quick_actions.report_incident'|trans({}, 'dashboard') }}</div>
-                    </a>
-                </div>
-            </div>
         </div>
+    </div>
+
+    {# Last Updated Timestamp #}
+    <div class="text-muted text-end small mt-3">
+        {{ 'dashboard.last_updated'|trans({'%time%': 'now'|date('H:i')}, 'dashboard') }}
     </div>
 
     {# Dashboard Settings Modal #}

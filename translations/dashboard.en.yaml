@@ -160,6 +160,9 @@ dashboard:
         controls: 'Controls'
         report_incident: 'Report Incident'
 
+    # Last Updated
+    last_updated: 'Data as of: %time%'
+
     # Activity Feed
     activity_feed:
         title: 'Recent Activities'
