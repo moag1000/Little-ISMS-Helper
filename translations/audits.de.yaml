@@ -212,3 +212,111 @@ pdf:
         recommendations: 'Empfehlungen'
     footer: 'Interner Audit-Bericht - %audit_number% - Erstellt %datetime% - Vertraulich'
     default_scope: 'Gesamtes ISMS'
+
+audit_finding:
+    page:
+        title: 'Audit-Feststellungen'
+        subtitle: 'ISO 27001:2022 Clause 10.1 — Nonconformity & Corrective Action'
+        new: 'Neue Feststellung'
+        edit: 'Feststellung bearbeiten'
+    action:
+        new: 'Neue Feststellung'
+    field:
+        audit: 'Audit'
+        finding_number: 'Feststellungsnummer'
+        title: 'Titel'
+        description: 'Beschreibung'
+        type: 'Typ'
+        severity: 'Schweregrad'
+        status: 'Status'
+        clause_reference: 'Klausel-/Control-Referenz'
+        evidence: 'Nachweis / Evidenz'
+        related_control: 'Verknüpfter Control'
+        assigned_to: 'Zugewiesen an'
+        due_date: 'Fällig bis'
+    placeholder:
+        audit: '-- Audit auswählen --'
+        related_control: '-- Control auswählen (optional) --'
+        assigned_to: '-- Verantwortliche Person --'
+    help:
+        audit: 'Internes Audit, in dem diese Feststellung entstanden ist'
+        finding_number: 'Eindeutige Nummer (optional — z.B. F-2026-001)'
+        description: 'Ausführliche Beschreibung der Abweichung bzw. Beobachtung'
+        type: 'Major-NC = schwerwiegende Abweichung; Minor-NC = geringfügige Abweichung; Observation = Hinweis; Opportunity = Verbesserungschance'
+        clause_reference: 'Norm-Referenz (z.B. ISO 27001 A.5.1, Clause 9.3)'
+        evidence: 'Belegmaterial (Interview, Dokument, Screenshot, …)'
+        due_date: 'Termin bis zur Behebung. ISO 27001 erwartet nachvollziehbare Fristen.'
+    type:
+        major_nc: 'Major Nonconformity'
+        minor_nc: 'Minor Nonconformity'
+        observation: 'Observation'
+        opportunity: 'Opportunity for Improvement'
+    severity:
+        critical: 'Kritisch'
+        high: 'Hoch'
+        medium: 'Mittel'
+        low: 'Niedrig'
+    status:
+        open: 'Offen'
+        in_progress: 'In Bearbeitung'
+        resolved: 'Behoben'
+        verified: 'Verifiziert'
+        closed: 'Geschlossen'
+    section:
+        description: 'Beschreibung'
+    alert:
+        overdue: '%count% überfällige Feststellung(en) benötigen Aufmerksamkeit.'
+    message:
+        no_findings: 'Keine Feststellungen vorhanden.'
+    confirm:
+        delete: 'Möchten Sie diese Feststellung wirklich löschen?'
+    flash:
+        created: 'Feststellung erstellt.'
+        updated: 'Feststellung aktualisiert.'
+        deleted: 'Feststellung gelöscht.'
+
+corrective_action:
+    page:
+        title: 'Korrekturmaßnahmen'
+        new: 'Neue Korrekturmaßnahme'
+        edit: 'Korrekturmaßnahme bearbeiten'
+    action:
+        new: 'Korrekturmaßnahme hinzufügen'
+    field:
+        finding: 'Feststellung'
+        title: 'Titel'
+        description: 'Beschreibung'
+        root_cause_analysis: 'Ursachenanalyse (Root Cause)'
+        status: 'Status'
+        responsible_person: 'Verantwortliche Person'
+        planned_completion_date: 'Geplanter Abschluss'
+        actual_completion_date: 'Tatsächlicher Abschluss'
+        effectiveness_review_date: 'Wirksamkeitsprüfung'
+        effectiveness_notes: 'Notizen zur Wirksamkeit'
+    placeholder:
+        finding: '-- Feststellung auswählen --'
+        responsible_person: '-- Verantwortlicher --'
+    help:
+        description: 'Konkrete Maßnahme zur Behebung der Abweichung'
+        root_cause_analysis: 'Warum ist die Abweichung aufgetreten? (5-Why / Ishikawa / FMEA)'
+        effectiveness_review_date: 'ISO 27001 10.1 fordert Wirksamkeitsbewertung nach Umsetzung'
+        effectiveness_notes: 'Ergebnis der Wirksamkeitsprüfung — warum wirksam/unwirksam'
+    status:
+        planned: 'Geplant'
+        in_progress: 'In Umsetzung'
+        completed: 'Umgesetzt'
+        verified_effective: 'Wirksam bestätigt'
+        verified_ineffective: 'Unwirksam — neue Maßnahme nötig'
+    section:
+        description: 'Beschreibung & Ursachenanalyse'
+    alert:
+        overdue: '%count% überfällige Maßnahme(n).'
+    message:
+        none: 'Keine Korrekturmaßnahmen vorhanden.'
+        for_finding: 'Für Feststellung'
+    confirm:
+        delete: 'Korrekturmaßnahme wirklich löschen?'
+    flash:
+        created: 'Korrekturmaßnahme erstellt.'
+        updated: 'Korrekturmaßnahme aktualisiert.'
+        deleted: 'Korrekturmaßnahme gelöscht.'

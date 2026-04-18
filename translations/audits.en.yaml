@@ -288,3 +288,111 @@ pdf:
         recommendations: 'Recommendations'
     footer: 'Internal Audit Report - %audit_number% - Generated %datetime% - Confidential'
     default_scope: 'Full ISMS'
+
+audit_finding:
+    page:
+        title: 'Audit Findings'
+        subtitle: 'ISO 27001:2022 Clause 10.1 — Nonconformity & Corrective Action'
+        new: 'New Finding'
+        edit: 'Edit Finding'
+    action:
+        new: 'New Finding'
+    field:
+        audit: 'Audit'
+        finding_number: 'Finding Number'
+        title: 'Title'
+        description: 'Description'
+        type: 'Type'
+        severity: 'Severity'
+        status: 'Status'
+        clause_reference: 'Clause/Control Reference'
+        evidence: 'Evidence'
+        related_control: 'Related Control'
+        assigned_to: 'Assigned to'
+        due_date: 'Due Date'
+    placeholder:
+        audit: '-- Select audit --'
+        related_control: '-- Select control (optional) --'
+        assigned_to: '-- Responsible person --'
+    help:
+        audit: 'Internal audit during which this finding was raised'
+        finding_number: 'Unique identifier (optional — e.g. F-2026-001)'
+        description: 'Detailed description of the deviation or observation'
+        type: 'Major NC = serious; Minor NC = minor; Observation = note; Opportunity = improvement chance'
+        clause_reference: 'Standard reference (e.g. ISO 27001 A.5.1, Clause 9.3)'
+        evidence: 'Supporting material (interview, document, screenshot, …)'
+        due_date: 'Deadline for remediation. ISO 27001 expects traceable dates.'
+    type:
+        major_nc: 'Major Nonconformity'
+        minor_nc: 'Minor Nonconformity'
+        observation: 'Observation'
+        opportunity: 'Opportunity for Improvement'
+    severity:
+        critical: 'Critical'
+        high: 'High'
+        medium: 'Medium'
+        low: 'Low'
+    status:
+        open: 'Open'
+        in_progress: 'In Progress'
+        resolved: 'Resolved'
+        verified: 'Verified'
+        closed: 'Closed'
+    section:
+        description: 'Description'
+    alert:
+        overdue: '%count% overdue finding(s) need attention.'
+    message:
+        no_findings: 'No findings yet.'
+    confirm:
+        delete: 'Delete this finding?'
+    flash:
+        created: 'Finding created.'
+        updated: 'Finding updated.'
+        deleted: 'Finding deleted.'
+
+corrective_action:
+    page:
+        title: 'Corrective Actions'
+        new: 'New Corrective Action'
+        edit: 'Edit Corrective Action'
+    action:
+        new: 'Add Corrective Action'
+    field:
+        finding: 'Finding'
+        title: 'Title'
+        description: 'Description'
+        root_cause_analysis: 'Root Cause Analysis'
+        status: 'Status'
+        responsible_person: 'Responsible Person'
+        planned_completion_date: 'Planned Completion'
+        actual_completion_date: 'Actual Completion'
+        effectiveness_review_date: 'Effectiveness Review'
+        effectiveness_notes: 'Effectiveness Notes'
+    placeholder:
+        finding: '-- Select finding --'
+        responsible_person: '-- Responsible person --'
+    help:
+        description: 'Concrete action to remediate the deviation'
+        root_cause_analysis: 'Why did this happen? (5-Why / Ishikawa / FMEA)'
+        effectiveness_review_date: 'ISO 27001 10.1 requires post-implementation effectiveness review'
+        effectiveness_notes: 'Outcome of effectiveness review — why it was (in)effective'
+    status:
+        planned: 'Planned'
+        in_progress: 'In Progress'
+        completed: 'Completed'
+        verified_effective: 'Verified Effective'
+        verified_ineffective: 'Verified Ineffective — new action required'
+    section:
+        description: 'Description & Root Cause'
+    alert:
+        overdue: '%count% overdue action(s).'
+    message:
+        none: 'No corrective actions yet.'
+        for_finding: 'For Finding'
+    confirm:
+        delete: 'Delete this corrective action?'
+    flash:
+        created: 'Corrective action created.'
+        updated: 'Corrective action updated.'
+        deleted: 'Corrective action deleted.'

@@ -1,0 +1,22 @@
+{{ form_start(form) }}
+    <div class="row g-3">
+        <div class="col-12">{{ form_row(form.finding) }}</div>
+        <div class="col-12">{{ form_row(form.title) }}</div>
+        <div class="col-12">{{ form_row(form.description) }}</div>
+        <div class="col-12">{{ form_row(form.rootCauseAnalysis) }}</div>
+        <div class="col-md-6">{{ form_row(form.status) }}</div>
+        <div class="col-md-6">{{ form_row(form.responsiblePerson) }}</div>
+        <div class="col-md-6">{{ form_row(form.plannedCompletionDate) }}</div>
+        <div class="col-md-6">{{ form_row(form.actualCompletionDate) }}</div>
+        <div class="col-md-6">{{ form_row(form.effectivenessReviewDate) }}</div>
+        <div class="col-12">{{ form_row(form.effectivenessNotes) }}</div>
+    </div>
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
+        </button>
+        <a href="{{ path('app_corrective_action_index') }}" class="btn btn-outline-secondary">
+            {{ 'common.cancel'|trans({}, 'messages') }}
+        </a>
+    </div>
+{{ form_end(form) }}

@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ action.title }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h1 class="h3 mb-1">{{ action.title }}</h1>
+            {% if action.finding %}
+                <div class="text-muted">
+                    {{ 'corrective_action.message.for_finding'|trans({}, 'audits') }}:
+                    <a href="{{ path('app_audit_finding_show', {id: action.finding.id}) }}">{{ action.finding.findingNumber ?? '#' ~ action.finding.id }} — {{ action.finding.title }}</a>
+                </div>
+            {% endif %}
+        </div>
+        <a href="{{ path('app_corrective_action_edit', {id: action.id}) }}" class="btn btn-outline-primary">
+            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+        </a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3"><strong>{{ 'corrective_action.field.status'|trans({}, 'audits') }}:</strong> {{ ('corrective_action.status.' ~ action.status)|trans({}, 'audits') }}</div>
+        <div class="col-md-3"><strong>{{ 'corrective_action.field.planned_completion_date'|trans({}, 'audits') }}:</strong> {{ action.plannedCompletionDate ? action.plannedCompletionDate|date('Y-m-d') : '—' }}</div>
+        <div class="col-md-3"><strong>{{ 'corrective_action.field.actual_completion_date'|trans({}, 'audits') }}:</strong> {{ action.actualCompletionDate ? action.actualCompletionDate|date('Y-m-d') : '—' }}</div>
+        <div class="col-md-3"><strong>{{ 'corrective_action.field.effectiveness_review_date'|trans({}, 'audits') }}:</strong> {{ action.effectivenessReviewDate ? action.effectivenessReviewDate|date('Y-m-d') : '—' }}</div>
+    </div>
+
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="h5 mb-0">{{ 'corrective_action.section.description'|trans({}, 'audits') }}</h2></div>
+        {% endblock %}
+        {% block card_body %}
+            <p class="mb-0">{{ action.description|nl2br }}</p>
+            {% if action.rootCauseAnalysis %}
+                <hr>
+                <h3 class="h6">{{ 'corrective_action.field.root_cause_analysis'|trans({}, 'audits') }}</h3>
+                <p class="mb-0 text-muted">{{ action.rootCauseAnalysis|nl2br }}</p>
+            {% endif %}
+            {% if action.effectivenessNotes %}
+                <hr>
+                <h3 class="h6">{{ 'corrective_action.field.effectiveness_notes'|trans({}, 'audits') }}</h3>
+                <p class="mb-0 text-muted">{{ action.effectivenessNotes|nl2br }}</p>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+
+    <form method="post" action="{{ path('app_corrective_action_delete', {id: action.id}) }}" class="mt-4" onsubmit="return confirm('{{ 'corrective_action.confirm.delete'|trans({}, 'audits') }}');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete_ca_' ~ action.id) }}">
+        <button type="submit" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
+        </button>
+    </form>
+</div>
+{% endblock %}

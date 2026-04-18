@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'audit_finding.page.title'|trans({}, 'audits') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1">{{ 'audit_finding.page.title'|trans({}, 'audits') }}</h1>
+            <p class="text-muted mb-0">{{ 'audit_finding.page.subtitle'|trans({}, 'audits') }}</p>
+        </div>
+        <a href="{{ path('app_audit_finding_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i>
+            {{ 'audit_finding.action.new'|trans({}, 'audits') }}
+        </a>
+    </div>
+
+    {% if overdue_count > 0 %}
+        <div class="alert alert-warning" role="alert">
+            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            {{ 'audit_finding.alert.overdue'|trans({'%count%': overdue_count}, 'audits') }}
+        </div>
+    {% endif %}
+
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_body %}
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="status" class="form-label">{{ 'audit_finding.field.status'|trans({}, 'audits') }}</label>
+                    <select name="status" id="status" class="form-select" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                        <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                        <option value="open" {% if selected_status == 'open' %}selected{% endif %}>{{ 'audit_finding.status.open'|trans({}, 'audits') }}</option>
+                        <option value="in_progress" {% if selected_status == 'in_progress' %}selected{% endif %}>{{ 'audit_finding.status.in_progress'|trans({}, 'audits') }}</option>
+                        <option value="resolved" {% if selected_status == 'resolved' %}selected{% endif %}>{{ 'audit_finding.status.resolved'|trans({}, 'audits') }}</option>
+                        <option value="verified" {% if selected_status == 'verified' %}selected{% endif %}>{{ 'audit_finding.status.verified'|trans({}, 'audits') }}</option>
+                        <option value="closed" {% if selected_status == 'closed' %}selected{% endif %}>{{ 'audit_finding.status.closed'|trans({}, 'audits') }}</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="severity" class="form-label">{{ 'audit_finding.field.severity'|trans({}, 'audits') }}</label>
+                    <select name="severity" id="severity" class="form-select" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                        <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                        <option value="critical" {% if selected_severity == 'critical' %}selected{% endif %}>{{ 'audit_finding.severity.critical'|trans({}, 'audits') }}</option>
+                        <option value="high" {% if selected_severity == 'high' %}selected{% endif %}>{{ 'audit_finding.severity.high'|trans({}, 'audits') }}</option>
+                        <option value="medium" {% if selected_severity == 'medium' %}selected{% endif %}>{{ 'audit_finding.severity.medium'|trans({}, 'audits') }}</option>
+                        <option value="low" {% if selected_severity == 'low' %}selected{% endif %}>{{ 'audit_finding.severity.low'|trans({}, 'audits') }}</option>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    {% if selected_status or selected_severity %}
+                        <a href="{{ path('app_audit_finding_index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.clear'|trans({}, 'messages') }}
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
+        {% endblock %}
+    {% endembed %}
+
+    {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
+        {% block card_body %}
+            {% if findings is empty %}
+                <div class="alert alert-info m-3">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    {{ 'audit_finding.message.no_findings'|trans({}, 'audits') }}
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th scope="col">{{ 'audit_finding.field.finding_number'|trans({}, 'audits') }}</th>
+                            <th scope="col">{{ 'audit_finding.field.title'|trans({}, 'audits') }}</th>
+                            <th scope="col">{{ 'audit_finding.field.type'|trans({}, 'audits') }}</th>
+                            <th scope="col">{{ 'audit_finding.field.severity'|trans({}, 'audits') }}</th>
+                            <th scope="col">{{ 'audit_finding.field.status'|trans({}, 'audits') }}</th>
+                            <th scope="col">{{ 'audit_finding.field.due_date'|trans({}, 'audits') }}</th>
+                            <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for f in findings %}
+                            <tr>
+                                <td>{{ f.findingNumber ?? '#' ~ f.id }}</td>
+                                <td>{{ f.title }}</td>
+                                <td><span class="badge bg-secondary">{{ ('audit_finding.type.' ~ f.type)|trans({}, 'audits') }}</span></td>
+                                <td>
+                                    {% set sevClass = {critical: 'danger', high: 'warning', medium: 'info', low: 'secondary'}[f.severity] ?? 'secondary' %}
+                                    <span class="badge bg-{{ sevClass }}">{{ ('audit_finding.severity.' ~ f.severity)|trans({}, 'audits') }}</span>
+                                </td>
+                                <td><span class="badge bg-{{ f.status == 'open' ? 'warning' : (f.status in ['verified', 'closed'] ? 'success' : 'info') }}">{{ ('audit_finding.status.' ~ f.status)|trans({}, 'audits') }}</span></td>
+                                <td>
+                                    {% if f.dueDate %}
+                                        <span {% if f.isOverdue %}class="text-danger fw-bold"{% endif %}>
+                                            {{ f.dueDate|date('Y-m-d') }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <a href="{{ path('app_audit_finding_show', {id: f.id}) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}
