@@ -77,6 +77,8 @@ supplier:
         security_requirements: 'Security Requirements'
         contact: Contact
         risk_level: 'Risk Level'
+        nace_code: 'NACE Code (Rev.2)'
+        country_of_head_office: 'Country of Head Office (ISO-3166)'
     help:
         name: 'Official name of the supplier or service provider.'
         description: 'Brief description of the supplier and their role for your organization.'
@@ -101,6 +103,8 @@ supplier:
         has_dpa: 'Is a Data Processing Agreement (DPA) per GDPR Art. 28 in place?'
         dpa_signed: 'Date on which the DPA was signed.'
         lei_code: 'Legal Entity Identifier (20 chars, ISO 17442) — mandatory for DORA ICT third-party providers.'
+        nace_code: 'EU NACE Rev.2 industry code of the ICT third-party provider (e.g. 62.01).'
+        country_of_head_office: 'ISO-3166 alpha-2 country code of the provider''s head office (e.g. DE, IE, US).'
         ict_criticality: 'DORA classification of the ICT service. Critical = outage affects operational continuity.'
         ict_function_type: 'Type of ICT service (e.g. Cloud, SaaS, Managed Service, Data Center).'
         substitutability: 'How easily can this supplier be replaced? Relevant for DORA Exit Strategy.'

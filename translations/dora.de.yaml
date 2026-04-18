@@ -72,3 +72,18 @@ dora:
 
     # Wizard
     run_wizard: "DORA-Wizard starten"
+
+    # MINOR-6: ITS-konformer Register-of-Information Export
+    register_export:
+        button: "Register of Information exportieren (ITS-konform)"
+        download_name: "dora-register-of-information"
+        aria: "Register of Information als ITS-konforme CSV-Datei herunterladen"
+
+    # MINOR-6: zusätzliche Supplier-Felder für ITS-ROI-Konformität
+    supplier:
+        nace_code:
+            label: "NACE-Code (Rev.2)"
+            help: "EU NACE Rev.2 Branchencode des ICT-Drittdienstleisters (z.B. 62.01)."
+        country_of_head_office:
+            label: "Hauptsitz (ISO-3166)"
+            help: "ISO-3166 alpha-2 Ländercode des Hauptsitzes (z.B. DE, IE, US)."

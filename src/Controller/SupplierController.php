@@ -88,6 +88,10 @@ class SupplierController extends AbstractController
             $suppliers = $this->tagFilterService->filterByTagName($suppliers, Supplier::class, $tagFilter);
         }
 
+        // MINOR-6: DORA Register-of-Information export only when framework is active.
+        $doraFramework = $this->complianceFrameworkRepository->findOneBy(['code' => 'DORA']);
+        $doraActive = $doraFramework !== null && $doraFramework->isActive();
+
         return $this->render('supplier/index.html.twig', [
             'suppliers' => $suppliers,
             'statistics' => $statistics,
@@ -97,6 +101,7 @@ class SupplierController extends AbstractController
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
             'detailedStats' => $detailedStats,
+            'doraActive' => $doraActive,
         ]);
     }
     #[Route('/supplier/new', name: 'app_supplier_new')]

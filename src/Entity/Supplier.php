@@ -804,6 +804,20 @@ class Supplier
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $gdprAvContractDate = null;
 
+    // ── MINOR-6: DORA ITS Register of Information additional fields ──────────
+
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $naceCode = null;  // EU NACE Rev.2 industry code
+
+    #[ORM\Column(length: 2, nullable: true)]
+    private ?string $countryOfHeadOffice = null;  // ISO-3166 alpha-2
+
+    public function getNaceCode(): ?string { return $this->naceCode; }
+    public function setNaceCode(?string $v): self { $this->naceCode = $v; return $this; }
+
+    public function getCountryOfHeadOffice(): ?string { return $this->countryOfHeadOffice; }
+    public function setCountryOfHeadOffice(?string $v): self { $this->countryOfHeadOffice = $v; return $this; }
+
     public function getLeiCode(): ?string { return $this->leiCode; }
     public function setLeiCode(?string $v): self { $this->leiCode = $v; return $this; }
 
