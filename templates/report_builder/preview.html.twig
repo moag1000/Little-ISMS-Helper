@@ -79,16 +79,16 @@
                     <table class="table table-bordered table-sm text-center">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th scope="col"></th>
                                 {% for label in data.labels.x %}
-                                <th class="small">{{ label }}</th>
+                                <th scope="col" class="small">{{ label }}</th>
                                 {% endfor %}
                             </tr>
                         </thead>
                         <tbody>
                             {% for y in 5..1 %}
                             <tr>
-                                <th class="small">{{ data.labels.y[y - 1] }}</th>
+                                <th scope="col" class="small">{{ data.labels.y[y - 1] }}</th>
                                 {% for x in 1..5 %}
                                 {% set count = data.matrix[y][x]|default(0) %}
                                 {% set score = y * x %}
@@ -126,7 +126,7 @@
                         <thead class="table-light">
                             <tr>
                                 {% for col in data.columns %}
-                                <th>{{ col }}</th>
+                                <th scope="col">{{ col }}</th>
                                 {% endfor %}
                             </tr>
                         </thead>

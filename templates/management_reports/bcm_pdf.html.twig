@@ -77,9 +77,9 @@
         <h2>BC Exercises</h2>
         <table>
             <tr>
-                <th>Metric</th>
-                <th>Value</th>
-                <th>Status</th>
+                <th scope="col">Metric</th>
+                <th scope="col">Value</th>
+                <th scope="col">Status</th>
             </tr>
             <tr>
                 <td>Total Exercises</td>
@@ -112,8 +112,8 @@
         <h2>Business Processes</h2>
         <table>
             <tr>
-                <th>Metric</th>
-                <th>Value</th>
+                <th scope="col">Metric</th>
+                <th scope="col">Value</th>
             </tr>
             <tr>
                 <td>Total Business Processes</td>
@@ -131,8 +131,8 @@
         <h2>Business Impact Analysis (BIA)</h2>
         <table>
             <tr>
-                <th>Criticality</th>
-                <th>Count</th>
+                <th scope="col">Criticality</th>
+                <th scope="col">Count</th>
             </tr>
             <tr>
                 <td><span class="badge badge-danger">Critical</span></td>
@@ -155,8 +155,8 @@
         <h3 style="font-size: 9pt; margin: 10px 0 5px;">RTO/RPO Coverage</h3>
         <table>
             <tr>
-                <th>Metric</th>
-                <th>Value</th>
+                <th scope="col">Metric</th>
+                <th scope="col">Value</th>
             </tr>
             <tr>
                 <td>Total Processes</td>
@@ -191,10 +191,10 @@
         <h2>BC Plans Overview</h2>
         <table>
             <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Last Review</th>
-                <th>Next Review</th>
+                <th scope="col">Name</th>
+                <th scope="col">Status</th>
+                <th scope="col">Last Review</th>
+                <th scope="col">Next Review</th>
             </tr>
             {% for plan in report.bc_plans.plans %}
             <tr>

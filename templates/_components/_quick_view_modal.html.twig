@@ -8,14 +8,17 @@
 #}
 
 <div class="quick-view-modal d-none"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="quick-view-title"
      data-quick-view-target="modal"
      data-action="click->quick-view#handleBackdropClick keydown->quick-view#handleModalKeydown">
-    
+
     <div class="quick-view-container">
         {# Modal Header #}
         <div class="quick-view-header">
-            <h5 class="quick-view-title" data-quick-view-target="title">
-                Vorschau
+            <h5 class="quick-view-title" id="quick-view-title" data-quick-view-target="title">
+                {{ 'common.preview'|trans({}, 'messages') }}
             </h5>
             <button type="button"
                     class="btn-close"
@@ -32,13 +35,13 @@
         <div class="quick-view-footer">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="text-muted small">
-                    <kbd>ESC</kbd> Schließen
-                    <span class="ms-3"><kbd>Space</kbd> auf Listen-Items öffnet Vorschau</span>
+                    <kbd>ESC</kbd> {{ 'common.close'|trans({}, 'messages') }}
+                    <span class="ms-3"><kbd>Space</kbd> {{ 'common.quick_view_hint'|trans({}, 'messages') }}</span>
                 </div>
                 <button type="button"
                         class="btn btn-sm btn-outline-secondary"
                         data-action="click->quick-view#close">
-                    Schließen
+                    {{ 'common.close'|trans({}, 'messages') }}
                 </button>
             </div>
         </div>

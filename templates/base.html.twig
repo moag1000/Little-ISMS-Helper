@@ -260,7 +260,7 @@
             <div class="container" data-controller="turbo">
                 <div class="content">
                     {# Flash Messages Container #}
-                    <div id="flash-messages">
+                    <div id="flash-messages" aria-live="polite" aria-atomic="true">
                         {% for label, messages in app.flashes %}
                             {% for message in messages %}
                                 <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
@@ -317,7 +317,7 @@
     {% include '_components/_notification_center.html.twig' %}
 
     {# Toast Notifications Container #}
-    <div class="toast-container" data-controller="toast" data-toast-target="container"></div>
+    <div class="toast-container" data-controller="toast" data-toast-target="container" role="status" aria-live="polite" aria-atomic="true"></div>
 
     {# Keyboard Shortcuts Help #}
     {% include '_components/_keyboard_shortcuts.html.twig' %}

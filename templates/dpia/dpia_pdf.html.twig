@@ -148,8 +148,8 @@
         <h2>Risk Assessment Summary</h2>
         <table>
             <tr>
-                <th style="width: 30%;">Assessment</th>
-                <th>Value</th>
+                <th scope="col" style="width: 30%;">Assessment</th>
+                <th scope="col">Value</th>
             </tr>
             {% if dpia.riskLevel %}
                 <tr>
@@ -201,8 +201,8 @@
 
         <table>
             <tr>
-                <th style="width: 30%;">Category</th>
-                <th>Details</th>
+                <th scope="col" style="width: 30%;">Category</th>
+                <th scope="col">Details</th>
             </tr>
             <tr>
                 <td>Data Categories</td>
@@ -256,8 +256,8 @@
 
         <table>
             <tr>
-                <th style="width: 30%;">Legal Compliance</th>
-                <th>Details</th>
+                <th scope="col" style="width: 30%;">Legal Compliance</th>
+                <th scope="col">Details</th>
             </tr>
             <tr>
                 <td>Legal Basis (Art. 6 GDPR)</td>
@@ -280,8 +280,8 @@
             <h3>Identified Risks</h3>
             <table>
                 <tr>
-                    <th>#</th>
-                    <th>Risk</th>
+                    <th scope="col">#</th>
+                    <th scope="col">Risk</th>
                 </tr>
                 {% for risk in dpia.identifiedRisks %}
                     <tr>
@@ -344,8 +344,8 @@
 
         <table>
             <tr>
-                <th style="width: 30%;">Consultation</th>
-                <th>Status</th>
+                <th scope="col" style="width: 30%;">Consultation</th>
+                <th scope="col">Status</th>
             </tr>
             <tr>
                 <td>DPO Consultation (Art. 35(4))</td>
@@ -403,8 +403,8 @@
 
             <table>
                 <tr>
-                    <th style="width: 30%;">Review</th>
-                    <th>Date</th>
+                    <th scope="col" style="width: 30%;">Review</th>
+                    <th scope="col">Date</th>
                 </tr>
                 {% if dpia.lastReviewDate %}
                     <tr>
@@ -435,8 +435,8 @@
 
             <table>
                 <tr>
-                    <th style="width: 30%;">Field</th>
-                    <th>Value</th>
+                    <th scope="col" style="width: 30%;">Field</th>
+                    <th scope="col">Value</th>
                 </tr>
                 <tr>
                     <td>Status</td>
