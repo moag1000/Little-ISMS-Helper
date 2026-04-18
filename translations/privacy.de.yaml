@@ -675,7 +675,7 @@ data_breach:
     help:
         detected_at: 'Wann wurde die Datenschutzverletzung entdeckt? Die 72-Stunden-Frist beginnt ab diesem Zeitpunkt.'
         incident: 'Optional: Falls die Verletzung durch einen Sicherheitsvorfall verursacht wurde, können Sie diesen hier verknüpfen.'
-        severity: 'Schweregrad der Datenschutzverletzung'
+        severity: 'Schweregrad der Verletzung (betrifft die Dringlichkeit der internen Behandlung). Nicht zu verwechseln mit risk_level (= Risiko für Betroffene nach Art. 33/34 DSGVO).'
         processing_activity: 'Verknüpfung zum VVT (Art. 30 DSGVO)'
         affected_data_subjects: 'Art. 33(3)(a) DSGVO'
         data_categories: 'Art. 33(3)(a) DSGVO - Alle zutreffenden Kategorien auswählen'
@@ -684,7 +684,7 @@ data_breach:
         likely_consequences: 'Art. 33(3)(b) DSGVO'
         measures_taken: 'Art. 33(3)(c) & (d) DSGVO'
         mitigation_measures: 'Art. 33(3)(d) DSGVO - Maßnahmen zur Abschwächung nachteiliger Auswirkungen'
-        risk_level: 'Bewertung des Risikos für Rechte und Freiheiten'
+        risk_level: 'Risiko für Rechte und Freiheiten der Betroffenen (DSGVO Art. 33/34). Entscheidet ob Behörden-/Betroffenen-Meldung nötig. Severity = interne Dringlichkeit, risk_level = externe Meldepflicht.'
         special_categories_affected: 'Art. 9 DSGVO - Rassische/ethnische Herkunft, politische Meinungen, religiöse Überzeugungen, Gesundheitsdaten, etc.'
         criminal_data_affected: 'Art. 10 DSGVO - Strafrechtliche Verurteilungen und Straftaten'
         requires_authority_notification: 'Art. 33(1) DSGVO - Meldung erforderlich, AUSSER Risiko für Rechte/Freiheiten ist unwahrscheinlich. Faktoren: Risikolevel, Anzahl Betroffene, Datenkategorien (Art. 9/10), Art der Verletzung, Schutzmaßnahmen vorhanden.'

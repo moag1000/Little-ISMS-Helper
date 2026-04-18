@@ -512,7 +512,7 @@ data_breach:
     help:
         detected_at: 'When was the data breach discovered? The 72-hour deadline starts from this point.'
         incident: 'Optional: If the breach was caused by a security incident, you can link it here.'
-        severity: 'Severity of the data breach'
+        severity: 'Breach severity (internal handling urgency). Do NOT confuse with risk_level (= risk to data subjects per GDPR Art. 33/34).'
         processing_activity: 'Link to ROPA (Art. 30 GDPR)'
         affected_data_subjects: 'Art. 33(3)(a) GDPR'
         data_categories: 'Art. 33(3)(a) GDPR - Select all applicable categories'
@@ -521,7 +521,7 @@ data_breach:
         likely_consequences: 'Art. 33(3)(b) GDPR'
         measures_taken: 'Art. 33(3)(c) & (d) GDPR'
         mitigation_measures: 'Art. 33(3)(d) GDPR - Measures to mitigate adverse effects'
-        risk_level: 'Assessment of risk to rights and freedoms'
+        risk_level: 'Risk to rights and freedoms of data subjects (GDPR Art. 33/34). Determines whether authority/subject notification is required. Severity = internal urgency, risk_level = external notification duty.'
         special_categories_affected: 'Art. 9 GDPR - Racial/ethnic origin, political opinions, religious beliefs, health data, etc.'
         criminal_data_affected: 'Art. 10 GDPR - Criminal convictions and offences'
         requires_authority_notification: 'Art. 33(1) GDPR - Notification required UNLESS risk to rights/freedoms is unlikely. Factors: Risk level, number affected, data categories (Art. 9/10), nature of breach, safeguards in place.'
