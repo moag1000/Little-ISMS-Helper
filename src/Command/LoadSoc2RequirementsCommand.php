@@ -31,19 +31,21 @@ class LoadSoc2RequirementsCommand
         // Create or get SOC 2 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'SOC2']);
-
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('SOC2')
-                ->setName('SOC 2 Type II')
-                ->setDescription('Service Organization Control 2 - Trust Services Criteria')
-                ->setVersion('2017')
-                ->setApplicableIndustry('service providers')
-                ->setRegulatoryBody('AICPA (American Institute of CPAs)')
-                ->setMandatory(false)
-                ->setScopeDescription('Audit standard for service organizations to demonstrate security, availability, processing integrity, confidentiality, and privacy controls')
-                ->setActive(true);
+        }
+        $framework->setCode('SOC2')
+            ->setName('SOC 2 Type II')
+            ->setDescription('Service Organization Control 2 - Trust Services Criteria')
+            ->setVersion('2017')
+            ->setApplicableIndustry('service providers')
+            ->setRegulatoryBody('AICPA (American Institute of CPAs)')
+            ->setMandatory(false)
+            ->setScopeDescription('Audit standard for service organizations to demonstrate security, availability, processing integrity, confidentiality, and privacy controls')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
             $symfonyStyle->text('✓ Created framework');
         } else {

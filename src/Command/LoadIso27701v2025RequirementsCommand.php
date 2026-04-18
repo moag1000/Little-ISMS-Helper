@@ -26,18 +26,21 @@ class LoadIso27701v2025RequirementsCommand
         // Create or get ISO 27701:2025 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'ISO27701_2025']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('ISO27701_2025')
-                ->setName('ISO/IEC 27701:2025 - Privacy Information Management System (PIMS)')
-                ->setDescription('Standalone privacy management standard aligned with ISO 27001:2022/27002:2022, enhanced for AI and digital ecosystems')
-                ->setVersion('2025')
-                ->setApplicableIndustry('all_sectors')
-                ->setRegulatoryBody('ISO/IEC')
-                ->setMandatory(false)
-                ->setScopeDescription('Provides comprehensive guidance for establishing, implementing, maintaining and improving a Privacy Information Management System - can be used standalone or integrated with ISO 27001')
-                ->setActive(true);
+        }
+        $framework->setCode('ISO27701_2025')
+            ->setName('ISO/IEC 27701:2025 - Privacy Information Management System (PIMS)')
+            ->setDescription('Standalone privacy management standard aligned with ISO 27001:2022/27002:2022, enhanced for AI and digital ecosystems')
+            ->setVersion('2025')
+            ->setApplicableIndustry('all_sectors')
+            ->setRegulatoryBody('ISO/IEC')
+            ->setMandatory(false)
+            ->setScopeDescription('Provides comprehensive guidance for establishing, implementing, maintaining and improving a Privacy Information Management System - can be used standalone or integrated with ISO 27001')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         } else {
             // Framework exists - check if requirements are already loaded
@@ -46,6 +49,9 @@ class LoadIso27701v2025RequirementsCommand
                 ->findBy(['complianceFramework' => $framework]);
 
             if ($existingRequirements !== []) {
+                // Persist updated metadata before early return so re-runs refresh it.
+                $framework->setUpdatedAt(new DateTimeImmutable());
+                $this->entityManager->flush();
                 $symfonyStyle->warning(sprintf(
                     'Framework ISO 27701:2025 already has %d requirements loaded. Skipping to avoid duplicates.',
                     count($existingRequirements)
@@ -55,7 +61,6 @@ class LoadIso27701v2025RequirementsCommand
 
             // Framework exists but has no requirements - update timestamp
             $framework->setUpdatedAt(new DateTimeImmutable());
-            $this->entityManager->persist($framework);
         }
         try {
             $this->entityManager->beginTransaction();

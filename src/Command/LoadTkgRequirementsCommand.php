@@ -24,18 +24,21 @@ class LoadTkgRequirementsCommand
         // Create or get TKG framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'TKG-2024']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('TKG-2024')
-                ->setName('TKG 2024 - Telekommunikationsgesetz mit TK-Sicherheitsverordnung')
-                ->setDescription('German Telecommunications Act 2024 with security requirements for telecom providers')
-                ->setVersion('2024')
-                ->setApplicableIndustry('telecommunications')
-                ->setRegulatoryBody('BNetzA - Bundesnetzagentur / BSI')
-                ->setMandatory(true)
-                ->setScopeDescription('Mandatory for telecommunications service providers in Germany')
-                ->setActive(true);
+        }
+        $framework->setCode('TKG-2024')
+            ->setName('TKG 2024 - Telekommunikationsgesetz mit TK-Sicherheitsverordnung')
+            ->setDescription('German Telecommunications Act 2024 with security requirements for telecom providers')
+            ->setVersion('2024')
+            ->setApplicableIndustry('telecommunications')
+            ->setRegulatoryBody('BNetzA - Bundesnetzagentur / BSI')
+            ->setMandatory(true)
+            ->setScopeDescription('Mandatory for telecommunications service providers in Germany')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         }
         $requirements = $this->getTkgRequirements();

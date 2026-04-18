@@ -24,18 +24,21 @@ class LoadKritisRequirementsCommand
         // Create or get KRITIS framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'KRITIS']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('KRITIS')
-                ->setName('KRITIS § 8a BSIG - Kritische Infrastrukturen')
-                ->setDescription('German Critical Infrastructure regulations according to § 8a BSI Act (BSIG) with IT Security Act 2.0 requirements')
-                ->setVersion('2024')
-                ->setApplicableIndustry('critical_infrastructure')
-                ->setRegulatoryBody('BSI - Bundesamt für Sicherheit in der Informationstechnik')
-                ->setMandatory(true)
-                ->setScopeDescription('Mandatory for operators of critical infrastructures in sectors: Energy, IT/Telecom, Transport, Health, Water, Food, Finance/Insurance, Government, Media, Waste Management')
-                ->setActive(true);
+        }
+        $framework->setCode('KRITIS')
+            ->setName('KRITIS § 8a BSIG - Kritische Infrastrukturen')
+            ->setDescription('German Critical Infrastructure regulations according to § 8a BSI Act (BSIG) with IT Security Act 2.0 requirements')
+            ->setVersion('2024')
+            ->setApplicableIndustry('critical_infrastructure')
+            ->setRegulatoryBody('BSI - Bundesamt für Sicherheit in der Informationstechnik')
+            ->setMandatory(true)
+            ->setScopeDescription('Mandatory for operators of critical infrastructures in sectors: Energy, IT/Telecom, Transport, Health, Water, Food, Finance/Insurance, Government, Media, Waste Management')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         }
         $requirements = $this->getKritisRequirements();

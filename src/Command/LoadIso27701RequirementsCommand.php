@@ -26,18 +26,21 @@ class LoadIso27701RequirementsCommand
         // Create or get ISO 27701 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'ISO27701']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('ISO27701')
-                ->setName('ISO/IEC 27701:2019 - Privacy Information Management System (PIMS)')
-                ->setDescription('Extension to ISO/IEC 27001 and ISO/IEC 27002 for privacy information management')
-                ->setVersion('2019')
-                ->setApplicableIndustry('all_sectors')
-                ->setRegulatoryBody('ISO/IEC')
-                ->setMandatory(false)
-                ->setScopeDescription('Provides guidance for establishing, implementing, maintaining and continually improving a Privacy Information Management System (PIMS)')
-                ->setActive(true);
+        }
+        $framework->setCode('ISO27701')
+            ->setName('ISO/IEC 27701:2019 - Privacy Information Management System (PIMS)')
+            ->setDescription('Extension to ISO/IEC 27001 and ISO/IEC 27002 for privacy information management')
+            ->setVersion('2019')
+            ->setApplicableIndustry('all_sectors')
+            ->setRegulatoryBody('ISO/IEC')
+            ->setMandatory(false)
+            ->setScopeDescription('Provides guidance for establishing, implementing, maintaining and continually improving a Privacy Information Management System (PIMS)')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         } else {
             // Framework exists - check if requirements are already loaded
@@ -46,6 +49,9 @@ class LoadIso27701RequirementsCommand
                 ->findBy(['complianceFramework' => $framework]);
 
             if ($existingRequirements !== []) {
+                // Persist updated metadata before early return so re-runs refresh it.
+                $framework->setUpdatedAt(new DateTimeImmutable());
+                $this->entityManager->flush();
                 $symfonyStyle->warning(sprintf(
                     'Framework ISO 27701 already has %d requirements loaded. Skipping to avoid duplicates.',
                     count($existingRequirements)
@@ -55,7 +61,6 @@ class LoadIso27701RequirementsCommand
 
             // Framework exists but has no requirements - update timestamp
             $framework->setUpdatedAt(new DateTimeImmutable());
-            $this->entityManager->persist($framework);
         }
         try {
             $this->entityManager->beginTransaction();

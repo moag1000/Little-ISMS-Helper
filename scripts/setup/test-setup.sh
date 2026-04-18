@@ -121,7 +121,7 @@ COMMANDS=(
     "LoadTisaxRequirementsCommand.php"
     "LoadDoraRequirementsCommand.php"
     "LoadC5RequirementsCommand.php"
-    "LoadC52025RequirementsCommand.php"
+    "LoadC52026RequirementsCommand.php"
     "LoadKritisRequirementsCommand.php"
     "LoadKritisHealthRequirementsCommand.php"
     "LoadDigavRequirementsCommand.php"

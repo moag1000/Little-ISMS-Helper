@@ -33,19 +33,21 @@ class LoadNis2UmsuCGRequirementsCommand
         // Create or get NIS2UmsuCG framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'NIS2UMSUCG']);
-
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('NIS2UMSUCG')
-                ->setName('NIS-2-Umsetzungs- und Cybersicherheitsstärkungsgesetz')
-                ->setDescription('German implementation of EU NIS2 directive - Gesetz zur Umsetzung der NIS-2-Richtlinie und zur Staerkung der Cybersicherheit (BGBl. 2025 I Nr. 301)')
-                ->setVersion('2025')
-                ->setApplicableIndustry('all')
-                ->setRegulatoryBody('BSI / BMI')
-                ->setMandatory(true)
-                ->setScopeDescription('German implementation of EU NIS2 directive. Applies to besonders wichtige Einrichtungen and wichtige Einrichtungen in critical and important sectors in Germany.')
-                ->setActive(true);
+        }
+        $framework->setCode('NIS2UMSUCG')
+            ->setName('NIS-2-Umsetzungs- und Cybersicherheitsstärkungsgesetz')
+            ->setDescription('German implementation of EU NIS2 directive - Gesetz zur Umsetzung der NIS-2-Richtlinie und zur Staerkung der Cybersicherheit (BGBl. 2025 I Nr. 301)')
+            ->setVersion('2025')
+            ->setApplicableIndustry('all')
+            ->setRegulatoryBody('BSI / BMI')
+            ->setMandatory(true)
+            ->setScopeDescription('German implementation of EU NIS2 directive. Applies to besonders wichtige Einrichtungen and wichtige Einrichtungen in critical and important sectors in Germany.')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
             $symfonyStyle->text('Created framework');
         } else {

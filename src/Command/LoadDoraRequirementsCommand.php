@@ -24,18 +24,21 @@ class LoadDoraRequirementsCommand
         // Create or get DORA framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'DORA']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('DORA')
-                ->setName('EU-DORA (Digital Operational Resilience Act)')
-                ->setDescription('Regulation on digital operational resilience for the financial sector')
-                ->setVersion('2022/2554')
-                ->setApplicableIndustry('financial_services')
-                ->setRegulatoryBody('European Union')
-                ->setMandatory(true)
-                ->setScopeDescription('Applies to financial entities including banks, insurance companies, investment firms, and critical ICT third-party service providers')
-                ->setActive(true);
+        }
+        $framework->setCode('DORA')
+            ->setName('EU-DORA (Digital Operational Resilience Act)')
+            ->setDescription('Regulation on digital operational resilience for the financial sector')
+            ->setVersion('2022/2554')
+            ->setApplicableIndustry('financial_services')
+            ->setRegulatoryBody('European Union')
+            ->setMandatory(true)
+            ->setScopeDescription('Applies to financial entities including banks, insurance companies, investment firms, and critical ICT third-party service providers')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         }
         $requirements = $this->getDoraRequirements();

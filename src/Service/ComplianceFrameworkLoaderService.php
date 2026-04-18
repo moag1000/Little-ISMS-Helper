@@ -15,7 +15,7 @@ use App\Command\LoadIso27001RequirementsCommand;
 use App\Command\LoadIso27701RequirementsCommand;
 use App\Command\LoadIso27701v2025RequirementsCommand;
 use App\Command\LoadC5RequirementsCommand;
-use App\Command\LoadC52025RequirementsCommand;
+use App\Command\LoadC52026RequirementsCommand;
 use App\Command\LoadKritisRequirementsCommand;
 use App\Command\LoadKritisHealthRequirementsCommand;
 use App\Command\LoadDigavRequirementsCommand;
@@ -41,7 +41,7 @@ class ComplianceFrameworkLoaderService
         private readonly LoadIso27701RequirementsCommand $loadIso27701RequirementsCommand,
         private readonly LoadIso27701v2025RequirementsCommand $loadIso27701v2025RequirementsCommand,
         private readonly LoadC5RequirementsCommand $loadC5RequirementsCommand,
-        private readonly LoadC52025RequirementsCommand $loadC52025RequirementsCommand,
+        private readonly LoadC52026RequirementsCommand $loadC52026RequirementsCommand,
         private readonly LoadKritisRequirementsCommand $loadKritisRequirementsCommand,
         private readonly LoadKritisHealthRequirementsCommand $loadKritisHealthRequirementsCommand,
         private readonly LoadDigavRequirementsCommand $loadDigavRequirementsCommand,
@@ -167,14 +167,14 @@ class ComplianceFrameworkLoaderService
                 'required_modules' => ['compliance', 'controls', 'risks', 'audit_logging'],
             ],
             [
-                'code' => 'BSI-C5-2025',
-                'name' => 'BSI C5:2025 Community Draft - Cloud Computing Compliance',
-                'description' => 'Next-generation C5 with container management, supply chain security, post-quantum cryptography, and confidential computing (43 new requirements, mandatory from Jan 2027)',
+                'code' => 'BSI-C5-2026',
+                'name' => 'BSI C5:2026 - Cloud Computing Compliance Criteria Catalogue',
+                'description' => 'C5:2026 final release with container management, supply chain security, post-quantum cryptography readiness, and EUCS Substantial alignment (mandatory from Jan 2027)',
                 'industry' => 'cloud_services',
                 'regulatory_body' => 'BSI - Bundesamt für Sicherheit in der Informationstechnik',
                 'mandatory' => false,
-                'version' => '2025 Community Draft',
-                'loaded' => in_array('BSI-C5-2025', $loadedCodes),
+                'version' => '2026',
+                'loaded' => in_array('BSI-C5-2026', $loadedCodes),
                 'icon' => '🔮',
                 'required_modules' => ['compliance', 'controls', 'risks', 'audit_logging'],
             ],
@@ -256,7 +256,7 @@ class ComplianceFrameworkLoaderService
             'ISO27701' => $this->loadIso27701RequirementsCommand,
             'ISO27701_2025' => $this->loadIso27701v2025RequirementsCommand,
             'BSI-C5' => $this->loadC5RequirementsCommand,
-            'BSI-C5-2025' => $this->loadC52025RequirementsCommand,
+            'BSI-C5-2026' => $this->loadC52026RequirementsCommand,
             'KRITIS' => $this->loadKritisRequirementsCommand,
             'KRITIS-HEALTH' => $this->loadKritisHealthRequirementsCommand,
             'DIGAV' => $this->loadDigavRequirementsCommand,

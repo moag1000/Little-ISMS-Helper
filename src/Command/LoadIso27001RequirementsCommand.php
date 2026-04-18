@@ -31,19 +31,21 @@ class LoadIso27001RequirementsCommand
         // Create or get ISO 27001 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'ISO27001']);
-
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('ISO27001')
-                ->setName('ISO/IEC 27001:2022')
-                ->setDescription('Information security management systems — Requirements')
-                ->setVersion('2022')
-                ->setApplicableIndustry('all')
-                ->setRegulatoryBody('ISO/IEC')
-                ->setMandatory(false)
-                ->setScopeDescription('International standard for establishing, implementing, maintaining and continually improving an information security management system')
-                ->setActive(true);
+        }
+        $framework->setCode('ISO27001')
+            ->setName('ISO/IEC 27001:2022')
+            ->setDescription('Information security management systems — Requirements')
+            ->setVersion('2022')
+            ->setApplicableIndustry('all')
+            ->setRegulatoryBody('ISO/IEC')
+            ->setMandatory(false)
+            ->setScopeDescription('International standard for establishing, implementing, maintaining and continually improving an information security management system')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
             $symfonyStyle->text('✓ Created framework');
         } else {

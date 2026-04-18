@@ -24,18 +24,21 @@ class LoadIso22301RequirementsCommand
         // Create or get ISO 22301 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'ISO-22301']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('ISO-22301')
-                ->setName('ISO 22301:2019 - Business Continuity Management')
-                ->setDescription('Security and resilience — Business continuity management systems — Requirements')
-                ->setVersion('2019')
-                ->setApplicableIndustry('all')
-                ->setRegulatoryBody('ISO (International Organization for Standardization)')
-                ->setMandatory(false)
-                ->setScopeDescription('International standard for business continuity management systems')
-                ->setActive(true);
+        }
+        $framework->setCode('ISO-22301')
+            ->setName('ISO 22301:2019 - Business Continuity Management')
+            ->setDescription('Security and resilience — Business continuity management systems — Requirements')
+            ->setVersion('2019')
+            ->setApplicableIndustry('all')
+            ->setRegulatoryBody('ISO (International Organization for Standardization)')
+            ->setMandatory(false)
+            ->setScopeDescription('International standard for business continuity management systems')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         }
         $requirements = $this->getIso22301Requirements();

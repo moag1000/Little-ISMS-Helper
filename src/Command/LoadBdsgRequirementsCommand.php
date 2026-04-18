@@ -33,19 +33,21 @@ class LoadBdsgRequirementsCommand
         // Create or get BDSG framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'BDSG']);
-
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('BDSG')
-                ->setName('Bundesdatenschutzgesetz (BDSG)')
-                ->setDescription('German Federal Data Protection Act - German-specific data protection requirements beyond GDPR')
-                ->setVersion('2018/2024')
-                ->setApplicableIndustry('all')
-                ->setRegulatoryBody('BfDI (Bundesbeauftragter für den Datenschutz und die Informationsfreiheit)')
-                ->setMandatory(true)
-                ->setScopeDescription('Mandatory for all organizations processing personal data in Germany, complementing EU GDPR with German-specific provisions')
-                ->setActive(true);
+        }
+        $framework->setCode('BDSG')
+            ->setName('Bundesdatenschutzgesetz (BDSG)')
+            ->setDescription('German Federal Data Protection Act - German-specific data protection requirements beyond GDPR')
+            ->setVersion('2018/2024')
+            ->setApplicableIndustry('all')
+            ->setRegulatoryBody('BfDI (Bundesbeauftragter für den Datenschutz und die Informationsfreiheit)')
+            ->setMandatory(true)
+            ->setScopeDescription('Mandatory for all organizations processing personal data in Germany, complementing EU GDPR with German-specific provisions')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
             $symfonyStyle->text('✓ Created framework');
         } else {

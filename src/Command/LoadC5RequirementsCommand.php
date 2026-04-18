@@ -24,18 +24,21 @@ class LoadC5RequirementsCommand
         // Create or get C5 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'BSI-C5']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('BSI-C5')
-                ->setName('BSI C5:2020 Cloud Computing Compliance Criteria Catalogue')
-                ->setDescription('German Federal Office for Information Security (BSI) criteria catalogue for secure cloud computing')
-                ->setVersion('2020')
-                ->setApplicableIndustry('cloud_services')
-                ->setRegulatoryBody('BSI - Bundesamt für Sicherheit in der Informationstechnik')
-                ->setMandatory(false)
-                ->setScopeDescription('Cloud service providers and cloud customers in Germany, mandatory for healthcare sector since July 2024 (DigiG)')
-                ->setActive(true);
+        }
+        $framework->setCode('BSI-C5')
+            ->setName('BSI C5:2020 Cloud Computing Compliance Criteria Catalogue')
+            ->setDescription('German Federal Office for Information Security (BSI) criteria catalogue for secure cloud computing')
+            ->setVersion('2020')
+            ->setApplicableIndustry('cloud_services')
+            ->setRegulatoryBody('BSI - Bundesamt für Sicherheit in der Informationstechnik')
+            ->setMandatory(false)
+            ->setScopeDescription('Cloud service providers and cloud customers in Germany, mandatory for healthcare sector since July 2024 (DigiG)')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         }
         $requirements = $this->getC5Requirements();

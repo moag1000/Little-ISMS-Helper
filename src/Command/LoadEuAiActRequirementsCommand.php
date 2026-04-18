@@ -33,19 +33,21 @@ class LoadEuAiActRequirementsCommand
         // Create or get EU AI Act framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'EU-AI-ACT']);
-
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('EU-AI-ACT')
-                ->setName('EU AI Act (Regulation (EU) 2024/1689)')
-                ->setDescription('Regulation (EU) 2024/1689 of the European Parliament and Council laying down harmonised rules on artificial intelligence. Published 13 June 2024 in the Official Journal; entered into force 1 August 2024. Phased application: prohibited practices from 2 February 2025; GPAI obligations from 2 August 2025; high-risk AI system obligations from 2 August 2026; full applicability 2 August 2027.')
-                ->setVersion('(EU) 2024/1689')
-                ->setApplicableIndustry('all')
-                ->setRegulatoryBody('European Union (Council and Parliament)')
-                ->setMandatory(true)
-                ->setScopeDescription('Mandatory for AI providers, deployers, importers, distributors, product manufacturers and authorised representatives operating in the EU. Extraterritorial scope where AI output is used in the EU.')
-                ->setActive(true);
+        }
+        $framework->setCode('EU-AI-ACT')
+            ->setName('EU AI Act (Regulation (EU) 2024/1689)')
+            ->setDescription('Regulation (EU) 2024/1689 of the European Parliament and Council laying down harmonised rules on artificial intelligence. Published 13 June 2024 in the Official Journal; entered into force 1 August 2024. Phased application: prohibited practices from 2 February 2025; GPAI obligations from 2 August 2025; high-risk AI system obligations from 2 August 2026; full applicability 2 August 2027.')
+            ->setVersion('(EU) 2024/1689')
+            ->setApplicableIndustry('all')
+            ->setRegulatoryBody('European Union (Council and Parliament)')
+            ->setMandatory(true)
+            ->setScopeDescription('Mandatory for AI providers, deployers, importers, distributors, product manufacturers and authorised representatives operating in the EU. Extraterritorial scope where AI output is used in the EU.')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
             $symfonyStyle->text('Created framework');
         } else {

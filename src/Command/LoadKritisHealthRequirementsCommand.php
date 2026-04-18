@@ -24,18 +24,21 @@ class LoadKritisHealthRequirementsCommand
         // Create or get KRITIS Health framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'KRITIS-HEALTH']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('KRITIS-HEALTH')
-                ->setName('KRITIS Health / KHPatSiG - Krankenhaus IT-Sicherheit')
-                ->setDescription('Patientendaten-Schutz-Gesetz and hospital-specific KRITIS requirements for IT security in healthcare')
-                ->setVersion('2025')
-                ->setApplicableIndustry('healthcare')
-                ->setRegulatoryBody('BSI / Bundesministerium für Gesundheit')
-                ->setMandatory(true)
-                ->setScopeDescription('Mandatory for hospitals, medical care centers, and healthcare facilities providing critical healthcare services')
-                ->setActive(true);
+        }
+        $framework->setCode('KRITIS-HEALTH')
+            ->setName('KRITIS Health / KHPatSiG - Krankenhaus IT-Sicherheit')
+            ->setDescription('Patientendaten-Schutz-Gesetz and hospital-specific KRITIS requirements for IT security in healthcare')
+            ->setVersion('2025')
+            ->setApplicableIndustry('healthcare')
+            ->setRegulatoryBody('BSI / Bundesministerium für Gesundheit')
+            ->setMandatory(true)
+            ->setScopeDescription('Mandatory for hospitals, medical care centers, and healthcare facilities providing critical healthcare services')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         }
         $requirements = $this->getKritisHealthRequirements();

@@ -24,18 +24,21 @@ class LoadDigavRequirementsCommand
         // Create or get DiGAV framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'DIGAV']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('DIGAV')
-                ->setName('DiGAV - Digitale-Gesundheitsanwendungen-Verordnung')
-                ->setDescription('German regulation for digital health applications (DiGA) that can be prescribed by physicians')
-                ->setVersion('2020')
-                ->setApplicableIndustry('digital_health')
-                ->setRegulatoryBody('BfArM - Bundesinstitut für Arzneimittel und Medizinprodukte')
-                ->setMandatory(true)
-                ->setScopeDescription('Mandatory for manufacturers of digital health applications (DiGA) seeking reimbursement in the German healthcare system')
-                ->setActive(true);
+        }
+        $framework->setCode('DIGAV')
+            ->setName('DiGAV - Digitale-Gesundheitsanwendungen-Verordnung')
+            ->setDescription('German regulation for digital health applications (DiGA) that can be prescribed by physicians')
+            ->setVersion('2020')
+            ->setApplicableIndustry('digital_health')
+            ->setRegulatoryBody('BfArM - Bundesinstitut für Arzneimittel und Medizinprodukte')
+            ->setMandatory(true)
+            ->setScopeDescription('Mandatory for manufacturers of digital health applications (DiGA) seeking reimbursement in the German healthcare system')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         }
         $requirements = $this->getDigavRequirements();

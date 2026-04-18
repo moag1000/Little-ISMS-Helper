@@ -24,18 +24,21 @@ class LoadGxpRequirementsCommand
         // Create or get GxP framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'GXP']);
-        if (!$framework instanceof ComplianceFramework) {
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
             $framework = new ComplianceFramework();
-            $framework->setCode('GXP')
-                ->setName('GxP - Good Practice für Pharma und Life Sciences')
-                ->setDescription('IT security requirements for computerized systems in pharmaceutical and life sciences (GMP, GCP, GLP, GDP, GVP)')
-                ->setVersion('2024')
-                ->setApplicableIndustry('pharmaceutical')
-                ->setRegulatoryBody('EMA / FDA / BfArM - EU GMP Annex 11, FDA 21 CFR Part 11')
-                ->setMandatory(true)
-                ->setScopeDescription('Mandatory for pharmaceutical manufacturers, clinical research, laboratories, and medical device companies')
-                ->setActive(true);
+        }
+        $framework->setCode('GXP')
+            ->setName('GxP - Good Practice für Pharma und Life Sciences')
+            ->setDescription('IT security requirements for computerized systems in pharmaceutical and life sciences (GMP, GCP, GLP, GDP, GVP)')
+            ->setVersion('2024')
+            ->setApplicableIndustry('pharmaceutical')
+            ->setRegulatoryBody('EMA / FDA / BfArM - EU GMP Annex 11, FDA 21 CFR Part 11')
+            ->setMandatory(true)
+            ->setScopeDescription('Mandatory for pharmaceutical manufacturers, clinical research, laboratories, and medical device companies')
+            ->setActive(true);
 
+        if ($isNew) {
             $this->entityManager->persist($framework);
         }
         $requirements = $this->getGxpRequirements();
