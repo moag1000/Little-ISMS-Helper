@@ -334,7 +334,7 @@ class ProcessingActivityType extends AbstractType
                 'label' => 'processing_activity.form.contact_person',
                 'help' => 'processing_activity.help.contact_person',
                 'class' => User::class,
-                'choice_label' => 'username',
+                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'attr' => ['class' => 'select2'],
             ])
@@ -342,7 +342,7 @@ class ProcessingActivityType extends AbstractType
                 'label' => 'processing_activity.form.data_protection_officer',
                 'help' => 'processing_activity.help.data_protection_officer',
                 'class' => User::class,
-                'choice_label' => 'username',
+                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'attr' => ['class' => 'select2'],
             ])
