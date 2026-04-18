@@ -132,6 +132,9 @@ dashboard:
     oldest_overdue_item_age: Ältester überfälliger Eintrag
     gap_count_critical: Kritische Compliance-Lücken
     gap_count_high: Hohe Compliance-Lücken
+    control_reuse_ratio: Control-Reuse-Ratio
+    regulatory_deadlines_upcoming: Regulatorische Fristen (30 Tage)
+    implementation_readiness: ISMS Implementation-Readiness
   hint:
     weighted_compliance: 'Gewichtung: implementiert=1.0, teilweise=0.5, geplant=0'
     isms_health_score: 'Zusammengesetzt: Compliance 40%, Risiken 25%, Incidents 20%,
