@@ -58,6 +58,17 @@ class WelcomeController extends AbstractController
         $complianceWizards = $this->complianceWizardService->getQuickStatus($tenant);
         $incompleteWizards = array_filter($complianceWizards, fn($w) => $w['score'] < 100);
 
+        // Compute overall compliance score from all wizard scores
+        $overallCompliance = 0;
+        if (!empty($complianceWizards)) {
+            $overallCompliance = (int) round(
+                array_sum(array_column($complianceWizards, 'score')) / count($complianceWizards)
+            );
+        }
+
+        // Count total risks for the hero status line
+        $risksTotal = $tenant ? $this->riskRepository->count(['tenant' => $tenant]) : 0;
+
         return $this->render('home/welcome.html.twig', [
             'active_modules' => $activeModules,
             'urgent_tasks' => $urgentTasks,
@@ -66,6 +77,8 @@ class WelcomeController extends AbstractController
             'skip_welcome' => $skipWelcome,
             'tenant' => $tenant,
             'compliance_wizards' => $incompleteWizards,
+            'overall_compliance' => $overallCompliance,
+            'risks_total' => $risksTotal,
         ]);
     }
 
@@ -96,7 +109,7 @@ class WelcomeController extends AbstractController
         // Core ISMS - always active
         $modules[] = [
             'key' => 'core',
-            'name' => 'Core ISMS',
+            'name_key' => 'welcome.module.core',
             'icon' => 'bi-shield-check',
             'color' => 'primary',
             'count' => null,
@@ -109,7 +122,7 @@ class WelcomeController extends AbstractController
             $count = $tenant ? $this->assetRepository->count(['tenant' => $tenant]) : 0;
             $modules[] = [
                 'key' => 'assets',
-                'name' => 'Assets',
+                'name_key' => 'welcome.module.assets',
                 'icon' => 'bi-server',
                 'color' => 'info',
                 'count' => $count,
@@ -123,7 +136,7 @@ class WelcomeController extends AbstractController
             $count = $tenant ? $this->riskRepository->count(['tenant' => $tenant]) : 0;
             $modules[] = [
                 'key' => 'risks',
-                'name' => 'Risiken',
+                'name_key' => 'welcome.module.risks',
                 'icon' => 'bi-exclamation-triangle',
                 'color' => 'warning',
                 'count' => $count,
@@ -138,7 +151,7 @@ class WelcomeController extends AbstractController
             $implemented = $tenant ? $this->controlRepository->count(['tenant' => $tenant, 'implementationStatus' => 'implemented']) : 0;
             $modules[] = [
                 'key' => 'controls',
-                'name' => 'Controls',
+                'name_key' => 'welcome.module.controls',
                 'icon' => 'bi-list-check',
                 'color' => 'success',
                 'count' => $implemented . '/' . $total,
@@ -152,7 +165,7 @@ class WelcomeController extends AbstractController
             $count = $tenant ? $this->incidentRepository->count(['tenant' => $tenant, 'status' => 'open']) : 0;
             $modules[] = [
                 'key' => 'incidents',
-                'name' => 'Incidents',
+                'name_key' => 'welcome.module.incidents',
                 'icon' => 'bi-exclamation-circle',
                 'color' => 'danger',
                 'count' => $count,
@@ -165,7 +178,7 @@ class WelcomeController extends AbstractController
         if ($this->moduleConfigurationService->isModuleActive('bcm')) {
             $modules[] = [
                 'key' => 'bcm',
-                'name' => 'BCM',
+                'name_key' => 'welcome.module.bcm',
                 'icon' => 'bi-arrow-repeat',
                 'color' => 'secondary',
                 'count' => null,
@@ -178,7 +191,7 @@ class WelcomeController extends AbstractController
         if ($this->moduleConfigurationService->isModuleActive('compliance')) {
             $modules[] = [
                 'key' => 'compliance',
-                'name' => 'Compliance',
+                'name_key' => 'welcome.module.compliance',
                 'icon' => 'bi-patch-check',
                 'color' => 'purple',
                 'count' => null,
@@ -191,7 +204,7 @@ class WelcomeController extends AbstractController
         if ($this->moduleConfigurationService->isModuleActive('audits')) {
             $modules[] = [
                 'key' => 'audits',
-                'name' => 'Audits',
+                'name_key' => 'welcome.module.audits',
                 'icon' => 'bi-clipboard-check',
                 'color' => 'dark',
                 'count' => null,
