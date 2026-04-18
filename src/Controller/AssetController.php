@@ -313,8 +313,28 @@ class AssetController extends AbstractController
     }
     #[Route('/asset/{id}/delete', name: 'app_asset_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function delete(Request $request, Asset $asset): Response
+    public function delete(Request $request, int $id): Response
     {
+        // Bypass the tenant filter so inherited-from-parent-tenant assets are
+        // also visible to this action; the inheritance check below decides
+        // whether to allow or block the deletion.
+        $filters = $this->entityManager->getFilters();
+        $tenantFilterEnabled = $filters->isEnabled('tenant_filter');
+        if ($tenantFilterEnabled) {
+            $filters->disable('tenant_filter');
+        }
+        try {
+            $asset = $this->assetRepository->find($id);
+        } finally {
+            if ($tenantFilterEnabled) {
+                $filters->enable('tenant_filter');
+            }
+        }
+
+        if (!$asset instanceof Asset) {
+            throw $this->createNotFoundException('Asset not found');
+        }
+
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
