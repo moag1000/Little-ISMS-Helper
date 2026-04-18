@@ -9,6 +9,7 @@ portfolio_report:
 
     action:
         download_pdf: 'Export as PDF'
+        download_excel: 'Export as Excel'
 
     form:
         stichtag: 'Reporting date'

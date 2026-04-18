@@ -43,6 +43,14 @@
                 <i class="bi bi-file-pdf" aria-hidden="true"></i>
                 {{ 'portfolio_report.action.download_pdf'|trans({}, 'portfolio_report') }}
             </a>
+            <a href="{{ path('app_management_reports_portfolio_excel', {
+                _locale: app.request.locale,
+                stichtag: stichtag|date('Y-m-d'),
+                vorperiode: vorperiode ? vorperiode|date('Y-m-d') : null
+            }) }}" class="btn btn-outline-success">
+                <i class="bi bi-file-earmark-excel" aria-hidden="true"></i>
+                {{ 'portfolio_report.action.download_excel'|trans({}, 'portfolio_report') }}
+            </a>
         </div>
     </div>
 

@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class ComplianceInheritanceVoter extends Voter
 {
+    public const VIEW = 'compliance_inheritance.view';
     public const CREATE_SUGGESTIONS = 'compliance_inheritance.create';
     public const CONFIRM = 'compliance_inheritance.confirm';
     public const REJECT = 'compliance_inheritance.reject';
@@ -22,6 +23,7 @@ final class ComplianceInheritanceVoter extends Voter
     public const APPROVE_IMPLEMENT = 'compliance_inheritance.approve_implement';
 
     private const ATTRIBUTES = [
+        self::VIEW,
         self::CREATE_SUGGESTIONS,
         self::CONFIRM,
         self::REJECT,
@@ -45,11 +47,19 @@ final class ComplianceInheritanceVoter extends Voter
         }
 
         $roles = $user->getRoles();
+        $isAuditorOrAbove = in_array('ROLE_AUDITOR', $roles, true)
+            || in_array('ROLE_MANAGER', $roles, true)
+            || in_array('ROLE_ADMIN', $roles, true)
+            || in_array('ROLE_SUPER_ADMIN', $roles, true);
         $isManagerOrAdmin = in_array('ROLE_MANAGER', $roles, true)
             || in_array('ROLE_ADMIN', $roles, true)
             || in_array('ROLE_SUPER_ADMIN', $roles, true);
 
         return match ($attribute) {
+            // AUDITOR gets read-only per Plan Anhang A (line 568–596).
+            self::VIEW => $isAuditorOrAbove,
+            // Write actions: MANAGER/ADMIN only. Plan explicitly excludes AUDITOR
+            // from write operations to preserve read-only consistency.
             self::CREATE_SUGGESTIONS,
             self::CONFIRM,
             self::REJECT,
