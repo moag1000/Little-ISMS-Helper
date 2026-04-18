@@ -22,10 +22,10 @@
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_body %}
             <form method="get" class="row g-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label for="framework" class="form-label">{{ 'compliance.requirement.filter_by_framework'|trans({}, 'compliance') }}</label>
                     <select name="framework" id="framework" class="form-select" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                        <option value="">All Frameworks</option>
+                        <option value="">{{ 'compliance.requirement.all_frameworks'|trans({}, 'compliance') }}</option>
                         {% for framework in frameworks %}
                             <option value="{{ framework.id }}" {% if selected_framework == framework.id %}selected{% endif %}>
                                 {{ framework.name }} ({{ framework.code }})
@@ -33,13 +33,31 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md-6 d-flex align-items-end">
+                <div class="col-md-3">
+                    <label for="absicherungs_stufe" class="form-label">{{ 'compliance.requirement.filter_by_absicherungs_stufe'|trans({}, 'compliance') }}</label>
+                    <select name="absicherungs_stufe" id="absicherungs_stufe" class="form-select" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                        <option value="">{{ 'compliance.requirement.all_stufen'|trans({}, 'compliance') }}</option>
+                        <option value="basis" {% if selected_absicherungs_stufe == 'basis' %}selected{% endif %}>{{ 'compliance.requirement.absicherungs_stufe.basis'|trans({}, 'compliance') }}</option>
+                        <option value="standard" {% if selected_absicherungs_stufe == 'standard' %}selected{% endif %}>{{ 'compliance.requirement.absicherungs_stufe.standard'|trans({}, 'compliance') }}</option>
+                        <option value="kern" {% if selected_absicherungs_stufe == 'kern' %}selected{% endif %}>{{ 'compliance.requirement.absicherungs_stufe.kern'|trans({}, 'compliance') }}</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="anforderungs_typ" class="form-label">{{ 'compliance.requirement.filter_by_anforderungs_typ'|trans({}, 'compliance') }}</label>
+                    <select name="anforderungs_typ" id="anforderungs_typ" class="form-select" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                        <option value="">{{ 'compliance.requirement.all_typen'|trans({}, 'compliance') }}</option>
+                        <option value="MUSS" {% if selected_anforderungs_typ == 'MUSS' %}selected{% endif %}>MUSS</option>
+                        <option value="SOLLTE" {% if selected_anforderungs_typ == 'SOLLTE' %}selected{% endif %}>SOLLTE</option>
+                        <option value="KANN" {% if selected_anforderungs_typ == 'KANN' %}selected{% endif %}>KANN</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
                     <button type="submit" class="btn btn-secondary">
-                        <i class="bi bi-funnel" aria-hidden="true"></i> Filter
+                        <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                     </button>
-                    {% if selected_framework %}
-                        <a href="{{ path('app_compliance_requirement_index') }}" class="btn btn-outline-secondary ms-2">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i> Clear
+                    {% if selected_framework or selected_absicherungs_stufe or selected_anforderungs_typ %}
+                        <a href="{{ path('app_compliance_requirement_index') }}" class="btn btn-outline-secondary ms-2" title="{{ 'common.clear'|trans({}, 'messages') }}">
+                            <i class="bi bi-x-circle" aria-hidden="true"></i>
                         </a>
                     {% endif %}
                 </div>

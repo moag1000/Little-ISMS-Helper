@@ -32,6 +32,8 @@ class ComplianceRequirementController extends AbstractController
     public function index(Request $request): Response
     {
         $frameworkId = $request->query->get('framework');
+        $absicherungsStufe = $request->query->get('absicherungs_stufe');
+        $anforderungsTyp = $request->query->get('anforderungs_typ');
 
         if ($frameworkId) {
             $framework = $this->complianceFrameworkRepository->find($frameworkId);
@@ -40,6 +42,20 @@ class ComplianceRequirementController extends AbstractController
                 : [];
         } else {
             $requirements = $this->complianceRequirementRepository->findAll();
+        }
+
+        // BSI 3.3: Filter by Absicherungsstufe (basis/standard/kern) and Anforderungstyp (MUSS/SOLLTE/KANN)
+        if ($absicherungsStufe) {
+            $requirements = array_values(array_filter(
+                $requirements,
+                fn(ComplianceRequirement $r): bool => $r->getAbsicherungsStufe() === $absicherungsStufe
+            ));
+        }
+        if ($anforderungsTyp) {
+            $requirements = array_values(array_filter(
+                $requirements,
+                fn(ComplianceRequirement $r): bool => $r->getAnforderungsTyp() === $anforderungsTyp
+            ));
         }
 
         $frameworks = $this->complianceFrameworkRepository->findAll();
@@ -63,6 +79,8 @@ class ComplianceRequirementController extends AbstractController
             'fulfillments' => $fulfillments,
             'frameworks' => $frameworks,
             'selected_framework' => $frameworkId,
+            'selected_absicherungs_stufe' => $absicherungsStufe,
+            'selected_anforderungs_typ' => $anforderungsTyp,
         ]);
     }
 
