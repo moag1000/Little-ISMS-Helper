@@ -81,6 +81,64 @@
             {{ cards.status_card('monitoring.card.database'|trans({}, 'monitoring'), 'database', db_status, db_color, db_content) }}
         </div>
 
+        {# Schema Validation #}
+        <div class="col-md-6 mb-4">
+            {% set schema_status = health_checks.schema.status %}
+            {% set schema_color = schema_status == 'healthy' ? 'success' : (schema_status == 'warning' ? 'warning' : 'danger') %}
+            {% set schema_content %}
+                <dl class="row mb-2">
+                    <dt class="col-sm-6">{{ 'monitoring.schema.mapping'|trans({}, 'monitoring') }}:</dt>
+                    <dd class="col-sm-6">
+                        {% if health_checks.schema.mapping_in_sync %}
+                            <span class="badge bg-success">{{ 'monitoring.schema.in_sync'|trans({}, 'monitoring') }}</span>
+                        {% else %}
+                            <span class="badge bg-danger">{{ health_checks.schema.mapping_error_count }} {{ 'monitoring.schema.errors'|trans({}, 'monitoring') }}</span>
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-6">{{ 'monitoring.schema.database'|trans({}, 'monitoring') }}:</dt>
+                    <dd class="col-sm-6">
+                        {% if health_checks.schema.database_in_sync %}
+                            <span class="badge bg-success">{{ 'monitoring.schema.in_sync'|trans({}, 'monitoring') }}</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">{{ health_checks.schema.pending_sql_count }} {{ 'monitoring.schema.pending'|trans({}, 'monitoring') }}</span>
+                        {% endif %}
+                    </dd>
+                </dl>
+
+                {% if schema_detail.mapping_errors is not empty %}
+                    <details class="mt-2">
+                        <summary class="small text-danger">{{ 'monitoring.schema.show_mapping_errors'|trans({}, 'monitoring') }}</summary>
+                        <ul class="small mt-2 mb-0">
+                            {% for class, errors in schema_detail.mapping_errors %}
+                                <li><code>{{ class }}</code>
+                                    <ul>{% for err in errors %}<li>{{ err }}</li>{% endfor %}</ul>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                {% endif %}
+
+                {% if schema_detail.pending_sql is not empty %}
+                    <details class="mt-2">
+                        <summary class="small text-warning">{{ 'monitoring.schema.show_pending_sql'|trans({}, 'monitoring') }}</summary>
+                        <pre class="small mt-2 mb-2" style="max-height:220px;overflow:auto"><code>{% for sql in schema_detail.pending_sql %}{{ sql }};
+{% endfor %}</code></pre>
+                        <form method="post" action="{{ path('monitoring_health_schema_update') }}"
+                              onsubmit="return confirm('{{ 'monitoring.schema.confirm_update'|trans({}, 'monitoring')|e('js') }}');"
+                              data-turbo="false">
+                            <input type="hidden" name="_token" value="{{ csrf_token('monitoring_schema_update') }}">
+                            <button type="submit" class="btn btn-sm btn-warning">
+                                <i class="bi bi-database-gear" aria-hidden="true"></i>
+                                {{ 'monitoring.schema.apply_update'|trans({}, 'monitoring') }}
+                            </button>
+                        </form>
+                    </details>
+                {% endif %}
+            {% endset %}
+            {{ cards.status_card('monitoring.schema.title'|trans({}, 'monitoring'), 'database-gear', schema_status, schema_color, schema_content) }}
+        </div>
+
         {# Disk Space #}
         <div class="col-md-6 mb-4">
             {% set disk_status = health_checks.disk.status %}
