@@ -182,6 +182,7 @@ incident:
         estimated_financial_impact: 'Estimated financial damage in EUR'
         national_authority: 'Competent national authority (e.g. BSI in Germany)'
         data_breach_occurred: 'Mark this as a data breach if personal data is affected (GDPR Art. 33)'
+        resolution_after_investigation: 'Typically filled in only after the investigation is complete'
     category:
         data_breach: 'Data Breach'
         security_incident: 'Security Incident'

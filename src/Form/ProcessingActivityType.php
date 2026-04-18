@@ -138,7 +138,11 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'multiple' => true,
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => [
+                    'class' => 'select2',
+                    'data-depends-on' => 'processing_activity_processesSpecialCategories',
+                    'data-depends-on-value' => '1',
+                ],
                 'choice_translation_domain' => 'privacy',
             ])
             ->add('processesCriminalData', ChoiceType::class, [
@@ -436,7 +440,11 @@ class ProcessingActivityType extends AbstractType
                 'label' => 'processing_activity.form.automated_decision_making_details',
                 'help' => 'processing_activity.help.automated_decision_making_details',
                 'required' => false,
-                'attr' => ['rows' => 3],
+                'attr' => [
+                    'rows' => 3,
+                    'data-depends-on' => 'processing_activity_hasAutomatedDecisionMaking',
+                    'data-depends-on-value' => '1',
+                ],
             ])
 
             // ============================================================================
@@ -497,6 +505,9 @@ class ProcessingActivityType extends AbstractType
         $resolver->setDefaults([
             'data_class' => ProcessingActivity::class,
             'translation_domain' => 'privacy',
+            'attr' => [
+                'data-controller' => 'conditional-fields',
+            ],
         ]);
     }
 }

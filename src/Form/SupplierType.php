@@ -200,11 +200,13 @@ class SupplierType extends AbstractType
             // ── WS-3: DORA ROI (Register of Information) ─────────────────────
             ->add('leiCode', TextType::class, [
                 'label' => 'supplier.field.lei_code',
+                'help' => 'supplier.help.lei_code',
                 'required' => false,
                 'attr' => ['maxlength' => 20, 'placeholder' => 'LEI (20 chars)'],
             ])
             ->add('ictCriticality', ChoiceType::class, [
                 'label' => 'supplier.field.ict_criticality',
+                'help' => 'supplier.help.ict_criticality',
                 'required' => false,
                 'placeholder' => 'supplier.value.na',
                 'choices' => [
@@ -216,11 +218,13 @@ class SupplierType extends AbstractType
             ])
             ->add('ictFunctionType', TextType::class, [
                 'label' => 'supplier.field.ict_function_type',
+                'help' => 'supplier.help.ict_function_type',
                 'required' => false,
                 'attr' => ['maxlength' => 100, 'placeholder' => 'Cloud / SaaS / Managed Service'],
             ])
             ->add('substitutability', ChoiceType::class, [
                 'label' => 'supplier.field.substitutability',
+                'help' => 'supplier.help.substitutability',
                 'required' => false,
                 'placeholder' => 'supplier.value.na',
                 'choices' => [
@@ -232,33 +236,39 @@ class SupplierType extends AbstractType
             ])
             ->add('hasSubcontractors', CheckboxType::class, [
                 'label' => 'supplier.field.has_subcontractors',
+                'help' => 'supplier.help.has_subcontractors',
                 'required' => false,
             ])
             ->add('subcontractorChain', TextareaType::class, [
                 'label' => 'supplier.field.subcontractor_chain',
+                'help' => 'supplier.help.subcontractor_chain',
                 'required' => false,
                 'mapped' => false,
                 'attr' => ['rows' => 3, 'placeholder' => 'Provider A' . "\n" . 'Provider B' . "\n" . 'Provider C'],
             ])
             ->add('processingLocations', TextareaType::class, [
                 'label' => 'supplier.field.processing_locations',
+                'help' => 'supplier.help.processing_locations',
                 'required' => false,
                 'mapped' => false,
                 'attr' => ['rows' => 2, 'placeholder' => 'DE, IE, US'],
             ])
             ->add('lastDoraAuditDate', DateType::class, [
                 'label' => 'supplier.field.last_dora_audit_date',
+                'help' => 'supplier.help.last_dora_audit_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('hasExitStrategy', CheckboxType::class, [
                 'label' => 'supplier.field.has_exit_strategy',
+                'help' => 'supplier.help.has_exit_strategy',
                 'required' => false,
             ])
 
             // ── WS-3: DSGVO Art. 28 processor fields ─────────────────────────
             ->add('gdprProcessorStatus', ChoiceType::class, [
                 'label' => 'supplier.field.gdpr_processor_status',
+                'help' => 'supplier.help.gdpr_processor_status',
                 'required' => false,
                 'placeholder' => 'supplier.value.na',
                 'choices' => [
@@ -271,15 +281,18 @@ class SupplierType extends AbstractType
             ])
             ->add('gdprTransferMechanism', TextType::class, [
                 'label' => 'supplier.field.gdpr_transfer_mechanism',
+                'help' => 'supplier.help.gdpr_transfer_mechanism',
                 'required' => false,
                 'attr' => ['maxlength' => 50, 'placeholder' => 'SCC / Adequacy Decision / BCR'],
             ])
             ->add('gdprAvContractSigned', CheckboxType::class, [
                 'label' => 'supplier.field.gdpr_av_contract_signed',
+                'help' => 'supplier.help.gdpr_av_contract_signed',
                 'required' => false,
             ])
             ->add('gdprAvContractDate', DateType::class, [
                 'label' => 'supplier.field.gdpr_av_contract_date',
+                'help' => 'supplier.help.gdpr_av_contract_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])

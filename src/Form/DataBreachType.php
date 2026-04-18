@@ -237,6 +237,8 @@ class DataBreachType extends AbstractType
                     'rows' => 3,
                     'class' => 'form-control',
                     'placeholder' => 'data_breach.placeholder.no_subject_notification_reason',
+                    'data-depends-on' => 'data_breach_requiresSubjectNotification',
+                    'data-depends-on-negated' => 'true',
                 ],
                 'help' => 'data_breach.help.no_subject_notification_reason',
             ])
@@ -283,6 +285,9 @@ class DataBreachType extends AbstractType
         $resolver->setDefaults([
             'data_class' => DataBreach::class,
             'translation_domain' => 'privacy',
+            'attr' => [
+                'data-controller' => 'conditional-fields',
+            ],
         ]);
     }
 }

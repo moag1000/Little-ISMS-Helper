@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Asset;
+use App\Entity\Location;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -56,13 +58,16 @@ class AssetType extends AbstractType
                 ],
                 'help' => 'asset.help.owner',
             ])
-            ->add('location', TextType::class, [
+            ->add('physicalLocation', EntityType::class, [
                 'label' => 'asset.field.location',
+                'class' => Location::class,
+                'choice_label' => 'name',
                 'required' => false,
+                'placeholder' => 'asset.placeholder.location_select',
                 'attr' => [
-                    'maxlength' => 100,
-                    'placeholder' => 'asset.placeholder.location',
+                    'class' => 'form-select',
                 ],
+                'help' => 'asset.help.physical_location',
             ])
             ->add('acquisitionValue', NumberType::class, [
                 'label' => 'asset.field.acquisition_value',

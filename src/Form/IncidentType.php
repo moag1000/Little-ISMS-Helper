@@ -120,6 +120,7 @@ class IncidentType extends AbstractType
                     'rows' => 3,
                     'placeholder' => 'incident.placeholder.root_cause',
                 ],
+                'help' => 'incident.help.resolution_after_investigation',
             ])
             ->add('correctiveActions', TextareaType::class, [
                 'label' => 'incident.field.corrective_actions',
@@ -128,6 +129,7 @@ class IncidentType extends AbstractType
                     'rows' => 3,
                     'placeholder' => 'incident.placeholder.corrective_actions',
                 ],
+                'help' => 'incident.help.resolution_after_investigation',
             ])
             ->add('lessonsLearned', TextareaType::class, [
                 'label' => 'incident.field.lessons_learned',
@@ -136,6 +138,7 @@ class IncidentType extends AbstractType
                     'rows' => 3,
                     'placeholder' => 'incident.placeholder.lessons_learned',
                 ],
+                'help' => 'incident.help.resolution_after_investigation',
             ])
             ->add('closedAt', DateTimeType::class, [
                 'label' => 'incident.field.closed_date',
@@ -186,7 +189,7 @@ class IncidentType extends AbstractType
                     'common.no' => false,
                 ],
                 'expanded' => true,
-                'required' => true,
+                'required' => false,
                 'help' => 'incident.help.cross_border_impact',
                     'choice_translation_domain' => 'messages',
             ])

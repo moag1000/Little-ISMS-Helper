@@ -17,6 +17,8 @@ export default class extends Controller {
     connect() {
         this.element.querySelectorAll('[data-depends-on]').forEach(field => {
             const triggerId = field.dataset.dependsOn
+            const negated = field.dataset.dependsOnNegated === 'true'
+            const expectedValue = field.dataset.dependsOnValue
             const trigger = document.getElementById(triggerId)
 
             // Find the wrapper element to show/hide (climb up to .mb-3, .form-group, or col-md-*)
@@ -24,9 +26,20 @@ export default class extends Controller {
 
             if (trigger) {
                 if (trigger.type === 'checkbox') {
-                    // Simple checkbox trigger
+                    // Simple checkbox trigger (supports negation)
                     const toggle = () => {
-                        wrapper.style.display = trigger.checked ? '' : 'none'
+                        const isActive = negated ? !trigger.checked : trigger.checked
+                        wrapper.style.display = isActive ? '' : 'none'
+                    }
+                    trigger.addEventListener('change', toggle)
+                    toggle()
+                } else if (trigger.tagName === 'SELECT') {
+                    // Select-based trigger (match expected value, or any non-empty value)
+                    const toggle = () => {
+                        const val = trigger.value
+                        const match = expectedValue !== undefined ? val === expectedValue : val !== ''
+                        const isActive = negated ? !match : match
+                        wrapper.style.display = isActive ? '' : 'none'
                     }
                     trigger.addEventListener('change', toggle)
                     toggle()
@@ -36,7 +49,14 @@ export default class extends Controller {
                     const toggle = () => {
                         const checked = Array.from(radios).find(r => r.checked)
                         // For boolean ChoiceType: value "1" or "true" means yes
-                        const isActive = checked && (checked.value === '1' || checked.value === 'true')
+                        // If expectedValue set, match exact value
+                        let match
+                        if (expectedValue !== undefined) {
+                            match = checked && checked.value === expectedValue
+                        } else {
+                            match = checked && (checked.value === '1' || checked.value === 'true')
+                        }
+                        const isActive = negated ? !match : match
                         wrapper.style.display = isActive ? '' : 'none'
                     }
                     radios.forEach(radio => radio.addEventListener('change', toggle))
