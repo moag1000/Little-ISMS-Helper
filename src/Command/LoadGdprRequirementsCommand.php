@@ -161,6 +161,52 @@ class LoadGdprRequirementsCommand
                 ],
             ],
 
+            // Chapter 2: Principles (Legal Bases & Special Categories)
+            [
+                'id' => 'GDPR-6',
+                'title' => 'Lawfulness of processing',
+                'description' => 'Processing shall be lawful only if and to the extent that at least one of the following applies: consent, contract, legal obligation, vital interests, public interest, legitimate interests.',
+                'category' => 'Principles',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'entity' => 'ProcessingActivity',
+                    'field' => 'legal_basis',
+                ],
+            ],
+            [
+                'id' => 'GDPR-9',
+                'title' => 'Processing of special categories of personal data',
+                'description' => 'Processing of personal data revealing racial/ethnic origin, political opinions, religious/philosophical beliefs, trade union membership, genetic data, biometric data, health data, sex life/orientation shall be prohibited unless one of the exceptions in Art. 9(2) applies.',
+                'category' => 'Principles',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'entity' => 'ProcessingActivity',
+                    'field' => 'processes_special_categories',
+                ],
+            ],
+            [
+                'id' => 'GDPR-13',
+                'title' => 'Information to be provided where personal data are collected from the data subject',
+                'description' => 'The controller shall provide the data subject with information about identity, purposes, legal basis, recipients, retention period, rights, etc., at the time of collection.',
+                'category' => 'Data Subject Rights',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'entity' => 'ProcessingActivity',
+                    'document_type' => 'privacy_notice',
+                ],
+            ],
+            [
+                'id' => 'GDPR-14',
+                'title' => 'Information where personal data have not been obtained from the data subject',
+                'description' => 'When personal data are obtained from sources other than the data subject, the controller shall provide equivalent information within a reasonable period (at the latest within one month).',
+                'category' => 'Data Subject Rights',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'entity' => 'ProcessingActivity',
+                    'document_type' => 'privacy_notice',
+                ],
+            ],
+
             // Chapter 3: Rights of the Data Subject
             [
                 'id' => 'GDPR-12',
@@ -223,6 +269,28 @@ class LoadGdprRequirementsCommand
                     'iso_controls' => ['5.34'],
                 ],
             ],
+            [
+                'id' => 'GDPR-21',
+                'title' => 'Right to object',
+                'description' => 'The data subject shall have the right to object at any time to processing of personal data concerning them based on Art. 6(1)(e) or (f), including profiling, and for direct marketing purposes.',
+                'category' => 'Data Subject Rights',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'entity' => 'DataSubjectRequest',
+                    'request_type' => 'objection',
+                ],
+            ],
+            [
+                'id' => 'GDPR-22',
+                'title' => 'Automated individual decision-making, including profiling',
+                'description' => 'The data subject shall have the right not to be subject to a decision based solely on automated processing, including profiling, which produces legal or similarly significant effects.',
+                'category' => 'Data Subject Rights',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'entity' => 'ProcessingActivity',
+                    'field' => 'has_automated_decision_making',
+                ],
+            ],
 
             // Chapter 4: Controller and Processor
             [
@@ -244,6 +312,16 @@ class LoadGdprRequirementsCommand
                 'priority' => 'critical',
                 'data_source_mapping' => [
                     'iso_controls' => ['8.25', '8.26'],
+                ],
+            ],
+            [
+                'id' => 'GDPR-26',
+                'title' => 'Joint Controllers',
+                'description' => 'Where two or more controllers jointly determine the purposes and means of processing, they shall be joint controllers and shall in a transparent manner determine their respective responsibilities.',
+                'category' => 'Controller Obligations',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'entity' => 'ProcessingActivity',
                 ],
             ],
             [
@@ -340,6 +418,16 @@ class LoadGdprRequirementsCommand
                 'data_source_mapping' => [
                     'iso_controls' => ['5.26'],
                     'incident_management' => true,
+                ],
+            ],
+            [
+                'id' => 'GDPR-36',
+                'title' => 'Prior consultation',
+                'description' => 'The controller shall consult the supervisory authority prior to processing where a DPIA indicates that the processing would result in a high risk in the absence of measures taken to mitigate the risk.',
+                'category' => 'DPIA',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'entity' => 'DataProtectionImpactAssessment',
                 ],
             ],
             [
