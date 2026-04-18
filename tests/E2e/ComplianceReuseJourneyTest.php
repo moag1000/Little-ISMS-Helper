@@ -336,7 +336,7 @@ final class ComplianceReuseJourneyTest extends KernelTestCase
         /** @var LoadNis2RequirementsCommand $cmd */
         $cmd = self::getContainer()->get(LoadNis2RequirementsCommand::class);
         $io = new SymfonyStyle(new ArrayInput([]), new BufferedOutput());
-        $cmd->__invoke($io);
+        $cmd->__invoke(false, $io);
 
         $framework = $this->em->getRepository(ComplianceFramework::class)->findOneBy(['code' => 'NIS2']);
         self::assertInstanceOf(ComplianceFramework::class, $framework, 'NIS2 framework must exist after loader.');
