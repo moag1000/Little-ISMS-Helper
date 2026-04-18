@@ -40,8 +40,8 @@ class MfaService
      */
     public function generateTotpSecret(User $user, string $deviceName = 'Authenticator App'): MfaToken
     {
-        // Create TOTP instance with secure random secret
-        $totp = TOTP::createFromSecret($this->generateSecureSecret());
+        // Create TOTP instance with a fresh base32-encoded secret (otphp handles encoding)
+        $totp = TOTP::generate();
         $totp->setLabel($user->getEmail());
         $totp->setIssuer($this->appName);
 
@@ -272,12 +272,14 @@ class MfaService
     }
 
     /**
-     * Generate secure random secret for TOTP
+     * Generate a base32-encoded TOTP secret (RFC 6238 compatible).
+     * Kept for backwards compatibility with callers — production code should
+     * prefer TOTP::generate() which uses this encoding internally.
      */
     private function generateSecureSecret(): string
     {
-        // Generate 160-bit (20 byte) secret for SHA1 TOTP
-        return random_bytes(20);
+        // 160-bit (20 byte) secret, base32 encoded for authenticator apps
+        return \ParagonIE\ConstantTime\Base32::encodeUpper(random_bytes(20));
     }
 
     /**
