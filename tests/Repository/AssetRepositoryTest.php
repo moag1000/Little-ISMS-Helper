@@ -167,7 +167,9 @@ class AssetRepositoryTest extends TestCase
         $method = new \ReflectionMethod($this->repository, 'findActiveAssets');
         $parameters = $method->getParameters();
 
-        $this->assertCount(0, $parameters);
+        $this->assertCount(1, $parameters);
+        $this->assertEquals('tenant', $parameters[0]->getName());
+        $this->assertEquals(Tenant::class, $parameters[0]->getType()->getName());
 
         $returnType = $method->getReturnType();
         $this->assertEquals('array', $returnType->getName());
@@ -181,7 +183,9 @@ class AssetRepositoryTest extends TestCase
         $method = new \ReflectionMethod($this->repository, 'countByType');
         $parameters = $method->getParameters();
 
-        $this->assertCount(0, $parameters);
+        $this->assertCount(1, $parameters);
+        $this->assertEquals('tenant', $parameters[0]->getName());
+        $this->assertEquals(Tenant::class, $parameters[0]->getType()->getName());
 
         $returnType = $method->getReturnType();
         $this->assertEquals('array', $returnType->getName());

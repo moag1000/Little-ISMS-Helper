@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Form\ControlType;
 use App\Repository\ControlRepository;
 use App\Service\SoAReportService;
+use App\Service\TagFilterService;
 use App\Service\WorkflowAutoProgressionService;
 use DateTime;
 use DateTimeImmutable;
@@ -47,6 +48,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     private MockObject $soaReportService;
     private MockObject $security;
     private MockObject $workflowAutoProgressionService;
+    private MockObject $tagFilterService;
     private MockObject $container;
     private MockObject $twig;
     private MockObject $formFactory;
@@ -64,6 +66,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
         $this->soaReportService = $this->createMock(SoAReportService::class);
         $this->security = $this->createMock(Security::class);
         $this->workflowAutoProgressionService = $this->createMock(WorkflowAutoProgressionService::class);
+        $this->tagFilterService = $this->createMock(TagFilterService::class);
         $this->container = $this->createMock(ContainerInterface::class);
         $this->twig = $this->createMock(Environment::class);
         $this->formFactory = $this->createMock(FormFactoryInterface::class);
@@ -113,7 +116,8 @@ class StatementOfApplicabilityControllerTest extends TestCase
             $this->translator,
             $this->soaReportService,
             $this->security,
-            $this->workflowAutoProgressionService
+            $this->workflowAutoProgressionService,
+            $this->tagFilterService,
         );
         $this->controller->setContainer($this->container);
     }
@@ -405,6 +409,10 @@ class StatementOfApplicabilityControllerTest extends TestCase
             $this->createControl(2, '8.3', 'Physical'),
         ];
 
+        $tenant = $this->createMock(Tenant::class);
+        $user = $this->createMock(User::class);
+        $user->method('getTenant')->willReturn($tenant);
+        $this->security->method('getUser')->willReturn($user);
         $this->controlRepository->method('findAllInIsoOrder')->willReturn($controls);
 
         $session = $this->createMock(SessionInterface::class);

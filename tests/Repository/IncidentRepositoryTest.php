@@ -235,8 +235,10 @@ class IncidentRepositoryTest extends TestCase
         $method = new \ReflectionMethod($this->repository, 'findOpenIncidents');
         $parameters = $method->getParameters();
 
-        // Should not require any parameters
-        $this->assertCount(0, $parameters);
+        // Requires Tenant parameter (multi-tenant isolation)
+        $this->assertCount(1, $parameters);
+        $this->assertSame('tenant', $parameters[0]->getName());
+        $this->assertSame(Tenant::class, $parameters[0]->getType()->getName());
 
         // Verify return type is array
         $returnType = $method->getReturnType();
@@ -255,8 +257,11 @@ class IncidentRepositoryTest extends TestCase
 
         $method = new \ReflectionMethod($this->repository, 'countByCategory');
 
-        // Should not require any parameters
-        $this->assertCount(0, $method->getParameters());
+        // Requires Tenant parameter (multi-tenant isolation)
+        $parameters = $method->getParameters();
+        $this->assertCount(1, $parameters);
+        $this->assertSame('tenant', $parameters[0]->getName());
+        $this->assertSame(Tenant::class, $parameters[0]->getType()->getName());
 
         // Verify return type is array
         $returnType = $method->getReturnType();
@@ -275,8 +280,11 @@ class IncidentRepositoryTest extends TestCase
 
         $method = new \ReflectionMethod($this->repository, 'countBySeverity');
 
-        // Should not require any parameters
-        $this->assertCount(0, $method->getParameters());
+        // Requires Tenant parameter (multi-tenant isolation)
+        $parameters = $method->getParameters();
+        $this->assertCount(1, $parameters);
+        $this->assertSame('tenant', $parameters[0]->getName());
+        $this->assertSame(Tenant::class, $parameters[0]->getType()->getName());
 
         // Verify return type is array
         $returnType = $method->getReturnType();

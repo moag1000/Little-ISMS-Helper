@@ -20,8 +20,9 @@ class LoadC52025RequirementsCommandTest extends KernelTestCase
         $kernel = self::bootKernel();
         $application = new Application($kernel);
 
+        // 2025 remains as alias on the 2026 command (catalogue update).
         $command = $application->find('app:load-c5-2025-requirements');
-        $this->assertSame('app:load-c5-2025-requirements', $command->getName());
+        $this->assertContains('app:load-c5-2025-requirements', $command->getAliases());
     }
 
     public function testCommandHasDescription(): void
