@@ -141,6 +141,56 @@ supplier:
             critical: 'Critical risk – immediate action required'
             high: 'High risk – review required'
             acceptable: 'Acceptable risk level'
+    tab:
+        master_data: 'Master Data'
+        contracts: 'Contracts & Documents'
+        dora: 'DORA Registration'
+        privacy: Privacy
+    frameworks:
+        label: 'Applicable frameworks'
+        aria_label: 'Applicable compliance frameworks for this supplier'
+        iso27001_tooltip: 'ISO 27001:2022 Annex A controls A.5.19–A.5.22 (Supplier relationships)'
+        dora_tooltip: 'EU DORA Art. 28 – Register of Information for ICT third-party providers'
+        gdpr_tooltip: 'GDPR Art. 28 – Data processing'
+    dora:
+        section_heading: 'DORA Register of Information (Art. 28)'
+        section_description: 'Mandatory fields per EU Digital Operational Resilience Act for ICT third-party providers.'
+        field:
+            lei_code: 'LEI code (Legal Entity Identifier)'
+            ict_criticality: 'ICT criticality'
+            ict_function_type: 'ICT function type'
+            substitutability: Substitutability
+            has_subcontractors: 'Has subcontractors'
+            subcontractor_chain: 'Subcontractor chain'
+            processing_locations: 'Processing locations (countries)'
+            last_dora_audit_date: 'Last DORA audit'
+            has_exit_strategy: 'Exit strategy available'
+            exit_strategy_document: 'Exit strategy document'
+        ict_criticality:
+            non_ict: 'Not an ICT service'
+            important: Important
+            critical: Critical
+        substitutability:
+            easy: 'Easily substitutable'
+            medium: Medium
+            hard: 'Hard to substitute'
+        advanced:
+            subcontractors_title: 'Subcontractors & processing locations'
+            exit_strategy_title: 'Exit strategy'
+            auto_expanded: 'Required field for critical ICT services'
+    gdpr:
+        section_heading: 'Privacy (GDPR Art. 28)'
+        section_description: 'Mandatory data processing fields per GDPR Art. 28.'
+        field:
+            gdpr_processor_status: 'GDPR Art. 28 role'
+            gdpr_transfer_mechanism: 'Transfer mechanism (third-country)'
+            gdpr_av_contract_signed: 'Data processing agreement signed'
+            gdpr_av_contract_date: 'DPA signed on'
+        processor_status:
+            controller: Controller
+            processor: Processor
+            joint_controller: 'Joint controller'
+            none: 'No personal data'
 corporate:
     stats:
         standalone: Standalone
