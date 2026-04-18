@@ -27,6 +27,7 @@ admin:
         module_management: 'Module Management'
         compliance_management: 'Compliance Management'
         compliance_policy: 'Compliance Policy Settings'
+        compliance_import_history: 'Compliance Import History'
         loader_fixer: 'Framework Loader Fixer'
         system_health: 'System Health'
         backup: Backup
@@ -422,3 +423,46 @@ setup:
 
     section:
         overview: Overview
+
+kpi_threshold:
+    page:
+        title: 'KPI Thresholds'
+        subtitle: 'Tenant-specific good/warning cut-offs for KPI status colours (overrides defaults).'
+        new: 'New threshold'
+        edit: 'Edit threshold'
+    action:
+        new: 'New threshold'
+    field:
+        kpi_key: 'KPI'
+        good_threshold: 'Good threshold (≥)'
+        warning_threshold: 'Warning threshold (≥)'
+        updated_at: 'Updated'
+    placeholder:
+        kpi_key: '-- Select KPI --'
+    help:
+        kpi_key: 'Which KPI should get a custom threshold?'
+        good_threshold: 'Values at or above this count as "good" (green). 0-100.'
+        warning_threshold: 'Values at or above this count as "warning" (yellow). Below: "danger". 0-100.'
+    hint:
+        thresholds: 'Good threshold must be ≥ warning threshold. Values below warning are classified as "danger".'
+    key:
+        control_compliance: 'Control Compliance'
+        control_compliance_weighted: 'Control Compliance (weighted)'
+        risk_treatment_rate: 'Risk Treatment Rate'
+        asset_classification_rate: 'Asset Classification Rate'
+        training_completion_rate: 'Training Completion Rate'
+        supplier_assessment_rate: 'Supplier Assessment Rate'
+        bia_coverage: 'BIA Coverage'
+        implementation_readiness: 'ISMS Implementation Readiness'
+        isms_health_score: 'ISMS Health Score'
+    flash:
+        created: 'Threshold created.'
+        updated: 'Threshold updated.'
+        deleted: 'Threshold deleted.'
+        duplicate_key: 'A threshold already exists for this KPI.'
+        good_below_warning: 'Good threshold must be ≥ warning threshold.'
+        no_tenant: 'No tenant assigned.'
+    message:
+        no_configs: 'No thresholds configured — defaults apply.'
+    confirm:
+        delete: 'Really delete this threshold? Defaults will apply afterwards.'

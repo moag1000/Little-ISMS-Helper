@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'kpi_threshold.page.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1">{{ 'kpi_threshold.page.title'|trans({}, 'admin') }}</h1>
+            <p class="text-muted mb-0">{{ 'kpi_threshold.page.subtitle'|trans({}, 'admin') }}</p>
+        </div>
+        <a href="{{ path('admin_kpi_threshold_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i>
+            {{ 'kpi_threshold.action.new'|trans({}, 'admin') }}
+        </a>
+    </div>
+
+    {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
+        {% block card_body %}
+            {% if configs is empty %}
+                <div class="alert alert-info m-3">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    {{ 'kpi_threshold.message.no_configs'|trans({}, 'admin') }}
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th scope="col">{{ 'kpi_threshold.field.kpi_key'|trans({}, 'admin') }}</th>
+                            <th scope="col">{{ 'kpi_threshold.field.good_threshold'|trans({}, 'admin') }}</th>
+                            <th scope="col">{{ 'kpi_threshold.field.warning_threshold'|trans({}, 'admin') }}</th>
+                            <th scope="col">{{ 'kpi_threshold.field.updated_at'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for c in configs %}
+                            <tr>
+                                <td>
+                                    <code>{{ c.kpiKey }}</code>
+                                    <div class="text-muted small">{{ ('kpi_threshold.key.' ~ c.kpiKey)|trans({}, 'admin') }}</div>
+                                </td>
+                                <td><span class="badge bg-success">≥ {{ c.goodThreshold }}</span></td>
+                                <td><span class="badge bg-warning text-dark">≥ {{ c.warningThreshold }}</span></td>
+                                <td>{{ c.updatedAt ? c.updatedAt|date('Y-m-d H:i') : c.createdAt|date('Y-m-d H:i') }}</td>
+                                <td class="text-end">
+                                    <a href="{{ path('admin_kpi_threshold_edit', {id: c.id}) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                                    </a>
+                                    <form method="post" action="{{ path('admin_kpi_threshold_delete', {id: c.id}) }}" class="d-inline" onsubmit="return confirm('{{ 'kpi_threshold.confirm.delete'|trans({}, 'admin') }}');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_kth_' ~ c.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}
