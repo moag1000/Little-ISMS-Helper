@@ -1118,6 +1118,11 @@ class DeploymentWizardController extends AbstractController
             $this->addFlash('warning', $warning);
         }
 
+        // WS-8: if compliance module selected, go through "was hast du schon?" first.
+        if (in_array('compliance', $resolved['modules'], true)) {
+            return $this->redirectToRoute('setup_wizard_existing_frameworks');
+        }
+
         return $this->redirectToRoute('setup_step8_compliance_frameworks');
     }
     /**

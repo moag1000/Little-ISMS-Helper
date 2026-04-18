@@ -45,7 +45,7 @@ final class ExistingFrameworksController extends AbstractController
             $session->set('setup.certification_dates', (array) ($data['certificationDates'] ?? []));
 
             $this->addFlash('success', 'setup_wizard.existing_frameworks.saved');
-            return $this->redirectToRoute('setup_wizard_index');
+            return $this->redirectToRoute('setup_step8_compliance_frameworks');
         }
 
         return $this->render('setup_wizard/existing_frameworks.html.twig', [
@@ -58,7 +58,7 @@ final class ExistingFrameworksController extends AbstractController
     public function skip(Request $request): Response
     {
         $request->getSession()->set('setup.existing_frameworks_skipped', true);
-        return $this->redirectToRoute('setup_wizard_index');
+        return $this->redirectToRoute('setup_step8_compliance_frameworks');
     }
 
     #[Route('/preview', name: '_preview', methods: ['POST'])]

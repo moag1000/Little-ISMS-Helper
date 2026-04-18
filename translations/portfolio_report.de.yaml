@@ -9,6 +9,7 @@ portfolio_report:
 
     action:
         download_pdf: 'Als PDF exportieren'
+        download_excel: 'Als Excel exportieren'
 
     form:
         stichtag: 'Stichtag'

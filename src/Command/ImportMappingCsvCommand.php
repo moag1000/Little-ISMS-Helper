@@ -153,13 +153,14 @@ final class ImportMappingCsvCommand extends Command
                 $updated++;
             }
 
+            $isBidirectional = strtolower($data['bidirectional']) === 'true';
             $mapping = (new ComplianceMapping())
                 ->setSourceRequirement($sourceReq)
                 ->setTargetRequirement($targetReq)
                 ->setMappingPercentage((int) $data['mapping_percentage'])
                 ->setMappingType($data['mapping_type'])
                 ->setConfidence($data['confidence'])
-                ->setBidirectional(strtolower($data['bidirectional']) === 'true')
+                ->setBidirectional($isBidirectional)
                 ->setMappingRationale($data['rationale'])
                 ->setSource($data['source_catalog'])
                 ->setVersion(($existing?->getVersion() ?? 0) + 1)
@@ -169,6 +170,29 @@ final class ImportMappingCsvCommand extends Command
                 $this->entityManager->persist($mapping);
             }
             $created++;
+
+            // WS-1 inheritance service queries mappings by targetRequirement.
+            // For bidirectional mappings we materialize the reverse direction
+            // too so inheritance works regardless of which framework the
+            // curator chose as "source" in the CSV.
+            if ($isBidirectional) {
+                $reverse = (new ComplianceMapping())
+                    ->setSourceRequirement($targetReq)
+                    ->setTargetRequirement($sourceReq)
+                    ->setMappingPercentage((int) $data['mapping_percentage'])
+                    ->setMappingType($data['mapping_type'])
+                    ->setConfidence($data['confidence'])
+                    ->setBidirectional(true)
+                    ->setMappingRationale($data['rationale'])
+                    ->setSource($data['source_catalog'] . '_reverse')
+                    ->setVersion(1)
+                    ->setValidFrom(new DateTimeImmutable());
+
+                if (!$dryRun) {
+                    $this->entityManager->persist($reverse);
+                }
+                $created++;
+            }
         }
         fclose($handle);
 
