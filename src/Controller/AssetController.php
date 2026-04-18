@@ -9,6 +9,7 @@ use App\Repository\AssetRepository;
 use App\Repository\AuditLogRepository;
 use App\Repository\BusinessProcessRepository;
 use App\Repository\RiskRepository;
+use App\Service\AssetDependencyService;
 use App\Service\AssetService;
 use App\Service\AssetQrCodeService;
 use App\Service\ProtectionRequirementService;
@@ -40,7 +41,8 @@ class AssetController extends AbstractController
         private readonly Security $security,
         private readonly TenantContext $tenantContext,
         private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
-        private readonly TagFilterService $tagFilterService
+        private readonly TagFilterService $tagFilterService,
+        private readonly ?AssetDependencyService $assetDependencyService = null,
     ) {}
     #[Route('/asset/', name: 'app_asset_index')]
     #[IsGranted('ROLE_USER')]
@@ -266,6 +268,8 @@ class AssetController extends AbstractController
             $canEdit = true;
         }
 
+        $inheritedProtection = $this->assetDependencyService?->calculateInheritedProtectionNeed($asset);
+
         return $this->render('asset/show.html.twig', [
             'asset' => $asset,
             'analysis' => $analysis,
@@ -275,6 +279,7 @@ class AssetController extends AbstractController
             'isInherited' => $isInherited,
             'canEdit' => $canEdit,
             'currentTenant' => $tenant,
+            'inheritedProtection' => $inheritedProtection,
         ]);
     }
     #[Route('/asset/{id}/edit', name: 'app_asset_edit', requirements: ['id' => '\d+'])]

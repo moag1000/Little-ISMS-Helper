@@ -34,6 +34,7 @@ asset:
     rto_analysis: Rto Analysis
     critical_assets: Critical Assets
     dependency_insights: Dependency Insights
+    inherited_protection: Inherited protection need (BSI 3.6)
   field:
     name: Name
     type: Asset type
@@ -267,6 +268,13 @@ asset:
     view_asset: View asset %name%
     edit_asset: Edit asset %name%
     actions_for_asset: Actions for asset %name%
+  inherited_protection:
+    warning: 'At least one dimension is raised by dependencies. Maximum principle:
+      highest value applies.'
+    dimension: Dimension
+    own: Own value
+    inherited: Inherited value
+    driven_by: Driven by
 qr:
   label:
     title: Asset Label

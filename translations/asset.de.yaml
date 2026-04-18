@@ -34,6 +34,7 @@ asset:
     rto_analysis: RTO-Analyse
     critical_assets: Kritische Assets
     dependency_insights: Abhängigkeitsanalyse
+    inherited_protection: Geerbter Schutzbedarf (BSI 3.6)
   field:
     name: Name
     type: Asset‑Typ
@@ -270,6 +271,13 @@ asset:
     view_asset: Asset %name% anzeigen
     edit_asset: Asset %name% bearbeiten
     actions_for_asset: Aktionen für Asset %name%
+  inherited_protection:
+    warning: 'Mindestens eine Dimension wird durch abhängige Assets erhöht. Maximum-Prinzip:
+      höchster Wert gilt.'
+    dimension: Dimension
+    own: Eigener Wert
+    inherited: Geerbter Wert
+    driven_by: Getrieben durch
 qr:
   label:
     title: Asset-Etikett
