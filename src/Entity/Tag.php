@@ -32,11 +32,19 @@ class Tag
     public const TYPE_FRAMEWORK = 'framework';
     public const TYPE_CLASSIFICATION = 'classification';
     public const TYPE_CUSTOM = 'custom';
+    /**
+     * ISB-Review OBS-3: ISO 27001 Klausel 4.3 Scope-Abgrenzung.
+     * Carries in-scope/out-of-scope metadata per entity. Combine with
+     * frameworkCode to anchor to a specific framework scope
+     * (e.g. frameworkCode=ISO27001, name=in-scope).
+     */
+    public const TYPE_SCOPE = 'scope';
 
     public const TYPES = [
         self::TYPE_FRAMEWORK,
         self::TYPE_CLASSIFICATION,
         self::TYPE_CUSTOM,
+        self::TYPE_SCOPE,
     ];
 
     #[ORM\Id]
