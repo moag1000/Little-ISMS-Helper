@@ -292,5 +292,10 @@
             {% endembed %}
         </div>
     </div>
+
+    {# Last Updated Timestamp #}
+    <div class="text-muted text-end small mt-3">
+        {{ 'dashboard.last_updated'|trans({'%time%': 'now'|date('H:i')}, 'dashboard') }}
+    </div>
 </div>
 {% endblock %}
