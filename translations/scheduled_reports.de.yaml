@@ -167,3 +167,21 @@ scheduled_report:
 
             Mit freundlichen Grüßen,
             Ihr ISMS-System
+
+# ISB MINOR-4 (DSGVO Art. 32, ISO 27001:2022 A.5.34):
+# Generic email shape + form-time role/tenant gate. Keys live at the
+# top of the domain so they are addressable as scheduled_reports.<key>.
+email:
+    subject_generic: '[ISMS Report] {period}'
+    body_generic: 'Ein geplanter Compliance-Report ist beigefügt. Inhalt auf tenant-interne Empfänger beschränkt.'
+    tls_required_error: 'Versand blockiert: Der Symfony-Mailer-DSN erzwingt keine TLS-Transportverschlüsselung (DSGVO Art. 32, ISO 27001:2022 A.5.34). Bitte MAILER_DSN auf smtps:// oder smtp://…?encryption=tls umstellen.'
+
+form:
+    recipient:
+        role_too_low: 'Empfänger {email} besitzt nicht die Mindestrolle ROLE_MANAGER.'
+        cross_tenant_forbidden: 'Empfänger {email} gehört nicht zum aktuellen Mandanten.'
+        unknown_user: 'Empfänger {email} existiert nicht als Benutzer im System.'
+        inactive: 'Empfänger {email} ist deaktiviert.'
+
+flash:
+    no_qualifying_recipients: 'Keine Empfänger erfüllen die Rolle-/Mandantenvorgabe. Report wurde nicht versendet.'

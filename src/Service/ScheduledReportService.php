@@ -5,11 +5,16 @@ namespace App\Service;
 use DateTime;
 use App\Entity\ScheduledReport;
 use App\Repository\ScheduledReportRepository;
+use App\Repository\UserRepository;
+use App\Service\AuditLogger;
+use App\Service\Mail\MailerTlsChecker;
+use App\Service\Mail\RecipientFilter;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Part\DataPart;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Scheduled Report Service
@@ -28,6 +33,11 @@ class ScheduledReportService
         private readonly MailerInterface $mailer,
         private readonly LoggerInterface $logger,
         private readonly TenantContext $tenantContext,
+        private readonly MailerTlsChecker $tlsChecker,
+        private readonly RecipientFilter $recipientFilter,
+        private readonly UserRepository $userRepository,
+        private readonly TranslatorInterface $translator,
+        private readonly AuditLogger $auditLogger,
         private readonly string $senderEmail = 'noreply@little-isms-helper.local',
         private readonly string $senderName = 'Little ISMS Helper',
     ) {
@@ -40,6 +50,15 @@ class ScheduledReportService
      */
     public function processDueReports(): array
     {
+        // ISB MINOR-4: verify mailer TLS ONCE before batch run. If the DSN is
+        // plain SMTP without encryption, refuse to process anything and surface
+        // the failure on each due report's run record.
+        try {
+            $this->tlsChecker->assertTlsConfigured();
+        } catch (\RuntimeException $tlsException) {
+            return $this->recordBatchTlsFailure($tlsException);
+        }
+
         $dueReports = $this->repository->findDueReports();
         $results = [
             'processed' => 0,
@@ -97,6 +116,20 @@ class ScheduledReportService
             'type' => $report->getReportType(),
         ]);
 
+        // ISB MINOR-4: evidence that the TLS pre-flight succeeded before send.
+        $this->tlsChecker->assertTlsConfigured();
+        $report->setTlsVerifiedAt(new DateTime());
+
+        // ISB MINOR-4: enforce tenant + role filter, audit-log every drop.
+        $filterResult = $this->recipientFilter->filter($report);
+        foreach ($filterResult['dropped'] as $entry) {
+            $this->auditDroppedRecipient($report, $entry['email'], $entry['reason']);
+        }
+
+        if ($filterResult['valid'] === []) {
+            throw new \RuntimeException('No qualifying recipients after role/tenant check.');
+        }
+
         // Generate the report content
         $content = $this->generateReportContent($report);
         $filename = $this->generateFilename($report);
@@ -104,23 +137,92 @@ class ScheduledReportService
             ? 'application/pdf'
             : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
-        // Send to all recipients
-        foreach ($report->getRecipients() as $recipient) {
+        foreach ($filterResult['valid'] as $recipient) {
             $this->sendReportEmail($report, $recipient, $content, $filename, $mimeType);
         }
 
         // Update report status
         $report->setLastRunAt(new DateTime());
         $report->setLastRunStatus(1);
-        $report->setLastRunMessage('Report generated and sent successfully to ' . count($report->getRecipients()) . ' recipient(s)');
+        $report->setLastRunMessage(sprintf(
+            'Report generated and sent successfully to %d qualifying recipient(s); %d dropped.',
+            count($filterResult['valid']),
+            count($filterResult['dropped']),
+        ));
         $report->calculateNextRunAt();
 
         $this->entityManager->flush();
 
         $this->logger->info('Scheduled report processed successfully', [
             'report_id' => $report->getId(),
-            'recipients' => count($report->getRecipients()),
+            'recipients_sent' => count($filterResult['valid']),
+            'recipients_dropped' => count($filterResult['dropped']),
         ]);
+    }
+
+    /**
+     * Mark all due reports as failed when the mailer DSN fails the TLS check.
+     * The TLS assertion ran exactly once at the top of processDueReports().
+     */
+    private function recordBatchTlsFailure(\RuntimeException $tlsException): array
+    {
+        $dueReports = $this->repository->findDueReports();
+        $results = [
+            'processed' => 0,
+            'success' => 0,
+            'failed' => 0,
+            'details' => [],
+        ];
+
+        foreach ($dueReports as $report) {
+            $report->setLastRunAt(new DateTime());
+            $report->setLastRunStatus(0);
+            $report->setLastRunMessage($tlsException->getMessage());
+            $results['failed']++;
+            $results['processed']++;
+            $results['details'][] = [
+                'id' => $report->getId(),
+                'name' => $report->getName(),
+                'status' => 'failed',
+                'error' => $tlsException->getMessage(),
+            ];
+        }
+
+        if ($dueReports !== []) {
+            $this->entityManager->flush();
+        }
+
+        $this->logger->error('Scheduled report batch aborted: mailer DSN fails TLS policy', [
+            'error' => $tlsException->getMessage(),
+            'affected_reports' => count($dueReports),
+        ]);
+
+        return $results;
+    }
+
+    private function auditDroppedRecipient(ScheduledReport $report, string $email, string $reason): void
+    {
+        $this->logger->warning('Scheduled report recipient dropped', [
+            'report_id' => $report->getId(),
+            'email' => $email,
+            'reason' => $reason,
+        ]);
+
+        try {
+            $this->auditLogger->logCustom(
+                action: 'scheduled_report.recipient_dropped',
+                entityType: 'ScheduledReport',
+                entityId: $report->getId(),
+                oldValues: ['email' => $email, 'reason' => $reason],
+                newValues: null,
+                description: sprintf('Recipient %s dropped: %s', $email, $reason),
+            );
+        } catch (\Throwable $e) {
+            // Audit-log failures must not break report sending; they are already logged above.
+            $this->logger->error('Audit log write failed for dropped recipient', [
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -236,7 +338,11 @@ class ScheduledReportService
     }
 
     /**
-     * Send report via email
+     * Send report via email.
+     *
+     * ISB MINOR-4: subject and body are generic — no inline report name or
+     * type — per DSGVO Art. 32 data-minimisation. Content remains in the
+     * attachment only, for tenant-internal recipients.
      */
     private function sendReportEmail(
         ScheduledReport $report,
@@ -245,72 +351,44 @@ class ScheduledReportService
         string $filename,
         string $mimeType,
     ): void {
-        $typeLabel = ScheduledReport::getReportTypes()[$report->getReportType()] ?? $report->getReportType();
+        $locale = $report->getLocale() ?? 'de';
+        $subject = $this->translator->trans(
+            'email.subject_generic',
+            ['{period}' => $report->getSchedule() ?? ''],
+            'scheduled_reports',
+            $locale,
+        );
+        $bodyText = $this->translator->trans('email.body_generic', [], 'scheduled_reports', $locale);
 
         $email = (new Email())
             ->from("{$this->senderName} <{$this->senderEmail}>")
             ->to($recipient)
-            ->subject("[ISMS Report] {$report->getName()} - {$typeLabel}")
-            ->text($this->getEmailText($report, $typeLabel))
-            ->html($this->getEmailHtml($report, $typeLabel))
+            ->subject($subject)
+            ->text($bodyText)
+            ->html($this->getGenericEmailHtml($bodyText))
             ->attach($content, $filename, $mimeType);
 
         $this->mailer->send($email);
     }
 
     /**
-     * Get plain text email content
+     * Minimal HTML wrapper for the generic body. No report name/type inline.
      */
-    private function getEmailText(ScheduledReport $report, string $typeLabel): string
+    private function getGenericEmailHtml(string $bodyText): string
     {
-        $date = date('Y-m-d H:i');
-
-        return <<<TEXT
-        Scheduled Report: {$report->getName()}
-
-        Report Type: {$typeLabel}
-        Generated: {$date}
-        Schedule: {$report->getSchedule()}
-
-        The report is attached to this email.
-
-        --
-        Little ISMS Helper
-        Automated Report System
-        TEXT;
-    }
-
-    /**
-     * Get HTML email content
-     */
-    private function getEmailHtml(ScheduledReport $report, string $typeLabel): string
-    {
-        $date = date('Y-m-d H:i');
-
+        $safe = htmlspecialchars($bodyText, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         return <<<HTML
         <!DOCTYPE html>
         <html>
         <head>
+            <meta charset="utf-8">
             <style>
-                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                .header { background: #0f172a; color: #06b6d4; padding: 20px; }
-                .content { padding: 20px; }
-                .footer { background: #f8fafc; padding: 15px; font-size: 12px; color: #666; }
-                .badge { display: inline-block; padding: 4px 8px; background: #06b6d4; color: white; border-radius: 4px; }
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; padding: 20px; }
+                .footer { font-size: 12px; color: #666; margin-top: 20px; }
             </style>
         </head>
         <body>
-            <div class="header">
-                <h1 style="margin: 0;">Scheduled Report</h1>
-                <p style="margin: 5px 0 0;">{$report->getName()}</p>
-            </div>
-            <div class="content">
-                <p><strong>Report Type:</strong> <span class="badge">{$typeLabel}</span></p>
-                <p><strong>Generated:</strong> {$date}</p>
-                <p><strong>Schedule:</strong> {$report->getSchedule()}</p>
-                <hr>
-                <p>The report is attached to this email.</p>
-            </div>
+            <p>{$safe}</p>
             <div class="footer">
                 <p>Little ISMS Helper - Automated Report System</p>
                 <p>This is an automated message. Please do not reply directly to this email.</p>

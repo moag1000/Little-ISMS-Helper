@@ -1,169 +1,104 @@
-# Scheduled Reports Translations - English
-
-scheduled_report:
-    title: 'Scheduled Reports'
-
-    # Page titles
-    new:
-        title: 'Create New Scheduled Report'
-    edit:
-        title: 'Edit Scheduled Report'
-    show:
-        title: 'Report Details'
-
-    # Form labels
-    form:
-        name: 'Name'
-        name_placeholder: 'e.g. Weekly Risk Report'
-        report_type: 'Report Type'
-        select_type: '-- Select report type --'
-        schedule: 'Schedule'
-        format: 'Format'
-        locale: 'Language'
-        description: 'Description'
-        preferred_time: 'Preferred Time'
-        preferred_time_help: 'When should the report be generated?'
-        day_of_week: 'Day of Week'
-        day_of_week_help: 'Only for weekly reports'
-        select_day: '-- Select day --'
-        day_of_month: 'Day of Month'
-        day_of_month_help: 'Only for monthly reports (1-28)'
-        recipients: 'Recipients'
-        recipients_placeholder: 'Enter email addresses (one per line or comma-separated)'
-        recipients_help: 'Enter one or more email addresses'
-        configuration: 'Configuration'
-        schedule_settings: 'Schedule Settings'
-        output_settings: 'Output Settings'
-        delivery_settings: 'Delivery Settings'
-
-    # Report types
-    type:
-        executive: 'Executive Summary'
-        risk: 'Risk Report'
-        bcm: 'BCM Report'
-        compliance: 'Compliance Report'
-        audit: 'Audit Report'
-        assets: 'Asset Report'
-        gdpr: 'GDPR Report'
-
-    # Schedule options
-    schedule:
-        daily: 'Daily'
-        weekly: 'Weekly'
-        monthly: 'Monthly'
-
-    # Status
-    status:
-        label: 'Status'
-        active: 'Active'
-        inactive: 'Inactive'
-        due: 'Due'
-
-    # Actions
-    action:
-        new: 'Create New Report'
-        edit: 'Edit'
-        view: 'View'
-        delete: 'Delete'
-        cancel: 'Cancel'
-        create: 'Create Report'
-        save: 'Save Changes'
-        activate: 'Activate'
-        deactivate: 'Deactivate'
-        preview: 'Preview / Download'
-        trigger: 'Send Now'
-
-    # Table headers
-    table:
-        name: 'Name'
-        type: 'Type'
-        schedule: 'Schedule'
-        format: 'Format'
-        status: 'Status'
-        next_run: 'Next Run'
-        recipients: 'Recipients'
-        actions: 'Actions'
-
-    # Statistics
-    stats:
-        total: 'Total'
-        active: 'Active'
-        inactive: 'Inactive'
-        due: 'Due'
-
-    # Empty state
-    empty:
-        title: 'No Scheduled Reports'
-        text: 'Create your first scheduled report to receive regular reports automatically via email.'
-
-    # Info messages
-    info:
-        activation_required: 'Scheduled reports must be manually activated before they will run.'
-        cron_hint: 'Make sure the cron job for report processing is set up.'
-        create_hint: 'Create a scheduled report to automatically generate and send reports via email. After creation, the report must be manually activated.'
-
-    # Due reports warning
-    due_reports:
-        title: 'Due Reports'
-        text: 'There are %count% report(s) waiting to be processed. Run the following command:'
-
-    # Details card
-    details:
-        title: 'Report Details'
-
-    # Recipients card
-    recipients:
-        title: 'Recipients'
-        empty: 'No recipients configured'
-
-    # Last run info
-    last_run:
-        title: 'Last Run'
-        time: 'Time'
-        status: 'Status'
-        message: 'Message'
-        success: 'Success'
-        failed: 'Failed'
-
-    # Next run
-    next_run: 'Next Run'
-
-    # Actions card
-    actions:
-        title: 'Actions'
-
-    # Metadata card
-    metadata:
-        title: 'Metadata'
-        created: 'Created at'
-        updated: 'Updated at'
-
-    # Confirmation dialogs
-    confirm:
-        delete: 'Are you sure you want to delete this scheduled report?'
-        trigger: 'Do you want to manually trigger this report and send it via email now?'
-
-    # Flash messages
-    flash:
-        created: 'Scheduled report has been created successfully.'
-        updated: 'Scheduled report has been updated successfully.'
-        deleted: 'Scheduled report has been deleted successfully.'
-        activated: 'Scheduled report has been activated.'
-        deactivated: 'Scheduled report has been deactivated.'
-        triggered: 'Report has been generated and sent successfully.'
-        trigger_failed: 'Error sending the report.'
-        preview_failed: 'Error creating the preview.'
-
-    # Email
-    email:
-        subject: 'Scheduled Report: %name%'
-        body: |
-            Dear Sir or Madam,
-
-            Please find attached the scheduled report "%name%".
-
-            Report Type: %type%
-            Generated on: %date%
-
-            Best regards,
-            Your ISMS System
+scheduled_report.title: 'Scheduled Reports'
+scheduled_report.new.title: 'Create New Scheduled Report'
+scheduled_report.edit.title: 'Edit Scheduled Report'
+scheduled_report.show.title: 'Report Details'
+scheduled_report.form.name: Name
+scheduled_report.form.name_placeholder: 'e.g. Weekly Risk Report'
+scheduled_report.form.report_type: 'Report Type'
+scheduled_report.form.select_type: '-- Select report type --'
+scheduled_report.form.schedule: Schedule
+scheduled_report.form.format: Format
+scheduled_report.form.locale: Language
+scheduled_report.form.description: Description
+scheduled_report.form.preferred_time: 'Preferred Time'
+scheduled_report.form.preferred_time_help: 'When should the report be generated?'
+scheduled_report.form.day_of_week: 'Day of Week'
+scheduled_report.form.day_of_week_help: 'Only for weekly reports'
+scheduled_report.form.select_day: '-- Select day --'
+scheduled_report.form.day_of_month: 'Day of Month'
+scheduled_report.form.day_of_month_help: 'Only for monthly reports (1-28)'
+scheduled_report.form.recipients: Recipients
+scheduled_report.form.recipients_placeholder: 'Enter email addresses (one per line or comma-separated)'
+scheduled_report.form.recipients_help: 'Enter one or more email addresses'
+scheduled_report.form.configuration: Configuration
+scheduled_report.form.schedule_settings: 'Schedule Settings'
+scheduled_report.form.output_settings: 'Output Settings'
+scheduled_report.form.delivery_settings: 'Delivery Settings'
+scheduled_report.type.executive: 'Executive Summary'
+scheduled_report.type.risk: 'Risk Report'
+scheduled_report.type.bcm: 'BCM Report'
+scheduled_report.type.compliance: 'Compliance Report'
+scheduled_report.type.audit: 'Audit Report'
+scheduled_report.type.assets: 'Asset Report'
+scheduled_report.type.gdpr: 'GDPR Report'
+scheduled_report.schedule.daily: Daily
+scheduled_report.schedule.weekly: Weekly
+scheduled_report.schedule.monthly: Monthly
+scheduled_report.status.label: Status
+scheduled_report.status.active: Active
+scheduled_report.status.inactive: Inactive
+scheduled_report.status.due: Due
+scheduled_report.action.new: 'Create New Report'
+scheduled_report.action.edit: Edit
+scheduled_report.action.view: View
+scheduled_report.action.delete: Delete
+scheduled_report.action.cancel: Cancel
+scheduled_report.action.create: 'Create Report'
+scheduled_report.action.save: 'Save Changes'
+scheduled_report.action.activate: Activate
+scheduled_report.action.deactivate: Deactivate
+scheduled_report.action.preview: 'Preview / Download'
+scheduled_report.action.trigger: 'Send Now'
+scheduled_report.table.name: Name
+scheduled_report.table.type: Type
+scheduled_report.table.schedule: Schedule
+scheduled_report.table.format: Format
+scheduled_report.table.status: Status
+scheduled_report.table.next_run: 'Next Run'
+scheduled_report.table.recipients: Recipients
+scheduled_report.table.actions: Actions
+scheduled_report.stats.total: Total
+scheduled_report.stats.active: Active
+scheduled_report.stats.inactive: Inactive
+scheduled_report.stats.due: Due
+scheduled_report.empty.title: 'No Scheduled Reports'
+scheduled_report.empty.text: 'Create your first scheduled report to receive regular reports automatically via email.'
+scheduled_report.info.activation_required: 'Scheduled reports must be manually activated before they will run.'
+scheduled_report.info.cron_hint: 'Make sure the cron job for report processing is set up.'
+scheduled_report.info.create_hint: 'Create a scheduled report to automatically generate and send reports via email. After creation, the report must be manually activated.'
+scheduled_report.due_reports.title: 'Due Reports'
+scheduled_report.due_reports.text: 'There are %count% report(s) waiting to be processed. Run the following command:'
+scheduled_report.details.title: 'Report Details'
+scheduled_report.recipients.title: Recipients
+scheduled_report.recipients.empty: 'No recipients configured'
+scheduled_report.last_run.title: 'Last Run'
+scheduled_report.last_run.time: Time
+scheduled_report.last_run.status: Status
+scheduled_report.last_run.message: Message
+scheduled_report.last_run.success: Success
+scheduled_report.last_run.failed: Failed
+scheduled_report.next_run: 'Next Run'
+scheduled_report.actions.title: Actions
+scheduled_report.metadata.title: Metadata
+scheduled_report.metadata.created: 'Created at'
+scheduled_report.metadata.updated: 'Updated at'
+scheduled_report.confirm.delete: 'Are you sure you want to delete this scheduled report?'
+scheduled_report.confirm.trigger: 'Do you want to manually trigger this report and send it via email now?'
+scheduled_report.flash.created: 'Scheduled report has been created successfully.'
+scheduled_report.flash.updated: 'Scheduled report has been updated successfully.'
+scheduled_report.flash.deleted: 'Scheduled report has been deleted successfully.'
+scheduled_report.flash.activated: 'Scheduled report has been activated.'
+scheduled_report.flash.deactivated: 'Scheduled report has been deactivated.'
+scheduled_report.flash.triggered: 'Report has been generated and sent successfully.'
+scheduled_report.flash.trigger_failed: 'Error sending the report.'
+scheduled_report.flash.preview_failed: 'Error creating the preview.'
+scheduled_report.email.subject: 'Scheduled Report: %name%'
+scheduled_report.email.body: "Dear Sir or Madam,\n\nPlease find attached the scheduled report \"%name%\".\n\nReport Type: %type%\nGenerated on: %date%\n\nBest regards,\nYour ISMS System\n"
+email.subject_generic: '[ISMS Report] {period}'
+email.body_generic: 'A scheduled compliance report is attached. Content restricted to tenant-internal recipients.'
+email.tls_required_error: 'Sending blocked: the Symfony mailer DSN does not enforce TLS transport encryption (DSGVO Art. 32, ISO 27001:2022 A.5.34). Please change MAILER_DSN to smtps:// or smtp://...?encryption=tls.'
+form.recipient.role_too_low: 'Recipient {email} does not hold the minimum role ROLE_MANAGER.'
+form.recipient.cross_tenant_forbidden: 'Recipient {email} does not belong to the current tenant.'
+form.recipient.unknown_user: 'Recipient {email} is not a registered user.'
+form.recipient.inactive: 'Recipient {email} is inactive.'
+flash.no_qualifying_recipients: 'No recipients satisfy the role/tenant policy. Report was not sent.'
