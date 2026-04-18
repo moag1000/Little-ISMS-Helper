@@ -12,13 +12,16 @@
      data-notifications-empty-message-value="{{ 'notifications.empty.description'|trans({}, 'notifications') }}">
     {# Notification Panel #}
     <div class="notification-panel d-none"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="notification-panel-title"
          data-notifications-target="panel"
          data-action="click->notifications#handleBackdropClick">
         
         <div class="notification-panel-container">
             {# Panel Header #}
             <div class="notification-panel-header">
-                <h5 class="notification-panel-title">
+                <h5 class="notification-panel-title" id="notification-panel-title">
                     <i class="bi bi-bell" aria-hidden="true"></i>
                     {{ 'notifications.title'|trans({}, 'notifications') }}
                 </h5>

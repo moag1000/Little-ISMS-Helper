@@ -60,8 +60,8 @@
         <h2>Assets by Type</h2>
         <table>
             <tr>
-                <th>Asset Type</th>
-                <th>Count</th>
+                <th scope="col">Asset Type</th>
+                <th scope="col">Count</th>
             </tr>
             {% for type, count in report.by_type %}
             <tr>
@@ -77,8 +77,8 @@
         <h2>Assets by Classification</h2>
         <table>
             <tr>
-                <th>Classification</th>
-                <th>Count</th>
+                <th scope="col">Classification</th>
+                <th scope="col">Count</th>
             </tr>
             {% for classification, count in report.by_classification %}
             <tr>
@@ -104,12 +104,12 @@
         <h2>Asset Inventory</h2>
         <table>
             <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Classification</th>
-                <th>Owner</th>
-                <th>Status</th>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Type</th>
+                <th scope="col">Classification</th>
+                <th scope="col">Owner</th>
+                <th scope="col">Status</th>
             </tr>
             {% for asset in report.assets %}
             <tr>

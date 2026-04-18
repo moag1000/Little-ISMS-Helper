@@ -90,9 +90,9 @@
         <h2>Breaches by Severity</h2>
         <table>
             <tr>
-                <th>Severity</th>
-                <th>Count</th>
-                <th>Distribution</th>
+                <th scope="col">Severity</th>
+                <th scope="col">Count</th>
+                <th scope="col">Distribution</th>
             </tr>
             <tr>
                 <td><span class="badge badge-danger">Critical</span></td>
@@ -141,8 +141,8 @@
         </div>
         <table>
             <tr>
-                <th>Requirement</th>
-                <th>Description</th>
+                <th scope="col">Requirement</th>
+                <th scope="col">Description</th>
             </tr>
             <tr>
                 <td>72-Hour Notification</td>
@@ -169,12 +169,12 @@
         <h2>Data Breach Register</h2>
         <table>
             <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Severity</th>
-                <th>Discovered</th>
-                <th>Notification Req.</th>
-                <th>Notified</th>
+                <th scope="col">ID</th>
+                <th scope="col">Title</th>
+                <th scope="col">Severity</th>
+                <th scope="col">Discovered</th>
+                <th scope="col">Notification Req.</th>
+                <th scope="col">Notified</th>
             </tr>
             {% for breach in report.breaches %}
             <tr>

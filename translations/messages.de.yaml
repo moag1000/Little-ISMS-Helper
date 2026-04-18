@@ -164,6 +164,7 @@ common:
     export_excel: 'Als Excel exportieren'
     filter: Filtern
     filters: Filter
+    clear: Zurücksetzen
     from: Von
     help: Hilfe
     history: Verlauf
@@ -190,6 +191,8 @@ common:
     days: Tage
     roles: Rollen
     close: Schließen
+    preview: Vorschau
+    quick_view_hint: 'auf Listen-Items öffnet Vorschau'
     copy: Kopieren
     copied: Kopiert
     verifying: Überprüfe...

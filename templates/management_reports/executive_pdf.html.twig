@@ -103,9 +103,9 @@
         <h2>Risk Distribution</h2>
         <table>
             <tr>
-                <th>Level</th>
-                <th>Count</th>
-                <th>Distribution</th>
+                <th scope="col">Level</th>
+                <th scope="col">Count</th>
+                <th scope="col">Distribution</th>
             </tr>
             <tr>
                 <td><span class="badge badge-danger">Critical (≥20)</span></td>
@@ -151,9 +151,9 @@
         <h2>Control Implementation Status</h2>
         <table>
             <tr>
-                <th>Status</th>
-                <th>Count</th>
-                <th>Progress</th>
+                <th scope="col">Status</th>
+                <th scope="col">Count</th>
+                <th scope="col">Progress</th>
             </tr>
             <tr>
                 <td><span class="badge badge-success">Implemented</span></td>
@@ -190,9 +190,9 @@
         <h2>Operational Metrics</h2>
         <table>
             <tr>
-                <th>Metric</th>
-                <th>Value</th>
-                <th>Status</th>
+                <th scope="col">Metric</th>
+                <th scope="col">Value</th>
+                <th scope="col">Status</th>
             </tr>
             <tr>
                 <td>Open Incidents (Last 12 Months)</td>
@@ -223,9 +223,9 @@
         <h2>Risk Trends (Last 12 Months)</h2>
         <table>
             <tr>
-                <th>Month</th>
-                <th>New Risks</th>
-                <th>High/Critical</th>
+                <th scope="col">Month</th>
+                <th scope="col">New Risks</th>
+                <th scope="col">High/Critical</th>
             </tr>
             {% for trend in risk_trends %}
             <tr>

@@ -182,10 +182,10 @@
                     } %}
                         {% block table_head %}
                             <tr>
-                                <th>{{ 'nis2.dashboard.incident_details.stage'|trans({}, 'messages') }}</th>
-                                <th class="text-end">{{ 'nis2.dashboard.incident_details.compliant'|trans({}, 'messages') }}</th>
-                                <th class="text-end">{{ 'nis2.dashboard.incident_details.total'|trans({}, 'messages') }}</th>
-                                <th class="text-end">{{ 'nis2.dashboard.incident_details.rate'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'nis2.dashboard.incident_details.stage'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="text-end">{{ 'nis2.dashboard.incident_details.compliant'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="text-end">{{ 'nis2.dashboard.incident_details.total'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="text-end">{{ 'nis2.dashboard.incident_details.rate'|trans({}, 'messages') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body %}

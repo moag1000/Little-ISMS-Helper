@@ -164,6 +164,7 @@ common:
     export_excel: 'Export as Excel'
     filter: Filter
     filters: Filters
+    clear: Clear
     from: From
     help: Help
     history: History
@@ -190,6 +191,8 @@ common:
     days: Days
     roles: Roles
     close: Close
+    preview: Preview
+    quick_view_hint: 'on list items opens preview'
     copy: Copy
     copied: 'Copied!'
     verifying: 'Verifying...'
