@@ -171,20 +171,17 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         // Use real ComplianceFramework objects to properly set id property
         $framework = new ComplianceFramework();
         $reflectionId = new \ReflectionProperty(ComplianceFramework::class, 'id');
-        $reflectionId->setAccessible(true);
         $reflectionId->setValue($framework, 1);
 
         $matchingRequirement = $this->createMock(ComplianceRequirement::class);
         $matchingFramework = new ComplianceFramework();
         $reflectionId2 = new \ReflectionProperty(ComplianceFramework::class, 'id');
-        $reflectionId2->setAccessible(true);
         $reflectionId2->setValue($matchingFramework, 1);
         $matchingRequirement->method('getFramework')->willReturn($matchingFramework);
 
         $nonMatchingRequirement = $this->createMock(ComplianceRequirement::class);
         $nonMatchingFramework = new ComplianceFramework();
         $reflectionId3 = new \ReflectionProperty(ComplianceFramework::class, 'id');
-        $reflectionId3->setAccessible(true);
         $reflectionId3->setValue($nonMatchingFramework, 2);
         $nonMatchingRequirement->method('getFramework')->willReturn($nonMatchingFramework);
 
