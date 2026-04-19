@@ -232,7 +232,7 @@ class HomeController extends AbstractController
             'asset_count' => $tenant ? $this->assetRepository->count(['tenant' => $tenant]) : 0,
             'risk_count' => $tenant ? $this->riskRepository->count(['tenant' => $tenant]) : 0,
             'applicable_control_count' => $tenant && $this->controlRepository
-                ? $this->controlRepository->count(['tenant' => $tenant, 'isApplicable' => true])
+                ? $this->controlRepository->count(['tenant' => $tenant, 'applicable' => true])
                 : 0,
             'document_count' => $tenant && $this->documentRepository
                 ? $this->documentRepository->count(['tenant' => $tenant])
