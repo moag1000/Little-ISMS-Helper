@@ -141,6 +141,84 @@ class SupplierRepository extends ServiceEntityRepository
     }
 
     /**
+     * Phase 9.P2.5 — Cross-tenant supplier roll-up.
+     *
+     * Collapses supplier rows from the given tenant subtree into a
+     * deduplicated set keyed by LEI (preferred, ISO 17442 globally
+     * unique) or by normalized name (lowercase + trim) when no LEI is
+     * present. Each entry lists every tenant in the subtree that has a
+     * supplier record matching that identity.
+     *
+     * Intended for the Group-CISO: answers "which suppliers serve
+     * multiple Konzern-Töchter, and could we consolidate contracts or
+     * align due diligence?" (DORA Art. 28.3 Sub-Outsourcing-Kette,
+     * ISO 27001 A.5.19 Supplier Relationships).
+     *
+     * @param Tenant[] $tenants
+     * @return array<string, array{
+     *   key: string,
+     *   representative: Supplier,
+     *   references: list<Supplier>,
+     *   tenant_codes: list<string>,
+     *   max_criticality: ?string,
+     *   has_lei: bool
+     * }>
+     */
+    public function findGroupedForTenants(array $tenants): array
+    {
+        if ($tenants === []) {
+            return [];
+        }
+
+        $suppliers = $this->createQueryBuilder('s')
+            ->where('s.tenant IN (:tenants)')
+            ->setParameter('tenants', $tenants)
+            ->orderBy('s.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $criticalityRank = ['critical' => 4, 'high' => 3, 'medium' => 2, 'low' => 1];
+        $grouped = [];
+        foreach ($suppliers as $supplier) {
+            $lei = (string) $supplier->getLeiCode();
+            if ($lei !== '') {
+                $key = 'lei:' . strtoupper($lei);
+                $hasLei = true;
+            } else {
+                $key = 'name:' . mb_strtolower(trim((string) $supplier->getName()));
+                $hasLei = false;
+            }
+
+            if (!isset($grouped[$key])) {
+                $grouped[$key] = [
+                    'key' => $key,
+                    'representative' => $supplier,
+                    'references' => [],
+                    'tenant_codes' => [],
+                    'max_criticality' => null,
+                    'has_lei' => $hasLei,
+                ];
+            }
+            $grouped[$key]['references'][] = $supplier;
+            $code = (string) $supplier->getTenant()?->getCode();
+            if ($code !== '' && !in_array($code, $grouped[$key]['tenant_codes'], true)) {
+                $grouped[$key]['tenant_codes'][] = $code;
+            }
+
+            $crit = (string) $supplier->getCriticality();
+            $currentMax = $grouped[$key]['max_criticality'];
+            if (isset($criticalityRank[$crit]) && (
+                $currentMax === null
+                || ($criticalityRank[$crit] ?? 0) > ($criticalityRank[$currentMax] ?? 0)
+            )) {
+                $grouped[$key]['max_criticality'] = $crit;
+            }
+        }
+
+        return $grouped;
+    }
+
+    /**
      * Find suppliers by tenant including all ancestors (for hierarchical governance)
      * This allows viewing inherited suppliers from parent companies, grandparents, etc.
      *

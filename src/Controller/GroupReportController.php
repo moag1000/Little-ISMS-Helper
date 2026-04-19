@@ -11,6 +11,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
 use App\Repository\RiskRepository;
+use App\Repository\SupplierRepository;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,6 +38,7 @@ final class GroupReportController extends AbstractController
         private readonly ControlRepository $controlRepository,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementRepository $requirementRepository,
+        private readonly SupplierRepository $supplierRepository,
     ) {
     }
 
@@ -224,6 +226,63 @@ final class GroupReportController extends AbstractController
             'tenants' => $tree,
             'control_ids' => array_keys($controlIdsSeen),
             'matrix' => $byControlId,
+            'totals' => $totals,
+        ]);
+    }
+
+    /**
+     * Phase 9.P2.5 — Cross-tenant supplier register.
+     * Deduplicates suppliers across the holding subtree by LEI
+     * (preferred) or normalized name. Shows how many tenants reference
+     * each unique supplier — the consolidation + re-negotiation hook
+     * the Group-CISO needs for DORA Art. 28.3 and ISO A.5.19.
+     */
+    #[Route('/suppliers', name: 'suppliers', methods: ['GET'])]
+    public function suppliers(): Response
+    {
+        $root = $this->tenantContext->getCurrentTenant();
+        if (!$root instanceof Tenant) {
+            throw $this->createAccessDeniedException('No active tenant');
+        }
+
+        $tree = $this->tenantContext->getAccessibleTenants();
+        $grouped = $this->supplierRepository->findGroupedForTenants($tree);
+
+        // Sort groups: multi-tenant suppliers first (biggest
+        // consolidation opportunity), then by name.
+        uasort($grouped, static function (array $a, array $b): int {
+            $sizeDiff = count($b['tenant_codes']) <=> count($a['tenant_codes']);
+            if ($sizeDiff !== 0) {
+                return $sizeDiff;
+            }
+            return strcmp(
+                (string) $a['representative']->getName(),
+                (string) $b['representative']->getName()
+            );
+        });
+
+        $totals = [
+            'unique' => count($grouped),
+            'shared' => 0,
+            'with_lei' => 0,
+            'critical' => 0,
+        ];
+        foreach ($grouped as $g) {
+            if (count($g['tenant_codes']) >= 2) {
+                $totals['shared']++;
+            }
+            if ($g['has_lei']) {
+                $totals['with_lei']++;
+            }
+            if ($g['max_criticality'] === 'critical') {
+                $totals['critical']++;
+            }
+        }
+
+        return $this->render('group_report/suppliers.html.twig', [
+            'root' => $root,
+            'tenants' => $tree,
+            'grouped' => $grouped,
             'totals' => $totals,
         ]);
     }
