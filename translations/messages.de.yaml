@@ -1234,6 +1234,43 @@ nis2:
     not_active: 'Nicht aktiv'
     report_not_available: 'Bericht nicht verfügbar'
     incident_not_reportable: 'Vorfall nicht meldepflichtig'
+bsi_check:
+    title: 'BSI IT-Grundschutz-Check'
+    description: 'Soll/Ist-Vergleich pro Baustein mit MUSS/SOLLTE/KANN-Gewichtung. Daten stammen aus dem ComplianceRequirement-Bestand und den gemappten Controls — keine Doppelpflege.'
+    framework: 'Framework'
+    filter:
+        absicherungs_stufe: 'Absicherungsstufe'
+        all: 'Alle Stufen'
+        apply: 'Anwenden'
+        reset: 'Zurücksetzen'
+    stufe:
+        basis: 'Basis-Absicherung'
+        standard: 'Standard-Absicherung'
+        kern: 'Kern-Absicherung'
+    overall:
+        weighted: 'Gewichteter Gesamt-Score'
+        weighted_hint: 'MUSS × 3, SOLLTE × 2, KANN × 1'
+    type:
+        label: 'Anforderungstyp'
+        muss: 'MUSS'
+        sollte: 'SOLLTE'
+        kann: 'KANN'
+    fulfilled_total: 'Erfüllt / Gesamt'
+    avg_pct: 'Ø Erfüllung'
+    weighted_pct: 'Gewichtet'
+    progress: 'Fortschritt'
+    layers:
+        title: 'Schichten (Layer)'
+    layer:
+        code: 'Schicht'
+        name: 'Name'
+    bausteine:
+        title: 'Bausteine'
+    requirements:
+        show: '%count% Anforderungen anzeigen'
+    empty:
+        title: 'Keine Anforderungen gefunden'
+        message: 'Für die gewählte Absicherungsstufe sind keine BSI-IT-Grundschutz-Anforderungen erfasst. Versuchen Sie einen anderen Filter oder laden Sie den Kompendium-Datenbestand mit app:load-bsi-grundschutz-requirements und app:load-bsi-kompendium-delta.'
 Customer: Kunde
 Shareholder: Shareholder
 Employee: Mitarbeiter
