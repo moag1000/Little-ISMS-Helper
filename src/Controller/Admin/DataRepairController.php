@@ -116,6 +116,24 @@ class DataRepairController extends AbstractController
         }
 
         $count = 0;
+        // Audit-log each reassignment per entity (ISB MAJOR-1). The per-entity
+        // granularity lets an auditor answer "who moved entity X into tenant Y"
+        // without reverse-engineering a diff.
+        $assignFn = function (object $entity, string $className) use ($tenant, &$count): void {
+            if (!method_exists($entity, 'setTenant') || !method_exists($entity, 'getId')) {
+                return;
+            }
+            $entity->setTenant($tenant);
+            $this->auditLogger->logCustom(
+                'admin.data_repair.orphan_reassigned',
+                $className,
+                (int) $entity->getId(),
+                ['tenant_id' => null],
+                ['tenant_id' => $tenant->getId(), 'tenant_name' => $tenant->getName()],
+                sprintf('Orphan %s#%d reassigned to tenant %s', $className, (int) $entity->getId(), $tenant->getName()),
+            );
+            $count++;
+        };
 
         switch ($entityType) {
             case 'assets':
@@ -124,8 +142,7 @@ class DataRepairController extends AbstractController
                     ->getQuery()
                     ->getResult();
                 foreach ($orphaned as $entity) {
-                    $entity->setTenant($tenant);
-                    $count++;
+                    $assignFn($entity, 'Asset');
                 }
                 break;
 
@@ -135,8 +152,7 @@ class DataRepairController extends AbstractController
                     ->getQuery()
                     ->getResult();
                 foreach ($orphaned as $entity) {
-                    $entity->setTenant($tenant);
-                    $count++;
+                    $assignFn($entity, 'Risk');
                 }
                 break;
 
@@ -146,8 +162,7 @@ class DataRepairController extends AbstractController
                     ->getQuery()
                     ->getResult();
                 foreach ($orphaned as $entity) {
-                    $entity->setTenant($tenant);
-                    $count++;
+                    $assignFn($entity, 'Incident');
                 }
                 break;
 
@@ -158,8 +173,7 @@ class DataRepairController extends AbstractController
                     ->getQuery()
                     ->getResult();
                 foreach ($orphanedAssets as $entity) {
-                    $entity->setTenant($tenant);
-                    $count++;
+                    $assignFn($entity, 'Asset');
                 }
 
                 $orphanedRisks = $this->riskRepository->createQueryBuilder('r')
@@ -167,8 +181,7 @@ class DataRepairController extends AbstractController
                     ->getQuery()
                     ->getResult();
                 foreach ($orphanedRisks as $entity) {
-                    $entity->setTenant($tenant);
-                    $count++;
+                    $assignFn($entity, 'Risk');
                 }
 
                 $orphanedIncidents = $this->incidentRepository->createQueryBuilder('i')
@@ -176,8 +189,7 @@ class DataRepairController extends AbstractController
                     ->getQuery()
                     ->getResult();
                 foreach ($orphanedIncidents as $orphanedIncident) {
-                    $orphanedIncident->setTenant($tenant);
-                    $count++;
+                    $assignFn($orphanedIncident, 'Incident');
                 }
                 break;
 
@@ -214,19 +226,23 @@ class DataRepairController extends AbstractController
 
         $entity = null;
         $entityName = '';
+        $className = '';
 
         switch ($type) {
             case 'asset':
                 $entity = $this->assetRepository->find($id);
                 $entityName = $entity ? $entity->getName() : '';
+                $className = 'Asset';
                 break;
             case 'risk':
                 $entity = $this->riskRepository->find($id);
                 $entityName = $entity ? $entity->getTitle() : '';
+                $className = 'Risk';
                 break;
             case 'incident':
                 $entity = $this->incidentRepository->find($id);
                 $entityName = $entity ? $entity->getTitle() : '';
+                $className = 'Incident';
                 break;
         }
 
@@ -235,7 +251,18 @@ class DataRepairController extends AbstractController
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
+        // ISB MAJOR-1: capture previous tenant before mutation for audit diff.
+        $previousTenant = method_exists($entity, 'getTenant') ? $entity->getTenant() : null;
+        $previousTenantId = $previousTenant instanceof \App\Entity\Tenant ? $previousTenant->getId() : null;
         $entity->setTenant($tenant);
+        $this->auditLogger->logCustom(
+            'admin.data_repair.entity_reassigned',
+            $className,
+            $id,
+            ['tenant_id' => $previousTenantId],
+            ['tenant_id' => $tenant->getId(), 'tenant_name' => $tenant->getName()],
+            sprintf('%s#%d "%s" reassigned to tenant %s', $className, $id, $entityName, $tenant->getName()),
+        );
         $this->entityManager->flush();
 
         $this->addFlash('success', $this->translator->trans('admin.data_repair.entity_reassigned', [
@@ -276,8 +303,18 @@ class DataRepairController extends AbstractController
                     $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found'));
                     return $this->redirectToRoute('admin_data_repair_index');
                 }
+                $previousAsset = $entity->getAsset();
+                $previousAssetId = $previousAsset?->getId();
                 $entity->setAsset($asset);
                 $entityName = $entity->getTitle();
+                $this->auditLogger->logCustom(
+                    'admin.data_repair.asset_assigned',
+                    'Risk',
+                    $id,
+                    ['asset_id' => $previousAssetId],
+                    ['asset_id' => $asset->getId(), 'asset_name' => $asset->getName()],
+                    sprintf('Risk#%d "%s" linked to Asset#%d "%s"', $id, $entityName, (int) $asset->getId(), $asset->getName()),
+                );
                 break;
 
             case 'incident':
@@ -287,10 +324,19 @@ class DataRepairController extends AbstractController
                     return $this->redirectToRoute('admin_data_repair_index');
                 }
                 // Incidents have ManyToMany relationship with assets
-                if (!$entity->getAffectedAssets()->contains($asset)) {
+                $alreadyLinked = $entity->getAffectedAssets()->contains($asset);
+                if (!$alreadyLinked) {
                     $entity->addAffectedAsset($asset);
                 }
                 $entityName = $entity->getTitle();
+                $this->auditLogger->logCustom(
+                    'admin.data_repair.asset_assigned',
+                    'Incident',
+                    $id,
+                    ['affected_asset_linked' => $alreadyLinked],
+                    ['asset_id' => $asset->getId(), 'asset_name' => $asset->getName(), 'affected_asset_linked' => true],
+                    sprintf('Incident#%d "%s" gained affected asset Asset#%d "%s"', $id, $entityName, (int) $asset->getId(), $asset->getName()),
+                );
                 break;
 
             default:
@@ -337,7 +383,16 @@ class DataRepairController extends AbstractController
         }
 
         // Add risk to control
+        $alreadyLinked = $control->getRisks()->contains($risk);
         $control->addRisk($risk);
+        $this->auditLogger->logCustom(
+            'admin.data_repair.risk_assigned',
+            'Control',
+            $id,
+            ['risk_linked' => $alreadyLinked],
+            ['risk_id' => $risk->getId(), 'risk_title' => $risk->getTitle(), 'risk_linked' => true],
+            sprintf('Control#%d "%s" linked to Risk#%d "%s"', $id, $control->getName(), (int) $risk->getId(), $risk->getTitle()),
+        );
         $this->entityManager->flush();
 
         $this->addFlash('success', sprintf(
@@ -377,7 +432,16 @@ class DataRepairController extends AbstractController
         }
 
         // Add asset to control's protected assets
+        $alreadyLinked = $control->getProtectedAssets()->contains($asset);
         $control->addProtectedAsset($asset);
+        $this->auditLogger->logCustom(
+            'admin.data_repair.asset_to_control_assigned',
+            'Control',
+            $id,
+            ['protected_asset_linked' => $alreadyLinked],
+            ['asset_id' => $asset->getId(), 'asset_name' => $asset->getName(), 'protected_asset_linked' => true],
+            sprintf('Control#%d "%s" now protects Asset#%d "%s"', $id, $control->getName(), (int) $asset->getId(), $asset->getName()),
+        );
         $this->entityManager->flush();
 
         $this->addFlash('success', sprintf(
@@ -486,11 +550,28 @@ class DataRepairController extends AbstractController
         return $this->redirectToRoute('admin_data_repair_index');
     }
 
+    /**
+     * Resolves cross-entity tenant mismatches by forcing the child's tenant
+     * to match its related Asset. ISB MINOR-5 / A.5.3: this is a judgement
+     * call (could be a data leak OR a reparation) — therefore:
+     *   - a reason ≥ 20 chars is mandatory,
+     *   - every reassignment is audit-logged with the before/after tenant.
+     */
     #[Route('/admin/data-repair/fix-tenant-mismatches', name: 'admin_data_repair_fix_tenant_mismatches', methods: ['POST'])]
     public function fixTenantMismatches(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('fix_tenant_mismatches', $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $reason = trim((string) $request->request->get('reason', ''));
+        if (mb_strlen($reason) < 20) {
+            $this->addFlash('danger', $this->translator->trans(
+                'admin.data_repair.reason_required',
+                ['%min%' => 20, '%actual%' => mb_strlen($reason)],
+                'admin',
+            ));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -503,7 +584,29 @@ class DataRepairController extends AbstractController
                 $risk = $this->riskRepository->find($ref['entity_id']);
                 $asset = $risk?->getAsset();
                 if ($risk && $asset && $asset->getTenant()) {
-                    $risk->setTenant($asset->getTenant());
+                    $previousTenant = $risk->getTenant();
+                    $newTenant = $asset->getTenant();
+                    $risk->setTenant($newTenant);
+                    $this->auditLogger->logCustom(
+                        'admin.data_repair.tenant_mismatch_fixed',
+                        'Risk',
+                        (int) $risk->getId(),
+                        ['tenant_id' => $previousTenant?->getId()],
+                        [
+                            'tenant_id' => $newTenant->getId(),
+                            'tenant_name' => $newTenant->getName(),
+                            'aligned_to' => 'Asset#' . (int) $asset->getId(),
+                            'reason' => $reason,
+                        ],
+                        sprintf(
+                            'Risk#%d tenant aligned to Asset#%d owner (tenant %d -> %d): %s',
+                            (int) $risk->getId(),
+                            (int) $asset->getId(),
+                            (int) ($previousTenant?->getId() ?? 0),
+                            (int) $newTenant->getId(),
+                            $reason,
+                        ),
+                    );
                     $fixedCount++;
                 }
             }
@@ -515,7 +618,29 @@ class DataRepairController extends AbstractController
                     // Set incident tenant to first asset's tenant
                     $firstAsset = $incident->getAffectedAssets()->first();
                     if ($firstAsset && $firstAsset->getTenant()) {
-                        $incident->setTenant($firstAsset->getTenant());
+                        $previousTenant = $incident->getTenant();
+                        $newTenant = $firstAsset->getTenant();
+                        $incident->setTenant($newTenant);
+                        $this->auditLogger->logCustom(
+                            'admin.data_repair.tenant_mismatch_fixed',
+                            'Incident',
+                            (int) $incident->getId(),
+                            ['tenant_id' => $previousTenant?->getId()],
+                            [
+                                'tenant_id' => $newTenant->getId(),
+                                'tenant_name' => $newTenant->getName(),
+                                'aligned_to' => 'Asset#' . (int) $firstAsset->getId(),
+                                'reason' => $reason,
+                            ],
+                            sprintf(
+                                'Incident#%d tenant aligned to first affected Asset#%d owner (tenant %d -> %d): %s',
+                                (int) $incident->getId(),
+                                (int) $firstAsset->getId(),
+                                (int) ($previousTenant?->getId() ?? 0),
+                                (int) $newTenant->getId(),
+                                $reason,
+                            ),
+                        );
                         $fixedCount++;
                     }
                 }
