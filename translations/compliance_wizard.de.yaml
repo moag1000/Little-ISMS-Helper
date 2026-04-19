@@ -1,0 +1,53 @@
+compliance_wizard:
+    delta:
+        title: 'Delta-Assessment'
+        sheet:
+            summary: 'Zusammenfassung'
+            detail: 'Detail-Delta'
+            mapping: 'Mapping-Inventar'
+        summary:
+            tenant: 'Mandant'
+            target: 'Ziel-Framework'
+            baseline: 'Baseline-Framework'
+            reporting_date: 'Stichtag'
+            total: 'Anforderungen gesamt'
+            inherited: 'Aus Baseline vererbt'
+            direct: 'Direkt erfüllt'
+            gap: 'Anforderungen mit Lücke (<50%)'
+            avg_fulfillment: 'Durchschnittliche Erfüllung'
+            fte_saved: 'Geschätzte FTE-Tage eingespart'
+            pre_fill_rate: 'Pre-Fill-Rate Ziel %target%%%, aktuell %actual%%%'
+            pre_fill_rate_ok: 'ZIEL ERREICHT'
+            pre_fill_rate_miss: 'UNTER ZIEL — Mapping-Abdeckung prüfen'
+        detail:
+            col:
+                requirement_id: 'Anforderungs-ID'
+                title: 'Titel'
+                category: 'Kategorie'
+                priority: 'Priorität'
+                fulfillment_pct: 'Aktuelle Erfüllung %'
+                status: 'Status'
+                source_mappings: 'Quell-Mappings'
+                inheritance_state: 'Vererbungsstatus'
+                applicability_justification: 'Anwendbarkeits-Begründung'
+                gap_estimation: 'Gap-Schätzung (Tage)'
+                action_required: 'Erforderliche Maßnahme'
+        mapping:
+            col:
+                source_requirement: 'Quell-Anforderung'
+                target_requirement: 'Ziel-Anforderung'
+                mapping_percentage: 'Mapping %'
+                confidence: 'Konfidenz'
+                bidirectional: 'Bidirektional'
+                source: 'Herkunft'
+                valid_from: 'Gültig ab'
+                valid_until: 'Gültig bis'
+        action:
+            no_action: 'keine Maßnahme'
+            review_pending: 'Review offen'
+            new_assessment: 'Neubewertung erforderlich'
+            gap_close: 'Gap schließen'
+            download_excel: 'Delta-Assessment exportieren (Excel)'
+            baseline_required: 'Baseline-Framework benötigt (kein anderes aktives Framework im Mandanten)'
+        flash:
+            no_baseline_selected: 'Kein Baseline-Framework gewählt — es wird nur der Zustand des Ziel-Frameworks gezeigt.'
