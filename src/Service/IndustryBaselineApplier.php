@@ -173,4 +173,29 @@ class IndustryBaselineApplier
             'frameworks_missing' => $frameworksMissing,
         ];
     }
+
+    /**
+     * Apply the baseline to $root and every direct and transitive
+     * subsidiary. Each tenant gets its own AppliedBaseline record and
+     * its own preset risks/assets/controls — propagation, not mere
+     * reference. Tenants that already have the baseline are left alone
+     * (idempotent per-subtree). Phase 9.P1.5.
+     *
+     * The return array is keyed by tenant code so a caller can render a
+     * per-tenant roll-up ("Holding: 12 risks, Tochter-A: 0 (already
+     * applied), Tochter-B: 12 risks").
+     *
+     * @return array<string, array{already_applied:bool, risks_created:int, assets_created:int, controls_marked_applicable:int, frameworks_missing:list<string>}>
+     */
+    public function applyRecursive(IndustryBaseline $baseline, Tenant $root, ?User $actor = null): array
+    {
+        $results = [];
+        $results[(string) $root->getCode()] = $this->apply($baseline, $root, $actor);
+
+        foreach ($root->getAllSubsidiaries() as $subsidiary) {
+            $results[(string) $subsidiary->getCode()] = $this->apply($baseline, $subsidiary, $actor);
+        }
+
+        return $results;
+    }
 }

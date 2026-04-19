@@ -25,12 +25,25 @@
                 <span class="badge bg-light text-dark border">{{ baseline.source }}</span>
             </p>
         </div>
-        <div>
+        <div class="d-flex flex-column align-items-end gap-2">
             {% if applied_record %}
                 <span class="badge bg-success fs-6">
                     <i class="bi bi-check-circle" aria-hidden="true"></i>
                     {{ 'industry_baseline.status.applied_at'|trans({'%date%': applied_record.appliedAt|date('Y-m-d H:i')}, 'industry_baseline') }}
                 </span>
+            {% elseif inherited_record %}
+                <span class="badge bg-info fs-6" title="{{ 'industry_baseline.status.inherited_from'|trans({'%tenant%': inherited_record.tenant.name}, 'industry_baseline') }}">
+                    <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                    {{ 'industry_baseline.status.inherited'|trans({'%tenant%': inherited_record.tenant.name}, 'industry_baseline') }}
+                </span>
+                <form method="post" action="{{ path('app_industry_baseline_apply', {code: baseline.code}) }}"
+                      onsubmit="return confirm('{{ 'industry_baseline.confirm_apply_over_inherited'|trans({}, 'industry_baseline')|e('js') }}');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('apply_baseline_' ~ baseline.code) }}">
+                    <button type="submit" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-rocket-takeoff" aria-hidden="true"></i>
+                        {{ 'industry_baseline.action.apply_locally'|trans({}, 'industry_baseline') }}
+                    </button>
+                </form>
             {% else %}
                 <form method="post" action="{{ path('app_industry_baseline_apply', {code: baseline.code}) }}"
                       onsubmit="return confirm('{{ 'industry_baseline.confirm_apply'|trans({}, 'industry_baseline')|e('js') }}');">
@@ -38,6 +51,17 @@
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-rocket-takeoff" aria-hidden="true"></i>
                         {{ 'industry_baseline.action.apply'|trans({}, 'industry_baseline') }}
+                    </button>
+                </form>
+            {% endif %}
+
+            {% if app.user and app.user.tenant and app.user.tenant.allSubsidiaries|length > 0 %}
+                <form method="post" action="{{ path('app_industry_baseline_apply_recursive', {code: baseline.code}) }}"
+                      onsubmit="return confirm('{{ 'industry_baseline.confirm_apply_recursive'|trans({'%count%': app.user.tenant.allSubsidiaries|length + 1}, 'industry_baseline')|e('js') }}');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('apply_baseline_recursive_' ~ baseline.code) }}">
+                    <button type="submit" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                        {{ 'industry_baseline.action.apply_recursive'|trans({'%count%': app.user.tenant.allSubsidiaries|length + 1}, 'industry_baseline') }}
                     </button>
                 </form>
             {% endif %}

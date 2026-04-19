@@ -14,6 +14,9 @@ industry_baseline:
     status:
         applied: 'Bereits angewendet'
         applied_at: 'Angewendet am %date%'
+        inherited: 'Vererbt von %tenant%'
+        inherited_short: 'Vererbt'
+        inherited_from: 'Über Konzernstruktur von %tenant% vererbt'
     field:
         description: 'Beschreibung'
         required_frameworks: 'Erforderliche Frameworks'
@@ -28,7 +31,11 @@ industry_baseline:
     action:
         details: 'Details ansehen'
         apply: 'Baseline anwenden'
+        apply_locally: 'Lokal zusätzlich anwenden'
+        apply_recursive: 'Auf %count% Tenants im Konzern anwenden'
     confirm_apply: 'Baseline wird auf deinen aktuellen Mandanten angewendet. Bereits vorhandene Daten (nach Titel/Name) werden nicht überschrieben. Fortfahren?'
+    confirm_apply_over_inherited: 'Diese Baseline ist bereits aus der übergeordneten Konzernstruktur sichtbar. Ein lokaler Apply erzeugt zusätzlich einen eigenen Datenstamm im aktuellen Tenant. Fortfahren?'
+    confirm_apply_recursive: 'Baseline wird auf %count% Tenants (aktueller Tenant + alle Töchter) angewendet. Bereits versorgte Tenants werden übersprungen. Fortfahren?'
     risk:
         title: 'Risiko'
         category: 'Kategorie'
@@ -45,6 +52,8 @@ industry_baseline:
     flash:
         invalid_csrf: 'Ungültiges CSRF-Token.'
         no_tenant: 'Kein aktiver Mandant — Baseline-Anwendung nicht möglich.'
+        no_subsidiaries: 'Der aktuelle Tenant hat keine Töchter — rekursive Anwendung nicht möglich.'
         already_applied: 'Baseline wurde bereits auf diesen Mandanten angewendet. Keine erneute Anwendung nötig.'
         applied_summary: 'Baseline angewendet: %risks% Risiken, %assets% Assets, %controls% Controls als anwendbar markiert.'
+        applied_recursive_summary: 'Rekursive Anwendung abgeschlossen: %applied% neu versorgt, %skipped% bereits vorhanden, %total% Tenants insgesamt.'
         frameworks_missing: 'Hinweis: Folgende erforderliche Frameworks sind im Mandanten noch nicht geladen: %frameworks%. Vor der weiteren Pflege sollten diese über den Compliance-Wizard aktiviert werden.'

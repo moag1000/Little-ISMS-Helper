@@ -84,4 +84,106 @@ final class IndustryBaselineApplierTest extends KernelTestCase
             $em->rollback();
         }
     }
+
+    public function testApplyRecursivePropagatesToSubsidiaries(): void
+    {
+        ['applier' => $applier, 'em' => $em] = $this->bootServices();
+
+        $em->beginTransaction();
+        try {
+            $holding = (new Tenant())
+                ->setName('UT Holding ' . uniqid('', true))
+                ->setCode('ut-holding-' . bin2hex(random_bytes(4)))
+                ->setIsCorporateParent(true);
+            $em->persist($holding);
+
+            $sub1 = (new Tenant())
+                ->setName('UT Tochter 1 ' . uniqid('', true))
+                ->setCode('ut-sub1-' . bin2hex(random_bytes(4)));
+            $holding->addSubsidiary($sub1);
+            $em->persist($sub1);
+
+            $sub2 = (new Tenant())
+                ->setName('UT Tochter 2 ' . uniqid('', true))
+                ->setCode('ut-sub2-' . bin2hex(random_bytes(4)));
+            $holding->addSubsidiary($sub2);
+            $em->persist($sub2);
+
+            $grandchild = (new Tenant())
+                ->setName('UT Enkel ' . uniqid('', true))
+                ->setCode('ut-grand-' . bin2hex(random_bytes(4)));
+            $sub1->addSubsidiary($grandchild);
+            $em->persist($grandchild);
+            $em->flush();
+
+            $baseline = $em->getRepository(IndustryBaseline::class)->findOneBy(['code' => 'BL-GENERIC-v1']);
+            self::assertNotNull($baseline);
+
+            $results = $applier->applyRecursive($baseline, $holding);
+
+            self::assertCount(4, $results, 'Holding + 2 subs + 1 grandchild');
+            self::assertFalse($results[$holding->getCode()]['already_applied']);
+            self::assertFalse($results[$sub1->getCode()]['already_applied']);
+            self::assertFalse($results[$sub2->getCode()]['already_applied']);
+            self::assertFalse($results[$grandchild->getCode()]['already_applied']);
+            self::assertGreaterThan(0, $results[$sub1->getCode()]['risks_created']);
+
+            foreach ([$holding, $sub1, $sub2, $grandchild] as $t) {
+                $record = $em->getRepository(AppliedBaseline::class)
+                    ->findOneBy(['tenant' => $t, 'baselineCode' => 'BL-GENERIC-v1']);
+                self::assertNotNull($record, 'Every tenant in subtree gets AppliedBaseline record');
+            }
+
+            $secondRun = $applier->applyRecursive($baseline, $holding);
+            self::assertTrue($secondRun[$holding->getCode()]['already_applied']);
+            self::assertTrue($secondRun[$grandchild->getCode()]['already_applied']);
+        } finally {
+            $em->rollback();
+        }
+    }
+
+    public function testInheritedBaselinesExcludeDirectlyApplied(): void
+    {
+        ['em' => $em] = $this->bootServices();
+        $applier = self::getContainer()->get(IndustryBaselineApplier::class);
+        $appliedRepo = $em->getRepository(AppliedBaseline::class);
+
+        $em->beginTransaction();
+        try {
+            $holding = (new Tenant())
+                ->setName('UT Holding ' . uniqid('', true))
+                ->setCode('ut-holding-' . bin2hex(random_bytes(4)));
+            $em->persist($holding);
+
+            $sub = (new Tenant())
+                ->setName('UT Tochter ' . uniqid('', true))
+                ->setCode('ut-sub-' . bin2hex(random_bytes(4)));
+            $holding->addSubsidiary($sub);
+            $em->persist($sub);
+            $em->flush();
+
+            $generic = $em->getRepository(IndustryBaseline::class)->findOneBy(['code' => 'BL-GENERIC-v1']);
+            $production = $em->getRepository(IndustryBaseline::class)->findOneBy(['code' => 'BL-PRODUCTION-v1']);
+            self::assertNotNull($generic);
+            self::assertNotNull($production);
+
+            // Holding applies both; child applies Generic directly as well
+            $applier->apply($generic, $holding);
+            $applier->apply($production, $holding);
+            $applier->apply($generic, $sub);
+
+            $inherited = $appliedRepo->findInheritedByTenant($sub);
+
+            // Generic is direct on sub — must not appear as inherited
+            self::assertArrayNotHasKey('BL-GENERIC-v1', $inherited);
+            // Production only on holding — must appear as inherited
+            self::assertArrayHasKey('BL-PRODUCTION-v1', $inherited);
+            self::assertSame($holding->getId(), $inherited['BL-PRODUCTION-v1']->getTenant()->getId());
+
+            // Holding itself has no ancestors, so no inheritance
+            self::assertSame([], $appliedRepo->findInheritedByTenant($holding));
+        } finally {
+            $em->rollback();
+        }
+    }
 }

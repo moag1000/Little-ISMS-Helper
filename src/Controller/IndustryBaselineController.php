@@ -35,11 +35,13 @@ final class IndustryBaselineController extends AbstractController
         $tenant = $this->tenantContext->getCurrentTenant();
         $applied = $tenant !== null ? $this->appliedRepository->findByTenant($tenant) : [];
         $appliedCodes = array_map(static fn($a) => $a->getBaselineCode(), $applied);
+        $inherited = $tenant !== null ? $this->appliedRepository->findInheritedByTenant($tenant) : [];
 
         return $this->render('industry_baseline/index.html.twig', [
             'baselines' => $this->baselineRepository->findAllOrdered(),
             'applied_codes' => $appliedCodes,
             'applied' => $applied,
+            'inherited' => $inherited,
         ]);
     }
 
@@ -54,10 +56,14 @@ final class IndustryBaselineController extends AbstractController
         $appliedRecord = $tenant !== null
             ? $this->appliedRepository->findOneByTenantAndCode($tenant, $baseline->getCode())
             : null;
+        $inherited = $tenant !== null
+            ? ($this->appliedRepository->findInheritedByTenant($tenant)[$baseline->getCode()] ?? null)
+            : null;
 
         return $this->render('industry_baseline/show.html.twig', [
             'baseline' => $baseline,
             'applied_record' => $appliedRecord,
+            'inherited_record' => $inherited,
         ]);
     }
 
@@ -103,6 +109,61 @@ final class IndustryBaselineController extends AbstractController
                 ));
             }
         }
+
+        return $this->redirectToRoute('app_industry_baseline_show', ['code' => $baseline->getCode()]);
+    }
+
+    /**
+     * Phase 9.P1.5 — Holding operator applies a baseline to the full
+     * corporate subtree (holding + all direct/transitive subsidiaries).
+     * Intended for governance baselines (ISO 27001 clauses, top-level
+     * policies) that every tochter should share as a starting point.
+     */
+    #[Route('/{code}/apply-recursive', name: 'apply_recursive', methods: ['POST'], requirements: ['code' => '[A-Za-z0-9_\-]+'])]
+    public function applyRecursive(string $code, Request $request): Response
+    {
+        $baseline = $this->baselineRepository->findByCode($code);
+        if ($baseline === null) {
+            throw $this->createNotFoundException();
+        }
+        if (!$this->isCsrfTokenValid('apply_baseline_recursive_' . $baseline->getCode(), (string) $request->request->get('_token'))) {
+            $this->addFlash('danger', $this->translator->trans('industry_baseline.flash.invalid_csrf', [], 'industry_baseline'));
+            return $this->redirectToRoute('app_industry_baseline_show', ['code' => $baseline->getCode()]);
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null) {
+            $this->addFlash('warning', $this->translator->trans('industry_baseline.flash.no_tenant', [], 'industry_baseline'));
+            return $this->redirectToRoute('app_industry_baseline_index');
+        }
+        if ($tenant->getAllSubsidiaries() === []) {
+            $this->addFlash('warning', $this->translator->trans('industry_baseline.flash.no_subsidiaries', [], 'industry_baseline'));
+            return $this->redirectToRoute('app_industry_baseline_show', ['code' => $baseline->getCode()]);
+        }
+
+        /** @var User|null $user */
+        $user = $this->getUser();
+        $results = $this->applier->applyRecursive($baseline, $tenant, $user instanceof User ? $user : null);
+
+        $appliedCount = 0;
+        $skippedCount = 0;
+        foreach ($results as $result) {
+            if ($result['already_applied']) {
+                $skippedCount++;
+            } else {
+                $appliedCount++;
+            }
+        }
+
+        $this->addFlash('success', $this->translator->trans(
+            'industry_baseline.flash.applied_recursive_summary',
+            [
+                '%applied%' => $appliedCount,
+                '%skipped%' => $skippedCount,
+                '%total%' => count($results),
+            ],
+            'industry_baseline',
+        ));
 
         return $this->redirectToRoute('app_industry_baseline_show', ['code' => $baseline->getCode()]);
     }
