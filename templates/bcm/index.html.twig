@@ -98,7 +98,7 @@
                                 <br><small class="text-muted">{{ process.description|length > 60 ? process.description|slice(0, 60) ~ '...' : process.description }}</small>
                             {% endif %}
                         </td>
-                        <td>{{ process.processOwner ?? '-' }}</td>
+                        <td>{{ process.effectiveProcessOwner ?? '-' }}</td>
                         <td>
                             {% set criticality_colors = {
                                 'critical': 'danger',

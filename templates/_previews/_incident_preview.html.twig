@@ -31,7 +31,7 @@
 
             {% if incident.reportedBy %}
             <dt class="col-sm-4">{{ 'incident.field.reported_by'|trans({}, 'incident') }}:</dt>
-            <dd class="col-sm-8">{{ incident.reportedBy }}</dd>
+            <dd class="col-sm-8">{{ incident.effectiveReportedBy }}</dd>
             {% endif %}
         </dl>
     </div>
