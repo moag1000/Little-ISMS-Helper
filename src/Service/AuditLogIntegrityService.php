@@ -51,6 +51,22 @@ class AuditLogIntegrityService
     }
 
     /**
+     * Re-sign a row with an explicit previousHmac — used by the
+     * app:audit-log:resign command when walking the chain from a
+     * specific starting point. Bypasses findLatestSignedHmac() so
+     * mid-chain re-signing does not inherit the terminal HMAC as
+     * every row's predecessor (which would corrupt the chain).
+     */
+    public function signWithPrevious(AuditLog $log, ?string $previousHmac): void
+    {
+        if (!$this->isEnabled()) {
+            return;
+        }
+        $log->setPreviousHmac($previousHmac);
+        $log->setHmac(hash_hmac(self::ALGO, $log->getSigningPayload(), $this->hmacSecret));
+    }
+
+    /**
      * Verifies a single row's HMAC against its current payload.
      */
     public function verify(AuditLog $log): bool

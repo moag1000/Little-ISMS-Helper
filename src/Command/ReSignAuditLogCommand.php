@@ -52,22 +52,35 @@ final class ReSignAuditLogCommand
         $count = (int) (clone $qb)->select('COUNT(a.id)')->getQuery()->getSingleScalarResult();
         $io->title(sprintf('Re-signing %d audit-log rows%s', $count, $dryRun ? ' (dry-run)' : ''));
 
+        // Anchor previousHmac: when --after > 0 we need the HMAC of row#$after
+        // itself so the next row links correctly to the existing chain. When
+        // starting from the top, previous is null (chain anchor). ISB MINOR
+        // finding — without this, sign() would pull findLatestSignedHmac()
+        // which is the last row in the table, breaking the chain.
+        $previousHmac = null;
+        if ($after > 0) {
+            $anchor = $this->repository->find($after);
+            $previousHmac = $anchor?->getHmac();
+        }
+
         $iter = $qb->getQuery()->toIterable();
         $processed = 0;
         $changed = 0;
         foreach ($iter as $row) {
             /** @var AuditLog $row */
-            $previous = $row->getHmac();
-            $this->integrity->sign($row);
-            if ($previous !== $row->getHmac()) {
+            $oldHmac = $row->getHmac();
+            $this->integrity->signWithPrevious($row, $previousHmac);
+            if ($oldHmac !== $row->getHmac()) {
                 $changed++;
             }
+            $previousHmac = $row->getHmac() ?? $previousHmac;
             $processed++;
             if ($processed % $batchSize === 0) {
                 if (!$dryRun) {
                     $this->entityManager->flush();
                 }
-                $this->entityManager->clear();
+                // NOTE: cannot clear() here — $previousHmac must stay live
+                // across the boundary so the next batch links correctly.
                 $io->writeln(sprintf('  … processed %d', $processed));
             }
         }
