@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Service\CompliancePolicyService;
 use App\Service\ExcelExportService;
+use App\Service\InheritanceMetricsService;
 use App\Service\PortfolioReportService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -35,6 +36,7 @@ class PortfolioReportController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly CompliancePolicyService $policy,
         private readonly ExcelExportService $excelExportService,
+        private readonly InheritanceMetricsService $inheritanceMetricsService,
     ) {
     }
 
@@ -67,6 +69,8 @@ class PortfolioReportController extends AbstractController
             : null;
 
         $matrix = $this->portfolioReportService->buildMatrix($tenant, $stichtag, $vorperiode);
+        $inheritanceMetrics = $this->inheritanceMetricsService->metricsForTenant($tenant);
+        $fteSaved = $this->inheritanceMetricsService->fteSavedForTenant($tenant);
 
         return $this->render('portfolio_report/index.html.twig', [
             'matrix' => $matrix,
@@ -74,6 +78,8 @@ class PortfolioReportController extends AbstractController
             'stichtag' => $stichtag,
             'vorperiode' => $vorperiode,
             'thresholds' => $this->thresholds(),
+            'inheritance_metrics' => $inheritanceMetrics,
+            'fte_saved' => $fteSaved,
         ]);
     }
 

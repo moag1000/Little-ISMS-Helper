@@ -54,6 +54,25 @@
         </div>
     </div>
 
+    {# FTE Executive KPI (CM-5) #}
+    {% if fte_saved is defined %}
+        <div class="card shadow-sm mb-4 border-success">
+            <div class="card-body text-center">
+                <div class="small text-uppercase text-muted mb-1">
+                    <i class="bi bi-lightning-charge-fill text-success" aria-hidden="true"></i>
+                    {{ 'portfolio_report.fte_saved.title'|trans({}, 'portfolio_report') }}
+                </div>
+                <div class="display-4 fw-bold text-success mb-1">
+                    {{ fte_saved|number_format(1, '.', ',') }}
+                    <small class="fs-5 text-muted">{{ 'portfolio_report.fte_saved.days_suffix'|trans({}, 'portfolio_report') }}</small>
+                </div>
+                <div class="text-muted">
+                    {{ 'portfolio_report.fte_saved.subtitle'|trans({}, 'portfolio_report') }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
     {# Stichtag / Vorperiode Picker #}
     <div class="card shadow-sm mb-4">
         <div class="card-body">
@@ -210,5 +229,61 @@
             {{ 'portfolio_report.matrix.legend'|trans({}, 'portfolio_report') }}
         </div>
     </div>
+
+    {# Inheritance-Rate Breakdown per Framework (CM-1) #}
+    {% if inheritance_metrics is defined and inheritance_metrics.per_framework|length > 0 %}
+        <div class="card shadow-sm mt-4">
+            <div class="card-header">
+                <h2 class="h5 mb-0">
+                    <i class="bi bi-share-fill text-primary" aria-hidden="true"></i>
+                    {{ 'portfolio_report.inheritance.title'|trans({}, 'portfolio_report') }}
+                </h2>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">{{ 'portfolio_report.matrix.function'|trans({}, 'portfolio_report') }}</th>
+                            <th scope="col" class="text-end">{{ 'portfolio_report.inheritance.total'|trans({}, 'portfolio_report') }}</th>
+                            <th scope="col" class="text-end">{{ 'portfolio_report.inheritance.manual'|trans({}, 'portfolio_report') }}</th>
+                            <th scope="col" class="text-end">{{ 'portfolio_report.inheritance.inherited'|trans({}, 'portfolio_report') }}</th>
+                            <th scope="col" class="text-end">{{ 'portfolio_report.inheritance.pending'|trans({}, 'portfolio_report') }}</th>
+                            <th scope="col" class="text-end">{{ 'portfolio_report.inheritance.rate'|trans({}, 'portfolio_report') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in inheritance_metrics.per_framework %}
+                            {% set inherited = row.fulfillments_from_inheritance_confirmed + row.fulfillments_from_inheritance_overridden %}
+                            <tr>
+                                <th scope="row">{{ row.framework_code }}</th>
+                                <td class="text-end">{{ row.fulfillments_total }}</td>
+                                <td class="text-end">{{ row.fulfillments_manual }}</td>
+                                <td class="text-end">{{ inherited }}</td>
+                                <td class="text-end">
+                                    {% if row.pending_review_count > 0 %}
+                                        <span class="text-warning">{{ row.pending_review_count }}</span>
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </td>
+                                <td class="text-end fw-semibold">{{ row.inheritance_rate_percent }}%</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="table-light">
+                        {% set total_inherited = inheritance_metrics.total.fulfillments_from_inheritance_confirmed + inheritance_metrics.total.fulfillments_from_inheritance_overridden %}
+                        <tr>
+                            <th scope="row">&Sigma;</th>
+                            <td class="text-end fw-semibold">{{ inheritance_metrics.total.fulfillments_total }}</td>
+                            <td class="text-end fw-semibold">{{ inheritance_metrics.total.fulfillments_manual }}</td>
+                            <td class="text-end fw-semibold">{{ total_inherited }}</td>
+                            <td class="text-end fw-semibold">{{ inheritance_metrics.total.pending_review_count }}</td>
+                            <td class="text-end fw-bold text-primary">{{ inheritance_metrics.total.inheritance_rate_percent }}%</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
