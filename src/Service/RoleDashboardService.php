@@ -73,6 +73,9 @@ class RoleDashboardService
         // Recent incidents
         $recentIncidents = $this->getRecentIncidents($tenant, 5);
 
+        // DORA KPIs (conditionally included when DORA framework is active)
+        $doraKpis = $this->dashboardStatisticsService->getDoraKPIs();
+
         return [
             'summary' => [
                 'overall_compliance' => $frameworkComparison['summary']['average_compliance'] ?? 0,
@@ -101,6 +104,7 @@ class RoleDashboardService
             'pending_approvals' => $pendingApprovals,
             'recent_incidents' => $recentIncidents,
             'management_kpis' => $managementKpis,
+            'dora_kpis' => $doraKpis,
         ];
     }
 

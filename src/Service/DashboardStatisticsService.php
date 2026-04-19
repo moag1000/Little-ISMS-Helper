@@ -13,6 +13,7 @@ use App\Repository\ControlRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
+use App\Repository\KpiSnapshotRepository;
 use App\Repository\KpiThresholdConfigRepository;
 use App\Repository\ManagementReviewRepository;
 use App\Repository\RiskAppetiteRepository;
@@ -24,6 +25,8 @@ use App\Service\AssetService;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\RiskService;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Dashboard Statistics Service
@@ -68,6 +71,8 @@ class DashboardStatisticsService
         private readonly ?ComplianceAnalyticsService $complianceAnalyticsService = null,
         private readonly ?RiskAppetiteRepository $riskAppetiteRepository = null,
         private readonly ?KpiThresholdConfigRepository $thresholdConfigRepository = null,
+        private readonly ?KpiSnapshotRepository $kpiSnapshotRepository = null,
+        private readonly ?CacheInterface $cache = null,
     ) {
     }
 
@@ -252,10 +257,25 @@ class DashboardStatisticsService
      */
     public function getDashboardStatistics(): array
     {
-        // Get current tenant from authenticated user
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
+        $cacheKey = 'dashboard_stats_' . ($tenant?->getId() ?? 'global');
 
+        if ($this->cache !== null) {
+            return $this->cache->get($cacheKey, function (ItemInterface $item) use ($tenant) {
+                $item->expiresAfter(300); // 5 minutes
+                return $this->computeDashboardStatistics($tenant);
+            });
+        }
+
+        return $this->computeDashboardStatistics($tenant);
+    }
+
+    /**
+     * Compute dashboard statistics (extracted for caching).
+     */
+    private function computeDashboardStatistics(?Tenant $tenant): array
+    {
         // Basic counts - show ALL accessible entities (own + inherited + subsidiaries)
         if ($tenant) {
             // Get all accessible assets (own + inherited from parent + from subsidiaries)
@@ -543,6 +563,23 @@ class DashboardStatisticsService
     {
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
+        $cacheKey = 'management_kpis_' . ($tenant?->getId() ?? 'global');
+
+        if ($this->cache !== null) {
+            return $this->cache->get($cacheKey, function (ItemInterface $item) use ($tenant) {
+                $item->expiresAfter(300); // 5 minutes
+                return $this->computeManagementKPIs($tenant);
+            });
+        }
+
+        return $this->computeManagementKPIs($tenant);
+    }
+
+    /**
+     * Compute management KPIs (extracted for caching).
+     */
+    private function computeManagementKPIs(?Tenant $tenant): array
+    {
         $activeModules = $this->moduleConfigurationService->getActiveModules();
 
         $core = $this->getCoreKPIs($tenant);
@@ -604,6 +641,90 @@ class DashboardStatisticsService
 
         if (in_array('documents', $activeModules, true)) {
             $kpis['documentation'] = $this->getDocumentationKPIs($tenant);
+        }
+
+        return $kpis;
+    }
+
+    /**
+     * Add trend data to management KPIs by comparing current values with historical snapshots.
+     *
+     * For each KPI that has a numeric value, compares against the snapshot from ~30 days ago.
+     * Adds 'trend' (up/down/stable), 'trend_delta' (numeric change), and 'trend_sentiment'
+     * (good/bad/neutral — context-aware, e.g., fewer incidents = good, lower compliance = bad).
+     *
+     * @param array $kpis The structured management KPIs array
+     * @param Tenant|null $tenant The current tenant
+     * @return array The enriched KPIs array with trend data
+     */
+    public function addTrendData(array $kpis, ?Tenant $tenant): array
+    {
+        if ($tenant === null || $this->kpiSnapshotRepository === null) {
+            return $kpis;
+        }
+
+        // Find snapshot from ~30 days ago
+        $compareDate = new \DateTimeImmutable('-30 days');
+        $previousSnapshot = $this->kpiSnapshotRepository->findClosestBefore($tenant, $compareDate);
+
+        if ($previousSnapshot === null) {
+            return $kpis;
+        }
+
+        $previousData = $previousSnapshot->getKpiData();
+        if ($previousData === []) {
+            return $kpis;
+        }
+
+        // Map of snapshot keys to KPI section.key paths and their sentiment direction
+        // 'higher_is_better' = true means going up is 'good', going down is 'bad'
+        $kpiMapping = [
+            'control_compliance' => ['section' => 'core', 'key' => 'control_compliance', 'higher_is_better' => true],
+            'risk_treatment_rate' => ['section' => 'risk_management', 'key' => 'risk_treatment_rate', 'higher_is_better' => true],
+            'total_risks' => ['section' => 'risk_management', 'key' => 'total_risks', 'higher_is_better' => false],
+            'high_risks' => ['section' => 'risk_management', 'key' => 'high_risks', 'higher_is_better' => false],
+            'critical_risks' => ['section' => 'risk_management', 'key' => 'critical_risks', 'higher_is_better' => false],
+            'open_incidents' => ['section' => 'incident_management', 'key' => 'open_incidents', 'higher_is_better' => false],
+            'training_completion' => ['section' => 'training', 'key' => 'training_completion_rate', 'higher_is_better' => true],
+            'supplier_assessment' => ['section' => 'supplier_management', 'key' => 'supplier_assessment_rate', 'higher_is_better' => true],
+            'isms_health_score' => ['section' => 'health', 'key' => 'isms_health_score', 'higher_is_better' => true],
+        ];
+
+        foreach ($kpiMapping as $snapshotKey => $mapping) {
+            if (!isset($previousData[$snapshotKey])) {
+                continue;
+            }
+            $section = $mapping['section'];
+            $key = $mapping['key'];
+
+            if (!isset($kpis[$section][$key]['value'])) {
+                continue;
+            }
+
+            $currentValue = $kpis[$section][$key]['value'];
+            $previousValue = $previousData[$snapshotKey];
+
+            if (!is_numeric($currentValue) || !is_numeric($previousValue)) {
+                continue;
+            }
+
+            $delta = $currentValue - $previousValue;
+
+            if (abs($delta) < 0.01) {
+                $trend = 'stable';
+                $sentiment = 'neutral';
+            } else {
+                $trend = $delta > 0 ? 'up' : 'down';
+                if ($mapping['higher_is_better']) {
+                    $sentiment = $delta > 0 ? 'good' : 'bad';
+                } else {
+                    $sentiment = $delta < 0 ? 'good' : 'bad';
+                }
+            }
+
+            $kpis[$section][$key]['trend'] = $trend;
+            $kpis[$section][$key]['trend_delta'] = round($delta, 1);
+            $kpis[$section][$key]['trend_sentiment'] = $sentiment;
         }
 
         return $kpis;

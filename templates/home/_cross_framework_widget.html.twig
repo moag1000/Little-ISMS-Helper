@@ -1,0 +1,55 @@
+{#
+ # Cross-Framework Control Efficiency Widget
+ # Shows controls that satisfy multiple compliance frameworks simultaneously.
+ # Helps Compliance Managers understand control reuse and efficiency.
+ #}
+
+<div class="widget-card mb-4"
+     data-widget-id="cross-framework"
+     data-dashboard-customizer-target="widget">
+    <div class="widget-header">
+        <h3 class="widget-title">
+            <i class="bi bi-intersect me-2" aria-hidden="true"></i>
+            {{ 'dashboard.cross_framework.title'|trans({}, 'dashboard') }}
+        </h3>
+        <div class="widget-actions">
+            {% if is_module_active('compliance') %}
+            <a href="{{ path('app_analytics_compliance_frameworks') }}" class="btn btn-sm btn-outline-primary">
+                {{ 'dashboard.cross_framework.view_all'|trans({}, 'dashboard') }}
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="widget-body p-3">
+        {% if cross_framework_data is defined and cross_framework_data.shared_controls > 0 %}
+            <div class="text-center mb-3">
+                <div class="h2 text-primary mb-1">{{ cross_framework_data.shared_controls }}</div>
+                <small class="text-muted">{{ 'dashboard.cross_framework.shared_controls'|trans({}, 'dashboard') }}</small>
+            </div>
+            <p class="text-muted small text-center mb-3">
+                {{ 'dashboard.cross_framework.efficiency_hint'|trans({'%ratio%': cross_framework_data.reuse_ratio}, 'dashboard') }}
+            </p>
+            {% if cross_framework_data.top_shared is defined and cross_framework_data.top_shared|length > 0 %}
+            <ul class="list-group list-group-flush">
+                {% for control in cross_framework_data.top_shared|slice(0, 5) %}
+                <li class="list-group-item d-flex justify-content-between align-items-center py-2 px-0">
+                    <span>
+                        <strong>{{ control.id }}</strong>
+                        <span class="text-muted small ms-1">{{ control.name|default('') }}</span>
+                    </span>
+                    {% include '_components/_badge.html.twig' with {
+                        variant: 'info',
+                        content: control.framework_count ~ ' Frameworks'
+                    } only %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        {% else %}
+            <div class="text-center text-muted py-3">
+                <i class="bi bi-intersect d-block mb-2" style="font-size: 2rem;" aria-hidden="true"></i>
+                <p class="mb-0">{{ 'dashboard.cross_framework.no_data'|trans({}, 'dashboard') }}</p>
+            </div>
+        {% endif %}
+    </div>
+</div>

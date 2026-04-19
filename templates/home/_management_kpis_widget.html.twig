@@ -82,12 +82,26 @@
                                         <div class="kpi-card p-2 rounded border-start border-4 border-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'info')) }}">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <span class="small text-muted">{{ ('dashboard.kpi.' ~ key)|trans({}, 'dashboard') }}</span>
-                                                {% set kpiVariant = kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'secondary')) %}
-                                                {% include '_components/_badge.html.twig' with {
-                                                    variant: kpiVariant ~ '-subtle',
-                                                    class: 'text-' ~ kpiVariant,
-                                                    content: kpi.value ~ kpi.unit
-                                                } %}
+                                                <span>
+                                                    {% set kpiVariant = kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'secondary')) %}
+                                                    {% include '_components/_badge.html.twig' with {
+                                                        variant: kpiVariant ~ '-subtle',
+                                                        class: 'text-' ~ kpiVariant,
+                                                        content: kpi.value ~ kpi.unit
+                                                    } %}
+                                                    {% if kpi.trend is defined and kpi.trend != 'stable' %}
+                                                    <span class="kpi-trend text-{{ kpi.trend_sentiment|default('neutral') == 'good' ? 'success' : (kpi.trend_sentiment|default('neutral') == 'bad' ? 'danger' : 'muted') }}">
+                                                        {% if kpi.trend == 'up' %}
+                                                            <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                                                        {% elseif kpi.trend == 'down' %}
+                                                            <i class="bi bi-graph-down-arrow" aria-hidden="true"></i>
+                                                        {% endif %}
+                                                        {% if kpi.trend_delta is defined %}
+                                                            <small>{{ kpi.trend_delta > 0 ? '+' : '' }}{{ kpi.trend_delta }}{{ kpi.unit|default('') }}</small>
+                                                        {% endif %}
+                                                    </span>
+                                                    {% endif %}
+                                                </span>
                                             </div>
                                             {% if kpi.details is defined and kpi.details.total is defined %}
                                             <div class="progress mt-1" style="height: 4px;">
@@ -106,6 +120,18 @@
                                             <div class="small text-muted">{{ ('dashboard.kpi.' ~ key)|trans({}, 'dashboard') }}</div>
                                             <div class="fw-bold text-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'body')) }}">
                                                 {{ kpi.value }}{{ kpi.unit }}
+                                                {% if kpi.trend is defined and kpi.trend != 'stable' %}
+                                                <span class="kpi-trend text-{{ kpi.trend_sentiment|default('neutral') == 'good' ? 'success' : (kpi.trend_sentiment|default('neutral') == 'bad' ? 'danger' : 'muted') }}">
+                                                    {% if kpi.trend == 'up' %}
+                                                        <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                                                    {% elseif kpi.trend == 'down' %}
+                                                        <i class="bi bi-graph-down-arrow" aria-hidden="true"></i>
+                                                    {% endif %}
+                                                    {% if kpi.trend_delta is defined %}
+                                                        <small>{{ kpi.trend_delta > 0 ? '+' : '' }}{{ kpi.trend_delta }}{{ kpi.unit|default('') }}</small>
+                                                    {% endif %}
+                                                </span>
+                                                {% endif %}
                                             </div>
                                         </div>
                                         {% endif %}
@@ -120,4 +146,11 @@
         </div>
     </div>
 </div>
+<style>
+    .kpi-trend {
+        font-size: 0.85rem;
+        margin-left: 0.25rem;
+        white-space: nowrap;
+    }
+</style>
 {% endif %}

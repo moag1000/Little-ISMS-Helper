@@ -97,6 +97,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $timezone = 'Europe/Berlin';
 
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $skipWelcomePage = false;
+
     #[ORM\ManyToOne(targetEntity: Tenant::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Tenant $tenant = null;
@@ -424,6 +427,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTimezone(?string $timezone): static
     {
         $this->timezone = $timezone;
+        return $this;
+    }
+
+    public function isSkipWelcomePage(): bool
+    {
+        return $this->skipWelcomePage;
+    }
+
+    public function setSkipWelcomePage(bool $skipWelcomePage): static
+    {
+        $this->skipWelcomePage = $skipWelcomePage;
         return $this;
     }
 

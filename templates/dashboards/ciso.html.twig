@@ -252,6 +252,39 @@
         </div>
     </div>
 
+    {# DORA Compliance Section (conditionally shown) #}
+    {% if dashboard.dora_kpis is defined and dashboard.dora_kpis is not empty %}
+    <div class="row g-4 mt-2">
+        <div class="col-12">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-bank me-2" aria-hidden="true"></i>{{ 'ciso.section.dora_compliance'|trans({}, 'dashboards') }}</h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    {% for category_key, category_kpis in dashboard.dora_kpis %}
+                        {% if category_kpis is not empty %}
+                        <div class="row g-3 {% if not loop.last %}mb-3{% endif %}">
+                            {% for key, kpi in category_kpis %}
+                                <div class="col-md-4">
+                                    <div class="border rounded p-3 text-center">
+                                        <div class="h4 mb-1 text-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'info')) }}">
+                                            {{ kpi.value }}{{ kpi.unit }}
+                                        </div>
+                                        <small class="text-muted">{{ kpi.label|trans({}, 'dashboard') }}</small>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+    {% endif %}
+
     {# Control Effectiveness Summary #}
     <div class="row g-4 mt-2">
         <div class="col-12">

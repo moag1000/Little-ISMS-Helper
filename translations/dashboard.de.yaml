@@ -190,5 +190,24 @@ dashboard:
     controls: Maßnahmen
     report_incident: Vorfall melden
   last_updated: 'Daten vom: %time% Uhr'
+  cross_framework:
+    title: Framework-übergreifende Effizienz
+    view_all: Analyse anzeigen
+    shared_controls: Controls für 2+ Frameworks
+    efficiency_hint: '%ratio%% der Controls bedienen mehrere Frameworks'
+    no_data: Noch keine framework-übergreifenden Zuordnungen vorhanden.
+  trend:
+    up: Steigend
+    down: Fallend
+    stable: Stabil
+    vs_30d: ggü. vor 30 Tagen
   activity_feed:
     title: Letzte Aktivitäten
+  kpi.dora:
+    ict_risks: IKT-Risiken
+    ict_risks_high: Hohe IKT-Risiken
+    major_ict_incidents: Schwerwiegende IKT-Vorfälle
+    4h_reporting_compliance: 4h-Meldefrist Compliance
+    resilience_tests_ytd: Resilienz-Tests (YTD)
+    ict_third_party_providers: IKT-Drittanbieter
+    critical_ict_providers: Kritische IKT-Anbieter
