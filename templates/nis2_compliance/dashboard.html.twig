@@ -49,6 +49,124 @@
         </div>
     </div>
 
+    {# Art. 21.2 letter grid — all 11 risk-management measures #}
+    {% if letters|length > 0 %}
+        {% set status_variant = {
+            'good': 'success',
+            'warning': 'warning',
+            'danger': 'danger',
+            'info': 'info',
+            'na': 'secondary',
+        } %}
+        {% set status_text_class = {
+            'good': 'text-success',
+            'warning': 'text-warning',
+            'danger': 'text-danger',
+            'info': 'text-info',
+            'na': 'text-muted',
+        } %}
+        <div class="row mb-2">
+            <div class="col-12">
+                <h2 class="h4">
+                    <i class="bi bi-grid-3x3-gap" aria-hidden="true"></i>
+                    {{ 'nis2.dashboard.letters.title'|trans({}, 'messages') }}
+                </h2>
+                <p class="text-muted small mb-3">{{ 'nis2.dashboard.letters.description'|trans({}, 'messages') }}</p>
+            </div>
+        </div>
+        <div class="row g-3 mb-4" data-testid="nis2-letters-grid">
+            {% for code, letter in letters %}
+                {% set key = code|replace({'21.2.': ''}) %}
+                {% set color = status_text_class[letter.status] ?? 'text-muted' %}
+                {% set badge_variant = status_variant[letter.status] ?? 'secondary' %}
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_body %}
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <span class="badge text-bg-light border">{{ code }}</span>
+                                </div>
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: badge_variant,
+                                    content: ('nis2.dashboard.status.' ~ letter.status)|trans({}, 'messages')
+                                } %}
+                            </div>
+                            <div class="h6 card-title">
+                                {{ ('nis2.dashboard.letter.' ~ key ~ '.title')|trans({}, 'messages') }}
+                            </div>
+                            <div class="display-6 {{ color }}" data-testid="letter-{{ key }}-value">
+                                {% if letter.value is null %}
+                                    <span class="text-muted">—</span>
+                                {% else %}
+                                    {{ letter.value }}{{ letter.unit }}
+                                {% endif %}
+                            </div>
+                            {% if letter.details is defined and letter.details|length > 0 %}
+                                <ul class="list-unstyled small text-muted mt-2 mb-0">
+                                    {% for k, v in letter.details %}
+                                        <li>
+                                            <span class="text-capitalize">{{ k|replace({'_': ' '}) }}:</span>
+                                            <strong>{{ v is iterable ? v|length : v }}</strong>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+            {% endfor %}
+        </div>
+
+        {# Art. 23 reporting timeline #}
+        {% if article23 is not null %}
+            {% set art23_variant = status_variant[article23.status] ?? 'secondary' %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ art23_variant } %}
+                        {% block card_header %}
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h2 class="h5 mb-0">
+                                    <i class="bi bi-stopwatch" aria-hidden="true"></i>
+                                    {{ 'nis2.dashboard.article23.title'|trans({}, 'messages') }}
+                                </h2>
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: art23_variant,
+                                    content: ('nis2.dashboard.status.' ~ article23.status)|trans({}, 'messages')
+                                } %}
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
+                            <div class="row text-center">
+                                <div class="col-md-3">
+                                    <div class="text-muted small">{{ 'nis2.dashboard.article23.tracked'|trans({}, 'messages') }}</div>
+                                    <div class="h4 mb-0">{{ article23.tracked ?? 0 }}</div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-muted small">{{ 'nis2.dashboard.article23.early_warning'|trans({}, 'messages') }} (24h)</div>
+                                    <div class="h4 mb-0">{{ article23.early_warning_rate ?? 0 }}%</div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-muted small">{{ 'nis2.dashboard.article23.detailed'|trans({}, 'messages') }} (72h)</div>
+                                    <div class="h4 mb-0">{{ article23.detailed_notification_rate ?? 0 }}%</div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-muted small">{{ 'nis2.dashboard.article23.final'|trans({}, 'messages') }} (1m)</div>
+                                    <div class="h4 mb-0">{{ article23.final_report_rate ?? 0 }}%</div>
+                                </div>
+                            </div>
+                            {% if article23.overdue_count is defined and article23.overdue_count > 0 %}
+                                <div class="alert alert-danger mt-3 mb-0">
+                                    <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                                    {{ 'nis2.dashboard.article23.overdue'|trans({'%count%': article23.overdue_count}, 'messages') }}
+                                </div>
+                            {% endif %}
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+
     {# Key Metrics #}
     <div class="row g-3 mb-4">
         {# MFA Adoption #}

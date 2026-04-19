@@ -1136,6 +1136,44 @@ nis2:
             compliant: 'Compliant (≥95%)'
             partial: 'Partially Compliant (75-94%)'
             non_compliant: 'Non-Compliant (<75%)'
+            good: 'Good'
+            warning: 'Warning'
+            danger: 'Danger'
+            info: 'Info'
+            na: 'n/a'
+        letters:
+            title: 'Art. 21.2 — Risk-Management Measures (all 11 letters)'
+            description: 'Complete coverage of all 11 NIS2 Art. 21.2 risk-management measures (a-k). Values are derived from existing domain data — no duplicate entry.'
+        letter:
+            a:
+                title: 'Risk-management policies'
+            b:
+                title: 'MFA / secure authentication'
+            c:
+                title: 'Encryption / cryptography'
+            d:
+                title: 'Vulnerability & patch management'
+            e:
+                title: 'Secure development & acquisition'
+            f:
+                title: 'Supply-chain security'
+            g:
+                title: 'HR security / awareness training'
+            h:
+                title: 'Access control'
+            i:
+                title: 'Asset management'
+            j:
+                title: 'Business continuity / backup'
+            k:
+                title: 'Cryptographic controls'
+        article23:
+            title: 'Art. 23 — Reporting timeline'
+            tracked: 'Tracked NIS2 incidents'
+            early_warning: 'Early warning'
+            detailed: 'Detailed notification'
+            final: 'Final report'
+            overdue: '%count% report(s) overdue'
         mfa:
             title: 'MFA Adoption'
             users: Users

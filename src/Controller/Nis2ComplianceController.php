@@ -10,6 +10,7 @@ use App\Repository\MfaTokenRepository;
 use App\Repository\UserRepository;
 use App\Repository\VulnerabilityRepository;
 use App\Repository\PatchRepository;
+use App\Service\Nis2ComplianceService;
 use App\Service\PdfExportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,7 +39,8 @@ class Nis2ComplianceController extends AbstractController
         private readonly VulnerabilityRepository $vulnerabilityRepository,
         private readonly PatchRepository $patchRepository,
         private readonly PdfExportService $pdfExportService,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly Nis2ComplianceService $nis2ComplianceService,
     ) {
     }
 
@@ -129,8 +131,12 @@ class Nis2ComplianceController extends AbstractController
         $failedPatches = $this->patchRepository->count(['status' => 'failed']);
         $patchDeploymentRate = $totalPatches > 0 ? round(($deployedPatches / $totalPatches) * 100, 1) : 0;
 
-        // 5. Overall NIS2 Compliance Score
-        $complianceScore = round(($mfaAdoptionRate + $reportingComplianceRate + $patchDeploymentRate) / 3, 1);
+        // 5. Full Art. 21.2 letter grid + weighted overall score (Nis2ComplianceService)
+        $payload = $this->nis2ComplianceService->getDashboardPayload();
+        $complianceScore = $payload['overall']['score'] ?? round(
+            ($mfaAdoptionRate + $reportingComplianceRate + $patchDeploymentRate) / 3,
+            1
+        );
 
         return $this->render('nis2_compliance/dashboard.html.twig', [
             // MFA Metrics
@@ -160,6 +166,12 @@ class Nis2ComplianceController extends AbstractController
 
             // Overall Compliance
             'overall_compliance_score' => $complianceScore,
+
+            // Art. 21.2 letters (full 11-letter grid) + Art. 23 timer
+            'payload' => $payload,
+            'letters' => $payload['letters'] ?? [],
+            'article23' => $payload['article23'] ?? null,
+            'overall' => $payload['overall'] ?? null,
         ]);
     }
 
