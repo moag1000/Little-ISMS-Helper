@@ -75,6 +75,20 @@ class Incident
     #[Groups(['incident:read'])]
     private ?Tenant $tenant = null;
 
+    /**
+     * Phase 9.P2.3 — Cross-posting opt-out flag for holding structures.
+     * Default true: when a tenant sits in a corporate subtree, incidents
+     * are visible to the Group-CISO / Konzern-Krisenstab by default so
+     * the group can coordinate response. A Tochter can flip this to
+     * false for genuinely confidential incidents (e.g. an HR incident
+     * that must not reach the parent company). Standalone tenants are
+     * unaffected — the flag is only consulted by the cross-tenant
+     * voter path.
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
+    #[Groups(['incident:read', 'incident:write'])]
+    private bool $visibleToHolding = true;
+
     // New relationship for threat tracking
     #[ORM\ManyToOne(targetEntity: ThreatIntelligence::class, inversedBy: 'resultingIncidents')]
     #[ORM\JoinColumn(name: 'originating_threat_id', nullable: true)]
@@ -345,6 +359,17 @@ class Incident
     public function setTenant(?Tenant $tenant): static
     {
         $this->tenant = $tenant;
+        return $this;
+    }
+
+    public function isVisibleToHolding(): bool
+    {
+        return $this->visibleToHolding;
+    }
+
+    public function setVisibleToHolding(bool $value): static
+    {
+        $this->visibleToHolding = $value;
         return $this;
     }
 

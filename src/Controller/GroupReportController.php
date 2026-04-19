@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Control;
+use App\Entity\Incident;
 use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
+use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
 use App\Repository\SupplierRepository;
 use App\Service\TenantContext;
@@ -39,6 +41,7 @@ final class GroupReportController extends AbstractController
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly SupplierRepository $supplierRepository,
+        private readonly IncidentRepository $incidentRepository,
     ) {
     }
 
@@ -284,6 +287,58 @@ final class GroupReportController extends AbstractController
             'tenants' => $tree,
             'grouped' => $grouped,
             'totals' => $totals,
+        ]);
+    }
+
+    /**
+     * Phase 9.P2.3 — Incidents across the holding subtree, respecting
+     * each subsidiary's visible_to_holding opt-out flag. Confidential
+     * incidents (flag = false) are silently excluded; the tab does
+     * NOT surface "N hidden" so the Tochter's opt-out actually stays
+     * confidential from the Group-CISO.
+     */
+    #[Route('/incidents', name: 'incidents', methods: ['GET'])]
+    public function incidents(): Response
+    {
+        $root = $this->tenantContext->getCurrentTenant();
+        if (!$root instanceof Tenant) {
+            throw $this->createAccessDeniedException('No active tenant');
+        }
+
+        $tree = $this->tenantContext->getAccessibleTenants();
+        $ownTenant = $root;
+
+        // Pull every incident in the subtree, then filter: incidents
+        // from the current tenant are always included (no opt-out
+        // against self), cross-tenant rows require visible_to_holding.
+        $all = $this->incidentRepository->findBy(
+            ['tenant' => $tree],
+            ['detectedAt' => 'DESC']
+        );
+        $visible = array_values(array_filter(
+            $all,
+            static fn(Incident $i): bool =>
+                $i->getTenant() === $ownTenant || $i->isVisibleToHolding()
+        ));
+
+        $severityBuckets = ['critical' => 0, 'high' => 0, 'medium' => 0, 'low' => 0];
+        $byTenant = [];
+        foreach ($visible as $incident) {
+            $sev = (string) $incident->getSeverity();
+            if (isset($severityBuckets[$sev])) {
+                $severityBuckets[$sev]++;
+            }
+            $code = (string) $incident->getTenant()?->getCode();
+            $byTenant[$code] = ($byTenant[$code] ?? 0) + 1;
+        }
+
+        return $this->render('group_report/incidents.html.twig', [
+            'root' => $root,
+            'tenants' => $tree,
+            'incidents' => $visible,
+            'total_visible' => count($visible),
+            'severity_buckets' => $severityBuckets,
+            'by_tenant' => $byTenant,
         ]);
     }
 }

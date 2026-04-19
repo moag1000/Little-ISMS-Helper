@@ -113,6 +113,7 @@ incident:
     authority_reference_number: Aktenzeichen der Behörde
     detected_date: Erkennungsdatum
     closed_date: Abschlussdatum
+    visible_to_holding: 'Für Konzern-Krisenstab sichtbar'
     data_breach_occurred: Datenschutzverletzung aufgetreten
     reported_by_legacy: Gemeldet von (freitext, veraltet)
   nis2_compliance:
@@ -189,6 +190,7 @@ incident:
     authority_reference: Aktenzeichen von der Behörde
     reported_by_user: -- Meldende Person --
   help:
+    visible_to_holding: 'Standard ein: Holding-/Konzern-CISO kann diesen Vorfall sehen, um Konzern-Response zu koordinieren. Nur für vertrauliche Fälle (z. B. HR) deaktivieren.'
     severity: Bewerten Sie den Schweregrad basierend auf Auswirkung und Umfang (ISO
       27001 A.16.1.4)
     affected_systems: Listen Sie alle betroffenen Systeme, Anwendungen und Infrastruktur

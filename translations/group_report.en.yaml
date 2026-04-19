@@ -70,6 +70,25 @@ group_report:
             planned: 'planned'
             not_started: 'not started'
             not_applicable: 'not applicable'
+    incidents:
+        title: 'Group incidents'
+        subtitle: 'Cross-posted from subsidiaries of %root% — tenants with opt-out stay hidden.'
+        intro: 'Default: subsidiary incidents are <strong>visible</strong> to the group crisis team. A subsidiary may set <code>visible_to_holding = false</code> (e.g. an HR case that must not surface to the parent). Those rows do not appear here — the opt-out count is deliberately <strong>not</strong> disclosed so that the confidentiality of the subsidiary is preserved.'
+        own: 'own'
+        none: 'No incidents in the visible scope.'
+        stat:
+            total: 'Visible incidents'
+        severity:
+            critical: 'critical'
+            high: 'high'
+            medium: 'medium'
+            low: 'low'
+        col:
+            detected_at: 'Detected'
+            incident: 'Incident'
+            tenant: 'Tenant'
+            severity: 'Severity'
+            status: 'Status'
     suppliers:
         title: 'Group supplier register'
         subtitle: 'Deduplicated by LEI or name across all subsidiaries of %root%.'

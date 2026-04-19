@@ -118,4 +118,63 @@ class IncidentVoterTest extends TestCase
 
         $this->assertSame(VoterInterface::ACCESS_ABSTAIN, $result);
     }
+
+    public function testGroupCisoCanViewVisibleCrossTenantIncident(): void
+    {
+        // Phase 9.P2.3: default is visibleToHolding=true, group-CISO sees it.
+        $holding = (new Tenant())->setCode('holding');
+        $sub = (new Tenant())->setCode('sub');
+        $holding->addSubsidiary($sub);
+
+        $user = $this->createMock(User::class);
+        $user->method('getRoles')->willReturn(['ROLE_USER', 'ROLE_GROUP_CISO']);
+        $user->method('getTenant')->willReturn($holding);
+
+        $incident = $this->createMock(Incident::class);
+        $incident->method('getTenant')->willReturn($sub);
+        $incident->method('isVisibleToHolding')->willReturn(true);
+
+        $token = new UsernamePasswordToken($user, 'main', $user->getRoles());
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $incident, [IncidentVoter::VIEW]));
+    }
+
+    public function testGroupCisoCannotViewOptedOutIncident(): void
+    {
+        // Phase 9.P2.3 opt-out: Tochter flipped visibleToHolding to false
+        // (confidential HR case), so even the group-CISO must be denied.
+        $holding = (new Tenant())->setCode('holding');
+        $sub = (new Tenant())->setCode('sub');
+        $holding->addSubsidiary($sub);
+
+        $user = $this->createMock(User::class);
+        $user->method('getRoles')->willReturn(['ROLE_USER', 'ROLE_GROUP_CISO']);
+        $user->method('getTenant')->willReturn($holding);
+
+        $incident = $this->createMock(Incident::class);
+        $incident->method('getTenant')->willReturn($sub);
+        $incident->method('isVisibleToHolding')->willReturn(false);
+
+        $token = new UsernamePasswordToken($user, 'main', $user->getRoles());
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $incident, [IncidentVoter::VIEW]));
+    }
+
+    public function testOwnTenantSeesIncidentEvenWhenNotVisibleToHolding(): void
+    {
+        // The opt-out flag only fires on the cross-tenant path. A user
+        // on the same tenant as the incident must always be able to see
+        // their own confidential rows.
+        $tenant = $this->createMock(Tenant::class);
+        $tenant->method('getId')->willReturn(42);
+
+        $user = $this->createMock(User::class);
+        $user->method('getRoles')->willReturn(['ROLE_USER']);
+        $user->method('getTenant')->willReturn($tenant);
+
+        $incident = $this->createMock(Incident::class);
+        $incident->method('getTenant')->willReturn($tenant);
+        $incident->method('isVisibleToHolding')->willReturn(false);
+
+        $token = new UsernamePasswordToken($user, 'main', $user->getRoles());
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $incident, [IncidentVoter::VIEW]));
+    }
 }
