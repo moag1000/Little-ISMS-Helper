@@ -59,6 +59,17 @@ class RiskTreatmentPlanController extends AbstractController
             $plans = array_filter($plans, fn(RiskTreatmentPlan $plan): bool => $plan->isOverdue());
         }
 
+        // Filter to approaching deadlines (due within N days, not overdue)
+        $approachingDays = $request->query->get('approaching');
+        if ($approachingDays !== null && is_numeric($approachingDays)) {
+            $now = new \DateTime();
+            $futureDate = (new \DateTime())->modify('+' . (int) $approachingDays . ' days');
+            $plans = array_filter($plans, function (RiskTreatmentPlan $plan) use ($now, $futureDate): bool {
+                $target = $plan->getTargetCompletionDate();
+                return $target !== null && $target >= $now && $target <= $futureDate;
+            });
+        }
+
         // Re-index array after filtering to avoid gaps in keys
         $plans = array_values($plans);
 

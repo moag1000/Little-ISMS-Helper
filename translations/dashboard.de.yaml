@@ -167,6 +167,22 @@ dashboard:
     total_documents: Dokumente gesamt
     documents_needing_review: Prüfung erforderlich
     documents_without_owner: Ohne Eigentümer
+  my_tasks:
+    title: Meine Aufgaben heute
+    all_done: Keine Aufgaben — alles erledigt!
+    type_treatment_plan: Behandlungsplan
+    type_workflow: Workflow-Freigabe
+    type_risk_review: Risikobewertung
+    days_overdue: T überfällig
+    workflow_approval: Workflow-Freigabe
+  urgent_items: dringende Punkte erfordern Aufmerksamkeit
+  urgent:
+    overdue_reviews: Überfällige Bewertungen
+    overdue_treatment_plans: Überfällige Pläne
+    approaching_deadlines: Nahende Deadlines
+    pending_workflows: Ausstehende Workflows
+    overdue_workflows: Überfällige Workflows
+  restore_first_steps: Erste Schritte erneut anzeigen
   quick_actions:
     title: Schnellaktionen
     new_asset: Neues Asset

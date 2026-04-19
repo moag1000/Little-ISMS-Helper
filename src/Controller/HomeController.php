@@ -61,7 +61,7 @@ class HomeController extends AbstractController
     }
 
     #[IsGranted('ROLE_USER')]
-    public function dashboard(): Response
+    public function dashboard(Request $request): Response
     {
         // Get all statistics from service (better separation of concerns)
         $stats = $this->dashboardStatisticsService->getDashboardStatistics();
@@ -130,6 +130,16 @@ class HomeController extends AbstractController
             $assetsByType[$type] = ($assetsByType[$type] ?? 0) + 1;
         }
 
+        // "My Tasks Today" Widget - Personal task list for current user
+        $myTasks = $this->getMyTasks($user, $overdueTreatmentPlans, $pendingWorkflows, $overdueReviews);
+
+        // Urgent Tasks (ported from WelcomeController)
+        $urgentTasks = $this->getUrgentTasks($tenant, $user, $overdueReviews, $overdueTreatmentPlans, $approachingTreatmentPlans, $pendingWorkflows, $overdueWorkflows);
+        $totalUrgentCount = array_sum(array_column($urgentTasks, 'count'));
+
+        // First Steps visibility (session-based dismiss)
+        $showFirstSteps = !$request->getSession()->get('first_steps_dismissed', false);
+
         return $this->render('home/dashboard.html.twig', [
             'stats' => $stats,
             'management_kpis' => $managementKpis,
@@ -145,7 +155,194 @@ class HomeController extends AbstractController
             'compliance_summary' => $complianceSummary,
             'risks_by_level' => $risksByLevel,
             'assets_by_type' => $assetsByType,
+            'my_tasks' => $myTasks,
+            'urgent_tasks' => $urgentTasks,
+            'total_urgent_count' => $totalUrgentCount,
+            'show_first_steps' => $showFirstSteps,
         ]);
+    }
+
+    #[IsGranted('ROLE_USER')]
+    public function dismissFirstSteps(Request $request): Response
+    {
+        if ($this->isCsrfTokenValid('dismiss_first_steps', $request->request->get('_token'))) {
+            $request->getSession()->set('first_steps_dismissed', true);
+        }
+
+        return $this->redirectToRoute('app_dashboard');
+    }
+
+    #[IsGranted('ROLE_USER')]
+    public function restoreFirstSteps(Request $request): Response
+    {
+        $request->getSession()->remove('first_steps_dismissed');
+
+        return $this->redirectToRoute('app_dashboard');
+    }
+
+    /**
+     * Build a personal task list for the current user.
+     * Aggregates from data already loaded in the dashboard method.
+     *
+     * @return array<array{type: string, title: string, url: string, priority: string, overdue_days: int|null}>
+     */
+    private function getMyTasks(
+        ?UserInterface $user,
+        array $overdueTreatmentPlans,
+        array $pendingWorkflows,
+        array $overdueReviews
+    ): array {
+        $myTasks = [];
+
+        if (!$user) {
+            return $myTasks;
+        }
+
+        // My overdue treatment plans (where I am the responsible person)
+        foreach ($overdueTreatmentPlans as $plan) {
+            if ($plan->getResponsiblePerson() === $user) {
+                $overdueDays = abs($plan->getDaysUntilTarget());
+                $myTasks[] = [
+                    'type' => 'treatment_plan',
+                    'title' => $plan->getTitle(),
+                    'url' => $this->generateUrl('app_risk_treatment_plan_show', ['id' => $plan->getId()]),
+                    'priority' => $overdueDays > 14 ? 'danger' : 'warning',
+                    'overdue_days' => $overdueDays,
+                    'icon' => 'bi-exclamation-triangle-fill',
+                ];
+            }
+        }
+
+        // My pending workflow approvals
+        foreach ($pendingWorkflows as $workflow) {
+            $myTasks[] = [
+                'type' => 'workflow',
+                'title' => $workflow->getWorkflow()?->getName() ?? $this->translator->trans('dashboard.my_tasks.workflow_approval', [], 'dashboard'),
+                'url' => $this->generateUrl('app_workflow_pending'),
+                'priority' => 'info',
+                'overdue_days' => null,
+                'icon' => 'bi-hourglass-split',
+            ];
+        }
+
+        // My risks needing review (risk owner = me, review date past)
+        foreach ($overdueReviews as $risk) {
+            if ($risk->getRiskOwner() === $user) {
+                $overdueDays = $risk->getReviewDate()
+                    ? (new DateTime())->diff($risk->getReviewDate())->days
+                    : null;
+                $myTasks[] = [
+                    'type' => 'risk_review',
+                    'title' => $risk->getTitle(),
+                    'url' => $this->generateUrl('app_risk_show', ['id' => $risk->getId()]),
+                    'priority' => 'warning',
+                    'overdue_days' => $overdueDays,
+                    'icon' => 'bi-calendar-x',
+                ];
+            }
+        }
+
+        // Sort: danger first, then warning, then info
+        $priorityOrder = ['danger' => 0, 'warning' => 1, 'info' => 2];
+        usort($myTasks, function (array $a, array $b) use ($priorityOrder): int {
+            $aPriority = $priorityOrder[$a['priority']] ?? 3;
+            $bPriority = $priorityOrder[$b['priority']] ?? 3;
+            return $aPriority <=> $bPriority;
+        });
+
+        return $myTasks;
+    }
+
+    /**
+     * Get urgent tasks for the dashboard (ported from WelcomeController).
+     * Reuses data already loaded in the dashboard method to avoid duplicate queries.
+     *
+     * @return array<array{type: string, icon: string, color: string, label: string, count: int, url: string, priority: int}>
+     */
+    private function getUrgentTasks(
+        ?Tenant $tenant,
+        ?UserInterface $user,
+        array $overdueReviews,
+        array $overdueTreatmentPlans,
+        array $approachingTreatmentPlans,
+        array $pendingWorkflows,
+        array $overdueWorkflows
+    ): array {
+        $tasks = [];
+
+        if (!$tenant) {
+            return $tasks;
+        }
+
+        // Overdue risk reviews
+        if (count($overdueReviews) > 0) {
+            $tasks[] = [
+                'type' => 'overdue_reviews',
+                'icon' => 'bi-calendar-x',
+                'color' => 'warning',
+                'label' => $this->translator->trans('dashboard.urgent.overdue_reviews', [], 'dashboard'),
+                'count' => count($overdueReviews),
+                'url' => $this->generateUrl('app_risk_index'),
+                'priority' => 2,
+            ];
+        }
+
+        // Overdue treatment plans
+        if (count($overdueTreatmentPlans) > 0) {
+            $tasks[] = [
+                'type' => 'overdue_treatment_plans',
+                'icon' => 'bi-exclamation-triangle-fill',
+                'color' => 'danger',
+                'label' => $this->translator->trans('dashboard.urgent.overdue_treatment_plans', [], 'dashboard'),
+                'count' => count($overdueTreatmentPlans),
+                'url' => $this->generateUrl('app_risk_treatment_plan_index'),
+                'priority' => 1,
+            ];
+        }
+
+        // Approaching treatment plan deadlines
+        if (count($approachingTreatmentPlans) > 0) {
+            $tasks[] = [
+                'type' => 'approaching_deadlines',
+                'icon' => 'bi-clock-history',
+                'color' => 'warning',
+                'label' => $this->translator->trans('dashboard.urgent.approaching_deadlines', [], 'dashboard'),
+                'count' => count($approachingTreatmentPlans),
+                'url' => $this->generateUrl('app_risk_treatment_plan_index'),
+                'priority' => 3,
+            ];
+        }
+
+        // Pending workflow approvals
+        if ($user && count($pendingWorkflows) > 0) {
+            $tasks[] = [
+                'type' => 'pending_workflows',
+                'icon' => 'bi-hourglass-split',
+                'color' => 'info',
+                'label' => $this->translator->trans('dashboard.urgent.pending_workflows', [], 'dashboard'),
+                'count' => count($pendingWorkflows),
+                'url' => $this->generateUrl('app_workflow_pending'),
+                'priority' => 2,
+            ];
+        }
+
+        // Overdue workflows
+        if (count($overdueWorkflows) > 0) {
+            $tasks[] = [
+                'type' => 'overdue_workflows',
+                'icon' => 'bi-exclamation-circle-fill',
+                'color' => 'danger',
+                'label' => $this->translator->trans('dashboard.urgent.overdue_workflows', [], 'dashboard'),
+                'count' => count($overdueWorkflows),
+                'url' => $this->generateUrl('app_workflow_overdue'),
+                'priority' => 1,
+            ];
+        }
+
+        // Sort by priority (lower = more urgent)
+        usort($tasks, fn(array $a, array $b): int => $a['priority'] <=> $b['priority']);
+
+        return $tasks;
     }
 
     private function getRecentActivities(): array

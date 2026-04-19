@@ -165,6 +165,22 @@ dashboard:
     total_documents: Total Documents
     documents_needing_review: Needing Review
     documents_without_owner: Without Owner
+  my_tasks:
+    title: My Tasks Today
+    all_done: No tasks — you're all caught up!
+    type_treatment_plan: Treatment Plan
+    type_workflow: Workflow Approval
+    type_risk_review: Risk Review
+    days_overdue: d overdue
+    workflow_approval: Workflow Approval
+  urgent_items: urgent items require attention
+  urgent:
+    overdue_reviews: Overdue Reviews
+    overdue_treatment_plans: Overdue Plans
+    approaching_deadlines: Approaching Deadlines
+    pending_workflows: Pending Workflows
+    overdue_workflows: Overdue Workflows
+  restore_first_steps: Show first steps again
   quick_actions:
     title: Quick Actions
     new_asset: New Asset

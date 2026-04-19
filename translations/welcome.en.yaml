@@ -42,16 +42,14 @@ welcome:
         view_all: "All Wizards"
         complete: "complete"
 
-    quick_actions:
-        title: "Quick Actions"
-        new_asset: "New Asset"
-        new_risk: "New Risk"
-        report_incident: "Report Incident"
-        new_document: "New Document"
+    create_new: "Create new"
+    days_overdue: "days overdue"
+    days_left: "days left"
 
     preference:
         skip_next_time: "Go directly to dashboard on next login"
         hint: "You can change this setting anytime"
+        session_note: "Note: This setting is stored for your current session."
 
     footer:
         tenant: "Organization: %tenant%"
