@@ -85,12 +85,21 @@ class DocumentVoter extends Voter
         if ($document->getUploadedBy() === $user) {
             return true;
         }
+        $userTenant = $user->getTenant();
+        $docTenant = $document->getTenant() ?? $document->getUploadedBy()?->getTenant();
+
         // Security: Multi-tenancy - users can view documents from their tenant
-        if ($document->getUploadedBy()?->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant) {
+        if ($docTenant === $userTenant && $userTenant instanceof Tenant) {
+            return true;
+        }
+        // Phase 9.P2.1 — inheritable holding policy: a subsidiary user
+        // may see a document marked inheritable=true on any ancestor
+        // tenant, read-only.
+        if ($document->isInheritable() && $userTenant instanceof Tenant && $docTenant instanceof Tenant && $userTenant->isChildOf($docTenant)) {
             return true;
         }
         // Phase 9.P1.6 — Group-CISO / Konzern-ISB may read down the tree
-        return $this->canReadAcrossHoldingTree($user, $document->getUploadedBy()?->getTenant());
+        return $this->canReadAcrossHoldingTree($user, $docTenant);
     }
 
     private function canEdit(Document $document, User $user): bool

@@ -78,6 +78,27 @@ class Document
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $tisaxInformationClassification = null;
 
+    /**
+     * Phase 9.P2.1 — Holding policy inheritance.
+     *
+     * inheritable: Holding-Tenant marks a document (typically a policy)
+     * as downstream-visible. Subsidiaries will see it read-only in their
+     * document register. Default false: only owner tenant sees it.
+     *
+     * overrideAllowed: when true, a subsidiary may author its own local
+     * document with the same title/category; the inherited one remains
+     * visible as reference but the local override takes precedence in
+     * the tochter's operational view. When false, the holding mandates
+     * the policy verbatim — the subsidiary has no legitimate local
+     * alternative (typical for Top-Management-ISMS-Leitlinie, Code of
+     * Conduct, Data-Protection-Policy under concentrated DPO).
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $inheritable = false;
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
+    private bool $overrideAllowed = true;
+
     public function __construct()
     {
         $this->uploadedAt = new DateTimeImmutable();
@@ -152,6 +173,12 @@ class Document
 
     public function getTisaxInformationClassification(): ?string { return $this->tisaxInformationClassification; }
     public function setTisaxInformationClassification(?string $value): static { $this->tisaxInformationClassification = $value; return $this; }
+
+    public function isInheritable(): bool { return $this->inheritable; }
+    public function setInheritable(bool $value): static { $this->inheritable = $value; return $this; }
+
+    public function isOverrideAllowed(): bool { return $this->overrideAllowed; }
+    public function setOverrideAllowed(bool $value): static { $this->overrideAllowed = $value; return $this; }
 
     public function getFileExtension(): string
     {

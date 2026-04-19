@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Document;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -49,6 +50,19 @@ class DocumentType extends AbstractType
                 ],
                 'required' => true,
                     'choice_translation_domain' => 'document',
+            ])
+            // Phase 9.P2.1 — holding policy inheritance flags. Only
+            // meaningful on a holding tenant; standalone tenants can
+            // leave both at default.
+            ->add('inheritable', CheckboxType::class, [
+                'label' => 'document.field.inheritable',
+                'help' => 'document.help.inheritable',
+                'required' => false,
+            ])
+            ->add('overrideAllowed', CheckboxType::class, [
+                'label' => 'document.field.override_allowed',
+                'help' => 'document.help.override_allowed',
+                'required' => false,
             ])
             ->add('file', FileType::class, [
                 'label' => 'document.field.file',
