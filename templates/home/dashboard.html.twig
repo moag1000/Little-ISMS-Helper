@@ -65,6 +65,21 @@
 
     {% import '_macros/cards.html.twig' as cards %}
 
+    {# Urgent Tasks Alert Banner (ported from Welcome page) #}
+    {% if total_urgent_count|default(0) > 0 %}
+    <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+        <strong>{{ total_urgent_count }} {{ 'dashboard.urgent_items'|trans({}, 'dashboard') }}</strong>
+        <div class="ms-auto">
+            {% for task in urgent_tasks|default([]) %}
+                <a href="{{ task.url }}" class="btn btn-sm btn-outline-danger ms-1">
+                    {{ task.label }} <span class="badge bg-danger">{{ task.count }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
     {# Prominent Workflow Approval Alert Banner #}
     {% set total_pending = pending_workflows|default([])|length %}
     {% set total_overdue = overdue_workflows|default([])|length %}
@@ -255,6 +270,63 @@
 
         {# Activity Feed Column #}
         <div class="col-lg-4">
+            {# My Tasks Today Widget #}
+            <div class="widget-card mb-4"
+                 data-widget-id="my-tasks"
+                 data-dashboard-customizer-target="widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">
+                        <i class="bi bi-person-check" aria-hidden="true"></i>
+                        {{ 'dashboard.my_tasks.title'|trans({}, 'dashboard') }}
+                    </h3>
+                    {% if my_tasks|default([])|length > 0 %}
+                    {% include '_components/_badge.html.twig' with {
+                        variant: 'primary',
+                        content: my_tasks|length
+                    } %}
+                    {% endif %}
+                </div>
+                <div class="widget-body p-3">
+                    {% if my_tasks|default([])|length > 0 %}
+                        <ul class="list-unstyled mb-0">
+                            {% for task in my_tasks|slice(0, 7) %}
+                            <li class="mb-2 pb-2 {% if not loop.last %}border-bottom{% endif %}">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <a href="{{ task.url }}" class="text-decoration-none">
+                                            <i class="bi {{ task.icon }} text-{{ task.priority }} me-1" aria-hidden="true"></i>
+                                            {{ task.title|length > 40 ? task.title|slice(0, 40) ~ '...' : task.title }}
+                                        </a>
+                                        <div class="small text-muted">
+                                            {% if task.type == 'treatment_plan' %}
+                                                {{ 'dashboard.my_tasks.type_treatment_plan'|trans({}, 'dashboard') }}
+                                            {% elseif task.type == 'workflow' %}
+                                                {{ 'dashboard.my_tasks.type_workflow'|trans({}, 'dashboard') }}
+                                            {% elseif task.type == 'risk_review' %}
+                                                {{ 'dashboard.my_tasks.type_risk_review'|trans({}, 'dashboard') }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% if task.overdue_days is not null %}
+                                    {% include '_components/_badge.html.twig' with {
+                                        variant: task.priority,
+                                        class: 'ms-2',
+                                        content: task.overdue_days ~ ' ' ~ 'dashboard.my_tasks.days_overdue'|trans({}, 'dashboard')
+                                    } %}
+                                    {% endif %}
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="text-center text-muted py-3">
+                            <i class="bi bi-check-circle-fill text-success d-block mb-2" style="font-size: 2rem;" aria-hidden="true"></i>
+                            <p class="mb-0">{{ 'dashboard.my_tasks.all_done'|trans({}, 'dashboard') }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
             {# Compliance Status Widget (Overview of all frameworks) #}
             {% include 'home/_compliance_status_widget.html.twig' with {
                 compliance_summary: compliance_summary|default({has_frameworks: false})
@@ -491,6 +563,16 @@
     <div class="text-muted text-end small mt-3">
         {{ 'dashboard.last_updated'|trans({'%time%': 'now'|date('H:i')}, 'dashboard') }}
     </div>
+
+    {# Restore First Steps Link (shown when first steps have been dismissed) #}
+    {% if not show_first_steps|default(true) %}
+    <div class="text-center mt-3">
+        <a href="{{ path('app_dashboard_restore_first_steps') }}" class="text-muted small">
+            <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>
+            {{ 'dashboard.restore_first_steps'|trans({}, 'dashboard') }}
+        </a>
+    </div>
+    {% endif %}
 
     {# Dashboard Settings Modal #}
     {% include '_components/_dashboard_settings_modal.html.twig' %}

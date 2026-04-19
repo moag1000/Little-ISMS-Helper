@@ -127,6 +127,7 @@ class WelcomeController extends AbstractController
                 'color' => 'info',
                 'count' => $count,
                 'route' => 'app_asset_index',
+                'create_route' => 'app_asset_new',
                 'active' => true,
             ];
         }
@@ -141,6 +142,7 @@ class WelcomeController extends AbstractController
                 'color' => 'warning',
                 'count' => $count,
                 'route' => 'app_risk_index',
+                'create_route' => 'app_risk_new',
                 'active' => true,
             ];
         }
@@ -170,6 +172,7 @@ class WelcomeController extends AbstractController
                 'color' => 'danger',
                 'count' => $count,
                 'route' => 'app_incident_index',
+                'create_route' => 'app_incident_new',
                 'active' => true,
             ];
         }
@@ -227,49 +230,86 @@ class WelcomeController extends AbstractController
         // Overdue risk reviews
         $overdueReviews = $this->riskReviewService->getOverdueReviews($tenant);
         if (count($overdueReviews) > 0) {
-            $tasks[] = [
+            // Sort by review date ascending (most overdue first)
+            usort($overdueReviews, fn($a, $b) => ($a->getReviewDate() ?? new \DateTime('1970-01-01')) <=> ($b->getReviewDate() ?? new \DateTime('1970-01-01')));
+            $topReview = $overdueReviews[0];
+            $reviewDate = $topReview->getReviewDate();
+            $daysOverdue = $reviewDate ? (new \DateTime())->diff($reviewDate)->days : null;
+
+            $task = [
                 'type' => 'overdue_reviews',
                 'icon' => 'bi-calendar-x',
                 'color' => 'warning',
                 'title' => 'welcome.tasks.overdue_reviews',
                 'count' => count($overdueReviews),
                 'route' => 'app_risk_index',
+                'route_params' => ['review_overdue' => '1'],
                 'priority' => 2,
+                'top_item_name' => $topReview->getTitle(),
             ];
+            if ($daysOverdue !== null) {
+                $task['top_item_overdue_days'] = $daysOverdue;
+            }
+            $tasks[] = $task;
         }
 
         // Overdue treatment plans
         $overduePlans = $this->riskTreatmentPlanRepository->findOverdueForTenant($tenant);
         if (count($overduePlans) > 0) {
-            $tasks[] = [
+            // Already sorted by targetCompletionDate ASC from repository (most overdue first)
+            $topPlan = $overduePlans[0];
+            $targetDate = $topPlan->getTargetCompletionDate();
+            $daysOverdue = $targetDate ? (new \DateTime())->diff($targetDate)->days : null;
+
+            $task = [
                 'type' => 'overdue_treatment_plans',
                 'icon' => 'bi-exclamation-triangle-fill',
                 'color' => 'danger',
                 'title' => 'welcome.tasks.overdue_treatment_plans',
                 'count' => count($overduePlans),
                 'route' => 'app_risk_treatment_plan_index',
+                'route_params' => ['overdue_only' => '1'],
                 'priority' => 1,
+                'top_item_name' => $topPlan->getTitle(),
             ];
+            if ($daysOverdue !== null) {
+                $task['top_item_overdue_days'] = $daysOverdue;
+            }
+            $tasks[] = $task;
         }
 
         // Approaching treatment plan deadlines
         $approachingPlans = $this->riskTreatmentPlanRepository->findDueWithinDays(7, $tenant);
         if (count($approachingPlans) > 0) {
-            $tasks[] = [
+            // Already sorted by targetCompletionDate ASC (soonest deadline first)
+            $topApproaching = $approachingPlans[0];
+            $targetDate = $topApproaching->getTargetCompletionDate();
+            $daysLeft = $targetDate ? (new \DateTime())->diff($targetDate)->days : null;
+
+            $task = [
                 'type' => 'approaching_deadlines',
                 'icon' => 'bi-clock-history',
                 'color' => 'warning',
                 'title' => 'welcome.tasks.approaching_deadlines',
                 'count' => count($approachingPlans),
                 'route' => 'app_risk_treatment_plan_index',
+                'route_params' => ['approaching' => '7'],
                 'priority' => 3,
+                'top_item_name' => $topApproaching->getTitle(),
             ];
+            if ($daysLeft !== null) {
+                $task['top_item_days_left'] = $daysLeft;
+            }
+            $tasks[] = $task;
         }
 
         // Pending workflow approvals
         if ($user) {
             $pendingWorkflows = $this->workflowInstanceRepository->findPendingForUser($user);
             if (count($pendingWorkflows) > 0) {
+                $topWorkflow = $pendingWorkflows[0];
+                $workflowName = $topWorkflow->getWorkflow()?->getName();
+
                 $tasks[] = [
                     'type' => 'pending_workflows',
                     'icon' => 'bi-hourglass-split',
@@ -277,7 +317,9 @@ class WelcomeController extends AbstractController
                     'title' => 'welcome.tasks.pending_workflows',
                     'count' => count($pendingWorkflows),
                     'route' => 'app_workflow_pending',
+                    'route_params' => [],
                     'priority' => 2,
+                    'top_item_name' => $workflowName,
                 ];
             }
         }
@@ -285,15 +327,26 @@ class WelcomeController extends AbstractController
         // Overdue workflows
         $overdueWorkflows = $this->workflowInstanceRepository->findOverdue();
         if (count($overdueWorkflows) > 0) {
-            $tasks[] = [
+            $topOverdueWf = $overdueWorkflows[0];
+            $wfName = $topOverdueWf->getWorkflow()?->getName();
+            $wfDueDate = $topOverdueWf->getDueDate();
+            $wfDaysOverdue = $wfDueDate ? (new \DateTime())->diff($wfDueDate)->days : null;
+
+            $task = [
                 'type' => 'overdue_workflows',
                 'icon' => 'bi-exclamation-circle-fill',
                 'color' => 'danger',
                 'title' => 'welcome.tasks.overdue_workflows',
                 'count' => count($overdueWorkflows),
                 'route' => 'app_workflow_overdue',
+                'route_params' => [],
                 'priority' => 1,
+                'top_item_name' => $wfName,
             ];
+            if ($wfDaysOverdue !== null) {
+                $task['top_item_overdue_days'] = $wfDaysOverdue;
+            }
+            $tasks[] = $task;
         }
 
         // Sort by priority (lower = more urgent)

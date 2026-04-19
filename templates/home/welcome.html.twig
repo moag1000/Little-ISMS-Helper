@@ -20,7 +20,7 @@
                         <div class="row g-3">
                             {% for task in urgent_tasks %}
                                 <div class="col-md-6">
-                                    <a href="{{ path(task.route) }}" class="text-decoration-none">
+                                    <a href="{{ path(task.route, task.route_params|default({})) }}" class="text-decoration-none">
                                         <div class="d-flex align-items-center p-3 rounded border border-{{ task.color }}-subtle bg-{{ task.color }}-subtle hover-lift">
                                             <div class="flex-shrink-0 me-3">
                                                 {% include '_components/_badge.html.twig' with {
@@ -34,9 +34,20 @@
                                                 <div class="fw-semibold text-dark">
                                                     {{ task.title|trans({'%count%': task.count}, 'welcome') }}
                                                 </div>
-                                                <small class="text-muted">
-                                                    {{ 'welcome.urgent_tasks.click_to_view'|trans({}, 'welcome') }}
-                                                </small>
+                                                {% if task.top_item_name is defined and task.top_item_name %}
+                                                    <small class="d-block text-muted mt-1">
+                                                        {{ task.top_item_name }}
+                                                        {% if task.top_item_overdue_days is defined %}
+                                                            — {{ task.top_item_overdue_days }} {{ 'welcome.days_overdue'|trans({}, 'welcome') }}
+                                                        {% elseif task.top_item_days_left is defined %}
+                                                            — {{ task.top_item_days_left }} {{ 'welcome.days_left'|trans({}, 'welcome') }}
+                                                        {% endif %}
+                                                    </small>
+                                                {% else %}
+                                                    <small class="text-muted">
+                                                        {{ 'welcome.urgent_tasks.click_to_view'|trans({}, 'welcome') }}
+                                                    </small>
+                                                {% endif %}
                                             </div>
                                             <div class="flex-shrink-0">
                                                 {% include '_components/_badge.html.twig' with { variant: task.color, class: 'fs-6', content: task.count } only %}
@@ -154,7 +165,7 @@
         </div>
     {% endif %}
 
-    {# Active Modules Section #}
+    {# Active Modules Section (with integrated create actions) #}
     <div class="row justify-content-center mb-5">
         <div class="col-lg-10 col-xl-8">
             <h2 class="h4 mb-4 text-center">
@@ -164,8 +175,15 @@
             <div class="row g-3">
                 {% for module in active_modules %}
                     <div class="col-6 col-md-4 col-lg-3">
-                        <a href="{{ path(module.route) }}" class="text-decoration-none">
-                            <div class="card h-100 text-center module-card hover-lift border-0 shadow-sm">
+                        <div class="card h-100 text-center module-card hover-lift border-0 shadow-sm position-relative">
+                            {% if module.create_route is defined %}
+                                <a href="{{ path(module.create_route) }}"
+                                   class="btn btn-sm btn-outline-{{ module.color }} position-absolute top-0 end-0 m-2 module-create-btn"
+                                   title="{{ 'welcome.create_new'|trans({}, 'welcome') }}">
+                                    <i class="bi bi-plus" aria-hidden="true"></i>
+                                </a>
+                            {% endif %}
+                            <a href="{{ path(module.route) }}" class="text-decoration-none">
                                 <div class="card-body py-4">
                                     <div class="module-icon mb-3">
                                         {% include '_components/_badge.html.twig' with {
@@ -179,68 +197,13 @@
                                         {% include '_components/_badge.html.twig' with { variant: module.color, content: module.count } only %}
                                     {% endif %}
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
         </div>
     </div>
-
-    {# Quick Actions Section - Only show actions for active modules #}
-    {% set quick_actions = [] %}
-    {% for module in active_modules %}
-        {% if module.key == 'assets' %}
-            {% set quick_actions = quick_actions|merge([{
-                'route': 'app_asset_new',
-                'icon': 'bi-plus-circle',
-                'color': 'primary',
-                'label': 'welcome.quick_actions.new_asset'
-            }]) %}
-        {% elseif module.key == 'risks' %}
-            {% set quick_actions = quick_actions|merge([{
-                'route': 'app_risk_new',
-                'icon': 'bi-exclamation-triangle',
-                'color': 'warning',
-                'label': 'welcome.quick_actions.new_risk'
-            }]) %}
-        {% elseif module.key == 'incidents' %}
-            {% set quick_actions = quick_actions|merge([{
-                'route': 'app_incident_new',
-                'icon': 'bi-exclamation-circle',
-                'color': 'danger',
-                'label': 'welcome.quick_actions.report_incident'
-            }]) %}
-        {% endif %}
-    {% endfor %}
-    {# Documents quick action - route to new document upload #}
-    {% set quick_actions = quick_actions|merge([{
-        'route': 'app_document_new',
-        'icon': 'bi-file-earmark-plus',
-        'color': 'secondary',
-        'label': 'welcome.quick_actions.new_document'
-    }]) %}
-
-    {% if quick_actions|length > 0 %}
-    <div class="row justify-content-center mb-5">
-        <div class="col-lg-10 col-xl-8">
-            <h2 class="h4 mb-4 text-center">
-                <i class="bi bi-lightning me-2" aria-hidden="true"></i>
-                {{ 'welcome.quick_actions.title'|trans({}, 'welcome') }}
-            </h2>
-            <div class="row g-3 justify-content-center">
-                {% for action in quick_actions %}
-                <div class="col-6 col-md-3">
-                    <a href="{{ path(action.route) }}" class="btn btn-outline-{{ action.color }} w-100 py-3">
-                        <i class="{{ action.icon }} d-block mb-2" style="font-size: 1.5rem;" aria-hidden="true"></i>
-                        {{ action.label|trans({}, 'welcome') }}
-                    </a>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-    {% endif %}
 
     {# Skip Welcome Preference #}
     <div class="row justify-content-center mb-4">
@@ -264,6 +227,9 @@
                         <small class="text-muted">
                             <i class="bi bi-info-circle" aria-hidden="true"></i>
                             {{ 'welcome.preference.hint'|trans({}, 'welcome') }}
+                        </small>
+                        <small class="text-muted d-block mt-1">
+                            {{ 'welcome.preference.session_note'|trans({}, 'welcome') }}
                         </small>
                     </form>
                 {% endblock %}
@@ -318,6 +284,19 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .module-create-btn {
+        z-index: 1;
+        padding: 0.15rem 0.4rem;
+        font-size: 0.85rem;
+        line-height: 1;
+        opacity: 0.6;
+        transition: opacity 0.2s ease;
+    }
+
+    .module-card:hover .module-create-btn {
+        opacity: 1;
     }
 
     /* Purple color for compliance module */

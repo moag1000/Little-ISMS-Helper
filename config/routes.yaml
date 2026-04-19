@@ -19,6 +19,25 @@ app_dashboard:
     defaults:
         _locale: de
 
+# Dashboard First Steps routes (HomeController is excluded from attribute scanning)
+app_dashboard_dismiss_first_steps:
+    path: /{_locale}/dashboard/dismiss-first-steps
+    controller: App\Controller\HomeController::dismissFirstSteps
+    methods: [POST]
+    requirements:
+        _locale: de|en
+    defaults:
+        _locale: de
+
+app_dashboard_restore_first_steps:
+    path: /{_locale}/dashboard/restore-first-steps
+    controller: App\Controller\HomeController::restoreFirstSteps
+    methods: [GET]
+    requirements:
+        _locale: de|en
+    defaults:
+        _locale: de
+
 # App routes WITH locale prefix
 app_routes:
     resource:

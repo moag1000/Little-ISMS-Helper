@@ -2,6 +2,7 @@
  # Management KPIs Widget
  # Displays module-aware KPIs for management reports
  # Only shows KPIs for active modules
+ # Sections are collapsible - danger sections auto-expand
  #}
 
 {% if management_kpis is defined and management_kpis|length > 0 %}
@@ -22,263 +23,101 @@
         </div>
     </div>
     <div class="widget-body p-3">
-        {# Core KPIs (always shown) #}
-        {% if management_kpis.core is defined %}
-        <div class="kpi-section mb-3">
-            <h6 class="text-muted mb-2 d-flex justify-content-between align-items-center">
-                <span>
-                    <i class="bi bi-shield-check" aria-hidden="true"></i>
-                    {{ 'dashboard.management_kpis.core.title'|trans({}, 'dashboard') }}
-                </span>
-                <a href="{{ path('app_soa_index') }}" class="btn btn-sm btn-link p-0" title="{{ 'common.view_all'|trans({}, 'messages') }}">
-                    <i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
-                </a>
-            </h6>
-            <div class="row g-2">
-                {% for key, kpi in management_kpis.core %}
-                <div class="col-6">
-                    <div class="kpi-card p-2 rounded border-start border-4 border-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'info')) }}">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="small text-muted">{{ ('dashboard.kpi.' ~ key)|trans({}, 'dashboard') }}</span>
-                            {% set kpiVariant = kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'secondary')) %}
-                            {% include '_components/_badge.html.twig' with {
-                                variant: kpiVariant ~ '-subtle',
-                                class: 'text-' ~ kpiVariant,
-                                content: kpi.value ~ kpi.unit
-                            } %}
-                        </div>
-                        {% if kpi.details is defined and kpi.details.total is defined %}
-                        <div class="progress mt-1" style="height: 4px;">
-                            <div class="progress-bar bg-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : 'danger') }}"
-                                 role="progressbar"
-                                 style="width: {{ kpi.value }}%"
-                                 aria-valuenow="{{ kpi.value }}"
-                                 aria-valuemin="0"
-                                 aria-valuemax="100"></div>
-                        </div>
+        {# Define KPI sections with their metadata #}
+        {% set kpi_sections = [
+            { key: 'core', icon: 'bi-shield-check', title_key: 'dashboard.management_kpis.core.title', route: 'app_soa_index', col_class: 'col-6' },
+            { key: 'risk_management', icon: 'bi-exclamation-triangle', title_key: 'dashboard.management_kpis.risk_management.title', route: 'app_risk_index', col_class: 'col-6 col-md-4' },
+            { key: 'asset_management', icon: 'bi-server', title_key: 'dashboard.management_kpis.asset_management.title', route: 'app_asset_index', col_class: 'col-6 col-md-4' },
+            { key: 'incident_management', icon: 'bi-fire', title_key: 'dashboard.management_kpis.incident_management.title', route: 'app_incident_index', col_class: 'col-6 col-md-3' },
+            { key: 'business_continuity', icon: 'bi-diagram-3', title_key: 'dashboard.management_kpis.business_continuity.title', route: 'app_bcm_index', col_class: 'col-6 col-md-3' },
+            { key: 'training', icon: 'bi-mortarboard', title_key: 'dashboard.management_kpis.training.title', route: 'app_training_index', col_class: 'col-6' },
+            { key: 'audits', icon: 'bi-clipboard-check', title_key: 'dashboard.management_kpis.audits.title', route: 'app_audit_index', col_class: 'col-6 col-md-4' },
+            { key: 'supplier_management', icon: 'bi-building', title_key: 'dashboard.management_kpis.supplier_management.title', route: 'app_supplier_index', col_class: 'col-6 col-md-3' },
+            { key: 'documentation', icon: 'bi-file-text', title_key: 'dashboard.management_kpis.documentation.title', route: 'app_document_index', col_class: 'col-6 col-md-4' },
+        ] %}
+
+        <div class="accordion" id="kpiAccordion">
+            {% for section in kpi_sections %}
+                {% if attribute(management_kpis, section.key) is defined %}
+                    {% set sectionKpis = attribute(management_kpis, section.key) %}
+
+                    {# Check if any KPI in this section has danger status #}
+                    {% set hasDanger = false %}
+                    {% for key, kpi in sectionKpis %}
+                        {% if kpi.status|default('') == 'danger' %}
+                            {% set hasDanger = true %}
                         {% endif %}
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
+                    {% endfor %}
 
-        {# Risk Management KPIs #}
-        {% if management_kpis.risk_management is defined %}
-        <div class="kpi-section mb-3">
-            <h6 class="text-muted mb-2 d-flex justify-content-between align-items-center">
-                <span>
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                    {{ 'dashboard.management_kpis.risk_management.title'|trans({}, 'dashboard') }}
-                </span>
-                <a href="{{ path('app_risk_index') }}" class="btn btn-sm btn-link p-0" title="{{ 'common.view_all'|trans({}, 'messages') }}">
-                    <i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
-                </a>
-            </h6>
-            <div class="row g-2">
-                {% for key, kpi in management_kpis.risk_management %}
-                <div class="col-6 col-md-4">
-                    <div class="kpi-mini p-2 rounded bg-light">
-                        <div class="small text-muted">{{ ('dashboard.kpi.' ~ key)|trans({}, 'dashboard') }}</div>
-                        <div class="fw-bold text-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'body')) }}">
-                            {{ kpi.value }}{{ kpi.unit }}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="kpiHeading-{{ section.key }}">
+                            <button class="accordion-button {{ hasDanger ? '' : 'collapsed' }} py-2"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#kpi-{{ section.key }}"
+                                    aria-expanded="{{ hasDanger ? 'true' : 'false' }}"
+                                    aria-controls="kpi-{{ section.key }}">
+                                <i class="bi {{ section.icon }} me-2" aria-hidden="true"></i>
+                                {{ section.title_key|trans({}, 'dashboard') }}
+                                {% if hasDanger %}
+                                    <span class="badge bg-danger ms-2">!</span>
+                                {% endif %}
+                            </button>
+                        </h2>
+                        <div id="kpi-{{ section.key }}"
+                             class="accordion-collapse collapse {{ hasDanger ? 'show' : '' }}"
+                             aria-labelledby="kpiHeading-{{ section.key }}"
+                             data-bs-parent="#kpiAccordion">
+                            <div class="accordion-body py-2 px-3">
+                                <div class="d-flex justify-content-end mb-2">
+                                    <a href="{{ path(section.route) }}" class="btn btn-sm btn-link p-0" title="{{ 'common.view_all'|trans({}, 'messages') }}">
+                                        <i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                                <div class="row g-2">
+                                    {% for key, kpi in sectionKpis %}
+                                    <div class="{{ section.col_class }}">
+                                        {% if section.key == 'core' %}
+                                        {# Core section uses the richer card style with progress bars #}
+                                        <div class="kpi-card p-2 rounded border-start border-4 border-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'info')) }}">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="small text-muted">{{ ('dashboard.kpi.' ~ key)|trans({}, 'dashboard') }}</span>
+                                                {% set kpiVariant = kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'secondary')) %}
+                                                {% include '_components/_badge.html.twig' with {
+                                                    variant: kpiVariant ~ '-subtle',
+                                                    class: 'text-' ~ kpiVariant,
+                                                    content: kpi.value ~ kpi.unit
+                                                } %}
+                                            </div>
+                                            {% if kpi.details is defined and kpi.details.total is defined %}
+                                            <div class="progress mt-1" style="height: 4px;">
+                                                <div class="progress-bar bg-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : 'danger') }}"
+                                                     role="progressbar"
+                                                     style="width: {{ kpi.value }}%"
+                                                     aria-valuenow="{{ kpi.value }}"
+                                                     aria-valuemin="0"
+                                                     aria-valuemax="100"></div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        {% else %}
+                                        {# Other sections use the compact mini card style #}
+                                        <div class="kpi-mini p-2 rounded bg-light">
+                                            <div class="small text-muted">{{ ('dashboard.kpi.' ~ key)|trans({}, 'dashboard') }}</div>
+                                            <div class="fw-bold text-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'body')) }}">
+                                                {{ kpi.value }}{{ kpi.unit }}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {% endfor %}
-            </div>
+                {% endif %}
+            {% endfor %}
         </div>
-        {% endif %}
-
-        {# Asset Management KPIs #}
-        {% if management_kpis.asset_management is defined %}
-        <div class="kpi-section mb-3">
-            <h6 class="text-muted mb-2 d-flex justify-content-between align-items-center">
-                <span>
-                    <i class="bi bi-server" aria-hidden="true"></i>
-                    {{ 'dashboard.management_kpis.asset_management.title'|trans({}, 'dashboard') }}
-                </span>
-                <a href="{{ path('app_asset_index') }}" class="btn btn-sm btn-link p-0" title="{{ 'common.view_all'|trans({}, 'messages') }}">
-                    <i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
-                </a>
-            </h6>
-            <div class="row g-2">
-                {% for key, kpi in management_kpis.asset_management %}
-                <div class="col-6 col-md-4">
-                    <div class="kpi-mini p-2 rounded bg-light">
-                        <div class="small text-muted">{{ ('dashboard.kpi.' ~ key)|trans({}, 'dashboard') }}</div>
-                        <div class="fw-bold text-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'body')) }}">
-                            {{ kpi.value }}{{ kpi.unit }}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        {# Incident Management KPIs #}
-        {% if management_kpis.incident_management is defined %}
-        <div class="kpi-section mb-3">
-            <h6 class="text-muted mb-2 d-flex justify-content-between align-items-center">
-                <span>
-                    <i class="bi bi-fire" aria-hidden="true"></i>
-                    {{ 'dashboard.management_kpis.incident_management.title'|trans({}, 'dashboard') }}
-                </span>
-                <a href="{{ path('app_incident_index') }}" class="btn btn-sm btn-link p-0" title="{{ 'common.view_all'|trans({}, 'messages') }}">
-                    <i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
-                </a>
-            </h6>
-            <div class="row g-2">
-                {% for key, kpi in management_kpis.incident_management %}
-                <div class="col-6 col-md-3">
-                    <div class="kpi-mini p-2 rounded bg-light">
-                        <div class="small text-muted">{{ ('dashboard.kpi.' ~ key)|trans({}, 'dashboard') }}</div>
-                        <div class="fw-bold text-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'body')) }}">
-                            {{ kpi.value }}{{ kpi.unit }}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        {# Business Continuity KPIs #}
-        {% if management_kpis.business_continuity is defined %}
-        <div class="kpi-section mb-3">
-            <h6 class="text-muted mb-2 d-flex justify-content-between align-items-center">
-                <span>
-                    <i class="bi bi-diagram-3" aria-hidden="true"></i>
-                    {{ 'dashboard.management_kpis.business_continuity.title'|trans({}, 'dashboard') }}
-                </span>
-                <a href="{{ path('app_bcm_index') }}" class="btn btn-sm btn-link p-0" title="{{ 'common.view_all'|trans({}, 'messages') }}">
-                    <i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
-                </a>
-            </h6>
-            <div class="row g-2">
-                {% for key, kpi in management_kpis.business_continuity %}
-                <div class="col-6 col-md-3">
-                    <div class="kpi-mini p-2 rounded bg-light">
-                        <div class="small text-muted">{{ ('dashboard.kpi.' ~ key)|trans({}, 'dashboard') }}</div>
-                        <div class="fw-bold text-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'body')) }}">
-                            {{ kpi.value }}{{ kpi.unit }}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        {# Training KPIs #}
-        {% if management_kpis.training is defined %}
-        <div class="kpi-section mb-3">
-            <h6 class="text-muted mb-2 d-flex justify-content-between align-items-center">
-                <span>
-                    <i class="bi bi-mortarboard" aria-hidden="true"></i>
-                    {{ 'dashboard.management_kpis.training.title'|trans({}, 'dashboard') }}
-                </span>
-                <a href="{{ path('app_training_index') }}" class="btn btn-sm btn-link p-0" title="{{ 'common.view_all'|trans({}, 'messages') }}">
-                    <i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
-                </a>
-            </h6>
-            <div class="row g-2">
-                {% for key, kpi in management_kpis.training %}
-                <div class="col-6">
-                    <div class="kpi-mini p-2 rounded bg-light">
-                        <div class="small text-muted">{{ ('dashboard.kpi.' ~ key)|trans({}, 'dashboard') }}</div>
-                        <div class="fw-bold text-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'body')) }}">
-                            {{ kpi.value }}{{ kpi.unit }}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        {# Audit KPIs #}
-        {% if management_kpis.audits is defined %}
-        <div class="kpi-section mb-3">
-            <h6 class="text-muted mb-2 d-flex justify-content-between align-items-center">
-                <span>
-                    <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-                    {{ 'dashboard.management_kpis.audits.title'|trans({}, 'dashboard') }}
-                </span>
-                <a href="{{ path('app_audit_index') }}" class="btn btn-sm btn-link p-0" title="{{ 'common.view_all'|trans({}, 'messages') }}">
-                    <i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
-                </a>
-            </h6>
-            <div class="row g-2">
-                {% for key, kpi in management_kpis.audits %}
-                <div class="col-6 col-md-4">
-                    <div class="kpi-mini p-2 rounded bg-light">
-                        <div class="small text-muted">{{ ('dashboard.kpi.' ~ key)|trans({}, 'dashboard') }}</div>
-                        <div class="fw-bold text-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'body')) }}">
-                            {{ kpi.value }}{{ kpi.unit }}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        {# Supplier Management KPIs #}
-        {% if management_kpis.supplier_management is defined %}
-        <div class="kpi-section mb-3">
-            <h6 class="text-muted mb-2 d-flex justify-content-between align-items-center">
-                <span>
-                    <i class="bi bi-building" aria-hidden="true"></i>
-                    {{ 'dashboard.management_kpis.supplier_management.title'|trans({}, 'dashboard') }}
-                </span>
-                <a href="{{ path('app_supplier_index') }}" class="btn btn-sm btn-link p-0" title="{{ 'common.view_all'|trans({}, 'messages') }}">
-                    <i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
-                </a>
-            </h6>
-            <div class="row g-2">
-                {% for key, kpi in management_kpis.supplier_management %}
-                <div class="col-6 col-md-3">
-                    <div class="kpi-mini p-2 rounded bg-light">
-                        <div class="small text-muted">{{ ('dashboard.kpi.' ~ key)|trans({}, 'dashboard') }}</div>
-                        <div class="fw-bold text-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'body')) }}">
-                            {{ kpi.value }}{{ kpi.unit }}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        {# Documentation KPIs #}
-        {% if management_kpis.documentation is defined %}
-        <div class="kpi-section">
-            <h6 class="text-muted mb-2 d-flex justify-content-between align-items-center">
-                <span>
-                    <i class="bi bi-file-text" aria-hidden="true"></i>
-                    {{ 'dashboard.management_kpis.documentation.title'|trans({}, 'dashboard') }}
-                </span>
-                <a href="{{ path('app_document_index') }}" class="btn btn-sm btn-link p-0" title="{{ 'common.view_all'|trans({}, 'messages') }}">
-                    <i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
-                </a>
-            </h6>
-            <div class="row g-2">
-                {% for key, kpi in management_kpis.documentation %}
-                <div class="col-6 col-md-4">
-                    <div class="kpi-mini p-2 rounded bg-light">
-                        <div class="small text-muted">{{ ('dashboard.kpi.' ~ key)|trans({}, 'dashboard') }}</div>
-                        <div class="fw-bold text-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'body')) }}">
-                            {{ kpi.value }}{{ kpi.unit }}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endif %}

@@ -119,6 +119,16 @@ class RiskController extends AbstractController
             );
         }
 
+        // Filter to overdue reviews only (review date in the past or null)
+        $reviewOverdue = $request->query->get('review_overdue');
+        if ($reviewOverdue === '1') {
+            $now = new \DateTime();
+            $risks = array_filter($risks, function (Risk $risk) use ($now): bool {
+                $reviewDate = $risk->getReviewDate();
+                return $reviewDate === null || $reviewDate < $now;
+            });
+        }
+
         // Re-index array after filtering
         $risks = array_values($risks);
 

@@ -42,16 +42,14 @@ welcome:
         view_all: "Alle Wizards"
         complete: "abgeschlossen"
 
-    quick_actions:
-        title: "Schnellzugriff"
-        new_asset: "Neues Asset"
-        new_risk: "Risiko erfassen"
-        report_incident: "Vorfall melden"
-        new_document: "Neues Dokument"
+    create_new: "Neu erstellen"
+    days_overdue: "Tage überfällig"
+    days_left: "Tage verbleibend"
 
     preference:
         skip_next_time: "Beim nächsten Login direkt zum Dashboard"
         hint: "Sie können diese Einstellung jederzeit ändern"
+        session_note: "Hinweis: Diese Einstellung wird in der aktuellen Sitzung gespeichert."
 
     footer:
         tenant: "Organisation: %tenant%"
