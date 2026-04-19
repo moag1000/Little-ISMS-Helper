@@ -302,6 +302,74 @@
     {% endblock %}
 {% endembed %}
 
+{# A2 Auto-Mapping-Vorschläge #}
+{% if mapping_suggestions is defined and mapping_suggestions|length > 0 %}
+    {% embed '_components/_card.html.twig' with { class: 'mt-4 border-info' } %}
+        {% block card_header %}
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="h6 mb-0">
+                    <i class="bi bi-magic" aria-hidden="true"></i>
+                    {{ 'control.mapping_suggestions.title'|trans({
+                        '%count%': mapping_suggestions_total,
+                        '%frameworks%': mapping_suggestions|length
+                    }, 'control') }}
+                </h2>
+                <span class="badge text-bg-info">{{ mapping_suggestions_total }}</span>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            <p class="small text-muted">{{ 'control.mapping_suggestions.description'|trans({}, 'control') }}</p>
+
+            {% for code, rows in mapping_suggestions %}
+                <div class="mb-3">
+                    <h3 class="h6 text-muted">
+                        <span class="badge text-bg-light border">{{ code }}</span>
+                        {{ rows[0].framework.name }}
+                    </h3>
+                    <ul class="list-unstyled mb-0">
+                        {% for row in rows %}
+                            {% set conf_pct = (row.confidence * 100)|round %}
+                            {% set conf_variant = conf_pct >= 50 ? 'success' : (conf_pct >= 30 ? 'warning' : 'secondary') %}
+                            <li class="d-flex justify-content-between align-items-start border-bottom py-2">
+                                <div class="flex-grow-1">
+                                    <div>
+                                        <code>{{ row.requirement.requirementId }}</code>
+                                        <span class="ms-1">{{ row.requirement.title }}</span>
+                                    </div>
+                                    {% if row.requirement.category %}
+                                        <div class="small text-muted">{{ row.requirement.category }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="ms-2 d-flex align-items-center gap-2">
+                                    <span class="badge text-bg-{{ conf_variant }}">
+                                        {{ conf_pct }}%
+                                    </span>
+                                    <form method="post"
+                                          action="{{ path('app_soa_accept_suggestion', { id: control.id, requirementId: row.requirement.id }) }}"
+                                          class="d-inline">
+                                        <input type="hidden" name="_token"
+                                               value="{{ csrf_token('accept_suggestion_' ~ control.id ~ '_' ~ row.requirement.id) }}">
+                                        <input type="hidden" name="confidence" value="{{ row.confidence }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-success">
+                                            <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                                            {{ 'control.mapping_suggestions.accept'|trans({}, 'control') }}
+                                        </button>
+                                    </form>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+
+            <div class="small text-muted mt-2">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                {{ 'control.mapping_suggestions.footer_hint'|trans({}, 'control') }}
+            </div>
+        {% endblock %}
+    {% endembed %}
+{% endif %}
+
 {# Action Buttons #}
 <div class="d-flex gap-2 mt-4">
     <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-success">

@@ -61,3 +61,10 @@ control:
     verified: Verified
   success:
     updated: Control updated successfully
+  flash:
+    mapping_accepted: 'Mapping suggestion accepted — requirement %requirement% is now linked to this control.'
+  mapping_suggestions:
+    title: '%count% mapping suggestions across %frameworks% framework(s)'
+    description: 'Automatically detected requirements this control may cover. Confidence is a Jaccard text-similarity score between the control description and the requirement text.'
+    accept: 'Accept'
+    footer_hint: 'Every acceptance is logged as "A2_auto_mapping_suggestion" with its confidence score — auditors can trace the origin.'
