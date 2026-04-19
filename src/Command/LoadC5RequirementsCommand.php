@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\Option;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,7 +20,8 @@ class LoadC5RequirementsCommand
     {
     }
 
-    public function __invoke(SymfonyStyle $symfonyStyle): int
+    public function __invoke(#[Option(name: 'update', shortcut: 'u', description: 'Update existing requirements instead of skipping them')]
+    bool $update = false, ?SymfonyStyle $symfonyStyle = null): int
     {
         // Create or get C5 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
@@ -42,20 +44,41 @@ class LoadC5RequirementsCommand
             $this->entityManager->persist($framework);
         }
         $requirements = $this->getC5Requirements();
-        foreach ($requirements as $reqData) {
-            $requirement = new ComplianceRequirement();
-            $requirement->setFramework($framework)
-                ->setRequirementId($reqData['id'])
-                ->setTitle($reqData['title'])
-                ->setDescription($reqData['description'])
-                ->setCategory($reqData['category'])
-                ->setPriority($reqData['priority'])
-                ->setDataSourceMapping($reqData['data_source_mapping']);
+        $stats = ['created' => 0, 'updated' => 0, 'skipped' => 0];
 
-            $this->entityManager->persist($requirement);
+        foreach ($requirements as $reqData) {
+            $existing = $this->entityManager->getRepository(ComplianceRequirement::class)
+                ->findOneBy([
+                    'complianceFramework' => $framework,
+                    'requirementId' => $reqData['id'],
+                ]);
+
+            if ($existing instanceof ComplianceRequirement) {
+                if ($update) {
+                    $existing->setTitle($reqData['title'])
+                        ->setDescription($reqData['description'])
+                        ->setCategory($reqData['category'])
+                        ->setPriority($reqData['priority'])
+                        ->setDataSourceMapping($reqData['data_source_mapping']);
+                    $stats['updated']++;
+                } else {
+                    $stats['skipped']++;
+                }
+            } else {
+                $requirement = new ComplianceRequirement();
+                $requirement->setFramework($framework)
+                    ->setRequirementId($reqData['id'])
+                    ->setTitle($reqData['title'])
+                    ->setDescription($reqData['description'])
+                    ->setCategory($reqData['category'])
+                    ->setPriority($reqData['priority'])
+                    ->setDataSourceMapping($reqData['data_source_mapping']);
+                $this->entityManager->persist($requirement);
+                $stats['created']++;
+            }
         }
         $this->entityManager->flush();
-        $symfonyStyle->success(sprintf('Successfully loaded %d BSI C5:2020 requirements', count($requirements)));
+        $symfonyStyle?->success(sprintf('BSI C5:2020 requirements: %d created, %d updated, %d skipped', $stats['created'], $stats['updated'], $stats['skipped']));
         return Command::SUCCESS;
     }
 
