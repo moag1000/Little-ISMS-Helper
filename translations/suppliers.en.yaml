@@ -135,6 +135,17 @@ supplier:
         high: High
         medium: Medium
         low: Low
+    subcontractor:
+        tier: Tier
+        name: Name
+        lei: LEI
+        country: Country
+        service: Service
+        criticality: Criticality
+        add: 'Add subcontractor'
+        empty: 'No subcontractors captured yet. Click "Add" to add a new tier.'
+        none: 'No subcontractors recorded.'
+        tree: 'Sub-outsourcing tree'
     status:
         active: Active
         inactive: Inactive

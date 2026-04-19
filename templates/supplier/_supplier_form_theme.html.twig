@@ -1,0 +1,13 @@
+{# Supplier form theme — route subcontractorChain through the structured editor #}
+
+{%- block _supplier_subcontractorChain_row -%}
+    <div class="mb-3">
+        {{ form_label(form) }}
+        {% include 'supplier/_subcontractor_chain_editor.html.twig' with {
+            field_name: form.vars.full_name,
+            initial: form.vars.value
+        } %}
+        <small class="form-text text-muted">{{ form.vars.help|trans({}, form.vars.help_translation_domain|default('suppliers')) }}</small>
+        {{ form_errors(form) }}
+    </div>
+{%- endblock -%}

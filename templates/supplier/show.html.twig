@@ -436,15 +436,7 @@
 
                             <dt class="col-sm-4">{{ 'supplier.dora.field.subcontractor_chain'|trans({}, 'suppliers') }}</dt>
                             <dd class="col-sm-8">
-                                {% if supplier.subcontractorChain is iterable and supplier.subcontractorChain|length > 0 %}
-                                    <ul class="mb-0">
-                                        {% for sub in supplier.subcontractorChain %}
-                                            <li>{{ sub is iterable ? (sub.name ?? sub|json_encode) : sub }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>
-                                {% endif %}
+                                {% include 'supplier/_subcontractor_chain_tree.html.twig' with { chain: supplier.subcontractorChain } %}
                             </dd>
 
                             <dt class="col-sm-4">{{ 'supplier.dora.field.processing_locations'|trans({}, 'suppliers') }}</dt>
