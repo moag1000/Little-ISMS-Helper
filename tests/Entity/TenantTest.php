@@ -251,4 +251,47 @@ class TenantTest extends TestCase
         $this->assertSame($middle, $leafAncestors[0]); // Immediate parent first
         $this->assertSame($root, $leafAncestors[1]); // Root parent last
     }
+
+    public function testIsChildOfDirectAndIndirect(): void
+    {
+        $root = new Tenant();
+        $middle = new Tenant();
+        $leaf = new Tenant();
+
+        $root->addSubsidiary($middle);
+        $middle->addSubsidiary($leaf);
+
+        $this->assertTrue($middle->isChildOf($root));
+        $this->assertTrue($leaf->isChildOf($middle));
+        $this->assertTrue($leaf->isChildOf($root));
+        $this->assertFalse($root->isChildOf($middle));
+        $this->assertFalse($middle->isChildOf($leaf));
+        $this->assertFalse($root->isChildOf($root));
+    }
+
+    public function testSetParentRejectsSelfReference(): void
+    {
+        $tenant = (new Tenant())->setCode('t1');
+
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('cannot be its own parent');
+
+        $tenant->setParent($tenant);
+    }
+
+    public function testSetParentRejectsCycle(): void
+    {
+        $root = (new Tenant())->setCode('root');
+        $child = (new Tenant())->setCode('child');
+        $grandchild = (new Tenant())->setCode('grandchild');
+
+        $root->addSubsidiary($child);
+        $child->addSubsidiary($grandchild);
+
+        // Attempt to make root a child of grandchild — would close the loop
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('cycle');
+
+        $root->setParent($grandchild);
+    }
 }

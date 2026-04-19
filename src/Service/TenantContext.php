@@ -153,4 +153,58 @@ class TenantContext
         $this->currentTenant = null;
         $this->initialized = false;
     }
+
+    /**
+     * Tenants the current user should be able to read across.
+     *
+     * For a regular tenant user this is just their own tenant. For a
+     * Holding-Tenant (isCorporateParent = true), the caller gets the
+     * full subtree — intended for Group-CISO style read-only roll-ups
+     * (Phase 9.P1.6). Authorization enforcement itself lives in the
+     * voter layer; this service only exposes the topology.
+     *
+     * @return Tenant[]
+     */
+    public function getAccessibleTenants(): array
+    {
+        $tenant = $this->getCurrentTenant();
+        if (!$tenant instanceof Tenant) {
+            return [];
+        }
+
+        $accessible = [$tenant];
+        foreach ($tenant->getAllSubsidiaries() as $subsidiary) {
+            $accessible[] = $subsidiary;
+        }
+        return $accessible;
+    }
+
+    /**
+     * Root tenant of the current user's corporate tree (or the tenant
+     * itself when it has no parent).
+     */
+    public function getCurrentRoot(): ?Tenant
+    {
+        return $this->getCurrentTenant()?->getRootParent();
+    }
+
+    /**
+     * True when $candidate is the current tenant or one of its descendants.
+     * Use from voters / controllers before dereferencing cross-tenant
+     * relationships.
+     */
+    public function canAccessTenant(Tenant $candidate): bool
+    {
+        $current = $this->getCurrentTenant();
+        if (!$current instanceof Tenant) {
+            return false;
+        }
+        if ($current === $candidate) {
+            return true;
+        }
+        if ($current->getId() !== null && $current->getId() === $candidate->getId()) {
+            return true;
+        }
+        return $candidate->isChildOf($current);
+    }
 }

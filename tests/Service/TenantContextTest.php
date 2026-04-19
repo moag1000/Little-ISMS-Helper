@@ -193,6 +193,82 @@ class TenantContextTest extends TestCase
         $this->assertFalse($this->tenantContext->hasTenant());
     }
 
+    public function testGetAccessibleTenantsReturnsEmptyWithoutCurrentTenant(): void
+    {
+        $this->security->method('getUser')->willReturn(null);
+
+        $this->assertSame([], $this->tenantContext->getAccessibleTenants());
+    }
+
+    public function testGetAccessibleTenantsReturnsSelfPlusDescendants(): void
+    {
+        $holding = (new Tenant())->setCode('holding')->setName('Holding');
+        $sub1 = (new Tenant())->setCode('sub1')->setName('Sub 1');
+        $sub2 = (new Tenant())->setCode('sub2')->setName('Sub 2');
+        $grandchild = (new Tenant())->setCode('grand')->setName('Grandchild');
+
+        $holding->addSubsidiary($sub1);
+        $holding->addSubsidiary($sub2);
+        $sub1->addSubsidiary($grandchild);
+
+        $this->tenantContext->setCurrentTenant($holding);
+
+        $accessible = $this->tenantContext->getAccessibleTenants();
+
+        $this->assertCount(4, $accessible);
+        $this->assertSame($holding, $accessible[0]);
+        $this->assertContains($sub1, $accessible);
+        $this->assertContains($sub2, $accessible);
+        $this->assertContains($grandchild, $accessible);
+    }
+
+    public function testCanAccessTenantCurrentTenantItself(): void
+    {
+        $current = $this->createMock(Tenant::class);
+        $current->method('getId')->willReturn(10);
+
+        $this->tenantContext->setCurrentTenant($current);
+
+        $this->assertTrue($this->tenantContext->canAccessTenant($current));
+    }
+
+    public function testCanAccessTenantDescendantReturnsTrue(): void
+    {
+        $holding = (new Tenant())->setCode('holding');
+        $sub = (new Tenant())->setCode('sub');
+        $holding->addSubsidiary($sub);
+
+        $this->tenantContext->setCurrentTenant($holding);
+
+        $this->assertTrue($this->tenantContext->canAccessTenant($sub));
+    }
+
+    public function testCanAccessTenantSiblingReturnsFalse(): void
+    {
+        $holding = (new Tenant())->setCode('holding');
+        $sub1 = (new Tenant())->setCode('sub1');
+        $sub2 = (new Tenant())->setCode('sub2');
+        $holding->addSubsidiary($sub1);
+        $holding->addSubsidiary($sub2);
+
+        $this->tenantContext->setCurrentTenant($sub1);
+
+        $this->assertFalse($this->tenantContext->canAccessTenant($sub2));
+    }
+
+    public function testGetCurrentRootReturnsRoot(): void
+    {
+        $holding = (new Tenant())->setCode('holding');
+        $sub = (new Tenant())->setCode('sub');
+        $leaf = (new Tenant())->setCode('leaf');
+        $holding->addSubsidiary($sub);
+        $sub->addSubsidiary($leaf);
+
+        $this->tenantContext->setCurrentTenant($leaf);
+
+        $this->assertSame($holding, $this->tenantContext->getCurrentRoot());
+    }
+
     public function testMultipleCallsToGetCurrentTenantUseCachedValue(): void
     {
         $tenant = new Tenant();
