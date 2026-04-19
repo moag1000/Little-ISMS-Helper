@@ -58,12 +58,21 @@ management_reports:
         view_reports: 'Berichte anzeigen'
         download_pdf: 'PDF herunterladen'
         download_excel: 'Excel herunterladen'
+        download_evidence_package: 'Evidenz-Paket herunterladen (ZIP)'
 
     # Quick Access
     quick_access:
         title: 'Schnellzugriff'
         pdf_exports: 'PDF-Exporte'
         excel_exports: 'Excel-Exporte'
+        evidence_package: 'Audit-Evidenz-Paket'
+
+    # Date Range Filter
+    filter:
+        from: 'Von'
+        to: 'Bis'
+        apply: 'Filtern'
+        reset: 'Zurücksetzen'
 
     # Generated At
     generated_at: 'Erstellt am'
@@ -118,6 +127,7 @@ management_reports:
     # Trend
     trend:
         month: 'Monat'
+        total_risks: 'Risiken gesamt'
         new_risks: 'Neue Risiken'
         high_critical: 'Hoch/Kritisch'
         total_incidents: 'Vorfälle gesamt'

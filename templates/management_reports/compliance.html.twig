@@ -21,8 +21,31 @@
             <a href="{{ path('app_management_reports_compliance_pdf') }}" class="btn btn-outline-danger">
                 <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
             </a>
+            <a href="{{ path('app_management_reports_compliance_excel') }}" class="btn btn-outline-success">
+                <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'management_reports.action.download_excel'|trans({}, 'management_reports') }}
+            </a>
         </div>
     </div>
+
+    {# Date Range Filter #}
+    <form class="d-flex gap-2 mb-3 align-items-end" method="get">
+        <div>
+            <label for="filter-from" class="form-label small mb-0">{{ 'management_reports.filter.from'|trans({}, 'management_reports') }}</label>
+            <input type="date" id="filter-from" name="from" value="{{ app.request.query.get('from') }}" class="form-control form-control-sm">
+        </div>
+        <div>
+            <label for="filter-to" class="form-label small mb-0">{{ 'management_reports.filter.to'|trans({}, 'management_reports') }}</label>
+            <input type="date" id="filter-to" name="to" value="{{ app.request.query.get('to') }}" class="form-control form-control-sm">
+        </div>
+        <button type="submit" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'management_reports.filter.apply'|trans({}, 'management_reports') }}
+        </button>
+        {% if app.request.query.get('from') or app.request.query.get('to') %}
+        <a href="{{ path('app_management_reports_compliance') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'management_reports.filter.reset'|trans({}, 'management_reports') }}
+        </a>
+        {% endif %}
+    </form>
 
     {# Overall Compliance #}
     <div class="row mb-4">

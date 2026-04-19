@@ -224,14 +224,16 @@
         <table>
             <tr>
                 <th scope="col">Month</th>
-                <th scope="col">New Risks</th>
+                <th scope="col">Total Risks</th>
                 <th scope="col">High/Critical</th>
+                <th scope="col">New</th>
             </tr>
             {% for trend in risk_trends %}
             <tr>
                 <td>{{ trend.month_name }}</td>
-                <td>{{ trend.new_risks }}</td>
+                <td><strong>{{ trend.total }}</strong></td>
                 <td>{% if trend.high_critical > 0 %}<span class="badge badge-danger">{{ trend.high_critical }}</span>{% else %}<span class="badge badge-success">0</span>{% endif %}</td>
+                <td>{{ trend.new_risks }}</td>
             </tr>
             {% endfor %}
         </table>
