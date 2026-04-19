@@ -59,6 +59,7 @@ class ScheduledReport
         self::TYPE_AUDIT,
         self::TYPE_ASSETS,
         self::TYPE_GDPR,
+        self::TYPE_PORTFOLIO,
     ])]
     private ?string $reportType = null;
 
@@ -453,6 +454,7 @@ class ScheduledReport
             self::TYPE_AUDIT => 'Audit Management',
             self::TYPE_ASSETS => 'Asset Inventory',
             self::TYPE_GDPR => 'Data Protection (GDPR)',
+            self::TYPE_PORTFOLIO => 'Cross-Framework Portfolio',
         ];
     }
 

@@ -3,10 +3,15 @@
 namespace App\Controller;
 
 use DateTime;
+use App\Repository\RiskRepository;
+use App\Service\ComplianceAnalyticsService;
+use App\Service\DashboardStatisticsService;
 use App\Service\ManagementReportService;
 use App\Service\PdfExportService;
 use App\Service\ExcelExportService;
+use App\Service\RoleDashboardService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -26,6 +31,11 @@ class ManagementReportController extends AbstractController
         private readonly ManagementReportService $reportService,
         private readonly PdfExportService $pdfExportService,
         private readonly ExcelExportService $excelExportService,
+        private readonly DashboardStatisticsService $dashboardStatisticsService,
+        private readonly RoleDashboardService $roleDashboardService,
+        private readonly RiskRepository $riskRepository,
+        private readonly ComplianceAnalyticsService $complianceAnalyticsService,
+        private readonly Security $security,
     ) {
     }
 
@@ -368,6 +378,68 @@ class ManagementReportController extends AbstractController
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="data_breach_report_' . date('Y-m-d') . '.pdf"',
+        ]);
+    }
+
+    // ===================== BOARD ONE-PAGER =====================
+
+    #[Route('/board-one-pager/pdf', name: 'app_reports_board_one_pager_pdf')]
+    #[IsGranted('ROLE_MANAGER')]
+    public function boardOnePagerPdf(Request $request): Response
+    {
+        // Gather data from existing services
+        $kpis = $this->dashboardStatisticsService->getManagementKPIs();
+        $boardData = $this->roleDashboardService->getBoardDashboard();
+
+        // Top 5 risks sorted by inherent risk level
+        $tenant = $this->security->getUser()?->getTenant();
+        $allRisks = $tenant ? $this->riskRepository->findByTenant($tenant) : [];
+        usort($allRisks, fn($a, $b) => $b->getInherentRiskLevel() - $a->getInherentRiskLevel());
+        $topRiskEntities = array_slice($allRisks, 0, 5);
+
+        // Convert to arrays with 'level' key for template compatibility
+        $topRisks = [];
+        foreach ($topRiskEntities as $risk) {
+            $score = $risk->getInherentRiskLevel();
+            $level = match (true) {
+                $score >= 20 => 'Critical',
+                $score >= 12 => 'High',
+                $score >= 6 => 'Medium',
+                default => 'Low',
+            };
+            $topRisks[] = [
+                'title' => $risk->getTitle(),
+                'level' => $level,
+                'score' => $score,
+            ];
+        }
+
+        // Framework compliance from ComplianceAnalyticsService
+        $frameworkCompliance = [];
+        $comparison = $this->complianceAnalyticsService->getFrameworkComparison();
+        foreach ($comparison['frameworks'] ?? [] as $fw) {
+            $frameworkCompliance[] = [
+                'name' => $fw['name'],
+                'percentage' => round($fw['compliance_percentage'] ?? 0),
+            ];
+        }
+
+        $request->getSession()->save();
+
+        $generatedAt = new DateTime();
+
+        $pdf = $this->pdfExportService->generatePdf('reports/board_one_pager.html.twig', [
+            'board_data' => $boardData,
+            'kpis' => $kpis,
+            'top_risks' => $topRisks,
+            'framework_compliance' => $frameworkCompliance,
+            'prepared_by' => $this->security->getUser()?->getFullName() ?? 'System',
+            'generated_at' => $generatedAt,
+        ]);
+
+        return new Response($pdf, Response::HTTP_OK, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="board-one-pager_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 }

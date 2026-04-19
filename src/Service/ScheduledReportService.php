@@ -38,6 +38,7 @@ class ScheduledReportService
         private readonly UserRepository $userRepository,
         private readonly TranslatorInterface $translator,
         private readonly AuditLogger $auditLogger,
+        private readonly PortfolioReportService $portfolioReportService,
         private readonly string $senderEmail = 'noreply@little-isms-helper.local',
         private readonly string $senderName = 'Little ISMS Helper',
     ) {
@@ -304,8 +305,31 @@ class ScheduledReportService
             ScheduledReport::TYPE_GDPR => [
                 'report' => $this->reportService->getDataBreachReport(),
             ],
+            ScheduledReport::TYPE_PORTFOLIO => $this->getPortfolioReportData(),
             default => throw new \InvalidArgumentException("Unknown report type: {$type}"),
         };
+    }
+
+    /**
+     * Get portfolio report data using PortfolioReportService
+     */
+    private function getPortfolioReportData(): array
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null) {
+            throw new \RuntimeException('Portfolio report requires a tenant context.');
+        }
+
+        $stichtag = new \DateTimeImmutable();
+        $matrix = $this->portfolioReportService->buildMatrix($tenant, $stichtag, null);
+
+        return [
+            'matrix' => $matrix,
+            'tenant' => $tenant,
+            'stichtag' => $stichtag,
+            'vorperiode' => null,
+            'thresholds' => ['green' => 80, 'amber' => 60],
+        ];
     }
 
     /**
@@ -321,6 +345,7 @@ class ScheduledReportService
             ScheduledReport::TYPE_AUDIT => 'management_reports/audit_pdf.html.twig',
             ScheduledReport::TYPE_ASSETS => 'management_reports/assets_pdf.html.twig',
             ScheduledReport::TYPE_GDPR => 'management_reports/gdpr_pdf.html.twig',
+            ScheduledReport::TYPE_PORTFOLIO => 'portfolio_report/pdf.html.twig',
             default => throw new \InvalidArgumentException("Unknown report type: {$type}"),
         };
     }
