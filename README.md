@@ -43,12 +43,17 @@ Little ISMS Helper unterstützt Organisationen bei der **Implementierung und Ver
 
 | Feature | Beschreibung |
 |---------|--------------|
-| ✅ **ISO 27001:2022 konform** | Alle 93 Annex A Controls integriert |
+| ✅ **ISO 27001:2022 konform** | Annex A (93 Controls) + Clauses 4–10 (Context, Leadership, Planning, …) |
+| 📋 **Audit-Findings + Korrekturmaßnahmen** | Strukturierte Erfassung nach Clause 10.1 (H-01) |
+| 🔐 **Tamper-evidentes Audit-Log** | HMAC-SHA256-Chain, `app:audit-log:verify` (NIS2 Art. 21.2) |
 | 🔄 **Intelligente Datenwiederverwendung** | Mapping-basierte Vererbung mit Review-Pflicht (WS-1) |
 | 🔗 **Cross-Framework-Mappings** | 461 geprüfte Mappings über 22 Frameworks |
-| 📊 **Multi-Framework Support** | ISO 27001/27002/27005/27701/22301, TISAX, DORA, NIS2, BSI, C5, EU AI Act |
+| 📊 **Multi-Framework Support** | ISO 27001/27002/27005/27701/22301, TISAX, DORA, NIS2/NIS2UmsuCG, BSI, C5, EU AI Act |
+| 🌐 **BSI IT-Grundschutz** | Absicherungsstufen (Basis/Standard/Kern), Anforderungstypen (MUSS/SOLLTE/KANN), Schutzbedarfsvererbung (Maximumprinzip) |
+| 🧭 **KPI-Dashboard** | ISMS Health Score, Per-Framework-Compliance, Risk-Appetite, MTTR nach Severity, Implementation-Readiness — tenant-spezifische Schwellen |
+| ♿ **WCAG 2.2 AA** | aria-live, scope="col", Dialog-Semantik |
 | 🐳 **Docker-Ready** | Ein Befehl – alles läuft |
-| 🚀 **Modern & schnell** | Symfony 7.4, PHP 8.4, Progressive UI |
+| 🚀 **Modern & schnell** | Symfony 7.4, PHP 8.4, Progressive UI, Turbo + Stimulus |
 | 🔓 **Open Architecture** | REST API für Integrationen |
 | 📈 **Automatische KPIs** | Echtzeit-Metriken ohne manuelle Berechnung |
 
