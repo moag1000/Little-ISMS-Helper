@@ -7,9 +7,16 @@ use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Process\Process;
 
 /**
- * Service for automatic health check fixes
+ * Service for automatic health check fixes.
+ *
+ * Every public fix-method routes its result through the AuditLogger
+ * (Consultant-Review A3 / ISB-MINOR-3). Log retention, cache wipes and
+ * composer-install are A.5.28 / A.8.19-relevant events and must survive
+ * monolog rotation — hence the dedicated entity_type "HealthAutoFix"
+ * and an explicit action namespace "admin.health_fix.*".
  */
 class HealthAutoFixService
 {
@@ -19,15 +26,59 @@ class HealthAutoFixService
         private readonly string $projectDir,
         private readonly string $cacheDir,
         private readonly string $logsDir,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {
         $this->filesystem = new Filesystem();
+    }
+
+    /**
+     * Audit sink for every fix-method. Entity id is always null (no concrete
+     * row); result is written as-is so the auditor sees exactly the return
+     * payload the UI received. Separate from monolog-based $this->logger,
+     * because monolog files rotate away.
+     *
+     * Failures are still logged (newValues.success === false). Intentionally
+     * swallows any logging exception — a broken audit pipeline must not
+     * cascade into a failed admin action.
+     */
+    private function audit(string $action, array $result): void
+    {
+        if (!$this->auditLogger instanceof AuditLogger) {
+            return;
+        }
+        try {
+            $this->auditLogger->logCustom(
+                'admin.health_fix.' . $action,
+                'HealthAutoFix',
+                null,
+                null,
+                $result,
+                sprintf(
+                    'HealthAutoFix %s: %s',
+                    $action,
+                    ($result['success'] ?? false) ? 'success' : 'failure',
+                ),
+            );
+        } catch (\Throwable $e) {
+            $this->logger->warning('Failed to write audit entry for health-fix action', [
+                'action' => $action,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
      * Fix cache directory permissions
      */
     public function fixCachePermissions(): array
+    {
+        $result = $this->doFixCachePermissions();
+        $this->audit('fix_cache_permissions', $result);
+        return $result;
+    }
+
+    private function doFixCachePermissions(): array
     {
         try {
             $this->logger->info('Attempting to fix cache directory permissions', [
@@ -121,6 +172,13 @@ class HealthAutoFixService
      */
     public function fixLogPermissions(): array
     {
+        $result = $this->doFixLogPermissions();
+        $this->audit('fix_log_permissions', $result);
+        return $result;
+    }
+
+    private function doFixLogPermissions(): array
+    {
         try {
             $this->logger->info('Attempting to fix log directory permissions', [
                 'directory' => $this->logsDir,
@@ -198,6 +256,13 @@ class HealthAutoFixService
      */
     public function clearCache(): array
     {
+        $result = $this->doClearCache();
+        $this->audit('clear_cache', $result);
+        return $result;
+    }
+
+    private function doClearCache(): array
+    {
         try {
             $this->logger->info('Clearing application cache');
 
@@ -239,9 +304,23 @@ class HealthAutoFixService
     }
 
     /**
-     * Clean old log files to free up disk space
+     * Clean old log files to free up disk space.
+     *
+     * ISB MINOR-3 / A.5.28: log deletion is an evidence-handling event and
+     * must itself be in the audit trail. The audit entry captures deletedCount
+     * and freed_space, so an auditor can reconcile disappearing rotated logs.
      */
     public function cleanOldLogs(int $daysToKeep = 30): array
+    {
+        $result = $this->doCleanOldLogs($daysToKeep);
+        // Include the days_to_keep input in the audit payload — the call could
+        // have been triggered with a non-default retention by the operator.
+        $result['days_to_keep'] = $daysToKeep;
+        $this->audit('clean_old_logs', $result);
+        return $result;
+    }
+
+    private function doCleanOldLogs(int $daysToKeep = 30): array
     {
         try {
             $this->logger->info('Cleaning old log files', [
@@ -302,6 +381,13 @@ class HealthAutoFixService
      * Rotate current log files (compress and archive)
      */
     public function rotateLogs(): array
+    {
+        $result = $this->doRotateLogs();
+        $this->audit('rotate_logs', $result);
+        return $result;
+    }
+
+    private function doRotateLogs(): array
     {
         try {
             $this->logger->info('Rotating log files');
@@ -368,32 +454,36 @@ class HealthAutoFixService
         try {
             $results = [];
 
-            // Clear cache
+            // Clear cache (child call already audits via clear_cache)
             $cacheResult = $this->clearCache();
             $results[] = $cacheResult['message'];
 
-            // Clean old logs
+            // Clean old logs (child call audits via clean_old_logs)
             $logsResult = $this->cleanOldLogs(30);
             $results[] = $logsResult['message'];
 
-            // Rotate large logs
+            // Rotate large logs (child call audits via rotate_logs)
             $rotateResult = $this->rotateLogs();
             $results[] = $rotateResult['message'];
 
-            return [
+            $result = [
                 'success' => true,
                 'message' => 'Disk space optimized successfully',
                 'details' => $results,
             ];
+            $this->audit('optimize_disk_space', $result);
+            return $result;
         } catch (Exception $e) {
             $this->logger->error('Failed to optimize disk space', [
                 'error' => $e->getMessage(),
             ]);
 
-            return [
+            $result = [
                 'success' => false,
                 'message' => 'Error: ' . $e->getMessage(),
             ];
+            $this->audit('optimize_disk_space', $result);
+            return $result;
         }
     }
 
@@ -455,6 +545,13 @@ class HealthAutoFixService
      * Fix file permissions for var/ directory
      */
     public function fixVarPermissions(): array
+    {
+        $result = $this->doFixVarPermissions();
+        $this->audit('fix_var_permissions', $result);
+        return $result;
+    }
+
+    private function doFixVarPermissions(): array
     {
         try {
             $varDir = $this->projectDir . '/var';
@@ -538,6 +635,13 @@ class HealthAutoFixService
      */
     public function fixUploadsPermissions(): array
     {
+        $result = $this->doFixUploadsPermissions();
+        $this->audit('fix_uploads_permissions', $result);
+        return $result;
+    }
+
+    private function doFixUploadsPermissions(): array
+    {
         try {
             $uploadsDir = $this->projectDir . '/public/uploads';
 
@@ -589,6 +693,13 @@ class HealthAutoFixService
      */
     public function fixSessionPermissions(): array
     {
+        $result = $this->doFixSessionPermissions();
+        $this->audit('fix_session_permissions', $result);
+        return $result;
+    }
+
+    private function doFixSessionPermissions(): array
+    {
         try {
             $sessionSavePath = session_save_path();
             if (in_array($sessionSavePath, ['', '0', false], true)) {
@@ -631,6 +742,14 @@ class HealthAutoFixService
      * Clear uploads directory (old files)
      */
     public function clearOldUploads(int $daysToKeep = 90): array
+    {
+        $result = $this->doClearOldUploads($daysToKeep);
+        $result['days_to_keep'] = $daysToKeep;
+        $this->audit('clear_old_uploads', $result);
+        return $result;
+    }
+
+    private function doClearOldUploads(int $daysToKeep = 90): array
     {
         try {
             $uploadsDir = $this->projectDir . '/public/uploads';
@@ -697,9 +816,23 @@ class HealthAutoFixService
     }
 
     /**
-     * Run composer install (with retry)
+     * Run composer install (with retry).
+     *
+     * Consultant-Review MINOR-4 / ISO 27001 A.8.19 (Installation of software):
+     * stdout + stderr are captured and persisted into the audit log so the
+     * question "which packages were installed on DATE by USER" is
+     * answerable without monolog-file access. The output is truncated by
+     * AuditLogger::sanitizeValues() if it exceeds 1000 chars — the tail
+     * is usually the relevant "Nothing to install/update" or failure line.
      */
     public function runComposerInstall(): array
+    {
+        $result = $this->doRunComposerInstall();
+        $this->audit('run_composer_install', $result);
+        return $result;
+    }
+
+    private function doRunComposerInstall(): array
     {
         try {
             $this->logger->info('Running composer install');
@@ -709,6 +842,9 @@ class HealthAutoFixService
                 return [
                     'success' => false,
                     'message' => 'Composer binary not found. Please install composer manually.',
+                    'output' => '',
+                    'stderr' => '',
+                    'exit_code' => null,
                 ];
             }
 
@@ -717,29 +853,48 @@ class HealthAutoFixService
                 return [
                     'success' => false,
                     'message' => 'Composer binary is not executable.',
+                    'output' => '',
+                    'stderr' => '',
+                    'exit_code' => null,
                 ];
             }
 
-            $output = [];
-            $returnCode = 0;
+            // Use Symfony Process so stdout/stderr are captured separately and
+            // we don't rely on shell-quoting correctness (MINOR-4).
+            $process = new Process(
+                [$composerBin, 'install', '--no-interaction', '--optimize-autoloader'],
+                $this->projectDir,
+            );
+            $process->setTimeout(600);
+            $process->run();
 
-            // Use escapeshellarg for security
-            $projectDir = escapeshellarg($this->projectDir);
-            $composerBin = escapeshellarg($composerBin);
+            $stdout = $process->getOutput();
+            $stderr = $process->getErrorOutput();
+            $exitCode = $process->getExitCode();
 
-            exec("cd $projectDir && $composerBin install --no-interaction --optimize-autoloader 2>&1", $output, $returnCode);
-
-            if ($returnCode === 0) {
-                $this->logger->info('Composer install completed successfully');
+            if ($exitCode === 0) {
+                $this->logger->info('Composer install completed successfully', [
+                    'output_length' => strlen($stdout),
+                ]);
                 return [
                     'success' => true,
                     'message' => 'Composer dependencies installed successfully',
+                    'output' => $stdout,
+                    'stderr' => $stderr,
+                    'exit_code' => $exitCode,
                 ];
             }
 
+            $this->logger->warning('Composer install failed', [
+                'exit_code' => $exitCode,
+                'stderr' => $stderr,
+            ]);
             return [
                 'success' => false,
                 'message' => 'Composer install failed. Check logs for details.',
+                'output' => $stdout,
+                'stderr' => $stderr,
+                'exit_code' => $exitCode,
             ];
         } catch (Exception $e) {
             $this->logger->error('Failed to run composer install', [
@@ -749,6 +904,9 @@ class HealthAutoFixService
             return [
                 'success' => false,
                 'message' => 'Error: ' . $e->getMessage(),
+                'output' => '',
+                'stderr' => $e->getMessage(),
+                'exit_code' => null,
             ];
         }
     }
