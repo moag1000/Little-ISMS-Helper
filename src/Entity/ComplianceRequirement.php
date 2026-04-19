@@ -69,6 +69,20 @@ class ComplianceRequirement
     #[ORM\ManyToMany(targetEntity: Training::class, mappedBy: 'complianceRequirements')]
     private Collection $trainings;
 
+    /**
+     * M-05: Structured evidence documents (ISO 27001 Clause 7.5).
+     * Replaces the legacy free-text evidenceDescription at the data layer.
+     *
+     * @var Collection<int, Document>
+     */
+    #[ORM\ManyToMany(targetEntity: Document::class)]
+    #[ORM\JoinTable(
+        name: 'compliance_requirement_evidence',
+        joinColumns: [new ORM\JoinColumn(onDelete: 'CASCADE')],
+        inverseJoinColumns: [new ORM\JoinColumn(onDelete: 'CASCADE')]
+    )]
+    private Collection $evidenceDocuments;
+
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $dataSourceMapping = null; // Maps to Asset, Risk, BCM, etc.
 
@@ -83,7 +97,28 @@ class ComplianceRequirement
         $this->mappedControls = new ArrayCollection();
         $this->trainings = new ArrayCollection();
         $this->detailedRequirements = new ArrayCollection();
+        $this->evidenceDocuments = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
+    }
+
+    /** @return Collection<int, Document> */
+    public function getEvidenceDocuments(): Collection
+    {
+        return $this->evidenceDocuments;
+    }
+
+    public function addEvidenceDocument(Document $document): static
+    {
+        if (!$this->evidenceDocuments->contains($document)) {
+            $this->evidenceDocuments->add($document);
+        }
+        return $this;
+    }
+
+    public function removeEvidenceDocument(Document $document): static
+    {
+        $this->evidenceDocuments->removeElement($document);
+        return $this;
     }
 
     public function getId(): ?int
@@ -385,6 +420,24 @@ class ComplianceRequirement
      */
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $absicherungsStufe = null;
+
+    /**
+     * TISAX VDA ISA Assessment Level tag ('AL1' | 'AL2' | 'AL3').
+     * Null for non-TISAX requirements.
+     */
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $assessmentLevel = null;
+
+    public function getAssessmentLevel(): ?string
+    {
+        return $this->assessmentLevel;
+    }
+
+    public function setAssessmentLevel(?string $assessmentLevel): static
+    {
+        $this->assessmentLevel = $assessmentLevel;
+        return $this;
+    }
 
     // ── WS-6: consultant-seeded baseline effort in FTE-days (0..999) ───────
     #[ORM\Column(nullable: true)]
