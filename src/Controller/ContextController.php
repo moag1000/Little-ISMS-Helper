@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\ISMSContextType;
 use App\Repository\AuditLogRepository;
+use App\Repository\InterestedPartyRepository;
 use App\Repository\ISMSObjectiveRepository;
 use App\Service\ISMSContextService;
 use App\Service\ISMSObjectiveService;
@@ -21,7 +22,8 @@ class ContextController extends AbstractController
         private readonly ISMSObjectiveService $ismsObjectiveService,
         private readonly ISMSObjectiveRepository $ismsObjectiveRepository,
         private readonly AuditLogRepository $auditLogRepository,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly InterestedPartyRepository $interestedPartyRepository,
     ) {}
     #[Route('/context/', name: 'app_context_index')]
     public function index(): Response
@@ -46,6 +48,13 @@ class ContextController extends AbstractController
         // Get objectives for KPI display and table
         $objectives = $this->ismsObjectiveRepository->findActive();
 
+        // B2 (Junior #5): single-source-of-truth interested-party aggregate
+        // pulled from the structured module; context form no longer carries
+        // a free-text duplicate.
+        $interestedPartiesList = $tenant !== null
+            ? $this->interestedPartyRepository->findBy(['tenant' => $tenant], ['name' => 'ASC'])
+            : [];
+
         return $this->render('context/index.html.twig', [
             'context' => $effectiveContext, // Show effective context
             'ownContext' => $context, // Keep reference to own context
@@ -59,6 +68,7 @@ class ContextController extends AbstractController
             'inheritanceInfo' => $inheritanceInfo, // NEW: Corporate inheritance info
             'canEdit' => $this->ismsContextService->canEditContext($context), // NEW: Edit permission
             'tenant' => $tenant, // NEW: Current tenant for navigation links
+            'interestedPartiesList' => $interestedPartiesList,
         ]);
     }
     #[Route('/context/edit', name: 'app_context_edit', methods: ['GET', 'POST'])]
