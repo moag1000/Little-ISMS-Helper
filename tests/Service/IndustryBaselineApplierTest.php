@@ -79,7 +79,7 @@ final class IndustryBaselineApplierTest extends KernelTestCase
             $applied = $em->getRepository(AppliedBaseline::class)
                 ->findOneBy(['tenant' => $tenant, 'baselineCode' => 'BL-GENERIC-v1']);
             self::assertNotNull($applied);
-            self::assertSame('1.0', $applied->getBaselineVersion());
+            self::assertSame('2.0', $applied->getBaselineVersion());
         } finally {
             $em->rollback();
         }
