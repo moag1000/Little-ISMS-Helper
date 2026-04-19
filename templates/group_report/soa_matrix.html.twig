@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'group_report.soa.title'|trans({}, 'group_report') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'group_report.title'|trans({}, 'group_report'), path: 'app_group_report_tree' },
+            { label: 'group_report.soa.title'|trans({}, 'group_report') }
+        ]
+    } %}
+
+    <div class="mb-4">
+        <h1 class="h2 mb-1">
+            <i class="bi bi-table text-primary" aria-hidden="true"></i>
+            {{ 'group_report.soa.title'|trans({}, 'group_report') }}
+        </h1>
+        <p class="text-muted mb-0">{{ 'group_report.soa.subtitle'|trans({'%controls%': control_ids|length, '%tenants%': tenants|length}, 'group_report') }}</p>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-2 mb-4">
+        <div class="col">
+            <div class="card h-100 text-center">
+                <div class="card-body py-2">
+                    <div class="display-6 fw-bold">{{ totals.cells }}</div>
+                    <div class="small text-muted">{{ 'group_report.soa.stat.cells'|trans({}, 'group_report') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 text-center border-primary">
+                <div class="card-body py-2">
+                    <div class="display-6 fw-bold text-primary">{{ totals.applicable }}</div>
+                    <div class="small text-muted">{{ 'group_report.soa.stat.applicable'|trans({}, 'group_report') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 text-center border-success">
+                <div class="card-body py-2">
+                    <div class="display-6 fw-bold text-success">{{ totals.implemented }}</div>
+                    <div class="small text-muted">{{ 'group_report.soa.stat.implemented'|trans({}, 'group_report') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive" style="max-height: 70vh;">
+                <table class="table table-hover table-sm mb-0 align-middle" aria-label="{{ 'group_report.soa.title'|trans({}, 'group_report') }}">
+                    <thead class="table-light" style="position: sticky; top: 0;">
+                        <tr>
+                            <th scope="col">{{ 'group_report.soa.col.control'|trans({}, 'group_report') }}</th>
+                            {% for tenant in tenants %}
+                                <th scope="col" class="text-center" title="{{ tenant.name }}">
+                                    <code class="small">{{ tenant.code }}</code>
+                                </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cid in control_ids %}
+                            <tr>
+                                <th scope="row"><code>{{ cid }}</code></th>
+                                {% for tenant in tenants %}
+                                    {% set control = matrix[cid][tenant.code]|default(null) %}
+                                    <td class="text-center">
+                                        {% if control is null %}
+                                            <span class="text-muted">·</span>
+                                        {% elseif not control.applicable %}
+                                            <span class="badge bg-light text-dark border" title="{{ 'group_report.soa.cell.not_applicable'|trans({}, 'group_report') }}">N/A</span>
+                                        {% else %}
+                                            {% set status = control.implementationStatus %}
+                                            {% set cls = {
+                                                'implemented': 'bg-success',
+                                                'in_progress': 'bg-warning text-dark',
+                                                'planned': 'bg-info',
+                                                'not_started': 'bg-secondary'
+                                            }[status]|default('bg-secondary') %}
+                                            <span class="badge {{ cls }}" title="{{ status }}">
+                                                {% if status == 'implemented' %}✓
+                                                {% elseif status == 'in_progress' %}◐
+                                                {% elseif status == 'planned' %}◯
+                                                {% else %}–{% endif %}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer small text-muted">
+            <strong>{{ 'group_report.soa.legend.title'|trans({}, 'group_report') }}:</strong>
+            <span class="badge bg-success">✓</span> {{ 'group_report.soa.legend.implemented'|trans({}, 'group_report') }}
+            · <span class="badge bg-warning text-dark">◐</span> {{ 'group_report.soa.legend.in_progress'|trans({}, 'group_report') }}
+            · <span class="badge bg-info">◯</span> {{ 'group_report.soa.legend.planned'|trans({}, 'group_report') }}
+            · <span class="badge bg-secondary">–</span> {{ 'group_report.soa.legend.not_started'|trans({}, 'group_report') }}
+            · <span class="badge bg-light text-dark border">N/A</span> {{ 'group_report.soa.legend.not_applicable'|trans({}, 'group_report') }}
+        </div>
+    </div>
+</div>
+{% endblock %}
