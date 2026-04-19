@@ -956,9 +956,74 @@ Dokument ohne Nacharbeit nutzbar.
 
 ---
 
+## 🏢 Phase 9: Holding/Konzern-Struktur (Geplant)
+
+**Zeitraum:** 2026 Q2–Q3
+**Status:** 🔄 Geplant
+**Priorität:** HOCH (Markt-Gap gegen HiScout/Verinice bei Mittelstands-Holdings)
+**Trigger:** Consultant-Review 2026-04-19 zu NIS2 §28 BSIG — Regulierung pro Rechtsperson, nicht Konzern; Holding liefert Governance (Art. 21)
+
+### Hintergrund
+NIS2 reguliert einzelne Rechtspersonen (Schwellwerte 50 MA / 10 Mio € pro juristischer Person). In Mischkonzernen kann Tochter A "besonders wichtig", Tochter B "wichtig", Tochter C gar nicht reguliert sein. Holding steuert Governance (Policies, Krisenmanagement, Lieferkettenrisiko). Markt-Vergleich: HiScout (Organisationseinheiten mit Vererbung), Verinice (Organisationen + Scope-Objekte), Archer (Business Hierarchies). Vanta/Drata ignorieren Konzernstrukturen komplett.
+
+### 🎯 Phase 9.P1 — Core Holding-Struktur (Must-Have)
+
+**Effort:** 8–12 FTE-Tage
+**Ziel:** 80 % der Mittelstands-Holdings produktiv abdecken.
+
+| # | Task | FTE-d |
+|---|------|-------|
+| 9.P1.1 | `Tenant.parent_id` self-FK + Migration (flat, keine Rekursion) | 1 |
+| 9.P1.2 | `Tenant.isHoldingTenant` Flag + UI-Badge "Konzern-Tenant" | 0.5 |
+| 9.P1.3 | `TenantContext` erweitern: `getChildren()`, `isChildOf()`, `getRoot()` | 1 |
+| 9.P1.4 | Baseline-Vererbung read-only: Child-Tenant zeigt Parent-Baselines als `inherited` | 2 |
+| 9.P1.5 | `IndustryBaselineApplier::applyRecursive(baseline, parent)` — propagiert auf Children | 1.5 |
+| 9.P1.6 | Rolle `ROLE_GROUP_CISO` + Voter: Cross-Tenant-Read auf Risks, Incidents, SoA | 2 |
+| 9.P1.7 | Konsolidierter NIS2-Registrierungs-Report: pro Tochter wer meldet was ans BSI (§28 BSIG) | 1.5 |
+| 9.P1.8 | Tenant-Hierarchie-UI: Tree-View im Admin-Panel | 1.5 |
+| 9.P1.9 | Tests + Docs (CHANGELOG, ROADMAP, README) | 1 |
+
+**Deliverable:** Holding-Tenant mit N Töchtern. Holding-CISO sieht alles read-only. Baselines aus Holding werden in Töchtern als "vererbt" sichtbar, Töchter können eigene Branchen-Baselines dazustapeln.
+
+### 🎯 Phase 9.P2 — HiScout-Niveau (Should-Have)
+
+**Effort:** 8–15 FTE-Tage
+**Ziel:** Konzern-Governance & Reporting auf Markt-Referenzniveau.
+
+| # | Task | FTE-d |
+|---|------|-------|
+| 9.P2.1 | Policy-Vererbung mit Override-Sperre: `Document.inheritedFromParent`, `Document.overrideAllowed` | 3 |
+| 9.P2.2 | Konzernweite Risk-Aggregation: "Top-10 Konzernrisiken" Dashboard über alle Töchter | 3 |
+| 9.P2.3 | Incident-Cross-Posting: Incident in Tochter → Sichtbarkeit Holding-Krisenstab (Opt-out-Flag) | 2 |
+| 9.P2.4 | Konzern-Audit-Programm: ein Auditplan → N Tochter-Audits abgeleitet | 2.5 |
+| 9.P2.5 | Cross-Tenant-Supplier-Register: Lieferant einmal Konzern, N-fach referenziert (DORA Art. 28 + 27001 A.5.19) | 2 |
+| 9.P2.6 | Group-KPI-Report: NIS2/DORA/27001-Reifegrad Matrix Holding + alle Töchter nebeneinander | 2 |
+| 9.P2.7 | **Group-SoA-Matrix**: Read-only Matrix-View (Zeilen = 93 Controls, Spalten = Holding + N Töchter) mit `applicable yes/no` + `implementation status` + Abweichungs-Kennzeichen, Excel-Export, Pflicht-Ausnahme-Begründung bei nicht übernommener Holding-Policy (auditfest) | 3 |
+
+### 📅 Phase 9.P3 — Optional / Backlog
+
+**Nur wenn konkreter Kundenbedarf. Nicht im Standard-Sprintplan.**
+
+| # | Task | Warum später |
+|---|------|--------------|
+| 9.P3.1 | Matrix-Organisation (mehrere Parents pro Tochter) | Nur M&A-Sondersituationen. Komplexität in Voter-Logik explodiert. |
+| 9.P3.2 | Cross-Tenant-Workflows mit Approval-Chains über Ebenen | Feature-Zombie. Kein Verinice-Kunde nutzt das produktiv. |
+| 9.P3.3 | Konzern-Change-Management Konsolidierung | Scope-Creep Richtung ITSM-Tool. |
+| 9.P3.4 | **Konsolidierte Finanz-KPIs** (Risiko-Euro-Exposure konzernweit) — *"später mal"* | SAP-GRC-Territorium. Relevant sobald CFO-Reporting gefordert. FTE-Aufwand 8–12 d. |
+
+### Risiken / Abhängigkeiten
+- **RBAC-Voter-Refactor** zieht sich durch alle Entities (Risk, Asset, Control, Incident, Document). Muss rückwärtskompatibel für Single-Tenant bleiben.
+- **Audit-Log**: Cross-Tenant-Reads müssen trotzdem im AuditLog landen (ISB-Anforderung).
+- **Migrations-Reihenfolge**: `Tenant.parent_id` muss vor allen P1.x-Features laufen.
+
+### Abgrenzung Multi-Industry pro Tenant (bereits vorhanden)
+Beliebig viele `AppliedBaseline` pro Tenant sind heute schon möglich (z. B. Produktion + Automotive + Cloud-Provider). Phase 9.P1.5 erweitert das nur um die Vererbungskante Parent → Child.
+
+---
+
 ## 📅 Zukünftige Phasen (Backlog)
 
-### Phase 9: Global Expansion (Vision)
+### Phase 10: Global Expansion (Vision)
 - 🔄 Real-time Collaboration (WebSocket)
 - 🔄 Advanced Workflow Automation
 - 🔄 Multi-Cloud Deployment (AWS, Azure, GCP)
