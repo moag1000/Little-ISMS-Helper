@@ -70,3 +70,21 @@ group_report:
             planned: 'planned'
             not_started: 'not started'
             not_applicable: 'not applicable'
+    suppliers:
+        title: 'Group supplier register'
+        subtitle: 'Deduplicated by LEI or name across all subsidiaries of %root%.'
+        intro: 'Identity key: <strong>LEI code</strong> (ISO 17442, globally unique) if present, otherwise normalized name. Suppliers referenced more than once (badge <strong>N×</strong>) are consolidation and renegotiation candidates (DORA Art. 28.3 sub-outsourcing chain, ISO 27001 A.5.19).'
+        none: 'No suppliers in group scope.'
+        matched_by_name: 'name only'
+        no_lei_help: 'No LEI code stored — duplicate detection is weak (normalized name). Maintain LEI on the supplier detail page.'
+        stat:
+            unique: 'Unique suppliers'
+            shared: 'Used by ≥ 2 tenants'
+            with_lei: 'With LEI'
+            critical: 'Critical'
+        col:
+            supplier: 'Supplier'
+            identity: 'Identity'
+            criticality: 'Criticality'
+            used_by: 'Used by'
+            service: 'Service'

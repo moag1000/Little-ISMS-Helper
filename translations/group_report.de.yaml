@@ -70,3 +70,21 @@ group_report:
             planned: 'geplant'
             not_started: 'nicht begonnen'
             not_applicable: 'nicht anwendbar'
+    suppliers:
+        title: 'Konzern-Lieferantenverzeichnis'
+        subtitle: 'Dedupliziert pro LEI oder Name über alle Töchter von %root%.'
+        intro: 'Identitätsschlüssel: <strong>LEI-Code</strong> (ISO 17442, global eindeutig) wenn vorhanden, sonst Name normalisiert. Mehrfach referenzierte Lieferanten (Badge <strong>N×</strong>) sind Konsolidierungs- und Nachverhandlungskandidaten (DORA Art. 28.3 Sub-Outsourcing-Kette, ISO 27001 A.5.19).'
+        none: 'Keine Lieferanten im Konzern-Scope.'
+        matched_by_name: 'nur Name'
+        no_lei_help: 'Kein LEI-Code hinterlegt — Duplikat-Erkennung ist schwach (normalisierter Name). LEI in Lieferanten-Detail pflegen.'
+        stat:
+            unique: 'Eindeutige Lieferanten'
+            shared: 'Von ≥ 2 Tenants genutzt'
+            with_lei: 'Mit LEI'
+            critical: 'Critical'
+        col:
+            supplier: 'Lieferant'
+            identity: 'Identität'
+            criticality: 'Kritikalität'
+            used_by: 'Genutzt von'
+            service: 'Leistung'
