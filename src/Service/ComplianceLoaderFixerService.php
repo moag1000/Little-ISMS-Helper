@@ -129,6 +129,7 @@ class ComplianceLoaderFixerService
         }
 
         $before = $this->countRequirementsFor($code);
+        $beforeMetadata = $this->snapshotFrameworkMetadata($code);
         $output = new BufferedOutput();
         $io = new SymfonyStyle(new ArrayInput([]), $output);
 
@@ -148,14 +149,36 @@ class ComplianceLoaderFixerService
         $this->entityManager->clear(ComplianceFramework::class);
         $after = $this->countRequirementsFor($code);
         $added = max(0, $after - $before);
+        $afterMetadata = $this->snapshotFrameworkMetadata($code);
+        $metadataDiff = $this->diffMetadata($beforeMetadata, $afterMetadata);
 
+        // ISB MAJOR-4: Audit-Log must show field-level diff when the loader
+        // upserts framework metadata, not just count deltas. Auditor's
+        // question "show me every framework row ever silently overwritten"
+        // is now answerable from the AuditLog.
         $this->auditLogger->logCustom(
             'compliance.loader_fixer.run',
             'ComplianceFramework',
-            null,
-            ['loaded_before' => $before],
-            ['loaded_after' => $after, 'added' => $added, 'success' => $success],
-            sprintf('Loader-Fixer: %s — added %d (total %d, %s)', $code, $added, $after, $actorDescription),
+            $afterMetadata['id'] ?? null,
+            [
+                'loaded_before' => $before,
+                'metadata_before' => $beforeMetadata,
+            ],
+            [
+                'loaded_after' => $after,
+                'added' => $added,
+                'success' => $success,
+                'metadata_after' => $afterMetadata,
+                'metadata_changed_fields' => array_keys($metadataDiff),
+            ],
+            sprintf(
+                'Loader-Fixer: %s — added %d requirement(s), %d metadata field(s) refreshed (total %d, %s)',
+                $code,
+                $added,
+                count($metadataDiff),
+                $after,
+                $actorDescription,
+            ),
         );
 
         return [
@@ -186,5 +209,48 @@ class ComplianceLoaderFixerService
         return $framework === null
             ? 0
             : $this->requirementRepository->count(['complianceFramework' => $framework]);
+    }
+
+    /**
+     * Capture the framework-row metadata that the upsert-loaders rewrite on
+     * every run. Returns [] when the framework does not exist yet.
+     *
+     * @return array<string, mixed>
+     */
+    private function snapshotFrameworkMetadata(string $code): array
+    {
+        $framework = $this->frameworkRepository->findOneBy(['code' => $code]);
+        if ($framework === null) {
+            return [];
+        }
+        return [
+            'id' => $framework->getId(),
+            'code' => $framework->getCode(),
+            'name' => $framework->getName(),
+            'description' => $framework->getDescription(),
+            'version' => $framework->getVersion(),
+            'applicable_industry' => $framework->getApplicableIndustry(),
+            'regulatory_body' => $framework->getRegulatoryBody(),
+            'scope_description' => $framework->getScopeDescription(),
+            'mandatory' => $framework->isMandatory(),
+            'active' => $framework->isActive(),
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $before
+     * @param array<string, mixed> $after
+     * @return array<string, array{before: mixed, after: mixed}> — field => before/after pair
+     */
+    private function diffMetadata(array $before, array $after): array
+    {
+        $diff = [];
+        foreach ($after as $key => $newValue) {
+            $oldValue = $before[$key] ?? null;
+            if ($oldValue !== $newValue) {
+                $diff[$key] = ['before' => $oldValue, 'after' => $newValue];
+            }
+        }
+        return $diff;
     }
 }
