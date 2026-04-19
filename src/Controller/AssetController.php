@@ -53,6 +53,7 @@ class AssetController extends AbstractController
         $tenant = $user?->getTenant();
 
         // Get filter parameters
+        $q = trim((string) $request->query->get('q', ''));
         $type = $request->query->get('type');
         $classification = $request->query->get('classification');
         $owner = $request->query->get('owner');
@@ -101,6 +102,20 @@ class AssetController extends AbstractController
 
         if ($status) {
             $assets = array_filter($assets, fn(Asset $asset): bool => $asset->getStatus() === $status);
+        }
+
+        if ($q !== '') {
+            $needle = mb_strtolower($q);
+            $assets = array_filter($assets, function (Asset $asset) use ($needle): bool {
+                $haystack = mb_strtolower(
+                    ($asset->getName() ?? '')
+                    . ' ' . ($asset->getDescription() ?? '')
+                    . ' ' . ($asset->getAssetType() ?? '')
+                    . ' ' . ($asset->getOwner() ?? '')
+                    . ' ' . (string) $asset->getId()
+                );
+                return str_contains($haystack, $needle);
+            });
         }
 
         // Re-index array after filtering to avoid gaps in keys

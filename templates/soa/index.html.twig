@@ -160,50 +160,39 @@
     } only %}
 {% endif %}
 
-<div class="filter-panel" data-controller="filter">
-    <div class="filter-controls">
-        <div class="filter-control">
-            <label for="search">{{ 'soa.filter.search'|trans({}, 'soa') }}</label>
-            <div class="search-box">
-                <input
-                    type="text"
-                    id="search"
-                    placeholder="{{ 'soa.filter.search_placeholder'|trans({}, 'soa') }}"
-                    data-filter-target="searchInput"
-                    data-action="input->filter#filterRows"
-                >
-            </div>
-        </div>
-
-        <div class="filter-control">
-            <label for="category-filter">{{ 'soa.filter.category'|trans({}, 'soa') }}</label>
-            <select id="category-filter" class="form-control" data-action="change->filter#filterByCategory">
+{# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
+{% embed '_components/_search_filter_form.html.twig' with {
+    action: path('app_soa_index'),
+    filter_keys: ['category', 'status', 'view', 'tag'],
+    search_placeholder: 'soa.filter.search_placeholder'|trans({}, 'soa'),
+    form_id: 'soa-filter-form'
+} %}
+    {% block filters %}
+        {% if app.request.query.get('view') %}
+            <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">
+        {% endif %}
+        <div class="col-md-6">
+            <label for="category-filter" class="form-label">{{ 'soa.filter.category'|trans({}, 'soa') }}</label>
+            <select id="category-filter" name="category" class="form-select">
                 <option value="">{{ 'soa.filter.all_categories'|trans({}, 'soa') }}</option>
-                <option value="Organizational">{{ 'soa.category.Organizational'|trans({}, 'soa') }}</option>
-                <option value="People">{{ 'soa.category.People'|trans({}, 'soa') }}</option>
-                <option value="Physical">{{ 'soa.category.Physical'|trans({}, 'soa') }}</option>
-                <option value="Technological">{{ 'soa.category.Technological'|trans({}, 'soa') }}</option>
+                <option value="Organizational" {{ app.request.query.get('category') == 'Organizational' ? 'selected' : '' }}>{{ 'soa.category.Organizational'|trans({}, 'soa') }}</option>
+                <option value="People" {{ app.request.query.get('category') == 'People' ? 'selected' : '' }}>{{ 'soa.category.People'|trans({}, 'soa') }}</option>
+                <option value="Physical" {{ app.request.query.get('category') == 'Physical' ? 'selected' : '' }}>{{ 'soa.category.Physical'|trans({}, 'soa') }}</option>
+                <option value="Technological" {{ app.request.query.get('category') == 'Technological' ? 'selected' : '' }}>{{ 'soa.category.Technological'|trans({}, 'soa') }}</option>
             </select>
         </div>
-
-        <div class="filter-control">
-            <label for="status-filter">{{ 'soa.filter.status'|trans({}, 'soa') }}</label>
-            <select id="status-filter" class="form-control" data-action="change->filter#filterByStatus">
+        <div class="col-md-6">
+            <label for="status-filter" class="form-label">{{ 'soa.filter.status'|trans({}, 'soa') }}</label>
+            <select id="status-filter" name="status" class="form-select">
                 <option value="">{{ 'soa.filter.all_status'|trans({}, 'soa') }}</option>
-                <option value="implemented">{{ 'soa.status.implemented'|trans({}, 'soa') }}</option>
-                <option value="in_progress">{{ 'soa.status.in_progress'|trans({}, 'soa') }}</option>
-                <option value="not_started">{{ 'soa.status.not_started'|trans({}, 'soa') }}</option>
-                <option value="not_applicable">{{ 'soa.status.not_applicable'|trans({}, 'soa') }}</option>
+                <option value="implemented" {{ app.request.query.get('status') == 'implemented' ? 'selected' : '' }}>{{ 'soa.status.implemented'|trans({}, 'soa') }}</option>
+                <option value="in_progress" {{ app.request.query.get('status') == 'in_progress' ? 'selected' : '' }}>{{ 'soa.status.in_progress'|trans({}, 'soa') }}</option>
+                <option value="not_started" {{ app.request.query.get('status') == 'not_started' ? 'selected' : '' }}>{{ 'soa.status.not_started'|trans({}, 'soa') }}</option>
+                <option value="not_applicable" {{ app.request.query.get('status') == 'not_applicable' ? 'selected' : '' }}>{{ 'soa.status.not_applicable'|trans({}, 'soa') }}</option>
             </select>
         </div>
-
-        <div class="filter-control justify-end">
-            <button type="button" class="btn btn-secondary" data-action="click->filter#reset">
-                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'soa.filter.reset'|trans({}, 'soa') }}
-            </button>
-        </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {% embed '_components/_table.html.twig' with {
     'stickyHeader': true,
@@ -278,7 +267,9 @@
     {% endblock %}
 {% endembed %}
 
-<div data-filter-target="noResults" class="hidden text-center-p-xl-muted">
+{% if controls|length == 0 %}
+<div class="text-center-p-xl-muted">
     <p>{{ 'soa.message.no_controls_filtered'|trans({}, 'soa') }}</p>
 </div>
+{% endif %}
 {% endblock %}

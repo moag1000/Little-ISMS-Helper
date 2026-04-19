@@ -177,60 +177,53 @@
     {% endblock %}
 {% endembed %}
 
-{# Risk Filters #}
-{% embed '_components/_card.html.twig' with {
-    'title': 'risk.index.filter_options'|trans({}, 'risk'),
-    'headerIcon': 'bi-funnel',
-    'class': 'mb-4'
+{# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
+{% embed '_components/_search_filter_form.html.twig' with {
+    action: path('app_risk_index'),
+    filter_keys: ['level', 'status', 'treatment', 'owner', 'view', 'review_overdue', 'tag'],
+    form_id: 'risk-filter-form'
 } %}
-    {% block card_body %}
-        <form method="get" action="{{ path('app_risk_index') }}" class="row g-3">
-            <div class="col-md-3">
-                <label for="filter-level" class="form-label">{{ 'risk.filter.level_label'|trans({}, 'risk') }}</label>
-                <select class="form-select" id="filter-level" name="level" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                    <option value="">{{ 'risk.filter.all_risks'|trans({}, 'risk') }}</option>
-                    <option value="critical" {{ app.request.query.get('level') == 'critical' ? 'selected' : '' }}>{{ 'risk.filter.level_critical'|trans({}, 'risk') }}</option>
-                    <option value="high" {{ app.request.query.get('level') == 'high' ? 'selected' : '' }}>{{ 'risk.filter.level_high'|trans({}, 'risk') }}</option>
-                    <option value="medium" {{ app.request.query.get('level') == 'medium' ? 'selected' : '' }}>{{ 'risk.filter.level_medium'|trans({}, 'risk') }}</option>
-                    <option value="low" {{ app.request.query.get('level') == 'low' ? 'selected' : '' }}>{{ 'risk.filter.level_low'|trans({}, 'risk') }}</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label for="filter-status" class="form-label">{{ 'risk.filter.status_label'|trans({}, 'risk') }}</label>
-                <select class="form-select" id="filter-status" name="status" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                    <option value="">{{ 'risk.filter.all_status'|trans({}, 'risk') }}</option>
-                    <option value="identified" {{ app.request.query.get('status') == 'identified' ? 'selected' : '' }}>{{ 'risk.filter.status_identified'|trans({}, 'risk') }}</option>
-                    <option value="assessed" {{ app.request.query.get('status') == 'assessed' ? 'selected' : '' }}>{{ 'risk.filter.status_assessed'|trans({}, 'risk') }}</option>
-                    <option value="treated" {{ app.request.query.get('status') == 'treated' ? 'selected' : '' }}>{{ 'risk.filter.status_treated'|trans({}, 'risk') }}</option>
-                    <option value="monitored" {{ app.request.query.get('status') == 'monitored' ? 'selected' : '' }}>{{ 'risk.filter.status_monitored'|trans({}, 'risk') }}</option>
-                    <option value="closed" {{ app.request.query.get('status') == 'closed' ? 'selected' : '' }}>{{ 'risk.filter.status_closed'|trans({}, 'risk') }}</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label for="filter-treatment" class="form-label">{{ 'risk.filter.treatment_label'|trans({}, 'risk') }}</label>
-                <select class="form-select" id="filter-treatment" name="treatment" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                    <option value="">{{ 'risk.filter.all_strategies'|trans({}, 'risk') }}</option>
-                    <option value="mitigate" {{ app.request.query.get('treatment') == 'mitigate' ? 'selected' : '' }}>{{ 'risk.index.treatment.mitigate'|trans({}, 'risk') }}</option>
-                    <option value="accept" {{ app.request.query.get('treatment') == 'accept' ? 'selected' : '' }}>{{ 'risk.index.treatment.accept'|trans({}, 'risk') }}</option>
-                    <option value="transfer" {{ app.request.query.get('treatment') == 'transfer' ? 'selected' : '' }}>{{ 'risk.index.treatment.transfer'|trans({}, 'risk') }}</option>
-                    <option value="avoid" {{ app.request.query.get('treatment') == 'avoid' ? 'selected' : '' }}>{{ 'risk.index.treatment.avoid'|trans({}, 'risk') }}</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label for="filter-owner" class="form-label">{{ 'risk.filter.owner_label'|trans({}, 'risk') }}</label>
-                <input type="text" class="form-control" id="filter-owner" name="owner"
-                       value="{{ app.request.query.get('owner') }}"
-                       placeholder="{{ 'risk.filter.owner_placeholder'|trans({}, 'risk') }}">
-            </div>
-            <div class="col-12">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
-                </button>
-                <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">
-                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
-                </a>
-            </div>
-        </form>
+    {% block filters %}
+        {% if app.request.query.get('view') %}
+            <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">
+        {% endif %}
+        <div class="col-md-3">
+            <label for="filter-level" class="form-label">{{ 'risk.filter.level_label'|trans({}, 'risk') }}</label>
+            <select class="form-select" id="filter-level" name="level">
+                <option value="">{{ 'risk.filter.all_risks'|trans({}, 'risk') }}</option>
+                <option value="critical" {{ app.request.query.get('level') == 'critical' ? 'selected' : '' }}>{{ 'risk.filter.level_critical'|trans({}, 'risk') }}</option>
+                <option value="high" {{ app.request.query.get('level') == 'high' ? 'selected' : '' }}>{{ 'risk.filter.level_high'|trans({}, 'risk') }}</option>
+                <option value="medium" {{ app.request.query.get('level') == 'medium' ? 'selected' : '' }}>{{ 'risk.filter.level_medium'|trans({}, 'risk') }}</option>
+                <option value="low" {{ app.request.query.get('level') == 'low' ? 'selected' : '' }}>{{ 'risk.filter.level_low'|trans({}, 'risk') }}</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="filter-status" class="form-label">{{ 'risk.filter.status_label'|trans({}, 'risk') }}</label>
+            <select class="form-select" id="filter-status" name="status">
+                <option value="">{{ 'risk.filter.all_status'|trans({}, 'risk') }}</option>
+                <option value="identified" {{ app.request.query.get('status') == 'identified' ? 'selected' : '' }}>{{ 'risk.filter.status_identified'|trans({}, 'risk') }}</option>
+                <option value="assessed" {{ app.request.query.get('status') == 'assessed' ? 'selected' : '' }}>{{ 'risk.filter.status_assessed'|trans({}, 'risk') }}</option>
+                <option value="treated" {{ app.request.query.get('status') == 'treated' ? 'selected' : '' }}>{{ 'risk.filter.status_treated'|trans({}, 'risk') }}</option>
+                <option value="monitored" {{ app.request.query.get('status') == 'monitored' ? 'selected' : '' }}>{{ 'risk.filter.status_monitored'|trans({}, 'risk') }}</option>
+                <option value="closed" {{ app.request.query.get('status') == 'closed' ? 'selected' : '' }}>{{ 'risk.filter.status_closed'|trans({}, 'risk') }}</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="filter-treatment" class="form-label">{{ 'risk.filter.treatment_label'|trans({}, 'risk') }}</label>
+            <select class="form-select" id="filter-treatment" name="treatment">
+                <option value="">{{ 'risk.filter.all_strategies'|trans({}, 'risk') }}</option>
+                <option value="mitigate" {{ app.request.query.get('treatment') == 'mitigate' ? 'selected' : '' }}>{{ 'risk.index.treatment.mitigate'|trans({}, 'risk') }}</option>
+                <option value="accept" {{ app.request.query.get('treatment') == 'accept' ? 'selected' : '' }}>{{ 'risk.index.treatment.accept'|trans({}, 'risk') }}</option>
+                <option value="transfer" {{ app.request.query.get('treatment') == 'transfer' ? 'selected' : '' }}>{{ 'risk.index.treatment.transfer'|trans({}, 'risk') }}</option>
+                <option value="avoid" {{ app.request.query.get('treatment') == 'avoid' ? 'selected' : '' }}>{{ 'risk.index.treatment.avoid'|trans({}, 'risk') }}</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="filter-owner" class="form-label">{{ 'risk.filter.owner_label'|trans({}, 'risk') }}</label>
+            <input type="text" class="form-control" id="filter-owner" name="owner"
+                   value="{{ app.request.query.get('owner') }}"
+                   placeholder="{{ 'risk.filter.owner_placeholder'|trans({}, 'risk') }}">
+        </div>
     {% endblock %}
 {% endembed %}
 
@@ -259,21 +252,6 @@
     {% block card_header %}
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk.index.all_risks'|trans({}, 'risk') }} ({{ risks|length }})</h2>
-            <div class="d-flex gap-2">
-                <select class="form-select form-select-sm w-150px" id="risk-filter" aria-label="{{ 'risk.filter.level_label'|trans({}, 'risk') }}">
-                    <option value="">{{ 'risk.filter.all_risks'|trans({}, 'risk') }}</option>
-                    <option value="critical">{{ 'risk.modern.kpi.critical'|trans({}, 'risk') }}</option>
-                    <option value="high">{{ 'risk.modern.kpi.high'|trans({}, 'risk') }}</option>
-                    <option value="medium">{{ 'risk.index.risk_level.medium'|trans({}, 'risk') }}</option>
-                    <option value="low">{{ 'risk.index.risk_level.low'|trans({}, 'risk') }}</option>
-                </select>
-                <label for="risk-search" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
-                <input type="search"
-                       class="form-control form-control-sm w-200px"
-                       placeholder="{{ 'common.search'|trans({}, 'messages') }}..."
-                       id="risk-search"
-                       aria-label="{{ 'common.search'|trans({}, 'messages') }}">
-            </div>
         </div>
     {% endblock %}
     {% block card_body %}
@@ -523,33 +501,5 @@
     color: var(--color-success);
 }
 </style>
-
-{# Search & Filter functionality #}
-<script>
-// Search
-document.getElementById('risk-search')?.addEventListener('input', function(e) {
-    const query = e.target.value.toLowerCase();
-    const rows = document.querySelectorAll('tbody tr[data-risk-id]');
-
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(query) ? '' : 'none';
-    });
-});
-
-// Filter by level
-document.getElementById('risk-filter')?.addEventListener('change', function(e) {
-    const level = e.target.value;
-    const rows = document.querySelectorAll('tbody tr[data-risk-id]');
-
-    rows.forEach(row => {
-        if (!level || row.dataset.riskLevel === level) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-});
-</script>
 
 {% endblock %}

@@ -1,0 +1,136 @@
+{#
+/**
+ * Search-first Filter Form
+ *
+ * Renders a GET form with a prominent search-input above collapsible advanced filters.
+ * All state lives in URL query parameters so filters are shareable and bookmarkable
+ * (UXC-11 / UXC-12).
+ *
+ * Parameters:
+ *   - action:              Route path the form submits to (required)
+ *   - search_name:         Name of the search query parameter (default: 'q')
+ *   - search_placeholder:  Placeholder text (default: ui.filter.search_placeholder)
+ *   - search_label:        Visible label (default: ui.filter.search_label)
+ *   - show_search:         Whether to show the search input (default: true)
+ *   - filter_keys:         Array of query param names to detect active filters and to
+ *                          keep the Reset link pointing to a clean URL (default: [])
+ *   - advanced_open:       Force <details> to start open (default: false)
+ *   - wrapper_class:       Extra CSS class on the outer wrapper (default: '')
+ *   - form_id:             Optional ID for the form element
+ *
+ * Blocks:
+ *   - filters: Your filter dropdowns / inputs go here. They live inside the same
+ *              <form>, so Enter on the search input submits everything atomically.
+ *
+ * Accessibility:
+ *   - role="search" on the form
+ *   - <label> with for= for search input (visually-hidden only when a prominent
+ *     placeholder is present)
+ *   - aria-expanded / aria-controls on the details toggle
+ *   - aria-label on the reset link
+ *
+ * Example:
+ *   {% embed '_components/_search_filter_form.html.twig' with {
+ *       action: path('app_risk_index'),
+ *       filter_keys: ['level', 'status', 'treatment', 'owner', 'view']
+ *   } %}
+ *       {% block filters %}
+ *           <div class="col-md-3">
+ *               <label for="filter-level" class="form-label">Level</label>
+ *               <select name="level" id="filter-level" class="form-select">...</select>
+ *           </div>
+ *       {% endblock %}
+ *   {% endembed %}
+ */
+#}
+{% set search_name       = search_name|default('q') %}
+{% set search_placeholder = search_placeholder|default('ui.filter.search_placeholder'|trans({}, 'ui')) %}
+{% set search_label      = search_label|default('ui.filter.search_label'|trans({}, 'ui')) %}
+{% set show_search       = show_search is defined ? show_search : true %}
+{% set filter_keys       = filter_keys|default([]) %}
+{% set advanced_open     = advanced_open|default(false) %}
+{% set wrapper_class     = wrapper_class|default('') %}
+{% set form_id           = form_id|default('search-filter-form') %}
+
+{# Detect whether any filter query-param is active so we can show the reset link #}
+{% set active_count = 0 %}
+{% if app.request.query.get(search_name) %}
+    {% set active_count = active_count + 1 %}
+{% endif %}
+{% for key in filter_keys %}
+    {% if app.request.query.get(key) is not null and app.request.query.get(key) != '' %}
+        {% set active_count = active_count + 1 %}
+    {% endif %}
+{% endfor %}
+
+<div class="search-filter-wrapper mb-3 {{ wrapper_class }}">
+    <form method="get"
+          action="{{ action }}"
+          id="{{ form_id }}"
+          role="search"
+          aria-label="{{ 'ui.filter.search_label'|trans({}, 'ui') }}"
+          class="card border-0 bg-body-tertiary">
+        <div class="card-body">
+            {% if show_search %}
+                {# Search-first: prominent search input, full-width on mobile, 8 cols on md+ #}
+                <div class="row g-2 align-items-stretch">
+                    <div class="col-12 col-md-8">
+                        <label for="{{ form_id }}-q" class="visually-hidden">{{ search_label }}</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-body text-body-secondary" aria-hidden="true">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="search"
+                                   class="form-control form-control-lg"
+                                   id="{{ form_id }}-q"
+                                   name="{{ search_name }}"
+                                   value="{{ app.request.query.get(search_name)|default('') }}"
+                                   placeholder="{{ search_placeholder }}"
+                                   aria-label="{{ 'ui.filter.search_aria_label'|trans({}, 'ui') }}"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 d-flex gap-2 align-items-stretch">
+                        <button type="submit" class="btn btn-primary flex-grow-1">
+                            <i class="bi bi-search" aria-hidden="true"></i>
+                            <span class="d-none d-sm-inline">{{ 'ui.filter.apply'|trans({}, 'ui') }}</span>
+                        </button>
+                        {% if active_count > 0 %}
+                            {% include '_components/_reset_filters_link.html.twig' with {
+                                action: action,
+                                active_count: active_count,
+                                controls: form_id,
+                                class: 'btn btn-outline-secondary'
+                            } only %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Advanced filters - collapsible to keep the UI calm when there are many #}
+            {% if block('filters') is defined or block('filters') is not empty %}
+                <details class="search-filter-advanced mt-3"
+                         {% if advanced_open or active_count > 0 %}open{% endif %}>
+                    <summary class="search-filter-advanced-toggle text-body-secondary"
+                             aria-controls="{{ form_id }}-advanced">
+                        <i class="bi bi-sliders" aria-hidden="true"></i>
+                        {{ 'ui.filter.advanced_filters'|trans({}, 'ui') }}
+                        {% if active_count > 0 %}
+                            <span class="badge bg-primary ms-1">{{ active_count }}</span>
+                        {% endif %}
+                    </summary>
+                    <div class="row g-3 mt-2" id="{{ form_id }}-advanced">
+                        {% block filters %}{% endblock %}
+                    </div>
+                </details>
+            {% endif %}
+
+            {% if active_count > 0 %}
+                <p class="small text-body-secondary mt-2 mb-0">
+                    <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                    {{ 'ui.filter.shareable_hint'|trans({}, 'ui') }}
+                </p>
+            {% endif %}
+        </div>
+    </form>
+</div>

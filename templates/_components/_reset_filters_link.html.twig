@@ -1,0 +1,35 @@
+{#
+/**
+ * Reset Filters Link
+ *
+ * Small link/button that returns to the index route stripped of all query-params,
+ * clearing every active filter. Intended to appear next to a search/filter form
+ * when at least one query-param is active (UXC-11 / UXC-12).
+ *
+ * Parameters:
+ *   - action:        Target URL without query-params (required)
+ *   - active_count:  Number of active filters (optional, used in aria label)
+ *   - controls:      ID of the form/region this link resets (optional, aria-controls)
+ *   - class:         CSS class override (default: 'btn btn-outline-secondary btn-sm')
+ *   - label:         Custom link label (default: ui.filter.reset translation)
+ *
+ * Accessibility:
+ *   - aria-label contains active filter count for screen reader context
+ *   - aria-controls points at the form id so SR users know what gets reset
+ */
+#}
+{% set class = class|default('btn btn-outline-secondary btn-sm') %}
+{% set label = label|default('ui.filter.reset'|trans({}, 'ui')) %}
+{% set aria_label = 'ui.filter.reset_aria_label'|trans({}, 'ui') %}
+{% if active_count is defined and active_count > 0 %}
+    {% set aria_label = aria_label ~ ' (' ~ active_count ~ ')' %}
+{% endif %}
+
+<a href="{{ action }}"
+   class="{{ class }}"
+   {% if controls is defined and controls %}aria-controls="{{ controls }}"{% endif %}
+   aria-label="{{ aria_label }}"
+   data-turbo-action="advance">
+    <i class="bi bi-x-circle" aria-hidden="true"></i>
+    <span class="d-none d-sm-inline">{{ label }}</span>
+</a>
