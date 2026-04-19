@@ -103,6 +103,14 @@
         </div>
     {% endif %}
 
+    {# Data-Reuse: Entity Link Matrix (Junior-Finding #8 / CM-Blocker) #}
+    {% include '_components/_entity_link_matrix.html.twig' with {
+        source_type: 'incident',
+        entity: incident,
+        linked_risks: linkedRisks|default([]),
+        linked_vulnerabilities: linkedVulnerabilities|default([])
+    } only %}
+
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             <div class="card-header">

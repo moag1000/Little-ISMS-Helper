@@ -1,6 +1,9 @@
 vulnerability:
     title: Vulnerabilities
     new: 'New Vulnerability'
+    prefill:
+        title_from_incident: 'Vulnerability from incident: %title%'
+        note_from_incident: '(Derived from incident ID=%id%.)'
     list: 'Vulnerability List'
     empty: 'No vulnerabilities available.'
     section:

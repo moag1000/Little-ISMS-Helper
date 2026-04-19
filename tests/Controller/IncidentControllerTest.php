@@ -12,6 +12,7 @@ use App\Form\IncidentType;
 use App\Repository\AuditLogRepository;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\IncidentRepository;
+use App\Repository\RiskRepository;
 use App\Repository\UserRepository;
 use App\Service\EmailNotificationService;
 use App\Service\GdprBreachAssessmentService;
@@ -70,6 +71,7 @@ class IncidentControllerTest extends TestCase
     private MockObject $workflowService;
     private MockObject $workflowAutoProgressionService;
     private MockObject $incidentRiskFeedbackService;
+    private MockObject $riskRepository;
     private MockObject $container;
     private MockObject $twig;
     private MockObject $formFactory;
@@ -97,6 +99,7 @@ class IncidentControllerTest extends TestCase
         $this->workflowService = $this->createMock(WorkflowService::class);
         $this->workflowAutoProgressionService = $this->createMock(WorkflowAutoProgressionService::class);
         $this->incidentRiskFeedbackService = $this->createMock(IncidentRiskFeedbackService::class);
+        $this->riskRepository = $this->createMock(RiskRepository::class);
         $this->container = $this->createMock(ContainerInterface::class);
         $this->twig = $this->createMock(Environment::class);
         $this->formFactory = $this->createMock(FormFactoryInterface::class);
@@ -156,7 +159,8 @@ class IncidentControllerTest extends TestCase
             $this->tenantContext,
             $this->workflowService,
             $this->workflowAutoProgressionService,
-            $this->incidentRiskFeedbackService
+            $this->incidentRiskFeedbackService,
+            $this->riskRepository
         );
         $this->controller->setContainer($this->container);
     }

@@ -7,10 +7,12 @@ use App\Entity\User;
 use Exception;
 use DateTime;
 use App\Entity\Incident;
+use App\Entity\Risk;
 use App\Form\IncidentType;
 use App\Repository\AuditLogRepository;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\IncidentRepository;
+use App\Repository\RiskRepository;
 use App\Service\EmailNotificationService;
 use App\Service\GdprBreachAssessmentService;
 use App\Service\IncidentBCMImpactService;
@@ -48,7 +50,8 @@ class IncidentController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly WorkflowService $workflowService,
         private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
-        private readonly IncidentRiskFeedbackService $incidentRiskFeedbackService
+        private readonly IncidentRiskFeedbackService $incidentRiskFeedbackService,
+        private readonly RiskRepository $riskRepository
     ) {}
     #[Route('/incident/', name: 'app_incident_index')]
     #[IsGranted('ROLE_USER')]
@@ -165,6 +168,41 @@ class IncidentController extends AbstractController
         $incident = new Incident();
         $incident->setTenant($tenant);
         $incident->setIncidentNumber($this->incidentRepository->getNextIncidentNumber($tenant));
+
+        // Pre-fill from Risk (Junior-Finding #8 / Data-Reuse: one-click derivation)
+        $fromRiskId = $request->query->get('fromRisk');
+        if ($fromRiskId !== null && $fromRiskId !== '') {
+            $sourceRisk = $this->riskRepository->find($fromRiskId);
+            // Multi-tenancy: only prefill within same tenant
+            if ($sourceRisk instanceof Risk && $sourceRisk->getTenant() === $tenant) {
+                $incident->setTitle($this->translator->trans(
+                    'incident.prefill.title_from_risk',
+                    ['%title%' => (string) $sourceRisk->getTitle()],
+                    'incident'
+                ));
+                $incident->setDescription(
+                    (string) $sourceRisk->getDescription()
+                    . "\n\n"
+                    . $this->translator->trans('incident.prefill.note_from_risk',
+                        ['%id%' => (string) $sourceRisk->getId()],
+                        'incident'
+                    )
+                );
+                $incident->setCategory('security_incident');
+                // Map inherent risk level → incident severity
+                $level = $sourceRisk->getInherentRiskLevel();
+                $severity = match (true) {
+                    $level >= 20 => 'critical',
+                    $level >= 12 => 'high',
+                    $level >= 6 => 'medium',
+                    default => 'low',
+                };
+                $incident->setSeverity($severity);
+                $incident->setStatus('reported');
+                // Link back to the originating risk via realizedRisks
+                $incident->addRealizedRisk($sourceRisk);
+            }
+        }
 
         $form = $this->createForm(IncidentType::class, $incident);
         $form->handleRequest($request);
@@ -301,6 +339,9 @@ class IncidentController extends AbstractController
             'totalAuditLogs' => count($auditLogs),
             'workflowStatus' => $workflowStatus,
             'canApproveWorkflow' => $canApproveWorkflow,
+            // Data-Reuse: one-click link matrix
+            'linkedRisks' => $incident->getRealizedRisks(),
+            'linkedVulnerabilities' => $incident->getRelatedVulnerabilities(),
         ]);
     }
     #[Route('/incident/{id}/edit', name: 'app_incident_edit', requirements: ['id' => '\d+'])]

@@ -5,6 +5,9 @@ incident_management:
   open_incidents: Offene Vorfälle
   total_recorded: Insgesamt erfasste Vorfälle
 incident:
+  prefill:
+    title_from_risk: 'Vorfall zu Risiko: %title%'
+    note_from_risk: '(Diese Erfassung wurde aus Risiko ID=%id% abgeleitet.)'
   preview:
     title: Vorfalls-Informationen
     affected_assets: Betroffene Assets (%count%)

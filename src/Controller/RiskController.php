@@ -8,10 +8,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Traversable;
 use Exception;
 use DomainException;
+use App\Entity\Incident;
 use App\Entity\Risk;
+use App\Entity\Vulnerability;
 use App\Form\RiskType;
 use App\Repository\AuditLogRepository;
+use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
+use App\Repository\VulnerabilityRepository;
 use App\Service\RiskMatrixService;
 use App\Service\RiskService;
 use App\Service\RiskAcceptanceWorkflowService;
@@ -42,7 +46,9 @@ class RiskController extends AbstractController
         private readonly PdfExportService $pdfExportService,
         private readonly Security $security,
         private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
-        private readonly TagFilterService $tagFilterService
+        private readonly TagFilterService $tagFilterService,
+        private readonly VulnerabilityRepository $vulnerabilityRepository,
+        private readonly IncidentRepository $incidentRepository
     ) {}
     #[Route('/risk/', name: 'app_risk_index')]
     #[IsGranted('ROLE_USER')]
@@ -673,8 +679,67 @@ class RiskController extends AbstractController
 
         // Set tenant from current user
         $user = $this->security->getUser();
+        $tenant = null;
         if ($user instanceof UserInterface && $user->getTenant()) {
-            $risk->setTenant($user->getTenant());
+            $tenant = $user->getTenant();
+            $risk->setTenant($tenant);
+        }
+
+        // Pre-fill from Vulnerability (Junior-Finding #8 / Data-Reuse: one-click derivation)
+        $fromVulnerabilityId = $request->query->get('fromVulnerability');
+        if ($fromVulnerabilityId !== null && $fromVulnerabilityId !== '') {
+            $vulnerability = $this->vulnerabilityRepository->find($fromVulnerabilityId);
+            // Multi-tenancy: only allow prefill within the same tenant
+            if ($vulnerability instanceof Vulnerability
+                && $tenant !== null
+                && $vulnerability->getTenant() === $tenant
+            ) {
+                $risk->setTitle($this->translator->trans(
+                    'risk.prefill.title_from_vulnerability',
+                    ['%title%' => (string) $vulnerability->getTitle()],
+                    'risk'
+                ));
+                $risk->setDescription(
+                    (string) $vulnerability->getDescription()
+                    . "\n\n"
+                    . $this->translator->trans('risk.prefill.note_from_vulnerability',
+                        ['%id%' => (string) $vulnerability->getId()],
+                        'risk'
+                    )
+                );
+                $risk->setThreat($this->translator->trans(
+                    'risk.prefill.threat_from_vulnerability',
+                    ['%title%' => (string) $vulnerability->getTitle()],
+                    'risk'
+                ));
+                $risk->setCategory('security');
+                $risk->setLinkedVulnerability($vulnerability);
+            }
+        }
+
+        // Pre-fill from Incident (Junior-Finding #8 / Data-Reuse)
+        $fromIncidentId = $request->query->get('fromIncident');
+        if ($fromIncidentId !== null && $fromIncidentId !== '') {
+            $incident = $this->incidentRepository->find($fromIncidentId);
+            if ($incident instanceof Incident
+                && $tenant !== null
+                && $incident->getTenant() === $tenant
+            ) {
+                $risk->setTitle($this->translator->trans(
+                    'risk.prefill.title_from_incident',
+                    ['%title%' => (string) $incident->getTitle()],
+                    'risk'
+                ));
+                $risk->setDescription(
+                    (string) $incident->getDescription()
+                    . "\n\n"
+                    . $this->translator->trans('risk.prefill.note_from_incident',
+                        ['%id%' => (string) $incident->getId()],
+                        'risk'
+                    )
+                );
+                $risk->setCategory('operational');
+            }
         }
 
         $form = $this->createForm(RiskType::class, $risk);
@@ -807,6 +872,14 @@ class RiskController extends AbstractController
             $canEdit = true;
         }
 
+        // Data-Reuse: Build link matrix data
+        // Risks have a single linkedVulnerability (ManyToOne). Wrap it in an
+        // array so the matrix component can render a uniform list.
+        $linkedVulnerabilities = [];
+        if ($risk->getLinkedVulnerability() !== null) {
+            $linkedVulnerabilities[] = $risk->getLinkedVulnerability();
+        }
+
         return $this->render('risk/show.html.twig', [
             'risk' => $risk,
             'auditLogs' => $recentAuditLogs,
@@ -814,6 +887,9 @@ class RiskController extends AbstractController
             'isInherited' => $isInherited,
             'canEdit' => $canEdit,
             'currentTenant' => $tenant,
+            // Data-Reuse: one-click link matrix
+            'linkedVulnerabilities' => $linkedVulnerabilities,
+            'linkedIncidents' => $risk->getIncidents(),
         ]);
     }
     #[Route('/risk/{id}/edit', name: 'app_risk_edit', requirements: ['id' => '\d+'])]
