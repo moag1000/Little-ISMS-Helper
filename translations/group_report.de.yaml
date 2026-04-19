@@ -70,6 +70,25 @@ group_report:
             planned: 'geplant'
             not_started: 'nicht begonnen'
             not_applicable: 'nicht anwendbar'
+    incidents:
+        title: 'Konzern-Incidents'
+        subtitle: 'Cross-Posting aus dem Subtree von %root% — Töchter mit Opt-out bleiben verborgen.'
+        intro: 'Default: Incidents aus Töchtern sind für den Konzern-Krisenstab <strong>sichtbar</strong>. Eine Tochter kann <code>visible_to_holding = false</code> setzen (z. B. HR-Fall, der nicht zur Mutter soll). Diese Zeilen erscheinen hier nicht — die Anzahl der Opt-outs wird bewusst <strong>nicht</strong> ausgewiesen, damit die Vertraulichkeit der Tochter gewahrt bleibt.'
+        own: 'eigen'
+        none: 'Keine Incidents im sichtbaren Scope.'
+        stat:
+            total: 'Sichtbare Incidents'
+        severity:
+            critical: 'critical'
+            high: 'high'
+            medium: 'medium'
+            low: 'low'
+        col:
+            detected_at: 'Erkannt'
+            incident: 'Vorfall'
+            tenant: 'Tenant'
+            severity: 'Severity'
+            status: 'Status'
     suppliers:
         title: 'Konzern-Lieferantenverzeichnis'
         subtitle: 'Dedupliziert pro LEI oder Name über alle Töchter von %root%.'

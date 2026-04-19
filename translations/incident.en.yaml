@@ -90,6 +90,7 @@ incident:
     corrective_actions: Corrective Actions
     lessons_learned: Lessons Learned
     closed_date: Closed Date
+    visible_to_holding: 'Visible to group crisis team'
     closed_at: Closed At
     nis2_category: Nis2 Category
     cross_border_impact: Cross Border Impact
@@ -181,6 +182,7 @@ incident:
     authority_reference: Reference number from authority
     reported_by_user: -- Select reporter --
   help:
+    visible_to_holding: 'Default on: holding / group CISO can see this incident to coordinate group-level response. Disable only for confidential cases (e.g. HR).'
     severity: Assess severity based on impact and scope (ISO 27001 A.16.1.4)
     affected_systems: List all affected systems, applications and infrastructure
     affected_assets: Select assets affected by the incident (hold CTRL for multiple

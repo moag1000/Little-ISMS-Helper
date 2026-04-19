@@ -81,7 +81,13 @@ class IncidentVoter extends Voter
         if ($incident->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant) {
             return true;
         }
-        // Phase 9.P1.6 — Group-CISO / Konzern-ISB may read down the tree
+        // Phase 9.P1.6 — Group-CISO / Konzern-ISB may read down the tree,
+        // but only if the subsidiary hasn't opted out of cross-posting
+        // (9.P2.3 confidential-incident carve-out, e.g. HR cases that
+        // must not reach the parent company's crisis team).
+        if (!$incident->isVisibleToHolding()) {
+            return false;
+        }
         return $this->canReadAcrossHoldingTree($user, $incident->getTenant());
     }
 

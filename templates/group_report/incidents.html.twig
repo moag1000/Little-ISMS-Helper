@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'group_report.incidents.title'|trans({}, 'group_report') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'group_report.title'|trans({}, 'group_report'), path: 'app_group_report_tree' },
+            { label: 'group_report.incidents.title'|trans({}, 'group_report') }
+        ]
+    } %}
+
+    <div class="mb-4">
+        <h1 class="h2 mb-1">
+            <i class="bi bi-bell text-danger" aria-hidden="true"></i>
+            {{ 'group_report.incidents.title'|trans({}, 'group_report') }}
+        </h1>
+        <p class="text-muted mb-0">{{ 'group_report.incidents.subtitle'|trans({'%root%': root.name}, 'group_report') }}</p>
+    </div>
+
+    <div class="alert alert-info d-flex gap-2" role="note">
+        <i class="bi bi-info-circle mt-1" aria-hidden="true"></i>
+        <div class="small">{{ 'group_report.incidents.intro'|trans({}, 'group_report')|raw }}</div>
+    </div>
+
+    <div class="row row-cols-2 row-cols-md-5 g-2 mb-4">
+        <div class="col">
+            <div class="card h-100 text-center">
+                <div class="card-body py-2">
+                    <div class="display-6 fw-bold">{{ total_visible }}</div>
+                    <div class="small text-muted">{{ 'group_report.incidents.stat.total'|trans({}, 'group_report') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 text-center border-danger">
+                <div class="card-body py-2">
+                    <div class="display-6 fw-bold text-danger">{{ severity_buckets.critical }}</div>
+                    <div class="small text-muted">{{ 'group_report.incidents.severity.critical'|trans({}, 'group_report') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 text-center border-warning">
+                <div class="card-body py-2">
+                    <div class="display-6 fw-bold text-warning">{{ severity_buckets.high }}</div>
+                    <div class="small text-muted">{{ 'group_report.incidents.severity.high'|trans({}, 'group_report') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 text-center">
+                <div class="card-body py-2">
+                    <div class="display-6 fw-bold text-info">{{ severity_buckets.medium }}</div>
+                    <div class="small text-muted">{{ 'group_report.incidents.severity.medium'|trans({}, 'group_report') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 text-center">
+                <div class="card-body py-2">
+                    <div class="display-6 fw-bold text-secondary">{{ severity_buckets.low }}</div>
+                    <div class="small text-muted">{{ 'group_report.incidents.severity.low'|trans({}, 'group_report') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle" aria-label="{{ 'group_report.incidents.title'|trans({}, 'group_report') }}">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">{{ 'group_report.incidents.col.detected_at'|trans({}, 'group_report') }}</th>
+                            <th scope="col">{{ 'group_report.incidents.col.incident'|trans({}, 'group_report') }}</th>
+                            <th scope="col">{{ 'group_report.incidents.col.tenant'|trans({}, 'group_report') }}</th>
+                            <th scope="col">{{ 'group_report.incidents.col.severity'|trans({}, 'group_report') }}</th>
+                            <th scope="col">{{ 'group_report.incidents.col.status'|trans({}, 'group_report') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for incident in incidents %}
+                            {% set sev = incident.severity %}
+                            {% set sevBadge = {
+                                'critical': 'bg-danger',
+                                'high': 'bg-warning text-dark',
+                                'medium': 'bg-info',
+                                'low': 'bg-secondary'
+                            }[sev]|default('bg-light text-dark border') %}
+                            <tr>
+                                <td class="small text-muted">{{ incident.detectedAt|date('Y-m-d H:i') }}</td>
+                                <td>
+                                    <code class="small">{{ incident.incidentNumber }}</code>
+                                    <strong>{{ incident.title }}</strong>
+                                    {% if incident.category %}
+                                        <div class="small text-muted">{{ incident.category }}</div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <code class="small">{{ incident.tenant.code }}</code>
+                                    {% if incident.tenant is same as(root) %}
+                                        <span class="badge bg-primary ms-1">{{ 'group_report.incidents.own'|trans({}, 'group_report') }}</span>
+                                    {% endif %}
+                                </td>
+                                <td><span class="badge {{ sevBadge }}">{{ sev }}</span></td>
+                                <td><code class="small">{{ incident.status }}</code></td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="5" class="text-center text-muted py-3">{{ 'group_report.incidents.none'|trans({}, 'group_report') }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

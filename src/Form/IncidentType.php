@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\Incident;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -154,6 +155,14 @@ class IncidentType extends AbstractType
                 'label' => 'incident.field.closed_date',
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
+                'required' => false,
+            ])
+            // Phase 9.P2.3 — opt-out of cross-posting to the Group-CISO
+            // in a holding subtree. Default true; operators of a Tochter
+            // uncheck only for genuinely confidential incidents.
+            ->add('visibleToHolding', CheckboxType::class, [
+                'label' => 'incident.field.visible_to_holding',
+                'help' => 'incident.help.visible_to_holding',
                 'required' => false,
             ])
 
