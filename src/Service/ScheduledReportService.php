@@ -4,6 +4,7 @@ namespace App\Service;
 
 use DateTime;
 use App\Entity\ScheduledReport;
+use App\Repository\RiskRepository;
 use App\Repository\ScheduledReportRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
@@ -14,6 +15,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Part\DataPart;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -39,6 +41,11 @@ class ScheduledReportService
         private readonly TranslatorInterface $translator,
         private readonly AuditLogger $auditLogger,
         private readonly PortfolioReportService $portfolioReportService,
+        private readonly DashboardStatisticsService $dashboardStatisticsService,
+        private readonly RoleDashboardService $roleDashboardService,
+        private readonly ComplianceAnalyticsService $complianceAnalyticsService,
+        private readonly RiskRepository $riskRepository,
+        private readonly Security $security,
         private readonly string $senderEmail = 'noreply@little-isms-helper.local',
         private readonly string $senderName = 'Little ISMS Helper',
     ) {
@@ -306,6 +313,7 @@ class ScheduledReportService
                 'report' => $this->reportService->getDataBreachReport(),
             ],
             ScheduledReport::TYPE_PORTFOLIO => $this->getPortfolioReportData(),
+            ScheduledReport::TYPE_BOARD => $this->getBoardReportData(),
             default => throw new \InvalidArgumentException("Unknown report type: {$type}"),
         };
     }
@@ -333,6 +341,56 @@ class ScheduledReportService
     }
 
     /**
+     * Get board one-pager report data using the same sources as ManagementReportController::boardOnePagerPdf()
+     */
+    private function getBoardReportData(): array
+    {
+        $kpis = $this->dashboardStatisticsService->getManagementKPIs();
+        $boardData = $this->roleDashboardService->getBoardDashboard();
+
+        // Top 5 risks sorted by inherent risk level
+        $tenant = $this->security->getUser()?->getTenant()
+            ?? $this->tenantContext->getCurrentTenant();
+        $allRisks = $tenant ? $this->riskRepository->findByTenant($tenant) : [];
+        usort($allRisks, fn($a, $b) => $b->getInherentRiskLevel() - $a->getInherentRiskLevel());
+        $topRiskEntities = array_slice($allRisks, 0, 5);
+
+        $topRisks = [];
+        foreach ($topRiskEntities as $risk) {
+            $score = $risk->getInherentRiskLevel();
+            $level = match (true) {
+                $score >= 20 => 'Critical',
+                $score >= 12 => 'High',
+                $score >= 6 => 'Medium',
+                default => 'Low',
+            };
+            $topRisks[] = [
+                'title' => $risk->getTitle(),
+                'level' => $level,
+                'score' => $score,
+            ];
+        }
+
+        // Framework compliance
+        $frameworkCompliance = [];
+        $comparison = $this->complianceAnalyticsService->getFrameworkComparison();
+        foreach ($comparison['frameworks'] ?? [] as $fw) {
+            $frameworkCompliance[] = [
+                'name' => $fw['name'],
+                'percentage' => round($fw['compliance_percentage'] ?? 0),
+            ];
+        }
+
+        return [
+            'board_data' => $boardData,
+            'kpis' => $kpis,
+            'top_risks' => $topRisks,
+            'framework_compliance' => $frameworkCompliance,
+            'prepared_by' => $this->security->getUser()?->getFullName() ?? 'System',
+        ];
+    }
+
+    /**
      * Get PDF template path for report type
      */
     private function getReportTemplate(string $type): string
@@ -346,6 +404,7 @@ class ScheduledReportService
             ScheduledReport::TYPE_ASSETS => 'management_reports/assets_pdf.html.twig',
             ScheduledReport::TYPE_GDPR => 'management_reports/gdpr_pdf.html.twig',
             ScheduledReport::TYPE_PORTFOLIO => 'portfolio_report/pdf.html.twig',
+            ScheduledReport::TYPE_BOARD => 'reports/board_one_pager.html.twig',
             default => throw new \InvalidArgumentException("Unknown report type: {$type}"),
         };
     }

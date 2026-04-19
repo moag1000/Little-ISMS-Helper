@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use DateTime;
+use App\Entity\Incident;
 use App\Repository\AssetRepository;
 use App\Repository\BCExerciseRepository;
 use App\Repository\BusinessContinuityPlanRepository;
@@ -14,7 +15,9 @@ use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
+use App\Service\PdfExportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -50,6 +53,8 @@ class DoraComplianceController extends AbstractController
         private readonly BCExerciseRepository $bcExerciseRepository,
         private readonly RiskTreatmentPlanRepository $treatmentPlanRepository,
         private readonly TrainingRepository $trainingRepository,
+        private readonly PdfExportService $pdfExportService,
+        private readonly Security $security,
         private readonly TranslatorInterface $translator
     ) {
     }
@@ -415,6 +420,41 @@ class DoraComplianceController extends AbstractController
             'implementation_rate' => $implementationRate,
             'score' => $implementationRate,
         ];
+    }
+
+    /**
+     * Generate a structured DORA Art. 19 ICT incident report PDF.
+     *
+     * Produces a report conforming to DORA RTS requirements:
+     * - Header with organization, LEI, reporting date, reference number
+     * - Classification: major/non-major ICT incident with criteria
+     * - Details: description, timeline, affected services, financial impact
+     * - DORA reporting timeline: Detection -> Initial (4h) -> Intermediate (72h) -> Final (1 month)
+     */
+    #[Route('/dora/ict-incident-report/{id}/pdf', name: 'app_dora_ict_incident_report_pdf')]
+    #[IsGranted('ROLE_MANAGER')]
+    public function ictIncidentReportPdf(Incident $incident): Response
+    {
+        $generatedAt = new DateTime();
+        $user = $this->security->getUser();
+        $organizationName = $user?->getTenant()?->getName() ?? 'Organization';
+
+        $pdf = $this->pdfExportService->generatePdf('dora/ict_incident_report_pdf.html.twig', [
+            'incident' => $incident,
+            'generated_at' => $generatedAt,
+            'organization_name' => $organizationName,
+        ]);
+
+        $filename = sprintf(
+            'dora-ict-incident-report_%s_%s.pdf',
+            $incident->getIncidentNumber(),
+            $generatedAt->format('Y-m-d')
+        );
+
+        return new Response($pdf, Response::HTTP_OK, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
     }
 
     /**

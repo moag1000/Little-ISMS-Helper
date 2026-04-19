@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'dora.ict_incident_report.title'|trans({}, 'dora') }}</title>
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 20px; color: #1e293b; }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #7c3aed;
+            padding-bottom: 10px;
+        }
+        .header h1 { color: #7c3aed; margin: 0; font-size: 16pt; text-transform: uppercase; letter-spacing: 0.5pt; }
+        .header .subtitle { color: #475569; font-size: 9pt; margin-top: 3px; }
+        .header .date { color: #64748b; font-size: 8pt; margin-top: 3px; }
+
+        .meta-grid { display: table; width: 100%; margin: 10px 0 15px 0; border: 1px solid #e2e8f0; }
+        .meta-row { display: table-row; }
+        .meta-label { display: table-cell; width: 30%; padding: 4px 8px; font-weight: bold; font-size: 8pt; color: #475569; text-transform: uppercase; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
+        .meta-value { display: table-cell; width: 70%; padding: 4px 8px; font-size: 9pt; border-bottom: 1px solid #e2e8f0; }
+
+        .section { margin: 15px 0; page-break-inside: avoid; }
+        .section h2 {
+            background: #7c3aed;
+            color: #ffffff;
+            padding: 6px 10px;
+            font-size: 10pt;
+            margin: 0 0 8px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.3pt;
+        }
+        .section h3 {
+            color: #7c3aed;
+            font-size: 9pt;
+            margin: 8px 0 4px 0;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 3px;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+        th {
+            background: #1e293b;
+            color: #c4b5fd;
+            padding: 5px 6px;
+            text-align: left;
+            font-size: 8pt;
+            text-transform: uppercase;
+        }
+        td { padding: 4px 6px; border-bottom: 1px solid #e2e8f0; font-size: 8pt; }
+        tr:nth-child(even) { background: #f8fafc; }
+
+        .field-group { margin: 6px 0; }
+        .field-label { font-weight: bold; font-size: 8pt; color: #475569; text-transform: uppercase; }
+        .field-value { font-size: 9pt; margin-top: 2px; padding: 4px 6px; background: #f8fafc; border-left: 3px solid #c4b5fd; }
+        .field-value.empty { color: #94a3b8; font-style: italic; }
+
+        .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
+        .badge-danger { background: #fecaca; color: #991b1b; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-info { background: #ede9fe; color: #5b21b6; }
+        .badge-major { background: #fecaca; color: #991b1b; border: 1px solid #dc2626; }
+        .badge-non-major { background: #dbeafe; color: #1e40af; }
+
+        .criteria-list { list-style: none; padding: 0; margin: 4px 0; }
+        .criteria-list li { padding: 2px 0; font-size: 8pt; }
+        .criteria-list li::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 5px; border-radius: 2px; }
+        .criteria-met::before { background: #dc2626; }
+        .criteria-not-met::before { background: #e2e8f0; }
+
+        .overdue { color: #dc2626; font-weight: bold; }
+        .compliant { color: #16a34a; font-weight: bold; }
+        .pending { color: #d97706; font-weight: bold; }
+
+        .footer { position: fixed; bottom: 15px; left: 20px; right: 20px; text-align: center; font-size: 7pt; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 6px; }
+        .page-break { page-break-after: always; }
+
+        @media print {
+            body { margin: 0; padding: 15px; }
+            .section { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    {# Header #}
+    <div class="header">
+        <h1>{{ 'dora.ict_incident_report.title'|trans({}, 'dora') }}</h1>
+        <div class="subtitle">{{ 'dora.ict_incident_report.subtitle'|trans({}, 'dora') }}</div>
+        <div class="date">{{ 'dora.ict_incident_report.generated_at'|trans({}, 'dora') }}: {{ generated_at|date('d.m.Y H:i') }}</div>
+    </div>
+
+    {# Header Meta Information #}
+    <div class="meta-grid">
+        <div class="meta-row">
+            <div class="meta-label">{{ 'dora.ict_incident_report.organization'|trans({}, 'dora') }}</div>
+            <div class="meta-value">{{ organization_name }}</div>
+        </div>
+        <div class="meta-row">
+            <div class="meta-label">{{ 'dora.ict_incident_report.lei'|trans({}, 'dora') }}</div>
+            <div class="meta-value">{{ 'dora.ict_incident_report.not_available'|trans({}, 'dora') }}</div>
+        </div>
+        <div class="meta-row">
+            <div class="meta-label">{{ 'dora.ict_incident_report.reporting_date'|trans({}, 'dora') }}</div>
+            <div class="meta-value">{{ generated_at|date('d.m.Y') }}</div>
+        </div>
+        <div class="meta-row">
+            <div class="meta-label">{{ 'dora.ict_incident_report.reference'|trans({}, 'dora') }}</div>
+            <div class="meta-value">{{ incident.authorityReferenceNumber ?? incident.incidentNumber }}</div>
+        </div>
+        <div class="meta-row">
+            <div class="meta-label">{{ 'dora.ict_incident_report.incident_number'|trans({}, 'dora') }}</div>
+            <div class="meta-value">{{ incident.incidentNumber }}</div>
+        </div>
+    </div>
+
+    {# ==================== CLASSIFICATION ==================== #}
+    <div class="section">
+        <h2>{{ 'dora.ict_incident_report.classification.title'|trans({}, 'dora') }}</h2>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'dora.ict_incident_report.classification.type'|trans({}, 'dora') }}</div>
+            <div class="field-value">
+                {% if incident.severity in ['high', 'critical'] %}
+                    <span class="badge badge-major">{{ 'dora.ict_incident_report.classification.major'|trans({}, 'dora') }}</span>
+                {% else %}
+                    <span class="badge badge-non-major">{{ 'dora.ict_incident_report.classification.non_major'|trans({}, 'dora') }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'dora.ict_incident_report.classification.criteria'|trans({}, 'dora') }}</div>
+            <div class="field-value">
+                <ul class="criteria-list">
+                    <li class="{% if incident.severity in ['high', 'critical'] %}criteria-met{% else %}criteria-not-met{% endif %}">
+                        {{ 'dora.ict_incident_report.classification.criteria_severity'|trans({}, 'dora') }}
+                    </li>
+                    <li class="{% if incident.crossBorderImpact %}criteria-met{% else %}criteria-not-met{% endif %}">
+                        {{ 'dora.ict_incident_report.classification.criteria_cross_border'|trans({}, 'dora') }}
+                    </li>
+                    <li class="{% if incident.estimatedFinancialImpact and incident.estimatedFinancialImpact > 0 %}criteria-met{% else %}criteria-not-met{% endif %}">
+                        {{ 'dora.ict_incident_report.classification.criteria_financial'|trans({}, 'dora') }}
+                    </li>
+                    <li class="{% if incident.affectedUsersCount and incident.affectedUsersCount > 100 %}criteria-met{% else %}criteria-not-met{% endif %}">
+                        {{ 'dora.ict_incident_report.classification.criteria_users'|trans({}, 'dora') }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {# ==================== INCIDENT DETAILS ==================== #}
+    <div class="section">
+        <h2>{{ 'dora.ict_incident_report.details.title'|trans({}, 'dora') }}</h2>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'dora.ict_incident_report.details.description'|trans({}, 'dora') }}</div>
+            <div class="field-value{% if not incident.description %} empty{% endif %}">{{ incident.description ?? ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'dora.ict_incident_report.details.occurrence_datetime'|trans({}, 'dora') }}</div>
+            <div class="field-value">{{ incident.occurredAt ? incident.occurredAt|date('d.m.Y H:i:s') : ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'dora.ict_incident_report.details.detection_datetime'|trans({}, 'dora') }}</div>
+            <div class="field-value">{{ incident.detectedAt ? incident.detectedAt|date('d.m.Y H:i:s') : ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'dora.ict_incident_report.details.duration'|trans({}, 'dora') }}</div>
+            <div class="field-value">
+                {% if incident.resolvedAt and incident.detectedAt %}
+                    {% set diff_seconds = incident.resolvedAt.timestamp - incident.detectedAt.timestamp %}
+                    {% set hours = (diff_seconds / 3600)|round(0, 'floor') %}
+                    {% set minutes = ((diff_seconds % 3600) / 60)|round(0, 'floor') %}
+                    {{ hours }}h {{ minutes }}m
+                {% else %}
+                    <span class="badge badge-warning">{{ 'dora.ict_incident_report.details.duration_ongoing'|trans({}, 'dora') }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <h3>{{ 'dora.ict_incident_report.details.services_affected'|trans({}, 'dora') }}</h3>
+        <div class="field-group">
+            <div class="field-value{% if not incident.affectedSystems %} empty{% endif %}">{{ incident.affectedSystems ?? ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
+        </div>
+
+        {% if incident.affectedAssets|length > 0 %}
+        <div class="field-group">
+            <div class="field-label">{{ 'dora.ict_incident_report.details.affected_assets'|trans({}, 'dora') }}</div>
+            <div class="field-value">
+                <ul style="margin: 0; padding-left: 15px;">
+                    {% for asset in incident.affectedAssets %}
+                        <li>{{ asset.name }} ({{ asset.assetType ?? 'N/A' }})</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if incident.affectedBusinessProcesses|length > 0 %}
+        <div class="field-group">
+            <div class="field-label">{{ 'dora.ict_incident_report.details.affected_processes'|trans({}, 'dora') }}</div>
+            <div class="field-value">
+                <ul style="margin: 0; padding-left: 15px;">
+                    {% for process in incident.affectedBusinessProcesses %}
+                        <li>{{ process.name }} ({{ process.criticality ?? 'N/A' }})</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="field-group">
+            <div class="field-label">{{ 'dora.ict_incident_report.details.clients_affected'|trans({}, 'dora') }}</div>
+            <div class="field-value">{{ incident.affectedUsersCount ?? ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'dora.ict_incident_report.details.financial_impact'|trans({}, 'dora') }}</div>
+            <div class="field-value">{{ incident.estimatedFinancialImpact ? incident.estimatedFinancialImpact|number_format(2, ',', '.') ~ ' EUR' : ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'dora.ict_incident_report.details.data_integrity'|trans({}, 'dora') }}</div>
+            <div class="field-value">
+                {% if incident.dataBreachOccurred %}
+                    <span class="badge badge-danger">{{ 'dora.ict_incident_report.yes'|trans({}, 'dora') }}</span>
+                {% else %}
+                    {{ 'dora.ict_incident_report.no'|trans({}, 'dora') }}
+                {% endif %}
+            </div>
+        </div>
+
+        <h3>{{ 'dora.ict_incident_report.details.recovery_measures'|trans({}, 'dora') }}</h3>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'dora.ict_incident_report.details.immediate_actions'|trans({}, 'dora') }}</div>
+            <div class="field-value{% if not incident.immediateActions %} empty{% endif %}">{{ incident.immediateActions ?? ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'dora.ict_incident_report.details.corrective_actions'|trans({}, 'dora') }}</div>
+            <div class="field-value{% if not incident.correctiveActions %} empty{% endif %}">{{ incident.correctiveActions ?? ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'dora.ict_incident_report.details.root_cause'|trans({}, 'dora') }}</div>
+            <div class="field-value{% if not incident.rootCause %} empty{% endif %}">{{ incident.rootCause ?? ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'dora.ict_incident_report.details.resolved_at'|trans({}, 'dora') }}</div>
+            <div class="field-value">{{ incident.resolvedAt ? incident.resolvedAt|date('d.m.Y H:i') : ('dora.ict_incident_report.not_specified'|trans({}, 'dora')) }}</div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    {# ==================== DORA REPORTING TIMELINE ==================== #}
+    <div class="section">
+        <h2>{{ 'dora.ict_incident_report.timeline.title'|trans({}, 'dora') }}</h2>
+        <table>
+            <tr>
+                <th scope="col">{{ 'dora.ict_incident_report.timeline.phase'|trans({}, 'dora') }}</th>
+                <th scope="col">{{ 'dora.ict_incident_report.timeline.deadline'|trans({}, 'dora') }}</th>
+                <th scope="col">{{ 'dora.ict_incident_report.timeline.status'|trans({}, 'dora') }}</th>
+            </tr>
+            <tr>
+                <td>{{ 'dora.ict_incident_report.timeline.detection'|trans({}, 'dora') }}</td>
+                <td>{{ incident.detectedAt ? incident.detectedAt|date('d.m.Y H:i') : '-' }}</td>
+                <td><span class="compliant">{{ 'dora.ict_incident_report.timeline.completed'|trans({}, 'dora') }}</span></td>
+            </tr>
+            <tr>
+                <td>{{ 'dora.ict_incident_report.timeline.initial_report'|trans({}, 'dora') }}</td>
+                <td>{{ incident.earlyWarningDeadline ? incident.earlyWarningDeadline|date('d.m.Y H:i') : '-' }}</td>
+                <td>
+                    {% if incident.earlyWarningReportedAt %}
+                        <span class="compliant">{{ incident.earlyWarningReportedAt|date('d.m.Y H:i') }}</span>
+                    {% elseif incident.earlyWarningOverdue %}
+                        <span class="overdue">{{ 'dora.ict_incident_report.timeline.overdue'|trans({}, 'dora') }}</span>
+                    {% else %}
+                        <span class="pending">{{ 'dora.ict_incident_report.timeline.pending'|trans({}, 'dora') }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>{{ 'dora.ict_incident_report.timeline.intermediate'|trans({}, 'dora') }}</td>
+                <td>{{ incident.detailedNotificationDeadline ? incident.detailedNotificationDeadline|date('d.m.Y H:i') : '-' }}</td>
+                <td>
+                    {% if incident.detailedNotificationReportedAt %}
+                        <span class="compliant">{{ incident.detailedNotificationReportedAt|date('d.m.Y H:i') }}</span>
+                    {% elseif incident.detailedNotificationOverdue %}
+                        <span class="overdue">{{ 'dora.ict_incident_report.timeline.overdue'|trans({}, 'dora') }}</span>
+                    {% else %}
+                        <span class="pending">{{ 'dora.ict_incident_report.timeline.pending'|trans({}, 'dora') }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>{{ 'dora.ict_incident_report.timeline.final_report'|trans({}, 'dora') }}</td>
+                <td>{{ incident.finalReportDeadline ? incident.finalReportDeadline|date('d.m.Y H:i') : '-' }}</td>
+                <td>
+                    {% if incident.finalReportSubmittedAt %}
+                        <span class="compliant">{{ incident.finalReportSubmittedAt|date('d.m.Y H:i') }}</span>
+                    {% elseif incident.finalReportOverdue %}
+                        <span class="overdue">{{ 'dora.ict_incident_report.timeline.overdue'|trans({}, 'dora') }}</span>
+                    {% else %}
+                        <span class="pending">{{ 'dora.ict_incident_report.timeline.pending'|trans({}, 'dora') }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        {{ 'dora.ict_incident_report.footer'|trans({}, 'dora') }} | {{ incident.incidentNumber }} | {{ generated_at|date('d.m.Y') }}
+    </div>
+</body>
+</html>

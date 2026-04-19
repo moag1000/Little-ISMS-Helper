@@ -32,6 +32,7 @@ class ScheduledReport
     public const TYPE_ASSETS = 'assets';
     public const TYPE_GDPR = 'gdpr';
     public const TYPE_PORTFOLIO = 'portfolio';  // WS-7: cross-framework matrix
+    public const TYPE_BOARD = 'board';
 
     public const SCHEDULE_DAILY = 'daily';
     public const SCHEDULE_WEEKLY = 'weekly';
@@ -60,6 +61,7 @@ class ScheduledReport
         self::TYPE_ASSETS,
         self::TYPE_GDPR,
         self::TYPE_PORTFOLIO,
+        self::TYPE_BOARD,
     ])]
     private ?string $reportType = null;
 
@@ -455,6 +457,7 @@ class ScheduledReport
             self::TYPE_ASSETS => 'Asset Inventory',
             self::TYPE_GDPR => 'Data Protection (GDPR)',
             self::TYPE_PORTFOLIO => 'Cross-Framework Portfolio',
+            self::TYPE_BOARD => 'Board One-Pager',
         ];
     }
 

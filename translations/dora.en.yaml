@@ -87,3 +87,73 @@ dora:
         country_of_head_office:
             label: "Country of Head Office (ISO-3166)"
             help: "ISO-3166 alpha-2 country code of the provider's head office (e.g. DE, IE, US)."
+
+    # ICT Incident Report PDF (DORA Art. 19)
+    ict_incident_report:
+        title: "DORA Art. 19 ICT Incident Report"
+        subtitle: "Digital Operational Resilience Act (EU 2022/2554)"
+        reference: "Reference No."
+        organization: "Organization"
+        lei: "LEI (Legal Entity Identifier)"
+        reporting_date: "Reporting Date"
+        generated_at: "Report Generated"
+        incident_number: "Incident Number"
+        not_specified: "Not specified"
+        not_available: "N/A"
+        yes: "Yes"
+        no: "No"
+
+        # Classification
+        classification:
+            title: "Incident Classification"
+            type: "Classification"
+            major: "Major ICT Incident"
+            non_major: "Non-Major ICT Incident"
+            criteria: "Classification Criteria Met"
+            criteria_severity: "Severity: High/Critical"
+            criteria_cross_border: "Cross-border impact"
+            criteria_financial: "Significant financial impact"
+            criteria_users: "Large number of affected clients"
+
+        # Details
+        details:
+            title: "Incident Details"
+            description: "Description of the Incident"
+            occurrence_datetime: "Date/Time of Occurrence"
+            detection_datetime: "Date/Time of Detection"
+            duration: "Duration"
+            duration_ongoing: "Ongoing"
+            duration_hours: "%hours%h %minutes%m"
+            services_affected: "Services/Functions Affected"
+            affected_systems: "Affected Systems"
+            affected_assets: "Affected Assets"
+            affected_processes: "Affected Business Processes"
+            clients_affected: "Number of Clients/Counterparties Affected"
+            financial_impact: "Financial Impact (Estimated)"
+            data_integrity: "Data Integrity Compromised"
+            recovery_measures: "Recovery Measures"
+            immediate_actions: "Immediate Actions Taken"
+            corrective_actions: "Corrective Actions"
+            root_cause: "Root Cause"
+            recovery_timeline: "Recovery Timeline"
+            resolved_at: "Resolved At"
+
+        # Timeline
+        timeline:
+            title: "DORA Reporting Timeline"
+            phase: "Phase"
+            deadline: "Deadline"
+            status: "Status"
+            detection: "Detection"
+            classification_phase: "Classification"
+            initial_report: "Initial Report (4h)"
+            intermediate: "Intermediate Report (72h)"
+            final_report: "Final Report (1 month)"
+            overdue: "OVERDUE"
+            compliant: "Compliant"
+            pending: "Pending"
+            completed: "Completed"
+
+        # Footer
+        footer: "Confidential - DORA Art. 19 ICT Incident Report"
+        page: "Page"

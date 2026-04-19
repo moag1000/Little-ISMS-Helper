@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use DateTime;
+use App\Entity\Incident;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\MfaTokenRepository;
 use App\Repository\UserRepository;
 use App\Repository\VulnerabilityRepository;
 use App\Repository\PatchRepository;
+use App\Service\PdfExportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -35,6 +37,7 @@ class Nis2ComplianceController extends AbstractController
         private readonly UserRepository $userRepository,
         private readonly VulnerabilityRepository $vulnerabilityRepository,
         private readonly PatchRepository $patchRepository,
+        private readonly PdfExportService $pdfExportService,
         private readonly TranslatorInterface $translator
     ) {
     }
@@ -157,6 +160,37 @@ class Nis2ComplianceController extends AbstractController
 
             // Overall Compliance
             'overall_compliance_score' => $complianceScore,
+        ]);
+    }
+
+    /**
+     * Generate a structured NIS2 Art. 23 incident notification PDF report.
+     *
+     * Produces a 3-section report following the NIS2 notification timeline:
+     * - Section 1: Early Warning (24h) - Detection, classification, cross-border impact
+     * - Section 2: Incident Notification (72h) - Nature, scope, severity, IoCs, actions
+     * - Section 3: Final Report (1 month) - Root cause, corrective/preventive actions, lessons
+     */
+    #[Route('/nis2/incident-report/{id}/pdf', name: 'app_nis2_incident_report_pdf')]
+    #[IsGranted('ROLE_MANAGER')]
+    public function incidentReportPdf(Incident $incident): Response
+    {
+        $generatedAt = new DateTime();
+
+        $pdf = $this->pdfExportService->generatePdf('nis2/incident_report_pdf.html.twig', [
+            'incident' => $incident,
+            'generated_at' => $generatedAt,
+        ]);
+
+        $filename = sprintf(
+            'nis2-incident-report_%s_%s.pdf',
+            $incident->getIncidentNumber(),
+            $generatedAt->format('Y-m-d')
+        );
+
+        return new Response($pdf, Response::HTTP_OK, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ]);
     }
 }

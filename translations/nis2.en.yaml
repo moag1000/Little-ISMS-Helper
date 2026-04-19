@@ -1,0 +1,97 @@
+# NIS2 Translations - English
+# Domain: nis2
+
+nis2:
+    # General
+    not_installed: "NIS2 framework is not installed. If your organization is subject to NIS2, please load the framework from the compliance frameworks page."
+    not_active: "NIS2 framework is deactivated. This indicates that NIS2 is not relevant for your organization. Activate it in compliance frameworks if needed."
+
+    # Incident Report PDF
+    incident_report:
+        title: "NIS2 Art. 23 Incident Notification Report"
+        subtitle: "Directive (EU) 2022/2555 - Incident Notification"
+        reference: "Reference No."
+        organization: "Organization"
+        generated_at: "Report Generated"
+        incident_number: "Incident Number"
+        classification: "Classification"
+        severity: "Severity"
+        status: "Status"
+        category: "Category"
+        nis2_category: "NIS2 Category"
+        reported_by: "Reported By"
+        assigned_to: "Assigned To"
+        cross_border: "Cross-Border Impact"
+        yes: "Yes"
+        no: "No"
+        not_specified: "Not specified"
+
+        # Section 1: Early Warning (24h)
+        section1:
+            title: "Section 1: Early Warning (24 hours)"
+            article_ref: "NIS2 Art. 23(4)(a)"
+            deadline: "Deadline"
+            detection_datetime: "Date/Time of Detection"
+            occurred_at: "Date/Time of Occurrence"
+            initial_classification: "Initial Classification"
+            significant: "Significant Incident"
+            non_significant: "Non-Significant Incident"
+            cross_border_impact: "Suspected Cross-Border Impact"
+            brief_description: "Brief Description"
+            early_warning_status: "Early Warning Status"
+            reported_at: "Reported At"
+            overdue: "OVERDUE"
+            compliant: "Compliant"
+            pending: "Pending"
+            hours_remaining: "Hours Remaining"
+
+        # Section 2: Incident Notification (72h)
+        section2:
+            title: "Section 2: Incident Notification (72 hours)"
+            article_ref: "NIS2 Art. 23(4)(b)"
+            deadline: "Deadline"
+            nature_scope: "Nature and Scope of the Incident"
+            affected_systems: "Affected Systems/Services"
+            affected_users: "Number of Affected Users/Customers"
+            affected_assets: "Affected Assets"
+            affected_processes: "Affected Business Processes"
+            severity_assessment: "Severity and Impact Assessment"
+            financial_impact: "Estimated Financial Impact"
+            iocs: "Indicators of Compromise (IoCs)"
+            related_vulnerabilities: "Related Vulnerabilities"
+            initial_actions: "Initial Actions Taken"
+            authority_notified: "National Authority Notified"
+            authority_reference: "Authority Reference Number"
+            notification_status: "Notification Status"
+            reported_at: "Reported At"
+
+        # Section 3: Final Report (1 month)
+        section3:
+            title: "Section 3: Final Report (1 month)"
+            article_ref: "NIS2 Art. 23(4)(d)"
+            deadline: "Deadline"
+            root_cause: "Root Cause Analysis"
+            corrective_actions: "Corrective Actions Taken"
+            preventive_actions: "Preventive Actions"
+            lessons_learned: "Lessons Learned"
+            data_breach_impact: "Impact on Data Subjects"
+            data_breach_occurred: "Data Breach Occurred"
+            notification_required: "Notification Required"
+            resolved_at: "Resolved At"
+            closed_at: "Closed At"
+            final_report_status: "Final Report Status"
+            submitted_at: "Submitted At"
+
+        # Timeline
+        timeline:
+            title: "NIS2 Compliance Timeline"
+            phase: "Phase"
+            deadline: "Deadline"
+            status: "Status"
+            early_warning: "Early Warning"
+            notification: "Incident Notification"
+            final_report: "Final Report"
+
+        # Footer
+        footer: "Confidential - NIS2 Art. 23 Incident Notification Report"
+        page: "Page"
