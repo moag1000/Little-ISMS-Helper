@@ -188,5 +188,24 @@ dashboard:
     controls: Controls
     report_incident: Report Incident
   last_updated: 'Data as of: %time%'
+  cross_framework:
+    title: Cross-Framework Efficiency
+    view_all: View Analysis
+    shared_controls: Controls covering 2+ frameworks
+    efficiency_hint: '%ratio%% of controls serve multiple frameworks'
+    no_data: No cross-framework mappings found yet.
+  trend:
+    up: Trending up
+    down: Trending down
+    stable: Stable
+    vs_30d: vs. 30 days ago
   activity_feed:
     title: Recent Activities
+  kpi.dora:
+    ict_risks: ICT Risks
+    ict_risks_high: High ICT Risks
+    major_ict_incidents: Major ICT Incidents
+    4h_reporting_compliance: 4h Reporting Compliance
+    resilience_tests_ytd: Resilience Tests (YTD)
+    ict_third_party_providers: ICT Third-Party Providers
+    critical_ict_providers: Critical ICT Providers

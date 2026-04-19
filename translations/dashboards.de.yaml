@@ -47,6 +47,7 @@ ciso:
         critical_risks: 'Kritische Risiken'
         pending_approvals: 'Ausstehende Genehmigungen'
         control_effectiveness: 'Wirksamkeit der Maßnahmen'
+        dora_compliance: 'DORA-Konformität (EU 2022/2554)'
     no_frameworks: 'Keine Frameworks konfiguriert'
     appetite_compliance_score: 'Risikoappetit-Konformitätswert'
     breaches: 'Überschreitungen'

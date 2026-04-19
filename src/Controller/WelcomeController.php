@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Tenant;
+use App\Entity\User;
 use App\Repository\AssetRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
@@ -13,6 +14,7 @@ use App\Service\ComplianceWizardService;
 use App\Service\ModuleConfigurationService;
 use App\Service\RiskReviewService;
 use App\Service\TenantContext;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,6 +36,7 @@ class WelcomeController extends AbstractController
         private readonly RiskReviewService $riskReviewService,
         private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
         private readonly WorkflowInstanceRepository $workflowInstanceRepository,
+        private readonly EntityManagerInterface $entityManager,
     ) {}
 
     #[Route('/welcome', name: 'app_welcome')]
@@ -51,8 +54,9 @@ class WelcomeController extends AbstractController
         // Get pending workflows for current user
         $pendingWorkflows = $user ? $this->workflowInstanceRepository->findPendingForUser($user) : [];
 
-        // Check if user prefers to skip welcome page
-        $skipWelcome = $request->getSession()->get('skip_welcome_page', false);
+        // Check if user prefers to skip welcome page (entity-persisted, session fallback)
+        $skipWelcome = ($user instanceof User && $user->isSkipWelcomePage())
+            || $request->getSession()->get('skip_welcome_page', false);
 
         // Get compliance wizard status for incomplete wizards
         $complianceWizards = $this->complianceWizardService->getQuickStatus($tenant);
@@ -93,6 +97,13 @@ class WelcomeController extends AbstractController
 
         $skipWelcome = $request->request->getBoolean('skip_welcome');
         $request->getSession()->set('skip_welcome_page', $skipWelcome);
+
+        // Persist preference to User entity for cross-session persistence
+        $user = $this->getUser();
+        if ($user instanceof User) {
+            $user->setSkipWelcomePage($skipWelcome);
+            $this->entityManager->flush();
+        }
 
         // Redirect to dashboard if user wants to skip
         if ($skipWelcome) {

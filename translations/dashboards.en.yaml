@@ -47,6 +47,7 @@ ciso:
         critical_risks: 'Critical Risks'
         pending_approvals: 'Pending Approvals'
         control_effectiveness: 'Control Effectiveness'
+        dora_compliance: 'DORA Compliance (EU 2022/2554)'
     no_frameworks: 'No frameworks configured'
     appetite_compliance_score: 'Risk Appetite Compliance Score'
     breaches: 'Breaches'

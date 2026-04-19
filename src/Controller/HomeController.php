@@ -4,17 +4,22 @@ namespace App\Controller;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Tenant;
+use App\Entity\User;
 use DateTimeImmutable;
 use DateTime;
 use App\Repository\AssetRepository;
+use App\Repository\AuditLogRepository;
+use App\Repository\ComplianceRequirementRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\WorkflowInstanceRepository;
+use App\Service\ComplianceAnalyticsService;
 use App\Service\ComplianceWizardService;
 use App\Service\DashboardStatisticsService;
 use App\Service\ISOComplianceIntelligenceService;
 use App\Service\RiskReviewService;
 use App\Service\TenantContext;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,7 +38,11 @@ class HomeController extends AbstractController
         private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
         private readonly WorkflowInstanceRepository $workflowInstanceRepository,
         private readonly TenantContext $tenantContext,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly ?ComplianceAnalyticsService $complianceAnalyticsService = null,
+        private readonly ?ComplianceRequirementRepository $complianceRequirementRepository = null,
+        private readonly ?AuditLogRepository $auditLogRepository = null,
+        private readonly ?EntityManagerInterface $entityManager = null,
     ) {}
 
     public function index(Request $request): Response
@@ -44,12 +53,14 @@ class HomeController extends AbstractController
             ?? 'de';
 
         // Not authenticated → redirect to login (without locale)
-        if (!$this->getUser() instanceof UserInterface) {
+        $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
             return $this->redirectToRoute('app_login');
         }
 
-        // Check user preference: skip welcome page?
-        $skipWelcome = $request->getSession()->get('skip_welcome_page', false);
+        // Check user preference: skip welcome page (entity-persisted, session fallback)
+        $skipWelcome = ($user instanceof User && $user->isSkipWelcomePage())
+            || $request->getSession()->get('skip_welcome_page', false);
 
         if ($skipWelcome) {
             // User prefers to go directly to dashboard
@@ -140,6 +151,55 @@ class HomeController extends AbstractController
         // First Steps visibility (session-based dismiss)
         $showFirstSteps = !$request->getSession()->get('first_steps_dismissed', false);
 
+        // Cross-Framework Control Mapping Data
+        $crossFrameworkData = ['shared_controls' => 0, 'reuse_ratio' => 0, 'top_shared' => []];
+        if ($this->complianceRequirementRepository !== null && $tenant instanceof Tenant) {
+            try {
+                $allRequirements = $this->complianceRequirementRepository->findAll();
+                $controlFrameworkMap = [];
+                foreach ($allRequirements as $req) {
+                    foreach ($req->getMappedControls() as $control) {
+                        $fw = $req->getFramework();
+                        if ($fw !== null) {
+                            $controlId = $control->getId();
+                            if (!isset($controlFrameworkMap[$controlId])) {
+                                $controlFrameworkMap[$controlId] = [
+                                    'count' => 0,
+                                    'control' => $control,
+                                    'frameworks' => [],
+                                ];
+                            }
+                            $fwCode = $fw->getCode();
+                            if (!isset($controlFrameworkMap[$controlId]['frameworks'][$fwCode])) {
+                                $controlFrameworkMap[$controlId]['frameworks'][$fwCode] = true;
+                                $controlFrameworkMap[$controlId]['count'] = count($controlFrameworkMap[$controlId]['frameworks']);
+                            }
+                        }
+                    }
+                }
+
+                $shared = array_filter($controlFrameworkMap, fn($c) => ($c['count'] ?? 0) >= 2);
+                usort($shared, fn($a, $b) => ($b['count'] ?? 0) - ($a['count'] ?? 0));
+
+                $crossFrameworkData = [
+                    'shared_controls' => count($shared),
+                    'reuse_ratio' => count($controlFrameworkMap) > 0
+                        ? round(count($shared) / count($controlFrameworkMap) * 100)
+                        : 0,
+                    'top_shared' => array_map(fn($c) => [
+                        'id' => $c['control']->getControlId(),
+                        'name' => $c['control']->getName(),
+                        'framework_count' => count($c['frameworks'] ?? []),
+                    ], array_slice($shared, 0, 5)),
+                ];
+            } catch (\Throwable) {
+                // Compliance module may not be fully set up
+            }
+        }
+
+        // Add trend data to management KPIs (from KPI snapshots)
+        $managementKpis = $this->dashboardStatisticsService->addTrendData($managementKpis, $tenant);
+
         return $this->render('home/dashboard.html.twig', [
             'stats' => $stats,
             'management_kpis' => $managementKpis,
@@ -159,6 +219,7 @@ class HomeController extends AbstractController
             'urgent_tasks' => $urgentTasks,
             'total_urgent_count' => $totalUrgentCount,
             'show_first_steps' => $showFirstSteps,
+            'cross_framework_data' => $crossFrameworkData,
         ]);
     }
 
@@ -176,6 +237,14 @@ class HomeController extends AbstractController
     public function restoreFirstSteps(Request $request): Response
     {
         $request->getSession()->remove('first_steps_dismissed');
+        $request->getSession()->remove('skip_welcome_page');
+
+        // Also reset entity-persisted preference
+        $user = $this->getUser();
+        if ($user instanceof User && $this->entityManager !== null) {
+            $user->setSkipWelcomePage(false);
+            $this->entityManager->flush();
+        }
 
         return $this->redirectToRoute('app_dashboard');
     }
@@ -345,81 +414,72 @@ class HomeController extends AbstractController
         return $tasks;
     }
 
+    /**
+     * Get recent activities from the audit log.
+     *
+     * Queries real audit log entries instead of generating fake activities
+     * from entity creation dates.
+     *
+     * @return array<array{icon: string, color: string, title: string, description: string, time: string, timestamp: int, user: string}>
+     */
     private function getRecentActivities(): array
     {
+        if ($this->auditLogRepository === null) {
+            return [];
+        }
+
+        $recentLogs = $this->auditLogRepository->findAllOrdered(10);
+
         $activities = [];
+        foreach ($recentLogs as $log) {
+            $createdAt = $log->getCreatedAt();
+            $timeAgo = $createdAt
+                ? $this->getTimeAgo($createdAt)
+                : $this->translator->trans('dashboard.activity.recently', [], 'dashboard');
 
-        // Beispiel-Aktivitäten (später durch echte Daten ersetzen)
-        $tenant = $this->getUser()?->getTenant();
-        $recentAssets = $tenant
-            ? array_slice($this->assetRepository->findActiveAssets($tenant), 0, 3)
-            : [];
-        foreach ($recentAssets as $recentAsset) {
-            $createdAt = $recentAsset->getCreatedAt();
-            if ($createdAt) {
-                $diff = $createdAt->diff(new DateTime());
-                $minutes = $diff->i;
-                $hours = $diff->h;
-                $days = $diff->d;
-
-                if ($days > 0) {
-                    $timeAgo = $this->translator->trans('dashboard.activity.days_ago', ['count' => $days], 'dashboard');
-                } elseif ($hours > 0) {
-                    $timeAgo = $this->translator->trans('dashboard.activity.hours_ago', ['count' => $hours], 'dashboard');
-                } else {
-                    $timeAgo = $this->translator->trans('dashboard.activity.minutes_ago', ['count' => $minutes], 'dashboard');
-                }
-            } else {
-                $timeAgo = $this->translator->trans('dashboard.activity.recently', [], 'dashboard');
-            }
+            $action = $log->getAction() ?? 'update';
+            [$icon, $color] = match ($action) {
+                'create' => ['bi-plus-circle', 'success'],
+                'update' => ['bi-pencil', 'primary'],
+                'delete' => ['bi-trash', 'danger'],
+                'login' => ['bi-box-arrow-in-right', 'info'],
+                'logout' => ['bi-box-arrow-right', 'secondary'],
+                default => ['bi-clock', 'muted'],
+            };
 
             $activities[] = [
-                'icon' => 'bi-server',
-                'color' => 'primary',
-                'title' => $this->translator->trans('dashboard.activity.asset_added', [], 'dashboard'),
-                'description' => $recentAsset->getName(),
+                'icon' => $icon,
+                'color' => $color,
+                'title' => $log->getEntityType() . ': ' . $action,
+                'description' => $log->getDescription()
+                    ?? ($log->getEntityType() . ' #' . $log->getEntityId()),
                 'time' => $timeAgo,
                 'timestamp' => $createdAt ? $createdAt->getTimestamp() : 0,
-                'user' => $recentAsset->getOwner() ?? $this->translator->trans('dashboard.activity.system', [], 'dashboard'),
+                'user' => $log->getUserName() ?? $this->translator->trans('dashboard.activity.system', [], 'dashboard'),
             ];
         }
 
-        $recentRisks = $tenant
-            ? array_slice($this->riskRepository->findByTenant($tenant), 0, 3)
-            : [];
-        foreach ($recentRisks as $recentRisk) {
-            $createdAt = $recentRisk->getCreatedAt();
-            if ($createdAt) {
-                $diff = $createdAt->diff(new DateTime());
-                $minutes = $diff->i;
-                $hours = $diff->h;
-                $days = $diff->d;
+        return $activities;
+    }
 
-                if ($days > 0) {
-                    $timeAgo = $this->translator->trans('dashboard.activity.days_ago', ['count' => $days], 'dashboard');
-                } elseif ($hours > 0) {
-                    $timeAgo = $this->translator->trans('dashboard.activity.hours_ago', ['count' => $hours], 'dashboard');
-                } else {
-                    $timeAgo = $this->translator->trans('dashboard.activity.minutes_ago', ['count' => $minutes], 'dashboard');
-                }
-            } else {
-                $timeAgo = $this->translator->trans('dashboard.activity.recently', [], 'dashboard');
-            }
+    /**
+     * Convert a datetime to a human-readable "time ago" string.
+     */
+    private function getTimeAgo(\DateTimeInterface $dateTime): string
+    {
+        $now = new DateTime();
+        $diff = $dateTime->diff($now);
+        $days = (int) $diff->days;
+        $hours = $diff->h;
+        $minutes = $diff->i;
 
-            $activities[] = [
-                'icon' => 'bi-exclamation-triangle',
-                'color' => 'warning',
-                'title' => $this->translator->trans('dashboard.activity.risk_identified', [], 'dashboard'),
-                'description' => $recentRisk->getDescription() ?? $this->translator->trans('dashboard.activity.new_risk', [], 'dashboard'),
-                'time' => $timeAgo,
-                'timestamp' => $createdAt ? $createdAt->getTimestamp() : 0,
-                'user' => $this->translator->trans('dashboard.activity.security_team', [], 'dashboard'),
-            ];
+        if ($days > 0) {
+            return $this->translator->trans('dashboard.activity.days_ago', ['count' => $days], 'dashboard');
+        }
+        if ($hours > 0) {
+            return $this->translator->trans('dashboard.activity.hours_ago', ['count' => $hours], 'dashboard');
         }
 
-        // Sort by timestamp descending (newest first)
-        usort($activities, fn(array $a, array $b): int => ($b['timestamp'] ?? 0) - ($a['timestamp'] ?? 0));
-
-        return array_slice($activities, 0, 10);
+        return $this->translator->trans('dashboard.activity.minutes_ago', ['count' => $minutes], 'dashboard');
     }
 }

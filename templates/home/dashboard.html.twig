@@ -332,6 +332,11 @@
                 compliance_summary: compliance_summary|default({has_frameworks: false})
             } %}
 
+            {# Cross-Framework Control Efficiency Widget #}
+            {% include 'home/_cross_framework_widget.html.twig' with {
+                cross_framework_data: cross_framework_data|default({shared_controls: 0})
+            } only %}
+
             {# Workflow Approvals Widget (UX High Priority #1) #}
             {% include 'home/_workflow_widget.html.twig' with {
                 pending_workflows: pending_workflows|default([]),
