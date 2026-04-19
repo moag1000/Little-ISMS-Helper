@@ -190,7 +190,7 @@
 {# WS-5 Bulk tag actions bar (polymorphic). Rendered above the list so the
    selected-count badge is announced to screen readers. #}
 {% if is_granted('TAG_APPLY') %}
-    {% include '_components/_bulk_actions_bar.html.twig' with {
+    {% include '_components/_bulk_action_bar.html.twig' with {
         entity_class:   'App\\Entity\\Asset',
         action_urls: {
             tag_add: path('admin_tag_bulk_apply', {entityClass: 'Asset'}),

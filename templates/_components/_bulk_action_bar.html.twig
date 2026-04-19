@@ -1,89 +1,231 @@
 {#
-  Bulk Action Bar Component
-  Floating action bar for bulk operations
+  Bulk Action Bar (konsolidiert aus _bulk_action_bar + _bulk_actions_bar, UXC-1)
 
-  Usage:
-  <div data-controller="bulk-actions" data-bulk-actions-endpoint-value="/assets">
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">
-            <input type="checkbox"
-                   data-action="bulk-actions#selectAll"
-                   data-bulk-actions-target="selectAllCheckbox">
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <input type="checkbox"
-                   data-bulk-actions-target="item"
-                   data-action="bulk-actions#selectItem"
-                   value="{{ item.id }}">
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  Kanonische Bulk-Actions-Komponente — ersetzt die frühere Plural-Variante
+  `_bulk_actions_bar.html.twig`. Pairs mit dem `bulk-actions` Stimulus-Controller.
 
+  Zwei Betriebs-Modi:
+
+  1) Generic Actions (Default)
+     Parameter: actions (Array aus 'delete', 'export', 'tag', 'assign')
+     Rendert Buttons für die jeweilige Aktion. Der Controller braucht zusätzlich
+     am Parent-Element `data-controller="bulk-actions"` und das
+     `data-bulk-actions-endpoint-value="/<entity>"`.
+
+  2) WS-5 Tag-Apply (polymorph, für zentralen Tag-Bulk-Endpoint)
+     Parameter:
+       entity_class    string   FQCN, z.B. 'App\\Entity\\Asset'
+       action_urls     hash     { 'tag_add':  path(...), 'tag_remove': path(...), 'export': path(...) }
+       available_tags  array    Liste der Tag-Entities (tenant-sichtbar)
+     Rendert ein Inline-Tag-Picker-Formular. Host-Element sollte das
+     `data-controller="bulk-actions"` UND die WS-5-spezifischen Value-Attribute
+     tragen (siehe Caller wie templates/asset/index.html.twig).
+
+  A11y:
+    - Counter mit aria-live="polite", Buttons mit aria-label.
+    - Dropdown-Items sind echte <button>s (keyboard-bedienbar).
+
+  Usage (generic):
     {% include '_components/_bulk_action_bar.html.twig' with {
-        actions: ['delete', 'export', 'tag']
+        actions: ['export', 'delete']
     } %}
-  </div>
+
+  Usage (WS-5 tag mode):
+    {% include '_components/_bulk_action_bar.html.twig' with {
+        entity_class: 'App\\Entity\\Asset',
+        action_urls: { tag_add: path('admin_tag_bulk_apply', {entityClass: 'Asset'}) },
+        available_tags: available_tags()
+    } only %}
 #}
 
-{% set actions = actions|default(['delete', 'export']) %}
+{% set actions        = actions|default([]) %}
+{% set entity_class   = entity_class|default('') %}
+{% set action_urls    = action_urls|default({}) %}
+{% set available_tags = available_tags|default([]) %}
 
-<div class="bulk-action-bar" data-bulk-actions-target="actionBar" hidden>
-    <div class="bulk-selection-info">
-        <span class="bulk-selection-count" data-bulk-actions-target="count">0</span>
-        <span class="bulk-selection-label">{{ 'bulk_actions.selected'|trans({}, 'messages') }}</span>
+{# WS-5 Tag-Apply-Mode aktiv, wenn entity_class ODER action_urls gesetzt sind #}
+{% set tag_mode = entity_class is not empty or action_urls|length > 0 %}
+
+{% if tag_mode %}
+    <div class="bulk-actions-bar card border-primary mb-3"
+         data-controller="bulk-actions"
+         data-bulk-actions-entity-class-value="{{ entity_class }}"
+         data-bulk-actions-tag-add-url-value="{{ action_urls['tag_add']|default('') }}"
+         data-bulk-actions-tag-remove-url-value="{{ action_urls['tag_remove']|default('') }}"
+         data-bulk-actions-export-url-value="{{ action_urls['export']|default('') }}"
+         hidden
+         data-bulk-actions-target="actionBar">
+        <div class="card-body d-flex flex-wrap align-items-center gap-3">
+            <div class="bulk-selection-info"
+                 role="status"
+                 aria-live="polite"
+                 aria-atomic="true">
+                <span class="fw-bold" data-bulk-actions-target="count">0</span>
+                <span>{{ 'tags.bulk.selected'|trans({}, 'tags') }}</span>
+            </div>
+
+            <div class="dropdown">
+                <button type="button"
+                        class="btn btn-primary dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label="{{ 'tags.bulk.actions_menu'|trans({}, 'tags') }}">
+                    <i class="bi bi-lightning" aria-hidden="true"></i>
+                    {{ 'tags.bulk.actions'|trans({}, 'tags') }}
+                </button>
+                <ul class="dropdown-menu">
+                    {% if action_urls['tag_add']|default('') is not empty %}
+                        <li>
+                            <button type="button"
+                                    class="dropdown-item"
+                                    data-action="click->bulk-actions#openTagAdd"
+                                    aria-label="{{ 'tags.bulk.add_tag'|trans({}, 'tags') }}">
+                                <i class="bi bi-tag-fill me-1" aria-hidden="true"></i>
+                                {{ 'tags.bulk.add_tag'|trans({}, 'tags') }}
+                            </button>
+                        </li>
+                    {% endif %}
+                    {% if action_urls['tag_remove']|default('') is not empty %}
+                        <li>
+                            <button type="button"
+                                    class="dropdown-item"
+                                    data-action="click->bulk-actions#openTagRemove"
+                                    aria-label="{{ 'tags.bulk.remove_tag'|trans({}, 'tags') }}">
+                                <i class="bi bi-tag me-1" aria-hidden="true"></i>
+                                {{ 'tags.bulk.remove_tag'|trans({}, 'tags') }}
+                            </button>
+                        </li>
+                    {% endif %}
+                    {% if action_urls['export']|default('') is not empty %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <button type="button"
+                                    class="dropdown-item"
+                                    data-action="click->bulk-actions#bulkExport"
+                                    aria-label="{{ 'tags.bulk.export'|trans({}, 'tags') }}">
+                                <i class="bi bi-download me-1" aria-hidden="true"></i>
+                                {{ 'tags.bulk.export'|trans({}, 'tags') }}
+                            </button>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <button type="button"
+                    class="btn btn-outline-secondary ms-auto"
+                    data-action="click->bulk-actions#deselectAll"
+                    aria-label="{{ 'tags.bulk.clear_selection'|trans({}, 'tags') }}">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+                {{ 'tags.bulk.clear_selection'|trans({}, 'tags') }}
+            </button>
+        </div>
+
+        {# Inline Tag-Picker (per Stimulus-Controller ein-/ausgeblendet) #}
+        <div class="card-footer bg-body-tertiary" data-bulk-actions-target="tagPicker" hidden>
+            <fieldset>
+                <legend class="form-label fw-bold mb-2">
+                    {{ 'tags.bulk.pick_tags'|trans({}, 'tags') }}
+                </legend>
+
+                {% if available_tags|length == 0 %}
+                    <p class="text-muted mb-0">
+                        {{ 'tags.bulk.no_tags_available'|trans({}, 'tags') }}
+                    </p>
+                {% else %}
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        {% for tag in available_tags %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       id="bulk-tag-{{ tag.id }}"
+                                       value="{{ tag.id }}"
+                                       data-bulk-actions-target="tagCheckbox"
+                                       aria-label="{{ 'tags.bulk.aria.select_tag'|trans({'%name%': tag.name}, 'tags') }}">
+                                <label class="form-check-label" for="bulk-tag-{{ tag.id }}">
+                                    <span class="badge bg-{{ tag.color|default('secondary') }}">
+                                        {{ tag.name }}
+                                    </span>
+                                    {% if tag.frameworkCode %}
+                                        <small class="text-muted">({{ tag.frameworkCode }})</small>
+                                    {% endif %}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="button"
+                                class="btn btn-sm btn-success"
+                                data-action="click->bulk-actions#submitTagApply">
+                            <i class="bi bi-check2" aria-hidden="true"></i>
+                            {{ 'tags.bulk.apply'|trans({}, 'tags') }}
+                        </button>
+                        <button type="button"
+                                class="btn btn-sm btn-outline-secondary"
+                                data-action="click->bulk-actions#closeTagPicker">
+                            {{ 'tags.bulk.cancel'|trans({}, 'tags') }}
+                        </button>
+                    </div>
+                {% endif %}
+            </fieldset>
+        </div>
     </div>
+{% else %}
+    {# Generic-Mode (Default): Floating-Action-Bar mit actions-Array #}
+    {% set actions = actions|default(['delete', 'export']) %}
 
-    <div class="bulk-action-divider"></div>
+    <div class="bulk-action-bar" data-bulk-actions-target="actionBar" hidden>
+        <div class="bulk-selection-info" role="status" aria-live="polite" aria-atomic="true">
+            <span class="bulk-selection-count" data-bulk-actions-target="count">0</span>
+            <span class="bulk-selection-label">{{ 'bulk_actions.selected'|trans({}, 'messages') }}</span>
+        </div>
 
-    <div class="bulk-actions">
-        {% if 'export' in actions %}
-            <button type="button"
-                    class="bulk-action-btn bulk-action-btn-success"
-                    data-action="click->bulk-actions#bulkExport">
-                <i class="bi bi-download" aria-hidden="true"></i>
-                {{ 'bulk_actions.export'|trans({}, 'messages') }}
-            </button>
-        {% endif %}
+        <div class="bulk-action-divider"></div>
 
-        {% if 'tag' in actions %}
-            <button type="button"
-                    class="bulk-action-btn"
-                    data-action="click->bulk-actions#bulkTag">
-                <i class="bi bi-tag" aria-hidden="true"></i>
-                {{ 'bulk_actions.add_tag'|trans({}, 'messages') }}
-            </button>
-        {% endif %}
+        <div class="bulk-actions">
+            {% if 'export' in actions %}
+                <button type="button"
+                        class="bulk-action-btn bulk-action-btn-success"
+                        data-action="click->bulk-actions#bulkExport">
+                    <i class="bi bi-download" aria-hidden="true"></i>
+                    {{ 'bulk_actions.export'|trans({}, 'messages') }}
+                </button>
+            {% endif %}
 
-        {% if 'assign' in actions %}
-            <button type="button"
-                    class="bulk-action-btn"
-                    data-action="click->bulk-actions#bulkAssign">
-                <i class="bi bi-person" aria-hidden="true"></i>
-                {{ 'bulk_actions.assign'|trans({}, 'messages') }}
-            </button>
-        {% endif %}
+            {% if 'tag' in actions %}
+                <button type="button"
+                        class="bulk-action-btn"
+                        data-action="click->bulk-actions#bulkTag">
+                    <i class="bi bi-tag" aria-hidden="true"></i>
+                    {{ 'bulk_actions.add_tag'|trans({}, 'messages') }}
+                </button>
+            {% endif %}
 
-        {% if 'delete' in actions %}
-            <button type="button"
-                    class="bulk-action-btn bulk-action-btn-danger"
-                    data-action="click->bulk-actions#bulkDelete">
-                <i class="bi bi-trash" aria-hidden="true"></i>
-                {{ 'bulk_actions.delete'|trans({}, 'messages') }}
-            </button>
-        {% endif %}
+            {% if 'assign' in actions %}
+                <button type="button"
+                        class="bulk-action-btn"
+                        data-action="click->bulk-actions#bulkAssign">
+                    <i class="bi bi-person" aria-hidden="true"></i>
+                    {{ 'bulk_actions.assign'|trans({}, 'messages') }}
+                </button>
+            {% endif %}
+
+            {% if 'delete' in actions %}
+                <button type="button"
+                        class="bulk-action-btn bulk-action-btn-danger"
+                        data-action="click->bulk-actions#bulkDelete">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
+                    {{ 'bulk_actions.delete'|trans({}, 'messages') }}
+                </button>
+            {% endif %}
+        </div>
+
+        <button type="button"
+                class="bulk-action-close"
+                data-action="click->bulk-actions#deselectAll"
+                title="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}"
+                aria-label="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+        </button>
     </div>
-
-    <button type="button"
-            class="bulk-action-close"
-            data-action="click->bulk-actions#deselectAll"
-            title="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}">
-        <i class="bi bi-x-lg" aria-hidden="true"></i>
-    </button>
-</div>
+{% endif %}

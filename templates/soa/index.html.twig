@@ -151,7 +151,7 @@
 
 {# WS-5 Bulk tag actions bar (polymorphic) #}
 {% if is_granted('TAG_APPLY') %}
-    {% include '_components/_bulk_actions_bar.html.twig' with {
+    {% include '_components/_bulk_action_bar.html.twig' with {
         entity_class:   'App\\Entity\\Control',
         action_urls: {
             tag_add: path('admin_tag_bulk_apply', {entityClass: 'Control'}),
@@ -226,7 +226,7 @@
         {% import '_macros/inheritance_badge.html.twig' as inheritance %}
         {% for control in controls %}
         <tr data-filter-target="filterableRow" data-category="{{ control.category }}" data-status="{{ control.implementationStatus }}">
-            <td><strong>{{ control.controlId }}</strong></td>
+            <td>{% include '_components/_iso_reference_label.html.twig' with { control: control, show_name: false, code_class: 'fw-bold' } only %}</td>
             <td>
                 {{ control.name }}
                 {{ inheritance.small_badge(control, currentTenant) }}

@@ -111,7 +111,7 @@
 
     {# WS-5 Bulk tag actions bar (polymorphic) #}
     {% if is_granted('TAG_APPLY') %}
-        {% include '_components/_bulk_actions_bar.html.twig' with {
+        {% include '_components/_bulk_action_bar.html.twig' with {
             entity_class:   'App\\Entity\\Supplier',
             action_urls: {
                 tag_add: path('admin_tag_bulk_apply', {entityClass: 'Supplier'}),
