@@ -1,0 +1,32 @@
+group_report:
+    title: 'Group reports'
+    root_marker: 'Group root'
+    tree:
+        title: 'Corporate structure'
+        subtitle: 'Read-only overview of every tenant in the group — ROLE_GROUP_CISO only.'
+        holding_marker: 'Holding tenant'
+        you_are_here: 'Your tenant'
+    nis2:
+        title: 'NIS2 registration matrix'
+        subtitle: 'Per legal entity in %root% — classification and BSI registration status.'
+        intro: 'NIS2 (German BSIG §28) regulates <strong>individual legal entities</strong>, not corporate groups. This matrix shows per subsidiary: classification (essential / important / not regulated / unknown), industry sector, NACE code, registered reporting contact, and registration date. Maintain the fields via tenant edit.'
+        stat:
+            total: 'Tenants'
+            registered: 'Registered with BSI'
+        class:
+            essential: 'Essential'
+            important: 'Important'
+            not_regulated: 'Not regulated'
+            unknown: 'Unknown'
+        matrix:
+            title: 'Matrix per legal entity'
+        col:
+            tenant: 'Tenant'
+            legal: 'Legal entity'
+            classification: 'NIS2 classification'
+            sector: 'Sector'
+            nace: 'NACE'
+            contact: 'BSI reporting contact'
+            registered: 'Registered'
+        registration:
+            missing: 'Registration missing'

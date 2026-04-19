@@ -1,0 +1,32 @@
+group_report:
+    title: 'Konzern-Reports'
+    root_marker: 'Konzern-Wurzel'
+    tree:
+        title: 'Konzern-Struktur'
+        subtitle: 'Read-only Übersicht aller Tenants im Konzern — nur für ROLE_GROUP_CISO.'
+        holding_marker: 'Holding-Tenant'
+        you_are_here: 'Dein Tenant'
+    nis2:
+        title: 'NIS2-Registrierungsmatrix'
+        subtitle: 'Pro Rechtsperson in %root% — Klassifizierung und BSI-Meldestatus.'
+        intro: 'NIS2 (BSIG §28) reguliert <strong>einzelne Rechtspersonen</strong>, nicht Konzerne. Diese Matrix zeigt je Tochter: Klassifizierung (besonders wichtig / wichtig / nicht reguliert / unbekannt), Branchen-Sektor, NACE-Code, registrierter Meldekontakt und Registrierungsdatum. Pflegen im Tenant-Edit.'
+        stat:
+            total: 'Tenants'
+            registered: 'Beim BSI registriert'
+        class:
+            essential: 'Besonders wichtig'
+            important: 'Wichtig'
+            not_regulated: 'Nicht reguliert'
+            unknown: 'Unbekannt'
+        matrix:
+            title: 'Matrix pro Rechtsperson'
+        col:
+            tenant: 'Tenant'
+            legal: 'Rechtsperson'
+            classification: 'NIS2-Klassifikation'
+            sector: 'Sektor'
+            nace: 'NACE'
+            contact: 'BSI-Meldekontakt'
+            registered: 'Registriert'
+        registration:
+            missing: 'Registrierung fehlt'
