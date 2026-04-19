@@ -262,6 +262,7 @@ class MonitoringController extends AbstractController
             'database_in_sync' => $schema['database_in_sync'],
             'mapping_error_count' => array_sum(array_map('count', $schema['mapping_errors'])),
             'pending_sql_count' => count($schema['pending_sql']),
+            'pending_migration_count' => count($schema['pending_migrations'] ?? []),
         ];
         if ($schema['overall_status'] === 'error' && $overallStatus !== 'error') {
             $overallStatus = 'error';
@@ -289,9 +290,16 @@ class MonitoringController extends AbstractController
 
         $user = $this->getUser();
         $actor = method_exists($user, 'getEmail') ? ($user->getEmail() ?? 'admin') : 'admin';
-        $result = $schemaHealth->applyUpdate($actor);
+        $bypass = $request->request->getBoolean('bypass_migration_gate');
+        $result = $schemaHealth->applyUpdate($actor, $bypass);
 
-        return $this->json($result, $result['success'] ? 200 : 500);
+        $statusCode = match (true) {
+            $result['blocked'] !== null => 409, // blocked — admin must migrate first
+            !$result['success']         => 500,
+            default                     => 200,
+        };
+
+        return $this->json($result, $statusCode);
     }
     #[Route('/admin/monitoring/health/json', name: 'monitoring_health_json', methods: ['GET'])]
     #[IsGranted('MONITORING_VIEW')]
