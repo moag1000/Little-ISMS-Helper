@@ -9,6 +9,7 @@ use App\Repository\IncidentRepository;
 use App\Repository\TenantRepository;
 use App\Repository\ControlRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Service\AuditLogger;
 use App\Service\DataIntegrityService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,7 +31,8 @@ class DataRepairController extends AbstractController
         private readonly ControlRepository $controlRepository,
         private readonly ComplianceRequirementRepository $complianceRequirementRepository,
         private readonly DataIntegrityService $dataIntegrityService,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly AuditLogger $auditLogger,
     ) {
     }
 
@@ -387,11 +389,42 @@ class DataRepairController extends AbstractController
         return $this->redirectToRoute('admin_data_repair_index');
     }
 
+    /**
+     * Bulk-assigns every orphaned entity (across all types) to the selected tenant.
+     *
+     * Consultant-Review A2 (docs/DB_REPAIR_REVIEW_CONSULTANT.md): this is a
+     * DSGVO incident trigger in multi-tenant deployments — a misclick can
+     * silently reassign assets/risks/incidents that belong to tenant A into
+     * tenant B's namespace. The bulk path is therefore gated:
+     *
+     *   1. Rejected outright when more than one tenant exists. Admins must
+     *      use the per-entity routes (assign-orphans, reassign-entity,
+     *      assign-asset, assign-risk, assign-asset-to-control).
+     *   2. Requires a second-layer confirm hash that matches the orphan
+     *      count shown at preview time — a stale browser tab can't
+     *      reassign more rows than the admin actually saw.
+     *   3. Audit-logs every reassignment individually with the current
+     *      actor_role (ISB Sprint-2 gate) before flush.
+     */
     #[Route('/admin/data-repair/fix-all-orphans/{tenantId}', name: 'admin_data_repair_fix_all_orphans', methods: ['POST'])]
     public function fixAllOrphans(Request $request, int $tenantId): Response
     {
         if (!$this->isCsrfTokenValid('fix_all_orphans', $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        // Guard 1: block bulk reassign in any multi-tenant deployment.
+        $tenantCount = (int) $this->tenantRepository->createQueryBuilder('t')
+            ->select('COUNT(t.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+        if ($tenantCount > 1) {
+            $this->addFlash('danger', $this->translator->trans(
+                'admin.data_repair.bulk_blocked_multi_tenant',
+                ['%count%' => $tenantCount],
+                'admin',
+            ));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -402,15 +435,44 @@ class DataRepairController extends AbstractController
         }
 
         $orphaned = $this->dataIntegrityService->findAllOrphanedEntities();
-        $totalFixed = 0;
 
-        // Assign all orphaned entities to the selected tenant
-        foreach ($orphaned as $entities) {
+        // Guard 2: confirm hash must match the orphan counts shown at preview
+        // time. Client sends `confirm_hash = sha256(expected_total|tenant_id)`.
+        $expectedTotal = 0;
+        $classCounts = [];
+        foreach ($orphaned as $className => $entities) {
+            $expectedTotal += count($entities);
+            $classCounts[$className] = count($entities);
+        }
+        $expectedHash = hash('sha256', $expectedTotal . '|' . $tenant->getId());
+        $submittedHash = (string) $request->request->get('confirm_hash', '');
+        if (!hash_equals($expectedHash, $submittedHash)) {
+            $this->addFlash('danger', $this->translator->trans(
+                'admin.data_repair.bulk_confirm_hash_mismatch',
+                ['%expected%' => $expectedTotal],
+                'admin',
+            ));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        // Apply + audit per entity, not per batch, so auditor can answer
+        // "show me each reassignment" without diff guessing.
+        $totalFixed = 0;
+        foreach ($orphaned as $className => $entities) {
             foreach ($entities as $entity) {
-                if (method_exists($entity, 'setTenant')) {
-                    $entity->setTenant($tenant);
-                    $totalFixed++;
+                if (!method_exists($entity, 'setTenant') || !method_exists($entity, 'getId')) {
+                    continue;
                 }
+                $entity->setTenant($tenant);
+                $this->auditLogger->logCustom(
+                    'admin.data_repair.orphan_reassigned',
+                    $className,
+                    (int) $entity->getId(),
+                    ['tenant_id' => null],
+                    ['tenant_id' => $tenant->getId(), 'tenant_name' => $tenant->getName()],
+                    sprintf('Orphan %s#%d reassigned to tenant %s', $className, (int) $entity->getId(), $tenant->getName()),
+                );
+                $totalFixed++;
             }
         }
 
@@ -419,7 +481,7 @@ class DataRepairController extends AbstractController
         $this->addFlash('success', $this->translator->trans('admin.data_repair.fixed_all_orphans', [
             '%count%' => $totalFixed,
             '%tenant%' => $tenant->getName(),
-        ],'admin'));;
+        ], 'admin'));
 
         return $this->redirectToRoute('admin_data_repair_index');
     }

@@ -203,6 +203,8 @@ admin:
         assign_orphans: 'Assign Orphans'
         assigned_count: '%count% entities successfully assigned to %tenant%'
         fixed_all_orphans: '%count% orphaned entities successfully assigned to %tenant%'
+        bulk_blocked_multi_tenant: 'Bulk assign blocked: %count% tenants exist in this instance. In multi-tenant deployments no single action may cross-reassign orphans. Please use the per-entity routes instead.'
+        bulk_confirm_hash_mismatch: 'Bulk assign aborted: orphan count changed since preview (expected %expected%). Reload the page and confirm again.'
         fixed_mismatches: '%count% tenant mismatches successfully fixed'
         tenant_not_found: 'Selected tenant not found'
         entity_not_found: 'Entity not found'
