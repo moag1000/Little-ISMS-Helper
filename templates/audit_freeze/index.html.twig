@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'audit_freeze.title'|trans({}, 'audit_freeze') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'audit_freeze.title'|trans({}, 'audit_freeze') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h1 class="h2 mb-1">
+                <i class="bi bi-snow text-primary" aria-hidden="true"></i>
+                {{ 'audit_freeze.title'|trans({}, 'audit_freeze') }}
+            </h1>
+            <p class="text-muted mb-0">{{ 'audit_freeze.subtitle'|trans({}, 'audit_freeze') }}</p>
+        </div>
+        <a href="{{ path('app_audit_freeze_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle" aria-hidden="true"></i>
+            {{ 'audit_freeze.action.create'|trans({}, 'audit_freeze') }}
+        </a>
+    </div>
+
+    {# Filters #}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" action="{{ path('app_audit_freeze_index') }}" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="filter_purpose" class="form-label">
+                        {{ 'audit_freeze.filter.purpose'|trans({}, 'audit_freeze') }}
+                    </label>
+                    <select name="purpose" id="filter_purpose" class="form-select" onchange="this.form.submit()">
+                        <option value="">{{ 'audit_freeze.filter.all'|trans({}, 'audit_freeze') }}</option>
+                        {% for p in purposes %}
+                            <option value="{{ p }}" {% if selected_purpose == p %}selected{% endif %}>
+                                {{ ('audit_freeze.purpose.' ~ p)|trans({}, 'audit_freeze') }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="filter_year" class="form-label">
+                        {{ 'audit_freeze.filter.year'|trans({}, 'audit_freeze') }}
+                    </label>
+                    <select name="year" id="filter_year" class="form-select" onchange="this.form.submit()">
+                        <option value="">{{ 'audit_freeze.filter.all'|trans({}, 'audit_freeze') }}</option>
+                        {% for y in years %}
+                            <option value="{{ y }}" {% if selected_year == y %}selected{% endif %}>{{ y }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {# List #}
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            {% if freezes is empty %}
+                <div class="text-center py-5">
+                    <i class="bi bi-snow text-muted" style="font-size: 3rem;" aria-hidden="true"></i>
+                    <p class="text-muted mt-3">{{ 'audit_freeze.empty'|trans({}, 'audit_freeze') }}</p>
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">{{ 'audit_freeze.column.name'|trans({}, 'audit_freeze') }}</th>
+                                <th scope="col">{{ 'audit_freeze.column.stichtag'|trans({}, 'audit_freeze') }}</th>
+                                <th scope="col">{{ 'audit_freeze.column.purpose'|trans({}, 'audit_freeze') }}</th>
+                                <th scope="col">{{ 'audit_freeze.column.frameworks'|trans({}, 'audit_freeze') }}</th>
+                                <th scope="col">{{ 'audit_freeze.column.created_at'|trans({}, 'audit_freeze') }}</th>
+                                <th scope="col">{{ 'audit_freeze.column.created_by'|trans({}, 'audit_freeze') }}</th>
+                                <th scope="col" class="text-end">{{ 'audit_freeze.column.actions'|trans({}, 'audit_freeze') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for freeze in freezes %}
+                                <tr>
+                                    <th scope="row">
+                                        <a href="{{ path('app_audit_freeze_show', {id: freeze.id}) }}" data-turbo-action="advance">
+                                            {{ freeze.freezeName }}
+                                        </a>
+                                    </th>
+                                    <td>{{ freeze.stichtag|date('Y-m-d') }}</td>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            {{ ('audit_freeze.purpose.' ~ freeze.purpose)|trans({}, 'audit_freeze') }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% for code in freeze.frameworkCodes %}
+                                            <span class="badge bg-info me-1">{{ code }}</span>
+                                        {% endfor %}
+                                    </td>
+                                    <td>{{ freeze.createdAt|date('Y-m-d H:i') }}</td>
+                                    <td>{{ freeze.createdBy.email|default('—') }}</td>
+                                    <td class="text-end">
+                                        <a href="{{ path('app_audit_freeze_show', {id: freeze.id}) }}"
+                                           class="btn btn-sm btn-outline-primary"
+                                           aria-label="{{ 'audit_freeze.action.view'|trans({}, 'audit_freeze') }}">
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

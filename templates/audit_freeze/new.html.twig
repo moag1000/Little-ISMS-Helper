@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'audit_freeze.new.title'|trans({}, 'audit_freeze') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'audit_freeze.title'|trans({}, 'audit_freeze'), path: 'app_audit_freeze_index' },
+            { label: 'audit_freeze.new.title'|trans({}, 'audit_freeze') }
+        ]
+    } %}
+
+    <h1 class="h2 mb-3">
+        <i class="bi bi-snow text-primary" aria-hidden="true"></i>
+        {{ 'audit_freeze.new.title'|trans({}, 'audit_freeze') }}
+    </h1>
+
+    <div class="alert alert-info d-flex gap-2" role="note">
+        <i class="bi bi-info-circle mt-1" aria-hidden="true"></i>
+        <div>
+            <strong>{{ 'audit_freeze.new.hint_title'|trans({}, 'audit_freeze') }}</strong>
+            <div class="small">{{ 'audit_freeze.new.hint_body'|trans({}, 'audit_freeze') }}</div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        {{ form_row(form.freezeName) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.stichtag) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.purpose) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.frameworkCodes) }}
+                    </div>
+                    <div class="col-12">
+                        {{ form_row(form.notes) }}
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_audit_freeze_index') }}" class="btn btn-outline-secondary">
+                        {{ 'audit_freeze.action.cancel'|trans({}, 'audit_freeze') }}
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-snow" aria-hidden="true"></i>
+                        {{ 'audit_freeze.action.create'|trans({}, 'audit_freeze') }}
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
