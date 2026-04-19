@@ -17,6 +17,7 @@ nav:
     compliance_frameworks: 'Compliance Frameworks'
     framework_dashboard: Framework-Dashboard
     nis2: NIS2-Bewertung
+    bsi_check: IT-Grundschutz-Check
     compliance_wizard: 'Compliance Wizard'
     industry_baselines: 'Branchen-Baselines'
     treatment_plans: Behandlungspläne
@@ -125,6 +126,7 @@ nav:
             framework_dashboard: 'Framework-übergreifende Übersicht'
             mapping_quality: 'Framework-übergreifende Mapping-Qualitätsanalyse'
             nis2: 'NIS2-Richtlinienbewertung'
+            bsi_check: 'BSI IT-Grundschutz Soll/Ist pro Baustein mit MUSS/SOLLTE/KANN-Gewichtung'
             compliance_wizard: 'Geführte Compliance-Prüfung'
             industry_baselines: 'Starter-Pakete pro Branche — ISMS nicht von null aufbauen'
             users: 'Benutzerkontenverwaltung'

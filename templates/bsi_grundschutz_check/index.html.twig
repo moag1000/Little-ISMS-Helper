@@ -1,0 +1,237 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'bsi_check.title'|trans({}, 'messages') }}{% endblock %}
+
+{% set status_variant = {
+    'good':    'success',
+    'warning': 'warning',
+    'danger':  'danger',
+    'na':      'secondary',
+} %}
+{% set stufe_options = ['basis', 'standard', 'kern'] %}
+
+{% macro aggregate_bar(aggregate, status_variant) %}
+    {% set pct = aggregate.weighted_pct is not null ? aggregate.weighted_pct : 0 %}
+    {% set variant = status_variant[aggregate.status] ?? 'secondary' %}
+    <div class="progress" style="height: 18px;" role="progressbar"
+         aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100"
+         aria-label="{{ 'bsi_check.weighted_pct'|trans({}, 'messages') }}">
+        <div class="progress-bar bg-{{ variant }}" style="width: {{ pct }}%;">
+            {% if aggregate.weighted_pct is not null %}{{ aggregate.weighted_pct }}%{% else %}n/a{% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro breakdown_row(label, row) %}
+    <tr>
+        <th scope="row">{{ label }}</th>
+        <td class="text-end">{{ row.fulfilled }} / {{ row.total }}</td>
+        <td class="text-end">
+            {% if row.pct is null %}<span class="text-muted">—</span>{% else %}{{ row.pct }}%{% endif %}
+        </td>
+    </tr>
+{% endmacro %}
+
+{% block body %}
+{% import _self as helpers %}
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-12">
+            <h1 class="h3 mb-2">
+                <i class="bi bi-shield-check" aria-hidden="true"></i>
+                {{ 'bsi_check.title'|trans({}, 'messages') }}
+            </h1>
+            <p class="text-muted mb-0">{{ 'bsi_check.description'|trans({}, 'messages') }}</p>
+            <p class="text-muted small mb-0">
+                {{ 'bsi_check.framework'|trans({}, 'messages') }}: <strong>{{ report.framework.name }}</strong>
+                {% if report.framework.version %}<span class="ms-1">({{ report.framework.version }})</span>{% endif %}
+            </p>
+        </div>
+    </div>
+
+    {# Absicherungsstufe filter #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <form method="get" class="d-flex flex-wrap align-items-end gap-3">
+                <div>
+                    <label for="absicherungs_stufe" class="form-label small text-muted mb-1">
+                        {{ 'bsi_check.filter.absicherungs_stufe'|trans({}, 'messages') }}
+                    </label>
+                    <select id="absicherungs_stufe" name="absicherungs_stufe" class="form-select form-select-sm"
+                            onchange="this.form.submit()">
+                        <option value="">{{ 'bsi_check.filter.all'|trans({}, 'messages') }}</option>
+                        {% for option in stufe_options %}
+                            <option value="{{ option }}" {% if absicherungsStufe == option %}selected{% endif %}>
+                                {{ ('bsi_check.stufe.' ~ option)|trans({}, 'messages') }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <noscript>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        {{ 'bsi_check.filter.apply'|trans({}, 'messages') }}
+                    </button>
+                </noscript>
+                {% if absicherungsStufe is not null %}
+                    <a href="{{ path('app_bsi_grundschutz_check') }}" class="btn btn-outline-secondary btn-sm">
+                        {{ 'bsi_check.filter.reset'|trans({}, 'messages') }}
+                    </a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    {# Overall summary #}
+    {% set overall_variant = status_variant[report.overall.status] ?? 'secondary' %}
+    <div class="row mb-4">
+        <div class="col-12">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ overall_variant } %}
+                {% block card_body %}
+                    <div class="row align-items-center">
+                        <div class="col-md-4 text-center">
+                            <div class="text-muted small">{{ 'bsi_check.overall.weighted'|trans({}, 'messages') }}</div>
+                            <div class="display-4 text-{{ overall_variant }}">
+                                {% if report.overall.weighted_pct is null %}—{% else %}{{ report.overall.weighted_pct }}%{% endif %}
+                            </div>
+                            <small class="text-muted">{{ 'bsi_check.overall.weighted_hint'|trans({}, 'messages') }}</small>
+                        </div>
+                        <div class="col-md-8">
+                            {{ helpers.aggregate_bar(report.overall, status_variant) }}
+                            <table class="table table-sm mt-3 mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">{{ 'bsi_check.type.label'|trans({}, 'messages') }}</th>
+                                        <th scope="col" class="text-end">{{ 'bsi_check.fulfilled_total'|trans({}, 'messages') }}</th>
+                                        <th scope="col" class="text-end">{{ 'bsi_check.avg_pct'|trans({}, 'messages') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{ helpers.breakdown_row('bsi_check.type.muss'|trans({}, 'messages'), report.overall.breakdown.muss) }}
+                                    {{ helpers.breakdown_row('bsi_check.type.sollte'|trans({}, 'messages'), report.overall.breakdown.sollte) }}
+                                    {{ helpers.breakdown_row('bsi_check.type.kann'|trans({}, 'messages'), report.overall.breakdown.kann) }}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+
+    {# Layer summary #}
+    {% if report.by_layer|length > 0 %}
+        <div class="row mb-4">
+            <div class="col-12">
+                {% embed '_components/_card.html.twig' %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="h5 mb-0">{{ 'bsi_check.layers.title'|trans({}, 'messages') }}</h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">{{ 'bsi_check.layer.code'|trans({}, 'messages') }}</th>
+                                        <th scope="col">{{ 'bsi_check.layer.name'|trans({}, 'messages') }}</th>
+                                        <th scope="col" class="text-end">{{ 'bsi_check.fulfilled_total'|trans({}, 'messages') }}</th>
+                                        <th scope="col" class="text-end">{{ 'bsi_check.weighted_pct'|trans({}, 'messages') }}</th>
+                                        <th scope="col" style="min-width: 200px;">{{ 'bsi_check.progress'|trans({}, 'messages') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for layer_code, layer in report.by_layer %}
+                                        <tr>
+                                            <th scope="row"><span class="badge text-bg-light border">{{ layer_code }}</span></th>
+                                            <td>{{ layer.name }}</td>
+                                            <td class="text-end">{{ layer.aggregate.fulfilled }} / {{ layer.aggregate.total }}</td>
+                                            <td class="text-end">
+                                                {% if layer.aggregate.weighted_pct is null %}<span class="text-muted">—</span>{% else %}{{ layer.aggregate.weighted_pct }}%{% endif %}
+                                            </td>
+                                            <td>{{ helpers.aggregate_bar(layer.aggregate, status_variant) }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endblock %}
+                {% endembed %}
+            </div>
+        </div>
+    {% endif %}
+
+    {# Baustein cards #}
+    <div class="row mb-2">
+        <div class="col-12">
+            <h2 class="h5 mb-3">{{ 'bsi_check.bausteine.title'|trans({}, 'messages') }}</h2>
+        </div>
+    </div>
+    {% if report.bausteine|length == 0 %}
+        {% include '_components/_empty_state.html.twig' with {
+            icon: 'bi-collection',
+            title: 'bsi_check.empty.title'|trans({}, 'messages'),
+            message: 'bsi_check.empty.message'|trans({}, 'messages'),
+        } %}
+    {% else %}
+        <div class="row g-3 mb-4">
+            {% for code, baustein in report.bausteine %}
+                {% set variant = status_variant[baustein.aggregate.status] ?? 'secondary' %}
+                <div class="col-md-6 col-lg-4">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-' ~ variant } %}
+                        {% block card_header %}
+                            <div class="card-header d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="small text-muted">
+                                        <span class="badge text-bg-light border">{{ baustein.layer }}</span>
+                                        <span class="ms-1">{{ code }}</span>
+                                    </div>
+                                    <div class="fw-semibold">{{ baustein.name }}</div>
+                                </div>
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: variant,
+                                    content: baustein.aggregate.weighted_pct is null ? 'n/a' : (baustein.aggregate.weighted_pct ~ '%')
+                                } %}
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
+                            {{ helpers.aggregate_bar(baustein.aggregate, status_variant) }}
+                            <table class="table table-sm mt-3 mb-2">
+                                <tbody>
+                                    {{ helpers.breakdown_row('bsi_check.type.muss'|trans({}, 'messages'), baustein.aggregate.breakdown.muss) }}
+                                    {{ helpers.breakdown_row('bsi_check.type.sollte'|trans({}, 'messages'), baustein.aggregate.breakdown.sollte) }}
+                                    {{ helpers.breakdown_row('bsi_check.type.kann'|trans({}, 'messages'), baustein.aggregate.breakdown.kann) }}
+                                </tbody>
+                            </table>
+
+                            <details class="small">
+                                <summary class="text-muted">
+                                    {{ 'bsi_check.requirements.show'|trans({'%count%': baustein.requirements|length}, 'messages') }}
+                                </summary>
+                                <ul class="list-unstyled mt-2 mb-0">
+                                    {% for req in baustein.requirements %}
+                                        <li class="py-1 border-bottom">
+                                            <div class="d-flex justify-content-between">
+                                                <span>
+                                                    <span class="badge text-bg-{{ req.type == 'muss' ? 'danger' : (req.type == 'sollte' ? 'warning' : 'info') }}">
+                                                        {{ ('bsi_check.type.' ~ req.type)|trans({}, 'messages') }}
+                                                    </span>
+                                                    <code class="ms-1">{{ req.id }}</code>
+                                                </span>
+                                                <span class="{{ req.fulfilled ? 'text-success' : 'text-muted' }}">
+                                                    {{ req.fulfillment_pct }}%
+                                                </span>
+                                            </div>
+                                            <div class="text-muted">{{ req.title }}</div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </details>
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
