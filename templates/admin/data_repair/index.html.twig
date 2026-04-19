@@ -128,6 +128,23 @@
                           data-action="submit->ui-actions#confirm"
                           data-ui-actions-message-param="Fix all tenant mismatches automatically?">
                         <input type="hidden" name="_token" value="{{ csrf_token('fix_tenant_mismatches') }}">
+                        <div class="mb-2">
+                            <label for="fix_tenant_mismatches_reason" class="form-label small fw-semibold">
+                                {{ 'admin.data_repair.reason_label'|trans({}, 'admin') }} <span class="text-danger" aria-hidden="true">*</span>
+                            </label>
+                            <textarea
+                                id="fix_tenant_mismatches_reason"
+                                name="reason"
+                                class="form-control"
+                                rows="2"
+                                minlength="20"
+                                required
+                                aria-required="true"
+                                aria-describedby="fix_tenant_mismatches_reason_help"></textarea>
+                            <div id="fix_tenant_mismatches_reason_help" class="form-text">
+                                {{ 'admin.data_repair.reason_help'|trans({}, 'admin') }}
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-danger w-100">
                             <i class="bi bi-lightning" aria-hidden="true"></i> Fix Tenant Mismatches
                         </button>

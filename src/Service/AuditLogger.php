@@ -124,7 +124,15 @@ class AuditLogger
         // ISB Sprint-2 gate: capture actor's highest role at time of action.
         $auditLog->setActorRole($this->getCurrentActorRole());
 
-        // Set request information if available
+        // Set request information if available.
+        //
+        // ISB MINOR-1 note: when $action originates from a console command
+        // (ReSignAuditLogCommand, ComplianceLoaderFixer CLI, LoaderFixer CLI,
+        // ScheduledTasks etc.) the RequestStack is empty and ip_address /
+        // user_agent stay NULL. This is intentional — a CLI run has no
+        // network context — and is accepted by the ISB review. The actor
+        // is still identifiable via user_name ("system" for CLI) plus
+        // actor_role. For HTTP-triggered actions IP and UA are captured.
         if ($request instanceof Request) {
             $auditLog->setIpAddress($request->getClientIp());
             $auditLog->setUserAgent($request->headers->get('User-Agent'));

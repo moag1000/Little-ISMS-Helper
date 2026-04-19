@@ -53,8 +53,15 @@ monitoring:
         pending: 'pending DDL statements'
         show_mapping_errors: 'Show mapping errors'
         show_pending_sql: 'Show pending SQL'
-        apply_update: 'Apply schema update (force)'
+        apply_update: 'Run schema update (force)'
         confirm_update: 'Schema update will run DDL against the live database. Continue?'
+        preview_open: 'Review SQL preview and continue'
+        preview_warning_title: 'Warning: destructive DDL operation'
+        preview_warning_body: 'This schema update runs SQL statements directly against the production database. There is no transaction wrap and no automatic rollback. Review every statement and make sure a recent backup exists.'
+        preview_sql_label: 'Pending SQL statements'
+        backup_confirmed_label: 'I have read the SQL and verified a current backup.'
+        backup_confirmed_help: 'This checkbox is mandatory. The schema update will not start until it is ticked.'
+        actions_label: 'Schema update actions'
     disk:
         title: Disk
         free: Free
