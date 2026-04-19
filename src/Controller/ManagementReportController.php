@@ -3,8 +3,12 @@
 namespace App\Controller;
 
 use DateTime;
+use DateTimeImmutable;
+use App\Repository\ControlRepository;
+use App\Repository\KpiSnapshotRepository;
 use App\Repository\RiskRepository;
 use App\Service\ComplianceAnalyticsService;
+use App\Service\ComplianceWizardService;
 use App\Service\DashboardStatisticsService;
 use App\Service\ManagementReportService;
 use App\Service\PdfExportService;
@@ -38,6 +42,9 @@ class ManagementReportController extends AbstractController
         private readonly RiskRepository $riskRepository,
         private readonly ComplianceAnalyticsService $complianceAnalyticsService,
         private readonly Security $security,
+        private readonly ComplianceWizardService $complianceWizardService,
+        private readonly ControlRepository $controlRepository,
+        private readonly KpiSnapshotRepository $kpiSnapshotRepository,
     ) {
     }
 
@@ -443,12 +450,153 @@ class ManagementReportController extends AbstractController
             'framework_compliance' => $frameworkCompliance,
             'prepared_by' => $this->security->getUser()?->getFullName() ?? 'System',
             'generated_at' => $generatedAt,
+        ], [
+            'classification' => 'CONFIDENTIAL',
         ]);
 
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="board-one-pager_' . date('Y-m-d') . '.pdf"',
         ]);
+    }
+
+    // ===================== CERTIFICATION READINESS =====================
+
+    #[Route('/certification-readiness', name: 'app_management_reports_cert_readiness')]
+    #[IsGranted('ROLE_MANAGER')]
+    public function certificationReadiness(): Response
+    {
+        $data = $this->getCertificationReadinessData();
+
+        return $this->render('management_reports/certification_readiness.html.twig', $data);
+    }
+
+    #[Route('/certification-readiness/pdf', name: 'app_management_reports_cert_readiness_pdf')]
+    #[IsGranted('ROLE_MANAGER')]
+    public function certificationReadinessPdf(Request $request): Response
+    {
+        $data = $this->getCertificationReadinessData();
+        $data['generated_at'] = new DateTime();
+        $data['version'] = (new DateTime())->format('Y.m.d');
+
+        $request->getSession()->save();
+
+        $pdf = $this->pdfExportService->generatePdf(
+            'management_reports/certification_readiness_pdf.html.twig',
+            $data,
+            ['classification' => 'CONFIDENTIAL']
+        );
+
+        return new Response($pdf, Response::HTTP_OK, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="certification_readiness_' . date('Y-m-d') . '.pdf"',
+        ]);
+    }
+
+    /**
+     * Assemble certification readiness data from multiple sources
+     */
+    private function getCertificationReadinessData(): array
+    {
+        $tenant = $this->security->getUser()?->getTenant();
+
+        // Section 1: Clause compliance via ComplianceWizardService
+        $clauseCompliance = [];
+        $isoAssessment = null;
+        if ($this->complianceWizardService->isWizardAvailable('iso27001')) {
+            $isoAssessment = $this->complianceWizardService->runAssessment('iso27001');
+            if ($isoAssessment['success']) {
+                foreach ($isoAssessment['categories'] as $key => $category) {
+                    $clauseCompliance[$key] = [
+                        'name' => $category['name'] ?? $key,
+                        'score' => $category['score'] ?? 0,
+                        'status' => match (true) {
+                            ($category['score'] ?? 0) >= 90 => 'complete',
+                            ($category['score'] ?? 0) >= 40 => 'partial',
+                            default => 'not_started',
+                        },
+                        'gaps' => $category['gaps'] ?? [],
+                        'items' => $category['items'] ?? [],
+                    ];
+                }
+            }
+        }
+
+        // Section 2: Annex A control coverage
+        $controlStats = ['total' => 0, 'implemented' => 0, 'in_progress' => 0, 'not_started' => 0, 'not_applicable' => 0];
+        $controlsNotStarted = [];
+        $controlsInProgress = [];
+        if ($tenant) {
+            $controlStats = $this->controlRepository->getImplementationStats($tenant);
+            $allControls = $this->controlRepository->findByTenant($tenant);
+            foreach ($allControls as $control) {
+                if (!$control->isApplicable()) {
+                    continue;
+                }
+                $status = $control->getImplementationStatus();
+                if ($status === 'not_started') {
+                    $controlsNotStarted[] = [
+                        'id' => $control->getControlId(),
+                        'title' => $control->getTitle(),
+                    ];
+                } elseif ($status === 'in_progress') {
+                    $controlsInProgress[] = [
+                        'id' => $control->getControlId(),
+                        'title' => $control->getTitle(),
+                    ];
+                }
+            }
+        }
+
+        $applicableTotal = $controlStats['total'];
+        $controlPercentage = $applicableTotal > 0
+            ? round(($controlStats['implemented'] / $applicableTotal) * 100, 1)
+            : 0;
+
+        // Section 3: Readiness score
+        $clauseScore = $isoAssessment && $isoAssessment['success']
+            ? $isoAssessment['overall_score']
+            : 0;
+        // Weighted: 60% clause compliance + 40% control implementation
+        $overallScore = round(($clauseScore * 0.6) + ($controlPercentage * 0.4), 1);
+
+        $recommendation = match (true) {
+            $overallScore >= 85 => 'READY',
+            $overallScore >= 70 => 'CONDITIONAL',
+            default => 'NOT_READY',
+        };
+
+        // Section 4: Gap list
+        $criticalGaps = $isoAssessment && $isoAssessment['success']
+            ? $isoAssessment['critical_gaps']
+            : [];
+        $recommendedImprovements = [];
+        if ($isoAssessment && $isoAssessment['success']) {
+            foreach ($isoAssessment['categories'] as $category) {
+                foreach ($category['gaps'] ?? [] as $gap) {
+                    if (($gap['priority'] ?? 'medium') !== 'critical') {
+                        $recommendedImprovements[] = $gap;
+                    }
+                }
+            }
+        }
+
+        // Dashboard KPIs for additional context
+        $kpis = $this->dashboardStatisticsService->getManagementKPIs();
+
+        return [
+            'clause_compliance' => $clauseCompliance,
+            'clause_score' => $clauseScore,
+            'control_stats' => $controlStats,
+            'control_percentage' => $controlPercentage,
+            'controls_not_started' => $controlsNotStarted,
+            'controls_in_progress' => $controlsInProgress,
+            'overall_score' => $overallScore,
+            'recommendation' => $recommendation,
+            'critical_gaps' => $criticalGaps,
+            'recommended_improvements' => $recommendedImprovements,
+            'kpis' => $kpis,
+        ];
     }
 
     // ===================== BCM EXCEL EXPORT =====================
@@ -666,6 +814,91 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
+    // ===================== MANAGEMENT REVIEW OUTPUT (ISO 27001 Clause 9.3) =====================
+
+    /**
+     * Generate Management Review Output PDF per ISO 27001:2022 Clause 9.3
+     *
+     * Aggregates inputs from all ISMS domains into a structured management review output:
+     * - Status of actions from previous reviews
+     * - Changes in internal/external issues
+     * - Performance information (KPIs, nonconformities, audit results, objectives)
+     * - Feedback from interested parties
+     * - Risk assessment/treatment results
+     * - Decisions: improvement opportunities, ISMS changes, resource needs
+     */
+    #[Route('/review-output/pdf', name: 'app_management_reports_review_output_pdf')]
+    #[IsGranted('ROLE_MANAGER')]
+    public function reviewOutputPdf(Request $request): Response
+    {
+        $locale = $request->getLocale();
+        $reviewData = $this->reportService->getManagementReviewReport($locale);
+
+        $request->getSession()->save();
+
+        $generatedAt = new DateTime();
+
+        $pdf = $this->pdfExportService->generatePdf('management_reports/review_output_pdf.html.twig', [
+            'generated_at' => $generatedAt,
+            'executive_data' => $reviewData['executive_data'],
+            'risk_data' => $reviewData['risk_data'],
+            'audit_data' => $reviewData['audit_data'],
+            'compliance_data' => $reviewData['compliance_data'],
+            'kpi_summary' => $reviewData['kpi_summary'],
+            'treatment_data' => $reviewData['treatment_data'],
+        ]);
+
+        return new Response($pdf, Response::HTTP_OK, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="management_review_output_' . date('Y-m-d') . '.pdf"',
+        ]);
+    }
+
+    // ===================== QUARTERLY TREND COMPARISON =====================
+
+    /**
+     * Display quarterly trend comparison report (HTML version)
+     *
+     * Shows period-over-period comparison of key ISMS metrics using KPI snapshot data.
+     * Compares current quarter against previous quarter with delta indicators.
+     */
+    #[Route('/quarterly-trend', name: 'app_management_reports_quarterly_trend')]
+    #[IsGranted('ROLE_MANAGER')]
+    public function quarterlyTrend(): Response
+    {
+        $metrics = $this->buildQuarterlyTrendMetrics();
+
+        return $this->render('management_reports/quarterly_trend.html.twig', [
+            'metrics' => $metrics['metrics'],
+            'has_historical_data' => $metrics['has_historical_data'],
+        ]);
+    }
+
+    /**
+     * Generate quarterly trend comparison PDF report
+     */
+    #[Route('/quarterly-trend/pdf', name: 'app_management_reports_quarterly_trend_pdf')]
+    #[IsGranted('ROLE_MANAGER')]
+    public function quarterlyTrendPdf(Request $request): Response
+    {
+        $metrics = $this->buildQuarterlyTrendMetrics();
+
+        $request->getSession()->save();
+
+        $generatedAt = new DateTime();
+
+        $pdf = $this->pdfExportService->generatePdf('management_reports/quarterly_trend_pdf.html.twig', [
+            'metrics' => $metrics['metrics'],
+            'has_historical_data' => $metrics['has_historical_data'],
+            'generated_at' => $generatedAt,
+        ]);
+
+        return new Response($pdf, Response::HTTP_OK, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="quarterly_trend_' . date('Y-m-d') . '.pdf"',
+        ]);
+    }
+
     // ===================== EVIDENCE PACKAGE (ZIP) =====================
 
     #[Route('/evidence-package', name: 'app_management_reports_evidence_package')]
@@ -750,6 +983,8 @@ class ManagementReportController extends AbstractController
         $summary = $this->reportService->getExecutiveSummary();
         $riskTrends = $this->reportService->getRiskTrendData(12);
         $incidentTrends = $this->reportService->getIncidentTrendData(12);
+        $pdfOptions = ['classification' => 'CONFIDENTIAL'];
+
         $reports['01-executive-summary.pdf'] = $this->pdfExportService->generatePdf(
             'management_reports/executive_pdf.html.twig',
             [
@@ -758,7 +993,8 @@ class ManagementReportController extends AbstractController
                 'incident_trends' => $incidentTrends,
                 'generated_at' => $generatedAt,
                 'version' => $version,
-            ]
+            ],
+            $pdfOptions
         );
 
         // Risk Management PDF
@@ -770,7 +1006,8 @@ class ManagementReportController extends AbstractController
                 'trends' => $riskTrends,
                 'generated_at' => $generatedAt,
                 'version' => $version,
-            ]
+            ],
+            $pdfOptions
         );
 
         // Compliance Status PDF
@@ -781,7 +1018,8 @@ class ManagementReportController extends AbstractController
                 'report' => $complianceReport,
                 'generated_at' => $generatedAt,
                 'version' => $version,
-            ]
+            ],
+            $pdfOptions
         );
 
         // BCM Report PDF
@@ -794,7 +1032,8 @@ class ManagementReportController extends AbstractController
                 'bia' => $biaSummary,
                 'generated_at' => $generatedAt,
                 'version' => $version,
-            ]
+            ],
+            $pdfOptions
         );
 
         // Audit Report PDF
@@ -805,7 +1044,8 @@ class ManagementReportController extends AbstractController
                 'report' => $auditReport,
                 'generated_at' => $generatedAt,
                 'version' => $version,
-            ]
+            ],
+            $pdfOptions
         );
 
         // GDPR / Data Breach PDF
@@ -816,7 +1056,8 @@ class ManagementReportController extends AbstractController
                 'report' => $dataBreachReport,
                 'generated_at' => $generatedAt,
                 'version' => $version,
-            ]
+            ],
+            $pdfOptions
         );
 
         // Asset Inventory PDF
@@ -827,9 +1068,176 @@ class ManagementReportController extends AbstractController
                 'report' => $assetReport,
                 'generated_at' => $generatedAt,
                 'version' => $version,
-            ]
+            ],
+            $pdfOptions
         );
 
         return $reports;
+    }
+
+    /**
+     * Build quarterly trend comparison metrics.
+     *
+     * Uses KpiSnapshotRepository to get historical data for the previous quarter.
+     * Falls back to showing current data only when no snapshots are available.
+     *
+     * @return array{metrics: array, has_historical_data: bool}
+     */
+    private function buildQuarterlyTrendMetrics(): array
+    {
+        $tenant = $this->security->getUser()?->getTenant();
+        $hasHistoricalData = false;
+        $previousSnapshot = null;
+
+        // Try to find a snapshot from ~3 months ago (previous quarter)
+        if ($tenant !== null) {
+            $threeMonthsAgo = new DateTimeImmutable('-3 months');
+            $previousSnapshot = $this->kpiSnapshotRepository->findClosestBefore($tenant, $threeMonthsAgo);
+            if ($previousSnapshot !== null) {
+                $hasHistoricalData = true;
+            }
+        }
+
+        $previousData = $previousSnapshot?->getKpiData() ?? [];
+
+        // Get current data from existing services
+        $executiveSummary = $this->reportService->getExecutiveSummary();
+        $riskReport = $this->reportService->getRiskManagementReport();
+        $complianceReport = $this->reportService->getComplianceStatusReport();
+
+        // Treatment plan completion
+        $treatmentTotal = $riskReport['treatment_plans']['total'];
+        $treatmentActive = $riskReport['treatment_plans']['active'];
+        $treatmentCompletion = $treatmentTotal > 0
+            ? round((($treatmentTotal - $treatmentActive) / $treatmentTotal) * 100)
+            : 100;
+
+        // Build metrics array
+        $metrics = [];
+
+        // 1. Compliance %
+        $currentCompliance = (int) round($complianceReport['overall_compliance']);
+        $prevCompliance = isset($previousData['control_compliance']) ? (int) $previousData['control_compliance'] : null;
+        $metrics[] = $this->buildMetricRow(
+            'management_reports.quarterly_trend.compliance_pct',
+            $currentCompliance,
+            $prevCompliance,
+            '%',
+            true,
+            100
+        );
+
+        // 2. Risk count
+        $currentRisks = $riskReport['total_risks'];
+        $prevRisks = $previousData['total_risks'] ?? null;
+        $metrics[] = $this->buildMetricRow(
+            'management_reports.quarterly_trend.risk_count',
+            $currentRisks,
+            $prevRisks !== null ? (int) $prevRisks : null,
+            '',
+            false,
+            max($currentRisks, ($prevRisks ?? 0), 1)
+        );
+
+        // 3. High risks
+        $currentHighRisks = $riskReport['level_counts']['critical'] + $riskReport['level_counts']['high'];
+        $prevHighRisks = isset($previousData['high_risks']) ? (int) $previousData['high_risks'] : null;
+        if ($prevHighRisks === null && isset($previousData['critical_risks'])) {
+            $prevHighRisks = (int) ($previousData['high_risks'] ?? 0) + (int) $previousData['critical_risks'];
+        }
+        $metrics[] = $this->buildMetricRow(
+            'management_reports.quarterly_trend.high_risks',
+            $currentHighRisks,
+            $prevHighRisks,
+            '',
+            false,
+            max($currentHighRisks, ($prevHighRisks ?? 0), 1)
+        );
+
+        // 4. Open incidents
+        $currentOpenIncidents = $executiveSummary['incident_summary']['open'];
+        $prevOpenIncidents = isset($previousData['open_incidents']) ? (int) $previousData['open_incidents'] : null;
+        $metrics[] = $this->buildMetricRow(
+            'management_reports.quarterly_trend.open_incidents',
+            $currentOpenIncidents,
+            $prevOpenIncidents,
+            '',
+            false,
+            max($currentOpenIncidents, ($prevOpenIncidents ?? 0), 1)
+        );
+
+        // 5. Treatment plan completion
+        $prevTreatment = isset($previousData['risk_treatment_rate']) ? (int) $previousData['risk_treatment_rate'] : null;
+        $metrics[] = $this->buildMetricRow(
+            'management_reports.quarterly_trend.treatment_completion',
+            $treatmentCompletion,
+            $prevTreatment,
+            '%',
+            true,
+            100
+        );
+
+        // 6. Training completion
+        $currentTraining = isset($previousData['training_completion']) ? (int) $previousData['training_completion'] : 0;
+        $kpis = $this->dashboardStatisticsService->getManagementKPIs();
+        if (isset($kpis['training']['training_completion_rate'])) {
+            $currentTraining = (int) $kpis['training']['training_completion_rate']['value'];
+        }
+        $prevTraining = isset($previousData['training_completion']) ? (int) $previousData['training_completion'] : null;
+        $metrics[] = $this->buildMetricRow(
+            'management_reports.quarterly_trend.training_completion',
+            $currentTraining,
+            $prevTraining,
+            '%',
+            true,
+            100
+        );
+
+        return [
+            'metrics' => $metrics,
+            'has_historical_data' => $hasHistoricalData,
+        ];
+    }
+
+    /**
+     * Build a single metric row for the quarterly trend comparison.
+     *
+     * @param string $label Translation key for the metric label
+     * @param int|float $current Current quarter value
+     * @param int|float|null $previous Previous quarter value (null if no data)
+     * @param string $unit Unit suffix (e.g., '%', '')
+     * @param bool $higherIsBetter Whether a higher value is an improvement
+     * @param int|float $maxValue Maximum value for progress bar scaling
+     * @return array Metric row data
+     */
+    private function buildMetricRow(
+        string $label,
+        int|float $current,
+        int|float|null $previous,
+        string $unit,
+        bool $higherIsBetter,
+        int|float $maxValue
+    ): array {
+        $delta = $previous !== null ? $current - $previous : null;
+        $trend = 'stable';
+
+        if ($delta !== null && $delta != 0) {
+            if ($higherIsBetter) {
+                $trend = $delta > 0 ? 'better' : 'worse';
+            } else {
+                $trend = $delta < 0 ? 'better' : 'worse';
+            }
+        }
+
+        return [
+            'label' => $label,
+            'current' => $current,
+            'previous' => $previous,
+            'delta' => $delta,
+            'unit' => $unit,
+            'trend' => $trend,
+            'higher_is_better' => $higherIsBetter,
+            'max_value' => $maxValue,
+        ];
     }
 }

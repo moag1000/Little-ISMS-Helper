@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'management_reports.quarterly_trend.pdf_title'|trans({}, 'management_reports') }}</title>
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 20px; color: #1e293b; }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, #06b6d4 0%, #ec4899 50%, #8b5cf6 100%) 1;
+            padding-bottom: 10px;
+        }
+        .header h1 { color: #0f172a; margin: 0; font-size: 16pt; text-transform: uppercase; letter-spacing: 0.5pt; }
+        .header .subtitle { color: #475569; font-size: 9pt; margin-top: 3px; }
+        .header .date { color: #64748b; font-size: 8pt; margin-top: 3px; }
+
+        .section { margin: 15px 0; page-break-inside: avoid; }
+        .section h2 {
+            background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+            color: #06b6d4;
+            padding: 6px 10px;
+            font-size: 10pt;
+            margin: 0 0 8px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.3pt;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+        th {
+            background: #0f172a;
+            color: #06b6d4;
+            padding: 5px 6px;
+            text-align: left;
+            font-size: 8pt;
+            text-transform: uppercase;
+        }
+        td { padding: 5px 6px; border-bottom: 1px solid #e2e8f0; font-size: 9pt; }
+        tr:nth-child(even) { background: #f8fafc; }
+        .text-center { text-align: center; }
+
+        .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
+        .badge-danger { background: #fecaca; color: #991b1b; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-info { background: #dbeafe; color: #1e40af; }
+        .badge-secondary { background: #e2e8f0; color: #475569; }
+
+        .progress-bar { background: #e5e7eb; height: 12px; border-radius: 6px; overflow: hidden; margin: 3px 0; }
+        .progress-fill { height: 100%; border-radius: 6px; }
+        .progress-fill.danger { background: #dc2626; }
+        .progress-fill.warning { background: #d97706; }
+        .progress-fill.success { background: #16a34a; }
+
+        .delta-positive { color: #16a34a; font-weight: bold; }
+        .delta-negative { color: #dc2626; font-weight: bold; }
+        .delta-neutral { color: #64748b; }
+
+        .no-data { text-align: center; padding: 20px; color: #94a3b8; font-style: italic; font-size: 10pt; }
+
+        .footer { position: fixed; bottom: 15px; left: 20px; right: 20px; text-align: center; font-size: 7pt; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 6px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ 'management_reports.quarterly_trend.pdf_title'|trans({}, 'management_reports') }}</h1>
+        <div class="subtitle">{{ 'management_reports.quarterly_trend.subtitle'|trans({}, 'management_reports') }}</div>
+        <div class="date">{{ 'management_reports.quarterly_trend.generated_at'|trans({}, 'management_reports') }}: {{ generated_at|date('d.m.Y H:i') }}</div>
+    </div>
+
+    {% if not has_historical_data %}
+    <div class="no-data">
+        {{ 'management_reports.quarterly_trend.no_data_hint'|trans({}, 'management_reports') }}
+    </div>
+    {% endif %}
+
+    <div class="section">
+        <h2>
+            {{ 'management_reports.quarterly_trend.current_quarter'|trans({}, 'management_reports') }}
+            vs.
+            {{ 'management_reports.quarterly_trend.previous_quarter'|trans({}, 'management_reports') }}
+        </h2>
+        <table>
+            <tr>
+                <th scope="col">{{ 'management_reports.quarterly_trend.metric'|trans({}, 'management_reports') }}</th>
+                <th scope="col" class="text-center">{{ 'management_reports.quarterly_trend.previous_quarter'|trans({}, 'management_reports') }}</th>
+                <th scope="col" class="text-center">{{ 'management_reports.quarterly_trend.current_quarter'|trans({}, 'management_reports') }}</th>
+                <th scope="col" class="text-center">{{ 'management_reports.quarterly_trend.delta'|trans({}, 'management_reports') }}</th>
+                <th scope="col" class="text-center">{{ 'management_reports.quarterly_trend.trend_direction'|trans({}, 'management_reports') }}</th>
+            </tr>
+            {% for metric in metrics %}
+            <tr>
+                <td><strong>{{ metric.label }}</strong></td>
+                <td class="text-center">
+                    {% if metric.previous is not null %}
+                        {{ metric.previous }}{{ metric.unit }}
+                    {% else %}
+                        <span class="delta-neutral">-</span>
+                    {% endif %}
+                </td>
+                <td class="text-center"><strong>{{ metric.current }}{{ metric.unit }}</strong></td>
+                <td class="text-center">
+                    {% if metric.delta is not null %}
+                        {% if metric.delta > 0 %}
+                            <span class="{% if metric.higher_is_better %}delta-positive{% else %}delta-negative{% endif %}">+{{ metric.delta }}{{ metric.unit }}</span>
+                        {% elseif metric.delta < 0 %}
+                            <span class="{% if metric.higher_is_better %}delta-negative{% else %}delta-positive{% endif %}">{{ metric.delta }}{{ metric.unit }}</span>
+                        {% else %}
+                            <span class="delta-neutral">0</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="delta-neutral">-</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if metric.trend == 'better' %}
+                        <span class="badge badge-success">{{ 'management_reports.quarterly_trend.better'|trans({}, 'management_reports') }}</span>
+                    {% elseif metric.trend == 'worse' %}
+                        <span class="badge badge-danger">{{ 'management_reports.quarterly_trend.worse'|trans({}, 'management_reports') }}</span>
+                    {% else %}
+                        <span class="badge badge-secondary">{{ 'management_reports.quarterly_trend.stable'|trans({}, 'management_reports') }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="footer">
+        {{ 'management_reports.quarterly_trend.footer'|trans({}, 'management_reports') }} | {{ generated_at|date('d.m.Y') }}
+    </div>
+</body>
+</html>

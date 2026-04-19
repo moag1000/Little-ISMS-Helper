@@ -87,3 +87,73 @@ dora:
         country_of_head_office:
             label: "Hauptsitz (ISO-3166)"
             help: "ISO-3166 alpha-2 Ländercode des Hauptsitzes (z.B. DE, IE, US)."
+
+    # IKT-Vorfall-Bericht PDF (DORA Art. 19)
+    ict_incident_report:
+        title: "DORA Art. 19 IKT-Vorfall-Bericht"
+        subtitle: "Digital Operational Resilience Act (EU 2022/2554)"
+        reference: "Referenznr."
+        organization: "Organisation"
+        lei: "LEI (Legal Entity Identifier)"
+        reporting_date: "Meldedatum"
+        generated_at: "Bericht erstellt"
+        incident_number: "Vorfallnummer"
+        not_specified: "Nicht angegeben"
+        not_available: "k.A."
+        yes: "Ja"
+        no: "Nein"
+
+        # Klassifizierung
+        classification:
+            title: "Vorfallklassifizierung"
+            type: "Klassifizierung"
+            major: "Schwerwiegender IKT-Vorfall"
+            non_major: "Nicht schwerwiegender IKT-Vorfall"
+            criteria: "Erfüllte Klassifizierungskriterien"
+            criteria_severity: "Schweregrad: Hoch/Kritisch"
+            criteria_cross_border: "Grenzüberschreitende Auswirkung"
+            criteria_financial: "Erhebliche finanzielle Auswirkung"
+            criteria_users: "Große Anzahl betroffener Kunden"
+
+        # Details
+        details:
+            title: "Vorfalldetails"
+            description: "Beschreibung des Vorfalls"
+            occurrence_datetime: "Datum/Uhrzeit des Vorfalls"
+            detection_datetime: "Datum/Uhrzeit der Erkennung"
+            duration: "Dauer"
+            duration_ongoing: "Andauernd"
+            duration_hours: "%hours%h %minutes%m"
+            services_affected: "Betroffene Dienste/Funktionen"
+            affected_systems: "Betroffene Systeme"
+            affected_assets: "Betroffene Assets"
+            affected_processes: "Betroffene Geschäftsprozesse"
+            clients_affected: "Anzahl betroffener Kunden/Gegenparteien"
+            financial_impact: "Finanzieller Schaden (geschätzt)"
+            data_integrity: "Datenintegrität beeinträchtigt"
+            recovery_measures: "Wiederherstellungsmaßnahmen"
+            immediate_actions: "Ergriffene Sofortmaßnahmen"
+            corrective_actions: "Korrekturmaßnahmen"
+            root_cause: "Ursache"
+            recovery_timeline: "Wiederherstellungszeitplan"
+            resolved_at: "Gelöst am"
+
+        # Zeitplan
+        timeline:
+            title: "DORA Meldezeitplan"
+            phase: "Phase"
+            deadline: "Frist"
+            status: "Status"
+            detection: "Erkennung"
+            classification_phase: "Klassifizierung"
+            initial_report: "Erstmeldung (4h)"
+            intermediate: "Zwischenbericht (72h)"
+            final_report: "Abschlussbericht (1 Monat)"
+            overdue: "ÜBERFÄLLIG"
+            compliant: "Konform"
+            pending: "Ausstehend"
+            completed: "Abgeschlossen"
+
+        # Footer
+        footer: "Vertraulich - DORA Art. 19 IKT-Vorfall-Bericht"
+        page: "Seite"

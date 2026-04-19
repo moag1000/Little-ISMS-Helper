@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'nis2.incident_report.title'|trans({}, 'nis2') }}</title>
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 20px; color: #1e293b; }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #1e40af;
+            padding-bottom: 10px;
+        }
+        .header h1 { color: #1e40af; margin: 0; font-size: 16pt; text-transform: uppercase; letter-spacing: 0.5pt; }
+        .header .subtitle { color: #475569; font-size: 9pt; margin-top: 3px; }
+        .header .date { color: #64748b; font-size: 8pt; margin-top: 3px; }
+
+        .meta-grid { display: table; width: 100%; margin: 10px 0 15px 0; }
+        .meta-row { display: table-row; }
+        .meta-label { display: table-cell; width: 30%; padding: 3px 8px; font-weight: bold; font-size: 8pt; color: #475569; text-transform: uppercase; }
+        .meta-value { display: table-cell; width: 70%; padding: 3px 8px; font-size: 9pt; }
+
+        .section { margin: 15px 0; page-break-inside: avoid; }
+        .section h2 {
+            background: #1e40af;
+            color: #ffffff;
+            padding: 6px 10px;
+            font-size: 10pt;
+            margin: 0 0 8px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.3pt;
+        }
+        .section h3 {
+            color: #1e40af;
+            font-size: 9pt;
+            margin: 8px 0 4px 0;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 3px;
+        }
+        .section .article-ref {
+            font-size: 7pt;
+            color: #64748b;
+            float: right;
+            font-weight: normal;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+        th {
+            background: #1e293b;
+            color: #93c5fd;
+            padding: 5px 6px;
+            text-align: left;
+            font-size: 8pt;
+            text-transform: uppercase;
+        }
+        td { padding: 4px 6px; border-bottom: 1px solid #e2e8f0; font-size: 8pt; }
+        tr:nth-child(even) { background: #f8fafc; }
+
+        .field-group { margin: 6px 0; }
+        .field-label { font-weight: bold; font-size: 8pt; color: #475569; text-transform: uppercase; }
+        .field-value { font-size: 9pt; margin-top: 2px; padding: 4px 6px; background: #f8fafc; border-left: 3px solid #cbd5e1; }
+        .field-value.empty { color: #94a3b8; font-style: italic; }
+
+        .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
+        .badge-danger { background: #fecaca; color: #991b1b; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-info { background: #dbeafe; color: #1e40af; }
+
+        .timeline-table td { font-size: 8pt; }
+        .overdue { color: #dc2626; font-weight: bold; }
+        .compliant { color: #16a34a; font-weight: bold; }
+        .pending { color: #d97706; font-weight: bold; }
+
+        .footer { position: fixed; bottom: 15px; left: 20px; right: 20px; text-align: center; font-size: 7pt; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 6px; }
+        .page-break { page-break-after: always; }
+
+        @media print {
+            body { margin: 0; padding: 15px; }
+            .section { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    {# Header #}
+    <div class="header">
+        <h1>{{ 'nis2.incident_report.title'|trans({}, 'nis2') }}</h1>
+        <div class="subtitle">{{ 'nis2.incident_report.subtitle'|trans({}, 'nis2') }}</div>
+        <div class="date">{{ 'nis2.incident_report.generated_at'|trans({}, 'nis2') }}: {{ generated_at|date('d.m.Y H:i') }}</div>
+    </div>
+
+    {# Incident Meta Information #}
+    <div class="meta-grid">
+        <div class="meta-row">
+            <div class="meta-label">{{ 'nis2.incident_report.incident_number'|trans({}, 'nis2') }}</div>
+            <div class="meta-value">{{ incident.incidentNumber }}</div>
+        </div>
+        <div class="meta-row">
+            <div class="meta-label">{{ 'nis2.incident_report.reference'|trans({}, 'nis2') }}</div>
+            <div class="meta-value">{{ incident.authorityReferenceNumber ?? ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+        <div class="meta-row">
+            <div class="meta-label">{{ 'nis2.incident_report.severity'|trans({}, 'nis2') }}</div>
+            <div class="meta-value">
+                {% if incident.severity == 'critical' %}
+                    <span class="badge badge-danger">{{ incident.severity|upper }}</span>
+                {% elseif incident.severity == 'high' %}
+                    <span class="badge badge-warning">{{ incident.severity|upper }}</span>
+                {% elseif incident.severity == 'medium' %}
+                    <span class="badge badge-info">{{ incident.severity|upper }}</span>
+                {% else %}
+                    <span class="badge badge-success">{{ incident.severity|upper }}</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="meta-row">
+            <div class="meta-label">{{ 'nis2.incident_report.status'|trans({}, 'nis2') }}</div>
+            <div class="meta-value">{{ incident.status }}</div>
+        </div>
+        <div class="meta-row">
+            <div class="meta-label">{{ 'nis2.incident_report.nis2_category'|trans({}, 'nis2') }}</div>
+            <div class="meta-value">{{ incident.nis2Category ?? ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+        <div class="meta-row">
+            <div class="meta-label">{{ 'nis2.incident_report.reported_by'|trans({}, 'nis2') }}</div>
+            <div class="meta-value">{{ incident.effectiveReportedBy }}</div>
+        </div>
+        <div class="meta-row">
+            <div class="meta-label">{{ 'nis2.incident_report.assigned_to'|trans({}, 'nis2') }}</div>
+            <div class="meta-value">{{ incident.assignedTo ?? ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+    </div>
+
+    {# ==================== SECTION 1: EARLY WARNING (24h) ==================== #}
+    <div class="section">
+        <h2>
+            {{ 'nis2.incident_report.section1.title'|trans({}, 'nis2') }}
+            <span class="article-ref">{{ 'nis2.incident_report.section1.article_ref'|trans({}, 'nis2') }}</span>
+        </h2>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section1.detection_datetime'|trans({}, 'nis2') }}</div>
+            <div class="field-value">{{ incident.detectedAt ? incident.detectedAt|date('d.m.Y H:i:s') : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+
+        {% if incident.occurredAt %}
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section1.occurred_at'|trans({}, 'nis2') }}</div>
+            <div class="field-value">{{ incident.occurredAt|date('d.m.Y H:i:s') }}</div>
+        </div>
+        {% endif %}
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section1.initial_classification'|trans({}, 'nis2') }}</div>
+            <div class="field-value">
+                {% if incident.severity in ['high', 'critical'] %}
+                    <span class="badge badge-danger">{{ 'nis2.incident_report.section1.significant'|trans({}, 'nis2') }}</span>
+                {% else %}
+                    <span class="badge badge-info">{{ 'nis2.incident_report.section1.non_significant'|trans({}, 'nis2') }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section1.cross_border_impact'|trans({}, 'nis2') }}</div>
+            <div class="field-value">
+                {% if incident.crossBorderImpact %}
+                    <span class="badge badge-warning">{{ 'nis2.incident_report.yes'|trans({}, 'nis2') }}</span>
+                {% else %}
+                    {{ 'nis2.incident_report.no'|trans({}, 'nis2') }}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section1.brief_description'|trans({}, 'nis2') }}</div>
+            <div class="field-value{% if not incident.description %} empty{% endif %}">{{ incident.description ?? ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section1.early_warning_status'|trans({}, 'nis2') }}</div>
+            <div class="field-value">
+                {% if incident.earlyWarningReportedAt %}
+                    <span class="compliant">{{ 'nis2.incident_report.section1.compliant'|trans({}, 'nis2') }}</span>
+                    &mdash; {{ 'nis2.incident_report.section1.reported_at'|trans({}, 'nis2') }}: {{ incident.earlyWarningReportedAt|date('d.m.Y H:i') }}
+                {% elseif incident.earlyWarningOverdue %}
+                    <span class="overdue">{{ 'nis2.incident_report.section1.overdue'|trans({}, 'nis2') }}</span>
+                {% else %}
+                    <span class="pending">{{ 'nis2.incident_report.section1.pending'|trans({}, 'nis2') }}</span>
+                    ({{ 'nis2.incident_report.section1.hours_remaining'|trans({}, 'nis2') }}: {{ incident.hoursUntilEarlyWarningDeadline }}h)
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section1.deadline'|trans({}, 'nis2') }}</div>
+            <div class="field-value">{{ incident.earlyWarningDeadline ? incident.earlyWarningDeadline|date('d.m.Y H:i') : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+    </div>
+
+    {# ==================== SECTION 2: INCIDENT NOTIFICATION (72h) ==================== #}
+    <div class="section">
+        <h2>
+            {{ 'nis2.incident_report.section2.title'|trans({}, 'nis2') }}
+            <span class="article-ref">{{ 'nis2.incident_report.section2.article_ref'|trans({}, 'nis2') }}</span>
+        </h2>
+
+        <h3>{{ 'nis2.incident_report.section2.nature_scope'|trans({}, 'nis2') }}</h3>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section2.affected_systems'|trans({}, 'nis2') }}</div>
+            <div class="field-value{% if not incident.affectedSystems %} empty{% endif %}">{{ incident.affectedSystems ?? ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section2.affected_users'|trans({}, 'nis2') }}</div>
+            <div class="field-value">{{ incident.affectedUsersCount ?? ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+
+        {% if incident.affectedAssets|length > 0 %}
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section2.affected_assets'|trans({}, 'nis2') }}</div>
+            <div class="field-value">
+                <ul style="margin: 0; padding-left: 15px;">
+                    {% for asset in incident.affectedAssets %}
+                        <li>{{ asset.name }} ({{ asset.assetType ?? 'N/A' }})</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if incident.affectedBusinessProcesses|length > 0 %}
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section2.affected_processes'|trans({}, 'nis2') }}</div>
+            <div class="field-value">
+                <ul style="margin: 0; padding-left: 15px;">
+                    {% for process in incident.affectedBusinessProcesses %}
+                        <li>{{ process.name }} ({{ process.criticality ?? 'N/A' }})</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        <h3>{{ 'nis2.incident_report.section2.severity_assessment'|trans({}, 'nis2') }}</h3>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section2.financial_impact'|trans({}, 'nis2') }}</div>
+            <div class="field-value">{{ incident.estimatedFinancialImpact ? incident.estimatedFinancialImpact|number_format(2, ',', '.') ~ ' EUR' : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+
+        <h3>{{ 'nis2.incident_report.section2.iocs'|trans({}, 'nis2') }}</h3>
+
+        {% if incident.relatedVulnerabilities|length > 0 %}
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section2.related_vulnerabilities'|trans({}, 'nis2') }}</div>
+            <div class="field-value">
+                <ul style="margin: 0; padding-left: 15px;">
+                    {% for vuln in incident.relatedVulnerabilities %}
+                        <li>{{ vuln.title ?? vuln.cveId ?? 'Vulnerability #' ~ vuln.id }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% else %}
+        <div class="field-group">
+            <div class="field-value empty">{{ 'nis2.incident_report.not_specified'|trans({}, 'nis2') }}</div>
+        </div>
+        {% endif %}
+
+        <h3>{{ 'nis2.incident_report.section2.initial_actions'|trans({}, 'nis2') }}</h3>
+        <div class="field-group">
+            <div class="field-value{% if not incident.immediateActions %} empty{% endif %}">{{ incident.immediateActions ?? ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section2.authority_notified'|trans({}, 'nis2') }}</div>
+            <div class="field-value">{{ incident.nationalAuthorityNotified ?? ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section2.notification_status'|trans({}, 'nis2') }}</div>
+            <div class="field-value">
+                {% if incident.detailedNotificationReportedAt %}
+                    <span class="compliant">{{ 'nis2.incident_report.section1.compliant'|trans({}, 'nis2') }}</span>
+                    &mdash; {{ 'nis2.incident_report.section2.reported_at'|trans({}, 'nis2') }}: {{ incident.detailedNotificationReportedAt|date('d.m.Y H:i') }}
+                {% elseif incident.detailedNotificationOverdue %}
+                    <span class="overdue">{{ 'nis2.incident_report.section1.overdue'|trans({}, 'nis2') }}</span>
+                {% else %}
+                    <span class="pending">{{ 'nis2.incident_report.section1.pending'|trans({}, 'nis2') }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section2.deadline'|trans({}, 'nis2') }}</div>
+            <div class="field-value">{{ incident.detailedNotificationDeadline ? incident.detailedNotificationDeadline|date('d.m.Y H:i') : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    {# ==================== SECTION 3: FINAL REPORT (1 month) ==================== #}
+    <div class="section">
+        <h2>
+            {{ 'nis2.incident_report.section3.title'|trans({}, 'nis2') }}
+            <span class="article-ref">{{ 'nis2.incident_report.section3.article_ref'|trans({}, 'nis2') }}</span>
+        </h2>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section3.root_cause'|trans({}, 'nis2') }}</div>
+            <div class="field-value{% if not incident.rootCause %} empty{% endif %}">{{ incident.rootCause ?? ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section3.corrective_actions'|trans({}, 'nis2') }}</div>
+            <div class="field-value{% if not incident.correctiveActions %} empty{% endif %}">{{ incident.correctiveActions ?? ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section3.preventive_actions'|trans({}, 'nis2') }}</div>
+            <div class="field-value{% if not incident.preventiveActions %} empty{% endif %}">{{ incident.preventiveActions ?? ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section3.lessons_learned'|trans({}, 'nis2') }}</div>
+            <div class="field-value{% if not incident.lessonsLearned %} empty{% endif %}">{{ incident.lessonsLearned ?? ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+
+        <h3>{{ 'nis2.incident_report.section3.data_breach_impact'|trans({}, 'nis2') }}</h3>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section3.data_breach_occurred'|trans({}, 'nis2') }}</div>
+            <div class="field-value">
+                {% if incident.dataBreachOccurred %}
+                    <span class="badge badge-danger">{{ 'nis2.incident_report.yes'|trans({}, 'nis2') }}</span>
+                {% else %}
+                    {{ 'nis2.incident_report.no'|trans({}, 'nis2') }}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section3.notification_required'|trans({}, 'nis2') }}</div>
+            <div class="field-value">
+                {% if incident.notificationRequired %}
+                    <span class="badge badge-warning">{{ 'nis2.incident_report.yes'|trans({}, 'nis2') }}</span>
+                {% else %}
+                    {{ 'nis2.incident_report.no'|trans({}, 'nis2') }}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section3.resolved_at'|trans({}, 'nis2') }}</div>
+            <div class="field-value">{{ incident.resolvedAt ? incident.resolvedAt|date('d.m.Y H:i') : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section3.closed_at'|trans({}, 'nis2') }}</div>
+            <div class="field-value">{{ incident.closedAt ? incident.closedAt|date('d.m.Y H:i') : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section3.final_report_status'|trans({}, 'nis2') }}</div>
+            <div class="field-value">
+                {% if incident.finalReportSubmittedAt %}
+                    <span class="compliant">{{ 'nis2.incident_report.section1.compliant'|trans({}, 'nis2') }}</span>
+                    &mdash; {{ 'nis2.incident_report.section3.submitted_at'|trans({}, 'nis2') }}: {{ incident.finalReportSubmittedAt|date('d.m.Y H:i') }}
+                {% elseif incident.finalReportOverdue %}
+                    <span class="overdue">{{ 'nis2.incident_report.section1.overdue'|trans({}, 'nis2') }}</span>
+                {% else %}
+                    <span class="pending">{{ 'nis2.incident_report.section1.pending'|trans({}, 'nis2') }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="field-group">
+            <div class="field-label">{{ 'nis2.incident_report.section3.deadline'|trans({}, 'nis2') }}</div>
+            <div class="field-value">{{ incident.finalReportDeadline ? incident.finalReportDeadline|date('d.m.Y H:i') : ('nis2.incident_report.not_specified'|trans({}, 'nis2')) }}</div>
+        </div>
+    </div>
+
+    {# ==================== NIS2 COMPLIANCE TIMELINE ==================== #}
+    <div class="section">
+        <h2>{{ 'nis2.incident_report.timeline.title'|trans({}, 'nis2') }}</h2>
+        <table class="timeline-table">
+            <tr>
+                <th scope="col">{{ 'nis2.incident_report.timeline.phase'|trans({}, 'nis2') }}</th>
+                <th scope="col">{{ 'nis2.incident_report.timeline.deadline'|trans({}, 'nis2') }}</th>
+                <th scope="col">{{ 'nis2.incident_report.timeline.status'|trans({}, 'nis2') }}</th>
+            </tr>
+            <tr>
+                <td>{{ 'nis2.incident_report.timeline.early_warning'|trans({}, 'nis2') }} (24h)</td>
+                <td>{{ incident.earlyWarningDeadline ? incident.earlyWarningDeadline|date('d.m.Y H:i') : '-' }}</td>
+                <td>
+                    {% if incident.earlyWarningReportedAt %}
+                        <span class="compliant">{{ incident.earlyWarningReportedAt|date('d.m.Y H:i') }}</span>
+                    {% elseif incident.earlyWarningOverdue %}
+                        <span class="overdue">{{ 'nis2.incident_report.section1.overdue'|trans({}, 'nis2') }}</span>
+                    {% else %}
+                        <span class="pending">{{ 'nis2.incident_report.section1.pending'|trans({}, 'nis2') }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>{{ 'nis2.incident_report.timeline.notification'|trans({}, 'nis2') }} (72h)</td>
+                <td>{{ incident.detailedNotificationDeadline ? incident.detailedNotificationDeadline|date('d.m.Y H:i') : '-' }}</td>
+                <td>
+                    {% if incident.detailedNotificationReportedAt %}
+                        <span class="compliant">{{ incident.detailedNotificationReportedAt|date('d.m.Y H:i') }}</span>
+                    {% elseif incident.detailedNotificationOverdue %}
+                        <span class="overdue">{{ 'nis2.incident_report.section1.overdue'|trans({}, 'nis2') }}</span>
+                    {% else %}
+                        <span class="pending">{{ 'nis2.incident_report.section1.pending'|trans({}, 'nis2') }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>{{ 'nis2.incident_report.timeline.final_report'|trans({}, 'nis2') }} (1 month)</td>
+                <td>{{ incident.finalReportDeadline ? incident.finalReportDeadline|date('d.m.Y H:i') : '-' }}</td>
+                <td>
+                    {% if incident.finalReportSubmittedAt %}
+                        <span class="compliant">{{ incident.finalReportSubmittedAt|date('d.m.Y H:i') }}</span>
+                    {% elseif incident.finalReportOverdue %}
+                        <span class="overdue">{{ 'nis2.incident_report.section1.overdue'|trans({}, 'nis2') }}</span>
+                    {% else %}
+                        <span class="pending">{{ 'nis2.incident_report.section1.pending'|trans({}, 'nis2') }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        {{ 'nis2.incident_report.footer'|trans({}, 'nis2') }} | {{ incident.incidentNumber }} | {{ generated_at|date('d.m.Y') }}
+    </div>
+</body>
+</html>

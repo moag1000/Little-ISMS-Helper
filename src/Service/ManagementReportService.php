@@ -781,6 +781,50 @@ class ManagementReportService
         ];
     }
 
+    // ===================== MANAGEMENT REVIEW OUTPUT (ISO 27001 Clause 9.3) =====================
+
+    /**
+     * Get Management Review Output data per ISO 27001:2022 Clause 9.3
+     *
+     * Aggregates all required inputs for a management review:
+     * - Status of actions from previous reviews
+     * - Changes in internal/external issues (risk landscape)
+     * - Performance information (KPIs, nonconformities, audit results)
+     * - Feedback from interested parties
+     * - Risk assessment/treatment results
+     * - Opportunities for improvement
+     *
+     * @param string $locale The locale for KPI translations
+     * @return array Complete management review output data
+     */
+    public function getManagementReviewReport(string $locale = 'en'): array
+    {
+        $executiveSummary = $this->getExecutiveSummary();
+        $riskReport = $this->getRiskManagementReport();
+        $auditReport = $this->getAuditManagementReport();
+        $complianceReport = $this->getComplianceStatusReport();
+        $kpiSummary = $this->getKPISummaryForReport($locale);
+
+        // Treatment plan data
+        $treatmentPlans = $this->riskTreatmentPlanRepository->findAll();
+        $activePlans = array_filter($treatmentPlans, fn($p): bool => $p->getStatus() === 'in_progress');
+        $overduePlans = array_filter($treatmentPlans, fn($p): bool => $p->getTargetDate() !== null && $p->getTargetDate() < new DateTime() && $p->getStatus() !== 'completed');
+
+        return [
+            'generated_at' => new DateTime(),
+            'executive_data' => $executiveSummary,
+            'risk_data' => $riskReport,
+            'audit_data' => $auditReport,
+            'compliance_data' => $complianceReport,
+            'kpi_summary' => $kpiSummary['summary_kpis'] ?? [],
+            'treatment_data' => [
+                'total' => count($treatmentPlans),
+                'active' => count($activePlans),
+                'overdue' => count($overduePlans),
+            ],
+        ];
+    }
+
     // ===================== DATE RANGE FILTERING =====================
 
     /**

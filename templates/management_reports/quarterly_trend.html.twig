@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'management_reports' %}
+
+{% block title %}{{ 'management_reports.quarterly_trend.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+{% import '_macros/cards.html.twig' as cards %}
+
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.reports'|trans({}, 'nav'), path: 'app_reports_index' },
+            { label: 'management_reports.title'|trans({}, 'management_reports'), path: 'app_management_reports' },
+            { label: 'management_reports.quarterly_trend.title'|trans({}, 'management_reports') }
+        ]
+    } only %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">
+            <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'management_reports.quarterly_trend.title'|trans({}, 'management_reports') }}
+        </h1>
+        <a href="{{ path('app_management_reports_quarterly_trend_pdf') }}" class="btn btn-outline-primary">
+            <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
+        </a>
+    </div>
+
+    <p class="text-muted mb-4">{{ 'management_reports.quarterly_trend.subtitle'|trans({}, 'management_reports') }}</p>
+
+    {% if not has_historical_data %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'management_reports.quarterly_trend.no_data_hint'|trans({}, 'management_reports') }}
+    </div>
+    {% endif %}
+
+    {# Trend Comparison Table #}
+    {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-light">
+                <h3 class="h5 mb-0">
+                    <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                    {{ 'management_reports.quarterly_trend.current_quarter'|trans({}, 'management_reports') }}
+                    vs.
+                    {{ 'management_reports.quarterly_trend.previous_quarter'|trans({}, 'management_reports') }}
+                </h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">{{ 'management_reports.quarterly_trend.metric'|trans({}, 'management_reports') }}</th>
+                            <th scope="col" class="text-center">{{ 'management_reports.quarterly_trend.previous_quarter'|trans({}, 'management_reports') }}</th>
+                            <th scope="col" class="text-center">{{ 'management_reports.quarterly_trend.current_quarter'|trans({}, 'management_reports') }}</th>
+                            <th scope="col" class="text-center">{{ 'management_reports.quarterly_trend.delta'|trans({}, 'management_reports') }}</th>
+                            <th scope="col" class="text-center">{{ 'management_reports.quarterly_trend.trend_direction'|trans({}, 'management_reports') }}</th>
+                            <th scope="col" style="width: 25%;">{{ 'management_reports.quarterly_trend.current_quarter'|trans({}, 'management_reports') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for metric in metrics %}
+                        <tr>
+                            <td><strong>{{ metric.label }}</strong></td>
+                            <td class="text-center">
+                                {% if metric.previous is not null %}
+                                    {{ metric.previous }}{{ metric.unit }}
+                                {% else %}
+                                    <span class="text-muted">{{ 'management_reports.quarterly_trend.no_data'|trans({}, 'management_reports') }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center"><strong>{{ metric.current }}{{ metric.unit }}</strong></td>
+                            <td class="text-center">
+                                {% if metric.delta is not null %}
+                                    {% if metric.delta > 0 %}
+                                        <span class="text-{{ metric.higher_is_better ? 'success' : 'danger' }}">
+                                            +{{ metric.delta }}{{ metric.unit }}
+                                        </span>
+                                    {% elseif metric.delta < 0 %}
+                                        <span class="text-{{ metric.higher_is_better ? 'danger' : 'success' }}">
+                                            {{ metric.delta }}{{ metric.unit }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted">0</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if metric.trend == 'better' %}
+                                    <span class="badge bg-success">{{ 'management_reports.quarterly_trend.better'|trans({}, 'management_reports') }}</span>
+                                {% elseif metric.trend == 'worse' %}
+                                    <span class="badge bg-danger">{{ 'management_reports.quarterly_trend.worse'|trans({}, 'management_reports') }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ 'management_reports.quarterly_trend.stable'|trans({}, 'management_reports') }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if metric.max_value is defined and metric.max_value > 0 %}
+                                <div class="progress" style="height: 18px;">
+                                    {% set pct = (metric.current / metric.max_value * 100)|round %}
+                                    {% if pct > 100 %}{% set pct = 100 %}{% endif %}
+                                    <div class="progress-bar {% if metric.higher_is_better %}{% if pct >= 80 %}bg-success{% elseif pct >= 60 %}bg-warning{% else %}bg-danger{% endif %}{% else %}{% if pct <= 20 %}bg-success{% elseif pct <= 50 %}bg-warning{% else %}bg-danger{% endif %}{% endif %}"
+                                         role="progressbar"
+                                         style="width: {{ pct }}%"
+                                         aria-valuenow="{{ metric.current }}"
+                                         aria-valuemin="0"
+                                         aria-valuemax="{{ metric.max_value }}">
+                                        {{ metric.current }}{{ metric.unit }}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}

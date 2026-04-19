@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'management_reports.review_output.pdf_title'|trans({}, 'management_reports') }}</title>
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 20px; color: #1e293b; }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, #0ea5e9 0%, #6366f1 50%, #8b5cf6 100%) 1;
+            padding-bottom: 10px;
+        }
+        .header h1 { color: #0f172a; margin: 0; font-size: 16pt; text-transform: uppercase; letter-spacing: 0.5pt; }
+        .header .subtitle { color: #475569; font-size: 9pt; margin-top: 3px; }
+        .header .date { color: #64748b; font-size: 8pt; margin-top: 3px; }
+
+        .section { margin: 15px 0; page-break-inside: avoid; }
+        .section h2 {
+            background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+            color: #38bdf8;
+            padding: 6px 10px;
+            font-size: 10pt;
+            margin: 0 0 8px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.3pt;
+        }
+        .section h3 {
+            color: #0ea5e9;
+            font-size: 9pt;
+            margin: 10px 0 4px 0;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 3px;
+        }
+
+        .stats-grid { display: table; width: 100%; margin: 10px 0; }
+        .stat-box {
+            display: table-cell;
+            width: 25%;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            text-align: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        .stat-box .number { font-size: 20pt; font-weight: bold; color: #0ea5e9; }
+        .stat-box .number.danger { color: #dc2626; }
+        .stat-box .number.success { color: #16a34a; }
+        .stat-box .number.warning { color: #d97706; }
+        .stat-box .label { font-size: 7pt; color: #0f172a; text-transform: uppercase; font-weight: bold; letter-spacing: 0.3pt; }
+
+        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+        th {
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 5px 6px;
+            text-align: left;
+            font-size: 8pt;
+            text-transform: uppercase;
+        }
+        td { padding: 4px 6px; border-bottom: 1px solid #e2e8f0; font-size: 8pt; }
+        tr:nth-child(even) { background: #f8fafc; }
+
+        .field-group { margin: 6px 0; }
+        .field-label { font-weight: bold; font-size: 8pt; color: #475569; text-transform: uppercase; }
+        .field-value { font-size: 9pt; margin-top: 2px; padding: 4px 6px; background: #f8fafc; border-left: 3px solid #cbd5e1; }
+
+        .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
+        .badge-danger { background: #fecaca; color: #991b1b; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-info { background: #dbeafe; color: #1e40af; }
+
+        .progress-bar { background: #e5e7eb; height: 10px; border-radius: 5px; overflow: hidden; margin: 3px 0; }
+        .progress-fill { height: 100%; border-radius: 5px; }
+        .progress-fill.danger { background: #dc2626; }
+        .progress-fill.warning { background: #d97706; }
+        .progress-fill.info { background: #0ea5e9; }
+        .progress-fill.success { background: #16a34a; }
+
+        .action-item { padding: 4px 8px; margin: 4px 0; background: #fffbeb; border-left: 3px solid #f59e0b; font-size: 8pt; }
+
+        .footer { position: fixed; bottom: 15px; left: 20px; right: 20px; text-align: center; font-size: 7pt; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 6px; }
+        .page-break { page-break-after: always; }
+    </style>
+</head>
+<body>
+    {# Header #}
+    <div class="header">
+        <h1>{{ 'management_reports.review_output.pdf_title'|trans({}, 'management_reports') }}</h1>
+        <div class="subtitle">{{ 'management_reports.review_output.subtitle'|trans({}, 'management_reports') }}</div>
+        <div class="date">{{ 'management_reports.review_output.generated_at'|trans({}, 'management_reports') }}: {{ generated_at|date('d.m.Y H:i') }}</div>
+    </div>
+
+    {# ==================== MANAGEMENT REVIEW INPUTS ==================== #}
+    <div class="section">
+        <h2>{{ 'management_reports.review_output.inputs_title'|trans({}, 'management_reports') }}</h2>
+
+        {# 1. Status of actions from previous reviews #}
+        <h3>{{ 'management_reports.review_output.previous_actions'|trans({}, 'management_reports') }}</h3>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="number">{{ audit_data.management_reviews.total }}</div>
+                <div class="label">{{ 'management_reports.review_output.previous_reviews_count'|trans({}, 'management_reports') }}</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">{{ audit_data.audits.by_status.completed }}</div>
+                <div class="label">{{ 'management_reports.review_output.completed_audits'|trans({}, 'management_reports') }}</div>
+            </div>
+            <div class="stat-box">
+                <div class="number {% if treatment_data.overdue > 0 %}danger{% else %}success{% endif %}">{{ treatment_data.overdue }}</div>
+                <div class="label">{{ 'management_reports.review_output.treatment_plans_overdue'|trans({}, 'management_reports') }}</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">{{ treatment_data.active }}</div>
+                <div class="label">{{ 'management_reports.review_output.treatment_plans_active'|trans({}, 'management_reports') }}</div>
+            </div>
+        </div>
+
+        {# 2. Changes in internal/external issues #}
+        <h3>{{ 'management_reports.review_output.changes_title'|trans({}, 'management_reports') }}</h3>
+        <div class="field-group">
+            <div class="field-label">{{ 'management_reports.review_output.total_risks'|trans({}, 'management_reports') }}</div>
+            <div class="field-value">{{ risk_data.total_risks }}</div>
+        </div>
+        <div class="field-group">
+            <div class="field-label">{{ 'management_reports.review_output.risk_distribution'|trans({}, 'management_reports') }}</div>
+            <div class="field-value">
+                <span class="badge badge-danger">{{ 'management_reports.risk_level.critical'|trans({}, 'management_reports') }}: {{ risk_data.level_counts.critical }}</span>
+                <span class="badge badge-warning">{{ 'management_reports.risk_level.high'|trans({}, 'management_reports') }}: {{ risk_data.level_counts.high }}</span>
+                <span class="badge badge-info">{{ 'management_reports.risk_level.medium'|trans({}, 'management_reports') }}: {{ risk_data.level_counts.medium }}</span>
+                <span class="badge badge-success">{{ 'management_reports.risk_level.low'|trans({}, 'management_reports') }}: {{ risk_data.level_counts.low }}</span>
+            </div>
+        </div>
+    </div>
+
+    {# ==================== PERFORMANCE INFORMATION ==================== #}
+    <div class="section">
+        <h2>{{ 'management_reports.review_output.performance_title'|trans({}, 'management_reports') }}</h2>
+
+        {# Nonconformities and corrective actions #}
+        <h3>{{ 'management_reports.review_output.nonconformities'|trans({}, 'management_reports') }}</h3>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="number {% if executive_data.incident_summary.open > 5 %}danger{% elseif executive_data.incident_summary.open > 0 %}warning{% else %}success{% endif %}">{{ executive_data.incident_summary.open }}</div>
+                <div class="label">{{ 'management_reports.review_output.open_incidents'|trans({}, 'management_reports') }}</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">{{ executive_data.incident_summary.total_12_months }}</div>
+                <div class="label">{{ 'management_reports.review_output.resolved_incidents'|trans({}, 'management_reports') }}</div>
+            </div>
+            <div class="stat-box">
+                <div class="number {% if compliance_data.overall_compliance >= 80 %}success{% elseif compliance_data.overall_compliance >= 60 %}warning{% else %}danger{% endif %}">{{ compliance_data.overall_compliance }}%</div>
+                <div class="label">{{ 'management_reports.review_output.compliance_rate'|trans({}, 'management_reports') }}</div>
+            </div>
+            <div class="stat-box">
+                <div class="number success">{{ compliance_data.controls.implemented }}</div>
+                <div class="label">{{ 'management_reports.review_output.controls_implemented'|trans({}, 'management_reports') }}</div>
+            </div>
+        </div>
+
+        {# Monitoring and measurement results #}
+        <h3>{{ 'management_reports.review_output.monitoring_results'|trans({}, 'management_reports') }}</h3>
+
+        {% if kpi_summary|length > 0 %}
+        <table>
+            <tr>
+                <th scope="col">{{ 'management_reports.review_output.kpi_label'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.review_output.kpi_value'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.review_output.kpi_status'|trans({}, 'management_reports') }}</th>
+            </tr>
+            {% for kpi in kpi_summary %}
+            <tr>
+                <td>{{ kpi.label }}</td>
+                <td><strong>{{ kpi.value }}</strong></td>
+                <td>
+                    {% if kpi.status == 'good' %}
+                        <span class="badge badge-success">{{ kpi.status_label }}</span>
+                    {% elseif kpi.status == 'warning' %}
+                        <span class="badge badge-warning">{{ kpi.status_label }}</span>
+                    {% elseif kpi.status == 'danger' %}
+                        <span class="badge badge-danger">{{ kpi.status_label }}</span>
+                    {% else %}
+                        <span class="badge badge-info">{{ kpi.status_label }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+
+        {# Audit results #}
+        <h3>{{ 'management_reports.review_output.audit_results'|trans({}, 'management_reports') }}</h3>
+        <div class="field-group">
+            <div class="field-label">{{ 'management_reports.review_output.audits_this_year'|trans({}, 'management_reports') }}</div>
+            <div class="field-value">{{ audit_data.audits.this_year }}</div>
+        </div>
+
+        {# Objectives fulfillment #}
+        <h3>{{ 'management_reports.review_output.objectives_fulfillment'|trans({}, 'management_reports') }}</h3>
+        <div class="field-group">
+            <div class="field-label">{{ 'management_reports.review_output.treatment_plans_active'|trans({}, 'management_reports') }}</div>
+            <div class="field-value">{{ treatment_data.active }}</div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    {# ==================== FEEDBACK / INTERESTED PARTIES ==================== #}
+    <div class="section">
+        <h2>{{ 'management_reports.review_output.feedback_title'|trans({}, 'management_reports') }}</h2>
+        <div class="field-group">
+            <div class="field-value">{{ 'management_reports.review_output.no_feedback_data'|trans({}, 'management_reports') }}</div>
+        </div>
+    </div>
+
+    {# ==================== RISK ASSESSMENT / TREATMENT RESULTS ==================== #}
+    <div class="section">
+        <h2>{{ 'management_reports.review_output.risk_results_title'|trans({}, 'management_reports') }}</h2>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="number">{{ risk_data.total_risks }}</div>
+                <div class="label">{{ 'management_reports.review_output.total_risks'|trans({}, 'management_reports') }}</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">{{ risk_data.average_risk_score }}</div>
+                <div class="label">{{ 'management_reports.review_output.avg_risk_score'|trans({}, 'management_reports') }}</div>
+            </div>
+            <div class="stat-box">
+                <div class="number {% if risk_data.level_counts.critical > 0 %}danger{% else %}success{% endif %}">{{ risk_data.level_counts.critical + risk_data.level_counts.high }}</div>
+                <div class="label">{{ 'management_reports.risk_level.critical'|trans({}, 'management_reports') }} / {{ 'management_reports.risk_level.high'|trans({}, 'management_reports') }}</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">{{ treatment_data.total }}</div>
+                <div class="label">{{ 'management_reports.review_output.treatment_plans_active'|trans({}, 'management_reports') }}</div>
+            </div>
+        </div>
+    </div>
+
+    {# ==================== OPPORTUNITIES FOR IMPROVEMENT ==================== #}
+    <div class="section">
+        <h2>{{ 'management_reports.review_output.improvement_title'|trans({}, 'management_reports') }}</h2>
+        <p style="font-size: 8pt; color: #64748b;">{{ 'management_reports.review_output.improvement_hint'|trans({}, 'management_reports') }}</p>
+
+        {% if compliance_data.overall_compliance < 80 %}
+        <div class="action-item">
+            {{ 'management_reports.compliance.improvement_text'|trans({}, 'management_reports') }}
+        </div>
+        {% endif %}
+
+        {% if risk_data.level_counts.critical > 0 %}
+        <div class="action-item">
+            {{ 'management_reports.risk_level.critical'|trans({}, 'management_reports') }}: {{ risk_data.level_counts.critical }} risks require immediate treatment.
+        </div>
+        {% endif %}
+
+        {% if treatment_data.overdue > 0 %}
+        <div class="action-item">
+            {{ treatment_data.overdue }} overdue treatment plans require management attention.
+        </div>
+        {% endif %}
+    </div>
+
+    {# ==================== DECISIONS AND ACTIONS ==================== #}
+    <div class="section">
+        <h2>{{ 'management_reports.review_output.decisions_title'|trans({}, 'management_reports') }}</h2>
+
+        <h3>{{ 'management_reports.review_output.continual_improvement'|trans({}, 'management_reports') }}</h3>
+        <div class="field-group">
+            <div class="field-value">{{ 'management_reports.review_output.improvement_items'|trans({}, 'management_reports') }}</div>
+        </div>
+
+        <h3>{{ 'management_reports.review_output.isms_changes'|trans({}, 'management_reports') }}</h3>
+        <div class="field-group">
+            <div class="field-value">{{ 'management_reports.review_output.change_items'|trans({}, 'management_reports') }}</div>
+        </div>
+
+        <h3>{{ 'management_reports.review_output.resource_needs'|trans({}, 'management_reports') }}</h3>
+        <div class="field-group">
+            <div class="field-value">{{ 'management_reports.review_output.resource_items'|trans({}, 'management_reports') }}</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        {{ 'management_reports.review_output.footer'|trans({}, 'management_reports') }} | {{ generated_at|date('d.m.Y') }}
+    </div>
+</body>
+</html>

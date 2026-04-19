@@ -1,0 +1,97 @@
+# NIS2 Translations - German
+# Domain: nis2
+
+nis2:
+    # General
+    not_installed: "NIS2-Framework ist nicht installiert. Falls Ihre Organisation NIS2 unterliegt, laden Sie bitte das Framework von der Compliance-Frameworks-Seite."
+    not_active: "NIS2-Framework ist deaktiviert. Dies bedeutet, dass NIS2 für Ihre Organisation nicht relevant ist. Aktivieren Sie es bei Bedarf in den Compliance-Frameworks."
+
+    # Incident Report PDF
+    incident_report:
+        title: "NIS2 Art. 23 Sicherheitsvorfall-Meldung"
+        subtitle: "Richtlinie (EU) 2022/2555 - Vorfallmeldung"
+        reference: "Referenznr."
+        organization: "Organisation"
+        generated_at: "Bericht erstellt"
+        incident_number: "Vorfallnummer"
+        classification: "Klassifizierung"
+        severity: "Schweregrad"
+        status: "Status"
+        category: "Kategorie"
+        nis2_category: "NIS2-Kategorie"
+        reported_by: "Gemeldet von"
+        assigned_to: "Zugewiesen an"
+        cross_border: "Grenzüberschreitende Auswirkung"
+        yes: "Ja"
+        no: "Nein"
+        not_specified: "Nicht angegeben"
+
+        # Section 1: Frühwarnung (24h)
+        section1:
+            title: "Abschnitt 1: Frühwarnung (24 Stunden)"
+            article_ref: "NIS2 Art. 23(4)(a)"
+            deadline: "Frist"
+            detection_datetime: "Datum/Uhrzeit der Erkennung"
+            occurred_at: "Datum/Uhrzeit des Vorfalls"
+            initial_classification: "Erstbewertung"
+            significant: "Erheblicher Vorfall"
+            non_significant: "Nicht erheblicher Vorfall"
+            cross_border_impact: "Vermutete grenzüberschreitende Auswirkung"
+            brief_description: "Kurzbeschreibung"
+            early_warning_status: "Frühwarnungs-Status"
+            reported_at: "Gemeldet am"
+            overdue: "ÜBERFÄLLIG"
+            compliant: "Konform"
+            pending: "Ausstehend"
+            hours_remaining: "Verbleibende Stunden"
+
+        # Section 2: Vorfallmeldung (72h)
+        section2:
+            title: "Abschnitt 2: Vorfallmeldung (72 Stunden)"
+            article_ref: "NIS2 Art. 23(4)(b)"
+            deadline: "Frist"
+            nature_scope: "Art und Umfang des Vorfalls"
+            affected_systems: "Betroffene Systeme/Dienste"
+            affected_users: "Anzahl betroffener Nutzer/Kunden"
+            affected_assets: "Betroffene Assets"
+            affected_processes: "Betroffene Geschäftsprozesse"
+            severity_assessment: "Schweregrad- und Auswirkungsbewertung"
+            financial_impact: "Geschätzter finanzieller Schaden"
+            iocs: "Indicators of Compromise (IoCs)"
+            related_vulnerabilities: "Verwandte Schwachstellen"
+            initial_actions: "Ergriffene Sofortmaßnahmen"
+            authority_notified: "Benachrichtigte nationale Behörde"
+            authority_reference: "Behörden-Referenznummer"
+            notification_status: "Meldungsstatus"
+            reported_at: "Gemeldet am"
+
+        # Section 3: Abschlussbericht (1 Monat)
+        section3:
+            title: "Abschnitt 3: Abschlussbericht (1 Monat)"
+            article_ref: "NIS2 Art. 23(4)(d)"
+            deadline: "Frist"
+            root_cause: "Ursachenanalyse"
+            corrective_actions: "Ergriffene Korrekturmaßnahmen"
+            preventive_actions: "Präventivmaßnahmen"
+            lessons_learned: "Erkenntnisse"
+            data_breach_impact: "Auswirkung auf betroffene Personen"
+            data_breach_occurred: "Datenpanne aufgetreten"
+            notification_required: "Meldepflicht"
+            resolved_at: "Gelöst am"
+            closed_at: "Geschlossen am"
+            final_report_status: "Abschlussbericht-Status"
+            submitted_at: "Eingereicht am"
+
+        # Timeline
+        timeline:
+            title: "NIS2 Compliance-Zeitplan"
+            phase: "Phase"
+            deadline: "Frist"
+            status: "Status"
+            early_warning: "Frühwarnung"
+            notification: "Vorfallmeldung"
+            final_report: "Abschlussbericht"
+
+        # Footer
+        footer: "Vertraulich - NIS2 Art. 23 Sicherheitsvorfall-Meldung"
+        page: "Seite"

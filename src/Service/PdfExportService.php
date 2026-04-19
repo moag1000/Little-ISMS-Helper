@@ -34,6 +34,40 @@ class PdfExportService
     {
         $html = $this->twigEnvironment->render($template, $data);
 
+        // Add watermark/classification if specified
+        $watermark = $options['watermark'] ?? null;
+        $classification = $options['classification'] ?? null;
+
+        if ($watermark || $classification) {
+            $watermarkCss = '';
+            if ($watermark) {
+                $safeWatermark = htmlspecialchars($watermark, ENT_QUOTES, 'UTF-8');
+                $watermarkCss .= "
+                    body::before {
+                        content: '{$safeWatermark}';
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%) rotate(-45deg);
+                        font-size: 80px;
+                        color: rgba(200, 200, 200, 0.3);
+                        z-index: -1;
+                        pointer-events: none;
+                    }
+                ";
+            }
+            if ($classification) {
+                $safeClassification = htmlspecialchars($classification, ENT_QUOTES, 'UTF-8');
+                $watermarkCss .= "
+                    @page {
+                        @top-center { content: '{$safeClassification}'; font-size: 10px; color: red; }
+                        @bottom-center { content: '{$safeClassification}'; font-size: 10px; color: red; }
+                    }
+                ";
+            }
+            $html = str_replace('</head>', "<style>{$watermarkCss}</style></head>", $html);
+        }
+
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'DejaVu Sans');
         // Security: Disable remote resources to prevent SSRF attacks (OWASP Top 10 #10)

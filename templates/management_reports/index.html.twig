@@ -149,6 +149,12 @@
                                 <a href="{{ path('app_management_reports_compliance_pdf') }}" class="btn btn-sm btn-outline-info">
                                     <i class="bi bi-file-pdf" aria-hidden="true"></i> Compliance Status
                                 </a>
+                                <a href="{{ path('app_management_reports_review_output_pdf') }}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.review_output.title'|trans({}, 'management_reports') }}
+                                </a>
+                                <a href="{{ path('app_management_reports_quarterly_trend') }}" class="btn btn-sm btn-outline-dark">
+                                    <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'management_reports.quarterly_trend.view_report'|trans({}, 'management_reports') }}
+                                </a>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -171,6 +177,15 @@
                                 </a>
                                 <a href="{{ path('app_management_reports_gdpr_excel') }}" class="btn btn-sm btn-outline-dark">
                                     <i class="bi bi-file-excel" aria-hidden="true"></i> GDPR / Data Breach
+                                </a>
+                            </div>
+                            <h4 class="h6">{{ 'cert_readiness.title'|trans({}, 'management_reports') }}</h4>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <a href="{{ path('app_management_reports_cert_readiness') }}" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-patch-check" aria-hidden="true"></i> {{ 'cert_readiness.view_assessment'|trans({}, 'management_reports') }}
+                                </a>
+                                <a href="{{ path('app_management_reports_cert_readiness_pdf') }}" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'cert_readiness.download_pdf'|trans({}, 'management_reports') }}
                                 </a>
                             </div>
                             <h4 class="h6">{{ 'management_reports.quick_access.evidence_package'|trans({}, 'management_reports') }}</h4>
