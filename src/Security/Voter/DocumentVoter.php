@@ -41,6 +41,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 class DocumentVoter extends Voter
 {
+    use HoldingTreeAccessTrait;
+
     public const string VIEW = 'view';
     public const string EDIT = 'edit';
     public const string DELETE = 'delete';
@@ -84,7 +86,11 @@ class DocumentVoter extends Voter
             return true;
         }
         // Security: Multi-tenancy - users can view documents from their tenant
-        return $document->getUploadedBy()?->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant;
+        if ($document->getUploadedBy()?->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant) {
+            return true;
+        }
+        // Phase 9.P1.6 — Group-CISO / Konzern-ISB may read down the tree
+        return $this->canReadAcrossHoldingTree($user, $document->getUploadedBy()?->getTenant());
     }
 
     private function canEdit(Document $document, User $user): bool

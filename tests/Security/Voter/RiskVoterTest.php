@@ -118,4 +118,84 @@ class RiskVoterTest extends TestCase
 
         $this->assertSame(VoterInterface::ACCESS_ABSTAIN, $result);
     }
+
+    public function testGroupCisoCanViewSubsidiaryRisk(): void
+    {
+        // Phase 9.P1.6: Group-CISO/Konzern-ISB reads across the holding tree.
+        // Must use real Tenant objects (not mocks) so isChildOf() works.
+        $holding = (new Tenant())->setCode('holding');
+        $sub = (new Tenant())->setCode('sub');
+        $holding->addSubsidiary($sub);
+
+        $user = $this->createMock(User::class);
+        $user->method('getRoles')->willReturn(['ROLE_USER', 'ROLE_GROUP_CISO']);
+        $user->method('getTenant')->willReturn($holding);
+
+        $risk = $this->createMock(Risk::class);
+        $risk->method('getTenant')->willReturn($sub);
+
+        $token = new UsernamePasswordToken($user, 'main', $user->getRoles());
+
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $risk, [RiskVoter::VIEW]));
+    }
+
+    public function testGroupCisoCannotEditSubsidiaryRisk(): void
+    {
+        $holding = (new Tenant())->setCode('holding');
+        $sub = (new Tenant())->setCode('sub');
+        $holding->addSubsidiary($sub);
+
+        $user = $this->createMock(User::class);
+        $user->method('getRoles')->willReturn(['ROLE_USER', 'ROLE_MANAGER', 'ROLE_GROUP_CISO']);
+        $user->method('getTenant')->willReturn($holding);
+
+        $risk = $this->createMock(Risk::class);
+        $risk->method('getTenant')->willReturn($sub);
+
+        $token = new UsernamePasswordToken($user, 'main', $user->getRoles());
+
+        // GROUP_CISO is read-only across the tree — EDIT must still be denied.
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $risk, [RiskVoter::EDIT]));
+    }
+
+    public function testGroupCisoCannotViewSiblingTenantRisk(): void
+    {
+        // Siblings of the user's tenant are NOT in the subtree, so even a
+        // GROUP_CISO must be denied — read-across is strictly downward.
+        $holding = (new Tenant())->setCode('holding');
+        $sub1 = (new Tenant())->setCode('sub1');
+        $sub2 = (new Tenant())->setCode('sub2');
+        $holding->addSubsidiary($sub1);
+        $holding->addSubsidiary($sub2);
+
+        $user = $this->createMock(User::class);
+        $user->method('getRoles')->willReturn(['ROLE_USER', 'ROLE_GROUP_CISO']);
+        $user->method('getTenant')->willReturn($sub1);
+
+        $risk = $this->createMock(Risk::class);
+        $risk->method('getTenant')->willReturn($sub2);
+
+        $token = new UsernamePasswordToken($user, 'main', $user->getRoles());
+
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $risk, [RiskVoter::VIEW]));
+    }
+
+    public function testUserWithoutGroupCisoCannotViewSubsidiaryRisk(): void
+    {
+        // ROLE_MANAGER alone does not grant read-across. GROUP_CISO is required.
+        $holding = (new Tenant())->setCode('holding');
+        $sub = (new Tenant())->setCode('sub');
+        $holding->addSubsidiary($sub);
+
+        $user = $this->createMock(User::class);
+        $user->method('getRoles')->willReturn(['ROLE_USER', 'ROLE_MANAGER']);
+        $user->method('getTenant')->willReturn($holding);
+
+        $risk = $this->createMock(Risk::class);
+        $risk->method('getTenant')->willReturn($sub);
+
+        $token = new UsernamePasswordToken($user, 'main', $user->getRoles());
+
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $risk, [RiskVoter::VIEW]));
+    }
 }

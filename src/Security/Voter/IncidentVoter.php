@@ -38,6 +38,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 class IncidentVoter extends Voter
 {
+    use HoldingTreeAccessTrait;
+
     public const string VIEW = 'view';
     public const string EDIT = 'edit';
     public const string DELETE = 'delete';
@@ -76,7 +78,11 @@ class IncidentVoter extends Voter
     private function canView(Incident $incident, User $user): bool
     {
         // Security: Multi-tenancy - users can view incidents from their tenant
-        return $incident->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant;
+        if ($incident->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant) {
+            return true;
+        }
+        // Phase 9.P1.6 — Group-CISO / Konzern-ISB may read down the tree
+        return $this->canReadAcrossHoldingTree($user, $incident->getTenant());
     }
 
     private function canEdit(Incident $incident, User $user): bool

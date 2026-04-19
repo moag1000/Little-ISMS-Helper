@@ -33,6 +33,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 class AssetVoter extends Voter
 {
+    use HoldingTreeAccessTrait;
+
     public const string VIEW = 'view';
     public const string EDIT = 'edit';
     public const string DELETE = 'delete';
@@ -71,7 +73,11 @@ class AssetVoter extends Voter
     private function canView(Asset $asset, User $user): bool
     {
         // Security: Multi-tenancy - users can view assets from their tenant
-        return $asset->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant;
+        if ($asset->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant) {
+            return true;
+        }
+        // Phase 9.P1.6 — Group-CISO / Konzern-ISB may read down the tree
+        return $this->canReadAcrossHoldingTree($user, $asset->getTenant());
     }
 
     private function canEdit(Asset $asset, User $user): bool
