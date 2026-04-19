@@ -1,0 +1,86 @@
+prototype_protection:
+    page:
+        index_title: 'Prototype-Protection (TISAX Kap. 8)'
+        index_description: 'VDA-ISA 6 Kapitel 8 — Schutz von Prototypen, Bauteilen, Erprobungsträgern und Events.'
+        new_title: 'Neues Assessment'
+        edit_title: 'Assessment bearbeiten — %title%'
+    action:
+        new: 'Neues Assessment'
+        pdf: 'PDF exportieren'
+    field:
+        title: 'Bezeichnung'
+        scope: 'Geltungsbereich'
+        status: 'Status'
+        tisax_level: 'TISAX-Assessment-Level'
+        required_labels: 'Geforderte TISAX-Labels'
+        supplier: 'Lieferant'
+        location: 'Standort'
+        assessor: 'Assessor / Prüfer'
+        assessment_date: 'Bewertungsdatum'
+        next_assessment_due: 'Nächste Bewertung fällig'
+        overall_result: 'Gesamtergebnis'
+    help:
+        scope: 'Programm, Baureihe, Fahrzeugvariante oder Event, auf das sich dieses Assessment bezieht.'
+        required_labels: 'Mehrfachauswahl — alle für den Scope anwendbaren Prototype-Labels.'
+    status:
+        draft: 'Entwurf'
+        in_review: 'In Prüfung'
+        approved: 'Freigegeben'
+        rejected: 'Abgelehnt'
+        expired: 'Abgelaufen'
+    result:
+        not_applicable: 'n/v'
+        not_met: 'Nicht erfüllt'
+        partial: 'Teilweise erfüllt'
+        met: 'Erfüllt'
+        exceeded: 'Übertroffen'
+    label:
+        prototype_parts_components: 'Prototypen-Bauteile/Komponenten'
+        prototype_vehicles: 'Prototypen-Fahrzeuge'
+        test_vehicles: 'Erprobungsträger'
+        events_and_shoots: 'Events / Shootings'
+    value:
+        na: 'n/v'
+    sections:
+        heading: 'Abschnitte nach VDA ISA 6 Kap. 8'
+        description: 'Je Abschnitt Ergebnis + Anmerkungen erfassen. "Gesamtergebnis" wird automatisch aus dem schlechtesten Abschnitt berechnet und kann vor der Freigabe manuell überschrieben werden.'
+    section:
+        physical:
+            title: 'Physische Sicherheit'
+            description: 'Zonen, Zutrittskontrolle, Sichtschutz, Parkflächen, Photo-Ban.'
+            result: 'Abschnittsergebnis 8.1'
+            notes: 'Anmerkungen 8.1'
+        organisation:
+            title: 'Organisatorische Anforderungen'
+            description: 'Verantwortlichkeiten, Vertraulichkeitsvereinbarungen, Rollenkonzept, Schulung.'
+            result: 'Abschnittsergebnis 8.2'
+            notes: 'Anmerkungen 8.2'
+        handling:
+            title: 'Handhabung und Transport'
+            description: 'Kennzeichnung, Abdeckung, Containertransport, Logistiklieferkette.'
+            result: 'Abschnittsergebnis 8.3'
+            notes: 'Anmerkungen 8.3'
+        trial_operation:
+            title: 'Schutz im Erprobungsbetrieb'
+            description: 'Testfahrten, Fahrtenbücher, Tarnmaßnahmen, Zwischenstopps, Abstellorte.'
+            result: 'Abschnittsergebnis 8.4'
+            notes: 'Anmerkungen 8.4'
+        events:
+            title: 'Events und Shootings'
+            description: 'Presse- und Fototermine, Gästemanagement, Foto-/Film-Verwertung.'
+            result: 'Abschnittsergebnis 8.5'
+            notes: 'Anmerkungen 8.5'
+    sidebar:
+        meta: 'Metadaten'
+    expiring:
+        heading: '%count% Bewertung(en) laufen in den nächsten 60 Tagen ab:'
+    empty:
+        title: 'Noch keine Prototype-Protection-Bewertungen'
+        message: 'Starten Sie mit einem neuen Assessment, sobald Prototypen, Erprobungsträger oder Events in Ihrem TISAX-Scope liegen.'
+    flash:
+        created: 'Prototype-Protection-Assessment erstellt.'
+        updated: 'Prototype-Protection-Assessment aktualisiert.'
+        deleted: 'Prototype-Protection-Assessment gelöscht.'
+    validation:
+        title_required: 'Bitte geben Sie eine Bezeichnung für das Assessment an.'
+        level_invalid: 'TISAX-Level muss AL2 oder AL3 sein.'

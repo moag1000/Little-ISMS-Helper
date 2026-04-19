@@ -1,0 +1,57 @@
+{{ form_start(form) }}
+    <div class="row g-3">
+        <div class="col-md-8">{{ form_row(form.title) }}</div>
+        <div class="col-md-4">{{ form_row(form.status) }}</div>
+        <div class="col-12">{{ form_row(form.scope) }}</div>
+
+        <div class="col-md-6">{{ form_row(form.tisaxLevel) }}</div>
+        <div class="col-md-6">{{ form_row(form.requiredLabels) }}</div>
+
+        <div class="col-md-6">{{ form_row(form.supplier) }}</div>
+        <div class="col-md-6">{{ form_row(form.location) }}</div>
+
+        <div class="col-md-4">{{ form_row(form.assessor) }}</div>
+        <div class="col-md-4">{{ form_row(form.assessmentDate) }}</div>
+        <div class="col-md-4">{{ form_row(form.nextAssessmentDue) }}</div>
+    </div>
+
+    <hr class="my-4">
+
+    <h2 class="h5">{{ 'prototype_protection.sections.heading'|trans({}, 'prototype_protection') }}</h2>
+    <p class="text-muted small">{{ 'prototype_protection.sections.description'|trans({}, 'prototype_protection') }}</p>
+
+    {% set sections = [
+        { key: 'physical',        result: form.physicalResult,         notes: form.physicalNotes,        ref: '8.1' },
+        { key: 'organisation',    result: form.organisationResult,     notes: form.organisationNotes,    ref: '8.2' },
+        { key: 'handling',        result: form.handlingResult,         notes: form.handlingNotes,        ref: '8.3' },
+        { key: 'trial_operation', result: form.trialOperationResult,   notes: form.trialOperationNotes,  ref: '8.4' },
+        { key: 'events',          result: form.eventsResult,           notes: form.eventsNotes,          ref: '8.5' },
+    ] %}
+
+    {% for section in sections %}
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="badge text-bg-light border">VDA {{ section.ref }}</span>
+                    <strong class="ms-1">{{ ('prototype_protection.section.' ~ section.key ~ '.title')|trans({}, 'prototype_protection') }}</strong>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="small text-muted">{{ ('prototype_protection.section.' ~ section.key ~ '.description')|trans({}, 'prototype_protection') }}</p>
+                <div class="row g-3">
+                    <div class="col-md-4">{{ form_row(section.result) }}</div>
+                    <div class="col-md-8">{{ form_row(section.notes) }}</div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{{ path('app_prototype_protection_index') }}" class="btn btn-outline-secondary">
+            {{ 'common.cancel'|trans({}, 'messages') }}
+        </a>
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
+        </button>
+    </div>
+{{ form_end(form) }}

@@ -365,6 +365,13 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.bsi_check'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        <li><a href="{{ path('app_prototype_protection_index') }}" class="{% if current_route starts with 'app_prototype_protection_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.prototype_protection'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.prototype_protection'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
                         <li><a href="{{ path('app_compliance_wizard_index') }}" class="{% if current_route starts with 'app_compliance_wizard_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-magic" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
