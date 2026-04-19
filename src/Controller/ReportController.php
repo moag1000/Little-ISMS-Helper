@@ -385,6 +385,7 @@ class ReportController extends AbstractController
 
         $controls = $this->controlRepository->findAll();
         $implementedControls = array_filter($controls, fn(Control $control): bool => $control->getImplementationStatus() === 'implemented');
+        $applicableControls = array_filter($controls, fn(Control $control): bool => $control->isApplicable());
 
         return [
             'assets_count' => $this->assetRepository->count([]),
@@ -392,7 +393,7 @@ class ReportController extends AbstractController
             'high_risks' => count($highRisks),
             'controls_count' => count($controls),
             'implemented_controls' => count($implementedControls),
-            'compliance_percentage' => count($controls) > 0 ? round((count($implementedControls) / count($controls)) * 100) : 0,
+            'compliance_percentage' => count($applicableControls) > 0 ? round((count($implementedControls) / count($applicableControls)) * 100) : 0,
             'open_incidents' => $this->incidentRepository->count(['status' => ['new', 'investigating', 'in_progress']]),
             'total_trainings' => $this->trainingRepository->count([]),
             'audits_this_year' => count($this->internalAuditRepository->findBy(['status' => 'completed'])),

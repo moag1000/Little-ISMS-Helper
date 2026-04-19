@@ -731,15 +731,21 @@ class ReportBuilderService
 
     private function getChartRiskTrend(array $filters): array
     {
-        // Simplified trend data (last 6 months)
         $months = [];
         $data = [];
+        $allRisks = $this->riskRepository->findAll();
 
         for ($i = 5; $i >= 0; $i--) {
             $date = new DateTimeImmutable("-{$i} months");
+            $monthEnd = $date->modify('last day of this month')->setTime(23, 59, 59);
             $months[] = $date->format('M Y');
-            // In a real implementation, this would query historical data
-            $data[] = rand(10, 30);
+
+            // Count risks that existed by end of each month (created on or before monthEnd)
+            $count = count(array_filter($allRisks, function ($risk) use ($monthEnd) {
+                $createdAt = $risk->getCreatedAt();
+                return $createdAt !== null && $createdAt <= $monthEnd;
+            }));
+            $data[] = $count;
         }
 
         return [
@@ -781,13 +787,18 @@ class ReportBuilderService
 
         foreach ($frameworks as $framework) {
             $labels[] = $framework->getName();
-            // Simplified compliance calculation
-            $data[] = rand(50, 100);
+            // Calculate actual compliance from controls mapped to this framework
+            $controls = $this->controlRepository->findAll();
+            $total = count($controls);
+            $implemented = count(array_filter($controls, fn($c) => $c->getImplementationStatus() === 'implemented'));
+            // Use overall control implementation as proxy when per-framework data isn't available
+            $data[] = $total > 0 ? round(($implemented / $total) * 100) : 0;
         }
 
         if (empty($labels)) {
-            $labels = ['ISO 27001', 'TISAX', 'NIS2', 'DORA'];
-            $data = [85, 70, 60, 75];
+            // No frameworks configured - return empty chart data
+            $labels = ['No Frameworks'];
+            $data = [0];
         }
 
         return [
@@ -803,11 +814,20 @@ class ReportBuilderService
     {
         $months = [];
         $data = [];
+        $allIncidents = $this->incidentRepository->findAll();
 
         for ($i = 5; $i >= 0; $i--) {
             $date = new DateTimeImmutable("-{$i} months");
+            $monthStart = $date->modify('first day of this month')->setTime(0, 0, 0);
+            $monthEnd = $date->modify('last day of this month')->setTime(23, 59, 59);
             $months[] = $date->format('M Y');
-            $data[] = rand(0, 10);
+
+            // Count incidents detected within each month
+            $count = count(array_filter($allIncidents, function ($incident) use ($monthStart, $monthEnd) {
+                $detectedAt = $incident->getDetectedAt();
+                return $detectedAt !== null && $detectedAt >= $monthStart && $detectedAt <= $monthEnd;
+            }));
+            $data[] = $count;
         }
 
         return [
@@ -859,12 +879,17 @@ class ReportBuilderService
 
         foreach ($frameworks as $framework) {
             $labels[] = $framework->getName();
-            $data[] = rand(50, 100);
+            // Calculate actual compliance from controls
+            $controls = $this->controlRepository->findAll();
+            $total = count($controls);
+            $implemented = count(array_filter($controls, fn($c) => $c->getImplementationStatus() === 'implemented'));
+            $data[] = $total > 0 ? round(($implemented / $total) * 100) : 0;
         }
 
         if (empty($labels)) {
-            $labels = ['ISO 27001', 'TISAX', 'NIS2', 'DORA'];
-            $data = [85, 70, 60, 75];
+            // No frameworks configured - return empty chart data
+            $labels = ['No Frameworks'];
+            $data = [0];
         }
 
         return [

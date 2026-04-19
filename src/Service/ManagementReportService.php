@@ -87,9 +87,10 @@ class ManagementReportService
         );
         $openIncidents = array_filter($recentIncidents, fn(Incident $i): bool => in_array($i->getStatus(), ['new', 'investigating', 'in_progress']));
 
-        // Compliance calculation
-        $compliancePercentage = count($controls) > 0
-            ? round((count($implementedControls) / count($controls)) * 100, 1)
+        // Compliance calculation (implemented / applicable to match getComplianceStatusReport)
+        $applicableControls = array_filter($controls, fn(Control $c): bool => $c->isApplicable());
+        $compliancePercentage = count($applicableControls) > 0
+            ? round((count($implementedControls) / count($applicableControls)) * 100, 1)
             : 0;
 
         return [
