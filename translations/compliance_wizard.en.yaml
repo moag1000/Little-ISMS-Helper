@@ -1,0 +1,53 @@
+compliance_wizard:
+    delta:
+        title: 'Delta Assessment'
+        sheet:
+            summary: 'Summary'
+            detail: 'Detailed Delta'
+            mapping: 'Mapping Inventory'
+        summary:
+            tenant: 'Tenant'
+            target: 'Target Framework'
+            baseline: 'Baseline Framework'
+            reporting_date: 'Reporting Date'
+            total: 'Total Requirements'
+            inherited: 'Inherited from Baseline'
+            direct: 'Directly Fulfilled'
+            gap: 'Requirements with Gap (<50%)'
+            avg_fulfillment: 'Average Fulfillment'
+            fte_saved: 'Estimated FTE-days Saved'
+            pre_fill_rate: 'Pre-fill rate target %target%%, current %actual%%'
+            pre_fill_rate_ok: 'TARGET MET'
+            pre_fill_rate_miss: 'BELOW TARGET — review mapping coverage'
+        detail:
+            col:
+                requirement_id: 'Requirement ID'
+                title: 'Title'
+                category: 'Category'
+                priority: 'Priority'
+                fulfillment_pct: 'Current Fulfillment %'
+                status: 'Status'
+                source_mappings: 'Source Mappings'
+                inheritance_state: 'Inheritance State'
+                applicability_justification: 'Applicability Justification'
+                gap_estimation: 'Gap Estimation (days)'
+                action_required: 'Action Required'
+        mapping:
+            col:
+                source_requirement: 'Source Requirement'
+                target_requirement: 'Target Requirement'
+                mapping_percentage: 'Mapping %'
+                confidence: 'Confidence'
+                bidirectional: 'Bidirectional'
+                source: 'Source'
+                valid_from: 'Valid From'
+                valid_until: 'Valid Until'
+        action:
+            no_action: 'no action'
+            review_pending: 'review pending'
+            new_assessment: 'new assessment needed'
+            gap_close: 'gap close needed'
+            download_excel: 'Export Delta-Assessment (Excel)'
+            baseline_required: 'Baseline framework required (no other framework active in this tenant)'
+        flash:
+            no_baseline_selected: 'No baseline framework selected — showing only target framework state.'
