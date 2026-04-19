@@ -170,7 +170,7 @@
                         <dd class="col-sm-8">{{ asset.status|default('-') }}</dd>
 
                         <dt class="col-sm-4">{{ 'asset.field.owner'|trans({}, 'asset') }}</dt>
-                        <dd class="col-sm-8">{{ asset.owner|default('-') }}</dd>
+                        <dd class="col-sm-8">{{ asset.effectiveOwner|default('-') }}</dd>
                     </dl>
                 </div>
                 <div class="col-md-6">

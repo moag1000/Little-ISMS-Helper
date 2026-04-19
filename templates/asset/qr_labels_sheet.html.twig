@@ -272,7 +272,7 @@
                                 <div class="label-name">{{ label.asset.name }}</div>
                                 <div class="label-id">ID: {{ label.asset.id }}</div>
                                 <div class="label-meta">
-                                    <div><strong>{% trans from 'asset' %}asset.field.owner{% endtrans %}:</strong> {{ label.asset.owner }}</div>
+                                    <div><strong>{% trans from 'asset' %}asset.field.owner{% endtrans %}:</strong> {{ label.asset.effectiveOwner }}</div>
                                     {% if label.asset.physicalLocation %}
                                         <div><strong>{% trans from 'asset' %}asset.field.location{% endtrans %}:</strong> {{ label.asset.physicalLocation.name }}</div>
                                     {% endif %}

@@ -115,7 +115,7 @@
                                         </a>
                                         {{ inheritance.small_badge(process, currentTenant) }}
                                     </td>
-                                    <td>{{ process.processOwner }}</td>
+                                    <td>{{ process.effectiveProcessOwner }}</td>
                                     <td>
                                         {% set criticality_class = {
                                             'critical': 'danger',

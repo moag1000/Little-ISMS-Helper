@@ -269,7 +269,7 @@
                     {% endif %}
                 </td>
                 <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: asset.assetType } %}</td>
-                <td>{{ asset.owner }}</td>
+                <td>{{ asset.effectiveOwner }}</td>
                 <td class="text-center">
                     {% if asset.dataClassification %}
                         <span class="{{ badge_classification(asset.dataClassification) }}">

@@ -223,7 +223,7 @@
         <div class="asset-details">
             <div class="detail-row">
                 <span class="detail-label">{% trans from 'asset' %}asset.field.owner{% endtrans %}</span>
-                <span class="detail-value">{{ label.asset.owner }}</span>
+                <span class="detail-value">{{ label.asset.effectiveOwner }}</span>
             </div>
 
             {% if label.asset.physicalLocation %}
