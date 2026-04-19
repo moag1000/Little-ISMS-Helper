@@ -31,4 +31,37 @@ class AppliedBaselineRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['tenant' => $tenant, 'baselineCode' => $code]);
     }
+
+    /**
+     * Baselines applied to any ancestor of $tenant but not directly to
+     * the tenant itself. Keyed by baseline code so a child can display
+     * "inherited from Holding X" without loading the full ancestor chain
+     * repeatedly. Phase 9.P1.4 read-only inheritance view.
+     *
+     * If several ancestors applied the same baseline, the immediate
+     * parent's record wins (closest origin).
+     *
+     * @return array<string, AppliedBaseline>
+     */
+    public function findInheritedByTenant(Tenant $tenant): array
+    {
+        $ownCodes = array_map(
+            static fn(AppliedBaseline $a): string => $a->getBaselineCode(),
+            $this->findByTenant($tenant)
+        );
+
+        $inherited = [];
+        foreach ($tenant->getAllAncestors() as $ancestor) {
+            foreach ($this->findByTenant($ancestor) as $applied) {
+                $code = $applied->getBaselineCode();
+                if (in_array($code, $ownCodes, true)) {
+                    continue;
+                }
+                if (!isset($inherited[$code])) {
+                    $inherited[$code] = $applied;
+                }
+            }
+        }
+        return $inherited;
+    }
 }

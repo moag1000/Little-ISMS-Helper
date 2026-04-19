@@ -14,6 +14,9 @@ industry_baseline:
     status:
         applied: 'Already applied'
         applied_at: 'Applied on %date%'
+        inherited: 'Inherited from %tenant%'
+        inherited_short: 'Inherited'
+        inherited_from: 'Inherited via corporate structure from %tenant%'
     field:
         description: 'Description'
         required_frameworks: 'Required frameworks'
@@ -28,7 +31,11 @@ industry_baseline:
     action:
         details: 'View details'
         apply: 'Apply baseline'
+        apply_locally: 'Apply locally in addition'
+        apply_recursive: 'Apply to %count% tenants in the corporate tree'
     confirm_apply: 'Baseline will be applied to your current tenant. Existing data (matched by title/name) is not overwritten. Continue?'
+    confirm_apply_over_inherited: 'This baseline is already visible via the corporate tree. A local apply will create an additional data stub on the current tenant. Continue?'
+    confirm_apply_recursive: 'Baseline will be applied to %count% tenants (current tenant + all subsidiaries). Tenants that already have it are skipped. Continue?'
     risk:
         title: 'Risk'
         category: 'Category'
@@ -45,6 +52,8 @@ industry_baseline:
     flash:
         invalid_csrf: 'Invalid CSRF token.'
         no_tenant: 'No active tenant — baseline application not possible.'
+        no_subsidiaries: 'The current tenant has no subsidiaries — recursive application is not possible.'
         already_applied: 'Baseline has already been applied to this tenant. No re-application needed.'
         applied_summary: 'Baseline applied: %risks% risks, %assets% assets, %controls% controls marked applicable.'
+        applied_recursive_summary: 'Recursive application finished: %applied% newly applied, %skipped% already present, %total% tenants total.'
         frameworks_missing: 'Note: the following required frameworks are not yet loaded for this tenant: %frameworks%. Activate them via the Compliance Wizard before further work.'
