@@ -98,6 +98,79 @@ Nur für die **externe Validierung vor Erst-Zertifizierung** (27001 + NIS2UmsuCG
 | BSI IT-Grundschutz | 🟡 80 % | 🟡 Absicherungsstufen + Schutzbedarfsvererbung scharf, Kompendium-Bausteine unvollständig | 🟡 in Vorbereitung |
 | TISAX 6.0.4 | 🟡 82 % | 🟡 VDA-ISA importiert, AL-Level-Tagging fehlt | 🟡 in Vorbereitung |
 
+### Weg nach Grün — konkrete To-Dos pro Ampel-Zeile
+
+Die Residual-Liste oben ist ROI-sortiert. Hier dieselben Items plus die framework-spezifischen Delta-TODOs, aufgeschlüsselt pro Ampel-Position. **"Tool-Grün"** heißt: das Tool kann alle geforderten Artefakte strukturiert abbilden — operative Datenbefüllung und Audit-Ergebnis liegen beim Mandanten.
+
+#### 🟡 ISO 27001 Daten-Reife → 🟢
+Tool ist 🟢. Für Daten-🟢 braucht es **operative Nachweise**, nicht Code:
+- [ ] Pre-Audit-Run im Tenant: alle Clause-4-10-Requirements mit Fulfillment-Status füllen
+- [ ] Mindestens 1 `ManagementReview` + `InternalAudit` der letzten 12 Monate erfasst
+- [ ] `implementation_readiness` KPI ≥ 80 % im Tenant
+- [ ] `days_since_management_review` < 365
+
+*Kein Code-Aufwand; Consultant-begleitetes Pre-Audit empfohlen.*
+
+#### 🟡 ISO 22301 Daten-Reife → 🟢
+- [ ] BC-Plan-Templates für jeden Tenant via `app:seed-bc-plan-templates <id>` seeden (<0,1 FTE-Tag pro Tenant)
+- [ ] Mindestens 1 `BCExercise` pro Plan in den letzten 12 Monaten
+- [ ] RTO/RPO an allen geschäftskritischen `BusinessProcess`-Entitäten gepflegt
+
+*Kein Code-Aufwand.*
+
+#### 🟡 NIS2 / NIS2UmsuCG Tool → 🟢
+- [ ] **H-03** NIS2-Dashboard-Vervollständigung — Widgets für Art. 21.2.a/c/e/f/g/h/i/j (8 fehlende Kacheln). Datenquellen liegen bereits vor: Risk-Policies, Control.implementationStatus (SDLC), Training-Completion-Rate, RBAC-Coverage, Asset-Inventar, BC-Plan-Aktivierung. **4 FTE-Tage.**
+- [ ] Gewichtete Gesamtbewertung über alle 11 Artikel statt aktuelle 3-Artikel-Mittelung (bereits vorbereitet via `KpiThresholdConfig`). **0,5 FTE-Tag.**
+- [ ] Art.-23-Meldefrist-Timer als eigenes Widget (Daten aus Incident-Entity schon vorhanden). **0,5 FTE-Tag.**
+
+**Summe Tool-Grün: 5 FTE-Tage.**
+
+#### 🟡 DORA Tool → 🟢
+- [ ] **TLPT-Layer** (Art. 26) — neue Entity `ThreatLedPenetrationTest` mit Scope, Tester, Ergebnis, Findings-Link auf `AuditFinding`. **3 FTE-Tage.**
+- [ ] Sub-Outsourcing-Kette strukturiert statt Freitext (Art. 28.6, Art. 30 RTS) — `Supplier.subcontractorChain` existiert als JSON, aber noch kein UI-Editor mit Ebenen-Visualisierung. **2 FTE-Tage.**
+- [ ] DORA-Register-of-Information-Importer (ITS-Format, Symmetrie zum bereits existierenden CSV-Export). **2 FTE-Tage.**
+- [ ] Incident-Classification nach Art. 18 DORA (Impact, Cross-Border, Reputation, Service-Delivery) — Metadata auf `Incident` ergänzen, `NIS2Category` als Template wiederverwenden. **1 FTE-Tag.**
+
+**Summe Tool-Grün: 8 FTE-Tage.**
+
+#### 🟡 DSGVO Daten-Reife → 🟢
+Tool ist 🟢. Datenseite:
+- [ ] VVT für alle Produktivprozesse im Tenant vollständig gepflegt (`ProcessingActivity.completenessPercentage` ≥ 90 %)
+- [ ] Mindestens 1 DPIA für alle Hochrisiko-Verarbeitungen
+- [ ] DSR-Metriken unter Sollwert (Durchschn. Bearbeitungszeit < 30 Tage)
+
+*Kein Code-Aufwand.*
+
+#### 🟡 BSI IT-Grundschutz Tool → 🟢
+- [ ] **Kompendium-Bausteine vervollständigen** — aktuell ca. 33 + 71 Supplement = ~104, Kompendium 2023 hat ~111 (inkl. ORP, CON, OPS, DER, APP, SYS, IND, NET, INF). Delta-Loader für fehlende Bausteine. **3 FTE-Tage.**
+- [ ] Absicherungsstufen-Filter in Dashboard-Analytik spiegeln (nicht nur ComplianceRequirement-Index, sondern auch KPI-Ebene). **1 FTE-Tag.**
+- [ ] BSI 200-2 Phasenmodell (Initiierung/Analyse/Konzeption/Umsetzung) als Tenant-State tracken. **1,5 FTE-Tage.**
+- [ ] IT-Grundschutz-Check-View (Baustein-Level Soll/Ist mit MUSS/SOLLTE/KANN-Klassifizierung — Felder vorhanden, UI fehlt). **2 FTE-Tage.**
+
+**Summe Tool-Grün: 7,5 FTE-Tage.**
+
+#### 🟡 TISAX 6.0.4 Tool → 🟢
+- [ ] AL-Level-Tagging pro Requirement (AL1/AL2/AL3 — aktuell nur in Al3-Seeder berücksichtigt). **0,5 FTE-Tag.**
+- [ ] Prototype-Protection-Assessment-Flow (VDA-Prototyp-Schutz, eigenes Assessment-Frame). **3 FTE-Tage.**
+- [ ] Info-Classification-Schicht mit VDA-Stufen (keine Kundeninformation vs. streng vertraulich). **1 FTE-Tag.**
+
+**Summe Tool-Grün: 4,5 FTE-Tage.**
+
+### Gesamt-Budget zum "Alles-Grün"
+
+| Bereich | FTE-Tage |
+|---|---|
+| Cross-Framework Residual (L-02, M-01/02/04/05, H-02) | 10 |
+| NIS2 Dashboard-Vervollständigung | 5 |
+| DORA TLPT + Sub-Outsourcing + Classification | 8 |
+| BSI IT-Grundschutz Kompendium + Check-View | 7,5 |
+| TISAX AL-Level + Prototype + Classification | 4,5 |
+| **Summe** | **~35 FTE-Tage** |
+
+**Entspricht knapp 2 Entwicklermonaten oder 1 Sprint pro Framework-Ampel.**
+
+Pro Ampel-Zeile kann der CISO selektiv investieren — die Cross-Framework-Items (10 FTE-Tage) sollten zuerst, weil sie bei jedem Framework greifen.
+
 ---
 
 **Ursprünglicher Bericht (November 2025) folgt unverändert ab hier — dient als historischer Referenzpunkt.**
