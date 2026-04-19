@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'industry_baseline.title'|trans({}, 'industry_baseline') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'industry_baseline.title'|trans({}, 'industry_baseline') }
+        ]
+    } %}
+
+    <div class="mb-4">
+        <h1 class="h2 mb-1">
+            <i class="bi bi-boxes text-primary" aria-hidden="true"></i>
+            {{ 'industry_baseline.title'|trans({}, 'industry_baseline') }}
+        </h1>
+        <p class="text-muted mb-0">{{ 'industry_baseline.subtitle'|trans({}, 'industry_baseline') }}</p>
+    </div>
+
+    <div class="alert alert-info d-flex gap-2" role="note">
+        <i class="bi bi-info-circle mt-1" aria-hidden="true"></i>
+        <div class="small">{{ 'industry_baseline.intro'|trans({}, 'industry_baseline')|raw }}</div>
+    </div>
+
+    {% if baselines is empty %}
+        <div class="alert alert-warning">
+            {{ 'industry_baseline.empty'|trans({}, 'industry_baseline') }}
+            <code>php bin/console app:load-industry-baselines</code>
+        </div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+            {% for baseline in baselines %}
+                {% set applied = baseline.code in applied_codes %}
+                <div class="col">
+                    <div class="card shadow-sm h-100 {% if applied %}border-success{% endif %}">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h2 class="h6 mb-0">
+                                <i class="bi bi-box-seam me-1" aria-hidden="true"></i>
+                                {{ baseline.name }}
+                            </h2>
+                            {% if applied %}
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                    {{ 'industry_baseline.status.applied'|trans({}, 'industry_baseline') }}
+                                </span>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-2 small">
+                                <span class="badge bg-secondary me-1">
+                                    {{ ('industry_baseline.industry.' ~ baseline.industry)|trans({}, 'industry_baseline') }}
+                                </span>
+                                <span class="badge bg-light text-dark border">v{{ baseline.version }}</span>
+                                <span class="badge bg-light text-dark border">{{ baseline.source }}</span>
+                            </div>
+                            <p class="small text-muted mb-3">{{ baseline.description|u.truncate(200, '…') }}</p>
+                            <dl class="row small mb-3">
+                                <dt class="col-sm-5">{{ 'industry_baseline.field.required_frameworks'|trans({}, 'industry_baseline') }}:</dt>
+                                <dd class="col-sm-7">
+                                    {% for code in baseline.requiredFrameworks %}
+                                        <span class="badge bg-info me-1">{{ code }}</span>
+                                    {% endfor %}
+                                </dd>
+                                <dt class="col-sm-5">{{ 'industry_baseline.field.preset_risks'|trans({}, 'industry_baseline') }}:</dt>
+                                <dd class="col-sm-7">{{ baseline.presetRisks|length }}</dd>
+                                <dt class="col-sm-5">{{ 'industry_baseline.field.preset_assets'|trans({}, 'industry_baseline') }}:</dt>
+                                <dd class="col-sm-7">{{ baseline.presetAssets|length }}</dd>
+                                <dt class="col-sm-5">{{ 'industry_baseline.field.preset_controls'|trans({}, 'industry_baseline') }}:</dt>
+                                <dd class="col-sm-7">{{ baseline.presetApplicableControls|length }}</dd>
+                                <dt class="col-sm-5">{{ 'industry_baseline.field.fte_saved'|trans({}, 'industry_baseline') }}:</dt>
+                                <dd class="col-sm-7"><strong class="text-success">{{ baseline.fteDaysSavedEstimate|number_format(1) }}</strong></dd>
+                            </dl>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <a href="{{ path('app_industry_baseline_show', {code: baseline.code}) }}" class="btn btn-outline-primary btn-sm w-100">
+                                {{ 'industry_baseline.action.details'|trans({}, 'industry_baseline') }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

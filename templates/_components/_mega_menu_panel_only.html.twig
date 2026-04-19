@@ -365,6 +365,13 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.compliance_wizard'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        <li><a href="{{ path('app_industry_baseline_index') }}" class="{% if current_route starts with 'app_industry_baseline_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-boxes" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.industry_baselines'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.industry_baselines'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
                     </ul>
                 </div>
             </div>
