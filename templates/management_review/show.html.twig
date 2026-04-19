@@ -205,6 +205,15 @@
                         </a>
                         {% endif %}
 
+                        {% if is_granted('ROLE_MANAGER') %}
+                        <a href="{{ path('app_management_review_pdf', {id: review.id}) }}"
+                           class="btn btn-outline-primary"
+                           data-turbo="false">
+                            <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                            {{ 'management_review.action.pdf'|trans({}, 'management_review') }}
+                        </a>
+                        {% endif %}
+
                         <a href="{{ path('app_management_review_index') }}"
                            class="btn btn-outline-secondary"
                            data-turbo-action="advance">

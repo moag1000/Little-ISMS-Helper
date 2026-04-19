@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use App\Entity\ManagementReview;
 use App\Form\ManagementReviewType;
 use App\Repository\ManagementReviewRepository;
+use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +23,8 @@ class ManagementReviewController extends AbstractController
         private readonly ManagementReviewRepository $managementReviewRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly TenantContext $tenantContext
+        private readonly TenantContext $tenantContext,
+        private readonly PdfExportService $pdfExportService,
     ) {}
     #[Route('/management-review/', name: 'app_management_review_index')]
     public function index(): Response
@@ -94,6 +96,33 @@ class ManagementReviewController extends AbstractController
             'form' => $form,
         ]);
     }
+    #[Route('/management-review/{id}/pdf', name: 'app_management_review_pdf', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function pdf(ManagementReview $managementReview): Response
+    {
+        $generatedAt = new DateTimeImmutable();
+
+        $pdf = $this->pdfExportService->generatePdf(
+            'management_review/pdf/report.html.twig',
+            [
+                'review' => $managementReview,
+                'generated_at' => $generatedAt,
+            ],
+            [
+                'classification' => $managementReview->getTenant()?->getName(),
+            ]
+        );
+
+        $dateSlug = $managementReview->getReviewDate()?->format('Y-m-d') ?? $generatedAt->format('Y-m-d');
+        $titleSlug = preg_replace('/[^A-Za-z0-9_-]+/', '-', (string) $managementReview->getTitle()) ?? 'management-review';
+        $filename = sprintf('management-review_%s_%s.pdf', $dateSlug, trim($titleSlug, '-') ?: 'review');
+
+        return new Response($pdf, Response::HTTP_OK, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+    }
+
     #[Route('/management-review/{id}/delete', name: 'app_management_review_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, ManagementReview $managementReview): Response
