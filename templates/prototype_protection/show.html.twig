@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ assessment.title }}{% endblock %}
+
+{% set status_variant = {
+    'draft':     'secondary',
+    'in_review': 'info',
+    'approved':  'success',
+    'rejected':  'danger',
+    'expired':   'warning',
+} %}
+
+{% set result_variant = {
+    'not_applicable': 'secondary',
+    'not_met':        'danger',
+    'partial':        'warning',
+    'met':            'success',
+    'exceeded':       'success',
+} %}
+
+{% block body %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'prototype_protection.page.index_title'|trans({}, 'prototype_protection'), url: path('app_prototype_protection_index') },
+            { label: assessment.title }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                {{ assessment.title }}
+            </h1>
+            <div class="small text-muted">
+                {% include '_components/_badge.html.twig' with {
+                    variant: status_variant[assessment.status] ?? 'secondary',
+                    content: ('prototype_protection.status.' ~ assessment.status)|trans({}, 'prototype_protection')
+                } %}
+                {% if assessment.tisaxLevel %}
+                    <span class="badge text-bg-light border ms-1">{{ assessment.tisaxLevel }}</span>
+                {% endif %}
+                {% if assessment.overallResult %}
+                    {% include '_components/_badge.html.twig' with {
+                        variant: result_variant[assessment.overallResult] ?? 'secondary',
+                        content: ('prototype_protection.result.' ~ assessment.overallResult)|trans({}, 'prototype_protection')
+                    } %}
+                {% endif %}
+            </div>
+        </div>
+        <div>
+            <a href="{{ path('app_prototype_protection_edit', {id: assessment.id}) }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+            </a>
+            <a href="{{ path('app_prototype_protection_index') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-8">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="h6 mb-0">{{ 'prototype_protection.sections.heading'|trans({}, 'prototype_protection') }}</h2></div>
+                {% endblock %}
+                {% block card_body %}
+                    {% set sections = [
+                        { key: 'physical',        ref: '8.1', result: assessment.physicalResult,       notes: assessment.physicalNotes },
+                        { key: 'organisation',    ref: '8.2', result: assessment.organisationResult,   notes: assessment.organisationNotes },
+                        { key: 'handling',        ref: '8.3', result: assessment.handlingResult,       notes: assessment.handlingNotes },
+                        { key: 'trial_operation', ref: '8.4', result: assessment.trialOperationResult, notes: assessment.trialOperationNotes },
+                        { key: 'events',          ref: '8.5', result: assessment.eventsResult,         notes: assessment.eventsNotes },
+                    ] %}
+                    {% for s in sections %}
+                        <div class="mb-3 pb-3 border-bottom">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="h6 mb-1">
+                                    <span class="badge text-bg-light border">VDA {{ s.ref }}</span>
+                                    <span class="ms-1">{{ ('prototype_protection.section.' ~ s.key ~ '.title')|trans({}, 'prototype_protection') }}</span>
+                                </h3>
+                                {% if s.result %}
+                                    {% include '_components/_badge.html.twig' with {
+                                        variant: result_variant[s.result] ?? 'secondary',
+                                        content: ('prototype_protection.result.' ~ s.result)|trans({}, 'prototype_protection')
+                                    } %}
+                                {% else %}
+                                    <span class="text-muted small">—</span>
+                                {% endif %}
+                            </div>
+                            {% if s.notes %}
+                                <div class="small text-muted mt-1" style="white-space: pre-wrap;">{{ s.notes }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        </div>
+
+        <div class="col-md-4">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="h6 mb-0">{{ 'prototype_protection.sidebar.meta'|trans({}, 'prototype_protection') }}</h2></div>
+                {% endblock %}
+                {% block card_body %}
+                    <dl class="row mb-0 small">
+                        <dt class="col-5">{{ 'prototype_protection.field.supplier'|trans({}, 'prototype_protection') }}</dt>
+                        <dd class="col-7">{{ assessment.supplier ? assessment.supplier.name : '—' }}</dd>
+
+                        <dt class="col-5">{{ 'prototype_protection.field.location'|trans({}, 'prototype_protection') }}</dt>
+                        <dd class="col-7">{{ assessment.location ? assessment.location.name : '—' }}</dd>
+
+                        <dt class="col-5">{{ 'prototype_protection.field.assessor'|trans({}, 'prototype_protection') }}</dt>
+                        <dd class="col-7">{{ assessment.assessor ? assessment.assessor.fullName|default(assessment.assessor.email) : '—' }}</dd>
+
+                        <dt class="col-5">{{ 'prototype_protection.field.assessment_date'|trans({}, 'prototype_protection') }}</dt>
+                        <dd class="col-7">{{ assessment.assessmentDate ? assessment.assessmentDate|date('d.m.Y') : '—' }}</dd>
+
+                        <dt class="col-5">{{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}</dt>
+                        <dd class="col-7">{{ assessment.nextAssessmentDue ? assessment.nextAssessmentDue|date('d.m.Y') : '—' }}</dd>
+
+                        <dt class="col-5">{{ 'prototype_protection.field.required_labels'|trans({}, 'prototype_protection') }}</dt>
+                        <dd class="col-7">
+                            {% if assessment.requiredLabels %}
+                                {% for label in assessment.requiredLabels %}
+                                    <span class="badge text-bg-light border d-block mb-1">
+                                        {{ ('prototype_protection.label.' ~ label)|trans({}, 'prototype_protection') }}
+                                    </span>
+                                {% endfor %}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </dd>
+                    </dl>
+                {% endblock %}
+            {% endembed %}
+
+            {% if assessment.scope %}
+                <div class="card mt-3">
+                    <div class="card-header"><h2 class="h6 mb-0">{{ 'prototype_protection.field.scope'|trans({}, 'prototype_protection') }}</h2></div>
+                    <div class="card-body small" style="white-space: pre-wrap;">{{ assessment.scope }}</div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

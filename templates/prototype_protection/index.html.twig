@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'prototype_protection.page.index_title'|trans({}, 'prototype_protection') }}{% endblock %}
+
+{% set status_variant = {
+    'draft':     'secondary',
+    'in_review': 'info',
+    'approved':  'success',
+    'rejected':  'danger',
+    'expired':   'warning',
+} %}
+
+{% set result_variant = {
+    'not_applicable': 'secondary',
+    'not_met':        'danger',
+    'partial':        'warning',
+    'met':            'success',
+    'exceeded':       'success',
+} %}
+
+{% block body %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.compliance'|trans({}, 'nav') },
+            { label: 'prototype_protection.page.index_title'|trans({}, 'prototype_protection') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                {{ 'prototype_protection.page.index_title'|trans({}, 'prototype_protection') }}
+            </h1>
+            <p class="text-muted mb-0 small">{{ 'prototype_protection.page.index_description'|trans({}, 'prototype_protection') }}</p>
+        </div>
+        <div>
+            <a href="{{ path('app_prototype_protection_new') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                {{ 'prototype_protection.action.new'|trans({}, 'prototype_protection') }}
+            </a>
+        </div>
+    </div>
+
+    {% if expiring|length > 0 %}
+        <div class="alert alert-warning">
+            <h2 class="h6 alert-heading">
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                {{ 'prototype_protection.expiring.heading'|trans({'%count%': expiring|length}, 'prototype_protection') }}
+            </h2>
+            <ul class="mb-0 small">
+                {% for a in expiring %}
+                    <li>
+                        <a href="{{ path('app_prototype_protection_show', {id: a.id}) }}" class="alert-link">{{ a.title }}</a>
+                        — {{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}:
+                        {{ a.nextAssessmentDue|date('d.m.Y') }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
+            {% if assessments|length == 0 %}
+                {% include '_components/_empty_state.html.twig' with {
+                    icon: 'bi-shield-lock',
+                    title: 'prototype_protection.empty.title'|trans({}, 'prototype_protection'),
+                    message: 'prototype_protection.empty.message'|trans({}, 'prototype_protection')
+                } %}
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'prototype_protection.field.title'|trans({}, 'prototype_protection') }}</th>
+                                <th scope="col">{{ 'prototype_protection.field.status'|trans({}, 'prototype_protection') }}</th>
+                                <th scope="col">{{ 'prototype_protection.field.tisax_level'|trans({}, 'prototype_protection') }}</th>
+                                <th scope="col">{{ 'prototype_protection.field.assessment_date'|trans({}, 'prototype_protection') }}</th>
+                                <th scope="col">{{ 'prototype_protection.field.overall_result'|trans({}, 'prototype_protection') }}</th>
+                                <th scope="col">{{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for a in assessments %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ path('app_prototype_protection_show', {id: a.id}) }}">{{ a.title }}</a>
+                                        {% if a.supplier %}
+                                            <div class="small text-muted">{{ a.supplier.name }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% include '_components/_badge.html.twig' with {
+                                            variant: status_variant[a.status] ?? 'secondary',
+                                            content: ('prototype_protection.status.' ~ a.status)|trans({}, 'prototype_protection')
+                                        } %}
+                                    </td>
+                                    <td>{{ a.tisaxLevel ?? '—' }}</td>
+                                    <td>{{ a.assessmentDate ? a.assessmentDate|date('d.m.Y') : '—' }}</td>
+                                    <td>
+                                        {% if a.overallResult %}
+                                            {% include '_components/_badge.html.twig' with {
+                                                variant: result_variant[a.overallResult] ?? 'secondary',
+                                                content: ('prototype_protection.result.' ~ a.overallResult)|trans({}, 'prototype_protection')
+                                            } %}
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if a.nextAssessmentDue %}
+                                            {{ a.nextAssessmentDue|date('d.m.Y') }}
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{{ path('app_prototype_protection_edit', {id: a.id}) }}"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}

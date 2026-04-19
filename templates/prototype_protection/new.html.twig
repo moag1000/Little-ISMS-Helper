@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'prototype_protection.page.new_title'|trans({}, 'prototype_protection') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'prototype_protection.page.index_title'|trans({}, 'prototype_protection'), url: path('app_prototype_protection_index') },
+            { label: 'prototype_protection.action.new'|trans({}, 'prototype_protection') }
+        ]
+    } %}
+
+    <h1 class="h3 mb-3">
+        <i class="bi bi-shield-lock" aria-hidden="true"></i>
+        {{ 'prototype_protection.page.new_title'|trans({}, 'prototype_protection') }}
+    </h1>
+
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
+            {% include 'prototype_protection/_form.html.twig' %}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}

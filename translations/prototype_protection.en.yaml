@@ -1,0 +1,86 @@
+prototype_protection:
+    page:
+        index_title: 'Prototype Protection (TISAX Ch. 8)'
+        index_description: 'VDA ISA 6 Chapter 8 — protection of prototypes, parts, test vehicles and events.'
+        new_title: 'New assessment'
+        edit_title: 'Edit assessment — %title%'
+    action:
+        new: 'New assessment'
+        pdf: 'Export PDF'
+    field:
+        title: 'Title'
+        scope: 'Scope'
+        status: 'Status'
+        tisax_level: 'TISAX Assessment Level'
+        required_labels: 'Required TISAX labels'
+        supplier: 'Supplier'
+        location: 'Location'
+        assessor: 'Assessor'
+        assessment_date: 'Assessment date'
+        next_assessment_due: 'Next assessment due'
+        overall_result: 'Overall result'
+    help:
+        scope: 'Program, model series, vehicle variant or event this assessment applies to.'
+        required_labels: 'Multi-select — all prototype labels applicable to the scope.'
+    status:
+        draft: 'Draft'
+        in_review: 'In review'
+        approved: 'Approved'
+        rejected: 'Rejected'
+        expired: 'Expired'
+    result:
+        not_applicable: 'n/a'
+        not_met: 'Not met'
+        partial: 'Partially met'
+        met: 'Met'
+        exceeded: 'Exceeded'
+    label:
+        prototype_parts_components: 'Prototype parts & components'
+        prototype_vehicles: 'Prototype vehicles'
+        test_vehicles: 'Test vehicles'
+        events_and_shoots: 'Events / shoots'
+    value:
+        na: 'n/a'
+    sections:
+        heading: 'Sections per VDA ISA 6 Ch. 8'
+        description: 'Capture result + notes per section. "Overall result" is computed from the worst section and can be overridden manually before approval.'
+    section:
+        physical:
+            title: 'Physical & environmental security'
+            description: 'Zones, access control, line-of-sight screening, parking areas, photo ban.'
+            result: 'Section result 8.1'
+            notes: 'Section notes 8.1'
+        organisation:
+            title: 'Organisational requirements'
+            description: 'Responsibilities, NDAs, role concept, training.'
+            result: 'Section result 8.2'
+            notes: 'Section notes 8.2'
+        handling:
+            title: 'Handling and transport'
+            description: 'Labelling, covering, container transport, logistics supply chain.'
+            result: 'Section result 8.3'
+            notes: 'Section notes 8.3'
+        trial_operation:
+            title: 'Protection during trial operation'
+            description: 'Test drives, log books, camouflage, interim stops, parking sites.'
+            result: 'Section result 8.4'
+            notes: 'Section notes 8.4'
+        events:
+            title: 'Events and shoots'
+            description: 'Press and photo events, guest management, photo/video usage.'
+            result: 'Section result 8.5'
+            notes: 'Section notes 8.5'
+    sidebar:
+        meta: 'Metadata'
+    expiring:
+        heading: '%count% assessment(s) expire in the next 60 days:'
+    empty:
+        title: 'No prototype-protection assessments yet'
+        message: 'Start with a new assessment once prototypes, test vehicles or events are in your TISAX scope.'
+    flash:
+        created: 'Prototype-protection assessment created.'
+        updated: 'Prototype-protection assessment updated.'
+        deleted: 'Prototype-protection assessment deleted.'
+    validation:
+        title_required: 'Please provide a title for the assessment.'
+        level_invalid: 'TISAX level must be AL2 or AL3.'
