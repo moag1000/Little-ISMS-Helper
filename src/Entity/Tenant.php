@@ -69,6 +69,30 @@ class Tenant
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $corporateNotes = null;
 
+    /**
+     * BSI 200-2 phase model: tracks where the tenant stands in the
+     * IT-Grundschutz adoption journey. Null until the tenant opts in.
+     */
+    public const BSI_PHASE_INITIATION = 'initiation';
+    public const BSI_PHASE_ANALYSIS = 'analysis';
+    public const BSI_PHASE_CONCEPT = 'concept';
+    public const BSI_PHASE_IMPLEMENTATION = 'implementation';
+    public const BSI_PHASE_CONTINUOUS = 'continuous';
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $bsiPhase = null;
+
+    public function getBsiPhase(): ?string
+    {
+        return $this->bsiPhase;
+    }
+
+    public function setBsiPhase(?string $bsiPhase): static
+    {
+        $this->bsiPhase = $bsiPhase;
+        return $this;
+    }
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
