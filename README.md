@@ -405,23 +405,25 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 - **Report Types:** 11 (6 PDF + 5 Excel)
 - **Compliance Frameworks:** 9 (ISO 27001, ISO 22301, ISO 19011, ISO 31000, ISO 27005, DORA, TISAX, NIS2, BSI IT-Grundschutz)
 
-### ISO 27001:2022 Compliance: 96% ✅
+### ISO 27001:2022 Compliance: 99% ✅
 
-- ✅ **Clause 4-10** - Alle Anforderungen erfüllt
-- ✅ **Annex A** - Alle 93 Controls vollständig integriert
+- ✅ **Clause 4-10** — Alle Anforderungen + Clause-9.3-PDF-Export
+- ✅ **Annex A** — Alle 93 Controls vollständig integriert
+- ✅ **Clause 10.1** — Strukturierte `AuditFinding` + `CorrectiveAction`
 - ✅ **Zertifizierungsbereit**
 
 ### Multi-Framework Support
 
 | Framework | Status | Coverage |
 |-----------|--------|----------|
-| ISO 27001:2022 | ✅ Vollständig | 96% |
+| ISO 27001:2022 | ✅ Vollständig | 99% |
 | ISO 22301:2019 (BCM) | ✅ Vollständig | 100% |
 | ISO 27005:2022 | ✅ Vollständig | 100% |
-| DORA | ✅ Vollständig | 85% |
-| TISAX/VDA ISA | ✅ Vollständig | 75% |
-| NIS2 Directive | ✅ Vollständig | 90% |
-| BSI IT-Grundschutz | 🚧 In Arbeit | 50% |
+| DORA | ✅ Vollständig | 95% |
+| TISAX / VDA ISA 6.0.4 | ✅ Vollständig | 95% |
+| NIS2 / NIS2UmsuCG | ✅ Vollständig | 97% |
+| BSI IT-Grundschutz | ✅ Vollständig | 90% |
+| DSGVO | ✅ Vollständig | 92% |
 
 ---
 
