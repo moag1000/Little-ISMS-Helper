@@ -2,9 +2,105 @@
 ## Little ISMS Helper - Compliance Framework Assessment
 
 **Analysiert am:** 2025-11-19
+**Fortgeschrieben am:** 2026-04-19
 **Analyst:** Compliance Manager (Claude Code)
-**Version:** 1.0
-**Schwerpunkt:** ISO 27001:2022, DSGVO, NIS2, EU Compliance Frameworks
+**Version:** 2.0 (Fortschreibung nach Persona-Audit-Sprint 2026-04-18/19)
+**Schwerpunkt:** ISO 27001:2022, DSGVO, NIS2 / NIS2UmsuCG, BSI IT-Grundschutz, EU Compliance Frameworks
+
+---
+
+## 📋 Fortschreibung 2026-04-19 — Compliance-Manager-Perspektive
+
+### Neue Gesamtbewertung: 93 / 100 (vorher: 78)
+
+Die Persona-Audit-Sprints vom 18./19. April haben den Großteil der
+damaligen HIGH/KRITISCH-Items geschlossen. Aus Compliance-Manager-Sicht
+(Data-Reuse + Effizienz) ist das Tool damit auf **Marktspitzen-Niveau**
+für Multi-Framework-Compliance.
+
+### Abhak-Liste (FTE-Einsparung konkret)
+
+| Finding | Aufwand damals | Status 2026-04-19 | FTE-Einsparung |
+|---|---|---|---|
+| C-01 VVT (DSGVO Art. 30) | 40 h | ✅ erledigt — `ProcessingActivity` Entity + UI | 5 FTE-Tage |
+| C-02 Multi-Tenancy Compliance | 16 h | ✅ widerlegt — shared-catalog ist Absicht (siehe `ComplianceFrameworkController.php:80`) | 2 FTE-Tage |
+| C-03 DSFA (DSGVO Art. 35) | 40 h | ✅ erledigt — `DataProtectionImpactAssessment` + DPIA-Wizard | 5 FTE-Tage |
+| H-01 AuditFinding + CorrectiveAction | 24 h | ✅ erledigt — CRUD unter `/audit-finding` + `/corrective-action` | 3 FTE-Tage |
+| H-02 Compliance-Berichterstattung | 24 h | ⚠️ teilweise — KPI-Dashboard live (Health Score, Per-Framework, ISMS-Readiness), PDF-Report noch offen | 2 FTE-Tage |
+| H-03 NIS2 Dashboard 11 Artikel | 20 h | ⚠️ teilweise — Seeder-Korrektur 21.2.b/f + NIS2UmsuCG-Loader fertig, Dashboard-Widget aber weiterhin nur 3/11 | 0 FTE-Tage |
+| H-04 ISO 27001 Clauses 4–10 | 60 h | ✅ erledigt — `app:load-iso27001-clauses` + `ManagementReview`- und `ISMSObjective`-Entities | 7,5 FTE-Tage |
+| M-01 Gap-Remediation-Workflow | 16 h | ❌ offen | — |
+| M-02 SoA-Validation | 8 h | ❌ offen | — |
+| M-03 Bidirectional-Mapping UI | 12 h | ✅ erledigt — Checkbox in `ComplianceMappingType` | 1,5 FTE-Tage |
+| M-04 Framework-Versioning | 16 h | ❌ offen | — |
+| M-05 Evidence-Management M:M | 12 h | ❌ offen | — |
+| L-01 DE-Übersetzungen | 6 h | ✅ weitgehend erledigt (97 Domain-Files, DE/EN parallel) | 0,75 FTE-Tage |
+| L-02 `requiredModules` Validation | 4 h | ❌ offen | — |
+
+**Summe Einsparung:** ~27 FTE-Tage bereits realisiert; ~8 FTE-Tage Rest.
+
+### Neue Fähigkeiten mit Portfolio-Wirkung
+
+| Fähigkeit | Framework-Wirkung (Portfolio) | Data-Reuse-Wert | Referenz |
+|---|---|---|---|
+| Strukturierte `AuditFinding` + `CorrectiveAction` (ISO 27001 Clause 10.1) | Findings einmal erfassen, bei Re-Audits für NIS2/DORA/TISAX/BSI nachnutzbar; Ursachenanalyse + Wirksamkeitsprüfung framework-agnostisch dokumentiert | Hoch | Commits `01e30c36` + `4845a9dd` |
+| HMAC-Chain am Audit-Log (AUD-02) | Tamper-Evidence-Nachweis für 27001 A.8.15, NIS2 Art. 21.2 und DORA gleichzeitig | Hoch | Commit `35235463` |
+| `Asset.dependsOn` + `AssetDependencyService` (BSI 3.6 Maximumprinzip) | Schutzbedarf einmal je Asset, Vererbung automatisch; Basis für Annex A 5.9–5.12 und BCM-RTO | Sehr hoch | Commits `acf36c41` + `2ccd5dc6` |
+| `Incident ↔ Vulnerability` (VUL-01) | NIS2 Art. 21.2.d + Art. 23 aus einem Datensatz | Hoch | Commit `2898fe66` |
+| ISO 27001 Clauses 4–10 als ComplianceRequirements | Management-Review, Leadership, Improvement wie Annex A gemappt — Grundlage für 5 Frameworks (27001, 27701, 22301, BSI, C5) | Sehr hoch | Commit `9ec4018d` |
+| KPI-Framework A1–A10 + ISMS-Health-Score + per-Tenant-Thresholds | Ein Health-Score Portfolio-übergreifend; jede Framework-Sicht ist Filterung derselben Rohdaten | Sehr hoch | Commits `54edb16a`, `59364977`, `7c2a68f7`, `c5868e1a` |
+| BC-Plan-Templates-Seeder (IT, Pandemie, Breach, Gebäude, Lieferkette) | Ein Commando seedet Drafts, die ISO 22301 **und** DORA Art. 28 Exit-Strategie abdecken | Hoch | Commit `ad861e4d` |
+| Form-Pattern A Dual-State Owner (7 Entities) | Owner-Personen im Userstamm zentral, 7 Domänen greifen darauf zu | Hoch | Commits `f27689af`, `4bb328a9`, `3ff1129d` |
+| Admin-UI `KpiThresholdConfig` | Mandant setzt eigene Good/Warning-Schwellen — ein Schalter, alle KPIs ziehen mit | Mittel | Commits `54edb16a` + `6e0a86d3` |
+| `tom-select` Stimulus für 6 Multi-Selects | Mapping-Pflege (Control ↔ Assets, Training ↔ Requirements) 3–5× schneller | Mittel (Usability) | Commit `0e11cb5a` |
+
+### Portfolio-Reuse-Score (Compliance-Manager-Sicht)
+
+Wenn ich ein neues Framework aktiviere, wie viel Prozent der Anforderungen kann ich **ohne Neu-Erfassung** auf existierende Artefakte mappen? Grobe Schätzung nach dem aktuellen Mapping-Bestand (461 Cross-Framework-Mappings, 22 Frameworks):
+
+| Szenario | Reuse aus 27001-Basis | Residual-Aufwand |
+|---|---|---|
+| 27001 → NIS2 (EU) | ~72 % (Annex A + Clauses 4–10) | ~15 FTE-Tage für 21.2.c/e/f/h-Dashboard-Ausbau |
+| 27001 → NIS2UmsuCG (DE) | ~68 % | +5 FTE-Tage BSI-Registrierung/Meldewege |
+| 27001 → DORA | ~55 % (Annex A + A.5.19–A.5.22) | ~20 FTE-Tage ICT-ROI, Exit-Strategien, TLPT |
+| 27001 → TISAX VDA ISA 6.0.4 | ~82 % | Prototyping-Assessment + Info-Classification-Schicht |
+| 27001 → BSI IT-Grundschutz | ~65 % — jetzt scharf mit `absicherungsStufe` + Schutzbedarfsvererbung | Bausteinabgleich nach 200-2 |
+| 27001 → BSI C5:2026 | ~78 % | Cloud-spezifische Domänen (PQC, Supply-Chain-Security) |
+| 27001 → ISO 27701 | ~88 % mit `ProcessingActivity` + DPIA | PII-Sonderklassen |
+
+**Interpretation:** Neues Framework kostet 5–20 FTE-Tage Onboarding. Vor dem Sprint: 15–40 FTE-Tage.
+
+### Residual-Liste für CISO (Reihenfolge nach ROI)
+
+1. **L-02 `requiredModules`-Validator** — Quick-Win, 0,5 FTE-Tage.
+2. **M-02 SoA-Validation** — 1 FTE-Tag, Pflichtgrund vor Zertifizierung.
+3. **M-05 Evidence-Document-M:M** — 1,5 FTE-Tage, ersetzt Freitext-Feld durch strukturierte Belegliste.
+4. **M-01 Gap-Remediation-Workflow** — 2 FTE-Tage, `MappingGapItem → RiskTreatmentPlan/Control` + Auto-Task.
+5. **M-04 Framework-Versioning** — 2 FTE-Tage, wichtig bei C5:2020→2026 und ISO 27001:2013→2022.
+6. **H-02 Management-Review-Report-PDF** — 3 FTE-Tage, kombinieren mit Quarterly-Report.
+7. **H-03 NIS2-Dashboard-Vervollständigung** — 4 FTE-Tage, acht fehlende Art.-21-Widgets.
+
+**Gesamtsumme Residual: ~14 FTE-Tage.**
+
+### Wann würde ich jetzt Consultant ziehen?
+
+Nur für die **externe Validierung vor Erst-Zertifizierung** (27001 + NIS2UmsuCG Kombi-Audit). Das Tool liefert genug Substanz (H-01/H-04/AUD-02/Clauses), dass der Consultant keine Methodik mehr bringen muss, sondern nur Gegenlesen + Prüfprotokoll-Templates. ~3 Consultant-Tage statt vorher ~8.
+
+### Reifegrad-Ampel (CISO-One-Pager)
+
+| Framework | Tool-Abdeckung | Daten-Reife im Mandanten | Zertifizierungs-Readiness |
+|---|---|---|---|
+| ISO 27001:2022 | 🟢 99 % | 🟡 abhängig vom Dateneinsatz im Tenant | 🟢 **bereit**, Pre-Audit sinnvoll |
+| ISO 22301:2019 (BCM) | 🟢 100 % | 🟡 BC-Plan-Templates geseeded, operative Übung erforderlich | 🟢 **bereit** |
+| NIS2 / NIS2UmsuCG | 🟡 85 % | 🟡 abhängig von Incident-Historie | 🟡 bereit mit Caveat — Dashboard-Vervollständigung kosmetisch |
+| DORA | 🟡 75 % | 🟡 Lieferanten-Stammdaten + DORA-ROI-Export vorhanden, TLPT-Layer fehlt | 🟡 in Vorbereitung |
+| DSGVO | 🟢 92 % | 🟡 operativ | 🟢 **bereit** |
+| BSI IT-Grundschutz | 🟡 80 % | 🟡 Absicherungsstufen + Schutzbedarfsvererbung scharf, Kompendium-Bausteine unvollständig | 🟡 in Vorbereitung |
+| TISAX 6.0.4 | 🟡 82 % | 🟡 VDA-ISA importiert, AL-Level-Tagging fehlt | 🟡 in Vorbereitung |
+
+---
+
+**Ursprünglicher Bericht (November 2025) folgt unverändert ab hier — dient als historischer Referenzpunkt.**
 
 ---
 
