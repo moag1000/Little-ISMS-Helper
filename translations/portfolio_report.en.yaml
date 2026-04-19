@@ -46,3 +46,16 @@ portfolio_report:
 
     flash:
         no_tenant: 'No tenant is active for the portfolio report.'
+
+    inheritance:
+        title: 'Inheritance rate per framework (WS-1)'
+        rate: 'Rate'
+        total: 'Fulfillments'
+        manual: 'Manual'
+        inherited: 'From inheritance'
+        pending: 'Pending reviews'
+
+    fte_saved:
+        title: 'FTE days saved (all frameworks)'
+        subtitle: 'through mapping-based inheritance (WS-1)'
+        days_suffix: 'FTE days'

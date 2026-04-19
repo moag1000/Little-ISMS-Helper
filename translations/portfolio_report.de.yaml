@@ -46,3 +46,16 @@ portfolio_report:
 
     flash:
         no_tenant: 'Es ist kein Mandant für den Portfolio-Report aktiv.'
+
+    inheritance:
+        title: 'Inheritance-Rate pro Framework (WS-1)'
+        rate: 'Rate'
+        total: 'Fulfillments'
+        manual: 'Manuell'
+        inherited: 'Aus Inheritance'
+        pending: 'Offene Reviews'
+
+    fte_saved:
+        title: 'FTE-Tage eingespart (alle Frameworks)'
+        subtitle: 'durch Mapping-basierte Vererbung (WS-1)'
+        days_suffix: 'FTE-Tage'
