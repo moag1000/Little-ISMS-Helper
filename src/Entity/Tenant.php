@@ -245,8 +245,36 @@ class Tenant
 
     public function setParent(?Tenant $parent): static
     {
+        if ($parent instanceof Tenant) {
+            if ($parent === $this) {
+                throw new \LogicException('A tenant cannot be its own parent');
+            }
+            if ($parent->isChildOf($this)) {
+                throw new \LogicException(sprintf(
+                    'Setting parent would create a cycle: tenant "%s" is already a descendant of "%s"',
+                    $parent->getCode() ?? '?',
+                    $this->getCode() ?? '?'
+                ));
+            }
+        }
+
         $this->parent = $parent;
         return $this;
+    }
+
+    /**
+     * True when $this is a direct or indirect descendant of $candidate.
+     */
+    public function isChildOf(Tenant $candidate): bool
+    {
+        $current = $this->parent;
+        while ($current instanceof Tenant) {
+            if ($current === $candidate) {
+                return true;
+            }
+            $current = $current->getParent();
+        }
+        return false;
     }
 
     /**
