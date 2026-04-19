@@ -73,6 +73,16 @@
                                     {% set badge_class = 'badge-danger' %}
                                 {% endif %}
                             {% endif %}
+                            {% set delta_val = cell.delta is defined ? cell.delta : null %}
+                            {% if delta_val is null %}
+                                {% set trend_icon = '—' %}
+                            {% elseif delta_val > 5 %}
+                                {% set trend_icon = '↗' %}
+                            {% elseif delta_val < -5 %}
+                                {% set trend_icon = '↘' %}
+                            {% else %}
+                                {% set trend_icon = '→' %}
+                            {% endif %}
                             <td>
                                 {% if cell.count == 0 %}
                                     <span class="badge badge-muted">{{ 'portfolio_report.cell.na'|trans({}, 'portfolio_report') }}</span>
@@ -83,9 +93,7 @@
                                         {% if cell.gaps > 0 %}
                                             <span class="cell-gaps">&nbsp;&middot; {{ cell.gaps }} {{ 'portfolio_report.cell.gaps_short'|trans({}, 'portfolio_report') }}</span>
                                         {% endif %}
-                                        {% if cell.delta != 0 %}
-                                            &middot; {{ cell.delta > 0 ? '+' : '' }}{{ cell.delta }}
-                                        {% endif %}
+                                        &middot; {{ trend_icon }}{% if delta_val is not null and delta_val != 0 %} {{ delta_val > 0 ? '+' : '' }}{{ delta_val }}{% endif %}
                                     </div>
                                 {% endif %}
                             </td>

@@ -8,6 +8,7 @@ use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
+use App\Repository\PortfolioSnapshotRepository;
 
 /**
  * Portfolio Report Service
@@ -55,6 +56,7 @@ class PortfolioReportService
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
+        private readonly ?PortfolioSnapshotRepository $portfolioSnapshotRepository = null,
     ) {
     }
 
@@ -126,6 +128,52 @@ class PortfolioReportService
     }
 
     /**
+     * Like buildMatrix() but computes a real trend `delta` per cell by comparing
+     * against the closest PortfolioSnapshot <= $vorperiode.
+     *
+     * Cells where no historical snapshot exists receive `delta = null` so the
+     * template can render "—" instead of a misleading "0".
+     *
+     * @return array{
+     *   rows: list<array{category: string, cells: array<string, array{pct: int, delta: int|null, count: int, gaps: int}>}>,
+     *   frameworks: list<array{code: string, name: string}>,
+     *   stichtag: \DateTimeInterface,
+     *   vorperiode: \DateTimeInterface|null
+     * }
+     */
+    public function buildMatrixWithTrend(
+        Tenant $tenant,
+        \DateTimeInterface $stichtag,
+        ?\DateTimeInterface $vorperiode = null,
+    ): array {
+        $matrix = $this->buildMatrix($tenant, $stichtag, $vorperiode);
+
+        // Overlay real deltas — only when a comparison date was provided AND the
+        // snapshot repository is wired. Otherwise keep delta=null (template → "—").
+        foreach ($matrix['rows'] as $rowIdx => $row) {
+            foreach ($row['cells'] as $code => $cell) {
+                $delta = null;
+
+                if ($vorperiode !== null && $this->portfolioSnapshotRepository !== null && $cell['count'] > 0) {
+                    $prev = $this->portfolioSnapshotRepository->findClosestCellOnOrBefore(
+                        $tenant,
+                        $vorperiode,
+                        $code,
+                        $row['category'],
+                    );
+                    if ($prev !== null) {
+                        $delta = $cell['pct'] - $prev->getFulfillmentPercentage();
+                    }
+                }
+
+                $matrix['rows'][$rowIdx]['cells'][$code]['delta'] = $delta;
+            }
+        }
+
+        return $matrix;
+    }
+
+    /**
      * Compute a single matrix cell: average fulfillment for requirements of a
      * given NIST-CSF category within a framework for a tenant.
      *
@@ -170,6 +218,51 @@ class PortfolioReportService
             'count' => $count,
             'gaps' => $gaps,
         ];
+    }
+
+    /**
+     * Compute the cell aggregate for a framework/category/tenant. Used by the
+     * snapshot command to persist the daily trend data. Exposed as public so
+     * it can be consumed from CapturePortfolioSnapshotCommand without
+     * duplicating the aggregation logic.
+     *
+     * @return array{pct: int, count: int, gaps: int}
+     */
+    public function computeCellAggregate(ComplianceFramework $framework, Tenant $tenant, string $category): array
+    {
+        $cell = $this->computeCell($framework, $tenant, $category);
+        return [
+            'pct' => $cell['pct'],
+            'count' => $cell['count'],
+            'gaps' => $cell['gaps'],
+        ];
+    }
+
+    /**
+     * Fetch all requirements of $framework that map to the given NIST CSF
+     * $category. Sorted by requirement id for deterministic drill-down output.
+     *
+     * @return list<ComplianceRequirement>
+     */
+    public function findRequirementsForCell(ComplianceFramework $framework, string $category): array
+    {
+        $matched = [];
+        foreach ($framework->requirements as $requirement) {
+            if (!$requirement instanceof ComplianceRequirement) {
+                continue;
+            }
+            if ($this->mapRequirementToCategory($requirement) === $category) {
+                $matched[] = $requirement;
+            }
+        }
+        usort(
+            $matched,
+            static fn(ComplianceRequirement $a, ComplianceRequirement $b): int => strnatcasecmp(
+                (string) $a->getRequirementId(),
+                (string) $b->getRequirementId(),
+            )
+        );
+        return $matched;
     }
 
     /**

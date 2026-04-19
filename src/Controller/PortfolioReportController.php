@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Service\CompliancePolicyService;
 use App\Service\ExcelExportService;
 use App\Service\InheritanceMetricsService;
@@ -37,6 +39,8 @@ class PortfolioReportController extends AbstractController
         private readonly CompliancePolicyService $policy,
         private readonly ExcelExportService $excelExportService,
         private readonly InheritanceMetricsService $inheritanceMetricsService,
+        private readonly ComplianceFrameworkRepository $frameworkRepository,
+        private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
     ) {
     }
 
@@ -68,7 +72,7 @@ class PortfolioReportController extends AbstractController
             ? $this->parseDate($vorperiodeRaw, $stichtag)
             : null;
 
-        $matrix = $this->portfolioReportService->buildMatrix($tenant, $stichtag, $vorperiode);
+        $matrix = $this->portfolioReportService->buildMatrixWithTrend($tenant, $stichtag, $vorperiode);
         $inheritanceMetrics = $this->inheritanceMetricsService->metricsForTenant($tenant);
         $fteSaved = $this->inheritanceMetricsService->fteSavedForTenant($tenant);
 
@@ -100,7 +104,7 @@ class PortfolioReportController extends AbstractController
             ? $this->parseDate($vorperiodeRaw, $stichtag)
             : null;
 
-        $matrix = $this->portfolioReportService->buildMatrix($tenant, $stichtag, $vorperiode);
+        $matrix = $this->portfolioReportService->buildMatrixWithTrend($tenant, $stichtag, $vorperiode);
 
         return $this->render('portfolio_report/pdf.html.twig', [
             'matrix' => $matrix,
@@ -203,6 +207,72 @@ class PortfolioReportController extends AbstractController
         );
         $response->headers->set('Cache-Control', 'max-age=0');
         return $response;
+    }
+
+    /**
+     * Drill-down on a single matrix cell.
+     *
+     * Lists every ComplianceRequirement of $frameworkCode that maps to the
+     * given NIST CSF $category, along with the tenant's fulfillment record
+     * (if any) so the manager can click through to the specific requirement.
+     *
+     * @see docs/CM_JUNIOR_RESPONSE.md CM-3
+     */
+    #[Route(
+        '/drill/{frameworkCode}/{category}',
+        name: 'app_management_reports_portfolio_drill',
+        requirements: [
+            'frameworkCode' => '[A-Za-z0-9\-_]+',
+            'category' => 'Govern|Identify|Protect|Detect|Respond|Recover',
+        ],
+        methods: ['GET'],
+    )]
+    public function drill(Request $request, string $frameworkCode, string $category): Response
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null) {
+            $this->addFlash('warning', 'portfolio_report.flash.no_tenant');
+            return $this->redirectToRoute('app_management_reports');
+        }
+
+        $stichtag = $this->parseDate($request->query->get('stichtag'), new DateTimeImmutable());
+
+        $framework = $this->frameworkRepository->findOneBy(['code' => $frameworkCode]);
+        if ($framework === null) {
+            throw $this->createNotFoundException(sprintf('Framework "%s" not found.', $frameworkCode));
+        }
+
+        $requirements = $this->portfolioReportService->findRequirementsForCell($framework, $category);
+
+        // Pre-index tenant fulfillments for O(1) lookup by requirement id.
+        $fulfillmentsByRequirementId = [];
+        foreach ($this->fulfillmentRepository->findByFrameworkAndTenant($framework, $tenant) as $fulfillment) {
+            $req = $fulfillment->getRequirement();
+            if ($req !== null && $req->getId() !== null) {
+                $fulfillmentsByRequirementId[$req->getId()] = $fulfillment;
+            }
+        }
+
+        $rows = [];
+        foreach ($requirements as $requirement) {
+            $fulfillment = $requirement->getId() !== null
+                ? ($fulfillmentsByRequirementId[$requirement->getId()] ?? null)
+                : null;
+            $rows[] = [
+                'requirement' => $requirement,
+                'fulfillment' => $fulfillment,
+                'pct' => $fulfillment?->getFulfillmentPercentage() ?? 0,
+                'applicable' => $fulfillment?->isApplicable() ?? true,
+            ];
+        }
+
+        return $this->render('portfolio_report/drill.html.twig', [
+            'framework' => $framework,
+            'category' => $category,
+            'rows' => $rows,
+            'stichtag' => $stichtag,
+            'tenant' => $tenant,
+        ]);
     }
 
     /**
