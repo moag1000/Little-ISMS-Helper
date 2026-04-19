@@ -50,6 +50,29 @@ class ComplianceFramework
     private ?bool $active = true;
 
     /**
+     * M-04: Lifecycle state — controls how the framework is surfaced:
+     *  - active      → current, appears in pickers and dashboards (default)
+     *  - deprecated  → still usable but flagged for replacement
+     *  - superseded  → read-only, succeeded by another framework (see predecessor/successor)
+     *  - draft       → not yet fit for certification audits
+     */
+    public const LIFECYCLE_ACTIVE = 'active';
+    public const LIFECYCLE_DEPRECATED = 'deprecated';
+    public const LIFECYCLE_SUPERSEDED = 'superseded';
+    public const LIFECYCLE_DRAFT = 'draft';
+
+    #[ORM\Column(length: 20)]
+    private string $lifecycleState = self::LIFECYCLE_ACTIVE;
+
+    /**
+     * M-04: Forward link to the framework that supersedes this one.
+     * Mapping source for upgrade wizards (e.g. ISO 27001:2013 → 2022).
+     */
+    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[ORM\JoinColumn(name: 'successor_id', nullable: true, onDelete: 'SET NULL')]
+    private ?self $successor = null;
+
+    /**
      * Required ISMS modules for this framework
      * @var array<string>
      */
@@ -76,6 +99,34 @@ class ComplianceFramework
     {
         $this->requirements = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
+    }
+
+    public function getLifecycleState(): string
+    {
+        return $this->lifecycleState;
+    }
+
+    public function setLifecycleState(string $state): static
+    {
+        $this->lifecycleState = $state;
+        return $this;
+    }
+
+    public function getSuccessor(): ?self
+    {
+        return $this->successor;
+    }
+
+    public function setSuccessor(?self $successor): static
+    {
+        $this->successor = $successor;
+        return $this;
+    }
+
+    public function isOperational(): bool
+    {
+        return $this->active === true
+            && in_array($this->lifecycleState, [self::LIFECYCLE_ACTIVE, self::LIFECYCLE_DEPRECATED], true);
     }
 
     public function getCode(): ?string
