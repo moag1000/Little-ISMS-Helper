@@ -318,7 +318,7 @@ class ProfileControllerTest extends WebTestCase
         $testImagePath = sys_get_temp_dir() . '/test_avatar.jpg';
         $image = imagecreate(100, 100);
         imagejpeg($image, $testImagePath);
-        imagedestroy($image);
+        unset($image);
 
         $uploadedFile = new UploadedFile(
             $testImagePath,

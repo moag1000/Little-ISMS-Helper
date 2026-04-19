@@ -670,7 +670,6 @@ class ComplianceControllerTest extends TestCase
         // Set id directly on the object (bypasses property hooks)
         $reflection = new \ReflectionClass($framework);
         $property = $reflection->getProperty('id');
-        $property->setAccessible(true);
         $property->setValue($framework, $id);
 
         return $framework;

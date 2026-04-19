@@ -32,7 +32,7 @@ class ScheduledReportType extends AbstractType
                 'attr' => ['placeholder' => 'scheduled_report.form.name_placeholder'],
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(['min' => 3, 'max' => 255]),
+                    new Assert\Length(min: 3, max: 255),
                 ],
             ])
             ->add('reportType', ChoiceType::class, [

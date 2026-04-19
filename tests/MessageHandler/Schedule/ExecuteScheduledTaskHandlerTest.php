@@ -66,7 +66,7 @@ class ExecuteScheduledTaskHandlerTest extends TestCase
 
         $this->logger->expects($this->once())
             ->method('info')
-            ->with('Scheduled task is disabled, skipping', $this->isType('array'));
+            ->with('Scheduled task is disabled, skipping', $this->isArray());
 
         $this->em->expects($this->never())
             ->method('flush');
