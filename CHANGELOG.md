@@ -9,6 +9,79 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ✨ Added
 
+#### Phase 9.P1 — Holding/Konzern-Struktur (2026-04-20)
+
+Umsetzung des Consultant-Plans zu NIS2-Holding-Abbildung (§28 BSIG-neu).
+Ziel: Holding-Governance steuern, Töchter bleiben eigene Rechtspersonen
+mit eigener NIS2-Klassifikation und Zertifizierungsscope.
+
+- **Tenant-Hierarchie gehärtet** (Commit `fa9b6d3d`).
+  `Tenant::setParent()` wirft jetzt `LogicException` bei Self-Reference
+  und bei transitiven Zyklen (vorher Endlos-Schleife in `getRootParent`
+  möglich). `Tenant::isChildOf()` prüft direkte und indirekte Abstammung.
+  `TenantContext` erhielt `getAccessibleTenants()`, `getCurrentRoot()`,
+  `canAccessTenant()` als Topology-Feed für die Voter-Schicht.
+  Handle `null`-IDs bei frisch konstruierten Objekten korrekt.
+
+- **Baseline-Vererbung read-only** (Commit `8a354644`).
+  `AppliedBaselineRepository::findInheritedByTenant()` scannt die
+  Ahnenkette und meldet Baselines, die an einem Vorfahren — nicht am
+  Tenant selbst — angewendet wurden (closest ancestor wins). UI zeigt
+  drei Zustände: direkt angewendet (grüner Badge), vererbt von
+  Holding X (blauer Badge mit Quellname), nicht angewendet.
+
+- **`applyRecursive` Propagation** (Commit `8a354644`).
+  `IndustryBaselineApplier::applyRecursive()` wendet eine Baseline auf
+  Holding + alle direkten/transitiven Töchter an, idempotent pro Subtree.
+  Neue Route `POST /industry-baselines/{code}/apply-recursive`
+  (ROLE_MANAGER + CSRF), Button erscheint nur bei Tenants mit Töchtern.
+  Flash-Summary meldet "%applied% neu versorgt, %skipped% bereits
+  vorhanden, %total% Tenants insgesamt".
+
+- **ROLE_GROUP_CISO / Konzern-ISB** (Commit `3fa65e0d`).
+  Neue Modifier-Rolle in `security.yaml role_hierarchy`: erbt nur
+  `ROLE_USER` — stackt auf vorhandene Rollen. `HoldingTreeAccessTrait`
+  von 5 Votern (Risk, Asset, Control, Incident, Document) konsumiert.
+  Strict downward-only: Siblings nicht zugreifbar; EDIT/DELETE
+  kreuztenant-weit verboten. Neue Voter-Tests gegen Sibling-Leakage
+  und Edit-Bypass.
+
+- **Tenant-NIS2-Felder** (Commit `1c2100ef`, Migration `20260420110000`).
+  Sieben zusätzliche Felder auf `Tenant`: `nis2_classification` (essential/
+  important/not_regulated/unknown), `nis2_sector`, `nace_code`,
+  `legal_name`, `legal_form`, `nis2_contact_point`, `nis2_registered_at`.
+  `Tenant::isNis2Regulated()` Helper. Konsequent pro Rechtsperson — nie
+  konzernweit konsolidiert (BSIG §28 verlangt das).
+
+- **Group-Report-Controller** `/group-report/*` (Commit `1c2100ef`).
+  `tree` — rekursives Macro-Rendering des Subtree ab aktuellem Tenant
+  (nach Review-Fix: explizit NICHT `getRootParent()`, um lateral/upward
+  Access zu verhindern). `nis2-registration` — Matrix-View mit je
+  Tenant: Rechtsperson, Klassifikation, Sektor, NACE, BSI-Meldekontakt,
+  Registrierungsdatum. Header-KPIs (essential / important /
+  not_regulated / unknown / registered). Rote "Registrierung fehlt"-
+  Badges für regulierte Tenants ohne Registrierungsdatum. Zugang via
+  `IsGranted('ROLE_GROUP_CISO')`.
+
+- **Form + Navigation** (Commit `db890e1b`, P1-Review-Fixes).
+  `TenantType` um 7 NIS2-Felder erweitert (ChoiceType + DateType + Text),
+  DE/EN-Übersetzungen für Labels, Helps, Placeholders, Enum-Labels.
+  Mega-Menu-Eintrag "Konzern-Reports" im ISMS-Bereich, ROLE_GROUP_CISO
+  gated.
+
+**Scope-Entscheidungen / Bewusste Auslassungen**
+- Flat hierarchy (Self-FK) — keine Multi-Parent-Matrix. Reicht laut
+  Consultant für 80 % der Mittelstands-Holdings; M&A-Sonderfälle → P3.
+- Konzern-Risk-Aggregation, Incident-Cross-Posting, Policy-Override-
+  Sperre, Cross-Tenant-Supplier-Register, Group-KPI-Report,
+  Group-SoA-Matrix → P2 (Backlog).
+- Konsolidierte Finanz-KPIs explizit als "später mal" markiert
+  (CFO-Reporting-Trigger, SAP-GRC-Territorium).
+
+**Tests + Regression**
+Entity 3 neue, Service 5 neue, Applier 2 neue, Voter 4 neue; full
+sweep 53/53 grün. lint:twig + lint:yaml + lint:container sauber.
+
 #### Compliance-Manager-Residual-Sprint (2026-04-19 / 04-20)
 
 Abschluss aller Residual-Items aus `docs/audit/compliance_manager_analysis.md`
