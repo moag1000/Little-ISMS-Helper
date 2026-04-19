@@ -119,19 +119,57 @@
                     </details>
                 {% endif %}
 
+                {# ISB MAJOR-3 / Consultant A3 two-phase UX:
+                   Phase 1 (details closed): operator must open the SQL preview.
+                   Phase 2 (inside details): operator must tick the backup-check
+                   box before the apply button accepts a click. Pure HTML, no
+                   Stimulus controller — the `required` checkbox is validated
+                   by the browser on submit. #}
                 {% if schema_detail.pending_sql is not empty %}
-                    <details class="mt-2">
-                        <summary class="small text-warning">{{ 'monitoring.schema.show_pending_sql'|trans({}, 'monitoring') }}</summary>
-                        <pre class="small mt-2 mb-2" style="max-height:220px;overflow:auto"><code>{% for sql in schema_detail.pending_sql %}{{ sql }};
+                    <details class="mt-2 schema-preview">
+                        <summary class="small text-warning">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
+                            {{ 'monitoring.schema.preview_open'|trans({}, 'monitoring') }}
+                        </summary>
+
+                        <div class="alert alert-danger mt-2 mb-2" role="alert">
+                            <h3 class="h6 mb-1">
+                                <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                                {{ 'monitoring.schema.preview_warning_title'|trans({}, 'monitoring') }}
+                            </h3>
+                            <p class="mb-0 small">
+                                {{ 'monitoring.schema.preview_warning_body'|trans({}, 'monitoring') }}
+                            </p>
+                        </div>
+
+                        <pre class="small mt-2 mb-2" style="max-height:220px;overflow:auto" aria-label="{{ 'monitoring.schema.preview_sql_label'|trans({}, 'monitoring') }}"><code>{% for sql in schema_detail.pending_sql %}{{ sql }};
 {% endfor %}</code></pre>
-                        <form method="post" action="{{ path('monitoring_health_schema_update') }}"
-                              onsubmit="return confirm('{{ 'monitoring.schema.confirm_update'|trans({}, 'monitoring')|e('js') }}');"
-                              data-turbo="false">
+
+                        <form method="post" action="{{ path('monitoring_health_schema_update') }}" data-turbo="false">
                             <input type="hidden" name="_token" value="{{ csrf_token('monitoring_schema_update') }}">
-                            <button type="submit" class="btn btn-sm btn-warning">
-                                <i class="bi bi-database-gear" aria-hidden="true"></i>
-                                {{ 'monitoring.schema.apply_update'|trans({}, 'monitoring') }}
-                            </button>
+
+                            <div class="form-check mb-2">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="backup_confirmed"
+                                       value="1"
+                                       id="schema_backup_confirmed"
+                                       required
+                                       aria-describedby="schema_backup_confirmed_help">
+                                <label class="form-check-label small" for="schema_backup_confirmed">
+                                    {{ 'monitoring.schema.backup_confirmed_label'|trans({}, 'monitoring') }}
+                                </label>
+                                <div id="schema_backup_confirmed_help" class="form-text small">
+                                    {{ 'monitoring.schema.backup_confirmed_help'|trans({}, 'monitoring') }}
+                                </div>
+                            </div>
+
+                            <div class="btn-group" role="group" aria-label="{{ 'monitoring.schema.actions_label'|trans({}, 'monitoring') }}">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-database-gear" aria-hidden="true"></i>
+                                    {{ 'monitoring.schema.apply_update'|trans({}, 'monitoring') }}
+                                </button>
+                            </div>
                         </form>
                     </details>
                 {% endif %}

@@ -53,8 +53,15 @@ monitoring:
         pending: "offene DDL-Statements"
         show_mapping_errors: "Mapping-Fehler anzeigen"
         show_pending_sql: "Ausstehende SQL-Statements anzeigen"
-        apply_update: "Schema-Update anwenden (force)"
+        apply_update: "Schema-Update ausführen (force)"
         confirm_update: "Schema-Update führt DDL gegen die Live-DB aus. Fortfahren?"
+        preview_open: "SQL-Preview prüfen und weiter"
+        preview_warning_title: "Achtung: Destruktive DDL-Operation"
+        preview_warning_body: "Dieses Schema-Update führt SQL-Statements direkt gegen die produktive Datenbank aus. Es gibt keine Transaktions-Wrap und kein automatisches Rollback. Prüfen Sie jedes Statement und stellen Sie sicher, dass ein aktuelles Backup vorliegt."
+        preview_sql_label: "Ausstehende SQL-Statements"
+        backup_confirmed_label: "Ich habe das SQL-Statement gelesen und ein aktuelles Backup geprüft."
+        backup_confirmed_help: "Dieser Haken ist Pflicht. Das Schema-Update startet erst nach Bestätigung."
+        actions_label: "Schema-Update-Aktionen"
     disk:
         title: Festplatte
         free: Frei
