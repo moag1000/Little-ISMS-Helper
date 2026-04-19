@@ -6,19 +6,25 @@ namespace App\Controller;
 
 use App\Entity\Control;
 use App\Entity\Incident;
+use App\Entity\InternalAudit;
 use App\Entity\Risk;
 use App\Entity\Tenant;
+use App\Entity\User;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
+use App\Repository\InternalAuditRepository;
 use App\Repository\RiskRepository;
 use App\Repository\SupplierRepository;
+use App\Service\GroupAuditProgramService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Phase 9.P1.7 + P1.8 — Group-level read-only reports intended for a
@@ -42,6 +48,9 @@ final class GroupReportController extends AbstractController
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly SupplierRepository $supplierRepository,
         private readonly IncidentRepository $incidentRepository,
+        private readonly InternalAuditRepository $auditRepository,
+        private readonly GroupAuditProgramService $groupAuditProgramService,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -340,5 +349,102 @@ final class GroupReportController extends AbstractController
             'severity_buckets' => $severityBuckets,
             'by_tenant' => $byTenant,
         ]);
+    }
+
+    /**
+     * Phase 9.P2.4 — Konzern-Audit-Programm matrix: every audit on the
+     * current tenant that has been derived onto N subsidiaries, plus
+     * per-tochter status (planned / in_progress / completed / missing).
+     * Missing cells are the action hook for the "Derive" button.
+     */
+    #[Route('/audit-program', name: 'audit_program', methods: ['GET'])]
+    public function auditProgram(): Response
+    {
+        $root = $this->tenantContext->getCurrentTenant();
+        if (!$root instanceof Tenant) {
+            throw $this->createAccessDeniedException('No active tenant');
+        }
+
+        // Programs are audits owned by the holding tenant. A program is
+        // any audit on the current tenant (holding) — deriving is an
+        // explicit action, so we show the full list and let the user
+        // decide which to derive.
+        $programs = $this->auditRepository->findBy(
+            ['tenant' => $root, 'parentAudit' => null],
+            ['plannedDate' => 'DESC']
+        );
+
+        $subsidiaries = array_values(array_filter(
+            $this->tenantContext->getAccessibleTenants(),
+            static fn(Tenant $t): bool => $t !== $root
+        ));
+
+        // matrix[program_id][subsidiary_code] = derived InternalAudit|null
+        $matrix = [];
+        foreach ($programs as $program) {
+            $row = [];
+            foreach ($subsidiaries as $sub) {
+                $derived = $this->auditRepository->findOneBy([
+                    'parentAudit' => $program,
+                    'tenant' => $sub,
+                ]);
+                $row[$sub->getCode()] = $derived;
+            }
+            $matrix[$program->getId()] = $row;
+        }
+
+        return $this->render('group_report/audit_program.html.twig', [
+            'root' => $root,
+            'subsidiaries' => $subsidiaries,
+            'programs' => $programs,
+            'matrix' => $matrix,
+        ]);
+    }
+
+    #[Route('/audit-program/{id}/derive', name: 'audit_program_derive', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function deriveAuditProgram(int $id, Request $request): Response
+    {
+        $root = $this->tenantContext->getCurrentTenant();
+        if (!$root instanceof Tenant) {
+            throw $this->createAccessDeniedException('No active tenant');
+        }
+
+        $program = $this->auditRepository->find($id);
+        if (!$program instanceof InternalAudit || $program->getTenant() !== $root) {
+            throw $this->createNotFoundException();
+        }
+        if (!$this->isCsrfTokenValid('audit_program_derive_' . $id, (string) $request->request->get('_token'))) {
+            $this->addFlash('danger', $this->translator->trans('group_report.audit_program.flash.invalid_csrf', [], 'group_report'));
+            return $this->redirectToRoute('app_group_report_audit_program');
+        }
+
+        $subsidiaries = array_values(array_filter(
+            $this->tenantContext->getAccessibleTenants(),
+            static fn(Tenant $t): bool => $t !== $root
+        ));
+        if ($subsidiaries === []) {
+            $this->addFlash('warning', $this->translator->trans('group_report.audit_program.flash.no_subsidiaries', [], 'group_report'));
+            return $this->redirectToRoute('app_group_report_audit_program');
+        }
+
+        /** @var User|null $actor */
+        $actor = $this->getUser();
+        $result = $this->groupAuditProgramService->deriveForSubsidiaries(
+            $program,
+            $subsidiaries,
+            $actor instanceof User ? $actor : null
+        );
+
+        $this->addFlash('success', $this->translator->trans(
+            'group_report.audit_program.flash.derived',
+            [
+                '%derived%' => count($result['derived']),
+                '%skipped%' => count($result['skipped']),
+                '%program%' => (string) $program->getAuditNumber(),
+            ],
+            'group_report',
+        ));
+
+        return $this->redirectToRoute('app_group_report_audit_program');
     }
 }

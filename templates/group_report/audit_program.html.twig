@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'group_report.audit_program.title'|trans({}, 'group_report') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'group_report.title'|trans({}, 'group_report'), path: 'app_group_report_tree' },
+            { label: 'group_report.audit_program.title'|trans({}, 'group_report') }
+        ]
+    } %}
+
+    <div class="mb-4">
+        <h1 class="h2 mb-1">
+            <i class="bi bi-clipboard2-check text-primary" aria-hidden="true"></i>
+            {{ 'group_report.audit_program.title'|trans({}, 'group_report') }}
+        </h1>
+        <p class="text-muted mb-0">{{ 'group_report.audit_program.subtitle'|trans({'%root%': root.name}, 'group_report') }}</p>
+    </div>
+
+    <div class="alert alert-info d-flex gap-2" role="note">
+        <i class="bi bi-info-circle mt-1" aria-hidden="true"></i>
+        <div class="small">{{ 'group_report.audit_program.intro'|trans({}, 'group_report')|raw }}</div>
+    </div>
+
+    {% if programs is empty %}
+        <div class="alert alert-warning">
+            {{ 'group_report.audit_program.empty'|trans({}, 'group_report') }}
+        </div>
+    {% elseif subsidiaries is empty %}
+        <div class="alert alert-warning">
+            {{ 'group_report.audit_program.no_subsidiaries'|trans({}, 'group_report') }}
+        </div>
+    {% else %}
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle" aria-label="{{ 'group_report.audit_program.title'|trans({}, 'group_report') }}">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">{{ 'group_report.audit_program.col.program'|trans({}, 'group_report') }}</th>
+                                {% for sub in subsidiaries %}
+                                    <th scope="col" class="text-center" title="{{ sub.name }}">
+                                        <code class="small">{{ sub.code }}</code>
+                                    </th>
+                                {% endfor %}
+                                <th scope="col" class="text-end">{{ 'group_report.audit_program.col.actions'|trans({}, 'group_report') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for program in programs %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ program.title }}</strong>
+                                        <div class="small text-muted">
+                                            <code>{{ program.auditNumber }}</code>
+                                            {% if program.plannedDate %}
+                                                · {{ program.plannedDate|date('Y-m-d') }}
+                                            {% endif %}
+                                            {% if program.scopeType %}
+                                                · <code>{{ program.scopeType }}</code>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    {% for sub in subsidiaries %}
+                                        {% set derived = matrix[program.id][sub.code] %}
+                                        <td class="text-center">
+                                            {% if derived is null %}
+                                                <span class="badge bg-light text-dark border" title="{{ 'group_report.audit_program.cell.missing_help'|trans({}, 'group_report') }}">
+                                                    <i class="bi bi-dash" aria-hidden="true"></i>
+                                                </span>
+                                            {% else %}
+                                                {% set status = derived.status %}
+                                                {% set cls = {
+                                                    'completed': 'bg-success',
+                                                    'in_progress': 'bg-warning text-dark',
+                                                    'planned': 'bg-info',
+                                                    'draft': 'bg-secondary'
+                                                }[status]|default('bg-secondary') %}
+                                                <span class="badge {{ cls }}" title="{{ status }} — {{ derived.auditNumber }}">
+                                                    {% if status == 'completed' %}✓
+                                                    {% elseif status == 'in_progress' %}◐
+                                                    {% elseif status == 'planned' %}◯
+                                                    {% else %}–{% endif %}
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                    <td class="text-end">
+                                        <form method="post" action="{{ path('app_group_report_audit_program_derive', {id: program.id}) }}" class="d-inline"
+                                              onsubmit="return confirm('{{ 'group_report.audit_program.confirm_derive'|trans({'%count%': subsidiaries|length}, 'group_report')|e('js') }}');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('audit_program_derive_' ~ program.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                                                {{ 'group_report.audit_program.action.derive'|trans({}, 'group_report') }}
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer small text-muted">
+                <strong>{{ 'group_report.soa.legend.title'|trans({}, 'group_report') }}:</strong>
+                <span class="badge bg-success">✓</span> {{ 'group_report.audit_program.legend.completed'|trans({}, 'group_report') }}
+                · <span class="badge bg-warning text-dark">◐</span> {{ 'group_report.audit_program.legend.in_progress'|trans({}, 'group_report') }}
+                · <span class="badge bg-info">◯</span> {{ 'group_report.audit_program.legend.planned'|trans({}, 'group_report') }}
+                · <span class="badge bg-light text-dark border">–</span> {{ 'group_report.audit_program.legend.missing'|trans({}, 'group_report') }}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
