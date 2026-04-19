@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'group_report.tree.title'|trans({}, 'group_report') }}{% endblock %}
+
+{% macro renderNode(tenant, current, depth) %}
+    {% set isCurrent = tenant is same as(current) %}
+    {% set class = tenant.nis2Classification|default('unknown') %}
+    {% set classBadge = {
+        'essential': 'bg-danger',
+        'important': 'bg-warning text-dark',
+        'not_regulated': 'bg-secondary',
+        'unknown': 'bg-light text-dark border'
+    }[class]|default('bg-light text-dark border') %}
+    <li class="list-group-item {% if isCurrent %}list-group-item-primary{% endif %}">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                {% if tenant.isCorporateParent %}
+                    <i class="bi bi-building-fill text-primary" aria-hidden="true" title="{{ 'group_report.tree.holding_marker'|trans({}, 'group_report') }}"></i>
+                {% else %}
+                    <i class="bi bi-diagram-2 text-muted" aria-hidden="true"></i>
+                {% endif %}
+                <strong>{{ tenant.name }}</strong>
+                <code class="small text-muted ms-1">{{ tenant.code }}</code>
+                {% if isCurrent %}
+                    <span class="badge bg-primary ms-1">{{ 'group_report.tree.you_are_here'|trans({}, 'group_report') }}</span>
+                {% endif %}
+            </div>
+            <div>
+                <span class="badge {{ classBadge }}">
+                    {{ ('group_report.nis2.class.' ~ class)|trans({}, 'group_report') }}
+                </span>
+                {% if tenant.naceCode %}
+                    <code class="small">{{ tenant.naceCode }}</code>
+                {% endif %}
+            </div>
+        </div>
+        {% if tenant.subsidiaries|length > 0 %}
+            <ul class="list-group list-group-flush mt-2 ms-3">
+                {% for child in tenant.subsidiaries %}
+                    {{ _self.renderNode(child, current, depth + 1) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'group_report.title'|trans({}, 'group_report'), path: 'app_group_report_tree' },
+            { label: 'group_report.tree.title'|trans({}, 'group_report') }
+        ]
+    } %}
+
+    <div class="mb-4 d-flex justify-content-between align-items-end flex-wrap gap-2">
+        <div>
+            <h1 class="h2 mb-1">
+                <i class="bi bi-diagram-3 text-primary" aria-hidden="true"></i>
+                {{ 'group_report.tree.title'|trans({}, 'group_report') }}
+            </h1>
+            <p class="text-muted mb-0">{{ 'group_report.tree.subtitle'|trans({}, 'group_report') }}</p>
+        </div>
+        <a href="{{ path('app_group_report_nis2_registration') }}" class="btn btn-outline-primary">
+            <i class="bi bi-shield-check" aria-hidden="true"></i>
+            {{ 'group_report.nis2.title'|trans({}, 'group_report') }}
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <ul class="list-group list-group-flush">
+                {{ _self.renderNode(root, current, 0) }}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

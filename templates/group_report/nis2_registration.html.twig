@@ -1,0 +1,163 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'group_report.nis2.title'|trans({}, 'group_report') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'group_report.title'|trans({}, 'group_report'), path: 'app_group_report_tree' },
+            { label: 'group_report.nis2.title'|trans({}, 'group_report') }
+        ]
+    } %}
+
+    <div class="mb-4">
+        <h1 class="h2 mb-1">
+            <i class="bi bi-shield-check text-primary" aria-hidden="true"></i>
+            {{ 'group_report.nis2.title'|trans({}, 'group_report') }}
+        </h1>
+        <p class="text-muted mb-0">
+            {{ 'group_report.nis2.subtitle'|trans({'%root%': root.name}, 'group_report') }}
+        </p>
+    </div>
+
+    <div class="alert alert-info d-flex gap-2" role="note">
+        <i class="bi bi-info-circle mt-1" aria-hidden="true"></i>
+        <div class="small">{{ 'group_report.nis2.intro'|trans({}, 'group_report')|raw }}</div>
+    </div>
+
+    <div class="row row-cols-2 row-cols-md-6 g-2 mb-4">
+        <div class="col">
+            <div class="card h-100 text-center">
+                <div class="card-body py-2">
+                    <div class="display-6 fw-bold">{{ stats.total }}</div>
+                    <div class="small text-muted">{{ 'group_report.nis2.stat.total'|trans({}, 'group_report') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 text-center border-danger">
+                <div class="card-body py-2">
+                    <div class="display-6 fw-bold text-danger">{{ stats.essential }}</div>
+                    <div class="small text-muted">{{ 'group_report.nis2.class.essential'|trans({}, 'group_report') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 text-center border-warning">
+                <div class="card-body py-2">
+                    <div class="display-6 fw-bold text-warning">{{ stats.important }}</div>
+                    <div class="small text-muted">{{ 'group_report.nis2.class.important'|trans({}, 'group_report') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 text-center">
+                <div class="card-body py-2">
+                    <div class="display-6 fw-bold text-muted">{{ stats.not_regulated }}</div>
+                    <div class="small text-muted">{{ 'group_report.nis2.class.not_regulated'|trans({}, 'group_report') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 text-center">
+                <div class="card-body py-2">
+                    <div class="display-6 fw-bold text-secondary">{{ stats.unknown }}</div>
+                    <div class="small text-muted">{{ 'group_report.nis2.class.unknown'|trans({}, 'group_report') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 text-center border-success">
+                <div class="card-body py-2">
+                    <div class="display-6 fw-bold text-success">{{ stats.registered }}</div>
+                    <div class="small text-muted">{{ 'group_report.nis2.stat.registered'|trans({}, 'group_report') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h2 class="h5 mb-0">
+                <i class="bi bi-table" aria-hidden="true"></i>
+                {{ 'group_report.nis2.matrix.title'|trans({}, 'group_report') }}
+            </h2>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle" aria-label="{{ 'group_report.nis2.matrix.title'|trans({}, 'group_report') }}">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">{{ 'group_report.nis2.col.tenant'|trans({}, 'group_report') }}</th>
+                            <th scope="col">{{ 'group_report.nis2.col.legal'|trans({}, 'group_report') }}</th>
+                            <th scope="col">{{ 'group_report.nis2.col.classification'|trans({}, 'group_report') }}</th>
+                            <th scope="col">{{ 'group_report.nis2.col.sector'|trans({}, 'group_report') }}</th>
+                            <th scope="col">{{ 'group_report.nis2.col.nace'|trans({}, 'group_report') }}</th>
+                            <th scope="col">{{ 'group_report.nis2.col.contact'|trans({}, 'group_report') }}</th>
+                            <th scope="col">{{ 'group_report.nis2.col.registered'|trans({}, 'group_report') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tenant in tenants %}
+                            {% set class = tenant.nis2Classification|default('unknown') %}
+                            {% set classBadge = {
+                                'essential': 'bg-danger',
+                                'important': 'bg-warning text-dark',
+                                'not_regulated': 'bg-secondary',
+                                'unknown': 'bg-light text-dark border'
+                            }[class]|default('bg-light text-dark border') %}
+                            <tr>
+                                <td>
+                                    {% if tenant is same as(root) %}
+                                        <i class="bi bi-building-fill text-primary" aria-hidden="true" title="{{ 'group_report.root_marker'|trans({}, 'group_report') }}"></i>
+                                    {% else %}
+                                        <i class="bi bi-diagram-2 text-muted" aria-hidden="true"></i>
+                                    {% endif %}
+                                    <strong>{{ tenant.name }}</strong>
+                                    <div class="small text-muted"><code>{{ tenant.code }}</code></div>
+                                </td>
+                                <td>
+                                    {% if tenant.legalName %}
+                                        {{ tenant.legalName }}
+                                        {% if tenant.legalForm %}
+                                            <span class="badge bg-light text-dark border">{{ tenant.legalForm }}</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge {{ classBadge }}">
+                                        {{ ('group_report.nis2.class.' ~ class)|trans({}, 'group_report') }}
+                                    </span>
+                                </td>
+                                <td>{{ tenant.nis2Sector|default('—') }}</td>
+                                <td>
+                                    {% if tenant.naceCode %}<code>{{ tenant.naceCode }}</code>{% else %}<span class="text-muted">—</span>{% endif %}
+                                </td>
+                                <td>{{ tenant.nis2ContactPoint|default('—') }}</td>
+                                <td>
+                                    {% if tenant.nis2RegisteredAt %}
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                            {{ tenant.nis2RegisteredAt|date('Y-m-d') }}
+                                        </span>
+                                    {% elseif tenant.isNis2Regulated %}
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                            {{ 'group_report.nis2.registration.missing'|trans({}, 'group_report') }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

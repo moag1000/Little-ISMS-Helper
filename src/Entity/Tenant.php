@@ -82,6 +82,42 @@ class Tenant
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $bsiPhase = null;
 
+    /**
+     * Phase 9.P1.7 — NIS2 classification per German BSIG §28:
+     * - essential:     "besonders wichtige Einrichtung" (Annex I, 250+ MA / 50M€)
+     * - important:     "wichtige Einrichtung"           (Annex II, 50+ MA / 10M€)
+     * - not_regulated: below thresholds, out of NIS2 scope
+     * - unknown:       classification not yet reviewed
+     *
+     * Always per-Rechtsperson (per BSIG §28) — hence one value per Tenant,
+     * never aggregated across a holding tree.
+     */
+    public const NIS2_ESSENTIAL     = 'essential';
+    public const NIS2_IMPORTANT     = 'important';
+    public const NIS2_NOT_REGULATED = 'not_regulated';
+    public const NIS2_UNKNOWN       = 'unknown';
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $nis2Classification = null;
+
+    #[ORM\Column(length: 150, nullable: true)]
+    private ?string $nis2Sector = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $naceCode = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $legalName = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $legalForm = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nis2ContactPoint = null;
+
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $nis2RegisteredAt = null;
+
     public function getBsiPhase(): ?string
     {
         return $this->bsiPhase;
@@ -91,6 +127,88 @@ class Tenant
     {
         $this->bsiPhase = $bsiPhase;
         return $this;
+    }
+
+    public function getNis2Classification(): ?string
+    {
+        return $this->nis2Classification;
+    }
+
+    public function setNis2Classification(?string $value): static
+    {
+        $this->nis2Classification = $value;
+        return $this;
+    }
+
+    public function getNis2Sector(): ?string
+    {
+        return $this->nis2Sector;
+    }
+
+    public function setNis2Sector(?string $value): static
+    {
+        $this->nis2Sector = $value;
+        return $this;
+    }
+
+    public function getNaceCode(): ?string
+    {
+        return $this->naceCode;
+    }
+
+    public function setNaceCode(?string $value): static
+    {
+        $this->naceCode = $value;
+        return $this;
+    }
+
+    public function getLegalName(): ?string
+    {
+        return $this->legalName;
+    }
+
+    public function setLegalName(?string $value): static
+    {
+        $this->legalName = $value;
+        return $this;
+    }
+
+    public function getLegalForm(): ?string
+    {
+        return $this->legalForm;
+    }
+
+    public function setLegalForm(?string $value): static
+    {
+        $this->legalForm = $value;
+        return $this;
+    }
+
+    public function getNis2ContactPoint(): ?string
+    {
+        return $this->nis2ContactPoint;
+    }
+
+    public function setNis2ContactPoint(?string $value): static
+    {
+        $this->nis2ContactPoint = $value;
+        return $this;
+    }
+
+    public function getNis2RegisteredAt(): ?\DateTimeImmutable
+    {
+        return $this->nis2RegisteredAt;
+    }
+
+    public function setNis2RegisteredAt(?\DateTimeImmutable $value): static
+    {
+        $this->nis2RegisteredAt = $value;
+        return $this;
+    }
+
+    public function isNis2Regulated(): bool
+    {
+        return in_array($this->nis2Classification, [self::NIS2_ESSENTIAL, self::NIS2_IMPORTANT], true);
     }
 
     public function __construct()
