@@ -37,7 +37,7 @@
                     },
                     'financial': {
                         'label': 'asset.section.financial'|trans({}, 'asset'),
-                        'fields': ['acquisitionValue', 'currentValue', 'monetaryValue']
+                        'fields': ['acquisitionValue', 'currentValue']
                     },
                     'classification': {
                         'label': 'asset.section.classification'|trans({}, 'asset'),
@@ -58,9 +58,8 @@
                     'description': 12,
                     'owner': 6,
                     'location': 6,
-                    'acquisitionValue': 4,
-                    'currentValue': 4,
-                    'monetaryValue': 4,
+                    'acquisitionValue': 6,
+                    'currentValue': 6,
                     'dataClassification': 4,
                     'status': 4,
                     'returnDate': 4,
@@ -73,7 +72,6 @@
                 'tooltips': {
                     'acquisitionValue': 'asset.tooltip.acquisition_value',
                     'currentValue': 'asset.tooltip.current_value',
-                    'monetaryValue': 'asset.tooltip.monetary_value',
                     'confidentialityValue': 'asset.tooltip.confidentiality',
                     'integrityValue': 'asset.tooltip.integrity',
                     'availabilityValue': 'asset.tooltip.availability'

@@ -43,9 +43,9 @@ asset:
     location: Location
     acquisition_value: Acquisition value
     current_value: Current value
-    confidentiality: Confidentiality
-    integrity: Integrity
-    availability: Availability
+    confidentiality: 'Confidentiality (1 public → 5 secret)'
+    integrity: 'Integrity (1 low → 5 critical)'
+    availability: 'Availability (1 >24h outage ok → 5 <15 min / 24×7)'
     rto_category: RTO Category
     asset_count: Asset Count
     examples: Examples

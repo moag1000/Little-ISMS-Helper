@@ -141,16 +141,10 @@ class AssetType extends AbstractType
                 ],
                 'help' => 'asset.help.availability',
             ])
-            ->add('monetaryValue', NumberType::class, [
-                'label' => 'asset.field.monetary_value',
-                'required' => false,
-                'attr' => [
-                    'step' => '0.01',
-                    'min' => '0',
-                    'placeholder' => '0.00',
-                ],
-                'help' => 'asset.help.monetary_value',
-            ])
+            // monetaryValue removed from form (Junior-Finding #9): redundant to
+            // acquisitionValue + currentValue. DB column preserved for
+            // backwards compatibility; existing values surface via asset.show
+            // if ever needed, but not maintained through the form anymore.
             ->add('dataClassification', ChoiceType::class, [
                 'label' => 'asset.field.data_classification',
                 'choices' => [

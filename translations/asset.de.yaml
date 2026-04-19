@@ -43,9 +43,9 @@ asset:
     location: Standort
     acquisition_value: Anschaffungswert
     current_value: Aktueller Wert
-    confidentiality: Vertraulichkeit
-    integrity: Integrität
-    availability: Verfügbarkeit
+    confidentiality: 'Vertraulichkeit (1 öffentlich → 5 geheim)'
+    integrity: 'Integrität (1 gering → 5 kritisch)'
+    availability: 'Verfügbarkeit (1 >24h Ausfall ok → 5 <15 Min / 24×7)'
     rto_category: RTO-Kategorie
     asset_count: Anzahl Assets
     examples: Beispiele
