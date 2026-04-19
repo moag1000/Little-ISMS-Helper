@@ -22,6 +22,7 @@ use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
 use App\Service\AssetService;
+use App\Service\BsiGrundschutzCheckService;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\RiskService;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -73,6 +74,7 @@ class DashboardStatisticsService
         private readonly ?KpiThresholdConfigRepository $thresholdConfigRepository = null,
         private readonly ?KpiSnapshotRepository $kpiSnapshotRepository = null,
         private readonly ?CacheInterface $cache = null,
+        private readonly ?BsiGrundschutzCheckService $bsiGrundschutzCheckService = null,
     ) {
     }
 
@@ -595,6 +597,12 @@ class DashboardStatisticsService
             $kpis['per_framework'] = $perFramework;
         }
 
+        // A1b: BSI IT-Grundschutz per Absicherungsstufe (basis / standard / kern)
+        $bsiStufen = $this->getBsiAbsicherungsstufenKPIs();
+        if ($bsiStufen !== []) {
+            $kpis['bsi_stufen'] = $bsiStufen;
+        }
+
         // A4: composite ISMS health score (lightweight, no snapshots needed)
         $healthScore = $this->calculateIsmsHealthScore($tenant, $core, $activeModules);
         $kpis['health'] = [
@@ -989,6 +997,53 @@ class DashboardStatisticsService
                     'fulfilled' => $fw['fulfilled'] ?? 0,
                     'applicable' => $fw['applicable'] ?? 0,
                     'mandatory' => $fw['mandatory'] ?? false,
+                ],
+            ];
+        }
+        return $result;
+    }
+
+    /**
+     * A1b: BSI IT-Grundschutz Absicherungsstufen filter — surface weighted
+     * compliance per Stufe (basis / standard / kern) as individual KPIs so
+     * the portfolio dashboard can show BSI readiness per Stufe instead of
+     * only the framework-level aggregate.
+     *
+     * Silently returns an empty array when the BSI framework is not loaded
+     * or the check service is not wired — no error, no log noise.
+     *
+     * @return array<string, array{label: string, value: int|float, unit: string, status: string, details: array}>
+     */
+    private function getBsiAbsicherungsstufenKPIs(): array
+    {
+        if ($this->bsiGrundschutzCheckService === null) {
+            return [];
+        }
+
+        $result = [];
+        foreach (['basis', 'standard', 'kern'] as $stufe) {
+            try {
+                $report = $this->bsiGrundschutzCheckService->getCheckReport($stufe);
+            } catch (\Throwable) {
+                continue;
+            }
+            $overall = $report['overall'] ?? null;
+            if (!is_array($overall) || ($overall['total'] ?? 0) === 0) {
+                continue;
+            }
+            $weighted = $overall['weighted_pct'];
+            $pct = $weighted === null ? 0 : (int) $weighted;
+            $result['bsi_stufe_' . $stufe] = [
+                'label' => 'kpi.bsi_stufe.' . $stufe,
+                'value' => $weighted ?? 0,
+                'unit' => '%',
+                'status' => $this->getStatus($pct, 80, 60),
+                'details' => [
+                    'fulfilled' => $overall['fulfilled'] ?? 0,
+                    'total' => $overall['total'] ?? 0,
+                    'muss' => $overall['breakdown']['muss'] ?? [],
+                    'sollte' => $overall['breakdown']['sollte'] ?? [],
+                    'kann' => $overall['breakdown']['kann'] ?? [],
                 ],
             ];
         }

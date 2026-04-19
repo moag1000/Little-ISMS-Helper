@@ -110,6 +110,9 @@ dashboard:
     documentation:
       title: Documentation
       icon: bi-file-text
+    bsi_stufen:
+      title: 'BSI Absicherungsstufen'
+      icon: bi-shield-shaded
     no_data: No data available
     view_details: View details
     status:
@@ -133,6 +136,9 @@ dashboard:
     control_reuse_ratio: Control Reuse Ratio
     regulatory_deadlines_upcoming: Regulatory deadlines (30 days)
     implementation_readiness: ISMS Implementation Readiness
+    bsi_stufe_basis: 'BSI Basis-Absicherung'
+    bsi_stufe_standard: 'BSI Standard-Absicherung'
+    bsi_stufe_kern: 'BSI Kern-Absicherung'
   hint:
     weighted_compliance: 'Weighting: implemented=1.0, partial=0.5, planned=0'
     isms_health_score: 'Composite: Compliance 40%, Risk 25%, Incidents 20%, Asset
