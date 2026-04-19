@@ -1158,6 +1158,44 @@ nis2:
             compliant: 'Compliant (≥95%)'
             partial: 'Teilweise Compliant (75-94%)'
             non_compliant: 'Nicht Compliant (<75%)'
+            good: 'Grün'
+            warning: 'Gelb'
+            danger: 'Rot'
+            info: 'Info'
+            na: 'n/v'
+        letters:
+            title: 'Art. 21.2 — Risikomanagement-Maßnahmen (11 Buchstaben)'
+            description: 'Vollständige Abdeckung aller 11 Risikomanagement-Maßnahmen nach NIS2 Art. 21.2 (a-k). Werte aus bestehenden Domain-Daten — keine Doppelpflege.'
+        letter:
+            a:
+                title: 'Risikomanagement-Richtlinien'
+            b:
+                title: 'MFA / sichere Authentisierung'
+            c:
+                title: 'Kryptografie / Verschlüsselung'
+            d:
+                title: 'Schwachstellen- und Patch-Management'
+            e:
+                title: 'Sichere Entwicklung und Beschaffung'
+            f:
+                title: 'Lieferketten-Sicherheit'
+            g:
+                title: 'Personalsicherheit / Awareness'
+            h:
+                title: 'Zugriffskontrolle'
+            i:
+                title: 'Asset-Management'
+            j:
+                title: 'Business Continuity / Backup'
+            k:
+                title: 'Kryptografische Kontrollen'
+        article23:
+            title: 'Art. 23 — Meldepflichten'
+            tracked: 'Erfasste NIS2-Incidents'
+            early_warning: 'Frühwarnung'
+            detailed: 'Detailmeldung'
+            final: 'Abschlussbericht'
+            overdue: '%count% Meldung(en) überfällig'
         mfa:
             title: MFA-Adoption
             users: Benutzer
