@@ -95,9 +95,53 @@ class MappingGapItem
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeInterface $updatedAt = null;
 
+    /**
+     * M-01: Link to the risk treatment plan that will close this gap.
+     * Null until the gap is assigned to a plan.
+     */
+    #[ORM\ManyToOne(targetEntity: RiskTreatmentPlan::class)]
+    #[ORM\JoinColumn(name: 'risk_treatment_plan_id', nullable: true, onDelete: 'SET NULL')]
+    private ?RiskTreatmentPlan $riskTreatmentPlan = null;
+
+    /**
+     * M-01: Link to a specific control that addresses this gap.
+     * Orthogonal to the plan link — some gaps are closed purely by
+     * implementing or improving a single Annex-A control.
+     */
+    #[ORM\ManyToOne(targetEntity: Control::class)]
+    #[ORM\JoinColumn(name: 'remediation_control_id', nullable: true, onDelete: 'SET NULL')]
+    private ?Control $remediationControl = null;
+
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
+    }
+
+    public function getRiskTreatmentPlan(): ?RiskTreatmentPlan
+    {
+        return $this->riskTreatmentPlan;
+    }
+
+    public function setRiskTreatmentPlan(?RiskTreatmentPlan $plan): static
+    {
+        $this->riskTreatmentPlan = $plan;
+        return $this;
+    }
+
+    public function getRemediationControl(): ?Control
+    {
+        return $this->remediationControl;
+    }
+
+    public function setRemediationControl(?Control $control): static
+    {
+        $this->remediationControl = $control;
+        return $this;
+    }
+
+    public function isRemediationPlanned(): bool
+    {
+        return $this->riskTreatmentPlan !== null || $this->remediationControl !== null;
     }
 
     public function getId(): ?int
