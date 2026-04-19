@@ -1246,4 +1246,112 @@ class Incident
         return $this->reportedByUser?->getFullName() ?? $this->reportedBy;
     }
 
+    /*
+     * DORA Art. 18 / RTS on classification of ICT-related incidents.
+     * Axes defined by the Joint Committee of the ESAs: clients impacted,
+     * reputation impact, downtime, geographic spread, data loss, economic
+     * impact. The derived classification ("major" / "non_major") is stored
+     * alongside the raw inputs.
+     */
+
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $doraClientsImpacted = null;
+
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $doraReputationImpact = null;
+
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $doraServiceDowntimeMinutes = null;
+
+    /** @var array<int,string>|null */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $doraGeographicalSpread = null;
+
+    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
+    private ?bool $doraDataLossOccurred = null;
+
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $doraEconomicImpactEur = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $doraClassification = null;
+
+    public function getDoraClientsImpacted(): ?int
+    {
+        return $this->doraClientsImpacted;
+    }
+
+    public function setDoraClientsImpacted(?int $value): static
+    {
+        $this->doraClientsImpacted = $value;
+        return $this;
+    }
+
+    public function getDoraReputationImpact(): ?string
+    {
+        return $this->doraReputationImpact;
+    }
+
+    public function setDoraReputationImpact(?string $value): static
+    {
+        $this->doraReputationImpact = $value;
+        return $this;
+    }
+
+    public function getDoraServiceDowntimeMinutes(): ?int
+    {
+        return $this->doraServiceDowntimeMinutes;
+    }
+
+    public function setDoraServiceDowntimeMinutes(?int $value): static
+    {
+        $this->doraServiceDowntimeMinutes = $value;
+        return $this;
+    }
+
+    /** @return array<int,string>|null */
+    public function getDoraGeographicalSpread(): ?array
+    {
+        return $this->doraGeographicalSpread;
+    }
+
+    /** @param array<int,string>|null $value */
+    public function setDoraGeographicalSpread(?array $value): static
+    {
+        $this->doraGeographicalSpread = $value;
+        return $this;
+    }
+
+    public function getDoraDataLossOccurred(): ?bool
+    {
+        return $this->doraDataLossOccurred;
+    }
+
+    public function setDoraDataLossOccurred(?bool $value): static
+    {
+        $this->doraDataLossOccurred = $value;
+        return $this;
+    }
+
+    public function getDoraEconomicImpactEur(): ?int
+    {
+        return $this->doraEconomicImpactEur;
+    }
+
+    public function setDoraEconomicImpactEur(?int $value): static
+    {
+        $this->doraEconomicImpactEur = $value;
+        return $this;
+    }
+
+    public function getDoraClassification(): ?string
+    {
+        return $this->doraClassification;
+    }
+
+    public function setDoraClassification(?string $value): static
+    {
+        $this->doraClassification = $value;
+        return $this;
+    }
 }
