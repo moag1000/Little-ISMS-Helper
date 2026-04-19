@@ -137,6 +137,7 @@ context:
         upcoming_review_text: 'The next review is scheduled for %date% (in %days% days).'
         no_context_topics: 'No context topics captured'
         no_interested_parties: 'No interested parties captured'
+        legacy_freetext_present: 'Legacy free-text entry present'
         no_requirements: 'Not captured'
         no_objectives: 'No active ISMS objectives defined yet.'
     empty:
@@ -149,5 +150,6 @@ context:
         roles_and_responsibilities_required: 'Roles and responsibilities are required.'
     hint:
         structured_parties: 'Use the Interested Parties module for structured capture per ISO 27001 Clause 4.2'
+        migrate_freetext: 'Legacy free-text: please move the content into structured entries in the module and then clear this field via the context form.'
     edit:
         title: Title

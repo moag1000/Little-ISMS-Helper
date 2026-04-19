@@ -70,16 +70,15 @@ class ISMSContextType extends AbstractType
                 ],
                 'help' => 'context.help.internal_issues'
             ])
-            ->add('interestedParties', TextareaType::class, [
-                'label' => 'context.field.interested_parties',
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                    'rows' => 4,
-                    'placeholder' => 'context.placeholder.interested_parties'
-                ],
-                'help' => 'context.help.interested_parties'
-            ])
+            // Junior-Finding #5 / CM-Blocker: Interessierte Parteien werden
+            // ausschließlich im strukturierten Modul (/interested-party)
+            // gepflegt. Der frühere Freitext im Kontext-Formular führte zu
+            // Doppelpflege und wurde entfernt. Bestehende Daten im DB-Feld
+            // `interested_parties` bleiben lesbar über getInterestedParties()
+            // für Migrations-Zwecke (Legacy-Anzeige in show-Template), werden
+            // aber nicht mehr aktiv editiert. Nächster Schritt: optionales
+            // Data-Migrations-Command, das Freitext in strukturierte
+            // InterestedParty-Zeilen überführt (außerhalb dieses Commits).
             ->add('interestedPartiesRequirements', TextareaType::class, [
                 'label' => 'context.field.interested_parties_requirements',
                 'required' => false,

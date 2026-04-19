@@ -229,29 +229,59 @@
         {% endblock %}
         {% block card_body %}
             <div class="row">
+                {# Junior-Finding #5 / CM-Blocker: Freitext entfernt. Aggregat
+                   aus dem strukturierten Interested-Parties-Modul wird hier
+                   als Read-Only-Zusammenfassung gezeigt (Single-Source-of-
+                   Truth ist das Modul). Legacy-Freitext aus
+                   context.interestedParties wird zusätzlich angezeigt wenn
+                   vorhanden (Migrations-Phase) mit Hinweis zur Umpflege. #}
                 <div class="col-md-6">
-                    {% if context.interestedParties %}
                     <label class="text-muted small mb-2">
                         <i class="bi bi-people-fill text-primary" aria-hidden="true"></i>
                         {{ 'context.section.interested_parties'|trans({}, 'context') }}
+                        {% if interestedPartiesList is defined and interestedPartiesList|length > 0 %}
+                            <span class="badge bg-secondary ms-1">{{ interestedPartiesList|length }}</span>
+                        {% endif %}
                     </label>
-                    <p class="mb-0">{{ context.interestedParties|nl2br }}</p>
+                    {% if interestedPartiesList is defined and interestedPartiesList|length > 0 %}
+                        <ul class="list-unstyled mb-2">
+                            {% for party in interestedPartiesList %}
+                                <li class="small">
+                                    <i class="bi bi-person-circle text-primary" aria-hidden="true"></i>
+                                    <a href="{{ path('app_interested_party_show', {id: party.id}) }}"
+                                       data-turbo-action="advance">{{ party.name }}</a>
+                                    {% if party.category %}
+                                        <span class="text-muted">· {{ party.category }}</span>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
                     {% else %}
-                    <div class="text-center py-3 text-muted">
-                        <i class="bi bi-people icon-2-opacity-3" aria-hidden="true"></i>
-                        <p class="small mt-2 mb-0">{{ 'context.message.no_interested_parties'|trans({}, 'context') }}</p>
-                    </div>
+                        <div class="alert alert-info small py-2 mb-2" role="status">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            {{ 'context.message.no_interested_parties'|trans({}, 'context') }}
+                        </div>
                     {% endif %}
-                </div>
-                {# Link to structured Interested Parties module #}
-                <div class="col-12">
-                    <div class="mt-3">
-                        <a href="{{ path('app_interested_party_index') }}" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-people me-1" aria-hidden="true"></i>
-                            {{ 'context.link.interested_parties_module'|trans({}, 'context') }}
-                        </a>
-                        <small class="text-muted ms-2">{{ 'context.hint.structured_parties'|trans({}, 'context') }}</small>
-                    </div>
+                    <a href="{{ path('app_interested_party_index') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-people me-1" aria-hidden="true"></i>
+                        {{ 'context.link.interested_parties_module'|trans({}, 'context') }}
+                    </a>
+                    <small class="text-muted ms-2">{{ 'context.hint.structured_parties'|trans({}, 'context') }}</small>
+
+                    {% if context.interestedParties %}
+                        <details class="mt-3">
+                            <summary class="small text-warning">
+                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                {{ 'context.message.legacy_freetext_present'|trans({}, 'context') }}
+                            </summary>
+                            <div class="bg-body-tertiary p-2 mt-2 small">
+                                <p class="mb-0">{{ context.interestedParties|nl2br }}</p>
+                            </div>
+                            <div class="small text-muted mt-1">
+                                {{ 'context.hint.migrate_freetext'|trans({}, 'context') }}
+                            </div>
+                        </details>
+                    {% endif %}
                 </div>
                 <div class="col-md-6">
                     {% if context.interestedPartiesRequirements %}
