@@ -7,7 +7,10 @@ use DateTimeImmutable;
 use App\Entity\Control;
 use App\Entity\User;
 use App\Form\ControlType;
+use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
+use App\Service\AuditLogger;
+use App\Service\MappingSuggestionService;
 use App\Service\SoAReportService;
 use App\Service\TagFilterService;
 use App\Service\WorkflowAutoProgressionService;
@@ -28,7 +31,10 @@ class StatementOfApplicabilityController extends AbstractController
         private readonly SoAReportService $soaReportService,
         private readonly Security $security,
         private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
-        private readonly TagFilterService $tagFilterService
+        private readonly TagFilterService $tagFilterService,
+        private readonly MappingSuggestionService $mappingSuggestionService,
+        private readonly ComplianceRequirementRepository $requirementRepository,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {}
     #[Route('/soa/', name: 'app_soa_index')]
     public function index(Request $request): Response
@@ -159,12 +165,81 @@ class StatementOfApplicabilityController extends AbstractController
     {
         return $this->soaReportService->streamSoAReport();
     }
-    #[Route('/soa/{id}', name: 'app_soa_show')]
+    #[Route('/soa/{id}', name: 'app_soa_show', requirements: ['id' => '\d+'])]
     public function show(Control $control): Response
     {
+        $suggestions = $this->mappingSuggestionService->suggestForControl($control);
         return $this->render('soa/show.html.twig', [
             'control' => $control,
+            'mapping_suggestions' => $suggestions,
+            'mapping_suggestions_total' => $this->mappingSuggestionService->totalCount($suggestions),
         ]);
+    }
+
+    /**
+     * Accept an A2 auto-mapping suggestion — creates the M:M link between
+     * the Control and the suggested ComplianceRequirement and records the
+     * acceptance in the audit log so the decision is reviewable later.
+     */
+    #[Route(
+        '/soa/{id}/accept-suggestion/{requirementId}',
+        name: 'app_soa_accept_suggestion',
+        requirements: ['id' => '\d+', 'requirementId' => '\d+'],
+        methods: ['POST']
+    )]
+    public function acceptSuggestion(Request $request, Control $control, int $requirementId): Response
+    {
+        if (!$this->isCsrfTokenValid('accept_suggestion_' . $control->getId() . '_' . $requirementId, (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        $requirement = $this->requirementRepository->find($requirementId);
+        if ($requirement === null) {
+            throw $this->createNotFoundException('Requirement not found.');
+        }
+
+        $confidence = $request->request->get('confidence');
+        $confidenceFloat = is_numeric($confidence) ? round((float) $confidence, 4) : null;
+
+        if (!$requirement->getMappedControls()->contains($control)) {
+            $requirement->addMappedControl($control);
+            $this->entityManager->flush();
+        }
+
+        if ($this->auditLogger !== null) {
+            try {
+                $this->auditLogger->logCustom(
+                    action: 'mapping_suggestion_accepted',
+                    entityType: 'Control',
+                    entityId: $control->getId(),
+                    oldValues: null,
+                    newValues: [
+                        'control_id' => $control->getControlId(),
+                        'requirement_id' => $requirement->getRequirementId(),
+                        'framework' => $requirement->getFramework()?->getCode(),
+                        'confidence' => $confidenceFloat,
+                        'source' => 'A2_auto_mapping_suggestion',
+                    ],
+                    description: sprintf(
+                        'A2 Auto-Mapping accepted: control %s ↔ %s (confidence %.2f)',
+                        (string) $control->getControlId(),
+                        (string) $requirement->getRequirementId(),
+                        $confidenceFloat ?? 0.0
+                    ),
+                );
+            } catch (\Throwable) {
+                // Audit log failure must not block the mapping acceptance.
+            }
+        }
+
+        $this->addFlash(
+            'success',
+            $this->translator->trans('control.flash.mapping_accepted', [
+                '%requirement%' => (string) $requirement->getRequirementId(),
+            ], 'control')
+        );
+
+        return $this->redirectToRoute('app_soa_show', ['id' => $control->getId()]);
     }
     #[Route('/soa/{id}/edit', name: 'app_soa_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Control $control): Response

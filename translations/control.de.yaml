@@ -61,3 +61,10 @@ control:
     verified: Verifiziert
   success:
     updated: Maßnahme erfolgreich aktualisiert
+  flash:
+    mapping_accepted: 'Mapping-Vorschlag übernommen — Anforderung %requirement% ist nun mit dieser Maßnahme verknüpft.'
+  mapping_suggestions:
+    title: '%count% Mapping-Vorschläge in %frameworks% Framework(s)'
+    description: 'Automatisch ermittelte Anforderungen, die diese Maßnahme abdecken könnte. Konfidenz basiert auf Text-Ähnlichkeit (Jaccard) zwischen Control-Beschreibung und Requirement-Text.'
+    accept: 'Übernehmen'
+    footer_hint: 'Jede Übernahme wird im Audit-Log als "A2_auto_mapping_suggestion" mit Konfidenz-Wert protokolliert — Auditoren sehen die Herkunft.'
