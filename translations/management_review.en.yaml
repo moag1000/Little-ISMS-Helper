@@ -79,6 +79,37 @@ management_review:
     output_1: 'Decisions and actions related to opportunities for improvement'
     output_2: 'Any need for changes to the ISMS'
     output_3: 'Resource needs'
+    action:
+        pdf: 'Export PDF'
+    pdf:
+        title: 'Management Review — %title%'
+        heading: 'Management Review (ISO 27001 Clause 9.3)'
+        standard_ref: 'ISO/IEC 27001:2022 Clause 9.3 — Management Review'
+        footer: 'Confidential — Management Review (%tenant%)'
+        section:
+            inputs: 'Inputs (Clause 9.3.2)'
+            inputs_hint: 'Inputs mandated by the standard as management-review subject matter.'
+            outputs: 'Outputs & Decisions (Clause 9.3.3)'
+            outputs_hint: 'Decisions, resource needs and improvement items produced by the review.'
+        input:
+            previous_actions: 'Status of previous management-review actions'
+            context_changes: 'Changes in the organisation''s context'
+            interested_parties: 'Feedback from interested parties'
+            performance: 'ISMS performance (KPIs, objectives)'
+            nonconformities: 'Nonconformities'
+            corrective_actions: 'Corrective actions'
+            incidents: 'Information-security incidents'
+            audit_results: 'Audit results (internal/external)'
+            objectives: 'Status of ISMS objectives'
+            risks: 'Risk assessment and treatment'
+            opportunities: 'Opportunities for improvement'
+        output:
+            improvements: 'Decisions on continual improvement'
+            changes_isms: 'Approved ISMS changes'
+            resources: 'Resource needs'
+            decisions: 'Other decisions'
+            action_items: 'Action items (tracked)'
+            summary: 'Summary'
     edit: Edit
     placeholder:
         title: 'e.g. Management Review Q1 2025'

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|default('de') }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'management_review.pdf.title'|trans({'%title%': review.title}, 'management_review') }}</title>
+    <style>
+        @page { size: A4; margin: 20mm 18mm 22mm 18mm; }
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            font-size: 10pt;
+            color: #222;
+            line-height: 1.4;
+        }
+        h1 { font-size: 18pt; margin: 0 0 4mm 0; color: #1b3a57; }
+        h2 {
+            font-size: 12pt;
+            margin: 6mm 0 2mm 0;
+            padding-bottom: 1mm;
+            border-bottom: 1px solid #1b3a57;
+            color: #1b3a57;
+        }
+        h3 { font-size: 10.5pt; margin: 3mm 0 1mm 0; color: #365f87; }
+        table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm 0; }
+        th, td {
+            text-align: left;
+            padding: 2mm 3mm;
+            border: 1px solid #cbd5e0;
+            vertical-align: top;
+        }
+        th { background: #eef3f8; font-weight: bold; width: 35%; }
+        .meta-table th { width: 30%; }
+        .section { margin-bottom: 6mm; }
+        .section-text {
+            white-space: pre-wrap;
+            background: #fafbfd;
+            border-left: 3px solid #365f87;
+            padding: 2mm 3mm;
+            min-height: 6mm;
+        }
+        .footer {
+            font-size: 8pt;
+            color: #777;
+            text-align: center;
+            margin-top: 10mm;
+            border-top: 1px solid #ddd;
+            padding-top: 2mm;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.5mm 2mm;
+            border-radius: 2mm;
+            font-size: 8.5pt;
+            background: #e5eaf0;
+            color: #1b3a57;
+        }
+        .status-planned   { background: #fef3c7; color: #92400e; }
+        .status-completed { background: #dcfce7; color: #166534; }
+        .status-overdue   { background: #fee2e2; color: #991b1b; }
+        ul { margin: 1mm 0 2mm 4mm; padding-left: 2mm; }
+        .small { font-size: 8.5pt; color: #555; }
+        .cover {
+            border: 1mm solid #1b3a57;
+            padding: 6mm 8mm;
+            margin-bottom: 6mm;
+            background: #f7f9fc;
+        }
+        .cover h1 { margin-bottom: 2mm; }
+        .cover .subtitle { font-size: 10.5pt; color: #365f87; }
+    </style>
+</head>
+<body>
+    <div class="cover">
+        <h1>{{ 'management_review.pdf.heading'|trans({}, 'management_review') }}</h1>
+        <div class="subtitle">
+            {{ review.title }}
+            {% if review.reviewDate %}
+                &mdash; {{ review.reviewDate|date('d.m.Y') }}
+            {% endif %}
+        </div>
+        <div class="small" style="margin-top: 2mm;">
+            {{ 'management_review.pdf.standard_ref'|trans({}, 'management_review') }}
+        </div>
+    </div>
+
+    <table class="meta-table">
+        <tr>
+            <th>{{ 'management_review.field.status'|trans({}, 'management_review') }}</th>
+            <td>
+                <span class="badge status-{{ review.status|default('planned') }}">
+                    {{ ('management_review.status.' ~ review.status|default('planned'))|trans({}, 'management_review') }}
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <th>{{ 'management_review.field.tenant'|trans({}, 'management_review') }}</th>
+            <td>{{ review.tenant ? review.tenant.name : '—' }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'management_review.field.reviewed_by'|trans({}, 'management_review') }}</th>
+            <td>{{ review.reviewedBy ? review.reviewedBy.fullName|default(review.reviewedBy.email) : '—' }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'management_review.field.participants'|trans({}, 'management_review') }}</th>
+            <td>
+                {% if review.participants|length > 0 %}
+                    {% for p in review.participants %}
+                        {{ p.fullName|default(p.email) }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>{{ 'management_review.field.generated_at'|trans({}, 'management_review') }}</th>
+            <td>{{ generated_at|date('d.m.Y H:i') }}</td>
+        </tr>
+    </table>
+
+    <h2>{{ 'management_review.pdf.section.inputs'|trans({}, 'management_review') }}</h2>
+    <p class="small">{{ 'management_review.pdf.section.inputs_hint'|trans({}, 'management_review') }}</p>
+
+    {% set inputs = [
+        { key: 'previous_actions',    value: review.previousReviewActions,        ref: '9.3.2 a' },
+        { key: 'context_changes',     value: review.contextChanges|default(review.changesRelevantToISMS), ref: '9.3.2 b' },
+        { key: 'interested_parties',  value: review.feedbackFromInterestedParties, ref: '9.3.2 b' },
+        { key: 'performance',         value: review.performanceEvaluation,         ref: '9.3.2 c' },
+        { key: 'nonconformities',     value: review.nonconformitiesReview|default(review.nonConformitiesStatus), ref: '9.3.2 c(1)' },
+        { key: 'corrective_actions',  value: review.correctiveActionsStatus,       ref: '9.3.2 c(2)' },
+        { key: 'incidents',           value: review.incidentsReview|default(''),   ref: '9.3.2 c(3)' },
+        { key: 'audit_results',       value: review.auditResults,                   ref: '9.3.2 c(4)' },
+        { key: 'objectives',          value: review.objectivesReview|default(''),  ref: '9.3.2 c(5)' },
+        { key: 'risks',               value: review.risksReview|default(''),       ref: '9.3.2 e' },
+        { key: 'opportunities',       value: review.improvementOpportunities|default(review.opportunitiesForImprovement), ref: '9.3.2 f' },
+    ] %}
+
+    {% for input in inputs %}
+        <div class="section">
+            <h3>
+                {{ ('management_review.pdf.input.' ~ input.key)|trans({}, 'management_review') }}
+                <span class="small">(ISO 27001 Clause {{ input.ref }})</span>
+            </h3>
+            <div class="section-text">{{ input.value|default('—')|trim ?: '—' }}</div>
+        </div>
+    {% endfor %}
+
+    <h2>{{ 'management_review.pdf.section.outputs'|trans({}, 'management_review') }}</h2>
+    <p class="small">{{ 'management_review.pdf.section.outputs_hint'|trans({}, 'management_review') }}</p>
+
+    {% set outputs = [
+        { key: 'improvements',    value: review.improvementOpportunities|default(review.opportunitiesForImprovement) },
+        { key: 'changes_isms',    value: review.contextChanges|default(review.changesRelevantToISMS) },
+        { key: 'resources',       value: review.resourcesNeeded|default(review.resourceNeeds) },
+        { key: 'decisions',       value: review.decisions },
+        { key: 'action_items',    value: review.actionItems },
+        { key: 'summary',         value: review.summary|default('') },
+    ] %}
+
+    {% for out in outputs %}
+        <div class="section">
+            <h3>{{ ('management_review.pdf.output.' ~ out.key)|trans({}, 'management_review') }}</h3>
+            <div class="section-text">{{ out.value|default('—')|trim ?: '—' }}</div>
+        </div>
+    {% endfor %}
+
+    <div class="footer">
+        {{ 'management_review.pdf.footer'|trans({'%tenant%': review.tenant ? review.tenant.name : '—'}, 'management_review') }}
+    </div>
+</body>
+</html>

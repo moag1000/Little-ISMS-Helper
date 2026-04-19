@@ -80,6 +80,37 @@ management_review:
         completed: Abgeschlossen
         follow_up_required: 'Follow-up erforderlich'
         cancelled: Abgebrochen
+    action:
+        pdf: 'PDF exportieren'
+    pdf:
+        title: 'Management Review – %title%'
+        heading: 'Management Review (ISO 27001 Clause 9.3)'
+        standard_ref: 'ISO/IEC 27001:2022 Clause 9.3 — Management Review'
+        footer: 'Vertraulich – Management Review (%tenant%)'
+        section:
+            inputs: 'Inputs (Clause 9.3.2)'
+            inputs_hint: 'Von der Norm vorgegebene Eingangsgrößen für das Management Review.'
+            outputs: 'Outputs & Decisions (Clause 9.3.3)'
+            outputs_hint: 'Ergebnisse, Beschlüsse und Maßnahmen des Reviews.'
+        input:
+            previous_actions: 'Status der Maßnahmen aus dem vorherigen Review'
+            context_changes: 'Änderungen im Kontext der Organisation'
+            interested_parties: 'Rückmeldungen interessierter Parteien'
+            performance: 'Performance des ISMS (KPIs, Ziele)'
+            nonconformities: 'Nichtkonformitäten'
+            corrective_actions: 'Korrekturmaßnahmen'
+            incidents: 'Informationssicherheits-Vorfälle'
+            audit_results: 'Audit-Ergebnisse (intern/extern)'
+            objectives: 'Status der ISMS-Ziele'
+            risks: 'Risikobewertung und -behandlung'
+            opportunities: 'Chancen zur Verbesserung'
+        output:
+            improvements: 'Entscheidungen zur kontinuierlichen Verbesserung'
+            changes_isms: 'Beschlossene Änderungen am ISMS'
+            resources: 'Benötigte Ressourcen'
+            decisions: 'Weitere Entscheidungen'
+            action_items: 'Action Items (Maßnahmenplan)'
+            summary: 'Zusammenfassung'
     edit: Bearbeiten
     placeholder:
         title: 'z.B. Management Review Q1 2025'
