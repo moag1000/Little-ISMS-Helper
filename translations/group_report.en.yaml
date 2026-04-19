@@ -89,6 +89,29 @@ group_report:
             tenant: 'Tenant'
             severity: 'Severity'
             status: 'Status'
+    audit_program:
+        title: 'Group audit program'
+        subtitle: 'One audit plan → N subsidiary audits. Status per subsidiary of %root%.'
+        intro: 'Create an audit on the holding tenant (e.g. "ISO 27001 Surveillance Q2 2026"). <strong>Derive</strong> spawns a tenant-scoped audit per subsidiary — identical scope, audit number with subsidiary suffix, status <code>planned</code>. Already-derived subsidiaries are skipped (idempotent). The parent link is preserved so findings can be rolled up group-wide later.'
+        empty: 'No audit programs on this holding yet. Create an audit on this tenant and come back.'
+        no_subsidiaries: 'The current tenant has no subsidiaries — nothing to derive.'
+        col:
+            program: 'Program'
+            actions: 'Actions'
+        cell:
+            missing_help: 'Not yet derived'
+        action:
+            derive: 'Derive'
+        confirm_derive: 'This audit program will be derived onto %count% subsidiary tenants. Already-derived subsidiaries are skipped. Continue?'
+        legend:
+            completed: 'completed'
+            in_progress: 'in progress'
+            planned: 'planned'
+            missing: 'not yet derived'
+        flash:
+            invalid_csrf: 'Invalid CSRF token.'
+            no_subsidiaries: 'The current tenant has no subsidiaries — derivation is not possible.'
+            derived: 'Program %program%: %derived% subsidiary audits derived, %skipped% skipped (already present).'
     suppliers:
         title: 'Group supplier register'
         subtitle: 'Deduplicated by LEI or name across all subsidiaries of %root%.'

@@ -211,6 +211,29 @@ class InternalAudit
     private ?Tenant $tenant = null;
 
     /**
+     * Phase 9.P2.4 — Konzern-Audit-Programm.
+     *
+     * parentAudit: when the Holding-CISO runs "Derive audits for
+     * subsidiaries" on a program audit, the generated Tochter-audits
+     * point back to the original. Lets the group roll up findings,
+     * compare subsidiary vs. subsidiary execution, and chase laggards
+     * without keeping a separate program table.
+     *
+     * An audit becomes a "program" implicitly when other audits
+     * reference it as parent (isProgram() below). No separate flag.
+     */
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'derivedAudits')]
+    #[ORM\JoinColumn(name: 'parent_audit_id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['audit:read'])]
+    private ?InternalAudit $parentAudit = null;
+
+    /**
+     * @var Collection<int, InternalAudit>
+     */
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentAudit')]
+    private Collection $derivedAudits;
+
+    /**
      * H-01: Structured findings (ISO 27001 Clause 10.1). Replaces free-text `findings`.
      *
      * @var Collection<int, AuditFinding>
@@ -223,7 +246,34 @@ public function __construct()
         $this->scopedAssets = new ArrayCollection();
         $this->auditedSubsidiaries = new ArrayCollection();
         $this->structuredFindings = new ArrayCollection();
+        $this->derivedAudits = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
+    }
+
+    public function getParentAudit(): ?self
+    {
+        return $this->parentAudit;
+    }
+
+    public function setParentAudit(?self $parent): static
+    {
+        $this->parentAudit = $parent;
+        return $this;
+    }
+
+    /** @return Collection<int, InternalAudit> */
+    public function getDerivedAudits(): Collection
+    {
+        return $this->derivedAudits;
+    }
+
+    /**
+     * True when at least one other audit has been derived from this one
+     * (i.e. this audit acts as a Konzern-program template).
+     */
+    public function isProgram(): bool
+    {
+        return $this->derivedAudits->count() > 0;
     }
 
     /** @return Collection<int, AuditFinding> */

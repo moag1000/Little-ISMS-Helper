@@ -89,6 +89,29 @@ group_report:
             tenant: 'Tenant'
             severity: 'Severity'
             status: 'Status'
+    audit_program:
+        title: 'Konzern-Audit-Programm'
+        subtitle: 'Ein Audit-Plan → N Tochter-Audits. Stand pro Tochter in %root%.'
+        intro: 'Erstelle einen Audit in der Holding (z. B. "ISO 27001 Surveillance Q2 2026"). Mit <strong>Derive</strong> legt das System ein eigenes Audit pro Tochter an, identischer Scope, Audit-Nummer mit Tochter-Suffix, Status <code>planned</code>. Bereits vorhandene Ableitungen werden übersprungen (idempotent). Parent-Link bleibt erhalten, Findings laufen später im Parent-Roll-up zusammen.'
+        empty: 'Noch keine Audit-Programme in der Holding angelegt. Lege einen Audit auf diesem Tenant an und kehre hierher zurück.'
+        no_subsidiaries: 'Der aktuelle Tenant hat keine Töchter — nichts abzuleiten.'
+        col:
+            program: 'Programm'
+            actions: 'Aktionen'
+        cell:
+            missing_help: 'Noch nicht abgeleitet'
+        action:
+            derive: 'Ableiten'
+        confirm_derive: 'Dieses Audit-Programm wird auf %count% Tochter-Tenants abgeleitet. Bereits existierende Ableitungen werden übersprungen. Fortfahren?'
+        legend:
+            completed: 'abgeschlossen'
+            in_progress: 'in Durchführung'
+            planned: 'geplant'
+            missing: 'noch nicht abgeleitet'
+        flash:
+            invalid_csrf: 'Ungültiges CSRF-Token.'
+            no_subsidiaries: 'Der aktuelle Tenant hat keine Töchter — keine Ableitung möglich.'
+            derived: 'Programm %program%: %derived% Tochter-Audits abgeleitet, %skipped% übersprungen (bereits vorhanden).'
     suppliers:
         title: 'Konzern-Lieferantenverzeichnis'
         subtitle: 'Dedupliziert pro LEI oder Name über alle Töchter von %root%.'
