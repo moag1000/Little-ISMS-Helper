@@ -154,6 +154,20 @@ class Asset
     private ?string $dataClassification = null;
 
     /**
+     * TISAX / VDA-ISA 6.0 information classification overlay.
+     * Values: public, internal, confidential, strictly_confidential, prototype.
+     * Kept separate from dataClassification so the TISAX label does not
+     * collide with the ISO-leaning `restricted` vocabulary already in use.
+     */
+    #[ORM\Column(length: 30, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    #[Assert\Choice(
+        choices: ['public', 'internal', 'confidential', 'strictly_confidential', 'prototype'],
+        message: 'TISAX information classification must be one of: { choices }'
+    )]
+    private ?string $tisaxInformationClassification = null;
+
+    /**
      * Acceptable Use Policy reference or description for this asset.
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -529,6 +543,17 @@ class Asset
     public function setDataClassification(?string $dataClassification): static
     {
         $this->dataClassification = $dataClassification;
+        return $this;
+    }
+
+    public function getTisaxInformationClassification(): ?string
+    {
+        return $this->tisaxInformationClassification;
+    }
+
+    public function setTisaxInformationClassification(?string $value): static
+    {
+        $this->tisaxInformationClassification = $value;
         return $this;
     }
 
