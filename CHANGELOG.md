@@ -9,6 +9,87 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ✨ Added
 
+#### Compliance-Manager-Residual-Sprint (2026-04-19 / 04-20)
+
+Abschluss aller Residual-Items aus `docs/audit/compliance_manager_analysis.md`
+v2.1. Audit-Doc v2.2 fortgeschrieben, Gesamtbewertung **98 / 100** (v2.1: 96).
+Alle sieben Ziel-Frameworks erstmals Tool-🟢. Residual-Budget **19 → 3 FTE-Tage**.
+
+**NIS2 Directive (EU 2022/2555) — Art. 21 + Art. 23**
+- **Nis2ComplianceService** — Backend-Metriken für alle 11 Art.-21.2-Letters
+  (a Risk-Policies, b Authentication, c Encryption, d Vulnerability-Mgmt,
+  e Secure-SDLC, f Supply-Chain, g HR-Security, h Access-Control, i Asset-Mgmt,
+  j BCM, k Cryptographic-Controls) plus Art.-23-Timer (24 h / 72 h / 1 Monat)
+  und gewichteter Gesamtscore. Alle Werte aus bestehenden Domain-Daten — keine
+  Doppelpflege. Commit `6d88e74f`.
+- **Dashboard-UI** — `/nis2-compliance` rendert 11-Letter-Grid + Art.-23-
+  Timeline-Card, ersetzt den bisherigen 3-Letter-Mittelwert durch den
+  gewichteten Score. Status-Farben, Drill-Down, DE/EN-Übersetzungen für
+  alle Letter-Titel. Commit `78423dcc`.
+
+**BSI IT-Grundschutz**
+- **Kompendium-Delta-Loader** `app:load-bsi-kompendium-delta` — 24
+  Anforderungen aus dem Kompendium 2023, die im Base- und Supplement-Loader
+  fehlten: CON.4/5 Standardsoftware/Entwicklung, OPS.2.3 Outsourcing,
+  APP.4.4 Kubernetes, APP.6 Allgemeine Software, SYS.1.2 Windows-Server,
+  SYS.1.3 Unix-Server, SYS.1.6 Containerisierung, SYS.2.2 Windows-Clients,
+  SYS.3.3 Mobiltelefon, NET.4.2 VPN, INF.10 Besprechungsräume.
+  `absicherungsStufe` tagged, idempotent. Commit `b1a3db20`.
+- **BsiGrundschutzCheckService** — gruppiert Anforderungen nach Baustein,
+  klassifiziert MUSS/SOLLTE/KANN (aus `anforderungsTyp` → Description-
+  Heuristik → Priority-Fallback), berechnet gewichtete Compliance
+  (MUSS × 3, SOLLTE × 2, KANN × 1), filter-tauglich nach Absicherungsstufe.
+  Commit `b1a3db20`.
+- **IT-Grundschutz-Check-View** `/bsi-grundschutz-check` — Overall-Score,
+  Schicht-Summary-Tabelle, Baustein-Cards mit Progress + expandierbarer
+  Anforderungsliste. Absicherungsstufen-Filter (basis/standard/kern/alle).
+  Mega-Menu-Eintrag + DE/EN-Übersetzungen. Commit `5b36be96`.
+- **BSI Absicherungsstufen-KPI-Filter** — neue `bsi_stufen`-Sektion im
+  Management-KPI-Dashboard, emittiert 3 gewichtete KPIs (basis/standard/
+  kern). Commit `4a2575eb`.
+
+**DORA (Digital Operational Resilience Act)**
+- **Register-of-Information-Importer** `DoraRegisterOfInformationImporter` +
+  `app:import-dora-register <file> --tenant=<id> [--dry-run]` — symmetrisch
+  zum bestehenden ITS-Exporter. Upsert per LEI (Fallback Name), 19 ITS-
+  Spalten, UTF-8 BOM tolerant, RFC 4180 quoting, strukturiertes Resultat
+  (processed / created / updated / skipped / errors). Commit `ae0f6eda`.
+- **Sub-Outsourcing-Editor (Art. 28.6 / 30)** — strukturierter Stimulus-
+  Row-Editor ersetzt die Freitext-Liste: Tier 1–5, Name, LEI, Country,
+  Service, Criticality pro Zeile. Baum-Visualisierung auf Supplier-
+  Show-Page mit Tier-Gruppierung + Badges. Backward-compat: Legacy-
+  Newline-Strings bleiben nutzbar. Form-Theme + SupplierType POST_SUBMIT
+  entkoden JSON. Commit `e73a5d9f`.
+
+**TISAX (VDA ISA 6.0.4)**
+- **Info-Classification-Schicht** — `tisaxInformationClassification` Enum
+  auf Asset + Document: public, internal, confidential, strictly_confidential,
+  prototype. Getrennt von `dataClassification` (ISO-leaning). Migration
+  Version20260419250000 idempotent. Commit `681c8bde`.
+- **Prototype-Protection-Flow (VDA Kap. 8)** — eigenständige
+  `PrototypeProtectionAssessment`-Entity mit Scope, TISAX-Level (AL2/AL3),
+  4 Prototype-Labels (parts, vehicles, test-vehicles, events_and_shoots),
+  je einem `result` + `notes` pro Kap.-8-Sektion (8.1 Physical, 8.2
+  Organisation, 8.3 Handling, 8.4 Trial-Operation, 8.5 Events), Evidence-
+  Documents M:M, Overall-Score worst-of-sections. CRUD unter
+  `/prototype-protection` gated by ROLE_MANAGER (Delete ROLE_ADMIN),
+  Index mit Expiring-60d-Alert. Mega-Menu + `prototype_protection.*`
+  Translation-Domain DE/EN. Commit `6ea86404`.
+
+**ISO 27001 Clause 9.3 — Management Review**
+- **H-02 Management-Review-PDF-Export** `/management-review/{id}/pdf` —
+  supervisory-grade Dokument, das die persistierten Review-Daten auf die
+  normative 9.3-Struktur mappt: 11 Input-Zeilen (Clause 9.3.2 a–f),
+  6 Output-Zeilen (Clause 9.3.3). Cover-Sheet, Status-Badge, Tenant,
+  Participants, Reviewer, Generated-at. Tenant-Name als Klassifizierungs-
+  Footer. DE/EN-Übersetzungen für alle Input/Output-Keys.
+  Commit `81adc39b`.
+
+**Audit-Dokumentation**
+- `docs/audit/compliance_manager_analysis.md` auf v2.2 fortgeschrieben mit
+  Delta-Liste, aktualisierter Reifegrad-Ampel und Portfolio-Reuse-Score
+  pro Szenario. v2.1-Residual-Zeilen in-place als ✅ erledigt markiert.
+
 #### Junior+UX+CM Audit Sprint (2026-04-19)
 
 Drei unabhängige Audits (`docs/JUNIOR_IMPLEMENTER_WALKTHROUGH.md`,

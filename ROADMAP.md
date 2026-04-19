@@ -871,6 +871,46 @@ aufgesetzt nach Audit durch Senior-Consultant + Compliance-Manager + ISB-Review
 
 ---
 
+### ✅ Phase 8CM2: Compliance-Manager-Residual-Sprint (Abgeschlossen 2026-04-20)
+
+**Grundlage:** `docs/audit/compliance_manager_analysis.md` v2.1 Residual-Liste
+(~19 FTE-Tage). Alle 10 HIGH/MEDIUM/LOW-Items im zweitägigen UI-Sprint
+geschlossen. Audit-Doc v2.2 mit Gesamtbewertung **98 / 100** (v2.1: 96).
+
+#### Ergebnis-Matrix
+
+| Finding | Prio | Commit | FTE-d | Kern-Deliverable |
+|---------|------|--------|-------|------------------|
+| H-02 Management-Review-PDF | HIGH | `81adc39b` | 3 | ISO 27001 Clause 9.3 Export (11 Inputs + 6 Outputs) |
+| H-03 NIS2-Dashboard-Widgets | HIGH | `78423dcc` | 1 | 11-Letter-Grid + Art.-23-Timer auf `/nis2-compliance` |
+| BSI Kompendium-Delta-Loader | MEDIUM | `b1a3db20` | 3 | `app:load-bsi-kompendium-delta` + 24 Anforderungen + `BsiGrundschutzCheckService` |
+| BSI IT-Grundschutz-Check-View | MEDIUM | `5b36be96` | 2 | `/bsi-grundschutz-check` mit Absicherungsstufen-Filter + Baustein-Cards |
+| BSI Absicherungsstufen-KPI-Filter | MEDIUM | `4a2575eb` | 1 | `bsi_stufen`-Sektion auf Management-Dashboard (basis/standard/kern) |
+| DORA Sub-Outsourcing-Editor | MEDIUM | `e73a5d9f` | 2 | Stimulus-Row-Editor + Baum-View (Tier 1–5, LEI, Country, Criticality) |
+| DORA Register-of-Information-Importer | MEDIUM | `ae0f6eda` | 2 | `app:import-dora-register --dry-run` symmetrisch zum Export |
+| TISAX Info-Classification-Schicht | LOW | `681c8bde` | 1 | `tisaxInformationClassification` auf Asset + Document (5 Stufen inkl. prototype) |
+| TISAX Prototype-Protection-Flow | LOW | `6ea86404` | 3 | `PrototypeProtectionAssessment` mit VDA-Kap.-8-Sections + CRUD + Mega-Menu |
+| NIS2 Backend (Nis2ComplianceService) | HIGH | `6d88e74f` | 3 | 11 Art.-21.2-Metriken + Art.-23-Timer + weighted Score |
+
+**Total:** ~21 FTE-Tage realisiert, Residual-Budget **19 → 3 FTE-Tage**.
+
+#### Resultierende Ampel v2.2
+
+| Framework | v2.1 | v2.2 |
+|-----------|------|------|
+| ISO 27001:2022 | 🟢 99 % | 🟢 99 % |
+| ISO 22301 | 🟢 100 % | 🟢 100 % |
+| NIS2 / NIS2UmsuCG | 🟡 92 % | 🟢 97 % |
+| DORA | 🟡 82 % | 🟢 95 % |
+| DSGVO | 🟢 92 % | 🟢 92 % |
+| BSI IT-Grundschutz | 🟡 83 % | 🟢 90 % |
+| TISAX 6.0.4 | 🟡 85 % | 🟢 95 % |
+
+**Erstmals sind alle sieben Ziel-Frameworks Tool-🟢.** Verbleibende Aufwände
+sind Daten-Reife beim Mandanten (Tenant-Befüllung), nicht mehr Tool-seitig.
+
+---
+
 ### ✅ Phase 8JR: Junior+UX+CM Audit Sprint (Abgeschlossen 2026-04-19)
 
 **Grundlage:** Drei unabhängige Audits
@@ -1089,8 +1129,25 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 - **Reporting:** Art. 23 Compliance durch Scheduled Reports
 
 ### BSI IT-Grundschutz
+- **Aktuell:** 90 % ✅ (Tool-Grün)
 - **Absicherungsstufen** (basis/standard/kern) + **Anforderungstypen** (MUSS/SOLLTE/KANN) als ComplianceRequirement-Felder + UI-Filter
 - **Schutzbedarfsvererbung** (BSI 3.6 Maximumprinzip) via `Asset.dependsOn` + `AssetDependencyService`
+- **BSI 200-2 Phasenmodell** via `Tenant.bsiPhase`
+- **IT-Grundschutz-Check-View** `/bsi-grundschutz-check` mit gewichtetem Soll/Ist (MUSS × 3, SOLLTE × 2, KANN × 1)
+- **Kompendium-Delta-Loader** `app:load-bsi-kompendium-delta` ergänzt CON/OPS/APP/SYS/NET/INF-Lücken
+
+### DORA (Digital Operational Resilience Act)
+- **Aktuell:** 95 % ✅ (Tool-Grün)
+- **Art. 18** strukturierte Incident-Klassifikation (7 Felder: Clients, Reputation, Downtime, Spread, Data-Loss, Economic-Impact, Classification)
+- **Art. 26** TLPT-Entity (Threat-Led Penetration Test) mit Findings-Link auf AuditFinding
+- **Art. 28** Sub-Outsourcing-Editor mit strukturiertem Tier-Baum (Name, LEI, Country, Service, Criticality)
+- **Register of Information** ITS-konformer CSV Export + Import (symmetrisch, LEI-Matching)
+
+### TISAX (VDA ISA 6.0.4)
+- **Aktuell:** 95 % ✅ (Tool-Grün)
+- **AL-Level-Tagging** AL2/AL3 auf ComplianceRequirement
+- **Info-Classification-Schicht** `tisaxInformationClassification` auf Asset + Document (public, internal, confidential, strictly_confidential, prototype)
+- **Prototype-Protection-Assessment** VDA Kap. 8 mit Sektionen 8.1 Physical, 8.2 Organisation, 8.3 Handling, 8.4 Trial Operation, 8.5 Events
 
 ---
 
@@ -1103,7 +1160,13 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 
 ---
 
-**Stand:** 2026-04-19
-**Version:** 2.7
-**Letzte Aenderung:** Persona-Audit Sprint (H-01 AuditFinding/CorrectiveAction, H-04 ISO Clauses 4–10, AUD-02 HMAC-Chain, VUL-01, Schutzbedarfsvererbung, Pattern A/B/C/D, WCAG 2.2 AA, KPI Phase 1–5 inkl. ISMS Health Score + tenant thresholds, BC-Plan-Templates). CHANGELOG siehe `[Unreleased]`.
-**Naechste Aktualisierung:** Nach Abschluss Phase 8H.1
+**Stand:** 2026-04-20
+**Version:** 2.7 (unreleased — letzter getaggter Release: `v2.6.0`)
+**Letzte Aenderung:** Alle [Unreleased]-Sprints seit 2026-04-17:
+(1) Phase 8J Standards Compliance (CHANGELOG [2.7.0]-Sektion, nicht getagged),
+(2) Persona-Audit Sprint (H-01/H-04/AUD-02 + Pattern A/B/C/D + KPI 1–5),
+(3) Junior+UX+CM Audit Sprint,
+(4) Compliance-Manager-Residual-Sprint v2.2 (H-02 + NIS2-Widgets + BSI-Check
++ DORA-Complete + TISAX-Complete).
+Audit-Doc 78 → 98. Alle 7 Ziel-Frameworks Tool-🟢.
+**Naechste Aktualisierung:** Nach Cutting `v2.7.0` + Phase 9 Holding-Struktur.
