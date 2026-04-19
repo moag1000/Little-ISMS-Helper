@@ -189,6 +189,16 @@
                         </div>
                     {% endif %}
 
+                    {% if transitive_coverage is defined %}
+                        <div class="mt-3">
+                            <div class="fw-bold small mb-1">
+                                <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                                {{ 'coverage.direct_heading'|trans({}, 'control') }} &amp; {{ 'coverage.transitive_heading'|trans({}, 'control') }}
+                            </div>
+                            {% include '_components/_transitive_coverage_badge.html.twig' with { coverage: transitive_coverage } %}
+                        </div>
+                    {% endif %}
+
                     {% if fulfillment.fulfillmentNotes %}
                         <p class="fw-bold mt-3">Notes {% if is_inherited %}<small class="text-muted">(from parent)</small>{% endif %}</p>
                         <p class="text-muted small">{{ fulfillment.fulfillmentNotes }}</p>

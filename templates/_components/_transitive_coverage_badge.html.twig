@@ -1,0 +1,99 @@
+{#
+ # Transitive Coverage Badge (B1)
+ # Visualises the Control-→-Requirement chain for a single requirement:
+ #   direct contributions (mapped controls) + transitive contributions
+ #   (controls mapped to a source-requirement that maps to this one).
+ #
+ # Caller contract:
+ #   - coverage: the array returned by
+ #     `TransitiveCoverageService::computeForRequirement()`.
+ #   - compact (optional, default false): when true, render just the
+ #     percentage-badge; the detailed popover stays collapsed behind a
+ #     `<details>` control for inline table use.
+ #}
+{% set compact = compact|default(false) %}
+{% set status_variant = {
+    'good': 'success',
+    'warning': 'warning',
+    'danger': 'danger',
+    'na': 'secondary',
+} %}
+{% set variant = status_variant[coverage.status] ?? 'secondary' %}
+
+<details class="transitive-coverage{% if compact %} transitive-coverage-compact{% endif %}">
+    <summary class="d-inline-flex align-items-center gap-1" style="cursor: pointer;">
+        <span class="badge text-bg-{{ variant }}" title="{{ 'coverage.tooltip'|trans({}, 'control') }}">
+            <i class="bi bi-diagram-3" aria-hidden="true"></i>
+            {{ coverage.percentage }}%
+        </span>
+        {% if not compact %}
+            <small class="text-muted">
+                {{ 'coverage.contributors'|trans({
+                    '%direct%': coverage.counts.direct_controls,
+                    '%transitive%': coverage.counts.transitive_controls,
+                    '%unique%': coverage.counts.unique_controls
+                }, 'control') }}
+            </small>
+        {% endif %}
+    </summary>
+
+    <div class="small mt-2 ps-3 border-start border-2 border-{{ variant }}">
+        {% if coverage.direct|length > 0 %}
+            <div class="fw-semibold text-muted mb-1">
+                {{ 'coverage.direct_heading'|trans({}, 'control') }}
+            </div>
+            <ul class="list-unstyled mb-2">
+                {% for row in coverage.direct %}
+                    <li class="d-flex justify-content-between">
+                        <span>
+                            <code>{{ row.control.controlId ?? row.control.id }}</code>
+                            <span class="ms-1">{{ row.control.name }}</span>
+                        </span>
+                        <span class="text-muted">{{ row.contribution }}%</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if coverage.transitive|length > 0 %}
+            <div class="fw-semibold text-muted mb-1">
+                {{ 'coverage.transitive_heading'|trans({}, 'control') }}
+            </div>
+            <ul class="list-unstyled mb-0">
+                {% for bucket in coverage.transitive %}
+                    {% set src = bucket.source_requirement %}
+                    {% set srcFw = src.framework %}
+                    <li class="mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span>
+                                {% if srcFw %}
+                                    <span class="badge text-bg-light border">{{ srcFw.code }}</span>
+                                {% endif %}
+                                <code class="ms-1">{{ src.requirementId }}</code>
+                                <span class="ms-1">{{ src.title }}</span>
+                            </span>
+                            <span class="text-muted">{{ bucket.effective_contribution }}%</span>
+                        </div>
+                        <div class="text-muted small ps-2">
+                            {{ 'coverage.transitive_formula'|trans({
+                                '%mapping%': bucket.mapping_percentage,
+                                '%fulfillment%': bucket.source_fulfillment
+                            }, 'control') }}
+                        </div>
+                        {% if bucket.controls|length > 0 %}
+                            <ul class="list-unstyled ps-4 mb-0 text-muted">
+                                {% for c in bucket.controls %}
+                                    <li>↳ <code>{{ c.controlId ?? c.id }}</code> {{ c.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if coverage.direct|length == 0 and coverage.transitive|length == 0 %}
+            <div class="text-muted">{{ 'coverage.empty'|trans({}, 'control') }}</div>
+        {% endif %}
+    </div>
+</details>
