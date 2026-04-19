@@ -126,6 +126,57 @@
     {% endblock %}
 {% endembed %}
 
+{# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
+{% embed '_components/_search_filter_form.html.twig' with {
+    action: path('app_incident_index'),
+    filter_keys: ['status', 'severity', 'category', 'data_breach_only', 'nis2_only', 'view'],
+    form_id: 'incident-filter-form'
+} %}
+    {% block filters %}
+        {% if app.request.query.get('view') %}
+            <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">
+        {% endif %}
+        <div class="col-md-4">
+            <label for="filter-status" class="form-label">{{ 'incident.field.status'|trans({}, 'incident') }}</label>
+            <select class="form-select" id="filter-status" name="status">
+                <option value="">{{ 'incident.filter.all_status'|trans({}, 'incident') }}</option>
+                <option value="reported" {{ app.request.query.get('status') == 'reported' ? 'selected' : '' }}>{{ 'incident.status.reported'|trans({}, 'incident') }}</option>
+                <option value="in_investigation" {{ app.request.query.get('status') == 'in_investigation' ? 'selected' : '' }}>{{ 'incident.status.in_investigation'|trans({}, 'incident') }}</option>
+                <option value="in_resolution" {{ app.request.query.get('status') == 'in_resolution' ? 'selected' : '' }}>{{ 'incident.status.in_resolution'|trans({}, 'incident') }}</option>
+                <option value="resolved" {{ app.request.query.get('status') == 'resolved' ? 'selected' : '' }}>{{ 'incident.status.resolved'|trans({}, 'incident') }}</option>
+                <option value="closed" {{ app.request.query.get('status') == 'closed' ? 'selected' : '' }}>{{ 'incident.status.closed'|trans({}, 'incident') }}</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="filter-severity" class="form-label">{{ 'incident.field.severity'|trans({}, 'incident') }}</label>
+            <select class="form-select" id="filter-severity" name="severity">
+                <option value="">{{ 'incident.filter.all_severity'|trans({}, 'incident') }}</option>
+                <option value="critical" {{ app.request.query.get('severity') == 'critical' ? 'selected' : '' }}>{{ 'incident.severity.critical'|trans({}, 'incident') }}</option>
+                <option value="high" {{ app.request.query.get('severity') == 'high' ? 'selected' : '' }}>{{ 'incident.severity.high'|trans({}, 'incident') }}</option>
+                <option value="medium" {{ app.request.query.get('severity') == 'medium' ? 'selected' : '' }}>{{ 'incident.severity.medium'|trans({}, 'incident') }}</option>
+                <option value="low" {{ app.request.query.get('severity') == 'low' ? 'selected' : '' }}>{{ 'incident.severity.low'|trans({}, 'incident') }}</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="filter-flags" class="form-label">{{ 'common.filter'|trans({}, 'messages') }}</label>
+            <div class="d-flex gap-3 pt-1">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="data_breach_only" value="1" id="filter-data-breach"
+                           {{ app.request.query.get('data_breach_only') == '1' ? 'checked' : '' }}>
+                    <label class="form-check-label" for="filter-data-breach">
+                        {{ 'incident.field.data_breach_occurred'|trans({}, 'incident') }}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="nis2_only" value="1" id="filter-nis2"
+                           {{ app.request.query.get('nis2_only') == '1' ? 'checked' : '' }}>
+                    <label class="form-check-label" for="filter-nis2">NIS2</label>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+{% endembed %}
+
 {# Incidents Table or Empty State #}
 {% if allIncidents|length == 0 %}
     {% include '_components/_empty_state.html.twig' with {
@@ -140,28 +191,6 @@
     {% block card_header %}
         <div class="card-header d-flex justify-content-between align-items-center">
             <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'incident.list.all_incidents'|trans({'%count%': allIncidents|length}, 'incident') }}</h3>
-            <div class="d-flex gap-2">
-                <select class="form-select form-select-sm w-150px" id="incident-status-filter">
-                    <option value="">{{ 'incident.filter.all_status'|trans({}, 'incident') }}</option>
-                    <option value="reported">{{ 'incident.status.reported'|trans({}, 'incident') }}</option>
-                    <option value="in_investigation">{{ 'incident.status.in_investigation'|trans({}, 'incident') }}</option>
-                    <option value="in_resolution">{{ 'incident.status.in_resolution'|trans({}, 'incident') }}</option>
-                    <option value="resolved">{{ 'incident.status.resolved'|trans({}, 'incident') }}</option>
-                    <option value="closed">{{ 'incident.status.closed'|trans({}, 'incident') }}</option>
-                </select>
-                <select class="form-select form-select-sm w-150px" id="incident-severity-filter">
-                    <option value="">{{ 'incident.filter.all_severity'|trans({}, 'incident') }}</option>
-                    <option value="critical">{{ 'incident.severity.critical'|trans({}, 'incident') }}</option>
-                    <option value="high">{{ 'incident.severity.high'|trans({}, 'incident') }}</option>
-                    <option value="medium">{{ 'incident.severity.medium'|trans({}, 'incident') }}</option>
-                    <option value="low">{{ 'incident.severity.low'|trans({}, 'incident') }}</option>
-                </select>
-                <label for="incident-search" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
-                <input type="search"
-                       class="form-control form-control-sm w-200px"
-                       id="incident-search"
-                       placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
-            </div>
         </div>
     {% endblock %}
     {% block card_body %}
@@ -379,43 +408,5 @@
     color: var(--color-primary);
 }
 </style>
-
-{# Search & Filter functionality #}
-<script>
-// Search
-document.getElementById('incident-search')?.addEventListener('input', function(e) {
-    const query = e.target.value.toLowerCase();
-    filterIncidents();
-});
-
-// Status filter
-document.getElementById('incident-status-filter')?.addEventListener('change', function(e) {
-    filterIncidents();
-});
-
-// Severity filter
-document.getElementById('incident-severity-filter')?.addEventListener('change', function(e) {
-    filterIncidents();
-});
-
-function filterIncidents() {
-    const query = document.getElementById('incident-search')?.value.toLowerCase() || '';
-    const status = document.getElementById('incident-status-filter')?.value || '';
-    const severity = document.getElementById('incident-severity-filter')?.value || '';
-    const rows = document.querySelectorAll('tbody tr[data-incident-id]');
-
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        const rowStatus = row.dataset.incidentStatus;
-        const rowSeverity = row.dataset.incidentSeverity;
-
-        const matchesSearch = !query || text.includes(query);
-        const matchesStatus = !status || rowStatus === status;
-        const matchesSeverity = !severity || rowSeverity === severity;
-
-        row.style.display = (matchesSearch && matchesStatus && matchesSeverity) ? '' : 'none';
-    });
-}
-</script>
 
 {% endblock %}

@@ -163,6 +163,11 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
+    # CM-8: Audit Freeze PDFs land under var/audit_freezes
+    App\Controller\AuditFreezeController:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
     # Configure Backup Service
     App\Service\BackupService:
         arguments:

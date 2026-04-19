@@ -37,8 +37,11 @@ class StatementOfApplicabilityController extends AbstractController
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        // Get view filter parameter
+        // Get filter parameters — URL-persisted so SoA views are shareable/bookmarkable (UXC-11)
         $view = $request->query->get('view', 'inherited'); // Default: inherited
+        $q = trim((string) $request->query->get('q', ''));
+        $category = $request->query->get('category');
+        $status = $request->query->get('status');
 
         // Get controls based on view filter
         if ($tenant) {
@@ -72,6 +75,26 @@ class StatementOfApplicabilityController extends AbstractController
         if (is_string($tagFilter) && $tagFilter !== '') {
             $controls = $this->tagFilterService->filterByTagName($controls, Control::class, $tagFilter);
         }
+
+        if ($category) {
+            $controls = array_filter($controls, fn(Control $c): bool => $c->getCategory() === $category);
+        }
+        if ($status) {
+            $controls = array_filter($controls, fn(Control $c): bool => $c->getImplementationStatus() === $status);
+        }
+        if ($q !== '') {
+            $needle = mb_strtolower($q);
+            $controls = array_filter($controls, function (Control $c) use ($needle): bool {
+                $haystack = mb_strtolower(
+                    ($c->getName() ?? '')
+                    . ' ' . ($c->getDescription() ?? '')
+                    . ' ' . ($c->getIsoReference() ?? '')
+                    . ' ' . ($c->getControlId() ?? '')
+                );
+                return str_contains($haystack, $needle);
+            });
+        }
+        $controls = array_values($controls);
 
         $stats = $tenant
             ? $this->controlRepository->getImplementationStats($tenant)

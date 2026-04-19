@@ -128,62 +128,56 @@
 {% endembed %}
 {% endif %}
 
-{# Filter Section #}
-{% embed '_components/_card.html.twig' with {
-    'title': 'common.filters',
-    'headerIcon': 'bi-funnel',
-    'class': 'mb-4'
+{# Search-first Filter: search input prominent, filter dropdowns in collapsible details.
+   All state lives in URL query params (UXC-11 / UXC-12). #}
+{% embed '_components/_search_filter_form.html.twig' with {
+    action: path('app_asset_index'),
+    filter_keys: ['type', 'classification', 'owner', 'status', 'view', 'tag'],
+    form_id: 'asset-filter-form'
 } %}
-    {% block card_body %}
-        <form method="get" action="{{ path('app_asset_index') }}" class="row g-3" id="asset-filter-form" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
-            <div id="filter-section" tabindex="-1"></div>
-            <div class="col-md-3">
-                <label for="filter-type" class="form-label">{{ 'asset.label.type'|trans({}, 'asset') }}</label>
-                <select class="form-select" id="filter-type" name="type" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    {% if typeStats|length > 0 %}
-                        {% for stat in typeStats %}
-                            <option value="{{ stat.assetType }}" {{ app.request.query.get('type') == stat.assetType ? 'selected' : '' }}>
-                                {{ stat.assetType }} ({{ stat.count }})
-                            </option>
-                        {% endfor %}
-                    {% endif %}
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label for="filter-classification" class="form-label">{{ 'asset.label.data_classification'|trans({}, 'asset') }}</label>
-                <select class="form-select" id="filter-classification" name="classification" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    <option value="public" {{ app.request.query.get('classification') == 'public' ? 'selected' : '' }}>{{ 'asset.classification.public'|trans({}, 'asset') }}</option>
-                    <option value="internal" {{ app.request.query.get('classification') == 'internal' ? 'selected' : '' }}>{{ 'asset.classification.internal'|trans({}, 'asset') }}</option>
-                    <option value="confidential" {{ app.request.query.get('classification') == 'confidential' ? 'selected' : '' }}>{{ 'asset.classification.confidential'|trans({}, 'asset') }}</option>
-                    <option value="restricted" {{ app.request.query.get('classification') == 'restricted' ? 'selected' : '' }}>{{ 'asset.classification.restricted'|trans({}, 'asset') }}</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label for="filter-owner" class="form-label">{{ 'asset.label.owner'|trans({}, 'asset') }}</label>
-                <input type="text" class="form-control" id="filter-owner" name="owner"
-                       value="{{ app.request.query.get('owner') }}"
-                       placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
-            </div>
-            <div class="col-md-3">
-                <label for="filter-status" class="form-label">{{ 'asset.label.status'|trans({}, 'asset') }}</label>
-                <select class="form-select" id="filter-status" name="status" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    <option value="active" {{ app.request.query.get('status') == 'active' ? 'selected' : '' }}>{{ 'asset.status.active'|trans({}, 'asset') }}</option>
-                    <option value="inactive" {{ app.request.query.get('status') == 'inactive' ? 'selected' : '' }}>{{ 'asset.status.inactive'|trans({}, 'asset') }}</option>
-                    <option value="retired" {{ app.request.query.get('status') == 'retired' ? 'selected' : '' }}>{{ 'asset.status.retired'|trans({}, 'asset') }}</option>
-                </select>
-            </div>
-            <div class="col-12">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
-                </button>
-                <a href="{{ path('app_asset_index') }}" class="btn btn-secondary">
-                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
-                </a>
-            </div>
-        </form>
+    {% block filters %}
+        {# Preserve the view parameter across filter submissions #}
+        {% if app.request.query.get('view') %}
+            <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">
+        {% endif %}
+        <div class="col-md-3">
+            <label for="filter-type" class="form-label">{{ 'asset.label.type'|trans({}, 'asset') }}</label>
+            <select class="form-select" id="filter-type" name="type">
+                <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                {% if typeStats|length > 0 %}
+                    {% for stat in typeStats %}
+                        <option value="{{ stat.assetType }}" {{ app.request.query.get('type') == stat.assetType ? 'selected' : '' }}>
+                            {{ stat.assetType }} ({{ stat.count }})
+                        </option>
+                    {% endfor %}
+                {% endif %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="filter-classification" class="form-label">{{ 'asset.label.data_classification'|trans({}, 'asset') }}</label>
+            <select class="form-select" id="filter-classification" name="classification">
+                <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                <option value="public" {{ app.request.query.get('classification') == 'public' ? 'selected' : '' }}>{{ 'asset.classification.public'|trans({}, 'asset') }}</option>
+                <option value="internal" {{ app.request.query.get('classification') == 'internal' ? 'selected' : '' }}>{{ 'asset.classification.internal'|trans({}, 'asset') }}</option>
+                <option value="confidential" {{ app.request.query.get('classification') == 'confidential' ? 'selected' : '' }}>{{ 'asset.classification.confidential'|trans({}, 'asset') }}</option>
+                <option value="restricted" {{ app.request.query.get('classification') == 'restricted' ? 'selected' : '' }}>{{ 'asset.classification.restricted'|trans({}, 'asset') }}</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="filter-owner" class="form-label">{{ 'asset.label.owner'|trans({}, 'asset') }}</label>
+            <input type="text" class="form-control" id="filter-owner" name="owner"
+                   value="{{ app.request.query.get('owner') }}"
+                   placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
+        </div>
+        <div class="col-md-3">
+            <label for="filter-status" class="form-label">{{ 'asset.label.status'|trans({}, 'asset') }}</label>
+            <select class="form-select" id="filter-status" name="status">
+                <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                <option value="active" {{ app.request.query.get('status') == 'active' ? 'selected' : '' }}>{{ 'asset.status.active'|trans({}, 'asset') }}</option>
+                <option value="inactive" {{ app.request.query.get('status') == 'inactive' ? 'selected' : '' }}>{{ 'asset.status.inactive'|trans({}, 'asset') }}</option>
+                <option value="retired" {{ app.request.query.get('status') == 'retired' ? 'selected' : '' }}>{{ 'asset.status.retired'|trans({}, 'asset') }}</option>
+            </select>
+        </div>
     {% endblock %}
 {% endembed %}
 
@@ -213,14 +207,6 @@
     {% block card_header %}
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'asset.modern.table.title_all'|trans({}, 'asset')}} ({{ assets|length }})</h2>
-            <div>
-                <label for="asset-search" class="visually-hidden">{{ 'asset.modern.header.title'|trans({}, 'asset')}} durchsuchen</label>
-                <input type="search"
-                       class="form-control form-control-sm w-200px"
-                       placeholder="{{ 'asset.modern.table.search_placeholder'|trans({}, 'asset')}}"
-                       id="asset-search"
-                       aria-label="{{ 'asset.modern.header.title'|trans({}, 'asset')}} durchsuchen">
-            </div>
         </div>
     {% endblock %}
     {% block card_body %}
@@ -340,16 +326,4 @@
 {% endembed %}
 {% endif %}
 
-{# Search functionality #}
-<script>
-document.getElementById('asset-search')?.addEventListener('input', function(e) {
-    const query = e.target.value.toLowerCase();
-    const rows = document.querySelectorAll('tbody tr[data-asset-id]');
-
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(query) ? '' : 'none';
-    });
-});
-</script>
 {% endblock %}

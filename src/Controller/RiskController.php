@@ -59,6 +59,7 @@ class RiskController extends AbstractController
         $tenant = $user?->getTenant();
 
         // Get filter parameters
+        $q = trim((string) $request->query->get('q', ''));
         $level = $request->query->get('level'); // critical, high, medium, low
         $status = $request->query->get('status');
         $treatment = $request->query->get('treatment');
@@ -132,6 +133,20 @@ class RiskController extends AbstractController
             $risks = array_filter($risks, function (Risk $risk) use ($now): bool {
                 $reviewDate = $risk->getReviewDate();
                 return $reviewDate === null || $reviewDate < $now;
+            });
+        }
+
+        // Free-text search across title, description, threat (q=...) — URL-persisted (UXC-11)
+        if ($q !== '') {
+            $needle = mb_strtolower($q);
+            $risks = array_filter($risks, function (Risk $risk) use ($needle): bool {
+                $haystack = mb_strtolower(
+                    ($risk->getTitle() ?? '')
+                    . ' ' . ($risk->getDescription() ?? '')
+                    . ' ' . ($risk->getThreat() ?? '')
+                    . ' ' . (string) $risk->getId()
+                );
+                return str_contains($haystack, $needle);
             });
         }
 

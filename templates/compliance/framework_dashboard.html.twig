@@ -41,6 +41,27 @@
             <a href="{{ path('app_compliance_assess', {id: framework.id}) }}" class="btn btn-success">
                 {{ 'compliance.button.reassess'|trans({}, 'compliance') }}
             </a>
+            {# CM-2: Delta-Assessment Export — requires a baseline framework (i.e. another active framework) #}
+            {% set baseline_candidates = (all_frameworks|default(get_compliance_frameworks_quick()))|filter(fw => fw.id != framework.id) %}
+            {% if is_granted('ROLE_MANAGER') %}
+                {% if baseline_candidates|length > 0 %}
+                    {% set baseline_code = baseline_candidates|first.code %}
+                    <a href="{{ path('app_delta_assessment_excel', {targetFrameworkCode: framework.code}) }}?baseline={{ baseline_code }}"
+                       class="btn btn-primary"
+                       data-bs-toggle="tooltip" data-bs-placement="top"
+                       title="{{ 'compliance_wizard.delta.action.download_excel'|trans({}, 'compliance_wizard') }}">
+                        <i class="bi bi-file-earmark-excel" aria-hidden="true"></i>
+                        {{ 'compliance_wizard.delta.action.download_excel'|trans({}, 'compliance_wizard') }}
+                    </a>
+                {% else %}
+                    <button type="button" class="btn btn-primary" disabled
+                            data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="{{ 'compliance_wizard.delta.action.baseline_required'|trans({}, 'compliance_wizard') }}">
+                        <i class="bi bi-file-earmark-excel" aria-hidden="true"></i>
+                        {{ 'compliance_wizard.delta.action.download_excel'|trans({}, 'compliance_wizard') }}
+                    </button>
+                {% endif %}
+            {% endif %}
         </div>
     </div>
 

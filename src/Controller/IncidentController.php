@@ -62,6 +62,7 @@ class IncidentController extends AbstractController
         $tenant = $user?->getTenant();
 
         // Get filter parameters
+        $q = trim((string) $request->query->get('q', ''));
         $severity = $request->query->get('severity');
         $category = $request->query->get('category');
         $status = $request->query->get('status');
@@ -126,6 +127,21 @@ class IncidentController extends AbstractController
 
         if ($nis2Only === '1') {
             $allIncidents = array_filter($allIncidents, fn(Incident $incident): bool => $incident->requiresNis2Reporting());
+        }
+
+        // Free-text search across title/description (q=...) — URL-persisted (UXC-11)
+        if ($q !== '') {
+            $needle = mb_strtolower($q);
+            $allIncidents = array_filter($allIncidents, function (Incident $incident) use ($needle): bool {
+                $haystack = mb_strtolower(
+                    ($incident->getTitle() ?? '')
+                    . ' ' . ($incident->getDescription() ?? '')
+                    . ' ' . ($incident->getCategory() ?? '')
+                    . ' ' . ($incident->getIncidentNumber() ?? '')
+                    . ' ' . (string) $incident->getId()
+                );
+                return str_contains($haystack, $needle);
+            });
         }
 
         // Re-index arrays after filtering to avoid gaps in keys

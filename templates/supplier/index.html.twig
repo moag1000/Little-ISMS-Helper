@@ -109,6 +109,46 @@
     </div>
     {% endif %}
 
+    {# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
+    {% embed '_components/_search_filter_form.html.twig' with {
+        action: path('app_supplier_index'),
+        filter_keys: ['criticality', 'status', 'iso27001', 'view', 'tag'],
+        form_id: 'supplier-filter-form'
+    } %}
+        {% block filters %}
+            {% if app.request.query.get('view') %}
+                <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">
+            {% endif %}
+            <div class="col-md-4">
+                <label for="filter-criticality" class="form-label">{{ 'supplier.table.criticality'|trans({}, 'suppliers') }}</label>
+                <select class="form-select" id="filter-criticality" name="criticality">
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    <option value="critical" {{ app.request.query.get('criticality') == 'critical' ? 'selected' : '' }}>{{ 'supplier.criticality.critical'|trans({}, 'suppliers') }}</option>
+                    <option value="high" {{ app.request.query.get('criticality') == 'high' ? 'selected' : '' }}>{{ 'supplier.criticality.high'|trans({}, 'suppliers') }}</option>
+                    <option value="medium" {{ app.request.query.get('criticality') == 'medium' ? 'selected' : '' }}>{{ 'supplier.criticality.medium'|trans({}, 'suppliers') }}</option>
+                    <option value="low" {{ app.request.query.get('criticality') == 'low' ? 'selected' : '' }}>{{ 'supplier.criticality.low'|trans({}, 'suppliers') }}</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="filter-status" class="form-label">{{ 'supplier.table.status'|trans({}, 'suppliers') }}</label>
+                <select class="form-select" id="filter-status" name="status">
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    <option value="active" {{ app.request.query.get('status') == 'active' ? 'selected' : '' }}>{{ 'supplier.status.active'|trans({}, 'suppliers') }}</option>
+                    <option value="inactive" {{ app.request.query.get('status') == 'inactive' ? 'selected' : '' }}>{{ 'supplier.status.inactive'|trans({}, 'suppliers') }}</option>
+                    <option value="terminated" {{ app.request.query.get('status') == 'terminated' ? 'selected' : '' }}>{{ 'supplier.status.terminated'|trans({}, 'suppliers') }}</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="filter-iso27001" class="form-label">{{ 'supplier.table.iso27001'|trans({}, 'suppliers') }}</label>
+                <select class="form-select" id="filter-iso27001" name="iso27001">
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    <option value="1" {{ app.request.query.get('iso27001') == '1' ? 'selected' : '' }}>{{ 'common.yes'|trans({}, 'messages') }}</option>
+                    <option value="0" {{ app.request.query.get('iso27001') == '0' ? 'selected' : '' }}>{{ 'common.no'|trans({}, 'messages') }}</option>
+                </select>
+            </div>
+        {% endblock %}
+    {% endembed %}
+
     {# WS-5 Bulk tag actions bar (polymorphic) #}
     {% if is_granted('TAG_APPLY') %}
         {% include '_components/_bulk_action_bar.html.twig' with {
