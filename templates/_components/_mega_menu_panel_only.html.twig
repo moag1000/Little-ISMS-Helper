@@ -386,6 +386,15 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.industry_baselines'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        {% if is_granted('ROLE_GROUP_CISO') %}
+                        <li><a href="{{ path('app_group_report_tree') }}" class="{% if current_route starts with 'app_group_report_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.group_report'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.group_report'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

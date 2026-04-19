@@ -199,9 +199,37 @@ corporate:
         actions: Actions
         subsidiary: Subsidiary
         parent: Parent
+        parent_help: 'Parent tenant (holding). Leave empty for standalone tenants.'
         governance_model: 'Governance Model'
         hierarchy_depth: 'Hierarchy Depth'
         subsidiaries: Subsidiaries
+        is_corporate_parent: 'Holding tenant (corporate root)'
+        is_corporate_parent_help: 'Marks this tenant as a holding node for Group-CISO views and baseline inheritance.'
+        corporate_notes: 'Corporate notes'
+        corporate_notes_help: 'Optional free-text notes on the corporate structure.'
+        legal_name: 'Legal entity name'
+        legal_name_help: 'Formal legal name (may differ from display name). Relevant for NIS2 registration.'
+        legal_form: 'Legal form'
+        legal_form_help: 'e.g. GmbH, AG, SE, Ltd.'
+        nace_code: 'NACE code'
+        nace_code_help: 'Industry classification, e.g. 62.03 (computing facilities management).'
+        nis2_classification: 'NIS2 classification'
+        nis2_classification_help: 'Determined per legal entity under BSIG §28 — not aggregated across the group.'
+        nis2_sector: 'NIS2 sector'
+        nis2_sector_help: 'BSI sector label, e.g. "Digital Infrastructure", "Energy", "Health".'
+        nis2_contact_point: 'BSI reporting contact'
+        nis2_contact_point_help: 'Person or function registered with BSI as contact point.'
+        nis2_registered_at: 'Registered with BSI on'
+        nis2_registered_at_help: 'Date of registration with the BSI reporting portal.'
+    placeholder:
+        parent: '— No parent —'
+        corporate_notes: 'Optional notes on the corporate structure ...'
+        nis2_classification: '— Not yet assessed —'
+    nis2:
+        essential: 'Essential entity (Annex I)'
+        important: 'Important entity (Annex II)'
+        not_regulated: 'Not NIS2 regulated'
+        unknown: 'Unknown / to be assessed'
     action:
         set_parent: 'Set Parent'
         update_governance: 'Update Governance'

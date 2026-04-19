@@ -199,9 +199,37 @@ corporate:
         actions: Aktionen
         subsidiary: Tochtergesellschaft
         parent: Muttergesellschaft
+        parent_help: 'Übergeordnete Muttergesellschaft (Holding). Frei lassen für Einzel-Tenants.'
         governance_model: Governance-Modell
         hierarchy_depth: Hierarchietiefe
         subsidiaries: Tochtergesellschaften
+        is_corporate_parent: 'Holding-Tenant (Konzern-Wurzel)'
+        is_corporate_parent_help: 'Markiert diesen Tenant als Holding-Knoten für Group-CISO-Sichten und Baseline-Vererbung.'
+        corporate_notes: 'Konzern-Notizen'
+        corporate_notes_help: 'Optionale Freitext-Hinweise zur Konzernstruktur.'
+        legal_name: 'Rechtspersonenname'
+        legal_name_help: 'Formeller Name der Rechtsperson (kann vom Anzeigenamen abweichen). Relevant für NIS2-Registrierung.'
+        legal_form: Rechtsform
+        legal_form_help: 'z. B. GmbH, AG, SE, KG.'
+        nace_code: 'NACE-Code'
+        nace_code_help: 'Wirtschaftszweig-Klassifikation, z. B. 62.03 (Betrieb von Datenverarbeitungseinrichtungen).'
+        nis2_classification: 'NIS2-Klassifikation'
+        nis2_classification_help: 'Nach BSIG §28 pro Rechtsperson zu bestimmen — NICHT konzernweit konsolidiert.'
+        nis2_sector: 'NIS2-Sektor'
+        nis2_sector_help: 'BSI-Sektor-Label, z. B. "Digitale Infrastruktur", "Energie", "Gesundheit".'
+        nis2_contact_point: 'BSI-Meldekontakt'
+        nis2_contact_point_help: 'Person oder Funktion, die beim BSI als Kontaktstelle registriert ist.'
+        nis2_registered_at: 'BSI-Registrierung am'
+        nis2_registered_at_help: 'Datum der Registrierung beim BSI-Meldeportal.'
+    placeholder:
+        parent: '— Keine Muttergesellschaft —'
+        corporate_notes: 'Optionale Hinweise zur Konzernstruktur ...'
+        nis2_classification: '— Noch nicht bewertet —'
+    nis2:
+        essential: 'Besonders wichtige Einrichtung (Anhang I)'
+        important: 'Wichtige Einrichtung (Anhang II)'
+        not_regulated: 'Nicht NIS2-reguliert'
+        unknown: 'Unbekannt / noch zu bewerten'
     action:
         set_parent: 'Muttergesellschaft zuordnen'
         update_governance: 'Governance aktualisieren'

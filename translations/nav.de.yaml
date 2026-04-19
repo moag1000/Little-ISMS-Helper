@@ -21,6 +21,7 @@ nav:
     prototype_protection: 'Prototype-Protection (TISAX)'
     compliance_wizard: 'Compliance Wizard'
     industry_baselines: 'Branchen-Baselines'
+    group_report: 'Konzern-Reports'
     treatment_plans: Behandlungspläne
     roles: 'Rollen & Berechtigungen'
     tenants: Mandanten
@@ -131,6 +132,7 @@ nav:
             prototype_protection: 'TISAX Kap. 8 — Schutz von Prototypen, Erprobungsträgern und Events'
             compliance_wizard: 'Geführte Compliance-Prüfung'
             industry_baselines: 'Starter-Pakete pro Branche — ISMS nicht von null aufbauen'
+            group_report: 'Konzernstruktur + NIS2-Registrierungsmatrix (Konzern-ISB/Group-CISO)'
             users: 'Benutzerkontenverwaltung'
             roles: 'Rollen und Berechtigungen'
             tenants: 'Mandantenverwaltung'
