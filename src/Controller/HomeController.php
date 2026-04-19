@@ -10,6 +10,9 @@ use DateTime;
 use App\Repository\AssetRepository;
 use App\Repository\AuditLogRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Repository\ControlRepository;
+use App\Repository\DocumentRepository;
+use App\Repository\ISMSContextRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\WorkflowInstanceRepository;
@@ -43,6 +46,9 @@ class HomeController extends AbstractController
         private readonly ?ComplianceRequirementRepository $complianceRequirementRepository = null,
         private readonly ?AuditLogRepository $auditLogRepository = null,
         private readonly ?EntityManagerInterface $entityManager = null,
+        private readonly ?ControlRepository $controlRepository = null,
+        private readonly ?DocumentRepository $documentRepository = null,
+        private readonly ?ISMSContextRepository $ismsContextRepository = null,
     ) {}
 
     public function index(Request $request): Response
@@ -220,7 +226,31 @@ class HomeController extends AbstractController
             'total_urgent_count' => $totalUrgentCount,
             'show_first_steps' => $showFirstSteps,
             'cross_framework_data' => $crossFrameworkData,
+
+            // S5 / Junior-Finding #4: 5-Step-Onboarding-Checklist counters.
+            'context_defined' => $this->hasContextDefined($tenant),
+            'asset_count' => $tenant ? $this->assetRepository->count(['tenant' => $tenant]) : 0,
+            'risk_count' => $tenant ? $this->riskRepository->count(['tenant' => $tenant]) : 0,
+            'applicable_control_count' => $tenant && $this->controlRepository
+                ? $this->controlRepository->count(['tenant' => $tenant, 'isApplicable' => true])
+                : 0,
+            'document_count' => $tenant && $this->documentRepository
+                ? $this->documentRepository->count(['tenant' => $tenant])
+                : 0,
         ]);
+    }
+
+    private function hasContextDefined(?\App\Entity\Tenant $tenant): bool
+    {
+        if ($tenant === null || $this->ismsContextRepository === null) {
+            return false;
+        }
+        $context = $this->ismsContextRepository->findOneBy(['tenant' => $tenant]);
+        if ($context === null) {
+            return false;
+        }
+        return trim((string) $context->getOrganizationName()) !== ''
+            && trim((string) $context->getIsmsScope()) !== '';
     }
 
     #[IsGranted('ROLE_USER')]

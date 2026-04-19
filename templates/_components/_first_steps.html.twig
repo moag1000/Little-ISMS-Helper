@@ -3,16 +3,27 @@
   Shows an onboarding checklist for new ISMS installations.
   Dismissable via session preference (POST to dismiss route).
 
+  S5 / Junior-Finding #4: 5-Schritt-Pfad "Mein erstes ISMS" —
+  Kontext → Asset → Risiko → Control → Dokument. Die Reihenfolge
+  spiegelt, wie ein QMB-mit-9001-Hintergrund laut Persona-Walkthrough
+  intuitiv vorgeht: erst Kontext/Scope, dann Inventar, dann Risiken,
+  dann Maßnahmen, am Ende Nachweise.
+
   Required variables:
+  - context_defined (bool): Whether ISMSContext has org_name + isms_scope
   - asset_count (int): Number of assets created
   - risk_count (int): Number of risks assessed
-  - soa_reviewed (bool): Whether SoA has been reviewed
-  - process_count (int): Number of business processes
+  - applicable_control_count (int): Number of controls marked applicable
+  - document_count (int): Number of documents attached
   - show_first_steps (bool): Whether to show the checklist
 #}
 
 {% if show_first_steps|default(false) %}
 {% set steps = [
+    { key: 'context', label: 'first_steps.define_context'|trans({}, 'dashboard'),
+      description: 'first_steps.define_context_desc'|trans({}, 'dashboard'),
+      url: path('app_context_index'), icon: 'bi-diagram-2',
+      done: context_defined|default(false), norm: 'ISO 27001 Klausel 4' },
     { key: 'assets', label: 'first_steps.create_asset'|trans({}, 'dashboard'),
       description: 'first_steps.create_asset_desc'|trans({}, 'dashboard'),
       url: path('app_asset_new'), icon: 'bi-hdd-network',
@@ -21,18 +32,14 @@
       description: 'first_steps.assess_risk_desc'|trans({}, 'dashboard'),
       url: path('app_risk_new'), icon: 'bi-exclamation-triangle',
       done: risk_count|default(0) > 0, norm: 'ISO 27001 6.1.2' },
-    { key: 'soa', label: 'first_steps.review_soa'|trans({}, 'dashboard'),
-      description: 'first_steps.review_soa_desc'|trans({}, 'dashboard'),
+    { key: 'control', label: 'first_steps.apply_control'|trans({}, 'dashboard'),
+      description: 'first_steps.apply_control_desc'|trans({}, 'dashboard'),
       url: path('app_soa_index'), icon: 'bi-list-check',
-      done: soa_reviewed|default(false), norm: 'ISO 27001 6.1.3 d' },
-    { key: 'process', label: 'first_steps.create_process'|trans({}, 'dashboard'),
-      description: 'first_steps.create_process_desc'|trans({}, 'dashboard'),
-      url: path('app_business_process_new'), icon: 'bi-diagram-3',
-      done: process_count|default(0) > 0, norm: 'ISO 22301 8.2' },
-    { key: 'wizard', label: 'first_steps.run_wizard'|trans({}, 'dashboard'),
-      description: 'first_steps.run_wizard_desc'|trans({}, 'dashboard'),
-      url: path('app_compliance_wizard'), icon: 'bi-magic',
-      done: wizard_completed|default(false), norm: 'ISO 27001 Clause 4-10' },
+      done: applicable_control_count|default(0) > 0, norm: 'ISO 27001 6.1.3 d / Annex A' },
+    { key: 'document', label: 'first_steps.attach_document'|trans({}, 'dashboard'),
+      description: 'first_steps.attach_document_desc'|trans({}, 'dashboard'),
+      url: path('app_document_new'), icon: 'bi-file-earmark-text',
+      done: document_count|default(0) > 0, norm: 'ISO 27001 7.5' },
 ] %}
 
 {% set done_count = 0 %}
