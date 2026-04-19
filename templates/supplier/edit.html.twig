@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'suppliers' %}
+{% form_theme form 'supplier/_supplier_form_theme.html.twig' %}
 
 {% block title %}{{ 'supplier.page.edit_title'|trans({'%name%': supplier.name}, 'suppliers') }}{% endblock %}
 

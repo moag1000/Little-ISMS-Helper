@@ -1,0 +1,105 @@
+{#
+ # DORA Sub-Outsourcing-Chain Editor
+ # Requires a Stimulus controller `subcontractor-chain-editor`.
+ # Expected caller variables:
+ #   - field_name  (string)  — name of the hidden textarea (bound to form)
+ #   - initial     (mixed)   — current chain value (array or JSON string)
+ #}
+<div data-controller="subcontractor-chain-editor">
+    {% set hidden_value = initial is defined and initial is iterable ? initial|json_encode : (initial|default('')) %}
+    <textarea
+        class="d-none"
+        name="{{ field_name }}"
+        data-subcontractor-chain-editor-target="hidden">{{ hidden_value }}</textarea>
+
+    <div class="table-responsive">
+        <table class="table table-sm align-middle mb-2">
+            <thead class="table-light small">
+                <tr>
+                    <th scope="col" style="width: 80px;">{{ 'supplier.subcontractor.tier'|trans({}, 'suppliers') }}</th>
+                    <th scope="col">{{ 'supplier.subcontractor.name'|trans({}, 'suppliers') }}</th>
+                    <th scope="col" style="width: 150px;">{{ 'supplier.subcontractor.lei'|trans({}, 'suppliers') }}</th>
+                    <th scope="col" style="width: 80px;">{{ 'supplier.subcontractor.country'|trans({}, 'suppliers') }}</th>
+                    <th scope="col">{{ 'supplier.subcontractor.service'|trans({}, 'suppliers') }}</th>
+                    <th scope="col" style="width: 120px;">{{ 'supplier.subcontractor.criticality'|trans({}, 'suppliers') }}</th>
+                    <th scope="col" style="width: 60px;"></th>
+                </tr>
+            </thead>
+            <tbody data-subcontractor-chain-editor-target="body"></tbody>
+        </table>
+    </div>
+
+    <div data-subcontractor-chain-editor-target="emptyState" class="text-muted small d-none mb-2">
+        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+        {{ 'supplier.subcontractor.empty'|trans({}, 'suppliers') }}
+    </div>
+
+    <button type="button"
+            class="btn btn-outline-primary btn-sm"
+            data-action="click->subcontractor-chain-editor#addRow">
+        <i class="bi bi-plus-circle" aria-hidden="true"></i>
+        {{ 'supplier.subcontractor.add'|trans({}, 'suppliers') }}
+    </button>
+
+    {# Row template consumed by the Stimulus controller.
+       Placeholders: __INDEX__, __TIER__, __NAME__, __LEI__, __COUNTRY__,
+       __SERVICE__, __CRIT__, __TIER_SEL_N__, __CRIT_SEL_X__ #}
+    <template data-subcontractor-chain-editor-target="template">
+        <tr>
+            <td>
+                <select class="form-select form-select-sm"
+                        data-index="__INDEX__" data-field="tier"
+                        data-action="change->subcontractor-chain-editor#updateField">
+                    <option value="1" __TIER_SEL_1__>T1</option>
+                    <option value="2" __TIER_SEL_2__>T2</option>
+                    <option value="3" __TIER_SEL_3__>T3</option>
+                    <option value="4" __TIER_SEL_4__>T4</option>
+                    <option value="5" __TIER_SEL_5__>T5+</option>
+                </select>
+            </td>
+            <td>
+                <input type="text" class="form-control form-control-sm"
+                       data-index="__INDEX__" data-field="name"
+                       data-action="input->subcontractor-chain-editor#updateField"
+                       value="__NAME__" placeholder="Acme Corp">
+            </td>
+            <td>
+                <input type="text" class="form-control form-control-sm"
+                       data-index="__INDEX__" data-field="lei"
+                       data-action="input->subcontractor-chain-editor#updateField"
+                       value="__LEI__" placeholder="529900…" maxlength="20">
+            </td>
+            <td>
+                <input type="text" class="form-control form-control-sm text-uppercase"
+                       data-index="__INDEX__" data-field="country"
+                       data-action="input->subcontractor-chain-editor#updateField"
+                       value="__COUNTRY__" placeholder="DE" maxlength="2">
+            </td>
+            <td>
+                <input type="text" class="form-control form-control-sm"
+                       data-index="__INDEX__" data-field="service"
+                       data-action="input->subcontractor-chain-editor#updateField"
+                       value="__SERVICE__" placeholder="Cloud hosting">
+            </td>
+            <td>
+                <select class="form-select form-select-sm"
+                        data-index="__INDEX__" data-field="criticality"
+                        data-action="change->subcontractor-chain-editor#updateField">
+                    <option value="" __CRIT_SEL___ >—</option>
+                    <option value="low" __CRIT_SEL_LOW__>{{ 'supplier.criticality.low'|trans({}, 'suppliers') }}</option>
+                    <option value="medium" __CRIT_SEL_MEDIUM__>{{ 'supplier.criticality.medium'|trans({}, 'suppliers') }}</option>
+                    <option value="high" __CRIT_SEL_HIGH__>{{ 'supplier.criticality.high'|trans({}, 'suppliers') }}</option>
+                    <option value="critical" __CRIT_SEL_CRITICAL__>{{ 'supplier.criticality.critical'|trans({}, 'suppliers') }}</option>
+                </select>
+            </td>
+            <td class="text-end">
+                <button type="button" class="btn btn-sm btn-outline-danger"
+                        data-index="__INDEX__"
+                        data-action="click->subcontractor-chain-editor#removeRow"
+                        aria-label="Remove">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
+                </button>
+            </td>
+        </tr>
+    </template>
+</div>

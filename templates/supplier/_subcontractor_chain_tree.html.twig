@@ -1,0 +1,67 @@
+{#
+ # Read-only tree visualisation of Supplier.subcontractorChain.
+ # Entries may be strings (legacy) or structured dicts:
+ #   { tier, name, lei, country, service, criticality }
+ # Grouped by tier for the tree effect.
+ #
+ # Expected caller variable: chain (array|null)
+ #}
+{% if chain is null or chain|length == 0 %}
+    <p class="text-muted small mb-0">
+        <i class="bi bi-dash-circle" aria-hidden="true"></i>
+        {{ 'supplier.subcontractor.none'|trans({}, 'suppliers') }}
+    </p>
+{% else %}
+    {% set tiers = {} %}
+    {% for entry in chain %}
+        {% if entry is iterable %}
+            {% set t = entry.tier|default(1) %}
+            {% set tiers = tiers|merge({ (t): (tiers[t]|default([]))|merge([entry]) }) %}
+        {% else %}
+            {% set tiers = tiers|merge({ (1): (tiers[1]|default([]))|merge([{ 'name': entry, 'tier': 1 }]) }) %}
+        {% endif %}
+    {% endfor %}
+
+    <ul class="list-unstyled mb-0" aria-label="{{ 'supplier.subcontractor.tree'|trans({}, 'suppliers') }}">
+        {% for tier, entries in tiers %}
+            <li class="mb-2">
+                <div class="small text-muted">
+                    <span class="badge text-bg-light border">T{{ tier }}</span>
+                    <span class="ms-1">{{ 'supplier.subcontractor.tier'|trans({}, 'suppliers') }} {{ tier }}</span>
+                </div>
+                <ul class="list-unstyled ms-3 mt-1">
+                    {% for entry in entries %}
+                        {% set crit = entry.criticality|default('') %}
+                        {% set crit_variant = {
+                            'critical': 'danger',
+                            'high':     'warning',
+                            'medium':   'info',
+                            'low':      'secondary',
+                        }[crit] | default('light') %}
+                        <li class="py-1 border-start border-2 ps-2 mb-1">
+                            <div>
+                                <strong>{{ entry.name|default('—') }}</strong>
+                                {% if entry.country|default('') %}
+                                    <span class="badge text-bg-light border ms-1">{{ entry.country }}</span>
+                                {% endif %}
+                                {% if crit %}
+                                    <span class="badge text-bg-{{ crit_variant }} ms-1">
+                                        {{ ('supplier.criticality.' ~ crit)|trans({}, 'suppliers') }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <div class="small text-muted">
+                                {% if entry.lei|default('') %}
+                                    <code>{{ entry.lei }}</code>
+                                {% endif %}
+                                {% if entry.service|default('') %}
+                                    <span class="ms-2">{{ entry.service }}</span>
+                                {% endif %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

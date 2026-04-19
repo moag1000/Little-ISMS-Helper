@@ -135,6 +135,17 @@ supplier:
         high: Hoch
         medium: Mittel
         low: Niedrig
+    subcontractor:
+        tier: Stufe
+        name: Name
+        lei: LEI
+        country: Land
+        service: Dienstleistung
+        criticality: Kritikalität
+        add: 'Subunternehmer hinzufügen'
+        empty: 'Noch keine Subunternehmer erfasst. Klicken Sie „Hinzufügen", um eine neue Ebene anzulegen.'
+        none: 'Keine Unterauftragnehmer erfasst.'
+        tree: 'Sub-Outsourcing-Baum'
     status:
         active: Aktiv
         inactive: Inaktiv

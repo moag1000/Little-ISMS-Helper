@@ -320,11 +320,41 @@ class SupplierType extends AbstractType
                     return;
                 }
                 if ($form->has('subcontractorChain')) {
-                    $raw = (string) ($form->get('subcontractorChain')->getData() ?? '');
-                    $list = array_values(array_filter(
-                        array_map('trim', preg_split('/\r?\n/', $raw) ?: []),
-                        static fn(string $v): bool => $v !== '',
-                    ));
+                    $raw = trim((string) ($form->get('subcontractorChain')->getData() ?? ''));
+                    $list = [];
+                    if (str_starts_with($raw, '[')) {
+                        $decoded = json_decode($raw, true);
+                        if (is_array($decoded)) {
+                            foreach ($decoded as $entry) {
+                                if (is_string($entry) && trim($entry) !== '') {
+                                    $list[] = trim($entry);
+                                    continue;
+                                }
+                                if (is_array($entry)) {
+                                    $name = isset($entry['name']) ? trim((string) $entry['name']) : '';
+                                    if ($name === '') {
+                                        continue;
+                                    }
+                                    $tier = isset($entry['tier']) ? max(1, min(5, (int) $entry['tier'])) : 1;
+                                    $list[] = [
+                                        'tier' => $tier,
+                                        'name' => $name,
+                                        'lei' => isset($entry['lei']) ? trim((string) $entry['lei']) : '',
+                                        'country' => isset($entry['country']) ? strtoupper(substr(trim((string) $entry['country']), 0, 2)) : '',
+                                        'service' => isset($entry['service']) ? trim((string) $entry['service']) : '',
+                                        'criticality' => isset($entry['criticality']) && in_array($entry['criticality'], ['low', 'medium', 'high', 'critical'], true)
+                                            ? $entry['criticality']
+                                            : '',
+                                    ];
+                                }
+                            }
+                        }
+                    } elseif ($raw !== '') {
+                        $list = array_values(array_filter(
+                            array_map('trim', preg_split('/\r?\n/', $raw) ?: []),
+                            static fn(string $v): bool => $v !== '',
+                        ));
+                    }
                     $supplier->setSubcontractorChain($list === [] ? null : $list);
                 }
                 if ($form->has('processingLocations')) {
@@ -351,7 +381,9 @@ class SupplierType extends AbstractType
         if ($form->has('subcontractorChain') && !$form->get('subcontractorChain')->getViewData()) {
             $chain = $supplier->getSubcontractorChain();
             if (is_array($chain) && $chain !== []) {
-                $view['subcontractorChain']->vars['value'] = implode("\n", array_map('strval', $chain));
+                // JSON-encode so the Stimulus editor picks up structured rows.
+                // Legacy strings are preserved verbatim in the encoded array.
+                $view['subcontractorChain']->vars['value'] = json_encode($chain, JSON_UNESCAPED_UNICODE);
             }
         }
         if ($form->has('processingLocations') && !$form->get('processingLocations')->getViewData()) {
