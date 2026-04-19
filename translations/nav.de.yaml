@@ -18,6 +18,7 @@ nav:
     framework_dashboard: Framework-Dashboard
     nis2: NIS2-Bewertung
     compliance_wizard: 'Compliance Wizard'
+    industry_baselines: 'Branchen-Baselines'
     treatment_plans: Behandlungspläne
     roles: 'Rollen & Berechtigungen'
     tenants: Mandanten
@@ -125,6 +126,7 @@ nav:
             mapping_quality: 'Framework-übergreifende Mapping-Qualitätsanalyse'
             nis2: 'NIS2-Richtlinienbewertung'
             compliance_wizard: 'Geführte Compliance-Prüfung'
+            industry_baselines: 'Starter-Pakete pro Branche — ISMS nicht von null aufbauen'
             users: 'Benutzerkontenverwaltung'
             roles: 'Rollen und Berechtigungen'
             tenants: 'Mandantenverwaltung'

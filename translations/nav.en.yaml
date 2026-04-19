@@ -18,6 +18,7 @@ nav:
     framework_dashboard: 'Framework Dashboard'
     nis2: 'NIS2 Assessment'
     compliance_wizard: 'Compliance Wizard'
+    industry_baselines: 'Industry Baselines'
     treatment_plans: 'Treatment Plans'
     roles: 'Roles & Permissions'
     tenants: Tenants
@@ -125,6 +126,7 @@ nav:
             mapping_quality: 'Cross-framework mapping quality analysis'
             nis2: 'NIS2 Directive assessment'
             compliance_wizard: 'Guided compliance assessment'
+            industry_baselines: 'Per-industry starter packs — do not bootstrap from zero'
             users: 'User account management'
             roles: 'Roles and permissions'
             tenants: 'Multi-tenant administration'

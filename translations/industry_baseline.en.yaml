@@ -1,0 +1,50 @@
+industry_baseline:
+    title: 'Industry Baselines'
+    subtitle: 'Pre-configured starter packs per industry — do not bootstrap your tenant from zero.'
+    intro: 'An <strong>industry baseline</strong> is a vetted starter pack: typical risks, core assets, mandatory controls, and framework recommendations for a specific industry. One click → your tenant has the baseline documentation. Refine from there.'
+    empty: 'No baselines loaded yet. Run the seed command:'
+    industry:
+        production: 'Manufacturing'
+        finance: 'Financial sector'
+        kritis_health: 'Critical Infrastructure Healthcare'
+        automotive: 'Automotive'
+        cloud: 'Cloud service providers'
+        public_sector: 'Public sector'
+        generic: 'Generic (industry-agnostic)'
+    status:
+        applied: 'Already applied'
+        applied_at: 'Applied on %date%'
+    field:
+        description: 'Description'
+        required_frameworks: 'Required frameworks'
+        recommended_frameworks: 'Recommended frameworks'
+        frameworks: 'Frameworks'
+        preset_risks: 'Preset risks'
+        preset_assets: 'Preset assets'
+        preset_controls: 'Preset applicable controls'
+        fte_saved: 'FTE days saved'
+    fte_suffix: 'FTE days'
+    fte_subtitle: 'vs. "everything by hand" (baseline author estimate)'
+    action:
+        details: 'View details'
+        apply: 'Apply baseline'
+    confirm_apply: 'Baseline will be applied to your current tenant. Existing data (matched by title/name) is not overwritten. Continue?'
+    risk:
+        title: 'Risk'
+        category: 'Category'
+        inherent: 'Inherent'
+        treatment: 'Treatment'
+    asset:
+        name: 'Asset'
+        type: 'Type'
+    applied_record:
+        title: 'Application record'
+        applied_at: 'Applied at'
+        applied_by: 'Applied by'
+        summary: 'Summary'
+    flash:
+        invalid_csrf: 'Invalid CSRF token.'
+        no_tenant: 'No active tenant — baseline application not possible.'
+        already_applied: 'Baseline has already been applied to this tenant. No re-application needed.'
+        applied_summary: 'Baseline applied: %risks% risks, %assets% assets, %controls% controls marked applicable.'
+        frameworks_missing: 'Note: the following required frameworks are not yet loaded for this tenant: %frameworks%. Activate them via the Compliance Wizard before further work.'

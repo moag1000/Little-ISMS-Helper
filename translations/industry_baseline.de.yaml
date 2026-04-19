@@ -1,0 +1,50 @@
+industry_baseline:
+    title: 'Branchen-Baselines'
+    subtitle: 'Starter-Pakete pro Branche — Rüste deinen Tenant nicht aus dem Nichts aus.'
+    intro: 'Eine <strong>Branchen-Baseline</strong> ist ein geprüftes Starter-Paket: typische Risiken, Kern-Assets, Pflicht-Controls und Framework-Empfehlungen für eine bestimmte Branche. Ein Klick → dein Tenant hat die Basis-Dokumentation. Danach individuell nachschärfen.'
+    empty: 'Noch keine Baselines geladen. Führe den Seed-Befehl aus:'
+    industry:
+        production: 'Produktion'
+        finance: 'Finanzsektor'
+        kritis_health: 'KRITIS Gesundheit'
+        automotive: 'Automotive'
+        cloud: 'Cloud-Dienstleister'
+        public_sector: 'Öffentlicher Sektor'
+        generic: 'Generisch (branchenneutral)'
+    status:
+        applied: 'Bereits angewendet'
+        applied_at: 'Angewendet am %date%'
+    field:
+        description: 'Beschreibung'
+        required_frameworks: 'Erforderliche Frameworks'
+        recommended_frameworks: 'Empfohlene Frameworks'
+        frameworks: 'Frameworks'
+        preset_risks: 'Voreingestellte Risiken'
+        preset_assets: 'Voreingestellte Assets'
+        preset_controls: 'Voreingestellte anwendbare Controls'
+        fte_saved: 'FTE-Tage eingespart'
+    fte_suffix: 'FTE-Tage'
+    fte_subtitle: 'vs. "alles von Hand" (Schätzung durch Baseline-Autor)'
+    action:
+        details: 'Details ansehen'
+        apply: 'Baseline anwenden'
+    confirm_apply: 'Baseline wird auf deinen aktuellen Mandanten angewendet. Bereits vorhandene Daten (nach Titel/Name) werden nicht überschrieben. Fortfahren?'
+    risk:
+        title: 'Risiko'
+        category: 'Kategorie'
+        inherent: 'Inhärent'
+        treatment: 'Behandlung'
+    asset:
+        name: 'Asset'
+        type: 'Typ'
+    applied_record:
+        title: 'Anwendungs-Protokoll'
+        applied_at: 'Angewendet am'
+        applied_by: 'Angewendet durch'
+        summary: 'Zusammenfassung'
+    flash:
+        invalid_csrf: 'Ungültiges CSRF-Token.'
+        no_tenant: 'Kein aktiver Mandant — Baseline-Anwendung nicht möglich.'
+        already_applied: 'Baseline wurde bereits auf diesen Mandanten angewendet. Keine erneute Anwendung nötig.'
+        applied_summary: 'Baseline angewendet: %risks% Risiken, %assets% Assets, %controls% Controls als anwendbar markiert.'
+        frameworks_missing: 'Hinweis: Folgende erforderliche Frameworks sind im Mandanten noch nicht geladen: %frameworks%. Vor der weiteren Pflege sollten diese über den Compliance-Wizard aktiviert werden.'

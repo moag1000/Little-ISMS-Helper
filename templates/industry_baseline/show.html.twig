@@ -1,0 +1,223 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ baseline.name }} · {{ 'industry_baseline.title'|trans({}, 'industry_baseline') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'industry_baseline.title'|trans({}, 'industry_baseline'), path: 'app_industry_baseline_index' },
+            { label: baseline.name }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+        <div>
+            <h1 class="h2 mb-1">
+                <i class="bi bi-box-seam text-primary" aria-hidden="true"></i>
+                {{ baseline.name }}
+            </h1>
+            <p class="text-muted mb-0">
+                <span class="badge bg-secondary">
+                    {{ ('industry_baseline.industry.' ~ baseline.industry)|trans({}, 'industry_baseline') }}
+                </span>
+                <span class="badge bg-light text-dark border">v{{ baseline.version }}</span>
+                <span class="badge bg-light text-dark border">{{ baseline.source }}</span>
+            </p>
+        </div>
+        <div>
+            {% if applied_record %}
+                <span class="badge bg-success fs-6">
+                    <i class="bi bi-check-circle" aria-hidden="true"></i>
+                    {{ 'industry_baseline.status.applied_at'|trans({'%date%': applied_record.appliedAt|date('Y-m-d H:i')}, 'industry_baseline') }}
+                </span>
+            {% else %}
+                <form method="post" action="{{ path('app_industry_baseline_apply', {code: baseline.code}) }}"
+                      onsubmit="return confirm('{{ 'industry_baseline.confirm_apply'|trans({}, 'industry_baseline')|e('js') }}');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('apply_baseline_' ~ baseline.code) }}">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-rocket-takeoff" aria-hidden="true"></i>
+                        {{ 'industry_baseline.action.apply'|trans({}, 'industry_baseline') }}
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-7">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">{{ 'industry_baseline.field.description'|trans({}, 'industry_baseline') }}</h2>
+                </div>
+                <div class="card-body">
+                    <p>{{ baseline.description|nl2br }}</p>
+                </div>
+            </div>
+
+            {# Preset Risks #}
+            {% if baseline.presetRisks|length > 0 %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">
+                            <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
+                            {{ 'industry_baseline.field.preset_risks'|trans({}, 'industry_baseline') }}
+                            <span class="badge bg-secondary ms-1">{{ baseline.presetRisks|length }}</span>
+                        </h2>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">{{ 'industry_baseline.risk.title'|trans({}, 'industry_baseline') }}</th>
+                                    <th scope="col">{{ 'industry_baseline.risk.category'|trans({}, 'industry_baseline') }}</th>
+                                    <th scope="col">{{ 'industry_baseline.risk.inherent'|trans({}, 'industry_baseline') }}</th>
+                                    <th scope="col">{{ 'industry_baseline.risk.treatment'|trans({}, 'industry_baseline') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for risk in baseline.presetRisks %}
+                                    {% set inherent = (risk.inherent_likelihood|default(3)) * (risk.inherent_impact|default(3)) %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ risk.title }}</strong>
+                                            <div class="small text-muted">{{ risk.description|default('')|u.truncate(120, '…') }}</div>
+                                        </td>
+                                        <td><code>{{ risk.category|default('–') }}</code></td>
+                                        <td>
+                                            <span class="badge {% if inherent >= 15 %}bg-danger{% elseif inherent >= 8 %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                                                {{ inherent }}
+                                            </span>
+                                        </td>
+                                        <td><code>{{ risk.treatment_strategy|default('mitigate') }}</code></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Preset Assets #}
+            {% if baseline.presetAssets|length > 0 %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">
+                            <i class="bi bi-box text-primary" aria-hidden="true"></i>
+                            {{ 'industry_baseline.field.preset_assets'|trans({}, 'industry_baseline') }}
+                            <span class="badge bg-secondary ms-1">{{ baseline.presetAssets|length }}</span>
+                        </h2>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">{{ 'industry_baseline.asset.name'|trans({}, 'industry_baseline') }}</th>
+                                    <th scope="col">{{ 'industry_baseline.asset.type'|trans({}, 'industry_baseline') }}</th>
+                                    <th scope="col">C</th>
+                                    <th scope="col">I</th>
+                                    <th scope="col">A</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for asset in baseline.presetAssets %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ asset.name }}</strong>
+                                            <div class="small text-muted">{{ asset.description|default('') }}</div>
+                                        </td>
+                                        <td><code>{{ asset.asset_type|default('–') }}</code></td>
+                                        <td>{{ asset.confidentiality|default(3) }}</td>
+                                        <td>{{ asset.integrity|default(3) }}</td>
+                                        <td>{{ asset.availability|default(3) }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Preset Controls #}
+            {% if baseline.presetApplicableControls|length > 0 %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">
+                            <i class="bi bi-list-check text-success" aria-hidden="true"></i>
+                            {{ 'industry_baseline.field.preset_controls'|trans({}, 'industry_baseline') }}
+                            <span class="badge bg-secondary ms-1">{{ baseline.presetApplicableControls|length }}</span>
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-1">
+                            {% for control in baseline.presetApplicableControls %}
+                                <code class="badge bg-light text-dark border">{{ control }}</code>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-5">
+            <div class="card shadow-sm mb-4 border-success">
+                <div class="card-body text-center">
+                    <div class="small text-uppercase text-muted mb-1">
+                        <i class="bi bi-lightning-charge-fill text-success" aria-hidden="true"></i>
+                        {{ 'industry_baseline.field.fte_saved'|trans({}, 'industry_baseline') }}
+                    </div>
+                    <div class="display-4 fw-bold text-success mb-1">
+                        {{ baseline.fteDaysSavedEstimate|number_format(1, '.', ',') }}
+                        <small class="fs-5 text-muted">{{ 'industry_baseline.fte_suffix'|trans({}, 'industry_baseline') }}</small>
+                    </div>
+                    <div class="text-muted small">{{ 'industry_baseline.fte_subtitle'|trans({}, 'industry_baseline') }}</div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">{{ 'industry_baseline.field.frameworks'|trans({}, 'industry_baseline') }}</h2>
+                </div>
+                <div class="card-body">
+                    <dl class="mb-0">
+                        <dt>{{ 'industry_baseline.field.required_frameworks'|trans({}, 'industry_baseline') }}</dt>
+                        <dd>
+                            {% for code in baseline.requiredFrameworks %}
+                                <span class="badge bg-info me-1">{{ code }}</span>
+                            {% endfor %}
+                        </dd>
+                        {% if baseline.recommendedFrameworks|length > 0 %}
+                            <dt class="mt-2">{{ 'industry_baseline.field.recommended_frameworks'|trans({}, 'industry_baseline') }}</dt>
+                            <dd>
+                                {% for code in baseline.recommendedFrameworks %}
+                                    <span class="badge bg-light text-dark border me-1">{{ code }}</span>
+                                {% endfor %}
+                            </dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+
+            {% if applied_record %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">{{ 'industry_baseline.applied_record.title'|trans({}, 'industry_baseline') }}</h2>
+                    </div>
+                    <div class="card-body">
+                        <dl class="small mb-0">
+                            <dt>{{ 'industry_baseline.applied_record.applied_at'|trans({}, 'industry_baseline') }}</dt>
+                            <dd>{{ applied_record.appliedAt|date('Y-m-d H:i') }}</dd>
+                            <dt>{{ 'industry_baseline.applied_record.applied_by'|trans({}, 'industry_baseline') }}</dt>
+                            <dd>{{ applied_record.appliedBy.email|default('—') }}</dd>
+                            <dt>{{ 'industry_baseline.applied_record.summary'|trans({}, 'industry_baseline') }}</dt>
+                            <dd>
+                                <pre class="small bg-body-tertiary p-2 mb-0">{{ applied_record.createdSummary|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
