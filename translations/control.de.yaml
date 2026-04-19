@@ -68,3 +68,10 @@ control:
     description: 'Automatisch ermittelte Anforderungen, die diese Maßnahme abdecken könnte. Konfidenz basiert auf Text-Ähnlichkeit (Jaccard) zwischen Control-Beschreibung und Requirement-Text.'
     accept: 'Übernehmen'
     footer_hint: 'Jede Übernahme wird im Audit-Log als "A2_auto_mapping_suggestion" mit Konfidenz-Wert protokolliert — Auditoren sehen die Herkunft.'
+coverage:
+  tooltip: 'Transitive Abdeckung: Direkte Controls + gemappte Quelle-Anforderungen'
+  contributors: '%direct% direkt · %transitive% transitiv · %unique% eindeutige Controls'
+  direct_heading: 'Direkt verknüpfte Maßnahmen'
+  transitive_heading: 'Transitive Herkunft (via Cross-Framework-Mapping)'
+  transitive_formula: 'Quell-Erfüllung %fulfillment% %% × Mapping-Stärke %mapping% %%'
+  empty: 'Noch keine beitragenden Maßnahmen erfasst.'

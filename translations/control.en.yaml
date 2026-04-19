@@ -68,3 +68,10 @@ control:
     description: 'Automatically detected requirements this control may cover. Confidence is a Jaccard text-similarity score between the control description and the requirement text.'
     accept: 'Accept'
     footer_hint: 'Every acceptance is logged as "A2_auto_mapping_suggestion" with its confidence score — auditors can trace the origin.'
+coverage:
+  tooltip: 'Transitive coverage: direct controls + mapped source requirements'
+  contributors: '%direct% direct · %transitive% transitive · %unique% unique controls'
+  direct_heading: 'Directly mapped controls'
+  transitive_heading: 'Transitive origin (via cross-framework mapping)'
+  transitive_formula: 'source fulfilment %fulfillment% %% × mapping strength %mapping% %%'
+  empty: 'No contributing controls recorded yet.'

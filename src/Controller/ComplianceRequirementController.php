@@ -10,6 +10,7 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\TenantContext;
+use App\Service\TransitiveCoverageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +26,8 @@ class ComplianceRequirementController extends AbstractController
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
-        private readonly TenantContext $tenantContext
+        private readonly TenantContext $tenantContext,
+        private readonly TransitiveCoverageService $transitiveCoverageService,
     ) {}
 
     #[Route('/compliance/requirement/', name: 'app_compliance_requirement_index', methods: ['GET'])]
@@ -151,6 +153,7 @@ class ComplianceRequirementController extends AbstractController
             'is_inherited' => $isInherited,
             'can_edit' => $canEdit,
             'sub_requirement_fulfillments' => $subRequirementFulfillments,
+            'transitive_coverage' => $this->transitiveCoverageService->computeForRequirement($complianceRequirement),
         ]);
     }
 
