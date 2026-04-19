@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'group_report.risks.title'|trans({}, 'group_report') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'group_report.title'|trans({}, 'group_report'), path: 'app_group_report_tree' },
+            { label: 'group_report.risks.title'|trans({}, 'group_report') }
+        ]
+    } %}
+
+    <div class="mb-4">
+        <h1 class="h2 mb-1">
+            <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
+            {{ 'group_report.risks.title'|trans({}, 'group_report') }}
+        </h1>
+        <p class="text-muted mb-0">{{ 'group_report.risks.subtitle'|trans({'%root%': root.name, '%count%': total_risks}, 'group_report') }}</p>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 g-3 mb-4">
+        <div class="col">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h2 class="h6 mb-0">{{ 'group_report.risks.top10'|trans({}, 'group_report') }}</h2>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0 align-middle" aria-label="{{ 'group_report.risks.top10'|trans({}, 'group_report') }}">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">{{ 'group_report.risks.col.title'|trans({}, 'group_report') }}</th>
+                                <th scope="col">{{ 'group_report.risks.col.tenant'|trans({}, 'group_report') }}</th>
+                                <th scope="col">{{ 'group_report.risks.col.inherent'|trans({}, 'group_report') }}</th>
+                                <th scope="col">{{ 'group_report.risks.col.residual'|trans({}, 'group_report') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for risk in top_risks %}
+                                {% set inherent = risk.inherentRiskLevel %}
+                                {% set residual = risk.residualRiskLevel %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>
+                                        <strong>{{ risk.title }}</strong>
+                                        {% if risk.category %}
+                                            <div class="small text-muted"><code>{{ risk.category }}</code></div>
+                                        {% endif %}
+                                    </td>
+                                    <td><code class="small">{{ risk.tenant.code }}</code></td>
+                                    <td>
+                                        <span class="badge {% if inherent >= 15 %}bg-danger{% elseif inherent >= 8 %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                                            {{ inherent }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if residual > 0 %}
+                                            <span class="badge {% if residual >= 15 %}bg-danger{% elseif residual >= 8 %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                                                {{ residual }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr><td colspan="5" class="text-center text-muted py-3">{{ 'group_report.risks.none'|trans({}, 'group_report') }}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h2 class="h6 mb-0">{{ 'group_report.risks.distribution'|trans({}, 'group_report') }}</h2>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">{{ 'group_report.risks.col.tenant'|trans({}, 'group_report') }}</th>
+                                <th scope="col" class="text-end">{{ 'group_report.risks.col.count'|trans({}, 'group_report') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tenant in tenants %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ tenant.name }}</strong>
+                                        <code class="small text-muted ms-1">{{ tenant.code }}</code>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="badge bg-light text-dark border">{{ risks_by_tenant[tenant.code]|default(0) }}</span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr>
+                                <th>{{ 'group_report.risks.total'|trans({}, 'group_report') }}</th>
+                                <th class="text-end">{{ total_risks }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

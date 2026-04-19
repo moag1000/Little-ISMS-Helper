@@ -61,10 +61,24 @@
             </h1>
             <p class="text-muted mb-0">{{ 'group_report.tree.subtitle'|trans({}, 'group_report') }}</p>
         </div>
-        <a href="{{ path('app_group_report_nis2_registration') }}" class="btn btn-outline-primary">
-            <i class="bi bi-shield-check" aria-hidden="true"></i>
-            {{ 'group_report.nis2.title'|trans({}, 'group_report') }}
-        </a>
+        <div class="btn-group flex-wrap" role="group" aria-label="Group reports">
+            <a href="{{ path('app_group_report_nis2_registration') }}" class="btn btn-outline-primary">
+                <i class="bi bi-shield-check" aria-hidden="true"></i>
+                {{ 'group_report.nis2.title'|trans({}, 'group_report') }}
+            </a>
+            <a href="{{ path('app_group_report_risks') }}" class="btn btn-outline-primary">
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                {{ 'group_report.risks.title'|trans({}, 'group_report') }}
+            </a>
+            <a href="{{ path('app_group_report_kpi_matrix') }}" class="btn btn-outline-primary">
+                <i class="bi bi-grid-3x3-gap" aria-hidden="true"></i>
+                {{ 'group_report.kpi.title'|trans({}, 'group_report') }}
+            </a>
+            <a href="{{ path('app_group_report_soa_matrix') }}" class="btn btn-outline-primary">
+                <i class="bi bi-table" aria-hidden="true"></i>
+                {{ 'group_report.soa.title'|trans({}, 'group_report') }}
+            </a>
+        </div>
     </div>
 
     <div class="card shadow-sm">

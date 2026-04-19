@@ -30,3 +30,43 @@ group_report:
             registered: 'Registriert'
         registration:
             missing: 'Registrierung fehlt'
+    risks:
+        title: 'Konzern-Top-Risiken'
+        subtitle: 'Top 10 Risiken über alle Töchter von %root% — %count% Risiken insgesamt.'
+        top10: 'Top 10 Risiken (Residualwert, Fallback inherent)'
+        distribution: 'Verteilung pro Tenant'
+        total: 'Summe Konzern'
+        none: 'Keine Risiken im Scope.'
+        col:
+            title: 'Risiko'
+            tenant: 'Tenant'
+            inherent: 'Inhärent'
+            residual: 'Residual'
+            count: 'Anzahl'
+    kpi:
+        title: 'Framework-Reifegrad-Matrix'
+        subtitle: 'NIS2 / DORA / ISO 27001 / ... pro Tenant in %root% — Zelle = erfüllt / anwendbar Prozent.'
+        intro: 'Zeilen = Tenants im Subtree. Spalten = verfügbare Compliance-Frameworks. Zellenwert ist identisch mit dem Per-Tenant-Dashboard (fulfilled / applicable). Leere Zelle bedeutet: Framework im Tenant nicht anwendbar markiert.'
+        holding: 'Holding'
+        requirements: 'Anforderungen'
+        n_a_help: 'Keine anwendbaren Anforderungen in diesem Tenant.'
+        col:
+            tenant: 'Tenant'
+    soa:
+        title: 'Konzern-SoA-Matrix'
+        subtitle: 'Annex-A-Controls × Tenants — %controls% Controls über %tenants% Tenants.'
+        stat:
+            cells: 'Zellen gesamt'
+            applicable: 'Anwendbar'
+            implemented: 'Umgesetzt'
+        col:
+            control: 'Control-ID'
+        cell:
+            not_applicable: 'Nicht anwendbar'
+        legend:
+            title: 'Legende'
+            implemented: 'umgesetzt'
+            in_progress: 'in Umsetzung'
+            planned: 'geplant'
+            not_started: 'nicht begonnen'
+            not_applicable: 'nicht anwendbar'

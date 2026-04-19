@@ -30,3 +30,43 @@ group_report:
             registered: 'Registered'
         registration:
             missing: 'Registration missing'
+    risks:
+        title: 'Group top risks'
+        subtitle: 'Top 10 risks across all subsidiaries of %root% — %count% risks total.'
+        top10: 'Top 10 risks (by residual; falls back to inherent)'
+        distribution: 'Distribution per tenant'
+        total: 'Group total'
+        none: 'No risks in scope.'
+        col:
+            title: 'Risk'
+            tenant: 'Tenant'
+            inherent: 'Inherent'
+            residual: 'Residual'
+            count: 'Count'
+    kpi:
+        title: 'Framework maturity matrix'
+        subtitle: 'NIS2 / DORA / ISO 27001 / ... per tenant in %root% — cell = fulfilled / applicable percent.'
+        intro: 'Rows = tenants in the subtree. Columns = available compliance frameworks. Cell value matches the per-tenant dashboard (fulfilled / applicable). Empty cell means no applicable requirements for that tenant.'
+        holding: 'Holding'
+        requirements: 'requirements'
+        n_a_help: 'No applicable requirements in this tenant.'
+        col:
+            tenant: 'Tenant'
+    soa:
+        title: 'Group SoA matrix'
+        subtitle: 'Annex A controls × tenants — %controls% controls over %tenants% tenants.'
+        stat:
+            cells: 'Total cells'
+            applicable: 'Applicable'
+            implemented: 'Implemented'
+        col:
+            control: 'Control ID'
+        cell:
+            not_applicable: 'Not applicable'
+        legend:
+            title: 'Legend'
+            implemented: 'implemented'
+            in_progress: 'in progress'
+            planned: 'planned'
+            not_started: 'not started'
+            not_applicable: 'not applicable'

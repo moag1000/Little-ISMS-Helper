@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'group_report.kpi.title'|trans({}, 'group_report') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'group_report.title'|trans({}, 'group_report'), path: 'app_group_report_tree' },
+            { label: 'group_report.kpi.title'|trans({}, 'group_report') }
+        ]
+    } %}
+
+    <div class="mb-4">
+        <h1 class="h2 mb-1">
+            <i class="bi bi-grid-3x3-gap text-primary" aria-hidden="true"></i>
+            {{ 'group_report.kpi.title'|trans({}, 'group_report') }}
+        </h1>
+        <p class="text-muted mb-0">{{ 'group_report.kpi.subtitle'|trans({'%root%': root.name}, 'group_report') }}</p>
+    </div>
+
+    <div class="alert alert-info d-flex gap-2" role="note">
+        <i class="bi bi-info-circle mt-1" aria-hidden="true"></i>
+        <div class="small">{{ 'group_report.kpi.intro'|trans({}, 'group_report') }}</div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle" aria-label="{{ 'group_report.kpi.title'|trans({}, 'group_report') }}">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">{{ 'group_report.kpi.col.tenant'|trans({}, 'group_report') }}</th>
+                            {% for framework in frameworks %}
+                                <th scope="col" class="text-center" title="{{ framework.name }}">
+                                    <code class="small">{{ framework.code }}</code>
+                                </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tenant in tenants %}
+                            <tr>
+                                <td>
+                                    <strong>{{ tenant.name }}</strong>
+                                    <code class="small text-muted ms-1">{{ tenant.code }}</code>
+                                    {% if tenant.isCorporateParent %}
+                                        <span class="badge bg-primary ms-1">{{ 'group_report.kpi.holding'|trans({}, 'group_report') }}</span>
+                                    {% endif %}
+                                </td>
+                                {% for framework in frameworks %}
+                                    {% set cell = matrix[tenant.code][framework.code]|default({}) %}
+                                    {% set pct = cell.percentage|default(null) %}
+                                    <td class="text-center">
+                                        {% if pct is null %}
+                                            <span class="text-muted small" title="{{ 'group_report.kpi.n_a_help'|trans({}, 'group_report') }}">—</span>
+                                        {% else %}
+                                            <span class="badge {% if pct >= 80 %}bg-success{% elseif pct >= 50 %}bg-warning text-dark{% else %}bg-danger{% endif %}"
+                                                  title="{{ cell.fulfilled }}/{{ cell.applicable }} {{ 'group_report.kpi.requirements'|trans({}, 'group_report') }}">
+                                                {{ pct }}%
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
