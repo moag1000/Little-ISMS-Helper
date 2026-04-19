@@ -51,7 +51,8 @@ Little ISMS Helper unterstützt Organisationen bei der **Implementierung und Ver
 | 🔗 **Cross-Framework-Mappings** | 461 geprüfte Mappings über 22 Frameworks |
 | 📊 **Multi-Framework Support** | ISO 27001/27002/27005/27701/22301, TISAX, DORA, NIS2/NIS2UmsuCG, BSI, C5, EU AI Act |
 | 🌐 **BSI IT-Grundschutz** | Absicherungsstufen (Basis/Standard/Kern), Anforderungstypen (MUSS/SOLLTE/KANN), Schutzbedarfsvererbung (Maximumprinzip) |
-| 📦 **Branchen-Baselines** | Starter-Pakete für Produktion, Finanzsektor, KRITIS-Health, Generic — 1-Klick-Apply statt ISMS-from-scratch |
+| 📦 **Branchen-Baselines** | 9 Consultant-Starter-Pakete (Generic, Production, Finance, KRITIS-Health, Automotive, Cloud, MSP, IT-Service, Hosting) — 1-Klick-Apply statt ISMS-from-scratch |
+| 🏢 **Holding/Konzern-Struktur** | Tenant-Hierarchie mit Cycle-Safety, `ROLE_GROUP_CISO` für read-across, Baseline-Vererbung + `applyRecursive`, NIS2-Registrierungsmatrix pro Rechtsperson (§28 BSIG) |
 | 📉 **Portfolio-Report mit Trend + Drill-Down** | Echte Delta-Werte via `PortfolioSnapshot`-Cron, Cell-Click führt zu den konkreten Requirements |
 | 🧭 **KPI-Dashboard** | ISMS Health Score, Per-Framework-Compliance, Risk-Appetite, MTTR nach Severity, Inheritance-Rate, FTE-Tage-eingespart |
 | ♿ **WCAG 2.2 AA** | aria-live, scope="col", Dialog-Semantik, ⌘K-Command-Palette discoverable |

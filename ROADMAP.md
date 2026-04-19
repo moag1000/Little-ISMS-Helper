@@ -996,34 +996,39 @@ Dokument ohne Nacharbeit nutzbar.
 
 ---
 
-## 🏢 Phase 9: Holding/Konzern-Struktur (Geplant)
+## 🏢 Phase 9: Holding/Konzern-Struktur (P1 ✅, P2 🔄)
 
 **Zeitraum:** 2026 Q2–Q3
-**Status:** 🔄 Geplant
+**Status:** P1 ✅ abgeschlossen 2026-04-20 · P2 🔄 Geplant
 **Priorität:** HOCH (Markt-Gap gegen HiScout/Verinice bei Mittelstands-Holdings)
 **Trigger:** Consultant-Review 2026-04-19 zu NIS2 §28 BSIG — Regulierung pro Rechtsperson, nicht Konzern; Holding liefert Governance (Art. 21)
 
 ### Hintergrund
 NIS2 reguliert einzelne Rechtspersonen (Schwellwerte 50 MA / 10 Mio € pro juristischer Person). In Mischkonzernen kann Tochter A "besonders wichtig", Tochter B "wichtig", Tochter C gar nicht reguliert sein. Holding steuert Governance (Policies, Krisenmanagement, Lieferkettenrisiko). Markt-Vergleich: HiScout (Organisationseinheiten mit Vererbung), Verinice (Organisationen + Scope-Objekte), Archer (Business Hierarchies). Vanta/Drata ignorieren Konzernstrukturen komplett.
 
-### 🎯 Phase 9.P1 — Core Holding-Struktur (Must-Have)
+### ✅ Phase 9.P1 — Core Holding-Struktur (Abgeschlossen 2026-04-20)
 
-**Effort:** 8–12 FTE-Tage
+**Effort:** 8–12 FTE-Tage (tatsächlich realisiert in 5 Commits über einen Arbeitstag — Entity-Fundament `parent`/`subsidiaries`/`isCorporateParent` existierte aus Phase 6L)
 **Ziel:** 80 % der Mittelstands-Holdings produktiv abdecken.
 
-| # | Task | FTE-d |
-|---|------|-------|
-| 9.P1.1 | `Tenant.parent_id` self-FK + Migration (flat, keine Rekursion) | 1 |
-| 9.P1.2 | `Tenant.isHoldingTenant` Flag + UI-Badge "Konzern-Tenant" | 0.5 |
-| 9.P1.3 | `TenantContext` erweitern: `getChildren()`, `isChildOf()`, `getRoot()` | 1 |
-| 9.P1.4 | Baseline-Vererbung read-only: Child-Tenant zeigt Parent-Baselines als `inherited` | 2 |
-| 9.P1.5 | `IndustryBaselineApplier::applyRecursive(baseline, parent)` — propagiert auf Children | 1.5 |
-| 9.P1.6 | Rolle `ROLE_GROUP_CISO` + Voter: Cross-Tenant-Read auf Risks, Incidents, SoA | 2 |
-| 9.P1.7 | Konsolidierter NIS2-Registrierungs-Report: pro Tochter wer meldet was ans BSI (§28 BSIG) | 1.5 |
-| 9.P1.8 | Tenant-Hierarchie-UI: Tree-View im Admin-Panel | 1.5 |
-| 9.P1.9 | Tests + Docs (CHANGELOG, ROADMAP, README) | 1 |
+| # | Task | FTE-d | Status | Commit |
+|---|------|-------|--------|--------|
+| 9.P1.1 | `Tenant.parent_id` self-FK + Migration (flat, keine Rekursion) | 1 | ✅ | Bestand aus Phase 6L; Cycle-Safety ergänzt in `fa9b6d3d` |
+| 9.P1.2 | `Tenant.isHoldingTenant` Flag + UI-Badge "Konzern-Tenant" | 0.5 | ✅ | `isCorporateParent` aus Phase 6L; UI-Badges in Tree/Matrix-Template (`1c2100ef`) |
+| 9.P1.3 | `TenantContext` erweitern: `getChildren()`, `isChildOf()`, `getRoot()` | 1 | ✅ | `fa9b6d3d` (`getAccessibleTenants`, `canAccessTenant`, `getCurrentRoot`) |
+| 9.P1.4 | Baseline-Vererbung read-only: Child-Tenant zeigt Parent-Baselines als `inherited` | 2 | ✅ | `8a354644` (`findInheritedByTenant` + UI-Badges) |
+| 9.P1.5 | `IndustryBaselineApplier::applyRecursive(baseline, parent)` — propagiert auf Children | 1.5 | ✅ | `8a354644` (Propagation + CSRF-Route + Flash-Summary) |
+| 9.P1.6 | Rolle `ROLE_GROUP_CISO` + Voter: Cross-Tenant-Read auf Risks, Incidents, SoA | 2 | ✅ | `3fa65e0d` (`HoldingTreeAccessTrait` in 5 Voter) |
+| 9.P1.7 | Konsolidierter NIS2-Registrierungs-Report: pro Tochter wer meldet was ans BSI (§28 BSIG) | 1.5 | ✅ | `1c2100ef` (7 NIS2-Felder auf Tenant + Matrix-View) |
+| 9.P1.8 | Tenant-Hierarchie-UI: Tree-View im Admin-Panel | 1.5 | ✅ | `1c2100ef` + Review-Fix `db890e1b` (downward-only Scope, Mega-Menu-Link) |
+| 9.P1.9 | Tests + Docs (CHANGELOG, ROADMAP, README) | 1 | ✅ | Dieser Commit |
 
-**Deliverable:** Holding-Tenant mit N Töchtern. Holding-CISO sieht alles read-only. Baselines aus Holding werden in Töchtern als "vererbt" sichtbar, Töchter können eigene Branchen-Baselines dazustapeln.
+**Deliverable geliefert:** Holding-Tenant mit N Töchtern. Group-CISO/Konzern-ISB sieht Tree + NIS2-Matrix read-only. Baselines aus Holding werden in Töchtern als "vererbt" sichtbar; Töchter können eigene Branchen-Baselines dazustapeln. `applyRecursive` propagiert Governance-Baselines auf das ganze Subtree.
+
+**Review-Befunde + Fixes** (`db890e1b`):
+- SECURITY: Tree-View zeigte ursprünglich `getRootParent()` → lateral/upward Access verletzte downward-only. Auf `getCurrentTenant()` gescopt.
+- UX: 7 NIS2-Felder nicht im TenantType-Form → ChoiceType/DateType/TextType ergänzt, DE+EN-Übersetzungen.
+- NAV: Kein Mega-Menu-Link zu /group-report → Entry in ISMS-Bereich, ROLE_GROUP_CISO gated.
 
 ### 🎯 Phase 9.P2 — HiScout-Niveau (Should-Have)
 
