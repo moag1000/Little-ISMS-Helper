@@ -235,4 +235,66 @@ class SoAReportService
 
         return $requiresAttention;
     }
+
+    /**
+     * M-02: SoA completeness validation. Returns a structured list of
+     * violations; empty array means the SoA is ready for export.
+     *
+     * Rules:
+     *  - Every control that is not applicable MUST have a justification
+     *    (ISO 27001:2022 Annex A requirement).
+     *  - Every applicable control MUST have an implementation status set.
+     *  - Overdue applicable controls (target date in the past, not yet
+     *    implemented) are flagged so they cannot slip through a sign-off.
+     *
+     * @return list<array{control_id: string, control_name: string, rule: string, severity: 'error'|'warning'}>
+     */
+    public function validateSoACompleteness(): array
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $controls = $tenant ? $this->controlRepository->findAllInIsoOrder($tenant) : [];
+        $issues = [];
+
+        foreach ($controls as $control) {
+            $controlId = (string) $control->getControlId();
+            $controlName = (string) $control->getName();
+
+            if ($control->isApplicable() === false) {
+                $justification = trim((string) $control->getJustification());
+                if ($justification === '') {
+                    $issues[] = [
+                        'control_id' => $controlId,
+                        'control_name' => $controlName,
+                        'rule' => 'not_applicable_without_justification',
+                        'severity' => 'error',
+                    ];
+                }
+                continue;
+            }
+
+            if ($control->isApplicable() === true) {
+                $status = $control->getImplementationStatus();
+                if ($status === null || $status === '' || $status === 'not_started') {
+                    $issues[] = [
+                        'control_id' => $controlId,
+                        'control_name' => $controlName,
+                        'rule' => 'applicable_without_implementation_status',
+                        'severity' => 'warning',
+                    ];
+                }
+                if ($control->getTargetDate() !== null
+                    && $control->getTargetDate() < new DateTime()
+                    && $status !== 'implemented'
+                ) {
+                    $issues[] = [
+                        'control_id' => $controlId,
+                        'control_name' => $controlName,
+                        'rule' => 'overdue',
+                        'severity' => 'warning',
+                    ];
+                }
+            }
+        }
+        return $issues;
+    }
 }
