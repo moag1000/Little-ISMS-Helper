@@ -6,6 +6,8 @@ use App\Entity\Tenant;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -130,6 +132,57 @@ class TenantType extends AbstractType
                     'rows' => 3,
                     'placeholder' => 'corporate.placeholder.corporate_notes',
                 ],
+            ])
+            // Phase 9.P1.7 — NIS2 / legal-entity identification. Per BSIG §28
+            // each Rechtsperson carries its own regulatory classification.
+            ->add('legalName', TextType::class, [
+                'label' => 'corporate.field.legal_name',
+                'help' => 'corporate.field.legal_name_help',
+                'required' => false,
+                'attr' => ['maxlength' => 255],
+            ])
+            ->add('legalForm', TextType::class, [
+                'label' => 'corporate.field.legal_form',
+                'help' => 'corporate.field.legal_form_help',
+                'required' => false,
+                'attr' => ['maxlength' => 50, 'placeholder' => 'GmbH / AG / SE / ...'],
+            ])
+            ->add('naceCode', TextType::class, [
+                'label' => 'corporate.field.nace_code',
+                'help' => 'corporate.field.nace_code_help',
+                'required' => false,
+                'attr' => ['maxlength' => 20, 'placeholder' => '62.03'],
+            ])
+            ->add('nis2Classification', ChoiceType::class, [
+                'label' => 'corporate.field.nis2_classification',
+                'help' => 'corporate.field.nis2_classification_help',
+                'required' => false,
+                'placeholder' => 'corporate.placeholder.nis2_classification',
+                'choices' => [
+                    'corporate.nis2.essential' => Tenant::NIS2_ESSENTIAL,
+                    'corporate.nis2.important' => Tenant::NIS2_IMPORTANT,
+                    'corporate.nis2.not_regulated' => Tenant::NIS2_NOT_REGULATED,
+                    'corporate.nis2.unknown' => Tenant::NIS2_UNKNOWN,
+                ],
+            ])
+            ->add('nis2Sector', TextType::class, [
+                'label' => 'corporate.field.nis2_sector',
+                'help' => 'corporate.field.nis2_sector_help',
+                'required' => false,
+                'attr' => ['maxlength' => 150],
+            ])
+            ->add('nis2ContactPoint', TextType::class, [
+                'label' => 'corporate.field.nis2_contact_point',
+                'help' => 'corporate.field.nis2_contact_point_help',
+                'required' => false,
+                'attr' => ['maxlength' => 255],
+            ])
+            ->add('nis2RegisteredAt', DateType::class, [
+                'label' => 'corporate.field.nis2_registered_at',
+                'help' => 'corporate.field.nis2_registered_at_help',
+                'required' => false,
+                'widget' => 'single_text',
+                'input' => 'datetime_immutable',
             ])
             ->add('settings', TextareaType::class, [
                 'label' => 'tenant.field.settings',

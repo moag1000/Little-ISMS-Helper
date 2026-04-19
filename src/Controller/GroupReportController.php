@@ -74,8 +74,12 @@ final class GroupReportController extends AbstractController
             throw $this->createAccessDeniedException('No active tenant');
         }
 
+        // Intentionally NOT getRootParent(): a Group-CISO sitting on a
+        // mid-tree tenant (e.g. a regional holding) must see only their
+        // subtree — lateral access to sibling subsidiaries and upward
+        // access to the top holding is a segregation violation.
         return $this->render('group_report/tree.html.twig', [
-            'root' => $root->getRootParent(),
+            'root' => $root,
             'current' => $root,
         ]);
     }
