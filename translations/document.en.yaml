@@ -71,6 +71,8 @@ document:
         overdue_reviews: 'Overdue Reviews'
         documents: Documents
         updated: Updated
+        inheritable: 'Inheritable to subsidiaries'
+        override_allowed: 'Local override allowed in subsidiaries'
     help:
         name: 'Unique name of the document'
         description: 'Detailed description of the content and purpose'
@@ -78,6 +80,8 @@ document:
         file: 'Choose a file to upload'
         edit_file: 'Leave the field empty to keep the existing file'
         file_edit: 'Upload a new file (optional)'
+        inheritable: 'Makes the document visible to every subsidiary of this holding (default off).'
+        override_allowed: 'When off: subsidiaries must use this policy verbatim (e.g. ISMS policy). When on: subsidiaries may author a local version.'
     delete_warning: 'Deleting this document cannot be undone.'
     badge:
         controlled: Controlled

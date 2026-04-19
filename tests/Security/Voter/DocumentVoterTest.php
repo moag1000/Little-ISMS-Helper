@@ -157,4 +157,75 @@ class DocumentVoterTest extends TestCase
 
         $this->assertSame(VoterInterface::ACCESS_ABSTAIN, $result);
     }
+
+    public function testSubsidiaryCanViewInheritableHoldingDocument(): void
+    {
+        // Phase 9.P2.1: holding-owned document marked inheritable=true
+        // is visible read-only in every subsidiary.
+        $holding = (new Tenant())->setCode('holding');
+        $sub = (new Tenant())->setCode('sub');
+        $holding->addSubsidiary($sub);
+
+        $uploader = $this->createMock(User::class);
+        $uploader->method('getTenant')->willReturn($holding);
+
+        $document = $this->createMock(Document::class);
+        $document->method('getUploadedBy')->willReturn($uploader);
+        $document->method('getTenant')->willReturn($holding);
+        $document->method('isInheritable')->willReturn(true);
+
+        $user = $this->createMock(User::class);
+        $user->method('getRoles')->willReturn(['ROLE_USER']);
+        $user->method('getTenant')->willReturn($sub);
+
+        $token = new UsernamePasswordToken($user, 'main', ['ROLE_USER']);
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $document, [DocumentVoter::VIEW]));
+    }
+
+    public function testSubsidiaryCannotViewNonInheritableHoldingDocument(): void
+    {
+        $holding = (new Tenant())->setCode('holding');
+        $sub = (new Tenant())->setCode('sub');
+        $holding->addSubsidiary($sub);
+
+        $uploader = $this->createMock(User::class);
+        $uploader->method('getTenant')->willReturn($holding);
+
+        $document = $this->createMock(Document::class);
+        $document->method('getUploadedBy')->willReturn($uploader);
+        $document->method('getTenant')->willReturn($holding);
+        $document->method('isInheritable')->willReturn(false);
+
+        $user = $this->createMock(User::class);
+        $user->method('getRoles')->willReturn(['ROLE_USER']);
+        $user->method('getTenant')->willReturn($sub);
+
+        $token = new UsernamePasswordToken($user, 'main', ['ROLE_USER']);
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $document, [DocumentVoter::VIEW]));
+    }
+
+    public function testSubsidiaryCannotEditInheritableHoldingDocument(): void
+    {
+        // Inheritance is read-only; edit must go through the holding
+        // user, not the subsidiary. Guards against a subsidiary user
+        // silently rewriting a mandated group policy.
+        $holding = (new Tenant())->setCode('holding');
+        $sub = (new Tenant())->setCode('sub');
+        $holding->addSubsidiary($sub);
+
+        $uploader = $this->createMock(User::class);
+        $uploader->method('getTenant')->willReturn($holding);
+
+        $document = $this->createMock(Document::class);
+        $document->method('getUploadedBy')->willReturn($uploader);
+        $document->method('getTenant')->willReturn($holding);
+        $document->method('isInheritable')->willReturn(true);
+
+        $subUser = $this->createMock(User::class);
+        $subUser->method('getRoles')->willReturn(['ROLE_USER', 'ROLE_MANAGER']);
+        $subUser->method('getTenant')->willReturn($sub);
+
+        $token = new UsernamePasswordToken($subUser, 'main', $subUser->getRoles());
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $document, [DocumentVoter::EDIT]));
+    }
 }

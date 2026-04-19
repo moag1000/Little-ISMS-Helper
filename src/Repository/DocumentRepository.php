@@ -75,6 +75,35 @@ class DocumentRepository extends ServiceEntityRepository
     }
 
     /**
+     * Phase 9.P2.1 — inheritable documents visible to a subsidiary
+     * from its ancestor chain. Returns only documents that the ancestor
+     * has explicitly marked inheritable=true (and that are still active).
+     *
+     * Unlike findByTenantIncludingParent which returns *all* ancestor
+     * docs indiscriminately, this method respects the holding-side
+     * intent: not every internal paper should propagate downstream.
+     *
+     * @return Document[]
+     */
+    public function findInheritedForTenant(Tenant $tenant): array
+    {
+        $ancestors = $tenant->getAllAncestors();
+        if ($ancestors === []) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('d')
+            ->where('d.tenant IN (:ancestors)')
+            ->andWhere('d.inheritable = :true')
+            ->andWhere('d.isArchived = false')
+            ->setParameter('ancestors', $ancestors)
+            ->setParameter('true', true)
+            ->orderBy('d.uploadedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find documents by tenant including all ancestors (for hierarchical governance)
      * This allows viewing inherited documents from parent companies, grandparents, etc.
      *

@@ -79,6 +79,8 @@ document:
         overdue_reviews: 'Overdue Reviews'
         documents: Dokumente
         updated: Aktualisiert
+        inheritable: 'An Tochtergesellschaften vererbbar'
+        override_allowed: 'Lokaler Override in Töchtern erlaubt'
     help:
         name: 'Eindeutiger Name des Dokuments'
         name_optional: 'Optionaler Name (wird automatisch vom Dateinamen übernommen, falls leer)'
@@ -87,6 +89,8 @@ document:
         file: 'Wählen Sie eine Datei zum Hochladen (max. 10 MB, erlaubte Formate: PDF, Word, Excel, Bilder, Text)'
         edit_file: 'Lassen Sie das Feld leer, um die vorhandene Datei beizubehalten'
         file_edit: 'Neue Datei hochladen (optional)'
+        inheritable: 'Markiert das Dokument als sichtbar in allen Töchtern dieser Holding (Standard: aus).'
+        override_allowed: 'Wenn aus: Töchter müssen diese Policy 1:1 übernehmen (z. B. ISMS-Leitlinie). Wenn an: Tochter darf eigene lokale Version anlegen.'
     placeholder:
         name: 'z.B. ISMS-Richtlinie 2025'
         description: 'Beschreiben Sie den Inhalt und Zweck dieses Dokuments...'
