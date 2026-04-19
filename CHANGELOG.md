@@ -9,6 +9,122 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ✨ Added
 
+#### Persona-Audit Sprint (2026-04-18 / 04-19)
+
+Kompletter Durchlauf der vier Persona-Analysen
+(`docs/audit/{ism,risk,bcm,compliance_manager}_analysis.md`) und der
+drei `.claude/` Pläne (IMPROVEMENT_PROJECTS, FORM_UX_IMPROVEMENTS,
+KPI_IMPROVEMENT_PLAN). Alle HIGH/KRITISCH-Items sind umgesetzt.
+
+**ISO 27001 Zertifizierungs-Readiness**
+- **H-01** Strukturierte Audit-Findings + Korrekturmaßnahmen (ISO 27001
+  Clause 10.1):
+  - Neue Entities `AuditFinding` (4 Typen, 4 Severities, 5-Stufen-Status)
+    und `CorrectiveAction` (inkl. Ursachenanalyse + Wirksamkeitsprüfung)
+  - CRUD unter `/audit-finding` und `/corrective-action`, Tenant-Isolation,
+    AuditLogger-Einbindung, Workflow-Links zwischen Findings und Aktionen
+- **H-04** ISO 27001 Clauses 4–10 als ComplianceRequirements
+  (`app:load-iso27001-clauses`) — 28 Requirements: Context, Leadership,
+  Planning, Support, Operation, Performance Evaluation, Improvement
+- **AUD-02** HMAC-SHA256-Chain für `audit_log` (NIS2 Art. 21.2
+  Tamper-Evidence) mit `app:audit-log:verify` + `app:audit-log:resign`
+
+**Risk- & Vulnerability-Management**
+- **VUL-01** `Incident ↔ Vulnerability` ManyToMany mit idempotenter
+  FK-Migration und Inverse-Relation auf beiden Seiten
+- **Risk-Linking** `Risk.threatIntelligence` und
+  `Risk.linkedVulnerability` im FormType, Freitext bleibt als Ergänzung
+- **Schutzbedarfsvererbung** (BSI 3.6 Maximumprinzip):
+  - `Asset.dependsOn` Self-ManyToMany + `AssetDependencyService`
+    (BFS-Traversierung, zyklensicher, driver-asset pro CIA-Dimension)
+  - Widget auf `asset/show.html.twig`, das erhöhte geerbte C/I/A-Werte
+    inkl. Verursacher-Asset anzeigt
+
+**Form-UX Plan (.claude/FORM_UX_IMPROVEMENTS.md) vollständig**
+- **Pattern A Dual-State Owner** — 7 Entities (Asset, BusinessContinuity-
+  Plan, BusinessProcess, Control, Incident, Risk, Training) bekommen eine
+  optionale `ManyToOne User`-Relation neben dem bisherigen Freitext:
+  - Migration `_user_id`-Spalten + Backfill via Name/E-Mail-Match
+    (tenant-scoped, case-insensitive, nicht-destruktiv)
+  - `getEffective*()` Helper (User → fullName, sonst Legacy-String)
+  - FormTypes mit EntityType(User) + Legacy-TextType als Fallback
+  - Templates nutzen `effective*` in Anzeige (Asset, BusinessProcess,
+    BCM, Incident-Preview, Training)
+- **Pattern B TomSelect** — 6 Native-Multi-Selects
+  (`Incident.affectedAssets`, `BusinessProcess.supportingAssets`/
+  `identifiedRisks`, `Control.protectedAssets`, `Training.coveredControls`/
+  `complianceRequirements`) nutzen neuen `tom-select` Stimulus-Controller
+- **Pattern C Help-Texte** — BCPlanType + 13 DORA/GDPR-Felder der
+  SupplierType bekommen Help-Strings + DE/EN-Übersetzungen
+- **Pattern D Progressive Disclosure** — `conditional_fields_controller`
+  um Negation (`data-depends-on-negated`) und Select-Trigger
+  (`data-depends-on-value`) erweitert. Angewendet auf
+  `DataBreach.noSubjectNotificationReason`, `DataSubjectRequest.
+  identityVerificationMethod`, `ProcessingActivity.specialCategoriesDetails`
+  und `.automatedDecisionMakingDetails`
+- Kleinere Form-UX Fixes: `IncidentType.crossBorderImpact` nicht mehr
+  `required`, Resolution-Hinweistexte, CIA-Skalen mit 1-5-Erklärung,
+  DataBreach `severity` vs. `risk_level` klargestellt
+
+**WCAG 2.2 AA Compliance**
+- `aria-live="polite"` + `role="status"` auf Flash-Messages- und
+  Toast-Containern
+- `role="dialog"` + `aria-modal` + `aria-labelledby` auf Quick-View-
+  und Notification-Panel
+- 314 `<th>`-Elemente in 40 Templates mit `scope="col"` versehen
+
+**KPI-Plan (.claude/KPI_IMPROVEMENT_PLAN.md) vollständig**
+- Phase 1 Bug-Fixes: MTTR-Divisor, `supplier_assessment_rate` null
+  statt 100 % wenn keine kritischen Lieferanten, `asset_classification_
+  rate` mit UND- statt ODER-Logik über alle CIA-Werte
+- Phase 2 High-Value: gewichtete Control-Compliance
+  (implemented=1.0, partial=0.5), per-Framework-Compliance (A1)
+- Phase 3 Strategic: Risk-Appetite-Compliance (A2), MTTR nach Severity
+  (kritisch/hoch), **ISMS Health Score** (A4) als Composite aus
+  Compliance 40 % / Risk 25 % / Incidents 20 % / Asset-Classification 15 %,
+  Residual Risk Exposure (A3)
+- Phase 4 Management: `days_since_management_review` (ISO-27001-Jahres-
+  schwelle), `oldest_overdue_item_age`, Gap-Count nach Priorität
+- Phase 5 Advanced: Control-Reuse-Ratio (A5), Regulatory-Deadline-
+  Tracker (A9, 30-Tage-Horizont), Implementation-Readiness-Checklist
+  (A10, 8-Punkt-Composite), Raw-Totals-Demotion via `tier`-Flag,
+  **KpiThresholdConfig** Entity + `/admin/kpi-thresholds` Admin-UI
+  für tenant-spezifische Good/Warning-Schwellen
+
+**BCM**
+- **BC-Plan-Templates-Seeder** `app:seed-bc-plan-templates <tenant-id>`
+  mit 5 Standard-Szenarien: IT-Ausfall, Pandemie/Personalausfall,
+  Datenschutzverletzung (DSGVO 72h), Gebäude-/Standort-Ausfall,
+  Lieferkette/ICT-Dienstleister (DORA Art. 28 Exit-Strategie)
+
+**Compliance-Kataloge**
+- **Seeder-Idempotenz** für 7 Load-Commands (DORA, NIS2, KRITIS, KRITIS-
+  Health, TISAX, DiGAV, GxP) mit `--update`-Flag + create/update/skip-
+  Statistiken (Best-Practice-Muster aus NIST CSF übernommen)
+- **GDPR** +8 Artikel (Art. 6, 9, 13, 14, 21, 22, 26, 36)
+- **CIS Controls** Kategorie-Labels v7 → v8 IG1/IG2/IG3
+- **KRITIS** Rechtsgrundlage von §8a BSIG auf NIS2UmsuCG (seit
+  2025-12-05 in Kraft) aktualisiert
+- **NIS2** Art. 21.2.f Title korrigiert ("Basic cyber hygiene and
+  cybersecurity training"), neuer `LoadNis2UmsuCGRequirementsCommand`
+  für das deutsche Umsetzungsgesetz
+- **Absicherungsstufen-Filter-UI** (BSI IT-Grundschutz basis/standard/
+  kern) auf `/compliance/requirement/` inklusive Anforderungstyp-
+  Filter (MUSS/SOLLTE/KANN)
+
+**Security & Data Quality**
+- TOTP-Secret: Base32-Encoding (RFC 6238) statt raw binary — behebt
+  MySQL utf8mb4-Insert-Fehler
+- Asset-Delete erlaubt Parent-Tenant-inherited Assets (Bypass des
+  `tenant_filter` nur für diese Route, danach `canEditAsset`-Check)
+
+**Tests & CI**
+- PHP 8.5: `ReflectionProperty::setAccessible()` + `imagedestroy()`
+  entfernt, `Length(['min', 'max'])` → named args, `isType('array')`
+  → `isArray()` — Test-Suite läuft unter `failOnDeprecation="true"`
+  auf exit 0
+- Suite: 3856 Tests, 10521 Assertions, 0 Fehler, 0 Failures
+
 #### Data-Reuse Plan v1.1 — WS-1 … WS-8 vollständig
 - **WS-1 Mapping-basierte Vererbung mit Review-Pflicht**
   - `ComplianceInheritanceService` erstellt Vorschläge → `FulfillmentInheritanceLog`

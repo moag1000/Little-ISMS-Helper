@@ -934,16 +934,27 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 ## 🏆 Zertifizierungsbereitschaft
 
 ### ISO 27001:2022
-- **Aktuell:** 96%+ ✅ (Zertifizierungsbereit)
-- **Phase 7A abgeschlossen:** 98%+ ✅ (Management Reporting für A.5.7, A.5.35)
+- **Aktuell:** 99%+ ✅ (Zertifizierungsbereit)
+- **Persona-Audit Sprint 2026-04-18/19 abgeschlossen:**
+  - H-01 Structured AuditFinding + CorrectiveAction (Clause 10.1)
+  - H-04 Clauses 4–10 als ComplianceRequirements (Context, Leadership, Planning, Support, Operation, Performance Evaluation, Improvement)
+  - AUD-02 HMAC-Chain für Audit-Logs (Tamper-Evidence)
 
 ### ISO 22301:2019 (BCM)
 - **Aktuell:** 100% ✅
-- **Phase 7A abgeschlossen:** 100% ✅ (Enhanced BCM Reporting)
+- **Persona-Audit Sprint:** 5 Standard-BC-Plan-Templates via `app:seed-bc-plan-templates`
 
-### NIS2 Directive (EU 2022/2555)
-- **Aktuell:** 92%+ ✅ (Phase 6H + 7A abgeschlossen)
+### NIS2 Directive (EU 2022/2555) + NIS2UmsuCG
+- **Aktuell:** 95%+ ✅
+- **Persona-Audit Sprint:**
+  - KRITIS-Loader auf NIS2UmsuCG (in Kraft 2025-12-05) aktualisiert
+  - Art. 21.2.f Title-Fix
+  - VUL-01 Vulnerability ↔ Incident strukturell verknüpft
 - **Reporting:** Art. 23 Compliance durch Scheduled Reports
+
+### BSI IT-Grundschutz
+- **Absicherungsstufen** (basis/standard/kern) + **Anforderungstypen** (MUSS/SOLLTE/KANN) als ComplianceRequirement-Felder + UI-Filter
+- **Schutzbedarfsvererbung** (BSI 3.6 Maximumprinzip) via `Asset.dependsOn` + `AssetDependencyService`
 
 ---
 
@@ -956,7 +967,7 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 
 ---
 
-**Stand:** 2026-04-17
+**Stand:** 2026-04-19
 **Version:** 2.7
-**Letzte Aenderung:** Phase 8J Standards Compliance & UX Improvement (Bugfixes, neue Features, KPI-System, Onboarding, Katalog-Updates, WCAG 2.2 AA, Package Updates, Admin Panel Fixes, Tenant/Context Improvements)
+**Letzte Aenderung:** Persona-Audit Sprint (H-01 AuditFinding/CorrectiveAction, H-04 ISO Clauses 4–10, AUD-02 HMAC-Chain, VUL-01, Schutzbedarfsvererbung, Pattern A/B/C/D, WCAG 2.2 AA, KPI Phase 1–5 inkl. ISMS Health Score + tenant thresholds, BC-Plan-Templates). CHANGELOG siehe `[Unreleased]`.
 **Naechste Aktualisierung:** Nach Abschluss Phase 8H.1
