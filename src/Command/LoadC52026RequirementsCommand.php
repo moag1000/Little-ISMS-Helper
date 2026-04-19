@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\Option;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,7 +21,8 @@ class LoadC52026RequirementsCommand
     {
     }
 
-    public function __invoke(SymfonyStyle $symfonyStyle): int
+    public function __invoke(#[Option(name: 'update', shortcut: 'u', description: 'Update existing requirements instead of skipping them')]
+    bool $update = false, ?SymfonyStyle $symfonyStyle = null): int
     {
         // Idempotent upgrade path: legacy draft framework BSI-C5-2025 is carried over
         // to the final BSI-C5-2026 release by renaming the code if found.
@@ -29,7 +31,7 @@ class LoadC52026RequirementsCommand
         if ($legacy instanceof ComplianceFramework) {
             $legacy->setCode('BSI-C5-2026');
             $this->entityManager->flush();
-            $symfonyStyle->text('Legacy BSI-C5-2025 framework code upgraded to BSI-C5-2026.');
+            $symfonyStyle?->text('Legacy BSI-C5-2025 framework code upgraded to BSI-C5-2026.');
         }
 
         // Create or get C5:2026 framework
@@ -53,20 +55,41 @@ class LoadC52026RequirementsCommand
             $this->entityManager->persist($framework);
         }
         $requirements = $this->getC52026Requirements();
-        foreach ($requirements as $reqData) {
-            $requirement = new ComplianceRequirement();
-            $requirement->setFramework($framework)
-                ->setRequirementId($reqData['id'])
-                ->setTitle($reqData['title'])
-                ->setDescription($reqData['description'])
-                ->setCategory($reqData['category'])
-                ->setPriority($reqData['priority'])
-                ->setDataSourceMapping($reqData['data_source_mapping']);
+        $stats = ['created' => 0, 'updated' => 0, 'skipped' => 0];
 
-            $this->entityManager->persist($requirement);
+        foreach ($requirements as $reqData) {
+            $existing = $this->entityManager->getRepository(ComplianceRequirement::class)
+                ->findOneBy([
+                    'complianceFramework' => $framework,
+                    'requirementId' => $reqData['id'],
+                ]);
+
+            if ($existing instanceof ComplianceRequirement) {
+                if ($update) {
+                    $existing->setTitle($reqData['title'])
+                        ->setDescription($reqData['description'])
+                        ->setCategory($reqData['category'])
+                        ->setPriority($reqData['priority'])
+                        ->setDataSourceMapping($reqData['data_source_mapping']);
+                    $stats['updated']++;
+                } else {
+                    $stats['skipped']++;
+                }
+            } else {
+                $requirement = new ComplianceRequirement();
+                $requirement->setFramework($framework)
+                    ->setRequirementId($reqData['id'])
+                    ->setTitle($reqData['title'])
+                    ->setDescription($reqData['description'])
+                    ->setCategory($reqData['category'])
+                    ->setPriority($reqData['priority'])
+                    ->setDataSourceMapping($reqData['data_source_mapping']);
+                $this->entityManager->persist($requirement);
+                $stats['created']++;
+            }
         }
         $this->entityManager->flush();
-        $symfonyStyle->success(sprintf('Successfully loaded %d BSI C5:2026 requirements (final release)', count($requirements)));
+        $symfonyStyle?->success(sprintf('BSI C5:2026 requirements: %d created, %d updated, %d skipped', $stats['created'], $stats['updated'], $stats['skipped']));
         return Command::SUCCESS;
     }
 
