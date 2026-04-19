@@ -59,3 +59,20 @@ portfolio_report:
         title: 'FTE-Tage eingespart (alle Frameworks)'
         subtitle: 'durch Mapping-basierte Vererbung (WS-1)'
         days_suffix: 'FTE-Tage'
+
+    drill:
+        title: 'Drill-Down: %framework% / %category%'
+        back: 'Zurück zur Matrix'
+        empty: 'Für diese Kombination sind keine Anforderungen hinterlegt.'
+        table:
+            requirement: 'Anforderung'
+            title: 'Titel'
+            fulfillment: 'Erfüllung'
+            applicable: 'Anwendbar'
+            link: 'Bearbeiten'
+
+    trend:
+        up: 'Verbesserung um %delta% Prozentpunkte gegenüber der Vorperiode'
+        down: 'Verschlechterung um %delta% Prozentpunkte gegenüber der Vorperiode'
+        stable: 'Stabil (%delta% Prozentpunkte) gegenüber der Vorperiode'
+        no_data: 'Keine Vergleichsdaten aus der Vorperiode'

@@ -59,3 +59,20 @@ portfolio_report:
         title: 'FTE days saved (all frameworks)'
         subtitle: 'through mapping-based inheritance (WS-1)'
         days_suffix: 'FTE days'
+
+    drill:
+        title: 'Drill-down: %framework% / %category%'
+        back: 'Back to matrix'
+        empty: 'No requirements mapped for this combination.'
+        table:
+            requirement: 'Requirement'
+            title: 'Title'
+            fulfillment: 'Fulfillment'
+            applicable: 'Applicable'
+            link: 'Edit'
+
+    trend:
+        up: 'Improved by %delta% percentage points vs. previous period'
+        down: 'Declined by %delta% percentage points vs. previous period'
+        stable: 'Stable (%delta% percentage points) vs. previous period'
+        no_data: 'No comparison data from the previous period'

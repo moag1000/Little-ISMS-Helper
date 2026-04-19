@@ -182,6 +182,25 @@
                                             '%gaps%': cell.gaps
                                         }, 'portfolio_report') %}
 
+                                        {% set delta_val = cell.delta is defined ? cell.delta : null %}
+                                        {% if delta_val is null %}
+                                            {% set trend_icon = '—' %}
+                                            {% set trend_class = 'text-muted' %}
+                                            {% set trend_key = 'no_data' %}
+                                        {% elseif delta_val > 5 %}
+                                            {% set trend_icon = '↗' %}
+                                            {% set trend_class = 'text-success' %}
+                                            {% set trend_key = 'up' %}
+                                        {% elseif delta_val < -5 %}
+                                            {% set trend_icon = '↘' %}
+                                            {% set trend_class = 'text-danger' %}
+                                            {% set trend_key = 'down' %}
+                                        {% else %}
+                                            {% set trend_icon = '→' %}
+                                            {% set trend_class = 'text-muted' %}
+                                            {% set trend_key = 'stable' %}
+                                        {% endif %}
+
                                         <td class="text-center">
                                             {% if cell.count == 0 %}
                                                 {% include '_components/_badge.html.twig' with {
@@ -192,13 +211,22 @@
                                                     content: 'portfolio_report.cell.na'|trans({}, 'portfolio_report')
                                                 } only %}
                                             {% else %}
-                                                {% include '_components/_badge.html.twig' with {
-                                                    variant: cell_variant,
-                                                    icon: cell_icon,
-                                                    aria_label: aria,
-                                                    title: aria,
-                                                    content: cell.pct ~ '%'
-                                                } only %}
+                                                <a href="{{ path('app_management_reports_portfolio_drill', {
+                                                        frameworkCode: framework.code,
+                                                        category: row.category,
+                                                        _locale: app.request.locale,
+                                                        stichtag: stichtag|date('Y-m-d')
+                                                    }) }}"
+                                                   class="text-decoration-none"
+                                                   aria-label="{{ aria }}">
+                                                    {% include '_components/_badge.html.twig' with {
+                                                        variant: cell_variant,
+                                                        icon: cell_icon,
+                                                        aria_label: aria,
+                                                        title: aria,
+                                                        content: cell.pct ~ '%'
+                                                    } only %}
+                                                </a>
                                                 <div class="small text-muted mt-1">
                                                     <span title="{{ 'portfolio_report.cell.count_tooltip'|trans({}, 'portfolio_report') }}">
                                                         <i class="bi bi-list-ol" aria-hidden="true"></i> {{ cell.count }}
@@ -208,11 +236,11 @@
                                                             <i class="bi bi-exclamation-diamond" aria-hidden="true"></i> {{ cell.gaps }}
                                                         </span>
                                                     {% endif %}
-                                                    {% if cell.delta != 0 %}
-                                                        <span class="ms-2 {{ cell.delta > 0 ? 'text-success' : 'text-danger' }}">
-                                                            {{ cell.delta > 0 ? '+' : '' }}{{ cell.delta }}
-                                                        </span>
-                                                    {% endif %}
+                                                    <span class="ms-2 {{ trend_class }}"
+                                                          aria-label="{{ ('portfolio_report.trend.' ~ trend_key)|trans({'%delta%': delta_val ?? 0}, 'portfolio_report') }}"
+                                                          title="{{ ('portfolio_report.trend.' ~ trend_key)|trans({'%delta%': delta_val ?? 0}, 'portfolio_report') }}">
+                                                        {{ trend_icon }}{% if delta_val is not null and delta_val != 0 %} {{ delta_val > 0 ? '+' : '' }}{{ delta_val }}{% endif %}
+                                                    </span>
                                                 </div>
                                             {% endif %}
                                         </td>
