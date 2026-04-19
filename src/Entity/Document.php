@@ -71,6 +71,13 @@ class Document
     #[ORM\Column(length: 50)]
     private string $status = 'active';
 
+    /**
+     * TISAX / VDA-ISA 6.0 information classification.
+     * Values: public, internal, confidential, strictly_confidential, prototype.
+     */
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $tisaxInformationClassification = null;
+
     public function __construct()
     {
         $this->uploadedAt = new DateTimeImmutable();
@@ -142,6 +149,9 @@ class Document
     public function setIsArchived(bool $isArchived): static { $this->isArchived = $isArchived; return $this; }
     public function getStatus(): string { return $this->status; }
     public function setStatus(string $status): static { $this->status = $status; return $this; }
+
+    public function getTisaxInformationClassification(): ?string { return $this->tisaxInformationClassification; }
+    public function setTisaxInformationClassification(?string $value): static { $this->tisaxInformationClassification = $value; return $this; }
 
     public function getFileExtension(): string
     {
