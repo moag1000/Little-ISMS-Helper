@@ -62,12 +62,19 @@ class ManagementReportService
     /**
      * Get executive summary data for management dashboard
      *
+     * @param ?\DateTime $from Optional start date filter (by creation date)
+     * @param ?\DateTime $to Optional end date filter (by creation date)
      * @return array Executive summary with key metrics
      */
-    public function getExecutiveSummary(): array
+    public function getExecutiveSummary(?\DateTime $from = null, ?\DateTime $to = null): array
     {
         $risks = $this->riskRepository->findAll();
         $controls = $this->controlRepository->findAll();
+
+        // Apply date range filter if provided
+        if ($from !== null || $to !== null) {
+            $risks = $this->filterByDateRange($risks, $from, $to);
+        }
 
         // Risk analysis
         $criticalRisks = array_filter($risks, fn(Risk $r): bool => $r->getRiskScore() >= 20);
@@ -133,11 +140,18 @@ class ManagementReportService
      * Get comprehensive risk management report data
      *
      * @param array $filters Optional filters (status, category, owner)
+     * @param ?\DateTime $from Optional start date filter (by creation date)
+     * @param ?\DateTime $to Optional end date filter (by creation date)
      * @return array Risk management report data
      */
-    public function getRiskManagementReport(array $filters = []): array
+    public function getRiskManagementReport(array $filters = [], ?\DateTime $from = null, ?\DateTime $to = null): array
     {
         $risks = $this->riskRepository->findAll();
+
+        // Apply date range filter if provided
+        if ($from !== null || $to !== null) {
+            $risks = $this->filterByDateRange($risks, $from, $to);
+        }
 
         // Apply filters
         if (!empty($filters['status'])) {
@@ -208,29 +222,58 @@ class ManagementReportService
     /**
      * Get risk trend data for the last N months
      *
+     * Shows cumulative risk posture at each month-end: how many risks existed
+     * (created before month-end) and how many of those were high/critical.
+     * Also includes new_risks as a supplementary metric.
+     *
      * @param int $months Number of months to analyze
-     * @return array Monthly risk trend data
+     * @return array Monthly risk trend data with cumulative posture
      */
     public function getRiskTrendData(int $months = 12): array
     {
         $trends = [];
         $now = new DateTime();
+        $allRisks = $this->riskRepository->findAll();
 
         for ($i = $months - 1; $i >= 0; $i--) {
             $monthStart = (clone $now)->modify("-{$i} months")->modify('first day of this month')->setTime(0, 0);
             $monthEnd = (clone $monthStart)->modify('last day of this month')->setTime(23, 59, 59);
 
-            $risks = $this->riskRepository->findAll();
-            $risksInMonth = array_filter($risks, function (Risk $r) use ($monthStart, $monthEnd): bool {
-                $created = $r->getCreatedAt();
-                return $created !== null && $created >= $monthStart && $created <= $monthEnd;
-            });
+            // Cumulative: count risks that EXISTED at month-end
+            // (created before month-end, excluding closed risks for accuracy)
+            $existingAtMonthEnd = 0;
+            $highCriticalAtMonthEnd = 0;
+            $newInMonth = 0;
+
+            foreach ($allRisks as $risk) {
+                $created = $risk->getCreatedAt();
+                if ($created === null || $created > $monthEnd) {
+                    continue; // Not yet created at this month-end
+                }
+
+                // Count as new if created within this specific month
+                if ($created >= $monthStart && $created <= $monthEnd) {
+                    $newInMonth++;
+                }
+
+                // Skip closed risks (they no longer represent active exposure)
+                $status = $risk->getStatus();
+                if ($status === 'closed') {
+                    continue;
+                }
+
+                $existingAtMonthEnd++;
+                if ($risk->getInherentRiskLevel() >= 12) {
+                    $highCriticalAtMonthEnd++;
+                }
+            }
 
             $trends[] = [
                 'month' => $monthStart->format('Y-m'),
                 'month_name' => $monthStart->format('M Y'),
-                'new_risks' => count($risksInMonth),
-                'high_critical' => count(array_filter($risksInMonth, fn(Risk $r): bool => $r->getRiskScore() >= 12)),
+                'total' => $existingAtMonthEnd,
+                'high_critical' => $highCriticalAtMonthEnd,
+                'new_risks' => $newInMonth,
             ];
         }
 
@@ -338,9 +381,11 @@ class ManagementReportService
     /**
      * Get compliance status report across all frameworks
      *
+     * @param ?\DateTime $from Optional start date filter
+     * @param ?\DateTime $to Optional end date filter
      * @return array Compliance status data
      */
-    public function getComplianceStatusReport(): array
+    public function getComplianceStatusReport(?\DateTime $from = null, ?\DateTime $to = null): array
     {
         $frameworks = $this->complianceFrameworkRepository->findAll();
         $controls = $this->controlRepository->findAll();
@@ -734,6 +779,40 @@ class ManagementReportService
             'categories' => $translatedKpis,
             'active_modules' => $rawKpis['active_modules'] ?? [],
         ];
+    }
+
+    // ===================== DATE RANGE FILTERING =====================
+
+    /**
+     * Filter entities by creation date range
+     *
+     * @param array $entities Entities with getCreatedAt() method
+     * @param ?\DateTime $from Start date (inclusive)
+     * @param ?\DateTime $to End date (inclusive, set to end of day)
+     * @return array Filtered entities
+     */
+    private function filterByDateRange(array $entities, ?\DateTime $from = null, ?\DateTime $to = null): array
+    {
+        if ($to !== null) {
+            $to = (clone $to)->setTime(23, 59, 59);
+        }
+
+        return array_filter($entities, function ($entity) use ($from, $to): bool {
+            if (!method_exists($entity, 'getCreatedAt')) {
+                return true;
+            }
+            $date = $entity->getCreatedAt();
+            if ($date === null) {
+                return true;
+            }
+            if ($from !== null && $date < $from) {
+                return false;
+            }
+            if ($to !== null && $date > $to) {
+                return false;
+            }
+            return true;
+        });
     }
 
     /**

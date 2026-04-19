@@ -153,12 +153,30 @@
                         </div>
                         <div class="col-md-6">
                             <h4 class="h6">{{ 'management_reports.quick_access.excel_exports'|trans({}, 'management_reports') }}</h4>
-                            <div class="d-flex flex-wrap gap-2">
+                            <div class="d-flex flex-wrap gap-2 mb-3">
                                 <a href="{{ path('app_management_reports_risk_excel') }}" class="btn btn-sm btn-outline-danger">
                                     <i class="bi bi-file-excel" aria-hidden="true"></i> Risk Register
                                 </a>
                                 <a href="{{ path('app_management_reports_assets_excel') }}" class="btn btn-sm btn-outline-secondary">
                                     <i class="bi bi-file-excel" aria-hidden="true"></i> Asset Inventory
+                                </a>
+                                <a href="{{ path('app_management_reports_bcm_excel') }}" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-file-excel" aria-hidden="true"></i> BCM Report
+                                </a>
+                                <a href="{{ path('app_management_reports_compliance_excel') }}" class="btn btn-sm btn-outline-info">
+                                    <i class="bi bi-file-excel" aria-hidden="true"></i> Compliance Status
+                                </a>
+                                <a href="{{ path('app_management_reports_audit_excel') }}" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-file-excel" aria-hidden="true"></i> Audit Report
+                                </a>
+                                <a href="{{ path('app_management_reports_gdpr_excel') }}" class="btn btn-sm btn-outline-dark">
+                                    <i class="bi bi-file-excel" aria-hidden="true"></i> GDPR / Data Breach
+                                </a>
+                            </div>
+                            <h4 class="h6">{{ 'management_reports.quick_access.evidence_package'|trans({}, 'management_reports') }}</h4>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="{{ path('app_management_reports_evidence_package') }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-file-zip" aria-hidden="true"></i> {{ 'management_reports.action.download_evidence_package'|trans({}, 'management_reports') }}
                                 </a>
                             </div>
                         </div>
