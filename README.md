@@ -45,13 +45,16 @@ Little ISMS Helper unterstützt Organisationen bei der **Implementierung und Ver
 |---------|--------------|
 | ✅ **ISO 27001:2022 konform** | Annex A (93 Controls) + Clauses 4–10 (Context, Leadership, Planning, …) |
 | 📋 **Audit-Findings + Korrekturmaßnahmen** | Strukturierte Erfassung nach Clause 10.1 (H-01) |
-| 🔐 **Tamper-evidentes Audit-Log** | HMAC-SHA256-Chain, `app:audit-log:verify` (NIS2 Art. 21.2) |
+| 🔐 **Tamper-evidentes Audit-Log** | HMAC-SHA256-Chain + actor_role-Spalte, `app:audit-log:verify` (NIS2 Art. 21.2 / ISB Sprint-2-Gate) |
+| 🧊 **Audit-Freeze / Stichtag-Snapshot** | SHA-256-versiegeltes Compliance-Abbild zum gewählten Datum (ISO 27001 Klausel 7.5.3) |
 | 🔄 **Intelligente Datenwiederverwendung** | Mapping-basierte Vererbung mit Review-Pflicht (WS-1) |
 | 🔗 **Cross-Framework-Mappings** | 461 geprüfte Mappings über 22 Frameworks |
 | 📊 **Multi-Framework Support** | ISO 27001/27002/27005/27701/22301, TISAX, DORA, NIS2/NIS2UmsuCG, BSI, C5, EU AI Act |
 | 🌐 **BSI IT-Grundschutz** | Absicherungsstufen (Basis/Standard/Kern), Anforderungstypen (MUSS/SOLLTE/KANN), Schutzbedarfsvererbung (Maximumprinzip) |
-| 🧭 **KPI-Dashboard** | ISMS Health Score, Per-Framework-Compliance, Risk-Appetite, MTTR nach Severity, Implementation-Readiness — tenant-spezifische Schwellen |
-| ♿ **WCAG 2.2 AA** | aria-live, scope="col", Dialog-Semantik |
+| 📦 **Branchen-Baselines** | Starter-Pakete für Produktion, Finanzsektor, KRITIS-Health, Generic — 1-Klick-Apply statt ISMS-from-scratch |
+| 📉 **Portfolio-Report mit Trend + Drill-Down** | Echte Delta-Werte via `PortfolioSnapshot`-Cron, Cell-Click führt zu den konkreten Requirements |
+| 🧭 **KPI-Dashboard** | ISMS Health Score, Per-Framework-Compliance, Risk-Appetite, MTTR nach Severity, Inheritance-Rate, FTE-Tage-eingespart |
+| ♿ **WCAG 2.2 AA** | aria-live, scope="col", Dialog-Semantik, ⌘K-Command-Palette discoverable |
 | 🐳 **Docker-Ready** | Ein Befehl – alles läuft |
 | 🚀 **Modern & schnell** | Symfony 7.4, PHP 8.4, Progressive UI, Turbo + Stimulus |
 | 🔓 **Open Architecture** | REST API für Integrationen |
