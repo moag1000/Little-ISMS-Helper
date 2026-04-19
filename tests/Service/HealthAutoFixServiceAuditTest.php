@@ -54,7 +54,7 @@ final class HealthAutoFixServiceAuditTest extends TestCase
                 $this->isNull(),
                 $this->isNull(),
                 $this->callback(static fn(array $payload): bool => array_key_exists('success', $payload)),
-                $this->isType('string'),
+                $this->isString(),
             );
 
         $service = new HealthAutoFixService(
@@ -83,7 +83,7 @@ final class HealthAutoFixServiceAuditTest extends TestCase
                 // retention value flows into the audit payload so a custom
                 // (non-default) value is always reviewable.
                 $this->callback(static fn(array $p): bool => ($p['days_to_keep'] ?? null) === 45),
-                $this->isType('string'),
+                $this->isString(),
             );
 
         $service = new HealthAutoFixService(
