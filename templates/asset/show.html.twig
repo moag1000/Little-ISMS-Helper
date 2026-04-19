@@ -361,7 +361,7 @@
                     <div class="controls-list">
                         {% for control in asset.protectingControls %}
                             <div class="control-item">
-                                <strong>{{ control.controlId }}</strong>: {{ control.name }}
+                                {% include '_components/_iso_reference_label.html.twig' with { control: control, code_class: 'fw-bold' } only %}
                                 <span class="{{ badge_status(control.implementationStatus) }}">
                                     {{ control.implementationStatus|upper }}
                                 </span>

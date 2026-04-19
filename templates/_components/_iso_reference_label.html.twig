@@ -1,0 +1,55 @@
+{#
+  ISO Control Reference Label (Junior-Finding #6)
+
+  Rendert eine ISO-Control-Referenz wie "A.5.23" zusammen mit der Kurzbezeichnung
+  und optional einem Tooltip mit der Volltext-Beschreibung. Löst das Junior-
+  Onboarding-Problem "was heißt A.5.23 nochmal?" durch direkten Klartext.
+
+  Required parameters:
+    control         Control-Entity (oder Objekt mit controlId/isoReference/name/description).
+
+  Optional parameters:
+    show_name       bool   Kurzbezeichnung direkt hinter dem Code anzeigen. Default: true.
+    with_tooltip    bool   Bootstrap-Tooltip mit description aktivieren. Default: true.
+    code_class      string CSS-Klasse für das <code>-Element. Default: '' (Bootstrap-Default).
+    separator       string Trenner zwischen Code und Name. Default: ' · '.
+
+  A11y:
+    - Tooltip ist keyboard-erreichbar (tabindex="0") und wird über
+      data-bs-toggle="tooltip" initialisiert. Bootstrap setzt aria-describedby
+      beim Fokus/Hover automatisch.
+    - Fallback: wenn keine description existiert, wird der Tooltip-Wrapper weggelassen.
+    - Wenn control.name leer ist, wird nur der Code gerendert (kein Separator, kein Name).
+#}
+{% set show_name    = show_name    ?? true %}
+{% set with_tooltip = with_tooltip ?? true %}
+{% set code_class   = code_class   ?? '' %}
+{% set separator    = separator    ?? ' · ' %}
+
+{% set iso_code = control.isoReference|default(control.controlId|default('')) %}
+{% set iso_name = control.name|default('') %}
+{% set iso_desc = control.description|default('') %}
+
+{%- if iso_code is not empty -%}
+    {%- if with_tooltip and iso_desc is not empty -%}
+        <span class="iso-reference-label"
+              tabindex="0"
+              role="note"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              data-bs-custom-class="iso-reference-tooltip"
+              title="{{ iso_desc }}">
+            <code{% if code_class %} class="{{ code_class }}"{% endif %}>{{ iso_code }}</code>
+            {%- if show_name and iso_name is not empty -%}
+                <span class="iso-reference-name">{{ separator }}{{ iso_name }}</span>
+            {%- endif -%}
+        </span>
+    {%- else -%}
+        <span class="iso-reference-label">
+            <code{% if code_class %} class="{{ code_class }}"{% endif %}>{{ iso_code }}</code>
+            {%- if show_name and iso_name is not empty -%}
+                <span class="iso-reference-name">{{ separator }}{{ iso_name }}</span>
+            {%- endif -%}
+        </span>
+    {%- endif -%}
+{%- endif -%}

@@ -259,7 +259,7 @@
                         <h3 class="h6">Linked ISO 27001 Controls:</h3>
                         <ul>
                             {% for control in processing_activity.implementedControls %}
-                                <li>{{ control.controlId }} - {{ control.name }}</li>
+                                <li>{% include '_components/_iso_reference_label.html.twig' with { control: control, separator: ' - ' } only %}</li>
                             {% endfor %}
                         </ul>
                     {% endif %}

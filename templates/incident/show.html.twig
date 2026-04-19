@@ -539,7 +539,7 @@
                     <div class="data-reuse-list">
                         {% for control in incident.relatedControls %}
                             <div class="data-reuse-item">
-                                <strong>{{ control.controlId }}</strong>: {{ control.name }}
+                                {% include '_components/_iso_reference_label.html.twig' with { control: control, code_class: 'fw-bold' } only %}
                                 {% include '_components/_badge.html.twig' with { variant: control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'danger'), content: control.implementationStatus|upper } %}
                                 {% if control.implementationStatus != 'implemented' %}
                                     <small class="text-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Control not fully implemented</small>

@@ -195,7 +195,7 @@
                 {% for control in plan.controls %}
                 <tr>
                     <td>
-                        <a href="{{ path('app_soa_show', {id: control.id}) }}">{{ control.controlId }}</a>
+                        <a href="{{ path('app_soa_show', {id: control.id}) }}">{% include '_components/_iso_reference_label.html.twig' with { control: control, show_name: false } only %}</a>
                     </td>
                     <td>{{ control.title }}</td>
                     <td>
