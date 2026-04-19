@@ -9,6 +9,110 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ✨ Added
 
+#### Junior+UX+CM Audit Sprint (2026-04-19)
+
+Drei unabhängige Audits (`docs/JUNIOR_IMPLEMENTER_WALKTHROUGH.md`,
+`docs/UX_JUNIOR_RESPONSE.md`, `docs/CM_JUNIOR_RESPONSE.md`) lieferten
+26 Findings. Umgesetzt in drei Sprints:
+
+**Sprint 1 Quick-Wins (8/8)**
+- Q1 CIA-Skala bei Asset-Labels inline sichtbar (1 öffentlich → 5
+  geheim / 1 gering → 5 kritisch / 1 >24h ok → 5 <15 Min)
+- Q2 ⌘K-Chip im Global-Search-Button ab md-Viewport sichtbar +
+  `aria-keyshortcuts`
+- Q3 Redundantes `monetaryValue`-Feld aus Asset-Form entfernt
+- Q4 `_iso_reference_label`-Komponente: Control-ID + Klartext +
+  Bootstrap-Tooltip (10 Caller migriert)
+- Q5 `_bulk_action_bar` konsolidiert, Plural-Variante gelöscht, 4
+  Caller migriert
+- Q6 Breadcrumb `Home` → `nav.home` Translation (UXC-10)
+- Q7 `InheritanceMetricsService`: per-framework Inheritance-Rate +
+  Tenant-Totalwerte — erfüllt Plan-v1.1-Mess­kriterium
+- Q8 FTE-saved-KPI als Exec-Summary-Card auf `/reports/management/
+  portfolio` (via `CompliancePolicyService::KEY_REUSE_DAYS_PER_
+  REQUIREMENT`)
+
+**Sprint 2 Blocker (3/3)**
+- B1 Portfolio-Report-Trend + Drill-Down (CM-3):
+  `PortfolioSnapshot`-Entity + `app:portfolio:capture-snapshot`
+  Cron-Command + `PortfolioReportService::buildMatrixWithTrend`
+  mit echtem Delta. Matrix-Zellen drillen auf Requirement-Liste via
+  `/reports/management/portfolio/drill/{framework}/{category}`.
+  Trend-Pfeile: ↗ > 5 / ↘ < -5 / → stable / — no data.
+- B2 Interessierte-Parteien Single-Source (Junior #5): `ISMSContext
+  .interestedParties`-Freitext aus Form entfernt; Kontext-Index
+  zeigt jetzt Live-Aggregat aus strukturiertem Modul mit CTA-Link.
+  Legacy-Freitext bleibt als aufklappbare `<details>` mit
+  Migrations-Hinweis.
+- B3 Incident↔Risk↔Vulnerability 1-Klick-Verknüpfung (Junior #8):
+  `_entity_link_matrix`-Komponente + Pre-Fill-Parameter in Risk/
+  Vulnerability/Incident `new()` (`?fromVulnerability=`,
+  `?fromIncident=`, `?fromRisk=`), tenant-strict.
+
+**Sprint 3 Strategic (5/5)**
+- S1 Filter-State in URL (UXC-11+12): 7 Index-Seiten auf GET-Form-
+  Filter umgestellt, `?q=`, `?status=`, `?sort=`, `?dir=`, `?page=`
+  persistieren im Link. Neue Components `_search_filter_form` +
+  `_reset_filters_link`. Audit-Links jetzt teilbar und bookmarkbar.
+- S2 Industry-Baselines (CM-6): neue Entities `IndustryBaseline` +
+  `AppliedBaseline`, `IndustryBaselineApplier` (idempotent, tenant-
+  strict, audit-logged), `app:load-industry-baselines`-Seed-Command
+  mit **4 Starter-Paketen** (Production, Finance, KRITIS-Health,
+  Generic). UI unter `/industry-baselines` mit Preview + 1-Klick-Apply.
+- S3 Audit-Freeze (CM-8): `AuditFreeze`-Entity mit SHA-256-versiegeltem
+  JSON-Payload. `/audit-freeze`-Routen unter ROLE_MANAGER:
+  index/new/show/verify/generate-pdf/download-pdf. Unveränderlich
+  by design — kein Update/Delete-Endpoint.
+  `AuditFreezeSnapshotBuilder` captured SoA-Entries, Framework-
+  Anforderungen, Top-Risiken, KPI-Summary zum Stichtag.
+- S4 Delta-Assessment-Excel (CM-2): `DeltaAssessmentExcelExporter`
+  mit 3-Sheet-Layout (Summary, Detailed-Delta, Mapping-Inventory).
+  Route `/delta-assessment/{framework}/excel?baseline={code}`.
+  Traffic-Light-Backgrounds + BOM-safe via `ExcelExportService`.
+- S5 Onboarding-Checkliste "Mein erstes ISMS" (Junior #4):
+  `_first_steps`-Component auf 5-Schritt-Pfad umgestellt —
+  Kontext → Asset → Risiko → Control → Dokument. 9001-Analogie
+  explizit im Hint: "Qualitätspolitik ≈ ISMS-Kontext, Prozess-
+  Landkarte ≈ Asset-Inventar, Maßnahme ≈ Control, dokumentierte
+  Information ≈ Dokument."
+
+**DB-Repair-Review-Findings — gefixt vor Sprint 1**
+- Consultant A1: 5 Loader (BSI, C5:2020, C5:2026, ISO22301, TKG)
+  waren nicht idempotent — jedes "Run All" verdoppelte Requirements.
+  Alle auf Tisax-Pattern migriert mit `--update`-Flag.
+- Consultant A2: `fixAllOrphans` Cross-Tenant-Leak — jetzt blockiert
+  bei > 1 Tenant, Confirm-Hash gegen Preview-Count, per-Entity
+  Audit-Log.
+- Consultant A4: Schema-Update UI divergierte mit
+  `doctrine_migration_versions` → `SchemaHealthService::applyUpdate`
+  blockt jetzt wenn Migrations pending sind, mit `$bypassMigrationGate`
+  als explicit Notfall-Option. SHA-256-Hash jeder ausgeführten SQL-
+  Bundle im Audit-Log.
+- ISB MINOR: `ReSignAuditLogCommand --after` brach HMAC-Chain →
+  neue `AuditLogIntegrityService::signWithPrevious()` mit manueller
+  Predecessor-Kette.
+- ISB MAJOR-4: Loader-Fixer Audit-Log enthielt nur Count-Deltas →
+  jetzt vollständiger Metadata-Diff (name, version, description,
+  applicable_industry, regulatory_body, scope_description) vor vs.
+  nach Loader-Run.
+
+**UX-Specialist Phase 2 — Process findings (ohne 4-Augen)**
+- `DataRepairController`: audit-logging auf 5 verbleibende Write-
+  Routen + `fixTenantMismatches` mit Reason-Pflicht (≥20 Zeichen)
+- `HealthAutoFixService`: Optional `AuditLogger` injiziert, alle 10
+  Methoden via `audit()`-Helper. `runComposerInstall` mit Symfony
+  Process-Output-Persistenz.
+- Schema-Update UI 2-Phasen-Flow: `<details>`-Preview mit Warning-
+  Alert + Pflicht-Checkbox "Backup geprüft" vor Submit.
+
+**Docs**
+- `docs/DB_REPAIR_REVIEW_ISB.md` (215 Z.) + `.../CONSULTANT.md` (165 Z.)
+- `docs/JUNIOR_IMPLEMENTER_WALKTHROUGH.md` (370 Z.) — Top-10 Findings
+- `docs/UX_JUNIOR_RESPONSE.md` (679 Z.) — Interventions-Matrix +
+  12 UXC-Findings über Junior hinaus
+- `docs/CM_JUNIOR_RESPONSE.md` (261 Z.) — FTE-Overlay + 10 CM-eigene
+  Findings
+
 #### Persona-Audit Sprint (2026-04-18 / 04-19)
 
 Kompletter Durchlauf der vier Persona-Analysen

@@ -871,6 +871,77 @@ aufgesetzt nach Audit durch Senior-Consultant + Compliance-Manager + ISB-Review
 
 ---
 
+### ✅ Phase 8JR: Junior+UX+CM Audit Sprint (Abgeschlossen 2026-04-19)
+
+**Grundlage:** Drei unabhängige Audits
+(`docs/JUNIOR_IMPLEMENTER_WALKTHROUGH.md` +
+`docs/UX_JUNIOR_RESPONSE.md` + `docs/CM_JUNIOR_RESPONSE.md`).
+
+#### Überblick
+Junior-Implementer (IT-Admin mit 9001-Hintergrund) bewertet das Tool
+initial mit *„Mit Einweisung — ohne Crashkurs drei Monate im Nebel"*.
+UX-Specialist ergänzt 12 quer-liegende Findings (UXC-1 bis UXC-12),
+Compliance-Manager 10 eigene Themen (CM-1 bis CM-10). Drei Sprints
+(1 Person-Tag) schließen alle 26 Findings außer MAJOR-2 Funktions-
+trennung (vom User ausgeschlossen).
+
+#### Ergebnis-Matrix
+
+| Block | Sprint | Status | Artefakt |
+|-------|--------|--------|----------|
+| Q1 CIA-Skala in Labels | 1 | ✅ | translations/asset.{de,en}.yaml |
+| Q2 ⌘K-Chip discoverable | 1 | ✅ | _global_search.html.twig |
+| Q3 monetaryValue entfernt | 1 | ✅ | AssetType + new/edit |
+| Q4 ISO-Klartext-Komponente | 1 | ✅ | _iso_reference_label.html.twig |
+| Q5 Bulk-Bar konsolidiert | 1 | ✅ | _bulk_action_bar.html.twig |
+| Q6 Breadcrumb-i18n | 1 | ✅ | _breadcrumb.html.twig |
+| Q7 Inheritance-Rate messbar | 1 | ✅ | InheritanceMetricsService |
+| Q8 FTE-Spar-KPI | 1 | ✅ | Portfolio-Report Exec-Card |
+| B1 Portfolio-Trend + Drill | 2 | ✅ | PortfolioSnapshot + buildMatrixWithTrend |
+| B2 Parteien-Single-Source | 2 | ✅ | Context zieht InterestedParty-Aggregat |
+| B3 Incident↔Risk↔Vuln-Links | 2 | ✅ | _entity_link_matrix.html.twig |
+| S1 Filter-State in URL | 3 | ✅ | 7 Index-Seiten GET-Form migriert |
+| S2 Industry-Baselines | 3 | ✅ | 4 Starter-Pakete + Applier + UI |
+| S3 Audit-Freeze | 3 | ✅ | AuditFreeze SHA-256-versiegelt |
+| S4 Delta-Assessment-Excel | 3 | ✅ | DeltaAssessmentExcelExporter 3-Sheet |
+| S5 Onboarding-Checkliste | 3 | ✅ | _first_steps.html.twig umgeschrieben |
+
+#### DB-Repair-Tooling (ISB+Consultant-Reviews)
+Parallele Prüfung des Admin-DB-Reparatur-Werkzeugsatzes
+(`docs/DB_REPAIR_REVIEW_ISB.md` + `docs/DB_REPAIR_REVIEW_CONSULTANT.md`):
+
+- **Consultant A1**: 5 Loader nicht idempotent (BSI, C5:2020, C5:2026,
+  ISO22301, TKG) → Tisax-Pattern mit `--update`-Flag
+- **Consultant A2**: `fixAllOrphans` Cross-Tenant-Leak → Multi-Tenant
+  hart geblockt + Confirm-Hash + per-Entity Audit
+- **Consultant A4**: Schema-Update vs. `doctrine_migration_versions` →
+  `SchemaHealthService::applyUpdate()` blockt bei pending Migrations,
+  SHA-256 der ausgeführten SQL im Audit
+- **ISB MINOR**: `ReSignAuditLogCommand --after` brach HMAC-Chain →
+  `AuditLogIntegrityService::signWithPrevious()` für Mid-Chain-Resign
+- **ISB MAJOR-1**: `DataRepairController` 5 Write-Routen ohne Audit →
+  alle mit `AuditLogger::logCustom` inkl. `actor_role`
+- **ISB MAJOR-3**: Schema-Update ohne Preview → 2-Phasen-UX mit
+  Pflicht-Checkbox "Backup geprüft"
+- **ISB MAJOR-4**: Loader-Fixer nur Count-Deltas → vollständiger
+  Metadata-Field-Diff im Audit
+
+#### Abnahme-Empfehlung
+
+Der Junior-Urteil verschiebt sich erwartungsgemäß von
+*„Mit Einweisung"* Richtung *„Weitgehend ja"* — die vier
+Hauptblocker (CIA-Lesbarkeit, ISO-Klartext, 9001-Analogie, Entity-
+Verknüpfungen) sind weg. Für Risiko-Bewertungs-Methodik und
+SoA-Nicht-Anwendbarkeit bleibt der halbtägige Fach-Crashkurs —
+das ist Schulung, kein Tool-Thema.
+
+CM-Zusage der Plan-v1.1 ist jetzt **messbar**: Portfolio-Report
+zeigt Inheritance-Rate pro Framework + FTE-Tage-eingespart als
+Exec-KPI. Delta-Assessment-Excel ist als Management-Review-
+Dokument ohne Nacharbeit nutzbar.
+
+---
+
 ### 📅 Phase 8B-8G: Geplante Features
 
 | Phase | Feature | Status | Beschreibung |
