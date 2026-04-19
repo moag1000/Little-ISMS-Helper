@@ -1,0 +1,173 @@
+{#
+  Entity Link Matrix Component (Junior-Finding #8 / CM Data-Reuse Blocker)
+  One-click links between Incident, Risk, and Vulnerability.
+
+  Parameters:
+    - source_type: 'vulnerability' | 'risk' | 'incident' - the type of the current entity
+    - entity: the current entity (Vulnerability, Risk, or Incident)
+    - linked_risks (optional, default [])       - array of Risk entities related to current entity
+    - linked_vulnerabilities (optional, default []) - array of Vulnerability entities related to current entity
+    - linked_incidents (optional, default [])   - array of Incident entities related to current entity
+
+  Renders:
+    - "Zugehörige Risiken" / "Zugehörige Vulnerabilities" / "Zugehörige Incidents" sections
+      depending on source_type (skipping the self type)
+    - 1-Click "Aus X ableiten" buttons that navigate to the target /new route with ?from<Source>={id}
+#}
+
+{% set linked_risks = linked_risks|default([]) %}
+{% set linked_vulnerabilities = linked_vulnerabilities|default([]) %}
+{% set linked_incidents = linked_incidents|default([]) %}
+
+<div class="detail-section entity-link-matrix" aria-labelledby="entity-link-matrix-heading-{{ source_type }}">
+    <h3 id="entity-link-matrix-heading-{{ source_type }}" class="h5">
+        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+        {{ ('common.link_matrix.title_' ~ source_type)|trans({}, 'messages') }}
+    </h3>
+    <p class="text-muted small">
+        {{ 'common.link_matrix.description'|trans({}, 'messages') }}
+    </p>
+
+    {# ---------- Zugehörige Risiken (hidden if source is risk) ---------- #}
+    {% if source_type != 'risk' %}
+        <div class="link-matrix-block" data-testid="link-matrix-risks">
+            <h4 class="h6">
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                {{ 'common.link_matrix.related_risks'|trans({}, 'messages') }}
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: linked_risks|length } only %}
+            </h4>
+
+            {% if linked_risks|length > 0 %}
+                <ul class="link-matrix-list">
+                    {% for risk in linked_risks %}
+                        <li class="link-matrix-item">
+                            <a href="{{ path('app_risk_show', {id: risk.id}) }}" data-turbo-action="advance">
+                                <strong>{{ risk.title }}</strong>
+                            </a>
+                            {% set riskClass = risk.inherentRiskLevel >= 16 ? 'danger' : (risk.inherentRiskLevel >= 9 ? 'warning' : 'success') %}
+                            {% include '_components/_badge.html.twig' with { variant: riskClass, content: 'Level ' ~ risk.inherentRiskLevel } only %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted small mb-2">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    {{ 'common.link_matrix.no_links_yet'|trans({}, 'messages') }}
+                </p>
+            {% endif %}
+
+            {% if source_type == 'vulnerability' %}
+                <a href="{{ path('app_risk_new', {fromVulnerability: entity.id}) }}"
+                   class="btn btn-primary btn-sm"
+                   aria-describedby="link-matrix-help-derive-risk-from-vuln">
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                    {{ 'common.link_matrix.derive_risk_from_vulnerability'|trans({}, 'messages') }}
+                </a>
+                <small id="link-matrix-help-derive-risk-from-vuln" class="text-muted ms-2">
+                    {{ 'common.link_matrix.help_derive_risk_from_vulnerability'|trans({}, 'messages') }}
+                </small>
+            {% elseif source_type == 'incident' %}
+                <a href="{{ path('app_risk_new', {fromIncident: entity.id}) }}"
+                   class="btn btn-primary btn-sm"
+                   aria-describedby="link-matrix-help-derive-risk-from-incident">
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                    {{ 'common.link_matrix.derive_risk_from_incident'|trans({}, 'messages') }}
+                </a>
+                <small id="link-matrix-help-derive-risk-from-incident" class="text-muted ms-2">
+                    {{ 'common.link_matrix.help_derive_risk_from_incident'|trans({}, 'messages') }}
+                </small>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {# ---------- Zugehörige Vulnerabilities (hidden if source is vulnerability) ---------- #}
+    {% if source_type != 'vulnerability' %}
+        <div class="link-matrix-block mt-3" data-testid="link-matrix-vulnerabilities">
+            <h4 class="h6">
+                <i class="bi bi-bug" aria-hidden="true"></i>
+                {{ 'common.link_matrix.related_vulnerabilities'|trans({}, 'messages') }}
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: linked_vulnerabilities|length } only %}
+            </h4>
+
+            {% if linked_vulnerabilities|length > 0 %}
+                <ul class="link-matrix-list">
+                    {% for vuln in linked_vulnerabilities %}
+                        <li class="link-matrix-item">
+                            <a href="{{ path('app_vulnerability_show', {id: vuln.id}) }}" data-turbo-action="advance">
+                                <strong>{{ vuln.title }}</strong>
+                                {% if vuln.cveId %}
+                                    <code class="ms-1">{{ vuln.cveId }}</code>
+                                {% endif %}
+                            </a>
+                            {% set vulnVariant = vuln.severity == 'critical' ? 'danger' : (vuln.severity == 'high' ? 'warning' : 'secondary') %}
+                            {% include '_components/_badge.html.twig' with { variant: vulnVariant, content: vuln.severity|upper } only %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted small mb-2">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    {{ 'common.link_matrix.no_links_yet'|trans({}, 'messages') }}
+                </p>
+            {% endif %}
+
+            {% if source_type == 'incident' %}
+                <a href="{{ path('app_vulnerability_new', {fromIncident: entity.id}) }}"
+                   class="btn btn-primary btn-sm"
+                   aria-describedby="link-matrix-help-derive-vuln-from-incident">
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                    {{ 'common.link_matrix.derive_vulnerability_from_incident'|trans({}, 'messages') }}
+                </a>
+                <small id="link-matrix-help-derive-vuln-from-incident" class="text-muted ms-2">
+                    {{ 'common.link_matrix.help_derive_vulnerability_from_incident'|trans({}, 'messages') }}
+                </small>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {# ---------- Zugehörige Incidents (hidden if source is incident) ---------- #}
+    {% if source_type != 'incident' %}
+        <div class="link-matrix-block mt-3" data-testid="link-matrix-incidents">
+            <h4 class="h6">
+                <i class="bi bi-fire" aria-hidden="true"></i>
+                {{ 'common.link_matrix.related_incidents'|trans({}, 'messages') }}
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: linked_incidents|length } only %}
+            </h4>
+
+            {% if linked_incidents|length > 0 %}
+                <ul class="link-matrix-list">
+                    {% for incident in linked_incidents %}
+                        <li class="link-matrix-item">
+                            <a href="{{ path('app_incident_show', {id: incident.id}) }}" data-turbo-action="advance">
+                                <strong>{{ incident.title }}</strong>
+                            </a>
+                            {% set sev = incident.severity|default('low') %}
+                            {% set sevVariant = sev == 'critical' ? 'danger' : (sev == 'high' ? 'warning' : 'secondary') %}
+                            {% include '_components/_badge.html.twig' with { variant: sevVariant, content: sev|upper } only %}
+                            {% if incident.detectedAt %}
+                                <small class="text-muted ms-1">{{ incident.detectedAt|date('Y-m-d') }}</small>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted small mb-2">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    {{ 'common.link_matrix.no_links_yet'|trans({}, 'messages') }}
+                </p>
+            {% endif %}
+
+            {% if source_type == 'risk' %}
+                <a href="{{ path('app_incident_new', {fromRisk: entity.id}) }}"
+                   class="btn btn-primary btn-sm"
+                   aria-describedby="link-matrix-help-derive-incident-from-risk">
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                    {{ 'common.link_matrix.derive_incident_from_risk'|trans({}, 'messages') }}
+                </a>
+                <small id="link-matrix-help-derive-incident-from-risk" class="text-muted ms-2">
+                    {{ 'common.link_matrix.help_derive_incident_from_risk'|trans({}, 'messages') }}
+                </small>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

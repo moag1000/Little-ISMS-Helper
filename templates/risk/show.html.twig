@@ -52,6 +52,14 @@
         </div>
     {% endif %}
 
+    {# Data-Reuse: Entity Link Matrix (Junior-Finding #8 / CM-Blocker) #}
+    {% include '_components/_entity_link_matrix.html.twig' with {
+        source_type: 'risk',
+        entity: risk,
+        linked_vulnerabilities: linkedVulnerabilities|default([]),
+        linked_incidents: linkedIncidents|default([])
+    } only %}
+
     {# ISO 27001 compliant thresholds: 20/12/6 #}
     {% set riskClass = risk.inherentRiskLevel >= 20 ? 'critical' : (risk.inherentRiskLevel >= 12 ? 'high' : (risk.inherentRiskLevel >= 6 ? 'medium' : 'low')) %}
 

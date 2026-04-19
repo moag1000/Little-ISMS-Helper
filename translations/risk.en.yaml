@@ -1,4 +1,10 @@
 risk:
+  prefill:
+    title_from_vulnerability: 'Risk derived from vulnerability: %title%'
+    title_from_incident: 'Risk derived from incident: %title%'
+    threat_from_vulnerability: 'Exploit of %title%'
+    note_from_vulnerability: '(Derived from vulnerability ID=%id%.)'
+    note_from_incident: '(Derived from incident ID=%id%.)'
   preview:
     title: Risk Information
   filter:

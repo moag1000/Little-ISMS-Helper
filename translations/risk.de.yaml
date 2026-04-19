@@ -1,4 +1,10 @@
 risk:
+  prefill:
+    title_from_vulnerability: 'Risiko aus Schwachstelle: %title%'
+    title_from_incident: 'Risiko aus Vorfall: %title%'
+    threat_from_vulnerability: 'Exploit von %title%'
+    note_from_vulnerability: '(Diese Erfassung wurde aus Schwachstelle ID=%id% abgeleitet.)'
+    note_from_incident: '(Diese Erfassung wurde aus Vorfall ID=%id% abgeleitet.)'
   preview:
     title: Risiko-Informationen
   filter:

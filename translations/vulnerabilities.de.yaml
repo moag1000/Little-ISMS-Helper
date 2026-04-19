@@ -1,6 +1,9 @@
 vulnerability:
     title: Schwachstellen
     new: 'Neue Schwachstelle'
+    prefill:
+        title_from_incident: 'Schwachstelle aus Vorfall: %title%'
+        note_from_incident: '(Diese Erfassung wurde aus Vorfall ID=%id% abgeleitet.)'
     edit: 'Schwachstelle bearbeiten'
     list: Schwachstellenliste
     empty: 'Keine Schwachstellen vorhanden.'

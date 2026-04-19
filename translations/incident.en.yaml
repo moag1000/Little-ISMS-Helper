@@ -4,6 +4,9 @@ incident_management:
   open_incidents: Open Incidents
   total_recorded: Total Recorded
 incident:
+  prefill:
+    title_from_risk: 'Incident for risk: %title%'
+    note_from_risk: '(Derived from risk ID=%id%.)'
   preview:
     title: Incident Information
     affected_assets: Affected Assets (%count%)
