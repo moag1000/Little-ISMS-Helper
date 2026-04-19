@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ freeze.freezeName }} · {{ 'audit_freeze.title'|trans({}, 'audit_freeze') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'audit_freeze.title'|trans({}, 'audit_freeze'), path: 'app_audit_freeze_index' },
+            { label: freeze.freezeName }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+        <div>
+            <h1 class="h2 mb-1">
+                <i class="bi bi-snow text-primary" aria-hidden="true"></i>
+                {{ freeze.freezeName }}
+            </h1>
+            <p class="text-muted mb-0">
+                {{ 'audit_freeze.column.stichtag'|trans({}, 'audit_freeze') }}:
+                <strong>{{ freeze.stichtag|date('Y-m-d') }}</strong>
+                · {{ ('audit_freeze.purpose.' ~ freeze.purpose)|trans({}, 'audit_freeze') }}
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            {% if freeze.pdfPath %}
+                <a href="{{ path('app_audit_freeze_download_pdf', {id: freeze.id}) }}" class="btn btn-outline-danger">
+                    <i class="bi bi-file-pdf" aria-hidden="true"></i>
+                    {{ 'audit_freeze.action.download_pdf'|trans({}, 'audit_freeze') }}
+                </a>
+            {% else %}
+                <form method="post" action="{{ path('app_audit_freeze_generate_pdf', {id: freeze.id}) }}" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('audit_freeze_generate_pdf_' ~ freeze.id) }}">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-file-pdf" aria-hidden="true"></i>
+                        {{ 'audit_freeze.action.generate_pdf'|trans({}, 'audit_freeze') }}
+                    </button>
+                </form>
+            {% endif %}
+            <a href="{{ path('app_audit_freeze_verify', {id: freeze.id}) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-shield-check" aria-hidden="true"></i>
+                {{ 'audit_freeze.action.verify'|trans({}, 'audit_freeze') }}
+            </a>
+        </div>
+    </div>
+
+    {# Integrity badge #}
+    <div class="alert {{ verified ? 'alert-success' : 'alert-danger' }}" role="alert">
+        {% if verified %}
+            <i class="bi bi-shield-check-fill" aria-hidden="true"></i>
+            <strong>{{ 'audit_freeze.integrity.verified'|trans({}, 'audit_freeze') }}</strong>
+            — {{ 'audit_freeze.integrity.verified_body'|trans({'%hash%': freeze.payloadSha256|slice(0, 16)}, 'audit_freeze') }}
+        {% else %}
+            <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+            <strong>{{ 'audit_freeze.integrity.tampered'|trans({}, 'audit_freeze') }}</strong>
+            — {{ 'audit_freeze.integrity.tampered_body'|trans({}, 'audit_freeze') }}
+        {% endif %}
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">{{ 'audit_freeze.meta.title'|trans({}, 'audit_freeze') }}</h2>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">{{ 'audit_freeze.column.created_at'|trans({}, 'audit_freeze') }}</dt>
+                        <dd class="col-sm-8">{{ freeze.createdAt|date('Y-m-d H:i') }}</dd>
+
+                        <dt class="col-sm-4">{{ 'audit_freeze.column.created_by'|trans({}, 'audit_freeze') }}</dt>
+                        <dd class="col-sm-8">{{ freeze.createdBy.email|default('—') }}</dd>
+
+                        <dt class="col-sm-4">{{ 'audit_freeze.column.frameworks'|trans({}, 'audit_freeze') }}</dt>
+                        <dd class="col-sm-8">
+                            {% for code in freeze.frameworkCodes %}
+                                <span class="badge bg-info me-1">{{ code }}</span>
+                            {% endfor %}
+                        </dd>
+
+                        {% if freeze.notes %}
+                            <dt class="col-sm-4">{{ 'audit_freeze.column.notes'|trans({}, 'audit_freeze') }}</dt>
+                            <dd class="col-sm-8">{{ freeze.notes|nl2br }}</dd>
+                        {% endif %}
+
+                        <dt class="col-sm-4">{{ 'audit_freeze.column.sha256'|trans({}, 'audit_freeze') }}</dt>
+                        <dd class="col-sm-8"><code class="small">{{ freeze.payloadSha256 }}</code></dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">{{ 'audit_freeze.payload.title'|trans({}, 'audit_freeze') }}</h2>
+                </div>
+                <div class="card-body">
+                    <details>
+                        <summary class="small text-muted">
+                            {{ 'audit_freeze.payload.show'|trans({}, 'audit_freeze') }}
+                        </summary>
+                        <pre class="small mt-2 bg-body-tertiary p-2" style="max-height:400px;overflow:auto"><code>{{ freeze.payloadJson|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</code></pre>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

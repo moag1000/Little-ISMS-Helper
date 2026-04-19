@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|default('de') }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ freeze.freezeName }} — {{ 'audit_freeze.title'|trans({}, 'audit_freeze') }}</title>
+    <style>
+        body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 10pt; color: #0f172a; margin: 0; padding: 24px; }
+        .header { border-bottom: 3px solid #0ea5e9; padding-bottom: 10px; margin-bottom: 16px; }
+        .header h1 { margin: 0 0 6px 0; font-size: 18pt; }
+        .meta { font-size: 9pt; color: #475569; }
+        .meta strong { color: #0f172a; }
+        h2 { font-size: 12pt; margin-top: 18px; margin-bottom: 8px; border-bottom: 1px solid #cbd5e1; padding-bottom: 3px; }
+        table { width: 100%; border-collapse: collapse; margin: 6px 0; }
+        th, td { border: 1px solid #cbd5e1; padding: 4px 6px; text-align: left; font-size: 8.5pt; vertical-align: top; }
+        thead th { background: #f1f5f9; color: #0f172a; font-weight: bold; }
+        .kpi-grid { display: block; margin-top: 8px; }
+        .kpi-grid .kpi { display: inline-block; margin-right: 16px; margin-bottom: 4px; }
+        .kpi strong { display: block; font-size: 14pt; color: #0ea5e9; }
+        .footer { margin-top: 24px; padding-top: 8px; border-top: 1px solid #cbd5e1; font-size: 8pt; color: #64748b; text-align: center; }
+        .hash { font-family: 'DejaVu Sans Mono', monospace; word-break: break-all; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>{{ freeze.freezeName }}</h1>
+    <div class="meta">
+        <strong>{{ 'audit_freeze.pdf.tenant'|trans({}, 'audit_freeze') }}:</strong> {{ freeze.tenant.name }}
+        &nbsp;|&nbsp;
+        <strong>{{ 'audit_freeze.column.stichtag'|trans({}, 'audit_freeze') }}:</strong> {{ freeze.stichtag|date('Y-m-d') }}
+        &nbsp;|&nbsp;
+        <strong>{{ 'audit_freeze.column.purpose'|trans({}, 'audit_freeze') }}:</strong>
+        {{ ('audit_freeze.purpose.' ~ freeze.purpose)|trans({}, 'audit_freeze') }}
+        &nbsp;|&nbsp;
+        <strong>{{ 'audit_freeze.column.created_at'|trans({}, 'audit_freeze') }}:</strong>
+        {{ freeze.createdAt|date('Y-m-d H:i') }}
+        &nbsp;|&nbsp;
+        <strong>{{ 'audit_freeze.column.created_by'|trans({}, 'audit_freeze') }}:</strong>
+        {{ freeze.createdBy.email|default('—') }}
+    </div>
+</div>
+
+<h2>{{ 'audit_freeze.pdf.summary'|trans({}, 'audit_freeze') }}</h2>
+
+<p>
+    <strong>{{ 'audit_freeze.column.frameworks'|trans({}, 'audit_freeze') }}:</strong>
+    {{ freeze.frameworkCodes|join(', ') }}
+</p>
+
+{% set payload = freeze.payloadJson %}
+
+{% if payload.kpi is defined %}
+    <div class="kpi-grid">
+        {% if payload.kpi.isms_health_score is defined %}
+            <span class="kpi">
+                <strong>{{ payload.kpi.isms_health_score }}</strong>
+                {{ 'audit_freeze.pdf.isms_health'|trans({}, 'audit_freeze') }}
+            </span>
+        {% endif %}
+        {% if payload.kpi.per_framework_compliance is defined %}
+            {% for framework, pct in payload.kpi.per_framework_compliance %}
+                <span class="kpi"><strong>{{ pct }}%</strong>{{ framework }}</span>
+            {% endfor %}
+        {% endif %}
+        {% if payload.kpi.risk_appetite_breach_count is defined %}
+            <span class="kpi">
+                <strong>{{ payload.kpi.risk_appetite_breach_count }}</strong>
+                {{ 'audit_freeze.pdf.appetite_breaches'|trans({}, 'audit_freeze') }}
+            </span>
+        {% endif %}
+    </div>
+{% endif %}
+
+{% if payload.soa_entries is defined and payload.soa_entries is not empty %}
+    <h2>{{ 'audit_freeze.pdf.soa'|trans({}, 'audit_freeze') }}</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'audit_freeze.pdf.col.control_id'|trans({}, 'audit_freeze') }}</th>
+                <th>{{ 'audit_freeze.pdf.col.applicable'|trans({}, 'audit_freeze') }}</th>
+                <th>{{ 'audit_freeze.pdf.col.status'|trans({}, 'audit_freeze') }}</th>
+                <th>{{ 'audit_freeze.pdf.col.pct'|trans({}, 'audit_freeze') }}</th>
+                <th>{{ 'audit_freeze.pdf.col.justification'|trans({}, 'audit_freeze') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in payload.soa_entries %}
+                <tr>
+                    <td>{{ e.control_id }}</td>
+                    <td>{{ e.applicable ? 'Y' : 'N' }}</td>
+                    <td>{{ e.status|default('—') }}</td>
+                    <td>{{ e.fulfillment_percentage|default(0) }}%</td>
+                    <td>{{ e.justification|default('')|slice(0, 150) }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% if payload.requirement_fulfillments is defined and payload.requirement_fulfillments is not empty %}
+    <h2>{{ 'audit_freeze.pdf.requirements'|trans({}, 'audit_freeze') }}</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'audit_freeze.pdf.col.framework'|trans({}, 'audit_freeze') }}</th>
+                <th>{{ 'audit_freeze.pdf.col.requirement_id'|trans({}, 'audit_freeze') }}</th>
+                <th>{{ 'audit_freeze.pdf.col.status'|trans({}, 'audit_freeze') }}</th>
+                <th>{{ 'audit_freeze.pdf.col.pct'|trans({}, 'audit_freeze') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in payload.requirement_fulfillments %}
+                <tr>
+                    <td>{{ r.framework }}</td>
+                    <td>{{ r.requirement_id }}</td>
+                    <td>{{ r.status|default('—') }}</td>
+                    <td>{{ r.fulfillment_percentage|default(0) }}%</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% if payload.risks is defined and payload.risks is not empty %}
+    <h2>{{ 'audit_freeze.pdf.risks'|trans({}, 'audit_freeze') }}</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'audit_freeze.pdf.col.risk_title'|trans({}, 'audit_freeze') }}</th>
+                <th>{{ 'audit_freeze.pdf.col.inherent'|trans({}, 'audit_freeze') }}</th>
+                <th>{{ 'audit_freeze.pdf.col.residual'|trans({}, 'audit_freeze') }}</th>
+                <th>{{ 'audit_freeze.pdf.col.treatment'|trans({}, 'audit_freeze') }}</th>
+                <th>{{ 'audit_freeze.pdf.col.status'|trans({}, 'audit_freeze') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for risk in payload.risks|slice(0, 20) %}
+                <tr>
+                    <td>{{ risk.title|slice(0, 80) }}</td>
+                    <td>{{ risk.inherent_level|default('—') }}</td>
+                    <td>{{ risk.residual_level|default('—') }}</td>
+                    <td>{{ risk.treatment_strategy|default('—') }}</td>
+                    <td>{{ risk.status|default('—') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% if freeze.notes %}
+    <h2>{{ 'audit_freeze.column.notes'|trans({}, 'audit_freeze') }}</h2>
+    <p>{{ freeze.notes|nl2br }}</p>
+{% endif %}
+
+<div class="footer">
+    <div><strong>SHA-256:</strong> <span class="hash">{{ freeze.payloadSha256 }}</span></div>
+    <div style="margin-top:4px">{{ 'audit_freeze.pdf.footer'|trans({}, 'audit_freeze') }}</div>
+</div>
+</body>
+</html>
