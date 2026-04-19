@@ -107,7 +107,7 @@
                             {% block table_body %}
                                 {% for control in requirement.mappedControls %}
                                     <tr>
-                                        <td><code>{{ control.controlId }}</code></td>
+                                        <td>{% include '_components/_iso_reference_label.html.twig' with { control: control, show_name: false } only %}</td>
                                         <td>{{ control.name }}</td>
                                         <td>
                                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: control.implementationStatus } %}

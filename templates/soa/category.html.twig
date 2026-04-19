@@ -56,7 +56,7 @@
     {% block table_body %}
         {% for control in controls %}
         <tr>
-            <td><strong>{{ control.controlId }}</strong></td>
+            <td>{% include '_components/_iso_reference_label.html.twig' with { control: control, show_name: false, code_class: 'fw-bold' } only %}</td>
             <td>
                 {{ control.name }}
                 <br>
