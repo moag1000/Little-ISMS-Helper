@@ -232,6 +232,16 @@
                             <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'audit.export_pdf'|trans({}, 'audit') }}
                         </a>
 
+                        {% if is_granted('ROLE_MANAGER') %}
+                            <form method="post" action="{{ path('app_audit_clone', {id: audit.id}) }}" class="d-grid">
+                                <input type="hidden" name="_token" value="{{ csrf_token('clone_audit_' ~ audit.id) }}">
+                                <button type="submit" class="btn btn-outline-success" data-turbo="false">
+                                    <i class="bi bi-files" aria-hidden="true"></i>
+                                    {{ 'audit.action.clone'|trans({}, 'audits') }}
+                                </button>
+                            </form>
+                        {% endif %}
+
                         <a href="{{ path('app_audit_index') }}"
                            class="btn btn-outline-secondary"
                            data-turbo-action="advance">
