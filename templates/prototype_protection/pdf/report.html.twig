@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|default('de') }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'prototype_protection.pdf.title'|trans({'%title%': assessment.title}, 'prototype_protection') }}</title>
+    <style>
+        @page { size: A4; margin: 20mm 18mm 22mm 18mm; }
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            font-size: 10pt;
+            color: #222;
+            line-height: 1.4;
+        }
+        h1 { font-size: 18pt; margin: 0 0 4mm 0; color: #1b3a57; }
+        h2 {
+            font-size: 12pt;
+            margin: 6mm 0 2mm 0;
+            padding-bottom: 1mm;
+            border-bottom: 1px solid #1b3a57;
+            color: #1b3a57;
+        }
+        h3 { font-size: 10.5pt; margin: 3mm 0 1mm 0; color: #365f87; }
+        table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm 0; }
+        th, td {
+            text-align: left;
+            padding: 2mm 3mm;
+            border: 1px solid #cbd5e0;
+            vertical-align: top;
+        }
+        th { background: #eef3f8; font-weight: bold; width: 35%; }
+        .meta-table th { width: 30%; }
+        .section { margin-bottom: 6mm; }
+        .section-text {
+            white-space: pre-wrap;
+            background: #fafbfd;
+            border-left: 3px solid #365f87;
+            padding: 2mm 3mm;
+            min-height: 6mm;
+        }
+        .footer {
+            font-size: 8pt;
+            color: #777;
+            text-align: center;
+            margin-top: 10mm;
+            border-top: 1px solid #ddd;
+            padding-top: 2mm;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.5mm 2mm;
+            border-radius: 2mm;
+            font-size: 8.5pt;
+            background: #e5eaf0;
+            color: #1b3a57;
+        }
+        .result-good    { background: #dcfce7; color: #166534; }
+        .result-warn    { background: #fef3c7; color: #92400e; }
+        .result-bad     { background: #fee2e2; color: #991b1b; }
+        .result-na      { background: #e5eaf0; color: #555; }
+        .cover {
+            border: 1mm solid #1b3a57;
+            padding: 6mm 8mm;
+            margin-bottom: 6mm;
+            background: #f7f9fc;
+        }
+        .cover h1 { margin-bottom: 2mm; }
+        .cover .subtitle { font-size: 10.5pt; color: #365f87; }
+        .signature-table td.sig-line {
+            border-bottom: 0.4mm solid #1b3a57;
+            height: 12mm;
+        }
+    </style>
+</head>
+<body>
+    <div class="cover">
+        <h1>{{ 'prototype_protection.pdf.heading'|trans({}, 'prototype_protection') }}</h1>
+        <div class="subtitle">
+            {{ assessment.title }}
+            {% if assessment.assessmentDate %}
+                &mdash; {{ assessment.assessmentDate|date('d.m.Y') }}
+            {% endif %}
+        </div>
+        <div class="small" style="margin-top: 2mm;">
+            {{ 'prototype_protection.pdf.standard_ref'|trans({}, 'prototype_protection') }}
+        </div>
+    </div>
+
+    <table class="meta-table">
+        <tr>
+            <th>{{ 'prototype_protection.field.status'|trans({}, 'prototype_protection') }}</th>
+            <td>
+                <span class="badge">
+                    {{ ('prototype_protection.status.' ~ assessment.status)|trans({}, 'prototype_protection') }}
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <th>{{ 'prototype_protection.field.tisax_level'|trans({}, 'prototype_protection') }}</th>
+            <td>{{ assessment.tisaxLevel ?? '—' }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'prototype_protection.field.overall_result'|trans({}, 'prototype_protection') }}</th>
+            <td>
+                {% if assessment.overallResult %}
+                    {% set resultClass = {
+                        'met': 'result-good',
+                        'exceeded': 'result-good',
+                        'partial': 'result-warn',
+                        'not_met': 'result-bad',
+                        'not_applicable': 'result-na'
+                    }[assessment.overallResult]|default('result-na') %}
+                    <span class="badge {{ resultClass }}">
+                        {{ ('prototype_protection.result.' ~ assessment.overallResult)|trans({}, 'prototype_protection') }}
+                    </span>
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>{{ 'prototype_protection.field.required_labels'|trans({}, 'prototype_protection') }}</th>
+            <td>
+                {% if assessment.requiredLabels %}
+                    {% for label in assessment.requiredLabels %}
+                        <span class="badge">{{ ('prototype_protection.label.' ~ label)|trans({}, 'prototype_protection') }}</span>
+                    {% endfor %}
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>{{ 'prototype_protection.field.supplier'|trans({}, 'prototype_protection') }}</th>
+            <td>{{ assessment.supplier ? assessment.supplier.name : '—' }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'prototype_protection.field.location'|trans({}, 'prototype_protection') }}</th>
+            <td>{{ assessment.location ? assessment.location.name : '—' }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'prototype_protection.field.assessor'|trans({}, 'prototype_protection') }}</th>
+            <td>{{ assessment.assessor ? assessment.assessor.fullName|default(assessment.assessor.email) : '—' }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'prototype_protection.field.assessment_date'|trans({}, 'prototype_protection') }}</th>
+            <td>{{ assessment.assessmentDate ? assessment.assessmentDate|date('d.m.Y') : '—' }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}</th>
+            <td>{{ assessment.nextAssessmentDue ? assessment.nextAssessmentDue|date('d.m.Y') : '—' }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'prototype_protection.pdf.generated_at'|trans({}, 'prototype_protection') }}</th>
+            <td>{{ generated_at|date('d.m.Y H:i') }}</td>
+        </tr>
+    </table>
+
+    {% if assessment.scope %}
+        <h2>{{ 'prototype_protection.field.scope'|trans({}, 'prototype_protection') }}</h2>
+        <div class="section-text">{{ assessment.scope }}</div>
+    {% endif %}
+
+    <h2>{{ 'prototype_protection.pdf.section.sections'|trans({}, 'prototype_protection') }}</h2>
+    <p class="small">{{ 'prototype_protection.pdf.section.sections_hint'|trans({}, 'prototype_protection') }}</p>
+
+    {% set sections = [
+        { key: 'physical',        ref: '8.1', result: assessment.physicalResult,       notes: assessment.physicalNotes },
+        { key: 'organisation',    ref: '8.2', result: assessment.organisationResult,   notes: assessment.organisationNotes },
+        { key: 'handling',        ref: '8.3', result: assessment.handlingResult,       notes: assessment.handlingNotes },
+        { key: 'trial_operation', ref: '8.4', result: assessment.trialOperationResult, notes: assessment.trialOperationNotes },
+        { key: 'events',          ref: '8.5', result: assessment.eventsResult,         notes: assessment.eventsNotes },
+    ] %}
+
+    {% for s in sections %}
+        <div class="section">
+            <h3>
+                VDA {{ s.ref }} &mdash;
+                {{ ('prototype_protection.section.' ~ s.key ~ '.title')|trans({}, 'prototype_protection') }}
+                {% if s.result %}
+                    {% set resultClass = {
+                        'met': 'result-good',
+                        'exceeded': 'result-good',
+                        'partial': 'result-warn',
+                        'not_met': 'result-bad',
+                        'not_applicable': 'result-na'
+                    }[s.result]|default('result-na') %}
+                    <span class="badge {{ resultClass }}">
+                        {{ ('prototype_protection.result.' ~ s.result)|trans({}, 'prototype_protection') }}
+                    </span>
+                {% endif %}
+            </h3>
+            <div class="section-text">{{ s.notes|default('—')|trim ?: '—' }}</div>
+        </div>
+    {% endfor %}
+
+    <h2>{{ 'prototype_protection.pdf.section.signatures'|trans({}, 'prototype_protection') }}</h2>
+    <table class="signature-table">
+        <thead>
+            <tr>
+                <th style="width: 30%;">{{ 'prototype_protection.pdf.signature.role'|trans({}, 'prototype_protection') }}</th>
+                <th style="width: 30%;">{{ 'prototype_protection.pdf.signature.name'|trans({}, 'prototype_protection') }}</th>
+                <th style="width: 20%;">{{ 'prototype_protection.pdf.signature.date'|trans({}, 'prototype_protection') }}</th>
+                <th style="width: 20%;">{{ 'prototype_protection.pdf.signature.signature'|trans({}, 'prototype_protection') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ 'prototype_protection.pdf.signature.role_assessor'|trans({}, 'prototype_protection') }}</td>
+                <td class="sig-line">{{ assessment.assessor ? assessment.assessor.fullName|default(assessment.assessor.email) : '' }}</td>
+                <td class="sig-line">{{ assessment.assessmentDate ? assessment.assessmentDate|date('d.m.Y') : '' }}</td>
+                <td class="sig-line"></td>
+            </tr>
+            <tr>
+                <td>{{ 'prototype_protection.pdf.signature.role_approver'|trans({}, 'prototype_protection') }}</td>
+                <td class="sig-line"></td>
+                <td class="sig-line"></td>
+                <td class="sig-line"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="footer">
+        {{ 'prototype_protection.pdf.footer'|trans({'%tenant%': assessment.tenant ? assessment.tenant.name : '—'}, 'prototype_protection') }}
+    </div>
+</body>
+</html>

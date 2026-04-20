@@ -7,6 +7,23 @@ prototype_protection:
     action:
         new: 'Neues Assessment'
         pdf: 'PDF exportieren'
+    pdf:
+        title: 'Prototype-Protection — %title%'
+        heading: 'Prototype-Protection Assessment (TISAX / VDA ISA 6, Kapitel 8)'
+        standard_ref: 'TISAX VDA ISA 6.0.4 — Kapitel 8 Prototype Protection'
+        generated_at: 'Generiert am'
+        footer: 'Vertraulich — Prototype-Protection Assessment (%tenant%)'
+        section:
+            sections: 'Abschnitte (VDA Kap. 8.1–8.5)'
+            sections_hint: 'Pro Unterabschnitt wird das Ergebnis (not_applicable / not_met / partial / met / exceeded) und die Auditoren-Anmerkungen festgehalten.'
+            signatures: 'Freigabe / Unterschriften'
+        signature:
+            role: 'Rolle'
+            name: 'Name'
+            date: 'Datum'
+            signature: 'Unterschrift'
+            role_assessor: 'Assessor / Prüfer'
+            role_approver: 'Freigabe (TISAX-Scope-Verantwortlicher)'
     field:
         title: 'Bezeichnung'
         scope: 'Geltungsbereich'

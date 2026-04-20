@@ -53,6 +53,10 @@
             <a href="{{ path('app_prototype_protection_edit', {id: assessment.id}) }}" class="btn btn-primary btn-sm">
                 <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
             </a>
+            <a href="{{ path('app_prototype_protection_pdf', {id: assessment.id}) }}" class="btn btn-outline-primary btn-sm" data-turbo="false">
+                <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                {{ 'prototype_protection.action.pdf'|trans({}, 'prototype_protection') }}
+            </a>
             <a href="{{ path('app_prototype_protection_index') }}" class="btn btn-outline-secondary btn-sm">
                 <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
             </a>
