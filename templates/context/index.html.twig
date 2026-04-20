@@ -250,8 +250,8 @@
                                     <i class="bi bi-person-circle text-primary" aria-hidden="true"></i>
                                     <a href="{{ path('app_interested_party_show', {id: party.id}) }}"
                                        data-turbo-action="advance">{{ party.name }}</a>
-                                    {% if party.category %}
-                                        <span class="text-muted">· {{ party.category }}</span>
+                                    {% if party.partyType %}
+                                        <span class="text-muted">· {{ party.partyType }}</span>
                                     {% endif %}
                                 </li>
                             {% endfor %}
