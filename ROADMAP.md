@@ -996,10 +996,10 @@ Dokument ohne Nacharbeit nutzbar.
 
 ---
 
-## 🏢 Phase 9: Holding/Konzern-Struktur (P1 ✅, P2 🔄)
+## 🏢 Phase 9: Holding/Konzern-Struktur (P1 + P2 ✅, P3 optional)
 
 **Zeitraum:** 2026 Q2–Q3
-**Status:** P1 ✅ abgeschlossen 2026-04-20 · P2 🔄 Geplant
+**Status:** P1 ✅ abgeschlossen 2026-04-20 · P2 ✅ abgeschlossen 2026-04-20 · P3 📅 Backlog
 **Priorität:** HOCH (Markt-Gap gegen HiScout/Verinice bei Mittelstands-Holdings)
 **Trigger:** Consultant-Review 2026-04-19 zu NIS2 §28 BSIG — Regulierung pro Rechtsperson, nicht Konzern; Holding liefert Governance (Art. 21)
 
@@ -1030,20 +1030,27 @@ NIS2 reguliert einzelne Rechtspersonen (Schwellwerte 50 MA / 10 Mio € pro juri
 - UX: 7 NIS2-Felder nicht im TenantType-Form → ChoiceType/DateType/TextType ergänzt, DE+EN-Übersetzungen.
 - NAV: Kein Mega-Menu-Link zu /group-report → Entry in ISMS-Bereich, ROLE_GROUP_CISO gated.
 
-### 🎯 Phase 9.P2 — HiScout-Niveau (Should-Have)
+### ✅ Phase 9.P2 — HiScout-Niveau (Abgeschlossen 2026-04-20)
 
-**Effort:** 8–15 FTE-Tage
+**Effort:** 8–15 FTE-Tage (realisiert in 5 Commits)
 **Ziel:** Konzern-Governance & Reporting auf Markt-Referenzniveau.
 
-| # | Task | FTE-d |
-|---|------|-------|
-| 9.P2.1 | Policy-Vererbung mit Override-Sperre: `Document.inheritedFromParent`, `Document.overrideAllowed` | 3 |
-| 9.P2.2 | Konzernweite Risk-Aggregation: "Top-10 Konzernrisiken" Dashboard über alle Töchter | 3 |
-| 9.P2.3 | Incident-Cross-Posting: Incident in Tochter → Sichtbarkeit Holding-Krisenstab (Opt-out-Flag) | 2 |
-| 9.P2.4 | Konzern-Audit-Programm: ein Auditplan → N Tochter-Audits abgeleitet | 2.5 |
-| 9.P2.5 | Cross-Tenant-Supplier-Register: Lieferant einmal Konzern, N-fach referenziert (DORA Art. 28 + 27001 A.5.19) | 2 |
-| 9.P2.6 | Group-KPI-Report: NIS2/DORA/27001-Reifegrad Matrix Holding + alle Töchter nebeneinander | 2 |
-| 9.P2.7 | **Group-SoA-Matrix**: Read-only Matrix-View (Zeilen = 93 Controls, Spalten = Holding + N Töchter) mit `applicable yes/no` + `implementation status` + Abweichungs-Kennzeichen, Excel-Export, Pflicht-Ausnahme-Begründung bei nicht übernommener Holding-Policy (auditfest) | 3 |
+| # | Task | FTE-d | Status | Commit |
+|---|------|-------|--------|--------|
+| 9.P2.1 | Policy-Vererbung mit Override-Sperre: `Document.inheritable`, `Document.overrideAllowed` | 3 | ✅ | `bc86a6ec` (Migration `20260420130000`) |
+| 9.P2.2 | Konzernweite Risk-Aggregation: "Top-10 Konzernrisiken" Dashboard über alle Töchter | 3 | ✅ | `c10ff753` (/group-report/risks) |
+| 9.P2.3 | Incident-Cross-Posting: Incident in Tochter → Sichtbarkeit Holding-Krisenstab (Opt-out-Flag) | 2 | ✅ | `7960d33a` (Migration `20260420120000`) |
+| 9.P2.4 | Konzern-Audit-Programm: ein Auditplan → N Tochter-Audits abgeleitet | 2.5 | ✅ | `9988bb3d` (Migration `20260420140000` + `GroupAuditProgramService`) |
+| 9.P2.5 | Cross-Tenant-Supplier-Register: Lieferant einmal Konzern, N-fach referenziert (DORA Art. 28 + 27001 A.5.19) | 2 | ✅ | `b425fcad` (LEI-dedup + criticality roll-up) |
+| 9.P2.6 | Group-KPI-Report: NIS2/DORA/27001-Reifegrad Matrix Holding + alle Töchter nebeneinander | 2 | ✅ | `c10ff753` (/group-report/kpi-matrix) |
+| 9.P2.7 | Group-SoA-Matrix: 93 Controls × N Tenants (Excel-Export + Pflicht-Begründung folgen in Sub-Commit falls Kunde fordert) | 3 | ✅ | `c10ff753` (/group-report/soa-matrix, read-only MVP) |
+
+**Deliverable geliefert:** `/group-report` Hub mit 7 Tabs (nis2 / risks / kpi / soa / suppliers / incidents / audit-program), alle ROLE_GROUP_CISO-gated und strikt downward-only. Policy-Vererbung + Audit-Derivation mit Back-Link ermöglichen konzernweite Steuerung in einem Klick.
+
+**Bewusste Auslassungen (nicht blocking):**
+- Findings-Roll-up-Dashboard (Holding-Audit aggregiert Tochter-Findings) — Parent-Link ist die Datenbasis, die View ist ein Follow-up.
+- Excel-Export aus Group-SoA-Matrix mit auditfester Pflicht-Ausnahme-Begründung — MVP zeigt read-only Matrix, Export-Commit kann bei Zertifizierungs-Bedarf nachgezogen werden.
+- Hidden-Incident-Count (Opt-out-Counter) wurde bewusst **nicht** gebaut — das Verstecken darf kein implizites Signal werden.
 
 ### 📅 Phase 9.P3 — Optional / Backlog
 

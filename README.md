@@ -53,6 +53,8 @@ Little ISMS Helper unterstützt Organisationen bei der **Implementierung und Ver
 | 🌐 **BSI IT-Grundschutz** | Absicherungsstufen (Basis/Standard/Kern), Anforderungstypen (MUSS/SOLLTE/KANN), Schutzbedarfsvererbung (Maximumprinzip) |
 | 📦 **Branchen-Baselines** | 9 Consultant-Starter-Pakete (Generic, Production, Finance, KRITIS-Health, Automotive, Cloud, MSP, IT-Service, Hosting) — 1-Klick-Apply statt ISMS-from-scratch |
 | 🏢 **Holding/Konzern-Struktur** | Tenant-Hierarchie mit Cycle-Safety, `ROLE_GROUP_CISO` für read-across, Baseline-Vererbung + `applyRecursive`, NIS2-Registrierungsmatrix pro Rechtsperson (§28 BSIG) |
+| 📡 **Group-Report-Hub** | 7 Konzern-Dashboards für ROLE_GROUP_CISO: Tree, NIS2-Matrix, Top-10 Risiken, Framework-KPI-Matrix, SoA-Matrix (93×N), Supplier-Dedup (LEI), Incident-Cross-Post (Opt-out), Audit-Programm (1→N Derivation) |
+| 📋 **Holding-Policy-Vererbung** | `Document.inheritable` + `Document.overrideAllowed` — Mandatory-Policies 1:1 durchmandatieren oder lokalen Override erlauben |
 | 📉 **Portfolio-Report mit Trend + Drill-Down** | Echte Delta-Werte via `PortfolioSnapshot`-Cron, Cell-Click führt zu den konkreten Requirements |
 | 🧭 **KPI-Dashboard** | ISMS Health Score, Per-Framework-Compliance, Risk-Appetite, MTTR nach Severity, Inheritance-Rate, FTE-Tage-eingespart |
 | ♿ **WCAG 2.2 AA** | aria-live, scope="col", Dialog-Semantik, ⌘K-Command-Palette discoverable |
