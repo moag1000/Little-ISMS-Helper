@@ -425,7 +425,7 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 | DORA | ✅ Vollständig | 95% |
 | TISAX / VDA ISA 6.0.4 | ✅ Vollständig | 95% |
 | NIS2 / NIS2UmsuCG | ✅ Vollständig | 97% |
-| BSI IT-Grundschutz | ✅ Vollständig | 90% |
+| BSI IT-Grundschutz | ✅ Vollständig (Kompendium 2023) | 99%+ (1 868 Anforderungen, 121 Bausteine) |
 | DSGVO | ✅ Vollständig | 92% |
 
 ---

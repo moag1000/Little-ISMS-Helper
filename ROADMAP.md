@@ -1182,13 +1182,18 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 
 ---
 
-**Stand:** 2026-04-20
+**Stand:** 2026-04-21
 **Version:** 2.7 (unreleased — letzter getaggter Release: `v2.6.0`)
 **Letzte Aenderung:** Alle [Unreleased]-Sprints seit 2026-04-17:
 (1) Phase 8J Standards Compliance (CHANGELOG [2.7.0]-Sektion, nicht getagged),
 (2) Persona-Audit Sprint (H-01/H-04/AUD-02 + Pattern A/B/C/D + KPI 1–5),
 (3) Junior+UX+CM Audit Sprint,
 (4) Compliance-Manager-Residual-Sprint v2.2 (H-02 + NIS2-Widgets + BSI-Check
-+ DORA-Complete + TISAX-Complete).
-Audit-Doc 78 → 98. Alle 7 Ziel-Frameworks Tool-🟢.
++ DORA-Complete + TISAX-Complete),
+(5) CM-Data-Reuse-Plan Sprint 1+2+3 (22 FTE-d → ~37 FTE-d/Jahr Ersparnis,
+12 Commits, Cross-Framework-Mapping-Automation),
+(6) Audit-v2.2 Residual-Closure + BSI-Kompendium 2023 vollständig
+(1 868 Anforderungen, 121 Bausteine via DocBook-XML-Import).
+Audit-Doc 78 → 98 → Residual-Budget 19 → 0 FTE-d. Alle 7 Ziel-Frameworks Tool-🟢,
+BSI IT-Grundschutz auf 99%+.
 **Naechste Aktualisierung:** Nach Cutting `v2.7.0` + Phase 9 Holding-Struktur.

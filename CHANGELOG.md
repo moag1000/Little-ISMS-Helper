@@ -9,6 +9,97 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ✨ Added
 
+#### CM-Data-Reuse-Plan Sprint 1–3 (2026-04-20)
+
+Umsetzung des `.claude/CM_DATA_REUSE_PLAN.md` über 12 Commits nach der
+Consultant-Priorisierung. 22 FTE-Tage Invest → ~37 FTE-Tage/Jahr
+Ersparnis beim CM-Alltag (~53 000 €/Jahr direkter Effekt).
+
+**Sprint 1 — Cross-Framework-Foundation (`6ada67ba`, `d9f44caf`, `de579b12`)**
+- **A4 Audit-Paket-Export** (`/audit-package/{framework}`): ZIP mit
+  INDEX.csv + AUDIT_SUMMARY.pdf + per-Requirement-Ordner mit Evidence-
+  Dateien + `*.MISSING.txt`-Stubs bei Daten-Gaps. SHA-256 im Audit-Log.
+- **A2 Auto-Mapping-Vorschläge**: `MappingSuggestionService` mit Jaccard-
+  Token-Overlap; Widget auf SoA-Control-Show mit 1-Klick-Accept + CSRF +
+  Audit-Log-Herkunft `A2_auto_mapping_suggestion`.
+- **B2 BSI ↔ ISO 27001 Seed-Mappings**: `app:seed-bsi-iso27001-mappings`
+  mit 42 Mappings aus offizieller BSI-Cross-Reference-Tabelle.
+
+**Sprint 2 — Cross-Norm-Visibility (`3e093b52`, `18ebe204`, `28fdd629`)**
+- **B1 Transitive Coverage-Badge**: `TransitiveCoverageService` +
+  `_transitive_coverage_badge.html.twig`. Dreht die Frage *"welche
+  Controls treiben diese Coverage?"* in einen aufklappbaren `<details>`-
+  Block mit direkten + transitiven Contributions, Formel pro Bucket.
+- **A3 Consultant-Template-Importer**: Generischer CSV-Importer
+  `app:import-cross-framework-mappings --source=X --target=Y`.
+- **B6 Framework-Version-Migration**: `FrameworkVersionMigrator` +
+  `app:migrate-framework-version --from=X --to=Y [--strategy=id|title|both]`.
+
+**Sprint 3 — Ausbau (`edc0b534`, `d2798d7e`, `b3097d74`, `108da8ac`, `7824ab26`, `161636c0`)**
+- **B5 SOC 2 + C5:2026 Seed-Mappings**: 38 SOC 2 ↔ ISO, 16 C5 ↔ ISO.
+- **C2 CMMI-Reifegradmodell**: `FrameworkMaturityService` mit 5 Levels
+  (Initial → Optimizing) + Maturity-Heatmap auf `/compliance/`.
+- **C3 Bulk-Applicability-Editor**: Inline-Form auf SoA-Index mit
+  pflichtiger Begründung für N/A-Marker + Audit-Log je Änderung.
+- **B4 Multi-Framework-Audit**: `InternalAudit.additionalScopedFrameworks`
+  M:M + Form-Multi-Select. Audit-Runs decken jetzt N Frameworks
+  gleichzeitig ab.
+- **A1 Inverse-Coverage-Widget**: `InverseCoverageService` + Partial
+  auf Document-Show + Supplier-Show (*"wo wird dieses Dokument
+  referenziert?"*).
+- **C1 InternalAudit-Clone**: `InternalAuditCloner` + POST-Route
+  `/audit/{id}/clone` mit Title-Override + Planned-Date-Feld.
+
+#### Audit-v2.2 Residual-Closure + BSI Kompendium 2023 vollständig (2026-04-20 / 04-21)
+
+Letzte Nice-to-haves + BSI-Vollständigkeit aus Audit-v2.2 Residual-Liste.
+Residual-Tool-Budget **3 → 0 FTE-Tage**.
+
+- **Management-Review-PDF Signatur-Block** (`b685e63c`): 3-Zeilen-Tabelle
+  (Top-Management / CISO / ISMS-Manager) mit vorbefülltem Reviewer-Name
+  + Datum wenn `status=completed`. eIDAS-Hinweis.
+- **Prototype-Protection PDF-Export** (`4af43750`): Route
+  `/prototype-protection/{id}/pdf` mit Cover, Meta-Tabelle, 5 VDA-Kap.-
+  8-Sektionen + Signatur-Block (Assessor + Approver).
+- **BSI-Kompendium Extended-Seed** (`163f885b`): `app:load-bsi-kompendium-
+  extended` mit 51 kuratierten Anforderungen aus 20 zusätzlichen
+  Bausteinen (CON.11, OPS.1.2.3, OPS.2.2, APP.3.2/3.3/3.6/4.2/5.3,
+  SYS.1.2.3/1.3/1.8/1.9/2.4/3.1/3.2.2/4.1/4.5, NET.4.1/4.3, INF.13).
+- **BSI-Kompendium-XML-Importer Refactor** (`2a2bc51f`): Parser auf
+  DocBook 5.0 umgeschrieben (real BSI-Format statt spekulatives Schema).
+  XPath-Walk über alle `//section/title` mit Regex gegen
+  `<Baustein>.A<N>`, Klassifikations-Parser `(B)/(S)/(H)` → basis/
+  standard/kern, ENTFALLEN-Skip, periodic-flush alle 100 Einträge für
+  Memory-Safety.
+- **BSI-Kompendium 2023 vollständig** (`5e9ec5c1`): Offizielles
+  DocBook-XML (3 MB) von bsi.bund.de/ITGSK/XML_Kompendium_2023.xml
+  heruntergeladen und via `app:import-bsi-kompendium-xml` importiert.
+  **1 868 Anforderungen** (B:492, S:867, H:404, 105 legacy), **121
+  Bausteine**. ENTFALLEN (290) übersprungen. Re-Import bei 2024er-
+  Edition = 1 Kommando, idempotent.
+
+#### Phase 8H.1 Detail-Group & UI-Komponenten (2026-04-20)
+
+Abgeschlossen mit einem finalen Einschub:
+
+- **Skeleton-Wrapper für Management-KPI-Widget** (`1c126d5e`) auf der
+  Home-Landing-Page: 350 ms Skeleton-KPI-Grid statt leerer Card. Nutzt
+  bestehenden `_skeleton.html.twig` + `skeleton`-Stimulus-Controller.
+  Perceived-Performance-Win ohne Server-seitige Änderung.
+
+#### Bug-Fixes
+
+- `65ee264e` BSI-Grundschutz-Check: `{% import _self as helpers %}` +
+  `{% set %}`-Statements waren außerhalb des Blocks und wurden von Twig
+  bei `extends` verworfen. Fix: alles in `{% block body %}` gezogen.
+- `2a2bc51f` ComplianceFramework PHP-8.4-Property-Hook-Rekursion: das
+  `get {}` las `$this->id`, was den Hook erneut triggerte → Stack-
+  Overflow. Fix: Property-Hook entfernt, klassischer `getId()` getter.
+- `ac11eba2` Interested-Party: verwendet jetzt `partyType` statt nicht-
+  existenter `category`-Property.
+
+---
+
 #### Phase 9.P2 — Konzern-Governance & Reporting (2026-04-20)
 
 Fortführung der Holding-Struktur aus P1. Die sieben Items aus dem
