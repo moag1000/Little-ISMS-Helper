@@ -7,7 +7,9 @@ namespace App\Controller;
 use App\Entity\PrototypeProtectionAssessment;
 use App\Form\PrototypeProtectionAssessmentType;
 use App\Repository\PrototypeProtectionAssessmentRepository;
+use App\Service\PdfExportService;
 use App\Service\TenantContext;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,6 +33,7 @@ class PrototypeProtectionAssessmentController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator,
+        private readonly ?PdfExportService $pdfExportService = null,
     ) {
     }
 
@@ -103,6 +106,36 @@ class PrototypeProtectionAssessmentController extends AbstractController
         return $this->render('prototype_protection/edit.html.twig', [
             'assessment' => $assessment,
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}/pdf', name: 'pdf', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function pdf(PrototypeProtectionAssessment $assessment): Response
+    {
+        $this->assertAccess($assessment);
+        if ($this->pdfExportService === null) {
+            throw $this->createNotFoundException('PDF export service is not available.');
+        }
+
+        $generatedAt = new DateTimeImmutable();
+        $pdf = $this->pdfExportService->generatePdf(
+            'prototype_protection/pdf/report.html.twig',
+            [
+                'assessment' => $assessment,
+                'generated_at' => $generatedAt,
+            ],
+            [
+                'classification' => $assessment->getTenant()?->getName(),
+            ]
+        );
+
+        $dateSlug = $assessment->getAssessmentDate()?->format('Y-m-d') ?? $generatedAt->format('Y-m-d');
+        $titleSlug = preg_replace('/[^A-Za-z0-9_-]+/', '-', (string) $assessment->getTitle()) ?? 'prototype-protection';
+        $filename = sprintf('prototype-protection_%s_%s.pdf', $dateSlug, trim($titleSlug, '-') ?: 'assessment');
+
+        return new Response($pdf, Response::HTTP_OK, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ]);
     }
 
