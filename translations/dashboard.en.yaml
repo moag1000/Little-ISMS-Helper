@@ -180,6 +180,11 @@ dashboard:
     days_overdue: d overdue
     workflow_approval: Workflow Approval
   urgent_items: urgent items require attention
+  reuse_fte:
+    title: 'Data-Reuse Efficiency — FTE Days Saved'
+    subtitle: 'through mapping-based requirement inheritance (all frameworks)'
+    days_suffix: 'FTE days'
+    cta: 'Go to Portfolio Report and trend chart'
   urgent:
     overdue_reviews: Overdue Reviews
     overdue_treatment_plans: Overdue Plans

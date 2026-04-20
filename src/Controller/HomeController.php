@@ -19,6 +19,7 @@ use App\Repository\WorkflowInstanceRepository;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\ComplianceWizardService;
 use App\Service\DashboardStatisticsService;
+use App\Service\InheritanceMetricsService;
 use App\Service\ISOComplianceIntelligenceService;
 use App\Service\RiskReviewService;
 use App\Service\TenantContext;
@@ -49,6 +50,7 @@ class HomeController extends AbstractController
         private readonly ?ControlRepository $controlRepository = null,
         private readonly ?DocumentRepository $documentRepository = null,
         private readonly ?ISMSContextRepository $ismsContextRepository = null,
+        private readonly ?InheritanceMetricsService $inheritanceMetricsService = null,
     ) {}
 
     public function index(Request $request): Response
@@ -206,9 +208,20 @@ class HomeController extends AbstractController
         // Add trend data to management KPIs (from KPI snapshots)
         $managementKpis = $this->dashboardStatisticsService->addTrendData($managementKpis, $tenant);
 
+        // R2 Ein-Zahl-KPI — Data-Reuse in FTE-Tagen (Board-taugliche Einzelzahl)
+        $reuseFteSaved = null;
+        if ($this->inheritanceMetricsService !== null && $tenant instanceof Tenant) {
+            try {
+                $reuseFteSaved = $this->inheritanceMetricsService->fteSavedForTenant($tenant);
+            } catch (\Throwable) {
+                $reuseFteSaved = null;
+            }
+        }
+
         return $this->render('home/dashboard.html.twig', [
             'stats' => $stats,
             'management_kpis' => $managementKpis,
+            'reuse_fte_saved' => $reuseFteSaved,
             'activities' => $activities,
             'iso_compliance' => $isoCompliance,
             'overdue_reviews' => $overdueReviews,
