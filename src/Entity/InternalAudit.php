@@ -137,6 +137,19 @@ class InternalAudit
     #[MaxDepth(1)]
     private ?ComplianceFramework $complianceFramework = null;
 
+    /**
+     * Sprint 3 / B4 — Additional frameworks covered by the same audit.
+     * Real-world internal audits often verify 27001 + NIS2 + DORA in one
+     * pass; a single `scoped_framework_id` cannot express that. This M:M
+     * is additive: the primary framework stays in `complianceFramework`
+     * for backward compatibility, further frameworks land here.
+     */
+    #[ORM\ManyToMany(targetEntity: ComplianceFramework::class)]
+    #[ORM\JoinTable(name: 'internal_audit_additional_framework')]
+    #[Groups(['audit:read'])]
+    #[MaxDepth(1)]
+    private Collection $additionalScopedFrameworks;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
     private ?string $objectives = null;
@@ -247,7 +260,49 @@ public function __construct()
         $this->auditedSubsidiaries = new ArrayCollection();
         $this->structuredFindings = new ArrayCollection();
         $this->derivedAudits = new ArrayCollection();
+        $this->additionalScopedFrameworks = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
+    }
+
+    /** @return Collection<int, ComplianceFramework> */
+    public function getAdditionalScopedFrameworks(): Collection
+    {
+        return $this->additionalScopedFrameworks;
+    }
+
+    public function addAdditionalScopedFramework(ComplianceFramework $framework): static
+    {
+        if (!$this->additionalScopedFrameworks->contains($framework)) {
+            $this->additionalScopedFrameworks->add($framework);
+        }
+        return $this;
+    }
+
+    public function removeAdditionalScopedFramework(ComplianceFramework $framework): static
+    {
+        $this->additionalScopedFrameworks->removeElement($framework);
+        return $this;
+    }
+
+    /**
+     * Returns all frameworks covered by this audit — primary (if set) +
+     * every additional framework. Useful for the audit report template.
+     *
+     * @return list<ComplianceFramework>
+     */
+    public function getAllScopedFrameworks(): array
+    {
+        $all = [];
+        if ($this->complianceFramework instanceof ComplianceFramework) {
+            $all[(int) $this->complianceFramework->id] = $this->complianceFramework;
+        }
+        foreach ($this->additionalScopedFrameworks as $fw) {
+            if (!$fw instanceof ComplianceFramework) {
+                continue;
+            }
+            $all[(int) $fw->id] = $fw;
+        }
+        return array_values($all);
     }
 
     public function getParentAudit(): ?self
