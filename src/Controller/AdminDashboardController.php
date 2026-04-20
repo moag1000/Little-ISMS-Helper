@@ -6,7 +6,9 @@ use App\Entity\Tenant;
 use DateTimeImmutable;
 use Exception;
 use App\Repository\AuditLogRepository;
+use App\Repository\ControlRepository;
 use App\Repository\UserRepository;
+use App\Service\ModuleConfigurationService;
 use Doctrine\DBAL\Platforms\MariaDBPlatform;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
@@ -42,6 +44,8 @@ class AdminDashboardController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly UserRepository $userRepository,
         private readonly AuditLogRepository $auditLogRepository,
+        private readonly ControlRepository $controlRepository,
+        private readonly ModuleConfigurationService $moduleConfiguration,
         private readonly LoggerInterface $logger
     ) {
     }
@@ -64,7 +68,7 @@ class AdminDashboardController extends AbstractController
         );
 
         // System Alerts (inactive users, pending reviews, etc.)
-        $alerts = $this->getSystemAlerts();
+        $alerts = $this->getSystemAlerts($currentTenant);
 
         return $this->render('admin/dashboard.html.twig', [
             'stats' => $stats,
@@ -272,9 +276,28 @@ class AdminDashboardController extends AbstractController
         }
     }
 
-    private function getSystemAlerts(): array
+    private function getSystemAlerts(?Tenant $currentTenant = null): array
     {
         $alerts = [];
+
+        // ISO 27001 module active but tenant has no Annex-A controls →
+        // the SoA UI would be empty, which is the "tool doesn't work"
+        // first impression. Offer a one-click fix.
+        if ($currentTenant instanceof Tenant
+            && $this->moduleConfiguration->isModuleActive('controls')
+            && $this->controlRepository->count(['tenant' => $currentTenant]) === 0
+        ) {
+            $alerts[] = [
+                'type' => 'danger',
+                'icon' => 'bi-exclamation-triangle-fill',
+                'message' => 'admin.alert.annex_a_missing',
+                'count' => 93,
+                'action' => $this->generateUrl('app_soa_index'),
+                'fix_route' => 'app_soa_bootstrap_annex_a',
+                'fix_csrf_name' => 'bootstrap_annex_a',
+                'fix_label' => 'admin.alert.annex_a_missing_fix',
+            ];
+        }
 
         // Check for inactive users
         $inactiveCount = $this->userRepository->count(['isActive' => false]);

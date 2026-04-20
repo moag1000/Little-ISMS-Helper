@@ -84,6 +84,18 @@ soa:
         classification_confidential_upper: VERTRAULICH
     message:
         no_controls_filtered: 'Keine Controls gefunden, die den Filterkriterien entsprechen.'
+        auto_seeded: '%count% ISO 27001 Annex A Controls wurden automatisch für diesen Tenant geladen.'
+    empty:
+        no_controls_for_tenant:
+            title: 'Noch keine ISO 27001 Annex A Controls für diesen Tenant'
+            iso_active: 'Das Controls-Modul ist aktiv, aber es wurden noch keine 93 Annex-A-Controls für diesen Tenant geladen. Ohne die Controls kann keine Anwendbarkeitserklärung gepflegt werden.'
+            iso_inactive: 'Das Controls-Modul ist für diesen Tenant nicht aktiv. Aktiviere es im Modul-Management oder lade die Annex-A-Controls manuell.'
+        no_controls_in_category: 'Keine Controls in Kategorie „%category%". Tenant hat insgesamt %total% Controls geladen — die Kategorie hat aber keinen Treffer.'
+        load_button: 'ISO 27001 Annex A Controls laden'
+        contact_admin: 'Bitte kontaktiere einen Administrator, um die Annex-A-Controls laden zu lassen.'
+        no_tenant: 'Kein aktiver Tenant — Controls können nicht geladen werden.'
+        loaded_flash: '%count% ISO 27001 Annex A Controls erfolgreich geladen.'
+        already_loaded_flash: 'Annex-A-Controls waren bereits für diesen Tenant geladen — keine Änderung.'
         no_justification: 'Keine Begründung angegeben.'
         no_implementation_notes: 'Keine Implementierungsnotizen vorhanden.'
         control_coverage: 'Dieses Control schützt %count% Asset(s) mit Gesamtwert %value%.'

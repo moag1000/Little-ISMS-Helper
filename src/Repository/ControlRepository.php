@@ -50,18 +50,27 @@ class ControlRepository extends ServiceEntityRepository
     /**
      * Find controls by category ordered by ISO 27001 control ID in natural order.
      *
-     * @param string $category The category to filter by
+     * Tenant is optional but SHOULD be passed — without it, the query returns
+     * controls from every tenant in the database (cross-tenant leak). The
+     * nullable signature exists only for legacy callers; new code must pass
+     * the tenant explicitly.
+     *
      * @return Control[] Array of Control entities in ISO 27001 natural order
      */
-    public function findByCategoryInIsoOrder(string $category): array
+    public function findByCategoryInIsoOrder(string $category, ?Tenant $tenant = null): array
     {
-        return $this->createQueryBuilder('c')
+        $qb = $this->createQueryBuilder('c')
             ->where('c.category = :category')
             ->setParameter('category', $category)
             ->orderBy('LENGTH(c.controlId)', 'ASC')
-            ->addOrderBy('c.controlId', 'ASC')
-            ->getQuery()
-            ->getResult();
+            ->addOrderBy('c.controlId', 'ASC');
+
+        if ($tenant instanceof Tenant) {
+            $qb->andWhere('c.tenant = :tenant')
+               ->setParameter('tenant', $tenant);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

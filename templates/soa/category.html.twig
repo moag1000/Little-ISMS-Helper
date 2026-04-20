@@ -38,8 +38,49 @@
     </div>
 </div>
 
+{% if auto_seeded is defined and auto_seeded > 0 %}
+    <div class="alert alert-success" role="status">
+        <i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>
+        {{ 'soa.message.auto_seeded'|trans({'%count%': auto_seeded}, 'soa') }}
+    </div>
+{% endif %}
+
 {# Controls Table #}
 <h2>Controls</h2>
+
+{% if controls|length == 0 and total_for_tenant is defined and total_for_tenant == 0 %}
+    <div class="alert alert-warning" role="status">
+        <h4 class="alert-heading">
+            <i class="bi bi-exclamation-triangle-fill me-1" aria-hidden="true"></i>
+            {{ 'soa.empty.no_controls_for_tenant.title'|trans({}, 'soa') }}
+        </h4>
+        <p class="mb-2">
+            {% if iso_27001_active is defined and iso_27001_active %}
+                {{ 'soa.empty.no_controls_for_tenant.iso_active'|trans({}, 'soa') }}
+            {% else %}
+                {{ 'soa.empty.no_controls_for_tenant.iso_inactive'|trans({}, 'soa') }}
+            {% endif %}
+        </p>
+        {% if is_granted('ROLE_ADMIN') %}
+            <form method="post" action="{{ path('app_soa_bootstrap_annex_a') }}" class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token('bootstrap_annex_a') }}">
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="bi bi-download me-1" aria-hidden="true"></i>
+                    {{ 'soa.empty.load_button'|trans({}, 'soa') }}
+                </button>
+            </form>
+        {% else %}
+            <p class="small text-muted mb-0">
+                {{ 'soa.empty.contact_admin'|trans({}, 'soa') }}
+            </p>
+        {% endif %}
+    </div>
+{% elseif controls|length == 0 %}
+    <div class="alert alert-info" role="status">
+        <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+        {{ 'soa.empty.no_controls_in_category'|trans({'%category%': category, '%total%': total_for_tenant}, 'soa') }}
+    </div>
+{% endif %}
 
 {% embed '_components/_table.html.twig' with {'class': 'table-container', 'noMargin': true} %}
     {% block table_head %}

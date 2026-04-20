@@ -6,11 +6,14 @@ use DateTime;
 use DateTimeImmutable;
 use App\Entity\Control;
 use App\Entity\User;
+use App\Entity\Tenant;
 use App\Form\ControlType;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
+use App\Service\AnnexAControlsBootstrapService;
 use App\Service\AuditLogger;
 use App\Service\MappingSuggestionService;
+use App\Service\ModuleConfigurationService;
 use App\Service\SoAReportService;
 use App\Service\TagFilterService;
 use App\Service\WorkflowAutoProgressionService;
@@ -34,6 +37,8 @@ class StatementOfApplicabilityController extends AbstractController
         private readonly TagFilterService $tagFilterService,
         private readonly MappingSuggestionService $mappingSuggestionService,
         private readonly ComplianceRequirementRepository $requirementRepository,
+        private readonly AnnexAControlsBootstrapService $annexBootstrap,
+        private readonly ModuleConfigurationService $moduleConfiguration,
         private readonly ?AuditLogger $auditLogger = null,
     ) {}
     #[Route('/soa/', name: 'app_soa_index')]
@@ -128,11 +133,31 @@ class StatementOfApplicabilityController extends AbstractController
     #[Route('/soa/category/{category}', name: 'app_soa_by_category')]
     public function byCategory(string $category): Response
     {
-        $controls = $this->controlRepository->findByCategoryInIsoOrder($category);
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        // Auto-bootstrap: if the controls module is active but this tenant
+        // has zero Annex-A controls, seed them. Rationale: a tenant with
+        // ISO 27001 active should never see an empty SoA — that's the
+        // first-impression failure the junior flagged.
+        $autoSeeded = 0;
+        $controlsModuleActive = $this->moduleConfiguration->isModuleActive('controls');
+        if ($tenant instanceof Tenant && $controlsModuleActive && !$this->annexBootstrap->isTenantSeeded($tenant)) {
+            $autoSeeded = $this->annexBootstrap->ensureLoadedForTenant($tenant);
+        }
+
+        $controls = $this->controlRepository->findByCategoryInIsoOrder($category, $tenant);
+        $totalForTenant = $tenant instanceof Tenant
+            ? $this->controlRepository->count(['tenant' => $tenant])
+            : 0;
 
         return $this->render('soa/category.html.twig', [
             'category' => $category,
             'controls' => $controls,
+            'tenant' => $tenant,
+            'total_for_tenant' => $totalForTenant,
+            'auto_seeded' => $autoSeeded,
+            'iso_27001_active' => $controlsModuleActive,
         ]);
     }
     #[Route('/soa/report/export', name: 'app_soa_export')]
@@ -174,6 +199,41 @@ class StatementOfApplicabilityController extends AbstractController
             'mapping_suggestions' => $suggestions,
             'mapping_suggestions_total' => $this->mappingSuggestionService->totalCount($suggestions),
         ]);
+    }
+
+    /**
+     * Admin bootstrap: seed the 93 Annex-A controls for the current tenant.
+     * Hooked from the SoA empty-state banner and the admin dashboard fix
+     * CTA. Idempotent — re-running is a no-op after initial load.
+     */
+    #[Route('/soa/bootstrap/annex-a', name: 'app_soa_bootstrap_annex_a', methods: ['POST'])]
+    public function bootstrapAnnexA(Request $request): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        if (!$this->isCsrfTokenValid('bootstrap_annex_a', (string) $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Invalid CSRF token.');
+            return $this->redirectToRoute('app_soa_index');
+        }
+
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+        if (!$tenant instanceof Tenant) {
+            $this->addFlash('warning', $this->translator->trans('soa.empty.no_tenant', [], 'soa'));
+            return $this->redirectToRoute('app_soa_index');
+        }
+
+        $created = $this->annexBootstrap->ensureLoadedForTenant($tenant);
+        if ($created > 0) {
+            $this->addFlash('success', $this->translator->trans('soa.empty.loaded_flash', ['%count%' => $created], 'soa'));
+        } else {
+            $this->addFlash('info', $this->translator->trans('soa.empty.already_loaded_flash', [], 'soa'));
+        }
+
+        $referer = $request->headers->get('referer');
+        if ($referer !== null && str_contains($referer, '/soa/')) {
+            return $this->redirect($referer);
+        }
+        return $this->redirectToRoute('app_soa_index');
     }
 
     /**

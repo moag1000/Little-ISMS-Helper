@@ -89,6 +89,18 @@ soa:
         effectiveness_score: 'Effectiveness score'
     message:
         no_controls_filtered: 'No controls found matching the filter criteria.'
+        auto_seeded: '%count% ISO 27001 Annex A controls were auto-loaded for this tenant.'
+    empty:
+        no_controls_for_tenant:
+            title: 'No ISO 27001 Annex A controls loaded for this tenant yet'
+            iso_active: 'The controls module is active but none of the 93 Annex A controls have been loaded for this tenant yet. The Statement of Applicability cannot be maintained without them.'
+            iso_inactive: 'The controls module is not active for this tenant. Either activate it in module management or load the Annex A controls manually.'
+        no_controls_in_category: 'No controls in category "%category%". The tenant has %total% controls loaded in total, but none match this category.'
+        load_button: 'Load ISO 27001 Annex A controls'
+        contact_admin: 'Contact an administrator to load the Annex A controls.'
+        no_tenant: 'No active tenant — controls cannot be loaded.'
+        loaded_flash: '%count% ISO 27001 Annex A controls successfully loaded.'
+        already_loaded_flash: 'Annex A controls were already loaded for this tenant — no change.'
         no_justification: 'No justification provided.'
         no_implementation_notes: 'No implementation notes available.'
         control_coverage: 'This control protects %count% asset(s) with a total value of %value%.'
