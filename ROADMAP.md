@@ -242,7 +242,6 @@ Phase 7 führt umfassende Management-Reporting-Funktionen und erweiterte Analyti
 - [x] ScheduledReport Entity (mit manueller Aktivierung)
 - [x] PdfExportService (Enhanced mit Management Reports)
 - [x] Report Templates (15+ HTML/PDF Templates)
-- [ ] PowerPointExportService (Optional - Backlog)
 - [x] Report Access Control (ROLE_MANAGER erforderlich)
 - [x] i18n Support (DE/EN Übersetzungen)
 
@@ -254,8 +253,10 @@ Phase 7 führt umfassende Management-Reporting-Funktionen und erweiterte Analyti
 - [x] ✅ Role-Based Access Control (ROLE_MANAGER)
 - [x] ✅ i18n (DE/EN) vollständig
 - [x] ✅ Print-optimiertes Layout
-- [ ] 🔄 PowerPoint Export (optional, Backlog)
-- [ ] 🔄 Charts in PDF Reports (Backlog)
+
+#### 📅 Bewusst zurückgestellt (nur bei konkreter Kundenanforderung)
+- **PowerPoint-Export-Service**: Board-Meetings werden aktuell mit PDF bedient. Eigener PPT-Renderer nur wenn ein Kunde explizit `.pptx` als Deliverable fordert. Alternative: PDF → PPT per externem Tool.
+- **Charts in PDF-Reports**: Tabellarischer PDF-Export funktioniert. Chart-Rendering in PDF würde headless-Chrome oder `wkhtmltopdf` mit JS-Execution erfordern (Deployment-Komplexität). Workaround: Dashboard-HTML-Print (Browser-Print-Dialog rendert Charts direkt).
 
 ---
 
@@ -379,6 +380,9 @@ Phase 7 führt umfassende Management-Reporting-Funktionen und erweiterte Analyti
 - [x] ✅ Performance: <2s Ladezeit
 - [x] ✅ Export: CSV Export für Analytics-Daten
 - [x] ✅ 75 Unit Tests für Analytics Services
+
+#### 📅 Bewusst zurückgestellt (nur bei konkreter Kundenanforderung)
+- **Industry-Benchmarking / Peer-Comparison** (anonymisiert): Voraussetzung wäre ein Pool anonymisierter Kundendaten, den es schlicht nicht gibt. Ohne Datenbasis keine sinnvolle Aussage. Kommt nur in Frage, wenn ein Kundenkonsortium oder ein Branchenverband entsprechende Daten bereitstellt.
 
 ---
 
@@ -515,6 +519,11 @@ Phase 7 führt umfassende Management-Reporting-Funktionen und erweiterte Analyti
 - ✅ **Compliance:** ISO 27001 A.5.7 (Threat Intelligence), NIS2 Art. 23 (Reporting)
 - ✅ **Efficiency:** Automatisierte Reports sparen ~5-10h/Monat pro Manager
 - ✅ **Predictive:** Proaktives Risikomanagement statt reaktiv
+
+**Bewusst zurückgestellte Items (nur bei konkreter Kundenanforderung umsetzen):**
+- 📅 7A PowerPoint-Export (PDF deckt Board-Reporting ab)
+- 📅 7A Charts in PDF-Reports (Workaround via Browser-Print verfügbar)
+- 📅 7B Industry-Benchmarking / Peer-Comparison (fehlende Datenbasis)
 
 ---
 
