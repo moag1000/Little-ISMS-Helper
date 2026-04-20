@@ -163,6 +163,64 @@
         </div>
     {% endfor %}
 
+    <h2>{{ 'management_review.pdf.section.signatures'|trans({}, 'management_review') }}</h2>
+    <p class="small">{{ 'management_review.pdf.section.signatures_hint'|trans({}, 'management_review') }}</p>
+
+    <table class="signature-table">
+        <thead>
+            <tr>
+                <th style="width: 30%;">{{ 'management_review.pdf.signature.role'|trans({}, 'management_review') }}</th>
+                <th style="width: 30%;">{{ 'management_review.pdf.signature.name'|trans({}, 'management_review') }}</th>
+                <th style="width: 20%;">{{ 'management_review.pdf.signature.date'|trans({}, 'management_review') }}</th>
+                <th style="width: 20%;">{{ 'management_review.pdf.signature.signature'|trans({}, 'management_review') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ 'management_review.pdf.signature.role_top_mgmt'|trans({}, 'management_review') }}</td>
+                <td class="sig-line"></td>
+                <td class="sig-line"></td>
+                <td class="sig-line"></td>
+            </tr>
+            <tr>
+                <td>{{ 'management_review.pdf.signature.role_ciso'|trans({}, 'management_review') }}</td>
+                <td class="sig-line"></td>
+                <td class="sig-line"></td>
+                <td class="sig-line"></td>
+            </tr>
+            <tr>
+                <td>{{ 'management_review.pdf.signature.role_isms_manager'|trans({}, 'management_review') }}</td>
+                <td class="sig-line">
+                    {% if review.reviewedBy %}
+                        {{ review.reviewedBy.fullName|default(review.reviewedBy.email) }}
+                    {% endif %}
+                </td>
+                <td class="sig-line">
+                    {% if review.status == 'completed' %}
+                        {{ review.updatedAt ? review.updatedAt|date('d.m.Y') : '' }}
+                    {% endif %}
+                </td>
+                <td class="sig-line"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="small" style="margin-top: 4mm;">
+        {{ 'management_review.pdf.signature.legal_note'|trans({}, 'management_review') }}
+    </p>
+
+    <style>
+        .signature-table { margin-top: 3mm; }
+        .signature-table th,
+        .signature-table td { padding: 3mm; vertical-align: bottom; }
+        .signature-table td.sig-line {
+            border-bottom: 0.4mm solid #1b3a57;
+            height: 12mm;
+            font-size: 9pt;
+            color: #444;
+        }
+    </style>
+
     <div class="footer">
         {{ 'management_review.pdf.footer'|trans({'%tenant%': review.tenant ? review.tenant.name : '—'}, 'management_review') }}
     </div>
