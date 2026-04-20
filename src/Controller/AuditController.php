@@ -8,8 +8,9 @@ use App\Entity\InternalAudit;
 use App\Form\InternalAuditType;
 use App\Repository\AuditLogRepository;
 use App\Repository\InternalAuditRepository;
-use App\Service\PdfExportService;
 use App\Service\ExcelExportService;
+use App\Service\InternalAuditCloner;
+use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +29,8 @@ class AuditController extends AbstractController
         private readonly PdfExportService $pdfExportService,
         private readonly ExcelExportService $excelExportService,
         private readonly TranslatorInterface $translator,
-        private readonly TenantContext $tenantContext
+        private readonly TenantContext $tenantContext,
+        private readonly ?InternalAuditCloner $internalAuditCloner = null,
     ) {}
     #[Route('/audit/', name: 'app_audit_index')]
     public function index(Request $request): Response
@@ -207,6 +209,49 @@ class AuditController extends AbstractController
             'form' => $form,
         ]);
     }
+    /**
+     * Sprint 3 / C1 — Clone an existing audit into a new planned audit.
+     * Shallow clone: title/scope/objectives/frameworks/team copied,
+     * findings and reports intentionally not copied (audit history
+     * must stay intact).
+     */
+    #[Route('/audit/{id}/clone', name: 'app_audit_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function clone(Request $request, InternalAudit $internalAudit): Response
+    {
+        if (!$this->isCsrfTokenValid('clone_audit_' . $internalAudit->getId(), (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+        if ($this->internalAuditCloner === null) {
+            throw $this->createNotFoundException('Audit clone service is not available.');
+        }
+
+        $plannedDate = null;
+        $plannedDateRaw = trim((string) $request->request->get('planned_date', ''));
+        if ($plannedDateRaw !== '') {
+            try {
+                $plannedDate = new \DateTimeImmutable($plannedDateRaw);
+            } catch (\Throwable) {
+                $plannedDate = null;
+            }
+        }
+
+        $titleOverride = trim((string) $request->request->get('title', ''));
+        $clone = $this->internalAuditCloner->clone(
+            source: $internalAudit,
+            targetTenant: $this->tenantContext->getCurrentTenant(),
+            plannedDate: $plannedDate,
+            titleOverride: $titleOverride !== '' ? $titleOverride : null,
+        );
+        $this->entityManager->flush();
+
+        $this->addFlash('success', $this->translator->trans('audit.flash.cloned', [
+            '%title%' => (string) $clone->getTitle(),
+        ], 'audits'));
+
+        return $this->redirectToRoute('app_audit_show', ['id' => $clone->getId()]);
+    }
+
     #[Route('/audit/{id}/delete', name: 'app_audit_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, InternalAudit $internalAudit): Response

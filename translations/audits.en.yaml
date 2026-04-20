@@ -107,6 +107,10 @@ audit_log:
     showing_recent: 'Showing Recent'
 audit:
     edit: Edit
+    action:
+        clone: 'Clone audit'
+    flash:
+        cloned: 'Audit cloned as template: "%title%" (status = planned, findings not copied).'
     iso_27001_requirement: 'Iso 27001 Requirement'
     iso_27001_clause_info: 'Iso 27001 Clause Info'
     section:

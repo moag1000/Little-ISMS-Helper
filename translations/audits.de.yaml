@@ -3,6 +3,10 @@ audit:
     edit: 'Audit bearbeiten'
     create: 'Audit erstellen'
     export_pdf: 'PDF exportieren'
+    action:
+        clone: 'Audit klonen'
+    flash:
+        cloned: 'Audit als Vorlage geklont: "%title%" (Status = geplant, Findings nicht kopiert).'
     quick_stats: Schnellübersicht
     framework: Rahmenwerk
     standard: Standard
