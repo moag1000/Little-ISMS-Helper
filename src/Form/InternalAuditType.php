@@ -129,6 +129,18 @@ class InternalAuditType extends AbstractType
                 ],
                 'help' => 'audit.help.scoped_framework',
             ])
+            ->add('additionalScopedFrameworks', EntityType::class, [
+                'label' => 'audit.field.additional_scoped_frameworks',
+                'class' => ComplianceFramework::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'size' => 6,
+                ],
+                'help' => 'audit.help.additional_scoped_frameworks',
+            ])
             ->add('auditedSubsidiaries', EntityType::class, [
                 'label' => 'audit.field.audited_subsidiaries',
                 'class' => Tenant::class,

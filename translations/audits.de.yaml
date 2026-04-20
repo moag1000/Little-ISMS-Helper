@@ -41,6 +41,7 @@ audit:
         status: Status
         scope_type: Scope‑Typ
         scoped_framework: 'Framework im Geltungsbereich'
+        additional_scoped_frameworks: 'Zusätzliche abgedeckte Frameworks'
         framework: Rahmenwerk
         standard: Standard
         audit_type: Audit‑Typ
@@ -115,6 +116,7 @@ audit:
         scope: 'Definiert den Umfang des Audits (z.B. gesamtes ISMS, spezifische Abteilung)'
         scope_type: 'Art des Geltungsbereichs (ISMS, Framework, Asset, Abteilung, etc.)'
         scoped_framework: 'Falls Audit auf ein Framework beschränkt ist (z.B. nur ISO 27001)'
+        additional_scoped_frameworks: 'Mehrfachauswahl — z. B. 27001 + NIS2 + DORA in einem Audit-Durchgang. Findings werden transitiv auf alle abgedeckten Frameworks gemappt.'
         audit_type: 'Art des Audits (intern, extern, Zertifizierung)'
         audited_subsidiaries: 'Bei Konzernaudits: Welche Tochtergesellschaften werden einbezogen?'
         framework: 'Gegen welches Framework/Standard wird auditiert (z.B. ISO 27001, TISAX)'
