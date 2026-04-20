@@ -202,6 +202,59 @@ compliance:
             full: 'Vollständig (100%)'
             partial: 'Teilweise (50-99%)'
             weak: 'Schwach (0-49%)'
+        wizard:
+            title: 'Mapping-Assistent'
+            description: 'In 4 Schritten ein Cross-Framework-Mapping anlegen — ohne 1.800-Einträge-Dropdown.'
+            cta:
+                seeds: 'Seed-Kataloge importieren'
+                advanced: 'Klassisches Formular'
+            submit: 'Mapping anlegen'
+            flash:
+                created: 'Mapping erfolgreich per Assistent angelegt.'
+            error:
+                source_required: 'Bitte Quell-Anforderung auswählen.'
+                target_required: 'Bitte Ziel-Anforderung auswählen.'
+                same_requirement: 'Quelle und Ziel dürfen nicht identisch sein.'
+                type_invalid: 'Mapping-Typ ungültig.'
+            step1:
+                title: 'Schritt 1 — Framework-Paar'
+                hint: 'Welche zwei Frameworks sollen verknüpft werden?'
+                source_label: 'Quell-Framework'
+                target_label: 'Ziel-Framework'
+                placeholder: 'Framework wählen'
+            step2:
+                title: 'Schritt 2 — Anforderungs-Paar'
+                hint: 'Dropdowns sind auf die in Schritt 1 gewählten Frameworks gefiltert.'
+                source_label: 'Quell-Anforderung'
+                target_label: 'Ziel-Anforderung'
+                placeholder: 'Anforderung wählen'
+            step3:
+                title: 'Schritt 3 — Mapping-Typ'
+                hint: 'Typ füllt Prozent und Konfidenz automatisch vor — frei überschreibbar.'
+                percentage_label: 'Mapping-Prozent'
+                percentage_help: '0–150 %. Werte über 100 % drücken aus, dass die Quelle über die Ziel-Anforderung hinausgeht.'
+                confidence_label: 'Analyse-Konfidenz'
+                confidence_help: 'Wie sicher bist du in dieser Einschätzung?'
+                confidence:
+                    low: 'Niedrig — grob geschätzt'
+                    medium: 'Mittel — fachlich plausibel'
+                    high: 'Hoch — manuell bestätigt'
+                type:
+                    full: 'Vollständig'
+                    full_desc: 'Identisch oder gleichwertig'
+                    partial: 'Teilweise'
+                    partial_desc: 'Teilweise Überschneidung'
+                    weak: 'Schwach'
+                    weak_desc: 'Geringe Überschneidung'
+                    exceeds: 'Übertrifft'
+                    exceeds_desc: 'Quelle geht über Ziel hinaus'
+            step4:
+                title: 'Schritt 4 — Begründung & Richtung'
+                hint: 'Kurze fachliche Begründung hilft bei späteren Audits.'
+                rationale_label: 'Begründung (optional)'
+                rationale_placeholder: 'Warum gilt dieses Mapping? (Audit-Nachweis)'
+                bidirectional_label: 'Bidirektional (beide Richtungen gelten)'
+                bidirectional_help: 'Wenn aktiviert, deckt Quelle ↔ Ziel beide Richtungen ab.'
     message:
         no_data_elements: 'Keine Datenelemente vorhanden'
         no_frameworks: 'Keine Frameworks vorhanden'

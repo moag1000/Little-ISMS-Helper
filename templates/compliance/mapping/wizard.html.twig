@@ -1,0 +1,233 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'compliance.mapping.wizard.title'|trans({}, 'compliance') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index') },
+            { label: 'compliance.mapping.list.title'|trans({}, 'compliance'), url: path('app_compliance_mapping_index') },
+            { label: 'compliance.mapping.wizard.title'|trans({}, 'compliance') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-magic" aria-hidden="true"></i>
+                {{ 'compliance.mapping.wizard.title'|trans({}, 'compliance') }}
+            </h1>
+            <p class="text-muted mb-0">{{ 'compliance.mapping.wizard.description'|trans({}, 'compliance') }}</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ path('app_compliance_mapping_seeds_index') }}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>
+                {{ 'compliance.mapping.wizard.cta.seeds'|trans({}, 'compliance') }}
+            </a>
+            <a href="{{ path('app_compliance_mapping_new') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-gear" aria-hidden="true"></i>
+                {{ 'compliance.mapping.wizard.cta.advanced'|trans({}, 'compliance') }}
+            </a>
+        </div>
+    </div>
+
+    <form method="post"
+          action="{{ path('app_compliance_mapping_wizard') }}"
+          data-controller="mapping-wizard"
+          data-mapping-wizard-frameworks-value="{{ requirements_by_framework|json_encode }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('mapping_wizard') }}">
+
+        {# Step 1 — Framework-Paar #}
+        <div class="card shadow-sm mb-3">
+            <div class="card-header">
+                <span class="badge text-bg-primary me-2">1</span>
+                <strong>{{ 'compliance.mapping.wizard.step1.title'|trans({}, 'compliance') }}</strong>
+                <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step1.hint'|trans({}, 'compliance') }}</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="source-framework" class="form-label">
+                            {{ 'compliance.mapping.wizard.step1.source_label'|trans({}, 'compliance') }}
+                        </label>
+                        <select id="source-framework"
+                                class="form-select"
+                                data-mapping-wizard-target="sourceFramework"
+                                data-action="change->mapping-wizard#onFrameworkChange"
+                                data-side="source">
+                            <option value="">— {{ 'compliance.mapping.wizard.step1.placeholder'|trans({}, 'compliance') }}</option>
+                            {% for fw in frameworks %}
+                                <option value="{{ fw.id }}">{{ fw.code }} — {{ fw.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="target-framework" class="form-label">
+                            {{ 'compliance.mapping.wizard.step1.target_label'|trans({}, 'compliance') }}
+                        </label>
+                        <select id="target-framework"
+                                class="form-select"
+                                data-mapping-wizard-target="targetFramework"
+                                data-action="change->mapping-wizard#onFrameworkChange"
+                                data-side="target">
+                            <option value="">— {{ 'compliance.mapping.wizard.step1.placeholder'|trans({}, 'compliance') }}</option>
+                            {% for fw in frameworks %}
+                                <option value="{{ fw.id }}">{{ fw.code }} — {{ fw.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Step 2 — Requirement-Paar (nur wenn Frameworks gewählt) #}
+        <div class="card shadow-sm mb-3" data-mapping-wizard-target="step2" hidden>
+            <div class="card-header">
+                <span class="badge text-bg-primary me-2">2</span>
+                <strong>{{ 'compliance.mapping.wizard.step2.title'|trans({}, 'compliance') }}</strong>
+                <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step2.hint'|trans({}, 'compliance') }}</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="source-requirement" class="form-label">
+                            {{ 'compliance.mapping.wizard.step2.source_label'|trans({}, 'compliance') }}
+                        </label>
+                        <select id="source-requirement"
+                                name="source_requirement_id"
+                                class="form-select"
+                                data-mapping-wizard-target="sourceRequirement"
+                                required>
+                            <option value="">— {{ 'compliance.mapping.wizard.step2.placeholder'|trans({}, 'compliance') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="target-requirement" class="form-label">
+                            {{ 'compliance.mapping.wizard.step2.target_label'|trans({}, 'compliance') }}
+                        </label>
+                        <select id="target-requirement"
+                                name="target_requirement_id"
+                                class="form-select"
+                                data-mapping-wizard-target="targetRequirement"
+                                required>
+                            <option value="">— {{ 'compliance.mapping.wizard.step2.placeholder'|trans({}, 'compliance') }}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Step 3 — Typ wählt Prozent + Confidence vor #}
+        <div class="card shadow-sm mb-3">
+            <div class="card-header">
+                <span class="badge text-bg-primary me-2">3</span>
+                <strong>{{ 'compliance.mapping.wizard.step3.title'|trans({}, 'compliance') }}</strong>
+                <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step3.hint'|trans({}, 'compliance') }}</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 mb-3">
+                    {% for type, meta in {
+                        'full':    { label: 'mapping.wizard.step3.type.full',    desc: 'mapping.wizard.step3.type.full_desc',    pct: 100, variant: 'success'  },
+                        'partial': { label: 'mapping.wizard.step3.type.partial', desc: 'mapping.wizard.step3.type.partial_desc', pct: 70,  variant: 'primary'  },
+                        'weak':    { label: 'mapping.wizard.step3.type.weak',    desc: 'mapping.wizard.step3.type.weak_desc',    pct: 30,  variant: 'warning'  },
+                        'exceeds': { label: 'mapping.wizard.step3.type.exceeds', desc: 'mapping.wizard.step3.type.exceeds_desc', pct: 120, variant: 'info'     }
+                    } %}
+                        <div class="col-md-6 col-lg-3">
+                            <label class="card type-card h-100" style="cursor: pointer;">
+                                <input type="radio" name="mapping_type" value="{{ type }}"
+                                       class="visually-hidden"
+                                       data-action="change->mapping-wizard#onTypeChange"
+                                       data-default-pct="{{ meta.pct }}"
+                                       {% if type == 'full' %}checked{% endif %}
+                                       required>
+                                <div class="card-body text-center">
+                                    <div class="h6 text-{{ meta.variant }}">
+                                        {{ ('compliance.' ~ meta.label)|trans({}, 'compliance') }}
+                                    </div>
+                                    <div class="display-6">{{ meta.pct }}%</div>
+                                    <div class="small text-muted">{{ ('compliance.' ~ meta.desc)|trans({}, 'compliance') }}</div>
+                                </div>
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="mapping-percentage" class="form-label">
+                            {{ 'compliance.mapping.wizard.step3.percentage_label'|trans({}, 'compliance') }}
+                        </label>
+                        <input type="number" id="mapping-percentage" name="mapping_percentage"
+                               class="form-control"
+                               data-mapping-wizard-target="percentage"
+                               min="0" max="150" value="100">
+                        <div class="form-text">
+                            {{ 'compliance.mapping.wizard.step3.percentage_help'|trans({}, 'compliance') }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="mapping-confidence" class="form-label">
+                            {{ 'compliance.mapping.wizard.step3.confidence_label'|trans({}, 'compliance') }}
+                        </label>
+                        <select id="mapping-confidence" name="confidence" class="form-select">
+                            <option value="low">{{ 'compliance.mapping.wizard.step3.confidence.low'|trans({}, 'compliance') }}</option>
+                            <option value="medium" selected>{{ 'compliance.mapping.wizard.step3.confidence.medium'|trans({}, 'compliance') }}</option>
+                            <option value="high">{{ 'compliance.mapping.wizard.step3.confidence.high'|trans({}, 'compliance') }}</option>
+                        </select>
+                        <div class="form-text">
+                            {{ 'compliance.mapping.wizard.step3.confidence_help'|trans({}, 'compliance') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Step 4 — Rationale #}
+        <div class="card shadow-sm mb-3">
+            <div class="card-header">
+                <span class="badge text-bg-primary me-2">4</span>
+                <strong>{{ 'compliance.mapping.wizard.step4.title'|trans({}, 'compliance') }}</strong>
+                <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step4.hint'|trans({}, 'compliance') }}</span>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="mapping-rationale" class="form-label">
+                        {{ 'compliance.mapping.wizard.step4.rationale_label'|trans({}, 'compliance') }}
+                    </label>
+                    <textarea id="mapping-rationale" name="rationale" rows="3"
+                              class="form-control"
+                              placeholder="{{ 'compliance.mapping.wizard.step4.rationale_placeholder'|trans({}, 'compliance') }}"></textarea>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="mapping-bidirectional" name="bidirectional"
+                           value="1" class="form-check-input" checked>
+                    <label for="mapping-bidirectional" class="form-check-label">
+                        {{ 'compliance.mapping.wizard.step4.bidirectional_label'|trans({}, 'compliance') }}
+                    </label>
+                    <div class="form-text">
+                        {{ 'compliance.mapping.wizard.step4.bidirectional_help'|trans({}, 'compliance') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mb-4">
+            <a href="{{ path('app_compliance_mapping_index') }}" class="btn btn-outline-secondary">
+                {{ 'common.cancel'|trans({}, 'messages') }}
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle" aria-hidden="true"></i>
+                {{ 'compliance.mapping.wizard.submit'|trans({}, 'compliance') }}
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .type-card input:checked + .card-body,
+    label.type-card:has(input:checked) { outline: 3px solid var(--bs-primary); outline-offset: -3px; border-radius: 0.5rem; }
+    .type-card { border: 1px solid var(--bs-border-color); border-radius: 0.5rem; }
+    .type-card:hover { background: var(--bs-tertiary-bg); }
+</style>
+{% endblock %}
