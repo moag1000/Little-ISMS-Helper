@@ -795,6 +795,7 @@ Basierend auf dem UX-Audit vom 01.01.2026: Konsolidierung der UI-Komponenten, CS
 - [x] Einheitliche "Data Reuse"-Quellen-Darstellung über `dataReuse: true` Flag (fairy-sparkle-Indikator)
 - [x] Floating Action Toolbar für Bulk-Operations: `_floating_toolbar.html.twig` + `_bulk_action_bar.html.twig`, 8 Listen eingebunden
 - [x] Skeleton Loading Pattern: Component, CSS + Stimulus-Controller vorhanden, in allen 4 Role-Dashboards (CISO/Risk-Manager/Auditor/Board) mit 600ms-Fade-in eingebunden
+- [x] Skeleton-Wrapper für Management-KPI-Widget auf Home-Dashboard (Landing-Page, 350ms)
 
 #### ✅ Phase 8H.2: Accessibility Deep Clean
 

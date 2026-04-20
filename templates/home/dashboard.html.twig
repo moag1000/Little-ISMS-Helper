@@ -207,13 +207,20 @@
         </div>
     </div>
 
-    {# Management KPIs Row (if available) #}
+    {# Management KPIs Row — skeleton-first rendering for perceived performance (8H.1) #}
     {% if management_kpis is defined and management_kpis|length > 0 %}
     <div class="row mb-4">
         <div class="col-12">
-            {% include 'home/_management_kpis_widget.html.twig' with {
-                management_kpis: management_kpis
-            } %}
+            <div data-controller="skeleton" data-skeleton-duration-value="350">
+                <div data-skeleton-target="skeleton">
+                    {% include '_components/_skeleton.html.twig' with { type: 'kpi-grid', count: 6 } %}
+                </div>
+                <div data-skeleton-target="content" class="hidden">
+                    {% include 'home/_management_kpis_widget.html.twig' with {
+                        management_kpis: management_kpis
+                    } %}
+                </div>
+            </div>
         </div>
     </div>
     {% endif %}
