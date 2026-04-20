@@ -60,6 +60,7 @@ compliance:
     unit:
         requirements: Anforderungen
     field:
+        priority: 'Priorität'
         framework_1: 'Framework 1'
         framework_2: 'Framework 2'
         select_framework: 'Framework auswählen'
@@ -438,6 +439,22 @@ compliance:
     mapping_error:
         creating: 'Fehler beim Erstellen der Mappings'
         prefix: 'Fehler'
+    maturity:
+        title: 'Reifegrad-Portfolio (CMMI-Level pro Framework)'
+        hint: 'Level 1 Initial → 5 Optimizing — basierend auf Coverage, Cross-Framework-Mappings, Audit-Aktivität und KPI-Historie.'
+        framework: 'Framework'
+        level: 'Reifegrad'
+        coverage: 'Abdeckung'
+        mappings: 'Cross-Mappings'
+        missing: 'Nächste Stufe verlangt'
+        none_missing: 'Maximal-Level erreicht'
+        label:
+            n/a: 'nicht erfasst'
+            initial: 'Initial'
+            managed: 'Managed'
+            defined: 'Defined'
+            quantitatively_managed: 'Quant. Managed'
+            optimizing: 'Optimizing'
     framework_info: Framework-Informationen
     recommendations: Empfehlungen
     filter: Filtern

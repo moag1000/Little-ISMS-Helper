@@ -22,3 +22,17 @@ reject_modal:
 flash:
     approved: 'Approval granted.'
     rejected: 'Approval rejected.'
+
+# Prefixed keys (used by templates with explicit domain prefix)
+four_eyes:
+    inbox:
+        title: 'Pending four-eyes approvals'
+        lead: 'Requests awaiting your second approval (segregation of duties per ISO 27001 A.5.3).'
+        empty: 'No pending approval requests.'
+    requested_by: 'Requested by'
+    expires_at: 'Expires on'
+    approve: 'Approve'
+    reject: 'Reject'
+    reject_modal:
+        title: 'Reject request'
+        reason: 'Reason (min. 20 chars)'

@@ -398,6 +398,10 @@ role:
         permission_matrix: 'Permission Matrix'
         has_permission: 'Has Permission'
         no_permission: 'No Permission'
+        select_label: 'Select Roles'
+        select_hint: 'Select at least two roles to compare'
+        submit: 'Compare'
+        legend_title: 'Legend'
     templates:
         title: 'Role Templates'
         description: 'Create a new role based on a template'
@@ -1389,6 +1393,15 @@ admin:
         select_asset: ''
         asset_not_found: ''
         select_risk: ''
+    data_export:
+        configure_title: 'Configure Export'
+        select_entities: 'Select Entities to Export'
+        select_all: 'Select All'
+        deselect_all: 'Deselect All'
+        format: 'Format'
+        format_help: 'Choose the export format'
+        format_selection: 'Format Selection'
+        submit: 'Export'
 business_process:
     success:
         created: ''
@@ -1637,3 +1650,228 @@ share:
         risk_desc: 'Record as new risk'
         create_document: 'Create Document'
         document_desc: 'Save as document'
+
+# Loader Fixer flash messages
+loader_fixer:
+    flash:
+        single: 'Loader issue fixed successfully'
+        bulk: 'Loader issues fixed in bulk successfully'
+
+# Compliance Inheritance flash messages
+compliance_inheritance:
+    flash:
+        confirmed: 'Inheritance confirmed'
+        rejected: 'Inheritance rejected'
+        overridden: 'Inheritance overridden'
+
+# Compliance Wizard Delta Report
+compliance_wizard:
+    delta:
+        title: 'Compliance Wizard Delta Report'
+        sheet:
+            summary: 'Summary'
+            detail: 'Details'
+            mapping: 'Mappings'
+        summary:
+            tenant: 'Tenant'
+            target: 'Target Framework'
+            baseline: 'Baseline Framework'
+            reporting_date: 'Reporting Date'
+            total: 'Total'
+            inherited: 'Inherited'
+            direct: 'Direct'
+            gap: 'Gap'
+            avg_fulfillment: 'Average Fulfillment'
+            fte_saved: 'FTE Saved'
+            pre_fill_rate_ok: 'Pre-fill Rate (met)'
+            pre_fill_rate_miss: 'Pre-fill Rate (missing)'
+        detail:
+            col:
+                requirement_id: 'Requirement ID'
+                title: 'Title'
+                category: 'Category'
+                priority: 'Priority'
+                fulfillment_pct: 'Fulfillment (%)'
+                status: 'Status'
+                source_mappings: 'Source Mappings'
+                inheritance_state: 'Inheritance State'
+                action_required: 'Action Required'
+                applicability_justification: 'Applicability Justification'
+                gap_estimation: 'Gap Estimation'
+        mapping:
+            col:
+                source: 'Source'
+                source_requirement: 'Source Requirement'
+                target_requirement: 'Target Requirement'
+                mapping_percentage: 'Mapping Percentage'
+                confidence: 'Confidence'
+                bidirectional: 'Bidirectional'
+                valid_from: 'Valid From'
+                valid_until: 'Valid Until'
+
+# Common additional keys
+common.presets: 'Presets'
+common.required: 'Required'
+common.value: 'Value'
+common.modules: 'Modules'
+common.confirm: 'Confirm'
+common.report_regenerated: 'Report has been regenerated'
+common.regenerate: 'Regenerate'
+common.error.unknown: 'An unknown error occurred'
+common.statistics: 'Statistics'
+
+# Role comparison keys
+role.compare.system_badge: 'System'
+role.compare.permission_column: 'Permission'
+
+# Action keys
+action.create_and_design: 'Create and design'
+action.create_first: 'Create first'
+action.export_pdf: 'Export PDF'
+action.preview: 'Preview'
+action.use_template: 'Use template'
+
+# Empty state
+empty:
+    no_reports: 'No reports available'
+
+# Form keys
+form.category: 'Category'
+form.description: 'Description'
+form.description_placeholder: 'Enter description...'
+form.layout: 'Layout'
+form.layout_preview: 'Layout Preview'
+form.name: 'Name'
+form.name_placeholder: 'Enter name...'
+
+# Layout keys
+layout:
+    dashboard: 'Dashboard'
+    single: 'Single'
+    two_column: 'Two Column'
+
+# New
+new:
+    subtitle: 'Create new entry'
+
+# Section keys
+section:
+    favorites: 'Favorites'
+    my_reports: 'My Reports'
+    quick_start: 'Quick Start'
+    recently_used: 'Recently Used'
+    shared_templates: 'Shared Templates'
+
+# Table keys
+table:
+    actions: 'Actions'
+    category: 'Category'
+    layout: 'Layout'
+    name: 'Name'
+    updated: 'Updated'
+
+# Uses
+uses: 'Uses'
+
+# DORA Dashboard
+dora:
+    dashboard:
+        overall_compliance: 'DORA Overall Compliance'
+    articles: 'DORA Articles'
+    pillar:
+        ict_risk: 'ICT Risk Management'
+        incidents: 'Incident Reporting'
+        testing: 'Resilience Testing'
+        third_party: 'Third-Party Risk'
+        information_sharing: 'Information Sharing'
+    metric:
+        ict_assets: 'ICT Assets'
+        ict_risks: 'ICT Risks'
+        high_critical_risks: 'High/Critical Risks'
+        risk_treatment_rate: 'Risk Treatment Rate'
+        asset_classification: 'Asset Classification'
+        control_implementation: 'Control Implementation'
+        total_incidents: 'Total Incidents'
+        open_major_incidents: 'Open Major Incidents'
+        major_incidents_ytd: 'Major Incidents (YTD)'
+        mttr: 'MTTR (Mean Time To Recover)'
+        4h_reporting: '4h Reporting'
+        exercises: 'Exercises'
+        bc_plans: 'BC Plans'
+        bc_coverage: 'BC Coverage'
+        resilience_trainings: 'Resilience Trainings'
+        ict_providers: 'ICT Providers'
+        critical_providers: 'Critical Providers'
+        assessment_rate: 'Assessment Rate'
+        overdue_assessments: 'Overdue Assessments'
+        concentration_risk: 'Concentration Risk'
+        exit_strategies: 'Exit Strategies'
+        implementation_rate: 'Implementation Rate'
+    article_19_hint: 'Art. 19 - Reporting of ICT-related incidents'
+    testing_requirement: 'Resilience testing requirement per DORA'
+    high_dependency_providers: 'High Dependency Providers'
+    information_sharing_desc: 'Information sharing on cyber threats and vulnerabilities'
+    controls_implemented: 'Controls Implemented'
+    quick_actions: 'Quick Actions'
+    action:
+        manage_risks: 'Manage Risks'
+        manage_incidents: 'Manage Incidents'
+        plan_exercises: 'Plan Exercises'
+        manage_suppliers: 'Manage Suppliers'
+
+# Wizard (Compliance Assessment)
+wizard:
+    actions: 'Actions'
+    active_modules: 'Active Modules'
+    assessed_at: 'Assessed At'
+    assessment_scope: 'Assessment Scope'
+    assessment_scope_desc: 'Scope of the compliance assessment'
+    average_compliance: 'Average Compliance'
+    best_framework: 'Best Framework'
+    category: 'Category'
+    category_comparison: 'Category Comparison'
+    category_summary: 'Category Summary'
+    check_name: 'Check Name'
+    checks: 'Checks'
+    critical_gaps: 'Critical Gaps'
+    data_sources_info: 'Data Sources Information'
+    detailed_checks: 'Detailed Checks'
+    duration_hint: 'Estimated assessment duration'
+    export_hint: 'Export the results as PDF'
+    export_pdf: 'Export PDF'
+    gap_hint: 'Hint about identified gaps'
+    gaps: 'Gaps'
+    gaps_identified: 'Gaps Identified'
+    gaps_to_address: 'Gaps to Address'
+    go_to_module: 'Go to Module'
+    insights: 'Insights'
+    needs_attention: 'Needs Attention'
+    overall: 'Overall'
+    rec_improve_controls: 'Recommendation: Improve controls'
+    rec_priority_framework: 'Recommendation: Priority framework'
+    rec_regular_assessment: 'Recommendation: Regular assessment'
+    recommendations: 'Recommendations'
+    recommended_action: 'Recommended Action'
+    run_again: 'Run Again'
+    score: 'Score'
+    score_hint: 'Compliance score based on implemented controls'
+    select_frameworks: 'Select Frameworks'
+    status:
+        compliant: 'Compliant'
+        in_progress: 'In Progress'
+        not_started: 'Not Started'
+        partial: 'Partial'
+    status_label: 'Status'
+    total_checks: 'Total Checks'
+    update_comparison: 'Update Comparison'
+    view_details: 'View Details'
+    what_to_expect: 'What to Expect'
+
+# Four Eyes Principle
+four_eyes:
+    title: 'Four Eyes Principle'
+    required: 'Four-eyes approval required'
+    approved_by: 'Approved by'
+    pending: 'Approval pending'
+    approve: 'Approve'
+    reject: 'Reject'

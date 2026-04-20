@@ -22,6 +22,8 @@ management_review:
         outputs: 'Outputs of the Review (9.3.3)'
     field:
         basic_info: 'Basic Information'
+        tenant: 'Organization'
+        generated_at: 'Generated at'
         title: Title
         review_date: 'Review Date'
         reviewed_by: 'Reviewed by'

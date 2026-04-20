@@ -46,6 +46,8 @@ management_review:
         outputs: 'Ergebnisse der Bewertung (9.3.3)'
     field:
         basic_info: 'Basisinformationen'
+        tenant: 'Organisation'
+        generated_at: 'Erstellt am'
         title: Titel
         review_date: Bewertungsdatum
         reviewed_by: 'Durchgeführt von'

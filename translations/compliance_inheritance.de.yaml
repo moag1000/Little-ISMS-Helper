@@ -63,3 +63,46 @@ flash:
 
 nav:
     pending_badge_label: '%count% Ableitungsvorschläge offen'
+
+# Prefixed keys (used by templates with explicit domain prefix)
+compliance_inheritance:
+    queue:
+        title: 'Ableitungsvorschläge — %framework%'
+        subtitle: '%count% Vorschläge warten auf Prüfung'
+        filter: 'Filter'
+        filter_pending: 'Offene'
+        filter_source_updated: 'Quelle geändert'
+        filter_all: 'Alle'
+        aria_count: '%count% Vorschläge warten auf Ihre Prüfung.'
+        empty: 'Keine offenen Ableitungsvorschläge für dieses Framework.'
+        from: 'abgeleitet aus'
+        mapping: 'Mapping'
+        suggested: 'Vorschlag'
+        open_review: 'Prüfpanel öffnen'
+    panel:
+        title: 'Ableitungsvorschlag prüfen'
+        suggested: 'Vorgeschlagener Wert'
+        comment_label: 'Prüferkommentar (mind. 20 Zeichen)'
+        chars_hint: 'Mindestens %min% Zeichen.'
+        request_implemented: 'Statusübergang zu „Umgesetzt" anfragen'
+        request_implemented_hint: 'Erfordert eine zweite Freigabe (4-Augen-Prinzip, ISO 27001 A.5.3).'
+        approver_label: 'Zweiter Prüfer'
+        approver_placeholder: '— bitte auswählen —'
+        confirm: 'Vorschlag bestätigen (%value%%%)'
+        override: 'Überschreiben'
+        reject: 'Ablehnen'
+        final_state: 'Status: %status%'
+    reject:
+        title: 'Ableitungsvorschlag ablehnen'
+        reason_label: 'Grund der Ablehnung'
+        submit: 'Ablehnen'
+    override:
+        title: 'Vorschlag überschreiben'
+        value_label: 'Neuer Wert (0–150)'
+        reason_label: 'Begründung'
+        approver_label: 'Zweiter Prüfer (4-Augen)'
+        submit: 'Überschreiben mit 4-Augen-Freigabe'
+    source:
+        label: 'Quelle'
+        mapping: 'Abdeckung'
+        catalog: 'Katalog'
