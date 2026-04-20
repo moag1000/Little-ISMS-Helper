@@ -66,10 +66,11 @@ class ImportBsiKompendiumXmlCommand extends Command
         $result = $this->importer->import($xml, persist: !$dryRun);
 
         $io->table(
-            ['Bausteine gelesen', 'Anforderungen gelesen', 'Neu erstellt', 'Übersprungen (bereits da)', 'Fehler'],
+            ['Bausteine', 'Anforderungen (aktiv)', 'ENTFALLEN übersprungen', 'Neu erstellt', 'Bereits vorhanden', 'Fehler'],
             [[
                 $result['bausteine_read'],
                 $result['requirements_read'],
+                $result['requirements_skipped_deprecated'] ?? 0,
                 $result['created'],
                 $result['skipped_existing'],
                 count($result['errors']),
