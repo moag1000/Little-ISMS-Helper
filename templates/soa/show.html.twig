@@ -330,6 +330,12 @@
                         {% for row in rows %}
                             {% set conf_pct = (row.confidence * 100)|round %}
                             {% set conf_variant = conf_pct >= 50 ? 'success' : (conf_pct >= 30 ? 'warning' : 'secondary') %}
+                            {% set conf_label = conf_pct >= 50
+                                ? 'control.mapping_suggestions.confidence.high'|trans({}, 'control')
+                                : (conf_pct >= 30
+                                    ? 'control.mapping_suggestions.confidence.medium'|trans({}, 'control')
+                                    : 'control.mapping_suggestions.confidence.low'|trans({}, 'control'))
+                            %}
                             <li class="d-flex justify-content-between align-items-start border-bottom py-2">
                                 <div class="flex-grow-1">
                                     <div>
@@ -341,8 +347,10 @@
                                     {% endif %}
                                 </div>
                                 <div class="ms-2 d-flex align-items-center gap-2">
-                                    <span class="badge text-bg-{{ conf_variant }}">
-                                        {{ conf_pct }}%
+                                    <span class="badge text-bg-{{ conf_variant }}"
+                                          title="{{ 'control.mapping_suggestions.confidence.tooltip'|trans({'%pct%': conf_pct}, 'control') }}"
+                                          data-bs-toggle="tooltip">
+                                        {{ conf_label }}
                                     </span>
                                     <form method="post"
                                           action="{{ path('app_soa_accept_suggestion', { id: control.id, requirementId: row.requirement.id }) }}"
