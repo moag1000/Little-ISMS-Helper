@@ -382,7 +382,7 @@ Phase 7 führt umfassende Management-Reporting-Funktionen und erweiterte Analyti
 - [x] ✅ 75 Unit Tests für Analytics Services
 
 #### 📅 Bewusst zurückgestellt (nur bei konkreter Kundenanforderung)
-- **Industry-Benchmarking / Peer-Comparison** (anonymisiert): Voraussetzung wäre ein Pool anonymisierter Kundendaten, den es schlicht nicht gibt. Ohne Datenbasis keine sinnvolle Aussage. Kommt nur in Frage, wenn ein Kundenkonsortium oder ein Branchenverband entsprechende Daten bereitstellt.
+- **Industry-Benchmarking / Peer-Comparison** (anonymisiert): Voraussetzung für echte Peer-Zahlen wäre ein Pool anonymisierter Kundendaten, den wir nicht haben. Kommt nur in Frage, wenn ein Kundenkonsortium oder ein Branchenverband Daten bereitstellt. **Teil-Alternative für KRITIS-Kunden:** öffentlich verfügbare Aggregatdaten können einfließen — z. B. [openKRITIS.de](https://www.openkritis.de) (Sektor-Schwellwerte, Betreiber-Zahlen), BSI-Lagebericht (Incidents nach Sektor), ENISA Threat Landscape (Incidents + Angriffsvektoren). Kein Peer-Benchmark im strengen Sinn, aber brauchbarer Sektor-Kontext für die eigene Einordnung. Umsetzung als KRITIS-spezifisches Mini-Dashboard (Scope-Referenz + Incident-Rate-per-Sektor) wäre 3–5 FTE-d Aufwand, sobald ein KRITIS-Kunde das fordert.
 
 ---
 
