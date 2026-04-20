@@ -177,6 +177,85 @@ class StatementOfApplicabilityController extends AbstractController
     }
 
     /**
+     * Bulk update applicability for a set of Controls (Sprint 3 / C3).
+     * Accepts selected control IDs + new applicable status + reason.
+     * Every row change is recorded in the audit log with actor + reason.
+     */
+    #[Route('/soa/bulk/applicability', name: 'app_soa_bulk_applicability', methods: ['POST'])]
+    public function bulkApplicability(Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('soa_bulk_applicability', (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        $ids = $request->request->all('control_ids');
+        if (!is_array($ids) || $ids === []) {
+            $this->addFlash('warning', $this->translator->trans('control.bulk.flash.no_selection', [], 'control'));
+            return $this->redirectToRoute('app_soa_index');
+        }
+
+        $applicable = $request->request->getBoolean('applicable');
+        $reason = trim((string) $request->request->get('reason', ''));
+        if (!$applicable && $reason === '') {
+            $this->addFlash('warning', $this->translator->trans('control.bulk.flash.reason_required', [], 'control'));
+            return $this->redirectToRoute('app_soa_index');
+        }
+
+        $tenant = $this->security->getUser()?->getTenant();
+        $updated = 0;
+        foreach (array_filter(array_map('intval', $ids)) as $controlId) {
+            $control = $this->controlRepository->find($controlId);
+            if (!$control instanceof Control) {
+                continue;
+            }
+            if ($tenant !== null && $control->getTenant()?->getId() !== $tenant->getId()) {
+                continue; // tenant isolation
+            }
+            $previous = $control->isApplicable();
+            if ($previous === $applicable) {
+                continue;
+            }
+            $control->setApplicable($applicable);
+            if (!$applicable && $reason !== '') {
+                $control->setJustification($reason);
+            }
+            $control->setUpdatedAt(new DateTimeImmutable());
+            $updated++;
+
+            if ($this->auditLogger !== null) {
+                try {
+                    $this->auditLogger->logCustom(
+                        action: 'control.bulk_applicability',
+                        entityType: 'Control',
+                        entityId: $controlId,
+                        oldValues: ['applicable' => $previous],
+                        newValues: ['applicable' => $applicable, 'reason' => $reason],
+                        description: sprintf(
+                            'Bulk-Applicability: control %s → %s',
+                            (string) $control->getControlId(),
+                            $applicable ? 'applicable' : 'N/A'
+                        ),
+                    );
+                } catch (\Throwable) {
+                    // audit log failure must not block the bulk operation
+                }
+            }
+        }
+
+        $this->entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            $this->translator->trans(
+                'control.bulk.flash.updated',
+                ['%count%' => $updated, '%status%' => $applicable ? 'applicable' : 'N/A'],
+                'control'
+            )
+        );
+        return $this->redirectToRoute('app_soa_index');
+    }
+
+    /**
      * Accept an A2 auto-mapping suggestion — creates the M:M link between
      * the Control and the suggested ComplianceRequirement and records the
      * acceptance in the audit log so the decision is reviewable later.

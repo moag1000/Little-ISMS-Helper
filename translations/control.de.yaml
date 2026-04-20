@@ -68,6 +68,21 @@ control:
     description: 'Automatisch ermittelte Anforderungen, die diese Maßnahme abdecken könnte. Konfidenz basiert auf Text-Ähnlichkeit (Jaccard) zwischen Control-Beschreibung und Requirement-Text.'
     accept: 'Übernehmen'
     footer_hint: 'Jede Übernahme wird im Audit-Log als "A2_auto_mapping_suggestion" mit Konfidenz-Wert protokolliert — Auditoren sehen die Herkunft.'
+  bulk:
+    title: 'Bulk-Applicability (mehrere Controls auf einmal ändern)'
+    hint: 'Power-User-Tool für CM — Control-IDs eingeben, applicable/N/A setzen, optional Begründung.'
+    ids: 'Control-IDs (Komma-getrennt)'
+    status: 'Status'
+    applicable: 'Applicable'
+    non_applicable: 'N/A (nicht anwendbar)'
+    reason: 'Begründung (Pflicht bei N/A)'
+    reason_placeholder: 'z. B. "Cloud-only, kein eigener physischer Standort"'
+    submit: 'Anwenden'
+    footer_hint: 'Jede Änderung wird pro Control als "control.bulk_applicability" im Audit-Log protokolliert (mit old/new-Werten, Begründung, Akteur).'
+    flash:
+      no_selection: 'Keine Control-IDs angegeben. Bitte mindestens eine ID wählen.'
+      reason_required: 'Eine Begründung ist Pflicht, wenn Controls als N/A markiert werden.'
+      updated: '%count% Control(s) als %status% aktualisiert.'
 coverage:
   tooltip: 'Transitive Abdeckung: Direkte Controls + gemappte Quelle-Anforderungen'
   contributors: '%direct% direkt · %transitive% transitiv · %unique% eindeutige Controls'

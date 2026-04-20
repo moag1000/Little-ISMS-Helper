@@ -68,6 +68,21 @@ control:
     description: 'Automatically detected requirements this control may cover. Confidence is a Jaccard text-similarity score between the control description and the requirement text.'
     accept: 'Accept'
     footer_hint: 'Every acceptance is logged as "A2_auto_mapping_suggestion" with its confidence score — auditors can trace the origin.'
+  bulk:
+    title: 'Bulk applicability (change several controls at once)'
+    hint: 'Power-user tool for CM — enter control IDs, set applicable/N/A, optional reason.'
+    ids: 'Control IDs (comma separated)'
+    status: 'Status'
+    applicable: 'Applicable'
+    non_applicable: 'N/A (not applicable)'
+    reason: 'Reason (required for N/A)'
+    reason_placeholder: 'e.g. "Cloud-only, no on-premise location"'
+    submit: 'Apply'
+    footer_hint: 'Each change is logged per control as "control.bulk_applicability" in the audit log (old/new values, reason, actor).'
+    flash:
+      no_selection: 'No control IDs supplied. Please select at least one.'
+      reason_required: 'A reason is required when marking controls as N/A.'
+      updated: 'Updated %count% control(s) to %status%.'
 coverage:
   tooltip: 'Transitive coverage: direct controls + mapped source requirements'
   contributors: '%direct% direct · %transitive% transitive · %unique% unique controls'
