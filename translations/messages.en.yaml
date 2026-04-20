@@ -1875,3 +1875,31 @@ four_eyes:
     pending: 'Approval pending'
     approve: 'Approve'
     reject: 'Reject'
+reuse:
+    page:
+        title: 'Data-Reuse Hub'
+        description: 'Which artefacts carry the biggest load? The most-reused documents and suppliers across all frameworks.'
+        footer_hint: 'Asset top-list follows once the dependency-graph heuristic is robust enough for all tenants (Sprint 5).'
+    fte:
+        title: 'Saved through reuse'
+        subtitle: 'mapping-based requirement inheritance across all frameworks'
+        days_suffix: 'FTE days'
+    stats:
+        documents: 'Documents reused: %reused% / %total%'
+        suppliers: 'Suppliers addressed: %reused% / %total%'
+        requirements: 'Compliance requirements total: %count%'
+    iso9001_bridge:
+        title: 'For 9001 practitioners:'
+        text: 'Reuse is like CAPA multi-leverage — one measure satisfies multiple norm clauses. Documents and suppliers carry the load across 22 compliance frameworks.'
+    documents:
+        heading: 'Top documents by reuse'
+        all_link: 'All documents'
+        empty: 'No documents linked as evidence to any requirement yet. Evidence can be attached on each requirement show page.'
+    suppliers:
+        heading: 'Top suppliers by addressing requirements'
+        all_link: 'All suppliers'
+        empty: 'No suppliers are currently addressed by compliance requirements.'
+    unit:
+        requirements_in_frameworks: 'requirements in %fw% framework(s)'
+    cta:
+        portfolio: 'Trend and portfolio report'

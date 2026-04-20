@@ -1,0 +1,166 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'reuse.page.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'reuse.page.title'|trans({}, 'messages') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-arrows-collapse" aria-hidden="true"></i>
+                {{ 'reuse.page.title'|trans({}, 'messages') }}
+            </h1>
+            <p class="text-muted mb-0">{{ 'reuse.page.description'|trans({}, 'messages') }}</p>
+        </div>
+        <a href="{{ path('app_management_reports_portfolio') }}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+            {{ 'reuse.cta.portfolio'|trans({}, 'messages') }}
+        </a>
+    </div>
+
+    {# Hero KPI — FTE-saved, identisch zur Home-Landing-Karte #}
+    <div class="card shadow-sm mb-4 border-success">
+        <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="small text-uppercase text-muted mb-1">
+                    <i class="bi bi-lightning-charge-fill text-success" aria-hidden="true"></i>
+                    {{ 'reuse.fte.title'|trans({}, 'messages') }}
+                </div>
+                <div class="display-5 fw-bold text-success">
+                    {{ fte_saved|number_format(1, '.', ',') }}
+                    <small class="fs-5 text-muted">{{ 'reuse.fte.days_suffix'|trans({}, 'messages') }}</small>
+                </div>
+                <div class="small text-muted">{{ 'reuse.fte.subtitle'|trans({}, 'messages') }}</div>
+            </div>
+            <div class="d-flex flex-column align-items-end gap-1">
+                <span class="badge text-bg-light border">
+                    <i class="bi bi-file-earmark" aria-hidden="true"></i>
+                    {{ 'reuse.stats.documents'|trans({
+                        '%reused%': stats.documents_reused,
+                        '%total%': stats.documents_total
+                    }, 'messages') }}
+                </span>
+                <span class="badge text-bg-light border">
+                    <i class="bi bi-building" aria-hidden="true"></i>
+                    {{ 'reuse.stats.suppliers'|trans({
+                        '%reused%': stats.suppliers_reused,
+                        '%total%': stats.suppliers_total
+                    }, 'messages') }}
+                </span>
+                <span class="badge text-bg-light border">
+                    <i class="bi bi-ui-checks" aria-hidden="true"></i>
+                    {{ 'reuse.stats.requirements'|trans({'%count%': stats.requirements_total}, 'messages') }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    {# 9001-Brücke für Junior-Einstieg #}
+    <div class="alert alert-info small mb-4">
+        <i class="bi bi-lightbulb" aria-hidden="true"></i>
+        <strong>{{ 'reuse.iso9001_bridge.title'|trans({}, 'messages') }}</strong>
+        {{ 'reuse.iso9001_bridge.text'|trans({}, 'messages') }}
+    </div>
+
+    <div class="row g-3">
+        {# TOP DOKUMENTE #}
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="h6 mb-0">
+                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                        {{ 'reuse.documents.heading'|trans({}, 'messages') }}
+                    </h2>
+                    <a href="{{ path('app_document_index') }}" class="small">
+                        {{ 'reuse.documents.all_link'|trans({}, 'messages') }}
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if top_documents|length == 0 %}
+                        <p class="text-muted small mb-0">
+                            {{ 'reuse.documents.empty'|trans({}, 'messages') }}
+                        </p>
+                    {% else %}
+                        <ol class="list-unstyled mb-0">
+                            {% for row in top_documents %}
+                                <li class="d-flex justify-content-between align-items-start border-bottom py-2">
+                                    <div class="flex-grow-1">
+                                        <a href="{{ path('app_document_show', {id: row.document.id}) }}" class="fw-semibold">
+                                            {{ row.document.originalFilename|default('Dokument #' ~ row.document.id) }}
+                                        </a>
+                                        {% if row.document.category %}
+                                            <div class="small text-muted">{{ row.document.category }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-end ms-2">
+                                        <div class="h5 mb-0 text-primary">{{ row.requirement_count }}</div>
+                                        <div class="small text-muted">
+                                            {{ 'reuse.unit.requirements_in_frameworks'|trans({'%fw%': row.framework_count}, 'messages') }}
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ol>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# TOP LIEFERANTEN #}
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="h6 mb-0">
+                        <i class="bi bi-building" aria-hidden="true"></i>
+                        {{ 'reuse.suppliers.heading'|trans({}, 'messages') }}
+                    </h2>
+                    <a href="{{ path('app_supplier_index') }}" class="small">
+                        {{ 'reuse.suppliers.all_link'|trans({}, 'messages') }}
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if top_suppliers|length == 0 %}
+                        <p class="text-muted small mb-0">
+                            {{ 'reuse.suppliers.empty'|trans({}, 'messages') }}
+                        </p>
+                    {% else %}
+                        <ol class="list-unstyled mb-0">
+                            {% for row in top_suppliers %}
+                                <li class="d-flex justify-content-between align-items-start border-bottom py-2">
+                                    <div class="flex-grow-1">
+                                        <a href="{{ path('app_supplier_show', {id: row.supplier.id}) }}" class="fw-semibold">
+                                            {{ row.supplier.name }}
+                                        </a>
+                                        {% if row.supplier.criticality %}
+                                            <div class="small text-muted">
+                                                {{ 'supplier.field.criticality'|trans({}, 'suppliers') }}: {{ row.supplier.criticality }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-end ms-2">
+                                        <div class="h5 mb-0 text-primary">{{ row.requirement_count }}</div>
+                                        <div class="small text-muted">
+                                            {{ 'reuse.unit.requirements_in_frameworks'|trans({'%fw%': row.framework_count}, 'messages') }}
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ol>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-secondary small mt-4 mb-0">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'reuse.page.footer_hint'|trans({}, 'messages') }}
+    </div>
+</div>
+{% endblock %}

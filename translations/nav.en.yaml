@@ -47,6 +47,7 @@ nav:
     cross_framework: Cross-Framework
     compare: Compare
     mapping_quality: 'Mapping Quality'
+    data_reuse: 'Data-Reuse Hub'
     locations: Locations
     people: People
     risk_appetite: 'Risk Appetite'
@@ -127,6 +128,7 @@ nav:
             compliance_frameworks: 'Multi-framework management'
             framework_dashboard: 'Cross-framework overview'
             mapping_quality: 'Cross-framework mapping quality analysis'
+            data_reuse: 'Top-reused documents and suppliers across all frameworks'
             nis2: 'NIS2 Directive assessment'
             bsi_check: 'BSI IT-Grundschutz Soll/Ist per Baustein with MUSS/SOLLTE/KANN weighting'
             prototype_protection: 'TISAX Chapter 8 — prototype, test-vehicle, events & shoots protection'
