@@ -107,6 +107,19 @@
                     <p>{{ document.entityType }} #{{ document.entityId }}</p>
                 </div>
             {% endif %}
+
+            {% if inverse_coverage is defined %}
+                <div class="detail-section">
+                    <h3>
+                        <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                        {{ 'inverse_coverage.document.heading'|trans({}, 'control') }}
+                    </h3>
+                    {% include '_components/_inverse_coverage_widget.html.twig' with {
+                        coverage: inverse_coverage,
+                        scope_key: 'document'
+                    } %}
+                </div>
+            {% endif %}
         {% endblock %}
     {% endembed %}
 </div>

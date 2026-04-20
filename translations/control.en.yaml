@@ -83,6 +83,14 @@ control:
       no_selection: 'No control IDs supplied. Please select at least one.'
       reason_required: 'A reason is required when marking controls as N/A.'
       updated: 'Updated %count% control(s) to %status%.'
+inverse_coverage:
+  total: 'Covers %count% requirement(s) across %frameworks% framework(s)'
+  document:
+    heading: 'Where is this document used?'
+    empty: 'This document is not yet referenced as evidence in any compliance requirement.'
+  supplier:
+    heading: 'Which requirements address this supplier?'
+    empty: 'No requirements address this supplier directly (neither via supplier mapping nor via A.5.19–A.5.23).'
 coverage:
   tooltip: 'Transitive coverage: direct controls + mapped source requirements'
   contributors: '%direct% direct · %transitive% transitive · %unique% unique controls'

@@ -83,6 +83,14 @@ control:
       no_selection: 'Keine Control-IDs angegeben. Bitte mindestens eine ID wählen.'
       reason_required: 'Eine Begründung ist Pflicht, wenn Controls als N/A markiert werden.'
       updated: '%count% Control(s) als %status% aktualisiert.'
+inverse_coverage:
+  total: 'Deckt %count% Anforderung(en) in %frameworks% Framework(s)'
+  document:
+    heading: 'Wo wird dieses Dokument genutzt?'
+    empty: 'Dieses Dokument ist noch in keiner Compliance-Anforderung als Evidence hinterlegt.'
+  supplier:
+    heading: 'Welche Anforderungen adressieren diesen Lieferanten?'
+    empty: 'Keine Anforderungen adressieren diesen Lieferanten direkt (weder via Supplier-Mapping noch via A.5.19–A.5.23).'
 coverage:
   tooltip: 'Transitive Abdeckung: Direkte Controls + gemappte Quelle-Anforderungen'
   contributors: '%direct% direkt · %transitive% transitiv · %unique% eindeutige Controls'

@@ -1,0 +1,45 @@
+{#
+ # Inverse Coverage Widget (Sprint 3 / A1)
+ # Zeigt pro Document/Asset/Supplier welche Requirements / Frameworks
+ # davon getragen werden (Evidence-Bubble-Up).
+ #
+ # Caller contract:
+ #   - coverage  (array from InverseCoverageService::forDocument/forSupplier)
+ #   - scope_key (string, z. B. 'document'|'supplier'|'asset') — bestimmt
+ #                die Übersetzungs-Präfixe.
+ #}
+{% if coverage.total == 0 %}
+    <div class="text-muted small">
+        <i class="bi bi-dash-circle" aria-hidden="true"></i>
+        {{ ('inverse_coverage.' ~ scope_key ~ '.empty')|trans({}, 'control') }}
+    </div>
+{% else %}
+    <div class="small mb-2">
+        <i class="bi bi-link-45deg" aria-hidden="true"></i>
+        {{ 'inverse_coverage.total'|trans({
+            '%count%': coverage.total,
+            '%frameworks%': coverage.frameworks|length
+        }, 'control') }}
+    </div>
+
+    {% for code, row in coverage.frameworks %}
+        <details class="mb-2">
+            <summary class="d-inline-flex align-items-center gap-2" style="cursor: pointer;">
+                <span class="badge text-bg-light border">{{ code }}</span>
+                <span class="small">{{ row.framework.name }}</span>
+                <span class="badge text-bg-info">{{ row.requirements|length }}</span>
+            </summary>
+            <ul class="list-unstyled ps-3 small mt-1 mb-0">
+                {% for req in row.requirements %}
+                    <li class="border-start border-2 ps-2 mb-1">
+                        <code>{{ req.requirementId }}</code>
+                        <span class="ms-1">{{ req.title }}</span>
+                        {% if req.category %}
+                            <div class="text-muted">{{ req.category }}</div>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </details>
+    {% endfor %}
+{% endif %}
