@@ -129,26 +129,16 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <span class="label">{{ 'incident.field.category'|trans({}, 'incident') }}:</span>
-                    <span class="value">{{ incident.category|upper|replace({'_': ' '}) }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">{{ 'incident.field.detected'|trans({}, 'incident') }}:</span>
-                    <span class="value">{{ incident.detectedAt ? incident.detectedAt|date('d.m.Y H:i') : 'N/A' }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">{{ 'incident.field.reported_by'|trans({}, 'incident') }}:</span>
-                    <span class="value">{{ incident.reportedBy ?? 'N/A' }}</span>
-                </div>
-                {% if incident.occurredAt %}
-                <div class="detail-item">
-                    <span class="label">{{ 'incident.field.occurred'|trans({}, 'incident') }}:</span>
-                    <span class="value">{{ incident.occurredAt|date('d.m.Y H:i') }}</span>
-                </div>
-                {% endif %}
-            </div>
+            {# Phase 8H.1: standardised via _detail_group component #}
+            {% set incidentItems = [
+                { label: 'incident.field.category'|trans({}, 'incident'), value: incident.category|upper|replace({'_': ' '}) },
+                { label: 'incident.field.detected'|trans({}, 'incident'), value: incident.detectedAt ? incident.detectedAt|date('d.m.Y H:i') : 'N/A' },
+                { label: 'incident.field.reported_by'|trans({}, 'incident'), value: incident.reportedBy ?? 'N/A' }
+            ] %}
+            {% if incident.occurredAt %}
+                {% set incidentItems = incidentItems|merge([{ label: 'incident.field.occurred'|trans({}, 'incident'), value: incident.occurredAt|date('d.m.Y H:i') }]) %}
+            {% endif %}
+            {% include '_components/_detail_group.html.twig' with { items: incidentItems } only %}
 
             {# NIS2 Article 23 Reporting Timeline #}
             {% if is_nis2_active() and incident.requiresNis2Reporting and incident.detectedAt %}

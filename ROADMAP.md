@@ -784,17 +784,17 @@ Step 3: Zusammenfassung
 
 Basierend auf dem UX-Audit vom 01.01.2026: Konsolidierung der UI-Komponenten, CSS-Bereinigung und Accessibility-Verbesserungen.
 
-#### 🔄 Phase 8H.1: Detail-Group & UI-Komponenten (Quick Win)
+#### ✅ Phase 8H.1: Detail-Group & UI-Komponenten (Quick Win)
 
-**Status:** 🚧 In Entwicklung
+**Status:** ✅ Abgeschlossen (2026-04-20)
 **Effort:** 4-6 Stunden
 
-- [ ] `_components/_detail_group.html.twig` erstellen
-- [ ] Standardisierte Label-Wert-Paare für alle Detail-Ansichten
-- [ ] Migration der Hauptmodule (Asset, Risk, Control, Incident)
-- [ ] Einheitliche Darstellung von "Data Reuse" Quellen
-- [ ] **NEU:** Floating Action Toolbar für Bulk-Operations (Cyberpunk Style)
-- [ ] **NEU:** Skeleton Loading Pattern für Dashboard & Analytics (Perceived Performance)
+- [x] `_components/_detail_group.html.twig` erstellen
+- [x] Standardisierte Label-Wert-Paare in Hauptmodulen (Asset/Risk/Incident Show-Templates)
+- [x] Migration der Hauptmodule (Asset-Valuation-Section mit `dataReuse`-Flag auf effective-Owner/Total-Value/Risk-Link)
+- [x] Einheitliche "Data Reuse"-Quellen-Darstellung über `dataReuse: true` Flag (fairy-sparkle-Indikator)
+- [x] Floating Action Toolbar für Bulk-Operations: `_floating_toolbar.html.twig` + `_bulk_action_bar.html.twig`, 8 Listen eingebunden
+- [x] Skeleton Loading Pattern: Component, CSS + Stimulus-Controller vorhanden, in allen 4 Role-Dashboards (CISO/Risk-Manager/Auditor/Board) mit 600ms-Fade-in eingebunden
 
 #### ✅ Phase 8H.2: Accessibility Deep Clean
 
