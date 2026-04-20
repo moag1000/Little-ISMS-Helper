@@ -131,6 +131,13 @@
                 'positive'
             ) }}
             </a>
+            {% if stats.assets_total|default(0) == 0 %}
+                <div class="text-center mt-1">
+                    <a href="{{ path('app_asset_new') }}" class="text-decoration-none small text-primary">
+                        <i class="bi bi-plus-circle me-1" aria-hidden="true"></i>{{ 'dashboard.create_first_asset'|trans({}, 'dashboard') }}
+                    </a>
+                </div>
+            {% endif %}
         </div>
 
         {# Risks Card #}
@@ -146,6 +153,13 @@
                 'negative'
             ) }}
             </a>
+            {% if stats.risks_total|default(0) == 0 %}
+                <div class="text-center mt-1">
+                    <a href="{{ path('app_risk_new') }}" class="text-decoration-none small text-warning">
+                        <i class="bi bi-plus-circle me-1" aria-hidden="true"></i>{{ 'dashboard.create_first_risk'|trans({}, 'dashboard') }}
+                    </a>
+                </div>
+            {% endif %}
         </div>
 
         {# Controls Card #}
@@ -161,6 +175,13 @@
                 'positive'
             ) }}
             </a>
+            {% if stats.controls_total|default(0) == 0 %}
+                <div class="text-center mt-1">
+                    <a href="{{ path('app_compliance_index') }}" class="text-decoration-none small text-success">
+                        <i class="bi bi-shield-check me-1" aria-hidden="true"></i>{{ 'dashboard.review_controls'|trans({}, 'dashboard') }}
+                    </a>
+                </div>
+            {% endif %}
         </div>
 
         {# Incidents Card #}
@@ -176,6 +197,13 @@
                 ''
             ) }}
             </a>
+            {% if stats.incidents_open|default(0) == 0 and stats.incidents_total|default(0) == 0 %}
+                <div class="text-center mt-1">
+                    <a href="{{ path('app_incident_new') }}" class="text-decoration-none small text-danger">
+                        <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>{{ 'dashboard.report_first_incident'|trans({}, 'dashboard') }}
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </div>
 

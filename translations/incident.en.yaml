@@ -145,9 +145,9 @@ incident:
   nis2_compliance:
     not_applicable: Not Applicable
   empty:
-    title: No Incidents Recorded
-    description: Great! No security incidents have been reported so far. If an incident
-      occurs, you can quickly document it here.
+    title: No security incidents yet
+    description: 'Security incidents are documented and tracked here. When an incident occurs, click ''Report Incident''.'
+    action: Report Incident
   severity_distribution:
     title: Severity Distribution
   list:
@@ -197,8 +197,7 @@ incident:
     affected_users_count: Estimated number of affected users/customers
     estimated_financial_impact: Estimated financial damage in EUR
     national_authority: Competent national authority (e.g. BSI in Germany)
-    data_breach_occurred: Mark this as a data breach if personal data is affected
-      (GDPR Art. 33)
+    data_breach_occurred: 'When checked, you should also report a data breach under Privacy/GDPR → Data Breaches. This does NOT auto-create a breach record — you must report it separately.'
     resolution_after_investigation: Typically filled in only after the investigation
       is complete
     reported_by_user: Reporter from user management. Leave empty if reported externally.

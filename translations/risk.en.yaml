@@ -40,10 +40,9 @@ risk:
       avoid: Avoid
     filter_options: Filter Options
     empty:
-      title: No risks identified yet
-      description: Start risk identification to capture and assess potential threats
-        to your ISMS.
-      action: Capture first risk
+      title: No risks recorded yet
+      description: 'Start by recording your first risk. Tip: Create assets first, then you can assign risks directly to them.'
+      action: Record first risk
     all_risks: All Risks
     table:
       select_all: Select all
@@ -216,8 +215,7 @@ risk:
     legal_basis: 'Legal basis for data processing (Art. 6 GDPR: Consent, contract,
       legitimate interest, etc.)'
     processing_scale: Scale of data processing (number of data subjects, data volume)
-    requires_dpia: Is a Data Protection Impact Assessment (DPIA) required per Art.
-      35 GDPR?
+    requires_dpia: 'When checked, a Data Protection Impact Assessment should be created under Privacy/GDPR → DPIA. This does NOT auto-create a DPIA — create it separately and link it.'
     data_subject_impact: Impact on the rights and freedoms of data subjects
     inherent: The inherent risk (gross risk) before applying measures
     probability: 'Probability: How likely is it that this risk will occur? (1-5)'
