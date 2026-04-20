@@ -60,6 +60,14 @@ portfolio_report:
         subtitle: 'through mapping-based inheritance (WS-1)'
         days_suffix: 'FTE days'
 
+    reuse_trend:
+        title: 'Reuse trend (last 12 months)'
+        hint: '%count% snapshots · daily capture via app:reuse:capture-snapshot'
+        fte_label: 'FTE days saved'
+        pct_label: 'Inheritance rate (%)'
+        footer: 'One-click answer to the board question "is it getting better?". Left axis FTE days, right axis inheritance rate in percent.'
+        empty: 'No trend history captured yet. First snapshot will be written on the next cron run (app:reuse:capture-snapshot).'
+
     drill:
         title: 'Drill-down: %framework% / %category%'
         back: 'Back to matrix'

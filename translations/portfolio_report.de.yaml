@@ -60,6 +60,14 @@ portfolio_report:
         subtitle: 'durch Mapping-basierte Vererbung (WS-1)'
         days_suffix: 'FTE-Tage'
 
+    reuse_trend:
+        title: 'Reuse-Trend (letzte 12 Monate)'
+        hint: '%count% Snapshots · tägliche Erfassung via app:reuse:capture-snapshot'
+        fte_label: 'FTE-Tage gespart'
+        pct_label: 'Inheritance-Rate (%)'
+        footer: 'Ein-Klick-Antwort auf die Board-Frage - wird es besser? Linke Achse FTE-Tage, rechte Achse Inheritance-Rate in Prozent.'
+        empty: 'Noch keine Trend-Historie erfasst. Erster Snapshot wird beim nächsten Cron-Run (app:reuse:capture-snapshot) geschrieben.'
+
     drill:
         title: 'Drill-Down: %framework% / %category%'
         back: 'Zurück zur Matrix'
