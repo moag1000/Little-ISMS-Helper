@@ -78,6 +78,7 @@ class ControlType extends AbstractType
                 'choice_translation_domain' => 'control',
                 'expanded' => true,
                 'attr' => ['class' => 'form-check'],
+                'help' => 'control.help.applicable_explained',
             ])
             ->add('justification', TextareaType::class, [
                 'label' => 'control.field.justification',
@@ -100,6 +101,7 @@ class ControlType extends AbstractType
                 ],
                 'choice_translation_domain' => 'control',
                 'attr' => ['class' => 'form-select'],
+                'help' => 'control.help.implementation_status_explained',
             ])
             ->add('implementationPercentage', IntegerType::class, [
                 'label' => 'control.field.implementation_percentage',

@@ -27,6 +27,8 @@ control:
     responsible_person_legacy: Verantwortliche Person (freitext, veraltet)
   help:
     control_id: ISO 27001:2022 Annex A Maßnahmen-ID
+    applicable_explained: "Anwendbarkeit (ISO 27001 6.1.3 d): 'Anwendbar' = diese Massnahme ist fuer Ihre Organisation relevant und MUSS umgesetzt werden. 'Nicht anwendbar' = diese Massnahme ist fuer Ihren ISMS-Scope nicht relevant — Begruendung im Feld 'Justification' PFLICHT. Beispiel: A.7.4 (Physische Ueberwachung) kann fuer ein reines Cloud-Unternehmen 'nicht anwendbar' sein."
+    implementation_status_explained: "Umsetzungsstatus: not_started = noch nicht begonnen, planned = geplant (Termin gesetzt), in_progress = in Umsetzung (teilweise wirksam), implemented = vollstaendig umgesetzt und wirksam, verified = durch Audit/Test als wirksam bestaetigt. Hinweis: Nur 'anwendbare' Controls zaehlen fuer die Compliance-Berechnung."
     justification: Pflicht für ISO 27001 Statement of Applicability (SoA)
     implementation_percentage: Implementierungsfortschritt in Prozent (0-100)
     implementation_notes: Beschreiben Sie wie das Control implementiert ist

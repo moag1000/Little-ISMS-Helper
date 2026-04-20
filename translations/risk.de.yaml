@@ -40,9 +40,8 @@ risk:
       avoid: Vermeiden
     filter_options: Filteroptionen
     empty:
-      title: Noch keine Risiken identifiziert
-      description: Beginnen Sie mit der Risikoidentifikation, um potenzielle Bedrohungen
-        für Ihr ISMS zu erfassen und zu bewerten.
+      title: Noch keine Risiken erfasst
+      description: 'Beginnen Sie mit der Erfassung Ihres ersten Risikos. Tipp: Legen Sie zuerst Assets an, dann koennen Sie Risiken direkt zuordnen.'
       action: Erstes Risiko erfassen
     all_risks: Alle Risiken
     table:
@@ -216,8 +215,7 @@ risk:
     legal_basis: 'Rechtsgrundlage für die Datenverarbeitung (Art. 6 DSGVO: Einwilligung,
       Vertrag, berechtigtes Interesse, etc.)'
     processing_scale: Umfang der Datenverarbeitung (Anzahl betroffener Personen, Datenmenge)
-    requires_dpia: Ist eine Datenschutz-Folgenabschätzung (DSFA) gemäß Art. 35 DSGVO
-      erforderlich?
+    requires_dpia: 'Wenn aktiviert, sollte eine Datenschutz-Folgenabschaetzung (DSFA) unter Privacy/GDPR → DPIA erstellt werden. Dies loest KEINE automatische DPIA-Erstellung aus — erstellen Sie die DPIA separat und verknuepfen Sie sie.'
     data_subject_impact: Auswirkung auf die Rechte und Freiheiten betroffener Personen
     inherent: Das inhärente Risiko (Brutto-Risiko) vor Anwendung von Maßnahmen
     probability: 'Eintrittswahrscheinlichkeit: Wie wahrscheinlich ist es, dass dieses

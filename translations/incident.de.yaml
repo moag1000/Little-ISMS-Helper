@@ -153,9 +153,9 @@ incident:
     all_status: Alle Status
     all_severity: Alle Schweregrade
   empty:
-    title: Keine Vorfälle erfasst
-    description: Gut! Es wurden bisher keine Sicherheitsvorfälle gemeldet. Falls ein
-      Vorfall auftritt, können Sie ihn hier schnell dokumentieren.
+    title: Noch keine Sicherheitsvorfaelle
+    description: 'Hier werden Sicherheitsvorfaelle dokumentiert und verfolgt. Bei einem Vorfall klicken Sie auf ''Vorfall melden''.'
+    action: Vorfall melden
   severity_distribution:
     title: Schweregrade
   list:
@@ -208,8 +208,7 @@ incident:
     affected_users_count: Geschätzte Anzahl betroffener Nutzer/Kunden
     estimated_financial_impact: Geschätzter finanzieller Schaden in EUR
     national_authority: Zuständige nationale Behörde (z.B. BSI in Deutschland)
-    data_breach_occurred: Kennzeichnen Sie dies als Datenschutzverletzung, wenn personenbezogene
-      Daten betroffen sind (DSGVO Art. 33)
+    data_breach_occurred: 'Wenn aktiviert, sollten Sie zusaetzlich eine Datenpanne unter Privacy/GDPR → Datenpannen erfassen. Dies loest KEINE automatische Erstellung aus — Sie muessen die Datenpanne separat melden.'
     resolution_after_investigation: Typischerweise erst nach Abschluss der Untersuchung
       ausfüllen
     reported_by_user: Meldende Person aus der Benutzerverwaltung. Leer lassen wenn
