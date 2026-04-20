@@ -9,6 +9,99 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ✨ Added
 
+#### Phase 9.P2 — HiScout-Niveau Konzern-Reports (2026-04-20)
+
+Fortführung der Holding-Struktur aus P1. Die sieben Items aus dem
+Consultant-Plan für Phase 9.P2 (8–15 FTE-d geschätzt) sind in fünf
+Commits abgebildet. Alle neuen Dashboards sind ROLE_GROUP_CISO-gated
+und strikt downward-only (Siblings unsichtbar).
+
+- **Drei Read-only-Group-Dashboards** (Commit `c10ff753`).
+  `/group-report/risks` — Top-10 Konzernrisiken über alle Töchter
+  (sortiert nach Residualwert, Fallback inherent) plus Verteilung
+  pro Tenant. `/group-report/kpi-matrix` — Framework-Reifegrad
+  pro Tenant, Zellenwert aus der vorhandenen
+  `getFrameworkStatisticsForTenant` (identisch zum Per-Tenant-
+  Compliance-Dashboard, keine doppelte Berechnung).
+  `/group-report/soa-matrix` — 93 Controls × N Tenants, single-char
+  Status-Badges (✓ ◐ ◯ – N/A), Sticky Header, max-height 70vh.
+  Keine Schema-Änderungen — alle Daten aus bestehenden Repositories.
+
+- **Cross-Tenant-Lieferantenverzeichnis** (Commit `b425fcad`).
+  `SupplierRepository::findGroupedForTenants()` dedupliziert per
+  LEI-Code (ISO 17442, wenn vorhanden — strong match, "LEI"-Badge)
+  oder normalisiertem Namen (lowercase + trim — weak match,
+  "name-only"-Badge mit Nudge zur LEI-Pflege). Worst-case-
+  Kritikalität gewinnt pro Gruppe (ein bei Tochter A "critical"
+  gelabelter Lieferant ist konzernweit "critical", auch wenn
+  Tochter B "medium" meldet). Sortierung nach Tenant-Anzahl
+  absteigend, damit Konsolidierungskandidaten oben stehen. Ziel:
+  DORA Art. 28.3 Sub-Outsourcing-Kette + ISO 27001 A.5.19.
+
+- **Incident-Cross-Posting mit Opt-out** (Commit `7960d33a`,
+  Migration `Version20260420120000`). Neues Boolean-Feld
+  `Incident.visible_to_holding`, default `true`. Eine Tochter kann
+  den Flag für vertrauliche Incidents (z. B. HR) deaktivieren —
+  der Flag kurzschließt im Voter vor dem Holding-Tree-Check, nicht
+  einmal ein Group-CISO überschreibt ihn. `/group-report/incidents`
+  filtert sichtbar vs. Opt-out; die UI gibt bewusst **keine**
+  "N versteckt"-Anzeige aus, damit das Verstecken kein implizites
+  Signal wird. IncidentType-Form bekam die Checkbox mit Hilfstext
+  "nur für vertrauliche Fälle deaktivieren". 3 neue Voter-Tests.
+
+- **Holding-Policy-Vererbung** (Commit `bc86a6ec`, Migration
+  `Version20260420130000`). `Document.inheritable` (default false)
+  und `Document.overrideAllowed` (default true). Nur Holding-
+  Dokumente mit `inheritable=true` werden in Töchtern read-only
+  sichtbar — konservativer Default, damit die bestehende
+  Dokumentenbasis nicht plötzlich propagiert wird.
+  `DocumentRepository::findInheritedForTenant()` (strikt gefiltert
+  im Gegensatz zum älteren `findByTenantIncludingParent`).
+  `DocumentVoter::canView` bekommt eine neue Grant-Strecke:
+  Tochter-User sieht Dokument, wenn `inheritable=true` und
+  `user.tenant.isChildOf(doc.tenant)`. Edit bleibt
+  uploader-only — inherited Docs sind automatisch read-only in
+  Töchtern. `DocumentType` bekommt zwei CheckboxType-Felder mit
+  Klartext-Helps zu "ISMS-Leitlinie 1:1 durchmandatieren"
+  vs. "lokaler Override erlaubt". 3 neue Voter-Tests.
+
+- **Konzern-Audit-Programm mit Derivation** (Commit `9988bb3d`,
+  Migration `Version20260420140000`). `InternalAudit.parent_audit_id`
+  self-FK (ON DELETE SET NULL, Index). Die FK-Erstellung läuft über
+  ein INFORMATION_SCHEMA-Guard-Muster (MySQL unterstützt kein
+  "ADD CONSTRAINT IF NOT EXISTS"). Neuer Service
+  `GroupAuditProgramService::deriveForSubsidiaries(program, tenants,
+  actor)` kopiert Scope/ScopeType/PlannedDate verbatim, suffixt die
+  Audit-Nummer mit `-<tenant-code>`, setzt Status hart auf `planned`
+  (jede Tochter läuft ihren eigenen Audit-Zyklus), und loggt ins
+  AuditLog (program_id, derived_count, skipped_count, target
+  tenant IDs — ISB-Anforderung). Idempotent: Töchter mit bereits
+  existierender Ableitung desselben Programms werden übersprungen.
+  Matrix-View `/group-report/audit-program`: Rows = Programs,
+  Columns = Subsidiaries, Cell = Status-Badge oder Strich;
+  Derive-Button pro Programm, CSRF-geschützt.
+
+**Group-Report-Hub** jetzt 7 Tabs: nis2 / risks / kpi / soa /
+suppliers / incidents / audit-program. Tree-View hat alle im Header.
+
+**Tests**
+- Voter: 6 neue (Document × 3, Incident × 3).
+- Full sweep 129/129 green nach P2.4. lint:twig, lint:yaml,
+  lint:container durchgehend sauber.
+
+**Scope-Entscheidungen / Auslassungen**
+- Findings-Roll-up (ein Dashboard das alle Tochter-Findings gegen
+  einen Holding-Audit-Program aggregiert) intentional nicht
+  enthalten — der Parent-Link ist die Datenbasis, die View ist ein
+  Follow-up.
+- `DocumentService` governance-model-basierte Vererbung
+  (`findByTenantIncludingParent`) bleibt unangetastet; die neue
+  `findInheritedForTenant` ist die strikt policy-gefilterte
+  Variante für künftige UI-Sektionen.
+- Group-KPI-Matrix zeigt leere Zelle ("—") wenn Framework im Tenant
+  nicht anwendbar markiert ist — wichtige Unterscheidung gegenüber
+  "0 % erfüllt", explizit für Auditor-Lesbarkeit.
+
 #### Phase 9.P1 — Holding/Konzern-Struktur (2026-04-20)
 
 Umsetzung des Consultant-Plans zu NIS2-Holding-Abbildung (§28 BSIG-neu).
