@@ -70,6 +70,11 @@ control:
     description: 'Automatically detected requirements this control may cover. Confidence is a Jaccard text-similarity score between the control description and the requirement text.'
     accept: 'Accept'
     footer_hint: 'Every acceptance is logged as "A2_auto_mapping_suggestion" with its confidence score — auditors can trace the origin.'
+    confidence:
+      high: 'Very high text similarity'
+      medium: 'Medium text similarity'
+      low: 'Low text similarity'
+      tooltip: 'Jaccard score: %pct%%% shared tokens (filtered token overlap between control description and requirement text).'
   bulk:
     title: 'Bulk applicability (change several controls at once)'
     hint: 'Power-user tool for CM — enter control IDs, set applicable/N/A, optional reason.'
