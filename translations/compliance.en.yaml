@@ -139,6 +139,22 @@ compliance:
         title: 'Compliance Mapping'
         create_link: 'Create mapping'
         create_instruction: 'to show how requirements relate to your controls'
+        seeds:
+            title: 'Mapping Seeds — 1-click import of curated cross-framework catalogues'
+            description: 'Official or curated mapping collections between two frameworks. One click is enough — the import is idempotent, existing entries are left unchanged.'
+            status:
+                loaded: '%count% loaded'
+                not_loaded: 'Not yet loaded'
+            field:
+                count: 'Volume'
+            action:
+                apply: 'Load seed'
+                reapply: 'Re-import (idempotent)'
+            flash:
+                applied: '%source% ↔ %target%: %count% new mapping(s) created.'
+                failed: 'Seed import %source% ↔ %target% failed: %stderr%'
+                framework_missing: 'Source or target framework not loaded. Please install %source% and %target% first.'
+            footer_hint: 'Each seed runs a CLI command in-process and records mappings with verified_by origin. Safe to re-run: existing mappings stay untouched.'
         edit:
             title: 'Edit Mapping'
         list:

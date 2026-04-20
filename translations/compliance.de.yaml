@@ -59,6 +59,7 @@ compliance:
         create_mappings_now: 'Mappings jetzt erstellen'
     unit:
         requirements: Anforderungen
+        mappings: Mappings
     field:
         priority: 'Priorität'
         framework_1: 'Framework 1'
@@ -138,6 +139,22 @@ compliance:
             delete: 'Möchten Sie diese Zuordnung wirklich löschen?'
         title: Compliance-Mapping
         create_link: 'Zuordnung erstellen'
+        seeds:
+            title: 'Mapping-Seeds — 1-Klick-Import kuratierter Cross-Framework-Kataloge'
+            description: 'Offizielle oder kuratierte Mapping-Sammlungen zwischen zwei Frameworks. Ein Klick genügt — der Import ist idempotent, bestehende Einträge werden nicht überschrieben.'
+            status:
+                loaded: '%count% geladen'
+                not_loaded: 'Noch nicht geladen'
+            field:
+                count: 'Umfang'
+            action:
+                apply: 'Seed laden'
+                reapply: 'Erneut importieren (idempotent)'
+            flash:
+                applied: '%source% ↔ %target%: %count% neue Mapping(s) angelegt.'
+                failed: 'Seed-Import %source% ↔ %target% fehlgeschlagen: %stderr%'
+                framework_missing: 'Quell- oder Ziel-Framework nicht geladen. Bitte %source% und %target% zuerst installieren.'
+            footer_hint: 'Jeder Seed führt ein CLI-Command in-process aus und protokolliert die Mappings mit verified_by-Herkunft. Sichere Re-Runs: bestehende Mappings bleiben unverändert.'
         create_instruction: 'um zu zeigen, wie Anforderungen mit Ihren Controls zusammenhängen'
         edit:
             title: 'Mapping bearbeiten'

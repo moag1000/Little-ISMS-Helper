@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'compliance.mapping.seeds.title'|trans({}, 'compliance') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index') },
+            { label: 'compliance.mapping.list.title'|trans({}, 'compliance'), url: path('app_compliance_mapping_index') },
+            { label: 'compliance.mapping.seeds.title'|trans({}, 'compliance') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>
+                {{ 'compliance.mapping.seeds.title'|trans({}, 'compliance') }}
+            </h1>
+            <p class="text-muted mb-0">{{ 'compliance.mapping.seeds.description'|trans({}, 'compliance') }}</p>
+        </div>
+        <a href="{{ path('app_compliance_mapping_index') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i>
+            {{ 'common.back'|trans({}, 'messages') }}
+        </a>
+    </div>
+
+    <div class="row g-3">
+        {% for seed in seeds %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm{% if seed.currently_loaded > 0 %} border-success{% endif %}">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <div class="flex-grow-1">
+                                <div class="h5 mb-1">
+                                    <i class="bi {{ seed.icon }}" aria-hidden="true"></i>
+                                    {{ seed.source_label }}
+                                </div>
+                                <div class="small text-muted">
+                                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                    {{ seed.target_label }}
+                                </div>
+                            </div>
+                            {% if seed.currently_loaded is not null %}
+                                {% if seed.currently_loaded > 0 %}
+                                    <span class="badge text-bg-success-subtle text-success">
+                                        {{ 'compliance.mapping.seeds.status.loaded'|trans({'%count%': seed.currently_loaded}, 'compliance') }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge text-bg-light border">
+                                        {{ 'compliance.mapping.seeds.status.not_loaded'|trans({}, 'compliance') }}
+                                    </span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+
+                        <div class="my-3">
+                            <div class="small text-muted">{{ 'compliance.mapping.seeds.field.count'|trans({}, 'compliance') }}</div>
+                            <div class="h4 mb-0">{{ seed.mapping_count }} {{ 'compliance.unit.mappings'|trans({}, 'compliance') }}</div>
+                        </div>
+
+                        <p class="small text-muted mb-3">
+                            <i class="bi bi-bookmark" aria-hidden="true"></i>
+                            {{ seed.rationale_source }}
+                        </p>
+
+                        {% if not seed.source_loaded or not seed.target_loaded %}
+                            <div class="alert alert-warning small mb-2">
+                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                {{ 'compliance.mapping.seeds.flash.framework_missing'|trans({
+                                    '%source%': seed.source_code,
+                                    '%target%': seed.target_code
+                                }, 'compliance') }}
+                            </div>
+                            <button type="button" class="btn btn-primary w-100" disabled>
+                                {{ 'compliance.mapping.seeds.action.apply'|trans({}, 'compliance') }}
+                            </button>
+                        {% else %}
+                            <form method="post"
+                                  action="{{ path('app_compliance_mapping_seeds_apply', { id: seed.id }) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('seed_' ~ seed.id) }}">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-play-circle" aria-hidden="true"></i>
+                                    {% if seed.currently_loaded > 0 %}
+                                        {{ 'compliance.mapping.seeds.action.reapply'|trans({}, 'compliance') }}
+                                    {% else %}
+                                        {{ 'compliance.mapping.seeds.action.apply'|trans({}, 'compliance') }}
+                                    {% endif %}
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="alert alert-info mt-4 small">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'compliance.mapping.seeds.footer_hint'|trans({}, 'compliance') }}
+    </div>
+</div>
+{% endblock %}
