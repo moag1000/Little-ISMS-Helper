@@ -14,6 +14,7 @@ use App\Service\ComplianceAssessmentService;
 use App\Service\ComplianceMappingService;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\ExcelExportService;
+use App\Service\FrameworkMaturityService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
@@ -39,7 +40,8 @@ class ComplianceController extends AbstractController
         private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly PdfExportService $pdfExportService,
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
-        private readonly TenantContext $tenantContext
+        private readonly TenantContext $tenantContext,
+        private readonly ?FrameworkMaturityService $frameworkMaturityService = null,
     ) {}
     #[Route('/compliance/', name: 'app_compliance_index')]
     public function index(): Response
@@ -58,12 +60,16 @@ class ComplianceController extends AbstractController
             }
         }
 
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $maturityPortfolio = $this->frameworkMaturityService?->computePortfolio($tenant) ?? [];
+
         return $this->render('compliance/index.html.twig', [
             'frameworks' => $frameworks,
             'overview' => $overview,
             'mapping_stats' => $mappingStats,
             'total_time_savings' => $totalTimeSavings,
             'total_days_savings' => round($totalTimeSavings / 8, 1),
+            'maturity_portfolio' => $maturityPortfolio,
         ]);
     }
     #[Route('/compliance/framework/{id}', name: 'app_compliance_framework', requirements: ['id' => '\d+'])]
