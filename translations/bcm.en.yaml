@@ -84,6 +84,11 @@ bcm:
     empty:
         title: 'No business processes defined yet'
         description: 'Start by adding your first critical process.'
+    criticality:
+        critical: 'Critical'
+        high: 'High'
+        medium: 'Medium'
+        low: 'Low'
     rto:
         standard: Standard
         flexible: Flexible

@@ -411,6 +411,10 @@ role:
         system_badge: System
         has_permission: 'Hat Berechtigung'
         no_permission: 'Keine Berechtigung'
+        select_label: 'Rollen auswählen'
+        select_hint: 'Wählen Sie mindestens zwei Rollen zum Vergleich'
+        submit: 'Vergleichen'
+        legend_title: 'Legende'
     templates:
         title: Rollenvorlagen
         description: 'Erstellen Sie eine neue Rolle basierend auf einer Vorlage'
@@ -1524,6 +1528,15 @@ admin:
         select_asset: 'Asset auswählen'
         asset_not_found: 'Asset nicht gefunden'
         select_risk: 'Risiko auswählen'
+    data_export:
+        configure_title: 'Export konfigurieren'
+        select_entities: 'Zu exportierende Entitäten auswählen'
+        select_all: 'Alle auswählen'
+        deselect_all: 'Alle abwählen'
+        format: 'Format'
+        format_help: 'Wählen Sie das Exportformat'
+        format_selection: 'Formatauswahl'
+        submit: 'Exportieren'
 business_process:
     index:
         table:
@@ -1696,3 +1709,228 @@ share:
         risk_desc: 'Als neues Risiko erfassen'
         create_document: 'Dokument erstellen'
         document_desc: 'Als Dokument ablegen'
+
+# Loader Fixer flash messages
+loader_fixer:
+    flash:
+        single: 'Loader-Problem erfolgreich behoben'
+        bulk: 'Loader-Probleme erfolgreich in Massen behoben'
+
+# Compliance Inheritance flash messages
+compliance_inheritance:
+    flash:
+        confirmed: 'Vererbung bestätigt'
+        rejected: 'Vererbung abgelehnt'
+        overridden: 'Vererbung überschrieben'
+
+# Compliance Wizard Delta Report
+compliance_wizard:
+    delta:
+        title: 'Compliance-Wizard Delta-Bericht'
+        sheet:
+            summary: 'Zusammenfassung'
+            detail: 'Details'
+            mapping: 'Mappings'
+        summary:
+            tenant: 'Mandant'
+            target: 'Ziel-Framework'
+            baseline: 'Basis-Framework'
+            reporting_date: 'Berichtsdatum'
+            total: 'Gesamt'
+            inherited: 'Geerbt'
+            direct: 'Direkt'
+            gap: 'Lücke'
+            avg_fulfillment: 'Durchschnittlicher Erfüllungsgrad'
+            fte_saved: 'Eingesparte FTE'
+            pre_fill_rate_ok: 'Vorab-Ausfüllrate (erfüllt)'
+            pre_fill_rate_miss: 'Vorab-Ausfüllrate (fehlend)'
+        detail:
+            col:
+                requirement_id: 'Anforderungs-ID'
+                title: 'Titel'
+                category: 'Kategorie'
+                priority: 'Priorität'
+                fulfillment_pct: 'Erfüllungsgrad (%)'
+                status: 'Status'
+                source_mappings: 'Quell-Mappings'
+                inheritance_state: 'Vererbungsstatus'
+                action_required: 'Handlung erforderlich'
+                applicability_justification: 'Anwendbarkeitsbegründung'
+                gap_estimation: 'Lücken-Einschätzung'
+        mapping:
+            col:
+                source: 'Quelle'
+                source_requirement: 'Quell-Anforderung'
+                target_requirement: 'Ziel-Anforderung'
+                mapping_percentage: 'Mapping-Prozentsatz'
+                confidence: 'Konfidenz'
+                bidirectional: 'Bidirektional'
+                valid_from: 'Gültig ab'
+                valid_until: 'Gültig bis'
+
+# Common additional keys
+common.presets: 'Vorlagen'
+common.required: 'Erforderlich'
+common.value: 'Wert'
+common.modules: 'Module'
+common.confirm: 'Bestätigen'
+common.report_regenerated: 'Bericht wurde neu generiert'
+common.regenerate: 'Neu generieren'
+common.error.unknown: 'Ein unbekannter Fehler ist aufgetreten'
+common.statistics: 'Statistiken'
+
+# Role comparison keys
+role.compare.system_badge: 'System'
+role.compare.permission_column: 'Berechtigung'
+
+# Action keys
+action.create_and_design: 'Erstellen und gestalten'
+action.create_first: 'Ersten erstellen'
+action.export_pdf: 'PDF exportieren'
+action.preview: 'Vorschau'
+action.use_template: 'Vorlage verwenden'
+
+# Empty state
+empty:
+    no_reports: 'Keine Berichte vorhanden'
+
+# Form keys
+form.category: 'Kategorie'
+form.description: 'Beschreibung'
+form.description_placeholder: 'Beschreibung eingeben...'
+form.layout: 'Layout'
+form.layout_preview: 'Layout-Vorschau'
+form.name: 'Name'
+form.name_placeholder: 'Name eingeben...'
+
+# Layout keys
+layout:
+    dashboard: 'Dashboard'
+    single: 'Einzeln'
+    two_column: 'Zweispaltig'
+
+# New
+new:
+    subtitle: 'Neuen Eintrag erstellen'
+
+# Section keys
+section:
+    favorites: 'Favoriten'
+    my_reports: 'Meine Berichte'
+    quick_start: 'Schnellstart'
+    recently_used: 'Zuletzt verwendet'
+    shared_templates: 'Geteilte Vorlagen'
+
+# Table keys
+table:
+    actions: 'Aktionen'
+    category: 'Kategorie'
+    layout: 'Layout'
+    name: 'Name'
+    updated: 'Aktualisiert'
+
+# Uses
+uses: 'Verwendungen'
+
+# DORA Dashboard
+dora:
+    dashboard:
+        overall_compliance: 'DORA Gesamt-Compliance'
+    articles: 'DORA-Artikel'
+    pillar:
+        ict_risk: 'IKT-Risikomanagement'
+        incidents: 'Vorfallmeldung'
+        testing: 'Resilienz-Tests'
+        third_party: 'Drittanbieter-Risiko'
+        information_sharing: 'Informationsaustausch'
+    metric:
+        ict_assets: 'IKT-Assets'
+        ict_risks: 'IKT-Risiken'
+        high_critical_risks: 'Hohe/Kritische Risiken'
+        risk_treatment_rate: 'Risikobehandlungsrate'
+        asset_classification: 'Asset-Klassifizierung'
+        control_implementation: 'Maßnahmen-Implementierung'
+        total_incidents: 'Vorfälle gesamt'
+        open_major_incidents: 'Offene Hauptvorfälle'
+        major_incidents_ytd: 'Hauptvorfälle (laufendes Jahr)'
+        mttr: 'MTTR (Mittlere Wiederherstellungszeit)'
+        4h_reporting: '4h-Meldung'
+        exercises: 'Übungen'
+        bc_plans: 'BC-Pläne'
+        bc_coverage: 'BC-Abdeckung'
+        resilience_trainings: 'Resilienz-Schulungen'
+        ict_providers: 'IKT-Anbieter'
+        critical_providers: 'Kritische Anbieter'
+        assessment_rate: 'Bewertungsrate'
+        overdue_assessments: 'Überfällige Bewertungen'
+        concentration_risk: 'Konzentrationsrisiko'
+        exit_strategies: 'Exit-Strategien'
+        implementation_rate: 'Implementierungsrate'
+    article_19_hint: 'Art. 19 - Meldung von IKT-bezogenen Vorfällen'
+    testing_requirement: 'Anforderung für Resilienz-Tests gemäß DORA'
+    high_dependency_providers: 'Anbieter mit hoher Abhängigkeit'
+    information_sharing_desc: 'Informationsaustausch über Cyberbedrohungen und Schwachstellen'
+    controls_implemented: 'Implementierte Maßnahmen'
+    quick_actions: 'Schnellaktionen'
+    action:
+        manage_risks: 'Risiken verwalten'
+        manage_incidents: 'Vorfälle verwalten'
+        plan_exercises: 'Übungen planen'
+        manage_suppliers: 'Lieferanten verwalten'
+
+# Wizard (Compliance Assessment)
+wizard:
+    actions: 'Aktionen'
+    active_modules: 'Aktive Module'
+    assessed_at: 'Bewertet am'
+    assessment_scope: 'Bewertungsumfang'
+    assessment_scope_desc: 'Umfang der Compliance-Bewertung'
+    average_compliance: 'Durchschnittliche Compliance'
+    best_framework: 'Bestes Framework'
+    category: 'Kategorie'
+    category_comparison: 'Kategorie-Vergleich'
+    category_summary: 'Kategorie-Zusammenfassung'
+    check_name: 'Prüfpunkt'
+    checks: 'Prüfungen'
+    critical_gaps: 'Kritische Lücken'
+    data_sources_info: 'Informationen zu Datenquellen'
+    detailed_checks: 'Detaillierte Prüfungen'
+    duration_hint: 'Voraussichtliche Dauer der Bewertung'
+    export_hint: 'Exportieren Sie die Ergebnisse als PDF'
+    export_pdf: 'PDF exportieren'
+    gap_hint: 'Hinweis zu identifizierten Lücken'
+    gaps: 'Lücken'
+    gaps_identified: 'Identifizierte Lücken'
+    gaps_to_address: 'Zu adressierende Lücken'
+    go_to_module: 'Zum Modul'
+    insights: 'Erkenntnisse'
+    needs_attention: 'Handlungsbedarf'
+    overall: 'Gesamt'
+    rec_improve_controls: 'Empfehlung: Maßnahmen verbessern'
+    rec_priority_framework: 'Empfehlung: Prioritäts-Framework'
+    rec_regular_assessment: 'Empfehlung: Regelmäßige Bewertung'
+    recommendations: 'Empfehlungen'
+    recommended_action: 'Empfohlene Maßnahme'
+    run_again: 'Erneut ausführen'
+    score: 'Ergebnis'
+    score_hint: 'Compliance-Score basierend auf implementierten Maßnahmen'
+    select_frameworks: 'Frameworks auswählen'
+    status:
+        compliant: 'Konform'
+        in_progress: 'In Bearbeitung'
+        not_started: 'Nicht begonnen'
+        partial: 'Teilweise'
+    status_label: 'Status'
+    total_checks: 'Prüfungen gesamt'
+    update_comparison: 'Vergleich aktualisieren'
+    view_details: 'Details anzeigen'
+    what_to_expect: 'Was Sie erwartet'
+
+# Four Eyes Principle
+four_eyes:
+    title: 'Vier-Augen-Prinzip'
+    required: 'Vier-Augen-Freigabe erforderlich'
+    approved_by: 'Freigegeben von'
+    pending: 'Freigabe ausstehend'
+    approve: 'Freigeben'
+    reject: 'Ablehnen'

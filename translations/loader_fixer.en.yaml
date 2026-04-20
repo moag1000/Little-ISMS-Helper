@@ -39,3 +39,36 @@ flash:
     invalid_csrf: 'Invalid CSRF token. Action aborted.'
     single: 'Loader %code%: %added% requirement(s) added, total %after%.'
     bulk: '%total% requirement(s) added across %frameworks% framework(s).'
+
+# Prefixed keys (used by templates with explicit domain prefix)
+loader_fixer:
+    page:
+        title: 'Loader Fixer'
+        lead: 'Idempotently re-runs the framework requirement loaders. Pulls in missing controls/requirements from updated catalogue versions without modifying existing entries.'
+    confirm:
+        all: 'Run all framework loaders idempotently? Existing requirements remain untouched, only missing ones are added.'
+    action:
+        run_all: 'Backfill all loaders'
+        run_one: 'Backfill'
+        back: 'Back to overview'
+    hint:
+        heading: 'How the fix works'
+        body: 'Loaders with idempotent upsert logic (BSI/GDPR/ISO 27701 and more) only add the missing requirements. Loaders still using the legacy skip-guard return 0 added — safe to re-run.'
+    table:
+        code: 'Framework code'
+        label: 'Name'
+        loaded: 'Currently loaded'
+        status: 'Status'
+        actions: 'Actions'
+    status:
+        not_loaded: 'Not loaded'
+        empty: 'Empty'
+        loaded: 'Loaded'
+    result:
+        title: 'Loader Fixer result'
+        total_added: '%total% requirement(s) added.'
+        ok: 'Success'
+        failed: 'Error'
+        before: 'Before'
+        after: 'After'
+        added: 'Added'

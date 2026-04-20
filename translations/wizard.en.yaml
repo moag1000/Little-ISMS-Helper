@@ -26,6 +26,18 @@ wizard:
 
     # Wizard descriptions are merged into framework-specific sections below
 
+    # PDF Export
+    export:
+        pdf:
+            title: 'Compliance Comparison'
+            tenant: 'Organization'
+            cutoff_date: 'Cut-off Date'
+            frameworks: 'Frameworks'
+            per_framework: 'Results per Framework'
+            matrix: 'Comparison Matrix'
+            generated_at: 'Generated at'
+            audit_notice: 'This document serves as compliance evidence and should be retained as documented information.'
+
     # How it works
     how_it_works: "How it works"
     step1_title: "Select Framework"

@@ -198,3 +198,38 @@ pdf:
             active: 'Aktiv'
             compliant: 'Konform'
             review: 'Prüfen'
+
+# Board One-Pager Report
+board_one_pager:
+    title: 'ISMS Board One-Pager'
+    status:
+        good: 'Gut'
+        warning: 'Warnung'
+        critical: 'Kritisch'
+    section:
+        key_metrics: 'Wichtige Kennzahlen'
+        top_risks: 'Top-Risiken'
+        framework_compliance: 'Framework-Compliance'
+        readiness: 'Zertifizierungsbereitschaft'
+        operational: 'Operative Kennzahlen'
+    metric:
+        health: 'ISMS-Gesundheit'
+        compliance: 'Compliance-Rate'
+        critical_risks: 'Kritische Risiken'
+        mttr: 'MTTR'
+    table:
+        risk: 'Risiko'
+        level: 'Stufe'
+    no_risks: 'Keine Top-Risiken vorhanden.'
+    no_frameworks: 'Keine Compliance-Frameworks konfiguriert.'
+    no_data: 'Keine Daten verfügbar.'
+    ops:
+        open_incidents: 'Offene Vorfälle'
+        risk_treatment: 'Risikobehandlung'
+        overdue_treatments: 'Überfällige Behandlungen'
+        training_completion: 'Schulungsabschluss'
+        control_compliance: 'Maßnahmen-Compliance'
+    footer:
+        prepared_by: 'Erstellt von'
+        generated: 'Generiert'
+        confidential: 'Vertraulich'

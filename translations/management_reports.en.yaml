@@ -413,3 +413,33 @@ management_reports:
         footer: 'Confidential - Quarterly Trend Comparison Report'
         page: 'Page'
         view_report: 'Quarterly Trend'
+
+# Top-level cert_readiness keys (used by templates without management_reports. prefix)
+cert_readiness:
+    title: 'Certification Readiness Assessment'
+    view_assessment: 'View Assessment'
+    download_pdf: 'Download PDF'
+    overall_score: 'Overall Readiness Score'
+    clause_compliance_score: 'Clause Compliance (4-10)'
+    clauses_4_10: 'ISO 27001 Clauses 4-10 (weighted 60%)'
+    annex_a_coverage: 'Annex A Control Coverage'
+    controls_implemented: 'controls implemented'
+    section:
+        clause_compliance: 'Clause Compliance (4-10)'
+        controls_not_started: 'Controls Not Started'
+        controls_in_progress: 'Controls In Progress'
+        critical_gaps: 'Critical Gaps (Must Fix Before Audit)'
+        recommended_improvements: 'Recommended Improvements'
+    table:
+        clause: 'Clause'
+        score: 'Score'
+        status: 'Status'
+        gaps: 'Gaps'
+    status:
+        complete: 'Complete'
+        partial: 'Partial'
+        not_started: 'Not Started'
+    gaps_found: 'gap(s)'
+    no_iso_wizard: 'ISO 27001 compliance wizard is not available. Enable the controls module to run the assessment.'
+    all_controls_started: 'All applicable controls have been started.'
+    no_controls_in_progress: 'No controls currently in progress.'

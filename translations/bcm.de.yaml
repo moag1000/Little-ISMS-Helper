@@ -84,6 +84,11 @@ bcm:
     empty:
         title: 'Noch keine Geschäftsprozesse definiert'
         description: 'Legen Sie Ihren ersten kritischen Prozess an, um zu beginnen.'
+    criticality:
+        critical: 'Kritisch'
+        high: 'Hoch'
+        medium: 'Mittel'
+        low: 'Niedrig'
     rto:
         standard: Standard
         flexible: Flexibel

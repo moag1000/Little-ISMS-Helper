@@ -413,3 +413,33 @@ management_reports:
         footer: 'Vertraulich - Quartalsvergleichs-Bericht'
         page: 'Seite'
         view_report: 'Quartalsvergleich'
+
+# Top-level cert_readiness keys (used by templates without management_reports. prefix)
+cert_readiness:
+    title: 'Zertifizierungsbereitschaft'
+    view_assessment: 'Bewertung anzeigen'
+    download_pdf: 'PDF herunterladen'
+    overall_score: 'Gesamtbereitschafts-Score'
+    clause_compliance_score: 'Klausel-Compliance (4-10)'
+    clauses_4_10: 'ISO 27001 Klauseln 4-10 (60% gewichtet)'
+    annex_a_coverage: 'Annex A Maßnahmenabdeckung'
+    controls_implemented: 'Maßnahmen umgesetzt'
+    section:
+        clause_compliance: 'Klausel-Compliance (4-10)'
+        controls_not_started: 'Nicht begonnene Maßnahmen'
+        controls_in_progress: 'Maßnahmen in Bearbeitung'
+        critical_gaps: 'Kritische Lücken (vor Audit beheben)'
+        recommended_improvements: 'Empfohlene Verbesserungen'
+    table:
+        clause: 'Klausel'
+        score: 'Score'
+        status: 'Status'
+        gaps: 'Lücken'
+    status:
+        complete: 'Vollständig'
+        partial: 'Teilweise'
+        not_started: 'Nicht begonnen'
+    gaps_found: 'Lücke(n)'
+    no_iso_wizard: 'ISO 27001 Compliance-Wizard nicht verfügbar. Aktivieren Sie das Maßnahmen-Modul für die Bewertung.'
+    all_controls_started: 'Alle anwendbaren Maßnahmen wurden begonnen.'
+    no_controls_in_progress: 'Keine Maßnahmen aktuell in Bearbeitung.'
