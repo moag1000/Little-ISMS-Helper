@@ -201,6 +201,59 @@ compliance:
             full: 'Full (100%)'
             partial: 'Partial (50-99%)'
             weak: 'Weak (0-49%)'
+        wizard:
+            title: 'Mapping Wizard'
+            description: 'Create a cross-framework mapping in 4 steps — without scrolling through 1,800 entries.'
+            cta:
+                seeds: 'Import seed catalogs'
+                advanced: 'Classic form'
+            submit: 'Create mapping'
+            flash:
+                created: 'Mapping created via wizard.'
+            error:
+                source_required: 'Please select a source requirement.'
+                target_required: 'Please select a target requirement.'
+                same_requirement: 'Source and target must differ.'
+                type_invalid: 'Invalid mapping type.'
+            step1:
+                title: 'Step 1 — Framework pair'
+                hint: 'Which two frameworks should be linked?'
+                source_label: 'Source framework'
+                target_label: 'Target framework'
+                placeholder: 'Select framework'
+            step2:
+                title: 'Step 2 — Requirement pair'
+                hint: 'Dropdowns are filtered to the frameworks chosen in step 1.'
+                source_label: 'Source requirement'
+                target_label: 'Target requirement'
+                placeholder: 'Select requirement'
+            step3:
+                title: 'Step 3 — Mapping type'
+                hint: 'Type auto-fills percentage and confidence — free to override.'
+                percentage_label: 'Mapping percentage'
+                percentage_help: '0–150%. Values above 100% indicate the source exceeds the target.'
+                confidence_label: 'Analysis confidence'
+                confidence_help: 'How confident are you in this assessment?'
+                confidence:
+                    low: 'Low — rough estimate'
+                    medium: 'Medium — plausible'
+                    high: 'High — manually confirmed'
+                type:
+                    full: 'Full'
+                    full_desc: 'Identical or equivalent'
+                    partial: 'Partial'
+                    partial_desc: 'Partial overlap'
+                    weak: 'Weak'
+                    weak_desc: 'Minor overlap'
+                    exceeds: 'Exceeds'
+                    exceeds_desc: 'Source goes beyond target'
+            step4:
+                title: 'Step 4 — Rationale & direction'
+                hint: 'A short rationale helps during later audits.'
+                rationale_label: 'Rationale (optional)'
+                rationale_placeholder: 'Why does this mapping apply? (audit evidence)'
+                bidirectional_label: 'Bidirectional (both directions apply)'
+                bidirectional_help: 'If enabled, source ↔ target covers both directions.'
     message:
         no_data_elements: __compliance.message.no_data_elements
         no_frameworks: __compliance.message.no_frameworks
