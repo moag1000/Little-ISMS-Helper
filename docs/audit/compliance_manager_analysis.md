@@ -52,7 +52,7 @@ Das Tool deckt alle Framework-Anforderungen technisch ab. Der Rest ist
 |---|---|---|---|
 | Management-Review-PDF Signatur-Feld | 0,5 FTE-Tag | Nice-to-have | Für Rechtssicherheit; digitale Signatur oder Unterschriften-Zeile. Nicht zertifizierungskritisch. |
 | Prototype-Protection PDF-Export | 0,5 FTE-Tag | Nice-to-have | Paralleler Export zum Management-Review-PDF; TISAX-Auditor-Beleg. |
-| BSI Kompendium-Vollständigkeit | 2 FTE-Tage | Optional | Delta-Loader deckt die wichtigsten ~24 Anforderungen. Vollständige 1100+ Anforderungen nur auf Kundenwunsch. |
+| BSI Kompendium-Vollständigkeit | 0,5 FTE-Tage (Datenpflege) | Optional | ✅ Infrastruktur komplett: Delta-Loader (24) + Extended-Loader (51) + XML-Importer für offizielles BSI-Profil. Aktuell ~187 Anforderungen im System (~17% von ~1 100 Kompendium). Volle Kompendium-Parität via `app:import-bsi-kompendium-xml <file>` sobald Operator das BSI-XML-Profil bereitstellt. |
 | Tenant-Daten-Reife (nicht Tool) | 0 FTE-Tage | Operativ | Mandanten-Implementierung, keine Entwicklungsarbeit. |
 
 **Residual-Tool-Budget: ~3 FTE-Tage (vorher v2.1: 19, v2.0: 35).**
