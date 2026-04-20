@@ -160,6 +160,50 @@
     } only %}
 {% endif %}
 
+{# C3 Bulk-Edit Applicability (Sprint 3) — power-user tool for CM #}
+{% if is_granted('ROLE_MANAGER') %}
+    <details class="card mb-3">
+        <summary class="card-header" style="cursor: pointer;">
+            <i class="bi bi-check2-square" aria-hidden="true"></i>
+            <strong>{{ 'control.bulk.title'|trans({}, 'control') }}</strong>
+            <small class="text-muted ms-2">{{ 'control.bulk.hint'|trans({}, 'control') }}</small>
+        </summary>
+        <div class="card-body">
+            <form method="post" action="{{ path('app_soa_bulk_applicability') }}" class="row g-2 align-items-end">
+                <input type="hidden" name="_token" value="{{ csrf_token('soa_bulk_applicability') }}">
+                <div class="col-md-4">
+                    <label for="bulk-control-ids" class="form-label small">{{ 'control.bulk.ids'|trans({}, 'control') }}</label>
+                    <input type="text" id="bulk-control-ids" name="control_ids_raw" class="form-control form-control-sm"
+                           placeholder="12, 34, 56">
+                </div>
+                <div class="col-md-2">
+                    <label for="bulk-applicable" class="form-label small">{{ 'control.bulk.status'|trans({}, 'control') }}</label>
+                    <select id="bulk-applicable" name="applicable" class="form-select form-select-sm">
+                        <option value="0">{{ 'control.bulk.non_applicable'|trans({}, 'control') }}</option>
+                        <option value="1">{{ 'control.bulk.applicable'|trans({}, 'control') }}</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="bulk-reason" class="form-label small">{{ 'control.bulk.reason'|trans({}, 'control') }}</label>
+                    <input type="text" id="bulk-reason" name="reason" class="form-control form-control-sm"
+                           placeholder="{{ 'control.bulk.reason_placeholder'|trans({}, 'control') }}">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary btn-sm w-100"
+                            onclick="this.form.querySelectorAll('[name=control_ids_raw]')[0].value.split(/[,\s]+/).filter(Boolean).forEach(id => { var h = document.createElement('input'); h.type='hidden'; h.name='control_ids[]'; h.value=id; this.form.appendChild(h); });">
+                        <i class="bi bi-check-lg" aria-hidden="true"></i>
+                        {{ 'control.bulk.submit'|trans({}, 'control') }}
+                    </button>
+                </div>
+            </form>
+            <div class="small text-muted mt-2">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                {{ 'control.bulk.footer_hint'|trans({}, 'control') }}
+            </div>
+        </div>
+    </details>
+{% endif %}
+
 {# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
 {% embed '_components/_search_filter_form.html.twig' with {
     action: path('app_soa_index'),
