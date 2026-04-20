@@ -26,6 +26,14 @@
         </div>
     </div>
 
+    {# Phase 8H.1: Skeleton placeholder renders instantly, real content fades in after ~600ms — perceived-performance win for first paint. #}
+    <div data-controller="skeleton" data-skeleton-duration-value="600">
+        <div data-skeleton-target="skeleton">
+            {% include '_components/_skeleton.html.twig' with { type: 'kpi-grid', count: 4 } %}
+        </div>
+
+        <div data-skeleton-target="content" class="hidden">
+
     {# Executive Summary Cards #}
     <div class="row g-3 mb-4">
         <div class="col-md-3">
@@ -330,5 +338,8 @@
     <div class="text-muted text-end small mt-3">
         {{ 'dashboard.last_updated'|trans({'%time%': 'now'|date('H:i')}, 'dashboard') }}
     </div>
+
+        </div>{# /skeleton-content #}
+    </div>{# /skeleton-controller #}
 </div>
 {% endblock %}

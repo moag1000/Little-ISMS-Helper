@@ -64,24 +64,15 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <span class="label">{{ 'asset.label.type'|trans({}, 'asset') }}</span>
-                    <span class="value">{{ asset.assetType }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">{{ 'asset.label.owner'|trans({}, 'asset') }}</span>
-                    <span class="value">{{ asset.effectiveOwner }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">{{ 'asset.label.location'|trans({}, 'asset') }}</span>
-                    <span class="value">{{ asset.location }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">{{ 'asset.label.status'|trans({}, 'asset') }}</span>
-                    <span class="value">{{ asset.status|upper }}</span>
-                </div>
-            </div>
+            {# Phase 8H.1: standardised via _detail_group component #}
+            {% include '_components/_detail_group.html.twig' with {
+                items: [
+                    { label: 'asset.label.type'|trans({}, 'asset'), value: asset.assetType },
+                    { label: 'asset.label.owner'|trans({}, 'asset'), value: asset.effectiveOwner, dataReuse: true },
+                    { label: 'asset.label.location'|trans({}, 'asset'), value: asset.location },
+                    { label: 'asset.label.status'|trans({}, 'asset'), value: asset.status|upper }
+                ]
+            } only %}
 
             {% if asset.description %}
                 <div class="detail-section">
@@ -92,38 +83,21 @@
 
             <div class="detail-section">
                 <h3>{{ 'asset.section.valuation'|trans({}, 'asset') }}</h3>
-                <div class="detail-grid">
-                    <div class="detail-item">
-                        <span class="label">{{ 'asset.label.acquisition_value'|trans({}, 'asset') }}</span>
-                        <span class="value">{{ asset.acquisitionValue ? asset.acquisitionValue ~ ' EUR' : 'N/A' }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">{{ 'asset.label.current_value'|trans({}, 'asset') }}</span>
-                        <span class="value">{{ asset.currentValue ? asset.currentValue ~ ' EUR' : 'N/A' }}</span>
-                    </div>
-                    {% if asset.monetaryValue %}
-                        <div class="detail-item">
-                            <span class="label">{{ 'asset.label.monetary_value'|trans({}, 'asset') }}</span>
-                            <span class="value">{{ asset.monetaryValue ~ ' EUR' }}</span>
-                        </div>
-                    {% endif %}
-                    <div class="detail-item">
-                        <span class="label">{{ 'asset.label.total_value'|trans({}, 'asset') }}</span>
-                        <span class="value">{{ asset.totalValue ~ ' EUR' }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">{{ 'asset.label.risks'|trans({}, 'asset') }}</span>
-                        <span class="value">
-                            {% if asset.risks|length > 0 %}
-                                <a href="#related-risks" class="{{ badge_score(asset.risks|length, 5, 3) }}">
-                                    {{ asset.risks|length }}
-                                </a>
-                            {% else %}
-                                <span class="text-muted">0</span>
-                            {% endif %}
-                        </span>
-                    </div>
-                </div>
+                {# Phase 8H.1: standardised via _detail_group component #}
+                {% set valuationItems = [
+                    { label: 'asset.label.acquisition_value'|trans({}, 'asset'), value: asset.acquisitionValue ? asset.acquisitionValue ~ ' EUR' : 'N/A' },
+                    { label: 'asset.label.current_value'|trans({}, 'asset'), value: asset.currentValue ? asset.currentValue ~ ' EUR' : 'N/A' }
+                ] %}
+                {% if asset.monetaryValue %}
+                    {% set valuationItems = valuationItems|merge([{ label: 'asset.label.monetary_value'|trans({}, 'asset'), value: asset.monetaryValue ~ ' EUR' }]) %}
+                {% endif %}
+                {% set valuationItems = valuationItems|merge([
+                    { label: 'asset.label.total_value'|trans({}, 'asset'), value: asset.totalValue ~ ' EUR', dataReuse: true },
+                    { label: 'asset.label.risks'|trans({}, 'asset'), raw: true, dataReuse: true, value: asset.risks|length > 0
+                        ? '<a href="#related-risks" class="' ~ badge_score(asset.risks|length, 5, 3) ~ '">' ~ asset.risks|length ~ '</a>'
+                        : '<span class="text-muted">0</span>' }
+                ]) %}
+                {% include '_components/_detail_group.html.twig' with { items: valuationItems } only %}
             </div>
 
             {% if asset.dataClassification or asset.returnDate %}

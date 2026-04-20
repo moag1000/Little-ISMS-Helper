@@ -73,20 +73,14 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <span class="label">{{ 'risk.field.status'|trans({}, 'risk') }}:</span>
-                    <span class="value">{{ risk.status|upper|replace({'_': ' '}) }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">{{ 'risk.field.created'|trans({}, 'risk') }}:</span>
-                    <span class="value">{{ risk.createdAt|date('d.m.Y') }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">{{ 'risk.field.last_review'|trans({}, 'risk') }}:</span>
-                    <span class="value">{{ risk.reviewDate ? risk.reviewDate|date('d.m.Y') : ('risk.not_reviewed'|trans({}, 'risk')) }}</span>
-                </div>
-            </div>
+            {# Phase 8H.1: standardised via _detail_group component #}
+            {% include '_components/_detail_group.html.twig' with {
+                items: [
+                    { label: 'risk.field.status'|trans({}, 'risk'), value: risk.status|upper|replace({'_': ' '}) },
+                    { label: 'risk.field.created'|trans({}, 'risk'), value: risk.createdAt|date('d.m.Y') },
+                    { label: 'risk.field.last_review'|trans({}, 'risk'), value: risk.reviewDate ? risk.reviewDate|date('d.m.Y') : ('risk.not_reviewed'|trans({}, 'risk')) }
+                ]
+            } only %}
 
             {% if risk.description %}
                 <div class="detail-section">

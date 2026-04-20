@@ -26,6 +26,14 @@
         </div>
     </div>
 
+    {# Phase 8H.1: Skeleton placeholder during first paint. #}
+    <div data-controller="skeleton" data-skeleton-duration-value="600">
+        <div data-skeleton-target="skeleton">
+            {% include '_components/_skeleton.html.twig' with { type: 'kpi-grid', count: 6 } %}
+        </div>
+
+        <div data-skeleton-target="content" class="hidden">
+
     {# Summary Cards #}
     <div class="row g-3 mb-4">
         <div class="col-md-2">
@@ -303,5 +311,8 @@
             {% endembed %}
         </div>
     </div>
+
+        </div>{# /skeleton-content #}
+    </div>{# /skeleton-controller #}
 </div>
 {% endblock %}
