@@ -17,13 +17,22 @@
                 {% for alert in alerts %}
                     <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert">
                         <i class="bi {{ alert.icon }}"></i>
-                        <strong>{{ alert.message|trans }}</strong>
+                        <strong>{{ alert.message|trans({}, 'admin') }}</strong>
                         {% if alert.count is defined %}
                             - {{ alert.count }}
                             {{ (alert.count == 1 ? 'admin.dashboard.alerts.item' : 'admin.dashboard.alerts.items')|trans({}, 'admin') }}
                         {% endif %}
                         {% if alert.action %}
                             <a href="{{ alert.action }}" class="alert-link ms-2">{{ 'admin.dashboard.alerts.view'|trans({}, 'admin') }} →</a>
+                        {% endif %}
+                        {% if alert.fix_route is defined and alert.fix_route %}
+                            <form method="post" action="{{ path(alert.fix_route) }}" class="d-inline ms-2">
+                                <input type="hidden" name="_token" value="{{ csrf_token(alert.fix_csrf_name) }}">
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-wrench-adjustable me-1" aria-hidden="true"></i>
+                                    {{ alert.fix_label|trans({}, 'admin') }}
+                                </button>
+                            </form>
                         {% endif %}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                     </div>

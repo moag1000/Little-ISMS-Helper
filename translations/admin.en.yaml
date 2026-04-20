@@ -36,6 +36,12 @@ admin:
         data_repair: 'Data Repair'
         licensing: Licensing
         license_management: 'License Management'
+    alert:
+        inactive_users: 'Inactive users'
+        unverified_users: 'Unverified users'
+        large_database: 'Database size (GB)'
+        annex_a_missing: 'ISO 27001 Annex A controls missing for this tenant'
+        annex_a_missing_fix: 'Load now'
     dashboard:
         title: 'Admin Dashboard'
         subtitle: 'Central administration and system overview'

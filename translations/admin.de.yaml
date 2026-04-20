@@ -36,6 +36,12 @@ admin:
         data_repair: Daten-Reparatur
         licensing: Lizenzierung
         license_management: Lizenz-Verwaltung
+    alert:
+        inactive_users: 'Inaktive Benutzer'
+        unverified_users: 'Unverifizierte Benutzer'
+        large_database: 'Datenbank-Größe (GB)'
+        annex_a_missing: 'ISO 27001 Annex A Controls fehlen für diesen Tenant'
+        annex_a_missing_fix: 'Jetzt laden'
     dashboard:
         title: 'Admin Dashboard'
         subtitle: 'Zentrale Verwaltung und Systemübersicht'
