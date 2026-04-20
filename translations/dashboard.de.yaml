@@ -182,6 +182,11 @@ dashboard:
     days_overdue: T überfällig
     workflow_approval: Workflow-Freigabe
   urgent_items: dringende Punkte erfordern Aufmerksamkeit
+  reuse_fte:
+    title: 'Data-Reuse-Effizienz — FTE-Tage eingespart'
+    subtitle: 'durch Mapping-basierte Anforderungs-Vererbung (alle Frameworks)'
+    days_suffix: 'FTE-Tage'
+    cta: 'Zum Portfolio-Report und Trend-Chart'
   urgent:
     overdue_reviews: Überfällige Bewertungen
     overdue_treatment_plans: Überfällige Pläne

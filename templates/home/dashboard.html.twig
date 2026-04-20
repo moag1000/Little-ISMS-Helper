@@ -207,6 +207,38 @@
         </div>
     </div>
 
+
+    {# R2 Ein-Zahl-KPI — Data-Reuse in FTE-Tagen (Board-tauglich) #}
+    {% if reuse_fte_saved is defined and reuse_fte_saved is not null %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <a href="{{ path('app_management_reports_portfolio') }}" class="text-decoration-none">
+                    <div class="card shadow-sm border-success">
+                        <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
+                            <div>
+                                <div class="small text-uppercase text-muted mb-1">
+                                    <i class="bi bi-lightning-charge-fill text-success" aria-hidden="true"></i>
+                                    {{ 'dashboard.reuse_fte.title'|trans({}, 'dashboard') }}
+                                </div>
+                                <div class="display-5 fw-bold text-success">
+                                    {{ reuse_fte_saved|number_format(1, '.', ',') }}
+                                    <small class="fs-5 text-muted">{{ 'dashboard.reuse_fte.days_suffix'|trans({}, 'dashboard') }}</small>
+                                </div>
+                                <div class="small text-muted">{{ 'dashboard.reuse_fte.subtitle'|trans({}, 'dashboard') }}</div>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge text-bg-success-subtle text-success fs-6">
+                                    <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                                    {{ 'dashboard.reuse_fte.cta'|trans({}, 'dashboard') }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
     {# Management KPIs Row — skeleton-first rendering for perceived performance (8H.1) #}
     {% if management_kpis is defined and management_kpis|length > 0 %}
     <div class="row mb-4">
