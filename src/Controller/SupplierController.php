@@ -9,6 +9,7 @@ use App\Entity\Supplier;
 use App\Form\SupplierType;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\SupplierRepository;
+use App\Service\InverseCoverageService;
 use App\Service\SupplierService;
 use App\Service\TagFilterService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,7 +30,8 @@ class SupplierController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
         private readonly TagFilterService $tagFilterService,
-        private readonly ComplianceFrameworkRepository $complianceFrameworkRepository
+        private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
+        private readonly ?InverseCoverageService $inverseCoverageService = null,
     ) {}
     #[Route('/supplier/', name: 'app_supplier_index')]
     #[IsGranted('ROLE_USER')]
@@ -211,6 +213,8 @@ class SupplierController extends AbstractController
         $gdprFramework = $this->complianceFrameworkRepository->findOneBy(['code' => 'GDPR', 'active' => true]);
         $iso27001Framework = $this->complianceFrameworkRepository->findOneBy(['code' => 'ISO27001', 'active' => true]);
 
+        $inverseCoverage = $this->inverseCoverageService?->forSupplier($supplier) ?? ['total' => 0, 'frameworks' => []];
+
         return $this->render('supplier/show.html.twig', [
             'supplier' => $supplier,
             'isInherited' => $isInherited,
@@ -222,6 +226,7 @@ class SupplierController extends AbstractController
             'doraFramework' => $doraFramework,
             'gdprFramework' => $gdprFramework,
             'iso27001Framework' => $iso27001Framework,
+            'inverse_coverage' => $inverseCoverage,
         ]);
     }
     #[Route('/supplier/{id}/edit', name: 'app_supplier_edit', requirements: ['id' => '\d+'])]

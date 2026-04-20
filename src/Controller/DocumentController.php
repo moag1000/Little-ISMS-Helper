@@ -9,6 +9,7 @@ use App\Form\DocumentType;
 use App\Repository\DocumentRepository;
 use App\Service\DocumentService;
 use App\Service\FileUploadSecurityService;
+use App\Service\InverseCoverageService;
 use App\Service\SecurityEventLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,7 +36,8 @@ class DocumentController extends AbstractController
         private readonly FileUploadSecurityService $fileUploadSecurityService,
         private readonly SecurityEventLogger $securityEventLogger,
         private readonly TranslatorInterface $translator,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly ?InverseCoverageService $inverseCoverageService = null,
     ) {}
 
     #[Route('/document/', name: 'app_document_index')]
@@ -276,11 +278,14 @@ class DocumentController extends AbstractController
             $canEdit = true;
         }
 
+        $inverseCoverage = $this->inverseCoverageService?->forDocument($document) ?? ['total' => 0, 'frameworks' => []];
+
         return $this->render('document/show.html.twig', [
             'document' => $document,
             'isInherited' => $isInherited,
             'canEdit' => $canEdit,
             'currentTenant' => $tenant,
+            'inverse_coverage' => $inverseCoverage,
         ]);
     }
 
