@@ -47,6 +47,7 @@ nav:
     cross_framework: Framework-übergreifend
     compare: Vergleichen
     mapping_quality: Mapping-Qualität
+    data_reuse: Data-Reuse-Hub
     locations: Standorte
     people: Personen
     risk_appetite: Risikobereitschaft
@@ -127,6 +128,7 @@ nav:
             compliance_frameworks: 'Multi-Framework-Management'
             framework_dashboard: 'Framework-übergreifende Übersicht'
             mapping_quality: 'Framework-übergreifende Mapping-Qualitätsanalyse'
+            data_reuse: 'Top-wiederverwendete Dokumente und Lieferanten über alle Frameworks'
             nis2: 'NIS2-Richtlinienbewertung'
             bsi_check: 'BSI IT-Grundschutz Soll/Ist pro Baustein mit MUSS/SOLLTE/KANN-Gewichtung'
             prototype_protection: 'TISAX Kap. 8 — Schutz von Prototypen, Erprobungsträgern und Events'

@@ -1934,3 +1934,31 @@ four_eyes:
     pending: 'Freigabe ausstehend'
     approve: 'Freigeben'
     reject: 'Ablehnen'
+reuse:
+    page:
+        title: 'Data-Reuse-Hub'
+        description: 'Welche Artefakte tragen die größte Last? Die wiederverwendeten Dokumente und Lieferanten über alle Frameworks hinweg.'
+        footer_hint: 'Assets als Top-Liste folgen, wenn die Dependency-Graph-Heuristik ausreichend robust für alle Mandanten ist (Sprint 5).'
+    fte:
+        title: 'Durch Wiederverwendung eingespart'
+        subtitle: 'Mapping-basierte Anforderungs-Vererbung über alle Frameworks'
+        days_suffix: 'FTE-Tage'
+    stats:
+        documents: 'Dokumente wiederverwendet: %reused% / %total%'
+        suppliers: 'Lieferanten adressiert: %reused% / %total%'
+        requirements: 'Compliance-Anforderungen gesamt: %count%'
+    iso9001_bridge:
+        title: 'Für 9001-Praktiker:'
+        text: 'Wiederverwendung ist wie CAPA-Mehrfachnutzen: eine Maßnahme erfüllt mehrere Normpunkte gleichzeitig. Dokumente und Lieferanten tragen hier die Last über 22 Compliance-Frameworks hinweg.'
+    documents:
+        heading: 'Top-Dokumente nach Wiederverwendung'
+        all_link: 'Alle Dokumente'
+        empty: 'Noch keine Dokumente als Evidence in Anforderungen hinterlegt. Über jede Anforderungs-Show-Seite kann Evidence zugeordnet werden.'
+    suppliers:
+        heading: 'Top-Lieferanten nach adressierenden Anforderungen'
+        all_link: 'Alle Lieferanten'
+        empty: 'Keine Lieferanten werden aktuell von Compliance-Anforderungen adressiert.'
+    unit:
+        requirements_in_frameworks: 'Anforderungen in %fw% Framework(s)'
+    cta:
+        portfolio: 'Trend und Portfolio-Report'
