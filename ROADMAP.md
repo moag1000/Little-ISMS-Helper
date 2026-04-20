@@ -1000,11 +1000,11 @@ Dokument ohne Nacharbeit nutzbar.
 
 **Zeitraum:** 2026 Q2–Q3
 **Status:** P1 ✅ abgeschlossen 2026-04-20 · P2 ✅ abgeschlossen 2026-04-20 · P3 📅 Backlog
-**Priorität:** HOCH (Markt-Gap gegen HiScout/Verinice bei Mittelstands-Holdings)
+**Priorität:** HOCH (Holding-Strukturen im Mittelstand sind regulär unterversorgt)
 **Trigger:** Consultant-Review 2026-04-19 zu NIS2 §28 BSIG — Regulierung pro Rechtsperson, nicht Konzern; Holding liefert Governance (Art. 21)
 
 ### Hintergrund
-NIS2 reguliert einzelne Rechtspersonen (Schwellwerte 50 MA / 10 Mio € pro juristischer Person). In Mischkonzernen kann Tochter A "besonders wichtig", Tochter B "wichtig", Tochter C gar nicht reguliert sein. Holding steuert Governance (Policies, Krisenmanagement, Lieferkettenrisiko). Markt-Vergleich: HiScout (Organisationseinheiten mit Vererbung), Verinice (Organisationen + Scope-Objekte), Archer (Business Hierarchies). Vanta/Drata ignorieren Konzernstrukturen komplett.
+NIS2 reguliert einzelne Rechtspersonen (Schwellwerte 50 MA / 10 Mio € pro juristischer Person). In Mischkonzernen kann Tochter A "besonders wichtig", Tochter B "wichtig", Tochter C gar nicht reguliert sein. Holding steuert Governance (Policies, Krisenmanagement, Lieferkettenrisiko). Pragmatisches Modell: Tenant = Rechtsperson mit eigenem ISMS-Scope, Parent/Child über Self-FK, Holding-CISO liest read-only in die Töchter.
 
 ### ✅ Phase 9.P1 — Core Holding-Struktur (Abgeschlossen 2026-04-20)
 
@@ -1030,7 +1030,7 @@ NIS2 reguliert einzelne Rechtspersonen (Schwellwerte 50 MA / 10 Mio € pro juri
 - UX: 7 NIS2-Felder nicht im TenantType-Form → ChoiceType/DateType/TextType ergänzt, DE+EN-Übersetzungen.
 - NAV: Kein Mega-Menu-Link zu /group-report → Entry in ISMS-Bereich, ROLE_GROUP_CISO gated.
 
-### ✅ Phase 9.P2 — HiScout-Niveau (Abgeschlossen 2026-04-20)
+### ✅ Phase 9.P2 — Konzern-Governance & Reporting (Abgeschlossen 2026-04-20)
 
 **Effort:** 8–15 FTE-Tage (realisiert in 5 Commits)
 **Ziel:** Konzern-Governance & Reporting auf Markt-Referenzniveau.
@@ -1059,7 +1059,7 @@ NIS2 reguliert einzelne Rechtspersonen (Schwellwerte 50 MA / 10 Mio € pro juri
 | # | Task | Warum später |
 |---|------|--------------|
 | 9.P3.1 | Matrix-Organisation (mehrere Parents pro Tochter) | Nur M&A-Sondersituationen. Komplexität in Voter-Logik explodiert. |
-| 9.P3.2 | Cross-Tenant-Workflows mit Approval-Chains über Ebenen | Feature-Zombie. Kein Verinice-Kunde nutzt das produktiv. |
+| 9.P3.2 | Cross-Tenant-Workflows mit Approval-Chains über Ebenen | Feature-Zombie. Komplexität hoch, echter Kundennutzen in der Praxis gering. |
 | 9.P3.3 | Konzern-Change-Management Konsolidierung | Scope-Creep Richtung ITSM-Tool. |
 | 9.P3.4 | **Konsolidierte Finanz-KPIs** (Risiko-Euro-Exposure konzernweit) — *"später mal"* | SAP-GRC-Territorium. Relevant sobald CFO-Reporting gefordert. FTE-Aufwand 8–12 d. |
 

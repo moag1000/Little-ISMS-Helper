@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ✨ Added
 
-#### Phase 9.P2 — HiScout-Niveau Konzern-Reports (2026-04-20)
+#### Phase 9.P2 — Konzern-Governance & Reporting (2026-04-20)
 
 Fortführung der Holding-Struktur aus P1. Die sieben Items aus dem
 Consultant-Plan für Phase 9.P2 (8–15 FTE-d geschätzt) sind in fünf
