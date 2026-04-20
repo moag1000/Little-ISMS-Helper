@@ -50,12 +50,12 @@ Das Tool deckt alle Framework-Anforderungen technisch ab. Der Rest ist
 
 | Thema | Residual | Typ | Notiz |
 |---|---|---|---|
-| Management-Review-PDF Signatur-Feld | 0,5 FTE-Tag | Nice-to-have | Für Rechtssicherheit; digitale Signatur oder Unterschriften-Zeile. Nicht zertifizierungskritisch. |
-| Prototype-Protection PDF-Export | 0,5 FTE-Tag | Nice-to-have | Paralleler Export zum Management-Review-PDF; TISAX-Auditor-Beleg. |
-| BSI Kompendium-Vollständigkeit | 0,5 FTE-Tage (Datenpflege) | Optional | ✅ Infrastruktur komplett: Delta-Loader (24) + Extended-Loader (51) + XML-Importer für offizielles BSI-Profil. Aktuell ~187 Anforderungen im System (~17% von ~1 100 Kompendium). Volle Kompendium-Parität via `app:import-bsi-kompendium-xml <file>` sobald Operator das BSI-XML-Profil bereitstellt. |
+| Management-Review-PDF Signatur-Feld | ✅ 0 | **Erledigt** | `b685e63c` — 3-Zeilen-Signatur-Tabelle (Top-Mgmt/CISO/ISMS-Manager) + eIDAS-Hinweis. |
+| Prototype-Protection PDF-Export | ✅ 0 | **Erledigt** | `4af43750` — Route `/prototype-protection/{id}/pdf` + Signatur-Block (Assessor + Approver). |
+| BSI Kompendium-Vollständigkeit | ✅ 0 | **Erledigt** | Offizielles BSI-DocBook-XML (bsi.bund.de/XML_Kompendium_2023.xml, 3 MB) importiert. **1 868 Anforderungen** im System (B:492, S:867, H:404, 121 Bausteine). ENTFALLEN (290) übersprungen. Re-Import bei 2024er-Edition = 1 Kommando. |
 | Tenant-Daten-Reife (nicht Tool) | 0 FTE-Tage | Operativ | Mandanten-Implementierung, keine Entwicklungsarbeit. |
 
-**Residual-Tool-Budget: ~3 FTE-Tage (vorher v2.1: 19, v2.0: 35).**
+**Residual-Tool-Budget: 0 FTE-Tage (alle Items geschlossen — vorher v2.1: 19, v2.0: 35).**
 
 ### Reifegrad-Ampel v2.2
 
