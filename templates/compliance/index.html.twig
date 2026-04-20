@@ -36,6 +36,68 @@
         </div>
     </div>
 
+    {# Maturity Heatmap — CMMI Levels per Framework (C2) #}
+    {% if maturity_portfolio is defined and maturity_portfolio|length > 0 %}
+        {% set level_variant = {
+            0: 'secondary',
+            1: 'danger',
+            2: 'warning',
+            3: 'info',
+            4: 'primary',
+            5: 'success',
+        } %}
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="h6 mb-0">
+                    <i class="bi bi-bar-chart-steps" aria-hidden="true"></i>
+                    {{ 'compliance.maturity.title'|trans({}, 'compliance') }}
+                </h2>
+                <span class="small text-muted">{{ 'compliance.maturity.hint'|trans({}, 'compliance') }}</span>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'compliance.maturity.framework'|trans({}, 'compliance') }}</th>
+                                <th scope="col" style="width: 140px;">{{ 'compliance.maturity.level'|trans({}, 'compliance') }}</th>
+                                <th scope="col" style="width: 100px;">{{ 'compliance.maturity.coverage'|trans({}, 'compliance') }}</th>
+                                <th scope="col" style="width: 100px;">{{ 'compliance.maturity.mappings'|trans({}, 'compliance') }}</th>
+                                <th scope="col">{{ 'compliance.maturity.missing'|trans({}, 'compliance') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for code, row in maturity_portfolio %}
+                                {% set m = row.maturity %}
+                                {% set variant = level_variant[m.level] ?? 'secondary' %}
+                                <tr>
+                                    <td>
+                                        <span class="badge text-bg-light border">{{ code }}</span>
+                                        <span class="ms-1">{{ row.framework.name }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge text-bg-{{ variant }}">
+                                            L{{ m.level }} — {{ ('compliance.maturity.label.' ~ m.label)|trans({}, 'compliance') }}
+                                        </span>
+                                    </td>
+                                    <td>{{ m.coverage_pct }}%</td>
+                                    <td>{{ m.cross_mappings }}</td>
+                                    <td class="small text-muted">
+                                        {% if m.missing|length == 0 %}
+                                            <em>{{ 'compliance.maturity.none_missing'|trans({}, 'compliance') }}</em>
+                                        {% else %}
+                                            {{ m.missing|first }}{% if m.missing|length > 1 %} <span class="text-muted">(+ {{ m.missing|length - 1 }})</span>{% endif %}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
     {# Quick Access Bar - One-Click Navigation #}
     {% if frameworks|length > 0 %}
     <div class="quick-access-bar">

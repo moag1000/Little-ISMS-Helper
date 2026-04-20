@@ -755,5 +755,21 @@ compliance_framework:
         public_sector: 'Public Sector'
         education: Education
         insurance: Insurance
+    maturity:
+        title: 'Maturity portfolio (CMMI level per framework)'
+        hint: 'Level 1 Initial → 5 Optimizing — based on coverage, cross-framework mappings, audit activity and KPI history.'
+        framework: 'Framework'
+        level: 'Maturity'
+        coverage: 'Coverage'
+        mappings: 'Cross-mappings'
+        missing: 'Next level requires'
+        none_missing: 'Maximum level reached'
+        label:
+            n/a: 'not tracked'
+            initial: 'Initial'
+            managed: 'Managed'
+            defined: 'Defined'
+            quantitatively_managed: 'Quant. Managed'
+            optimizing: 'Optimizing'
 nis2:
     article: Article
