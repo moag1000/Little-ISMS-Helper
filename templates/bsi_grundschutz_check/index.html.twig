@@ -2,14 +2,6 @@
 
 {% block title %}{{ 'bsi_check.title'|trans({}, 'messages') }}{% endblock %}
 
-{% set status_variant = {
-    'good':    'success',
-    'warning': 'warning',
-    'danger':  'danger',
-    'na':      'secondary',
-} %}
-{% set stufe_options = ['basis', 'standard', 'kern'] %}
-
 {% macro aggregate_bar(aggregate, status_variant) %}
     {% set pct = aggregate.weighted_pct is not null ? aggregate.weighted_pct : 0 %}
     {% set variant = status_variant[aggregate.status] ?? 'secondary' %}
@@ -33,7 +25,16 @@
 {% endmacro %}
 
 {% block body %}
+{# Macros + Lookups in den Block gezogen — bei extends werden {% set %} und
+ # {% import %} außerhalb von Blocks von Twig verworfen. #}
 {% import _self as helpers %}
+{% set status_variant = {
+    'good':    'success',
+    'warning': 'warning',
+    'danger':  'danger',
+    'na':      'secondary',
+} %}
+{% set stufe_options = ['basis', 'standard', 'kern'] %}
 <div class="container-fluid">
     <div class="row mb-3">
         <div class="col-12">
