@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
+use App\Repository\ReuseTrendSnapshotRepository;
 use App\Service\CompliancePolicyService;
 use App\Service\ExcelExportService;
 use App\Service\InheritanceMetricsService;
@@ -41,6 +42,7 @@ class PortfolioReportController extends AbstractController
         private readonly InheritanceMetricsService $inheritanceMetricsService,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
+        private readonly ?ReuseTrendSnapshotRepository $reuseTrendRepository = null,
     ) {
     }
 
@@ -76,6 +78,18 @@ class PortfolioReportController extends AbstractController
         $inheritanceMetrics = $this->inheritanceMetricsService->metricsForTenant($tenant);
         $fteSaved = $this->inheritanceMetricsService->fteSavedForTenant($tenant);
 
+        // R3 Reuse-Trend: 12-Monats-Verlauf als Chart-Daten (wenn Snapshots existieren)
+        $reuseTrend = [];
+        if ($this->reuseTrendRepository !== null) {
+            foreach ($this->reuseTrendRepository->findRecentForTenant($tenant, 12) as $s) {
+                $reuseTrend[] = [
+                    'day' => $s->getCapturedDay()->format('Y-m-d'),
+                    'fte_saved' => $s->getFteSavedTotal(),
+                    'inheritance_pct' => $s->getInheritanceRatePct(),
+                ];
+            }
+        }
+
         return $this->render('portfolio_report/index.html.twig', [
             'matrix' => $matrix,
             'tenant' => $tenant,
@@ -84,6 +98,7 @@ class PortfolioReportController extends AbstractController
             'thresholds' => $this->thresholds(),
             'inheritance_metrics' => $inheritanceMetrics,
             'fte_saved' => $fteSaved,
+            'reuse_trend' => $reuseTrend,
         ]);
     }
 

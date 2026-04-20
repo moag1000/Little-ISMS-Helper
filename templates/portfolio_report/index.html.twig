@@ -73,6 +73,63 @@
         </div>
     {% endif %}
 
+    {# R3 Reuse-Trend — 12-Monats-Verlauf aus ReuseTrendSnapshot #}
+    {% if reuse_trend is defined and reuse_trend|length > 0 %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="h6 mb-0">
+                    <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                    {{ 'portfolio_report.reuse_trend.title'|trans({}, 'portfolio_report') }}
+                </h2>
+                <span class="small text-muted">{{ 'portfolio_report.reuse_trend.hint'|trans({'%count%': reuse_trend|length}, 'portfolio_report') }}</span>
+            </div>
+            <div class="card-body">
+                <canvas id="reuseTrendChart" height="90"
+                        data-labels="{{ reuse_trend|map(p => p.day)|json_encode }}"
+                        data-fte="{{ reuse_trend|map(p => p.fte_saved)|json_encode }}"
+                        data-pct="{{ reuse_trend|map(p => p.inheritance_pct)|json_encode }}"></canvas>
+                <p class="small text-muted mt-2 mb-0">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    {{ 'portfolio_report.reuse_trend.footer'|trans({}, 'portfolio_report') }}
+                </p>
+            </div>
+        </div>
+        <script type="module">
+            import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.js/+esm';
+            const el = document.getElementById('reuseTrendChart');
+            if (el) {
+                const labels = JSON.parse(el.dataset.labels);
+                const fte = JSON.parse(el.dataset.fte);
+                const pct = JSON.parse(el.dataset.pct);
+                new Chart(el, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: '{{ 'portfolio_report.reuse_trend.fte_label'|trans({}, 'portfolio_report') }}',
+                              data: fte, yAxisID: 'y1', borderColor: '#198754', backgroundColor: 'rgba(25,135,84,0.1)', tension: 0.3, fill: true },
+                            { label: '{{ 'portfolio_report.reuse_trend.pct_label'|trans({}, 'portfolio_report') }}',
+                              data: pct, yAxisID: 'y2', borderColor: '#0d6efd', borderDash: [4,4], tension: 0.3 }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: { mode: 'index', intersect: false },
+                        scales: {
+                            y1: { type: 'linear', position: 'left', title: { display: true, text: 'FTE-Tage' } },
+                            y2: { type: 'linear', position: 'right', title: { display: true, text: '%' }, min: 0, max: 100, grid: { drawOnChartArea: false } }
+                        }
+                    }
+                });
+            }
+        </script>
+    {% elseif reuse_trend is defined %}
+        <div class="alert alert-info mb-4">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            {{ 'portfolio_report.reuse_trend.empty'|trans({}, 'portfolio_report') }}
+        </div>
+    {% endif %}
+
     {# Stichtag / Vorperiode Picker #}
     <div class="card shadow-sm mb-4">
         <div class="card-body">
