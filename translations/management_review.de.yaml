@@ -92,6 +92,17 @@ management_review:
             inputs_hint: 'Von der Norm vorgegebene Eingangsgrößen für das Management Review.'
             outputs: 'Outputs & Decisions (Clause 9.3.3)'
             outputs_hint: 'Ergebnisse, Beschlüsse und Maßnahmen des Reviews.'
+            signatures: 'Freigabe / Unterschriften'
+            signatures_hint: 'Handschriftliche Unterschrift bestätigt die Kenntnisnahme der Ergebnisse durch das Top-Management. ISO 27001 Clause 9.3.3 verlangt dokumentierte Information als Ergebnis.'
+        signature:
+            role: 'Rolle'
+            name: 'Name'
+            date: 'Datum'
+            signature: 'Unterschrift'
+            role_top_mgmt: 'Top-Management / Geschäftsführung'
+            role_ciso: 'CISO / Informationssicherheitsbeauftragte*r'
+            role_isms_manager: 'ISMS-Manager / Reviewer'
+            legal_note: 'Die obige Tabelle dient als Freigabe-Nachweis. Digitale Signatur (z. B. qualifizierte elektronische Signatur gemäß eIDAS) ist der handschriftlichen gleichwertig.'
         input:
             previous_actions: 'Status der Maßnahmen aus dem vorherigen Review'
             context_changes: 'Änderungen im Kontext der Organisation'

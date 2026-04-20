@@ -91,6 +91,17 @@ management_review:
             inputs_hint: 'Inputs mandated by the standard as management-review subject matter.'
             outputs: 'Outputs & Decisions (Clause 9.3.3)'
             outputs_hint: 'Decisions, resource needs and improvement items produced by the review.'
+            signatures: 'Approval / Signatures'
+            signatures_hint: 'A wet or qualified electronic signature confirms top-management acknowledgement of the results. ISO 27001 Clause 9.3.3 requires documented information as output.'
+        signature:
+            role: 'Role'
+            name: 'Name'
+            date: 'Date'
+            signature: 'Signature'
+            role_top_mgmt: 'Top Management'
+            role_ciso: 'CISO / Information Security Officer'
+            role_isms_manager: 'ISMS Manager / Reviewer'
+            legal_note: 'The table above serves as approval record. A qualified electronic signature (e.g. eIDAS-conformant) is equivalent to a handwritten one.'
         input:
             previous_actions: 'Status of previous management-review actions'
             context_changes: 'Changes in the organisation''s context'
