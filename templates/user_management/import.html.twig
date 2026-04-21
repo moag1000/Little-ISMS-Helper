@@ -29,7 +29,7 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
     {# Import Form #}
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
-            <div class="card-header bg-primary text-white">
+            <div class="card-header">
                 <h2 class="mb-0">
                     <i class="bi bi-file-earmark-arrow-up" aria-hidden="true"></i> {{ 'user.import.upload_title'|trans({}, 'user') }}
                 </h2>

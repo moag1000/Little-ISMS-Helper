@@ -15,7 +15,7 @@
     {# Role Selection #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-primary text-white">
+            <div class="card-header">
                 <h2 class="mb-0">
                     <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'role.compare.select_roles'|trans }}
                 </h2>
@@ -53,7 +53,7 @@
         {# Comparison Matrix #}
         {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
             {% block card_header %}
-                <div class="card-header bg-success text-white">
+                <div class="card-header">
                     <h3 class="mb-0">
                         <i class="bi bi-table" aria-hidden="true"></i> {{ 'role.compare.permission_matrix'|trans }}
                     </h3>
