@@ -89,8 +89,8 @@
             {% if bia_data.financial_impact_day %}
                 <div class="alert alert-info mt-3">
                     <ul class="mb-0">
-                        <li>1 Woche Ausfall: {{ (bia_data.financial_impact_day * 7)|number_format(2, ',', '.') }} €</li>
-                        <li>1 Monat Ausfall: {{ (bia_data.financial_impact_day * 30)|number_format(2, ',', '.') }} €</li>
+                        <li>{{ 'business_process.bia.field.projection_week'|trans({'%amount%': (bia_data.financial_impact_day * 7)|number_format(2, ',', '.')}, 'business_process') }}</li>
+                        <li>{{ 'business_process.bia.field.projection_month'|trans({'%amount%': (bia_data.financial_impact_day * 30)|number_format(2, ',', '.')}, 'business_process') }}</li>
                     </ul>
                 </div>
             {% endif %}
@@ -157,11 +157,11 @@
         {% block card_body %}
             <h3 class="h6 text-muted text-uppercase fw-bold mb-2">{{ 'business_process.bia.field.suggested_availability'|trans({}, 'business_process') }}</h3>
             <p class="lead">
-                Basierend auf RTO {{ bia_data.rto }}h wird empfohlen:
-{% include '_components/_badge.html.twig' with { variant: 'primary', class: 'fs-5', content: bia_data.suggested_availability ~ '/5' } %}
+                {{ 'business_process.bia.field.rto_recommendation_intro'|trans({'%rto%': bia_data.rto}, 'business_process') }}
+                {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'fs-5', content: bia_data.suggested_availability ~ '/5' } %}
             </p>
             <small class="text-muted">
-                Dieser Wert sollte bei der Asset-Bewertung berücksichtigt werden, um die Konsistenz zwischen BIA und Asset Management sicherzustellen.
+                {{ 'business_process.bia.field.rto_consistency_hint'|trans({}, 'business_process') }}
             </small>
         {% endblock %}
     {% endembed %}
