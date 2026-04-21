@@ -1,0 +1,30 @@
+{#
+ # FairyAurora CheckRow — Status + Label + optional Value + Hint
+ #
+ # Usage:
+ #   {% import '_components/_check_row.html.twig' as row %}
+ #   {{ row.render({ status: 'ok', label: 'PHP 8.4', value: 'OK' }) }}
+ #   {{ row.render({ status: 'warn', label: 'SMTP', hint: 'Optional aber empfohlen' }) }}
+ #
+ # Status: ok | warn | err | idle
+ #}
+
+{% macro render(props) %}
+    {% set status = props.status|default('idle') %}
+    {% set validStatuses = ['ok', 'warn', 'err', 'idle'] %}
+    {% set s = status in validStatuses ? status : 'idle' %}
+    {% set glyphs = { 'ok': '✓', 'warn': '!', 'err': '✕', 'idle': '·' } %}
+
+    <div class="fa-check-row fa-check-row--{{ s }}">
+        <span class="fa-check-row__glyph" aria-hidden="true">{{ glyphs[s] }}</span>
+        <div class="fa-check-row__body">
+            <div class="fa-check-row__label">{{ props.label }}</div>
+            {% if props.hint is defined and props.hint %}
+                <div class="fa-check-row__hint">{{ props.hint }}</div>
+            {% endif %}
+        </div>
+        {% if props.value is defined and props.value %}
+            <div class="fa-check-row__value">{{ props.value }}</div>
+        {% endif %}
+    </div>
+{% endmacro %}

@@ -1,0 +1,71 @@
+{#
+ # FairyAurora NavBar (Wizard-Navigation) — Zurück links, Weiter rechts
+ #
+ # Usage:
+ #   {% import '_components/_nav_bar.html.twig' as nav %}
+ #   {{ nav.render({
+ #       back: { url: path('setup_step_prev'), label: 'Zurück' },
+ #       next: { url: path('setup_step_next'), label: 'Weiter' }
+ #   }) }}
+ #   {{ nav.render({
+ #       next: { submit: true, label: 'Absenden', disabled: false }
+ #   }) }}
+ #
+ # Props:
+ #   back:      { url, label } | null
+ #   next:      { url | submit: bool, label, disabled, icon }
+ #   secondary: { url, label } (optional Link neben Next-Button, z.B. "Überspringen")
+ #}
+
+{% import '_components/_cyber_button.html.twig' as btn %}
+
+{% macro render(props) %}
+    {% import _self as self %}
+    <nav class="fa-nav-bar" aria-label="{{ 'wizard.navigation'|trans({}, 'messages')|default('Wizard-Navigation') }}">
+        <div class="fa-nav-bar__left">
+            {% if props.back is defined and props.back %}
+                {{ self._backBtn(props.back) }}
+            {% endif %}
+        </div>
+        <div class="fa-nav-bar__right">
+            {% if props.secondary is defined and props.secondary %}
+                {% import '_components/_cyber_button.html.twig' as btn %}
+                {{ btn.link(
+                    props.secondary.url,
+                    props.secondary.label,
+                    { variant: 'ghost', icon: props.secondary.icon|default(null) }
+                ) }}
+            {% endif %}
+            {% if props.next is defined and props.next %}
+                {{ self._nextBtn(props.next) }}
+            {% endif %}
+        </div>
+    </nav>
+{% endmacro %}
+
+{% macro _backBtn(back) %}
+    {% import '_components/_cyber_button.html.twig' as btn %}
+    {% if back.url is defined %}
+        {{ btn.link(back.url, back.label|default('Zurück'), { variant: 'secondary', icon: back.icon|default('bi-arrow-left') }) }}
+    {% else %}
+        {{ btn.render(back.label|default('Zurück'), { variant: 'secondary', icon: back.icon|default('bi-arrow-left'), attrs: back.attrs|default({}) }) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro _nextBtn(next) %}
+    {% import '_components/_cyber_button.html.twig' as btn %}
+    {% set props = {
+        variant: next.variant|default('primary'),
+        icon: next.icon|default('bi-arrow-right'),
+        iconAfter: true,
+        disabled: next.disabled|default(false),
+        attrs: next.attrs|default({})
+    } %}
+    {% if next.submit|default(false) %}
+        {{ btn.submit(next.label|default('Weiter'), props|merge({ type: 'submit' })) }}
+    {% elseif next.url is defined %}
+        {{ btn.link(next.url, next.label|default('Weiter'), props) }}
+    {% else %}
+        {{ btn.render(next.label|default('Weiter'), props) }}
+    {% endif %}
+{% endmacro %}

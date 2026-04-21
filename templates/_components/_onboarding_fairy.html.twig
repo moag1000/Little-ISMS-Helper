@@ -1,0 +1,33 @@
+{#
+ # FairyAurora OnboardingFairy — Alva (150px) + Aura-Pulse + Orbit-Dots
+ #
+ # Wird im Setup-Wizard Left-Panel zentriert angezeigt.
+ # Die 4 Orbit-Dots rotieren auf 110px-Radius um Alva.
+ #
+ # Usage:
+ #   {% import '_components/_onboarding_fairy.html.twig' as onFairy %}
+ #   {{ onFairy.render('happy') }}
+ #}
+
+{% import '_components/_alva.html.twig' as faAlva %}
+
+{% macro render(mood = 'idle') %}
+    {% import '_components/_alva.html.twig' as faAlva %}
+    <div class="fa-onboarding-fairy fa-onboarding-fairy--{{ mood }}">
+        {# Aura-Pulse-Layer hinter Alva #}
+        <span class="fa-onboarding-fairy__aura" aria-hidden="true"></span>
+
+        {# Orbit mit 4 Dots — rotiert als ganze SVG-Gruppe #}
+        <svg class="fa-onboarding-fairy__orbit" width="220" height="220" viewBox="0 0 220 220" aria-hidden="true">
+            <circle cx="110" cy="18"  r="2"   fill="var(--accent)"  opacity="0.8"/>
+            <circle cx="202" cy="110" r="1.5" fill="var(--primary)" opacity="0.7"/>
+            <circle cx="110" cy="202" r="1.2" fill="var(--accent)"  opacity="0.5"/>
+            <circle cx="18"  cy="110" r="1.8" fill="var(--primary)" opacity="0.6"/>
+        </svg>
+
+        {# Alva selbst, zentriert #}
+        <div class="fa-onboarding-fairy__character">
+            {{ faAlva.render(mood, { size: 150, decorative: true })|raw }}
+        </div>
+    </div>
+{% endmacro %}
