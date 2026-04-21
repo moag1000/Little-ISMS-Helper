@@ -544,7 +544,7 @@ Compliance Wizards führen Benutzer durch die bestehenden Module und prüfen den
 - ✅ Handlungsempfehlungen mit direkten Links zu den Modulen
 - ✅ Management-ready Compliance Reports
 
-### 🔄 Phase 7E.1: Compliance Wizard Framework
+### ✅ Phase 7E.1: Compliance Wizard Framework
 
 **Komponenten:**
 
@@ -623,7 +623,7 @@ Step 3: Zusammenfassung
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### 🔄 Phase 7E.2: Module-Aware KPIs
+### ✅ Phase 7E.2: Module-Aware KPIs
 
 **Konzept:** KPIs werden nur angezeigt, wenn das zugehörige Modul aktiv ist.
 
@@ -653,7 +653,7 @@ Step 3: Zusammenfassung
 | Supplier Risk Score | Weighted Avg(supplier risk ratings) | assets (suppliers) |
 | BCM Readiness | (Tested BC Plans / Total) * 100 | bcm |
 
-### 🔄 Phase 7E.3: DORA Compliance Dashboard
+### ✅ Phase 7E.3: DORA Compliance Dashboard
 
 **Analog zum NIS2-Dashboard, spezifisch für DORA:**
 
@@ -837,14 +837,16 @@ Basierend auf dem UX-Audit vom 01.01.2026: Konsolidierung der UI-Komponenten, CS
 - [x] Legacy-Migration bei anderen Änderungen (Batch-weise, pro besuchtes Modul)
 - [ ] Ziel: 100 % Konsistenz — realistisch nur über ~12 Monate durch organische Migration
 
-**Batch 1 (Commit: siehe `group_report`-Migrations-Commit):**
+**Batch 1 (Commit `a80c19b5`):**
 - Alle 8 `group_report/*` Templates — Haupt-Content-Cards auf `_card.html.twig` umgestellt (kpi_matrix, tree, risks, audit_program, incidents, nis2_registration, soa_matrix, suppliers). KPI-Stat-Cards mit `py-2`-Override bleiben vorerst bestehen (kein 1:1-Mapping auf Component, Mehraufwand ohne visuellen Gewinn).
 - `_card.html.twig` unterstützt jetzt `noPadding: true`-Kurzform für Tabellen-Cards — saubere API statt `class="card-body p-0"` zu duplizieren.
 
+**Batch 2 (2026-04-21):**
+- `industry_baseline/index.html.twig` + `industry_baseline/show.html.twig` — alle 8 Top-Level-Card-Wrapper auf `_card.html.twig` umgestellt. Border-Farb-Logik (applied→success, inheritedRecord→info) via `class`-Prop durchgereicht. `card_header`/`card_footer`-Blöcke genutzt für komplexe Header-Strukturen (Badge + Title + Actions) und Footer-CTA.
+
 **Nächste Batches (organisch, bei Modul-Touch):**
-- industry_baseline/* (2 Templates, 19 manuelle Cards) — beim nächsten Baseline-Feature
 - data_reuse_hub, context, home, dpia* (high-traffic, bei UX-Review)
-- Restlicher Long-Tail (200+ Templates) — jeweils bei Feature-Änderung dort
+- Restlicher Long-Tail (~240 Templates) — jeweils bei Feature-Änderung dort
 
 **Akzeptanz-Kriterium für "abgeschlossen":** sinnvoll, wenn > 90 % adoption erreicht ist. Die verbleibenden 10 % sind meist begründet (KPI-Stats mit spezieller Padding-Logik, Print-Templates, Email-Templates).
 
