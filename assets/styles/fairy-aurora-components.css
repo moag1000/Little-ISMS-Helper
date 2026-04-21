@@ -641,3 +641,52 @@
 .fa-alert--warning .fa-alert__message { color: var(--warning-text); }
 .fa-alert--danger  { border-left-color: var(--danger); background: var(--danger-glow); }
 .fa-alert--danger  .fa-alert__icon { color: var(--danger); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Mode-Switch (3-State Light / Dark / System)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-mode-switch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--fg-2);
+    cursor: pointer;
+    position: relative;
+    transition: border-color var(--t-fast) var(--ease-out),
+                color var(--t-fast) var(--ease-out),
+                background-color var(--t-fast) var(--ease-out);
+}
+.fa-mode-switch:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-tint);
+}
+.fa-mode-switch:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.fa-mode-switch__icon {
+    font-size: 16px;
+    line-height: 1;
+    position: absolute;
+    opacity: 0;
+    transform: scale(0.6) rotate(-30deg);
+    transition: opacity var(--t-fast) var(--ease-out),
+                transform var(--t-fast) var(--ease-out);
+}
+.fa-mode-switch[data-current-mode="light"]  .fa-mode-switch__icon--light,
+.fa-mode-switch[data-current-mode="dark"]   .fa-mode-switch__icon--dark,
+.fa-mode-switch[data-current-mode="system"] .fa-mode-switch__icon--system {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+}
+@media (prefers-reduced-motion: reduce) {
+    .fa-mode-switch__icon { transition: opacity var(--t-instant); transform: none; }
+}
