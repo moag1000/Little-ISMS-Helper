@@ -51,7 +51,7 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: var(--color-text); /* Using CSS var */
+    color: var(--fg); /* Using CSS var */
     font-size: 0.875rem;
     font-weight: 500;
     border-radius: 0;
@@ -60,20 +60,20 @@
 
 .mega-menu-trigger:hover {
     background: rgba(6, 182, 212, 0.08);
-    border-left-color: var(--color-secondary);
-    color: var(--color-secondary);
+    border-left-color: var(--primary);
+    color: var(--primary);
 }
 
 .mega-menu-trigger:focus {
-    outline: 2px solid var(--color-secondary);
+    outline: 2px solid var(--primary);
     outline-offset: -2px;
     z-index: 1;
 }
 
 .mega-menu-trigger.active {
     background: rgba(6, 182, 212, 0.12);
-    border-left-color: var(--color-secondary);
-    color: var(--color-secondary);
+    border-left-color: var(--primary);
+    color: var(--primary);
 }
 
 .mega-menu-trigger i:first-child {
@@ -81,7 +81,7 @@
     flex-shrink: 0;
     width: 1.25rem;
     text-align: center;
-    color: var(--color-secondary);
+    color: var(--primary);
 }
 
 .mega-menu-trigger span {
@@ -127,8 +127,8 @@
     left: 100%; /* Start completely off-screen to the right */
     bottom: 0;
     width: 600px;
-    background: var(--color-white);
-    border-left: 1px solid var(--color-border);
+    background: var(--surface);
+    border-left: 1px solid var(--border);
     box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
     z-index: 99999 !important; /* Very high - above everything except turbo bar */
     transform: translateX(0);
@@ -168,8 +168,8 @@
 /* Dark mode panel */
 [data-bs-theme="dark"] .mega-menu-secondary,
 [data-theme="dark"] .mega-menu-secondary {
-    background: var(--bg-elevated);
-    border-left-color: var(--color-border);
+    background: var(--surface);
+    border-left-color: var(--border);
     box-shadow: -4px 0 30px rgba(0, 0, 0, 0.5);
 }
 
@@ -190,10 +190,10 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--color-text-muted);
+    color: var(--fg-3);
     margin-bottom: 0.875rem;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--color-border);
+    border-bottom: 2px solid var(--border);
 }
 
 .mega-menu-links {
@@ -213,26 +213,26 @@
     padding: 0.75rem 0.875rem;
     border-radius: 6px;
     text-decoration: none;
-    color: var(--color-text);
+    color: var(--fg);
     transition: all 0.2s ease;
     border-left: 3px solid transparent;
 }
 
 .mega-menu-links a:hover {
     background: rgba(6, 182, 212, 0.06);
-    border-left-color: var(--color-secondary);
+    border-left-color: var(--primary);
     transform: translateX(2px);
 }
 
 .mega-menu-links a:focus {
-    outline: 2px solid var(--color-secondary);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 
 .mega-menu-links a.active {
     background: rgba(6, 182, 212, 0.12);
-    border-left-color: var(--color-secondary);
-    color: var(--color-secondary);
+    border-left-color: var(--primary);
+    color: var(--primary);
     font-weight: 600;
 }
 
@@ -242,7 +242,7 @@
     flex-shrink: 0;
     width: 1.5rem;
     text-align: center;
-    color: var(--color-secondary);
+    color: var(--primary);
 }
 
 .mega-menu-link-content {
@@ -260,16 +260,16 @@
 .mega-menu-link-desc {
     display: block;
     font-size: 0.8125rem;
-    color: var(--color-text-muted);
+    color: var(--fg-3);
     line-height: 1.5;
 }
 
 .mega-menu-links a:hover .mega-menu-link-desc {
-    color: var(--color-text);
+    color: var(--fg);
 }
 
 .mega-menu-links a.active .mega-menu-link-desc {
-    color: var(--color-text);
+    color: var(--fg);
 }
 
 /* Dark mode is always on for panels - no override needed */
@@ -279,7 +279,7 @@
    ==================================== */
 
 [data-bs-theme="dark"] .mega-menu-primary {
-    background: var(--bs-dark);
+    background: var(--fg);
 }
 
 [data-bs-theme="dark"] .mega-menu-trigger:hover {
@@ -336,10 +336,10 @@
         left: 0;
         right: 0;
         padding: 1rem;
-        background: var(--color-bg-alt);
-        border-bottom: 1px solid var(--color-border);
+        background: var(--surface-2);
+        border-bottom: 1px solid var(--border);
         font-weight: 600;
-        color: var(--color-secondary);
+        color: var(--primary);
         z-index: 1;
     }
 
@@ -357,8 +357,8 @@
 @media (max-width: 767px) {
     [data-theme="dark"] .mega-menu-panel::before,
     [data-bs-theme="dark"] .mega-menu-panel::before {
-        background: var(--bg-secondary);
-        border-bottom-color: var(--border-color);
+        background: var(--bg);
+        border-bottom-color: var(--border);
         color: var(--primary);
     }
 }
@@ -370,7 +370,7 @@
 /* Focus visible for keyboard navigation */
 .mega-menu-trigger:focus-visible,
 .mega-menu-links a:focus-visible {
-    outline: 3px solid var(--bs-primary);
+    outline: 3px solid var(--primary);
     outline-offset: 2px;
 }
 
@@ -390,14 +390,14 @@
 /* High contrast mode support */
 @media (prefers-contrast: high) {
     .mega-menu {
-        border: 2px solid var(--bs-border-color);
+        border: 2px solid var(--border);
     }
 
     .mega-menu-trigger:hover,
     .mega-menu-trigger.active,
     .mega-menu-links a:hover,
     .mega-menu-links a.active {
-        border: 2px solid var(--bs-primary);
+        border: 2px solid var(--primary);
     }
 }
 

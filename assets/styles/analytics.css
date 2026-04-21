@@ -16,7 +16,7 @@
     margin-bottom: 30px;
     padding-bottom: 20px;
     border-bottom: 3px solid transparent;
-    border-image: linear-gradient(90deg, var(--color-secondary), var(--color-accent-pink)) 1;
+    border-image: linear-gradient(90deg, var(--primary), var(--accent)) 1;
     position: relative;
 }
 
@@ -63,13 +63,13 @@
     left: 0;
     width: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--color-secondary), var(--color-accent-pink));
+    background: linear-gradient(90deg, var(--primary), var(--accent));
     transition: width 0.3s ease;
 }
 
 .analytics-tabs .nav-link:hover {
-    color: var(--color-secondary);
-    text-shadow: var(--glow-cyan);
+    color: var(--primary);
+    text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
 .analytics-tabs .nav-link:hover::before {
@@ -77,8 +77,8 @@
 }
 
 .analytics-tabs .nav-link.active {
-    color: var(--color-secondary);
-    text-shadow: var(--glow-cyan);
+    color: var(--primary);
+    text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
 .analytics-tabs .nav-link.active::before {
@@ -107,8 +107,8 @@
 }
 
 .analytics-card:hover {
-    border-color: var(--color-secondary);
-    box-shadow: var(--shadow-md), var(--glow-cyan);
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
 .analytics-card .card-header {
@@ -178,7 +178,7 @@
     align-items: center;
     gap: 0.625rem;
     padding: 0.5rem 1rem;
-    background: var(--bg-elevated);
+    background: var(--surface);
     border: 1px solid var(--border-color, #e5e7eb);
     border-radius: 6px;
     white-space: nowrap;
@@ -379,12 +379,12 @@
 .overall-compliance {
     display: inline-block;
     padding: 20px 40px;
-    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent-purple) 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
     border-radius: 12px;
     color: white;
     margin-bottom: 20px;
-    box-shadow: var(--glow-cyan), var(--shadow-lg);
-    border: 2px solid var(--color-accent-pink);
+    box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint), var(--shadow-lg);
+    border: 2px solid var(--accent);
 }
 
 .compliance-label {
@@ -436,9 +436,9 @@
 }
 
 .trend-tabs .nav-link.active {
-    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent-purple) 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
     color: white;
-    box-shadow: var(--glow-cyan);
+    box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
 .trend-tabs .nav-link i {
@@ -564,8 +564,8 @@
     align-items: center;
     margin-bottom: 20px;
     padding: 15px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    background: var(--bg);
+    border: 1px solid var(--border);
     border-radius: 8px;
     width: 100%;
 }
@@ -576,8 +576,8 @@
     align-items: center;
     gap: 0.625rem;
     padding: 0.5rem 1rem;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-color);
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 6px;
     white-space: nowrap;
     position: relative;
@@ -604,7 +604,7 @@
     font-weight: 500;
     position: static;
     flex-shrink: 0;
-    color: var(--text-primary);
+    color: var(--fg);
 }
 
 /* Risk Level Colors - Bootstrap consistent */
@@ -653,7 +653,7 @@
 }
 
 [data-theme="dark"] .chart-stats {
-    background: var(--bg-tertiary);
+    background: var(--surface-2);
 }
 
 [data-theme="dark"] .heat-map-legend {
@@ -742,8 +742,8 @@
 
 /* Dark Mode */
 [data-theme="dark"] .heat-map-tooltip {
-    background: var(--bg-secondary);
-    border-color: var(--border-color);
+    background: var(--bg);
+    border-color: var(--border);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
                 0 0 20px rgba(6, 182, 212, 0.15);
 }
@@ -802,7 +802,7 @@
 
 /* Focus State for Keyboard Navigation */
 .heat-map-cell:focus {
-    outline: 3px solid var(--color-secondary);
+    outline: 3px solid var(--primary);
     outline-offset: 2px;
     transform: scale(1.15);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2),
@@ -879,7 +879,7 @@
 }
 
 .heat-map-filters .filter-label i {
-    color: var(--color-secondary, var(--primary));
+    color: var(--primary);
 }
 
 .heat-map-filters .form-select-sm {
@@ -888,7 +888,7 @@
 }
 
 [data-theme="dark"] .heat-map-filters {
-    background: var(--bg-tertiary);
+    background: var(--surface-2);
 }
 
 /* Responsive Filters */
@@ -965,7 +965,7 @@
 .heat-map-details .risk-item-enhanced:hover {
     background: var(--bg-elevated, white);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-color: var(--color-secondary, var(--primary));
+    border-color: var(--primary);
     transform: translateX(3px);
 }
 
@@ -988,11 +988,11 @@
 }
 
 .heat-map-details .risk-title:hover {
-    color: var(--color-secondary, var(--primary));
+    color: var(--primary);
 }
 
 .heat-map-details .risk-title i {
-    color: var(--color-danger, var(--danger));
+    color: var(--danger);
     font-size: 0.9rem;
 }
 
@@ -1018,12 +1018,12 @@
 
 /* Dark Mode */
 [data-theme="dark"] .heat-map-details .risk-item-enhanced {
-    background: var(--bg-tertiary);
-    border-color: var(--border-color);
+    background: var(--surface-2);
+    border-color: var(--border);
 }
 
 [data-theme="dark"] .heat-map-details .risk-item-enhanced:hover {
-    background: var(--bg-secondary);
+    background: var(--bg);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
