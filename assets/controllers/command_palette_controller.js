@@ -1,8 +1,10 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Command Palette Controller (⌘K / Ctrl+K)
- * Modern command interface for power users
+ * Command Palette Controller (⌘P / Ctrl+P — VS-Code-style)
+ * Modern command interface for power users.
+ *
+ * Discoverable via the Keyboard-Shortcuts-Cheatsheet (? key) under „Global".
  *
  * Usage:
  * <div data-controller="command-palette">

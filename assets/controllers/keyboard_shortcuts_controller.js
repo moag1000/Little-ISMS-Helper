@@ -15,6 +15,12 @@ export default class extends Controller {
     static targets = ['modal'];
 
     shortcuts = [
+        // Global Command Palette — matches existing binding in command_palette_controller.js
+        // (metaKey/ctrlKey + 'p'). Documented here for discoverability; the actual key
+        // handling lives in command_palette_controller.js — these entries are display-only.
+        { keys: ['⌘+P'], description: 'Open Command Palette (macOS)', category: 'Global', displayOnly: true },
+        { keys: ['Ctrl+P'], description: 'Open Command Palette (Windows/Linux)', category: 'Global', displayOnly: true },
+
         // Global Navigation (paths without locale - will be prefixed automatically)
         { keys: ['g', 'd'], description: 'Go to Dashboard', action: () => this.navigateWithLocale('/dashboard'), category: 'Navigation' },
         { keys: ['g', 'a'], description: 'Go to Assets', action: () => this.navigateWithLocale('/asset'), category: 'Navigation' },
