@@ -1020,6 +1020,45 @@ Begründungstext pro Framework.
 
 ---
 
+### ✅ Phase 8CM5: Admin-Panel-UX-Review (Abgeschlossen 2026-04-21)
+
+**Ausgangspunkt:** Drei-Personas-Walkthrough (Consultant/Junior/UX)
+durchs Admin-Panel. Befunde: 57 Routen in 7 flachen Sektionen (kognitive
+Überlast), 9 Hidden Routes ohne Menü-Eintrag, KPI-Cards mit Ops-lastigen
+Metriken (DB-Size, Total-Records), Quick-Actions statisch, 12 von 36
+Sub-Templates ohne Breadcrumb, keine Admin-scoped Suche. Umsetzung
+nach Impact in drei Sprints.
+
+#### Ergebnis-Matrix
+
+| Item | Commit | FTE-d | Kern-Deliverable |
+|------|--------|-------|-------------------|
+| S10-1 Menu-Restructuring | `8420a877` | 1,0 | Platform-Admin vs Compliance-Admin + Hidden Routes sichtbar |
+| S10-2 Data-Repair Safety-Banner | `d5d888ef` | 0,25 | Warn-Header mit Backup/Audit-Escape-Actions |
+| S11-1+2+3 Dashboard-Refresh | `f3d10817` | 2,0 | Framework-Load-KPI, Unreviewed-Seed-KPI, Dynamic Quick Actions |
+| S12-1 Breadcrumb-Konsistenz | `86a2b151` | 0,5 | 12 Admin-Templates mit Breadcrumb |
+| S12-2 Admin-scoped Command Palette | `a418e7e5` | 0,5 | 21 neue Admin-Commands + Auto-Scope auf `/admin/*` |
+
+**Total:** ~4,25 FTE-Tage. Alle sieben Findings geschlossen.
+
+#### Wirkung auf die Personas
+
+- **Junior:** *„Ich öffne /admin. Erste Kachel: Framework-Status
+  '18/23' — weiß sofort ob alles da ist. Zweite Kachel: '5 Seed-
+  Mappings warten' — direktlink dorthin. Quick-Actions zeigen nur
+  was ich jetzt brauche. Mega-Menü trennt Platform-Ops von
+  Compliance-Governance — ich verstehe welche Box mein Problem ist."*
+- **Compliance-Manager:** *„Compliance-Admin hat ein eigenes Menu-
+  Segment. Framework-Management / Policy / Loader-Fixer / Import-
+  Wizard / Import-History in zwei logisch getrennten Gruppen. Das
+  ist der Mental-Model eines GRC-Teams."*
+- **UX-Specialist:** *„KPI-Thresholds und Tags waren Dead-Routes —
+  jetzt sichtbar. Breadcrumb überall konsistent. ⌘P findet alle 23
+  Admin-Routen. Data-Repair hat jetzt offene Warnkommunikation statt
+  implizites Risiko."*
+
+---
+
 ### ✅ Phase 8JR: Junior+UX+CM Audit Sprint (Abgeschlossen 2026-04-19)
 
 **Grundlage:** Drei unabhängige Audits
@@ -1299,7 +1338,11 @@ Reuse + Framework-Mapping junior-tauglich: Wizard / Hub / Seed-Review-Queue
 (8) Phase 8CM4 Seed-Kataloge + Admin-Katalog + 3-Bucket-Applicability +
 Wizard-Integration (8 FTE-d: 4 neue Seeds NIS2/DORA/TISAX/GDPR ↔ ISO 27001,
 1 Seed GDPR ↔ ISO 27701, Admin-Katalog 15 → 23 Frameworks, FrameworkApplicabilityService
-+ Setup-Wizard-Step-8 mit Pflicht/Empfohlen/Optional-Buckets).
++ Setup-Wizard-Step-8 mit Pflicht/Empfohlen/Optional-Buckets),
+(9) Phase 8CM5 Admin-Panel-UX-Review (~4,25 FTE-d nach Drei-Personas-Walkthrough:
+Menü-Restrukturierung Platform-/Compliance-Admin, Hidden Routes sichtbar,
+Data-Repair-Safety-Banner, Dashboard-KPIs neu kuratiert, Breadcrumb-Konsistenz,
+Admin-scoped Command-Palette).
 Audit-Doc 78 → 98 → Residual-Budget 19 → 0 FTE-d. Alle 7 Ziel-Frameworks Tool-🟢,
 BSI IT-Grundschutz auf 99%+.
 **Naechste Aktualisierung:** Nach Cutting `v2.7.0` + Phase 9 Holding-Struktur.
