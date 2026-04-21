@@ -11,6 +11,13 @@ admin:
         navigation: Navigation
         data_management: 'Data Management'
         licensing: Licensing
+        platform:
+            users_access: 'Platform · Users & Access'
+            configuration: 'Platform · Configuration'
+            data_ops: 'Platform · Data & Operations'
+        compliance:
+            frameworks: 'Compliance · Frameworks'
+            imports: 'Compliance · Imports'
     nav:
         tenants: Tenants
         users: Users
@@ -36,6 +43,9 @@ admin:
         data_repair: 'Data Repair'
         licensing: Licensing
         license_management: 'License Management'
+        kpi_thresholds: 'KPI Thresholds'
+        tags: 'Tags'
+        compliance_import: 'Compliance Import Wizard'
     alert:
         inactive_users: 'Inactive users'
         unverified_users: 'Unverified users'

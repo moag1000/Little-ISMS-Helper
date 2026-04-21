@@ -11,6 +11,13 @@ admin:
         navigation: Navigation
         data_management: Daten-Verwaltung
         licensing: Lizenzierung
+        platform:
+            users_access: 'Platform · Benutzer & Zugriff'
+            configuration: 'Platform · Konfiguration'
+            data_ops: 'Platform · Daten & Betrieb'
+        compliance:
+            frameworks: 'Compliance · Frameworks'
+            imports: 'Compliance · Importe'
     nav:
         tenants: Mandanten
         users: Benutzer
@@ -36,6 +43,9 @@ admin:
         data_repair: Daten-Reparatur
         licensing: Lizenzierung
         license_management: Lizenz-Verwaltung
+        kpi_thresholds: 'KPI-Schwellwerte'
+        tags: 'Tags'
+        compliance_import: 'Compliance-Import-Wizard'
     alert:
         inactive_users: 'Inaktive Benutzer'
         unverified_users: 'Unverifizierte Benutzer'
