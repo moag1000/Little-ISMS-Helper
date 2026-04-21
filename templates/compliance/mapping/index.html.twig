@@ -43,9 +43,23 @@
         {% endblock %}
         {% block card_body %}
             {% if mappings is empty %}
-                <div class="alert alert-info m-3">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.no_items_found'|trans({}, 'messages') }}.
-                    <a href="{{ path('app_compliance_mapping_new') }}">{{ 'compliance.mapping.create_link'|trans({}, 'compliance') }}</a> {{ 'compliance.mapping.create_instruction'|trans({}, 'compliance') }}.
+                <div class="p-4">
+                    {% include '_components/_empty_state.html.twig' with {
+                        icon: 'bi-diagram-2',
+                        title: 'compliance.mapping.empty.title'|trans({}, 'compliance'),
+                        description: 'compliance.mapping.empty.description'|trans({}, 'compliance'),
+                        action: {
+                            label: 'compliance.mapping.empty.action_wizard'|trans({}, 'compliance'),
+                            url: path('app_compliance_mapping_wizard'),
+                            icon: 'bi-magic'
+                        }
+                    } %}
+                    <div class="text-center mt-3">
+                        <a href="{{ path('app_compliance_mapping_seeds_index') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-lightning-charge" aria-hidden="true"></i>
+                            {{ 'compliance.mapping.empty.action_seeds'|trans({}, 'compliance') }}
+                        </a>
+                    </div>
                 </div>
             {% else %}
             {% embed '_components/_table.html.twig' with {
