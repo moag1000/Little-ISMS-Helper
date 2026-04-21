@@ -10,58 +10,6 @@
     --z-toast: 9999;
     --z-turbo-bar: 999999;
 
-    /* Cyberpunk Fairy Theme Colors - From Logo */
-    --color-primary: #0f172a;
-    --color-primary-light: #1e293b;
-    --color-secondary: var(--primary);       /* Vibrant Cyan - Cyberpunk Fairy signature */
-    --color-secondary-hover: var(--primary-hover);
-    --color-accent-pink: var(--accent);     /* Vibrant Pink - Fairy magic glow */
-    --color-accent-purple: var(--accent);   /* Vibrant Purple - Mystical aura */
-    --color-success: var(--success);         /* Emerald - Positive fairy dust */
-    --color-warning: var(--warning);         /* Amber - Caution sparkles */
-    --color-danger: var(--danger);          /* Red - Alert flames */
-    --color-info: var(--primary);            /* Cyan - Info glow */
-
-    /* Text Colors - Improved contrast for WCAG AA compliance */
-    --color-text: #1e293b;
-    --color-text-light: #64748b;
-    --color-text-muted: #64748b;  /* Changed from #94a3b8 for better contrast (6.4:1) */
-    --color-text-secondary: #64748b;  /* Alias for --text-secondary compatibility */
-
-    /* Semantic Light Variants for Status Backgrounds */
-    --color-success-light: rgba(16, 185, 129, 0.15);   /* Emerald subtle bg */
-    --color-warning-light: rgba(245, 158, 11, 0.15);   /* Amber subtle bg */
-    --color-danger-light: rgba(239, 68, 68, 0.15);     /* Red subtle bg */
-    --color-info-light: rgba(6, 182, 212, 0.15);       /* Cyan subtle bg */
-
-    /* Background Colors */
-    --color-bg: #f8fafc;
-    --color-bg-alt: #f1f5f9;
-    --color-white: #ffffff;
-    --color-border: #e2e8f0;
-    --color-border-light: #f1f5f9;
-
-    /* Background Variables (used by components) */
-    --bg-primary: #ffffff;
-    --bg-secondary: #f8fafc;
-    --bg-tertiary: #f1f5f9;
-    --bg-elevated: #ffffff;
-
-    /* Bootstrap Variables Override - Light Mode */
-    --bs-body-bg: #ffffff;
-    --bs-body-color: #1e293b;
-    --bs-tertiary-bg: #f8fafc;
-    --bs-secondary-bg: #f1f5f9;
-
-    /* Text Variables (used by components) */
-    --text-primary: #1e293b;
-    --text-secondary: #64748b;
-    --text-muted: #94a3b8;
-
-    /* Border Variables (used by components) */
-    --border-color: #e2e8f0;
-    --border-color-light: #f1f5f9;
-
     /* Spacing */
     --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;
@@ -79,10 +27,6 @@
     --shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.08);
     --shadow-md: 0 4px 8px rgba(15, 23, 42, 0.12);
     --shadow-lg: 0 8px 16px rgba(15, 23, 42, 0.16);
-    /* Transitions */
-    --transition-fast: 0.15s ease;
-    --transition-normal: 0.2s ease;
-    --transition-slow: 0.3s ease;
 }
 
 /* Reset und Basis */
@@ -183,8 +127,8 @@ body {
     position: absolute;
     top: -50px;
     left: 0;
-    background: #1e40af; /* High contrast blue - WCAG AAA compliant */
-    color: #ffffff;
+    background: var(--primary-strong); /* High contrast blue - WCAG AAA compliant */
+    color: var(--on-primary);
     padding: var(--spacing-sm) var(--spacing-lg);
     text-decoration: none;
     font-weight: 700;
@@ -209,14 +153,14 @@ body {
 }
 
 .skip-link:hover {
-    background: #1e3a8a; /* Darker blue on hover */
+    background: var(--primary-hover);
     box-shadow: 0 6px 20px rgba(30, 64, 175, 0.6);
 }
 
 /* Dark mode support for skip links */
 [data-theme="dark"] .skip-link {
-    background: #3b82f6; /* Lighter blue for dark mode */
-    color: #000000; /* Black text for better contrast */
+    background: var(--primary); /* Lighter blue for dark mode */
+    color: var(--on-primary);
 }
 
 [data-theme="dark"] .skip-link:focus,
@@ -394,8 +338,8 @@ body {
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%) translateY(-4px);
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    color: #f8fafc;
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    color: var(--fg);
     padding: 0.5rem 0.75rem;
     padding-top: 0.625rem;
     border-radius: 6px;
@@ -443,7 +387,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     border: 6px solid transparent;
-    border-top-color: #1e293b;
+    border-top-color: var(--surface);
 }
 
 .fairy-tooltip:hover::after,
@@ -454,7 +398,7 @@ body {
 
 /* Dark mode enhancement */
 [data-theme="dark"] .fairy-tooltip::after {
-    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
     box-shadow:
         0 4px 16px rgba(0, 0, 0, 0.4),
         0 0 0 1px rgba(236, 72, 153, 0.3);
@@ -852,7 +796,7 @@ body {
     align-items: center;
     gap: 0.375rem;
     padding: 0.375rem 0.75rem;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
     color: var(--accent);
     font-size: 0.75rem;
     font-weight: 500;
@@ -1231,7 +1175,7 @@ body {
 /* Dark Mode Sidebar */
 [data-theme="dark"] .app-sidebar,
 [data-bs-theme="dark"] .app-sidebar {
-    background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    background: linear-gradient(180deg, var(--bg) 0%, var(--surface) 50%, var(--bg) 100%);
     border-right: 3px solid transparent;
     border-image: linear-gradient(180deg,
                   rgba(6, 182, 212, 0.6),
@@ -1266,8 +1210,8 @@ body {
 [data-bs-theme="dark"] .app-sidebar::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg,
                 var(--primary) 0%,
-                #a78bfa 50%,
-                var(--accent) 100%);
+                var(--accent) 50%,
+                var(--accent-hover) 100%);
     box-shadow: 0 0 20px rgba(6, 182, 212, 0.9),
                 0 0 10px rgba(236, 72, 153, 0.6),
                 inset 0 0 15px rgba(255, 255, 255, 0.2);
@@ -1567,7 +1511,7 @@ body {
     font-size: 0.6rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: #67e8f9;
+    color: var(--primary);
     letter-spacing: 1px;
     opacity: 0.8;
     user-select: none;
@@ -1950,19 +1894,19 @@ h3 {
 }
 
 .btn-secondary {
-    background: linear-gradient(135deg, #64748b, #475569);
-    border-color: #64748b;
+    background: linear-gradient(135deg, var(--fg-2), var(--fg-3));
+    border-color: var(--fg-2);
     box-shadow: var(--shadow-sm);
 }
 
 .btn-secondary:hover {
-    background: linear-gradient(135deg, #475569, #334155);
+    background: linear-gradient(135deg, var(--fg-3), var(--surface-3));
     box-shadow: var(--shadow-md);
 }
 
 .btn-success {
     /* Cyberpunk Fairy green with dark overlay for WCAG AA compliance */
-    background: linear-gradient(135deg, var(--success), #059669),
+    background: linear-gradient(135deg, var(--success), var(--success-strong)),
                 linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25));
     background-blend-mode: normal, multiply;
     border-color: var(--success);
@@ -1973,7 +1917,7 @@ h3 {
 }
 
 .btn-success:hover {
-    background: linear-gradient(135deg, #059669, #047857),
+    background: linear-gradient(135deg, var(--success-strong), var(--success-strong)),
                 linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3));
     background-blend-mode: normal, multiply;
     box-shadow: var(--shadow-md),
@@ -1997,7 +1941,7 @@ h3 {
 }
 
 .btn-danger:hover {
-    background: linear-gradient(135deg, var(--danger), #b91c1c),
+    background: linear-gradient(135deg, var(--danger), var(--danger-strong)),
                 linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25));
     background-blend-mode: normal, multiply;
     box-shadow: var(--shadow-md),
@@ -2019,63 +1963,63 @@ h3 {
 /* Outline buttons need darker text colors in light mode for WCAG AA compliance */
 
 .btn-outline-primary {
-    color: #0d4f6e;
-    border-color: #0d6efd;
+    color: var(--primary-strong);
+    border-color: var(--primary);
     background: transparent;
     font-weight: 600;
 }
 
 .btn-outline-primary:hover,
 .btn-outline-primary.active {
-    color: #fff;
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+    color: var(--on-primary);
+    background-color: var(--primary);
+    border-color: var(--primary);
 }
 
 .btn-outline-secondary {
-    color: #3d4852;
-    border-color: #6c757d;
+    color: var(--fg-2);
+    border-color: var(--fg-3);
     background: transparent;
     font-weight: 600;
 }
 
 .btn-outline-secondary:hover,
 .btn-outline-secondary.active {
-    color: #fff;
-    background-color: #6c757d;
-    border-color: #6c757d;
+    color: var(--surface);
+    background-color: var(--fg-2);
+    border-color: var(--fg-2);
 }
 
 .btn-outline-success {
-    color: #0d5c36;
-    border-color: #198754;
+    color: var(--success-strong);
+    border-color: var(--success);
     background: transparent;
     font-weight: 600;
 }
 
 .btn-outline-success:hover,
 .btn-outline-success.active {
-    color: #fff;
-    background-color: #198754;
-    border-color: #198754;
+    color: var(--on-success);
+    background-color: var(--success);
+    border-color: var(--success);
 }
 
 .btn-outline-warning {
-    color: #664d03;
-    border-color: #cc9a06;
+    color: var(--warning-strong);
+    border-color: var(--warning);
     background: transparent;
     font-weight: 600;
 }
 
 .btn-outline-warning:hover,
 .btn-outline-warning.active {
-    color: #000;
+    color: var(--on-warning);
     background-color: var(--warning);
     border-color: var(--warning);
 }
 
 .btn-outline-danger {
-    color: #842029;
+    color: var(--danger-strong);
     border-color: var(--danger);
     background: transparent;
     font-weight: 600;
@@ -2083,23 +2027,23 @@ h3 {
 
 .btn-outline-danger:hover,
 .btn-outline-danger.active {
-    color: #fff;
+    color: var(--on-danger);
     background-color: var(--danger);
     border-color: var(--danger);
 }
 
 .btn-outline-info {
-    color: #055160;
-    border-color: #0dcaf0;
+    color: var(--primary-strong);
+    border-color: var(--primary);
     background: transparent;
     font-weight: 600;
 }
 
 .btn-outline-info:hover,
 .btn-outline-info.active {
-    color: #000;
-    background-color: #0dcaf0;
-    border-color: #0dcaf0;
+    color: var(--on-primary);
+    background-color: var(--primary);
+    border-color: var(--primary);
 }
 
 /* Button Loading State */
@@ -2180,26 +2124,26 @@ h3 {
 /* Bootstrap Alerts - Light Mode with readable dark text */
 .alert-info {
     background-color: var(--bs-info-bg-subtle);
-    border-color: #9eeaf9;
-    color: #055160;
+    border-color: var(--primary-tint);
+    color: var(--primary-strong);
 }
 
 .alert-warning {
     background-color: var(--bs-warning-bg-subtle);
-    border-color: #ffecb5;
-    color: #664d03;
+    border-color: var(--warning-glow);
+    color: var(--warning-strong);
 }
 
 .alert-danger {
     background-color: var(--bs-danger-bg-subtle);
-    border-color: #f5c2c7;
-    color: #842029;
+    border-color: var(--danger-glow);
+    color: var(--danger-strong);
 }
 
 .alert-success {
     background-color: var(--bs-success-bg-subtle);
-    border-color: #badbcc;
-    color: #0f5132;
+    border-color: var(--success-glow);
+    color: var(--success-strong);
 }
 
 /* Tables with Dark Mode Support */
@@ -2364,7 +2308,7 @@ tbody td {
 
 /* WCAG AA Contrast Fix: bg-warning badges need dark text for readability */
 .badge.bg-warning {
-    color: #212529 !important; /* Bootstrap text-dark value */
+    color: var(--on-warning) !important;
 }
 
 /* Icon in badge spacing */
@@ -2379,8 +2323,8 @@ tbody td {
 /* SEVERITY BADGES - For Risks, Vulnerabilities, Incidents (WCAG AA Compliant) */
 .badge-critical {
     /* Already WCAG AA compliant: 4.83:1 contrast */
-    background: linear-gradient(135deg, var(--danger), #991b1b);
-    color: white;
+    background: linear-gradient(135deg, var(--danger), var(--danger-strong));
+    color: var(--on-danger);
     font-weight: 600;
     box-shadow: 0 2px 4px rgba(220, 38, 38, 0.3);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
@@ -2388,32 +2332,32 @@ tbody td {
 
 .badge-high {
     /* WCAG AA: Dark overlay improves contrast from 2.80:1 to 4.5:1 */
-    background: linear-gradient(135deg, #f97316, #ea580c),
+    background: linear-gradient(135deg, var(--warning-strong), var(--danger)),
                 linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25));
     background-blend-mode: normal, multiply;
-    color: white;
+    color: var(--on-danger);
     font-weight: 600;
-    box-shadow: 0 2px 4px rgba(249, 115, 22, 0.3);
+    box-shadow: 0 2px 4px var(--warning-glow);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 .badge-medium {
-    /* Already WCAG AA compliant with black text on yellow */
-    background: linear-gradient(135deg, #eab308, #ca8a04);
-    color: #000;
+    /* Already WCAG AA compliant with dark text on amber */
+    background: linear-gradient(135deg, var(--warning), var(--warning-strong));
+    color: var(--on-warning);
     font-weight: 600;
-    box-shadow: 0 2px 4px rgba(234, 179, 8, 0.3);
+    box-shadow: 0 2px 4px var(--warning-glow);
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
 .badge-low {
     /* WCAG AA: Dark overlay improves contrast from 3.68:1 to 4.5:1 */
-    background: linear-gradient(135deg, #3b82f6, #2563eb),
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover)),
                 linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
     background-blend-mode: normal, multiply;
-    color: white;
+    color: var(--on-primary);
     font-weight: 600;
-    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 2px 4px var(--primary-glow);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
@@ -2433,7 +2377,7 @@ tbody td {
     display: block;
     margin-bottom: var(--spacing-sm);
     font-weight: 600;
-    color: #1e293b;
+    color: var(--fg);
 }
 
 [data-theme="dark"] .form-label {
@@ -2450,7 +2394,7 @@ tbody td {
 
 [data-theme="dark"] .form-label .required,
 [data-theme="dark"] .required-indicator {
-    color: #f87171;
+    color: var(--danger);
 }
 
 /* Required Field Legend */
@@ -2532,8 +2476,8 @@ fieldset.nis2-fieldset {
 
 fieldset.nis2-fieldset legend.nis2-legend {
     background: var(--warning) !important;
-    color: #212529 !important;
-    border-bottom-color: #e0a800;
+    color: var(--on-warning) !important;
+    border-bottom-color: var(--warning-strong);
 }
 
 [data-theme="dark"] fieldset.nis2-fieldset {
@@ -2542,8 +2486,8 @@ fieldset.nis2-fieldset legend.nis2-legend {
 
 [data-theme="dark"] fieldset.nis2-fieldset legend.nis2-legend {
     background: var(--warning) !important;
-    color: #212529 !important;
-    border-bottom-color: #e0a800;
+    color: var(--on-warning) !important;
+    border-bottom-color: var(--warning-strong);
 }
 
 /* Invalid Field Feedback - Consistent Positioning */
@@ -2607,7 +2551,7 @@ textarea.is-invalid:focus {
 
 [data-theme="dark"] .invalid-feedback,
 [data-theme="dark"] .form-error {
-    color: #f87171;
+    color: var(--danger);
 }
 
 [data-theme="dark"] .form-control.is-invalid,
@@ -2615,7 +2559,7 @@ textarea.is-invalid:focus {
 [data-theme="dark"] input.is-invalid,
 [data-theme="dark"] select.is-invalid,
 [data-theme="dark"] textarea.is-invalid {
-    border-color: #f87171;
+    border-color: var(--danger);
 }
 
 /* ==========================================
@@ -2627,7 +2571,7 @@ input::placeholder,
 textarea::placeholder,
 .form-control::placeholder,
 .form-select::placeholder {
-    color: #64748b; /* Darkened from #94a3b8 for 4.76:1 contrast */
+    color: var(--fg-2); /* Darkened placeholder for 4.76:1 contrast */
     opacity: 1;
 }
 
@@ -2917,7 +2861,7 @@ textarea.form-control {
     height: 36px;
     border-radius: 50%;
     background: var(--brand-gradient);
-    color: #ffffff;
+    color: var(--on-primary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3057,7 +3001,7 @@ textarea.form-control {
 .footer {
     text-align: center;
     padding: var(--spacing-xl);
-    color: #64748b;
+    color: var(--fg-2);
     margin-top: var(--spacing-2xl);
     border-top: 2px solid transparent;
     border-image: linear-gradient(90deg,
@@ -3390,7 +3334,7 @@ input.is-valid:focus {
 /* Dark mode adjustments */
 [data-theme="dark"] .invalid-feedback,
 [data-theme="dark"] .form-error {
-    color: #f87171;
+    color: var(--danger);
 }
 
 [data-theme="dark"] .valid-feedback {
@@ -3399,7 +3343,7 @@ input.is-valid:focus {
 
 [data-theme="dark"] .form-control.is-invalid,
 [data-theme="dark"] input.is-invalid {
-    border-color: #f87171;
+    border-color: var(--danger);
 }
 
 [data-theme="dark"] .form-control.is-valid,
@@ -3418,12 +3362,12 @@ input.is-valid:focus {
 .password-strength-meter .progress {
     height: 6px;
     border-radius: 3px;
-    background-color: #e5e7eb;
+    background-color: var(--surface-3);
     overflow: hidden;
 }
 
 [data-theme="dark"] .password-strength-meter .progress {
-    background-color: #374151;
+    background-color: var(--surface-3);
 }
 
 .password-strength-meter .progress-bar {
@@ -3456,7 +3400,7 @@ input.is-valid:focus {
 
 /* Dark mode strength colors */
 [data-theme="dark"] .password-strength-meter .bg-danger {
-    background-color: #f87171 !important;
+    background-color: var(--danger) !important;
 }
 
 [data-theme="dark"] .password-strength-meter .bg-warning {
@@ -3602,7 +3546,7 @@ table:not(.no-default-style) tbody tr:hover {
 /* Fix text-muted in tables for dark mode */
 [data-theme="dark"] table:not(.no-default-style) .text-muted,
 [data-theme="dark"] table:not(.no-default-style) small.text-muted {
-    color: #94a3b8 !important; /* slate-400 - readable muted text */
+    color: var(--fg-3) !important; /* readable muted text */
 }
 
 /* Ensure strong/bold text is highly visible in dark mode tables */
@@ -3612,7 +3556,7 @@ table:not(.no-default-style) tbody tr:hover {
 [data-theme="dark"] table:not(.no-default-style) td b,
 [data-theme="dark"] table tbody td strong,
 [data-theme="dark"] table tbody td b {
-    color: #ffffff !important; /* Pure white for maximum contrast */
+    color: var(--fg) !important; /* high contrast text */
     font-weight: 600;
     opacity: 1 !important;
 }
@@ -3815,7 +3759,7 @@ table.table-borderless td {
 /* Dark mode - ensure asterisk is visible */
 [data-theme="dark"] .required,
 [data-bs-theme="dark"] .required {
-    color: #fca5a5; /* Lighter red for better contrast in dark mode */
+    color: var(--danger); /* Lighter red for better contrast in dark mode */
 }
 
 /* Accessibility: Screen reader text */
@@ -3844,7 +3788,7 @@ table.table-borderless td {
 
 /* Modal header standardization */
 .modal-header {
-    border-bottom: 1px solid var(--border-color, #e2e8f0);
+    border-bottom: 1px solid var(--border);
 }
 
 .modal-header .modal-title {
@@ -3863,25 +3807,25 @@ table.table-borderless td {
 
 /* Warning modal header */
 .modal-header.bg-warning {
-    color: #212529;
+    color: var(--on-warning);
     border-bottom-color: rgba(0, 0, 0, 0.1);
 }
 
 /* Dark mode modal adjustments */
 [data-theme="dark"] .modal-content,
 [data-bs-theme="dark"] .modal-content {
-    background-color: var(--bg-primary, #1e293b);
-    border-color: var(--border-color, #334155);
+    background-color: var(--surface);
+    border-color: var(--border);
 }
 
 [data-theme="dark"] .modal-header,
 [data-bs-theme="dark"] .modal-header {
-    border-bottom-color: var(--border-color, #334155);
+    border-bottom-color: var(--border);
 }
 
 [data-theme="dark"] .modal-footer,
 [data-bs-theme="dark"] .modal-footer {
-    border-top-color: var(--border-color, #334155);
+    border-top-color: var(--border);
 }
 
 /* ============================================
@@ -3906,7 +3850,7 @@ table.table-borderless td {
 .icon-danger { color: var(--danger); }
 .icon-warning { color: var(--warning); }
 .icon-info { color: var(--primary); }
-.icon-muted { color: var(--text-muted, #94a3b8); }
+.icon-muted { color: var(--fg-3); }
 
 /* Action icon colors (for buttons/links) */
 .icon-edit { color: var(--primary); }
@@ -3946,7 +3890,7 @@ table.table-borderless td {
 /* Dark mode icon adjustments */
 [data-theme="dark"] .icon-muted,
 [data-bs-theme="dark"] .icon-muted {
-    color: var(--text-secondary, #94a3b8);
+    color: var(--fg-2);
 }
 
 /* ============================================
@@ -3978,12 +3922,12 @@ table.table-borderless td {
 
 /* Ensure all info/warning badges are readable */
 .badge.bg-info {
-    color: #fff;
+    color: var(--on-primary);
 }
 
 /* Light background badges need dark text */
 .badge.bg-light {
-    color: #212529 !important;
+    color: var(--fg) !important;
 }
 
 /* Badge with icons - consistent spacing */
@@ -4009,12 +3953,12 @@ table.table-borderless td {
 /* Dark mode badge adjustments */
 [data-theme="dark"] .badge.bg-secondary,
 [data-bs-theme="dark"] .badge.bg-secondary {
-    background-color: #475569 !important;
-    color: #f1f5f9 !important;
+    background-color: var(--fg-2) !important;
+    color: var(--surface) !important;
 }
 
 [data-theme="dark"] .badge.bg-light,
 [data-bs-theme="dark"] .badge.bg-light {
-    background-color: #334155 !important;
-    color: #f1f5f9 !important;
+    background-color: var(--surface-3) !important;
+    color: var(--fg) !important;
 }
