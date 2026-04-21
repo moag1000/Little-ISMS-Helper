@@ -201,6 +201,13 @@
                     {% include '_components/_notification_bell.html.twig' %}
                 {% endif %}
 
+                {# FairyAurora System-Status-Pill (Topbar) #}
+                {% if not is_setup_route %}
+                    <span class="header-system-status d-none d-lg-inline-flex">
+                        {% include '_components/_system_status.html.twig' %}
+                    </span>
+                {% endif %}
+
                 {# FairyAurora Mode-Switch (Light/Dark/System) #}
                 {% include '_components/_mode_switch.html.twig' %}
 

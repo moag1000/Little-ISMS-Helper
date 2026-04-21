@@ -1,0 +1,31 @@
+{#
+ # FairyAurora System-Status-Pill (Topbar)
+ #
+ # Usage in Topbar:
+ #   {% include '_components/_system_status.html.twig' %}
+ #
+ # Zeigt eine kompakte Status-Pill mit farbigem Dot + Mono-Label.
+ # Werte derzeit statisch; später kann ein Status-Service den Tone dynamisch setzen
+ # (success = Operational, warning = Degraded, danger = Down).
+ #
+ # Plan § 4 (Topbar-Layout).
+ #}
+
+{% import '_components/_status_pill.html.twig' as pill %}
+
+{% set systemTone = app_system_status|default('success') %}
+{% set systemLabelKey = {
+    'success': 'system.status.operational',
+    'warning': 'system.status.degraded',
+    'danger':  'system.status.down',
+    'info':    'system.status.maintenance'
+} %}
+
+<span class="fa-topbar-status"
+      title="{{ (systemLabelKey[systemTone] ?? 'system.status.operational')|trans({}, 'ui')|default('System operational') }}">
+    {{ pill.render(
+        (systemLabelKey[systemTone] ?? 'system.status.operational')|trans({}, 'ui')|default('Operational'),
+        systemTone,
+        { size: 'sm' }
+    ) }}
+</span>
