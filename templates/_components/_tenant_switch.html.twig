@@ -1,0 +1,62 @@
+{#
+ FairyAurora Tenant-Switch — Dropdown für Tenant-Wechsel (Multi-Tenant-User)
+
+ Nutzt unified Aurora-Dropdown-Panel-Pattern (Plan § 20).
+ Wird nur gerendert wenn User Zugriff auf mehrere Tenants hat.
+
+ Usage (in Sidebar-Top oder Header-Actions):
+   {% include '_components/_tenant_switch.html.twig' with {
+       currentTenant: current_tenant,
+       availableTenants: user_tenants
+   } %}
+
+ Props:
+   currentTenant: Entity des aktuellen Tenants (name, initials)
+   availableTenants: array of { id, name, initials, isCurrent }
+#}
+
+{% set availableTenants = availableTenants|default([]) %}
+
+{% if availableTenants|length > 1 %}
+<div class="fa-tenant-switch" data-controller="aurora-dropdown">
+    <button type="button"
+            class="fa-tenant-switch__trigger"
+            data-action="click->aurora-dropdown#toggle"
+            aria-haspopup="true"
+            aria-expanded="false">
+        <span class="fa-tenant-switch__initials" aria-hidden="true">{{ currentTenant.initials|default('??') }}</span>
+        <span class="fa-tenant-switch__body">
+            <span class="fa-tenant-switch__name">{{ currentTenant.name|default('Tenant') }}</span>
+            <span class="fa-tenant-switch__hint">{{ 'tenant.switch_hint'|trans({}, 'tenant')|default('Wechseln') }}</span>
+        </span>
+        <i class="bi bi-chevron-down fa-tenant-switch__chevron" aria-hidden="true"></i>
+    </button>
+
+    <div class="fa-tenant-switch__panel fa-dropdown-panel fa-dropdown-panel--bottom-left"
+         role="menu"
+         data-aurora-dropdown-target="panel"
+         hidden>
+        <div class="fa-dropdown-panel__header">
+            {{ 'tenant.switch_header'|trans({}, 'tenant')|default('Tenant wechseln') }}
+        </div>
+        <div class="fa-dropdown-panel__body">
+            {% for t in availableTenants %}
+                <a href="{{ path('app_tenant_switch', {id: t.id}) }}"
+                   class="fa-dropdown-panel__item {% if t.isCurrent %}is-active{% endif %}"
+                   role="menuitem">
+                    <span class="fa-tenant-switch__item-initials" aria-hidden="true">{{ t.initials }}</span>
+                    <span class="fa-dropdown-panel__item-body">
+                        <span class="fa-dropdown-panel__item-title">{{ t.name }}</span>
+                        {% if t.frameworks is defined and t.frameworks %}
+                            <span class="fa-dropdown-panel__item-sub">{{ t.frameworks|join(' · ') }}</span>
+                        {% endif %}
+                    </span>
+                    {% if t.isCurrent %}
+                        <i class="bi bi-check-lg fa-dropdown-panel__item-meta" aria-hidden="true" style="color: var(--success);"></i>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}

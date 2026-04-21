@@ -2,6 +2,8 @@ tenant:
     title: 'Tenant Management'
     subtitle: 'Manage organizations and tenants'
     empty: 'No tenants available'
+    switch_hint: 'Switch'
+    switch_header: 'Switch tenant'
     stats:
         total: Total
         active: Active

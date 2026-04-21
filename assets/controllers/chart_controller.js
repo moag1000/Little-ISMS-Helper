@@ -11,6 +11,7 @@ import {
     Tooltip,
     Legend
 } from 'chart.js';
+import { readTokens, applyAuroraDefaults, subscribeToThemeChanges } from '../chart-theme.js';
 
 // Register Chart.js components
 Chart.register(
@@ -25,16 +26,25 @@ Chart.register(
     Legend
 );
 
+// FairyAurora v3.0: Aurora-Defaults global anwenden (liest CSS-Vars).
+applyAuroraDefaults(Chart);
+
 /**
- * Get current theme colors based on dark/light mode
+ * FairyAurora-Tokens für chart-Controller.
+ * Liest live aus CSS-Custom-Properties (reagiert auf Light/Dark/System).
  */
 function getThemeColors() {
+    const t = readTokens();
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
-                   document.documentElement.getAttribute('data-bs-theme') === 'dark';
-
+                   (document.documentElement.getAttribute('data-theme') === 'system' &&
+                    window.matchMedia('(prefers-color-scheme: dark)').matches);
     return {
-        textMuted: isDark ? '#cbd5e1' : '#6b7280',
-        grid: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)',
+        textMuted: t['--fg-3'] || (isDark ? '#cbd5e1' : '#6b7280'),
+        grid:      t['--border'] || (isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)'),
+        primary:   t['--primary'],
+        accent:    t['--accent'],
+        surface2:  t['--surface-2'],
+        fg:        t['--fg'],
         isDark
     };
 }

@@ -1,7 +1,10 @@
 import { Controller } from '@hotwired/stimulus';
+import { readTokens, applyAuroraDefaults } from '../chart-theme.js';
 
 /**
  * Radar Chart Controller - Compliance Radar Visualization
+ * FairyAurora v3.0: readTokens() liefert Aurora-Palette aus CSS-Custom-Properties;
+ * applyAuroraDefaults() setzt globale Chart.js-Defaults.
  *
  * Features:
  * - Spider/Radar chart using Chart.js
@@ -15,22 +18,26 @@ export default class extends Controller {
         url: String
     };
 
-    // Bootstrap 5 colors - consistent across all charts
-    // Dark mode uses lighter variants for visibility
+    // FairyAurora v3.0: Palette aus CSS-Custom-Properties (Light/Dark/System auto).
     get colors() {
+        const t = readTokens();
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
-                       document.documentElement.getAttribute('data-bs-theme') === 'dark';
+                       (document.documentElement.getAttribute('data-theme') === 'system' &&
+                        window.matchMedia('(prefers-color-scheme: dark)').matches);
         return {
-            success: isDark ? '#34d399' : '#28a745',
-            successBg: isDark ? 'rgba(52, 211, 153, 0.3)' : 'rgba(40, 167, 69, 0.2)',
-            text: isDark ? '#e2e8f0' : '#2c3e50',
-            textMuted: isDark ? '#cbd5e1' : '#6c757d',
-            gridColor: isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
+            success:    t['--success'] || (isDark ? '#34d399' : '#059669'),
+            successBg:  'rgba(5, 150, 105, 0.2)',
+            primary:    t['--primary'],
+            accent:     t['--accent'],
+            text:       t['--fg']    || (isDark ? '#e9eaf5' : '#1e1b4b'),
+            textMuted:  t['--fg-3']  || (isDark ? '#6d6f99' : '#6d6b92'),
+            gridColor:  t['--border']|| (isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)')
         };
     }
 
     connect() {
         this.chart = null;
+        if (window.Chart) applyAuroraDefaults(window.Chart);
         this.loadData();
 
         // Re-render chart when theme changes
