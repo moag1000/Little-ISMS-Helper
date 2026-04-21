@@ -4,6 +4,14 @@
 
 {% block body %}
 <div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'admin.title'|trans({}, 'admin'), url: path('admin_dashboard') },
+            { label: 'admin.nav.tags'|trans({}, 'admin'), url: path('admin_tag_index') },
+            { label: tag.name }
+        ]
+    } %}
+
     <h1 class="h3 mb-4">{{ 'tags.admin.edit.title'|trans({'%name%': tag.name}, 'tags') }}</h1>
 
     {{ form_start(form) }}

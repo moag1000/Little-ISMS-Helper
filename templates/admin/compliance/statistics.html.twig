@@ -4,6 +4,11 @@
 
 {% block title %}{{ 'admin.compliance.statistics'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_compliance_index') }}">{{ 'admin.nav.compliance_management'|trans({}, 'admin') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.compliance.statistics'|trans({}, 'admin') }}</li>
+{% endblock %}
+
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-end mb-4">

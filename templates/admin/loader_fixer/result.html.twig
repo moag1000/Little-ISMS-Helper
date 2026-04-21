@@ -4,6 +4,14 @@
 
 {% block body %}
 <div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'admin.title'|trans({}, 'admin'), url: path('admin_dashboard') },
+            { label: 'admin.nav.loader_fixer'|trans({}, 'admin'), url: path('admin_loader_fixer_index') },
+            { label: 'loader_fixer.result.title'|trans({}, 'loader_fixer') }
+        ]
+    } %}
+
     <div class="d-flex justify-content-between align-items-start mb-3">
         <div>
             <h1 class="h3">{{ 'loader_fixer.result.title'|trans({}, 'loader_fixer') }}</h1>
