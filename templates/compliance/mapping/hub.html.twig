@@ -1,0 +1,205 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'compliance.mapping.hub.title'|trans({}, 'compliance') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index') },
+            { label: 'compliance.mapping.hub.title'|trans({}, 'compliance') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                {{ 'compliance.mapping.hub.title'|trans({}, 'compliance') }}
+            </h1>
+            <p class="text-muted mb-0">{{ 'compliance.mapping.hub.subtitle'|trans({}, 'compliance') }}</p>
+        </div>
+    </div>
+
+    {% include '_components/_iso9001_analogy.html.twig' with { variant: 'mapping' } %}
+
+    {# KPI-Strip #}
+    <div class="row g-2 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm h-100 border-primary">
+                <div class="card-body py-2 px-3">
+                    <div class="small text-muted">{{ 'compliance.mapping.hub.kpi.total'|trans({}, 'compliance') }}</div>
+                    <div class="h4 mb-0 text-primary">{{ stats.total_mappings }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm h-100 {% if unreviewed_count > 0 %}border-warning{% else %}border-success{% endif %}">
+                <div class="card-body py-2 px-3">
+                    <div class="small text-muted">{{ 'compliance.mapping.hub.kpi.unreviewed'|trans({}, 'compliance') }}</div>
+                    <div class="h4 mb-0 {% if unreviewed_count > 0 %}text-warning{% else %}text-success{% endif %}">
+                        {{ unreviewed_count }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body py-2 px-3">
+                    <div class="small text-muted">{{ 'compliance.mapping.hub.kpi.bidirectional'|trans({}, 'compliance') }}</div>
+                    <div class="h4 mb-0">{{ stats.bidirectional_mappings }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body py-2 px-3">
+                    <div class="small text-muted">{{ 'compliance.mapping.hub.kpi.frameworks'|trans({}, 'compliance') }}</div>
+                    <div class="h4 mb-0">{{ framework_count }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# 5 Einstiegs-Karten #}
+    <div class="row g-3 mb-4">
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ path('app_compliance_mapping_wizard') }}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm border-primary">
+                    <div class="card-body">
+                        <div class="h5 text-primary">
+                            <i class="bi bi-magic" aria-hidden="true"></i>
+                            {{ 'compliance.mapping.hub.action.wizard.title'|trans({}, 'compliance') }}
+                            <span class="badge text-bg-primary ms-1">{{ 'compliance.mapping.hub.badge.start_here'|trans({}, 'compliance') }}</span>
+                        </div>
+                        <p class="small text-body mb-0">
+                            {{ 'compliance.mapping.hub.action.wizard.desc'|trans({}, 'compliance') }}
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ path('app_compliance_mapping_seeds_index') }}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="h5">
+                            <i class="bi bi-lightning-charge text-success" aria-hidden="true"></i>
+                            {{ 'compliance.mapping.hub.action.seeds.title'|trans({}, 'compliance') }}
+                        </div>
+                        <p class="small text-body mb-0">
+                            {{ 'compliance.mapping.hub.action.seeds.desc'|trans({}, 'compliance') }}
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ path('app_mapping_quality_dashboard') }}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="h5">
+                            <i class="bi bi-check2-circle text-info" aria-hidden="true"></i>
+                            {{ 'compliance.mapping.hub.action.quality.title'|trans({}, 'compliance') }}
+                            {% if unreviewed_count > 0 %}
+                                <span class="badge text-bg-warning ms-1">{{ unreviewed_count }}</span>
+                            {% endif %}
+                        </div>
+                        <p class="small text-body mb-0">
+                            {{ 'compliance.mapping.hub.action.quality.desc'|trans({}, 'compliance') }}
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ path('app_compliance_cross_framework') }}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="h5">
+                            <i class="bi bi-arrow-left-right text-secondary" aria-hidden="true"></i>
+                            {{ 'compliance.mapping.hub.action.transitive.title'|trans({}, 'compliance') }}
+                        </div>
+                        <p class="small text-body mb-0">
+                            {{ 'compliance.mapping.hub.action.transitive.desc'|trans({}, 'compliance') }}
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ path('app_compliance_mapping_index') }}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="h5">
+                            <i class="bi bi-list-ul" aria-hidden="true"></i>
+                            {{ 'compliance.mapping.hub.action.list.title'|trans({}, 'compliance') }}
+                        </div>
+                        <p class="small text-body mb-0">
+                            {{ 'compliance.mapping.hub.action.list.desc'|trans({'%count%': stats.total_mappings}, 'compliance') }}
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ path('app_data_reuse_hub') }}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="h5">
+                            <i class="bi bi-arrows-collapse text-success" aria-hidden="true"></i>
+                            {{ 'compliance.mapping.hub.action.reuse.title'|trans({}, 'compliance') }}
+                        </div>
+                        <p class="small text-body mb-0">
+                            {{ 'compliance.mapping.hub.action.reuse.desc'|trans({}, 'compliance') }}
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    {# Letzte 5 Mappings #}
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="h6 mb-0">
+                <i class="bi bi-clock-history" aria-hidden="true"></i>
+                {{ 'compliance.mapping.hub.recent.heading'|trans({}, 'compliance') }}
+            </h2>
+            <a href="{{ path('app_compliance_mapping_index') }}" class="small">
+                {{ 'compliance.mapping.hub.recent.all_link'|trans({}, 'compliance') }}
+            </a>
+        </div>
+        <div class="card-body p-0">
+            {% if recent|length == 0 %}
+                <p class="small text-muted m-3 mb-0">
+                    {{ 'compliance.mapping.hub.recent.empty'|trans({}, 'compliance') }}
+                </p>
+            {% else %}
+                <ul class="list-group list-group-flush">
+                    {% for m in recent %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="flex-grow-1">
+                                <a href="{{ path('app_compliance_mapping_show', {id: m.id}) }}" class="fw-semibold">
+                                    {{ m.sourceRequirement.framework.code }}:{{ m.sourceRequirement.requirementId }}
+                                    → {{ m.targetRequirement.framework.code }}:{{ m.targetRequirement.requirementId }}
+                                </a>
+                                <span class="badge text-bg-light border ms-2">{{ m.mappingType }}</span>
+                                <span class="small text-muted ms-2">{{ m.finalPercentage }}%</span>
+                            </div>
+                            <span class="small text-muted">
+                                {{ m.updatedAt ? m.updatedAt|date('Y-m-d') : '—' }}
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
