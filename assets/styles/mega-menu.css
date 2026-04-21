@@ -102,7 +102,7 @@
 /* Dark mode support for triggers */
 [data-bs-theme="dark"] .mega-menu-trigger,
 [data-theme="dark"] .mega-menu-trigger {
-    color: #cffafe; /* Dark mode: Cyan-50 */
+    color: var(--primary); /* Dark mode: primary cyan */
 }
 
 [data-bs-theme="dark"] .mega-menu-trigger:hover,

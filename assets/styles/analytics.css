@@ -32,7 +32,7 @@
 .page-header h1 {
     font-size: 2rem;
     margin-bottom: 5px;
-    color: var(--text-primary, #2c3e50);
+    color: var(--fg);
 }
 
 .page-header-actions {
@@ -45,11 +45,11 @@
    =============================== */
 .analytics-tabs {
     margin-bottom: 20px;
-    border-bottom: 2px solid var(--border-color, #dee2e6);
+    border-bottom: 2px solid var(--border);
 }
 
 .analytics-tabs .nav-link {
-    color: var(--text-secondary, #6c757d);
+    color: var(--fg-2);
     font-weight: 500;
     padding: 12px 20px;
     transition: all 0.2s;
@@ -101,7 +101,7 @@
     border: 2px solid rgba(6, 182, 212, 0.2);
     border-radius: 12px;
     box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.1)), 0 0 15px rgba(6, 182, 212, 0.05);
-    background: var(--bg-elevated, #ffffff);
+    background: var(--surface);
     overflow: hidden;
     transition: all 0.3s ease;
 }
@@ -116,15 +116,15 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background: var(--bg-secondary, #f8f9fa);
-    border-bottom: 2px solid var(--border-color, #dee2e6);
+    background: var(--surface-2);
+    border-bottom: 2px solid var(--border);
 }
 
 .analytics-card .card-title {
     margin: 0;
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--text-primary, #2c3e50);
+    color: var(--fg);
 }
 
 .analytics-card .card-title i {
@@ -169,7 +169,7 @@
     row-gap: 0.75rem;
     margin-bottom: 20px;
     padding: 15px;
-    background: var(--bg-secondary, #f8f9fa);
+    background: var(--surface-2);
     border-radius: 8px;
 }
 
@@ -179,7 +179,7 @@
     gap: 0.625rem;
     padding: 0.5rem 1rem;
     background: var(--surface);
-    border: 1px solid var(--border-color, #e5e7eb);
+    border: 1px solid var(--border);
     border-radius: 6px;
     white-space: nowrap;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -195,7 +195,7 @@
 
 .legend-label {
     font-size: 0.875rem;
-    color: var(--text-primary, #2c3e50);
+    color: var(--fg);
     font-weight: 500;
 }
 
@@ -220,7 +220,7 @@
     top: 50%;
     transform: translateY(-50%) rotate(-90deg);
     font-weight: 600;
-    color: var(--text-secondary, #6c757d);
+    color: var(--fg-2);
 }
 
 .x-axis-label {
@@ -229,7 +229,7 @@
     left: 50%;
     transform: translateX(-50%);
     font-weight: 600;
-    color: var(--text-secondary, #6c757d);
+    color: var(--fg-2);
 }
 
 .heat-map-matrix {
@@ -253,7 +253,7 @@
     width: 40px;
     height: 60px;
     font-weight: 600;
-    color: var(--text-secondary, #6c757d);
+    color: var(--fg-2);
 }
 
 .heat-map-cells {
@@ -277,7 +277,7 @@
 
 .heat-map-cell:hover {
     transform: scale(1.1);
-    border-color: var(--text-primary, #2c3e50);
+    border-color: var(--fg);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
@@ -299,7 +299,7 @@
     width: 80px;
     text-align: center;
     font-weight: 600;
-    color: var(--text-secondary, #6c757d);
+    color: var(--fg-2);
 }
 
 .heat-map-details {
@@ -307,8 +307,8 @@
     top: 20px;
     right: 20px;
     width: 300px;
-    background: var(--bg-elevated, #ffffff);
-    border: 1px solid var(--border-color, #dee2e6);
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 8px;
     box-shadow: var(--shadow-lg, 0 8px 24px rgba(0,0,0,0.15));
     z-index: 10;
@@ -319,8 +319,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px;
-    background: var(--bg-secondary, #f8f9fa);
-    border-bottom: 1px solid var(--border-color, #dee2e6);
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
 }
 
 .details-header h6 {
@@ -343,13 +343,13 @@
 .risk-item {
     padding: 10px;
     margin-bottom: 8px;
-    background: var(--bg-secondary, #f8f9fa);
+    background: var(--surface-2);
     border-radius: 6px;
     transition: background 0.2s;
 }
 
 .risk-item:hover {
-    background: var(--bg-tertiary, #e9ecef);
+    background: var(--surface-3);
 }
 
 .risk-item a {
@@ -405,12 +405,12 @@
 }
 
 .annex-details table {
-    background: var(--bg-elevated, #ffffff);
+    background: var(--surface);
 }
 
 .annex-details th {
-    background: var(--bg-secondary, #f8f9fa);
-    color: var(--text-primary, #2c3e50);
+    background: var(--surface-2);
+    color: var(--fg);
     font-weight: 600;
 }
 
@@ -432,7 +432,7 @@
 }
 
 .trend-tabs .nav-link:hover {
-    background: var(--bg-secondary, #f8f9fa);
+    background: var(--surface-2);
 }
 
 .trend-tabs .nav-link.active {
@@ -453,7 +453,7 @@
     font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 20px;
-    color: var(--text-primary, #2c3e50);
+    color: var(--fg);
 }
 
 .trend-chart-wrapper canvas {
@@ -464,7 +464,7 @@
     display: flex;
     justify-content: space-around;
     padding: 20px;
-    background: var(--bg-secondary, #f8f9fa);
+    background: var(--surface-2);
     border-radius: 8px;
 }
 
@@ -475,7 +475,7 @@
 .stat-label {
     display: block;
     font-size: 0.85rem;
-    color: var(--text-secondary, #6c757d);
+    color: var(--fg-2);
     margin-bottom: 5px;
 }
 
@@ -483,7 +483,7 @@
     display: block;
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--text-primary, #2c3e50);
+    color: var(--fg);
 }
 
 /* ===============================
@@ -609,7 +609,7 @@
 
 /* Risk Level Colors - Bootstrap consistent */
 .heat-map-legend .legend-color-critical {
-    background: #721c24;
+    background: var(--danger-strong);
 }
 
 .heat-map-legend .legend-color-high {
@@ -621,16 +621,16 @@
 }
 
 .heat-map-legend .legend-color-low {
-    background: #28a745;
+    background: var(--success);
 }
 
 /* Dark Mode - Brighter colors for visibility */
 [data-theme="dark"] .heat-map-legend .legend-color-critical {
-    background: #b91c1c;
+    background: var(--danger-strong);
 }
 
 [data-theme="dark"] .heat-map-legend .legend-color-high {
-    background: #f87171;
+    background: var(--danger);
 }
 
 [data-theme="dark"] .heat-map-legend .legend-color-medium {
@@ -674,8 +674,8 @@
 .heat-map-tooltip {
     position: absolute;
     z-index: 10000;
-    background: var(--bg-elevated, white);
-    border: 1px solid var(--border-color, #e2e8f0);
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 12px 16px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15),
@@ -707,11 +707,11 @@
     gap: 10px;
     margin-bottom: 10px;
     padding-bottom: 8px;
-    border-bottom: 1px solid var(--border-color, #e2e8f0);
+    border-bottom: 1px solid var(--border);
 }
 
 .heat-map-tooltip .tooltip-header strong {
-    color: var(--text-primary, #1e293b);
+    color: var(--fg);
     font-size: 0.875rem;
 }
 
@@ -731,12 +731,12 @@
 
 .heat-map-tooltip .tooltip-risk-list li {
     padding: 4px 0;
-    color: var(--text-secondary, #64748b);
+    color: var(--fg-2);
     line-height: 1.4;
 }
 
 .heat-map-tooltip .tooltip-risk-list strong {
-    color: var(--text-primary, #1e293b);
+    color: var(--fg);
     font-weight: 500;
 }
 
@@ -845,8 +845,8 @@
     gap: 15px;
     align-items: flex-end;
     padding: 15px;
-    background: var(--bg-secondary, #f8f9fa);
-    border-bottom: 1px solid var(--border-color, #dee2e6);
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
     animation: slideDown 0.3s ease;
 }
 
@@ -872,7 +872,7 @@
 .heat-map-filters .filter-label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--text-primary, #1e293b);
+    color: var(--fg);
     display: flex;
     align-items: center;
     gap: 5px;
@@ -908,7 +908,7 @@
    =============================== */
 .heat-map-details {
     margin-top: 20px;
-    border-top: 2px solid var(--border-color, #dee2e6);
+    border-top: 2px solid var(--border);
     padding-top: 20px;
     opacity: 0;
     transform: translateY(10px);
@@ -929,7 +929,7 @@
 
 .heat-map-details .details-title-content h6 {
     margin: 0 0 10px 0;
-    color: var(--text-primary, #1e293b);
+    color: var(--fg);
     font-size: 1.1rem;
     font-weight: 600;
 }
@@ -955,15 +955,15 @@
 }
 
 .heat-map-details .risk-item-enhanced {
-    background: var(--bg-secondary, #f8f9fa);
-    border: 1px solid var(--border-color, #dee2e6);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 12px 15px;
     transition: all 0.2s ease;
 }
 
 .heat-map-details .risk-item-enhanced:hover {
-    background: var(--bg-elevated, white);
+    background: var(--surface);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border-color: var(--primary);
     transform: translateX(3px);
@@ -981,7 +981,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--text-primary, #1e293b);
+    color: var(--fg);
     text-decoration: none;
     flex: 1;
     transition: color 0.2s ease;
@@ -1011,7 +1011,7 @@
 
 .heat-map-details .risk-description {
     font-size: 0.85rem;
-    color: var(--text-secondary, #64748b);
+    color: var(--fg-2);
     margin: 8px 0 0 0;
     line-height: 1.5;
 }
