@@ -31,3 +31,6 @@
 
 /* FairyAurora Edge-Components — Stepper, Dropdown, Chips, Banner, Confirm, Accordion */
 @import './styles/fairy-aurora-edge.css';
+
+/* FairyAurora Print-Styles — @media print Neutral-Fallback (Plan § 23) */
+@import './styles/fairy-aurora-print.css';

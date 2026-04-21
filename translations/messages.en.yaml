@@ -445,23 +445,37 @@ error:
         subheading: 'Something Went Wrong'
         message: 'We encountered an error while processing your request.'
         help: 'Please try again or contact support if the problem persists.'
+    code_label: 'Not found'
+    code_label_server: 'Server error'
+    code_label_forbidden: 'Access denied'
     403:
         title: 'Access Denied'
         heading: 'Access Denied'
         message: "You don't have permission to access this resource."
+        alva_line: "You don't have permission for this."
+        alva_sub: "If that's wrong, talk to your admin."
     404:
         title: 'Page Not Found'
         heading: 'Page Not Found'
         message: 'Sorry, the page you are looking for does not exist.'
+        alva_line: "Hmm, I can't find that."
+        alva_sub: 'Check the URL or head to the dashboard.'
     500:
         title: 'Server Error'
         heading: 'Internal Server Error'
         message: "Something went wrong on our end. We're working to fix it."
         help: 'Please try again later.'
+        alva_line: 'Something went wrong.'
+        alva_sub: "Not your fault. Try again or report it to the admin."
     action:
         homepage: 'Go to Homepage'
         back: 'Go Back'
         login: Login
+        retry: 'Try again'
+email:
+    footer:
+        sent_by: 'This message was sent by Little ISMS Helper.'
+        auto: 'Automatic notification'
 entity_history:
     title: 'Entity History'
     section: History

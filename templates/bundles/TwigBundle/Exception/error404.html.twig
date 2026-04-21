@@ -1,40 +1,22 @@
-{% extends 'base.html.twig' %}
-
-{# Security: Custom 404 Not Found error page (prevents information disclosure) #}
+{% extends 'base_auth.html.twig' %}
 
 {% block title %}{{ 'error.404.title'|trans({}, 'messages') }}{% endblock %}
 
+{% block auth_mood %}thinking{% endblock %}
+{% block auth_alva_line %}{{ 'error.404.alva_line'|trans({}, 'messages')|default('Hmm, das finde ich nicht.') }}{% endblock %}
+{% block auth_alva_sub %}{{ 'error.404.alva_sub'|trans({}, 'messages')|default('Prüfe die URL oder gehe zum Dashboard.') }}{% endblock %}
+
 {% block body %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <div class="error-template">
-                <h1 class="display-1">404</h1>
-                <h2>{{ 'error.404.heading'|trans({}, 'messages') }}</h2>
-                <div class="error-details mt-4">
-                    <p class="lead">{{ 'error.404.message'|trans({}, 'messages') }}</p>
-                </div>
-                <div class="error-actions mt-4">
-                    <a href="{{ path('app_home') }}" class="btn btn-primary btn-lg">
-                        <i class="bi bi-house" aria-hidden="true"></i> {{ 'error.action.homepage'|trans({}, 'messages') }}
-                    </a>
-                    <a href="javascript:history.back()" class="btn btn-outline-secondary btn-lg">
-                        <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'error.action.back'|trans({}, 'messages') }}
-                    </a>
-                </div>
-            </div>
+    {% import '_components/_cyber_button.html.twig' as btn %}
+    <div class="fa-auth-form">
+        <header class="fa-auth-form__head">
+            <div class="fa-auth-form__eyebrow">404 · {{ 'error.code_label'|trans({}, 'messages')|default('Nicht gefunden') }}</div>
+            <h1 class="fa-auth-form__title">{{ 'error.404.heading'|trans({}, 'messages') }}</h1>
+            <p class="fa-auth-form__desc">{{ 'error.404.message'|trans({}, 'messages') }}</p>
+        </header>
+        <div style="display:flex; gap: 10px; margin-top: 8px; flex-wrap: wrap;">
+            {{ btn.link(path('app_home'), 'error.action.homepage'|trans({}, 'messages'), { variant: 'primary', icon: 'bi-house' }) }}
+            {{ btn.link('javascript:history.back()', 'error.action.back'|trans({}, 'messages'), { variant: 'secondary', icon: 'bi-arrow-left' }) }}
         </div>
     </div>
-</div>
-
-<style>
-    .error-template {
-        padding: 40px 15px;
-        text-align: center;
-    }
-    .error-template h1 {
-        font-size: 10em;
-        color: #6c757d;
-    }
-</style>
 {% endblock %}
