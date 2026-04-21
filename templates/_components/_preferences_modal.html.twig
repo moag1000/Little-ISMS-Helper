@@ -1,138 +1,160 @@
-{# User Preferences Modal Component
-   Usage: {% include '_components/_preferences_modal.html.twig' %}
+{#
+ FairyAurora v3.0 — Preferences-Modal (Aurora-Redesign)
 
-   Features:
-   - View density settings
-   - Animation preferences
-   - Keyboard shortcuts toggle
-   - Export/Import settings
+ Usage: {% include '_components/_preferences_modal.html.twig' %}
+ Öffnen via: Trigger mit data-action="preferences#open"
+
+ Features:
+ - View-Density, Animations-Toggle, Keyboard-Shortcuts, Sprache
+ - Export/Import der Preferences
+ - i18n komplett via preferences domain (DE + EN)
+ - Aurora-Panel-Pattern (surface-2 + Border + Shadow)
 #}
 
-<div class="preferences-modal d-none"
+<div class="preferences-modal d-none fa-prefs-modal"
      data-controller="preferences"
      data-preferences-target="modal"
      data-action="click->preferences#handleBackdropClick">
 
-    <div class="preferences-container">
-        {# Modal Header #}
-        <div class="preferences-header">
-            <h5 class="preferences-title">
-                <i class="bi bi-gear" aria-hidden="true"></i>
-                Einstellungen
-            </h5>
+    <div class="fa-prefs-modal__container preferences-container">
+        {# Header #}
+        <div class="fa-prefs-modal__header preferences-header">
+            <h2 class="fa-prefs-modal__title preferences-title">
+                <i class="bi bi-gear-fill" aria-hidden="true"></i>
+                {{ 'preferences.title'|trans({}, 'preferences')|default('Einstellungen') }}
+            </h2>
             <button type="button"
-                    class="btn-close"
+                    class="fa-prefs-modal__close"
                     data-action="click->preferences#close"
-                    aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
+                    aria-label="{{ 'common.close'|trans({}, 'messages') }}">×</button>
         </div>
 
-        {# Modal Body #}
-        <div class="preferences-body">
-            {# View Density #}
-            <div class="preference-section">
-                <h6 class="preference-section-title">
+        {# Body #}
+        <div class="fa-prefs-modal__body preferences-body">
+
+            {# View-Density #}
+            <section class="fa-prefs-section preference-section">
+                <h3 class="fa-prefs-section__title preference-section-title">
                     <i class="bi bi-layout-three-columns" aria-hidden="true"></i>
-                    Ansichtsdichte
-                </h6>
-                <label>
-                    <select class="form-select"
-                            data-preferences-target="viewDensity"
-                            data-action="change->preferences#setViewDensity">
-                        <option value="compact">Kompakt</option>
-                        <option value="comfortable" selected>Komfortabel</option>
-                    </select>
-                </label>
-                <small class="text-muted">Bestimmt, wie viel Abstand zwischen Elementen ist</small>
-            </div>
+                    {{ 'preferences.density.title'|trans({}, 'preferences')|default('Ansichtsdichte') }}
+                </h3>
+                <div class="fa-cyber-input fa-cyber-input--select">
+                    <div class="fa-cyber-input__frame">
+                        <span class="fa-cyber-input__tick fa-cyber-input__tick--tl"></span>
+                        <span class="fa-cyber-input__tick fa-cyber-input__tick--tr"></span>
+                        <span class="fa-cyber-input__tick fa-cyber-input__tick--bl"></span>
+                        <span class="fa-cyber-input__tick fa-cyber-input__tick--br"></span>
+                        <select class="fa-cyber-input__field form-select"
+                                data-preferences-target="viewDensity"
+                                data-action="change->preferences#setViewDensity">
+                            <option value="compact">{{ 'preferences.density.compact'|trans({}, 'preferences')|default('Kompakt') }}</option>
+                            <option value="comfortable" selected>{{ 'preferences.density.comfortable'|trans({}, 'preferences')|default('Komfortabel') }}</option>
+                        </select>
+                        <span class="fa-cyber-input__chevron" aria-hidden="true">▾</span>
+                    </div>
+                    <div class="fa-cyber-input__hint">{{ 'preferences.density.hint'|trans({}, 'preferences')|default('Bestimmt, wie viel Abstand zwischen Elementen ist') }}</div>
+                </div>
+            </section>
 
             {# Animations #}
-            <div class="preference-section">
-                <h6 class="preference-section-title">
+            <section class="fa-prefs-section preference-section">
+                <h3 class="fa-prefs-section__title preference-section-title">
                     <i class="bi bi-stars" aria-hidden="true"></i>
-                    Animationen
-                </h6>
-                <div class="form-check form-switch">
-                    <input class="form-check-input"
-                           type="checkbox"
+                    {{ 'preferences.animations.title'|trans({}, 'preferences')|default('Animationen') }}
+                </h3>
+                <label class="fa-prefs-toggle">
+                    <input type="checkbox"
+                           class="fa-prefs-toggle__input form-check-input"
                            data-preferences-target="animations"
                            data-action="change->preferences#toggleAnimations"
                            checked>
-                    <label class="form-check-label">
-                        Animationen aktivieren
-                    </label>
-                </div>
-                <small class="text-muted">Deaktivieren für bessere Performance</small>
-            </div>
+                    <span class="fa-prefs-toggle__slider" aria-hidden="true"></span>
+                    <span class="fa-prefs-toggle__label">{{ 'preferences.animations.enable'|trans({}, 'preferences')|default('Animationen aktivieren') }}</span>
+                </label>
+                <div class="fa-cyber-input__hint">{{ 'preferences.animations.hint'|trans({}, 'preferences')|default('Deaktivieren für bessere Performance') }}</div>
+            </section>
 
-            {# Keyboard Shortcuts #}
-            <div class="preference-section">
-                <h6 class="preference-section-title">
+            {# Keyboard-Shortcuts #}
+            <section class="fa-prefs-section preference-section">
+                <h3 class="fa-prefs-section__title preference-section-title">
                     <i class="bi bi-keyboard" aria-hidden="true"></i>
-                    Tastaturkürzel
-                </h6>
-                <div class="form-check form-switch">
-                    <input class="form-check-input"
-                           type="checkbox"
+                    {{ 'preferences.shortcuts.title'|trans({}, 'preferences')|default('Tastaturkürzel') }}
+                </h3>
+                <label class="fa-prefs-toggle">
+                    <input type="checkbox"
+                           class="fa-prefs-toggle__input form-check-input"
                            data-preferences-target="keyboardShortcuts"
                            data-action="change->preferences#toggleKeyboardShortcuts"
                            checked>
-                    <label class="form-check-label">
-                        Tastaturkürzel aktivieren
-                    </label>
-                </div>
-                <small class="text-muted">Cmd+K für Suche, Space für Vorschau, etc.</small>
-            </div>
+                    <span class="fa-prefs-toggle__slider" aria-hidden="true"></span>
+                    <span class="fa-prefs-toggle__label">{{ 'preferences.shortcuts.enable'|trans({}, 'preferences')|default('Tastaturkürzel aktivieren') }}</span>
+                </label>
+                <div class="fa-cyber-input__hint">{{ 'preferences.shortcuts.hint'|trans({}, 'preferences')|default('Cmd+K für Suche, Space für Vorschau, etc.') }}</div>
+            </section>
 
-            {# Language Preference #}
-            <div class="preference-section">
-                <h6 class="preference-section-title">
+            {# Language #}
+            <section class="fa-prefs-section preference-section">
+                <h3 class="fa-prefs-section__title preference-section-title">
                     <i class="bi bi-translate" aria-hidden="true"></i>
-                    Sprache
-                </h6>
-                <select class="form-select"
-                        data-preferences-target="language"
-                        data-action="change->preferences#setLanguage">
-                    <option value="de" {% if app.request.locale == 'de' %}selected{% endif %}>Deutsch</option>
-                    <option value="en" {% if app.request.locale == 'en' %}selected{% endif %}>English</option>
-                </select>
-            </div>
+                    {{ 'preferences.language.title'|trans({}, 'preferences')|default('Sprache') }}
+                </h3>
+                <div class="fa-cyber-input fa-cyber-input--select">
+                    <div class="fa-cyber-input__frame">
+                        <span class="fa-cyber-input__tick fa-cyber-input__tick--tl"></span>
+                        <span class="fa-cyber-input__tick fa-cyber-input__tick--tr"></span>
+                        <span class="fa-cyber-input__tick fa-cyber-input__tick--bl"></span>
+                        <span class="fa-cyber-input__tick fa-cyber-input__tick--br"></span>
+                        <select class="fa-cyber-input__field form-select"
+                                data-preferences-target="language"
+                                data-action="change->preferences#setLanguage">
+                            <option value="de" {% if app.request.locale == 'de' %}selected{% endif %}>Deutsch</option>
+                            <option value="en" {% if app.request.locale == 'en' %}selected{% endif %}>English</option>
+                        </select>
+                        <span class="fa-cyber-input__chevron" aria-hidden="true">▾</span>
+                    </div>
+                </div>
+            </section>
 
-            {# Export/Import #}
-            <div class="preference-section">
-                <h6 class="preference-section-title">
-                    <i class="bi bi-download" aria-hidden="true"></i>
-                    Einstellungen sichern
-                </h6>
-                <div class="d-flex gap-2">
-                    <button type="button"
-                            class="btn btn-sm btn-outline-primary"
-                            data-action="click->preferences#exportPreferences">
-                        <i class="bi bi-download" aria-hidden="true"></i> Exportieren
-                    </button>
-                    <label class="btn btn-sm btn-outline-secondary">
-                        <i class="bi bi-upload" aria-hidden="true"></i> Importieren
+            {# Export / Import #}
+            <section class="fa-prefs-section preference-section">
+                <h3 class="fa-prefs-section__title preference-section-title">
+                    <i class="bi bi-arrow-down-up" aria-hidden="true"></i>
+                    {{ 'preferences.backup.title'|trans({}, 'preferences')|default('Einstellungen sichern') }}
+                </h3>
+                <div class="fa-prefs-actions">
+                    {% import '_components/_cyber_button.html.twig' as btn %}
+                    {{ btn.render('preferences.backup.export'|trans({}, 'preferences')|default('Exportieren'), {
+                        variant: 'secondary',
+                        size: 'sm',
+                        icon: 'bi-download',
+                        attrs: { 'data-action': 'click->preferences#exportPreferences' }
+                    }) }}
+                    <label class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--sm">
+                        <i class="bi bi-upload" aria-hidden="true"></i>
+                        <span class="fa-cyber-btn__label">{{ 'preferences.backup.import'|trans({}, 'preferences')|default('Importieren') }}</span>
                         <input type="file"
                                accept=".json"
-                               class="d-none"
+                               style="display:none;"
                                data-action="change->preferences#importPreferences">
                     </label>
                 </div>
-            </div>
+            </section>
         </div>
 
-        {# Modal Footer #}
-        <div class="preferences-footer">
-            <button type="button"
-                    class="btn btn-sm btn-outline-danger"
-                    data-action="click->preferences#resetToDefaults">
-                <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
-                {{ 'common.reset'|trans({}, 'messages') }}
-            </button>
-            <button type="button"
-                    class="btn btn-sm btn-primary"
-                    data-action="click->preferences#close">
-                {{ 'common.close'|trans({}, 'messages') }}
-            </button>
+        {# Footer #}
+        <div class="fa-prefs-modal__footer preferences-footer">
+            {% import '_components/_cyber_button.html.twig' as btn %}
+            {{ btn.render('common.reset'|trans({}, 'messages')|default('Zurücksetzen'), {
+                variant: 'danger',
+                size: 'sm',
+                icon: 'bi-arrow-counterclockwise',
+                attrs: { 'data-action': 'click->preferences#resetToDefaults' }
+            }) }}
+            {{ btn.render('common.close'|trans({}, 'messages')|default('Schließen'), {
+                variant: 'primary',
+                size: 'sm',
+                attrs: { 'data-action': 'click->preferences#close' }
+            }) }}
         </div>
     </div>
 </div>

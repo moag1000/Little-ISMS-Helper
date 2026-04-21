@@ -1,0 +1,21 @@
+preferences:
+    title: 'Preferences'
+    density:
+        title: 'View density'
+        compact: 'Compact'
+        comfortable: 'Comfortable'
+        hint: 'Controls the amount of space between elements'
+    animations:
+        title: 'Animations'
+        enable: 'Enable animations'
+        hint: 'Disable for better performance'
+    shortcuts:
+        title: 'Keyboard shortcuts'
+        enable: 'Enable keyboard shortcuts'
+        hint: 'Cmd+K for search, Space for preview, etc.'
+    language:
+        title: 'Language'
+    backup:
+        title: 'Backup settings'
+        export: 'Export'
+        import: 'Import'

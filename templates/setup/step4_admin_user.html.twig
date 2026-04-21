@@ -1,154 +1,120 @@
 {% extends 'setup/_layout.html.twig' %}
+{% trans_default_domain 'setup' %}
 {% set active_step = 'admin' %}
 
-{% block title %}{{ 'setup.admin.title'|trans({}, 'setup') }} - Deployment Wizard{% endblock %}
-
-{% block step_head %}
-    {{ parent() }}
-    {# Disable Turbo cache to ensure CSRF tokens are always fresh #}
-    <meta name="turbo-cache-control" content="no-cache">
-{% endblock %}
+{% block title %}{{ 'setup.admin.title'|trans({}, 'setup') }}{% endblock %}
 
 {% block step_content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            {# Flash Messages #}
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                        {{ message|raw }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'setup.common.close'|trans({}, 'setup') }}"></button>
-                    </div>
-                {% endfor %}
-            {% endfor %}
+    {% import '_components/_step_header.html.twig' as step_header %}
+    {% import '_components/_alert.html.twig' as faAlert %}
+    {% import '_components/_nav_bar.html.twig' as nav %}
+    {% import '_components/_cyber_button.html.twig' as btn %}
 
-            {# Progress Bar #}
-            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h4 class="mb-0">{{ 'setup.progress.title'|trans({}, 'setup') }}</h4>
-                        <small class="text-muted">{{ 'setup.progress.step_of'|trans({'%current%': 4, '%total%': 11}, 'setup') }}</small>
-                    </div>
-                    <div class="progress" style="height: 10px;">
-                        <div class="progress-bar" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+    {% for label, messages in app.flashes %}
+        {% set tone = label == 'success' ? 'success' : (label in ['error','danger'] ? 'danger' : (label == 'warning' ? 'warning' : 'info')) %}
+        {% for message in messages %}
+            {{ faAlert.render(message|raw, tone, { dismissible: true })|raw }}
+        {% endfor %}
+    {% endfor %}
 
-            {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg' } %}
-                {% block card_header %}
-                    <div class="card-header bg-primary text-white">
-                        <h1 class="h3 mb-0">
-                            <i class="bi bi-person-shield me-2" aria-hidden="true"></i>
-                            {{ 'setup.admin.header'|trans({}, 'setup') }}
-                        </h1>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    <div class="p-4">
-                        <p class="text-muted mb-4">
-                            {{ 'setup.admin.description'|trans({}, 'setup') }}
-                        </p>
+    {{ step_header.render(5, 12, step.kind, 'setup.admin.header'|trans({}, 'setup'), 'setup.admin.description'|trans({}, 'setup'))|raw }}
 
-                        {# Admin User Form - Turbo disabled due to complex server-side processing #}
-                        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate', 'data-turbo': 'false'}}) }}
+    {{ form_start(form, {'attr': {'class': 'fa-setup-form', 'novalidate': 'novalidate', 'data-turbo': 'false'}}) }}
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.firstName,
-                                    'label': 'setup.admin.first_name'|trans({}, 'setup'),
-                                    'required': true
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.lastName,
-                                    'label': 'setup.admin.last_name'|trans({}, 'setup'),
-                                    'required': true
-                                } %}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.email,
-                                    'label': 'setup.admin.email'|trans({}, 'setup'),
-                                    'help': 'setup.admin.email_help'|trans({}, 'setup'),
-                                    'required': true
-                                } %}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.password.first,
-                                    'label': 'setup.admin.password'|trans({}, 'setup'),
-                                    'required': true
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.password.second,
-                                    'label': 'setup.admin.password_confirm'|trans({}, 'setup'),
-                                    'required': true
-                                } %}
-                            </div>
-                        </div>
-
-                        {# Password Requirements Info #}
-                        <div class="alert alert-info">
-                            <i class="bi bi-shield me-2" aria-hidden="true"></i>
-                            <strong>{{ 'setup.admin.password_requirements.title'|trans({}, 'setup') }}</strong>
-                            <ul class="mb-0 mt-2">
-                                <li>{{ 'setup.admin.password_requirements.length'|trans({}, 'setup') }}</li>
-                                <li>{{ 'setup.admin.password_requirements.uppercase'|trans({}, 'setup') }}</li>
-                                <li>{{ 'setup.admin.password_requirements.lowercase'|trans({}, 'setup') }}</li>
-                                <li>{{ 'setup.admin.password_requirements.number'|trans({}, 'setup') }}</li>
-                            </ul>
-                        </div>
-
-                        {# Security Note #}
-                        <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
-                            <strong>{{ 'setup.admin.security_note.title'|trans({}, 'setup') }}</strong>
-                            <p class="mb-0">{{ 'setup.admin.security_note.message'|trans({}, 'setup') }}</p>
-                        </div>
-
-                        {# Navigation #}
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ path('setup_step3_restore_backup') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
-                                {{ 'setup.navigation.back'|trans({}, 'setup') }}
-                            </a>
-
-                            <button type="submit" class="btn btn-primary">
-                                {{ 'setup.navigation.next'|trans({}, 'setup') }}
-                                <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
-                            </button>
-                        </div>
-
-                        {{ form_end(form) }}
-                    </div>
-                {% endblock %}
-            {% endembed %}
-
-            {# Information Card #}
-            {% embed '_components/_card.html.twig' with { 'class': 'mt-4 border-info' } %}
-                {% block card_body %}
-                    <p class="h5 mb-3">
-                        <i class="bi bi-info-circle text-info me-2" aria-hidden="true"></i>
-                        {{ 'setup.admin.next_steps.title'|trans({}, 'setup') }}
-                    </p>
-                    <p class="text-muted mb-0">
-                        {{ 'setup.admin.next_steps.description'|trans({}, 'setup') }}
-                    </p>
-                {% endblock %}
-            {% endembed %}
+    <div class="fa-setup-form__grid">
+        <div class="fa-setup-form__col">
+            {{ form_label(form.firstName, 'setup.admin.first_name'|trans({}, 'setup'), {'label_attr': {'class': 'fa-cyber-input__label'}}) }}
+            <div class="fa-cyber-input__frame">
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tl"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tr"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--bl"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--br"></span>
+                {{ form_widget(form.firstName, {'attr': {'class': 'fa-cyber-input__field', 'required': 'required'}}) }}
+            </div>
+            {{ form_errors(form.firstName) }}
+        </div>
+        <div class="fa-setup-form__col">
+            {{ form_label(form.lastName, 'setup.admin.last_name'|trans({}, 'setup'), {'label_attr': {'class': 'fa-cyber-input__label'}}) }}
+            <div class="fa-cyber-input__frame">
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tl"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tr"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--bl"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--br"></span>
+                {{ form_widget(form.lastName, {'attr': {'class': 'fa-cyber-input__field', 'required': 'required'}}) }}
+            </div>
+            {{ form_errors(form.lastName) }}
         </div>
     </div>
-</div>
+
+    <div class="fa-cyber-input">
+        {{ form_label(form.email, 'setup.admin.email'|trans({}, 'setup'), {'label_attr': {'class': 'fa-cyber-input__label'}}) }}
+        <div class="fa-cyber-input__frame">
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--tl"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--tr"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--bl"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--br"></span>
+            {{ form_widget(form.email, {'attr': {'class': 'fa-cyber-input__field', 'required': 'required'}}) }}
+        </div>
+        <div class="fa-cyber-input__hint">{{ 'setup.admin.email_help'|trans({}, 'setup') }}</div>
+        {{ form_errors(form.email) }}
+    </div>
+
+    <div class="fa-setup-form__grid">
+        <div class="fa-setup-form__col">
+            {{ form_label(form.password.first, 'setup.admin.password'|trans({}, 'setup'), {'label_attr': {'class': 'fa-cyber-input__label'}}) }}
+            <div class="fa-cyber-input__frame">
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tl"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tr"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--bl"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--br"></span>
+                {{ form_widget(form.password.first, {'attr': {'class': 'fa-cyber-input__field', 'required': 'required', 'type': 'password'}}) }}
+            </div>
+            {{ form_errors(form.password.first) }}
+        </div>
+        <div class="fa-setup-form__col">
+            {{ form_label(form.password.second, 'setup.admin.password_confirm'|trans({}, 'setup'), {'label_attr': {'class': 'fa-cyber-input__label'}}) }}
+            <div class="fa-cyber-input__frame">
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tl"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tr"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--bl"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--br"></span>
+                {{ form_widget(form.password.second, {'attr': {'class': 'fa-cyber-input__field', 'required': 'required', 'type': 'password'}}) }}
+            </div>
+            {{ form_errors(form.password.second) }}
+        </div>
+    </div>
+
+    {# Password Requirements Info als Aurora-Alert #}
+    {% set pwReqs %}
+        <ul style="margin:6px 0 0; padding-left:20px;">
+            <li>{{ 'setup.admin.password_requirements.length'|trans({}, 'setup') }}</li>
+            <li>{{ 'setup.admin.password_requirements.uppercase'|trans({}, 'setup') }}</li>
+            <li>{{ 'setup.admin.password_requirements.lowercase'|trans({}, 'setup') }}</li>
+            <li>{{ 'setup.admin.password_requirements.number'|trans({}, 'setup') }}</li>
+        </ul>
+    {% endset %}
+    {{ faAlert.render(pwReqs, 'info', { title: 'setup.admin.password_requirements.title'|trans({}, 'setup'), icon: 'bi-shield-lock' })|raw }}
+
+    {{ faAlert.render(
+        'setup.admin.security_note.message'|trans({}, 'setup'),
+        'warning',
+        { title: 'setup.admin.security_note.title'|trans({}, 'setup'), withAlva: true }
+    )|raw }}
+
+    <div class="fa-nav-bar">
+        <div class="fa-nav-bar__left">
+            {{ btn.link(path('setup_step3_restore_backup'), 'setup.navigation.back'|trans({}, 'setup'), { variant: 'secondary', icon: 'bi-arrow-left' }) }}
+        </div>
+        <div class="fa-nav-bar__right">
+            {{ btn.submit('setup.navigation.next'|trans({}, 'setup'), { variant: 'primary', icon: 'bi-arrow-right', iconAfter: true }) }}
+        </div>
+    </div>
+
+    {{ form_end(form) }}
+
+    {{ faAlert.render(
+        'setup.admin.next_steps.description'|trans({}, 'setup'),
+        'info',
+        { title: 'setup.admin.next_steps.title'|trans({}, 'setup'), icon: 'bi-info-circle' }
+    )|raw }}
 {% endblock %}
