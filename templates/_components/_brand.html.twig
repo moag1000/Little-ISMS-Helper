@@ -1,0 +1,42 @@
+{#
+ # FairyAurora Brand Component — Aurora-Gradient-Box + „Little ISMS Helper" + Mono-Version
+ #
+ # Usage:
+ #   {% import '_components/_brand.html.twig' as brand %}
+ #   {{ brand.render() }}                      {# default 28px mark + full text #}
+ #   {{ brand.render(size='sm') }}             {# 22px mark, small text #}
+ #   {{ brand.render(size='lg') }}             {# 40px mark, hero-variant #}
+ #   {{ brand.render(link='/dashboard') }}     {# wraps in <a> #}
+ #   {{ brand.render(text=false) }}            {# mark only (for Sidebar-Logo) #}
+ #
+ # Reads version from composer.json via Twig-Global `app_version`.
+ #}
+
+{% macro render(size='md', link=null, text=true, asText='Little ISMS Helper', version=null) %}
+    {% set sizeMap = {
+        'sm': { mark: 22, textSize: 12, subSize: 9 },
+        'md': { mark: 28, textSize: 14, subSize: 10 },
+        'lg': { mark: 40, textSize: 20, subSize: 11 }
+    } %}
+    {% set s = sizeMap[size] ?? sizeMap['md'] %}
+    {% set v = version ?? app_version ?? '3.0' %}
+
+    {% set inner %}
+        <div class="fa-brand-mark" style="width:{{ s.mark }}px;height:{{ s.mark }}px;"
+             aria-hidden="true">
+            <span class="fa-brand-sparkle">✦</span>
+        </div>
+        {% if text %}
+            <div class="fa-brand-text">
+                <div class="fa-brand-name" style="font-size:{{ s.textSize }}px;">{{ asText }}</div>
+                <div class="fa-brand-version" style="font-size:{{ s.subSize }}px;">ISMS · v{{ v }}</div>
+            </div>
+        {% endif %}
+    {% endset %}
+
+    {% if link %}
+        <a href="{{ link }}" class="fa-brand" data-turbo-action="advance">{{ inner|raw }}</a>
+    {% else %}
+        <div class="fa-brand">{{ inner|raw }}</div>
+    {% endif %}
+{% endmacro %}
