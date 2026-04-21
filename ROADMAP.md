@@ -850,8 +850,13 @@ Die drei Templates mit dem höchsten Count an Top-Level-Card-Wrappern gezielt mi
 - `help/iso9001_bridge.html.twig` — 8 Cards → 0. 9001-Bridge-Hilfeseite, Junior liest sie oft. Intro, Mapping-Tabelle, "Was ist neu in 27001"-Section mit 5 inneren Feature-Cards.
 - `portfolio_report/index.html.twig` — 5 Cards → 0. Management-Portfolio-Report. FTE-KPI, Reuse-Trend-Chart, Stichtag-Picker, Matrix mit Footer, Inheritance-Breakdown.
 
+**Batch 4 — next tier (2026-04-21):**
+- `admin/data_repair/index.html.twig` — 5 Cards → 0. 3 Orphan-Count-Summary-Cards plus 2 Duplicate-Detail-Cards (audits, assets) in `{% for %}`-Loops — elegant durch `_card.html.twig`-embeds ersetzt.
+- `compliance/mapping/wizard.html.twig` — 4 Cards → 0. 4-Step-Wizard (Framework-Paar → Requirement-Paar → Type → Rationale); Step 2 hat `hidden` + `data-mapping-wizard-target="step2"` auf dem Wrapper, via `card_attrs`-Block durchgereicht. Stimulus-Controller bleibt intakt.
+- `compliance_wizard/_gap_report_body.html.twig` — 4 Cards → 0. 3 Summary-KPI-Cards + 1 Budget-Simulator-Card mit `data-controller="budget-simulator"` auf dem Wrapper — `card_attrs`-Block-Pattern auch hier eingesetzt (Stimulus-Integration mit Component ohne zusätzlichen Wrapper-Div).
+
 **Nächste Outliers (aktuell):**
-`admin/data_repair/index.html.twig` (5), `group_report/incidents|nis2_registration|suppliers|soa_matrix` (KPI-Stats-Reste mit `py-2`-Override), `compliance/mapping/wizard.html.twig` (4), `compliance_wizard/_gap_report_body.html.twig` (4), `report_builder/new.html.twig` (3), `data_reuse_hub/index.html.twig` (3).
+`group_report/incidents|nis2_registration|suppliers|soa_matrix` (KPI-Stats-Reste mit `py-2`-Override), `report_builder/new.html.twig` (3), `data_reuse_hub/index.html.twig` (3), `compliance/mapping_quality/*` und `compliance/mapping/import.html.twig` (je 4+).
 
 **Restlicher Long-Tail (~230 Templates)** — jeweils bei Feature-Änderung dort.
 

@@ -40,14 +40,16 @@
           data-mapping-wizard-frameworks-value="{{ requirements_by_framework|json_encode }}">
         <input type="hidden" name="_token" value="{{ csrf_token('mapping_wizard') }}">
 
-        {# Step 1 — Framework-Paar #}
-        <div class="card shadow-sm mb-3">
-            <div class="card-header">
-                <span class="badge text-bg-primary me-2">1</span>
-                <strong>{{ 'compliance.mapping.wizard.step1.title'|trans({}, 'compliance') }}</strong>
-                <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step1.hint'|trans({}, 'compliance') }}</span>
-            </div>
-            <div class="card-body">
+        {# Step 1 — Framework-Paar — 8H.4 migrated #}
+        {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-3' } %}
+            {% block card_header %}
+                <div class="card-header">
+                    <span class="badge text-bg-primary me-2">1</span>
+                    <strong>{{ 'compliance.mapping.wizard.step1.title'|trans({}, 'compliance') }}</strong>
+                    <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step1.hint'|trans({}, 'compliance') }}</span>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="source-framework" class="form-label">
@@ -80,17 +82,20 @@
                         </select>
                     </div>
                 </div>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
 
-        {# Step 2 — Requirement-Paar (nur wenn Frameworks gewählt) #}
-        <div class="card shadow-sm mb-3" data-mapping-wizard-target="step2" hidden>
-            <div class="card-header">
-                <span class="badge text-bg-primary me-2">2</span>
-                <strong>{{ 'compliance.mapping.wizard.step2.title'|trans({}, 'compliance') }}</strong>
-                <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step2.hint'|trans({}, 'compliance') }}</span>
-            </div>
-            <div class="card-body">
+        {# Step 2 — Requirement-Paar (nur wenn Frameworks gewählt) — 8H.4 migrated #}
+        {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-3' } %}
+            {% block card_attrs %}data-mapping-wizard-target="step2" hidden{% endblock %}
+            {% block card_header %}
+                <div class="card-header">
+                    <span class="badge text-bg-primary me-2">2</span>
+                    <strong>{{ 'compliance.mapping.wizard.step2.title'|trans({}, 'compliance') }}</strong>
+                    <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step2.hint'|trans({}, 'compliance') }}</span>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="source-requirement" class="form-label">
@@ -117,17 +122,19 @@
                         </select>
                     </div>
                 </div>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
 
-        {# Step 3 — Typ wählt Prozent + Confidence vor #}
-        <div class="card shadow-sm mb-3">
-            <div class="card-header">
-                <span class="badge text-bg-primary me-2">3</span>
-                <strong>{{ 'compliance.mapping.wizard.step3.title'|trans({}, 'compliance') }}</strong>
-                <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step3.hint'|trans({}, 'compliance') }}</span>
-            </div>
-            <div class="card-body">
+        {# Step 3 — Typ wählt Prozent + Confidence vor — 8H.4 migrated #}
+        {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-3' } %}
+            {% block card_header %}
+                <div class="card-header">
+                    <span class="badge text-bg-primary me-2">3</span>
+                    <strong>{{ 'compliance.mapping.wizard.step3.title'|trans({}, 'compliance') }}</strong>
+                    <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step3.hint'|trans({}, 'compliance') }}</span>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 <div class="row g-3 mb-3">
                     {% for type, meta in {
                         'full':    { label: 'mapping.wizard.step3.type.full',    desc: 'mapping.wizard.step3.type.full_desc',    pct: 100, variant: 'success'  },
@@ -182,17 +189,19 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
 
-        {# Step 4 — Rationale #}
-        <div class="card shadow-sm mb-3">
-            <div class="card-header">
-                <span class="badge text-bg-primary me-2">4</span>
-                <strong>{{ 'compliance.mapping.wizard.step4.title'|trans({}, 'compliance') }}</strong>
-                <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step4.hint'|trans({}, 'compliance') }}</span>
-            </div>
-            <div class="card-body">
+        {# Step 4 — Rationale — 8H.4 migrated #}
+        {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-3' } %}
+            {% block card_header %}
+                <div class="card-header">
+                    <span class="badge text-bg-primary me-2">4</span>
+                    <strong>{{ 'compliance.mapping.wizard.step4.title'|trans({}, 'compliance') }}</strong>
+                    <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step4.hint'|trans({}, 'compliance') }}</span>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 <div class="mb-3">
                     <label for="mapping-rationale" class="form-label">
                         {{ 'compliance.mapping.wizard.step4.rationale_label'|trans({}, 'compliance') }}
@@ -211,8 +220,8 @@
                         {{ 'compliance.mapping.wizard.step4.bidirectional_help'|trans({}, 'compliance') }}
                     </div>
                 </div>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
 
         <div class="d-flex justify-content-between mb-4">
             <a href="{{ path('app_compliance_mapping_index') }}" class="btn btn-outline-secondary">

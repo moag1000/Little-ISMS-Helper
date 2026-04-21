@@ -205,30 +205,31 @@
                     <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.orphans_found'|trans({}, 'admin') }}
                 </div>
 
+                {# 8H.4 migrated — 3 orphan-count summary cards #}
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        <div class="card text-center">
-                            <div class="card-body">
+                        {% embed '_components/_card.html.twig' with { class: 'text-center' } %}
+                            {% block card_body %}
                                 <h3 class="text-danger">{{ orphanedAssets|length }}</h3>
                                 <p class="mb-0">{{ 'admin.data_repair.orphaned_assets'|trans({}, 'admin') }}</p>
-                            </div>
-                        </div>
+                            {% endblock %}
+                        {% endembed %}
                     </div>
                     <div class="col-md-4">
-                        <div class="card text-center">
-                            <div class="card-body">
+                        {% embed '_components/_card.html.twig' with { class: 'text-center' } %}
+                            {% block card_body %}
                                 <h3 class="text-danger">{{ orphanedRisks|length }}</h3>
                                 <p class="mb-0">{{ 'admin.data_repair.orphaned_risks'|trans({}, 'admin') }}</p>
-                            </div>
-                        </div>
+                            {% endblock %}
+                        {% endembed %}
                     </div>
                     <div class="col-md-4">
-                        <div class="card text-center">
-                            <div class="card-body">
+                        {% embed '_components/_card.html.twig' with { class: 'text-center' } %}
+                            {% block card_body %}
                                 <h3 class="text-danger">{{ orphanedIncidents|length }}</h3>
                                 <p class="mb-0">{{ 'admin.data_repair.orphaned_incidents'|trans({}, 'admin') }}</p>
-                            </div>
-                        </div>
+                            {% endblock %}
+                        {% endembed %}
                     </div>
                 </div>
 
@@ -738,12 +739,14 @@
                 Found {{ duplicates.audits|length }} audit number(s) used multiple times within the same tenant.
             </div>
             {% for dup in duplicates.audits %}
-                <div class="card mb-3 border-warning">
-                    <div class="card-header">
-                        <strong>Audit Number:</strong> {{ dup.value }}
-                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: dup.count ~ ' duplicates' } %}
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { class: 'mb-3 border-warning' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <strong>Audit Number:</strong> {{ dup.value }}
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: dup.count ~ ' duplicates' } %}
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         <ul class="list-unstyled mb-0">
                         {% for audit in dup.entities %}
                             <li class="mb-2">
@@ -756,8 +759,8 @@
                             </li>
                         {% endfor %}
                         </ul>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endfor %}
         {% endblock %}
     {% endembed %}
@@ -778,12 +781,14 @@
                 Found {{ duplicates.assets|length }} asset name(s) used multiple times within the same tenant.
             </div>
             {% for dup in duplicates.assets %}
-                <div class="card mb-3 border-warning">
-                    <div class="card-header">
-                        <strong>Asset Name:</strong> {{ dup.value }}
-                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: dup.count ~ ' duplicates' } %}
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { class: 'mb-3 border-warning' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <strong>Asset Name:</strong> {{ dup.value }}
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: dup.count ~ ' duplicates' } %}
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         <ul class="list-unstyled mb-0">
                         {% for asset in dup.entities %}
                             <li class="mb-2">
@@ -793,8 +798,8 @@
                             </li>
                         {% endfor %}
                         </ul>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endfor %}
         {% endblock %}
     {% endembed %}
