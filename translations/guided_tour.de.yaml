@@ -5,6 +5,21 @@ guided_tour:
         finish: 'Fertig'
         skip: 'Überspringen'
         restart: 'Tour neu starten'
+        choose_role: 'Tour nach Rolle wählen'
+
+    role:
+        auditor:
+            label: 'Auditor-Tour'
+        risk_owner:
+            label: 'Risk-Owner-Tour'
+        cm:
+            label: 'Compliance-Manager-Tour'
+        isb:
+            label: 'ISB / Manager-Tour'
+        ciso:
+            label: 'CISO / Admin-Tour'
+        junior:
+            label: 'Einstiegs-Tour (Junior)'
 
     mobile:
         title: 'Tour am Desktop öffnen'
