@@ -16,6 +16,10 @@ business_process:
       business_impact_score: Aggregierter Business Impact Score
       suggested_availability: Empfohlener Verfügbarkeitswert
       not_specified: Nicht angegeben
+      rto_recommendation_intro: 'Basierend auf RTO %rto%h wird empfohlen:'
+      rto_consistency_hint: 'Dieser Wert sollte bei der Asset-Bewertung berücksichtigt werden, um die Konsistenz zwischen BIA und Asset Management sicherzustellen.'
+      projection_week: '1 Woche Ausfall: %amount% €'
+      projection_month: '1 Monat Ausfall: %amount% €'
   success:
     created: Geschäftsprozess erfolgreich erstellt.
     updated: Geschäftsprozess erfolgreich aktualisiert.

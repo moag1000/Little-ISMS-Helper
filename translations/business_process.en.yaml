@@ -16,6 +16,10 @@ business_process:
       business_impact_score: Aggregated Business Impact Score
       suggested_availability: Recommended Availability Value
       not_specified: Not specified
+      rto_recommendation_intro: 'Based on RTO %rto%h we recommend:'
+      rto_consistency_hint: 'This value should be considered in asset assessment to ensure consistency between BIA and Asset Management.'
+      projection_week: '1 week of downtime: %amount% €'
+      projection_month: '1 month of downtime: %amount% €'
   section:
     basic_info: Basic Information
     recovery_objectives: Recovery Objectives
