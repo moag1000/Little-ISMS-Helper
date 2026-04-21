@@ -102,13 +102,13 @@
                 </div>
                 {% elseif data.type in ['pie', 'doughnut'] %}
                 {# Pie/Doughnut Chart #}
-                <canvas class="chart-canvas" data-chart-type="{{ data.type }}" data-chart-labels="{{ data.labels|json_encode }}" data-chart-data="{{ data.data|json_encode }}" data-chart-colors="{{ data.colors|default(['#0d6efd', 'var(--fg-3)', '#198754', 'var(--danger)', 'var(--warning)'])|json_encode }}" height="200"></canvas>
+                <canvas class="chart-canvas" data-chart-type="{{ data.type }}" data-chart-labels="{{ data.labels|json_encode }}" data-chart-data="{{ data.data|json_encode }}" data-chart-colors="{{ data.colors|default(['var(--primary)', 'var(--fg-3)', 'var(--success)', 'var(--danger)', 'var(--warning)'])|json_encode }}" height="200"></canvas>
                 {% elseif data.type == 'radar' %}
                 {# Radar Chart #}
                 <canvas class="chart-canvas" data-chart-type="radar" data-chart-labels="{{ data.labels|json_encode }}" data-chart-datasets="{{ data.datasets|json_encode }}" height="250"></canvas>
                 {% elseif data.type in ['bar', 'horizontalBar'] %}
                 {# Bar Chart #}
-                <canvas class="chart-canvas" data-chart-type="bar" data-chart-labels="{{ data.labels|json_encode }}" data-chart-data="{{ data.data|json_encode }}" data-chart-colors="{{ data.colors|default(['#0d6efd'])|json_encode }}" height="200"></canvas>
+                <canvas class="chart-canvas" data-chart-type="bar" data-chart-labels="{{ data.labels|json_encode }}" data-chart-data="{{ data.data|json_encode }}" data-chart-colors="{{ data.colors|default(['var(--primary)'])|json_encode }}" height="200"></canvas>
                 {% elseif data.type == 'line' %}
                 {# Line Chart #}
                 <canvas class="chart-canvas" data-chart-type="line" data-chart-labels="{{ data.labels|json_encode }}" data-chart-datasets="{{ data.datasets|json_encode }}" height="200"></canvas>
@@ -218,7 +218,7 @@
     }
 
     .widget-preview-container {
-        background: #fff;
+        background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 0.5rem;
         padding: 1rem;

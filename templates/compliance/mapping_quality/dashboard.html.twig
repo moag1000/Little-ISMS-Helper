@@ -486,7 +486,7 @@
             ];
 
             const backgroundColors = gapLabels.map(label => {
-                if (label === 'CRITICAL') return '#721c24';
+                if (label === 'CRITICAL') return 'var(--danger-strong)';
                 if (label === 'HIGH') return 'var(--danger)';
                 if (label === 'MEDIUM') return 'var(--warning)';
                 return 'var(--fg-3)';

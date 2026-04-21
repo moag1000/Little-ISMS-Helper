@@ -103,12 +103,12 @@
                 {% set y = 250 - barHeight %}
 
                 <rect x="{{ x + 2 }}" y="{{ y }}" width="{{ barWidth - 4 }}" height="{{ barHeight }}"
-                      fill="#007bff" opacity="0.8">
+                      style="fill: var(--primary-strong);" opacity="0.8">
                     <title>{{ date }}: {{ count }} Einträge</title>
                 </rect>
 
                 {% if i % 5 == 0 %}
-                    <text x="{{ x + barWidth/2 }}" y="280" text-anchor="middle" font-size="10" fill="#666">
+                    <text x="{{ x + barWidth/2 }}" y="280" text-anchor="middle" font-size="10" style="fill: var(--fg-3);">
                         {{ date|slice(5) }}
                     </text>
                 {% endif %}
@@ -116,7 +116,7 @@
                 {% set i = i + 1 %}
             {% endfor %}
 
-            <line x1="0" y1="250" x2="900" y2="250" stroke="#ccc" stroke-width="1"/>
+            <line x1="0" y1="250" x2="900" y2="250" style="stroke: var(--border);" stroke-width="1"/>
         </svg>
     </div>
     {% else %}

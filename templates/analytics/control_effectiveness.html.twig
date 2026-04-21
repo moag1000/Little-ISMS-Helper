@@ -531,7 +531,7 @@
                                 statusData.not_applicable || 0,
                                 statusData.not_implemented || 0
                             ],
-                            backgroundColor: ['#198754', 'var(--warning)', '#0dcaf0', 'var(--fg-3)', 'var(--danger)']
+                            backgroundColor: ['var(--success)', 'var(--warning)', 'var(--primary)', 'var(--fg-3)', 'var(--danger)']
                         }]
                     },
                     options: {
@@ -555,11 +555,11 @@
                         datasets: [{
                             label: '{{ 'analytics.controls.chart.effectiveness'|trans({}, 'analytics') }}',
                             data: categoryData.map(c => c.average_effectiveness),
-                            backgroundColor: '#0d6efd'
+                            backgroundColor: 'var(--primary)'
                         }, {
                             label: '{{ 'analytics.controls.chart.implementation'|trans({}, 'analytics') }}',
                             data: categoryData.map(c => c.implementation_rate),
-                            backgroundColor: '#198754'
+                            backgroundColor: 'var(--success)'
                         }]
                     },
                     options: {
@@ -594,7 +594,7 @@
                                 agingData.critical || 0,
                                 agingData.never_reviewed || 0
                             ],
-                            backgroundColor: ['#198754', '#0dcaf0', 'var(--warning)', 'var(--danger)', 'var(--fg-3)']
+                            backgroundColor: ['var(--success)', 'var(--primary)', 'var(--warning)', 'var(--danger)', 'var(--fg-3)']
                         }]
                     },
                     options: {

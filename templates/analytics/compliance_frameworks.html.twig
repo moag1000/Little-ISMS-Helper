@@ -372,7 +372,7 @@
                             {
                                 label: '{{ 'analytics.compliance.chart.compliant'|trans({}, 'analytics') }}',
                                 data: comparisonData.map(f => f.fulfilled),
-                                backgroundColor: '#198754'
+                                backgroundColor: 'var(--success)'
                             },
                             {
                                 label: '{{ 'analytics.compliance.chart.partial'|trans({}, 'analytics') }}',
@@ -409,7 +409,7 @@
                         labels: ['{{ 'analytics.compliance.chart.shared'|trans({}, 'analytics') }}', '{{ 'analytics.compliance.chart.unique'|trans({}, 'analytics') }}'],
                         datasets: [{
                             data: [totalShared, Math.max(0, totalFrameworks - totalShared)],
-                            backgroundColor: ['#198754', 'var(--fg-3)']
+                            backgroundColor: ['var(--success)', 'var(--fg-3)']
                         }]
                     },
                     options: {

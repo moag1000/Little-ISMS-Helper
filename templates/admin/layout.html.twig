@@ -77,7 +77,7 @@
             display: flex;
             align-items: center;
             padding: 0.625rem 1rem;
-            color: #495057;
+            color: var(--fg-2);
             text-decoration: none;
             transition: all 0.2s;
             font-size: 0.9rem;
@@ -93,7 +93,7 @@
 
         .admin-sidebar ul li a.active {
             background: var(--brand-gradient);
-            color: #ffffff;
+            color: var(--on-primary);
             font-weight: 500;
             border-left: 3px solid var(--accent);
             padding-left: calc(1rem - 3px);
@@ -118,18 +118,18 @@
         .admin-header {
             margin-bottom: 2rem;
             padding-bottom: 1rem;
-            border-bottom: 2px solid #dee2e6;
+            border-bottom: 2px solid var(--border);
         }
 
         .admin-header h1 {
             font-size: 1.75rem;
             font-weight: 600;
             margin: 0 0 0.5rem 0;
-            color: #212529;
+            color: var(--fg);
         }
 
         .admin-header p {
-            color: #6c757d;
+            color: var(--fg-3);
             margin: 0;
         }
 
@@ -141,16 +141,16 @@
         }
 
         .admin-breadcrumb .breadcrumb-item a {
-            color: #6c757d;
+            color: var(--fg-3);
             text-decoration: none;
         }
 
         .admin-breadcrumb .breadcrumb-item a:hover {
-            color: #0d6efd;
+            color: var(--primary);
         }
 
         .admin-breadcrumb .breadcrumb-item.active {
-            color: #212529;
+            color: var(--fg);
         }
 
         /* Dark mode support */
@@ -171,7 +171,7 @@
 
         [data-theme="dark"] .admin-sidebar ul li a.active {
             background: var(--brand-gradient);
-            color: #ffffff;
+            color: var(--on-primary);
             box-shadow: 0 0 15px var(--primary-glow),
                         inset 0 0 10px rgba(255, 255, 255, 0.1);
         }
@@ -203,7 +203,7 @@
                 height: auto;
                 position: relative;
                 border-right: none;
-                border-bottom: 1px solid #dee2e6;
+                border-bottom: 1px solid var(--border);
                 padding: 0.75rem 0;
             }
 

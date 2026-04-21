@@ -58,7 +58,7 @@
             z-index: 10000;
             padding: 0.5rem 1rem;
             background: var(--primary);
-            color: #ffffff;
+            color: var(--on-primary);
             text-decoration: none;
             font-weight: bold;
             border-radius: 0 0 0.25rem 0;
@@ -67,7 +67,7 @@
 
         .skip-link:focus {
             top: 0;
-            outline: 3px solid var(--color-warning, #ffc107);
+            outline: 3px solid var(--warning);
             outline-offset: 2px;
         }
     </style>
@@ -129,7 +129,7 @@
                 left: 50%;
                 transform: translateX(-50%);
                 background: var(--danger);
-                color: #ffffff;
+                color: var(--on-danger);
                 padding: 4px 16px;
                 border-radius: 0 0 8px 8px;
                 font-size: 12px;
@@ -145,7 +145,7 @@
                 gap: 6px;
                 padding: 6px 12px;
                 background: var(--brand-gradient);
-                color: #ffffff;
+                color: var(--on-primary);
                 border: none;
                 border-radius: var(--r-md);
                 font-size: 13px;
@@ -156,15 +156,21 @@
 
             .pwa-install-btn:hover {
                 transform: translateY(-1px);
-                box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+                box-shadow: 0 4px 12px var(--primary-glow);
             }
         </style>
     {% endblock %}
 </head>
 {% set is_setup_route = app.request.attributes.get('_route') starts with 'setup_' %}
-<body data-turbo="true" data-controller="modal-manager{{ is_setup_route ? '' : ' sidebar-toggle mega-menu session-reminder' ~ (app.user ? ' guided-tour' : '') }}"
+<body data-turbo="true" data-controller="modal-manager{{ is_setup_route ? '' : ' sidebar-toggle mega-menu session-reminder notifications' ~ (app.user ? ' guided-tour' : '') }}"
       data-session-reminder-warning-value="3300000"
       data-session-reminder-timeout-value="3600000"
+      {% if not is_setup_route %}
+      data-notifications-delete-title-value="{{ 'notifications.action.delete'|trans({}, 'notifications') }}"
+      data-notifications-view-details-value="{{ 'notifications.action.view_details'|trans({}, 'notifications') }}"
+      data-notifications-empty-title-value="{{ 'notifications.empty.title'|trans({}, 'notifications') }}"
+      data-notifications-empty-message-value="{{ 'notifications.empty.description'|trans({}, 'notifications') }}"
+      {% endif %}
       {% if app.user and not is_setup_route %}
       data-guided-tour-steps-url-value="{{ path('app_guided_tour_steps', {role: tour_role|default('junior')}) }}"
       data-guided-tour-complete-url-value="{{ path('app_guided_tour_complete', {role: tour_role|default('junior')}) }}"

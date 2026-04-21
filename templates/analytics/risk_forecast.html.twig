@@ -470,15 +470,15 @@
                         datasets: [{
                             label: '{{ 'analytics.forecast.chart.historical'|trans({}, 'analytics') }}',
                             data: [...historical.map(h => h.total), ...Array(predicted.length).fill(null)],
-                            borderColor: '#0d6efd',
-                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                            borderColor: 'var(--primary)',
+                            backgroundColor: 'var(--primary-tint)',
                             fill: true
                         }, {
                             label: '{{ 'analytics.forecast.chart.predicted'|trans({}, 'analytics') }}',
                             data: [...Array(historical.length - 1).fill(null), historical.length > 0 ? historical[historical.length - 1].total : 0, ...predicted.map(p => p.total)],
                             borderColor: 'var(--warning)',
                             borderDash: [5, 5],
-                            backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                            backgroundColor: 'var(--warning-glow)',
                             fill: true
                         }]
                     },
@@ -514,7 +514,7 @@
                         datasets: [{
                             label: '{{ 'analytics.forecast.velocity.net_change'|trans({}, 'analytics') }}',
                             data: changes,
-                            backgroundColor: changes.map(c => c > 0 ? 'var(--danger)' : '#198754')
+                            backgroundColor: changes.map(c => c > 0 ? 'var(--danger)' : 'var(--success)')
                         }]
                     },
                     options: {
@@ -539,8 +539,8 @@
                         datasets: [{
                             data: [score, 100 - score],
                             backgroundColor: [
-                                score >= 80 ? '#198754' : (score >= 50 ? 'var(--warning)' : 'var(--danger)'),
-                                '#e9ecef'
+                                score >= 80 ? 'var(--success)' : (score >= 50 ? 'var(--warning)' : 'var(--danger)'),
+                                'var(--surface-3)'
                             ],
                             circumference: 180,
                             rotation: 270
