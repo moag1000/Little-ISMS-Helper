@@ -72,15 +72,21 @@ consent:
         customer_id: 'Kundennummer'
         employee_id: 'Mitarbeiternummer'
         user_id: 'Benutzer-ID'
+        pseudonym: 'Pseudonym'
+        phone: 'Telefonnummer'
         other: 'Sonstige'
 
     # Consent methods
     method:
         written: 'Schriftlich'
+        written_form: 'Schriftlich'
         electronic: 'Elektronisch'
         verbal: 'Mündlich'
+        oral: 'Mündlich'
+        email: 'Per E-Mail'
         double_opt_in: 'Double Opt-In'
         checkbox: 'Checkbox'
+        other: 'Sonstige'
 
     # Consent channels
     channel:
@@ -88,8 +94,10 @@ consent:
         app: 'App'
         email: 'E-Mail'
         paper: 'Papierformular'
+        paper_form: 'Papierformular'
         phone: 'Telefon'
         in_person: 'Persönlich'
+        other: 'Sonstige'
 
     # Filters
     filter:
