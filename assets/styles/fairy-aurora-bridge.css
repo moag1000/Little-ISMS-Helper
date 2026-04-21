@@ -571,6 +571,70 @@ small.text-muted,
 
 /* Opacity-Utility "bg-opacity-*" bleibt Bootstrap (nutzt CSS-Vars intern, OK) */
 
+/* ═══════════════════════════════════════════════════════════════════
+   Kontrast-Rettung innerhalb subtle-BG-Container:
+   Bootstrap-Link-Color kann Text unter <a> übernehmen und Kontrast
+   brechen. Hier forcieren wir lesbare Aurora-Farben.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.bg-warning-subtle,
+.bg-danger-subtle,
+.bg-success-subtle,
+.bg-info-subtle,
+.bg-primary-subtle,
+.bg-light-subtle { color: var(--fg); }
+
+.bg-warning-subtle a:not(.btn),
+.bg-danger-subtle a:not(.btn),
+.bg-success-subtle a:not(.btn),
+.bg-info-subtle a:not(.btn),
+.bg-primary-subtle a:not(.btn),
+.bg-light-subtle a:not(.btn) {
+    color: var(--fg);
+}
+
+.bg-warning-subtle .text-dark,
+.bg-danger-subtle .text-dark,
+.bg-success-subtle .text-dark,
+.bg-info-subtle .text-dark,
+.bg-primary-subtle .text-dark { color: var(--fg) !important; }
+
+.bg-warning-subtle .text-muted,
+.bg-danger-subtle .text-muted,
+.bg-success-subtle .text-muted,
+.bg-info-subtle .text-muted,
+.bg-primary-subtle .text-muted { color: var(--fg-2) !important; }
+
+/* .lead (Bootstrap Hero-Paragraph) — Aurora-contrast */
+.lead { color: var(--fg); }
+.lead.text-muted { color: var(--fg-2) !important; }
+
+/* Welcome-Hero (welcome.html.twig) — explizite Klassen damit text-muted
+   nicht mehr nötig ist, aber Hero bleibt als leichter Farb-Akzent sichtbar. */
+.welcome-hero__title { color: var(--fg); font-weight: 500; }
+.welcome-hero__lead { color: var(--fg-2); }
+
+/* Alle *-muted in kontrastkritischen Kontexten heben auf fg-2, damit
+   Kompatibilität mit alten Templates bleibt aber Lesbarkeit wächst. */
+.card .text-muted,
+.card-body .text-muted,
+.alert .text-muted,
+.fa-alert .text-muted,
+td.text-muted,
+th.text-muted { color: var(--fg-2) !important; }
+
+/* Micro-Meta weiterhin dezent (small-tags, form-hints, mono-labels) */
+small.text-muted,
+.text-muted.small,
+.form-text,
+.fa-text-meta { color: var(--fg-3) !important; }
+
+/* Bootstrap text-opacity-XX wirkt sonst auf --bs-body-color
+   und macht alles blass. Aurora setzt volle opacity-Kontrolle: */
+.text-body-emphasis { color: var(--fg) !important; }
+.text-body-secondary { color: var(--fg-2) !important; }
+.text-body-tertiary  { color: var(--fg-3) !important; }
+
 /* Border-Utilities auf Aurora-Farben */
 .border         { border-color: var(--border) !important; }
 .border-primary { border-color: var(--primary) !important; }
