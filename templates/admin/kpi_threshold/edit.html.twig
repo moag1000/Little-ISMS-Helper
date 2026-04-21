@@ -4,6 +4,14 @@
 
 {% block body %}
 <div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'admin.title'|trans({}, 'admin'), url: path('admin_dashboard') },
+            { label: 'admin.nav.kpi_thresholds'|trans({}, 'admin'), url: path('admin_kpi_threshold_index') },
+            { label: config.kpiKey }
+        ]
+    } %}
+
     <h1 class="h3 mb-4">{{ 'kpi_threshold.page.edit'|trans({}, 'admin') }}: <code>{{ config.kpiKey }}</code></h1>
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}

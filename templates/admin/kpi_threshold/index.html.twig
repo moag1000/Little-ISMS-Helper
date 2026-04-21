@@ -4,6 +4,13 @@
 
 {% block body %}
 <div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'admin.title'|trans({}, 'admin'), url: path('admin_dashboard') },
+            { label: 'admin.nav.kpi_thresholds'|trans({}, 'admin') }
+        ]
+    } %}
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 mb-1">{{ 'kpi_threshold.page.title'|trans({}, 'admin') }}</h1>
