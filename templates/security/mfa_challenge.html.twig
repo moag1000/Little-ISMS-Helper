@@ -1,152 +1,79 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_auth.html.twig' %}
+{% trans_default_domain 'mfa' %}
 
-{% block title %}{{ 'mfa.challenge.title'|trans({}, 'mfa') }}{% endblock %}
+{% block title %}{{ 'mfa.challenge.title'|trans({}, 'mfa') }} — Little ISMS Helper{% endblock %}
+
+{% block auth_mood %}thinking{% endblock %}
+{% block auth_alva_line %}{{ 'mfa.alva_line'|trans({}, 'mfa')|default('Zweiter Faktor.') }}{% endblock %}
+{% block auth_alva_sub %}{{ 'mfa.alva_sub'|trans({}, 'mfa')|default('Ich warte auf deinen Code.') }}{% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-5">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_header %}
-                    <div class="card-header bg-primary text-white">
-                        <h1 class="mb-0">
-                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
-                            {{ 'mfa.challenge.title'|trans({}, 'mfa') }}
-                        </h1>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    {% if error %}
-                        <div class="alert alert-danger">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                            {{ error }}
-                        </div>
-                    {% endif %}
+{% import '_components/_cyber_input.html.twig' as ci %}
+{% import '_components/_cyber_button.html.twig' as btn %}
+{% import '_components/_alert.html.twig' as faAlert %}
 
-                    <p class="text-muted mb-4">
-                        {{ 'mfa.challenge.description'|trans({}, 'mfa') }}
-                    </p>
-
-                    <form method="post" action="{{ path('app_mfa_verify', {_locale: app.request.locale}) }}">
-                        <div class="mb-3">
-                            <label for="token_id" class="form-label">
-                                {{ 'mfa.challenge.device'|trans({}, 'mfa') }}
-                            </label>
-                            <select name="token_id" id="token_id" class="form-select" required>
-                                {% for token in mfaTokens %}
-                                    <option value="{{ token.id }}">
-                                        {% if token.tokenType == 'totp' %}
-                                            <i class="bi bi-phone" aria-hidden="true"></i>
-                                        {% elseif token.tokenType == 'webauthn' %}
-                                            <i class="bi bi-key" aria-hidden="true"></i>
-                                        {% endif %}
-                                        {{ token.deviceName }}
-                                        {% if token.isPrimary %}
-                                            ({{ 'mfa.token.primary'|trans({}, 'mfa') }})
-                                        {% endif %}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                            <small class="form-text text-muted">
-                                {{ 'mfa.challenge.device_help'|trans({}, 'mfa') }}
-                            </small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="code" class="form-label">
-                                {{ 'mfa.challenge.code'|trans({}, 'mfa') }}
-                            </label>
-                            <input
-                                type="text"
-                                name="code"
-                                id="code"
-                                class="form-control form-control-lg text-center font-monospace"
-                                placeholder="000000"
-                                pattern="[0-9]{6}|[A-Za-z0-9]{8}"
-                                maxlength="8"
-                                autocomplete="one-time-code"
-                                inputmode="numeric"
-                                autofocus
-                                required
-                            >
-                            <small class="form-text text-muted">
-                                {{ 'mfa.challenge.code_help'|trans({}, 'mfa') }}
-                            </small>
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <button type="submit"
-                                    class="btn btn-primary btn-lg"
-                                    data-controller="button-loading"
-                                    data-action="button-loading#start">
-                                <i class="bi bi-check-circle" aria-hidden="true"></i>
-                                {{ 'mfa.challenge.verify'|trans({}, 'mfa') }}
-                            </button>
-                        </div>
-                    </form>
-
-                    <hr class="my-4">
-
-                    <div class="text-center">
-                        <p class="text-muted small mb-2">
-                            {{ 'mfa.challenge.backup_code_hint'|trans({}, 'mfa') }}
-                        </p>
-                        <details class="small">
-                            <summary class="text-primary" style="cursor: pointer;">
-                                {{ 'mfa.challenge.using_backup_code'|trans({}, 'mfa') }}
-                            </summary>
-                            <div class="mt-2 text-muted">
-                                <p>{{ 'mfa.challenge.backup_code_info'|trans({}, 'mfa') }}</p>
-                            </div>
-                        </details>
-                    </div>
-
-                    <hr class="my-4">
-
-                    <div class="text-center">
-                        <a href="{{ path('app_logout') }}" class="btn btn-link btn-sm text-danger">
-                            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
-                            {{ 'mfa.challenge.cancel'|trans({}, 'mfa') }}
-                        </a>
-                    </div>
-                {% endblock %}
-                {% block card_footer %}
-                    <div class="card-footer text-muted small text-center">
-                        <i class="bi bi-shield-check" aria-hidden="true"></i>
-                        {{ 'mfa.challenge.nis2_compliance'|trans({}, 'mfa') }}
-                    </div>
-                {% endblock %}
-            {% endembed %}
-
-            <div class="alert alert-info mt-3">
-                <i class="bi bi-info-circle" aria-hidden="true"></i>
-                <strong>{{ 'mfa.challenge.help_title'|trans({}, 'mfa') }}</strong><br>
-                {{ 'mfa.challenge.help_text'|trans({}, 'mfa') }}
-            </div>
+<div class="fa-auth-form">
+    <header class="fa-auth-form__head">
+        <div class="fa-auth-form__eyebrow">
+            <i class="bi bi-shield-lock" aria-hidden="true"></i>
+            {{ 'mfa.challenge.eyebrow'|trans({}, 'mfa')|default('2-Faktor-Authentifizierung') }}
         </div>
+        <h1 class="fa-auth-form__title">{{ 'mfa.challenge.title'|trans({}, 'mfa') }}</h1>
+        <p class="fa-auth-form__desc">{{ 'mfa.challenge.description'|trans({}, 'mfa') }}</p>
+    </header>
+
+    {% if error %}
+        {{ faAlert.render(error, 'danger', { withAlva: true })|raw }}
+    {% endif %}
+
+    <form method="post"
+          action="{{ path('app_mfa_verify', {_locale: app.request.locale}) }}"
+          class="fa-auth-form__form">
+
+        {% set deviceOptions = [] %}
+        {% for token in mfaTokens %}
+            {% set label = token.deviceName %}
+            {% if token.isPrimary %}{% set label = label ~ ' (' ~ 'mfa.token.primary'|trans({}, 'mfa') ~ ')' %}{% endif %}
+            {% set deviceOptions = deviceOptions|merge([{ value: token.id, label: label }]) %}
+        {% endfor %}
+
+        {{ ci.select({
+            name: 'token_id',
+            label: 'mfa.challenge.device'|trans({}, 'mfa'),
+            options: deviceOptions,
+            required: true,
+            hint: 'mfa.challenge.device_help'|trans({}, 'mfa')
+        }) }}
+
+        {{ ci.render({
+            name: 'code',
+            label: 'mfa.challenge.code'|trans({}, 'mfa'),
+            type: 'text',
+            required: true,
+            placeholder: '000000',
+            autocomplete: 'one-time-code',
+            attrs: { autofocus: 'autofocus', inputmode: 'numeric', pattern: '[0-9]{6}|[A-Za-z0-9]{8}', maxlength: '8' },
+            hint: 'mfa.challenge.code_help'|trans({}, 'mfa')
+        }) }}
+
+        {{ btn.submit('mfa.challenge.verify'|trans({}, 'mfa'), {
+            variant: 'primary',
+            fullWidth: true,
+            icon: 'bi-check-lg',
+            attrs: { 'data-controller': 'button-loading', 'data-action': 'button-loading#start' }
+        }) }}
+    </form>
+
+    <details class="fa-auth-details">
+        <summary>{{ 'mfa.challenge.using_backup_code'|trans({}, 'mfa') }}</summary>
+        <p class="fa-auth-details__body">{{ 'mfa.challenge.backup_code_info'|trans({}, 'mfa') }}</p>
+    </details>
+
+    <div class="fa-auth-form__footer-link">
+        <a href="{{ path('app_logout') }}" class="fa-auth-cancel-link">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+            {{ 'mfa.challenge.cancel'|trans({}, 'mfa') }}
+        </a>
     </div>
 </div>
-
-<script>
-    // Auto-submit when 6-digit code is entered
-    document.getElementById('code').addEventListener('input', function(e) {
-        const value = e.target.value.replace(/\D/g, ''); // Remove non-digits for TOTP codes
-        if (value.length === 6) {
-            e.target.value = value;
-            // Auto-submit after short delay for UX
-            setTimeout(() => {
-                // Trigger loading state before submit
-                const submitBtn = e.target.form.querySelector('button[type="submit"]');
-                if (submitBtn) {
-                    submitBtn.click(); // This will trigger the button-loading controller
-                }
-            }, 300);
-        }
-    });
-
-    // Focus code input on page load
-    window.addEventListener('load', function() {
-        document.getElementById('code').focus();
-    });
-</script>
 {% endblock %}

@@ -59,8 +59,11 @@ mfa:
         sms: SMS
         hardware: 'Hardware Token'
         backup: 'Backup Codes'
+    alva_line: 'Second factor.'
+    alva_sub: 'I''m waiting for your code.'
     challenge:
         title: 'Two-Factor Authentication'
+        eyebrow: '2-Factor Authentication'
         description: 'Please enter the verification code from your authenticator.'
         device: 'Authentication Device'
         device_help: 'Select the device you want to use.'

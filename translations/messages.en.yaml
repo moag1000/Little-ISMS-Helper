@@ -20,7 +20,11 @@ breadcrumb:
     home: Home
 login:
     title: Login
+    eyebrow: 'Sign in'
     already_logged_in: 'You are already logged in as %user%.'
+    alva_line: 'Welcome back.'
+    alva_sub: 'Quick sign-in — then we continue.'
+    or_divider: 'or'
     field:
         email: Email
         password: Password
@@ -34,6 +38,12 @@ login:
     placeholder:
         email: ''
         password: 'Your password'
+auth:
+    companion: 'Alva — companion'
+    companion_short: 'companion'
+    alva:
+        default_line: 'Welcome back.'
+        default_sub: ''
 logout: Logout
 email: Email
 password: Password

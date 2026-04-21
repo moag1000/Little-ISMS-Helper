@@ -1,120 +1,104 @@
 {% extends 'base_auth.html.twig' %}
 
-{% block title %}Login - {{ parent() }}{% endblock %}
+{% block title %}{{ 'login.title'|trans({}, 'messages') }} — Little ISMS Helper{% endblock %}
+
+{% block auth_mood %}focused{% endblock %}
+{% block auth_alva_line %}{{ 'login.alva_line'|trans({}, 'messages')|default('Willkommen zurück.') }}{% endblock %}
+{% block auth_alva_sub %}{{ 'login.alva_sub'|trans({}, 'messages')|default("Kurz anmelden, dann geht's weiter.") }}{% endblock %}
 
 {% block body %}
-{% embed '_components/_card.html.twig' with { 'class': 'shadow-lg', 'noPadding': true } %}
-    {% block card_attrs %}style="max-width: 450px; width: 100%;"{% endblock %}
-    {% block card_body %}
-        <div class="p-5">
-            <h1 class="h3 mb-4 text-center">{{ 'login.title'|trans({}, 'messages') }}</h1>
+{% import '_components/_cyber_input.html.twig' as ci %}
+{% import '_components/_cyber_button.html.twig' as btn %}
+{% import '_components/_alert.html.twig' as faAlert %}
 
-            {% if error %}
-                <div class="alert alert-danger">
-                    {{ error.messageKey|trans(error.messageData, 'security') }}
-                </div>
-            {% endif %}
+<div class="fa-auth-form">
+    <header class="fa-auth-form__head">
+        <div class="fa-auth-form__eyebrow">{{ 'login.eyebrow'|trans({}, 'messages')|default('Anmeldung') }}</div>
+        <h1 class="fa-auth-form__title">{{ 'login.title'|trans({}, 'messages') }}</h1>
+    </header>
 
-            {% if app.user %}
-                <div class="alert alert-info">
-                    {{ 'login.already_logged_in'|trans({'%user%': app.user.userIdentifier}, 'messages') }}
-                    <a href="{{ path('app_home') }}">{{ 'common.to_home'|trans({}, 'messages') }}</a>
-                </div>
-            {% else %}
-                {# Local Login Form #}
-                <form method="post"
-                      action="{{ path('app_login') }}"
-                      novalidate
-                      data-controller="form-validation"
-                      data-action="submit->form-validation#handleSubmit">
-                    <p class="form-required-legend">
-                        <span class="required">*</span> = {{ 'form.required_field'|trans({}, 'messages') }}
-                    </p>
+    {% if error %}
+        {{ faAlert.render(error.messageKey|trans(error.messageData, 'security'), 'danger', { withAlva: true, dismissible: false })|raw }}
+    {% endif %}
 
-                    <div class="mb-3">
-                        <label for="username" class="form-label">
-                            {{ 'login.field.email'|trans({}, 'messages') }}
-                            <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
-                        </label>
-                        <input type="email"
-                               class="form-control"
-                               id="username"
-                               name="_username"
-                               value="{{ last_username }}"
-                               required
-                               aria-required="true"
-                               autofocus
-                               autocomplete="email"
-                               placeholder="{{ 'login.placeholder.email'|trans({}, 'messages') }}"
-                               aria-describedby="username-help">
-                        <small class="form-text text-muted" id="username-help">
-                            {{ 'login.help.email'|trans({}, 'messages') }}
-                        </small>
-                    </div>
+    {% if app.user %}
+        {{ faAlert.render(
+            'login.already_logged_in'|trans({'%user%': app.user.userIdentifier}, 'messages')
+            ~ ' <a href="' ~ path('app_home') ~ '">' ~ ('common.to_home'|trans({}, 'messages')) ~ '</a>',
+            'info', { withAlva: true }
+        )|raw }}
+    {% else %}
+        <form method="post"
+              action="{{ path('app_login') }}"
+              novalidate
+              class="fa-auth-form__form"
+              data-controller="form-validation"
+              data-action="submit->form-validation#handleSubmit">
 
-                    <div class="mb-3">
-                        <label for="password" class="form-label">
-                            {{ 'login.field.password'|trans({}, 'messages') }}
-                            <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
-                        </label>
-                        <input type="password"
-                               class="form-control"
-                               id="password"
-                               name="_password"
-                               required
-                               aria-required="true"
-                               autocomplete="current-password"
-                               placeholder="{{ 'login.placeholder.password'|trans({}, 'messages') }}">
-                    </div>
+            {{ ci.render({
+                name: '_username',
+                label: 'login.field.email'|trans({}, 'messages'),
+                type: 'email',
+                value: last_username,
+                required: true,
+                placeholder: 'login.placeholder.email'|trans({}, 'messages'),
+                autocomplete: 'email',
+                attrs: { autofocus: 'autofocus' },
+                hint: 'login.help.email'|trans({}, 'messages')
+            }) }}
 
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me">
-                        <label class="form-check-label" for="remember_me">
-                            {{ 'login.remember_me'|trans({}, 'messages') }}
-                        </label>
-                    </div>
+            {{ ci.render({
+                name: '_password',
+                label: 'login.field.password'|trans({}, 'messages'),
+                type: 'password',
+                required: true,
+                placeholder: 'login.placeholder.password'|trans({}, 'messages'),
+                autocomplete: 'current-password'
+            }) }}
 
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <label class="fa-auth-remember">
+                <input type="checkbox" name="_remember_me" value="1">
+                <span>{{ 'login.remember_me'|trans({}, 'messages') }}</span>
+            </label>
 
-                    <button class="btn btn-primary w-100 mb-3" type="submit">
-                        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> {{ 'login.submit'|trans({}, 'messages') }}
-                    </button>
-                </form>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-                <hr class="my-4">
+            {{ btn.submit('login.submit'|trans({}, 'messages'), {
+                variant: 'primary',
+                fullWidth: true,
+                icon: 'bi-box-arrow-in-right'
+            }) }}
+        </form>
 
-                {# Azure OAuth Login #}
-                <div class="d-grid gap-2">
-                    <a href="{{ path('oauth_azure_connect') }}" class="btn btn-outline-primary">
-                        <svg width="20" height="20" class="me-2" viewBox="0 0 23 23">
-                            <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
-                            <path fill="#f35325" d="M1 1h10v10H1z"/>
-                            <path fill="#81bc06" d="M12 1h10v10H12z"/>
-                            <path fill="#05a6f0" d="M1 12h10v10H1z"/>
-                            <path fill="#ffba08" d="M12 12h10v10H12z"/>
-                        </svg>
-                        {{ 'login.azure_oauth'|trans({}, 'messages') }}
-                    </a>
-
-                    <a href="{{ path('saml_login') }}" class="btn btn-outline-secondary">
-                        <svg width="20" height="20" class="me-2" viewBox="0 0 23 23">
-                            <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
-                            <path fill="#f35325" d="M1 1h10v10H1z"/>
-                            <path fill="#81bc06" d="M12 1h10v10H12z"/>
-                            <path fill="#05a6f0" d="M1 12h10v10H1z"/>
-                            <path fill="#ffba08" d="M12 12h10v10H12z"/>
-                        </svg>
-                        {{ 'login.azure_saml'|trans({}, 'messages') }}
-                    </a>
-                </div>
-
-                <div class="text-center mt-4">
-                    <small class="text-muted">
-                        {{ 'login.no_account_message'|trans({}, 'messages') }}
-                    </small>
-                </div>
-            {% endif %}
+        <div class="fa-auth-form__divider">
+            <span>{{ 'login.or_divider'|trans({}, 'messages')|default('oder') }}</span>
         </div>
-    {% endblock %}
-{% endembed %}
+
+        <div class="fa-auth-form__oauth">
+            <a href="{{ path('oauth_azure_connect') }}" class="fa-auth-oauth-btn">
+                <svg class="fa-auth-oauth-btn__logo" width="18" height="18" viewBox="0 0 23 23" aria-hidden="true">
+                    <path fill="#f35325" d="M1 1h10v10H1z"/>
+                    <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                    <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                    <path fill="#ffba08" d="M12 12h10v10H12z"/>
+                </svg>
+                <span>{{ 'login.azure_oauth'|trans({}, 'messages') }}</span>
+            </a>
+
+            <a href="{{ path('saml_login') }}" class="fa-auth-oauth-btn">
+                <svg class="fa-auth-oauth-btn__logo" width="18" height="18" viewBox="0 0 23 23" aria-hidden="true">
+                    <path fill="#f35325" d="M1 1h10v10H1z"/>
+                    <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                    <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                    <path fill="#ffba08" d="M12 12h10v10H12z"/>
+                </svg>
+                <span>{{ 'login.azure_saml'|trans({}, 'messages') }}</span>
+            </a>
+        </div>
+
+        <p class="fa-auth-form__help">
+            {{ 'login.no_account_message'|trans({}, 'messages') }}
+        </p>
+    {% endif %}
+</div>
 {% endblock %}

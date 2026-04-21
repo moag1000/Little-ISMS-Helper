@@ -20,7 +20,11 @@ breadcrumb:
     home: Startseite
 login:
     title: Anmelden
+    eyebrow: Anmeldung
     already_logged_in: 'Sie sind bereits als %user% angemeldet.'
+    alva_line: 'Willkommen zurück.'
+    alva_sub: 'Kurz anmelden — dann geht es weiter.'
+    or_divider: 'oder'
     field:
         email: E-Mail
         password: Passwort
@@ -34,6 +38,12 @@ login:
     placeholder:
         email: ihre.email@unternehmen.de
         password: 'Ihr Passwort'
+auth:
+    companion: 'Alva — Begleiterin'
+    companion_short: 'Begleiterin'
+    alva:
+        default_line: 'Willkommen zurück.'
+        default_sub: ''
 logout: Abmelden
 email: E-Mail
 password: Passwort

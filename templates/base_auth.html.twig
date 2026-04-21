@@ -1,3 +1,17 @@
+{#
+ FairyAurora v3.0 — Auth-Layout (Login / MFA / Password-Reset / Verify-Email)
+ 2-Col wie Setup-Wizard, aber ohne Flow-Array: statische Alva-Begleitung
+ via auth_mood-Block (Default: focused) + authAlvaLine-Block.
+
+ Verwendung:
+   extends 'base_auth.html.twig'
+   block auth_mood          (optional — idle|focused|thinking|happy|warning)
+   block auth_alva_line     (z.B. 'Nur noch ein Passwort, dann geht's los.')
+   block auth_alva_sub      (optionaler Untertext)
+   block body               (der eigentliche Form-Content rechts)
+
+ Plan § 13 Pattern-Source-of-Truth (Login-Pattern).
+#}
 <!DOCTYPE html>
 <html lang="{{ app.request.locale }}">
 <head>
@@ -6,79 +20,93 @@
     <meta name="turbo-cache-control" content="no-cache">
     <title>{% block title %}{{ 'app.title'|trans({}, 'messages') }}{% endblock %}</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <meta name="theme-color" content="#0284c7" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#38bdf8" media="(prefers-color-scheme: dark)">
+
+    <link rel="preload" href="{{ asset('fonts/inter-500.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('fonts/inter-600.woff2') }}" as="font" type="font/woff2" crossorigin>
+
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('fa-theme');
+                var theme = (saved === 'light' || saved === 'dark' || saved === 'system') ? saved : 'light';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
 
     {% block stylesheets %}
-        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
-        <link rel="stylesheet" href="{{ asset('styles/components.css') }}">
-        <style>
-            /* Minimal auth page styling */
-            body {
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            }
-
-            .auth-container {
-                flex: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 2rem 1rem;
-            }
-
-            .auth-footer {
-                text-align: center;
-                padding: 1.5rem;
-                color: rgba(255, 255, 255, 0.8);
-                font-size: 0.875rem;
-            }
-        </style>
+        {{ importmap(['app', 'styles']) }}
+        <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}">
     {% endblock %}
 </head>
-<body>
-    <div class="auth-container">
-        {% block body %}{% endblock %}
-    </div>
+<body class="fa-auth-body">
 
-    <footer class="auth-footer">
-        <p>{{ 'app.footer'|trans({}, 'messages') }}</p>
-    </footer>
+{% import '_components/_brand.html.twig' as faBrand %}
+{% import '_components/_tech_backdrop.html.twig' as techBg %}
+{% import '_components/_onboarding_fairy.html.twig' as onFairy %}
 
-    {% block javascripts %}
-        {# Suppress browser extension errors that don't affect functionality #}
-        <script>
-            // Suppress unchecked runtime.lastError messages from browser extensions
-            window.addEventListener('error', function(event) {
-                // Check if error is from browser extension
-                if (event.message && (
-                    event.message.includes('runtime.lastError') ||
-                    event.message.includes('extension port') ||
-                    event.message.includes('back/forward cache') ||
-                    event.message.includes('Receiving end does not exist') ||
-                    event.message.includes('Frame') && event.message.includes('does not exist')
-                )) {
-                    event.preventDefault();
-                    return true;
-                }
-            });
+<div class="fa-auth-shell">
+    <aside class="fa-auth-left" aria-label="{{ 'auth.companion'|trans({}, 'messages')|default('Alva — Begleiterin') }}">
+        {{ techBg.render(0.75)|raw }}
+        <span class="fa-setup-left__tick fa-setup-left__tick--tl" aria-hidden="true"></span>
+        <span class="fa-setup-left__tick fa-setup-left__tick--tr" aria-hidden="true"></span>
+        <span class="fa-setup-left__tick fa-setup-left__tick--bl" aria-hidden="true"></span>
+        <span class="fa-setup-left__tick fa-setup-left__tick--br" aria-hidden="true"></span>
 
-            // Suppress unhandled promise rejections from browser extensions
-            window.addEventListener('unhandledrejection', function(event) {
-                const message = event.reason?.message || String(event.reason);
-                if (message.includes('Could not establish connection') ||
-                    message.includes('Receiving end does not exist') ||
-                    message.includes('Frame') && message.includes('does not exist')) {
-                    event.preventDefault();
-                }
-            });
+        <div class="fa-auth-left__brand">
+            {{ faBrand.render(size='lg', link=path('app_home'))|raw }}
+        </div>
 
-            // Prevent page from entering bfcache on auth pages
-            window.addEventListener('pagehide', function(event) {
-                // Setting this prevents bfcache
-                event.persisted = false;
-            });
-        </script>
-    {% endblock %}
+        <div class="fa-auth-left__middle">
+            {{ onFairy.render((block('auth_mood') ?: 'focused')|trim)|raw }}
+            <div>
+                <div class="fa-setup-left__alva-label">Alva · {{ 'auth.companion_short'|trans({}, 'messages')|default('Begleiterin') }}</div>
+                <div class="fa-auth-left__line">
+                    {% block auth_alva_line %}{{ 'auth.alva.default_line'|trans({}, 'messages')|default('Willkommen zurück.') }}{% endblock %}
+                </div>
+                <div class="fa-auth-left__sub">
+                    {% block auth_alva_sub %}{{ 'auth.alva.default_sub'|trans({}, 'messages')|default('') }}{% endblock %}
+                </div>
+            </div>
+        </div>
+
+        <div class="fa-auth-left__footer">
+            <p>{{ 'app.footer'|trans({}, 'messages') }}</p>
+        </div>
+    </aside>
+
+    <main class="fa-auth-right" role="main">
+        <div class="fa-auth-right__inner">
+            {% block body %}{% endblock %}
+        </div>
+    </main>
+</div>
+
+{% block javascripts %}
+    <script>
+        window.addEventListener('error', function(event) {
+            if (event.message && (
+                event.message.includes('runtime.lastError') ||
+                event.message.includes('extension port') ||
+                event.message.includes('back/forward cache') ||
+                event.message.includes('Receiving end does not exist')
+            )) { event.preventDefault(); return true; }
+        });
+        window.addEventListener('unhandledrejection', function(event) {
+            const message = event.reason?.message || String(event.reason);
+            if (message.includes('Could not establish connection') ||
+                message.includes('Receiving end does not exist')) {
+                event.preventDefault();
+            }
+        });
+        window.addEventListener('pagehide', function(event) { event.persisted = false; });
+    </script>
+{% endblock %}
 </body>
 </html>
