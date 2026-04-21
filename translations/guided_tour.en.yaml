@@ -121,6 +121,18 @@ guided_tour:
                 title: 'View + confirm my risks'
                 body: '/risk?owner=me filters to your risks. Open one: on the left the description from ISB/CM, on the right your feedback field "confirm or request change". The ISB/CM takes it from there.'
 
+    # Module-bound add-on steps (junior + isb only, only when module active)
+    modules:
+        bsi:
+            title: 'BSI IT-Grundschutz (optional, because module is active)'
+            body: 'Under /bsi-grundschutz-check you see the protection-level filter (Basis / Standard / Kern) plus requirement types (MUSS / SOLLTE / KANN). If your tenant only needs Basis protection, this significantly reduces SoA effort.'
+        gdpr:
+            title: 'Privacy (optional, because GDPR module is active)'
+            body: 'Three key routes: /vvt (Art. 30 processing activities), /dpia (Art. 35 DPIA) and /data-breach (Art. 33 with 72h timer). The timer runs automatically and notifies the ISB.'
+        bcm:
+            title: 'Business continuity (optional, because BCM module is active)'
+            body: 'Four stops for the BCM flow: /business-process → BIA (Business Impact Analysis) → /bc-plan → /bc-exercise. RTO/RPO are explained as tooltips on the respective fields.'
+
     # Auditor (3 Steps)
     auditor:
         meta:

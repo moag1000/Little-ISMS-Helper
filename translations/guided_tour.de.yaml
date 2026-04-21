@@ -121,6 +121,18 @@ guided_tour:
                 title: 'Meine Risiken ansehen + bestätigen'
                 body: '/risk?owner=me filtert auf Ihre Risiken. Öffnen Sie eines: links Beschreibung von ISB/CM, rechts Ihr Feedback-Feld „bestätigen oder Änderung anfordern". Die ISB/CM bearbeitet das weiter.'
 
+    # Modul-bedingte Zusatz-Stopps (nur Junior + ISB, nur wenn jeweiliges Modul aktiv)
+    modules:
+        bsi:
+            title: 'BSI IT-Grundschutz (optional, weil Modul aktiv)'
+            body: 'Unter /bsi-grundschutz-check sehen Sie die Absicherungsstufen-Filter (Basis / Standard / Kern) plus Anforderungstypen (MUSS / SOLLTE / KANN). Wenn Ihr Tenant nur Basis-Absicherung braucht, reduziert das den SoA-Aufwand erheblich.'
+        gdpr:
+            title: 'Datenschutz (optional, weil DSGVO-Modul aktiv)'
+            body: 'Drei Schlüssel-Routen: /vvt (Art. 30 Verarbeitungstätigkeiten), /dpia (Art. 35 DSFA) und /data-breach (Art. 33 mit 72h-Timer). Der Timer läuft automatisch und benachrichtigt die ISB.'
+        bcm:
+            title: 'Business Continuity (optional, weil BCM-Modul aktiv)'
+            body: 'Vier Stopps für den BCM-Flow: /business-process → BIA (Business Impact Analysis) → /bc-plan → /bc-exercise. RTO/RPO werden als Tooltips an den jeweiligen Feldern erklärt.'
+
     # Auditor (3 Steps)
     auditor:
         meta:

@@ -1,0 +1,156 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}
+    <i class="bi bi-stars fairy-icon-sparkle" aria-hidden="true"></i>
+    {{ 'admin.tour_completion.title'|trans({}, 'admin') }}
+{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.tour_completion.title'|trans({}, 'admin') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    <p class="text-muted mb-3">
+        {{ 'admin.tour_completion.description'|trans({}, 'admin') }}
+    </p>
+
+    {# Stats strip #}
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body py-2 px-3">
+                    <div class="small text-muted">{{ 'admin.tour_completion.stats.total_users'|trans({}, 'admin') }}</div>
+                    <div class="h4 mb-0">{{ total_users }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            {% set _rate = total_users > 0 ? (completion_count * 100 / total_users)|round : 0 %}
+            {% set _variant = _rate >= 80 ? 'success' : (_rate >= 50 ? 'warning' : 'danger') %}
+            <div class="card shadow-sm h-100 border-{{ _variant }}">
+                <div class="card-body py-2 px-3">
+                    <div class="small text-muted">{{ 'admin.tour_completion.stats.completion_rate'|trans({}, 'admin') }}</div>
+                    <div class="h4 mb-0 text-{{ _variant }}">
+                        {{ _rate }} %
+                        <small class="fs-6 text-muted">({{ completion_count }}/{{ total_users }})</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <a href="{{ path('admin_tour_completion_export') }}" class="btn btn-outline-primary btn-sm w-100">
+                <i class="bi bi-download" aria-hidden="true"></i>
+                {{ 'admin.tour_completion.export_csv'|trans({}, 'admin') }}
+            </a>
+        </div>
+    </div>
+
+    {# Filter-Bar #}
+    <form method="get" class="card shadow-sm mb-3">
+        <div class="card-body p-3">
+            <div class="row g-2">
+                <div class="col-md-5">
+                    <input type="search" name="q" class="form-control form-control-sm"
+                           placeholder="{{ 'admin.tour_completion.filter.search_placeholder'|trans({}, 'admin') }}"
+                           value="{{ search }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="role" class="form-select form-select-sm">
+                        <option value="">{{ 'admin.tour_completion.filter.role_all'|trans({}, 'admin') }}</option>
+                        {% for t in tours %}
+                            <option value="{{ t }}" {% if role_filter == t %}selected{% endif %}>
+                                {{ ('guided_tour.' ~ t ~ '.meta.label')|trans({}, 'guided_tour') }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-center">
+                    <div class="form-check">
+                        <input type="checkbox" id="only-incomplete" name="only_incomplete"
+                               value="1" class="form-check-input"
+                               {% if only_incomplete %}checked{% endif %}>
+                        <label for="only-incomplete" class="form-check-label small">
+                            {{ 'admin.tour_completion.filter.only_incomplete'|trans({}, 'admin') }}
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                        <i class="bi bi-funnel" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {# Table #}
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">{{ 'admin.tour_completion.col.user'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'admin.tour_completion.col.auto_role'|trans({}, 'admin') }}</th>
+                        {% for t in tours %}
+                            <th scope="col" class="text-center small">
+                                {{ ('guided_tour.' ~ t ~ '.meta.label')|trans({}, 'guided_tour')|split(' ')|first }}
+                            </th>
+                        {% endfor %}
+                        <th scope="col" class="text-end">{{ 'admin.tour_completion.col.actions'|trans({}, 'admin') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if rows|length == 0 %}
+                        <tr>
+                            <td colspan="{{ 3 + tours|length }}" class="text-center text-muted py-4">
+                                {{ 'admin.tour_completion.empty'|trans({}, 'admin') }}
+                            </td>
+                        </tr>
+                    {% else %}
+                        {% for row in rows %}
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">{{ row.user.fullName|default(row.user.email) }}</div>
+                                    <div class="small text-muted">{{ row.user.email }}</div>
+                                </td>
+                                <td>
+                                    <span class="badge text-bg-secondary">{{ row.auto_role }}</span>
+                                </td>
+                                {% for t in tours %}
+                                    <td class="text-center">
+                                        {% if t in row.completed_tours %}
+                                            <i class="bi bi-check-circle-fill text-success" aria-label="{{ 'admin.tour_completion.completed'|trans({}, 'admin') }}"></i>
+                                        {% else %}
+                                            <i class="bi bi-dash-circle text-muted" aria-label="{{ 'admin.tour_completion.not_completed'|trans({}, 'admin') }}"></i>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                                <td class="text-end">
+                                    {% if row.completed_tours|length > 0 %}
+                                        <form method="post"
+                                              action="{{ path('admin_tour_completion_reset', {id: row.user.id, role: 'all'}) }}"
+                                              class="d-inline"
+                                              onsubmit="return confirm('{{ 'admin.tour_completion.confirm_reset'|trans({'%user%': row.user.email}, 'admin')|e('js') }}');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('admin_tour_reset_' ~ row.user.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-secondary"
+                                                    title="{{ 'admin.tour_completion.reset_all'|trans({}, 'admin') }}">
+                                                <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="alert alert-info small mt-3">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'admin.tour_completion.audit_hint'|trans({}, 'admin')|raw }}
+    </div>
+</div>
+{% endblock %}
