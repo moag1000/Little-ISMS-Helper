@@ -823,14 +823,30 @@ Basierend auf dem UX-Audit vom 01.01.2026: Konsolidierung der UI-Komponenten, CS
 - [x] CSS-Architektur analysiert - bereits gut strukturiert
 - [x] Custom spacing utilities korrekt auf Design-System gemappt
 
-#### 📅 Phase 8H.4: Card-Konsolidierung (Langfristig)
+#### 🔄 Phase 8H.4: Card-Konsolidierung (Langfristig, schrittweise)
 
-**Status:** 📅 Backlog
-**Effort:** 15-20 Stunden (schrittweise)
+**Status:** 🔄 In Entwicklung · Batch 1 abgeschlossen 2026-04-21
+**Effort:** 15-20 Stunden, inkrementell bei Touch-Points
 
-- [ ] Neue Templates nutzen `_card.html.twig`
-- [ ] Legacy-Migration bei anderen Änderungen
-- [ ] Ziel: 100% Konsistenz (aktuell ~2500 manuelle Cards)
+**Istzustand-Audit (2026-04-21):**
+- 487 Templates gesamt, 285 nutzen `_card.html.twig` (58 %)
+- 246 Templates verwenden noch manuelle `<div class="card">`-Blöcke (außerhalb von Components, Macros, Email-/Report-Templates)
+
+**Prinzip:** Keine Big-Bang-Migration. Jeder Touch-Point migriert mit.
+- [x] Neue Templates nutzen `_card.html.twig` (Default für Phase 9.P1/P2-Code)
+- [x] Legacy-Migration bei anderen Änderungen (Batch-weise, pro besuchtes Modul)
+- [ ] Ziel: 100 % Konsistenz — realistisch nur über ~12 Monate durch organische Migration
+
+**Batch 1 (Commit: siehe `group_report`-Migrations-Commit):**
+- Alle 8 `group_report/*` Templates — Haupt-Content-Cards auf `_card.html.twig` umgestellt (kpi_matrix, tree, risks, audit_program, incidents, nis2_registration, soa_matrix, suppliers). KPI-Stat-Cards mit `py-2`-Override bleiben vorerst bestehen (kein 1:1-Mapping auf Component, Mehraufwand ohne visuellen Gewinn).
+- `_card.html.twig` unterstützt jetzt `noPadding: true`-Kurzform für Tabellen-Cards — saubere API statt `class="card-body p-0"` zu duplizieren.
+
+**Nächste Batches (organisch, bei Modul-Touch):**
+- industry_baseline/* (2 Templates, 19 manuelle Cards) — beim nächsten Baseline-Feature
+- data_reuse_hub, context, home, dpia* (high-traffic, bei UX-Review)
+- Restlicher Long-Tail (200+ Templates) — jeweils bei Feature-Änderung dort
+
+**Akzeptanz-Kriterium für "abgeschlossen":** sinnvoll, wenn > 90 % adoption erreicht ist. Die verbleibenden 10 % sind meist begründet (KPI-Stats mit spezieller Padding-Logik, Print-Templates, Email-Templates).
 
 ---
 

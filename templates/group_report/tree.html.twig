@@ -93,12 +93,12 @@
         </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
+    {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
+        {% block card_body %}
             <ul class="list-group list-group-flush">
                 {{ _self.renderNode(root, current, 0) }}
             </ul>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

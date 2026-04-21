@@ -46,8 +46,8 @@
         </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
+    {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
+        {% block card_body %}
             <div class="table-responsive" style="max-height: 70vh;">
                 <table class="table table-hover table-sm mb-0 align-middle" aria-label="{{ 'group_report.soa.title'|trans({}, 'group_report') }}">
                     <thead class="table-light" style="position: sticky; top: 0;">
@@ -93,15 +93,17 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-        <div class="card-footer small text-muted">
-            <strong>{{ 'group_report.soa.legend.title'|trans({}, 'group_report') }}:</strong>
-            <span class="badge bg-success">✓</span> {{ 'group_report.soa.legend.implemented'|trans({}, 'group_report') }}
-            · <span class="badge bg-warning text-dark">◐</span> {{ 'group_report.soa.legend.in_progress'|trans({}, 'group_report') }}
-            · <span class="badge bg-info">◯</span> {{ 'group_report.soa.legend.planned'|trans({}, 'group_report') }}
-            · <span class="badge bg-secondary">–</span> {{ 'group_report.soa.legend.not_started'|trans({}, 'group_report') }}
-            · <span class="badge bg-light text-dark border">N/A</span> {{ 'group_report.soa.legend.not_applicable'|trans({}, 'group_report') }}
-        </div>
-    </div>
+        {% endblock %}
+        {% block card_footer %}
+            <div class="card-footer small text-muted">
+                <strong>{{ 'group_report.soa.legend.title'|trans({}, 'group_report') }}:</strong>
+                <span class="badge bg-success">✓</span> {{ 'group_report.soa.legend.implemented'|trans({}, 'group_report') }}
+                · <span class="badge bg-warning text-dark">◐</span> {{ 'group_report.soa.legend.in_progress'|trans({}, 'group_report') }}
+                · <span class="badge bg-info">◯</span> {{ 'group_report.soa.legend.planned'|trans({}, 'group_report') }}
+                · <span class="badge bg-secondary">–</span> {{ 'group_report.soa.legend.not_started'|trans({}, 'group_report') }}
+                · <span class="badge bg-light text-dark border">N/A</span> {{ 'group_report.soa.legend.not_applicable'|trans({}, 'group_report') }}
+            </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

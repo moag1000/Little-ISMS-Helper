@@ -21,11 +21,13 @@
 
     <div class="row row-cols-1 row-cols-md-2 g-3 mb-4">
         <div class="col">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h2 class="h6 mb-0">{{ 'group_report.risks.top10'|trans({}, 'group_report') }}</h2>
-                </div>
-                <div class="card-body p-0">
+            {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h6 mb-0">{{ 'group_report.risks.top10'|trans({}, 'group_report') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <table class="table table-hover mb-0 align-middle" aria-label="{{ 'group_report.risks.top10'|trans({}, 'group_report') }}">
                         <thead class="table-light">
                             <tr>
@@ -69,15 +71,17 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h2 class="h6 mb-0">{{ 'group_report.risks.distribution'|trans({}, 'group_report') }}</h2>
-                </div>
-                <div class="card-body p-0">
+            {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h6 mb-0">{{ 'group_report.risks.distribution'|trans({}, 'group_report') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <table class="table table-hover mb-0 align-middle">
                         <thead class="table-light">
                             <tr>
@@ -105,8 +109,8 @@
                             </tr>
                         </tfoot>
                     </table>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>
