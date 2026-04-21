@@ -270,7 +270,7 @@ Für Produktions-Deployments beachten Sie:
 ### 🎨 Modern UI/UX (🆕 2.0)
 - **Mega Menu Navigation** - Hierarchische, Multi-Column Navigation mit visuellen Icons
 - **Dark Mode** - Vollständige Theme-Unterstützung mit WCAG AA Kontrasten
-- **Complete i18n** - 3.290+ Übersetzungsschlüssel in 97 Domänen (DE/EN)
+- **Complete i18n** - 13.400+ Übersetzungsschlüssel in 81 Domänen (DE/EN)
 - **WCAG 2.2 AA** - Barrierefreiheit (Kontraste, ARIA, Keyboard Navigation, Focus Not Obscured, Target Size)
 - **Component System** - Wiederverwendbare Twig-Komponenten (Cards, Badges, Buttons)
 - **Responsive Design** - Mobile-First mit Bootstrap 5.3
@@ -327,7 +327,7 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 - Compliance Framework Management
 - System Health & Performance Monitoring
 - Database Backup, Export & Import
-- License Management (163 Dependencies)
+- License Management (165 Dependencies)
 
 📖 **Vollständiger Guide:** [ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md)
 
@@ -371,7 +371,7 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 | [Verification Report](docs/reports/VERIFICATION_REPORT.md) | Code-Nachweis für alle Features |
 | [Module Completeness Audit](docs/phases/MODULE_COMPLETENESS_AUDIT.md) | Phase 6 Module Completeness Status |
 | [Security Audit](docs/reports/security-audit-owasp-2025-rc1.md) | OWASP Security Audit Report |
-| [License Report](docs/reports/license-report.md) | Third-Party License Compliance (163 Pakete) |
+| [License Report](docs/reports/license-report.md) | Third-Party License Compliance (165 Pakete) |
 
 ### 🔒 Compliance & Security
 
@@ -390,8 +390,8 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 | **Frontend** | Twig, Bootstrap 5, Stimulus, Turbo |
 | **Database** | PostgreSQL 16 / MySQL 8.0+ |
 | **API** | API Platform 4.2, OpenAPI 3.0, Swagger UI |
-| **Export** | Dompdf 3.1 (PDF), PhpSpreadsheet 5.2 (Excel) |
-| **Testing** | PHPUnit 12.4 (2528 tests, 7782 assertions) |
+| **Export** | Dompdf 3.1 (PDF), PhpSpreadsheet 5.3 (Excel) |
+| **Testing** | PHPUnit 12.5 (3,919 tests) |
 | **CI/CD** | GitHub Actions (4 parallel jobs) |
 | **Deployment** | Docker, Docker Compose, Nginx |
 
@@ -399,13 +399,14 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 
 ## 📊 Projekt-Statistiken
 
-- **Codezeilen:** ~43,600+ LOC
-- **Entities:** 52+ Doctrine Entities
-- **Controllers:** 68+ Controllers
-- **Services:** 65+ Business Logic Services
-- **Templates:** 420+ Twig Templates (WCAG 2.2 AA)
-- **Translations:** 3,500+ keys (DE + EN) in 115+ YAML files
-- **Tests:** 2528 tests (34 test files, 19,175 LOC)
+- **Codezeilen:** ~167,400+ LOC
+- **Entities:** 73+ Doctrine Entities
+- **Controllers:** 104+ Controllers
+- **Services:** 121+ Business Logic Services
+- **Commands:** 77 Console Commands
+- **Templates:** 487+ Twig Templates (WCAG 2.2 AA)
+- **Translations:** 13,400+ keys (DE + EN) in 162 YAML files
+- **Tests:** 3,919 tests (267 test files, ~75,500 LOC)
 - **API Endpoints:** 30 REST Endpoints
 - **Report Types:** 11 (6 PDF + 5 Excel)
 - **Compliance Frameworks:** 9 (ISO 27001, ISO 22301, ISO 19011, ISO 31000, ISO 27005, DORA, TISAX, NIS2, BSI IT-Grundschutz)
@@ -434,7 +435,7 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 
 ## 🧪 Testing
 
-Das Projekt enthält eine umfassende Testsuite mit **2528 Tests** in **34 Testdateien** (~19.175 LOC).
+Das Projekt enthält eine umfassende Testsuite mit **3,919 Tests** in **267 Testdateien** (~75,500 LOC).
 
 ### Test Coverage
 
@@ -492,8 +493,7 @@ php bin/phpunit
 - 🚧 **Workflow Engine** - In Entwicklung
 
 **Aktuelle Test-Statistik:**
-- Gesamt: 2528 Tests
-- Assertions: 7782
+- Gesamt: 3,919 Tests
 - Erfolgsquote: ~95% (ohne Test-DB-Setup)
 - Mit Test-DB: ~98%+
 
@@ -573,13 +573,13 @@ Siehe auch: [CHANGELOG.md](CHANGELOG.md) für detaillierte Versionshistorie
 
 ## 📋 Lizenz-Compliance
 
-Little ISMS Helper verwendet **163 Third-Party Open-Source-Pakete**, die für kommerzielle Nutzung freigegeben sind.
+Little ISMS Helper verwendet **165 Third-Party Open-Source-Pakete**, die für kommerzielle Nutzung freigegeben sind.
 
 ### Compliance-Status
 
 | Status | Pakete | Prozent |
 |--------|--------|---------|
-| ✅ Erlaubt | 160 | 98.2% |
+| ✅ Erlaubt | 162 | 98.2% |
 | 🔄 Copyleft (LGPL) | 3 | 1.8% |
 
 **Gesamtstatus:** ✅ **Lizenzkonform für kommerzielle Nutzung**

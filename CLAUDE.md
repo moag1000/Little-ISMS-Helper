@@ -21,7 +21,7 @@ Guidelines for Claude Code in this repository.
 
 **Multi-tenancy:** All entities use `tenant_id` field. `TenantContext` service manages context.
 
-**RBAC:** USER → AUDITOR → MANAGER → ADMIN → SUPER_ADMIN with 50+ permissions.
+**RBAC:** USER → AUDITOR → MANAGER → ADMIN → SUPER_ADMIN with 35+ permissions.
 
 ## Essential Commands
 
@@ -54,14 +54,14 @@ php bin/console lint:twig templates/  # validate all templates
 ## Architecture Quick Guide
 
 **Directory Layout:**
-- `src/Entity/` - Doctrine entities (43 total, all with `tenant_id`)
-- `src/Service/` - Business logic (47 services)
-- `src/Controller/` - HTTP handlers (55 controllers)
-- `src/Command/` - Console commands (31 total)
+- `src/Entity/` - Doctrine entities (73 total, all with `tenant_id`)
+- `src/Service/` - Business logic (121 services)
+- `src/Controller/` - HTTP handlers (104 controllers)
+- `src/Command/` - Console commands (77 total)
 - `src/Security/Voter/` - Authorization voters
 - `templates/` - Twig templates
 - `assets/controllers/` - Stimulus JS controllers
-- `translations/` - Translation files (97 YAML files organized by domain)
+- `translations/` - Translation files (162 YAML files organized by domain)
 
 **Key Services:**
 - `RiskService`, `AssetService`, `ControlService` - Core CRUD
@@ -108,7 +108,7 @@ Custom modals (like command palette) use CSS classes instead of Bootstrap Modal 
 The application uses domain-specific translation files instead of monolithic `messages.*.yaml` files.
 
 Structure:
-- `translations/` contains 97 YAML files (49 domains × 2 languages)
+- `translations/` contains 162 YAML files (81 domains × 2 languages)
 - Each functional area has its own domain: `nav`, `mfa`, `tenant`, `role_management`, etc.
 - `messages.{de,en}.yaml` remains as fallback for common/cross-domain terms
 
@@ -123,16 +123,18 @@ Usage in Twig templates:
 {{ 'common.save'|trans({}, 'messages') }}
 ```
 
-Available domains (49 total):
-- **Navigation:** nav, dashboard, ui
-- **Access Control:** mfa, role_management, session, users
-- **ISMS Core:** assets, risks, controls, incidents, audits, soa, context
-- **BCM:** bcm, bc_plans, bc_exercises, crisis_team
-- **Compliance:** compliance, privacy, interested_parties, objectives
-- **Management:** tenant, admin, management_review, analytics, reports
-- **Operations:** documents, workflows, training, change_requests, patches
-- **Resources:** suppliers, locations, people, physical_access
-- **Technical:** monitoring, crypto, vulnerabilities, threat, bulk_delete, field
+Available domains (81 total):
+- **Navigation:** nav, dashboard, ui, help, welcome
+- **Access Control:** mfa, role_management, session, user, security, four_eyes
+- **ISMS Core:** assets, risk, control, incident, audits, audit_log, audit_freeze, soa, context, risk_appetite, risk_treatment_plan
+- **BCM:** bcm, bc_plans, bc_exercises, crisis_team, business_process
+- **Compliance:** compliance, compliance_import, compliance_inheritance, compliance_policy, compliance_wizard, privacy, interested_parties, objective, consent, data_subject_request, dora, nis2
+- **Management:** tenant, admin, management_review, analytics, reports, management_reports, kpi
+- **Operations:** document, workflows, training, change_requests, patches, notifications, scheduled_reports, tags
+- **Reports:** gap_report, group_report, portfolio_report, security_reports, report_builder
+- **Resources:** suppliers, locations, people, physical_access, prototype_protection, industry_baseline
+- **Technical:** monitoring, crypto, vulnerabilities, threat, bulk_delete, field, loader_fixer, emails
+- **Setup:** setup, setup_wizard, wizard
 - **Validators:** validators (form validation messages)
 
 When adding new features:

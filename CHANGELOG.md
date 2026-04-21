@@ -244,7 +244,7 @@ Residual-Tool-Budget **3 → 0 FTE-Tage**.
   `/prototype-protection/{id}/pdf` mit Cover, Meta-Tabelle, 5 VDA-Kap.-
   8-Sektionen + Signatur-Block (Assessor + Approver).
 - **BSI-Kompendium Extended-Seed** (`163f885b`): `app:load-bsi-kompendium-
-  extended` mit 51 kuratierten Anforderungen aus 20 zusätzlichen
+  extended` mit 52 kuratierten Anforderungen aus 20 zusätzlichen
   Bausteinen (CON.11, OPS.1.2.3, OPS.2.2, APP.3.2/3.3/3.6/4.2/5.3,
   SYS.1.2.3/1.3/1.8/1.9/2.4/3.1/3.2.2/4.1/4.5, NET.4.1/4.3, INF.13).
 - **BSI-Kompendium-XML-Importer Refactor** (`2a2bc51f`): Parser auf
@@ -467,7 +467,7 @@ Alle sieben Ziel-Frameworks erstmals Tool-🟢. Residual-Budget **19 → 3 FTE-T
   alle Letter-Titel. Commit `78423dcc`.
 
 **BSI IT-Grundschutz**
-- **Kompendium-Delta-Loader** `app:load-bsi-kompendium-delta` — 24
+- **Kompendium-Delta-Loader** `app:load-bsi-kompendium-delta` — 29
   Anforderungen aus dem Kompendium 2023, die im Base- und Supplement-Loader
   fehlten: CON.4/5 Standardsoftware/Entwicklung, OPS.2.3 Outsourcing,
   APP.4.4 Kubernetes, APP.6 Allgemeine Software, SYS.1.2 Windows-Server,
@@ -747,7 +747,7 @@ KPI_IMPROVEMENT_PLAN). Alle HIGH/KRITISCH-Items sind umgesetzt.
   entfernt, `Length(['min', 'max'])` → named args, `isType('array')`
   → `isArray()` — Test-Suite läuft unter `failOnDeprecation="true"`
   auf exit 0
-- Suite: 3856 Tests, 10521 Assertions, 0 Fehler, 0 Failures
+- Suite: 3,919 Tests, 10,827 Assertions, 0 Fehler, 0 Failures
 
 #### Data-Reuse Plan v1.1 — WS-1 … WS-8 vollständig
 - **WS-1 Mapping-basierte Vererbung mit Review-Pflicht**
@@ -901,7 +901,7 @@ KPI_IMPROVEMENT_PLAN). Alle HIGH/KRITISCH-Items sind umgesetzt.
 - Implementation Readiness Checklist, Trend-Pfeile auf allen KPIs
 
 **Compliance-Kataloge:**
-- 3 neue Frameworks: NIS2UmsuCG (15 Req), BDSG (7 Req), EU AI Act (10 Req)
+- 3 neue Frameworks: NIS2UmsuCG (15 Req), BDSG (12 Req), EU AI Act (10 Req)
 - GDPR +7 Artikel, NIST CSF +17 Subcategories, GxP Subpart C + GAMP5/ICH/PIC/S
 - DiGAV 2020→2024 + BSI TR-03161, KRITIS→NIS2UmsuCG, CIS IG-Labels
 - 8 Frameworks im Setup Wizard hinzugefuegt (ISO 22301, SOC2, CIS, NIST CSF, etc.)
