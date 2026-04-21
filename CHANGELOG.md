@@ -5,6 +5,132 @@ All notable changes to Little ISMS Helper will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] — 2026-04-21 🌸 FairyAurora Design-Reset
+
+**Major Design-Reset**: komplette Migration vom "Cyberpunk-Fairy"-Theme
+auf die **FairyAurora-Palette** (Cyan #0284c7 + Violett #7c3aed, Light + Dark
+gleichrangig). Neue Fee **Alva** als Logo und Begleit-Charakter mit 9 Moods.
+Plan: `.claude/FAIRY_AURORA_PLAN.md` (1000+ Zeilen).
+
+### 🎨 Added — Aurora-Token-Layer
+
+- Design-Tokens (`assets/styles/fairy-aurora.css`): Light + Dark + System
+  Palette, Timing-Tokens (`--t-instant/fast/base/slow/magic`), Radius,
+  Brand-Gradient, Alva-Vars.
+- Legacy-Bridge (`fairy-aurora-bridge.css`): mappt 14 000 bestehende
+  Legacy-CSS-Zeilen auf Aurora-Tokens automatisch.
+- Self-hosted Fonts: Inter (400/500/600/700) + JetBrains Mono (400/500/600)
+  unter `public/fonts/`, SIL OFL.
+- Theme-Init-Script + Mode-Switch-UI 3-state (Light/Dark/System) via
+  `aurora_mode_controller.js` + `_mode_switch.html.twig`, Persist in
+  `localStorage['fa-theme']`.
+
+### 🧚 Added — Alva Character (9 Moods)
+
+- Logo (`public/logo.svg`): Alva mit subtil-breathing, CSS-Custom-Properties
+  (Light/Dark auto), `prefers-reduced-motion` respect.
+- Favicon (multi-size ICO) + PWA-Icons 72-512 + Apple-Touch 180 +
+  OG-Image 1200×630 + Email-Logo.
+- Character-Macro (`_alva.html.twig`): 9 Moods
+  (idle/happy/thinking/focused/working/scanning/warning/celebrating/sleeping),
+  inline-SVG, 7 Body-Bob-Keyframes, 5 Wing-Flap-Speeds.
+- Server-Mood-Resolver (`AlvaMoodExtension`): Session-Flash →
+  Session-Attribute → Nacht-Easter-Egg → idle. Twig-Global `alva_mood`.
+- OnboardingFairy-Compound: Aura-Pulse + 4 Orbit-Dots + Mood-Wing-Tilt.
+
+### 🧩 Added — Component-Library (20+ Aurora-Primitives)
+
+Neue Twig-Macros unter `templates/_components/`:
+`_brand`, `_cyber_button` (5 Varianten), `_cyber_input` (+select),
+`_status_pill`, `_alert`, `_empty_state`, `_kpi_card`, `_sparkline`,
+`_step_header`, `_check_row`, `_toggle_card`, `_nav_bar`,
+`_tech_backdrop`, `_onboarding_fairy`, `_typewriter`, `_stepper`,
+`_dropdown_panel`, `_filter_chips`, `_global_banner`,
+`_confirmation_dialog`, `_accordion`, `_system_status`.
+
+Plus 4 Stimulus-Controller (`aurora_alert`, `aurora_mode`, `aurora_banner`,
+`typewriter`) und Chart-Theme-Modul (`assets/chart-theme.js`).
+
+### 📱 Added — Shell + Responsive
+
+- Sidebar 260 → 224 px Aurora-Surface; Topbar 80 → 52 px flat Aurora.
+- User-Avatar Pill 36 px mit Brand-Gradient + Mono-Initialen.
+- System-Status-Pill + Alva-Topbar-Mount in Topbar.
+- Responsive-Layer (`fairy-aurora-responsive.css`): 4 Breakpoints
+  (sm<640, md<768, lg<1024, xl≥1280), Sidebar off-canvas <lg, Touch-Targets
+  44×44 <md, KPI-Reflow 4→2→1.
+
+### 🧙 Added — Setup-Wizard (12-Step Flow)
+
+- Neues Layout (`setup/_layout.html.twig`): 2-Col 480/flex mit TechBackdrop
+  + Brand + OnboardingFairy + Typewriter + Phase-Indicator.
+- Flow-Array (`src/Setup/SetupFlow.php`) mit 12 Steps DE+EN.
+- Alle 12 Setup-Steps auf Aurora-Layout migriert.
+
+### 🔐 Added — Auth-Flows
+
+- Neues `base_auth.html.twig`: 2-Col Aurora-Layout mit
+  auth_mood / auth_alva_line / auth_alva_sub Blocks.
+- Login + MFA-Challenge komplett Aurora (CyberInput, CyberButton,
+  OAuth-Buttons, `<details>`-Accordion).
+
+### 📧 Added — Email-Template-Base
+
+- `templates/emails/base.html.twig` (NEU) mit Aurora-Gradient-Header +
+  neutral Light-Body + Inline-CSS (Mail-Client-Kompat).
+- 3 broken-extends gefixt + 4 fehlende Templates erstellt.
+
+### ⚠️ Added — Error-Pages (404/500/403)
+
+Migriert auf `base_auth.html.twig` mit Alva-Mood-Mapping:
+404→thinking, 500→warning (+ Request-ID mono), 403→sleeping.
+
+### 🖨️ Added — Print-Styles
+
+`@media print` Neutral-Light-Fallback: Shell hidden, Links mit
+URL in Klammern, Page-Break-Utilities.
+
+### ♿ Added — A11y-Compliance (WCAG 2.2 AA)
+
+- Neue Tokens für WCAG-safe Button-Text-Kontraste
+  (`--primary-strong`, `--*-strong`, `--on-primary/accent/...` Inverse-Flip).
+- Audit-Runner (`.claude/fairy-aurora/a11y_contrast_audit.py`) —
+  18/18 kritische Kombinationen bestehen WCAG 2.2 AA.
+- Alva aria-labels für alle 9 Moods (DE + EN).
+- Alle Animationen respektieren `prefers-reduced-motion`.
+
+### ⚡ Changed — Performance + Foundation
+
+- Service-Worker `CACHE_VERSION` → `v3.0.0-fa`, 7 Font-Files +
+  favicon.ico + apple-touch-icon in STATIC_CACHE.
+- Font-Preload: inter-500 + inter-600 above-the-fold.
+- `composer.json`: neues `version`-Feld als Single-Source-of-Truth.
+- Flash-Bridge: Symfony app.flashes → Aurora-Alerts mit Alva-Avatar.
+- Toast-Controller-API 1:1 kompatibel, rendert jetzt Aurora-Alert-DOM.
+- `manifest.json`: theme_color #06b6d4 → #0284c7.
+
+### 🗑️ Removed
+
+- Legacy `_theme_toggle.html.twig` + `theme_controller.js` (ersetzt durch
+  Aurora 3-state Mode-Switch).
+- 17 Legacy-Logos archiviert nach `public/archive/legacy-logos/`.
+
+### 📊 Gesamt-Statistik
+
+- ~40 FTE-d Umfang, ~25 Commits über 11 FA-Phasen.
+- 20+ neue Twig-Macros, 4 neue Stimulus-Controller, 4 Twig-Extensions.
+- 7 CSS-Files unter `assets/styles/fairy-aurora-*.css`.
+- Zero Breaking-Changes dank Bridge-Layer.
+- 521 Twig-Files Lint OK, Container-Lint OK, A11y-Audit 18/18 AA.
+
+### 🎯 Migration-Reihenfolge
+
+FA-0 Brand → FA-1 Theme → FA-2 Components → FA-3 Shell → FA-4 Alva →
+FA-5 Setup-Wizard → FA-6 Auth → FA-8 Responsive → FA-9 Charts+Edge →
+FA-10 Email+Error+Print → FA-7 Universal-Sweep.
+
+---
+
 ## [Unreleased]
 
 ### ✨ Added

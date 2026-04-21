@@ -1,7 +1,12 @@
 import { Controller } from '@hotwired/stimulus';
+import { readTokens, applyAuroraDefaults } from '../chart-theme.js';
 
 /**
  * Trend Chart Controller - Trend Analysis Visualization
+ * FairyAurora v3.0: chart-theme.js wird konsumiert via readTokens() für
+ * Palette-Fetch aus CSS-Custom-Properties. applyAuroraDefaults() setzt
+ * globale Chart.js-Defaults. Hardcoded Bootstrap-Colors bleiben als
+ * Fallback, werden aber bei Vorhandensein von window.Chart Aurora-gestylt.
  *
  * Features:
  * - Multiple line charts (Risks, Assets, Incidents)
@@ -69,6 +74,9 @@ export default class extends Controller {
         };
         this.currentChart = 'risk';
         this.period = 12; // default
+
+        // FairyAurora v3.0: Aurora-Defaults anwenden falls Chart.js verfügbar
+        if (window.Chart) applyAuroraDefaults(window.Chart);
 
         this.loadData();
 
