@@ -34,6 +34,12 @@
             <a href="{{ path('app_compliance_framework', {id: framework.id}) }}" class="btn btn-info">
                 <i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'compliance.framework.action.dashboard'|trans({}, 'compliance') }}
             </a>
+            {% if is_granted('ROLE_MANAGER') %}
+                <a href="{{ path('app_compliance_framework_migrate', {id: framework.id}) }}" class="btn btn-outline-primary">
+                    <i class="bi bi-signpost-split" aria-hidden="true"></i>
+                    {{ 'compliance.framework.migrate.title'|trans({}, 'compliance') }}
+                </a>
+            {% endif %}
             {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('app_compliance_framework_edit', {id: framework.id}) }}" class="btn btn-warning">
                     <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}

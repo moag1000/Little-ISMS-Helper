@@ -351,6 +351,40 @@ compliance:
         no_mapping: 'Nicht zugeordnet'
         overdue: Überfällig
     framework:
+        migrate:
+            title: 'Framework-Version migrieren'
+            description: 'Bridge-Mappings von %framework% zur neuen Version — transitive Abdeckung ohne Neu-Verknüpfung.'
+            intro: 'Der Assistent findet passende Anforderungs-Paare per ID oder Titel und legt bidirektionale Bridge-Mappings an. Bestehende Mappings bleiben unverändert — der Lauf ist idempotent.'
+            field:
+                old: 'Alte Version'
+                target: 'Neue Version'
+                strategy: 'Matching-Strategie'
+            strategy:
+                id: 'Requirement-ID (Default)'
+                title: 'Titel-Exact-Match'
+                both: 'ID dann Titel (Fallback)'
+                hint: 'Default „ID" funktioniert bei strukturell gleichen Versionen (z. B. ISO 27001:2013 → 2022 A.5.1 bleibt A.5.1). Titel-Fallback hilft bei Umnummerierungen.'
+            action:
+                preview: 'Dry-Run (Vorschau)'
+                commit: 'Bridges anlegen'
+            error:
+                target_required: 'Bitte Ziel-Framework auswählen.'
+                same_framework: 'Ziel- und Quell-Framework dürfen nicht identisch sein.'
+                invalid_strategy: 'Ungültige Matching-Strategie.'
+            result:
+                preview: 'Vorschau (noch nicht gespeichert)'
+                committed: 'Migration abgeschlossen'
+                matched: 'Zugeordnet'
+                unmatched: 'Ohne Match'
+                created: 'Bridges angelegt'
+                skipped_existing: 'Bestehend übersprungen'
+                matched_heading: 'Zugeordnete Anforderungen'
+                unmatched_heading: 'Anforderungen ohne Match'
+                unmatched_hint: 'Diese Anforderungen existieren in der neuen Version nicht mit gleichem ID/Titel. Prüfen, ob sie umbenannt, gestrichen oder strukturell verändert wurden.'
+                via: 'Match über'
+                req_id: 'ID'
+                req_title: 'Titel'
+                preview_ok_hint: 'Preview OK — jetzt „Bridges anlegen" drücken, um die Verknüpfungen zu speichern.'
         edit:
             title: 'Compliance-Framework bearbeiten'
             heading: 'Framework bearbeiten'
