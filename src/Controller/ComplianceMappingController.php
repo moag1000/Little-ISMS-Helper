@@ -30,6 +30,37 @@ class ComplianceMappingController extends AbstractController
         private readonly ?TranslatorInterface $translator = null,
     ) {}
 
+    /**
+     * Sprint 5 / M4 — Mapping-Hub (Landing-Page).
+     *
+     * Junior-Consultant-Walkthrough: Wer zum ersten Mal auf /compliance/mapping
+     * landet, sieht eine Tabelle mit tausenden Einträgen — keine Orientierung.
+     * Der Hub bietet fünf Einstiege (Wizard, Seeds, Quality, Transitive,
+     * Liste) plus KPI-Strip + 9001-Brücke + Last-5.
+     */
+    #[Route('/compliance/mapping/hub', name: 'app_compliance_mapping_hub', methods: ['GET'])]
+    public function hub(): Response
+    {
+        $stats = $this->complianceMappingRepository->getMappingStatistics();
+        $unreviewed = count($this->complianceMappingRepository->findMappingsRequiringReview());
+        $frameworkCount = $this->frameworkRepository !== null
+            ? count($this->frameworkRepository->findBy(['active' => true]))
+            : 0;
+
+        $recent = $this->complianceMappingRepository->findBy(
+            [],
+            ['updatedAt' => 'DESC', 'id' => 'DESC'],
+            5,
+        );
+
+        return $this->render('compliance/mapping/hub.html.twig', [
+            'stats' => $stats,
+            'unreviewed_count' => $unreviewed,
+            'framework_count' => $frameworkCount,
+            'recent' => $recent,
+        ]);
+    }
+
     #[Route('/compliance/mapping/', name: 'app_compliance_mapping_index', methods: ['GET'])]
     public function index(Request $request): Response
     {

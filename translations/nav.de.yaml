@@ -46,6 +46,7 @@ nav:
     tools: Werkzeuge
     cross_framework: Framework-übergreifend
     compare: Vergleichen
+    mapping_hub: Mapping-Hub
     mapping_quality: Mapping-Qualität
     data_reuse: Data-Reuse-Hub
     locations: Standorte
@@ -127,6 +128,7 @@ nav:
             management_reviews: 'Managementbewertungs-Meetings'
             compliance_frameworks: 'Multi-Framework-Management'
             framework_dashboard: 'Framework-übergreifende Übersicht'
+            mapping_hub: 'Zentraler Einstieg: Wizard, Seeds, Qualität, transitive Abdeckung'
             mapping_quality: 'Framework-übergreifende Mapping-Qualitätsanalyse'
             data_reuse: 'Top-wiederverwendete Dokumente und Lieferanten über alle Frameworks'
             nis2: 'NIS2-Richtlinienbewertung'

@@ -146,6 +146,39 @@ compliance:
     mapping:
         confirm:
             delete: 'Möchten Sie diese Zuordnung wirklich löschen?'
+        hub:
+            title: 'Mapping-Hub'
+            subtitle: 'Einstieg für Cross-Framework-Zuordnungen — Wizard, Seed-Pakete, Qualität, transitive Abdeckung.'
+            badge:
+                start_here: 'Hier starten'
+            kpi:
+                total: 'Mappings insgesamt'
+                unreviewed: 'Noch zu prüfen'
+                bidirectional: 'Bidirektional'
+                frameworks: 'Aktive Frameworks'
+            action:
+                wizard:
+                    title: 'Neues Mapping (Wizard)'
+                    desc: '4 Schritte, gefilterte Dropdowns, Typ-Karten mit Auto-Default. Für Neulinge empfohlen.'
+                seeds:
+                    title: 'Seed-Kataloge'
+                    desc: 'Fertige Mapping-Pakete (BSI ↔ ISO, SOC 2 ↔ ISO, C5 ↔ ISO) in einem Klick laden.'
+                quality:
+                    title: 'Mapping-Qualität'
+                    desc: 'Qualitätsbewertung, Review-Queue, schwache Mappings aufspüren — Analog zu internen Audit-Befunden.'
+                transitive:
+                    title: 'Transitive Abdeckung'
+                    desc: 'A erfüllt B und B erfüllt C ⇒ A erfüllt C. Hebeleffekte über Frameworks hinweg.'
+                list:
+                    title: 'Alle Mappings (Liste)'
+                    desc: 'Vollständige Tabelle mit %count% Einträgen — nur ansehen, wenn gezielt gesucht wird.'
+                reuse:
+                    title: 'Data-Reuse-Hub'
+                    desc: 'Welche Dokumente und Lieferanten decken die meisten Frameworks ab?'
+            recent:
+                heading: 'Zuletzt geänderte Mappings'
+                all_link: 'Alle anzeigen'
+                empty: 'Noch keine Mappings — Wizard oder Seeds starten.'
         title: Compliance-Mapping
         create_link: 'Zuordnung erstellen'
         seeds:
