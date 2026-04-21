@@ -49,7 +49,7 @@
             {% endblock %}
         {% endembed %}
         {% else %}
-        <p>Keine Daten verfügbar</p>
+        <p class="text-muted">{{ 'audit_log.message.no_data_available'|trans({}, 'audit_log') }}</p>
         {% endif %}
     </div>
 
@@ -84,7 +84,7 @@
             {% endblock %}
         {% endembed %}
         {% else %}
-        <p>Keine Daten verfügbar</p>
+        <p class="text-muted">{{ 'audit_log.message.no_data_available'|trans({}, 'audit_log') }}</p>
         {% endif %}
     </div>
 </div>

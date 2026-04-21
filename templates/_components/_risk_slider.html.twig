@@ -92,7 +92,7 @@
                        data-action="input->risk-slider#calculate"
                        aria-label="{{ 'risk.field.impact'|trans({}, 'risk') }}">
                 <div class="text-center" style="min-width: 100px;">
-                    <span class="badge bg-warning fs-5" data-risk-slider-target="impactValue">{{ impact }}</span>
+                    <span class="badge bg-warning text-dark fs-5" data-risk-slider-target="impactValue">{{ impact }}</span>
                     <div class="small text-muted mt-1" data-risk-slider-target="impactLabel">
                         {% set impact_labels = {
                             1: 'risk.impact.negligible'|trans({}, 'risk'),

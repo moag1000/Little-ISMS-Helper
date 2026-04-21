@@ -410,6 +410,16 @@ processing_activity:
     permanently_delete: 'Permanently Delete'
     view_all_activities: 'View All Processing Activities'
     confirm_delete: 'Do you really want to delete this processing activity?'
+    dashboard:
+        incomplete_activities: 'Incomplete Activities (%count%)'
+    show:
+        linked_controls: 'Linked ISO 27001 Controls'
+        not_documented: 'Not documented'
+        subtitle: 'Processing Activity Details (Art. 30 GDPR)'
+        tab:
+            overview: Overview
+            data_details: 'Data Details'
+            compliance: Compliance
     pdf:
         art_30_title: 'Record of Processing Activities according to Art. 30 GDPR'
         table_of_contents: 'Table of Contents'

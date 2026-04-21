@@ -49,6 +49,7 @@ audit_log:
     message:
         no_entries: 'No log entries found.'
         no_entries_filtered: 'No audit log entries found for the selected filter.'
+        no_data_available: 'No data available'
     action:
         back_to_health: 'Back to Health'
     modal:
@@ -66,6 +67,8 @@ audit_log:
         action: Action
         user: User
         description: Description
+        details: Details
+        entity: Entity
         entity_type: 'Entity Type'
         entity_id: 'Entity Id'
         ip_address: 'Ip Address'

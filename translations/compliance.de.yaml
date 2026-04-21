@@ -484,6 +484,7 @@ compliance:
             fulfilled: Erfüllt
             compliance: Compliance-Rate
     requirement:
+        details: 'Anforderungsdetails'
         confirm:
             delete: 'Möchten Sie diese Anforderung wirklich löschen?'
         title: Compliance-Anforderung

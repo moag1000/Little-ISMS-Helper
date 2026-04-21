@@ -550,6 +550,16 @@ processing_activity:
     permanently_delete: 'Dauerhaft löschen'
     view_all_activities: 'Alle Verarbeitungstätigkeiten anzeigen'
     confirm_delete: 'Möchten Sie diese Verarbeitungstätigkeit wirklich löschen?'
+    dashboard:
+        incomplete_activities: 'Unvollständige Aktivitäten (%count%)'
+    show:
+        linked_controls: 'Verknüpfte ISO-27001-Maßnahmen'
+        not_documented: 'Nicht dokumentiert'
+        subtitle: 'Details zur Verarbeitungstätigkeit (Art. 30 DSGVO)'
+        tab:
+            overview: Übersicht
+            data_details: 'Datenschutzdetails'
+            compliance: Compliance
     pdf:
         art_30_title: 'Verzeichnis von Verarbeitungstätigkeiten gemäß Art. 30 DSGVO'
         table_of_contents: Inhaltsverzeichnis

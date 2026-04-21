@@ -16,7 +16,7 @@
     {# Page Header #}
     {% include '_components/_page_header.html.twig' with {
         title: processing_activity.name,
-        subtitle: 'Processing Activity Details (Art. 30 GDPR)',
+        subtitle: 'processing_activity.show.subtitle'|trans({}, 'privacy'),
         icon: 'bi-file-earmark-text',
         actions: [
             { label: 'Edit', url: path('app_processing_activity_edit', {id: processing_activity.id}), variant: 'primary', icon: 'bi-pencil' },
@@ -106,7 +106,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="data-tab" data-bs-toggle="tab" data-bs-target="#data" type="button" role="tab">
-                <i class="bi bi-database" aria-hidden="true"></i> Data Details
+                <i class="bi bi-database" aria-hidden="true"></i> {{ 'processing_activity.show.tab.data_details'|trans({}, 'privacy') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -253,10 +253,10 @@
                     {% endembed %}</div>
 
                     <h2 class="h5 mt-4">Technical & Organizational Measures (Art. 30(1)(g))</h2>
-                    <p>{{ processing_activity.technicalOrganizationalMeasures ?? 'Not documented' }}</p>
+                    <p>{{ processing_activity.technicalOrganizationalMeasures ?? 'processing_activity.show.not_documented'|trans({}, 'privacy') }}</p>
 
                     {% if processing_activity.implementedControls|length > 0 %}
-                        <h3 class="h6">Linked ISO 27001 Controls:</h3>
+                        <h3 class="h6">{{ 'processing_activity.show.linked_controls'|trans({}, 'privacy') }}:</h3>
                         <ul>
                             {% for control in processing_activity.implementedControls %}
                                 <li>{% include '_components/_iso_reference_label.html.twig' with { control: control, separator: ' - ' } only %}</li>
