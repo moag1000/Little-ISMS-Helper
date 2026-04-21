@@ -921,6 +921,50 @@ sind Daten-Reife beim Mandanten (Tenant-Befüllung), nicht mehr Tool-seitig.
 
 ---
 
+### ✅ Phase 8CM3: Junior-Consultant-Walkthrough Sprint 4–6 (Abgeschlossen 2026-04-21)
+
+**Grundlage:** `.claude/CM_JUNIOR_CONSULTANT_WALKTHROUGH.md` — Compliance-Manager
+setzt sich mit Junior-Implementer und Senior-Consultant zusammen und geht
+die beiden Module „Data-Reuse" + „Framework-Mapping" durch die Junior-Brille
+durch. Ergebnis: 12 Items / 15 FTE-Tage verteilt auf 3 Sprints (HIGH/MEDIUM/LOW).
+
+#### Ergebnis-Matrix
+
+| # | Prio | Commit | FTE | Kern-Deliverable |
+|---|------|--------|-----|------------------|
+| M3 Klartext-Confidence | HIGH | `83017e1b` | 0,5 | SoA-Mapping-Suggestion-Widget zeigt *„Sehr hohe Text-Ähnlichkeit"* statt `85 %` Jaccard |
+| R3 Reuse-Trend-Chart | HIGH | `52c54eda` | 2 | `ReuseTrendSnapshot` + `app:reuse:capture-snapshot` + Chart.js auf Portfolio-Report |
+| R2 Home-Dashboard-FTE-KPI | HIGH | `aa1e1b8d` | 1 | Einzelne große FTE-Zahl auf `/dashboard`, klickt durch auf Portfolio |
+| M2 Seed-1-Klick-UI | HIGH | `68f33377` | 1 | `/compliance/mapping/seeds` — 3 Karten ersetzen 3 CLI-Commands |
+| R1 Data-Reuse-Hub | HIGH | `00c8f28a` | 1,5 | First-Class-Route `/reuse` mit Hero-KPI + Top-10 + Mega-Menü |
+| M1 4-Step-Wizard | HIGH | `04d7cee5`, `328c93eb` | 2 | `/compliance/mapping/wizard` mit gefilterten Dropdowns + Typ-Karten |
+| R4 ISO-9001-Analogien | MEDIUM | `053aeea8` | 0,5 | Reusable Component auf 4 Mapping-Seiten + Link zu `/help/iso9001-bridge` |
+| M4 Mapping-Hub | MEDIUM | `ce6d39fd` | 2 | `/compliance/mapping/hub` als Junior-Einstieg (KPI-Strip + 6 Karten) |
+| R5 CSV-Import-UI | MEDIUM | `686d88af` | 1 | `/compliance/mapping/import` mit Dry-Run-Preview (nutzt `CrossFrameworkMappingImporter`) |
+| M5 Version-Migrations-UI | MEDIUM | `2bb93bb0` | 1,5 | `/compliance/framework/{id}/migrate` — Strategie-Wahl + Preview (27001:2013 → 2022) |
+| M6 Seed-Review-Queue | LOW | `f5118e39` | 1 | `/compliance/mapping/seed-review` — Audit-Antwort *„wer hat das Mapping gemacht?"* |
+| R6 Reuse-Heatmap | LOW | `d9603404` | 1 | `/reuse/heatmap` — 5-Bucket-Farbgrid zur Monokultur-Erkennung |
+
+**Total:** ~15 FTE-Tage realisiert. Plan-Budget 1:1 getroffen.
+
+#### Plus Post-Audit-Fix
+
+Der Audit (`328c93eb`) identifizierte im M1-Wizard einen Zugriff auf die private
+`ComplianceFramework::$id` (Commit `2a2bc51f` hatte die Property-Hooks entfernt).
+Fix: `getId()` statt Property-Zugriff. Twig-Templates waren nicht betroffen
+(Method-Resolution greift automatisch).
+
+#### Drei-Personas-Leitsätze im Ergebnis
+
+- **Junior (9001-Hintergrund):** *„1-Klick-Seed + Wizard + 9001-Brücke auf 4 Seiten
+  heben das Werkzeug von *Expert-only* auf *Junior-tauglich-mit-Führung*."*
+- **Compliance-Manager:** *„Hub + Version-Migrations-UI + CSV-Preview + Seed-Review
+  schließen die Consultant-Ergonomie-Lücken und liefern Audit-Nachweis."*
+- **Consultant:** *„Keine Feature-Lücke mehr zu Markt-Spitze (OneTrust, ServiceNow
+  GRC). Unterschied liegt jetzt in Preis + Deployment-Freiheit, nicht in Ergonomie."*
+
+---
+
 ### ✅ Phase 8JR: Junior+UX+CM Audit Sprint (Abgeschlossen 2026-04-19)
 
 **Grundlage:** Drei unabhängige Audits
@@ -1193,7 +1237,10 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 (5) CM-Data-Reuse-Plan Sprint 1+2+3 (22 FTE-d → ~37 FTE-d/Jahr Ersparnis,
 12 Commits, Cross-Framework-Mapping-Automation),
 (6) Audit-v2.2 Residual-Closure + BSI-Kompendium 2023 vollständig
-(1 868 Anforderungen, 121 Bausteine via DocBook-XML-Import).
+(1 868 Anforderungen, 121 Bausteine via DocBook-XML-Import),
+(7) CM-Junior-Consultant-Walkthrough Sprint 4+5+6 (15 FTE-d, 12 Items,
+Reuse + Framework-Mapping junior-tauglich: Wizard / Hub / Seed-Review-Queue
+/ Reuse-Heatmap / Version-Migrations-UI / CSV-Import mit Dry-Run-Preview).
 Audit-Doc 78 → 98 → Residual-Budget 19 → 0 FTE-d. Alle 7 Ziel-Frameworks Tool-🟢,
 BSI IT-Grundschutz auf 99%+.
 **Naechste Aktualisierung:** Nach Cutting `v2.7.0` + Phase 9 Holding-Struktur.

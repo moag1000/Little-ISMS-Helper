@@ -50,6 +50,69 @@ Ersparnis beim CM-Alltag (~53 000 €/Jahr direkter Effekt).
 - **C1 InternalAudit-Clone**: `InternalAuditCloner` + POST-Route
   `/audit/{id}/clone` mit Title-Override + Planned-Date-Feld.
 
+#### CM-Junior-Consultant-Walkthrough Sprint 4–6 (2026-04-21)
+
+Fortführung des CM-Plans aus Sicht eines Junior-Consultants, der zum
+ersten Mal Reuse + Framework-Mapping sieht. 12 Items / 15 FTE-Tage auf
+3 Sprints verteilt. Plan in `.claude/CM_JUNIOR_CONSULTANT_WALKTHROUGH.md`.
+
+**Sprint 4 — HIGH (8 FTE-d)**
+- **M3 Klartext-Confidence** (`83017e1b`): SoA-Mapping-Suggestion-Widget
+  zeigt "Sehr hohe Text-Ähnlichkeit" + Tooltip statt Jaccard-Prozent —
+  Junior versteht 85 % Confidence nicht instinktiv.
+- **R3 Reuse-Trend-Chart** (`52c54eda`): Neue Entity `ReuseTrendSnapshot`
+  + `app:reuse:capture-snapshot` (tägl. Cron) + Chart.js-Line-Chart auf
+  Portfolio-Report mit dualer Y-Achse (FTE-Tage + Inheritance-Rate %).
+- **R2 Home-Dashboard-FTE-KPI** (`aa1e1b8d`): Einzelne große FTE-Zahl auf
+  `/dashboard` oberhalb der Management-KPIs, klickt durch auf Portfolio-
+  Report — Board-reife Einzahl.
+- **M2 Seed-1-Klick-UI** (`68f33377`): `/compliance/mapping/seeds`
+  ersetzt drei CLI-Commands durch drei Karten mit Status-Badges
+  (BSI/SOC 2/C5:2026 ↔ ISO). In-Process-Execution via `symfony/process`.
+- **R1 Data-Reuse-Hub** (`00c8f28a`): First-Class-Route `/reuse` mit
+  Hero-KPI (FTE-saved) + Stats-Bar + Top-10-Dokumente + Top-10-Lieferanten.
+  9001-Brücke als alert-info. Mega-Menü-Eintrag.
+- **M1 4-Step-Wizard** (`04d7cee5` + fix `328c93eb`): `/compliance/mapping/wizard`
+  führt durch Framework-Paar → gefilterte Requirement-Dropdowns →
+  Typ-Karten (full/partial/weak/exceeds mit Auto-Default-Prozent) →
+  Rationale. Stimulus-Client-Filter auf `requirements_by_framework`-JSON.
+
+**Sprint 5 — MEDIUM (5 FTE-d)**
+- **R4 ISO-9001-Analogien** (`053aeea8`): Reusable Component
+  `_components/_iso9001_analogy.html.twig` mit 5 variant-spezifischen
+  Texten (mapping/seeds/quality/reuse/default), verlinkt auf Voll-Brücke
+  `/help/iso9001-bridge`. Auf 4 Seiten eingebunden.
+- **M4 Mapping-Hub** (`ce6d39fd`): `/compliance/mapping/hub` als
+  Junior-Einstieg. KPI-Strip (Total / Unreviewed / Bidirectional /
+  Frameworks) + 6 Einstiegs-Karten inkl. "Hier starten"-Badge am Wizard.
+  Liste bleibt für gezielte Suche erreichbar.
+- **R5 CSV-Import-UI** (`686d88af`): `/compliance/mapping/import`
+  (ROLE_MANAGER) nutzt bestehenden `CrossFrameworkMappingImporter` mit
+  Dry-Run-Preview, KPI-Strip, Warnings-Tabelle. Consultant-Tabellen
+  ohne CLI verdau­bar.
+- **M5 Version-Migrations-UI** (`2bb93bb0`): `/compliance/framework/{id}/migrate`
+  kapselt `FrameworkVersionMigrator` — Strategie-Wahl (ID / Titel /
+  Fallback), Dry-Run-Preview mit matched + unmatched + via-Badge,
+  idempotent. Löst CLI-Only-Barriere für ISO 27001:2013 → 2022 /
+  C5:2020 → 2026.
+
+**Sprint 6 — LOW (2 FTE-d)**
+- **M6 Seed-Review-Queue** (`f5118e39`): `/compliance/mapping/seed-review`
+  listet alle maschinell erstellten Mappings (`verifiedBy` matches
+  `app:seed-*`, `consultant_template_import`, `csv_import_ui*`,
+  `mapping_wizard`, `app:migrate-framework-version`) mit
+  `reviewStatus='unreviewed'`. Approve/Reject pro Zeile, Filter nach
+  Herkunft. Audit-Antwort auf *"wer hat das Mapping gemacht?"*.
+- **R6 Reuse-Heatmap** (`d9603404`): `/reuse/heatmap` rendert alle
+  wiederverwendeten Dokumente + Lieferanten als farbige Kacheln in 5
+  Buckets (grau → gelb → orange → rot) via normierter Ratio gegen
+  Max-Wert. Thematisiert Monokultur-Risiko.
+
+**Bug-Fix post-audit (`328c93eb`)**: M1-Wizard griff via `$fw->id`
+direkt auf die private Eigenschaft der `ComplianceFramework`-Entity zu
+(Commit `2a2bc51f` hatte die Property-Hooks entfernt). Umgestellt
+auf `getId()`.
+
 #### Audit-v2.2 Residual-Closure + BSI Kompendium 2023 vollständig (2026-04-20 / 04-21)
 
 Letzte Nice-to-haves + BSI-Vollständigkeit aus Audit-v2.2 Residual-Liste.
