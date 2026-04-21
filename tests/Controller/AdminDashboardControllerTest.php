@@ -7,7 +7,9 @@ use App\Entity\AuditLog;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\AuditLogRepository;
+use App\Repository\ControlRepository;
 use App\Repository\UserRepository;
+use App\Service\ModuleConfigurationService;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
@@ -31,6 +33,8 @@ class AdminDashboardControllerTest extends TestCase
     private MockObject $entityManager;
     private MockObject $userRepository;
     private MockObject $auditLogRepository;
+    private MockObject $controlRepository;
+    private MockObject $moduleConfiguration;
     private MockObject $logger;
     private MockObject $container;
     private MockObject $tokenStorage;
@@ -43,6 +47,8 @@ class AdminDashboardControllerTest extends TestCase
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->userRepository = $this->createMock(UserRepository::class);
         $this->auditLogRepository = $this->createMock(AuditLogRepository::class);
+        $this->controlRepository = $this->createMock(ControlRepository::class);
+        $this->moduleConfiguration = $this->createMock(ModuleConfigurationService::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->container = $this->createMock(ContainerInterface::class);
         $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
@@ -67,6 +73,8 @@ class AdminDashboardControllerTest extends TestCase
             $this->entityManager,
             $this->userRepository,
             $this->auditLogRepository,
+            $this->controlRepository,
+            $this->moduleConfiguration,
             $this->logger
         );
         $this->controller->setContainer($this->container);

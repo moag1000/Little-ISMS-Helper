@@ -156,14 +156,13 @@
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
     /* — Alva-CSS-Custom-Properties (für Logo-SVG und zentralen Character) —
-       alva-fg = Kopf/Körper-Fill (bright in Dark, dark in Light)
-       alva-ink = INVERSE (dark in Dark, light in Light) damit Face-Features
-                  auf dem Kopf-Fill IMMER sichtbar sind. */
+       Fee hat IMMER hellen Körper + dunkle Augen/Mund in beiden Modi.
+       (Kein var(--fg)/var(--bg) mehr — das würde mitinvertieren.) */
     --alva-primary: var(--primary);
     --alva-accent:  var(--accent);
     --alva-aura:    var(--fairy-aura);
-    --alva-fg:      var(--fg);
-    --alva-ink:     var(--bg);
+    --alva-fg:      #f4f7ff;  /* fast-weiß für Body/Kopf */
+    --alva-ink:     #1e1b4b;  /* Aurora-dark-navy für Face-Features */
 }
 
 /* ═══════════════════════════════════════════════════════════════════
