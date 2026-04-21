@@ -190,3 +190,11 @@
 #flash-messages:not([data-skip-toast]) .alert {
     display: none;
 }
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

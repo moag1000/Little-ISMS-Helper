@@ -126,7 +126,7 @@
     width: 90%;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: var(--shadow-lg), 0 0 30px rgba(6, 182, 212, 0.3);
+    box-shadow: var(--shadow-lg), 0 0 30px var(--primary-glow);
     position: relative;
     z-index: 1001;
     transform: scale(0.9);
@@ -208,7 +208,7 @@
     background: var(--bg-elevated);
     border-radius: var(--border-radius);
     padding: var(--spacing-md) var(--spacing-lg);
-    box-shadow: var(--shadow-lg), 0 0 20px rgba(6, 182, 212, 0.3);
+    box-shadow: var(--shadow-lg), 0 0 20px var(--primary-glow);
     min-width: 300px;
     max-width: 400px;
     pointer-events: all;
@@ -238,13 +238,13 @@
 .notification-error {
     border-color: var(--color-danger);
     background: linear-gradient(135deg, #fee2e2 0%, #f8d7da 100%);
-    box-shadow: var(--shadow-lg), 0 0 20px rgba(239, 68, 68, 0.3);
+    box-shadow: var(--shadow-lg), 0 0 20px var(--danger-glow);
 }
 
 .notification-warning {
     border-color: var(--color-warning);
     background: linear-gradient(135deg, #fef3c7 0%, #fff3cd 100%);
-    box-shadow: var(--shadow-lg), 0 0 20px rgba(245, 158, 11, 0.3);
+    box-shadow: var(--shadow-lg), 0 0 20px var(--warning-glow);
 }
 
 .notification-info {
@@ -667,7 +667,7 @@
 
 .sla-progress-bar.sla-at-risk {
     background: linear-gradient(90deg, var(--warning) 0%, #d97706 100%);
-    box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 0 10px var(--warning-glow);
 }
 
 .sla-progress-bar.sla-critical {
@@ -677,18 +677,18 @@
 
 .sla-progress-bar.sla-overdue {
     background: linear-gradient(90deg, var(--danger) 0%, var(--danger) 100%);
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+    box-shadow: 0 0 10px var(--danger-glow);
     animation: sla-pulse 2s ease-in-out infinite;
 }
 
 @keyframes sla-pulse {
     0%, 100% {
         opacity: 1;
-        box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+        box-shadow: 0 0 10px var(--danger-glow);
     }
     50% {
         opacity: 0.8;
-        box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+        box-shadow: 0 0 20px var(--danger-glow);
     }
 }
 
