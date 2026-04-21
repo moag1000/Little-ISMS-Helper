@@ -68,7 +68,7 @@
 
 .skeleton-card {
     padding: var(--spacing-lg);
-    background: var(--bg-elevated);
+    background: var(--surface);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
 }
@@ -86,10 +86,10 @@
     align-items: center;
     gap: var(--spacing-md);
     padding: var(--spacing-lg);
-    background: var(--bg-elevated);
+    background: var(--surface);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
-    border-left: 4px solid var(--color-border);
+    border-left: 4px solid var(--border);
 }
 
 .skeleton-kpi-icon {
@@ -111,7 +111,7 @@
     display: flex;
     gap: var(--spacing-md);
     padding: var(--spacing-md);
-    border-bottom: 1px solid var(--color-border-light);
+    border-bottom: 1px solid var(--border);
 }
 
 .skeleton-table-cell {
@@ -130,7 +130,7 @@
     align-items: center;
     gap: var(--spacing-md);
     padding: var(--spacing-md) 0;
-    border-bottom: 1px solid var(--color-border-light);
+    border-bottom: 1px solid var(--border);
 }
 
 /* Grid Skeleton */
@@ -148,13 +148,13 @@
     justify-content: center;
     padding: var(--spacing-2xl);
     text-align: center;
-    color: var(--color-text-muted);
+    color: var(--fg-3);
 }
 
 .skeleton-error i {
     font-size: 48px;
     margin-bottom: var(--spacing-md);
-    color: var(--color-danger);
+    color: var(--danger);
 }
 
 .skeleton-error p {
@@ -190,9 +190,9 @@
 .skeleton-light {
     background: linear-gradient(
         90deg,
-        var(--bg-elevated) 0%,
-        var(--bg-secondary) 50%,
-        var(--bg-elevated) 100%
+        var(--surface) 0%,
+        var(--bg) 50%,
+        var(--surface) 100%
     );
     background-size: 200% 100%;
 }

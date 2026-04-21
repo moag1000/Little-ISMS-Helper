@@ -10,11 +10,11 @@
     left: 50%;
     transform: translateX(-50%) translateY(20px);
     z-index: 1000;
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+    background: linear-gradient(135deg, var(--fg) 0%, var(--fg-2) 100%);
     color: white;
     border-radius: var(--border-radius-lg);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4), 0 0 30px rgba(6, 182, 212, 0.4);
-    border: 2px solid var(--color-secondary);
+    border: 2px solid var(--primary);
     padding: var(--spacing-lg) var(--spacing-xl);
     display: flex;
     align-items: center;
@@ -97,7 +97,7 @@
 }
 
 .bulk-action-btn-danger {
-    background: var(--color-danger);
+    background: var(--danger);
 }
 
 .bulk-action-btn-danger:hover {
@@ -105,7 +105,7 @@
 }
 
 .bulk-action-btn-success {
-    background: var(--color-success);
+    background: var(--success);
 }
 
 .bulk-action-btn-success:hover {
@@ -137,12 +137,12 @@ input[type="checkbox"][data-action*="selectAll"] {
     width: 18px;
     height: 18px;
     cursor: pointer;
-    accent-color: var(--color-secondary);
+    accent-color: var(--primary);
 }
 
 /* Indeterminate state (for select all) */
 input[type="checkbox"]:indeterminate {
-    accent-color: var(--color-warning);
+    accent-color: var(--warning);
 }
 
 /* Table with bulk selection */
@@ -182,7 +182,7 @@ input[type="checkbox"]:indeterminate {
 
 /* Badge for selected count in header */
 .bulk-selected-badge {
-    background: var(--color-secondary);
+    background: var(--primary);
     color: white;
     font-size: 0.75rem;
     font-weight: 600;

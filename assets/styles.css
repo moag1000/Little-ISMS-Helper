@@ -17,10 +17,7 @@
 @import './styles/analytics.css';
 @import './styles/guided-tour.css';
 
-/* FairyAurora Bridge — MUST load LAST (overrides legacy :root tokens) */
-@import './styles/fairy-aurora-bridge.css';
-
-/* FairyAurora Components — Aurora-Primitives (Brand, CyberButton, CyberInput, Status-Pill) */
+/* FairyAurora Components — Aurora-Primitives + migrated Bridge rules */
 @import './styles/fairy-aurora-components.css';
 
 /* FairyAurora Alva — 9-Mood-Character-Engine */

@@ -27,10 +27,10 @@
 
 /* Container */
 .command-palette-container {
-    background: var(--bg-elevated);
+    background: var(--surface);
     border-radius: 12px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px var(--primary-glow);
-    border: 2px solid var(--color-secondary);
+    border: 2px solid var(--primary);
     width: 640px;
     max-width: 90vw;
     max-height: 70vh;
@@ -70,14 +70,14 @@
     display: flex;
     align-items: center;
     padding: 16px 20px;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--border);
     gap: 12px;
 }
 
 .command-palette-search-icon {
     font-size: 20px;
-    color: var(--color-secondary);
-    text-shadow: var(--glow-cyan);
+    color: var(--primary);
+    text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
 .command-palette-input {
@@ -85,22 +85,22 @@
     border: none;
     outline: none;
     font-size: 16px;
-    color: var(--color-text);
+    color: var(--fg);
     background: transparent;
 }
 
 .command-palette-input::placeholder {
-    color: var(--color-text-muted);
+    color: var(--fg-3);
 }
 
 .command-palette-hint {
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
+    background: var(--bg);
+    border: 1px solid var(--border);
     border-radius: 4px;
     padding: 4px 8px;
     font-size: 11px;
     font-weight: 600;
-    color: var(--color-text-muted);
+    color: var(--fg-3);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", monospace;
 }
 
@@ -127,7 +127,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--color-text-muted);
+    color: var(--fg-3);
 }
 
 /* Command Item - Cyberpunk Style */
@@ -151,7 +151,7 @@
     top: 0;
     bottom: 0;
     width: 3px;
-    background: linear-gradient(180deg, var(--color-secondary), var(--color-accent-purple));
+    background: linear-gradient(180deg, var(--primary), var(--accent));
     opacity: 0;
     transition: opacity 0.15s ease;
 }
@@ -164,7 +164,7 @@
 .command-item:hover,
 .command-item.selected {
     background: linear-gradient(90deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.05));
-    border-color: var(--color-secondary);
+    border-color: var(--primary);
     box-shadow: 0 0 15px var(--primary-glow);
 }
 
@@ -173,8 +173,8 @@
 }
 
 .command-item.selected .command-item-icon {
-    color: var(--color-secondary);
-    text-shadow: var(--glow-cyan);
+    color: var(--primary);
+    text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
 .command-item-content {
@@ -185,7 +185,7 @@
 
 .command-item-icon {
     font-size: 16px;
-    color: var(--color-text-light);
+    color: var(--fg-2);
     transition: color 0.1s ease;
 }
 
@@ -201,7 +201,7 @@
     align-items: center;
     justify-content: center;
     padding: 48px 24px;
-    color: var(--color-text-muted);
+    color: var(--fg-3);
     text-align: center;
 }
 
@@ -224,27 +224,27 @@
 /* Footer */
 .command-palette-footer {
     padding: 12px 20px;
-    border-top: 1px solid var(--color-border);
-    background: var(--color-bg);
+    border-top: 1px solid var(--border);
+    background: var(--bg);
 }
 
 .command-palette-shortcuts {
     display: flex;
     gap: 20px;
     font-size: 12px;
-    color: var(--color-text-muted);
+    color: var(--fg-3);
 }
 
 .command-palette-shortcuts kbd {
     background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(236, 72, 153, 0.1));
-    border: 1px solid var(--color-secondary);
+    border: 1px solid var(--primary);
     border-radius: 3px;
     padding: 2px 6px;
     font-size: 11px;
     font-weight: 600;
     margin: 0 2px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", monospace;
-    color: var(--color-secondary);
+    color: var(--primary);
     box-shadow: 0 0 8px var(--primary-glow);
 }
 
@@ -263,12 +263,12 @@
 }
 
 .command-palette-results::-webkit-scrollbar-thumb {
-    background: var(--color-border);
+    background: var(--border);
     border-radius: 4px;
 }
 
 .command-palette-results::-webkit-scrollbar-thumb:hover {
-    background: var(--color-text-muted);
+    background: var(--fg-3);
 }
 
 /* Responsive */

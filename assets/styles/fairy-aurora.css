@@ -7,7 +7,7 @@
  * wenn [data-theme="system"] oder kein data-theme gesetzt ist.
  *
  * Diese Datei darf KEINE Selektoren enthalten, die auf konkrete Komponenten
- * zielen — nur Token-Definitionen. Legacy-Aliasing in fairy-aurora-bridge.css.
+ * zielen — nur Token-Definitionen. Komponenten-Regeln in fairy-aurora-components.css.
  */
 
 /* ═══════════════════════════════════════════════════════════════════
