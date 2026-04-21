@@ -162,6 +162,24 @@
                 </div>
             </a>
         </div>
+
+        {% if is_granted('ROLE_MANAGER') %}
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ path('app_compliance_mapping_import') }}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="h5">
+                            <i class="bi bi-file-earmark-arrow-up text-primary" aria-hidden="true"></i>
+                            {{ 'compliance.mapping.hub.action.import.title'|trans({}, 'compliance') }}
+                        </div>
+                        <p class="small text-body mb-0">
+                            {{ 'compliance.mapping.hub.action.import.desc'|trans({}, 'compliance') }}
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endif %}
     </div>
 
     {# Letzte 5 Mappings #}

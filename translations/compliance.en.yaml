@@ -145,6 +145,42 @@ compliance:
     mapping:
         confirm:
             delete: 'Are you sure you want to delete this mapping?'
+        import:
+            title: 'CSV mapping import'
+            description: 'Upload a consultant mapping table — with dry-run preview before commit.'
+            spec:
+                title: 'CSV spec'
+                intro: 'UTF-8, RFC 4180 compatible. BOM tolerated.'
+                required: 'Required columns: source_requirement_id, target_requirement_id, mapping_type'
+                types: 'Mapping types: full, partial, weak, exceeds (percentage auto-derived)'
+                optional: 'Optional: mapping_percentage, confidence (low/medium/high), bidirectional (true/false), rationale'
+                idempotent: 'Import is idempotent — existing source/target pairs are skipped.'
+            field:
+                source: 'Source framework'
+                target: 'Target framework'
+                pair_hint: 'One framework pair per file.'
+                file: 'CSV file'
+                file_hint: 'Max 2 MB. UTF-8 recommended.'
+            action:
+                preview: 'Dry-run (preview)'
+                commit: 'Import'
+            error:
+                frameworks_required: 'Please select source and target framework.'
+                same_framework: 'Source and target framework must differ.'
+                file_required: 'Please choose a CSV file.'
+                file_invalid: 'File upload failed.'
+                file_too_large: 'File too large (max 2 MB).'
+                file_empty: 'File is empty or unreadable.'
+            result:
+                preview: 'Preview (not saved yet)'
+                committed: 'Import completed'
+                processed: 'Processed'
+                created: 'Created'
+                skipped_existing: 'Skipped (existing)'
+                skipped_missing: 'Missing requirement'
+                errors_heading: 'Errors (%count%)'
+                warnings_heading: 'Warnings (%count%)'
+                preview_ok_hint: 'Preview OK — re-upload and press "Import" to persist the data.'
         hub:
             title: 'Mapping Hub'
             subtitle: 'Entry point for cross-framework mappings — wizard, seed packs, quality, transitive coverage.'
@@ -174,6 +210,9 @@ compliance:
                 reuse:
                     title: 'Data-Reuse Hub'
                     desc: 'Which documents and suppliers cover the most frameworks?'
+                import:
+                    title: 'CSV import'
+                    desc: 'Upload consultant mapping tables with dry-run preview.'
             recent:
                 heading: 'Recently updated mappings'
                 all_link: 'Show all'
