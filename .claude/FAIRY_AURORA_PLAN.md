@@ -199,11 +199,16 @@ Während der Migration werden folgende Inkonsistenzen **mitgezogen**:
 | **4** | Alva-Character (SVG-Port, 9 Moods, zentralisierter Mount, Mood-Trigger-Regeln) | 3,0 | 1 |
 | **5** | Setup-Wizard-Redesign (Left-Panel + Typewriter + TechBackdrop + Flow-Array, 12 Steps) | 4,0 | 1, 2, 4 |
 | **6** | Login-Seite + weitere Auth-Flows (Password-Reset, 2FA-Challenge, Verify-Email) | 2,0 | 1, 2, 4 |
-| **7** | **Universal-Coverage-Sweep** — Audit aller Templates (489+), Inline-Hex-Werte migrieren, Outlier fixen, Chart.js-Farben + Stimulus-Controller-inline-styles | 3,0 | 1-6 |
+| **7** | **Universal-Coverage-Sweep** — Audit aller Templates (489+), Inline-Hex-Werte migrieren, Outlier fixen, Chart.js-Farben + Stimulus-Controller-inline-styles | 2,5 | 1-6 |
 | **8** | **Responsive-Sweep** — Breakpoints, Off-Canvas-Drawer, Topbar-Kollaps, KPI-Grid-Reflow, Table-Scroll, Form-1-col-Fallback | 2,0 | 3 |
 | **9** | **Charts + Dropdowns + Skeleton + Stepper** — Chart.js-Theme, Bell/⌘K/User-Menu/Tenant-Switch-Dropdowns, Skeleton-Loader, horizontaler Stepper (Incident/DPIA/Risk-Treatment) | 2,0 | 2 |
-| **10** | **Tour + Error-Pages + Email + Print** — Guided-Tour-Overlay-Reskin, 404/500/403, Email-Template-Header, `@media print` Neutral-Fallback | 1,5 | 2, 4 |
-| **Total** | | **36,0** | |
+| **10** | **Tour + Error-Pages + Email + Print** — Guided-Tour-Overlay-Reskin, 404/500/403, Email-Template-Header (22 Templates inkl. `emails/base.html.twig`-Layer), `@media print` Neutral-Fallback | 6,0 | 2, 4 |
+| **Total** | | **40,5** | |
+
+**Hinweis (2026-04-21 Agent-Inventur-Revision):**
+- FA-7 (Universal-Sweep): ursprünglich 3,0 FTE-d → 2,5 nach Inventur-Befund (138 Templates, echte Hot-Spots nur 5 Files).
+- FA-10 (Email): ursprünglich 1,5 FTE-d → 6,0 nach Inventur (22 Email-Templates + fehlendes `emails/base.html.twig`-Master-Layout; 3 Templates derzeit broken durch leeres Extend).
+- Inventuren in `.claude/fairy-aurora/` versioniert.
 
 **Realistisch:** 5-6 Kalenderwochen mit Feedback-Zyklen.
 
