@@ -1,0 +1,255 @@
+/*
+ * FairyAurora v3.0 — Alva Character CSS (9 Moods, Animations, Decorations)
+ *
+ * Geladen durch assets/styles.css. Nutzt ausschließlich CSS-Custom-Properties
+ * aus fairy-aurora.css (keine Hex-Farben, außer zwei Confetti/Blush-Pink).
+ *
+ * Jede Mood-Klasse schaltet Aura-Farben, Bob-Animation, Wing-Flap,
+ * Face-Visibility und Decorations. Alle Animationen respektieren
+ * prefers-reduced-motion.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   Root Container
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-alva {
+    display: inline-block;
+    position: relative;
+    line-height: 0;
+}
+.fa-alva svg { width: 100%; height: 100%; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Face-Visibility (9 Moods) — alle rendern, CSS zeigt eine
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-alva__face { display: none; }
+
+.fa-alva--idle        .fa-alva__face--idle        { display: block; }
+.fa-alva--thinking    .fa-alva__face--thinking    { display: block; }
+.fa-alva--warning     .fa-alva__face--warning     { display: block; }
+.fa-alva--happy       .fa-alva__face--happy       { display: block; }
+.fa-alva--celebrating .fa-alva__face--happy       { display: block; } /* reuse happy */
+.fa-alva--focused     .fa-alva__face--focused     { display: block; }
+.fa-alva--scanning    .fa-alva__face--scanning    { display: block; }
+.fa-alva--working     .fa-alva__face--working     { display: block; }
+.fa-alva--sleeping    .fa-alva__face--sleeping    { display: block; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Decorations-Visibility
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-alva__deco { display: none; }
+
+.fa-alva--sleeping    .fa-alva__deco--sleeping    { display: block; }
+.fa-alva--thinking    .fa-alva__deco--thinking    { display: block; }
+.fa-alva--warning     .fa-alva__deco--warning     { display: block; }
+.fa-alva--happy       .fa-alva__deco--happy       { display: block; }
+.fa-alva--celebrating .fa-alva__deco--celebrating { display: block; }
+.fa-alva--focused     .fa-alva__deco--focused     { display: block; }
+.fa-alva--working     .fa-alva__deco--working     { display: block; }
+
+/* Scan-Line nur für scanning-mood */
+.fa-alva__scan { display: none; }
+.fa-alva--scanning .fa-alva__scan { display: block; animation: fa-alva-scan 1.8s linear infinite; }
+
+/* Wand bei sleeping versteckt */
+.fa-alva--sleeping .fa-alva__wand { display: none; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Aura-Color-Tokens per Mood (radialGradient <stop>-class-basiert)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-alva__aura-inner { stop-color: var(--fairy-aura); stop-opacity: 0.55; }
+.fa-alva__aura-mid   { stop-color: var(--fairy-aura); stop-opacity: 0.165; }
+.fa-alva__aura-outer { stop-color: var(--fairy-aura); stop-opacity: 0; }
+
+.fa-alva--thinking   .fa-alva__aura-inner { stop-color: var(--primary);  stop-opacity: 0.45; }
+.fa-alva--thinking   .fa-alva__aura-mid   { stop-color: var(--primary);  stop-opacity: 0.135; }
+.fa-alva--thinking   .fa-alva__aura-outer { stop-color: var(--primary);  stop-opacity: 0; }
+
+.fa-alva--focused    .fa-alva__aura-inner { stop-color: var(--primary);  stop-opacity: 0.65; }
+.fa-alva--focused    .fa-alva__aura-mid   { stop-color: var(--primary);  stop-opacity: 0.195; }
+.fa-alva--focused    .fa-alva__aura-outer { stop-color: var(--primary);  stop-opacity: 0; }
+
+.fa-alva--scanning   .fa-alva__aura-inner { stop-color: var(--fairy-aura); stop-opacity: 0.7; }
+.fa-alva--scanning   .fa-alva__aura-mid   { stop-color: var(--fairy-aura); stop-opacity: 0.21; }
+
+.fa-alva--warning    .fa-alva__aura-inner { stop-color: var(--warning);  stop-opacity: 0.75; }
+.fa-alva--warning    .fa-alva__aura-mid   { stop-color: var(--warning);  stop-opacity: 0.225; }
+.fa-alva--warning    .fa-alva__aura-outer { stop-color: var(--warning);  stop-opacity: 0; }
+
+.fa-alva--happy      .fa-alva__aura-inner { stop-color: var(--accent);   stop-opacity: 0.72; }
+.fa-alva--happy      .fa-alva__aura-mid   { stop-color: var(--accent);   stop-opacity: 0.216; }
+.fa-alva--happy      .fa-alva__aura-outer { stop-color: var(--accent);   stop-opacity: 0; }
+
+.fa-alva--celebrating .fa-alva__aura-inner { stop-color: #ec4899; stop-opacity: 0.85; }
+.fa-alva--celebrating .fa-alva__aura-mid   { stop-color: #ec4899; stop-opacity: 0.255; }
+.fa-alva--celebrating .fa-alva__aura-outer { stop-color: #ec4899; stop-opacity: 0; }
+
+.fa-alva--working    .fa-alva__aura-inner { stop-color: var(--accent);   stop-opacity: 0.6; }
+.fa-alva--working    .fa-alva__aura-mid   { stop-color: var(--accent);   stop-opacity: 0.18; }
+.fa-alva--working    .fa-alva__aura-outer { stop-color: var(--accent);   stop-opacity: 0; }
+
+.fa-alva--sleeping   .fa-alva__aura-inner { stop-color: var(--fairy-aura); stop-opacity: 0.35; }
+.fa-alva--sleeping   .fa-alva__aura-mid   { stop-color: var(--fairy-aura); stop-opacity: 0.105; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Aura-Pulse (+ warning schneller)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-alva__aura {
+    transform-origin: 60px 62px;
+    animation: fa-alva-aura-pulse 3s ease-in-out infinite;
+}
+.fa-alva--warning     .fa-alva__aura { animation: fa-alva-aura-pulse 0.8s ease-in-out infinite; }
+.fa-alva--idle        .fa-alva__aura { transform: scale(1); }
+.fa-alva--thinking    .fa-alva__aura { transform: scale(0.9); }
+.fa-alva--sleeping    .fa-alva__aura { transform: scale(0.85); }
+.fa-alva--warning     .fa-alva__aura { transform: scale(1.15); }
+.fa-alva--happy       .fa-alva__aura { transform: scale(1.1); }
+.fa-alva--focused     .fa-alva__aura { transform: scale(0.95); }
+.fa-alva--scanning    .fa-alva__aura { transform: scale(1.05); }
+.fa-alva--celebrating .fa-alva__aura { transform: scale(1.2); }
+.fa-alva--working     .fa-alva__aura { transform: scale(1); }
+
+@keyframes fa-alva-aura-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.6; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Body-Bob (per Mood unterschiedliche Animation)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-alva--idle        .fa-alva__bob { animation: fa-alva-breathe 3s   ease-in-out infinite; }
+.fa-alva--thinking    .fa-alva__bob { animation: fa-alva-tilt    4s   ease-in-out infinite; }
+.fa-alva--sleeping    .fa-alva__bob { animation: fa-alva-sleep   5s   ease-in-out infinite; }
+.fa-alva--warning     .fa-alva__bob { animation: fa-alva-shake   0.5s ease-in-out infinite; }
+.fa-alva--happy       .fa-alva__bob { animation: fa-alva-bounce  1.2s ease-in-out infinite; }
+.fa-alva--focused     .fa-alva__bob { animation: fa-alva-breathe 6s   ease-in-out infinite; }
+.fa-alva--scanning    .fa-alva__bob { animation: fa-alva-breathe 2.5s ease-in-out infinite; }
+.fa-alva--celebrating .fa-alva__bob { animation: fa-alva-bounce  0.6s ease-in-out infinite; }
+.fa-alva--working     .fa-alva__bob { animation: fa-alva-work    1.4s ease-in-out infinite; }
+
+@keyframes fa-alva-breathe { 0%,100% { transform: translateY(0); }          50% { transform: translateY(-2px); } }
+@keyframes fa-alva-tilt    { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-1.5px) rotate(1deg); } }
+@keyframes fa-alva-sleep   { 0%,100% { transform: translateY(0) rotate(6deg); }  50% { transform: translateY(-1px) rotate(6deg); } }
+@keyframes fa-alva-shake   { 0%,100% { transform: translate(0,0); } 25% { transform: translate(-1.5px,-1px); } 75% { transform: translate(1.5px,-1px); } }
+@keyframes fa-alva-bounce  { 0%,100% { transform: translateY(0); }          50% { transform: translateY(-5px); } }
+@keyframes fa-alva-work    { 0%,100% { transform: translateY(0) rotate(-0.5deg); } 50% { transform: translateY(-1.5px) rotate(0.5deg); } }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Wings-Flap (per Mood Speed-Variation)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-alva__wings { animation: fa-alva-flap 1.1s ease-in-out infinite; }
+.fa-alva--sleeping    .fa-alva__wings { animation: none; }
+.fa-alva--celebrating .fa-alva__wings { animation: fa-alva-flap 0.18s ease-in-out infinite; }
+.fa-alva--happy       .fa-alva__wings { animation: fa-alva-flap 0.35s ease-in-out infinite; }
+.fa-alva--warning     .fa-alva__wings { animation: fa-alva-flap 0.2s  ease-in-out infinite; }
+@keyframes fa-alva-flap { 0%,100% { transform: scaleX(1); } 50% { transform: scaleX(0.82); } }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Head-Tilt (thinking / sleeping)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-alva--thinking .fa-alva__head { transform: rotate(-8deg); }
+.fa-alva--sleeping .fa-alva__head { transform: rotate(10deg); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Wand-Halo-Pulse
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-alva--celebrating .fa-alva__wand-halo { animation: fa-alva-wand-pop   0.5s ease-in-out infinite; }
+.fa-alva--warning     .fa-alva__wand-halo { animation: fa-alva-wand-alert 0.6s ease-in-out infinite; }
+@keyframes fa-alva-wand-pop   { 0%,100% { transform: scale(1); opacity: 0.25; } 50% { transform: scale(2);   opacity: 0.6; } }
+@keyframes fa-alva-wand-alert { 0%,100% { transform: scale(1); opacity: 0.3; }  50% { transform: scale(1.4); opacity: 0.7; } }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Scan-Line (scanning mood)
+   ═══════════════════════════════════════════════════════════════════ */
+
+@keyframes fa-alva-scan {
+    0%   { transform: translateY(-20px); }
+    100% { transform: translateY(140px); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Decorations-Animations
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ZZZ (sleeping) */
+.fa-alva__zzz { animation: fa-alva-zzz 2.5s ease-in-out infinite; }
+.fa-alva__zzz--2 { animation-delay: 0.4s; }
+.fa-alva__zzz--3 { animation-delay: 0.8s; }
+@keyframes fa-alva-zzz {
+    0%   { opacity: 0; transform: translateY(4px); }
+    50%  { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-4px); }
+}
+
+/* Thinking ? */
+.fa-alva__deco--thinking { animation: fa-alva-think 1.8s ease-in-out infinite; }
+@keyframes fa-alva-think {
+    0%,100% { opacity: 0.4; transform: translateY(0); }
+    50%     { opacity: 1;   transform: translateY(-2px); }
+}
+
+/* Warning Alert-Triangle-Blink */
+.fa-alva__deco--warning { animation: fa-alva-alert-blink 0.5s ease-in-out infinite; }
+@keyframes fa-alva-alert-blink {
+    0%,100% { opacity: 1; }
+    50%     { opacity: 0.35; }
+}
+
+/* Happy Sparkles */
+.fa-alva__sparkle { animation: fa-alva-sparkle 1.5s ease-in-out infinite; transform-origin: center; }
+.fa-alva__sparkle--2 { animation-delay: 0.5s; }
+.fa-alva__sparkle--3 { animation-delay: 1s; }
+@keyframes fa-alva-sparkle {
+    0%,100% { opacity: 0.3; transform: scale(0.8); }
+    50%     { opacity: 1;   transform: scale(1.1); }
+}
+
+/* Celebrating Confetti */
+.fa-alva__deco--celebrating { animation: fa-alva-confetti 0.8s ease-out infinite; }
+@keyframes fa-alva-confetti {
+    0%   { opacity: 0; transform: translateY(-4px); }
+    40%  { opacity: 1; }
+    100% { opacity: 0; transform: translateY(8px); }
+}
+
+/* Focused Reticle-Rotation */
+.fa-alva__reticle { animation: fa-alva-reticle 8s linear infinite; }
+@keyframes fa-alva-reticle { to { transform: rotate(360deg); } }
+
+/* Working Cogs */
+.fa-alva__cog--lg { animation: fa-alva-spin     2s linear infinite; }
+.fa-alva__cog--sm { animation: fa-alva-spin-rev 3s linear infinite; }
+@keyframes fa-alva-spin     { to { transform: rotate(360deg); } }
+@keyframes fa-alva-spin-rev { to { transform: rotate(-360deg); } }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Reduced-Motion — alle Animationen deaktivieren, Poses behalten
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+    .fa-alva *,
+    .fa-alva__bob,
+    .fa-alva__wings,
+    .fa-alva__aura,
+    .fa-alva__zzz,
+    .fa-alva__sparkle,
+    .fa-alva__reticle,
+    .fa-alva__cog--lg,
+    .fa-alva__cog--sm,
+    .fa-alva__wand-halo,
+    .fa-alva__scan,
+    .fa-alva__deco--thinking,
+    .fa-alva__deco--warning,
+    .fa-alva__deco--celebrating {
+        animation: none !important;
+    }
+}

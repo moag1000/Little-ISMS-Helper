@@ -1,5 +1,5 @@
 {#
- # FairyAurora v3.0 — Alva Character Component (zentralisierter Mount)
+ # FairyAurora v3.0 — Alva Character (9-Mood-SVG-Engine)
  #
  # Usage:
  #   {% import '_components/_alva.html.twig' as alva %}
@@ -7,24 +7,21 @@
  #   {{ alva.render('warning', { size: 80 }) }}
  #   {{ alva.render(mood, { size: 120, ariaLabel: 'Alva prüft die Daten' }) }}
  #
- # Moods (FA-2: minimal Implementation, FA-4 bringt volle 9-Mood-Engine):
+ # Moods:
  #   idle | happy | thinking | focused | working | scanning | warning | celebrating | sleeping
  #
- # Props:
- #   mood: (required, 1st arg) — Fallback auf 'idle'
- #   size: Pixel (default 100)
- #   ariaLabel: Screen-Reader-Label (default aus i18n alva.mood.{mood})
- #   decorative: boolean — aria-hidden statt Label (default false)
- #   class: zusätzliche CSS-Classes
+ # Aura, Face, Wings, Wand + mood-spezifische Decorations sind alle SVG-inline.
+ # Die CSS-Klasse .fa-alva--{mood} am Root toggelt Animationen via assets/styles/alva.css.
  #
- # A11y: respektiert prefers-reduced-motion (statisch statt breathing).
+ # Port aus `assets/Little ISMS Helper Design System/states/FairyCharacter.jsx`.
  #}
 
 {% macro render(mood = 'idle', props = {}) %}
-    {% set validMoods = ['idle', 'happy', 'thinking', 'focused', 'working', 'scanning', 'warning', 'celebrating', 'sleeping'] %}
+    {% set validMoods = ['idle','happy','thinking','focused','working','scanning','warning','celebrating','sleeping'] %}
     {% set m = mood in validMoods ? mood : 'idle' %}
-    {% set size = props.size|default(100) %}
+    {% set size = props.size|default(120) %}
     {% set decorative = props.decorative|default(false) %}
+    {% set uid = 'a' ~ random(999999) %}
     {% set classAttr = 'fa-alva fa-alva--' ~ m ~ (props.class is defined ? ' ' ~ props.class : '') %}
 
     <div class="{{ classAttr }}"
@@ -32,7 +29,191 @@
          {% if decorative %}aria-hidden="true"
          {% else %}role="img" aria-label="{{ props.ariaLabel|default(('alva.mood.' ~ m)|trans({}, 'messages'))|default('Alva') }}"
          {% endif %}>
-        {# FA-4 ersetzt diesen <img> durch dynamische SVG-Keyframe-Engine mit 9 Moods #}
-        <img src="{{ asset('logo.svg') }}" alt="" width="{{ size }}" height="{{ size }}" aria-hidden="true">
+        <svg viewBox="0 0 120 120" fill="none" style="display:block;overflow:visible;width:100%;height:100%;">
+            <defs>
+                <radialGradient id="fcAura-{{ uid }}" cx="50%" cy="55%" r="55%">
+                    <stop offset="0%"   class="fa-alva__aura-inner"/>
+                    <stop offset="55%"  class="fa-alva__aura-mid"/>
+                    <stop offset="100%" class="fa-alva__aura-outer"/>
+                </radialGradient>
+                <linearGradient id="fcWingL-{{ uid }}" x1="1" y1="0" x2="0" y2="1">
+                    <stop offset="0%"   stop-color="var(--primary)" stop-opacity="0.85"/>
+                    <stop offset="100%" stop-color="var(--accent)"  stop-opacity="0.3"/>
+                </linearGradient>
+                <linearGradient id="fcWingR-{{ uid }}" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%"   stop-color="var(--primary)" stop-opacity="0.85"/>
+                    <stop offset="100%" stop-color="var(--accent)"  stop-opacity="0.3"/>
+                </linearGradient>
+                <clipPath id="fcClip-{{ uid }}"><rect x="0" y="0" width="120" height="120"/></clipPath>
+            </defs>
+
+            {# Aura #}
+            <circle class="fa-alva__aura" cx="60" cy="62" r="56" fill="url(#fcAura-{{ uid }})"/>
+
+            {# Scan-Line (nur mood=scanning sichtbar via CSS) #}
+            <g class="fa-alva__scan" clip-path="url(#fcClip-{{ uid }})">
+                <rect x="0" width="120" height="1.5" fill="var(--fairy-aura)" opacity="0.9"/>
+                <rect x="0" width="120" height="18" fill="var(--fairy-aura)" opacity="0.12"/>
+            </g>
+
+            {# Body-Bob-Gruppe #}
+            <g class="fa-alva__bob" style="transform-origin:60px 60px;">
+                {# Wings #}
+                <g class="fa-alva__wings" style="transform-origin:60px 58px;">
+                    <path d="M55 50 Q20 30 14 54 Q16 72 44 66 Q52 62 55 52 Z"
+                          fill="url(#fcWingL-{{ uid }})" stroke="var(--primary)" stroke-width="0.6" stroke-opacity="0.5"/>
+                    <path d="M65 50 Q100 30 106 54 Q104 72 76 66 Q68 62 65 52 Z"
+                          fill="url(#fcWingR-{{ uid }})" stroke="var(--primary)" stroke-width="0.6" stroke-opacity="0.5"/>
+                    <path d="M56 64 Q34 72 32 86 Q40 92 54 82 Q58 76 56 66 Z"
+                          fill="url(#fcWingL-{{ uid }})" opacity="0.6"/>
+                    <path d="M64 64 Q86 72 88 86 Q80 92 66 82 Q62 76 64 66 Z"
+                          fill="url(#fcWingR-{{ uid }})" opacity="0.6"/>
+                    <circle cx="28" cy="52" r="1.1" fill="var(--accent)" opacity="0.75"/>
+                    <circle cx="92" cy="52" r="1.1" fill="var(--accent)" opacity="0.75"/>
+                </g>
+
+                {# Body #}
+                <path d="M60 44 Q64.5 46 64.5 54 Q63 58 63 62 Q64.5 66 64 74 Q62 80 60 82 Q58 80 56 74 Q55.5 66 57 62 Q57 58 55.5 54 Q55.5 46 60 44 Z"
+                      fill="var(--fg)" opacity="0.92" stroke="rgba(30,27,75,0.45)" stroke-width="0.4"/>
+
+                {# Head + Crown + Face #}
+                <g class="fa-alva__head" style="transform-origin:60px 39px;">
+                    <ellipse cx="60" cy="39" rx="7.5" ry="8.5" fill="var(--fg)" opacity="0.97" stroke="rgba(30,27,75,0.45)" stroke-width="0.4"/>
+                    <path d="M54 36 Q50 32 48 28" stroke="var(--primary)" stroke-width="0.8" stroke-linecap="round" fill="none" opacity="0.65"/>
+                    <path d="M66 36 Q70 32 72 28" stroke="var(--primary)" stroke-width="0.8" stroke-linecap="round" fill="none" opacity="0.65"/>
+                    <path d="M54 32.5 Q60 29.5 66 32.5" stroke="var(--accent)" stroke-width="0.7" stroke-linecap="round" fill="none" opacity="0.75"/>
+                    <circle cx="60" cy="30" r="0.9" fill="var(--accent)" opacity="0.9"/>
+
+                    {# Face per mood — alle gerendert, CSS zeigt nur aktive #}
+                    {# IDLE / default #}
+                    <g class="fa-alva__face fa-alva__face--idle">
+                        <circle cx="57" cy="38" r="1.15" fill="var(--alva-ink)" opacity="0.92"/>
+                        <circle cx="63" cy="38" r="1.15" fill="var(--alva-ink)" opacity="0.92"/>
+                        <path d="M57.3 42.2 Q60 43.7 62.7 42.2" stroke="var(--alva-ink)" stroke-width="0.7" stroke-linecap="round" fill="none" opacity="0.85"/>
+                    </g>
+                    {# THINKING #}
+                    <g class="fa-alva__face fa-alva__face--thinking">
+                        <circle cx="57" cy="37.5" r="1.15" fill="var(--alva-ink)" opacity="0.92"/>
+                        <circle cx="63" cy="37.5" r="1.15" fill="var(--alva-ink)" opacity="0.92"/>
+                        <circle cx="60" cy="42.5" r="0.7" fill="var(--alva-ink)" opacity="0.7"/>
+                    </g>
+                    {# WARNING #}
+                    <g class="fa-alva__face fa-alva__face--warning">
+                        <circle cx="57" cy="38" r="1.5" fill="var(--alva-ink)" opacity="0.95"/>
+                        <circle cx="63" cy="38" r="1.5" fill="var(--alva-ink)" opacity="0.95"/>
+                        <line x1="58" y1="42.5" x2="62" y2="42.5" stroke="var(--alva-ink)" stroke-width="0.8" stroke-linecap="round"/>
+                    </g>
+                    {# HAPPY / CELEBRATING #}
+                    <g class="fa-alva__face fa-alva__face--happy">
+                        <path d="M55.5 38.5 Q57 37 58.5 38.5" stroke="var(--alva-ink)" stroke-width="0.9" stroke-linecap="round" fill="none"/>
+                        <path d="M61.5 38.5 Q63 37 64.5 38.5" stroke="var(--alva-ink)" stroke-width="0.9" stroke-linecap="round" fill="none"/>
+                        <path d="M56.5 41.5 Q60 44.5 63.5 41.5" stroke="var(--alva-ink)" stroke-width="0.9" stroke-linecap="round" fill="none"/>
+                        <circle cx="54" cy="40" r="1.6" fill="#ec4899" opacity="0.3"/>
+                        <circle cx="66" cy="40" r="1.6" fill="#ec4899" opacity="0.3"/>
+                    </g>
+                    {# FOCUSED #}
+                    <g class="fa-alva__face fa-alva__face--focused">
+                        <path d="M55 38 L59 38" stroke="var(--alva-ink)" stroke-width="1.2" stroke-linecap="round"/>
+                        <path d="M61 38 L65 38" stroke="var(--alva-ink)" stroke-width="1.2" stroke-linecap="round"/>
+                        <path d="M58.5 42.3 Q60 42.8 61.5 42.3" stroke="var(--alva-ink)" stroke-width="0.7" stroke-linecap="round" fill="none"/>
+                    </g>
+                    {# SCANNING #}
+                    <g class="fa-alva__face fa-alva__face--scanning">
+                        <circle cx="57" cy="38" r="1.15" fill="var(--alva-ink)" opacity="0.92"/>
+                        <circle cx="63" cy="38" r="1.15" fill="var(--alva-ink)" opacity="0.92"/>
+                        <circle cx="57" cy="38" r="2.2" stroke="var(--fairy-aura)" stroke-width="0.3" fill="none" opacity="0.6"/>
+                        <circle cx="63" cy="38" r="2.2" stroke="var(--fairy-aura)" stroke-width="0.3" fill="none" opacity="0.6"/>
+                        <path d="M57.3 42.2 Q60 43.2 62.7 42.2" stroke="var(--alva-ink)" stroke-width="0.7" stroke-linecap="round" fill="none" opacity="0.85"/>
+                    </g>
+                    {# WORKING #}
+                    <g class="fa-alva__face fa-alva__face--working">
+                        <circle cx="57" cy="38" r="1.15" fill="var(--alva-ink)" opacity="0.92"/>
+                        <circle cx="63" cy="38" r="1.15" fill="var(--alva-ink)" opacity="0.92"/>
+                        <path d="M58.5 42.2 Q60 43.5 61.5 42.2" stroke="var(--alva-ink)" stroke-width="0.7" stroke-linecap="round" fill="none"/>
+                        <circle cx="60" cy="43" r="0.5" fill="#ec4899" opacity="0.6"/>
+                    </g>
+                    {# SLEEPING #}
+                    <g class="fa-alva__face fa-alva__face--sleeping">
+                        <path d="M55.5 38.2 Q57 39.2 58.5 38.2" stroke="var(--alva-ink)" stroke-width="0.8" stroke-linecap="round" fill="none"/>
+                        <path d="M61.5 38.2 Q63 39.2 64.5 38.2" stroke="var(--alva-ink)" stroke-width="0.8" stroke-linecap="round" fill="none"/>
+                        <path d="M58.2 42.4 Q60 43 61.8 42.4" stroke="var(--alva-ink)" stroke-width="0.6" stroke-linecap="round" fill="none" opacity="0.7"/>
+                    </g>
+                </g>
+
+                {# Wand (bei sleeping versteckt via CSS) #}
+                <g class="fa-alva__wand">
+                    <line x1="55" y1="70" x2="36" y2="90" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="round"/>
+                    <circle cx="36" cy="90" r="2.8" fill="var(--accent)"/>
+                    <circle class="fa-alva__wand-halo" cx="36" cy="90" r="5" fill="var(--accent)" opacity="0.25"/>
+                </g>
+            </g>
+
+            {# Mood-spezifische Decorations (außerhalb Bob-Gruppe) #}
+            {# SLEEPING: z z z #}
+            <g class="fa-alva__deco fa-alva__deco--sleeping">
+                <text class="fa-alva__zzz fa-alva__zzz--1" x="74" y="30" font-size="10" font-weight="600" fill="var(--fg)" opacity="0.7" font-family="monospace">z</text>
+                <text class="fa-alva__zzz fa-alva__zzz--2" x="82" y="22" font-size="8"  font-weight="600" fill="var(--fg)" opacity="0.5" font-family="monospace">z</text>
+                <text class="fa-alva__zzz fa-alva__zzz--3" x="88" y="16" font-size="6"  font-weight="600" fill="var(--fg)" opacity="0.35" font-family="monospace">z</text>
+            </g>
+
+            {# THINKING: ? bubble #}
+            <g class="fa-alva__deco fa-alva__deco--thinking">
+                <circle cx="78" cy="24" r="6" fill="var(--primary-tint)" stroke="var(--primary)" stroke-opacity="0.5" stroke-width="0.6"/>
+                <text x="75" y="27.5" font-size="7" font-weight="700" fill="var(--primary)" font-family="sans-serif">?</text>
+            </g>
+
+            {# WARNING: alert triangle #}
+            <g class="fa-alva__deco fa-alva__deco--warning">
+                <path d="M84 16 L96 36 L72 36 Z" fill="var(--warning)" stroke="var(--alva-ink)" stroke-width="0.5" stroke-linejoin="round"/>
+                <text x="82" y="32" font-size="9" font-weight="800" fill="var(--alva-ink)" font-family="sans-serif">!</text>
+            </g>
+
+            {# HAPPY: sparkles #}
+            <g class="fa-alva__deco fa-alva__deco--happy">
+                <text class="fa-alva__sparkle fa-alva__sparkle--1" x="92" y="32" font-size="10" fill="var(--accent)" opacity="0.9" font-family="monospace">✦</text>
+                <text class="fa-alva__sparkle fa-alva__sparkle--2" x="16" y="36" font-size="7"  fill="var(--accent)" opacity="0.7" font-family="monospace">✦</text>
+                <text class="fa-alva__sparkle fa-alva__sparkle--3" x="94" y="68" font-size="5"  fill="var(--primary)" opacity="0.7" font-family="monospace">✦</text>
+            </g>
+
+            {# CELEBRATING: confetti #}
+            <g class="fa-alva__deco fa-alva__deco--celebrating">
+                <rect x="20" y="18" width="3" height="7" fill="#ec4899" transform="rotate(20 21 21)"/>
+                <rect x="96" y="26" width="3" height="7" fill="var(--warning)" transform="rotate(-30 97 29)"/>
+                <rect x="30" y="10" width="2.5" height="6" fill="var(--primary)" transform="rotate(45 31 13)"/>
+                <rect x="88" y="14" width="2.5" height="6" fill="var(--accent)" transform="rotate(-15 89 17)"/>
+                <circle cx="14" cy="52" r="1.5" fill="#ec4899"/>
+                <circle cx="104" cy="44" r="1.5" fill="var(--fairy-aura)"/>
+                <text x="100" y="100" font-size="10" fill="var(--accent)">✦</text>
+                <text x="14"  y="100" font-size="10" fill="#ec4899">✦</text>
+            </g>
+
+            {# FOCUSED: reticle #}
+            <g class="fa-alva__deco fa-alva__deco--focused">
+                <circle class="fa-alva__reticle" cx="60" cy="60" r="36" stroke="var(--primary)" stroke-width="0.6" stroke-dasharray="2 3" opacity="0.5" fill="none" style="transform-origin:60px 60px;"/>
+                <line x1="60" y1="20" x2="60" y2="26"  stroke="var(--primary)" stroke-width="0.8" opacity="0.7"/>
+                <line x1="60" y1="94" x2="60" y2="100" stroke="var(--primary)" stroke-width="0.8" opacity="0.7"/>
+                <line x1="20" y1="60" x2="26" y2="60"  stroke="var(--primary)" stroke-width="0.8" opacity="0.7"/>
+                <line x1="94" y1="60" x2="100" y2="60" stroke="var(--primary)" stroke-width="0.8" opacity="0.7"/>
+            </g>
+
+            {# WORKING: spinning cogs #}
+            <g class="fa-alva__deco fa-alva__deco--working">
+                <g class="fa-alva__cog fa-alva__cog--lg" style="transform-origin:105px 50px;">
+                    <circle cx="105" cy="50" r="4" stroke="var(--accent)" stroke-width="0.7" fill="none"/>
+                    <line x1="105" y1="45" x2="105" y2="47" stroke="var(--accent)" stroke-width="0.8"/>
+                    <line x1="105" y1="53" x2="105" y2="55" stroke="var(--accent)" stroke-width="0.8"/>
+                    <line x1="100" y1="50" x2="102" y2="50" stroke="var(--accent)" stroke-width="0.8"/>
+                    <line x1="108" y1="50" x2="110" y2="50" stroke="var(--accent)" stroke-width="0.8"/>
+                    <circle cx="105" cy="50" r="1" fill="var(--accent)"/>
+                </g>
+                <g class="fa-alva__cog fa-alva__cog--sm" style="transform-origin:14px 74px;">
+                    <circle cx="14" cy="74" r="3" stroke="var(--primary)" stroke-width="0.6" fill="none"/>
+                    <line x1="14" y1="70" x2="14" y2="72" stroke="var(--primary)" stroke-width="0.7"/>
+                    <line x1="14" y1="76" x2="14" y2="78" stroke="var(--primary)" stroke-width="0.7"/>
+                    <line x1="10" y1="74" x2="12" y2="74" stroke="var(--primary)" stroke-width="0.7"/>
+                    <line x1="16" y1="74" x2="18" y2="74" stroke="var(--primary)" stroke-width="0.7"/>
+                </g>
+            </g>
+        </svg>
     </div>
 {% endmacro %}

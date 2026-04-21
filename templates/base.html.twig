@@ -201,6 +201,15 @@
                     {% include '_components/_notification_bell.html.twig' %}
                 {% endif %}
 
+                {# FairyAurora Alva-Topbar-Mount (zentralisierter Mood-Anchor) #}
+                {% if not is_setup_route %}
+                    {% import '_components/_alva.html.twig' as faAlva %}
+                    <span class="header-alva d-none d-md-inline-flex"
+                          data-current-mood="{{ alva_mood|default('idle') }}">
+                        {{ faAlva.render(alva_mood|default('idle'), { size: 32, decorative: false })|raw }}
+                    </span>
+                {% endif %}
+
                 {# FairyAurora System-Status-Pill (Topbar) #}
                 {% if not is_setup_route %}
                     <span class="header-system-status d-none d-lg-inline-flex">

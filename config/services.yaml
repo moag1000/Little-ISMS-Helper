@@ -92,6 +92,10 @@ services:
             $projectDir: '%kernel.project_dir%'
         tags: ['twig.extension']
 
+    # FairyAurora v3.0 — Alva-Mood-Resolver (Server-seitig, Plan § 6)
+    App\Twig\AlvaMoodExtension:
+        tags: ['twig.extension']
+
     # Configure Data Import Service
     App\Service\DataImportService:
         arguments:

@@ -22,3 +22,6 @@
 
 /* FairyAurora Components — Aurora-Primitives (Brand, CyberButton, CyberInput, Status-Pill) */
 @import './styles/fairy-aurora-components.css';
+
+/* FairyAurora Alva — 9-Mood-Character-Engine */
+@import './styles/alva.css';
