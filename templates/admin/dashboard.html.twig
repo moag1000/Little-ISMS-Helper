@@ -95,44 +95,72 @@
             {% endembed %}
         </div>
 
-        {# Database Size Card #}
+        {# Framework-Ladezustand (Sprint 11) — ersetzt DB-Size. Semantische Färbung:
+         # grün wenn alle universal pflichtigen geladen, sonst warning. #}
+        {% set _fw_variant = stats.compliance.frameworks_loaded >= stats.compliance.frameworks_catalog ? 'success' : (stats.compliance.frameworks_loaded > 0 ? 'warning' : 'danger') %}
         <div class="col-md-6 col-lg-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'border-info h-100' } %}
+            {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ _fw_variant ~ ' h-100' } %}
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <div class="text-muted small fw-semibold mb-2">{{ 'admin.dashboard.stats.database'|trans({}, 'admin') }}</div>
-                            <div class="fs-2 fw-bold">{{ stats.database.size_mb }}</div>
+                            <div class="text-muted small fw-semibold mb-2">{{ 'admin.dashboard.stats.frameworks'|trans({}, 'admin') }}</div>
+                            <div class="fs-2 fw-bold text-{{ _fw_variant }}">
+                                {{ stats.compliance.frameworks_loaded }}<small class="text-muted fs-6"> / {{ stats.compliance.frameworks_catalog }}</small>
+                            </div>
                         </div>
-                        <div class="bg-info bg-opacity-10 p-3 rounded">
-                            <i class="bi bi-database-fill text-info fs-3" aria-hidden="true"></i>
+                        <div class="bg-{{ _fw_variant }} bg-opacity-10 p-3 rounded">
+                            <i class="bi bi-clipboard-check text-{{ _fw_variant }} fs-3" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="small text-muted">
-                        <i class="bi bi-file-earmark-binary" aria-hidden="true"></i> MB
+                        <i class="bi bi-diagram-2" aria-hidden="true"></i>
+                        {{ 'admin.dashboard.stats.mappings_count'|trans({'%count%': stats.compliance.mappings_total}, 'admin') }}
+                    </div>
+                {% endblock %}
+                {% block card_footer %}
+                    <div class="card-footer bg-transparent border-top-0">
+                        <a href="{{ path('admin_compliance_index') }}" class="btn btn-sm btn-outline-{{ _fw_variant }} w-100">
+                            {{ 'admin.dashboard.stats.manage'|trans({}, 'admin') }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                        </a>
                     </div>
                 {% endblock %}
             {% endembed %}
         </div>
 
-        {# Modules Overview Card #}
+        {# Unreviewed Seed-Mappings (Sprint 11) — ersetzt Total-Records. Rot wenn > 0. #}
+        {% set _review_variant = stats.compliance.unreviewed_seed_mappings == 0 ? 'success' : (stats.compliance.unreviewed_seed_mappings < 10 ? 'warning' : 'danger') %}
         <div class="col-md-6 col-lg-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'border-warning h-100' } %}
+            {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ _review_variant ~ ' h-100' } %}
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <div class="text-muted small fw-semibold mb-2">{{ 'admin.dashboard.stats.total_records'|trans({}, 'admin') }}</div>
-                            <div class="fs-2 fw-bold">
-                                {{ stats.modules.assets.total + stats.modules.risks.total + stats.modules.controls.total + stats.modules.incidents.total }}
+                            <div class="text-muted small fw-semibold mb-2">{{ 'admin.dashboard.stats.unreviewed_mappings'|trans({}, 'admin') }}</div>
+                            <div class="fs-2 fw-bold text-{{ _review_variant }}">
+                                {{ stats.compliance.unreviewed_seed_mappings }}
                             </div>
                         </div>
-                        <div class="bg-warning bg-opacity-10 p-3 rounded">
-                            <i class="bi bi-layers-fill text-warning fs-3" aria-hidden="true"></i>
+                        <div class="bg-{{ _review_variant }} bg-opacity-10 p-3 rounded">
+                            <i class="bi bi-person-check text-{{ _review_variant }} fs-3" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="small text-muted">
-                        <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'admin.dashboard.stats.across_modules'|trans({}, 'admin') }}
+                        {% if stats.workflows.open > 0 %}
+                            <i class="bi bi-kanban" aria-hidden="true"></i>
+                            {{ 'admin.dashboard.stats.workflows_open'|trans({'%count%': stats.workflows.open}, 'admin') }}
+                        {% else %}
+                            <i class="bi bi-check-all text-success" aria-hidden="true"></i>
+                            {{ 'admin.dashboard.stats.workflows_none'|trans({}, 'admin') }}
+                        {% endif %}
                     </div>
+                {% endblock %}
+                {% block card_footer %}
+                    {% if stats.compliance.unreviewed_seed_mappings > 0 %}
+                        <div class="card-footer bg-transparent border-top-0">
+                            <a href="{{ path('app_compliance_mapping_seed_review') }}" class="btn btn-sm btn-outline-{{ _review_variant }} w-100">
+                                {{ 'admin.dashboard.stats.review_now'|trans({}, 'admin') }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    {% endif %}
                 {% endblock %}
             {% endembed %}
         </div>
@@ -265,7 +293,8 @@
 
         {# Recent Activity & Quick Actions #}
         <div class="col-lg-4">
-            {# Quick Actions #}
+            {# Quick Actions (Sprint 11) — kontextabhängig: nur zeigen was gerade
+             # relevant ist, plus immer-sinnvolle Power-User-Shortcuts. #}
             {% embed '_components/_card.html.twig' with {
                 'title': 'admin.dashboard.quick_actions.title',
                 'titleDomain': 'admin',
@@ -274,17 +303,38 @@
             } %}
                 {% block card_body %}
                     <div class="d-grid gap-2">
+                        {# Kontext-Actions — nur bei Bedarf sichtbar #}
+                        {% if stats.compliance.unreviewed_seed_mappings > 0 %}
+                            <a href="{{ path('app_compliance_mapping_seed_review') }}" class="btn btn-warning">
+                                <i class="bi bi-person-check" aria-hidden="true"></i>
+                                {{ 'admin.dashboard.quick_actions.review_seeds'|trans({'%count%': stats.compliance.unreviewed_seed_mappings}, 'admin') }}
+                            </a>
+                        {% endif %}
+                        {% if stats.compliance.frameworks_missing > 0 %}
+                            <a href="{{ path('admin_compliance_index') }}" class="btn btn-outline-warning">
+                                <i class="bi bi-cloud-arrow-down" aria-hidden="true"></i>
+                                {{ 'admin.dashboard.quick_actions.load_frameworks'|trans({'%count%': stats.compliance.frameworks_missing}, 'admin') }}
+                            </a>
+                        {% endif %}
+                        {% if stats.users.inactive > 0 %}
+                            <a href="{{ path('user_management_index') }}" class="btn btn-outline-warning">
+                                <i class="bi bi-person-x" aria-hidden="true"></i>
+                                {{ 'admin.dashboard.quick_actions.review_inactive_users'|trans({'%count%': stats.users.inactive}, 'admin') }}
+                            </a>
+                        {% endif %}
+
+                        {# Standard-Shortcuts — immer sichtbar #}
                         <a href="{{ path('user_management_new') }}" class="btn btn-outline-primary">
                             <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.add_user'|trans({}, 'admin') }}
                         </a>
-                        <a href="{{ path('role_management_new') }}" class="btn btn-outline-success">
-                            <i class="bi bi-shield-plus" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.add_role'|trans({}, 'admin') }}
+                        <a href="{{ path('tenant_management_index') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-building-add" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_tenants'|trans({}, 'admin') }}
+                        </a>
+                        <a href="{{ path('admin_compliance_index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_compliance'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('app_audit_log_index') }}" class="btn btn-outline-info">
                             <i class="bi bi-journal-text" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.view_logs'|trans({}, 'admin') }}
-                        </a>
-                        <a href="{{ path('app_compliance_index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_compliance'|trans({}, 'admin') }}
                         </a>
                     </div>
                 {% endblock %}
