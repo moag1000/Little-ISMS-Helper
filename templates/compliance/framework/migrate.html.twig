@@ -1,0 +1,224 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'compliance.framework.migrate.title'|trans({}, 'compliance') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index') },
+            { label: 'compliance.mapping.hub.title'|trans({}, 'compliance'), url: path('app_compliance_mapping_hub') },
+            { label: old_framework.code ~ ' · ' ~ ('compliance.framework.migrate.title'|trans({}, 'compliance')) }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-signpost-split" aria-hidden="true"></i>
+                {{ 'compliance.framework.migrate.title'|trans({}, 'compliance') }}
+            </h1>
+            <p class="text-muted mb-0">
+                {{ 'compliance.framework.migrate.description'|trans({
+                    '%framework%': old_framework.code ~ ' — ' ~ old_framework.name
+                }, 'compliance') }}
+            </p>
+        </div>
+    </div>
+
+    <div class="alert alert-info small">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'compliance.framework.migrate.intro'|trans({}, 'compliance') }}
+    </div>
+
+    {% if error is not null %}
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            {{ error|trans({}, 'compliance') }}
+        </div>
+    {% endif %}
+
+    <form method="post"
+          action="{{ path('app_compliance_framework_migrate', {id: old_framework.id}) }}"
+          class="card shadow-sm mb-3">
+        <input type="hidden" name="_token" value="{{ csrf_token('framework_migrate_' ~ old_framework.id) }}">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">{{ 'compliance.framework.migrate.field.old'|trans({}, 'compliance') }}</label>
+                    <input type="text" class="form-control" value="{{ old_framework.code }} — {{ old_framework.name }} ({{ old_framework.version|default('—') }})" disabled>
+                </div>
+                <div class="col-md-6">
+                    <label for="target-framework-id" class="form-label">
+                        {{ 'compliance.framework.migrate.field.target'|trans({}, 'compliance') }}
+                    </label>
+                    <select id="target-framework-id" name="target_framework_id" class="form-select" required>
+                        <option value="">—</option>
+                        {% for fw in candidates %}
+                            <option value="{{ fw.id }}" {% if fw.id == target_id %}selected{% endif %}>
+                                {{ fw.code }} — {{ fw.name }} ({{ fw.version|default('—') }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row g-3 mt-2">
+                <div class="col-md-6">
+                    <label class="form-label d-block">
+                        {{ 'compliance.framework.migrate.field.strategy'|trans({}, 'compliance') }}
+                    </label>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" id="strategy-id" name="strategy" value="id" class="form-check-input"
+                               {% if strategy == 'id' %}checked{% endif %}>
+                        <label for="strategy-id" class="form-check-label">
+                            {{ 'compliance.framework.migrate.strategy.id'|trans({}, 'compliance') }}
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" id="strategy-title" name="strategy" value="title" class="form-check-input"
+                               {% if strategy == 'title' %}checked{% endif %}>
+                        <label for="strategy-title" class="form-check-label">
+                            {{ 'compliance.framework.migrate.strategy.title'|trans({}, 'compliance') }}
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" id="strategy-both" name="strategy" value="both" class="form-check-input"
+                               {% if strategy == 'both' %}checked{% endif %}>
+                        <label for="strategy-both" class="form-check-label">
+                            {{ 'compliance.framework.migrate.strategy.both'|trans({}, 'compliance') }}
+                        </label>
+                    </div>
+                    <div class="form-text">
+                        {{ 'compliance.framework.migrate.strategy.hint'|trans({}, 'compliance') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex gap-2 justify-content-between">
+            <a href="{{ path('app_compliance_mapping_hub') }}" class="btn btn-outline-secondary">
+                {{ 'common.cancel'|trans({}, 'messages') }}
+            </a>
+            <div class="d-flex gap-2">
+                <button type="submit" name="commit" value="0" class="btn btn-outline-primary">
+                    <i class="bi bi-eye" aria-hidden="true"></i>
+                    {{ 'compliance.framework.migrate.action.preview'|trans({}, 'compliance') }}
+                </button>
+                <button type="submit" name="commit" value="1" class="btn btn-primary">
+                    <i class="bi bi-check-circle" aria-hidden="true"></i>
+                    {{ 'compliance.framework.migrate.action.commit'|trans({}, 'compliance') }}
+                </button>
+            </div>
+        </div>
+    </form>
+
+    {% if result is not null %}
+        <div class="card shadow-sm mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <strong>
+                    {% if was_commit %}
+                        <i class="bi bi-check2-circle text-success" aria-hidden="true"></i>
+                        {{ 'compliance.framework.migrate.result.committed'|trans({}, 'compliance') }}
+                    {% else %}
+                        <i class="bi bi-eye text-primary" aria-hidden="true"></i>
+                        {{ 'compliance.framework.migrate.result.preview'|trans({}, 'compliance') }}
+                    {% endif %}
+                </strong>
+                <span class="small text-muted">
+                    {{ result.source.code }} → {{ result.target.code }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row g-2 mb-3">
+                    <div class="col-6 col-md-3">
+                        <div class="border rounded p-2 text-center">
+                            <div class="small text-muted">{{ 'compliance.framework.migrate.result.matched'|trans({}, 'compliance') }}</div>
+                            <div class="h4 mb-0 text-success">{{ result.matched|length }}</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="border rounded p-2 text-center {% if result.unmatched|length > 0 %}border-warning{% endif %}">
+                            <div class="small text-muted">{{ 'compliance.framework.migrate.result.unmatched'|trans({}, 'compliance') }}</div>
+                            <div class="h4 mb-0 {% if result.unmatched|length > 0 %}text-warning{% endif %}">{{ result.unmatched|length }}</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="border rounded p-2 text-center">
+                            <div class="small text-muted">{{ 'compliance.framework.migrate.result.created'|trans({}, 'compliance') }}</div>
+                            <div class="h4 mb-0 text-primary">{{ result.bridges_created }}</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="border rounded p-2 text-center">
+                            <div class="small text-muted">{{ 'compliance.framework.migrate.result.skipped_existing'|trans({}, 'compliance') }}</div>
+                            <div class="h4 mb-0">{{ result.bridges_skipped_existing }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if result.matched|length > 0 %}
+                    <h3 class="h6 text-success mb-2">
+                        {{ 'compliance.framework.migrate.result.matched_heading'|trans({}, 'compliance') }}
+                    </h3>
+                    <div class="table-responsive" style="max-height: 400px;">
+                        <table class="table table-sm table-striped small mb-3">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ result.source.code }}</th>
+                                    <th></th>
+                                    <th>{{ result.target.code }}</th>
+                                    <th>{{ 'compliance.framework.migrate.result.via'|trans({}, 'compliance') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for m in result.matched %}
+                                    <tr>
+                                        <td><code>{{ m.source_id }}</code> {{ m.source_title|u.truncate(60, '…') }}</td>
+                                        <td class="text-muted">→</td>
+                                        <td><code>{{ m.target_id }}</code> {{ m.target_title|u.truncate(60, '…') }}</td>
+                                        <td><span class="badge text-bg-light border">{{ m.via }}</span></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+
+                {% if result.unmatched|length > 0 %}
+                    <h3 class="h6 text-warning mb-2">
+                        {{ 'compliance.framework.migrate.result.unmatched_heading'|trans({}, 'compliance') }}
+                    </h3>
+                    <div class="table-responsive" style="max-height: 300px;">
+                        <table class="table table-sm table-striped small mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ 'compliance.framework.migrate.result.req_id'|trans({}, 'compliance') }}</th>
+                                    <th>{{ 'compliance.framework.migrate.result.req_title'|trans({}, 'compliance') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for u in result.unmatched %}
+                                    <tr>
+                                        <td><code>{{ u.source_id }}</code></td>
+                                        <td>{{ u.source_title|u.truncate(120, '…') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="small text-muted mt-2">
+                        {{ 'compliance.framework.migrate.result.unmatched_hint'|trans({}, 'compliance') }}
+                    </div>
+                {% endif %}
+
+                {% if not was_commit and result.bridges_created > 0 %}
+                    <div class="alert alert-info small mt-3 mb-0">
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        {{ 'compliance.framework.migrate.result.preview_ok_hint'|trans({}, 'compliance') }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

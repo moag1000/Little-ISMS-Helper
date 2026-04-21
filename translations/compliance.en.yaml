@@ -350,6 +350,40 @@ compliance:
         no_mapping: __compliance.badge.no_mapping
         overdue: __compliance.badge.overdue
     framework:
+        migrate:
+            title: 'Migrate framework version'
+            description: 'Bridge mappings from %framework% to the new version — transitive coverage without re-linking.'
+            intro: 'The assistant finds matching requirement pairs by ID or title and creates bidirectional bridge mappings. Existing mappings stay untouched — the run is idempotent.'
+            field:
+                old: 'Old version'
+                target: 'New version'
+                strategy: 'Matching strategy'
+            strategy:
+                id: 'Requirement ID (default)'
+                title: 'Title exact match'
+                both: 'ID then title (fallback)'
+                hint: 'Default "ID" works for structurally identical versions (e.g. ISO 27001:2013 → 2022 A.5.1 stays A.5.1). Title fallback handles renumbering.'
+            action:
+                preview: 'Dry-run (preview)'
+                commit: 'Create bridges'
+            error:
+                target_required: 'Please select target framework.'
+                same_framework: 'Target and source framework must differ.'
+                invalid_strategy: 'Invalid matching strategy.'
+            result:
+                preview: 'Preview (not saved yet)'
+                committed: 'Migration completed'
+                matched: 'Matched'
+                unmatched: 'Unmatched'
+                created: 'Bridges created'
+                skipped_existing: 'Skipped (existing)'
+                matched_heading: 'Matched requirements'
+                unmatched_heading: 'Unmatched requirements'
+                unmatched_hint: 'These requirements do not exist with matching ID/title in the new version. Check whether they were renamed, removed, or restructured.'
+                via: 'Match via'
+                req_id: 'ID'
+                req_title: 'Title'
+                preview_ok_hint: 'Preview OK — press "Create bridges" to persist the links.'
         edit:
             title: __compliance.framework.edit.title
             heading: __compliance.framework.edit.heading
