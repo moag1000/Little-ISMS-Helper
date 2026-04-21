@@ -1,187 +1,127 @@
 {% extends 'setup/_layout.html.twig' %}
+{% trans_default_domain 'setup' %}
 {% set active_step = 'frameworks' %}
 
-{% block title %}{{ 'setup.compliance.title'|trans({}, 'setup') }} - Deployment Wizard{% endblock %}
+{% block title %}{{ 'setup.compliance.title'|trans({}, 'setup') }}{% endblock %}
 
-{% block step_head %}
-    {{ parent() }}
-    {# Disable Turbo cache to ensure CSRF tokens are always fresh #}
-    <meta name="turbo-cache-control" content="no-cache">
-{% endblock %}
-
-{# Macro: rendert eine Framework-Karte im Wizard-3-Bucket-Layout.
- # Muss top-level definiert sein, damit import via expliziter Pfad aus
- # embed-Blöcken heraus zuverlässig funktioniert. #}
+{# Macro: rendert eine Framework-Karte im Aurora-Bucket-Layout.
+ # Nutzt fa-toggle-card-Pattern mit Symfony-Form-Widget im Inneren. #}
 {% macro framework_card(child, framework, classification, bucket) %}
-    {% set variant = bucket == 'mandatory' ? 'danger' : (bucket == 'recommended' ? 'warning' : 'secondary') %}
-    <div class="col-md-6 mb-3">
-        {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-' ~ variant } %}
-            {% block card_body %}
-                <div class="form-check">
-                    {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
-                    {{ form_label(child, null, {'label_attr': {'class': 'form-check-label fw-bold'}}) }}
+    {% set bucketTone = bucket == 'mandatory' ? 'danger' : (bucket == 'recommended' ? 'warning' : 'neutral') %}
+    <label class="fa-toggle-card fa-toggle-card--bucket fa-toggle-card--bucket-{{ bucket }}"
+           for="{{ child.vars.id }}">
+        {{ form_widget(child, {'attr': {'class': 'fa-toggle-card__input'}}) }}
+        <span class="fa-toggle-card__box" aria-hidden="true">
+            <svg viewBox="0 0 14 14" width="10" height="10" fill="none">
+                <path d="M2 7 L6 11 L12 3" stroke="currentColor" stroke-width="2.5"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </span>
+        <div class="fa-toggle-card__body">
+            <div class="fa-toggle-card__title">
+                {{ framework.icon }} {{ framework.name }}
+            </div>
+            <div class="fa-toggle-card__sub">{{ framework.description }}</div>
+            {% if classification[framework.code] is defined and classification[framework.code].reason_key %}
+                <div class="fa-toggle-card__reason">
+                    <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                    <strong>{{ ('setup.applicability.bucket.' ~ bucket ~ '.why')|trans({}, 'setup') }}:</strong>
+                    {{ classification[framework.code].reason_key|trans({}, 'setup') }}
                 </div>
-                <small class="text-muted d-block mt-2">{{ framework.description }}</small>
-                {% if classification[framework.code] is defined and classification[framework.code].reason_key %}
-                    <div class="small mt-2 p-2 rounded bg-light border">
-                        <i class="bi bi-lightbulb text-warning" aria-hidden="true"></i>
-                        <strong>{{ ('setup.applicability.bucket.' ~ bucket ~ '.why')|trans({}, 'setup') }}:</strong>
-                        {{ classification[framework.code].reason_key|trans({}, 'setup') }}
-                    </div>
-                {% endif %}
-            {% endblock %}
-        {% endembed %}
-    </div>
+            {% endif %}
+        </div>
+    </label>
 {% endmacro %}
 
 {% block step_content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            {# Flash Messages #}
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                        {{ message|raw }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'setup.common.close'|trans({}, 'setup') }}"></button>
-                    </div>
-                {% endfor %}
+    {% import '_components/_step_header.html.twig' as step_header %}
+    {% import '_components/_alert.html.twig' as faAlert %}
+    {% import '_components/_status_pill.html.twig' as pill %}
+    {% import '_components/_cyber_button.html.twig' as btn %}
+    {% import _self as wizard %}
+
+    {% for label, messages in app.flashes %}
+        {% set tone = label == 'success' ? 'success' : (label in ['error','danger'] ? 'danger' : (label == 'warning' ? 'warning' : 'info')) %}
+        {% for message in messages %}
+            {{ faAlert.render(message|raw, tone, { dismissible: true })|raw }}
+        {% endfor %}
+    {% endfor %}
+
+    {{ step_header.render(9, 12, step.kind, 'setup.compliance.header'|trans({}, 'setup'), 'setup.compliance.description'|trans({}, 'setup'))|raw }}
+
+    {{ faAlert.render(
+        'setup.applicability.intro.description'|trans({}, 'setup'),
+        'info',
+        { title: 'setup.applicability.intro.title'|trans({}, 'setup'), icon: 'bi-info-circle' }
+    )|raw }}
+
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'fa-setup-form'}}) }}
+
+    {# 🔴 MANDATORY #}
+    {% if mandatory_codes|length > 0 %}
+        <div class="fa-setup-bucket-header">
+            {{ pill.render('🔴 ' ~ 'setup.applicability.bucket.mandatory.label'|trans({}, 'setup'), 'danger', { size: 'sm', noDot: true })|raw }}
+            <span class="fa-setup-bucket-hint">{{ 'setup.applicability.bucket.mandatory.hint'|trans({}, 'setup') }}</span>
+        </div>
+        <div class="fa-toggle-card-grid">
+            {% for child in form.frameworks %}
+                {% if child.vars.value in mandatory_codes %}
+                    {% for framework in available_frameworks|filter(f => f.code == child.vars.value) %}
+                        {{ wizard.framework_card(child, framework, classification, 'mandatory') }}
+                    {% endfor %}
+                {% endif %}
             {% endfor %}
+        </div>
+    {% endif %}
 
-            {# Progress Bar #}
-            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h4 class="mb-0">{{ 'setup.progress.title'|trans({}, 'setup') }}</h4>
-                        <small class="text-muted">{{ 'setup.progress.step_of'|trans({'%current%': 8, '%total%': 11}, 'setup') }}</small>
-                    </div>
-                    <div class="progress" style="height: 10px;">
-                        <div class="progress-bar" role="progressbar" style="width: 70%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+    {# 🟡 RECOMMENDED #}
+    {% if recommended_codes|length > 0 %}
+        <div class="fa-setup-bucket-header">
+            {{ pill.render('🟡 ' ~ 'setup.applicability.bucket.recommended.label'|trans({}, 'setup'), 'warning', { size: 'sm', noDot: true })|raw }}
+            <span class="fa-setup-bucket-hint">{{ 'setup.applicability.bucket.recommended.hint'|trans({}, 'setup') }}</span>
+        </div>
+        <div class="fa-toggle-card-grid">
+            {% for child in form.frameworks %}
+                {% if child.vars.value in recommended_codes %}
+                    {% for framework in available_frameworks|filter(f => f.code == child.vars.value) %}
+                        {{ wizard.framework_card(child, framework, classification, 'recommended') }}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
 
-            {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg' } %}
-                {% block card_header %}
-                    <div class="card-header bg-primary text-white">
-                        <h1 class="h3 mb-0">
-                            <i class="bi bi-balance me-2" aria-hidden="true"></i>
-                            {{ 'setup.compliance.header'|trans({}, 'setup') }}
-                        </h1>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    <div class="p-4">
-                        <p class="lead mb-4">
-                            {{ 'setup.compliance.description'|trans({}, 'setup') }}
-                        </p>
+    {# ⚪ OPTIONAL #}
+    {% if optional_codes|length > 0 %}
+        <div class="fa-setup-bucket-header">
+            {{ pill.render('⚪ ' ~ 'setup.applicability.bucket.optional.label'|trans({}, 'setup'), 'neutral', { size: 'sm', noDot: true })|raw }}
+            <span class="fa-setup-bucket-hint">{{ 'setup.applicability.bucket.optional.hint'|trans({}, 'setup') }}</span>
+        </div>
+        <div class="fa-toggle-card-grid">
+            {% for child in form.frameworks %}
+                {% if child.vars.value in optional_codes %}
+                    {% for framework in available_frameworks|filter(f => f.code == child.vars.value) %}
+                        {{ wizard.framework_card(child, framework, classification, 'optional') }}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
 
-                        {# Sprint 9: 3-Bucket-Klassifikation — *„Muss / Sollte / Kann"* #}
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                            <strong>{{ 'setup.applicability.intro.title'|trans({}, 'setup') }}</strong>
-                            <p class="mb-0">{{ 'setup.applicability.intro.description'|trans({}, 'setup') }}</p>
-                        </div>
+    {{ faAlert.render(
+        'setup.compliance.note.message'|trans({}, 'setup'),
+        'warning',
+        { title: 'setup.compliance.note.title'|trans({}, 'setup'), withAlva: true }
+    )|raw }}
 
-                        {# Compliance Framework Selection Form #}
-                        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-
-                        {% import 'setup/step8_compliance_frameworks.html.twig' as wizard %}
-
-                        {# 🔴 MANDATORY — Pflicht #}
-                        {% if mandatory_codes|length > 0 %}
-                            <div class="mt-4 mb-2 d-flex align-items-center gap-2">
-                                <span class="badge text-bg-danger">🔴 {{ 'setup.applicability.bucket.mandatory.label'|trans({}, 'setup') }}</span>
-                                <span class="small text-muted">{{ 'setup.applicability.bucket.mandatory.hint'|trans({}, 'setup') }}</span>
-                            </div>
-                            <div class="row">
-                                {% for child in form.frameworks %}
-                                    {% if child.vars.value in mandatory_codes %}
-                                        {% for framework in available_frameworks|filter(f => f.code == child.vars.value) %}
-                                            {{ wizard.framework_card(child, framework, classification, 'mandatory') }}
-                                        {% endfor %}
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        {# 🟡 RECOMMENDED — Empfehlung #}
-                        {% if recommended_codes|length > 0 %}
-                            <div class="mt-4 mb-2 d-flex align-items-center gap-2">
-                                <span class="badge text-bg-warning">🟡 {{ 'setup.applicability.bucket.recommended.label'|trans({}, 'setup') }}</span>
-                                <span class="small text-muted">{{ 'setup.applicability.bucket.recommended.hint'|trans({}, 'setup') }}</span>
-                            </div>
-                            <div class="row">
-                                {% for child in form.frameworks %}
-                                    {% if child.vars.value in recommended_codes %}
-                                        {% for framework in available_frameworks|filter(f => f.code == child.vars.value) %}
-                                            {{ wizard.framework_card(child, framework, classification, 'recommended') }}
-                                        {% endfor %}
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        {# ⚪ OPTIONAL — Kann #}
-                        {% if optional_codes|length > 0 %}
-                            <div class="mt-4 mb-2 d-flex align-items-center gap-2">
-                                <span class="badge text-bg-secondary">⚪ {{ 'setup.applicability.bucket.optional.label'|trans({}, 'setup') }}</span>
-                                <span class="small text-muted">{{ 'setup.applicability.bucket.optional.hint'|trans({}, 'setup') }}</span>
-                            </div>
-                            <div class="row">
-                                {% for child in form.frameworks %}
-                                    {% if child.vars.value in optional_codes %}
-                                        {% for framework in available_frameworks|filter(f => f.code == child.vars.value) %}
-                                            {{ wizard.framework_card(child, framework, classification, 'optional') }}
-                                        {% endfor %}
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        {# Information Box #}
-                        <div class="alert alert-warning mt-4">
-                            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
-                            <strong>{{ 'setup.compliance.note.title'|trans({}, 'setup') }}</strong>
-                            <p class="mb-0">{{ 'setup.compliance.note.message'|trans({}, 'setup') }}</p>
-                        </div>
-
-                        {# Navigation #}
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ path('setup_step7_modules') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
-                                {{ 'setup.navigation.back'|trans({}, 'setup') }}
-                            </a>
-
-                            <button type="submit" class="btn btn-primary">
-                                {{ 'setup.navigation.next'|trans({}, 'setup') }}
-                                <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
-                            </button>
-                        </div>
-
-                        {{ form_end(form) }}
-                    </div>
-                {% endblock %}
-            {% endembed %}
-
-            {# Framework Details Card #}
-            {% embed '_components/_card.html.twig' with { 'class': 'mt-4 border-info' } %}
-                {% block card_body %}
-                    <p class="h5 mb-3">
-                        <i class="bi bi-book text-info me-2" aria-hidden="true"></i>
-                        {{ 'setup.compliance.details.title'|trans({}, 'setup') }}
-                    </p>
-                    <div class="row">
-                        {% for framework in available_frameworks %}
-                            <div class="col-md-6 mb-3">
-                                <p class="h6 mb-1">{{ framework.icon }} {{ framework.name }}</p>
-                                <p class="text-muted small mb-0">{{ framework.description }}</p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endblock %}
-            {% endembed %}
+    <div class="fa-nav-bar">
+        <div class="fa-nav-bar__left">
+            {{ btn.link(path('setup_step7_modules'), 'setup.navigation.back'|trans({}, 'setup'), { variant: 'secondary', icon: 'bi-arrow-left' }) }}
+        </div>
+        <div class="fa-nav-bar__right">
+            {{ btn.submit('setup.navigation.next'|trans({}, 'setup'), { variant: 'primary', icon: 'bi-arrow-right', iconAfter: true }) }}
         </div>
     </div>
-</div>
+
+    {{ form_end(form) }}
 {% endblock %}

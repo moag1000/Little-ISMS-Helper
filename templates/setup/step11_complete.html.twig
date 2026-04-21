@@ -1,152 +1,114 @@
 {% extends 'setup/_layout.html.twig' %}
+{% trans_default_domain 'setup' %}
 {% set active_step = 'complete' %}
 
-{% block title %}{{ 'setup.complete.title'|trans({}, 'setup') }} - Deployment Wizard{% endblock %}
+{% block title %}{{ 'setup.complete.title'|trans({}, 'setup') }}{% endblock %}
 
 {% block step_content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            {# Progress Bar #}
-            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h4 class="mb-0">{{ 'setup.complete.progress_title'|trans({}, 'setup') }}</h4>
-                        <small class="text-muted">{{ 'setup.complete.step_of'|trans({'%current%': 11, '%total%': 11}, 'setup') }}</small>
-                    </div>
-                    <div class="progress" style="height: 10px;">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+    {% import '_components/_step_header.html.twig' as step_header %}
+    {% import '_components/_alva.html.twig' as alva %}
+    {% import '_components/_alert.html.twig' as faAlert %}
+    {% import '_components/_kpi_card.html.twig' as kpi %}
+    {% import '_components/_status_pill.html.twig' as pill %}
+    {% import '_components/_cyber_button.html.twig' as btn %}
 
-            {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg border-success' } %}
-                {% block card_header %}
-                    <div class="card-header bg-success text-white">
-                        <h1 class="h3 mb-0">
-                            <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
-                            {{ 'setup.complete.title'|trans({}, 'setup') }}
-                        </h1>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    <div class="p-5 text-center">
-                        <div class="mb-4">
-                            <i class="bi bi-check-circle text-success" aria-hidden="true" style="font-size: 5rem;"></i>
-                        </div>
-
-                        <h2 class="h3 mb-4">{{ 'setup.complete.system_ready'|trans({}, 'setup') }}</h2>
-
-                        <p class="lead text-muted mb-4">
-                            {{ 'setup.complete.all_components_ready'|trans({}, 'setup') }}
-                        </p>
-
-                        {# Statistics #}
-                        <div class="row g-3 mb-5">
-                            <div class="col-md-3">
-                                {% embed '_components/_card.html.twig' with { 'class': 'bg-light' } %}
-                                    {% block card_body %}
-                                        <p class="h2 mb-0 text-primary">{{ statistics.active_modules }}</p>
-                                        <small class="text-muted">{{ 'setup.complete.stats.active_modules'|trans({}, 'setup') }}</small>
-                                    {% endblock %}
-                                {% endembed %}
-                            </div>
-                            <div class="col-md-3">
-                                {% embed '_components/_card.html.twig' with { 'class': 'bg-light' } %}
-                                    {% block card_body %}
-                                        <p class="h2 mb-0 text-success">{{ statistics.total_modules }}</p>
-                                        <small class="text-muted">{{ 'setup.complete.stats.available_modules'|trans({}, 'setup') }}</small>
-                                    {% endblock %}
-                                {% endembed %}
-                            </div>
-                            <div class="col-md-3">
-                                {% embed '_components/_card.html.twig' with { 'class': 'bg-light' } %}
-                                    {% block card_body %}
-                                        <p class="h2 mb-0 text-info">{{ statistics.required_modules }}</p>
-                                        <small class="text-muted">{{ 'setup.complete.stats.core_modules'|trans({}, 'setup') }}</small>
-                                    {% endblock %}
-                                {% endembed %}
-                            </div>
-                            <div class="col-md-3">
-                                {% embed '_components/_card.html.twig' with { 'class': 'bg-light' } %}
-                                    {% block card_body %}
-                                        <p class="h2 mb-0 text-warning">{{ statistics.optional_modules }}</p>
-                                        <small class="text-muted">{{ 'setup.complete.stats.optional_modules'|trans({}, 'setup') }}</small>
-                                    {% endblock %}
-                                {% endembed %}
-                            </div>
-                        </div>
-
-                        {# Active Modules #}
-                        {% embed '_components/_card.html.twig' with { 'class': 'bg-light mb-4 text-start' } %}
-                            {% block card_body %}
-                                <h3 class="h5 mb-3">
-                                    <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
-                                    {{ 'setup.complete.activated_modules'|trans({}, 'setup') }}
-                                </h3>
-                                <div class="row g-2">
-                                    {% for moduleKey in selected_modules %}
-                                        <div class="col-md-4">
-                                            {% include '_components/_badge.html.twig' with { variant: 'primary', content: moduleKey } %}
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endblock %}
-                        {% endembed %}
-
-                        {# Next Steps #}
-                        {% embed '_components/_card.html.twig' with { 'class': 'bg-info bg-opacity-10 border-info mb-4 text-start' } %}
-                            {% block card_body %}
-                                <h3 class="h5 mb-3">
-                                    <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
-                                    {{ 'setup.complete.next_steps.title'|trans({}, 'setup') }}
-                                </h3>
-                                <ol class="mb-0">
-                                    <li class="mb-2">{{ 'setup.complete.next_steps.explore_dashboard'|trans({}, 'setup') }}</li>
-                                    <li class="mb-2">{{ 'setup.complete.next_steps.define_context'|trans({}, 'setup') }}</li>
-                                    <li class="mb-2">{{ 'setup.complete.next_steps.capture_assets'|trans({}, 'setup') }}</li>
-                                    <li class="mb-2">{{ 'setup.complete.next_steps.use_compliance'|trans({}, 'setup') }}</li>
-                                    <li class="mb-2">{{ 'setup.complete.next_steps.add_modules'|trans({}, 'setup') }}</li>
-                                </ol>
-                            {% endblock %}
-                        {% endembed %}
-
-                        {# Actions #}
-                        <div class="d-grid gap-3">
-                            <a href="{{ path('app_welcome', {'_locale': app.request.locale}) }}" class="btn btn-lg btn-success">
-                                <i class="bi bi-rocket-takeoff me-2" aria-hidden="true"></i>
-                                {{ 'setup.complete.start_using'|trans({}, 'setup') }}
-                            </a>
-                            <div class="row g-2">
-                                <div class="col-md-6">
-                                    <a href="{{ path('module_management_index', {'_locale': app.request.locale}) }}" class="btn btn-outline-primary w-100">
-                                        <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
-                                        {{ 'setup.manage_modules'|trans({}, 'setup') }}
-                                    </a>
-                                </div>
-                                <div class="col-md-6">
-                                    <a href="{{ path('app_context_index', {'_locale': app.request.locale}) }}" class="btn btn-outline-primary w-100">
-                                        <i class="bi bi-gear me-2" aria-hidden="true"></i>
-                                        {{ 'setup.complete.configure_context'|trans({}, 'setup') }}
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        {# Support Info #}
-                        <div class="alert alert-light mt-4 text-start" role="alert">
-                            <p class="h5 mb-2">
-                                <i class="bi bi-question-circle me-2" aria-hidden="true"></i>
-                                {{ 'setup.complete.help_documentation.title'|trans({}, 'setup') }}
-                            </p>
-                            <p class="mb-0 small">
-                                {{ 'setup.complete.help_documentation.description'|trans({}, 'setup') }}
-                            </p>
-                        </div>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+    <div class="fa-setup-complete">
+        {# Celebrating Alva #}
+        <div class="fa-setup-complete__hero">
+            {{ alva.render('celebrating', { size: 140, decorative: true })|raw }}
+            <h1 class="fa-setup-complete__title">{{ 'setup.complete.system_ready'|trans({}, 'setup') }}</h1>
+            <p class="fa-setup-complete__subtitle">{{ 'setup.complete.all_components_ready'|trans({}, 'setup') }}</p>
         </div>
+
+        {# Stats Grid mit KPI-Cards #}
+        <div class="fa-setup-complete__stats">
+            <div class="fa-kpi-card fa-kpi-card--primary">
+                <div class="fa-kpi-card__body">
+                    <div class="fa-kpi-card__label">{{ 'setup.complete.stats.active_modules'|trans({}, 'setup') }}</div>
+                    <div class="fa-kpi-card__value">
+                        <span class="fa-kpi-card__number">{{ statistics.active_modules }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="fa-kpi-card fa-kpi-card--success">
+                <div class="fa-kpi-card__body">
+                    <div class="fa-kpi-card__label">{{ 'setup.complete.stats.available_modules'|trans({}, 'setup') }}</div>
+                    <div class="fa-kpi-card__value">
+                        <span class="fa-kpi-card__number">{{ statistics.total_modules }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="fa-kpi-card fa-kpi-card--accent">
+                <div class="fa-kpi-card__body">
+                    <div class="fa-kpi-card__label">{{ 'setup.complete.stats.core_modules'|trans({}, 'setup') }}</div>
+                    <div class="fa-kpi-card__value">
+                        <span class="fa-kpi-card__number">{{ statistics.required_modules }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="fa-kpi-card fa-kpi-card--warning">
+                <div class="fa-kpi-card__body">
+                    <div class="fa-kpi-card__label">{{ 'setup.complete.stats.optional_modules'|trans({}, 'setup') }}</div>
+                    <div class="fa-kpi-card__value">
+                        <span class="fa-kpi-card__number">{{ statistics.optional_modules }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Active Modules als Status-Pills #}
+        <section class="fa-setup-complete__section">
+            <h2 class="fa-setup-complete__section-title">
+                <i class="bi bi-puzzle" aria-hidden="true"></i>
+                {{ 'setup.complete.activated_modules'|trans({}, 'setup') }}
+            </h2>
+            <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                {% for moduleKey in selected_modules %}
+                    {{ pill.render(moduleKey, 'primary', { size: 'sm', noDot: true })|raw }}
+                {% endfor %}
+            </div>
+        </section>
+
+        {# Next Steps als strukturierte Liste #}
+        <section class="fa-setup-complete__section">
+            <h2 class="fa-setup-complete__section-title">
+                <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                {{ 'setup.complete.next_steps.title'|trans({}, 'setup') }}
+            </h2>
+            <ol class="fa-setup-complete__next-steps">
+                <li>{{ 'setup.complete.next_steps.explore_dashboard'|trans({}, 'setup') }}</li>
+                <li>{{ 'setup.complete.next_steps.define_context'|trans({}, 'setup') }}</li>
+                <li>{{ 'setup.complete.next_steps.capture_assets'|trans({}, 'setup') }}</li>
+                <li>{{ 'setup.complete.next_steps.use_compliance'|trans({}, 'setup') }}</li>
+                <li>{{ 'setup.complete.next_steps.add_modules'|trans({}, 'setup') }}</li>
+            </ol>
+        </section>
+
+        {# Primary CTA + Secondary Actions #}
+        <div class="fa-setup-complete__actions">
+            {{ btn.link(
+                path('app_welcome', {'_locale': app.request.locale}),
+                'setup.complete.start_using'|trans({}, 'setup'),
+                { variant: 'primary', size: 'lg', icon: 'bi-rocket-takeoff', fullWidth: true }
+            ) }}
+            <div class="fa-setup-complete__secondary-actions">
+                {{ btn.link(
+                    path('module_management_index', {'_locale': app.request.locale}),
+                    'setup.manage_modules'|trans({}, 'setup'),
+                    { variant: 'secondary', icon: 'bi-puzzle' }
+                ) }}
+                {{ btn.link(
+                    path('app_context_index', {'_locale': app.request.locale}),
+                    'setup.complete.configure_context'|trans({}, 'setup'),
+                    { variant: 'secondary', icon: 'bi-gear' }
+                ) }}
+            </div>
+        </div>
+
+        {{ faAlert.render(
+            'setup.complete.help_documentation.description'|trans({}, 'setup'),
+            'info',
+            { title: 'setup.complete.help_documentation.title'|trans({}, 'setup'), icon: 'bi-question-circle' }
+        )|raw }}
     </div>
-</div>
 {% endblock %}

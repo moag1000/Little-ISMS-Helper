@@ -1299,6 +1299,195 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   Deep-Rewrite Setup-Step Patterns (FA-5b)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Admin-User + frameworks 2-col Form-Grid */
+.fa-setup-form { display: flex; flex-direction: column; gap: 14px; }
+.fa-setup-form__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+@media (max-width: 639.98px) {
+    .fa-setup-form__grid { grid-template-columns: 1fr; }
+}
+.fa-setup-form__col { display: flex; flex-direction: column; gap: 6px; }
+
+/* Section-Title (Mono-Uppercase, Primary-Color) */
+.fa-setup-section-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin: 20px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.fa-setup-section-title i { font-size: 14px; }
+
+/* Toggle-Card-Grid für Module + Framework-Selection */
+.fa-toggle-card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+@media (max-width: 767.98px) {
+    .fa-toggle-card-grid { grid-template-columns: 1fr; }
+}
+
+/* Toggle-Card erweitert für Module-Meta (Dependencies + Required-By) */
+.fa-toggle-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    color: var(--fg-3);
+}
+.fa-toggle-card__meta i { font-size: 12px; }
+
+/* Bucket-spezifische Variants (mandatory/recommended/optional) */
+.fa-toggle-card--bucket-mandatory {
+    border-left: 4px solid var(--danger);
+}
+.fa-toggle-card--bucket-recommended {
+    border-left: 4px solid var(--warning);
+}
+.fa-toggle-card--bucket-optional {
+    border-left: 4px solid var(--border-strong);
+}
+.fa-toggle-card__reason {
+    margin-top: 8px;
+    padding: 6px 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    font-size: 11px;
+    color: var(--fg-2);
+    line-height: 1.5;
+}
+.fa-toggle-card__reason i { color: var(--warning); margin-right: 4px; }
+
+/* Bucket-Header (Pills + Hint-Text) */
+.fa-setup-bucket-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0 10px;
+    flex-wrap: wrap;
+}
+.fa-setup-bucket-hint {
+    font-size: 12px;
+    color: var(--fg-3);
+    font-style: italic;
+}
+
+/* Summary-Bar unten (modules selected count) */
+.fa-setup-modules-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+    padding: 14px 16px;
+    background: var(--primary-tint);
+    border: 1px solid var(--primary);
+    border-radius: var(--r-md);
+    font-size: 13px;
+    color: var(--fg);
+}
+.fa-setup-modules-summary i { font-size: 16px; color: var(--primary); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Step11 Complete — Celebration-Layout
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-setup-complete {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.fa-setup-complete__hero {
+    text-align: center;
+    padding: 20px 0 10px;
+}
+.fa-setup-complete__title {
+    font-family: var(--font-sans);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 16px 0 8px;
+    letter-spacing: -0.5px;
+}
+.fa-setup-complete__subtitle {
+    font-size: 14px;
+    color: var(--fg-2);
+    margin: 0;
+    line-height: 1.55;
+}
+
+.fa-setup-complete__stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+@media (max-width: 1023.98px) {
+    .fa-setup-complete__stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 639.98px) {
+    .fa-setup-complete__stats { grid-template-columns: 1fr; }
+}
+
+.fa-setup-complete__section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 16px 18px;
+}
+.fa-setup-complete__section-title {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.fa-setup-complete__section-title i { color: var(--primary); font-size: 16px; }
+
+.fa-setup-complete__next-steps {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--fg-2);
+    font-size: 13px;
+    line-height: 1.7;
+}
+.fa-setup-complete__next-steps li { margin-bottom: 4px; }
+
+.fa-setup-complete__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+.fa-setup-complete__secondary-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+@media (max-width: 639.98px) {
+    .fa-setup-complete__secondary-actions { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    Auth-Layout (Login / MFA / Password-Reset / Verify-Email)
    ═══════════════════════════════════════════════════════════════════ */
 

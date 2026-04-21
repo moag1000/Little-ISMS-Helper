@@ -1,0 +1,21 @@
+preferences:
+    title: 'Einstellungen'
+    density:
+        title: 'Ansichtsdichte'
+        compact: 'Kompakt'
+        comfortable: 'Komfortabel'
+        hint: 'Bestimmt, wie viel Abstand zwischen Elementen ist'
+    animations:
+        title: 'Animationen'
+        enable: 'Animationen aktivieren'
+        hint: 'Deaktivieren für bessere Performance'
+    shortcuts:
+        title: 'Tastaturkürzel'
+        enable: 'Tastaturkürzel aktivieren'
+        hint: 'Cmd+K für Suche, Space für Vorschau, etc.'
+    language:
+        title: 'Sprache'
+    backup:
+        title: 'Einstellungen sichern'
+        export: 'Exportieren'
+        import: 'Importieren'

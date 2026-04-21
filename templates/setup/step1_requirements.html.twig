@@ -5,178 +5,88 @@
 {% block title %}{{ 'setup.step1.title'|trans({}, 'setup') }}{% endblock %}
 
 {% block step_content %}
-<div class="fa-setup-legacy-wrapper">
+    {% import '_components/_step_header.html.twig' as step_header %}
+    {% import '_components/_check_row.html.twig' as row %}
+    {% import '_components/_alert.html.twig' as faAlert %}
+    {% import '_components/_status_pill.html.twig' as pill %}
+    {% import '_components/_nav_bar.html.twig' as nav %}
 
-            {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg' } %}
-                {% block card_header %}
-                    <div class="card-header bg-primary text-white">
-                        <h1 class="h3 mb-0">
-                            <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
-                            {{ 'setup.step1.header'|trans({}, 'setup') }}
-                        </h1>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    <div class="p-4">
-                        {# Overall Status #}
-                        <div class="alert {{ results.overall.can_proceed ? 'alert-success' : 'alert-danger' }} mb-4" role="alert">
-                            <p class="h5 mb-2">
-                                <i class="bi bi-{{ results.overall.can_proceed ? 'check-circle' : 'exclamation-circle' }} me-2" aria-hidden="true"></i>
-                                {{ results.overall.message }}
-                            </p>
-                            <div class="mt-2">
-                                {% include '_components/_badge.html.twig' with { variant: 'success', content: results.overall.success ~ ' ' ~ 'setup.step1.status.success'|trans({}, 'setup') } %}
-                                {% if results.overall.warnings > 0 %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: results.overall.warnings ~ ' ' ~ 'setup.step1.status.warnings'|trans({}, 'setup') } %}
-                                {% endif %}
-                                {% if results.overall.critical_errors > 0 %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: results.overall.critical_errors ~ ' ' ~ 'setup.step1.status.critical_errors'|trans({}, 'setup') } %}
-                                {% endif %}
-                            </div>
-                        </div>
+    {{ step_header.render(2, 12, step.kind, 'setup.step1.header'|trans({}, 'setup'), results.overall.message)|raw }}
 
-                        {# Individual Checks #}
-                        <h2 class="h5 mb-3">{{ 'setup.step1.detailed_checks'|trans({}, 'setup') }}</h2>
+    {# Status-Summary mit Pills #}
+    <div style="display:flex; gap:6px; flex-wrap:wrap; margin:8px 0 20px;">
+        {{ pill.render(results.overall.success ~ ' ' ~ 'setup.step1.status.success'|trans({}, 'setup'), 'success')|raw }}
+        {% if results.overall.warnings > 0 %}
+            {{ pill.render(results.overall.warnings ~ ' ' ~ 'setup.step1.status.warnings'|trans({}, 'setup'), 'warning')|raw }}
+        {% endif %}
+        {% if results.overall.critical_errors > 0 %}
+            {{ pill.render(results.overall.critical_errors ~ ' ' ~ 'setup.step1.status.critical_errors'|trans({}, 'setup'), 'danger')|raw }}
+        {% endif %}
+    </div>
 
-                        {# PHP Version #}
-                        {% embed '_components/_card.html.twig' with { 'class': 'mb-3 border-' ~ (results.php.status == 'success' ? 'success' : 'danger') } %}
-                            {% block card_body %}
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h3 class="h6 mb-1">
-                                            <i class="bi bi-{{ results.php.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
-                                            {{ 'setup.step1.php.title'|trans({}, 'setup') }}
-                                        </h3>
-                                        <p class="mb-0 text-muted">{{ results.php.message }}</p>
-                                    </div>
-                                    <div class="text-end">
-                                        <div class="badge bg-{{ results.php.status == 'success' ? 'success' : 'danger' }}">
-                                            {{ results.php.current }}
-                                        </div>
-                                        <small class="d-block text-muted">{{ 'setup.step1.php.required'|trans({'%version%': results.php.required}, 'setup') }}</small>
-                                    </div>
-                                </div>
-                            {% endblock %}
-                        {% endembed %}
+    {% if not results.overall.can_proceed %}
+        {{ faAlert.render(results.overall.message, 'danger', { withAlva: true, title: 'setup.step1.cannot_proceed'|trans({}, 'setup')|default('Voraussetzungen nicht erfüllt') })|raw }}
+    {% endif %}
 
-                        {# PHP Extensions #}
-                        {% embed '_components/_card.html.twig' with { 'class': 'mb-3 border-' ~ (results.extensions.status == 'success' ? 'success' : 'danger') } %}
-                            {% block card_body %}
-                                <h3 class="h6 mb-2">
-                                    <i class="bi bi-{{ results.extensions.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
-                                    {{ 'setup.step1.extensions.title'|trans({}, 'setup') }}
-                                </h3>
-                                <p class="mb-2 text-muted">{{ results.extensions.message }}</p>
-                                {% if results.extensions.missing|length > 0 %}
-                                    <div class="alert alert-danger mb-0">
-                                        <strong>{{ 'setup.step1.extensions.missing'|trans({}, 'setup') }}</strong>
-                                        <ul class="mb-0 mt-2">
-                                            {% for ext in results.extensions.missing %}
-                                                <li><code>{{ ext }}</code></li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                {% else %}
-                                    <div class="text-muted small">
-                                        {% for ext in results.extensions.loaded %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'success', content: ext, class: 'me-1' } %}
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            {% endblock %}
-                        {% endembed %}
+    <h2 style="font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--fg-3); margin:24px 0 12px;">
+        {{ 'setup.step1.detailed_checks'|trans({}, 'setup') }}
+    </h2>
 
-                        {# Database #}
-                        {% embed '_components/_card.html.twig' with { 'class': 'mb-3 border-' ~ (results.database.status == 'success' ? 'success' : (results.database.status == 'warning' ? 'warning' : 'danger')) } %}
-                            {% block card_body %}
-                                <h3 class="h6 mb-1">
-                                    <i class="bi bi-database me-2 text-{{ results.database.status == 'success' ? 'success' : (results.database.status == 'warning' ? 'warning' : 'danger') }}" aria-hidden="true"></i>
-                                    {{ 'setup.step1.database.title'|trans({}, 'setup') }}
-                                </h3>
-                                <p class="mb-0 text-muted">{{ results.database.message }}</p>
-                            {% endblock %}
-                        {% endembed %}
+    {# Pro Check ein CheckRow #}
+    {% set statusMap = { 'success': 'ok', 'warning': 'warn', 'danger': 'err', 'error': 'err' } %}
 
-                        {# Permissions #}
-                        {% embed '_components/_card.html.twig' with { 'class': 'mb-3 border-' ~ (results.permissions.status == 'success' ? 'success' : 'danger') } %}
-                            {% block card_body %}
-                                <h3 class="h6 mb-2">
-                                    <i class="bi bi-{{ results.permissions.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
-                                    {{ 'setup.step1.permissions.title'|trans({}, 'setup') }}
-                                </h3>
-                                <p class="mb-2 text-muted">{{ results.permissions.message }}</p>
-                                {% if results.permissions.not_writable|length > 0 %}
-                                    <div class="alert alert-danger mb-0">
-                                        <strong>{{ 'setup.step1.permissions.not_writable'|trans({}, 'setup') }}</strong>
-                                        <ul class="mb-0 mt-2">
-                                            {% for dir in results.permissions.not_writable %}
-                                                <li><code>{{ dir }}</code></li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                {% endif %}
-                            {% endblock %}
-                        {% endembed %}
+    {{ row.render({
+        status: statusMap[results.php.status]|default('idle'),
+        label: 'setup.step1.php.title'|trans({}, 'setup'),
+        value: results.php.current,
+        hint: results.php.message ~ ' · ' ~ 'setup.step1.php.required'|trans({'%version%': results.php.required}, 'setup')
+    })|raw }}
 
-                        {# Memory & Execution Time #}
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% embed '_components/_card.html.twig' with { 'class': 'mb-3 border-' ~ (results.memory.status == 'success' ? 'success' : 'warning') } %}
-                                    {% block card_body %}
-                                        <h3 class="h6 mb-1">
-                                            <i class="bi bi-memory me-2 text-{{ results.memory.status == 'success' ? 'success' : 'warning' }}" aria-hidden="true"></i>
-                                            {{ 'setup.step1.memory.title'|trans({}, 'setup') }}
-                                        </h3>
-                                        <p class="mb-0 text-muted">{{ results.memory.current }}</p>
-                                        <small class="text-muted">{{ 'setup.step1.memory.recommended'|trans({'%value%': results.memory.required}, 'setup') }}</small>
-                                    {% endblock %}
-                                {% endembed %}
-                            </div>
-                            <div class="col-md-6">
-                                {% embed '_components/_card.html.twig' with { 'class': 'mb-3 border-' ~ (results.execution_time.status == 'success' ? 'success' : 'warning') } %}
-                                    {% block card_body %}
-                                        <h3 class="h6 mb-1">
-                                            <i class="bi bi-clock me-2 text-{{ results.execution_time.status == 'success' ? 'success' : 'warning' }}" aria-hidden="true"></i>
-                                            {{ 'setup.step1.execution_time.title'|trans({}, 'setup') }}
-                                        </h3>
-                                        <p class="mb-0 text-muted">{{ results.execution_time.current }}s</p>
-                                        <small class="text-muted">{{ 'setup.step1.execution_time.recommended'|trans({'%value%': results.execution_time.required}, 'setup') }}</small>
-                                    {% endblock %}
-                                {% endembed %}
-                            </div>
-                        </div>
+    {{ row.render({
+        status: statusMap[results.extensions.status]|default('idle'),
+        label: 'setup.step1.extensions.title'|trans({}, 'setup'),
+        value: results.extensions.missing|length == 0 ? 'OK' : (results.extensions.missing|length ~ ' ' ~ 'fehlen'|trans({}, 'setup')|default('fehlen')),
+        hint: results.extensions.missing|length > 0 ? results.extensions.missing|join(', ') : results.extensions.message
+    })|raw }}
 
-                        {# Symfony Version #}
-                        {% embed '_components/_card.html.twig' with { 'class': 'mb-3 border-' ~ (results.symfony.status == 'success' ? 'success' : 'danger') } %}
-                            {% block card_body %}
-                                <h3 class="h6 mb-1">
-                                    <i class="bi bi-{{ results.symfony.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
-                                    {{ 'setup.step1.symfony.title'|trans({}, 'setup') }}
-                                </h3>
-                                <p class="mb-0 text-muted">{{ results.symfony.message }}</p>
-                            {% endblock %}
-                        {% endembed %}
+    {{ row.render({
+        status: statusMap[results.database.status]|default('idle'),
+        label: 'setup.step1.database.title'|trans({}, 'setup'),
+        hint: results.database.message
+    })|raw }}
 
-                        {# Navigation #}
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ path('setup_step0_welcome') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
-                                {{ 'setup.common.back'|trans({}, 'setup') }}
-                            </a>
+    {{ row.render({
+        status: statusMap[results.permissions.status]|default('idle'),
+        label: 'setup.step1.permissions.title'|trans({}, 'setup'),
+        hint: results.permissions.not_writable|length > 0
+            ? ('setup.step1.permissions.not_writable'|trans({}, 'setup') ~ ': ' ~ results.permissions.not_writable|join(', '))
+            : results.permissions.message
+    })|raw }}
 
-                            {% if can_proceed %}
-                                <a href="{{ path('setup_step2_database_config') }}" class="btn btn-primary">
-                                    {{ 'setup.next_step'|trans({'%step%': 2, '%name%': 'setup.steps.database'|trans({}, 'setup')}, 'messages') }}
-                                    <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
-                                </a>
-                            {% else %}
-                                <button type="button" class="btn btn-secondary" disabled>
-                                    {{ 'setup.fix_errors_first'|trans({}, 'setup') }}
-                                </button>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-</div>
+    {{ row.render({
+        status: statusMap[results.memory.status]|default('idle'),
+        label: 'setup.step1.memory.title'|trans({}, 'setup'),
+        value: results.memory.current,
+        hint: 'setup.step1.memory.recommended'|trans({'%value%': results.memory.required}, 'setup')
+    })|raw }}
+
+    {{ row.render({
+        status: statusMap[results.execution_time.status]|default('idle'),
+        label: 'setup.step1.execution_time.title'|trans({}, 'setup'),
+        value: results.execution_time.current ~ 's',
+        hint: 'setup.step1.execution_time.recommended'|trans({'%value%': results.execution_time.required}, 'setup')
+    })|raw }}
+
+    {{ row.render({
+        status: statusMap[results.symfony.status]|default('idle'),
+        label: 'setup.step1.symfony.title'|trans({}, 'setup'),
+        hint: results.symfony.message
+    })|raw }}
+
+    {{ nav.render({
+        back: { url: path('setup_step0_welcome'), label: 'setup.common.back'|trans({}, 'setup') },
+        next: can_proceed
+            ? { url: path('setup_step2_database_config'), label: 'setup.next_step'|trans({'%step%': 2, '%name%': 'setup.steps.database'|trans({}, 'setup')}, 'messages') }
+            : { label: 'setup.fix_errors_first'|trans({}, 'setup'), disabled: true }
+    })|raw }}
 {% endblock %}
