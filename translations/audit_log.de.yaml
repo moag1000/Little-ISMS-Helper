@@ -49,6 +49,7 @@ audit_log:
     message:
         no_entries: 'Keine Protokolleinträge gefunden.'
         no_entries_filtered: 'Keine Protokolleinträge für den ausgewählten Filter gefunden.'
+        no_data_available: 'Keine Daten verfügbar'
     action:
         back_to_health: 'Zurück zur Systemgesundheit'
     modal:
@@ -62,14 +63,16 @@ audit_log:
     entries: Entries
     view_all: 'Alle anzeigen'
     field:
-        timestamp: Timestamp
+        timestamp: Zeitstempel
         action: Aktion
         user: Benutzer
         description: Beschreibung
-        entity_type: 'Entity Type'
-        entity_id: 'Entity Id'
-        ip_address: 'Ip Address'
-        user_agent: 'User Agent'
+        details: Details
+        entity: Entität
+        entity_type: Entitätstyp
+        entity_id: Entitäts-ID
+        ip_address: IP-Adresse
+        user_agent: Benutzeragent
     title: Titel
     detail:
         subtitle: Untertitel

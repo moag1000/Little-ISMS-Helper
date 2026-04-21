@@ -87,7 +87,7 @@
                 {% endblock %}
                 {% block card_body %}
                     {% if incomplete|length > 0 %}
-                        <h3 class="h6">Incomplete Activities ({{ incomplete|length }})</h3>
+                        <h3 class="h6">{{ 'processing_activity.dashboard.incomplete_activities'|trans({'%count%': incomplete|length}, 'privacy') }}</h3>
                         <ul class="list-unstyled">
                             {% for pa in incomplete|slice(0, 5) %}
                                 <li class="mb-2">
