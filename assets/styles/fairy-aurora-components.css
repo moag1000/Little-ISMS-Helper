@@ -1225,6 +1225,38 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   Legacy Setup-Step Content Neutralisierung
+   Legacy-Templates haben .container mt-5 + .row + .col-md-10 im
+   step_content — zusammen mit fa-setup-right__padding ist das doppelt.
+   Reset damit Bootstrap-Container nicht extra Constraints auflegen.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-setup-right__content > .container,
+.fa-setup-right__content > .container-fluid,
+.fa-setup-right__content .fa-setup-legacy-wrapper > .container {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.fa-setup-right__content > .container > .row,
+.fa-setup-right__content .fa-setup-legacy-wrapper > .container > .row {
+    margin: 0;
+}
+.fa-setup-right__content > .container > .row > [class*="col-"],
+.fa-setup-right__content .fa-setup-legacy-wrapper > .container > .row > [class*="col-"] {
+    max-width: none;
+    padding: 0;
+    flex: 0 0 100%;
+}
+
+/* Legacy mt-5 im setup-context → kein extra top-Margin (Layout hat Padding) */
+.fa-setup-right__content > .container.mt-5,
+.fa-setup-right__content .fa-setup-legacy-wrapper > .container.mt-5 {
+    margin-top: 0 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    Auth-Layout (Login / MFA / Password-Reset / Verify-Email)
    ═══════════════════════════════════════════════════════════════════ */
 

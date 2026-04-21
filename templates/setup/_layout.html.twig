@@ -57,6 +57,8 @@
     {{ importmap(['app', 'styles']) }}
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}">
+    <meta name="turbo-cache-control" content="no-cache">
+    {% block step_head %}{% endblock %}
 </head>
 <body class="fa-setup-body">
 
