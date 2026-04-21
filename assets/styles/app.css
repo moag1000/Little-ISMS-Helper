@@ -2964,31 +2964,17 @@ textarea.form-control {
     transform: translateY(-1px);
 }
 
+/* FairyAurora v3.0: User-Dropdown nutzt fa-dropdown-panel-Pattern;
+   Visibility wird via hidden-Attribut vom aurora-dropdown-Stimulus-Controller
+   gesteuert (nicht mehr hover/focus-within). */
 .user-dropdown {
     position: absolute;
     top: calc(100% + 0.5rem);
     right: 0;
     min-width: 240px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15),
-                0 4px 14px var(--primary-glow);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-6px) scale(0.98);
-    transition: opacity var(--t-base) var(--ease-out),
-                visibility var(--t-base),
-                transform var(--t-base) var(--ease-out);
     z-index: 1000;
 }
-
-.user-menu:hover .user-dropdown,
-.user-menu:focus-within .user-dropdown {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0) scale(1);
-}
+.user-dropdown[hidden] { display: none !important; }
 
 .user-dropdown-header {
     padding: var(--spacing-md);

@@ -1,0 +1,32 @@
+{
+  "_readme": "FairyAurora v3.0 — Local Lighthouse-CI-Config. NUR für lokale Entwickler-Runs. Voraussetzungen: symfony serve läuft auf Port 8000 UND Dashboard ist erreichbar (User eingeloggt). Für authentifizierten /dashboard-Check musst du vor dem Lauf manuell einloggen und Session-Cookie bereitstellen, oder nur login-URL testen. Für CI-Gate: siehe .claude/fairy-aurora/a11y_contrast_audit.py (läuft automatisch in .github/workflows/ci.yml ohne Browser).",
+  "_usage_local": "npx @lhci/cli@latest autorun",
+  "ci": {
+    "collect": {
+      "url": [
+        "http://localhost:8000/de/login"
+      ],
+      "numberOfRuns": 1,
+      "settings": {
+        "chromeFlags": "--no-sandbox --headless=new"
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance":   ["warn",  {"minScore": 0.80}],
+        "categories:accessibility": ["error", {"minScore": 0.90}],
+        "categories:best-practices": ["warn", {"minScore": 0.85}],
+        "categories:seo":           ["warn",  {"minScore": 0.85}],
+        "largest-contentful-paint": ["warn",  {"maxNumericValue": 2500}],
+        "cumulative-layout-shift":  ["error", {"maxNumericValue": 0.1}],
+        "total-blocking-time":      ["warn",  {"maxNumericValue": 300}],
+        "color-contrast":           ["error", {"minScore": 1}],
+        "heading-order":            ["warn",  {"minScore": 1}],
+        "html-has-lang":            ["error", {"minScore": 1}]
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

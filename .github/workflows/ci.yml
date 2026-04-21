@@ -159,6 +159,15 @@ jobs:
           fi
         continue-on-error: true
 
+      # FairyAurora v3.0 — A11y-Kontrast-Gate (WCAG 2.2 AA)
+      - name: FairyAurora A11y Contrast Audit
+        run: |
+          if [ -f .claude/fairy-aurora/a11y_contrast_audit.py ]; then
+            python3 .claude/fairy-aurora/a11y_contrast_audit.py
+          else
+            echo "A11y audit script not found — skipping"
+          fi
+
   security:
     name: Security Checks
     runs-on: ubuntu-latest
