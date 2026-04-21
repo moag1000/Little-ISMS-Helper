@@ -1,0 +1,139 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Tests\Service;
+
+use App\Entity\User;
+use App\Service\GuidedTourService;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+
+/**
+ * Unit-Tests für GuidedTourService (Sprint 13).
+ */
+class GuidedTourServiceTest extends TestCase
+{
+    private function buildService(array $grantedRoles = []): GuidedTourService
+    {
+        $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $authChecker->method('isGranted')
+            ->willReturnCallback(static fn(string $attribute): bool => in_array($attribute, $grantedRoles, true));
+
+        return new GuidedTourService($authChecker);
+    }
+
+    public function testAutoDetectFallsBackToJunior(): void
+    {
+        $service = $this->buildService([]);
+        $this->assertSame('junior', $service->autoDetectTour(new User()));
+    }
+
+    public function testAutoDetectAuditorBeatsAdmin(): void
+    {
+        // Auditor hat oft zusätzlich ROLE_USER. Die Priorisierung muss
+        // Auditor zuverlässig gewinnen lassen.
+        $service = $this->buildService(['ROLE_AUDITOR', 'ROLE_ADMIN']);
+        $this->assertSame('auditor', $service->autoDetectTour(new User()));
+    }
+
+    public function testAutoDetectRiskOwnerBeforeCm(): void
+    {
+        $service = $this->buildService(['ROLE_RISK_OWNER', 'ROLE_COMPLIANCE_MANAGER']);
+        $this->assertSame('risk_owner', $service->autoDetectTour(new User()));
+    }
+
+    public function testAutoDetectCm(): void
+    {
+        $service = $this->buildService(['ROLE_COMPLIANCE_MANAGER']);
+        $this->assertSame('cm', $service->autoDetectTour(new User()));
+    }
+
+    public function testAutoDetectIsb(): void
+    {
+        $service = $this->buildService(['ROLE_ISB']);
+        $this->assertSame('isb', $service->autoDetectTour(new User()));
+    }
+
+    public function testAutoDetectManagerMapsToIsb(): void
+    {
+        // Manager ist eine RBAC-Rolle oberhalb USER — die Tour soll
+        // den ISB-Flow zeigen (operativ), nicht den CISO-Flow (Exec).
+        $service = $this->buildService(['ROLE_MANAGER']);
+        $this->assertSame('isb', $service->autoDetectTour(new User()));
+    }
+
+    public function testAutoDetectCisoFromGroupCiso(): void
+    {
+        $service = $this->buildService(['ROLE_GROUP_CISO']);
+        $this->assertSame('ciso', $service->autoDetectTour(new User()));
+    }
+
+    public function testAutoDetectCisoFromAdmin(): void
+    {
+        $service = $this->buildService(['ROLE_ADMIN']);
+        $this->assertSame('ciso', $service->autoDetectTour(new User()));
+    }
+
+    public function testAllToursHaveSteps(): void
+    {
+        $service = $this->buildService([]);
+        foreach (GuidedTourService::ALL_TOURS as $tourId) {
+            $steps = $service->stepsFor($tourId);
+            $this->assertNotEmpty($steps, "Tour '{$tourId}' must have at least one step");
+        }
+    }
+
+    public function testEveryStepHasRequiredKeys(): void
+    {
+        $service = $this->buildService([]);
+        foreach (GuidedTourService::ALL_TOURS as $tourId) {
+            foreach ($service->stepsFor($tourId) as $i => $step) {
+                $this->assertArrayHasKey('id', $step);
+                $this->assertArrayHasKey('title_key', $step);
+                $this->assertArrayHasKey('body_key', $step);
+                $this->assertArrayHasKey('placement', $step);
+                $this->assertIsString($step['title_key'], "Step {$i} of {$tourId} missing title_key");
+                $this->assertIsString($step['body_key'], "Step {$i} of {$tourId} missing body_key");
+            }
+        }
+    }
+
+    public function testStepCountsMatchPlan(): void
+    {
+        // Plan-Vertrag aus .claude/GUIDED_TOUR_PLAN.md § Tour-Matrix.
+        $service = $this->buildService([]);
+        $this->assertCount(7, $service->stepsFor('junior'));
+        $this->assertCount(5, $service->stepsFor('cm'));
+        $this->assertCount(4, $service->stepsFor('ciso'));
+        $this->assertCount(5, $service->stepsFor('isb'));
+        $this->assertCount(2, $service->stepsFor('risk_owner'));
+        $this->assertCount(3, $service->stepsFor('auditor'));
+    }
+
+    public function testUnknownTourReturnsEmpty(): void
+    {
+        $service = $this->buildService([]);
+        $this->assertSame([], $service->stepsFor('wurst'));
+    }
+
+    public function testMetaReflectsStepCount(): void
+    {
+        $service = $this->buildService([]);
+        $meta = $service->metaFor('junior');
+        $this->assertSame('junior', $meta['id']);
+        $this->assertSame(7, $meta['step_count']);
+        $this->assertGreaterThan(0, $meta['duration_min']);
+    }
+
+    public function testAllMetaCoversAllTours(): void
+    {
+        $service = $this->buildService([]);
+        $all = $service->allMeta();
+        $this->assertCount(count(GuidedTourService::ALL_TOURS), $all);
+        $ids = array_map(static fn(array $m): string => $m['id'], $all);
+        foreach (GuidedTourService::ALL_TOURS as $tourId) {
+            $this->assertContains($tourId, $ids);
+        }
+    }
+}

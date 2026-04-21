@@ -217,6 +217,16 @@
                             <i class="bi bi-shield-lock" aria-hidden="true"></i>
                             {{ 'nav.security'|trans({}, 'nav') }}
                         </a>
+                        {# Sprint 13 — Guided-Tour-Launcher. Klick startet Tour in
+                         # der aktuell vorgesehenen Rolle; Re-Run ist jederzeit möglich. #}
+                        <a href="{{ path('app_home') }}#tour-restart"
+                           class="user-dropdown-item"
+                           role="menuitem"
+                           data-action="click->guided-tour#start"
+                           data-guided-tour-role-param="junior">
+                            <i class="bi bi-stars fairy-icon-sparkle" aria-hidden="true"></i>
+                            {{ 'guided_tour.action.restart'|trans({}, 'guided_tour') }}
+                        </a>
                         <div class="user-dropdown-divider"></div>
                         <a href="{{ path('app_logout') }}" class="user-dropdown-item user-dropdown-logout fairy-logout" role="menuitem">
                             <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
@@ -321,6 +331,11 @@
 
     {# Keyboard Shortcuts Help #}
     {% include '_components/_keyboard_shortcuts.html.twig' %}
+
+    {# Sprint 13 — Guided Tour Mount (global, damit User-Dropdown-Launcher
+     # von überall klickbar ist). Der eigentliche Tour-Content lebt via
+     # Fetch der /tour/steps/{role}-Route. #}
+    {% include '_components/_guided_tour_mount.html.twig' %}
 
     {# Bulk Delete Confirmation Dialog #}
     {% include '_components/_bulk_delete_confirmation.html.twig' %}
