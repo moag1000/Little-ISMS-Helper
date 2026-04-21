@@ -60,4 +60,38 @@ class DataReuseHubController extends AbstractController
             'top_suppliers' => $suppliers,
         ]);
     }
+
+    /**
+     * Sprint 6 / R6 — Per-Entity-Reuse-Heatmap.
+     *
+     * Gibt jedem wiederverwendeten Dokument und Lieferanten eine farbige
+     * Kachel, intensiv nach Anzahl referenzierender Requirements. Dient
+     * dem Management-Review zur Frage *„welche Artefakte tragen das
+     * ISMS?"* und zeigt Monokultur-Risiken (wenn ein Dokument 80 %
+     * der Last trägt).
+     */
+    #[Route('/reuse/heatmap', name: 'app_data_reuse_heatmap', methods: ['GET'])]
+    public function heatmap(): Response
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        $documents = $this->hubService->topDocumentsByReuse($tenant, 200);
+        $suppliers = $this->hubService->topSuppliersByReuse($tenant, 200);
+
+        $docMax = 0;
+        foreach ($documents as $d) {
+            $docMax = max($docMax, $d['requirement_count']);
+        }
+        $supMax = 0;
+        foreach ($suppliers as $s) {
+            $supMax = max($supMax, $s['requirement_count']);
+        }
+
+        return $this->render('data_reuse_hub/heatmap.html.twig', [
+            'documents' => $documents,
+            'suppliers' => $suppliers,
+            'doc_max' => $docMax,
+            'sup_max' => $supMax,
+        ]);
+    }
 }

@@ -1963,3 +1963,18 @@ reuse:
         requirements_in_frameworks: 'Anforderungen in %fw% Framework(s)'
     cta:
         portfolio: 'Trend und Portfolio-Report'
+        heatmap: 'Reuse-Heatmap'
+    heatmap:
+        title: 'Reuse-Heatmap'
+        description: 'Welche Dokumente und Lieferanten tragen das ISMS? Helle Kacheln = geringe Wiederverwendung, rote Kacheln = Load-Bearing.'
+        legend:
+            title: 'Intensität:'
+            low: 'niedrig'
+            medium: 'mittel'
+            high: 'hoch'
+            top: 'Spitze'
+        documents:
+            heading: 'Dokumente (%count%, Max %max% Requirements)'
+        suppliers:
+            heading: 'Lieferanten (%count%, Max %max% Requirements)'
+        hint_monoculture: 'Wenige sehr-rote Kacheln sind ein Monokultur-Risiko: fällt ein einzelnes Artefakt weg, bricht die Abdeckung vieler Frameworks ein. Spread the load.'
