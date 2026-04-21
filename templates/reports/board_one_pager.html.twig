@@ -263,7 +263,7 @@
                 {% for fw in framework_compliance %}
                 <div class="fw-row">
                     <span class="fw-name">{{ fw.name|length > 12 ? fw.name[:12] ~ '.' : fw.name }}</span>
-                    <span class="fw-pct {% if fw.percentage >= 80 %}success{% elseif fw.percentage >= 60 %}warning{% else %}danger{% endif %}" style="color: {% if fw.percentage >= 80 %}#16a34a{% elseif fw.percentage >= 60 %}#d97706{% else %}var(--danger){% endif %}">{{ fw.percentage }}%</span>
+                    <span class="fw-pct {% if fw.percentage >= 80 %}success{% elseif fw.percentage >= 60 %}warning{% else %}danger{% endif %}" style="color: {% if fw.percentage >= 80 %}var(--success){% elseif fw.percentage >= 60 %}var(--warning){% else %}var(--danger){% endif %}">{{ fw.percentage }}%</span>
                     <span class="fw-bar">
                         <div class="progress-bar-container">
                             <div class="progress-fill {% if fw.percentage >= 80 %}success{% elseif fw.percentage >= 60 %}warning{% else %}danger{% endif %}"
