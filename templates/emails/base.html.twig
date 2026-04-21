@@ -48,9 +48,9 @@
                                 <tr>
                                     <td style="font-size: 11px; color: #6d6b92; line-height: 1.6;">
                                         {% block footer %}
-                                            <p style="margin: 0 0 4px 0;">{{ 'email.footer.sent_by'|trans({}, 'messages')|default('Diese Nachricht wurde von Little ISMS Helper verschickt.') }}</p>
+                                            <p style="margin: 0 0 4px 0;">{{ 'email_notification.footer.sent_by'|trans({}, 'messages')|default('Diese Nachricht wurde von Little ISMS Helper verschickt.') }}</p>
                                             <p style="margin: 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;">
-                                                ISMS · v{{ app_version|default('3.0') }} · {{ 'email.footer.auto'|trans({}, 'messages')|default('Automatische Benachrichtigung') }}
+                                                ISMS · v{{ app_version|default('3.0') }} · {{ 'email_notification.footer.auto'|trans({}, 'messages')|default('Automatische Benachrichtigung') }}
                                             </p>
                                         {% endblock %}
                                     </td>

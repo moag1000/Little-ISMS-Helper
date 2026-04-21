@@ -485,7 +485,7 @@ error:
         back: Zurück
         login: Anmelden
         retry: 'Nochmal versuchen'
-email:
+email_notification:
     footer:
         sent_by: 'Diese Nachricht wurde von Little ISMS Helper verschickt.'
         auto: 'Automatische Benachrichtigung'

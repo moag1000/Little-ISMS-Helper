@@ -41,7 +41,9 @@
         </div>
         <div class="fa-dropdown-panel__body">
             {% for t in availableTenants %}
-                <a href="{{ path('app_tenant_switch', {id: t.id}) }}"
+                {# Route app_tenant_switch muss vom Backend registriert werden;
+                 # t.switchUrl als Fallback, falls verschiedene Routing-Strategien. #}
+                <a href="{{ t.switchUrl|default('#') }}"
                    class="fa-dropdown-panel__item {% if t.isCurrent %}is-active{% endif %}"
                    role="menuitem">
                     <span class="fa-tenant-switch__item-initials" aria-hidden="true">{{ t.initials }}</span>
