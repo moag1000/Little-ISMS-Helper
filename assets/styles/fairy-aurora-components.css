@@ -690,3 +690,20 @@
 @media (prefers-reduced-motion: reduce) {
     .fa-mode-switch__icon { transition: opacity var(--t-instant); transform: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Topbar-Layout-Adjustments (FA-3 Shell)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.header-system-status {
+    display: inline-flex;
+    align-items: center;
+}
+
+.header-actions {
+    gap: 10px !important;
+}
+
+.header-logo {
+    min-width: 0;
+}

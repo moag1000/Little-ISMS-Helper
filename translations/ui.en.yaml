@@ -55,6 +55,12 @@ ui:
         light: 'Light'
         dark: 'Dark'
         system: 'System'
+    system:
+        status:
+            operational: 'Operational'
+            degraded: 'Degraded'
+            down: 'Down'
+            maintenance: 'Maintenance'
     keyboard:
         navigation: Navigation
         select: Select
