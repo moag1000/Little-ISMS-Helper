@@ -965,6 +965,61 @@ Fix: `getId()` statt Property-Zugriff. Twig-Templates waren nicht betroffen
 
 ---
 
+### ✅ Phase 8CM4: Seed-Kataloge, Admin-Katalog, 3-Bucket-Applicability, Wizard-Integration (Abgeschlossen 2026-04-21)
+
+**Ausgangspunkt:** Junior-Consultant-Walkthrough-Nachlese. Seed-UI
+zeigte nur 3 Kataloge, Admin-Compliance nur 15 von 18 in der DB
+geladenen Frameworks, Pflicht-Badge binär irreführend. Doppel-
+Sprint-Paket zur Framework-Onboarding-Reife.
+
+#### Ergebnis-Matrix
+
+| Item | Commit | FTE-d | Kern-Deliverable |
+|------|--------|-------|-------------------|
+| S7-1 NIS2 ↔ ISO 27001 Seed | `3edf5160` (Teil) | 0,75 | 79 Paare, ENISA + BSI + Impl. Reg. (EU) 2024/2690 |
+| S7-2 DORA ↔ ISO 27001 Seed | `3edf5160` (Teil) | 0,75 | 68 Paare, EBA + ENISA + BaFin-FAQ |
+| S7-3 TISAX ↔ ISO 27001 Seed | `3edf5160` (Teil) | 1,0 | 98 Paare, VDA-ISA → 27001:2022 Annex A |
+| S7-4 GDPR ↔ ISO 27001 Seed | `3edf5160` (Teil) | 0,5 | 40 Paare, EDPB Guidelines |
+| S8-1 GDPR ↔ ISO 27701 Seed | `a0b4e5a8` | 0,5 | 60 Paare, ISO 27701:2019 Annex D GDPR-Mapping |
+| Admin-Katalog 15 → 23 Frameworks | `54889154` | 0,5 | SOC2/NIST-CSF/CIS/ISO-22301/ISO27005/BDSG/EU-AI-ACT/NIS2UmsuCG im Katalog |
+| BSI-Grundschutz-Check Macro-Fix | `b9228654` | 0,25 | `_self`-Import in embed-Scopes durch expliziten Pfad ersetzt |
+| Option B 3-State-Applicability | `f24278c1` | 1,5 | universal/conditional/voluntary + Condition-Text pro Framework |
+| Sprint 9 Wizard-Integration | `a770c9b8` | 2,0 | `FrameworkApplicabilityService` + Step-8-Template in 3 Buckets |
+
+**Total:** ~8 FTE-Tage. Wirkt auf Junior-Implementer-Erfahrung direkt —
+statt *„welche der 23 roten Frameworks lade ich jetzt?"* steht bei
+der Einrichtung *„Pflicht: 3, Empfohlen: 4, Optional: 16"* mit einem
+Begründungstext pro Framework.
+
+#### Neue Service-/Artefakt-Schicht
+
+- **`FrameworkApplicabilityService`** — reine Entscheidungs-Engine,
+  klassifiziert 23 Frameworks per `classifyAll($industries, $size, $country, $aiHighRisk)`.
+  Testbar, ohne Template-Abhängigkeit, wiederverwendbar über den Wizard hinaus
+  (Kandidaten: Admin-Panel-Filter, Reports *„pflicht-erfüllt/gap"*).
+- **8 Seed-Kataloge** — BSI/SOC2/C5:2026/NIS2/DORA/TISAX/GDPR ↔ ISO 27001
+  plus GDPR ↔ ISO 27701. Alle idempotent, mit audit-fähigem `verifiedBy`.
+- **Admin-Compliance-Katalog** — einheitliche Quelle für alle 23 Frameworks,
+  Applicability-Metadata + Translation-Keys für Trigger-Texte.
+
+#### Wie sich das für die Personas anfühlt
+
+- **Junior:** *„Ich öffne den Wizard. Tool sagt mir: 'Für 40-Mann-SaaS
+  in AT brauchst du ISO 27001 + GDPR. NIS2 nur wenn ihr auf ≥50 MA
+  wachst. DORA? Kein Finanzdienstleister, ignorier das.' Drei Checkboxen
+  statt 23 — das ist der Unterschied zwischen *'wo fang ich an'*
+  und *'ich weiß was zu tun ist'*."*
+- **Compliance-Manager:** *„Neu-Onboarding pro Tenant: von 2 Stunden
+  Consultant-Rücksprache auf ~15 min Self-Service. Der Applicability-
+  Text ist Audit-Nachweis zugleich — *'Warum kein DORA?'* → *'Kein
+  Finanzdienstleister, Stand 2026-04-21'*."*
+- **Consultant:** *„Zuordnungslogik im Service heißt: ein Kunden-
+  Fragebogen-Durchlauf statt einer individuellen Beratungsstunde.
+  Mehrwert des Consultants verschiebt sich von Framework-Auswahl
+  auf Umsetzungs-Qualität."*
+
+---
+
 ### ✅ Phase 8JR: Junior+UX+CM Audit Sprint (Abgeschlossen 2026-04-19)
 
 **Grundlage:** Drei unabhängige Audits
@@ -1240,7 +1295,11 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 (1 868 Anforderungen, 121 Bausteine via DocBook-XML-Import),
 (7) CM-Junior-Consultant-Walkthrough Sprint 4+5+6 (15 FTE-d, 12 Items,
 Reuse + Framework-Mapping junior-tauglich: Wizard / Hub / Seed-Review-Queue
-/ Reuse-Heatmap / Version-Migrations-UI / CSV-Import mit Dry-Run-Preview).
+/ Reuse-Heatmap / Version-Migrations-UI / CSV-Import mit Dry-Run-Preview),
+(8) Phase 8CM4 Seed-Kataloge + Admin-Katalog + 3-Bucket-Applicability +
+Wizard-Integration (8 FTE-d: 4 neue Seeds NIS2/DORA/TISAX/GDPR ↔ ISO 27001,
+1 Seed GDPR ↔ ISO 27701, Admin-Katalog 15 → 23 Frameworks, FrameworkApplicabilityService
++ Setup-Wizard-Step-8 mit Pflicht/Empfohlen/Optional-Buckets).
 Audit-Doc 78 → 98 → Residual-Budget 19 → 0 FTE-d. Alle 7 Ziel-Frameworks Tool-🟢,
 BSI IT-Grundschutz auf 99%+.
 **Naechste Aktualisierung:** Nach Cutting `v2.7.0` + Phase 9 Holding-Struktur.
