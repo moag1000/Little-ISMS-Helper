@@ -9,6 +9,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ✨ Added
 
+#### Admin-Panel-Review: Sprint 10/11/12 (2026-04-21)
+
+Drei-Personas-Walkthrough durchs Admin-Panel (Consultant / Junior-
+Implementer / UX-Specialist) ergab sieben konsolidierte Findings.
+Nach Impact umgesetzt in drei Sprints:
+
+**Sprint 10 — Kritisch**
+- **S10-1 Menu-Restructuring** (`8420a877`): Mega-Menü 7 flache
+  Sektionen → 2 Oberdomänen „Platform-Admin" (Users & Access /
+  Configuration / Data & Operations) + „Compliance-Admin" (Frameworks
+  / Imports). Hidden Routes `KPI-Thresholds` und `Tags` sind jetzt
+  sichtbar (vorher Dead-Routes). Compliance-Import-Wizard erhält
+  direkten Menü-Eintrag.
+- **S10-2 Data-Repair Safety-Banner** (`d5d888ef`): Roter
+  Warn-Header oben auf /admin/data-repair/ mit 3-Punkte-Liste
+  (Audit-Log-Trail, Backup-Hinweis, Confirm-Dialog-Betonung) + zwei
+  Escape-Aktionen (Backup prüfen, Audit-Log ansehen). Junior-Sorge
+  „Titel klingt gefährlich" adressiert ohne Dry-Run-Rewrite.
+
+**Sprint 11 — Wichtig**
+- **Dashboard-KPIs neu kuratiert + Dynamic Quick Actions** (`f3d10817`):
+  - 2 der 4 KPI-Cards ersetzt: *Database Size (MB)* → *Framework-
+    Ladezustand* („18 / 23"). *Total Records* → *Ungeprüfte Seed-
+    Mappings*. Beide semantisch gefärbt (rot bei action required).
+  - Framework-Card Footer-CTA „Verwalten" → /admin/compliance.
+    Seed-Mapping-Card Footer-CTA „Jetzt prüfen" → Seed-Review-Queue
+    (nur wenn >0).
+  - Quick Actions sind jetzt kontextabhängig: „N Seed-Mappings prüfen"
+    / „N Frameworks fehlen" / „N inaktive Benutzer" erscheinen nur
+    wenn relevant. Standard-Shortcuts bleiben unten.
+  - Controller injiziert optional 4 Repos (framework, mapping,
+    workflow-instance, framework-loader) — null-safe für Tests.
+
+**Sprint 12 — Schön**
+- **S12-1 Breadcrumb-Konsistenz** (`86a2b151`): 12 Admin-Templates
+  ergänzen fehlende Breadcrumbs. Zwei Patterns harmonisiert:
+  `admin/layout.html.twig`-extender nutzen `{% block breadcrumb_items %}`,
+  `base.html.twig`-extender includen `_components/_breadcrumb.html.twig`.
+  Betroffen: compliance/statistics, modules/details + graph,
+  compliance_policy, loader_fixer-index + result, tag-index + new +
+  edit, kpi_threshold-index + new + edit.
+- **S12-2 Admin-scoped Command Palette** (`a418e7e5`): ⌘P
+  gewinnt 21 neue Admin-Commands (Tenants, Roles, Permissions,
+  Sessions, MFA, Settings, KPI-Thresholds, Tags, Modules, Backup,
+  Export, Import, Data-Repair, Health, Licensing, Compliance-Catalog,
+  Policy, Loader-Fixer, Compliance-Import, Import-History) in der
+  Administration-Kategorie. Dead-Routes damit per Suche erreichbar.
+  Stimulus-Controller erkennt `/admin/*` und sortiert Admin-Commands
+  nach oben — Junior muss nicht „admin" tippen, um Ziel zu finden.
+
 #### Seed-Kataloge Erweiterung + Admin-Applicability + Wizard-Integration (2026-04-21)
 
 Vier-teiliges Doppel-Sprint-Paket zur Verbesserung der Framework-
