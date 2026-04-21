@@ -123,6 +123,17 @@ class ComplianceMappingSeedController extends AbstractController
                 'rationale_source' => 'EDPB Guidelines + BSI „Datenschutz und IT-Sicherheit" + ISO/IEC 27701',
                 'icon' => 'bi-person-lock',
             ],
+            [
+                'id' => 'gdpr-iso27701',
+                'command' => 'app:seed-gdpr-iso27701-mappings',
+                'source_code' => 'GDPR',
+                'target_code' => 'ISO27701',
+                'source_label' => 'GDPR (General Data Protection Regulation)',
+                'target_label' => 'ISO/IEC 27701:2019 — PIMS',
+                'mapping_count' => 60,
+                'rationale_source' => 'ISO 27701:2019 Annex D (GDPR-Mapping) + EDPB Guidelines 2/2023',
+                'icon' => 'bi-file-earmark-lock2',
+            ],
         ];
     }
 
