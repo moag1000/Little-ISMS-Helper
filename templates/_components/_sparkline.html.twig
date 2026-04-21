@@ -1,0 +1,65 @@
+{#
+ # FairyAurora Sparkline — SVG-Area-Chart mit End-Dot + Halo
+ #
+ # Usage:
+ #   {% import '_components/_sparkline.html.twig' as spark %}
+ #   {{ spark.render([1,4,3,7,9,12], { width: 140, height: 32 }) }}
+ #   {{ spark.render(values, { tone: 'accent', width: 120, height: 28 }) }}
+ #
+ # Props:
+ #   values: array of numbers (required)
+ #   width: default 140
+ #   height: default 32
+ #   tone: primary | accent | success | warning | danger (default: primary)
+ #   fill: boolean — area-fill (default: true)
+ #   endDot: boolean — halo+dot am Endpunkt (default: true)
+ #}
+
+{% macro render(values, props = {}) %}
+    {% set w = props.width|default(140) %}
+    {% set h = props.height|default(32) %}
+    {% set tone = props.tone|default('primary') %}
+    {% set fill = props.fill|default(true) %}
+    {% set endDot = props.endDot|default(true) %}
+
+    {% if values is empty %}
+        <svg width="{{ w }}" height="{{ h }}" aria-hidden="true"></svg>
+    {% else %}
+        {% set maxV = max(values) %}
+        {% set minV = min(values) %}
+        {% set range = maxV - minV > 0 ? maxV - minV : 1 %}
+        {% set padY = 3 %}
+        {% set step = (w - 4) / (values|length - 1 > 0 ? values|length - 1 : 1) %}
+
+        {% set points = [] %}
+        {% for v in values %}
+            {% set x = 2 + loop.index0 * step %}
+            {% set y = (h - padY) - ((v - minV) / range) * (h - padY * 2) %}
+            {% set points = points|merge([x|round(2) ~ ',' ~ y|round(2)]) %}
+        {% endfor %}
+        {% set path = points|join(' L ') %}
+        {% set lastX = 2 + (values|length - 1) * step %}
+        {% set lastY = (h - padY) - ((values|last - minV) / range) * (h - padY * 2) %}
+
+        {% set gradientId = 'fa-spark-' ~ random(99999) %}
+        <svg width="{{ w }}" height="{{ h }}" viewBox="0 0 {{ w }} {{ h }}"
+             class="fa-sparkline fa-sparkline--{{ tone }}" aria-hidden="true"
+             preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="{{ gradientId }}" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="currentColor" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
+                </linearGradient>
+            </defs>
+            {% if fill %}
+                <path d="M {{ path }} L {{ lastX|round(2) }},{{ h }} L 2,{{ h }} Z"
+                      fill="url(#{{ gradientId }})"/>
+            {% endif %}
+            <path d="M {{ path }}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            {% if endDot %}
+                <circle cx="{{ lastX|round(2) }}" cy="{{ lastY|round(2) }}" r="5" fill="currentColor" opacity="0.2"/>
+                <circle cx="{{ lastX|round(2) }}" cy="{{ lastY|round(2) }}" r="2" fill="currentColor"/>
+            {% endif %}
+        </svg>
+    {% endif %}
+{% endmacro %}

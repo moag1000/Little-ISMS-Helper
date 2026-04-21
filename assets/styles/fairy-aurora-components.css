@@ -366,3 +366,208 @@
 .fa-status-pill--warning { background: var(--warning-glow); color: var(--warning-text); border-color: var(--warning); }
 .fa-status-pill--danger  { background: var(--danger-glow);  color: var(--danger);  border-color: var(--danger); }
 .fa-status-pill--neutral { background: var(--surface-2);    color: var(--fg-2);    border-color: var(--border); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Alva Character Mount (FA-2: minimal — FA-4 ersetzt durch 9-Mood-SVG)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-alva {
+    display: inline-block;
+    position: relative;
+}
+.fa-alva img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Empty-State mit Alva-Anchor
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 48px 24px;
+    text-align: center;
+    min-height: 280px;
+}
+
+.fa-empty-state__alva {
+    opacity: 0.95;
+    margin-bottom: 8px;
+}
+
+.fa-empty-state__title {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0;
+    max-width: 440px;
+    line-height: 1.35;
+}
+
+.fa-empty-state__desc {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--fg-2);
+    margin: 0;
+    max-width: 480px;
+    line-height: 1.55;
+}
+
+.fa-empty-state__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Sparkline
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-sparkline {
+    display: inline-block;
+    vertical-align: middle;
+}
+.fa-sparkline--primary  { color: var(--primary); }
+.fa-sparkline--accent   { color: var(--accent); }
+.fa-sparkline--success  { color: var(--success); }
+.fa-sparkline--warning  { color: var(--warning); }
+.fa-sparkline--danger   { color: var(--danger); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   KPI-Card — Aurora-Pattern (überschreibt Legacy .kpi-card-Variante)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-kpi-card {
+    position: relative;
+    display: flex;
+    gap: 14px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    transition: border-color var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out),
+                transform var(--t-fast) var(--ease-out);
+    overflow: hidden;
+}
+
+.fa-kpi-card__topline {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--brand-gradient);
+}
+
+.fa-kpi-card--emphasis {
+    background: linear-gradient(145deg, var(--surface), var(--surface-2));
+    box-shadow: 0 0 0 1px var(--primary-glow), 0 4px 18px var(--primary-glow);
+    border-color: transparent;
+}
+
+.fa-kpi-card--linked { cursor: pointer; }
+.fa-kpi-card--linked:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 14px var(--primary-glow);
+    transform: translateY(-1px);
+}
+
+.fa-kpi-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    background: var(--primary-tint);
+    color: var(--primary);
+    border-radius: var(--r-md);
+    font-size: 16px;
+}
+.fa-kpi-card--accent  .fa-kpi-card__icon { background: var(--accent-tint);  color: var(--accent); }
+.fa-kpi-card--success .fa-kpi-card__icon { background: var(--success-glow); color: var(--success); }
+.fa-kpi-card--warning .fa-kpi-card__icon { background: var(--warning-glow); color: var(--warning); }
+.fa-kpi-card--danger  .fa-kpi-card__icon { background: var(--danger-glow);  color: var(--danger); }
+
+.fa-kpi-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.fa-kpi-card__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+
+.fa-kpi-card__value {
+    display: baseline;
+    gap: 4px;
+    line-height: 1;
+}
+.fa-kpi-card__number {
+    font-family: var(--font-sans);
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--fg);
+    letter-spacing: -0.02em;
+}
+.fa-kpi-card__unit {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-3);
+    margin-left: 4px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.fa-kpi-card__delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+}
+.fa-kpi-card__delta.trend-up   { color: var(--success); }
+.fa-kpi-card__delta.trend-down { color: var(--danger); }
+.fa-kpi-card__hint,
+.fa-kpi-card__hint-only {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--fg-3);
+    font-weight: 400;
+}
+
+.fa-kpi-card__sparkline {
+    margin-top: 6px;
+    margin-left: -4px;
+}
+
+.fa-kpi-card__link {
+    align-self: flex-start;
+    color: var(--fg-3);
+    text-decoration: none;
+    font-size: 18px;
+    transition: color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+}
+.fa-kpi-card__link:hover {
+    color: var(--primary);
+    transform: translateX(2px);
+}

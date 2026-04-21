@@ -1,29 +1,53 @@
 {#
-  Reusable Empty State Component
+  FairyAurora v3.0 — Empty-State mit Alva-Character-Anchor
 
   Usage:
   {% include '_components/_empty_state.html.twig' with {
+      mood: 'thinking',
       icon: 'bi-inbox',
       title: 'Noch keine Assets vorhanden',
       description: 'Legen Sie Ihr erstes Asset an, um zu beginnen.',
-      action: { label: 'Asset erstellen', url: path('app_asset_new') }
+      action: { label: 'Asset erstellen', url: path('app_asset_new'), icon: 'bi-plus-circle' }
   } %}
+
+  Optional props:
+    mood: idle|thinking|focused|sleeping|warning (Default-Mapping aus Plan § 21)
+    alvaSize: 80 (default)
+    icon: nur Fallback wenn kein Alva (mood: 'none')
+    secondary: { label, url } — optionaler Secondary-Link (z.B. "Import")
+
+  Mood-Mapping (Plan § 21):
+    - Noch nichts angelegt       → thinking   (default)
+    - Filter-Empty / kein Treffer → focused
+    - Alles erledigt              → sleeping
+    - Feature nicht aktiviert     → idle
+    - Fehler beim Laden           → warning
 #}
 
-<div class="empty-state">
-    <div class="empty-state-icon">
-        <i class="bi {{ icon|default('bi-inbox') }}"></i>
-    </div>
-    <h3 class="empty-state-title">{{ title }}</h3>
-    {% if description is defined %}
-        <p class="empty-state-description">{{ description }}</p>
+{% import '_components/_alva.html.twig' as alva %}
+{% import '_components/_cyber_button.html.twig' as btn %}
+
+<div class="empty-state fa-empty-state">
+    {% if mood|default('thinking') != 'none' %}
+        {{ alva.render(mood|default('thinking'), { size: alvaSize|default(80), decorative: true, class: 'fa-empty-state__alva' }) }}
+    {% else %}
+        <div class="empty-state-icon">
+            <i class="bi {{ icon|default('bi-inbox') }}" aria-hidden="true"></i>
+        </div>
     {% endif %}
+
+    <h3 class="empty-state-title fa-empty-state__title">{{ title }}</h3>
+
+    {% if description is defined %}
+        <p class="empty-state-description fa-empty-state__desc">{{ description }}</p>
+    {% endif %}
+
     {% if action is defined and is_granted('ROLE_USER') %}
-        <a href="{{ action.url }}"
-           class="btn btn-primary"
-           data-turbo-action="advance">
-            <i class="bi {{ action.icon|default('bi-plus-circle') }}"></i>
-            {{ action.label }}
-        </a>
+        <div class="fa-empty-state__actions">
+            {{ btn.link(action.url, action.label, { variant: 'primary', icon: action.icon|default('bi-plus-circle') }) }}
+            {% if secondary is defined %}
+                {{ btn.link(secondary.url, secondary.label, { variant: 'ghost', icon: secondary.icon|default(null) }) }}
+            {% endif %}
+        </div>
     {% endif %}
 </div>
