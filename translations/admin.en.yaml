@@ -70,6 +70,12 @@ admin:
             database: 'Database Size'
             total_records: 'Total Records'
             across_modules: 'Across all modules'
+            frameworks: 'Frameworks (active/catalog)'
+            mappings_count: '%count% cross-framework mappings'
+            unreviewed_mappings: 'Unreviewed seed mappings'
+            workflows_open: '%count% open workflows'
+            workflows_none: 'No open workflows'
+            review_now: 'Review now'
         modules:
             title: 'Modules Overview'
             module: Module
@@ -88,6 +94,10 @@ admin:
             add_role: 'Add role'
             view_logs: 'View logs'
             manage_compliance: 'Manage compliance'
+            manage_tenants: 'Manage tenants'
+            review_seeds: 'Review %count% seed mappings'
+            load_frameworks: '%count% frameworks missing — load now'
+            review_inactive_users: 'Review %count% inactive users'
         activity:
             title: Activity
             empty: 'No recent activity.'

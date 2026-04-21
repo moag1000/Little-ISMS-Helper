@@ -6,8 +6,12 @@ use App\Entity\Tenant;
 use DateTimeImmutable;
 use Exception;
 use App\Repository\AuditLogRepository;
+use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\ComplianceMappingRepository;
 use App\Repository\ControlRepository;
 use App\Repository\UserRepository;
+use App\Repository\WorkflowInstanceRepository;
+use App\Service\ComplianceFrameworkLoaderService;
 use App\Service\ModuleConfigurationService;
 use Doctrine\DBAL\Platforms\MariaDBPlatform;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
@@ -46,7 +50,11 @@ class AdminDashboardController extends AbstractController
         private readonly AuditLogRepository $auditLogRepository,
         private readonly ControlRepository $controlRepository,
         private readonly ModuleConfigurationService $moduleConfiguration,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly ?ComplianceFrameworkRepository $frameworkRepository = null,
+        private readonly ?ComplianceMappingRepository $mappingRepository = null,
+        private readonly ?ComplianceFrameworkLoaderService $frameworkLoader = null,
+        private readonly ?WorkflowInstanceRepository $workflowInstanceRepository = null,
     ) {
     }
 
@@ -115,6 +123,11 @@ class AdminDashboardController extends AbstractController
             ->getQuery()
             ->getSingleScalarResult();
 
+        // Sprint 11: Compliance-Health Metriken (Framework-Ladezustand, Mapping-Counts,
+        // Unreviewed-Seeds) — ersetzen die Ops-lastigen Total-Records-/DB-Size-Cards.
+        $complianceStats = $this->getComplianceHealthStats();
+        $workflowStats = $this->getWorkflowStats();
+
         return [
             'users' => [
                 'total' => $totalUsers,
@@ -128,7 +141,94 @@ class AdminDashboardController extends AbstractController
             'database' => [
                 'size_mb' => $this->getDatabaseSize(),
             ],
+            'compliance' => $complianceStats,
+            'workflows' => $workflowStats,
         ];
+    }
+
+    /**
+     * @return array{
+     *     frameworks_catalog: int, frameworks_loaded: int, frameworks_missing: int,
+     *     mappings_total: int, unreviewed_seed_mappings: int
+     * }
+     */
+    private function getComplianceHealthStats(): array
+    {
+        $catalog = 0;
+        if ($this->frameworkLoader !== null) {
+            try {
+                $catalog = count($this->frameworkLoader->getAvailableFrameworks());
+            } catch (Exception $e) {
+                $this->logger->debug('Framework catalog not available', ['error' => $e->getMessage()]);
+            }
+        }
+
+        $loaded = 0;
+        if ($this->frameworkRepository !== null) {
+            try {
+                $loaded = (int) $this->frameworkRepository->createQueryBuilder('f')
+                    ->select('COUNT(f.id)')
+                    ->where('f.active = :active')
+                    ->setParameter('active', true)
+                    ->getQuery()
+                    ->getSingleScalarResult();
+            } catch (Exception $e) {
+                $this->logger->debug('Framework count failed', ['error' => $e->getMessage()]);
+            }
+        }
+
+        $mappingsTotal = 0;
+        $unreviewedSeeds = 0;
+        if ($this->mappingRepository !== null) {
+            try {
+                $mappingsTotal = (int) $this->mappingRepository->createQueryBuilder('m')
+                    ->select('COUNT(m.id)')
+                    ->getQuery()
+                    ->getSingleScalarResult();
+                $unreviewedSeeds = (int) $this->mappingRepository->createQueryBuilder('m')
+                    ->select('COUNT(m.id)')
+                    ->where('m.reviewStatus = :status')
+                    ->andWhere('(m.verifiedBy LIKE :seed OR m.verifiedBy LIKE :consultant OR m.verifiedBy LIKE :csv OR m.verifiedBy = :wizard OR m.verifiedBy = :migrate)')
+                    ->setParameter('status', 'unreviewed')
+                    ->setParameter('seed', 'app:seed-%')
+                    ->setParameter('consultant', 'consultant_template_import%')
+                    ->setParameter('csv', 'csv_import_ui%')
+                    ->setParameter('wizard', 'mapping_wizard')
+                    ->setParameter('migrate', 'app:migrate-framework-version')
+                    ->getQuery()
+                    ->getSingleScalarResult();
+            } catch (Exception $e) {
+                $this->logger->debug('Mapping count failed', ['error' => $e->getMessage()]);
+            }
+        }
+
+        return [
+            'frameworks_catalog' => $catalog,
+            'frameworks_loaded' => $loaded,
+            'frameworks_missing' => max(0, $catalog - $loaded),
+            'mappings_total' => $mappingsTotal,
+            'unreviewed_seed_mappings' => $unreviewedSeeds,
+        ];
+    }
+
+    /** @return array{open: int} */
+    private function getWorkflowStats(): array
+    {
+        if ($this->workflowInstanceRepository === null) {
+            return ['open' => 0];
+        }
+        try {
+            $open = (int) $this->workflowInstanceRepository->createQueryBuilder('wi')
+                ->select('COUNT(wi.id)')
+                ->where('wi.status IN (:states)')
+                ->setParameter('states', ['running', 'pending', 'in_progress'])
+                ->getQuery()
+                ->getSingleScalarResult();
+            return ['open' => $open];
+        } catch (Exception $e) {
+            $this->logger->debug('Workflow count failed', ['error' => $e->getMessage()]);
+            return ['open' => 0];
+        }
     }
 
     private function getCorporateTableStats(string $tableName, Tenant $currentTenant): array
