@@ -1177,7 +1177,7 @@ Dokument ohne Nacharbeit nutzbar.
 | 8D | Integration Marketplace | 📅 | Slack, Teams, JIRA Anbindungen |
 | 8E | White-Label Support | 📅 | Eigenes Branding für Kunden |
 | 8F | AI-Features | 📅 | Risk Scoring, Auto-Classification |
-| 8G | Interactive Help & Onboarding | 📅 | Guided Tours, Contextual Help, Keyboard Shortcuts Overlay |
+| 8G | Interactive Help & Onboarding | ✅ | Guided Tours (6 Rollen), Contextual Help, Keyboard-Shortcuts-Cheat-Sheet — abgeschlossen 2026-04-21, siehe `.claude/GUIDED_TOUR_PLAN.md` |
 | 8I | Enhanced Search & Navigation | 📅 | Command Palette Contextual Actions, Global Search Filters |
 
 ---
@@ -1380,7 +1380,14 @@ Wizard-Integration (8 FTE-d: 4 neue Seeds NIS2/DORA/TISAX/GDPR ↔ ISO 27001,
 (9) Phase 8CM5 Admin-Panel-UX-Review (~4,25 FTE-d nach Drei-Personas-Walkthrough:
 Menü-Restrukturierung Platform-/Compliance-Admin, Hidden Routes sichtbar,
 Data-Repair-Safety-Banner, Dashboard-KPIs neu kuratiert, Breadcrumb-Konsistenz,
-Admin-scoped Command-Palette).
+Admin-scoped Command-Palette),
+(10) Phase 8G Interactive Help & Onboarding (~9,5 FTE-d Sprint 13 nach
+Experten-Konsens UX + 7 Personas + 5 Domain-Specialists: eigener Stimulus-
+Controller im Cyberpunk-Fee-Theme, 6 rollenbasierte Touren
+junior/cm/ciso/isb/risk_owner/auditor, Modul-bedingte Zusatz-Stopps
+BSI/GDPR/BCM, Admin-Completion-Report für ISO 27001 A.6.3-Nachweis,
+Tenant-Override-Modul für Tour-Content, Static-Help-Handouts mit
+Print-CSS statt PDF-Pipeline — siehe `.claude/GUIDED_TOUR_PLAN.md`).
 Audit-Doc 78 → 98 → Residual-Budget 19 → 0 FTE-d. Alle 7 Ziel-Frameworks Tool-🟢,
 BSI IT-Grundschutz auf 99%+.
 **Naechste Aktualisierung:** Nach Cutting `v2.7.0` + Phase 9 Holding-Struktur.

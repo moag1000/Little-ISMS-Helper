@@ -9,6 +9,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ✨ Added
 
+#### Sprint 13 — Guided Tour (Phase 8G) (2026-04-21)
+
+Rollenbasierte First-Login-Tour mit eigenem Stimulus-Controller
+(keine externe Library), Cyberpunk-Fee-Theme (cyan-pink-purple
+Gradient, fairy-sparkle-Animations). Expertenrunde UX + 7 Personas +
+5 Domain-Specialists siehe `.claude/GUIDED_TOUR_PLAN.md`.
+
+**Phase A — Core (`9cb96800`)**
+- `User.completedTours` JSON + Migration + Entity-Helpers.
+- `GuidedTourService` mit 6 rollenbasierten Step-Listen
+  (junior=7, cm=5, ciso=4, isb=5, risk_owner=2, auditor=3) +
+  Role-Auto-Detect.
+- `GuidedTourController` (steps / complete / reset).
+- Custom Stimulus-Controller mit Popover + Backdrop + Highlight +
+  Keyboard-Nav (←/→/ESC) + Focus-Trap + aria-live + prefers-
+  reduced-motion + LocalStorage-Resume + Mobile-Fallback < 768 px.
+- Cyberpunk-Fee-CSS (Gradient-Border, fairy-pulse + fairy-shimmer,
+  3-Farb-Highlight-Pulse). Vollständige DE+EN-Translations.
+- `HomeController::dashboard` schlägt rollen-passende Tour per Banner
+  vor.
+
+**Phase B — Launcher + Tests + Admin-Report + Modul-Addons
+(`abae4a30`, `c9da4898`)**
+- User-Dropdown „Tour neu starten" mit sparkle-Icon — global
+  erreichbar (Mount auf base.html.twig gehoben).
+- 21 Unit-Tests (Service + Entity). 199 Assertions, alle grün.
+- `/admin/tours/completion` Admin-Report mit User × Tour-Matrix,
+  Stats, Filter, CSV-Export, Reset-Action — **ISO 27001 A.6.3
+  Awareness-Training-Audit-Nachweis**.
+- Modul-bedingte Zusatz-Stopps (BSI-Grundschutz / GDPR / BCM) an
+  Junior- und ISB-Touren.
+
+**Phase C — Content-Config + Help-Handouts
+(`8c04d1a1`, `5ef94e36`)**
+- `GuidedTourStepOverride` Entity + Migration + Repository.
+  Auflösungs-Reihenfolge: tenant-spezifisch > global (tenant=null) >
+  Translation-Default.
+- `/admin/tours/content` + `/{tourId}` Admin-UI mit DE+EN-Edit pro
+  Step, Default als Placeholder. Bulk-Save + Reset-Tour.
+  SUPER_ADMIN kann System-Default-Override setzen.
+- `/help/tour` + `/help/tour/{role}` statische Pages mit
+  Cyberpunk-Fee-Step-Number-Badges. `@media print`-CSS für
+  Handout-Druck inkl. Unterschriftsfeld — **ersetzt geplanten PDF-
+  Export zu 25 % Aufwand**.
+
+**Neue Mega-Menü-Einträge unter Platform-Config:**
+Tour-Einweisungsstand, Tour-Texte anpassen.
+
+**Realisiert:** ~9,5 FTE-d, 28 Files.
+
 #### Admin-Panel-Review: Sprint 10/11/12 (2026-04-21)
 
 Drei-Personas-Walkthrough durchs Admin-Panel (Consultant / Junior-
