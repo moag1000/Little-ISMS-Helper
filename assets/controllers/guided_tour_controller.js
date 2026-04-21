@@ -221,7 +221,9 @@ export default class extends Controller {
                 <button type="button" class="guided-tour-close" aria-label="Close"
                         data-guided-tour-action="close">&times;</button>
             </div>
-            <h3 id="guided-tour-title" class="guided-tour-title">${this.escapeHtml(step.title)}</h3>
+            <h3 id="guided-tour-title" class="guided-tour-title">
+                ${step.icon ? `<i class="${this.escapeHtml(step.icon)}" aria-hidden="true"></i> ` : ''}${this.escapeHtml(step.title)}
+            </h3>
             <div id="guided-tour-body" class="guided-tour-body">${this.escapeHtml(step.body)}</div>
             <div class="guided-tour-footer">
                 <button type="button" class="btn btn-link btn-sm"

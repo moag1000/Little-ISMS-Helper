@@ -54,6 +54,7 @@ class GuidedTourController extends AbstractController
 
             $steps[] = [
                 'id' => $step['id'],
+                'icon' => $step['icon'] ?? null,
                 'target' => $step['target'],
                 'title' => $title,
                 'body' => $body,

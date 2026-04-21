@@ -276,6 +276,17 @@ dashboard:
     ict_third_party_providers: ICT Third-Party Providers
     critical_ict_providers: Critical ICT Providers
 
+# Top-level kpi.dora block — service emits label as "kpi.dora.*" without
+# the dashboard-prefix so that |trans({}, 'dashboard') resolves directly.
+kpi.dora:
+  ict_risks: ICT Risks
+  ict_risks_high: High ICT Risks
+  major_ict_incidents: Major ICT Incidents
+  4h_reporting_compliance: 4h Reporting Compliance
+  resilience_tests_ytd: Resilience Tests (YTD)
+  ict_third_party_providers: ICT Third-Party Providers
+  critical_ict_providers: Critical ICT Providers
+
 # Top-level first_steps keys (used by templates without dashboard. prefix)
 first_steps:
     title: 'My first ISMS — guided onboarding'

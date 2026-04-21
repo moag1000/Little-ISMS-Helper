@@ -188,34 +188,25 @@ final class GuidedTourService
         $addons = [];
         if ($this->moduleConfig->isModuleActive('bsi_grundschutz')) {
             $addons[] = [
-                'id' => 'module-bsi',
-                'target' => null,
-                'title_key' => 'guided_tour.modules.bsi.title',
-                'body_key' => 'guided_tour.modules.bsi.body',
-                'url' => null,
-                'placement' => 'center',
+                'id' => 'module-bsi', 'icon' => 'bi-building-shield', 'target' => null,
+                'title_key' => 'guided_tour.modules.bsi.title', 'body_key' => 'guided_tour.modules.bsi.body',
+                'url' => null, 'placement' => 'center',
             ];
         }
         if ($this->moduleConfig->isModuleActive('privacy')
             || $this->moduleConfig->isModuleActive('gdpr')
         ) {
             $addons[] = [
-                'id' => 'module-gdpr',
-                'target' => null,
-                'title_key' => 'guided_tour.modules.gdpr.title',
-                'body_key' => 'guided_tour.modules.gdpr.body',
-                'url' => null,
-                'placement' => 'center',
+                'id' => 'module-gdpr', 'icon' => 'bi-person-badge', 'target' => null,
+                'title_key' => 'guided_tour.modules.gdpr.title', 'body_key' => 'guided_tour.modules.gdpr.body',
+                'url' => null, 'placement' => 'center',
             ];
         }
         if ($this->moduleConfig->isModuleActive('bcm')) {
             $addons[] = [
-                'id' => 'module-bcm',
-                'target' => null,
-                'title_key' => 'guided_tour.modules.bcm.title',
-                'body_key' => 'guided_tour.modules.bcm.body',
-                'url' => null,
-                'placement' => 'center',
+                'id' => 'module-bcm', 'icon' => 'bi-life-preserver', 'target' => null,
+                'title_key' => 'guided_tour.modules.bcm.title', 'body_key' => 'guided_tour.modules.bcm.body',
+                'url' => null, 'placement' => 'center',
             ];
         }
         return $addons;
@@ -227,62 +218,13 @@ final class GuidedTourService
         $dashboard = $this->urlFor('app_dashboard');
         $assets = $this->urlFor('app_asset_index');
         return [
-            [
-                'id' => 'welcome',
-                'target' => null,
-                'title_key' => 'guided_tour.junior.step.welcome.title',
-                'body_key' => 'guided_tour.junior.step.welcome.body',
-                'url' => $dashboard,
-                'placement' => 'center',
-            ],
-            [
-                'id' => 'mega-menu',
-                'target' => '[data-mega-menu-target="trigger"]',
-                'title_key' => 'guided_tour.junior.step.mega_menu.title',
-                'body_key' => 'guided_tour.junior.step.mega_menu.body',
-                'url' => $dashboard,
-                'placement' => 'bottom',
-            ],
-            [
-                'id' => 'kpis',
-                'target' => '.management-kpis-widget, .dashboard-stats, [data-role="kpi-grid"]',
-                'title_key' => 'guided_tour.junior.step.kpis.title',
-                'body_key' => 'guided_tour.junior.step.kpis.body',
-                'url' => $dashboard,
-                'placement' => 'top',
-            ],
-            [
-                'id' => 'iso9001-bridge',
-                'target' => null,
-                'title_key' => 'guided_tour.junior.step.iso9001_bridge.title',
-                'body_key' => 'guided_tour.junior.step.iso9001_bridge.body',
-                'url' => $dashboard,
-                'placement' => 'center',
-            ],
-            [
-                'id' => 'command-palette',
-                'target' => null,
-                'title_key' => 'guided_tour.junior.step.command_palette.title',
-                'body_key' => 'guided_tour.junior.step.command_palette.body',
-                'url' => $dashboard,
-                'placement' => 'center',
-            ],
-            [
-                'id' => 'first-asset',
-                'target' => null,
-                'title_key' => 'guided_tour.junior.step.first_asset.title',
-                'body_key' => 'guided_tour.junior.step.first_asset.body',
-                'url' => $assets,
-                'placement' => 'center',
-            ],
-            [
-                'id' => 'shortcuts-hint',
-                'target' => null,
-                'title_key' => 'guided_tour.junior.step.shortcuts.title',
-                'body_key' => 'guided_tour.junior.step.shortcuts.body',
-                'url' => $dashboard,
-                'placement' => 'center',
-            ],
+            ['id' => 'welcome', 'icon' => 'bi-stars', 'target' => null, 'title_key' => 'guided_tour.junior.step.welcome.title', 'body_key' => 'guided_tour.junior.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
+            ['id' => 'mega-menu', 'icon' => 'bi-grid-3x3-gap', 'target' => '[data-mega-menu-target="trigger"]', 'title_key' => 'guided_tour.junior.step.mega_menu.title', 'body_key' => 'guided_tour.junior.step.mega_menu.body', 'url' => $dashboard, 'placement' => 'bottom'],
+            ['id' => 'kpis', 'icon' => 'bi-speedometer2', 'target' => '.management-kpis-widget, .dashboard-stats, [data-role="kpi-grid"]', 'title_key' => 'guided_tour.junior.step.kpis.title', 'body_key' => 'guided_tour.junior.step.kpis.body', 'url' => $dashboard, 'placement' => 'top'],
+            ['id' => 'iso9001-bridge', 'icon' => 'bi-bridge', 'target' => null, 'title_key' => 'guided_tour.junior.step.iso9001_bridge.title', 'body_key' => 'guided_tour.junior.step.iso9001_bridge.body', 'url' => $dashboard, 'placement' => 'center'],
+            ['id' => 'command-palette', 'icon' => 'bi-command', 'target' => null, 'title_key' => 'guided_tour.junior.step.command_palette.title', 'body_key' => 'guided_tour.junior.step.command_palette.body', 'url' => $dashboard, 'placement' => 'center'],
+            ['id' => 'first-asset', 'icon' => 'bi-box-seam', 'target' => null, 'title_key' => 'guided_tour.junior.step.first_asset.title', 'body_key' => 'guided_tour.junior.step.first_asset.body', 'url' => $assets, 'placement' => 'center'],
+            ['id' => 'shortcuts-hint', 'icon' => 'bi-keyboard', 'target' => null, 'title_key' => 'guided_tour.junior.step.shortcuts.title', 'body_key' => 'guided_tour.junior.step.shortcuts.body', 'url' => $dashboard, 'placement' => 'center'],
         ];
     }
 
@@ -293,27 +235,27 @@ final class GuidedTourService
         $mapping = $this->urlFor('app_compliance_mapping_hub');
         $reuse = $this->urlFor('app_data_reuse_hub');
         return [
-            ['id' => 'welcome', 'target' => null, 'title_key' => 'guided_tour.cm.step.welcome.title', 'body_key' => 'guided_tour.cm.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
-            ['id' => 'framework-dashboard', 'target' => null, 'title_key' => 'guided_tour.cm.step.framework_dashboard.title', 'body_key' => 'guided_tour.cm.step.framework_dashboard.body', 'url' => $dashboard, 'placement' => 'center'],
-            ['id' => 'mapping-hub', 'target' => null, 'title_key' => 'guided_tour.cm.step.mapping_hub.title', 'body_key' => 'guided_tour.cm.step.mapping_hub.body', 'url' => $mapping, 'placement' => 'center'],
-            ['id' => 'reuse-hub', 'target' => null, 'title_key' => 'guided_tour.cm.step.reuse_hub.title', 'body_key' => 'guided_tour.cm.step.reuse_hub.body', 'url' => $reuse, 'placement' => 'center'],
-            ['id' => 'seed-review', 'target' => null, 'title_key' => 'guided_tour.cm.step.seed_review.title', 'body_key' => 'guided_tour.cm.step.seed_review.body', 'url' => $dashboard, 'placement' => 'center'],
+            ['id' => 'welcome', 'icon' => 'bi-stars', 'target' => null, 'title_key' => 'guided_tour.cm.step.welcome.title', 'body_key' => 'guided_tour.cm.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
+            ['id' => 'framework-dashboard', 'icon' => 'bi-speedometer2', 'target' => null, 'title_key' => 'guided_tour.cm.step.framework_dashboard.title', 'body_key' => 'guided_tour.cm.step.framework_dashboard.body', 'url' => $dashboard, 'placement' => 'center'],
+            ['id' => 'mapping-hub', 'icon' => 'bi-diagram-3', 'target' => null, 'title_key' => 'guided_tour.cm.step.mapping_hub.title', 'body_key' => 'guided_tour.cm.step.mapping_hub.body', 'url' => $mapping, 'placement' => 'center'],
+            ['id' => 'reuse-hub', 'icon' => 'bi-recycle', 'target' => null, 'title_key' => 'guided_tour.cm.step.reuse_hub.title', 'body_key' => 'guided_tour.cm.step.reuse_hub.body', 'url' => $reuse, 'placement' => 'center'],
+            ['id' => 'seed-review', 'icon' => 'bi-check2-circle', 'target' => null, 'title_key' => 'guided_tour.cm.step.seed_review.title', 'body_key' => 'guided_tour.cm.step.seed_review.body', 'url' => $dashboard, 'placement' => 'center'],
         ];
     }
 
-    /** @return list<array{id: string, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}> */
+    /** @return list<array{id: string, icon: string|null, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}> */
     private function cisoSteps(): array
     {
         $cisoDash = $this->urlFor('app_dashboard_ciso');
         return [
-            ['id' => 'welcome', 'target' => null, 'title_key' => 'guided_tour.ciso.step.welcome.title', 'body_key' => 'guided_tour.ciso.step.welcome.body', 'url' => $cisoDash, 'placement' => 'center'],
-            ['id' => 'board-export', 'target' => null, 'title_key' => 'guided_tour.ciso.step.board_export.title', 'body_key' => 'guided_tour.ciso.step.board_export.body', 'url' => $cisoDash, 'placement' => 'center'],
-            ['id' => 'health-score', 'target' => null, 'title_key' => 'guided_tour.ciso.step.health_score.title', 'body_key' => 'guided_tour.ciso.step.health_score.body', 'url' => $cisoDash, 'placement' => 'center'],
-            ['id' => 'framework-matrix', 'target' => null, 'title_key' => 'guided_tour.ciso.step.framework_matrix.title', 'body_key' => 'guided_tour.ciso.step.framework_matrix.body', 'url' => $cisoDash, 'placement' => 'center'],
+            ['id' => 'welcome', 'icon' => 'bi-shield-lock', 'target' => null, 'title_key' => 'guided_tour.ciso.step.welcome.title', 'body_key' => 'guided_tour.ciso.step.welcome.body', 'url' => $cisoDash, 'placement' => 'center'],
+            ['id' => 'board-export', 'icon' => 'bi-file-earmark-slides', 'target' => null, 'title_key' => 'guided_tour.ciso.step.board_export.title', 'body_key' => 'guided_tour.ciso.step.board_export.body', 'url' => $cisoDash, 'placement' => 'center'],
+            ['id' => 'health-score', 'icon' => 'bi-heart-pulse', 'target' => null, 'title_key' => 'guided_tour.ciso.step.health_score.title', 'body_key' => 'guided_tour.ciso.step.health_score.body', 'url' => $cisoDash, 'placement' => 'center'],
+            ['id' => 'framework-matrix', 'icon' => 'bi-grid-3x3', 'target' => null, 'title_key' => 'guided_tour.ciso.step.framework_matrix.title', 'body_key' => 'guided_tour.ciso.step.framework_matrix.body', 'url' => $cisoDash, 'placement' => 'center'],
         ];
     }
 
-    /** @return list<array{id: string, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}> */
+    /** @return list<array{id: string, icon: string|null, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}> */
     private function isbSteps(): array
     {
         $dashboard = $this->urlFor('app_dashboard');
@@ -322,35 +264,35 @@ final class GuidedTourService
         $workflows = $this->urlFor('app_workflow_index');
         $auditLog = $this->urlFor('app_audit_log_index');
         return [
-            ['id' => 'welcome', 'target' => null, 'title_key' => 'guided_tour.isb.step.welcome.title', 'body_key' => 'guided_tour.isb.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
-            ['id' => 'soa', 'target' => null, 'title_key' => 'guided_tour.isb.step.soa.title', 'body_key' => 'guided_tour.isb.step.soa.body', 'url' => $soa, 'placement' => 'center'],
-            ['id' => 'incidents', 'target' => null, 'title_key' => 'guided_tour.isb.step.incidents.title', 'body_key' => 'guided_tour.isb.step.incidents.body', 'url' => $incidents, 'placement' => 'center'],
-            ['id' => 'workflows', 'target' => null, 'title_key' => 'guided_tour.isb.step.workflows.title', 'body_key' => 'guided_tour.isb.step.workflows.body', 'url' => $workflows, 'placement' => 'center'],
-            ['id' => 'audit-log', 'target' => null, 'title_key' => 'guided_tour.isb.step.audit_log.title', 'body_key' => 'guided_tour.isb.step.audit_log.body', 'url' => $auditLog, 'placement' => 'center'],
+            ['id' => 'welcome', 'icon' => 'bi-stars', 'target' => null, 'title_key' => 'guided_tour.isb.step.welcome.title', 'body_key' => 'guided_tour.isb.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
+            ['id' => 'soa', 'icon' => 'bi-clipboard-check', 'target' => null, 'title_key' => 'guided_tour.isb.step.soa.title', 'body_key' => 'guided_tour.isb.step.soa.body', 'url' => $soa, 'placement' => 'center'],
+            ['id' => 'incidents', 'icon' => 'bi-exclamation-triangle', 'target' => null, 'title_key' => 'guided_tour.isb.step.incidents.title', 'body_key' => 'guided_tour.isb.step.incidents.body', 'url' => $incidents, 'placement' => 'center'],
+            ['id' => 'workflows', 'icon' => 'bi-diagram-2', 'target' => null, 'title_key' => 'guided_tour.isb.step.workflows.title', 'body_key' => 'guided_tour.isb.step.workflows.body', 'url' => $workflows, 'placement' => 'center'],
+            ['id' => 'audit-log', 'icon' => 'bi-journal-text', 'target' => null, 'title_key' => 'guided_tour.isb.step.audit_log.title', 'body_key' => 'guided_tour.isb.step.audit_log.body', 'url' => $auditLog, 'placement' => 'center'],
         ];
     }
 
-    /** @return list<array{id: string, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}> */
+    /** @return list<array{id: string, icon: string|null, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}> */
     private function riskOwnerSteps(): array
     {
         $dashboard = $this->urlFor('app_dashboard');
         $risks = $this->urlFor('app_risk_index');
         return [
-            ['id' => 'welcome', 'target' => null, 'title_key' => 'guided_tour.risk_owner.step.welcome.title', 'body_key' => 'guided_tour.risk_owner.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
-            ['id' => 'my-risks', 'target' => null, 'title_key' => 'guided_tour.risk_owner.step.my_risks.title', 'body_key' => 'guided_tour.risk_owner.step.my_risks.body', 'url' => $risks, 'placement' => 'center'],
+            ['id' => 'welcome', 'icon' => 'bi-stars', 'target' => null, 'title_key' => 'guided_tour.risk_owner.step.welcome.title', 'body_key' => 'guided_tour.risk_owner.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
+            ['id' => 'my-risks', 'icon' => 'bi-exclamation-diamond', 'target' => null, 'title_key' => 'guided_tour.risk_owner.step.my_risks.title', 'body_key' => 'guided_tour.risk_owner.step.my_risks.body', 'url' => $risks, 'placement' => 'center'],
         ];
     }
 
-    /** @return list<array{id: string, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}> */
+    /** @return list<array{id: string, icon: string|null, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}> */
     private function auditorSteps(): array
     {
         $auditorDash = $this->urlFor('app_dashboard_auditor');
         $documents = $this->urlFor('app_document_index');
         $auditLog = $this->urlFor('app_audit_log_index');
         return [
-            ['id' => 'welcome', 'target' => null, 'title_key' => 'guided_tour.auditor.step.welcome.title', 'body_key' => 'guided_tour.auditor.step.welcome.body', 'url' => $auditorDash, 'placement' => 'center'],
-            ['id' => 'documents', 'target' => null, 'title_key' => 'guided_tour.auditor.step.documents.title', 'body_key' => 'guided_tour.auditor.step.documents.body', 'url' => $documents, 'placement' => 'center'],
-            ['id' => 'audit-log', 'target' => null, 'title_key' => 'guided_tour.auditor.step.audit_log.title', 'body_key' => 'guided_tour.auditor.step.audit_log.body', 'url' => $auditLog, 'placement' => 'center'],
+            ['id' => 'welcome', 'icon' => 'bi-search', 'target' => null, 'title_key' => 'guided_tour.auditor.step.welcome.title', 'body_key' => 'guided_tour.auditor.step.welcome.body', 'url' => $auditorDash, 'placement' => 'center'],
+            ['id' => 'documents', 'icon' => 'bi-file-earmark-text', 'target' => null, 'title_key' => 'guided_tour.auditor.step.documents.title', 'body_key' => 'guided_tour.auditor.step.documents.body', 'url' => $documents, 'placement' => 'center'],
+            ['id' => 'audit-log', 'icon' => 'bi-journal-text', 'target' => null, 'title_key' => 'guided_tour.auditor.step.audit_log.title', 'body_key' => 'guided_tour.auditor.step.audit_log.body', 'url' => $auditLog, 'placement' => 'center'],
         ];
     }
 
