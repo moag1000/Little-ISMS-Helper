@@ -21,6 +21,14 @@ use App\Command\LoadKritisHealthRequirementsCommand;
 use App\Command\LoadDigavRequirementsCommand;
 use App\Command\LoadTkgRequirementsCommand;
 use App\Command\LoadGxpRequirementsCommand;
+use App\Command\LoadBdsgRequirementsCommand;
+use App\Command\LoadCisControlsRequirementsCommand;
+use App\Command\LoadEuAiActRequirementsCommand;
+use App\Command\LoadIso22301RequirementsCommand;
+use App\Command\LoadIso27005RequirementsCommand;
+use App\Command\LoadNis2UmsuCGRequirementsCommand;
+use App\Command\LoadNistCsfRequirementsCommand;
+use App\Command\LoadSoc2RequirementsCommand;
 use App\Repository\ComplianceFrameworkRepository;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -47,6 +55,14 @@ class ComplianceFrameworkLoaderService
         private readonly LoadDigavRequirementsCommand $loadDigavRequirementsCommand,
         private readonly LoadTkgRequirementsCommand $loadTkgRequirementsCommand,
         private readonly LoadGxpRequirementsCommand $loadGxpRequirementsCommand,
+        private readonly LoadBdsgRequirementsCommand $loadBdsgRequirementsCommand,
+        private readonly LoadCisControlsRequirementsCommand $loadCisControlsRequirementsCommand,
+        private readonly LoadEuAiActRequirementsCommand $loadEuAiActRequirementsCommand,
+        private readonly LoadIso22301RequirementsCommand $loadIso22301RequirementsCommand,
+        private readonly LoadIso27005RequirementsCommand $loadIso27005RequirementsCommand,
+        private readonly LoadNis2UmsuCGRequirementsCommand $loadNis2UmsuCGRequirementsCommand,
+        private readonly LoadNistCsfRequirementsCommand $loadNistCsfRequirementsCommand,
+        private readonly LoadSoc2RequirementsCommand $loadSoc2RequirementsCommand,
     ) {}
 
     /**
@@ -238,6 +254,102 @@ class ComplianceFrameworkLoaderService
                 'icon' => '💊',
                 'required_modules' => ['compliance', 'controls', 'audit_logging', 'training'],
             ],
+            [
+                'code' => 'SOC2',
+                'name' => 'SOC 2 Type II (AICPA Trust Services Criteria)',
+                'description' => 'US SaaS/Cloud-Provider attestation standard covering Security, Availability, Processing Integrity, Confidentiality and Privacy (~50 criteria)',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'AICPA',
+                'mandatory' => false,
+                'version' => '2017 TSC (revised 2022)',
+                'loaded' => in_array('SOC2', $loadedCodes),
+                'icon' => '🇺🇸',
+                'required_modules' => ['compliance', 'controls', 'audit_logging'],
+            ],
+            [
+                'code' => 'NIST-CSF',
+                'name' => 'NIST Cybersecurity Framework 2.0',
+                'description' => 'US cybersecurity risk management framework with 6 Functions (Govern, Identify, Protect, Detect, Respond, Recover) and ~100 sub-categories',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'NIST',
+                'mandatory' => false,
+                'version' => '2.0 (2024)',
+                'loaded' => in_array('NIST-CSF', $loadedCodes),
+                'icon' => '🛰️',
+                'required_modules' => ['compliance', 'controls', 'risks'],
+            ],
+            [
+                'code' => 'CIS-CONTROLS',
+                'name' => 'CIS Controls v8.1',
+                'description' => 'Center for Internet Security Top-18 Controls with Implementation Groups IG1-IG3 (~150 safeguards)',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'Center for Internet Security',
+                'mandatory' => false,
+                'version' => '8.1 (2024)',
+                'loaded' => in_array('CIS-CONTROLS', $loadedCodes),
+                'icon' => '🛠️',
+                'required_modules' => ['compliance', 'controls'],
+            ],
+            [
+                'code' => 'ISO-22301',
+                'name' => 'ISO 22301:2019 - Business Continuity Management',
+                'description' => 'Business Continuity Management System with ISO 22313:2020 guidance (~50 requirements)',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'ISO',
+                'mandatory' => false,
+                'version' => '2019 (+ 22313:2020)',
+                'loaded' => in_array('ISO-22301', $loadedCodes),
+                'icon' => '🔁',
+                'required_modules' => ['compliance', 'bcm'],
+            ],
+            [
+                'code' => 'ISO27005',
+                'name' => 'ISO/IEC 27005:2022 - Information Security Risk Management',
+                'description' => 'Guidance on information security risk management, complements ISO 27001 risk processes',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'ISO/IEC',
+                'mandatory' => false,
+                'version' => '2022',
+                'loaded' => in_array('ISO27005', $loadedCodes),
+                'icon' => '📊',
+                'required_modules' => ['compliance', 'risks'],
+            ],
+            [
+                'code' => 'BDSG',
+                'name' => 'Bundesdatenschutzgesetz (BDSG)',
+                'description' => 'Deutsches Datenschutzgesetz als Ergänzung zur DSGVO, 12 Anforderungen aus Teil 1-4',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'Bundesministerium des Innern',
+                'mandatory' => true,
+                'version' => '2018 (aktuell)',
+                'loaded' => in_array('BDSG', $loadedCodes),
+                'icon' => '🇩🇪',
+                'required_modules' => ['compliance', 'controls', 'audit_logging'],
+            ],
+            [
+                'code' => 'EU-AI-ACT',
+                'name' => 'EU AI Act (Regulation (EU) 2024/1689)',
+                'description' => 'Risk-based AI regulation with obligations for Providers/Deployers of High-Risk systems (~10 governance requirements)',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'European Union',
+                'mandatory' => true,
+                'version' => '2024/1689',
+                'loaded' => in_array('EU-AI-ACT', $loadedCodes),
+                'icon' => '🤖',
+                'required_modules' => ['compliance', 'controls', 'risks', 'audit_logging'],
+            ],
+            [
+                'code' => 'NIS2UMSUCG',
+                'name' => 'NIS-2-Umsetzungs- und Cybersicherheitsstärkungsgesetz (NIS2UmsuCG)',
+                'description' => 'Deutsche Umsetzung der NIS2-Richtlinie mit zusätzlichen BSI-spezifischen Anforderungen',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'BSI / Bundesamt für Sicherheit in der Informationstechnik',
+                'mandatory' => true,
+                'version' => '2024',
+                'loaded' => in_array('NIS2UMSUCG', $loadedCodes),
+                'icon' => '🇩🇪',
+                'required_modules' => ['compliance', 'controls', 'incidents', 'audit_logging'],
+            ],
         ];
     }
 
@@ -262,6 +374,14 @@ class ComplianceFrameworkLoaderService
             'DIGAV' => $this->loadDigavRequirementsCommand,
             'TKG-2024' => $this->loadTkgRequirementsCommand,
             'GXP' => $this->loadGxpRequirementsCommand,
+            'SOC2' => $this->loadSoc2RequirementsCommand,
+            'NIST-CSF' => $this->loadNistCsfRequirementsCommand,
+            'CIS-CONTROLS' => $this->loadCisControlsRequirementsCommand,
+            'ISO-22301' => $this->loadIso22301RequirementsCommand,
+            'ISO27005' => $this->loadIso27005RequirementsCommand,
+            'BDSG' => $this->loadBdsgRequirementsCommand,
+            'EU-AI-ACT' => $this->loadEuAiActRequirementsCommand,
+            'NIS2UMSUCG' => $this->loadNis2UmsuCGRequirementsCommand,
             default => null,
         };
 
