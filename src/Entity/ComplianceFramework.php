@@ -16,7 +16,11 @@ class ComplianceFramework
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    // Kept public to preserve backward-compat with existing
+    // $framework->id direct reads (controllers, repositories,
+    // commands — see callers audit). Getter below exposes it
+    // under the getId() alias Twig/Symfony expect.
+    public ?int $id = null;
 
     public function getId(): ?int
     {
@@ -82,9 +86,14 @@ class ComplianceFramework
 
     /**
      * @var Collection<int, ComplianceRequirement>
+     *
+     * Kept public for backward-compat with callers that read
+     * $framework->requirements directly (PortfolioReportService,
+     * ComplianceAnalyticsService, several commands). getRequirements()
+     * stays as the canonical method path.
      */
     #[ORM\OneToMany(targetEntity: ComplianceRequirement::class, mappedBy: 'complianceFramework', cascade: ['persist', 'remove'])]
-    private Collection $requirements;
+    public Collection $requirements;
 
     /**
      * @return Collection<int, ComplianceRequirement>
