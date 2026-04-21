@@ -254,13 +254,36 @@
     }
 
     .welcome-hero {
-        background: linear-gradient(135deg, var(--bs-light) 0%, var(--bs-white) 100%);
+        /* Dezenter Aurora-Farbverlauf — gleichmäßig lesbar über ganze Breite */
+        background: var(--surface);
+        border: 1px solid var(--border);
         border-radius: 1rem;
         padding: 3rem 2rem;
+        color: var(--fg);
+    }
+    /* Optionaler subtiler Glow-Hint oben (kein links/rechts-Unterschied) */
+    .welcome-hero {
+        box-shadow: 0 0 0 1px var(--primary-glow),
+                    0 6px 20px rgba(0, 0, 0, 0.04);
+        position: relative;
+        overflow: hidden;
+    }
+    .welcome-hero::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: var(--brand-gradient);
+        opacity: 0.6;
     }
 
+    html[data-theme="dark"] .welcome-hero,
     [data-bs-theme="dark"] .welcome-hero {
-        background: linear-gradient(135deg, var(--bs-dark) 0%, var(--bs-gray-900) 100%);
+        background: var(--surface);
+        border-color: var(--border);
+        color: var(--fg);
+        box-shadow: 0 0 0 1px var(--primary-glow),
+                    0 8px 24px rgba(0, 0, 0, 0.25);
     }
 
     .welcome-logo img {

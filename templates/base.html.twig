@@ -277,14 +277,40 @@
                             <i class="bi bi-shield-lock fa-dropdown-panel__item-icon" aria-hidden="true"></i>
                             <span class="fa-dropdown-panel__item-body">{{ 'nav.security'|trans({}, 'nav') }}</span>
                         </a>
-                        <a href="{{ path('app_home') }}#tour-restart"
-                           class="user-dropdown-item fa-dropdown-panel__item"
-                           role="menuitem"
-                           data-action="click->guided-tour#start"
-                           data-guided-tour-role-param="junior">
-                            <i class="bi bi-stars fa-dropdown-panel__item-icon" aria-hidden="true"></i>
-                            <span class="fa-dropdown-panel__item-body">{{ 'guided_tour.action.restart'|trans({}, 'guided_tour') }}</span>
-                        </a>
+                        {# Guided-Tour — Rolle(n) auswählbar bei mehreren passenden #}
+                        {% set tour_roles = [] %}
+                        {% if is_granted('ROLE_AUDITOR') %}{% set tour_roles = tour_roles|merge(['auditor']) %}{% endif %}
+                        {% if is_granted('ROLE_RISK_OWNER') %}{% set tour_roles = tour_roles|merge(['risk_owner']) %}{% endif %}
+                        {% if is_granted('ROLE_COMPLIANCE_MANAGER') %}{% set tour_roles = tour_roles|merge(['cm']) %}{% endif %}
+                        {% if is_granted('ROLE_ISB') or is_granted('ROLE_MANAGER') %}{% set tour_roles = tour_roles|merge(['isb']) %}{% endif %}
+                        {% if is_granted('ROLE_GROUP_CISO') or is_granted('ROLE_ADMIN') %}{% set tour_roles = tour_roles|merge(['ciso']) %}{% endif %}
+                        {% set tour_roles = tour_roles|merge(['junior']) %}
+
+                        {% if tour_roles|length == 1 %}
+                            <button type="button"
+                                    class="user-dropdown-item fa-dropdown-panel__item"
+                                    role="menuitem"
+                                    data-action="click->guided-tour#start:prevent"
+                                    data-guided-tour-role-param="{{ tour_roles|first }}">
+                                <i class="bi bi-stars fa-dropdown-panel__item-icon" aria-hidden="true"></i>
+                                <span class="fa-dropdown-panel__item-body">{{ 'guided_tour.action.restart'|trans({}, 'guided_tour') }}</span>
+                            </button>
+                        {% else %}
+                            <div class="user-dropdown-section-label">
+                                <i class="bi bi-stars" aria-hidden="true"></i>
+                                <span>{{ 'guided_tour.action.choose_role'|trans({}, 'guided_tour')|default('Tour nach Rolle') }}</span>
+                            </div>
+                            {% for role in tour_roles %}
+                                <button type="button"
+                                        class="user-dropdown-item fa-dropdown-panel__item user-dropdown-tour-item"
+                                        role="menuitem"
+                                        data-action="click->guided-tour#start:prevent"
+                                        data-guided-tour-role-param="{{ role }}">
+                                    <i class="bi bi-arrow-right-short fa-dropdown-panel__item-icon" aria-hidden="true"></i>
+                                    <span class="fa-dropdown-panel__item-body">{{ ('guided_tour.role.' ~ role ~ '.label')|trans({}, 'guided_tour')|default(role|capitalize) }}</span>
+                                </button>
+                            {% endfor %}
+                        {% endif %}
                         <div class="user-dropdown-divider"></div>
                         <a href="{{ path('app_logout') }}" class="user-dropdown-item fa-dropdown-panel__item user-dropdown-logout" role="menuitem">
                             <i class="bi bi-box-arrow-right fa-dropdown-panel__item-icon" aria-hidden="true"></i>

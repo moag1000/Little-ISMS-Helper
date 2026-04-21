@@ -68,8 +68,12 @@ html[data-theme="dark"] .fa-brand-mark {
 .mega-menu-panel {
     background:
         linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%),
+        /* Circuit-Traces als SVG-data-url (wie Login-TechBackdrop) */
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 800' preserveAspectRatio='xMidYMid slice'%3E%3Cg stroke='%230284c7' stroke-width='0.55' fill='none' opacity='0.12'%3E%3Cpath d='M 0 160 L 140 160 L 170 190 L 290 190' stroke-linecap='round'/%3E%3Cpath d='M 600 280 L 460 280 L 430 310 L 340 310' stroke-linecap='round'/%3E%3Cpath d='M 60 560 L 180 560 L 210 530 L 330 530' stroke-linecap='round'/%3E%3Cpath d='M 520 620 L 400 620' stroke-linecap='round'/%3E%3C/g%3E%3Cg fill='%237c3aed' opacity='0.3'%3E%3Ccircle cx='140' cy='160' r='1.8'/%3E%3Ccircle cx='290' cy='190' r='1.8'/%3E%3Ccircle cx='460' cy='280' r='1.8'/%3E%3Ccircle cx='340' cy='310' r='1.8'/%3E%3Ccircle cx='180' cy='560' r='1.8'/%3E%3Ccircle cx='330' cy='530' r='1.8'/%3E%3Ccircle cx='400' cy='620' r='1.8'/%3E%3C/g%3E%3C/svg%3E"),
         radial-gradient(circle at 24px 24px, var(--primary-tint) 0.7px, transparent 1.2px);
-    background-size: 100% 100%, 48px 48px;
+    background-size: 100% 100%, 100% 100%, 48px 48px;
+    background-position: 0 0, center center, 0 0;
+    background-repeat: no-repeat, no-repeat, repeat;
     position: relative;
 }
 
@@ -94,13 +98,16 @@ html[data-theme="dark"] .fa-brand-mark {
     z-index: 0;
 }
 
-/* Dark-Mode — intensiver Dot-Pattern für Sichtbarkeit */
+/* Dark-Mode — intensiver Dot-Pattern + hellere Circuit-Farben für Kontrast */
 html[data-theme="dark"] .app-sidebar,
 html[data-theme="dark"] .mega-menu-panel {
     background:
         linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 800' preserveAspectRatio='xMidYMid slice'%3E%3Cg stroke='%2338bdf8' stroke-width='0.55' fill='none' opacity='0.22'%3E%3Cpath d='M 0 160 L 140 160 L 170 190 L 290 190' stroke-linecap='round'/%3E%3Cpath d='M 600 280 L 460 280 L 430 310 L 340 310' stroke-linecap='round'/%3E%3Cpath d='M 60 560 L 180 560 L 210 530 L 330 530' stroke-linecap='round'/%3E%3Cpath d='M 520 620 L 400 620' stroke-linecap='round'/%3E%3C/g%3E%3Cg fill='%23a78bfa' opacity='0.5'%3E%3Ccircle cx='140' cy='160' r='1.8'/%3E%3Ccircle cx='290' cy='190' r='1.8'/%3E%3Ccircle cx='460' cy='280' r='1.8'/%3E%3Ccircle cx='340' cy='310' r='1.8'/%3E%3Ccircle cx='180' cy='560' r='1.8'/%3E%3Ccircle cx='330' cy='530' r='1.8'/%3E%3Ccircle cx='400' cy='620' r='1.8'/%3E%3C/g%3E%3C/svg%3E"),
         radial-gradient(circle at 24px 24px, rgba(56, 189, 248, 0.18) 0.8px, transparent 1.4px);
-    background-size: 100% 100%, 48px 48px;
+    background-size: 100% 100%, 100% 100%, 48px 48px;
+    background-position: 0 0, center center, 0 0;
+    background-repeat: no-repeat, no-repeat, repeat;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
