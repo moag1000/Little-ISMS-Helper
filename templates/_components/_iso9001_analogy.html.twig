@@ -1,0 +1,18 @@
+{#
+  ISO-9001-Brücke: kurzer Inline-Hinweis für QMB/Neulinge.
+  Varianten halten Analogie passend zum Kontext (Mapping, Seeds, Quality, …).
+
+  Params:
+    variant: 'mapping' | 'seeds' | 'quality' | 'reuse' | 'default'
+#}
+{% set variant = variant|default('default') %}
+<div class="alert alert-info d-flex align-items-start gap-2 small mb-3" role="note">
+    <i class="bi bi-lightbulb-fill text-warning" aria-hidden="true"></i>
+    <div class="flex-grow-1">
+        <strong>{{ 'compliance.iso9001_bridge.prefix'|trans({}, 'compliance') }}</strong>
+        {{ ('compliance.iso9001_bridge.variant.' ~ variant)|trans({}, 'compliance') }}
+        <a href="{{ path('app_help_iso9001_bridge') }}" class="alert-link">
+            {{ 'compliance.iso9001_bridge.more'|trans({}, 'compliance') }}
+        </a>
+    </div>
+</div>

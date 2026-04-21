@@ -1,4 +1,13 @@
 compliance:
+    iso9001_bridge:
+        prefix: 'For 9001 practitioners:'
+        more: 'full 9001 ↔ 27001 bridge →'
+        variant:
+            default: 'Think in QMS analogies — a control is like a measure, a mapping like a cross-reference table.'
+            mapping: 'A mapping between two standards is the QMS cross-reference table: one evidence covers multiple clauses.'
+            seeds: 'Seed catalogs are ready-made cross-references — like a purchased 9001-↔-IATF mapping set you only review once.'
+            quality: 'Mapping quality is like an internal audit finding: poor mappings are handled like non-conformities (CAPA).'
+            reuse: 'Reuse equals CAPA multi-use: one measure satisfies multiple clauses simultaneously.'
     title:
         transitive: 'Transitive Compliance'
         compare: 'Framework Comparison'

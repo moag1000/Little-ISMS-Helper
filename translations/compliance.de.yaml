@@ -1,4 +1,13 @@
 compliance:
+    iso9001_bridge:
+        prefix: 'Für 9001-Praktiker:'
+        more: 'volle Brücke 9001 ↔ 27001 →'
+        variant:
+            default: 'Denken Sie in QMS-Analogien — ein Control ist wie eine Maßnahme, ein Mapping wie eine Querverweistabelle.'
+            mapping: 'Ein Mapping zwischen zwei Normen ist die QMS-Querverweistabelle: ein Nachweis deckt mehrere Normpunkte ab.'
+            seeds: 'Seed-Kataloge sind fertige Normquerverweise — wie ein zugekaufter 9001-↔-IATF-Mappingsatz, den Sie nur einmal prüfen.'
+            quality: 'Mapping-Qualität ist wie interner Audit-Befund: schlechte Mappings werden wie Abweichungen behandelt (CAPA).'
+            reuse: 'Wiederverwendung entspricht CAPA-Mehrfachnutzen: eine Maßnahme erfüllt mehrere Normpunkte gleichzeitig.'
     title:
         transitive: 'Transitive Compliance'
         compare: Framework‑Vergleich

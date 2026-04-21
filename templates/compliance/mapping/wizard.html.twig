@@ -32,6 +32,8 @@
         </div>
     </div>
 
+    {% include '_components/_iso9001_analogy.html.twig' with { variant: 'mapping' } %}
+
     <form method="post"
           action="{{ path('app_compliance_mapping_wizard') }}"
           data-controller="mapping-wizard"
