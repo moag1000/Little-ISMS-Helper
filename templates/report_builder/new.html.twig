@@ -8,13 +8,13 @@
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.reports'|trans({}, 'nav'), path: path('app_reports_overview') },
-            { label: 'page.title'|trans, path: path('report_builder_index') },
-            { label: 'new.title'|trans }
+            { label: 'page.title'|trans({}, 'report_builder'), path: path('report_builder_index') },
+            { label: 'new.title'|trans({}, 'report_builder') }
         ]
     } %}
 
     <h1 class="h2 mb-4">
-        <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'new.title'|trans }}
+        <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'new.title'|trans({}, 'report_builder') }}
     </h1>
 
     <div class="row justify-content-center">
@@ -22,26 +22,26 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="h5 mb-0">{{ 'new.subtitle'|trans }}</h2>
+                        <h2 class="h5 mb-0">{{ 'new.subtitle'|trans({}, 'report_builder') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
                     <form method="post" action="{{ path('report_builder_new') }}">
                         <div class="mb-3">
-                            <label for="name" class="form-label">{{ 'form.name'|trans }} <span class="text-danger">*</span></label>
+                            <label for="name" class="form-label">{{ 'form.name'|trans({}, 'report_builder') }} <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="name" name="name" required
-                                   placeholder="{{ 'form.name_placeholder'|trans }}">
+                                   placeholder="{{ 'form.name_placeholder'|trans({}, 'report_builder') }}">
                         </div>
 
                         <div class="mb-3">
-                            <label for="description" class="form-label">{{ 'form.description'|trans }}</label>
+                            <label for="description" class="form-label">{{ 'form.description'|trans({}, 'report_builder') }}</label>
                             <textarea class="form-control" id="description" name="description" rows="3"
-                                      placeholder="{{ 'form.description_placeholder'|trans }}"></textarea>
+                                      placeholder="{{ 'form.description_placeholder'|trans({}, 'report_builder') }}"></textarea>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="category" class="form-label">{{ 'form.category'|trans }}</label>
+                                <label for="category" class="form-label">{{ 'form.category'|trans({}, 'report_builder') }}</label>
                                 <select class="form-select" id="category" name="category">
                                     {% for key, label in categories %}
                                     <option value="{{ key }}">{{ label }}</option>
@@ -50,7 +50,7 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label for="layout" class="form-label">{{ 'form.layout'|trans }}</label>
+                                <label for="layout" class="form-label">{{ 'form.layout'|trans({}, 'report_builder') }}</label>
                                 <select class="form-select" id="layout" name="layout">
                                     {% for key, label in layouts %}
                                     <option value="{{ key }}" {% if key == 'dashboard' %}selected{% endif %}>{{ label }}</option>
@@ -60,7 +60,7 @@
                         </div>
 
                         <div class="mb-4">
-                            <h3 class="h6">{{ 'form.layout_preview'|trans }}</h3>
+                            <h3 class="h6">{{ 'form.layout_preview'|trans({}, 'report_builder') }}</h3>
                             <div class="row g-2" id="layout-preview">
                                 <div class="col-md-4">
                                     <div class="card text-center layout-option" data-layout="single">
@@ -68,7 +68,7 @@
                                             <div class="border rounded p-2 mb-2" style="height: 80px; background: #f8f9fa;">
                                                 <div class="bg-primary opacity-25 h-100 rounded"></div>
                                             </div>
-                                            <small>{{ 'layout.single'|trans }}</small>
+                                            <small>{{ 'layout.single'|trans({}, 'report_builder') }}</small>
                                         </div>
                                     </div>
                                 </div>
@@ -79,7 +79,7 @@
                                                 <div class="bg-primary opacity-25 flex-grow-1 rounded"></div>
                                                 <div class="bg-primary opacity-25 flex-grow-1 rounded"></div>
                                             </div>
-                                            <small>{{ 'layout.two_column'|trans }}</small>
+                                            <small>{{ 'layout.two_column'|trans({}, 'report_builder') }}</small>
                                         </div>
                                     </div>
                                 </div>
@@ -92,7 +92,7 @@
                                                     <div class="col-6"><div class="bg-primary opacity-25 h-100 rounded"></div></div>
                                                 </div>
                                             </div>
-                                            <small>{{ 'layout.dashboard'|trans }}</small>
+                                            <small>{{ 'layout.dashboard'|trans({}, 'report_builder') }}</small>
                                         </div>
                                     </div>
                                 </div>
@@ -101,10 +101,10 @@
 
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'action.create_and_design'|trans }}
+                                <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'action.create_and_design'|trans({}, 'report_builder') }}
                             </button>
                             <a href="{{ path('report_builder_index') }}" class="btn btn-outline-secondary">
-                                {{ 'action.cancel'|trans }}
+                                {{ 'action.cancel'|trans({}, 'report_builder') }}
                             </a>
                         </div>
                     </form>
