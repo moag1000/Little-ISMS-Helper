@@ -15,8 +15,8 @@
 
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
-            <div class="card-header bg-primary text-white">
-                <h1 class="mb-0 h2">{{ 'patch.edit'|trans({}, 'patches') }}</h1>
+            <div class="card-header">
+                <h1 class="mb-0 h2"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'patch.edit'|trans({}, 'patches') }}</h1>
             </div>
         {% endblock %}
         {% block card_body %}
