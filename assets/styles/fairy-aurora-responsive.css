@@ -1,0 +1,154 @@
+/*
+ * FairyAurora v3.0 — Responsive-Layer (Plan § 15)
+ *
+ * Breakpoints (Tailwind-kompatibel, unabhängig von Framework):
+ *   sm   < 640  — Phone
+ *   md   < 1024 — Tablet (Sidebar off-canvas)
+ *   lg   ≥ 1024 — Desktop (Sidebar 224px fix)
+ *   xl   ≥ 1280 — Wide-Screen
+ *
+ * Policy: Aurora-spezifische Responsive-Overrides. Bootstrap-Legacy-Responsive
+ * in app.css bleibt bestehen; dieser Layer setzt Aurora-Komponenten-Regeln.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   < md (1024px) — Tablet + Phone: Sidebar off-canvas, Alva-Drawer
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1023.98px) {
+    /* Sidebar geht off-canvas via bestehendem .app-sidebar + .open aus app.css.
+       Wir erweitern nur Aurora-Shadow + off-canvas BG. */
+    .app-sidebar {
+        box-shadow: 5px 0 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .sidebar-backdrop {
+        background: rgba(10, 14, 26, 0.5);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+    }
+
+    /* Topbar Alva mini im Hamburger-Drawer-Header sichtbar (statt im Topbar) */
+    .header-alva { display: none !important; }
+
+    /* System-Status-Pill verschwindet (platz) */
+    .header-system-status { display: none !important; }
+
+    /* KPI-Grid 4 → 2 */
+    .kpi-grid,
+    .module-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Tables horizontal-scroll */
+    .table-responsive-aurora,
+    .content > table,
+    .content .fa-kpi-card {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   < md (768px) — Phone: Topbar-Kollaps
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 767.98px) {
+    /* Brand reduziert: nur Mark, Text weg */
+    .header-logo .fa-brand-text { display: none; }
+    .header-logo .fa-brand-mark { width: 28px !important; height: 28px !important; }
+
+    /* Language-Switcher verkleinert */
+    .language-switcher { font-size: 10px; }
+
+    /* Language-Switcher optional ausblenden ab sehr schmal */
+    /* (User entscheidet per Präferenz) */
+
+    /* KPI-Grid 2 → 1 */
+    .kpi-grid,
+    .module-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Touch-Targets erhöhen auf 44×44 */
+    .fa-cyber-btn,
+    .fa-mode-switch,
+    .user-avatar,
+    .notification-bell-btn-header,
+    .mobile-menu-btn {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    /* Form 2-col → 1-col global */
+    .row.g-2,
+    .row.g-3,
+    .row.g-4 {
+        --bs-gutter-x: 0.5rem;
+    }
+    .row > [class*="col-md-"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   < sm (640px) — Phone schmal
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 639.98px) {
+    /* Topbar: Header-Padding reduziert */
+    .header { padding: 0 var(--spacing-md); }
+
+    /* Container auf volle Breite */
+    .container {
+        max-width: 100% !important;
+        padding: 0 var(--spacing-sm) !important;
+    }
+
+    /* Modal-Fullscreen auf sehr kleinen Screens */
+    .modal-dialog {
+        margin: 0;
+        max-width: 100%;
+        width: 100%;
+        height: 100vh;
+        min-height: 100vh;
+    }
+    .modal-content {
+        min-height: 100vh;
+        border-radius: 0 !important;
+    }
+
+    /* Aurora-Alert stackt vertikaler */
+    .fa-alert {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .fa-alert__close {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   xl (≥ 1280px) — Wide Desktop (optional Optimierungen)
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (min-width: 1280px) {
+    /* Container breiter nutzen */
+    .container { max-width: 1600px; }
+
+    /* Setup-Wizard: Right-Panel max-width Content */
+    .fa-setup-right__content { max-width: 720px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Touch-Device-Erkennung (unabhängig von Viewport)
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (hover: none) and (pointer: coarse) {
+    /* Touch-Geräte: keine Hover-Transitions, direkt Active */
+    .fa-cyber-btn:hover:not(.is-disabled) { transform: none; }
+    .user-avatar:hover { transform: none; }
+}
