@@ -231,25 +231,25 @@
 
 .notification-success {
     border-color: var(--success);
-    background: linear-gradient(135deg, #d1fae5 0%, #d4edda 100%);
+    background: var(--success-glow);
     box-shadow: var(--shadow-lg), 0 0 10px var(--success-glow), 0 0 20px var(--success-glow);
 }
 
 .notification-error {
     border-color: var(--danger);
-    background: linear-gradient(135deg, #fee2e2 0%, #f8d7da 100%);
+    background: var(--danger-glow);
     box-shadow: var(--shadow-lg), 0 0 20px var(--danger-glow);
 }
 
 .notification-warning {
     border-color: var(--warning);
-    background: linear-gradient(135deg, #fef3c7 0%, #fff3cd 100%);
+    background: var(--warning-glow);
     box-shadow: var(--shadow-lg), 0 0 20px var(--warning-glow);
 }
 
 .notification-info {
     border-color: var(--primary);
-    background: linear-gradient(135deg, #cffafe 0%, #d1ecf1 100%);
+    background: var(--primary-tint);
     box-shadow: var(--shadow-lg), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
@@ -656,23 +656,23 @@
     border-radius: 12px;
     transition: width 0.6s ease, background-color 0.3s ease;
     position: relative;
-    background: linear-gradient(90deg, var(--success) 0%, #059669 100%);
+    background: linear-gradient(90deg, var(--success) 0%, var(--success-strong) 100%);
 }
 
 /* Color states for progress bar */
 .sla-progress-bar.sla-on-track {
-    background: linear-gradient(90deg, var(--success) 0%, #059669 100%);
+    background: linear-gradient(90deg, var(--success) 0%, var(--success-strong) 100%);
     box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
 }
 
 .sla-progress-bar.sla-at-risk {
-    background: linear-gradient(90deg, var(--warning) 0%, #d97706 100%);
+    background: linear-gradient(90deg, var(--warning) 0%, var(--warning-strong) 100%);
     box-shadow: 0 0 10px var(--warning-glow);
 }
 
 .sla-progress-bar.sla-critical {
-    background: linear-gradient(90deg, #f97316 0%, #ea580c 100%);
-    box-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
+    background: linear-gradient(90deg, var(--warning-strong) 0%, var(--danger) 100%);
+    box-shadow: 0 0 10px var(--warning-glow);
 }
 
 .sla-progress-bar.sla-overdue {
@@ -792,7 +792,7 @@
 }
 
 .sla-progress-bar-mini.sla-critical {
-    background: #f97316;
+    background: var(--warning-strong);
 }
 
 .sla-progress-bar-mini.sla-overdue {
@@ -823,15 +823,15 @@
 }
 
 .sla-timeline-compact.sla-on-track .sla-info-mini {
-    color: #059669;
+    color: var(--success-strong);
 }
 
 .sla-timeline-compact.sla-at-risk .sla-info-mini {
-    color: #d97706;
+    color: var(--warning-strong);
 }
 
 .sla-timeline-compact.sla-critical .sla-info-mini {
-    color: #ea580c;
+    color: var(--warning-strong);
 }
 
 .sla-timeline-compact.sla-overdue .sla-info-mini {
@@ -850,8 +850,8 @@
 }
 
 .badge.badge-sla-critical {
-    background-color: #f97316;
-    color: white;
+    background-color: var(--warning-strong);
+    color: var(--on-warning);
 }
 
 .badge.badge-sla-overdue {
