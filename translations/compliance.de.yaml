@@ -118,7 +118,27 @@ compliance:
     mandatory_missing: 'Pflicht-Frameworks fehlen'
     available_frameworks: 'Verfügbare Frameworks'
     version: Version
-    industry: Branche
+    industry_label: Branche
+    industry:
+        all: 'Alle Branchen'
+        all_sectors: 'Alle Branchen'
+        automotive: Automobil
+        financial_services: Finanzdienstleistungen
+        healthcare: Gesundheitswesen
+        telecommunications: Telekommunikation
+        pharmaceutical: Pharma
+        cloud_services: Cloud-Dienste
+        critical_infrastructure: 'Kritische Infrastruktur'
+        digital_health: 'Digitale Gesundheit'
+        service_providers: Dienstleister
+        'service providers': Dienstleister
+        energy: Energie
+        manufacturing: Fertigung
+        retail: Einzelhandel
+        transportation: Transport
+        public_sector: 'Öffentlicher Sektor'
+        education: Bildung
+        insurance: Versicherung
     regulatory_body: Regulierungsbehörde
     mandatory: Pflicht
     required_modules: 'Erforderliche Module'

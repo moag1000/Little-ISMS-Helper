@@ -118,7 +118,27 @@ compliance:
     mandatory_missing: __compliance.mandatory_missing
     available_frameworks: __compliance.available_frameworks
     version: __compliance.version
-    industry: __compliance.industry
+    industry_label: Industry
+    industry:
+        all: 'All Sectors'
+        all_sectors: 'All Sectors'
+        automotive: Automotive
+        financial_services: Financial Services
+        healthcare: Healthcare
+        telecommunications: Telecommunications
+        pharmaceutical: Pharmaceutical
+        cloud_services: Cloud Services
+        critical_infrastructure: Critical Infrastructure
+        digital_health: Digital Health
+        service_providers: Service Providers
+        'service providers': Service Providers
+        energy: Energy
+        manufacturing: Manufacturing
+        retail: Retail
+        transportation: Transportation
+        public_sector: Public Sector
+        education: Education
+        insurance: Insurance
     regulatory_body: __compliance.regulatory_body
     mandatory: __compliance.mandatory
     required_modules: __compliance.required_modules
