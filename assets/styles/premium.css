@@ -306,7 +306,7 @@
     display: flex;
     gap: 15px;
     padding: 15px 0;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--border-color);
     transition: all 0.2s ease;
 }
 
@@ -436,7 +436,7 @@
    Feature Cards (Landing Page)
    =============================== */
 .feature-card {
-    background: white;
+    background: var(--bg-elevated);
     border-radius: 12px;
     padding: 30px;
     text-align: center;
@@ -485,12 +485,12 @@
 .feature-title {
     font-size: 1.3rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--text-primary);
     margin-bottom: 15px;
 }
 
 .feature-description {
-    color: #6c757d;
+    color: var(--text-secondary);
     line-height: 1.6;
 }
 
@@ -546,12 +546,12 @@
 .step-title {
     font-size: 1.2rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--text-primary);
     margin-bottom: 8px;
 }
 
 .step-description {
-    color: #6c757d;
+    color: var(--text-secondary);
     line-height: 1.6;
 }
 
@@ -559,7 +559,7 @@
    Testimonials
    =============================== */
 .testimonial-card {
-    background: white;
+    background: var(--bg-elevated);
     border-radius: 12px;
     padding: 30px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -569,7 +569,7 @@
 
 .testimonial-content {
     font-style: italic;
-    color: #495057;
+    color: var(--text-secondary);
     margin-bottom: 20px;
     line-height: 1.7;
 }
@@ -599,13 +599,13 @@
 
 .testimonial-name {
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--text-primary);
     margin-bottom: 3px;
 }
 
 .testimonial-position {
     font-size: 0.85rem;
-    color: #6c757d;
+    color: var(--text-secondary);
 }
 
 /* ===============================
@@ -721,7 +721,7 @@
 }
 
 .global-search-container {
-    background: white;
+    background: var(--bg-elevated);
     border-radius: 12px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     max-width: 600px;
@@ -748,7 +748,7 @@
     align-items: center;
     gap: 12px;
     padding: 20px;
-    border-bottom: 2px solid #f0f0f0;
+    border-bottom: 2px solid var(--border-color);
 }
 
 .global-search-header i {
@@ -761,18 +761,19 @@
     outline: none;
     font-size: 1.1rem;
     padding: 8px 0;
-    color: #2c3e50;
+    color: var(--text-primary);
+    background: transparent;
 }
 
 .global-search-input::placeholder {
-    color: #95a5a6;
+    color: var(--text-secondary);
 }
 
 .global-search-shortcuts {
     display: flex;
     gap: 12px;
     font-size: 0.75rem;
-    color: #95a5a6;
+    color: var(--text-secondary);
 }
 
 .global-search-shortcuts kbd {
@@ -803,7 +804,7 @@
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #6c757d;
+    color: var(--text-secondary);
     background: var(--bg-secondary);
     border-radius: 6px;
     margin-bottom: 8px;
@@ -822,7 +823,7 @@
     padding: 12px;
     border-radius: 8px;
     text-decoration: none;
-    color: #2c3e50;
+    color: var(--text-primary);
     transition: all 0.2s ease;
 }
 
@@ -859,21 +860,21 @@
 }
 
 .search-result-title mark {
-    background: #fff3cd;
+    background: var(--bs-warning-bg-subtle);
     padding: 0 2px;
     border-radius: 2px;
 }
 
 .search-result-description {
     font-size: 0.85rem;
-    color: #6c757d;
+    color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .search-result-description mark {
-    background: #fff3cd;
+    background: var(--bs-warning-bg-subtle);
     padding: 0 2px;
     border-radius: 2px;
 }
@@ -891,7 +892,7 @@
 
 .global-search-footer {
     padding: 12px 20px;
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid var(--border-color);
     background: var(--bg-secondary);
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
@@ -926,7 +927,7 @@
 }
 
 .quick-view-container {
-    background: white;
+    background: var(--bg-elevated);
     border-radius: 12px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     max-width: 700px;
@@ -953,14 +954,14 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px;
-    border-bottom: 2px solid #f0f0f0;
+    border-bottom: 2px solid var(--border-color);
 }
 
 .quick-view-title {
     margin: 0;
     font-size: 1.2rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--text-primary);
 }
 
 .quick-view-body {
@@ -971,14 +972,14 @@
 
 .quick-view-footer {
     padding: 15px 20px;
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid var(--border-color);
     background: var(--bg-secondary);
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
 }
 
 .quick-view-footer kbd {
-    background: #fff;
+    background: var(--bg-elevated);
     border: 1px solid var(--border-color);
     border-radius: 3px;
     padding: 2px 6px;
@@ -995,7 +996,7 @@
 
 .preview-section {
     padding-bottom: 20px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .preview-section:last-of-type {
@@ -1005,7 +1006,7 @@
 .preview-section-title {
     font-size: 0.9rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--text-primary);
     margin-bottom: 12px;
     display: flex;
     align-items: center;
@@ -1027,7 +1028,7 @@
 
 .cia-label {
     font-size: 0.75rem;
-    color: #6c757d;
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 5px;
@@ -1043,12 +1044,12 @@
 .stat-mini-value {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #2c3e50;
+    color: var(--text-primary);
 }
 
 .stat-mini-label {
     font-size: 0.75rem;
-    color: #6c757d;
+    color: var(--text-secondary);
     margin-top: 4px;
 }
 
@@ -1061,7 +1062,7 @@
 
 .risk-metric-label {
     font-size: 0.75rem;
-    color: #6c757d;
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 8px;
@@ -1074,7 +1075,7 @@
 
 .risk-metric-detail {
     font-size: 0.85rem;
-    color: #6c757d;
+    color: var(--text-secondary);
     margin-top: 4px;
 }
 
@@ -1082,14 +1083,14 @@
     display: flex;
     gap: 10px;
     padding-top: 20px;
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid var(--border-color);
 }
 
 /* ===============================
    Filter Presets
    =============================== */
 .filter-presets {
-    background: white;
+    background: var(--bg-elevated);
     border-radius: 12px;
     padding: 15px 20px;
     margin-bottom: 20px;
@@ -1103,7 +1104,7 @@
     gap: 8px;
     font-weight: 600;
     font-size: 0.9rem;
-    color: #2c3e50;
+    color: var(--text-primary);
     margin-bottom: 12px;
 }
 
@@ -1119,10 +1120,10 @@
     gap: 6px;
     padding: 8px 16px;
     border: 1px solid var(--border-color);
-    background: white;
+    background: var(--bg-elevated);
     border-radius: 8px;
     font-size: 0.85rem;
-    color: #2c3e50;
+    color: var(--text-primary);
     cursor: pointer;
     transition: all 0.2s ease;
 }

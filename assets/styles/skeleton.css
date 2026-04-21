@@ -70,7 +70,7 @@
 
 .skeleton-card {
     padding: var(--spacing-lg);
-    background: white;
+    background: var(--bg-elevated);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
 }
@@ -88,7 +88,7 @@
     align-items: center;
     gap: var(--spacing-md);
     padding: var(--spacing-lg);
-    background: white;
+    background: var(--bg-elevated);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
     border-left: 4px solid var(--color-border);
@@ -192,9 +192,9 @@
 .skeleton-light {
     background: linear-gradient(
         90deg,
-        #fafafa 0%,
-        #f0f0f0 50%,
-        #fafafa 100%
+        var(--bg-elevated) 0%,
+        var(--bg-secondary) 50%,
+        var(--bg-elevated) 100%
     );
     background-size: 200% 100%;
 }

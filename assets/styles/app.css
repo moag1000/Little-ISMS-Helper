@@ -1664,7 +1664,7 @@ body {
 }
 
 .content {
-    background: white;
+    background: var(--bg-elevated);
     padding: var(--spacing-md);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
@@ -2226,25 +2226,25 @@ h3 {
 
 /* Bootstrap Alerts - Light Mode with readable dark text */
 .alert-info {
-    background-color: #cff4fc;
+    background-color: var(--bs-info-bg-subtle);
     border-color: #9eeaf9;
     color: #055160;
 }
 
 .alert-warning {
-    background-color: #fff3cd;
+    background-color: var(--bs-warning-bg-subtle);
     border-color: #ffecb5;
     color: #664d03;
 }
 
 .alert-danger {
-    background-color: #f8d7da;
+    background-color: var(--bs-danger-bg-subtle);
     border-color: #f5c2c7;
     color: #842029;
 }
 
 .alert-success {
-    background-color: #d1e7dd;
+    background-color: var(--bs-success-bg-subtle);
     border-color: #badbcc;
     color: #0f5132;
 }
@@ -2260,7 +2260,7 @@ h3 {
 table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
+    background: var(--bg-elevated);
 }
 
 [data-theme="dark"] table {

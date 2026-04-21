@@ -62,7 +62,7 @@
 
 /* Container - Cyberpunk Fairy */
 .keyboard-shortcuts-container {
-    background: white;
+    background: var(--bg-elevated);
     border-radius: 12px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(6, 182, 212, 0.3);
     border: 2px solid var(--color-secondary);
@@ -185,7 +185,7 @@
 
 /* Keyboard Key */
 kbd {
-    background: linear-gradient(to bottom, white, #f5f5f5);
+    background: linear-gradient(to bottom, var(--bg-elevated), var(--bg-secondary));
     border: 1px solid var(--color-border);
     border-radius: 4px;
     box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1);

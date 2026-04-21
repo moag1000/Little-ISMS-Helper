@@ -178,7 +178,7 @@
     align-items: center;
     gap: 0.625rem;
     padding: 0.5rem 1rem;
-    background: white;
+    background: var(--bg-elevated);
     border: 1px solid var(--border-color, #e5e7eb);
     border-radius: 6px;
     white-space: nowrap;

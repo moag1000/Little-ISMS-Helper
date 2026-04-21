@@ -27,7 +27,7 @@
 
 /* Container */
 .command-palette-container {
-    background: white;
+    background: var(--bg-elevated);
     border-radius: 12px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(6, 182, 212, 0.3);
     border: 2px solid var(--color-secondary);
