@@ -530,8 +530,15 @@ html[data-theme="dark"] .keyboard-key {
 .text-dark  { color: var(--fg)   !important; }
 .text-body  { color: var(--fg)   !important; }
 .text-light { color: var(--fg-2) !important; }
-.text-muted { color: var(--fg-3) !important; }
+/* text-muted: --fg-2 statt --fg-3 — Dark-Mode-Lesbarkeit für Card-Body
+   (Mapping-Hub etc.). Für Metadata-kleines-grau: <small class="text-muted"> */
+.text-muted { color: var(--fg-2) !important; }
 .text-secondary { color: var(--fg-2) !important; }
+small.text-muted,
+.text-muted.small,
+.form-text,
+.form-text.text-muted,
+.fa-text-meta { color: var(--fg-3) !important; }
 .text-primary   { color: var(--primary) !important; }
 .text-success   { color: var(--success) !important; }
 .text-warning   { color: var(--warning-text) !important; }

@@ -162,9 +162,21 @@
     {% endblock %}
 </head>
 {% set is_setup_route = app.request.attributes.get('_route') starts with 'setup_' %}
-<body data-turbo="true" data-controller="modal-manager{{ is_setup_route ? '' : ' sidebar-toggle mega-menu session-reminder' }}"
+<body data-turbo="true" data-controller="modal-manager{{ is_setup_route ? '' : ' sidebar-toggle mega-menu session-reminder' ~ (app.user ? ' guided-tour' : '') }}"
       data-session-reminder-warning-value="3300000"
-      data-session-reminder-timeout-value="3600000">
+      data-session-reminder-timeout-value="3600000"
+      {% if app.user and not is_setup_route %}
+      data-guided-tour-steps-url-value="{{ path('app_guided_tour_steps', {role: tour_role|default('junior')}) }}"
+      data-guided-tour-complete-url-value="{{ path('app_guided_tour_complete', {role: tour_role|default('junior')}) }}"
+      data-guided-tour-csrf-value="{{ csrf_token('guided_tour_complete') }}"
+      data-guided-tour-auto-start-value="false"
+      data-guided-tour-i18n-next-value="{{ 'guided_tour.action.next'|trans({}, 'guided_tour') }}"
+      data-guided-tour-i18n-previous-value="{{ 'guided_tour.action.previous'|trans({}, 'guided_tour') }}"
+      data-guided-tour-i18n-finish-value="{{ 'guided_tour.action.finish'|trans({}, 'guided_tour') }}"
+      data-guided-tour-i18n-skip-value="{{ 'guided_tour.action.skip'|trans({}, 'guided_tour') }}"
+      data-guided-tour-i18n-mobile-title-value="{{ 'guided_tour.mobile.title'|trans({}, 'guided_tour') }}"
+      data-guided-tour-i18n-mobile-body-value="{{ 'guided_tour.mobile.body'|trans({}, 'guided_tour') }}"
+      {% endif %}>
     {# Skip Links for Accessibility - WCAG 2.4.1 #}
     <a href="#main-content" class="skip-link">{{ 'accessibility.skip_to_content'|trans({}, 'messages') }}</a>
     <a href="#main-navigation" class="skip-link">{{ 'accessibility.skip_to_navigation'|trans({}, 'messages') }}</a>
