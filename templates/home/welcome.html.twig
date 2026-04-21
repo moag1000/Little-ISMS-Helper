@@ -63,15 +63,13 @@
         </div>
     {% endif %}
 
-    {# Hero Section with Logo #}
+    {# Hero Section with Alva — inline SVG reagiert auf Mode-Switch #}
+    {% import '_components/_alva.html.twig' as alva %}
     <div class="row justify-content-center mb-5">
         <div class="col-lg-10 col-xl-8">
             <div class="welcome-hero text-center py-5">
-                <div class="welcome-logo mb-4">
-                    <img src="{{ asset('logo.svg') }}"
-                         alt="{{ 'welcome.logo_alt'|trans({}, 'welcome') }}"
-                         class="img-fluid"
-                         style="max-height: 200px;">
+                <div class="welcome-logo mb-4 d-flex justify-content-center">
+                    {{ alva.render('happy', { size: 180, ariaLabel: 'welcome.logo_alt'|trans({}, 'welcome') })|raw }}
                 </div>
                 <h1 class="h3 text-muted mb-3">{{ 'welcome.headline'|trans({}, 'welcome') }}</h1>
                 <p class="lead text-muted mb-2">
