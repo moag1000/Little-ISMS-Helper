@@ -334,10 +334,11 @@
     align-items: center;
     gap: var(--spacing-md);
     padding: var(--spacing-lg);
-    background: white;
+    background: var(--bs-body-bg, white);
     border-radius: var(--border-radius);
     border: 2px solid var(--color-border);
     transition: all 0.2s;
+    color: var(--bs-body-color, inherit);
 }
 
 .status-card:hover {
@@ -376,10 +377,11 @@
 .severity-badge {
     text-align: center;
     padding: var(--spacing-lg);
-    background: white;
+    background: var(--bs-body-bg, white);
     border-radius: var(--border-radius);
     border: 2px solid;
     transition: all 0.2s;
+    color: var(--bs-body-color, inherit);
 }
 
 .severity-badge.severity-critical { border-color: var(--color-danger); }
