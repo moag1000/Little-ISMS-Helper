@@ -88,6 +88,7 @@
         <div class="col-12">
             {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ overall_variant } %}
                 {% block card_body %}
+                    {% import 'bsi_grundschutz_check/index.html.twig' as helpers %}
                     <div class="row align-items-center">
                         <div class="col-md-4 text-center">
                             <div class="text-muted small">{{ 'bsi_check.overall.weighted'|trans({}, 'messages') }}</div>
@@ -130,6 +131,7 @@
                         </div>
                     {% endblock %}
                     {% block card_body %}
+                        {% import 'bsi_grundschutz_check/index.html.twig' as helpers %}
                         <div class="table-responsive">
                             <table class="table table-sm align-middle mb-0">
                                 <thead>
@@ -196,6 +198,7 @@
                             </div>
                         {% endblock %}
                         {% block card_body %}
+                            {% import 'bsi_grundschutz_check/index.html.twig' as helpers %}
                             {{ helpers.aggregate_bar(baustein.aggregate, status_variant) }}
                             <table class="table table-sm mt-3 mb-2">
                                 <tbody>
