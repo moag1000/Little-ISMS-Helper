@@ -20,9 +20,9 @@
         icon: 'bi-signpost-2'
     } only %}
 
-    {# Introduction Card #}
-    <div class="card mb-4">
-        <div class="card-body">
+    {# Introduction Card — 8H.4 migrated #}
+    {% embed '_components/_card.html.twig' with { class: 'mb-4' } %}
+        {% block card_body %}
             <div class="d-flex align-items-start">
                 <i class="bi bi-lightbulb-fill text-warning me-3 fs-3" aria-hidden="true"></i>
                 <div>
@@ -30,18 +30,20 @@
                     <p class="card-text mb-0">{{ 'help.iso9001_bridge.intro_text'|trans({}, 'help') }}</p>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
-    {# Mapping Table #}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="card-title mb-0">
-                <i class="bi bi-arrow-left-right me-2" aria-hidden="true"></i>
-                {{ 'help.iso9001_bridge.mapping_title'|trans({}, 'help') }}
-            </h5>
-        </div>
-        <div class="card-body p-0">
+    {# Mapping Table — 8H.4 migrated (noPadding for table) #}
+    {% embed '_components/_card.html.twig' with { class: 'mb-4', noPadding: true } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-arrow-left-right me-2" aria-hidden="true"></i>
+                    {{ 'help.iso9001_bridge.mapping_title'|trans({}, 'help') }}
+                </h5>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="table-responsive">
                 <table class="table table-striped table-hover mb-0">
                     <thead>
@@ -210,88 +212,90 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
-    {# What is NEW in 27001 Section #}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="card-title mb-0">
-                <i class="bi bi-stars me-2" aria-hidden="true"></i>
-                {{ 'help.iso9001_bridge.new_title'|trans({}, 'help') }}
-            </h5>
-        </div>
-        <div class="card-body">
+    {# What is NEW in 27001 Section — 8H.4 migrated #}
+    {% embed '_components/_card.html.twig' with { class: 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-stars me-2" aria-hidden="true"></i>
+                    {{ 'help.iso9001_bridge.new_title'|trans({}, 'help') }}
+                </h5>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <p class="text-muted mb-4">{{ 'help.iso9001_bridge.new_intro'|trans({}, 'help') }}</p>
 
             <div class="row g-3">
                 {# CIA Triad #}
                 <div class="col-md-6 col-xl-4">
-                    <div class="card h-100 border-info">
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { class: 'h-100 border-info' } %}
+                        {% block card_body %}
                             <h6 class="card-title">
                                 <i class="bi bi-shield-lock text-info me-2" aria-hidden="true"></i>
                                 {{ 'help.iso9001_bridge.new.cia.title'|trans({}, 'help') }}
                             </h6>
                             <p class="card-text small mb-0">{{ 'help.iso9001_bridge.new.cia.description'|trans({}, 'help') }}</p>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
 
                 {# 93 Controls #}
                 <div class="col-md-6 col-xl-4">
-                    <div class="card h-100 border-primary">
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { class: 'h-100 border-primary' } %}
+                        {% block card_body %}
                             <h6 class="card-title">
                                 <i class="bi bi-list-check text-primary me-2" aria-hidden="true"></i>
                                 {{ 'help.iso9001_bridge.new.controls.title'|trans({}, 'help') }}
                             </h6>
                             <p class="card-text small mb-0">{{ 'help.iso9001_bridge.new.controls.description'|trans({}, 'help') }}</p>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
 
                 {# Protection Requirements #}
                 <div class="col-md-6 col-xl-4">
-                    <div class="card h-100 border-warning">
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { class: 'h-100 border-warning' } %}
+                        {% block card_body %}
                             <h6 class="card-title">
                                 <i class="bi bi-bar-chart-steps text-warning me-2" aria-hidden="true"></i>
                                 {{ 'help.iso9001_bridge.new.protection.title'|trans({}, 'help') }}
                             </h6>
                             <p class="card-text small mb-0">{{ 'help.iso9001_bridge.new.protection.description'|trans({}, 'help') }}</p>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
 
                 {# Business Continuity #}
                 <div class="col-md-6 col-xl-4">
-                    <div class="card h-100 border-danger">
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { class: 'h-100 border-danger' } %}
+                        {% block card_body %}
                             <h6 class="card-title">
                                 <i class="bi bi-lightning-charge text-danger me-2" aria-hidden="true"></i>
                                 {{ 'help.iso9001_bridge.new.bcm.title'|trans({}, 'help') }}
                             </h6>
                             <p class="card-text small mb-0">{{ 'help.iso9001_bridge.new.bcm.description'|trans({}, 'help') }}</p>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
 
                 {# Data Protection / GDPR #}
                 <div class="col-md-6 col-xl-4">
-                    <div class="card h-100 border-success">
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { class: 'h-100 border-success' } %}
+                        {% block card_body %}
                             <h6 class="card-title">
                                 <i class="bi bi-person-lock text-success me-2" aria-hidden="true"></i>
                                 {{ 'help.iso9001_bridge.new.gdpr.title'|trans({}, 'help') }}
                             </h6>
                             <p class="card-text small mb-0">{{ 'help.iso9001_bridge.new.gdpr.description'|trans({}, 'help') }}</p>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Tip Box #}
     <div class="alert alert-success mb-4">

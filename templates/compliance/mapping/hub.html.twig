@@ -23,50 +23,58 @@
 
     {% include '_components/_iso9001_analogy.html.twig' with { variant: 'mapping' } %}
 
-    {# KPI-Strip #}
+    {# KPI-Strip — 8H.4: migrated to _card.html.twig component #}
     <div class="row g-2 mb-4">
         <div class="col-6 col-md-3">
-            <div class="card shadow-sm h-100 border-primary">
-                <div class="card-body py-2 px-3">
-                    <div class="small text-muted">{{ 'compliance.mapping.hub.kpi.total'|trans({}, 'compliance') }}</div>
-                    <div class="h4 mb-0 text-primary">{{ stats.total_mappings }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="card shadow-sm h-100 {% if unreviewed_count > 0 %}border-warning{% else %}border-success{% endif %}">
-                <div class="card-body py-2 px-3">
-                    <div class="small text-muted">{{ 'compliance.mapping.hub.kpi.unreviewed'|trans({}, 'compliance') }}</div>
-                    <div class="h4 mb-0 {% if unreviewed_count > 0 %}text-warning{% else %}text-success{% endif %}">
-                        {{ unreviewed_count }}
+            {% embed '_components/_card.html.twig' with { class: 'shadow-sm h-100 border-primary' } %}
+                {% block card_body %}
+                    <div class="py-2 px-3">
+                        <div class="small text-muted">{{ 'compliance.mapping.hub.kpi.total'|trans({}, 'compliance') }}</div>
+                        <div class="h4 mb-0 text-primary">{{ stats.total_mappings }}</div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-6 col-md-3">
-            <div class="card shadow-sm h-100">
-                <div class="card-body py-2 px-3">
-                    <div class="small text-muted">{{ 'compliance.mapping.hub.kpi.bidirectional'|trans({}, 'compliance') }}</div>
-                    <div class="h4 mb-0">{{ stats.bidirectional_mappings }}</div>
-                </div>
-            </div>
+            {% set _unreviewedBorder = unreviewed_count > 0 ? 'border-warning' : 'border-success' %}
+            {% set _unreviewedText = unreviewed_count > 0 ? 'text-warning' : 'text-success' %}
+            {% embed '_components/_card.html.twig' with { class: 'shadow-sm h-100 ' ~ _unreviewedBorder } %}
+                {% block card_body %}
+                    <div class="py-2 px-3">
+                        <div class="small text-muted">{{ 'compliance.mapping.hub.kpi.unreviewed'|trans({}, 'compliance') }}</div>
+                        <div class="h4 mb-0 {{ _unreviewedText }}">{{ unreviewed_count }}</div>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-6 col-md-3">
-            <div class="card shadow-sm h-100">
-                <div class="card-body py-2 px-3">
-                    <div class="small text-muted">{{ 'compliance.mapping.hub.kpi.frameworks'|trans({}, 'compliance') }}</div>
-                    <div class="h4 mb-0">{{ framework_count }}</div>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { class: 'shadow-sm h-100' } %}
+                {% block card_body %}
+                    <div class="py-2 px-3">
+                        <div class="small text-muted">{{ 'compliance.mapping.hub.kpi.bidirectional'|trans({}, 'compliance') }}</div>
+                        <div class="h4 mb-0">{{ stats.bidirectional_mappings }}</div>
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+        <div class="col-6 col-md-3">
+            {% embed '_components/_card.html.twig' with { class: 'shadow-sm h-100' } %}
+                {% block card_body %}
+                    <div class="py-2 px-3">
+                        <div class="small text-muted">{{ 'compliance.mapping.hub.kpi.frameworks'|trans({}, 'compliance') }}</div>
+                        <div class="h4 mb-0">{{ framework_count }}</div>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
-    {# 5 Einstiegs-Karten #}
+    {# 9 entry cards — 8H.4: migrated. Each card is a clickable block-link to a mapping tool. #}
     <div class="row g-3 mb-4">
         <div class="col-md-6 col-lg-4">
             <a href="{{ path('app_compliance_mapping_wizard') }}" class="text-decoration-none">
-                <div class="card h-100 shadow-sm border-primary">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm border-primary' } %}
+                    {% block card_body %}
                         <div class="h5 text-primary">
                             <i class="bi bi-magic" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.wizard.title'|trans({}, 'compliance') }}
@@ -75,15 +83,15 @@
                         <p class="small text-body mb-0">
                             {{ 'compliance.mapping.hub.action.wizard.desc'|trans({}, 'compliance') }}
                         </p>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </a>
         </div>
 
         <div class="col-md-6 col-lg-4">
             <a href="{{ path('app_compliance_mapping_seeds_index') }}" class="text-decoration-none">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
+                    {% block card_body %}
                         <div class="h5">
                             <i class="bi bi-lightning-charge text-success" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.seeds.title'|trans({}, 'compliance') }}
@@ -91,15 +99,15 @@
                         <p class="small text-body mb-0">
                             {{ 'compliance.mapping.hub.action.seeds.desc'|trans({}, 'compliance') }}
                         </p>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </a>
         </div>
 
         <div class="col-md-6 col-lg-4">
             <a href="{{ path('app_mapping_quality_dashboard') }}" class="text-decoration-none">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
+                    {% block card_body %}
                         <div class="h5">
                             <i class="bi bi-check2-circle text-info" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.quality.title'|trans({}, 'compliance') }}
@@ -110,15 +118,15 @@
                         <p class="small text-body mb-0">
                             {{ 'compliance.mapping.hub.action.quality.desc'|trans({}, 'compliance') }}
                         </p>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </a>
         </div>
 
         <div class="col-md-6 col-lg-4">
             <a href="{{ path('app_compliance_cross_framework') }}" class="text-decoration-none">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
+                    {% block card_body %}
                         <div class="h5">
                             <i class="bi bi-arrow-left-right text-secondary" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.transitive.title'|trans({}, 'compliance') }}
@@ -126,15 +134,15 @@
                         <p class="small text-body mb-0">
                             {{ 'compliance.mapping.hub.action.transitive.desc'|trans({}, 'compliance') }}
                         </p>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </a>
         </div>
 
         <div class="col-md-6 col-lg-4">
             <a href="{{ path('app_compliance_mapping_index') }}" class="text-decoration-none">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
+                    {% block card_body %}
                         <div class="h5">
                             <i class="bi bi-list-ul" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.list.title'|trans({}, 'compliance') }}
@@ -142,15 +150,15 @@
                         <p class="small text-body mb-0">
                             {{ 'compliance.mapping.hub.action.list.desc'|trans({'%count%': stats.total_mappings}, 'compliance') }}
                         </p>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </a>
         </div>
 
         <div class="col-md-6 col-lg-4">
             <a href="{{ path('app_data_reuse_hub') }}" class="text-decoration-none">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
+                    {% block card_body %}
                         <div class="h5">
                             <i class="bi bi-arrows-collapse text-success" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.reuse.title'|trans({}, 'compliance') }}
@@ -158,16 +166,16 @@
                         <p class="small text-body mb-0">
                             {{ 'compliance.mapping.hub.action.reuse.desc'|trans({}, 'compliance') }}
                         </p>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </a>
         </div>
 
         {% if is_granted('ROLE_MANAGER') %}
         <div class="col-md-6 col-lg-4">
             <a href="{{ path('app_compliance_mapping_import') }}" class="text-decoration-none">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
+                    {% block card_body %}
                         <div class="h5">
                             <i class="bi bi-file-earmark-arrow-up text-primary" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.import.title'|trans({}, 'compliance') }}
@@ -175,15 +183,15 @@
                         <p class="small text-body mb-0">
                             {{ 'compliance.mapping.hub.action.import.desc'|trans({}, 'compliance') }}
                         </p>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </a>
         </div>
 
         <div class="col-md-6 col-lg-4">
             <a href="{{ path('app_compliance_mapping_seed_review') }}" class="text-decoration-none">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
+                    {% block card_body %}
                         <div class="h5">
                             <i class="bi bi-person-check text-warning" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.seed_review.title'|trans({}, 'compliance') }}
@@ -191,25 +199,27 @@
                         <p class="small text-body mb-0">
                             {{ 'compliance.mapping.hub.action.seed_review.desc'|trans({}, 'compliance') }}
                         </p>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </a>
         </div>
         {% endif %}
     </div>
 
-    {# Letzte 5 Mappings #}
-    <div class="card shadow-sm">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h2 class="h6 mb-0">
-                <i class="bi bi-clock-history" aria-hidden="true"></i>
-                {{ 'compliance.mapping.hub.recent.heading'|trans({}, 'compliance') }}
-            </h2>
-            <a href="{{ path('app_compliance_mapping_index') }}" class="small">
-                {{ 'compliance.mapping.hub.recent.all_link'|trans({}, 'compliance') }}
-            </a>
-        </div>
-        <div class="card-body p-0">
+    {# Recent 5 mappings — 8H.4: migrated #}
+    {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
+        {% block card_header %}
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="h6 mb-0">
+                    <i class="bi bi-clock-history" aria-hidden="true"></i>
+                    {{ 'compliance.mapping.hub.recent.heading'|trans({}, 'compliance') }}
+                </h2>
+                <a href="{{ path('app_compliance_mapping_index') }}" class="small">
+                    {{ 'compliance.mapping.hub.recent.all_link'|trans({}, 'compliance') }}
+                </a>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if recent|length == 0 %}
                 <p class="small text-muted m-3 mb-0">
                     {{ 'compliance.mapping.hub.recent.empty'|trans({}, 'compliance') }}
@@ -233,7 +243,7 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

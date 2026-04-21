@@ -844,9 +844,16 @@ Basierend auf dem UX-Audit vom 01.01.2026: Konsolidierung der UI-Komponenten, CS
 **Batch 2 (2026-04-21):**
 - `industry_baseline/index.html.twig` + `industry_baseline/show.html.twig` — alle 8 Top-Level-Card-Wrapper auf `_card.html.twig` umgestellt. Border-Farb-Logik (applied→success, inheritedRecord→info) via `class`-Prop durchgereicht. `card_header`/`card_footer`-Blöcke genutzt für komplexe Header-Strukturen (Badge + Title + Actions) und Footer-CTA.
 
-**Nächste Batches (organisch, bei Modul-Touch):**
-- data_reuse_hub, context, home, dpia* (high-traffic, bei UX-Review)
-- Restlicher Long-Tail (~240 Templates) — jeweils bei Feature-Änderung dort
+**Batch 3 — Top-Outlier-Migration (2026-04-21):**
+Die drei Templates mit dem höchsten Count an Top-Level-Card-Wrappern gezielt migriert, weil sie hohe Sichtbarkeit haben und bei Modul-Touch selten angefasst werden (sonst bleiben sie ewig im Long-Tail):
+- `compliance/mapping/hub.html.twig` — 13 Cards → 0. Mapping-Hub-Landingpage, Junior-Einstieg. KPI-Strip (4), Einstiegs-Karten (9), Recent-Mappings (1).
+- `help/iso9001_bridge.html.twig` — 8 Cards → 0. 9001-Bridge-Hilfeseite, Junior liest sie oft. Intro, Mapping-Tabelle, "Was ist neu in 27001"-Section mit 5 inneren Feature-Cards.
+- `portfolio_report/index.html.twig` — 5 Cards → 0. Management-Portfolio-Report. FTE-KPI, Reuse-Trend-Chart, Stichtag-Picker, Matrix mit Footer, Inheritance-Breakdown.
+
+**Nächste Outliers (aktuell):**
+`admin/data_repair/index.html.twig` (5), `group_report/incidents|nis2_registration|suppliers|soa_matrix` (KPI-Stats-Reste mit `py-2`-Override), `compliance/mapping/wizard.html.twig` (4), `compliance_wizard/_gap_report_body.html.twig` (4), `report_builder/new.html.twig` (3), `data_reuse_hub/index.html.twig` (3).
+
+**Restlicher Long-Tail (~230 Templates)** — jeweils bei Feature-Änderung dort.
 
 **Akzeptanz-Kriterium für "abgeschlossen":** sinnvoll, wenn > 90 % adoption erreicht ist. Die verbleibenden 10 % sind meist begründet (KPI-Stats mit spezieller Padding-Logik, Print-Templates, Email-Templates).
 

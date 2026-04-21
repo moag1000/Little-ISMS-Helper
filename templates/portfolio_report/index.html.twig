@@ -54,36 +54,40 @@
         </div>
     </div>
 
-    {# FTE Executive KPI (CM-5) #}
+    {# FTE Executive KPI (CM-5) — 8H.4 migrated #}
     {% if fte_saved is defined %}
-        <div class="card shadow-sm mb-4 border-success">
-            <div class="card-body text-center">
-                <div class="small text-uppercase text-muted mb-1">
-                    <i class="bi bi-lightning-charge-fill text-success" aria-hidden="true"></i>
-                    {{ 'portfolio_report.fte_saved.title'|trans({}, 'portfolio_report') }}
+        {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4 border-success' } %}
+            {% block card_body %}
+                <div class="text-center">
+                    <div class="small text-uppercase text-muted mb-1">
+                        <i class="bi bi-lightning-charge-fill text-success" aria-hidden="true"></i>
+                        {{ 'portfolio_report.fte_saved.title'|trans({}, 'portfolio_report') }}
+                    </div>
+                    <div class="display-4 fw-bold text-success mb-1">
+                        {{ fte_saved|number_format(1, '.', ',') }}
+                        <small class="fs-5 text-muted">{{ 'portfolio_report.fte_saved.days_suffix'|trans({}, 'portfolio_report') }}</small>
+                    </div>
+                    <div class="text-muted">
+                        {{ 'portfolio_report.fte_saved.subtitle'|trans({}, 'portfolio_report') }}
+                    </div>
                 </div>
-                <div class="display-4 fw-bold text-success mb-1">
-                    {{ fte_saved|number_format(1, '.', ',') }}
-                    <small class="fs-5 text-muted">{{ 'portfolio_report.fte_saved.days_suffix'|trans({}, 'portfolio_report') }}</small>
-                </div>
-                <div class="text-muted">
-                    {{ 'portfolio_report.fte_saved.subtitle'|trans({}, 'portfolio_report') }}
-                </div>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 
-    {# R3 Reuse-Trend — 12-Monats-Verlauf aus ReuseTrendSnapshot #}
+    {# R3 Reuse-Trend — 12-Monats-Verlauf aus ReuseTrendSnapshot — 8H.4 migrated #}
     {% if reuse_trend is defined and reuse_trend|length > 0 %}
-        <div class="card shadow-sm mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h2 class="h6 mb-0">
-                    <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
-                    {{ 'portfolio_report.reuse_trend.title'|trans({}, 'portfolio_report') }}
-                </h2>
-                <span class="small text-muted">{{ 'portfolio_report.reuse_trend.hint'|trans({'%count%': reuse_trend|length}, 'portfolio_report') }}</span>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4' } %}
+            {% block card_header %}
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="h6 mb-0">
+                        <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                        {{ 'portfolio_report.reuse_trend.title'|trans({}, 'portfolio_report') }}
+                    </h2>
+                    <span class="small text-muted">{{ 'portfolio_report.reuse_trend.hint'|trans({'%count%': reuse_trend|length}, 'portfolio_report') }}</span>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 <canvas id="reuseTrendChart" height="90"
                         data-labels="{{ reuse_trend|map(p => p.day)|json_encode }}"
                         data-fte="{{ reuse_trend|map(p => p.fte_saved)|json_encode }}"
@@ -92,8 +96,8 @@
                     <i class="bi bi-info-circle" aria-hidden="true"></i>
                     {{ 'portfolio_report.reuse_trend.footer'|trans({}, 'portfolio_report') }}
                 </p>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
         <script type="module">
             import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.js/+esm';
             const el = document.getElementById('reuseTrendChart');
@@ -130,9 +134,9 @@
         </div>
     {% endif %}
 
-    {# Stichtag / Vorperiode Picker #}
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
+    {# Stichtag / Vorperiode Picker — 8H.4 migrated #}
+    {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4' } %}
+        {% block card_body %}
             <form method="get" action="{{ path('app_management_reports_portfolio', { _locale: app.request.locale }) }}" class="row g-3 align-items-end">
                 <div class="col-md-4">
                     <label for="portfolio_stichtag" class="form-label">
@@ -171,18 +175,20 @@
                     </button>
                 </div>
             </form>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
-    {# Matrix #}
-    <div class="card shadow-sm">
-        <div class="card-header">
-            <h2 class="h5 mb-0">
-                <i class="bi bi-diagram-3" aria-hidden="true"></i>
-                {{ 'portfolio_report.matrix.title'|trans({}, 'portfolio_report') }}
-            </h2>
-        </div>
-        <div class="card-body p-0">
+    {# Matrix — 8H.4 migrated #}
+    {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="h5 mb-0">
+                    <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                    {{ 'portfolio_report.matrix.title'|trans({}, 'portfolio_report') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if matrix.frameworks|length == 0 %}
                 <div class="alert alert-info mb-0 m-3">
                     <i class="bi bi-info-circle" aria-hidden="true"></i>
@@ -308,23 +314,28 @@
                     </table>
                 </div>
             {% endif %}
-        </div>
-        <div class="card-footer small text-muted">
-            <i class="bi bi-info-circle" aria-hidden="true"></i>
-            {{ 'portfolio_report.matrix.legend'|trans({}, 'portfolio_report') }}
-        </div>
-    </div>
-
-    {# Inheritance-Rate Breakdown per Framework (CM-1) #}
-    {% if inheritance_metrics is defined and inheritance_metrics.per_framework|length > 0 %}
-        <div class="card shadow-sm mt-4">
-            <div class="card-header">
-                <h2 class="h5 mb-0">
-                    <i class="bi bi-share-fill text-primary" aria-hidden="true"></i>
-                    {{ 'portfolio_report.inheritance.title'|trans({}, 'portfolio_report') }}
-                </h2>
+        {% endblock %}
+        {% block card_footer %}
+            <div class="card-footer small text-muted">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                {{ 'portfolio_report.matrix.legend'|trans({}, 'portfolio_report') }}
             </div>
-            <div class="table-responsive">
+        {% endblock %}
+    {% endembed %}
+
+    {# Inheritance-Rate Breakdown per Framework (CM-1) — 8H.4 migrated #}
+    {% if inheritance_metrics is defined and inheritance_metrics.per_framework|length > 0 %}
+        {% embed '_components/_card.html.twig' with { class: 'shadow-sm mt-4', noPadding: true } %}
+            {% block card_header %}
+                <div class="card-header">
+                    <h2 class="h5 mb-0">
+                        <i class="bi bi-share-fill text-primary" aria-hidden="true"></i>
+                        {{ 'portfolio_report.inheritance.title'|trans({}, 'portfolio_report') }}
+                    </h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
+                <div class="table-responsive">
                 <table class="table table-sm mb-0 align-middle">
                     <thead class="table-light">
                         <tr>
@@ -368,7 +379,8 @@
                     </tfoot>
                 </table>
             </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 </div>
 {% endblock %}
