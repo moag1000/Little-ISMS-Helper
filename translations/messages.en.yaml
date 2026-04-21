@@ -1719,6 +1719,7 @@ common.report_regenerated: 'Report has been regenerated'
 common.regenerate: 'Regenerate'
 common.error.unknown: 'An unknown error occurred'
 common.statistics: 'Statistics'
+common.loading: 'Loading...'
 
 # Role comparison keys
 role.compare.system_badge: 'System'

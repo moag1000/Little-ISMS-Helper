@@ -48,6 +48,11 @@ incident:
     nis2_info: Aktivieren Sie diesen Abschnitt, wenn der Vorfall NIS2‑relevant ist.
     history: History
     closure: Abschluss
+    root_cause: Ursachenanalyse
+    affected_assets: 'Betroffene Assets (%count%)'
+    bcm_impact: Business-Continuity-Auswirkungen
+    realized_risks: 'Realisierte Risiken (%count%)'
+    related_controls: 'Zugehörige Maßnahmen (%count%)'
   modern:
     breadcrumb: Vorfallsmanagement
     header:
@@ -268,6 +273,23 @@ incident:
       notifications_sent: E-Mail-Benachrichtigungen werden an Stakeholder gesendet
       approval_required: Genehmigungsschritte werden initiiert
       sla_tracked: SLA-Tracking wird gestartet
+  bcm:
+    affected_processes: Betroffene Prozesse
+    recovery_priority: Wiederherstellungspriorität
+    est_impact_24h: Gesch. Auswirkung (24h)
+    value: Wert
+    owner: Eigentümer
+    detailed_analysis: Detaillierte BCM-Auswirkungsanalyse
+    auto_detect_more: Weitere Prozesse erkennen
+    auto_detect: Betroffene Prozesse erkennen
+    empty_title: Noch keine Geschäftsprozesse verknüpft.
+    empty_description: Verknüpfen Sie Prozesse manuell im Bearbeitungsformular oder nutzen Sie die automatische Erkennung basierend auf betroffenen Assets.
+  reuse:
+    risk_realization: Risikorealisierung
+    risk_realization_detail: 'Dieser Vorfall hat %count% identifizierte(s) Risiko/Risiken realisiert. Überprüfen Sie die Risikowahrscheinlichkeiten.'
+    risk_level: 'Risikostufe: %level%'
+    probability: 'Wahrscheinlichkeit: %value%/5'
+    control_not_implemented: Maßnahme nicht vollständig umgesetzt
   feedback:
     risk_re_evaluation_triggered: Risiko-Neubewertung wurde für verknüpfte Risiken
       ausgelöst

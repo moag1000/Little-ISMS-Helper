@@ -40,7 +40,33 @@
                 {% endblock %}
                 {% block card_body %}
                 <div data-controller="incident-escalation-preview"
-                     data-incident-escalation-preview-preview-url-value="{{ path('app_incident_escalation_preview') }}">
+                     data-incident-escalation-preview-preview-url-value="{{ path('app_incident_escalation_preview') }}"
+                     data-incident-escalation-preview-translations-value="{{ {
+                         title: 'incident.escalation_preview.title'|trans({}, 'incident'),
+                         workflow_name: 'incident.escalation_preview.workflow_name'|trans({}, 'incident'),
+                         automatic: 'incident.escalation_preview.automatic'|trans({}, 'incident'),
+                         notified_users: 'incident.escalation_preview.notified_users'|trans({}, 'incident'),
+                         emails: 'incident.escalation_preview.emails'|trans({}, 'incident'),
+                         sla_requirement: 'incident.escalation_preview.sla_requirement'|trans({}, 'incident'),
+                         gdpr_warning: 'incident.escalation_preview.gdpr_warning'|trans({}, 'incident'),
+                         gdpr_deadline: 'incident.escalation_preview.gdpr_deadline'|trans({}, 'incident'),
+                         gdpr_reference: 'incident.escalation_preview.gdpr_reference'|trans({}, 'incident'),
+                         approval_required: 'incident.escalation_preview.approval_required'|trans({}, 'incident'),
+                         estimated_time: 'incident.escalation_preview.estimated_time'|trans({}, 'incident'),
+                         summary_title: 'incident.escalation_preview.summary_title'|trans({}, 'incident'),
+                         action_workflow_started: 'incident.escalation_preview.actions.workflow_started'|trans({}, 'incident'),
+                         action_notifications_sent: 'incident.escalation_preview.actions.notifications_sent'|trans({}, 'incident'),
+                         action_approval_required: 'incident.escalation_preview.actions.approval_required'|trans({}, 'incident'),
+                         action_sla_tracked: 'incident.escalation_preview.actions.sla_tracked'|trans({}, 'incident'),
+                         loading: 'common.loading'|trans({}, 'messages'),
+                         loading_preview: 'incident.escalation_preview.select_severity'|trans({}, 'incident'),
+                         error: 'common.error.unknown'|trans({}, 'messages'),
+                         level_data_breach: 'incident.workflow.escalation.data_breach'|trans({}, 'incident'),
+                         level_critical: 'incident.severity.critical'|trans({}, 'incident'),
+                         level_high: 'incident.severity.high'|trans({}, 'incident'),
+                         level_medium: 'incident.severity.medium'|trans({}, 'incident'),
+                         level_low: 'incident.severity.low'|trans({}, 'incident')
+                     }|json_encode }}"
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'incident-form'}}) }}
 
                     {# Basic Info Section #}
