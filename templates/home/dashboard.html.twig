@@ -13,6 +13,11 @@
         ]
     } %}
 
+    {# Sprint 13 — Guided-Tour-Mount + Banner (nur wenn Tour für diese Rolle
+     # noch nicht abgeschlossen ist — siehe HomeController::dashboard) #}
+    {% include '_components/_guided_tour_mount.html.twig' with { tour_role: tour_role|default('junior') } %}
+    {% include '_components/_guided_tour_banner.html.twig' with { suggested_tour: suggested_tour|default(null) } %}
+
     {# Page Header with Customize Button and Role Dashboard Switcher #}
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>

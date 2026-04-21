@@ -19,6 +19,7 @@ use App\Repository\WorkflowInstanceRepository;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\ComplianceWizardService;
 use App\Service\DashboardStatisticsService;
+use App\Service\GuidedTourService;
 use App\Service\InheritanceMetricsService;
 use App\Service\ISOComplianceIntelligenceService;
 use App\Service\RiskReviewService;
@@ -51,6 +52,7 @@ class HomeController extends AbstractController
         private readonly ?DocumentRepository $documentRepository = null,
         private readonly ?ISMSContextRepository $ismsContextRepository = null,
         private readonly ?InheritanceMetricsService $inheritanceMetricsService = null,
+        private readonly ?GuidedTourService $guidedTourService = null,
     ) {}
 
     public function index(Request $request): Response
@@ -218,10 +220,23 @@ class HomeController extends AbstractController
             }
         }
 
+        // Sprint 13: Guided-Tour-Banner-Vorschlag. Zeigt pro Nutzer die
+        // noch nicht abgeschlossene, rollen-passende Tour. Null = kein Banner.
+        $suggestedTour = null;
+        $autoRole = null;
+        if ($this->guidedTourService !== null && $user instanceof User) {
+            $autoRole = $this->guidedTourService->autoDetectTour($user);
+            if (!$user->hasCompletedTour($autoRole)) {
+                $suggestedTour = $this->guidedTourService->metaFor($autoRole);
+            }
+        }
+
         return $this->render('home/dashboard.html.twig', [
             'stats' => $stats,
             'management_kpis' => $managementKpis,
             'reuse_fte_saved' => $reuseFteSaved,
+            'suggested_tour' => $suggestedTour,
+            'tour_role' => $autoRole,
             'activities' => $activities,
             'iso_compliance' => $isoCompliance,
             'overdue_reviews' => $overdueReviews,

@@ -1,0 +1,138 @@
+guided_tour:
+    action:
+        next: 'Next'
+        previous: 'Previous'
+        finish: 'Finish'
+        skip: 'Skip'
+        restart: 'Restart tour'
+
+    mobile:
+        title: 'Open tour on desktop'
+        body: 'The guided tour is optimized for desktop. Please open the tool on a larger screen for the full experience.'
+
+    banner:
+        aria_label: 'Suggested onboarding tour'
+        meta: '%steps% steps · approx. %min% min · skip anytime'
+        start: 'Start tour'
+        skip_forever: 'Don''t ask again'
+        skip_forever_title: 'Mark as completed — banner will not reappear'
+
+    # Junior (7 Steps)
+    junior:
+        meta:
+            label: 'Newcomer orientation'
+            description: 'The most important entry points for newcomers — especially helpful with a QM background.'
+        step:
+            welcome:
+                title: 'Welcome to the tool!'
+                body: 'In 5 minutes I''ll show you the key landing points. You can skip with Esc anytime — the tour stays accessible from the user menu (top right).'
+            mega_menu:
+                title: 'Navigation via the mega menu'
+                body: 'The main navigation groups all modules into seven categories: Dashboard, ISMS Core, Assets & Risk, BCM, Privacy, Operations, Compliance, Administration. Hover opens, click navigates.'
+            kpis:
+                title: 'Key KPIs at a glance'
+                body: 'Your current status at a glance: risk heatmap, framework load state, FTE savings from reuse. Colors indicate action required — red = now, yellow = soon, green = fine.'
+            iso9001_bridge:
+                title: 'For newcomers with a QM background'
+                body: 'Familiar with ISO 9001? Then you already know a lot! In the Help menu under "9001 → 27001 bridge" you''ll find a conceptual translation — CAPA ↔ Risk treatment, Process map ↔ SoA, Management review ↔ Management evaluation.'
+            command_palette:
+                title: 'Faster via the Command Palette (⌘P / Ctrl+P)'
+                body: 'Press ⌘P (Mac) or Ctrl+P (Windows/Linux). The search finds every page, action and admin function via keyboard — faster than clicking through the menu. "?" shows all shortcuts.'
+            first_asset:
+                title: 'Create your first asset'
+                body: 'Assets (IT systems, information, processes) are the foundation — risks, controls and compliance build on them. Create one and record the protection needs (confidentiality / integrity / availability on a 1–5 scale).'
+            shortcuts:
+                title: 'Stuck? "?" pops a cheat sheet'
+                body: 'Top right you''ll find the shortcut helper (keyboard icon). When in doubt: keyboard shortcuts, 9001 bridge in the help menu, command palette. Good luck!'
+
+    # Compliance-Manager (5 Steps)
+    cm:
+        meta:
+            label: 'Compliance Manager orientation'
+            description: 'Framework portfolio, reuse KPIs, mapping leverage — everything GRC day-to-day needs.'
+        step:
+            welcome:
+                title: 'Welcome, Compliance Manager'
+                body: 'Three minutes, five stops — the levers for framework portfolio, data reuse and mapping efficiency. You know ISMS jargon, I''ll skip asset/risk basics.'
+            framework_dashboard:
+                title: 'Framework dashboard'
+                body: 'Under Compliance → Framework dashboard you see which of the 23 frameworks are loaded, which requirements are met, where gaps exist. This is your portfolio radar.'
+            mapping_hub:
+                title: 'Mapping hub as junior entry point'
+                body: 'Compliance → Mapping hub bundles Wizard (4-step creation), Seed catalogs (8 ready-made cross-framework packs), Quality score, Transitive Coverage. No more direct dive into the 1,800-entry dropdowns.'
+            reuse_hub:
+                title: 'Data-Reuse Hub — the board story'
+                body: '/reuse shows FTE-days saved through mapping inheritance plus top documents/suppliers. That''s your euro figure for the board — and the trend chart on the portfolio page answers "is it getting better?".'
+            seed_review:
+                title: 'Seed review queue for audit evidence'
+                body: 'Seeds come with verified_by=app:seed-*. Under Mapping → Seed Review Queue you can go through all machine-created mappings once and approve — audit-relevant when the auditor asks "who made this?".'
+
+    # CISO (4 Steps)
+    ciso:
+        meta:
+            label: 'CISO orientation'
+            description: 'Board metrics in 90 seconds — delegation to CM/ISB runs through the modules.'
+        step:
+            welcome:
+                title: 'Welcome, CISO'
+                body: '90 seconds, four stops. No SoA detail, no button explanations — the three numbers for your next board meeting plus the delegation path.'
+            board_export:
+                title: 'Board one-pager export'
+                body: 'Management reports → Board one-pager. One click, one PDF: ISMS health score, top-5 risks, framework traffic light, last critical incidents. Briefing for the next session.'
+            health_score:
+                title: 'ISMS health score on the dashboard'
+                body: 'At the top of /dashboard you see the aggregated health score — weighted mix of coverage, risk level, incident trend. Color indicates action required.'
+            framework_matrix:
+                title: 'Framework traffic-light matrix'
+                body: 'Under Compliance → Framework dashboard you see which frameworks are green/yellow/red. Click a red entry → directly to the action list that your CM/ISB works on.'
+
+    # ISB (5 Steps)
+    isb:
+        meta:
+            label: 'ISB orientation'
+            description: 'Operational tools: SoA, incidents, workflows, audit log — daily ISB work.'
+        step:
+            welcome:
+                title: 'Welcome, ISB'
+                body: 'Four minutes, five operational stops — SoA, incidents, workflows, audit log, command palette. Your core tools for daily work.'
+            soa:
+                title: 'SoA with bulk edit'
+                body: '/soa lists all 93 Annex A controls plus module-specific ones. The bulk edit toolbar allows N/A marking with mandatory justification for multiple controls at once — one filter click is enough.'
+            incidents:
+                title: 'Incidents with status filter + 72h timer'
+                body: '/incident shows open incidents with severity filter. For GDPR data breaches the 72h timer (Art. 33) runs visibly — the workflow notifies automatically.'
+            workflows:
+                title: 'Review workflow instances'
+                body: '/workflow/instances shows all running approvals, incident escalations, document reviews. Auto-progression: when field X is filled, the workflow moves to the next step.'
+            audit_log:
+                title: 'Tamper-evident audit log'
+                body: '/admin/audit-log has an HMAC-SHA256 chain — every entry can be verified. app:audit-log:verify on the command line confirms integrity. NIS2 Art. 21.2 compliant.'
+
+    # Risk-Owner (2 Steps)
+    risk_owner:
+        meta:
+            label: 'Risk Owner orientation'
+            description: 'Your risks, your confirmation — enough to get started.'
+        step:
+            welcome:
+                title: 'Welcome, Risk Owner'
+                body: 'One minute, two stops. You''re business, not security expert — my tour is intentionally short.'
+            my_risks:
+                title: 'View + confirm my risks'
+                body: '/risk?owner=me filters to your risks. Open one: on the left the description from ISB/CM, on the right your feedback field "confirm or request change". The ISB/CM takes it from there.'
+
+    # Auditor (3 Steps)
+    auditor:
+        meta:
+            label: 'Auditor orientation'
+            description: 'Read-only scope. Three bookmarks are enough for audit runs.'
+        step:
+            welcome:
+                title: 'Welcome, auditor'
+                body: 'Your account is read-only. Two minutes, three stops — the three bookmarks for your audit run.'
+            documents:
+                title: 'Documents + policies'
+                body: '/document lists all policies, process documents, evidence. Filter by framework (ISO 27001, NIS2, DORA etc.) narrows to your audit scope. Export as PDF or audit-package ZIP at the bottom right.'
+            audit_log:
+                title: 'Audit log with integrity check'
+                body: '/admin/audit-log — tamper-evident HMAC-SHA256 chain. Click "Verify" to validate each entry. This is your chain of custody for ISO 27001 Clause 9.2 and NIS2 Art. 21.2.'

@@ -1,0 +1,42 @@
+{#
+  Guided-Tour-Banner auf dem Dashboard — einmalig sichtbar für Nutzer,
+  die die für ihre Rolle passende Tour noch nicht abgeschlossen haben.
+
+  Erwartet im Template-Kontext:
+    - suggested_tour: { id, step_count, duration_min }
+      (aus GuidedTourService::metaFor()). Wenn null, Banner nicht rendern.
+#}
+{% if suggested_tour is defined and suggested_tour %}
+    <div class="guided-tour-banner" role="region" aria-label="{{ 'guided_tour.banner.aria_label'|trans({}, 'guided_tour') }}">
+        <i class="bi bi-stars guided-tour-banner-icon fairy-icon-sparkle" aria-hidden="true"></i>
+        <div class="guided-tour-banner-content">
+            <div class="guided-tour-banner-title">
+                {{ ('guided_tour.' ~ suggested_tour.id ~ '.meta.label')|trans({}, 'guided_tour') }}
+            </div>
+            <div class="guided-tour-banner-meta">
+                {{ 'guided_tour.banner.meta'|trans({
+                    '%steps%': suggested_tour.step_count,
+                    '%min%': suggested_tour.duration_min
+                }, 'guided_tour') }}
+            </div>
+        </div>
+        <div class="guided-tour-banner-actions">
+            <button type="button"
+                    class="btn btn-sm btn-primary"
+                    data-action="click->guided-tour#start"
+                    data-guided-tour-role-param="{{ suggested_tour.id }}">
+                <i class="bi bi-play-circle" aria-hidden="true"></i>
+                {{ 'guided_tour.banner.start'|trans({}, 'guided_tour') }}
+            </button>
+            <form method="post"
+                  action="{{ path('app_guided_tour_complete', {role: suggested_tour.id}) }}"
+                  class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token('guided_tour_complete') }}">
+                <button type="submit" class="btn btn-sm btn-outline-secondary"
+                        title="{{ 'guided_tour.banner.skip_forever_title'|trans({}, 'guided_tour') }}">
+                    {{ 'guided_tour.banner.skip_forever'|trans({}, 'guided_tour') }}
+                </button>
+            </form>
+        </div>
+    </div>
+{% endif %}
