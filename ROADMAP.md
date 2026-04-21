@@ -855,8 +855,16 @@ Die drei Templates mit dem höchsten Count an Top-Level-Card-Wrappern gezielt mi
 - `compliance/mapping/wizard.html.twig` — 4 Cards → 0. 4-Step-Wizard (Framework-Paar → Requirement-Paar → Type → Rationale); Step 2 hat `hidden` + `data-mapping-wizard-target="step2"` auf dem Wrapper, via `card_attrs`-Block durchgereicht. Stimulus-Controller bleibt intakt.
 - `compliance_wizard/_gap_report_body.html.twig` — 4 Cards → 0. 3 Summary-KPI-Cards + 1 Budget-Simulator-Card mit `data-controller="budget-simulator"` auf dem Wrapper — `card_attrs`-Block-Pattern auch hier eingesetzt (Stimulus-Integration mit Component ohne zusätzlichen Wrapper-Div).
 
+**Batch 5 — tail-end outliers (2026-04-21):**
+- `compliance/mapping/import.html.twig` — CSV-Spec-Card + Ergebnis-Block migriert. Der `<form class="card">`-Wrapper ist eine **bewusste Ausnahme**: das Form-Element IST die Card, Migration würde die Submit-Buttons im `.card-footer` restrukturieren; dokumentiert als "form-as-card"-Pattern.
+- `data_reuse_hub/index.html.twig` — 3 Cards → 0. Hero-FTE-KPI mit flex-wrap-Layout, Top-Dokumente-Liste mit Header-CTA-Link, Top-Lieferanten-Liste analog.
+- `admin/tour_completion/index.html.twig` — 3 Cards → 0 (+1 form-as-card Ausnahme). Stats-Strip (Users + Completion-Rate mit dynamischer Border-Variante), Table-Card mit noPadding.
+- `report_builder/new.html.twig` — 3 clickable Layout-Option-Cards (single / two_column / dashboard) mit `data-layout`-Attr per `card_attrs`-Block. JS-Handler (layoutSelect) bleibt intakt.
+
+**Muster-Pattern gefunden:** `form-as-card` (`<form class="card ...">`) wird **nicht** migriert — das Form-Element selbst trägt die Card-CSS-Klassen und enthält `.card-body`/`.card-footer` für Submit-Button-Layout. Migration würde den Submit-Flow brechen. 2 Vorkommen bisher (import.html.twig, tour_completion/index.html.twig, evtl. weitere im Long-Tail).
+
 **Nächste Outliers (aktuell):**
-`group_report/incidents|nis2_registration|suppliers|soa_matrix` (KPI-Stats-Reste mit `py-2`-Override), `report_builder/new.html.twig` (3), `data_reuse_hub/index.html.twig` (3), `compliance/mapping_quality/*` und `compliance/mapping/import.html.twig` (je 4+).
+Keine 3+-Card-Templates mehr nach Grep (ausgenommen die `group_report`-KPI-Stats-Reste mit `py-2`-Override). Long-Tail-Count ~220 bei ≤ 2 Cards pro Datei.
 
 **Restlicher Long-Tail (~230 Templates)** — jeweils bei Feature-Änderung dort.
 

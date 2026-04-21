@@ -30,42 +30,44 @@
         </div>
     </div>
 
-    {# Hero KPI — FTE-saved, identisch zur Home-Landing-Karte #}
-    <div class="card shadow-sm mb-4 border-success">
-        <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
-            <div>
-                <div class="small text-uppercase text-muted mb-1">
-                    <i class="bi bi-lightning-charge-fill text-success" aria-hidden="true"></i>
-                    {{ 'reuse.fte.title'|trans({}, 'messages') }}
+    {# Hero KPI — FTE-saved, identisch zur Home-Landing-Karte — 8H.4 migrated #}
+    {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4 border-success' } %}
+        {% block card_body %}
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
+                    <div class="small text-uppercase text-muted mb-1">
+                        <i class="bi bi-lightning-charge-fill text-success" aria-hidden="true"></i>
+                        {{ 'reuse.fte.title'|trans({}, 'messages') }}
+                    </div>
+                    <div class="display-5 fw-bold text-success">
+                        {{ fte_saved|number_format(1, '.', ',') }}
+                        <small class="fs-5 text-muted">{{ 'reuse.fte.days_suffix'|trans({}, 'messages') }}</small>
+                    </div>
+                    <div class="small text-muted">{{ 'reuse.fte.subtitle'|trans({}, 'messages') }}</div>
                 </div>
-                <div class="display-5 fw-bold text-success">
-                    {{ fte_saved|number_format(1, '.', ',') }}
-                    <small class="fs-5 text-muted">{{ 'reuse.fte.days_suffix'|trans({}, 'messages') }}</small>
+                <div class="d-flex flex-column align-items-end gap-1">
+                    <span class="badge text-bg-light border">
+                        <i class="bi bi-file-earmark" aria-hidden="true"></i>
+                        {{ 'reuse.stats.documents'|trans({
+                            '%reused%': stats.documents_reused,
+                            '%total%': stats.documents_total
+                        }, 'messages') }}
+                    </span>
+                    <span class="badge text-bg-light border">
+                        <i class="bi bi-building" aria-hidden="true"></i>
+                        {{ 'reuse.stats.suppliers'|trans({
+                            '%reused%': stats.suppliers_reused,
+                            '%total%': stats.suppliers_total
+                        }, 'messages') }}
+                    </span>
+                    <span class="badge text-bg-light border">
+                        <i class="bi bi-ui-checks" aria-hidden="true"></i>
+                        {{ 'reuse.stats.requirements'|trans({'%count%': stats.requirements_total}, 'messages') }}
+                    </span>
                 </div>
-                <div class="small text-muted">{{ 'reuse.fte.subtitle'|trans({}, 'messages') }}</div>
             </div>
-            <div class="d-flex flex-column align-items-end gap-1">
-                <span class="badge text-bg-light border">
-                    <i class="bi bi-file-earmark" aria-hidden="true"></i>
-                    {{ 'reuse.stats.documents'|trans({
-                        '%reused%': stats.documents_reused,
-                        '%total%': stats.documents_total
-                    }, 'messages') }}
-                </span>
-                <span class="badge text-bg-light border">
-                    <i class="bi bi-building" aria-hidden="true"></i>
-                    {{ 'reuse.stats.suppliers'|trans({
-                        '%reused%': stats.suppliers_reused,
-                        '%total%': stats.suppliers_total
-                    }, 'messages') }}
-                </span>
-                <span class="badge text-bg-light border">
-                    <i class="bi bi-ui-checks" aria-hidden="true"></i>
-                    {{ 'reuse.stats.requirements'|trans({'%count%': stats.requirements_total}, 'messages') }}
-                </span>
-            </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# 9001-Brücke für Junior-Einstieg #}
     <div class="alert alert-info small mb-4">
@@ -75,19 +77,21 @@
     </div>
 
     <div class="row g-3">
-        {# TOP DOKUMENTE #}
+        {# TOP DOKUMENTE — 8H.4 migrated #}
         <div class="col-lg-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h2 class="h6 mb-0">
-                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
-                        {{ 'reuse.documents.heading'|trans({}, 'messages') }}
-                    </h2>
-                    <a href="{{ path('app_document_index') }}" class="small">
-                        {{ 'reuse.documents.all_link'|trans({}, 'messages') }}
-                    </a>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { class: 'shadow-sm h-100' } %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="h6 mb-0">
+                            <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                            {{ 'reuse.documents.heading'|trans({}, 'messages') }}
+                        </h2>
+                        <a href="{{ path('app_document_index') }}" class="small">
+                            {{ 'reuse.documents.all_link'|trans({}, 'messages') }}
+                        </a>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if top_documents|length == 0 %}
                         <p class="text-muted small mb-0">
                             {{ 'reuse.documents.empty'|trans({}, 'messages') }}
@@ -114,23 +118,25 @@
                             {% endfor %}
                         </ol>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
-        {# TOP LIEFERANTEN #}
+        {# TOP LIEFERANTEN — 8H.4 migrated #}
         <div class="col-lg-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h2 class="h6 mb-0">
-                        <i class="bi bi-building" aria-hidden="true"></i>
-                        {{ 'reuse.suppliers.heading'|trans({}, 'messages') }}
-                    </h2>
-                    <a href="{{ path('app_supplier_index') }}" class="small">
-                        {{ 'reuse.suppliers.all_link'|trans({}, 'messages') }}
-                    </a>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { class: 'shadow-sm h-100' } %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="h6 mb-0">
+                            <i class="bi bi-building" aria-hidden="true"></i>
+                            {{ 'reuse.suppliers.heading'|trans({}, 'messages') }}
+                        </h2>
+                        <a href="{{ path('app_supplier_index') }}" class="small">
+                            {{ 'reuse.suppliers.all_link'|trans({}, 'messages') }}
+                        </a>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if top_suppliers|length == 0 %}
                         <p class="text-muted small mb-0">
                             {{ 'reuse.suppliers.empty'|trans({}, 'messages') }}
@@ -159,8 +165,8 @@
                             {% endfor %}
                         </ol>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 

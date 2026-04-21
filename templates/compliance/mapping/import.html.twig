@@ -24,24 +24,28 @@
 
     {% include '_components/_iso9001_analogy.html.twig' with { variant: 'seeds' } %}
 
-    {# CSV-Spezifikation #}
-    <div class="card shadow-sm mb-3">
-        <div class="card-header">
-            <strong>{{ 'compliance.mapping.import.spec.title'|trans({}, 'compliance') }}</strong>
-        </div>
-        <div class="card-body small">
-            <p class="mb-2">{{ 'compliance.mapping.import.spec.intro'|trans({}, 'compliance') }}</p>
-            <pre class="bg-light border p-2 mb-2 rounded small"><code>source_requirement_id,target_requirement_id,mapping_type,mapping_percentage,confidence,bidirectional,rationale
+    {# CSV-Spezifikation — 8H.4 migrated #}
+    {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-3' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <strong>{{ 'compliance.mapping.import.spec.title'|trans({}, 'compliance') }}</strong>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            <div class="small">
+                <p class="mb-2">{{ 'compliance.mapping.import.spec.intro'|trans({}, 'compliance') }}</p>
+                <pre class="bg-light border p-2 mb-2 rounded small"><code>source_requirement_id,target_requirement_id,mapping_type,mapping_percentage,confidence,bidirectional,rationale
 A.5.1,NIS2-21.2.a,full,100,high,true,"Policies"
 A.5.15,NIS2-21.2.h,full,100,high,true,"Access Control"</code></pre>
-            <ul class="mb-0">
-                <li>{{ 'compliance.mapping.import.spec.required'|trans({}, 'compliance') }}</li>
-                <li>{{ 'compliance.mapping.import.spec.types'|trans({}, 'compliance') }}</li>
-                <li>{{ 'compliance.mapping.import.spec.optional'|trans({}, 'compliance') }}</li>
-                <li>{{ 'compliance.mapping.import.spec.idempotent'|trans({}, 'compliance') }}</li>
-            </ul>
-        </div>
-    </div>
+                <ul class="mb-0">
+                    <li>{{ 'compliance.mapping.import.spec.required'|trans({}, 'compliance') }}</li>
+                    <li>{{ 'compliance.mapping.import.spec.types'|trans({}, 'compliance') }}</li>
+                    <li>{{ 'compliance.mapping.import.spec.optional'|trans({}, 'compliance') }}</li>
+                    <li>{{ 'compliance.mapping.import.spec.idempotent'|trans({}, 'compliance') }}</li>
+                </ul>
+            </div>
+        {% endblock %}
+    {% endembed %}
 
     {% if error is not null %}
         <div class="alert alert-danger">
@@ -120,24 +124,26 @@ A.5.15,NIS2-21.2.h,full,100,high,true,"Access Control"</code></pre>
         </div>
     </form>
 
-    {# Ergebnis-Block #}
+    {# Ergebnis-Block — 8H.4 migrated #}
     {% if result is not null %}
-        <div class="card shadow-sm">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <strong>
-                    {% if was_commit %}
-                        <i class="bi bi-check2-circle text-success" aria-hidden="true"></i>
-                        {{ 'compliance.mapping.import.result.committed'|trans({}, 'compliance') }}
-                    {% else %}
-                        <i class="bi bi-eye text-primary" aria-hidden="true"></i>
-                        {{ 'compliance.mapping.import.result.preview'|trans({}, 'compliance') }}
-                    {% endif %}
-                </strong>
-                <span class="small text-muted">
-                    {{ source_code }} → {{ target_code }}
-                </span>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' with { class: 'shadow-sm' } %}
+            {% block card_header %}
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong>
+                        {% if was_commit %}
+                            <i class="bi bi-check2-circle text-success" aria-hidden="true"></i>
+                            {{ 'compliance.mapping.import.result.committed'|trans({}, 'compliance') }}
+                        {% else %}
+                            <i class="bi bi-eye text-primary" aria-hidden="true"></i>
+                            {{ 'compliance.mapping.import.result.preview'|trans({}, 'compliance') }}
+                        {% endif %}
+                    </strong>
+                    <span class="small text-muted">
+                        {{ source_code }} → {{ target_code }}
+                    </span>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 <div class="row g-2 mb-3">
                     <div class="col-6 col-md-3">
                         <div class="border rounded p-2 text-center">
@@ -210,8 +216,8 @@ A.5.15,NIS2-21.2.h,full,100,high,true,"Access Control"</code></pre>
                         {{ 'compliance.mapping.import.result.preview_ok_hint'|trans({}, 'compliance') }}
                     </div>
                 {% endif %}
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 </div>
 {% endblock %}
