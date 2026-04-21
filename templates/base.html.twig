@@ -230,51 +230,54 @@
                 </div>
                 {% endif %}
 
-                {# User Menu with Dropdown #}
+                {# User Menu — Aurora-Dropdown (Stimulus-gesteuert, Plan § 20) #}
                 {% if app.user %}
-                <div class="user-menu">
+                <div class="user-menu" data-controller="aurora-dropdown">
                     {% set firstName = app.user.firstName|default('') %}
                     {% set lastName = app.user.lastName|default('') %}
                     {% set initials = (firstName|length > 0 ? firstName|slice(0, 1) : '') ~ (lastName|length > 0 ? lastName|slice(0, 1) : '') %}
                     {% if initials|length == 0 %}
                         {% set initials = app.user.fullName|slice(0, 2) %}
                     {% endif %}
-                    <button class="user-avatar"
+                    <button type="button"
+                            class="user-avatar"
                             title="{{ app.user.fullName }}"
                             aria-label="{{ 'nav.user_menu'|trans({}, 'nav') }}"
                             aria-haspopup="true"
-                            aria-expanded="false">
+                            aria-expanded="false"
+                            data-action="click->aurora-dropdown#toggle">
                         {{ initials|upper }}
                     </button>
-                    <div class="user-dropdown" role="menu">
+                    <div class="user-dropdown fa-dropdown-panel fa-dropdown-panel--bottom-right"
+                         role="menu"
+                         data-aurora-dropdown-target="panel"
+                         hidden>
                         <div class="user-dropdown-header">
                             <span class="user-dropdown-name">{{ app.user.fullName }}</span>
                             <span class="user-dropdown-email">{{ app.user.email }}</span>
                         </div>
                         <div class="user-dropdown-divider"></div>
-                        <a href="{{ path('app_profile') }}" class="user-dropdown-item" role="menuitem">
-                            <i class="bi bi-person" aria-hidden="true"></i>
-                            {{ 'nav.my_profile'|trans({}, 'nav') }}
+                        <a href="{{ path('app_profile') }}" class="user-dropdown-item fa-dropdown-panel__item" role="menuitem">
+                            <i class="bi bi-person fa-dropdown-panel__item-icon" aria-hidden="true"></i>
+                            <span class="fa-dropdown-panel__item-body">{{ 'nav.my_profile'|trans({}, 'nav') }}</span>
                         </a>
-                        <a href="{{ path('app_profile_mfa_index') }}" class="user-dropdown-item" role="menuitem">
-                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
-                            {{ 'nav.security'|trans({}, 'nav') }}
+                        <a href="{{ path('app_profile_mfa_index') }}" class="user-dropdown-item fa-dropdown-panel__item" role="menuitem">
+                            <i class="bi bi-shield-lock fa-dropdown-panel__item-icon" aria-hidden="true"></i>
+                            <span class="fa-dropdown-panel__item-body">{{ 'nav.security'|trans({}, 'nav') }}</span>
                         </a>
-                        {# Sprint 13 — Guided-Tour-Launcher. Klick startet Tour in
-                         # der aktuell vorgesehenen Rolle; Re-Run ist jederzeit möglich. #}
                         <a href="{{ path('app_home') }}#tour-restart"
-                           class="user-dropdown-item"
+                           class="user-dropdown-item fa-dropdown-panel__item"
                            role="menuitem"
                            data-action="click->guided-tour#start"
                            data-guided-tour-role-param="junior">
-                            <i class="bi bi-stars fairy-icon-sparkle" aria-hidden="true"></i>
-                            {{ 'guided_tour.action.restart'|trans({}, 'guided_tour') }}
+                            <i class="bi bi-stars fa-dropdown-panel__item-icon" aria-hidden="true"></i>
+                            <span class="fa-dropdown-panel__item-body">{{ 'guided_tour.action.restart'|trans({}, 'guided_tour') }}</span>
                         </a>
                         <div class="user-dropdown-divider"></div>
-                        <a href="{{ path('app_logout') }}" class="user-dropdown-item user-dropdown-logout fairy-logout" role="menuitem">
-                            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
-                            <span>{{ 'nav.logout'|trans({}, 'nav') }}</span>
-                            <span class="fairy-logout-sparkle">✦</span>
+                        <a href="{{ path('app_logout') }}" class="user-dropdown-item fa-dropdown-panel__item user-dropdown-logout" role="menuitem">
+                            <i class="bi bi-box-arrow-right fa-dropdown-panel__item-icon" aria-hidden="true"></i>
+                            <span class="fa-dropdown-panel__item-body">{{ 'nav.logout'|trans({}, 'nav') }}</span>
+                            <span class="fa-dropdown-panel__item-meta" style="color: var(--accent);">✦</span>
                         </a>
                     </div>
                 </div>
