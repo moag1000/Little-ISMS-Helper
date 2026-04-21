@@ -1,0 +1,27 @@
+{#
+ # FairyAurora Mode-Switch — 3-State Toggle (Light / Dark / System)
+ #
+ # Usage:
+ #   {% include '_components/_mode_switch.html.twig' %}
+ #
+ # Aktiviert via Stimulus-Controller `aurora-mode`:
+ # - Click cycled light → dark → system → light
+ # - Persistenz: localStorage['fa-theme']
+ # - Init: base.html.twig setzt html[data-theme] vor Render (no FOUC)
+ #
+ # Plan § 17.
+ #}
+
+<button type="button"
+        class="fa-mode-switch"
+        data-controller="aurora-mode"
+        data-action="click->aurora-mode#cycle"
+        data-aurora-mode-label-light-value="{{ 'ui.theme.light'|trans({}, 'ui')|default('Light') }}"
+        data-aurora-mode-label-dark-value="{{ 'ui.theme.dark'|trans({}, 'ui')|default('Dark') }}"
+        data-aurora-mode-label-system-value="{{ 'ui.theme.system'|trans({}, 'ui')|default('System') }}"
+        aria-label="{{ 'ui.theme.switch_title'|trans({}, 'ui')|default('Farbmodus wechseln') }}">
+    <i class="bi bi-sun-fill fa-mode-switch__icon fa-mode-switch__icon--light" aria-hidden="true"></i>
+    <i class="bi bi-moon-fill fa-mode-switch__icon fa-mode-switch__icon--dark" aria-hidden="true"></i>
+    <i class="bi bi-circle-half fa-mode-switch__icon fa-mode-switch__icon--system" aria-hidden="true"></i>
+    <span class="visually-hidden" data-aurora-mode-target="srText"></span>
+</button>

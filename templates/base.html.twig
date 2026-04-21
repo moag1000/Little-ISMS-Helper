@@ -183,11 +183,8 @@
                     <span></span>
                 </button>
                 {% endif %}
-                <img src="{{ asset('favicon.svg') }}" alt="Little ISMS Helper Logo" width="40" height="40">
-                <div>
-                    <h1>{{ 'app.title'|trans({}, 'messages') }}</h1>
-                    <p>{{ 'app.subtitle'|trans({}, 'messages') }}</p>
-                </div>
+                {% import '_components/_brand.html.twig' as faBrand %}
+                {{ faBrand.render(size='md', link=path('app_home'))|raw }}
             </div>
             <div class="header-actions">
                 {# PWA Install Button - Hidden by default, shown when installable #}
@@ -203,6 +200,9 @@
                 {% if not is_setup_route %}
                     {% include '_components/_notification_bell.html.twig' %}
                 {% endif %}
+
+                {# FairyAurora Mode-Switch (Light/Dark/System) #}
+                {% include '_components/_mode_switch.html.twig' %}
 
                 {% set current_route = app.request.attributes.get('_route') %}
                 {% if current_route %}
@@ -346,8 +346,7 @@
     {# Quick View Modal (Paket B - Premium) #}
     {% include '_components/_quick_view_modal.html.twig' %}
 
-    {# Theme Toggle (Paket C - Premium) #}
-    {% include '_components/_theme_toggle.html.twig' %}
+    {# FairyAurora v3.0: Mode-Switch ist jetzt in Header (3-State L/D/System) #}
 
     {# Preferences Modal (Paket C - Premium) #}
     {% include '_components/_preferences_modal.html.twig' %}

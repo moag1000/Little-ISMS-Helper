@@ -1222,20 +1222,20 @@ body {
     min-height: calc(100vh - 180px);
 }
 
-/* App Sidebar - Theme-aware */
+/* App Sidebar - FairyAurora v3.0 (224px per Design-System-Spec) */
 .app-sidebar {
-    width: 260px;
-    background: var(--color-bg-alt); /* Light mode: Light gray using CSS var */
-    border-right: 1px solid var(--color-border);
+    width: 224px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
     padding: var(--spacing-lg) 0;
     overflow-y: auto;
     overflow-x: hidden;
     box-shadow: var(--shadow-sm);
     position: sticky;
-    top: 0; /* Scrolls with page - header stays on top */
+    top: 0;
     align-self: flex-start;
     max-height: 100vh;
-    z-index: 50; /* Below header (z-index: 100), above content */
+    z-index: 50;
 }
 
 /* Custom Scrollbar for Sidebar - Light Mode */
