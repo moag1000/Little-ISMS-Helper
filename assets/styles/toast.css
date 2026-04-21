@@ -19,7 +19,7 @@
 /* Toast - Cyberpunk Style */
 .toast {
     background: var(--bs-body-bg, white);
-    color: var(--bs-body-color, #212529);
+    color: var(--fg);
     border-radius: 8px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 0 20px rgba(6, 182, 212, 0.2);
     padding: 16px;

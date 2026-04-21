@@ -26,7 +26,7 @@
 
 .risk-level-medium .risk-score {
     background-color: var(--warning);
-    color: var(--text-inverse, #000);  /* Uses theme-aware inverse text */
+    color: var(--on-warning);  /* Uses theme-aware inverse text */
 }
 
 .risk-level-low .risk-score {
@@ -1602,7 +1602,7 @@
 }
 
 .chart-legend-label {
-    color: var(--text-primary, #1e293b);
+    color: var(--fg);
     font-size: 0.875rem;
     font-weight: 500;
 }
@@ -1622,7 +1622,7 @@
 
 [data-theme="dark"] .chart-legend-label,
 [data-bs-theme="dark"] .chart-legend-label {
-    color: #f1f5f9;
+    color: var(--fg);
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
@@ -1807,16 +1807,16 @@
 /* Compliance Transitive Utilities */
 /* Gradient backgrounds for empty states - Cyberpunk Fairy Theme */
 .gradient-purple {
-    background: var(--gradient-purple, linear-gradient(135deg, var(--accent) 0%, var(--accent) 100%));
-    color: white;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    color: var(--on-accent);
     text-align: center;
     padding: 3rem;
     border: none;
 }
 
 .gradient-pink {
-    background: var(--gradient-pink, linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%));
-    color: white;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    color: var(--on-accent);
     text-align: center;
     padding: 3rem;
     border: none;
@@ -2155,7 +2155,7 @@
 
 /* Compliance Index Utilities - Cyberpunk Fairy Emerald Gradient */
 .alert-gradient-success {
-    background: linear-gradient(135deg, var(--success) 0%, #059669 100%);  /* Emerald fairy dust */
+    background: linear-gradient(135deg, var(--success) 0%, var(--success-strong) 100%);  /* Emerald fairy dust */
     color: white;
     border: none;
     margin-bottom: var(--spacing-lg);
@@ -2411,7 +2411,7 @@
 
 .badge-update {
     background: var(--warning);  /* Amber caution sparkles */
-    color: var(--text-inverse, #000);  /* Theme-aware dark text on amber */
+    color: var(--on-warning);  /* Theme-aware dark text on amber */
 }
 
 .badge-delete {
@@ -2437,13 +2437,13 @@
 /* Dark Mode - Audit Log Badges */
 [data-theme="dark"] .badge-create {
     background: var(--success);
-    color: #0f172a;
+    color: var(--on-success);
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
 }
 
 [data-theme="dark"] .badge-update {
     background: var(--warning);
-    color: #0f172a;
+    color: var(--on-warning);
     box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
 }
 
@@ -2455,7 +2455,7 @@
 
 [data-theme="dark"] .badge-view {
     background: var(--primary);
-    color: #0f172a;
+    color: var(--on-primary);
     box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
 }
 
