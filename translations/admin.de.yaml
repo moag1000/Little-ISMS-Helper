@@ -47,6 +47,7 @@ admin:
         tags: 'Tags'
         compliance_import: 'Compliance-Import-Wizard'
         tour_completion: 'Tour-Einweisungsstand'
+        tour_content: 'Tour-Texte anpassen'
     alert:
         inactive_users: 'Inaktive Benutzer'
         unverified_users: 'Unverifizierte Benutzer'
@@ -203,6 +204,25 @@ admin:
         no_frameworks_loaded: 'Keine Frameworks geladen'
     panel:
         title: Admin-Panel
+    tour_content:
+        title: 'Tour-Texte anpassen'
+        description: 'Default-Texte der Einweisungs-Touren liegen in <code>translations/guided_tour.*.yaml</code>. Hier können Admins pro Tour + Step + Sprache einen <strong>Mandanten-spezifischen Override</strong> setzen — z.B. „Hier finden Sie IHRE Asset-Kategorien" statt der generischen Formulierung. Leeres Feld = Default wird verwendet.'
+        scope_tenant_hint: 'Änderungen gelten nur für Mandant <strong>%tenant%</strong>.'
+        scope_global: 'Als System-Default speichern (alle Mandanten)'
+        scope_global_hint: 'Nur SUPER_ADMIN. Global gespeicherte Overrides gelten wenn kein tenant-spezifischer Override existiert.'
+        global_hint: 'Als SUPER_ADMIN können Sie pro Tour einen System-Default-Override als Checkbox auf der Edit-Seite anlegen.'
+        edit_description: 'Pro Step ein Block mit zwei Zeilen (DE + EN). Feld leer lassen = Default aus Translation-File nutzen.'
+        steps: Schritte
+        step_id_hint: 'Interne Step-ID — bei Override wird sowohl Titel als auch Body überschrieben.'
+        title_label: 'Titel-Override'
+        body_label: 'Beschreibungs-Override (Markdown möglich)'
+        default: 'Default'
+        save: 'Overrides speichern'
+        reset_tour: 'Alle Overrides dieser Tour zurücksetzen'
+        confirm_reset: 'Wirklich alle Overrides dieser Tour löschen? Danach gelten wieder die Defaults aus den Translation-Files.'
+        flash:
+            saved: '%changed% Override(s) gespeichert, %removed% entfernt.'
+            reset: '%count% Override(s) gelöscht.'
     tour_completion:
         title: 'Tour-Einweisungsstand'
         description: 'Welche Benutzer haben die Einweisungs-Tour für ihre Rolle durchlaufen? ISO-27001-A.6.3-Awareness-Training-Nachweis. Pro Benutzer sichtbar welche der 6 Touren (junior / cm / ciso / isb / risk_owner / auditor) als abgeschlossen markiert sind.'

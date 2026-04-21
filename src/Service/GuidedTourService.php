@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Tenant;
 use App\Entity\User;
+use App\Repository\GuidedTourStepOverrideRepository;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Optional-Dependency-Sicht: ModuleConfigurationService wird injiziert,
  * wenn verfügbar — andernfalls werden Modul-Zusatz-Stopps übersprungen
  * (Tests + frische Installationen brauchen den Service nicht).
+ *
+ * Analog optional: GuidedTourStepOverrideRepository für P5 Tenant-Override.
  */
 
 /**
@@ -57,7 +61,31 @@ final class GuidedTourService
     public function __construct(
         private readonly AuthorizationCheckerInterface $authChecker,
         private readonly ?ModuleConfigurationService $moduleConfig = null,
+        private readonly ?GuidedTourStepOverrideRepository $overrideRepository = null,
+        private readonly ?TenantContext $tenantContext = null,
     ) {
+    }
+
+    /**
+     * Prüft Override-Repository für einen gegebenen Step. Gibt Override-
+     * Texte zurück oder null wenn Default gelten sollen.
+     *
+     * @return array{title: string, body: string}|null
+     */
+    public function resolveOverride(string $tourId, string $stepId, string $locale): ?array
+    {
+        if ($this->overrideRepository === null) {
+            return null;
+        }
+        $tenant = $this->tenantContext?->getCurrentTenant();
+        $override = $this->overrideRepository->findEffective($tenant, $tourId, $stepId, $locale);
+        if ($override === null) {
+            return null;
+        }
+        return [
+            'title' => $override->getTitleOverride() ?? '',
+            'body' => $override->getBodyOverride() ?? '',
+        ];
     }
 
     /**

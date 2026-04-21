@@ -1,0 +1,123 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}
+    <i class="bi bi-stars fairy-icon-sparkle" aria-hidden="true"></i>
+    {{ ('guided_tour.' ~ tour_id ~ '.meta.label')|trans({}, 'guided_tour') }}
+{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_tour_content_index') }}">{{ 'admin.tour_content.title'|trans({}, 'admin') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ tour_id }}</li>
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    <p class="text-muted mb-3">
+        {{ 'admin.tour_content.edit_description'|trans({}, 'admin') }}
+    </p>
+
+    {% if scope_tenant %}
+        <div class="alert alert-info small">
+            <i class="bi bi-building" aria-hidden="true"></i>
+            {{ 'admin.tour_content.scope_tenant_hint'|trans({'%tenant%': scope_tenant.name}, 'admin') }}
+        </div>
+    {% endif %}
+
+    <form method="post" action="{{ path('admin_tour_content_save', {tourId: tour_id}) }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('admin_tour_content_' ~ tour_id) }}">
+
+        {% if can_set_global %}
+            <div class="card shadow-sm mb-3">
+                <div class="card-body py-2 px-3">
+                    <div class="form-check">
+                        <input type="checkbox" id="scope-global" name="scope_global" value="1" class="form-check-input">
+                        <label for="scope-global" class="form-check-label small">
+                            <i class="bi bi-globe" aria-hidden="true"></i>
+                            <strong>{{ 'admin.tour_content.scope_global'|trans({}, 'admin') }}</strong>
+                            — {{ 'admin.tour_content.scope_global_hint'|trans({}, 'admin') }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% set last_step = '' %}
+        {% for row in rows %}
+            {% if row.step_id != last_step %}
+                {% if not loop.first %}</div></div>{% endif %}
+                <div class="card shadow-sm mb-3">
+                    <div class="card-header">
+                        <code class="text-primary">{{ row.step_id }}</code>
+                        <span class="small text-muted ms-2">
+                            {{ 'admin.tour_content.step_id_hint'|trans({}, 'admin') }}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                {% set last_step = row.step_id %}
+            {% endif %}
+
+            <div class="row g-2 mb-3 pb-3 {% if not loop.last and rows[loop.index] is defined and rows[loop.index].step_id == row.step_id %}border-bottom{% endif %}">
+                <div class="col-lg-1 text-center">
+                    <span class="badge text-bg-secondary">{{ row.locale|upper }}</span>
+                </div>
+                <div class="col-lg-5">
+                    <label for="title-{{ row.step_id }}-{{ row.locale }}" class="form-label small fw-semibold">
+                        {{ 'admin.tour_content.title_label'|trans({}, 'admin') }}
+                    </label>
+                    <input type="text"
+                           id="title-{{ row.step_id }}-{{ row.locale }}"
+                           name="title[{{ row.step_id }}|{{ row.locale }}]"
+                           class="form-control form-control-sm"
+                           placeholder="{{ row.default_title }}"
+                           value="{{ row.override_title }}">
+                    <div class="small text-muted mt-1">
+                        {{ 'admin.tour_content.default'|trans({}, 'admin') }}:
+                        <em>{{ row.default_title }}</em>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <label for="body-{{ row.step_id }}-{{ row.locale }}" class="form-label small fw-semibold">
+                        {{ 'admin.tour_content.body_label'|trans({}, 'admin') }}
+                    </label>
+                    <textarea id="body-{{ row.step_id }}-{{ row.locale }}"
+                              name="body[{{ row.step_id }}|{{ row.locale }}]"
+                              class="form-control form-control-sm"
+                              rows="3"
+                              placeholder="{{ row.default_body }}">{{ row.override_body }}</textarea>
+                    {% if row.updated_at %}
+                        <div class="small text-muted mt-1">
+                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                            {{ row.updated_at|date('Y-m-d H:i') }}{% if row.updated_by %} — {{ row.updated_by }}{% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if loop.last %}</div></div>{% endif %}
+        {% endfor %}
+
+        <div class="d-flex justify-content-between mt-4">
+            <form method="post"
+                  action="{{ path('admin_tour_content_reset', {tourId: tour_id}) }}"
+                  class="d-inline"
+                  onsubmit="return confirm('{{ 'admin.tour_content.confirm_reset'|trans({}, 'admin')|e('js') }}');">
+                <input type="hidden" name="_token" value="{{ csrf_token('admin_tour_content_reset_' ~ tour_id) }}">
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                    {{ 'admin.tour_content.reset_tour'|trans({}, 'admin') }}
+                </button>
+            </form>
+
+            <div class="d-flex gap-2">
+                <a href="{{ path('admin_tour_content_index') }}" class="btn btn-outline-secondary">
+                    {{ 'common.cancel'|trans({}, 'messages') }}
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save" aria-hidden="true"></i>
+                    {{ 'admin.tour_content.save'|trans({}, 'admin') }}
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -28,6 +29,7 @@ class GuidedTourController extends AbstractController
         private readonly GuidedTourService $tourService,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
+        private readonly RequestStack $requestStack,
     ) {
     }
 
@@ -38,13 +40,23 @@ class GuidedTourController extends AbstractController
             return new JsonResponse(['error' => 'unknown tour'], 404);
         }
 
+        $locale = $this->requestStack->getCurrentRequest()?->getLocale() ?? 'de';
         $steps = [];
         foreach ($this->tourService->stepsFor($role) as $step) {
+            // P5: Tenant-Override hat Priorität über Translation-Default.
+            $override = $this->tourService->resolveOverride($role, $step['id'], $locale);
+            $title = $override !== null && $override['title'] !== ''
+                ? $override['title']
+                : $this->translator->trans($step['title_key'], [], 'guided_tour');
+            $body = $override !== null && $override['body'] !== ''
+                ? $override['body']
+                : $this->translator->trans($step['body_key'], [], 'guided_tour');
+
             $steps[] = [
                 'id' => $step['id'],
                 'target' => $step['target'],
-                'title' => $this->translator->trans($step['title_key'], [], 'guided_tour'),
-                'body' => $this->translator->trans($step['body_key'], [], 'guided_tour'),
+                'title' => $title,
+                'body' => $body,
                 'url' => $step['url'],
                 'placement' => $step['placement'],
             ];
