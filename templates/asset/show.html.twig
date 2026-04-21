@@ -441,12 +441,12 @@
     padding: 1rem;
     background: var(--bs-tertiary-bg);
     color: var(--bs-body-color);
-    border-left: 3px solid #3b82f6;
+    border-left: 3px solid var(--primary);
     border-radius: 4px;
     white-space: pre-wrap;
 }
 .badge-classification-public { background: var(--success); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-classification-internal { background: #3b82f6; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-classification-internal { background: var(--primary); color: var(--on-primary, white); padding: 0.25rem 0.5rem; border-radius: 4px; }
 .badge-classification-confidential { background: var(--warning); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 .badge-classification-restricted { background: var(--danger); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 /* Data Reuse Sections */
@@ -455,7 +455,7 @@
     padding: 0.75rem;
     background: var(--bs-tertiary-bg);
     color: var(--bs-body-color);
-    border-left: 3px solid #3b82f6;
+    border-left: 3px solid var(--primary);
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -499,7 +499,7 @@
     font-weight: 500;
 }
 .badge-action-insert { background: var(--success); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-action-update { background: #3b82f6; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-action-update { background: var(--primary); color: var(--on-primary, white); padding: 0.25rem 0.5rem; border-radius: 4px; }
 .badge-action-delete { background: var(--danger); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 
 /* Protection Analysis Styles */

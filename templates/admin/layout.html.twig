@@ -27,13 +27,14 @@
 
         /* Admin-specific layout - match .content from base.html.twig */
         .admin-wrapper {
-            background: white;
+            background: var(--bg);
             padding: var(--spacing-xl);
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-sm);
         }
 
-        [data-theme="dark"] .admin-wrapper {
+        [data-theme="dark"] .admin-wrapper,
+        [data-bs-theme="dark"] .admin-wrapper {
             background: var(--bg-elevated);
             color: var(--text-primary);
         }

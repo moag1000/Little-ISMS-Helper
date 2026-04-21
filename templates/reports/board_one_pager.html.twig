@@ -61,15 +61,15 @@
         }
         .metric-box .number { font-size: 18pt; font-weight: bold; color: var(--primary); margin: 0; }
         .metric-box .number.danger { color: var(--danger); }
-        .metric-box .number.success { color: #16a34a; }
+        .metric-box .number.success { color: var(--success); }
         .metric-box .number.warning { color: #d97706; }
         .metric-box .label { font-size: 7pt; color: #475569; text-transform: uppercase; font-weight: bold; letter-spacing: 0.3pt; }
         .metric-box .trend { font-size: 7pt; }
-        .trend-up { color: #16a34a; }
+        .trend-up { color: var(--success); }
         .trend-down { color: var(--danger); }
-        .trend-stable { color: #94a3b8; }
+        .trend-stable { color: var(--fg-3); }
         .trend-up-bad { color: var(--danger); }
-        .trend-down-good { color: #16a34a; }
+        .trend-down-good { color: var(--success); }
 
         /* Two-column layout */
         .two-col { display: table; width: 100%; margin-bottom: 10px; }
@@ -124,7 +124,7 @@
 
         /* Readiness checklist */
         .check-item { font-size: 7.5pt; padding: 1px 0; }
-        .check-pass { color: #16a34a; }
+        .check-pass { color: var(--success); }
         .check-fail { color: var(--danger); }
 
         /* Footer */
@@ -135,7 +135,7 @@
             right: 0;
             text-align: center;
             font-size: 7pt;
-            color: #94a3b8;
+            color: var(--fg-3);
             border-top: 1px solid var(--border);
             padding-top: 4px;
         }
@@ -253,7 +253,7 @@
                 </tbody>
             </table>
             {% else %}
-            <p style="color: #94a3b8; text-align: center; padding: 10px;">{{ 'board_one_pager.no_risks'|trans({}, 'reports') }}</p>
+            <p style="color: var(--fg-3); text-align: center; padding: 10px;">{{ 'board_one_pager.no_risks'|trans({}, 'reports') }}</p>
             {% endif %}
         </div>
 
@@ -273,7 +273,7 @@
                 </div>
                 {% endfor %}
             {% else %}
-                <p style="color: #94a3b8; text-align: center; padding: 10px;">{{ 'board_one_pager.no_frameworks'|trans({}, 'reports') }}</p>
+                <p style="color: var(--fg-3); text-align: center; padding: 10px;">{{ 'board_one_pager.no_frameworks'|trans({}, 'reports') }}</p>
             {% endif %}
         </div>
     </div>
@@ -297,7 +297,7 @@
             </div>
             {% endfor %}
             {% if readiness is empty %}
-            <p style="color: #94a3b8; font-size: 7.5pt;">{{ 'board_one_pager.no_data'|trans({}, 'reports') }}</p>
+            <p style="color: var(--fg-3); font-size: 7.5pt;">{{ 'board_one_pager.no_data'|trans({}, 'reports') }}</p>
             {% endif %}
         </div>
 
