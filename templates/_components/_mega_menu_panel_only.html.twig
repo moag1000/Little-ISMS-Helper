@@ -415,7 +415,8 @@
         </div>
         {% endif %}
 
-        {# Admin Panel #}
+        {# Admin Panel — restrukturiert (Sprint 10): zwei logische Oberdomänen
+         # (Platform-Admin vs. Compliance-Admin) statt 7 flacher Sektionen. #}
         {% if is_granted('ROLE_ADMIN') %}
         <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="admin" role="menu" aria-label="{{ 'nav.mega.category.admin'|trans({}, 'nav') }}">
             <div class="mega-menu-panel-content">
@@ -432,9 +433,11 @@
                     </ul>
                 </div>
 
-                {# User & Access Management #}
+                {# ─── Platform-Admin ─── #}
+
+                {# Users & Access #}
                 <div class="mega-menu-section">
-                    <h3 class="mega-menu-section-title">{{ 'admin.section.user_access'|trans({}, 'admin') }}</h3>
+                    <h3 class="mega-menu-section-title">{{ 'admin.section.platform.users_access'|trans({}, 'admin') }}</h3>
                     <ul class="mega-menu-links">
                         <li><a href="{{ path('tenant_management_index') }}" class="{% if current_route starts with 'tenant_management_' and current_route != 'tenant_management_corporate_structure' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-building" aria-hidden="true"></i>
@@ -483,9 +486,9 @@
                     </ul>
                 </div>
 
-                {# System Configuration #}
+                {# Platform-Config — Settings + KPI-Thresholds + Tags (Sprint 10: hidden routes sichtbar) #}
                 <div class="mega-menu-section">
-                    <h3 class="mega-menu-section-title">{{ 'admin.section.system_config'|trans({}, 'admin') }}</h3>
+                    <h3 class="mega-menu-section-title">{{ 'admin.section.platform.configuration'|trans({}, 'admin') }}</h3>
                     <ul class="mega-menu-links">
                         <li><a href="{{ path('admin_settings_index') }}" class="{% if current_route starts with 'admin_settings_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-gear" aria-hidden="true"></i>
@@ -493,19 +496,82 @@
                                 <span class="mega-menu-link-title">{{ 'admin.nav.settings'|trans({}, 'admin') }}</span>
                             </div>
                         </a></li>
-                    </ul>
-                </div>
-
-                {# Modules & Features #}
-                <div class="mega-menu-section">
-                    <h3 class="mega-menu-section-title">{{ 'admin.section.modules'|trans({}, 'admin') }}</h3>
-                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('admin_kpi_threshold_index') }}" class="{% if current_route starts with 'admin_kpi_threshold' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-rulers" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.kpi_thresholds'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('admin_tag_index') }}" class="{% if current_route starts with 'admin_tag' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-tags" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.tags'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
                         <li><a href="{{ path('admin_modules_index') }}" class="{% if current_route starts with 'admin_modules_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-puzzle" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'admin.nav.module_management'|trans({}, 'admin') }}</span>
                             </div>
                         </a></li>
+                    </ul>
+                </div>
+
+                {# Platform-Data & Ops — Backup/Export/Import/Repair/Health/Log/License #}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'admin.section.platform.data_ops'|trans({}, 'admin') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('data_backup_index') }}" class="{% if current_route starts with 'data_backup' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-hdd" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.backup'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('data_export_index') }}" class="{% if current_route starts with 'data_export' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-download" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.export'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('data_import_index') }}" class="{% if current_route starts with 'data_import' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-upload" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.import'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('admin_data_repair_index') }}" class="{% if current_route starts with 'admin_data_repair' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-tools text-danger" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.data_repair'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('monitoring_health') }}" class="{% if current_route starts with 'monitoring_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-heart-pulse" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.system_health'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-journal-text" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.audit_log'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('admin_licensing_index') }}" class="{% if current_route starts with 'admin_licensing_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-award" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.licensing'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+
+                {# ─── Compliance-Admin ─── #}
+
+                {# Compliance-Frameworks (Katalog, Loader, Policy) #}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'admin.section.compliance.frameworks'|trans({}, 'admin') }}</h3>
+                    <ul class="mega-menu-links">
                         <li><a href="{{ path('admin_compliance_index') }}" class="{% if current_route == 'admin_compliance_index' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-check-circle" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -527,70 +593,20 @@
                     </ul>
                 </div>
 
-                {# Monitoring & Logs #}
+                {# Compliance-Import (Requirement-Importer + History) #}
                 <div class="mega-menu-section">
-                    <h3 class="mega-menu-section-title">{{ 'admin.section.monitoring'|trans({}, 'admin') }}</h3>
+                    <h3 class="mega-menu-section-title">{{ 'admin.section.compliance.imports'|trans({}, 'admin') }}</h3>
                     <ul class="mega-menu-links">
-                        <li><a href="{{ path('monitoring_health') }}" class="{% if current_route starts with 'monitoring_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-heart-pulse" aria-hidden="true"></i>
+                        <li><a href="{{ path('admin_compliance_import_upload') }}" class="{% if current_route starts with 'admin_compliance_import_' and current_route != 'admin_compliance_import_cancel' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-file-earmark-arrow-up" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.system_health'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-journal-text" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.audit_log'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                    </ul>
-                </div>
-
-                {# Data Management #}
-                <div class="mega-menu-section">
-                    <h3 class="mega-menu-section-title">{{ 'admin.section.data_management'|trans({}, 'admin') }}</h3>
-                    <ul class="mega-menu-links">
-                        <li><a href="{{ path('data_backup_index') }}" class="{% if current_route starts with 'data_backup' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-hdd" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.backup'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        <li><a href="{{ path('data_export_index') }}" class="{% if current_route starts with 'data_export' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-download" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.export'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        <li><a href="{{ path('data_import_index') }}" class="{% if current_route starts with 'data_import' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-upload" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.import'|trans({}, 'admin') }}</span>
+                                <span class="mega-menu-link-title">{{ 'admin.nav.compliance_import'|trans({}, 'admin') }}</span>
                             </div>
                         </a></li>
                         <li><a href="{{ path('admin_import_history_index') }}" class="{% if current_route starts with 'admin_import_history_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-clock-history" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'admin.nav.compliance_import_history'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        <li><a href="{{ path('admin_data_repair_index') }}" class="{% if current_route starts with 'admin_data_repair' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-tools" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.data_repair'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                    </ul>
-                </div>
-
-                {# Licensing #}
-                <div class="mega-menu-section">
-                    <h3 class="mega-menu-section-title">{{ 'admin.section.licensing'|trans({}, 'admin') }}</h3>
-                    <ul class="mega-menu-links">
-                        <li><a href="{{ path('admin_licensing_index') }}" class="{% if current_route starts with 'admin_licensing_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-award" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.licensing'|trans({}, 'admin') }}</span>
                             </div>
                         </a></li>
                     </ul>
