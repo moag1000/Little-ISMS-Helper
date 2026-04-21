@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'help.tour.index.title'|trans({}, 'help') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'help.tour.index.title'|trans({}, 'help') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-stars fairy-icon-sparkle" aria-hidden="true"></i>
+                {{ 'help.tour.index.title'|trans({}, 'help') }}
+            </h1>
+            <p class="text-muted mb-0">{{ 'help.tour.index.subtitle'|trans({}, 'help') }}</p>
+        </div>
+        <button type="button" class="btn btn-outline-secondary btn-sm d-print-none" onclick="window.print()">
+            <i class="bi bi-printer" aria-hidden="true"></i>
+            {{ 'help.tour.print'|trans({}, 'help') }}
+        </button>
+    </div>
+
+    <div class="alert alert-info small d-print-none">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'help.tour.index.hint'|trans({}, 'help')|raw }}
+    </div>
+
+    <div class="row g-3">
+        {% for tour in tours %}
+            <div class="col-md-6 col-lg-4">
+                <a href="{{ path('app_help_tour_role', {role: tour.id}) }}"
+                   class="text-decoration-none">
+                    {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
+                        {% block card_body %}
+                            <h2 class="h5 mb-1">
+                                <i class="bi bi-stars" aria-hidden="true"></i>
+                                {{ ('guided_tour.' ~ tour.id ~ '.meta.label')|trans({}, 'guided_tour') }}
+                            </h2>
+                            <div class="small text-muted mb-2">
+                                {{ tour.step_count }} {{ 'help.tour.steps'|trans({}, 'help') }}
+                                · {{ tour.duration_min }} min
+                            </div>
+                            <p class="small text-body mb-0">
+                                {{ ('guided_tour.' ~ tour.id ~ '.meta.description')|trans({}, 'guided_tour') }}
+                            </p>
+                        {% endblock %}
+                    {% endembed %}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

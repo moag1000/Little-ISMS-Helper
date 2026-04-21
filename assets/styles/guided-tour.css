@@ -318,3 +318,52 @@
     gap: 0.5rem;
     flex-shrink: 0;
 }
+
+/* ============================================
+   Help / Tour-Handout (statisches Druckbild)
+   ============================================ */
+
+.help-tour-steps {
+    list-style: none;
+    counter-reset: tour-step;
+}
+
+.help-tour-step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #06b6d4, #8b5cf6 50%, #ec4899);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.help-tour-step-body {
+    padding-left: 2.5rem;
+    line-height: 1.6;
+}
+
+@media print {
+    /* Print-Mode optimiert für A4-Handout */
+    body { background: #fff !important; color: #000 !important; }
+    .header, .footer, .mega-menu, .breadcrumb, .toast-container,
+    .alert-dismissible, .d-print-none, .guided-tour-banner,
+    .modal, .command-palette-modal { display: none !important; }
+    .help-tour-handout { max-width: 100% !important; }
+    .help-tour-step { page-break-inside: avoid; }
+    .help-tour-step-number {
+        background: #000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    a { color: #000; text-decoration: none; }
+    a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.75em;
+        color: #666;
+    }
+}
