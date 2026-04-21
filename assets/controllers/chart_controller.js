@@ -107,8 +107,10 @@ export default class extends Controller {
                 },
                 tooltip: {
                     titleColor: '#ffffff',
-                    bodyColor: '#ffffff',
-                    backgroundColor: colors.isDark ? 'rgba(30, 41, 59, 0.95)' : 'rgba(0, 0, 0, 0.8)'
+                    bodyColor: 'rgba(255,255,255,0.85)',
+                    backgroundColor: colors.isDark
+                        ? 'rgba(30, 41, 59, 0.95)'
+                        : 'rgba(15, 23, 42, 0.88)'
                 }
             }
         };

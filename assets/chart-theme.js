@@ -87,7 +87,9 @@ export function applyAuroraDefaults(Chart) {
     Chart.defaults.font.size = 12;
     Chart.defaults.color = t['--fg-2'] || '#4c4a73';
     Chart.defaults.borderColor = t['--border'] || '#dfe3f0';
-    Chart.defaults.backgroundColor = 'transparent';
+    // NOTE: Do NOT set Chart.defaults.backgroundColor = 'transparent' here.
+    // That global default overrides arc-element colors in pie/doughnut charts,
+    // making segments invisible. Dataset-level backgroundColor values are used instead.
 
     // Grid
     if (Chart.defaults.scales) {

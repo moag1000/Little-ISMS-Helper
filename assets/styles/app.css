@@ -1644,14 +1644,14 @@ body {
 h1 {
     font-size: 2rem;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--fg);
     margin-bottom: var(--spacing-lg);
 }
 
 h2 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #0f172a;
+    color: var(--fg);
     margin-top: var(--spacing-2xl);
     margin-bottom: var(--spacing-md);
 }
@@ -1659,14 +1659,8 @@ h2 {
 h3 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #0f172a;
+    color: var(--fg);
     margin-bottom: var(--spacing-md);
-}
-
-[data-theme="dark"] h1,
-[data-theme="dark"] h2,
-[data-theme="dark"] h3 {
-    color: var(--text-primary);
 }
 
 /* Cards - Cyberpunk Style with Dark Mode Support */

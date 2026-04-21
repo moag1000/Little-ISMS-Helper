@@ -121,6 +121,7 @@ select,
 textarea,
 button {
     font-family: var(--font-sans);
+    color: var(--fg);
 }
 
 code,
@@ -132,6 +133,67 @@ pre,
 [class*="badge"] .mono,
 small.mono {
     font-family: var(--font-mono);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Aurora-Typografie: h1–h6, p, strong, .lead, .display-*
+   Setzt Aurora-Font + Farbe für alle Überschriften global (höchste
+   Cascade-Priorität: bridge lädt zuletzt).
+   ═══════════════════════════════════════════════════════════════════ */
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    color: var(--fg);
+    letter-spacing: -0.2px;
+    line-height: 1.25;
+}
+
+h1 { letter-spacing: -0.5px; }
+h2 { letter-spacing: -0.3px; }
+
+p {
+    color: var(--fg);
+    line-height: 1.55;
+}
+
+strong, b {
+    font-weight: 600;
+    color: var(--fg);
+}
+
+/* Bootstrap .display-* — großformatige Hero-Überschriften */
+.display-1, .display-2, .display-3,
+.display-4, .display-5, .display-6 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--fg);
+}
+
+/* Bootstrap .lead — Hero-Paragraph */
+.lead {
+    font-size: 1.125rem;
+    color: var(--fg-2);
+    line-height: 1.6;
+}
+
+/* Bootstrap h1–h6 utility classes */
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    color: var(--fg);
+    letter-spacing: -0.2px;
+}
+
+/* Inline code — Mono-Font für Code/IDs/Versionen */
+code:not([class]) {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background: var(--surface-2);
+    color: var(--accent);
+    padding: 1px 5px;
+    border-radius: var(--r-sm);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -737,3 +799,49 @@ small.text-muted,
 .border-info    { border-color: var(--primary) !important; }
 .border-light   { border-color: var(--border) !important; }
 .border-dark    { border-color: var(--border-strong) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Legacy .kpi-card — Aurora-Farb-Override (Bug #2: Dark-Mode)
+   Überschreibt hardcoded Hintergrundfarben und Textfarben in allen
+   Themes. .fa-kpi-card (Aurora-Komponent) ist davon unabhängig.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.kpi-card {
+    background: var(--surface) !important;
+    border-color: var(--border) !important;
+    color: var(--fg) !important;
+}
+
+.kpi-card .label,
+.kpi-card-label,
+.kpi-card .kpi-card-label {
+    color: var(--fg-3) !important;
+}
+
+.kpi-card .value,
+.kpi-card-value {
+    color: var(--fg) !important;
+}
+
+.kpi-card .unit,
+.kpi-card-unit {
+    color: var(--fg-3) !important;
+}
+
+.kpi-card-icon {
+    background: var(--surface-2) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Legacy dark-mode.css Bootstrap-Overrides vereinheitlichen —
+   diese drei Klassen werden in dark-mode.css mit [data-theme="dark"]
+   und !important überschrieben, aber mit falschem var(--bg-secondary).
+   Die Bridge stellt hier sicher, dass Aurora-Tokens fließen.
+   ═══════════════════════════════════════════════════════════════════ */
+
+[data-theme="dark"] .card-header,
+[data-theme="dark"] .widget-header {
+    background-color: var(--surface-2) !important;
+    border-color: var(--border) !important;
+    color: var(--fg) !important;
+}
