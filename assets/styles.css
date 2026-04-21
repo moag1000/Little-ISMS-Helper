@@ -25,3 +25,6 @@
 
 /* FairyAurora Alva — 9-Mood-Character-Engine */
 @import './styles/alva.css';
+
+/* FairyAurora Responsive — Breakpoint-Overrides (Plan § 15) */
+@import './styles/fairy-aurora-responsive.css';

@@ -3230,13 +3230,13 @@ textarea.form-control {
         left: 0;
         width: 280px;
         height: 100vh;
-        z-index: var(--z-fixed); /* 500 - below modals (1000+), above page content */
+        z-index: var(--z-fixed);
         transform: translateX(-100%);
-        transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); /* Elastic bounce */
-        box-shadow: 5px 0 30px rgba(6, 182, 212, 0.3);
+        transition: transform var(--t-base) var(--ease-out);
+        box-shadow: 5px 0 30px rgba(0, 0, 0, 0.15);
         will-change: transform;
         contain: layout style paint;
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        -webkit-overflow-scrolling: touch;
     }
 
     .app-sidebar.open {
