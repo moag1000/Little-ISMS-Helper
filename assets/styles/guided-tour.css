@@ -65,8 +65,8 @@
 .guided-tour-popover {
     position: absolute;
     z-index: 10002;
-    background: #ffffff;
-    color: #0f172a;
+    background: var(--surface);
+    color: var(--fg);
     border-radius: 14px;
     padding: 1.25rem 1.5rem;
     max-width: 440px;
@@ -117,8 +117,8 @@
 }
 
 [data-theme="dark"] .guided-tour-popover {
-    background: #1e293b;
-    color: #f1f5f9;
+    background: var(--surface);
+    color: var(--fg);
     box-shadow:
         0 0 0 1px rgba(236, 72, 153, 0.3),
         0 12px 40px rgba(6, 182, 212, 0.35),
@@ -187,11 +187,11 @@
 
 .guided-tour-body {
     margin-bottom: 1.25rem;
-    color: #334155;
+    color: var(--fg-2);
 }
 
 [data-theme="dark"] .guided-tour-body {
-    color: #cbd5e1;
+    color: var(--fg-2);
 }
 
 .guided-tour-footer {
@@ -212,7 +212,7 @@
 .guided-tour-nav .btn-primary {
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%);
     border: none;
-    color: #fff;
+    color: var(--on-primary);
     font-weight: 600;
     box-shadow: 0 2px 8px rgba(139, 92, 246, 0.35);
     transition: all 220ms ease;
@@ -306,11 +306,11 @@
 
 .guided-tour-banner-meta {
     font-size: 0.875rem;
-    color: #64748b;
+    color: var(--fg-2);
 }
 
 [data-theme="dark"] .guided-tour-banner-meta {
-    color: #94a3b8;
+    color: var(--fg-3);
 }
 
 .guided-tour-banner-actions {
@@ -336,7 +336,7 @@
     height: 2rem;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--primary), var(--accent) 50%, var(--accent));
-    color: #fff;
+    color: var(--on-primary);
     font-weight: 700;
     font-size: 0.9rem;
     flex-shrink: 0;
