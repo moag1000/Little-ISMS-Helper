@@ -15,28 +15,32 @@
         {{ 'admin.tour_completion.description'|trans({}, 'admin') }}
     </p>
 
-    {# Stats strip #}
+    {# Stats strip — 8H.4 migrated #}
     <div class="row g-3 mb-3">
         <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body py-2 px-3">
-                    <div class="small text-muted">{{ 'admin.tour_completion.stats.total_users'|trans({}, 'admin') }}</div>
-                    <div class="h4 mb-0">{{ total_users }}</div>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { class: 'shadow-sm h-100' } %}
+                {% block card_body %}
+                    <div class="py-2 px-3">
+                        <div class="small text-muted">{{ 'admin.tour_completion.stats.total_users'|trans({}, 'admin') }}</div>
+                        <div class="h4 mb-0">{{ total_users }}</div>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
             {% set _rate = total_users > 0 ? (completion_count * 100 / total_users)|round : 0 %}
             {% set _variant = _rate >= 80 ? 'success' : (_rate >= 50 ? 'warning' : 'danger') %}
-            <div class="card shadow-sm h-100 border-{{ _variant }}">
-                <div class="card-body py-2 px-3">
-                    <div class="small text-muted">{{ 'admin.tour_completion.stats.completion_rate'|trans({}, 'admin') }}</div>
-                    <div class="h4 mb-0 text-{{ _variant }}">
-                        {{ _rate }} %
-                        <small class="fs-6 text-muted">({{ completion_count }}/{{ total_users }})</small>
+            {% embed '_components/_card.html.twig' with { class: 'shadow-sm h-100 border-' ~ _variant } %}
+                {% block card_body %}
+                    <div class="py-2 px-3">
+                        <div class="small text-muted">{{ 'admin.tour_completion.stats.completion_rate'|trans({}, 'admin') }}</div>
+                        <div class="h4 mb-0 text-{{ _variant }}">
+                            {{ _rate }} %
+                            <small class="fs-6 text-muted">({{ completion_count }}/{{ total_users }})</small>
+                        </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4 d-flex align-items-end">
             <a href="{{ path('admin_tour_completion_export') }}" class="btn btn-outline-primary btn-sm w-100">
@@ -84,10 +88,11 @@
         </div>
     </form>
 
-    {# Table #}
-    <div class="card shadow-sm">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+    {# Table — 8H.4 migrated #}
+    {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
+        {% block card_body %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
                         <th scope="col">{{ 'admin.tour_completion.col.user'|trans({}, 'admin') }}</th>
@@ -145,8 +150,9 @@
                     {% endif %}
                 </tbody>
             </table>
-        </div>
-    </div>
+            </div>
+        {% endblock %}
+    {% endembed %}
 
     <div class="alert alert-info small mt-3">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
