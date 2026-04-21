@@ -55,7 +55,7 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
   - ✅ Compliance-Tests für Multi-Framework Support
   - ✅ Workflow Service Tests (6 neue Test-Klassen)
 - ✅ Phase 6K: Internationalisierung (i18n) Vervollständigung (~98% abgeschlossen)
-  - ✅ Translation domain architecture (49 domains × 2 languages = 97 YAML files)
+  - ✅ Translation domain architecture (81 domains × 2 languages = 162 YAML files)
   - ✅ Translation quality checker script (HARDCODED_TEXT, INVALID_DOMAIN, NO_DOMAIN, UNTRANSLATED_ATTRIBUTE)
   - ✅ Fixed 100+ translation issues (56× 'audits'→'audit', 2× 'controls'→'control', etc.)
   - ✅ Added {% trans_default_domain %} to 14 templates
@@ -1250,17 +1250,17 @@ Beliebig viele `AppliedBaseline` pro Tenant sind heute schon möglich (z. B. Pro
 
 ## 📈 Projekt-Metriken
 
-### Aktueller Stand (Dez 2025 - Phase 7 vollständig abgeschlossen)
-- **Codezeilen:** ~55,000+ LOC
-- **Entities:** 47 Doctrine Entities (+CustomReport, +WizardSession)
-- **Controllers:** 64 Controllers (+ReportBuilderController, RoleDashboardController, ComplianceWizardController, DoraComplianceController)
-- **Templates:** 260+ Twig Templates (+Report Builder, Role Dashboards, Compliance Wizards, DORA)
-- **Services:** 55+ Business Logic Services (+ReportBuilderService, RoleDashboardService, ComplianceWizardService)
-- **Commands:** 34+ Console Commands (+app:wizard-report)
-- **Tests:** 3800+ Tests, 100% passing
+### Aktueller Stand (Apr 2026 - Phase 9 P1+P2 abgeschlossen)
+- **Codezeilen:** ~167,400+ LOC (src/ PHP)
+- **Entities:** 73 Doctrine Entities
+- **Controllers:** 104 Controllers
+- **Templates:** 487+ Twig Templates
+- **Services:** 121+ Business Logic Services
+- **Commands:** 77+ Console Commands
+- **Tests:** 3,919+ Tests, 100% passing
 - **API Endpoints:** 50+ REST Endpoints (+17 Report Builder API, +7 Wizard API)
 - **Report Types:** 25+ Widgets (Custom Report Builder)
-- **Translation Files:** 113 YAML files (+report_builder, +dashboards, +wizard, +dora, +kpi)
+- **Translation Files:** 162 YAML files (81 domains × 2 languages)
 
 ---
 
@@ -1278,8 +1278,8 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 | **i18n Abdeckung** | ~98% | 100% | 🔄 In Arbeit |
 
 ### Test Coverage Verbesserung (Backlog)
-- 📅 Service Tests für alle 51+ Services
-- 📅 Controller Tests für alle 60 Controllers
+- 📅 Service Tests für alle 121+ Services
+- 📅 Controller Tests für alle 104 Controllers
 - 📅 Repository Tests für komplexe Queries
 - 📅 Integration Tests für Workflows
 
