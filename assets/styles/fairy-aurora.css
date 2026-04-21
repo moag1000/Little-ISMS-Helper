@@ -1,0 +1,269 @@
+/*
+ * FairyAurora v3.0 — Design-Token-Layer
+ *
+ * Source-of-Truth für alle Farben, Timing, Typografie, Radius.
+ * Light ist Default; Dark wird via html[data-theme="dark"] aktiviert.
+ * system-preference fällt über @media (prefers-color-scheme: dark) greift,
+ * wenn [data-theme="system"] oder kein data-theme gesetzt ist.
+ *
+ * Diese Datei darf KEINE Selektoren enthalten, die auf konkrete Komponenten
+ * zielen — nur Token-Definitionen. Legacy-Aliasing in fairy-aurora-bridge.css.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   @font-face — Self-Hosted Inter + JetBrains Mono
+   ═══════════════════════════════════════════════════════════════════ */
+
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("/fonts/inter-400.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("/fonts/inter-500.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("/fonts/inter-600.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("/fonts/inter-700.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "JetBrains Mono";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("/fonts/jetbrains-mono-400.woff2") format("woff2");
+}
+@font-face {
+    font-family: "JetBrains Mono";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("/fonts/jetbrains-mono-500.woff2") format("woff2");
+}
+@font-face {
+    font-family: "JetBrains Mono";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("/fonts/jetbrains-mono-600.woff2") format("woff2");
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Light-Palette (Default)
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+    /* — Flächen — */
+    --bg:          #f5f6fa;
+    --surface:     #ffffff;
+    --surface-2:   #eef0f9;
+    --surface-3:   #e5e8f4;
+
+    /* — Ränder — */
+    --border:        #dfe3f0;
+    --border-strong: #b9bfd6;
+
+    /* — Vordergrund / Text — */
+    --fg:   #1e1b4b;
+    --fg-2: #4c4a73;
+    --fg-3: #6d6b92;
+
+    /* — Primär (Cyan) — */
+    --primary:       #0284c7;
+    --primary-hover: #0369a1;
+    --primary-glow:  rgba(2, 132, 199, 0.2);
+    --primary-tint:  rgba(2, 132, 199, 0.1);
+
+    /* — Accent (Violett) — */
+    --accent:       #7c3aed;
+    --accent-hover: #6d28d9;
+    --accent-glow:  rgba(124, 58, 237, 0.2);
+    --accent-tint:  rgba(124, 58, 237, 0.1);
+
+    /* — Semantic — */
+    --success:       #059669;
+    --success-glow:  rgba(5, 150, 105, 0.2);
+    --warning:       #d97706;
+    --warning-glow:  rgba(217, 119, 6, 0.2);
+    --danger:        #dc2626;
+    --danger-glow:   rgba(220, 38, 38, 0.2);
+    --info:          #0284c7;
+    --info-glow:     rgba(2, 132, 199, 0.2);
+
+    /* — Alva / Fairy — */
+    --fairy-primary: #0284c7;
+    --fairy-accent:  #7c3aed;
+    --fairy-aura:    #818cf8;
+
+    /* — Aurora-Gradient (Hero-BG, Brand-Mark) — */
+    --aurora-gradient:
+        radial-gradient(at 20% 30%, rgba(2, 132, 199, 0.08) 0%, transparent 50%),
+        radial-gradient(at 80% 70%, rgba(124, 58, 237, 0.06) 0%, transparent 50%),
+        linear-gradient(180deg, #f5f6fa 0%, #eef0f9 100%);
+    --brand-gradient: linear-gradient(135deg, var(--primary), var(--accent));
+
+    /* — Typografie — */
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+    /* — Radius — */
+    --r-xs: 3px;
+    --r-sm: 5px;
+    --r-md: 6px;
+    --r-lg: 8px;
+    --r-xl: 12px;
+    --r-2xl: 16px;
+    --r-pill: 999px;
+
+    /* — Timing-Tokens (Motion-Policy § 14) — */
+    --t-instant: 80ms;
+    --t-fast:    120ms;
+    --t-base:    240ms;
+    --t-slow:    360ms;
+    --t-magic:   600ms;
+    --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* — Alva-CSS-Custom-Properties (für Logo-SVG und zentralen Character) — */
+    --alva-primary: var(--primary);
+    --alva-accent:  var(--accent);
+    --alva-aura:    var(--fairy-aura);
+    --alva-fg:      var(--fg);
+    --alva-ink:     var(--fg);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Dark-Palette — gleichwertig, nicht als Nachgedanke
+   ═══════════════════════════════════════════════════════════════════ */
+
+html[data-theme="dark"] {
+    --bg:          #0a0e1a;
+    --surface:     #141829;
+    --surface-2:   #1e2139;
+    --surface-3:   #282d48;
+
+    --border:        #232845;
+    --border-strong: #3d4270;
+
+    --fg:   #e9eaf5;
+    --fg-2: #b9bad4;
+    --fg-3: #6d6f99;
+
+    --primary:       #38bdf8;
+    --primary-hover: #7dd3fc;
+    --primary-glow:  rgba(56, 189, 248, 0.3);
+    --primary-tint:  rgba(56, 189, 248, 0.12);
+
+    --accent:       #a78bfa;
+    --accent-hover: #c4b5fd;
+    --accent-glow:  rgba(167, 139, 250, 0.3);
+    --accent-tint:  rgba(167, 139, 250, 0.12);
+
+    --success:       #34d399;
+    --success-glow:  rgba(52, 211, 153, 0.25);
+    --warning:       #fbbf24;
+    --warning-glow:  rgba(251, 191, 36, 0.25);
+    --danger:        #f87171;
+    --danger-glow:   rgba(248, 113, 113, 0.3);
+    --info:          #38bdf8;
+    --info-glow:     rgba(56, 189, 248, 0.25);
+
+    --fairy-primary: #38bdf8;
+    --fairy-accent:  #a78bfa;
+    --fairy-aura:    #6366f1;
+
+    --aurora-gradient:
+        radial-gradient(at 20% 30%, rgba(56, 189, 248, 0.10) 0%, transparent 50%),
+        radial-gradient(at 80% 70%, rgba(167, 139, 250, 0.08) 0%, transparent 50%),
+        linear-gradient(180deg, #0a0e1a 0%, #141829 100%);
+    --brand-gradient: linear-gradient(135deg, var(--primary), var(--accent));
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   System-Mode — folgt OS-prefers-color-scheme
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (prefers-color-scheme: dark) {
+    html[data-theme="system"] {
+        --bg:          #0a0e1a;
+        --surface:     #141829;
+        --surface-2:   #1e2139;
+        --surface-3:   #282d48;
+        --border:        #232845;
+        --border-strong: #3d4270;
+        --fg:   #e9eaf5;
+        --fg-2: #b9bad4;
+        --fg-3: #6d6f99;
+        --primary:       #38bdf8;
+        --primary-hover: #7dd3fc;
+        --primary-glow:  rgba(56, 189, 248, 0.3);
+        --primary-tint:  rgba(56, 189, 248, 0.12);
+        --accent:       #a78bfa;
+        --accent-hover: #c4b5fd;
+        --accent-glow:  rgba(167, 139, 250, 0.3);
+        --accent-tint:  rgba(167, 139, 250, 0.12);
+        --success: #34d399; --success-glow: rgba(52,211,153,0.25);
+        --warning: #fbbf24; --warning-glow: rgba(251,191,36,0.25);
+        --danger:  #f87171; --danger-glow:  rgba(248,113,113,0.3);
+        --info:    #38bdf8; --info-glow:    rgba(56,189,248,0.25);
+        --fairy-primary: #38bdf8;
+        --fairy-accent:  #a78bfa;
+        --fairy-aura:    #6366f1;
+        --aurora-gradient:
+            radial-gradient(at 20% 30%, rgba(56, 189, 248, 0.10) 0%, transparent 50%),
+            radial-gradient(at 80% 70%, rgba(167, 139, 250, 0.08) 0%, transparent 50%),
+            linear-gradient(180deg, #0a0e1a 0%, #141829 100%);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Mode-Transition (sanfter L↔D-Wechsel, keine Flash)
+   ═══════════════════════════════════════════════════════════════════ */
+
+html {
+    transition: background-color var(--t-base) var(--ease-in-out),
+                color            var(--t-base) var(--ease-in-out);
+}
+
+html * {
+    transition-property: background-color, border-color, color;
+    transition-duration: var(--t-base);
+    transition-timing-function: var(--ease-in-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html, html * { transition: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Base-Typography-Anwendung
+   ═══════════════════════════════════════════════════════════════════ */
+
+html {
+    font-family: var(--font-sans);
+    color: var(--fg);
+    background: var(--bg);
+}
+
+.font-mono,
+code, kbd, samp, pre {
+    font-family: var(--font-mono);
+}

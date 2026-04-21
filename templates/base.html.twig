@@ -32,6 +32,23 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="{{ asset('og-image.png') }}">
 
+    {# FairyAurora v3.0 — Font-Preload (above-the-fold weights only) #}
+    <link rel="preload" href="{{ asset('fonts/inter-500.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('fonts/inter-600.woff2') }}" as="font" type="font/woff2" crossorigin>
+
+    {# FairyAurora v3.0 — Theme-Init (prevent Flash-of-Wrong-Theme) #}
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('fa-theme');
+                var theme = (saved === 'light' || saved === 'dark' || saved === 'system') ? saved : 'light';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
     {# Skip Link Styles - WCAG 2.1 AA Requirement #}
     <style>
         .skip-link {

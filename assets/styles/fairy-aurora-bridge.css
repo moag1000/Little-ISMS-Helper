@@ -1,0 +1,168 @@
+/*
+ * FairyAurora v3.0 — Legacy-Token-Bridge
+ *
+ * Ordnet bestehende Tokens (--color-*, --bs-*, --text-*, --bg-*,
+ * --glow-*, --gradient-*) den neuen Aurora-Tokens zu. Wird ALS
+ * LETZTE CSS-Datei geladen, damit sie sämtliche vorhergehenden
+ * :root-Definitionen überschreibt (einheitliche Cascade-Regel).
+ *
+ * Erst durch diese Datei bekommen 14.000 bestehende CSS-Zeilen
+ * automatisch das Aurora-Look — ohne dass jede einzelne Hex-
+ * Referenz umgeschrieben werden muss.
+ */
+
+:root,
+html[data-theme="light"],
+html[data-theme="dark"],
+html[data-theme="system"] {
+    /* — Legacy Cyberpunk-Tokens → Aurora — */
+    --color-primary:         var(--fg);           /* war dark-navy, jetzt fg als "Haupttext-Farbe" */
+    --color-primary-light:   var(--fg-2);
+    --color-primary-dark:    var(--primary-hover);
+    --color-secondary:       var(--primary);       /* ehemals cyan #06b6d4 → aurora cyan */
+    --color-secondary-hover: var(--primary-hover);
+    --color-accent-pink:     var(--accent);        /* pink → violet */
+    --color-accent-purple:   var(--accent);
+    --color-success:         var(--success);
+    --color-warning:         var(--warning);
+    --color-danger:          var(--danger);
+    --color-info:            var(--primary);
+
+    --color-text:            var(--fg);
+    --color-text-light:      var(--fg-2);
+    --color-text-muted:      var(--fg-3);
+    --color-text-secondary:  var(--fg-2);
+
+    --color-success-light:   var(--success-glow);
+    --color-warning-light:   var(--warning-glow);
+    --color-danger-light:    var(--danger-glow);
+    --color-info-light:      var(--primary-tint);
+
+    --color-bg:              var(--bg);
+    --color-bg-alt:          var(--surface-2);
+    --color-white:           var(--surface);
+    --color-border:          var(--border);
+    --color-border-light:    var(--border);
+
+    /* — Legacy Background-Aliases — */
+    --bg-primary:    var(--surface);
+    --bg-secondary:  var(--bg);
+    --bg-tertiary:   var(--surface-2);
+    --bg-elevated:   var(--surface);
+
+    /* — Bootstrap-Override — */
+    --bs-body-bg:        var(--bg);
+    --bs-body-color:     var(--fg);
+    --bs-tertiary-bg:    var(--bg);
+    --bs-secondary-bg:   var(--surface-2);
+    --bs-primary:        var(--primary);
+    --bs-primary-rgb:    2, 132, 199;
+    --bs-secondary:      var(--fg-2);
+    --bs-success:        var(--success);
+    --bs-info:           var(--primary);
+    --bs-warning:        var(--warning);
+    --bs-danger:         var(--danger);
+    --bs-light:          var(--surface-2);
+    --bs-dark:           var(--fg);
+    --bs-primary-bg-subtle:  var(--primary-tint);
+    --bs-info-bg-subtle:     var(--primary-tint);
+    --bs-warning-bg-subtle:  var(--warning-glow);
+    --bs-danger-bg-subtle:   var(--danger-glow);
+    --bs-success-bg-subtle:  var(--success-glow);
+    --bs-light-bg-subtle:    var(--surface-2);
+    --bs-dark-bg-subtle:     var(--bg);
+    --bs-border-color:       var(--border);
+
+    /* — Legacy Text-Aliases — */
+    --text-primary:   var(--fg);
+    --text-secondary: var(--fg-2);
+    --text-muted:     var(--fg-3);
+    --text-inverse:   var(--surface);
+
+    /* — Legacy Border-Aliases — */
+    --border-color:        var(--border);
+    --border-color-light:  var(--border);
+
+    /* — Neon-Glow-Aliases (aus Aurora-Glow abgeleitet) — */
+    --glow-cyan:   0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
+    --glow-pink:   0 0 10px var(--accent-glow),  0 0 20px var(--accent-tint);
+    --glow-purple: 0 0 10px var(--accent-glow),  0 0 20px var(--accent-tint);
+    --glow-green:  0 0 10px var(--success-glow), 0 0 20px var(--success-glow);
+
+    --shadow-neon:       0 0 15px var(--primary-glow);
+    --shadow-neon-pink:  0 0 15px var(--accent-glow);
+
+    /* — Legacy Gradients → Aurora — */
+    --gradient-primary:  var(--brand-gradient);
+    --gradient-purple:   var(--brand-gradient);
+    --gradient-pink:     var(--brand-gradient);
+    --gradient-info:     linear-gradient(135deg, var(--primary), var(--primary-hover));
+    --gradient-success:  linear-gradient(135deg, var(--success), var(--success));
+    --gradient-warning:  linear-gradient(135deg, var(--warning), var(--warning));
+    --gradient-danger:   linear-gradient(135deg, var(--danger), var(--danger));
+
+    /* — Transitions → Timing-Tokens — */
+    --transition-fast:   var(--t-fast) var(--ease-out);
+    --transition-normal: var(--t-base) var(--ease-out);
+    --transition-slow:   var(--t-slow) var(--ease-out);
+    --transition-speed:  var(--t-base);
+
+    /* — Overlays — */
+    --overlay-bg: rgba(10, 14, 26, 0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Globale Typografie-Migration: body/html/form-elements auf Inter
+   ═══════════════════════════════════════════════════════════════════ */
+
+body,
+input,
+select,
+textarea,
+button {
+    font-family: var(--font-sans);
+}
+
+code,
+kbd,
+samp,
+pre,
+.font-mono,
+.mono,
+[class*="badge"] .mono,
+small.mono {
+    font-family: var(--font-mono);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Mono-Label-Utility (Metadaten, Versions-Strings, Shortcuts)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-mono-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Aurora-Gradient-BG-Utility (Hero-BG, Empty-States, Welcome)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-aurora-bg {
+    background: var(--aurora-gradient);
+    min-height: 100%;
+}
+
+.fa-brand-gradient {
+    background: var(--brand-gradient);
+    color: #ffffff;
+}
+
+.fa-focus-ring:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}

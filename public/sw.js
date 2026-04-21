@@ -8,7 +8,7 @@
  * - HTML Pages: Network First with Offline Fallback
  */
 
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v3.0.0-fa';
 const STATIC_CACHE = `isms-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `isms-dynamic-${CACHE_VERSION}`;
 const API_CACHE = `isms-api-${CACHE_VERSION}`;
@@ -19,9 +19,18 @@ const STATIC_ASSETS = [
     '/offline.html',
     '/manifest.json',
     '/favicon.svg',
+    '/favicon.ico',
     '/logo.svg',
+    '/apple-touch-icon.png',
     '/icons/icon-192x192.png',
     '/icons/icon-512x512.png',
+    '/fonts/inter-400.woff2',
+    '/fonts/inter-500.woff2',
+    '/fonts/inter-600.woff2',
+    '/fonts/inter-700.woff2',
+    '/fonts/jetbrains-mono-400.woff2',
+    '/fonts/jetbrains-mono-500.woff2',
+    '/fonts/jetbrains-mono-600.woff2',
     '/vendor/bootstrap/css/bootstrap.min.css',
     '/vendor/bootstrap-icons/font/bootstrap-icons.min.css'
 ];
