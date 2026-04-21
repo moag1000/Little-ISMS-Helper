@@ -138,9 +138,27 @@ export default class extends Controller {
         this.modalTarget.classList.add('command-palette-open');
         this.inputTarget.value = '';
         this.inputTarget.focus();
-        this.filteredCommands = this.commands;
+
+        // Sprint 12: Admin-Scope — wenn wir auf /admin/* sind, Admin-Commands
+        // zuerst zeigen. User muss „admin" nicht erst tippen.
+        this.filteredCommands = this.isOnAdminPage()
+            ? this.sortAdminFirst(this.commands)
+            : this.commands;
         this.selectedIndex = 0;
         this.render();
+    }
+
+    isOnAdminPage() {
+        const path = window.location.pathname;
+        // Matches /admin, /de/admin, /en/admin etc.
+        return /^\/(?:[a-z]{2}\/)?admin(?:\/|$)/.test(path);
+    }
+
+    sortAdminFirst(commands) {
+        const isAdmin = (cmd) => (cmd.id || '').startsWith('admin-') || (cmd.url || '').includes('/admin/');
+        const adminCmds = commands.filter(isAdmin);
+        const others = commands.filter((c) => !isAdmin(c));
+        return [...adminCmds, ...others];
     }
 
     close() {
@@ -157,7 +175,9 @@ export default class extends Controller {
         const query = event.target.value.toLowerCase().trim();
 
         if (!query) {
-            this.filteredCommands = this.commands;
+            this.filteredCommands = this.isOnAdminPage()
+                ? this.sortAdminFirst(this.commands)
+                : this.commands;
         } else {
             this.filteredCommands = this.commands.filter(cmd => {
                 const searchStr = `${cmd.label} ${cmd.category} ${cmd.keywords.join(' ')}`.toLowerCase();
