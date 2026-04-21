@@ -847,7 +847,7 @@
     width: 96px;
     height: 96px;
     border-radius: 50%;
-    background: white;
+    background: var(--bg-elevated);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -900,7 +900,7 @@
     position: sticky;
     top: 70px;
     z-index: 10;
-    background: white;
+    background: var(--bg-elevated);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-md);
     padding: var(--spacing-md) var(--spacing-lg);
@@ -1225,7 +1225,7 @@
     font-weight: 600;
     position: sticky;
     left: 0;
-    background: white;
+    background: var(--bg-elevated);
     z-index: 5;
 }
 
@@ -1574,8 +1574,8 @@
 .chart-html-legend {
     margin-top: 0.75rem;
     padding: 0.75rem 1rem;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     position: relative;
     z-index: 10;
