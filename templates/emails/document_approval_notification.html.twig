@@ -1,0 +1,49 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block subject %}Dokument zur Genehmigung: {{ document.title|default('(Dokument)') }}{% endblock %}
+
+{% block content %}
+    <h2 style="color: #1e1b4b; font-size: 20px; font-weight: 600; margin: 0 0 16px 0;">
+        Dokument zur Genehmigung
+    </h2>
+    <p style="font-size: 14px; color: #4c4a73; margin: 0 0 16px 0;">
+        Sie sind als Genehmiger für das folgende Dokument eingetragen:
+    </p>
+
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+           style="background-color: #f0f9ff; border-left: 4px solid #0369a1; margin-bottom: 20px;">
+        <tr>
+            <td style="padding: 14px 16px;">
+                <p style="margin: 0 0 4px 0; font-weight: 600; color: #1e1b4b; font-size: 14px;">
+                    {{ document.title|default('(ohne Titel)') }}
+                </p>
+                {% if document.type is defined %}
+                    <p style="margin: 0 0 4px 0; font-family: 'Courier New', monospace; font-size: 11px; color: #0369a1; text-transform: uppercase; letter-spacing: 0.08em;">
+                        {{ document.type }}
+                    </p>
+                {% endif %}
+                {% if document.requestedBy is defined %}
+                    <p style="margin: 0; font-size: 12px; color: #4c4a73;">
+                        Eingereicht von: <strong>{{ document.requestedBy }}</strong>
+                    </p>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    {% if link is defined and link %}
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 8px 0 20px 0;">
+            <tr>
+                <td style="background-color: #0369a1; border-radius: 6px;">
+                    <a href="{{ link }}" style="display: inline-block; padding: 10px 20px; color: #ffffff; text-decoration: none; font-weight: 500; font-size: 13px;">
+                        Dokument öffnen →
+                    </a>
+                </td>
+            </tr>
+        </table>
+    {% endif %}
+
+    <p style="font-size: 12px; color: #6d6b92; margin: 0;">
+        Bitte prüfen Sie Inhalt, Gültigkeit und Vollständigkeit vor der Entscheidung.
+    </p>
+{% endblock %}

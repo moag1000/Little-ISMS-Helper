@@ -458,23 +458,37 @@ error:
         subheading: 'Etwas ist schief gelaufen'
         message: 'Bei der Verarbeitung Ihrer Anfrage ist ein Fehler aufgetreten.'
         help: 'Bitte versuchen Sie es erneut oder kontaktieren Sie den Support, wenn das Problem weiterhin besteht.'
+    code_label: 'Nicht gefunden'
+    code_label_server: 'Serverfehler'
+    code_label_forbidden: 'Zugriff verweigert'
     403:
         title: 'Zugriff verweigert'
         heading: 'Zugriff verweigert'
         message: 'Sie haben keine Berechtigung, auf diese Ressource zuzugreifen.'
+        alva_line: 'Dafür fehlt dir die Berechtigung.'
+        alva_sub: 'Wenn das falsch ist, sprich mit deinem Admin.'
     404:
         title: 'Seite nicht gefunden'
         heading: 'Seite nicht gefunden'
         message: 'Entschuldigung, die Seite, die Sie suchen, existiert nicht.'
+        alva_line: 'Hmm, das finde ich nicht.'
+        alva_sub: 'Prüfe die URL oder gehe zum Dashboard.'
     500:
         title: Serverfehler
         heading: 'Interner Serverfehler'
         message: 'Auf unserer Seite ist etwas schief gelaufen. Wir arbeiten daran, das Problem zu beheben.'
         help: 'Bitte versuchen Sie es später erneut.'
+        alva_line: 'Etwas ist schiefgelaufen.'
+        alva_sub: 'Das ist nicht deine Schuld. Versuche es nochmal oder melde es dem Admin.'
     action:
         homepage: 'Zur Startseite'
         back: Zurück
         login: Anmelden
+        retry: 'Nochmal versuchen'
+email:
+    footer:
+        sent_by: 'Diese Nachricht wurde von Little ISMS Helper verschickt.'
+        auto: 'Automatische Benachrichtigung'
 entity_history:
     title: Entitätsverlauf
     section: Verlauf

@@ -1,0 +1,127 @@
+/*
+ * FairyAurora v3.0 — Print-Styles (Plan § 23)
+ *
+ * @media print — Neutral-Light-Fallback für Browser-Ctrl+P.
+ * Unterscheidet sich von PDF-Templates (templates/pdf/) — die bleiben
+ * corporate-neutral und werden nicht von diesem Stylesheet betroffen.
+ */
+
+@media print {
+    /* Light-Palette zwingen, auch wenn Dark aktiv ist */
+    :root,
+    html[data-theme="dark"],
+    html[data-theme="system"] {
+        --bg: #ffffff;
+        --surface: #ffffff;
+        --surface-2: #f5f6fa;
+        --border: #cbd5e0;
+        --fg: #1a1a1a;
+        --fg-2: #4c4a73;
+        --fg-3: #6d6b92;
+        --primary: #0369a1;
+        --primary-tint: rgba(3, 105, 161, 0.08);
+    }
+
+    /* Alle Animationen stoppen */
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    /* Shell-Elemente komplett ausblenden */
+    .app-sidebar,
+    .header,
+    .header-actions,
+    .footer,
+    .sidebar-backdrop,
+    .mobile-menu-btn,
+    .mega-menu-panel,
+    .command-palette,
+    .guided-tour-overlay,
+    .toast-container,
+    .fa-global-banner,
+    .fa-alva,
+    .fa-onboarding-fairy,
+    .fa-tech-backdrop,
+    .header-alva,
+    .header-system-status,
+    .pwa-install-btn,
+    .turbo-progress-bar,
+    .skip-link,
+    .mode-switch,
+    .fa-mode-switch,
+    [data-controller*="tour"],
+    [data-controller*="guided"] {
+        display: none !important;
+    }
+
+    /* Content auf volle Breite */
+    body,
+    .app-layout,
+    .app-main,
+    .content,
+    .container,
+    .fa-setup-shell,
+    .fa-setup-right,
+    .fa-auth-shell,
+    .fa-auth-right {
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        color: #1a1a1a !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+
+    /* Setup/Auth Left-Panel hidden in print */
+    .fa-setup-left,
+    .fa-auth-left {
+        display: none !important;
+    }
+
+    /* Links mit URL in Klammern (Audit-Nachvollziehbarkeit) */
+    a[href^="http"]:not(.no-print-url)::after,
+    a[href^="/"]:not(.no-print-url)::after {
+        content: " (" attr(href) ")";
+        font-size: 10px;
+        color: #666;
+        font-weight: normal;
+    }
+
+    /* Page-Break-Utilities */
+    .page-break-before { break-before: page; }
+    .page-break-after  { break-after: page; }
+    .page-break-avoid  { break-inside: avoid; }
+
+    /* Tabellen nicht mitten abbrechen wenn möglich */
+    table, tr, td, th { break-inside: avoid; }
+
+    /* Headings nicht allein am Seitenende */
+    h1, h2, h3, h4 { break-after: avoid; }
+
+    /* Cards/Sections zusammenhalten */
+    .card, .fa-kpi-card, .fa-alert, .fa-stepper,
+    .fa-accordion__item {
+        break-inside: avoid;
+    }
+
+    /* Form-Elemente lesbar aber ohne Interaktion-Hints */
+    input, select, textarea {
+        border: 1px solid #999 !important;
+        background: #ffffff !important;
+        color: #1a1a1a !important;
+    }
+    button, .btn {
+        border: 1px solid #999 !important;
+        background: #f5f5f5 !important;
+        color: #1a1a1a !important;
+    }
+
+    /* Sparklines sichtbar aber monochrom */
+    .fa-sparkline { filter: grayscale(100%); }
+}

@@ -138,7 +138,7 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     /* Cyan-Pink-Gradient-Text */
-    background: linear-gradient(90deg, #06b6d4, #8b5cf6 50%, #ec4899);
+    background: linear-gradient(90deg, var(--primary), var(--accent) 50%, var(--accent));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -156,7 +156,7 @@
 }
 
 .guided-tour-close:hover {
-    color: #ec4899;
+    color: var(--accent);
 }
 
 .guided-tour-title {
@@ -210,7 +210,7 @@
 
 /* Primary „Next/Finish"-Button: cyan-pink-gradient im Cyberpunk-Fee-Stil */
 .guided-tour-nav .btn-primary {
-    background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%);
     border: none;
     color: #fff;
     font-weight: 600;
@@ -226,7 +226,7 @@
 }
 
 .guided-tour-nav .btn-primary:focus {
-    outline: 2px solid #ec4899;
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
 
@@ -238,7 +238,7 @@
     z-index: 10010;
     max-width: 480px;
     margin: 0 auto;
-    border-left: 4px solid #8b5cf6;
+    border-left: 4px solid var(--accent);
     box-shadow: 0 4px 16px rgba(139, 92, 246, 0.22);
 }
 
@@ -282,7 +282,7 @@
 
 .guided-tour-banner-icon {
     font-size: 1.75rem;
-    color: #8b5cf6;
+    color: var(--accent);
     flex-shrink: 0;
     animation: fairy-pulse 2.5s ease-in-out infinite;
 }
@@ -298,7 +298,7 @@
 .guided-tour-banner-title {
     font-weight: 600;
     margin-bottom: 0.125rem;
-    background: linear-gradient(90deg, #06b6d4, #ec4899);
+    background: linear-gradient(90deg, var(--primary), var(--accent));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -335,7 +335,7 @@
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6 50%, #ec4899);
+    background: linear-gradient(135deg, var(--primary), var(--accent) 50%, var(--accent));
     color: #fff;
     font-weight: 700;
     font-size: 0.9rem;
