@@ -1,0 +1,69 @@
+{#
+ FairyAurora Stepper — horizontaler Prozess-Stepper
+
+ Für Multi-Step-Prozesse OUTSIDE Setup-Wizard (Incident-Response, DPIA,
+ Risk-Treatment, BCM-Exercise). Setup-Wizard nutzt eigenen 2-Col-Pattern.
+
+ Usage:
+   {% import '_components/_stepper.html.twig' as stepper %}
+   {{ stepper.render({
+       current: 2,
+       steps: [
+           { label: 'Erfassung',  href: path('incident_edit', {id: x}) },
+           { label: 'Bewertung',  href: path('incident_assess', {id: x}) },
+           { label: 'Behandlung', href: null },
+           { label: 'Abschluss',  href: null }
+       ]
+   }) }}
+
+ Props:
+   current: 1-basiert, welcher Step aktiv ist
+   steps: Array of { label, href?, icon? }
+   orientation: horizontal (default) | vertical (mobile-Fallback)
+#}
+
+{% macro render(props) %}
+    {% set current = props.current|default(1) %}
+    {% set steps = props.steps|default([]) %}
+    {% set orientation = props.orientation|default('horizontal') %}
+
+    <ol class="fa-stepper fa-stepper--{{ orientation }}" aria-label="{{ props.ariaLabel|default('Prozess-Fortschritt') }}">
+        {% for step in steps %}
+            {% set idx = loop.index %}
+            {% set state = idx < current ? 'done' : (idx == current ? 'active' : 'pending') %}
+            <li class="fa-stepper__item fa-stepper__item--{{ state }}">
+                {% if step.href is defined and step.href and state in ['done', 'active'] %}
+                    <a href="{{ step.href }}" class="fa-stepper__link"
+                       {% if state == 'active' %}aria-current="step"{% endif %}>
+                        <span class="fa-stepper__dot" aria-hidden="true">
+                            {% if state == 'done' %}
+                                <svg width="10" height="10" viewBox="0 0 14 14" fill="none">
+                                    <path d="M2 7 L6 11 L12 3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            {% endif %}
+                        </span>
+                        <span class="fa-stepper__label">
+                            <span class="fa-stepper__num">{{ idx }}</span>
+                            <span class="fa-stepper__text">{{ step.label }}</span>
+                        </span>
+                    </a>
+                {% else %}
+                    <div class="fa-stepper__link" {% if state == 'active' %}aria-current="step"{% endif %}>
+                        <span class="fa-stepper__dot" aria-hidden="true">
+                            {% if state == 'done' %}
+                                <svg width="10" height="10" viewBox="0 0 14 14" fill="none">
+                                    <path d="M2 7 L6 11 L12 3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            {% endif %}
+                        </span>
+                        <span class="fa-stepper__label">
+                            <span class="fa-stepper__num">{{ idx }}</span>
+                            <span class="fa-stepper__text">{{ step.label }}</span>
+                        </span>
+                    </div>
+                {% endif %}
+                {% if not loop.last %}<span class="fa-stepper__connector" aria-hidden="true"></span>{% endif %}
+            </li>
+        {% endfor %}
+    </ol>
+{% endmacro %}

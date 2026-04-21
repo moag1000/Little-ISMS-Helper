@@ -1,0 +1,36 @@
+{#
+ FairyAurora Filter-Chips — Inline-Pills unter Search/Filter-Bar
+
+ Usage:
+   {% import '_components/_filter_chips.html.twig' as chips %}
+   {{ chips.render([
+       { label: 'Status', value: 'Offen', removeUrl: '?status=' },
+       { label: 'Framework', value: 'ISO 27001', removeUrl: '?framework=' }
+   ], { clearAllUrl: '?' }) }}
+
+ Props:
+   chips: Array of { label, value, removeUrl?, color? }
+   clearAllUrl: URL zum Alle-Löschen-Link (optional)
+#}
+
+{% macro render(chips, props = {}) %}
+    {% if chips|length > 0 %}
+        <div class="fa-filter-chips" role="group" aria-label="{{ props.ariaLabel|default('Aktive Filter') }}">
+            {% for chip in chips %}
+                <span class="fa-filter-chip {% if chip.color is defined %}fa-filter-chip--{{ chip.color }}{% endif %}">
+                    <span class="fa-filter-chip__label">{{ chip.label }}:</span>
+                    <span class="fa-filter-chip__value">{{ chip.value }}</span>
+                    {% if chip.removeUrl is defined and chip.removeUrl %}
+                        <a href="{{ chip.removeUrl }}" class="fa-filter-chip__remove"
+                           aria-label="{{ 'filter.remove_chip'|trans({'%label%': chip.label}, 'messages')|default('Filter entfernen') }}">×</a>
+                    {% endif %}
+                </span>
+            {% endfor %}
+            {% if chips|length > 1 and props.clearAllUrl is defined %}
+                <a href="{{ props.clearAllUrl }}" class="fa-filter-chips__clear-all">
+                    {{ 'filter.clear_all'|trans({}, 'messages')|default('Alle löschen') }}
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endmacro %}

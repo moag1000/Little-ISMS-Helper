@@ -1,0 +1,61 @@
+{#
+ FairyAurora Dropdown-Panel (unified) — Bell, ⌘K, User, Tenant-Switch
+
+ Usage:
+   {% import '_components/_dropdown_panel.html.twig' as dp %}
+   {{ dp.open('Benachrichtigungen', { footerHref: '/all', footerLabel: 'Alle anzeigen →' }) }}
+      <!-- items HTML -->
+   {{ dp.close() }}
+
+ Props für open():
+   headerLabel: mono-uppercase-Titel (z.B. "BENACHRICHTIGUNGEN")
+   footerHref / footerLabel: optionaler Footer-Link
+   position: bottom-right (default) | bottom-left
+   minWidth: default 320
+#}
+
+{% macro open(headerLabel, props = {}) %}
+    {% set minWidth = props.minWidth|default(320) %}
+    {% set position = props.position|default('bottom-right') %}
+    <div class="fa-dropdown-panel fa-dropdown-panel--{{ position }}"
+         role="menu"
+         style="min-width:{{ minWidth }}px;">
+        {% if headerLabel %}
+            <div class="fa-dropdown-panel__header">{{ headerLabel }}</div>
+        {% endif %}
+        <div class="fa-dropdown-panel__body">
+{% endmacro %}
+
+{% macro close(footerHref = null, footerLabel = null) %}
+        </div>
+        {% if footerHref and footerLabel %}
+            <a class="fa-dropdown-panel__footer" href="{{ footerHref }}">{{ footerLabel }}</a>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{#
+ Item-Helper (einzelner Listen-Eintrag im Dropdown-Body)
+   {{ dp.item({ icon: 'bi-bell', title: 'Risiko aktualisiert', meta: '2 min', href: '/risk/42' }) }}
+#}
+
+{% macro item(props) %}
+    {% set tag = props.href is defined and props.href ? 'a' : 'button' %}
+    <{{ tag }}
+        {% if tag == 'a' %}href="{{ props.href }}"{% else %}type="button"{% endif %}
+        class="fa-dropdown-panel__item {% if props.active|default(false) %}is-active{% endif %}"
+        role="menuitem">
+        {% if props.icon is defined and props.icon %}
+            <i class="bi {{ props.icon }} fa-dropdown-panel__item-icon" aria-hidden="true"></i>
+        {% endif %}
+        <span class="fa-dropdown-panel__item-body">
+            <span class="fa-dropdown-panel__item-title">{{ props.title }}</span>
+            {% if props.sub is defined and props.sub %}
+                <span class="fa-dropdown-panel__item-sub">{{ props.sub }}</span>
+            {% endif %}
+        </span>
+        {% if props.meta is defined and props.meta %}
+            <span class="fa-dropdown-panel__item-meta">{{ props.meta }}</span>
+        {% endif %}
+    </{{ tag }}>
+{% endmacro %}
