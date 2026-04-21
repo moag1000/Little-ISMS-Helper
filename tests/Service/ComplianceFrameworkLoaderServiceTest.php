@@ -47,7 +47,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         $frameworks = $this->service->getAvailableFrameworks();
 
         $this->assertIsArray($frameworks);
-        $this->assertCount(15, $frameworks);
+        $this->assertCount(23, $frameworks);
 
         // Verify TISAX framework structure
         $this->assertEquals('TISAX', $frameworks[0]['code']);
@@ -78,7 +78,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
     {
         $stats = $this->service->getFrameworkStatistics();
 
-        $this->assertEquals(15, $stats['total_available']);
+        $this->assertEquals(23, $stats['total_available']);
         $this->assertArrayHasKey('total_loaded', $stats);
         $this->assertArrayHasKey('total_not_loaded', $stats);
         $this->assertArrayHasKey('compliance_percentage', $stats);
@@ -86,8 +86,10 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         $this->assertArrayHasKey('mandatory_loaded', $stats);
         $this->assertArrayHasKey('mandatory_not_loaded', $stats);
 
-        // Verify mandatory frameworks count (DORA, NIS2, GDPR, KRITIS, KRITIS-HEALTH, DIGAV, TKG-2024, GXP = 8)
-        $this->assertEquals(8, $stats['mandatory_frameworks']);
+        // Verify mandatory frameworks count (Sprint-8-Semantik: mandatory=true heißt
+        // nur noch UNIVERSELL pflichtig — nur GDPR erfüllt das. Branchen-/
+        // größenabhängige Frameworks wandern auf applicability=conditional.)
+        $this->assertEquals(1, $stats['mandatory_frameworks']);
     }
 
     public function testLoadFrameworkWithInvalidCode(): void
@@ -106,7 +108,9 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         $expectedCodes = [
             'TISAX', 'DORA', 'NIS2', 'BSI_GRUNDSCHUTZ', 'GDPR',
             'ISO27001', 'ISO27701', 'ISO27701_2025', 'BSI-C5', 'BSI-C5-2026',
-            'KRITIS', 'KRITIS-HEALTH', 'DIGAV', 'TKG-2024', 'GXP'
+            'KRITIS', 'KRITIS-HEALTH', 'DIGAV', 'TKG-2024', 'GXP',
+            'SOC2', 'NIST-CSF', 'CIS-CONTROLS', 'ISO-22301', 'ISO27005',
+            'BDSG', 'EU-AI-ACT', 'NIS2UMSUCG',
         ];
 
         foreach ($expectedCodes as $expectedCode) {
@@ -114,18 +118,40 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         }
     }
 
-    public function testMandatoryFrameworksAreCorrectlyMarked(): void
+    public function testApplicabilityIsCorrectlyClassified(): void
     {
         $frameworks = $this->service->getAvailableFrameworks();
 
-        $mandatoryCodes = ['DORA', 'NIS2', 'GDPR', 'KRITIS', 'KRITIS-HEALTH', 'DIGAV', 'TKG-2024', 'GXP'];
-        $optionalCodes = ['TISAX', 'BSI_GRUNDSCHUTZ', 'ISO27001', 'ISO27701', 'ISO27701_2025', 'BSI-C5', 'BSI-C5-2026'];
+        // Post-Sprint: `mandatory=true` heißt jetzt UNIVERSELL pflichtig (unabhängig
+        // von Branche/Größe). Nur GDPR erfüllt das. Alles andere wandert auf
+        // `applicability: conditional` (branchen-/größenabhängig) oder
+        // `applicability: voluntary` (freiwillig).
+        $universal = ['GDPR'];
+        $conditional = [
+            'TISAX', 'DORA', 'NIS2', 'BSI_GRUNDSCHUTZ', 'KRITIS', 'KRITIS-HEALTH',
+            'DIGAV', 'TKG-2024', 'GXP', 'BDSG', 'EU-AI-ACT', 'NIS2UMSUCG',
+        ];
+        $voluntary = [
+            'ISO27001', 'ISO27701', 'ISO27701_2025', 'BSI-C5', 'BSI-C5-2026',
+            'SOC2', 'NIST-CSF', 'CIS-CONTROLS', 'ISO-22301', 'ISO27005',
+        ];
 
         foreach ($frameworks as $framework) {
-            if (in_array($framework['code'], $mandatoryCodes)) {
-                $this->assertTrue($framework['mandatory'], "Framework {$framework['code']} should be mandatory");
+            $code = $framework['code'];
+            $this->assertArrayHasKey('applicability', $framework, "Framework {$code} must carry applicability");
+
+            if (in_array($code, $universal, true)) {
+                $this->assertSame('universal', $framework['applicability'], "{$code} should be universal");
+                $this->assertTrue($framework['mandatory'], "{$code} (universal) keeps mandatory=true");
+            } elseif (in_array($code, $conditional, true)) {
+                $this->assertSame('conditional', $framework['applicability'], "{$code} should be conditional");
+                $this->assertFalse($framework['mandatory'], "{$code} (conditional) must have mandatory=false");
+                $this->assertNotNull($framework['applicability_condition_key'], "{$code} needs a condition translation key");
+            } elseif (in_array($code, $voluntary, true)) {
+                $this->assertSame('voluntary', $framework['applicability'], "{$code} should be voluntary");
+                $this->assertFalse($framework['mandatory'], "{$code} (voluntary) keeps mandatory=false");
             } else {
-                $this->assertFalse($framework['mandatory'], "Framework {$framework['code']} should not be mandatory");
+                $this->fail("Framework {$code} is not classified in universal/conditional/voluntary sets — update the test.");
             }
         }
     }

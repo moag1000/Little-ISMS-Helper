@@ -115,7 +115,7 @@ compliance:
     total_available: __compliance.total_available
     loaded: __compliance.loaded
     not_loaded: __compliance.not_loaded
-    mandatory_missing: __compliance.mandatory_missing
+    mandatory_missing: 'Universally mandatory, not loaded'
     available_frameworks: __compliance.available_frameworks
     version: __compliance.version
     industry_label: Industry
@@ -1012,5 +1012,28 @@ compliance_framework:
             defined: 'Defined'
             quantitatively_managed: 'Quant. Managed'
             optimizing: 'Optimizing'
+
+admin:
+    compliance:
+        applicability:
+            label: 'Applicability'
+            universal: 'Universally mandatory'
+            conditional: 'Industry/size-dependent'
+            voluntary: 'Voluntary'
+            applies_when: 'Mandatory when'
+            condition:
+                tisax: 'Automotive supplier with OEM business (VDA requirement, not a law — but market access depends on it).'
+                dora: 'Financial entity per DORA Art. 2 (banks, payment services, crypto, insurance, critical ICT third parties).'
+                nis2: 'Essential or important entity in a NIS2 sector (Annex I+II) **and** ≥ 50 employees or ≥ 10 M€ annual revenue.'
+                nis2umsucg: 'Same thresholds as NIS2 + based in Germany. Additionally: operators of especially important entities per BSI catalog.'
+                bsi_grundschutz: 'German federal authorities (mandatory via UP Bund), state authorities with federal link, suppliers of public contracting authorities.'
+                kritis: 'Operators of critical infrastructure per BSI KRITIS Regulation (sectors: energy, water, food, ICT, health, finance, transport, waste).'
+                kritis_health: 'Hospitals with ≥ 30,000 inpatient cases/year, care facilities, and emergency services per KHZG/§75c SGB V.'
+                digav: 'Providers or distributors of digital health applications (DiGA) with BfArM approval (prescription apps).'
+                tkg: 'Operators of public telecommunications networks and services per §§164–167 TKG (mobile/fixed-line providers, ISPs, VoIP).'
+                gxp: 'Manufacturers, distributors, or service providers for pharmaceuticals, medical devices, or their IT systems (GMP/GxP-regulated industries).'
+                bdsg: 'Controllers or processors established in or processing PII in Germany.'
+                eu_ai_act: 'Providers or deployers of AI systems classified as High-Risk per EU AI Act Annex III.'
+
 nis2:
     article: Article
