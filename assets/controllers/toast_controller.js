@@ -95,10 +95,12 @@ export default class extends Controller {
             }
         }
 
-        // Trigger animation
-        requestAnimationFrame(() => {
-            toast.classList.add('toast-visible', 'show');
-        });
+        // Trigger animation (Aurora uses CSS @keyframes fa-alert-enter, no manual class-toggle needed)
+        // Set progress-bar animation duration
+        const progressBar = toast.querySelector('.fa-alert__progress');
+        if (progressBar && duration > 0) {
+            progressBar.style.animationDuration = `${duration}ms`;
+        }
 
         // Auto-dismiss
         if (duration > 0) {
@@ -109,24 +111,32 @@ export default class extends Controller {
     }
 
     createToast(message, type) {
+        // FairyAurora v3.0: Aurora-Alert-Pattern statt Bootstrap-Toast.
+        // API bleibt identisch (.show/.success/etc.), DOM wird Aurora-styled.
+        const toneMap = {
+            success: 'success',
+            error: 'danger',
+            warning: 'warning',
+            info: 'info',
+        };
+        const tone = toneMap[type] || 'info';
+
         const toast = document.createElement('div');
-        // Add fairy styling to success toasts for subtle magic effect
-        const fairyClass = type === 'success' ? ' fairy-toast' : '';
-        toast.className = `toast toast-${type}${fairyClass}`;
+        toast.className = `fa-alert fa-alert--${tone} fa-alert--toast`;
         toast.setAttribute('role', 'alert');
         toast.setAttribute('aria-live', 'polite');
 
         const icon = this.getIcon(type);
 
         toast.innerHTML = `
-            <div class="toast-content">
-                <i class="bi ${icon} toast-icon"></i>
-                <div class="toast-message">${this.escapeHtml(message)}</div>
+            <i class="bi ${icon} fa-alert__icon" aria-hidden="true"></i>
+            <div class="fa-alert__body">
+                <div class="fa-alert__message">${this.escapeHtml(message)}</div>
             </div>
-            <button class="toast-close" aria-label="Schließen" data-action="click->toast#dismissButton">
-                <i class="bi bi-x"></i>
-            </button>
-            <div class="toast-progress"></div>
+            <button class="fa-alert__close"
+                    aria-label="Schließen"
+                    data-action="click->toast#dismissButton">×</button>
+            <span class="fa-alert__progress" aria-hidden="true"></span>
         `;
 
         return toast;
@@ -143,17 +153,14 @@ export default class extends Controller {
     }
 
     dismissButton(event) {
-        const toast = event.target.closest('.toast');
+        const toast = event.target.closest('.fa-alert');
         this.dismiss(toast);
     }
 
     dismiss(toast) {
-        toast.classList.remove('toast-visible', 'show');
-        toast.classList.add('toast-exit');
-
-        setTimeout(() => {
-            toast.remove();
-        }, 300);
+        if (!toast) return;
+        toast.classList.add('is-dismissing');
+        setTimeout(() => { toast.remove(); }, 240);
     }
 
     escapeHtml(text) {

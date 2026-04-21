@@ -631,6 +631,48 @@
 .fa-alert--danger  { border-left-color: var(--danger); background: var(--danger-glow); }
 .fa-alert--danger  .fa-alert__icon { color: var(--danger); }
 
+/* Toast-Variant (stacked top-right, Progress-Bar) */
+.fa-alert--toast {
+    min-width: 320px;
+    max-width: 420px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+    position: relative;
+    padding-bottom: 14px;
+}
+.fa-alert__progress {
+    position: absolute;
+    left: 0; bottom: 0;
+    height: 2px;
+    background: currentColor;
+    opacity: 0.4;
+    animation: fa-alert-progress linear forwards;
+}
+@keyframes fa-alert-progress {
+    from { width: 100%; }
+    to   { width: 0%; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .fa-alert__progress { animation: none; width: 100%; }
+}
+
+/* Toast-Container (bleibt .toast-container für Kompat, styled nach Aurora) */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: var(--z-toast, 9999);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+.toast-container > * { pointer-events: auto; }
+
+@media (max-width: 639.98px) {
+    .toast-container { top: 10px; right: 10px; left: 10px; }
+    .fa-alert--toast { min-width: 0; max-width: none; }
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    Mode-Switch (3-State Light / Dark / System)
    ═══════════════════════════════════════════════════════════════════ */
