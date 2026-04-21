@@ -59,6 +59,38 @@ html[data-theme="dark"] .fa-brand-mark {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   App-Wide Tech-Backdrop — subtle Circuit-Optics on <body>
+   Schaltkreis-Optik wie Login-Sidebar, dezent app-weit als Hintergrund.
+   Content-Container bleiben transparent, damit BG durchscheint.
+   ═══════════════════════════════════════════════════════════════════ */
+
+body {
+    background-color: var(--bg);
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 900' preserveAspectRatio='xMidYMid slice'%3E%3Cg stroke='%230284c7' stroke-width='0.5' fill='none' opacity='0.07'%3E%3Cpath d='M 0 120 L 240 120 L 270 150 L 520 150' stroke-linecap='round'/%3E%3Cpath d='M 1200 260 L 900 260 L 870 290 L 640 290' stroke-linecap='round'/%3E%3Cpath d='M 0 460 L 320 460 L 350 430 L 560 430' stroke-linecap='round'/%3E%3Cpath d='M 1200 640 L 820 640 L 790 670 L 620 670' stroke-linecap='round'/%3E%3Cpath d='M 140 780 L 380 780' stroke-linecap='round'/%3E%3Cpath d='M 700 820 L 1060 820' stroke-linecap='round'/%3E%3C/g%3E%3Cg fill='%237c3aed' opacity='0.18'%3E%3Ccircle cx='240' cy='120' r='1.6'/%3E%3Ccircle cx='520' cy='150' r='1.6'/%3E%3Ccircle cx='900' cy='260' r='1.6'/%3E%3Ccircle cx='640' cy='290' r='1.6'/%3E%3Ccircle cx='320' cy='460' r='1.6'/%3E%3Ccircle cx='560' cy='430' r='1.6'/%3E%3Ccircle cx='820' cy='640' r='1.6'/%3E%3Ccircle cx='620' cy='670' r='1.6'/%3E%3C/g%3E%3C/svg%3E"),
+        radial-gradient(circle at 32px 32px, var(--primary-tint) 0.6px, transparent 1.1px);
+    background-size: cover, 64px 64px;
+    background-position: center center, 0 0;
+    background-repeat: no-repeat, repeat;
+    background-attachment: fixed, fixed;
+}
+
+html[data-theme="dark"] body {
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 900' preserveAspectRatio='xMidYMid slice'%3E%3Cg stroke='%2338bdf8' stroke-width='0.5' fill='none' opacity='0.12'%3E%3Cpath d='M 0 120 L 240 120 L 270 150 L 520 150' stroke-linecap='round'/%3E%3Cpath d='M 1200 260 L 900 260 L 870 290 L 640 290' stroke-linecap='round'/%3E%3Cpath d='M 0 460 L 320 460 L 350 430 L 560 430' stroke-linecap='round'/%3E%3Cpath d='M 1200 640 L 820 640 L 790 670 L 620 670' stroke-linecap='round'/%3E%3Cpath d='M 140 780 L 380 780' stroke-linecap='round'/%3E%3Cpath d='M 700 820 L 1060 820' stroke-linecap='round'/%3E%3C/g%3E%3Cg fill='%23a78bfa' opacity='0.3'%3E%3Ccircle cx='240' cy='120' r='1.6'/%3E%3Ccircle cx='520' cy='150' r='1.6'/%3E%3Ccircle cx='900' cy='260' r='1.6'/%3E%3Ccircle cx='640' cy='290' r='1.6'/%3E%3Ccircle cx='320' cy='460' r='1.6'/%3E%3Ccircle cx='560' cy='430' r='1.6'/%3E%3Ccircle cx='820' cy='640' r='1.6'/%3E%3Ccircle cx='620' cy='670' r='1.6'/%3E%3C/g%3E%3C/svg%3E"),
+        radial-gradient(circle at 32px 32px, rgba(56, 189, 248, 0.10) 0.7px, transparent 1.3px);
+}
+
+/* Content-Areas transparent, damit Body-Pattern durchscheint */
+.app-main,
+.app-content,
+main.app-main,
+main > .container,
+main > .container-fluid {
+    background: transparent;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    App-Sidebar + Mega-Menu-Panel — Login-Pattern-BG (Gradient + Dots)
    Macht App-Seitenleiste optisch konsistent mit Login/Setup-Wizard-
    Left-Panel. Gradient (surface→bg) + subtile Dot-Pattern + Corner-Tick.
