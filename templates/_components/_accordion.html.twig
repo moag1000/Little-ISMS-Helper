@@ -1,0 +1,42 @@
+{#
+ FairyAurora Accordion — expand/collapse panels
+
+ Usage:
+   {% import '_components/_accordion.html.twig' as acc %}
+   {{ acc.open('my-accordion') }}
+       {{ acc.item('Was ist ISMS?', 'isms-1', { open: true }) }}
+           ... content ...
+       {{ acc.closeItem() }}
+       {{ acc.item('Wie läuft Zertifizierung?', 'isms-2') }}
+           ... content ...
+       {{ acc.closeItem() }}
+   {{ acc.close() }}
+
+ Nutzt native <details>-Element (keine JS-Abhängigkeit, Tastatur-nav kostenlos).
+ Plan § 29 Accordion.
+#}
+
+{% macro open(id = null, props = {}) %}
+    <div class="fa-accordion {% if props.flush|default(false) %}fa-accordion--flush{% endif %}"
+         {% if id %}id="{{ id }}"{% endif %}>
+{% endmacro %}
+
+{% macro close() %}
+    </div>
+{% endmacro %}
+
+{% macro item(title, id = null, props = {}) %}
+    <details class="fa-accordion__item" {% if id %}id="{{ id }}"{% endif %} {% if props.open|default(false) %}open{% endif %}>
+        <summary class="fa-accordion__summary">
+            {% if props.icon is defined %}<i class="bi {{ props.icon }} fa-accordion__icon" aria-hidden="true"></i>{% endif %}
+            <span class="fa-accordion__title">{{ title }}</span>
+            {% if props.badge is defined %}<span class="fa-accordion__badge">{{ props.badge }}</span>{% endif %}
+            <span class="fa-accordion__chevron" aria-hidden="true">▾</span>
+        </summary>
+        <div class="fa-accordion__body">
+{% endmacro %}
+
+{% macro closeItem() %}
+        </div>
+    </details>
+{% endmacro %}

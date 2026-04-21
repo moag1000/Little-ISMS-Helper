@@ -1,0 +1,63 @@
+{#
+ FairyAurora Confirmation-Dialog (Destructive Actions)
+
+ Usage:
+   {% include '_components/_confirmation_dialog.html.twig' with {
+       id: 'delete-tenant-modal',
+       title: 'Wirklich löschen?',
+       message: 'Dies entfernt den Tenant und alle Daten unwiderruflich.',
+       confirmUrl: path('tenant_delete', {id: x}),
+       confirmLabel: 'Löschen',
+       confirmIcon: 'bi-trash',
+       typingConfirm: 'LÖSCHEN'    {# optional: Typing-Bestätigung für High-Risk #}
+   } %}
+
+ Nutzt Bootstrap-Modal-Infrastruktur + Aurora-Styling via .fa-confirm-modal-Klasse.
+ Plan § 29 Confirmation-Dialog.
+#}
+
+{% set id = id|default('fa-confirm-' ~ random(99999)) %}
+{% set confirmLabel = confirmLabel|default('common.confirm'|trans({}, 'messages')|default('Bestätigen')) %}
+{% set cancelLabel = cancelLabel|default('common.cancel'|trans({}, 'messages')|default('Abbrechen')) %}
+
+<div class="modal fade fa-confirm-modal" id="{{ id }}" tabindex="-1" aria-hidden="true" aria-labelledby="{{ id }}-title">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content fa-confirm-modal__content">
+            <div class="modal-body fa-confirm-modal__body">
+                {% import '_components/_alva.html.twig' as alva %}
+                {{ alva.render('warning', { size: 60, decorative: true, class: 'fa-confirm-modal__alva' })|raw }}
+
+                <h2 id="{{ id }}-title" class="fa-confirm-modal__title">{{ title }}</h2>
+                <p class="fa-confirm-modal__message">{{ message }}</p>
+
+                {% if typingConfirm is defined and typingConfirm %}
+                    <div class="fa-confirm-modal__typing">
+                        <label class="fa-confirm-modal__typing-label">
+                            {{ 'confirm.typing_hint'|trans({'%keyword%': typingConfirm}, 'messages')|default('Tippe &laquo;' ~ typingConfirm ~ '&raquo; um zu bestätigen:')|raw }}
+                        </label>
+                        <input type="text"
+                               class="fa-confirm-modal__typing-input"
+                               data-confirm-keyword="{{ typingConfirm }}"
+                               data-controller="confirm-typing"
+                               data-confirm-typing-target-value="{{ typingConfirm }}"
+                               autocomplete="off">
+                    </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer fa-confirm-modal__footer">
+                {% import '_components/_cyber_button.html.twig' as btn %}
+                {{ btn.render(cancelLabel, { variant: 'secondary', attrs: { 'data-bs-dismiss': 'modal' } }) }}
+                {% if confirmUrl is defined and confirmUrl %}
+                    {% if confirmMethod|default('post') == 'get' %}
+                        {{ btn.link(confirmUrl, confirmLabel, { variant: 'danger', icon: confirmIcon|default('bi-exclamation-triangle') }) }}
+                    {% else %}
+                        <form action="{{ confirmUrl }}" method="post" class="fa-confirm-modal__form">
+                            {% if csrfToken is defined %}<input type="hidden" name="_token" value="{{ csrfToken }}">{% endif %}
+                            {{ btn.submit(confirmLabel, { variant: 'danger', icon: confirmIcon|default('bi-exclamation-triangle') }) }}
+                        </form>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+{#
+ FairyAurora Global-Banner — Top-of-Page-Strip über Topbar
+
+ Usage (in base.html.twig VOR <header>):
+   {% include '_components/_global_banner.html.twig' with {
+       id: 'trial-ending',
+       tone: 'warning',
+       icon: 'bi-hourglass-split',
+       message: 'Ihre Testphase endet in 7 Tagen.',
+       cta: { url: path('billing_upgrade'), label: 'Upgrade' },
+       dismissible: true
+   } %}
+
+ Props:
+   id: unique banner ID (localStorage-Dismiss-Persist)
+   tone: info | warning | danger (default info)
+   icon: bi-* class
+   message: Text (raw HTML erlaubt)
+   cta: { url, label } (optional)
+   dismissible: boolean (default true)
+
+ Plan § 29 Global-Banner.
+#}
+
+{% set id = id|default('banner-' ~ random(99999)) %}
+{% set tone = tone|default('info') %}
+{% set dismissible = dismissible|default(true) %}
+
+<div class="fa-global-banner fa-global-banner--{{ tone }}"
+     role="alert"
+     data-banner-id="{{ id }}"
+     data-controller="aurora-banner">
+    <div class="fa-global-banner__inner">
+        {% if icon is defined and icon %}
+            <i class="bi {{ icon }} fa-global-banner__icon" aria-hidden="true"></i>
+        {% endif %}
+        <span class="fa-global-banner__message">{{ message|raw }}</span>
+        {% if cta is defined and cta %}
+            <a href="{{ cta.url }}" class="fa-global-banner__cta">{{ cta.label }}</a>
+        {% endif %}
+        {% if dismissible %}
+            <button type="button"
+                    class="fa-global-banner__close"
+                    data-action="click->aurora-banner#dismiss"
+                    aria-label="{{ 'common.close'|trans({}, 'messages')|default('Schließen') }}">×</button>
+        {% endif %}
+    </div>
+</div>
