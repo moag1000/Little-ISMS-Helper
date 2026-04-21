@@ -115,7 +115,7 @@ compliance:
     total_available: 'Gesamt verfügbar'
     loaded: Geladen
     not_loaded: 'Nicht geladen'
-    mandatory_missing: 'Pflicht-Frameworks fehlen'
+    mandatory_missing: 'Universell pflichtig, nicht geladen'
     available_frameworks: 'Verfügbare Frameworks'
     version: Version
     industry_label: Branche
@@ -1015,3 +1015,25 @@ compliance_framework:
             defined: 'Defined'
             quantitatively_managed: 'Quant. Managed'
             optimizing: 'Optimizing'
+
+admin:
+    compliance:
+        applicability:
+            label: 'Anwendbarkeit'
+            universal: 'Universell pflichtig'
+            conditional: 'Branchen-/größenabhängig'
+            voluntary: 'Freiwillig'
+            applies_when: 'Pflicht wenn'
+            condition:
+                tisax: 'Automotive-Zulieferer mit OEM-Geschäft (VDA-Anforderung, kein Gesetz — aber Marktzugang hängt dran).'
+                dora: 'Finanzdienstleister nach DORA Art. 2 (Banken, Zahlungsdienste, Krypto, Versicherungen, kritische IKT-Drittparteien).'
+                nis2: 'Wesentliche oder wichtige Einrichtung in einem NIS2-Sektor (Anhang I+II) **und** ≥ 50 MA oder ≥ 10 Mio € Jahresumsatz.'
+                nis2umsucg: 'Gleiche Schwellwerte wie NIS2 + deutscher Sitz. Zusätzlich: Betreiber besonders wichtiger Einrichtungen nach BSI-Katalog.'
+                bsi_grundschutz: 'Bundesbehörden (pflichtig via UP Bund), Landesbehörden mit Bezug zum Bund, sowie Zulieferer öffentlicher Auftraggeber.'
+                kritis: 'Betreiber kritischer Infrastrukturen nach BSI-Kritis-Verordnung (Sektoren: Energie, Wasser, Ernährung, IKT, Gesundheit, Finanz, Transport, Entsorgung).'
+                kritis_health: 'Krankenhäuser ab 30.000 vollstationären Fällen/Jahr, sowie Pflegeeinrichtungen und Rettungsdienste nach KHZG/§75c SGB V.'
+                digav: 'Hersteller oder Vertrieb digitaler Gesundheitsanwendungen (DiGA) mit BfArM-Zulassung (App auf Rezept).'
+                tkg: 'Betreiber öffentlicher Telekommunikationsnetze und -dienste nach §§164–167 TKG (Mobilfunk-/Festnetz-Provider, Internet-Access-Provider, VoIP).'
+                gxp: 'Hersteller, Distributoren oder Service-Provider von Arzneimitteln, Medizinprodukten oder deren IT-Systemen (GMP-/GxP-regulierte Branchen).'
+                bdsg: 'Verantwortliche oder Auftragsverarbeiter mit Sitz oder PII-Verarbeitung in Deutschland.'
+                eu_ai_act: 'Anbieter oder Deployer von KI-Systemen, die als High-Risk nach EU AI Act Anhang III klassifiziert sind.'

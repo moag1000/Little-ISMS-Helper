@@ -64,7 +64,8 @@
         <div class="framework-cards-grid">
             {% for framework in available_frameworks %}
                 <div class="framework-card {% if framework.loaded %}loaded{% endif %}">
-                    <div class="framework-card-header {% if framework.mandatory %}bg-gradient-danger{% else %}bg-gradient-primary{% endif %}">
+                    {% set _applicability = framework.applicability|default(framework.mandatory ? 'universal' : 'voluntary') %}
+                    <div class="framework-card-header {% if _applicability == 'universal' %}bg-gradient-danger{% elseif _applicability == 'conditional' %}bg-gradient-warning{% else %}bg-gradient-primary{% endif %}">
                         <div class="framework-icon">{{ framework.icon }}</div>
                         <div class="framework-title">
                             <h3>{{ framework.code }}</h3>
@@ -92,16 +93,26 @@
                                 <span class="value">{{ framework.regulatory_body }}</span>
                             </div>
                             <div class="info-item">
-                                <span class="label">{{ 'compliance.mandatory'|trans({}, 'compliance') }}:</span>
+                                <span class="label">{{ 'admin.compliance.applicability.label'|trans({}, 'compliance') }}:</span>
                                 <span class="value">
-                                    {% if framework.mandatory %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'common.yes'|trans({}, 'messages') } %}
+                                    {% if _applicability == 'universal' %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'admin.compliance.applicability.universal'|trans({}, 'compliance') } %}
+                                    {% elseif _applicability == 'conditional' %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'admin.compliance.applicability.conditional'|trans({}, 'compliance') } %}
                                     {% else %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.no'|trans({}, 'messages') } %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'admin.compliance.applicability.voluntary'|trans({}, 'compliance') } %}
                                     {% endif %}
                                 </span>
                             </div>
                         </div>
+
+                        {% if _applicability == 'conditional' and framework.applicability_condition_key %}
+                            <div class="alert alert-warning small py-2 px-3 mb-2">
+                                <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+                                <strong>{{ 'admin.compliance.applicability.applies_when'|trans({}, 'compliance') }}:</strong>
+                                {{ framework.applicability_condition_key|trans({}, 'compliance') }}
+                            </div>
+                        {% endif %}
 
                         <p class="framework-description">{{ framework.description }}</p>
 
