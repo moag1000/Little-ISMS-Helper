@@ -146,6 +146,42 @@ compliance:
     mapping:
         confirm:
             delete: 'Möchten Sie diese Zuordnung wirklich löschen?'
+        import:
+            title: 'CSV-Mapping-Import'
+            description: 'Consultant-Mapping-Tabelle hochladen — mit Dry-Run-Preview vor dem Commit.'
+            spec:
+                title: 'CSV-Spezifikation'
+                intro: 'UTF-8, RFC 4180 kompatibel. BOM wird toleriert.'
+                required: 'Pflichtspalten: source_requirement_id, target_requirement_id, mapping_type'
+                types: 'Mapping-Typen: full, partial, weak, exceeds (Prozent wird automatisch abgeleitet)'
+                optional: 'Optional: mapping_percentage, confidence (low/medium/high), bidirectional (true/false), rationale'
+                idempotent: 'Import ist idempotent — bestehende Quell/Ziel-Paare werden übersprungen.'
+            field:
+                source: 'Quell-Framework'
+                target: 'Ziel-Framework'
+                pair_hint: 'Ein Framework-Paar pro Datei.'
+                file: 'CSV-Datei'
+                file_hint: 'Max. 2 MB. UTF-8-Kodierung empfohlen.'
+            action:
+                preview: 'Dry-Run (Vorschau)'
+                commit: 'Importieren'
+            error:
+                frameworks_required: 'Bitte Quell- und Ziel-Framework auswählen.'
+                same_framework: 'Quell- und Ziel-Framework dürfen nicht identisch sein.'
+                file_required: 'Bitte CSV-Datei wählen.'
+                file_invalid: 'Datei-Upload fehlerhaft.'
+                file_too_large: 'Datei zu groß (max. 2 MB).'
+                file_empty: 'Datei ist leer oder nicht lesbar.'
+            result:
+                preview: 'Vorschau (noch nicht gespeichert)'
+                committed: 'Import abgeschlossen'
+                processed: 'Verarbeitet'
+                created: 'Angelegt'
+                skipped_existing: 'Bestehend übersprungen'
+                skipped_missing: 'Fehlende Anforderung'
+                errors_heading: 'Fehler (%count%)'
+                warnings_heading: 'Warnungen (%count%)'
+                preview_ok_hint: 'Preview OK — jetzt erneut hochladen und "Importieren" drücken, um die Daten zu übernehmen.'
         hub:
             title: 'Mapping-Hub'
             subtitle: 'Einstieg für Cross-Framework-Zuordnungen — Wizard, Seed-Pakete, Qualität, transitive Abdeckung.'
@@ -175,6 +211,9 @@ compliance:
                 reuse:
                     title: 'Data-Reuse-Hub'
                     desc: 'Welche Dokumente und Lieferanten decken die meisten Frameworks ab?'
+                import:
+                    title: 'CSV-Import'
+                    desc: 'Consultant-Mapping-Tabellen hochladen mit Dry-Run-Preview.'
             recent:
                 heading: 'Zuletzt geänderte Mappings'
                 all_link: 'Alle anzeigen'
