@@ -9,6 +9,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ✨ Added
 
+#### Seed-Kataloge Erweiterung + Admin-Applicability + Wizard-Integration (2026-04-21)
+
+Vier-teiliges Doppel-Sprint-Paket zur Verbesserung der Framework-
+Onboarding-Experience. Ergebnis: 23 Frameworks im Admin-Katalog
+sichtbar (vorher 15), 8 kuratierte Seed-Kataloge verfügbar (vorher 3),
+3-Bucket-Applicability statt binärer Pflicht-Anzeige.
+
+**Sprint 7 — 4 neue Seed-Kataloge (`3edf5160`)**
+- **NIS2 ↔ ISO 27001**: 79 Paare (61 neu), ENISA + BSI + Impl. Reg.
+  (EU) 2024/2690 Anhang I. Art. 20-25 komplett, Art. 21.2.a-j +
+  Third-Party + Reporting.
+- **DORA ↔ ISO 27001**: 68 Paare (57 neu), EBA Guidelines +
+  ENISA DORA Tech. Guidance + BaFin FAQ. Art. 5-33 mit Fokus
+  ICT-Risk / Incident-Mgmt / Testing / Third-Party.
+- **TISAX ↔ ISO 27001**: 98 Paare (57 neu), VDA-ISA → 27001:2022
+  Annex A. Volle ACC/BCM/CMP/COM/CRY/DEV/HRS/INC/INF/MOB/OPS/PHY/
+  PROT/SUP-Struktur, meist full=100%.
+- **GDPR ↔ ISO 27001**: 40 Paare (40 neu), EDPB Guidelines +
+  ISO/IEC 27701. Art. 5 Grundsätze, 24/25/28/30/32-37/44-46
+  Schlüsselartikel.
+
+**Sprint 8 — GDPR ↔ ISO 27701 (PIMS) Seed (`a0b4e5a8`)**
+- 60 Paare (48 neu), ISO 27701:2019 Annex D GDPR-Mapping.
+- Deutlich höhere Treffer-Dichte als GDPR↔ISO 27001 weil 27701
+  die DSGVO operationalisiert (Controller-Obligations A.7.x +
+  Processor-Obligations B.8.x + dedizierte GDPR-Interop-Sektion).
+- Seed-UI zeigt jetzt 8 Karten statt 3.
+
+**Admin-Katalog-Erweiterung (`54889154`)**
+- Acht Frameworks im Katalog nachgetragen (waren in der DB, aber
+  nicht in `ComplianceFrameworkLoaderService::getAvailableFrameworks()`):
+  SOC2, NIST-CSF, CIS-CONTROLS, ISO-22301, ISO27005, BDSG,
+  EU-AI-ACT, NIS2UMSUCG. `loadFramework()`-Match-Statement
+  entsprechend ergänzt — Reload/Delete via UI funktioniert jetzt.
+
+**Option B — 3-State Applicability-Badge (`f24278c1`)**
+- Junior-Walkthrough-Feedback: *"DORA `Pflicht: Ja` ist irreführend —
+  nur Finanzdienstleister betroffen"*. Binäres Mandatory-Flag ersetzt
+  durch drei Zustände:
+  - 🔴 `universal`: rechtliche Pflicht ohne Branche/Größe-Filter
+    (nur GDPR im EU-Kontext)
+  - 🟡 `conditional`: branchen-/größen-/tätigkeits-abhängig
+    (TISAX, DORA, NIS2, NIS2UmsuCG, BSI IT-Grundschutz, KRITIS,
+    KRITIS-Health, DIGAV, TKG, GXP, BDSG, EU AI Act)
+  - ⚪ `voluntary`: Markt-Standard ohne Gesetzescharakter
+    (ISO 27001/27005/27701/22301, BSI-C5, SOC2, NIST-CSF, CIS-Controls)
+- Pro conditional-Framework ein Trigger-Text (z.B. DORA:
+  *"Finanzdienstleister nach DORA Art. 2"*), im Admin-Katalog unter
+  jeder Karte als alert-warning sichtbar.
+
+**Sprint 9 — Applicability-Service + Wizard-Integration (`a770c9b8`)**
+- Neuer `FrameworkApplicabilityService` klassifiziert pro Tenant-
+  Kontext (Branche, Größe, Land, AI-High-Risk-Flag) jedes Framework
+  in einen von drei Buckets: `mandatory` / `recommended` / `optional`.
+- Setup-Wizard Step 8 zeigt Frameworks nicht mehr flach, sondern
+  in drei farbkodierten Sektionen mit Pre-Select von mandatory +
+  recommended. Junge Implementer sehen *was* empfohlen wird UND
+  *warum*.
+- Beispiele: Finanzdienstleister DE → DORA + NIS2 + GDPR + BDSG
+  mandatory. Automotive + 120 MA + DE → TISAX + NIS2 mandatory.
+  8-Mann-Marketing-Startup AT → nur ISO27001 + GDPR mandatory.
+
+**BSI-Grundschutz-Check Macro-Fix (`b9228654`)**
+- Template-Bug: `{% import _self as helpers %}` im äußeren Block
+  war in `{% embed %}`-Scopes nicht sichtbar. `_self` innerhalb
+  eines Embeds verweist auf das eingebettete `_card.html.twig`.
+  Fix: In 3 betroffenen `card_body`-Blöcken explizit
+  `{% import 'bsi_grundschutz_check/index.html.twig' as helpers %}`.
+
 #### CM-Data-Reuse-Plan Sprint 1–3 (2026-04-20)
 
 Umsetzung des `.claude/CM_DATA_REUSE_PLAN.md` über 12 Commits nach der

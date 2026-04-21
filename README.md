@@ -48,8 +48,9 @@ Little ISMS Helper unterstützt Organisationen bei der **Implementierung und Ver
 | 🔐 **Tamper-evidentes Audit-Log** | HMAC-SHA256-Chain + actor_role-Spalte, `app:audit-log:verify` (NIS2 Art. 21.2 / ISB Sprint-2-Gate) |
 | 🧊 **Audit-Freeze / Stichtag-Snapshot** | SHA-256-versiegeltes Compliance-Abbild zum gewählten Datum (ISO 27001 Klausel 7.5.3) |
 | 🔄 **Intelligente Datenwiederverwendung** | Mapping-basierte Vererbung mit Review-Pflicht (WS-1) |
-| 🔗 **Cross-Framework-Mappings** | 461 geprüfte Mappings über 22 Frameworks |
-| 📊 **Multi-Framework Support** | ISO 27001/27002/27005/27701/22301, TISAX, DORA, NIS2/NIS2UmsuCG, BSI, C5, EU AI Act |
+| 🔗 **Cross-Framework-Mappings** | **790+ geprüfte Mappings über 23 Frameworks**, davon **8 kuratierte Seed-Kataloge** (BSI/SOC2/C5:2026/NIS2/DORA/TISAX/GDPR↔ISO 27001 + GDPR↔ISO 27701) — 1-Klick-Import auf `/compliance/mappings/seeds` |
+| 📊 **Multi-Framework Support** | ISO 27001/27005/27701/22301, TISAX, DORA, NIS2/NIS2UmsuCG, BSI IT-Grundschutz/C5, GDPR/BDSG, EU AI Act, KRITIS/KRITIS-Health, TKG 2024, GxP, DiGAV, SOC 2, NIST CSF, CIS Controls |
+| 🎯 **3-Bucket-Applicability** | Setup-Wizard klassifiziert Frameworks in `Pflicht / Empfohlen / Optional` basierend auf Branche, Größe, Land — mit Begründungstext pro Framework. Kein Rätselraten für Junior-Implementer. |
 | 🌐 **BSI IT-Grundschutz** | Absicherungsstufen (Basis/Standard/Kern), Anforderungstypen (MUSS/SOLLTE/KANN), Schutzbedarfsvererbung (Maximumprinzip) |
 | 📦 **Branchen-Baselines** | 9 Consultant-Starter-Pakete (Generic, Production, Finance, KRITIS-Health, Automotive, Cloud, MSP, IT-Service, Hosting) — 1-Klick-Apply statt ISMS-from-scratch |
 | 🏢 **Holding/Konzern-Struktur** | Tenant-Hierarchie mit Cycle-Safety, `ROLE_GROUP_CISO` für read-across, Baseline-Vererbung + `applyRecursive`, NIS2-Registrierungsmatrix pro Rechtsperson (§28 BSIG) |
@@ -223,8 +224,9 @@ Für Produktions-Deployments beachten Sie:
 
 ### 📋 Compliance Management
 - **93 ISO 27001:2022 Controls** - Vollständige Annex A Abdeckung
-- **Multi-Framework** - 22 Frameworks (ISO, TISAX, DORA, NIS2, BSI, C5, EU AI Act)
-- **461 Cross-Framework-Mappings** - geprüfte Wiederverwendungspfade
+- **Multi-Framework** - 23 Frameworks (ISO, TISAX, DORA, NIS2, BSI, C5, GDPR, EU AI Act, SOC 2, NIST CSF, CIS Controls, …)
+- **790+ Cross-Framework-Mappings** - geprüfte Wiederverwendungspfade + 8 Seed-Kataloge per 1-Klick
+- **3-Bucket-Applicability** - Setup-Wizard klassifiziert nach Pflicht/Empfohlen/Optional mit Begründung
 - **Mapping-basierte Vererbung** - Vorschläge mit 4-Augen-Review (WS-1)
 - **SoA PDF Export** - Professional ISO 27001 Reports
 - **Audit Management** - ISO 27001 Clause 9.2
