@@ -103,35 +103,116 @@ _pagination.html.twig    - Pagination controls
 - `docs/STYLE_GUIDE.md` - General styling guidelines
 - `docs/ARIA_ANALYSIS.md` - Accessibility patterns
 
-**CSS Architecture**:
+**CSS Architecture (FairyAurora v3.0)**:
+
+Single source of truth = `assets/styles/fairy-aurora.css`. All other CSS files consume Aurora-tokens natively (no legacy bridge-layer).
+
 ```
 assets/styles/
-├── app.css           - Main styles, light theme
-├── dark-mode.css     - Dark theme overrides
-└── premium.css       - Premium feature styling
+├── fairy-aurora.css                ← TOKEN LAYER (loads first, single SoT)
+├── app.css                          ← base/layout
+├── components.css, ui-components.css ← component primitives
+├── mega-menu.css, command-palette.css, toast.css, skeleton.css, bulk-actions.css
+├── premium.css                      ← KPI/widget/stat cards
+├── dark-mode.css                    ← only Dark-specific *effects* (glow, shadow).
+│                                      No pure color-swaps — tokens are theme-aware.
+├── analytics.css                    ← chart panels
+├── guided-tour.css
+├── fairy-aurora-components.css      ← Aurora-Primitives (Brand, CyberButton, CyberInput,
+│                                      Status-Pill, Alert, KPI, Empty-State)
+│                                      + card/button/form/badge/nav-link overrides
+├── alva.css                         ← 9-Mood-Character
+├── fairy-aurora-responsive.css, fairy-aurora-edge.css, fairy-aurora-print.css
 ```
 
-**Key CSS Custom Properties** (in `:root`):
+**CRITICAL: Aurora-Tokens only — no legacy vars, no raw hex**
+
+Every color/background/border/text in new CSS **must** use Aurora-tokens. The legacy bridge-layer (`fairy-aurora-bridge.css`) and the legacy `--color-*` / `--text-*` / `--bg-*` / `--glow-*` / `--gradient-*` tokens have been dissolved. Re-introducing them is a regression — they create a second SoT that conflicts with Aurora's Light/Dark/System cascade.
+
+**Canonical Aurora Tokens** (defined in `fairy-aurora.css`):
+
 ```css
-/* Spacing System */
---spacing-xs: 0.25rem;
---spacing-sm: 0.5rem;
---spacing-md: 1rem;
---spacing-lg: 1.5rem;
---spacing-xl: 2rem;
+/* Flächen / BG */
+--bg            /* Seiten-BG     (Light #f5f6fa, Dark #0a0e1a) */
+--surface       /* Karten/Panels (Light #ffffff, Dark #141829) */
+--surface-2     /* 2. Ebene      (Light #eef0f9, Dark #1e2139) */
+--surface-3     /* 3. Ebene      (Light #e5e8f4, Dark #282d48) */
 
-/* Colors (light theme) */
---color-primary: #0d6efd;
---color-success: #198754;
---color-danger: #dc3545;
---color-warning: #ffc107;
---color-info: #0dcaf0;
+/* Text */
+--fg            /* primär       (Light #1e1b4b, Dark #e9eaf5) */
+--fg-2          /* sekundär     (Light #4c4a73, Dark #b9bad4) */
+--fg-3          /* tertiär/muted (Light #6d6b92, Dark #6d6f99) */
 
-/* Typography */
---font-family-base: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
---font-size-base: 1rem;
---line-height-base: 1.5;
+/* Ränder */
+--border, --border-strong
+
+/* Primary (Cyan) + Accent (Violet) */
+--primary, --primary-strong, --primary-hover, --primary-glow, --primary-tint
+--accent,  --accent-strong,  --accent-hover,  --accent-glow,  --accent-tint
+
+/* Semantic — jede Variante hat -strong und -glow */
+--success, --success-strong, --success-glow
+--warning, --warning-strong, --warning-text, --warning-glow
+--danger,  --danger-strong,  --danger-glow
+--info (== --primary)
+
+/* On-Color (Text auf farbigem Grund — invertiert sich im Dark-Mode) */
+--on-primary, --on-accent, --on-success, --on-warning, --on-danger
+
+/* Typografie */
+--font-sans (Inter), --font-mono (JetBrains Mono)
+
+/* Radius */
+--r-sm, --r-md, --r-lg, --r-xl, --r-pill
+
+/* Timing */
+--t-instant, --t-fast, --t-base, --t-slow, --t-magic
+--ease-out, --ease-in-out
+
+/* Gradients / Overlays */
+--brand-gradient, --aurora-gradient
 ```
+
+**Anti-patterns (will be flagged in review)**:
+- `var(--color-primary)`, `var(--text-primary)`, `var(--bg-primary)` — legacy; replace with Aurora-equivalent
+- `var(--X, #hexfallback)` — the fallback hex re-introduces hardcoded colors silently when the var is missing. Don't use fallbacks inside CSS; Aurora-tokens are defined globally.
+- Raw hex like `#0f172a`, `#64748b`, `#198754`, Tailwind/Flat-UI palettes (`#667eea`, `#27ae60`, `#7dd3fc`)
+- `color: white` / `#fff` for "text on primary" → use `var(--on-primary)` (becomes dark in Dark-Mode since Dark primary is bright)
+- `[data-theme="dark"] .foo { color: #fff }` pure-color-swap overrides — unnecessary, Aurora tokens already swap. Only keep Dark-specific *effects* (glows, shadows, neon-trim).
+
+**Mapping cheatsheet** (when touching legacy code):
+
+| Legacy / raw | Aurora replacement |
+|---|---|
+| `--color-primary`, `#0f172a`, `#1e293b`       | `var(--fg)` |
+| `--color-text-light`, `#64748b`               | `var(--fg-2)` |
+| `--color-text-muted`, `--text-muted`, `#94a3b8` | `var(--fg-3)` |
+| `--color-secondary`, `#06b6d4`, `#0d6efd`     | `var(--primary)` (display) / `var(--primary-strong)` (text-on-white/button-BG) |
+| `--color-accent-*`, `#7c3aed`, `#a855f7`      | `var(--accent)` / `var(--accent-strong)` |
+| `--color-success`, `#198754`, `#10b981`       | `var(--success)` / `var(--success-strong)` |
+| `--color-warning`, `#ffc107`, `#f59e0b`       | `var(--warning)` / `var(--warning-strong)` |
+| `--color-danger`, `#dc3545`, `#ef4444`        | `var(--danger)` / `var(--danger-strong)` |
+| `--bg-primary`, `--color-white`, `#ffffff`    | `var(--surface)` (flat white = app-surface) |
+| `--bg-secondary`, `--color-bg`, `#f8fafc`     | `var(--bg)` (page-background) |
+| `--bg-tertiary`, `--bg-elevated`, `#f1f5f9`   | `var(--surface-2)` |
+| `--border-color`, `#e2e8f0`, `#dee2e6`        | `var(--border)` |
+| `white` (text on primary button)              | `var(--on-primary)` |
+| `black` (text on warning/amber)               | `var(--on-warning)` (usually `#ffffff` in Light, `#0a0e1a` in Dark) |
+| `--gradient-primary`, custom linear-gradients | `var(--brand-gradient)` |
+| `--transition-fast`, `150ms ease`             | `var(--t-fast) var(--ease-out)` |
+
+**Spacing**: Bootstrap 5 spacing utilities (`m-*`, `p-*`, `gap-*`) are canonical. Aurora does NOT redefine `--spacing-*` tokens — use Bootstrap's `$spacer` scale.
+
+**Typography**:
+```css
+font-family: var(--font-sans);  /* Inter for UI text */
+font-family: var(--font-mono);  /* JetBrains Mono for codes, IDs, metrics, section-labels */
+/* Headings come with default font-weight 600 and letter-spacing -0.2px.
+   For display-*, weight is 700. Don't re-declare — inherit from bridge rules in
+   fairy-aurora-components.css. */
+```
+
+**Dark-Mode**: Toggle via `html[data-theme="dark|light|system"]`. Aurora tokens swap automatically. **Do not** write component-level `[data-theme="dark"]` overrides for pure colors — they are redundant. Only write a dark-specific rule when the *effect* (shadow-strength, glow-opacity, trim-color) must differ beyond the token-swap.
 
 ### Current Navigation Patterns
 
