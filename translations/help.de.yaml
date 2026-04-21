@@ -166,3 +166,18 @@ help:
             bia:
                 name: "BIA (Business Impact Analysis)"
                 definition: "Analyse welche Geschaeftsprozesse wie kritisch sind."
+
+    tour:
+        steps: "Schritte"
+        print: "Drucken"
+        start_interactive: "Interaktive Tour starten"
+        index:
+            title: "Einweisungs-Touren"
+            subtitle: "Rollen-spezifische Onboarding-Guides als statische Übersicht — druckbar als Handout oder interaktiv im Tool ablaufen."
+            hint: 'Die <strong>interaktive Tour</strong> startest du im Tool selbst (Button oben rechts im User-Menü → „Tour neu starten") und läuft mit Highlight-Overlay über der echten Oberfläche. Diese Seite hier zeigt dir den gleichen Inhalt als ruhige Referenz — z. B. als PDF-Handout für Consultant-Schulungen oder als Audit-Nachweis (ISO 27001 A.6.3).'
+        role:
+            footer_hint: 'Interaktive Version: Klick auf <em>„Interaktive Tour starten"</em> oben oder öffne das User-Menü (rechts oben) → <em>„Tour neu starten"</em>.'
+            print_signature_name: "Name"
+            print_signature_date: "Datum"
+            print_signature: "Unterschrift"
+            print_footer_note: "Dieses ausgefüllte Handout dient als Awareness-Training-Nachweis nach ISO 27001 Annex A.6.3 (Information Security Awareness, Education and Training)."

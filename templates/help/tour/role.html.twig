@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% set _label = ('guided_tour.' ~ tour_id ~ '.meta.label')|trans({}, 'guided_tour') %}
+
+{% block title %}{{ _label }} — {{ 'help.tour.index.title'|trans({}, 'help') }}{% endblock %}
+
+{% block body %}
+<div class="container help-tour-handout">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'help.tour.index.title'|trans({}, 'help'), url: path('app_help_tour_index') },
+            { label: _label }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-start mb-3 d-print-none">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-stars fairy-icon-sparkle" aria-hidden="true"></i>
+                {{ _label }}
+            </h1>
+            <div class="text-muted">
+                {{ tour_meta.step_count }} {{ 'help.tour.steps'|trans({}, 'help') }}
+                · {{ tour_meta.duration_min }} min
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ path('app_home') }}"
+               class="btn btn-primary btn-sm"
+               data-action="click->guided-tour#start"
+               data-guided-tour-role-param="{{ tour_id }}">
+                <i class="bi bi-play-circle" aria-hidden="true"></i>
+                {{ 'help.tour.start_interactive'|trans({}, 'help') }}
+            </a>
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+                <i class="bi bi-printer" aria-hidden="true"></i>
+                {{ 'help.tour.print'|trans({}, 'help') }}
+            </button>
+        </div>
+    </div>
+
+    {# Print-only Header — only visible on paper #}
+    <div class="d-none d-print-block mb-4">
+        <h1 class="h2 mb-1">{{ _label }}</h1>
+        <p class="text-muted mb-0">
+            {{ ('guided_tour.' ~ tour_id ~ '.meta.description')|trans({}, 'guided_tour') }}
+        </p>
+        <hr>
+    </div>
+
+    <p class="text-muted d-print-none">
+        {{ ('guided_tour.' ~ tour_id ~ '.meta.description')|trans({}, 'guided_tour') }}
+    </p>
+
+    <ol class="help-tour-steps ps-0">
+        {% for step in steps %}
+            <li class="help-tour-step mb-4">
+                <div class="help-tour-step-header d-flex align-items-center gap-2 mb-2">
+                    <span class="help-tour-step-number">{{ loop.index }}</span>
+                    <h2 class="h5 mb-0">{{ step.title_key|trans({}, 'guided_tour') }}</h2>
+                </div>
+                <p class="help-tour-step-body mb-0">{{ step.body_key|trans({}, 'guided_tour') }}</p>
+            </li>
+        {% endfor %}
+    </ol>
+
+    <div class="alert alert-secondary small mt-4 d-print-none">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'help.tour.role.footer_hint'|trans({}, 'help')|raw }}
+    </div>
+
+    {# Print-only footer — ISO A.6.3 Awareness-Training-Nachweis #}
+    <div class="d-none d-print-block mt-5">
+        <hr>
+        <div class="row small">
+            <div class="col-6">
+                <strong>{{ 'help.tour.role.print_signature_name'|trans({}, 'help') }}:</strong><br>
+                _________________________________________
+            </div>
+            <div class="col-3">
+                <strong>{{ 'help.tour.role.print_signature_date'|trans({}, 'help') }}:</strong><br>
+                ________________
+            </div>
+            <div class="col-3">
+                <strong>{{ 'help.tour.role.print_signature'|trans({}, 'help') }}:</strong><br>
+                ________________
+            </div>
+        </div>
+        <p class="small text-muted mt-3 mb-0">
+            {{ 'help.tour.role.print_footer_note'|trans({}, 'help') }}
+        </p>
+    </div>
+</div>
+{% endblock %}
