@@ -76,7 +76,7 @@
     {% for category, permissions in groupedPermissions %}
         {% embed '_components/_card.html.twig' with { 'class': 'mb-4', 'category': category, 'permissions': permissions } only %}
             {% block card_header %}
-                <div class="card-header bg-primary text-white">
+                <div class="card-header">
                     <h2 class="mb-0">
                         <i class="bi bi-folder" aria-hidden="true"></i> {{ category|title }}
                         {% include '_components/_badge.html.twig' with { variant: 'light', content: permissions|length, class: 'text-dark' } only %}

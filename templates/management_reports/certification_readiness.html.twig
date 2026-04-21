@@ -78,7 +78,7 @@
     {# Section 1: Clause Compliance #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4 shadow-sm' } %}
         {% block card_header %}
-            <div class="card-header bg-primary text-white">
+            <div class="card-header">
                 <h3 class="h5 mb-0">
                     <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'cert_readiness.section.clause_compliance'|trans({}, 'management_reports') }}
                 </h3>
@@ -145,7 +145,7 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
                 {% block card_header %}
-                    <div class="card-header bg-info text-white">
+                    <div class="card-header">
                         <h3 class="h5 mb-0">
                             <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'cert_readiness.section.controls_not_started'|trans({}, 'management_reports') }}
                             <span class="badge bg-body-secondary text-body ms-2">{{ controls_not_started|length }}</span>
