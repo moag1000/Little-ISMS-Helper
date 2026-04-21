@@ -134,9 +134,7 @@
                         <div class="col">
                             <div class="small text-muted mb-1">{{ 'risk.field.level'|trans({}, 'risk') }}</div>
                             <span data-risk-slider-target="level"
-                                  class="badge fs-6"
-                                  style="background-color: {% if score >= 15 %}#f8d7da{% elseif score >= 10 %}#ffe5d0{% elseif score >= 5 %}#fff3cd{% else %}#d4edda{% endif %};
-                                         color: {% if score >= 15 %}var(--danger){% elseif score >= 10 %}var(--warning){% elseif score >= 5 %}#856404{% else %}var(--success){% endif %}">
+                                  class="badge fs-6 {% if score >= 15 %}bg-danger-subtle text-danger{% elseif score >= 10 %}bg-warning-subtle text-warning{% elseif score >= 5 %}bg-warning-subtle text-warning{% else %}bg-success-subtle text-success{% endif %}">
                                 {% if score >= 15 %}
                                     {{ 'risk.level.critical'|trans({}, 'risk') }}
                                 {% elseif score >= 10 %}

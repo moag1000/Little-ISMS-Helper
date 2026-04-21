@@ -54,7 +54,7 @@
             {# Summary Stats Row #}
             <div class="row g-2 mb-3">
                 <div class="col-6 col-md-3">
-                    <div class="text-center p-2 {% if summary.risks_count > 0 %}bg-warning-subtle{% else %}bg-light{% endif %} rounded">
+                    <div class="text-center p-2 {% if summary.risks_count > 0 %}bg-warning-subtle{% else %}bg-body-secondary{% endif %} rounded">
                         <div class="fs-5 fw-bold {% if summary.risks_count > 0 %}text-warning{% else %}text-muted{% endif %}">
                             {{ summary.risks_count }}
                         </div>
@@ -62,7 +62,7 @@
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
-                    <div class="text-center p-2 {% if summary.bc_plans_count > 0 %}bg-warning-subtle{% else %}bg-light{% endif %} rounded">
+                    <div class="text-center p-2 {% if summary.bc_plans_count > 0 %}bg-warning-subtle{% else %}bg-body-secondary{% endif %} rounded">
                         <div class="fs-5 fw-bold {% if summary.bc_plans_count > 0 %}text-warning{% else %}text-muted{% endif %}">
                             {{ summary.bc_plans_count }}
                         </div>
@@ -70,7 +70,7 @@
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
-                    <div class="text-center p-2 {% if summary.processing_activities_count > 0 %}bg-warning-subtle{% else %}bg-light{% endif %} rounded">
+                    <div class="text-center p-2 {% if summary.processing_activities_count > 0 %}bg-warning-subtle{% else %}bg-body-secondary{% endif %} rounded">
                         <div class="fs-5 fw-bold {% if summary.processing_activities_count > 0 %}text-warning{% else %}text-muted{% endif %}">
                             {{ summary.processing_activities_count }}
                         </div>
@@ -78,7 +78,7 @@
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
-                    <div class="text-center p-2 {% if summary.dpias_count > 0 %}bg-warning-subtle{% else %}bg-light{% endif %} rounded">
+                    <div class="text-center p-2 {% if summary.dpias_count > 0 %}bg-warning-subtle{% else %}bg-body-secondary{% endif %} rounded">
                         <div class="fs-5 fw-bold {% if summary.dpias_count > 0 %}text-warning{% else %}text-muted{% endif %}">
                             {{ summary.dpias_count }}
                         </div>

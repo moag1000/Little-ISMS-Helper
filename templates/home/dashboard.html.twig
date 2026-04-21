@@ -232,7 +232,7 @@
                                 <div class="small text-muted">{{ 'dashboard.reuse_fte.subtitle'|trans({}, 'dashboard') }}</div>
                             </div>
                             <div class="text-end">
-                                <span class="badge text-bg-success-subtle text-success fs-6">
+                                <span class="badge bg-success-subtle text-success fs-6">
                                     <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
                                     {{ 'dashboard.reuse_fte.cta'|trans({}, 'dashboard') }}
                                 </span>
@@ -310,7 +310,7 @@
                 <div class="chart-container">
                     <canvas data-controller="chart"
                             data-chart-type-value="doughnut"
-                            data-chart-data-value='{"labels":["{{ 'risk.level.critical'|trans({}, 'messages') }}","{{ 'risk.level.high'|trans({}, 'messages') }}","{{ 'risk.level.medium'|trans({}, 'messages') }}","{{ 'risk.level.low'|trans({}, 'messages') }}"],"datasets":[{"data":[{{ risks_by_level.critical|default(0) }},{{ risks_by_level.high|default(0) }},{{ risks_by_level.medium|default(0) }},{{ risks_by_level.low|default(0) }}],"backgroundColor":["#6f42c1","var(--danger)","var(--warning)","var(--success)"]}]}'
+                            data-chart-data-value='{"labels":["{{ 'risk.level.critical'|trans({}, 'messages') }}","{{ 'risk.level.high'|trans({}, 'messages') }}","{{ 'risk.level.medium'|trans({}, 'messages') }}","{{ 'risk.level.low'|trans({}, 'messages') }}"],"datasets":[{"data":[{{ risks_by_level.critical|default(0) }},{{ risks_by_level.high|default(0) }},{{ risks_by_level.medium|default(0) }},{{ risks_by_level.low|default(0) }}],"backgroundColor":["#7c3aed","var(--danger)","var(--warning)","var(--success)"]}]}'
                             data-chart-options-value='{"plugins":{"legend":{"position":"bottom"}}}'></canvas>
                 </div>
             </div>

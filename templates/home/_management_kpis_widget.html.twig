@@ -91,7 +91,7 @@
                                                         content: kpi.value ~ kpi.unit
                                                     } %}
                                                     {% if kpi.trend is defined and kpi.trend != 'stable' %}
-                                                    <span class="kpi-trend text-{{ kpi.trend_sentiment|default('neutral') == 'good' ? 'success' : (kpi.trend_sentiment|default('neutral') == 'bad' ? 'danger' : 'muted') }}">
+                                                    <span class="fs-6 ms-1 text-{{ kpi.trend_sentiment|default('neutral') == 'good' ? 'success' : (kpi.trend_sentiment|default('neutral') == 'bad' ? 'danger' : 'muted') }}">
                                                         {% if kpi.trend == 'up' %}
                                                             <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
                                                         {% elseif kpi.trend == 'down' %}
@@ -117,12 +117,12 @@
                                         </div>
                                         {% else %}
                                         {# Other sections use the compact mini card style #}
-                                        <div class="kpi-mini p-2 rounded bg-light">
+                                        <div class="kpi-mini p-2 rounded bg-body-secondary">
                                             <div class="small text-muted">{{ ('dashboard.kpi.' ~ key)|trans({}, 'dashboard') }}</div>
                                             <div class="fw-bold text-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'body')) }}">
                                                 {{ kpi.value }}{{ kpi.unit }}
                                                 {% if kpi.trend is defined and kpi.trend != 'stable' %}
-                                                <span class="kpi-trend text-{{ kpi.trend_sentiment|default('neutral') == 'good' ? 'success' : (kpi.trend_sentiment|default('neutral') == 'bad' ? 'danger' : 'muted') }}">
+                                                <span class="fs-6 ms-1 text-{{ kpi.trend_sentiment|default('neutral') == 'good' ? 'success' : (kpi.trend_sentiment|default('neutral') == 'bad' ? 'danger' : 'muted') }}">
                                                     {% if kpi.trend == 'up' %}
                                                         <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
                                                     {% elseif kpi.trend == 'down' %}
@@ -147,11 +147,4 @@
         </div>
     </div>
 </div>
-<style>
-    .kpi-trend {
-        font-size: 0.85rem;
-        margin-left: 0.25rem;
-        white-space: nowrap;
-    }
-</style>
 {% endif %}
