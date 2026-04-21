@@ -145,6 +145,28 @@ export default class extends Controller {
         const step = this.steps[this.currentIndex];
         if (!step) return;
 
+        // FairyAurora: Seite navigieren wenn Step eine eigene URL hat und
+        // wir gerade nicht schon dort sind. Erlaubt dass die Tour durch
+        // mehrere Seiten führt und die besprochene Ansicht im Hintergrund zeigt.
+        if (step.url && window.location.pathname !== step.url) {
+            // Save tour state vor Navigation damit wir im resume-check
+            // auf der neuen Seite weiter machen können.
+            try {
+                localStorage.setItem(this.storagePrefixValue + 'resume', JSON.stringify({
+                    index: this.currentIndex,
+                    steps: this.steps,
+                    at: Date.now(),
+                }));
+            } catch (e) { /* quota */ }
+
+            if (window.Turbo && typeof window.Turbo.visit === 'function') {
+                window.Turbo.visit(step.url);
+            } else {
+                window.location.href = step.url;
+            }
+            return;
+        }
+
         const targetEl = step.target ? document.querySelector(step.target) : null;
         this.positionHighlight(targetEl);
         this.positionPopover(targetEl, step.placement);

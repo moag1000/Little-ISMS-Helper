@@ -30,7 +30,7 @@ use App\Repository\ComplianceRequirementRepository;
  * persistence. Runs in ~50 ms for 1 000 requirements, which is far
  * below any ergonomic ceiling.
  */
-final class MappingSuggestionService
+class MappingSuggestionService
 {
     public const DEFAULT_THRESHOLD = 0.20;
     public const DEFAULT_LIMIT_PER_FRAMEWORK = 5;

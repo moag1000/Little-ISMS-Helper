@@ -8,6 +8,10 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Form\ControlType;
 use App\Repository\ControlRepository;
+use App\Repository\ComplianceRequirementRepository;
+use App\Service\AnnexAControlsBootstrapService;
+use App\Service\MappingSuggestionService;
+use App\Service\ModuleConfigurationService;
 use App\Service\SoAReportService;
 use App\Service\TagFilterService;
 use App\Service\WorkflowAutoProgressionService;
@@ -49,6 +53,10 @@ class StatementOfApplicabilityControllerTest extends TestCase
     private MockObject $security;
     private MockObject $workflowAutoProgressionService;
     private MockObject $tagFilterService;
+    private MockObject $mappingSuggestionService;
+    private MockObject $requirementRepository;
+    private MockObject $annexBootstrap;
+    private MockObject $moduleConfiguration;
     private MockObject $container;
     private MockObject $twig;
     private MockObject $formFactory;
@@ -67,6 +75,10 @@ class StatementOfApplicabilityControllerTest extends TestCase
         $this->security = $this->createMock(Security::class);
         $this->workflowAutoProgressionService = $this->createMock(WorkflowAutoProgressionService::class);
         $this->tagFilterService = $this->createMock(TagFilterService::class);
+        $this->mappingSuggestionService = $this->createMock(MappingSuggestionService::class);
+        $this->requirementRepository = $this->createMock(ComplianceRequirementRepository::class);
+        $this->annexBootstrap = $this->createMock(AnnexAControlsBootstrapService::class);
+        $this->moduleConfiguration = $this->createMock(ModuleConfigurationService::class);
         $this->container = $this->createMock(ContainerInterface::class);
         $this->twig = $this->createMock(Environment::class);
         $this->formFactory = $this->createMock(FormFactoryInterface::class);
@@ -118,6 +130,10 @@ class StatementOfApplicabilityControllerTest extends TestCase
             $this->security,
             $this->workflowAutoProgressionService,
             $this->tagFilterService,
+            $this->mappingSuggestionService,
+            $this->requirementRepository,
+            $this->annexBootstrap,
+            $this->moduleConfiguration,
         );
         $this->controller->setContainer($this->container);
     }
