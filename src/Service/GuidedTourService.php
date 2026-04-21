@@ -8,6 +8,12 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
+ * Optional-Dependency-Sicht: ModuleConfigurationService wird injiziert,
+ * wenn verfügbar — andernfalls werden Modul-Zusatz-Stopps übersprungen
+ * (Tests + frische Installationen brauchen den Service nicht).
+ */
+
+/**
  * Sprint 13 / S13-2: GuidedTour-Service.
  *
  * Liefert rollenbasierte Tour-Definitionen (Step-Listen) an den
@@ -50,6 +56,7 @@ final class GuidedTourService
 
     public function __construct(
         private readonly AuthorizationCheckerInterface $authChecker,
+        private readonly ?ModuleConfigurationService $moduleConfig = null,
     ) {
     }
 
@@ -98,7 +105,7 @@ final class GuidedTourService
      */
     public function stepsFor(string $tourId): array
     {
-        return match ($tourId) {
+        $base = match ($tourId) {
             self::TOUR_JUNIOR => $this->juniorSteps(),
             self::TOUR_CM => $this->cmSteps(),
             self::TOUR_CISO => $this->cisoSteps(),
@@ -107,6 +114,62 @@ final class GuidedTourService
             self::TOUR_AUDITOR => $this->auditorSteps(),
             default => [],
         };
+
+        // Modul-bedingte Zusatz-Stopps — nur für Junior und ISB sinnvoll
+        // (operative Rollen, die mit den Domain-Modulen arbeiten).
+        if (in_array($tourId, [self::TOUR_JUNIOR, self::TOUR_ISB], true)) {
+            $base = array_merge($base, $this->moduleAddonSteps());
+        }
+
+        return $base;
+    }
+
+    /**
+     * Extra-Stopps die nur hinzugefügt werden, wenn das jeweilige Modul
+     * aktiv ist. Translation-Keys liegen unter `guided_tour.modules.*`.
+     *
+     * @return list<array{id: string, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}>
+     */
+    private function moduleAddonSteps(): array
+    {
+        if ($this->moduleConfig === null) {
+            return [];
+        }
+
+        $addons = [];
+        if ($this->moduleConfig->isModuleActive('bsi_grundschutz')) {
+            $addons[] = [
+                'id' => 'module-bsi',
+                'target' => null,
+                'title_key' => 'guided_tour.modules.bsi.title',
+                'body_key' => 'guided_tour.modules.bsi.body',
+                'url' => null,
+                'placement' => 'center',
+            ];
+        }
+        if ($this->moduleConfig->isModuleActive('privacy')
+            || $this->moduleConfig->isModuleActive('gdpr')
+        ) {
+            $addons[] = [
+                'id' => 'module-gdpr',
+                'target' => null,
+                'title_key' => 'guided_tour.modules.gdpr.title',
+                'body_key' => 'guided_tour.modules.gdpr.body',
+                'url' => null,
+                'placement' => 'center',
+            ];
+        }
+        if ($this->moduleConfig->isModuleActive('bcm')) {
+            $addons[] = [
+                'id' => 'module-bcm',
+                'target' => null,
+                'title_key' => 'guided_tour.modules.bcm.title',
+                'body_key' => 'guided_tour.modules.bcm.body',
+                'url' => null,
+                'placement' => 'center',
+            ];
+        }
+        return $addons;
     }
 
     /** @return list<array{id: string, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}> */

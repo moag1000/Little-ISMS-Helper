@@ -46,6 +46,7 @@ admin:
         kpi_thresholds: 'KPI-Schwellwerte'
         tags: 'Tags'
         compliance_import: 'Compliance-Import-Wizard'
+        tour_completion: 'Tour-Einweisungsstand'
     alert:
         inactive_users: 'Inaktive Benutzer'
         unverified_users: 'Unverifizierte Benutzer'
@@ -202,6 +203,28 @@ admin:
         no_frameworks_loaded: 'Keine Frameworks geladen'
     panel:
         title: Admin-Panel
+    tour_completion:
+        title: 'Tour-Einweisungsstand'
+        description: 'Welche Benutzer haben die Einweisungs-Tour für ihre Rolle durchlaufen? ISO-27001-A.6.3-Awareness-Training-Nachweis. Pro Benutzer sichtbar welche der 6 Touren (junior / cm / ciso / isb / risk_owner / auditor) als abgeschlossen markiert sind.'
+        col:
+            user: 'Benutzer'
+            auto_role: 'Auto-Rolle'
+            actions: 'Aktionen'
+        completed: 'abgeschlossen'
+        not_completed: 'nicht abgeschlossen'
+        stats:
+            total_users: 'Benutzer gesamt'
+            completion_rate: 'Quote — Auto-Tour abgeschlossen'
+        filter:
+            search_placeholder: 'E-Mail oder Name suchen …'
+            role_all: 'Alle Rollen'
+            only_incomplete: 'Nur unvollständige'
+        export_csv: 'CSV exportieren'
+        reset_all: 'Alle Touren für diesen User zurücksetzen'
+        reset_success: 'Touren für %user% zurückgesetzt.'
+        confirm_reset: 'Alle Tour-Markierungen für %user% wirklich zurücksetzen? Der Nutzer sieht das Einweisungs-Banner beim nächsten Login wieder.'
+        empty: 'Keine Benutzer entsprechen den aktuellen Filtern.'
+        audit_hint: 'Dieser Report ist als <strong>Audit-Nachweis</strong> für ISO 27001 Annex A.6.3 (Information Security Awareness, Education and Training) nutzbar. Er zeigt wer wann in die Tool-Bedienung eingeführt wurde — pro Rolle eine eigene Tour mit rollen-spezifischem Content.'
     data_repair:
         title: 'Daten-Reparatur & Integrität'
         description: 'Datenintegritätsprobleme, Mandantenzuweisungen und defekte Referenzen erkennen und beheben'

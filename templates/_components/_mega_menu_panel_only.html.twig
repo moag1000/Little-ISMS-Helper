@@ -508,6 +508,12 @@
                                 <span class="mega-menu-link-title">{{ 'admin.nav.tags'|trans({}, 'admin') }}</span>
                             </div>
                         </a></li>
+                        <li><a href="{{ path('admin_tour_completion_index') }}" class="{% if current_route starts with 'admin_tour_completion_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-stars" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.tour_completion'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
                         <li><a href="{{ path('admin_modules_index') }}" class="{% if current_route starts with 'admin_modules_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-puzzle" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
