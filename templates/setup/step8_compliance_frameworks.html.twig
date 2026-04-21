@@ -8,6 +8,30 @@
     <meta name="turbo-cache-control" content="no-cache">
 {% endblock %}
 
+{# Macro: rendert eine Framework-Karte im Wizard-3-Bucket-Layout.
+ # Muss top-level definiert sein, damit import via expliziter Pfad aus
+ # embed-Blöcken heraus zuverlässig funktioniert. #}
+{% macro framework_card(child, framework, classification, bucket) %}
+    {% set variant = bucket == 'mandatory' ? 'danger' : (bucket == 'recommended' ? 'warning' : 'secondary') %}
+    <div class="col-md-6 mb-3">
+        {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-' ~ variant } %}
+            {% block card_body %}
+                <div class="form-check">
+                    {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
+                    {{ form_label(child, null, {'label_attr': {'class': 'form-check-label fw-bold'}}) }}
+                </div>
+                <small class="text-muted d-block mt-2">{{ framework.description }}</small>
+                {% if classification[framework.code] is defined and classification[framework.code].reason_key %}
+                    <div class="small mt-2 p-2 rounded bg-light border">
+                        <i class="bi bi-lightbulb text-warning" aria-hidden="true"></i>
+                        <strong>{{ ('setup.applicability.bucket.' ~ bucket ~ '.why')|trans({}, 'setup') }}:</strong>
+                        {{ classification[framework.code].reason_key|trans({}, 'setup') }}
+                    </div>
+                {% endif %}
+            {% endblock %}
+        {% endembed %}
+    </div>
+{% endmacro %}
 
 {% block body %}
 <div class="container mt-5">
@@ -51,75 +75,68 @@
                             {{ 'setup.compliance.description'|trans({}, 'setup') }}
                         </p>
 
-                        {# Recommended Frameworks Alert #}
-                        {% if recommended_frameworks is not empty %}
-                            <div class="alert alert-success">
-                                <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
-                                <strong>{{ 'setup.compliance.recommended.title'|trans({}, 'setup') }}</strong>
-                                <p class="mb-2">{{ 'setup.compliance.recommended.description'|trans({}, 'setup') }}</p>
-                                <div class="d-flex flex-wrap gap-2">
-                                    {% for code in recommended_frameworks %}
-                                        {% for framework in available_frameworks|filter(f => f.code == code) %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'success', content: framework.icon ~ ' ' ~ framework.name } %}
-                                        {% endfor %}
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        {% endif %}
-
-                        {# ISO 27001 Mandatory Notice #}
+                        {# Sprint 9: 3-Bucket-Klassifikation — *„Muss / Sollte / Kann"* #}
                         <div class="alert alert-info">
                             <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                            <strong>{{ 'setup.compliance.mandatory.title'|trans({}, 'setup') }}</strong>
-                            <p class="mb-0">{{ 'setup.compliance.mandatory.message'|trans({}, 'setup') }}</p>
+                            <strong>{{ 'setup.applicability.intro.title'|trans({}, 'setup') }}</strong>
+                            <p class="mb-0">{{ 'setup.applicability.intro.description'|trans({}, 'setup') }}</p>
                         </div>
-
-                        {# Critical Infrastructure Notice for NIS2 #}
-                        {% if 'NIS2' in recommended_frameworks and (app.session.get('setup_organisation_employee_count', '1-10') in ['1-10', '11-50']) %}
-                            <div class="alert alert-warning">
-                                <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
-                                <strong>{{ 'setup.compliance.critical_infrastructure.title'|trans({}, 'setup') }}</strong>
-                                <p class="mb-0">{{ 'setup.compliance.critical_infrastructure.message'|trans({}, 'setup') }}</p>
-                            </div>
-                        {% endif %}
 
                         {# Compliance Framework Selection Form #}
                         {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
-                        <h2 class="h5 mb-3">{{ 'setup.compliance.select_frameworks'|trans({}, 'setup') }}</h2>
+                        {% import 'setup/step8_compliance_frameworks.html.twig' as wizard %}
 
-                        <div class="row">
-                            {% for child in form.frameworks %}
-                                <div class="col-md-6 mb-3">
-                                    {% embed '_components/_card.html.twig' with { 'class': 'h-100 ' ~ (loop.index0 in recommended_frameworks or 'ISO27001' in child.vars.value ? 'border-success' : 'border-secondary') } %}
-                                        {% block card_body %}
-                                            <div class="form-check">
-                                                {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
-                                                {{ form_label(child, null, {'label_attr': {'class': 'form-check-label fw-bold'}}) }}
-                                            </div>
+                        {# 🔴 MANDATORY — Pflicht #}
+                        {% if mandatory_codes|length > 0 %}
+                            <div class="mt-4 mb-2 d-flex align-items-center gap-2">
+                                <span class="badge text-bg-danger">🔴 {{ 'setup.applicability.bucket.mandatory.label'|trans({}, 'setup') }}</span>
+                                <span class="small text-muted">{{ 'setup.applicability.bucket.mandatory.hint'|trans({}, 'setup') }}</span>
+                            </div>
+                            <div class="row">
+                                {% for child in form.frameworks %}
+                                    {% if child.vars.value in mandatory_codes %}
+                                        {% for framework in available_frameworks|filter(f => f.code == child.vars.value) %}
+                                            {{ wizard.framework_card(child, framework, classification, 'mandatory') }}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
 
-                                            {# Find matching framework for description #}
-                                            {% set framework_code = child.vars.value %}
-                                            {% for framework in available_frameworks|filter(f => f.code == framework_code) %}
-                                                <small class="text-muted d-block mt-2">
-                                                    {{ framework.description }}
-                                                </small>
+                        {# 🟡 RECOMMENDED — Empfehlung #}
+                        {% if recommended_codes|length > 0 %}
+                            <div class="mt-4 mb-2 d-flex align-items-center gap-2">
+                                <span class="badge text-bg-warning">🟡 {{ 'setup.applicability.bucket.recommended.label'|trans({}, 'setup') }}</span>
+                                <span class="small text-muted">{{ 'setup.applicability.bucket.recommended.hint'|trans({}, 'setup') }}</span>
+                            </div>
+                            <div class="row">
+                                {% for child in form.frameworks %}
+                                    {% if child.vars.value in recommended_codes %}
+                                        {% for framework in available_frameworks|filter(f => f.code == child.vars.value) %}
+                                            {{ wizard.framework_card(child, framework, classification, 'recommended') }}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
 
-                                                {# Show recommended badge #}
-                                                {% if framework_code in recommended_frameworks %}
-                                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-star', content: 'setup.compliance.recommended_badge'|trans({}, 'setup'), class: 'mt-2' } %}
-                                                {% endif %}
-
-                                                {# Show mandatory badge for ISO 27001 #}
-                                                {% if framework_code == 'ISO27001' %}
-                                                    {% include '_components/_badge.html.twig' with { variant: 'primary', icon: 'bi-lock', content: 'setup.compliance.mandatory_badge'|trans({}, 'setup'), class: 'mt-2' } %}
-                                                {% endif %}
-                                            {% endfor %}
-                                        {% endblock %}
-                                    {% endembed %}
-                                </div>
-                            {% endfor %}
-                        </div>
+                        {# ⚪ OPTIONAL — Kann #}
+                        {% if optional_codes|length > 0 %}
+                            <div class="mt-4 mb-2 d-flex align-items-center gap-2">
+                                <span class="badge text-bg-secondary">⚪ {{ 'setup.applicability.bucket.optional.label'|trans({}, 'setup') }}</span>
+                                <span class="small text-muted">{{ 'setup.applicability.bucket.optional.hint'|trans({}, 'setup') }}</span>
+                            </div>
+                            <div class="row">
+                                {% for child in form.frameworks %}
+                                    {% if child.vars.value in optional_codes %}
+                                        {% for framework in available_frameworks|filter(f => f.code == child.vars.value) %}
+                                            {{ wizard.framework_card(child, framework, classification, 'optional') }}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
 
                         {# Information Box #}
                         <div class="alert alert-warning mt-4">

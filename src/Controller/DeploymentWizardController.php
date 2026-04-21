@@ -22,6 +22,7 @@ use App\Repository\TenantRepository;
 use App\Security\SetupAccessChecker;
 use App\Service\BackupService;
 use App\Service\ComplianceFrameworkLoaderService;
+use App\Service\FrameworkApplicabilityService;
 use App\Service\DatabaseTestService;
 use App\Service\DataImportService;
 use App\Service\EnvironmentWriter;
@@ -59,6 +60,7 @@ class DeploymentWizardController extends AbstractController
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
         private readonly IncidentRepository $incidentRepository,
+        private readonly FrameworkApplicabilityService $applicabilityService,
     ) {
     }
     /**
@@ -1152,10 +1154,22 @@ class DeploymentWizardController extends AbstractController
         $employeeCount = $session->get('setup_organisation_employee_count', '1-10');
         $country = $session->get('setup_organisation_country', 'DE');
 
-        // Get industry-specific recommendations (supports multiple industries)
-        $recommendedFrameworks = $this->getRecommendedFrameworksForIndustries($organisationIndustries, $employeeCount, $country);
+        // Sprint 9: 3-Bucket-Klassifikation pro Framework — gibt dem Junior
+        // eine klare *„muss / sollte / kann"*-Entscheidung statt eines flachen
+        // Empfehlungs-Arrays.
+        $classification = $this->applicabilityService->classifyAll(
+            $organisationIndustries,
+            $employeeCount,
+            $country,
+        );
+        $mandatoryCodes = $this->applicabilityService->codesForBucket($classification, FrameworkApplicabilityService::BUCKET_MANDATORY);
+        $recommendedCodes = $this->applicabilityService->codesForBucket($classification, FrameworkApplicabilityService::BUCKET_RECOMMENDED);
+        $optionalCodes = $this->applicabilityService->codesForBucket($classification, FrameworkApplicabilityService::BUCKET_OPTIONAL);
 
-        // Pre-select recommended frameworks (including ISO27001 which is mandatory)
+        // Legacy: flat array für Backward-Compat mit bestehender Template-Logik.
+        $recommendedFrameworks = array_values(array_unique(array_merge($mandatoryCodes, $recommendedCodes)));
+
+        // Pre-select mandatory + recommended (empfohlener Default für Junior).
         $form = $this->createForm(ComplianceFrameworkSelectionType::class, [
             'frameworks' => $recommendedFrameworks,
         ], [
@@ -1187,6 +1201,10 @@ class DeploymentWizardController extends AbstractController
             'form' => $form,
             'available_frameworks' => $availableFrameworks,
             'recommended_frameworks' => $recommendedFrameworks,
+            'classification' => $classification,
+            'mandatory_codes' => $mandatoryCodes,
+            'recommended_codes' => $recommendedCodes,
+            'optional_codes' => $optionalCodes,
         ]);
 
         if ($form->isSubmitted() && !$form->isValid()) {
