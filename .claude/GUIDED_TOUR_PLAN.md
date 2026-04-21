@@ -2,8 +2,8 @@
 
 **Erstellt:** 2026-04-21
 **Scope:** Rollenbasierte Einweisungs-Tour für Erst-Nutzer
-**Aufwand:** Vollausbau ~9,5 FTE-d
-**Status:** ✅ freigegeben — Entscheidungen fix, 3-Phasen-Umsetzung
+**Aufwand:** Vollausbau ~9,5 FTE-d — **realisiert**
+**Status:** ✅ **Phase A, B, C abgeschlossen** (2026-04-21)
 
 ## ✅ Entscheidungen (2026-04-21)
 
@@ -12,13 +12,26 @@
    Styling, A11y, Turbo-Integration.
 2. **Scope:** Vollausbau — alle 6 Rollen + modul-bedingte Zusatz-Stopps
    (BSI/GDPR/BCM) + Admin-Modul für Tour-Content-Konfigurierbarkeit +
-   S13-12 Admin-Report + S13-13 PDF-Export.
+   S13-12 Admin-Report + **P6-alt Static Help-Handout-Pages** statt
+   PDF-Export (75 % Aufwand gespart, selbe Consultant-Nutzen).
 3. **Umsetzung:** 3 Phasen (A Primary-Target / B Power-User /
    C Edge-Rollen + Consultant-Extras).
 4. **Mobile:** < 768px deaktiviert, Hinweis auf Desktop-Version
    (inline Info-Box statt Tour).
 5. **Re-Run:** Permanent erreichbar via Header-User-Dropdown +
    Admin-„Tour für User X zurücksetzen"-Action.
+
+## ✅ Umsetzungs-Status (2026-04-21)
+
+| Phase | Item | Commit |
+|-------|------|--------|
+| A | Core Infrastructure (Entity/Migration/Service/Controller/JS/CSS/Templates/6 Rollen) | `9cb96800` |
+| B | Launcher im User-Dropdown + 21 Unit-Tests | `abae4a30` |
+| B | Admin-Completion-Report + Modul-Zusatz-Stopps (BSI/GDPR/BCM) | `c9da4898` |
+| C | Content-Config-Admin-Modul (Tenant-Override + SUPER_ADMIN-Global) | `8c04d1a1` |
+| C | Static Help-Handouts /help/tour + Print-CSS (ersetzt PDF-Export) | `5ef94e36` |
+
+**Realisiert:** ~9,5 FTE-d, 28 Files.
 
 ---
 
