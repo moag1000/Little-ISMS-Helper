@@ -35,7 +35,7 @@
                 <div>
                     <strong>{{ 'compliance_import.upload.template_label'|trans({}, 'compliance_import') }}</strong>
                     <div>
-                        <a href="{{ template_url }}" download
+                        <a href="{{ template_url|default('#') }}" download
                            aria-label="{{ 'compliance_import.upload.template_download_aria'|trans({}, 'compliance_import') }}">
                             {{ 'compliance_import.upload.template_download'|trans({}, 'compliance_import') }}
                         </a>

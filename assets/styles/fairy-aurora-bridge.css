@@ -166,3 +166,410 @@ small.mono {
     outline-offset: 2px;
     box-shadow: 0 0 0 3px var(--primary-glow);
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-Button → Aurora-CyberButton-Look (global unification)
+   Bestehende 1000+ .btn.btn-primary-Calls bekommen damit Aurora-Stil
+   ohne Template-Änderung. Die "echten" fa-cyber-btn (mit Notch) bleiben
+   das Premium-Pattern für Primary-Actions in neuen Components.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.btn {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    border-radius: var(--r-md);
+    transition: background-color var(--t-fast) var(--ease-out),
+                border-color var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out),
+                transform var(--t-fast) var(--ease-out),
+                color var(--t-fast) var(--ease-out);
+}
+.btn:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.btn.btn-primary,
+.btn-primary {
+    background-color: var(--primary-strong);
+    border-color: var(--primary-strong);
+    color: var(--on-primary);
+    box-shadow: 0 0 10px var(--primary-glow);
+}
+.btn.btn-primary:hover:not(:disabled):not(.disabled),
+.btn-primary:hover:not(:disabled):not(.disabled) {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    color: var(--on-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 0 16px var(--primary-glow);
+}
+
+.btn.btn-outline-primary,
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+    background-color: transparent;
+}
+.btn.btn-outline-primary:hover:not(:disabled):not(.disabled),
+.btn-outline-primary:hover:not(:disabled):not(.disabled) {
+    background-color: var(--primary-strong);
+    border-color: var(--primary-strong);
+    color: var(--on-primary);
+}
+
+.btn.btn-secondary,
+.btn-secondary {
+    background-color: transparent;
+    border-color: var(--border-strong);
+    color: var(--fg);
+}
+.btn.btn-secondary:hover:not(:disabled):not(.disabled),
+.btn-secondary:hover:not(:disabled):not(.disabled) {
+    background-color: var(--surface-2);
+    border-color: var(--primary);
+    color: var(--fg);
+    transform: translateY(-1px);
+}
+
+.btn.btn-outline-secondary,
+.btn-outline-secondary {
+    color: var(--fg-2);
+    border-color: var(--border-strong);
+    background-color: transparent;
+}
+.btn.btn-outline-secondary:hover:not(:disabled):not(.disabled),
+.btn-outline-secondary:hover:not(:disabled):not(.disabled) {
+    background-color: var(--surface-2);
+    border-color: var(--primary);
+    color: var(--fg);
+}
+
+.btn.btn-success,
+.btn-success {
+    background-color: var(--success-strong);
+    border-color: var(--success-strong);
+    color: var(--on-success);
+}
+.btn.btn-warning,
+.btn-warning {
+    background-color: var(--warning);
+    border-color: var(--warning);
+    color: var(--on-warning);
+}
+.btn.btn-danger,
+.btn-danger {
+    background-color: var(--danger);
+    border-color: var(--danger);
+    color: var(--on-danger);
+}
+.btn.btn-outline-danger,
+.btn-outline-danger {
+    color: var(--danger);
+    border-color: var(--danger);
+    background-color: transparent;
+}
+.btn.btn-outline-danger:hover:not(:disabled):not(.disabled),
+.btn-outline-danger:hover:not(:disabled):not(.disabled) {
+    background-color: var(--danger);
+    color: var(--on-danger);
+}
+
+.btn.btn-info,
+.btn-info {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--on-primary);
+}
+.btn.btn-link,
+.btn-link {
+    color: var(--primary);
+    text-decoration: none;
+}
+.btn.btn-link:hover,
+.btn-link:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+    text-decoration-color: var(--primary);
+    text-underline-offset: 3px;
+}
+
+/* Disabled-States konsistent */
+.btn:disabled,
+.btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   <kbd> — Tastenkürzel-Badges (hohe Lesbarkeit in Light + Dark)
+   ═══════════════════════════════════════════════════════════════════ */
+
+kbd,
+.kbd,
+.keyboard-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    padding: 2px 8px;
+    background: var(--surface-2);
+    color: var(--fg);
+    border: 1px solid var(--border-strong);
+    border-bottom-width: 2px;
+    border-radius: var(--r-sm);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+    white-space: nowrap;
+}
+/* Dark-Mode: deutlicher Kontrast durch helleren BG + subtile primary-glow */
+html[data-theme="dark"] kbd,
+html[data-theme="dark"] .kbd,
+html[data-theme="dark"] .keyboard-key {
+    background: var(--surface-3);
+    color: var(--fg);
+    border-color: var(--border-strong);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(56, 189, 248, 0.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-Card → Aurora-Card-Look (Dashboard-Unifikation)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    color: var(--fg);
+    transition: border-color var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out);
+}
+.card:hover {
+    border-color: var(--border-strong);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.card-header {
+    background-color: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+    padding: 14px 18px;
+    font-weight: 600;
+    letter-spacing: -0.1px;
+}
+.card-body { color: var(--fg); padding: 18px; }
+.card-footer {
+    background-color: var(--surface-2);
+    border-top: 1px solid var(--border);
+    color: var(--fg-2);
+}
+.card-title { color: var(--fg); font-weight: 600; }
+.card-subtitle { color: var(--fg-2); }
+.card-text { color: var(--fg-2); line-height: 1.55; }
+
+.card.border-primary,  .card.border-left-primary  { border-left: 4px solid var(--primary); }
+.card.border-success,  .card.border-left-success  { border-left: 4px solid var(--success); }
+.card.border-warning,  .card.border-left-warning  { border-left: 4px solid var(--warning); }
+.card.border-danger,   .card.border-left-danger   { border-left: 4px solid var(--danger); }
+.card.border-info,     .card.border-left-info     { border-left: 4px solid var(--primary); }
+.card.border-accent,   .card.border-left-accent   { border-left: 4px solid var(--accent); }
+
+.card-header.bg-primary {
+    background: var(--brand-gradient);
+    color: var(--on-primary);
+    border-bottom: none;
+}
+.card-header.bg-primary h1,
+.card-header.bg-primary h2,
+.card-header.bg-primary h3,
+.card-header.bg-primary h4 { color: var(--on-primary); margin: 0; }
+.card-header.bg-success { background: var(--success-strong); color: var(--on-success); }
+.card-header.bg-warning { background: var(--warning);        color: var(--on-warning); }
+.card-header.bg-danger  { background: var(--danger);         color: var(--on-danger); }
+.card-header.bg-info    { background: var(--primary-strong); color: var(--on-primary); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-Form-Control → Aurora-Look
+   ═══════════════════════════════════════════════════════════════════ */
+
+.form-control,
+.form-select {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    transition: border-color var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out);
+}
+.form-control::placeholder { color: var(--fg-3); }
+.form-control:hover,
+.form-select:hover { border-color: var(--border-strong); }
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--surface);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+    color: var(--fg);
+    outline: none;
+}
+.form-control:disabled,
+.form-select:disabled {
+    background-color: var(--surface-2);
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+.form-label { color: var(--fg); font-weight: 500; margin-bottom: 6px; }
+.form-text { color: var(--fg-3); font-size: 12px; }
+
+.form-control.is-invalid,
+.form-select.is-invalid,
+.was-validated .form-control:invalid { border-color: var(--danger); }
+.form-control.is-invalid:focus,
+.was-validated .form-control:invalid:focus { box-shadow: 0 0 0 3px var(--danger-glow); }
+.form-control.is-valid,
+.form-select.is-valid { border-color: var(--success); }
+.invalid-feedback { color: var(--danger); font-size: 12px; }
+.valid-feedback   { color: var(--success); font-size: 12px; }
+
+.form-check-input {
+    border-color: var(--border-strong);
+    background-color: var(--surface);
+}
+.form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+.form-check-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+.form-check-label { color: var(--fg); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-Badge → Aurora-Status-Pill-Look
+   ═══════════════════════════════════════════════════════════════════ */
+
+.badge {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    border-radius: var(--r-pill);
+    padding: 3px 9px;
+}
+.badge.text-bg-primary,
+.badge.bg-primary    { background-color: var(--primary-strong) !important; color: var(--on-primary) !important; }
+.badge.text-bg-success,
+.badge.bg-success    { background-color: var(--success-strong) !important; color: var(--on-success) !important; }
+.badge.text-bg-warning,
+.badge.bg-warning    { background-color: var(--warning) !important; color: var(--on-warning) !important; }
+.badge.text-bg-danger,
+.badge.bg-danger     { background-color: var(--danger) !important; color: var(--on-danger) !important; }
+.badge.text-bg-info,
+.badge.bg-info       { background-color: var(--primary) !important; color: var(--on-primary) !important; }
+.badge.text-bg-secondary,
+.badge.bg-secondary  { background-color: var(--surface-2) !important; color: var(--fg-2) !important; border: 1px solid var(--border); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-Alert → Aurora-Alert (Legacy-Usages ohne _alert-Macro)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.alert {
+    border-radius: var(--r-md);
+    border-left-width: 4px;
+    color: var(--fg);
+    background: var(--surface);
+    border-color: var(--border);
+}
+.alert-primary,
+.alert-info {
+    background: var(--primary-tint);
+    border-color: var(--primary);
+    border-left-color: var(--primary);
+    color: var(--fg);
+}
+.alert-success {
+    background: var(--success-glow);
+    border-color: var(--success);
+    border-left-color: var(--success);
+    color: var(--fg);
+}
+.alert-warning {
+    background: var(--warning-glow);
+    border-color: var(--warning);
+    border-left-color: var(--warning);
+    color: var(--warning-text);
+}
+.alert-danger {
+    background: var(--danger-glow);
+    border-color: var(--danger);
+    border-left-color: var(--danger);
+    color: var(--fg);
+}
+.alert-light {
+    background: var(--surface-2);
+    border-color: var(--border);
+    border-left-color: var(--border-strong);
+    color: var(--fg);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-Text-Utilities → Aurora-Farben (Dark-Mode-Fix für .text-dark)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* .text-dark zeigt in Bootstrap fix #212529 — in Dark-Mode unlesbar.
+   In Aurora muss das Default-Text-Farbe werden (var(--fg)), damit
+   Dashboard-Karten-Labels sichtbar bleiben. */
+.text-dark  { color: var(--fg)   !important; }
+.text-body  { color: var(--fg)   !important; }
+.text-light { color: var(--fg-2) !important; }
+.text-muted { color: var(--fg-3) !important; }
+.text-secondary { color: var(--fg-2) !important; }
+.text-primary   { color: var(--primary) !important; }
+.text-success   { color: var(--success) !important; }
+.text-warning   { color: var(--warning-text) !important; }
+.text-danger    { color: var(--danger)  !important; }
+.text-info      { color: var(--primary) !important; }
+.text-white     { color: #ffffff !important; }
+
+/* Bootstrap-text-bg-* kombiniert BG + Text */
+.text-bg-primary   { background-color: var(--primary-strong) !important; color: var(--on-primary) !important; }
+.text-bg-success   { background-color: var(--success-strong) !important; color: var(--on-success) !important; }
+.text-bg-warning   { background-color: var(--warning) !important; color: var(--on-warning) !important; }
+.text-bg-danger    { background-color: var(--danger)  !important; color: var(--on-danger)  !important; }
+.text-bg-info      { background-color: var(--primary) !important; color: var(--on-primary) !important; }
+.text-bg-secondary { background-color: var(--surface-2) !important; color: var(--fg) !important; }
+
+/* Bootstrap-bg-* Utilities */
+.bg-light       { background-color: var(--surface-2) !important; }
+.bg-dark        { background-color: var(--bg) !important; }
+.bg-white       { background-color: var(--surface) !important; }
+.bg-body        { background-color: var(--bg) !important; }
+.bg-body-tertiary { background-color: var(--surface-2) !important; }
+
+/* *-subtle (Bootstrap 5.3) für Badge/Icon-Hintergründe */
+.bg-primary-subtle  { background-color: var(--primary-tint) !important; }
+.bg-success-subtle  { background-color: var(--success-glow) !important; }
+.bg-warning-subtle  { background-color: var(--warning-glow) !important; }
+.bg-danger-subtle   { background-color: var(--danger-glow)  !important; }
+.bg-info-subtle     { background-color: var(--primary-tint) !important; }
+.bg-light-subtle    { background-color: var(--surface-2)    !important; }
+
+/* Opacity-Utility "bg-opacity-*" bleibt Bootstrap (nutzt CSS-Vars intern, OK) */
+
+/* Border-Utilities auf Aurora-Farben */
+.border         { border-color: var(--border) !important; }
+.border-primary { border-color: var(--primary) !important; }
+.border-success { border-color: var(--success) !important; }
+.border-warning { border-color: var(--warning) !important; }
+.border-danger  { border-color: var(--danger)  !important; }
+.border-info    { border-color: var(--primary) !important; }
+.border-light   { border-color: var(--border) !important; }
+.border-dark    { border-color: var(--border-strong) !important; }
