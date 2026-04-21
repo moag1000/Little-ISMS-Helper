@@ -111,9 +111,9 @@
                         labels: labels,
                         datasets: [
                             { label: '{{ 'portfolio_report.reuse_trend.fte_label'|trans({}, 'portfolio_report') }}',
-                              data: fte, yAxisID: 'y1', borderColor: '#198754', backgroundColor: 'rgba(25,135,84,0.1)', tension: 0.3, fill: true },
+                              data: fte, yAxisID: 'y1', borderColor: 'var(--success)', backgroundColor: 'var(--success-glow)', tension: 0.3, fill: true },
                             { label: '{{ 'portfolio_report.reuse_trend.pct_label'|trans({}, 'portfolio_report') }}',
-                              data: pct, yAxisID: 'y2', borderColor: '#0d6efd', borderDash: [4,4], tension: 0.3 }
+                              data: pct, yAxisID: 'y2', borderColor: 'var(--primary)', borderDash: [4,4], tension: 0.3 }
                         ]
                     },
                     options: {

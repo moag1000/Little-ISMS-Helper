@@ -5,13 +5,9 @@
    The button is in _notification_bell.html.twig (in header)
 #}
 
-{# FairyAurora v3.0 — data-controller wandert aufs <body> (siehe base.html.twig),
-   damit Bell-Button + Panel EINEN Controller-Scope teilen. Values bleiben hier. #}
-<div class="notification-center-panel"
-     data-notifications-delete-title-value="{{ 'notifications.action.delete'|trans({}, 'notifications') }}"
-     data-notifications-view-details-value="{{ 'notifications.action.view_details'|trans({}, 'notifications') }}"
-     data-notifications-empty-title-value="{{ 'notifications.empty.title'|trans({}, 'notifications') }}"
-     data-notifications-empty-message-value="{{ 'notifications.empty.description'|trans({}, 'notifications') }}">
+{# FairyAurora v3.0 — data-controller + values liegen auf <body>.
+   Hier nur noch die Panel-Struktur als einfacher Wrapper. #}
+<div class="notification-center-panel">
     {# Notification Panel #}
     <div class="notification-panel d-none"
          role="dialog"

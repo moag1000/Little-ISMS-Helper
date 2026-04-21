@@ -39,7 +39,7 @@
                     content: ('prototype_protection.status.' ~ assessment.status)|trans({}, 'prototype_protection')
                 } %}
                 {% if assessment.tisaxLevel %}
-                    <span class="badge text-bg-light border ms-1">{{ assessment.tisaxLevel }}</span>
+                    <span class="badge bg-body-secondary text-body border ms-1">{{ assessment.tisaxLevel }}</span>
                 {% endif %}
                 {% if assessment.overallResult %}
                     {% include '_components/_badge.html.twig' with {
@@ -81,7 +81,7 @@
                         <div class="mb-3 pb-3 border-bottom">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h3 class="h6 mb-1">
-                                    <span class="badge text-bg-light border">VDA {{ s.ref }}</span>
+                                    <span class="badge bg-body-secondary text-body border">VDA {{ s.ref }}</span>
                                     <span class="ms-1">{{ ('prototype_protection.section.' ~ s.key ~ '.title')|trans({}, 'prototype_protection') }}</span>
                                 </h3>
                                 {% if s.result %}
@@ -128,7 +128,7 @@
                         <dd class="col-7">
                             {% if assessment.requiredLabels %}
                                 {% for label in assessment.requiredLabels %}
-                                    <span class="badge text-bg-light border d-block mb-1">
+                                    <span class="badge bg-body-secondary text-body border d-block mb-1">
                                         {{ ('prototype_protection.label.' ~ label)|trans({}, 'prototype_protection') }}
                                     </span>
                                 {% endfor %}

@@ -486,8 +486,8 @@ function initializeMappingButton() {
                 setTimeout(() => {
                     btnIcon.textContent = '🔗';
                     btnText.textContent = '{{ 'compliance.action.create_mappings_now'|trans({}, 'compliance') }}';
-                    createBtn.style.background = 'white';
-                    createBtn.style.color = '#667eea';
+                    createBtn.style.background = 'var(--surface)';
+                    createBtn.style.color = 'var(--accent)';
                     createBtn.style.opacity = '1';
                     createBtn.style.cursor = 'pointer';
                     createBtn.disabled = false;
@@ -497,13 +497,13 @@ function initializeMappingButton() {
             btnIcon.textContent = '❌';
             btnText.textContent = '{{ 'common.error'|trans({}, 'messages') }}: ' + error.message;
             createBtn.style.background = 'var(--danger)';
-            createBtn.style.color = 'white';
+            createBtn.style.color = 'var(--on-danger)';
 
             setTimeout(() => {
                 btnIcon.textContent = '🔗';
                 btnText.textContent = '{{ 'compliance.action.create_mappings_now'|trans({}, 'compliance') }}';
-                createBtn.style.background = 'white';
-                createBtn.style.color = '#667eea';
+                createBtn.style.background = 'var(--surface)';
+                createBtn.style.color = 'var(--accent)';
                 createBtn.style.opacity = '1';
                 createBtn.style.cursor = 'pointer';
                 createBtn.disabled = false;

@@ -405,7 +405,7 @@
 }
 
 .risk-level-card.risk-critical { border-color: var(--color-danger); }
-.risk-level-card.risk-high { border-color: #ff9800; }
+.risk-level-card.risk-high { border-color: var(--warning); }
 .risk-level-card.risk-medium { border-color: var(--color-warning); }
 .risk-level-card.risk-low { border-color: var(--color-success); }
 
@@ -482,23 +482,23 @@
 }
 
 .risk-score-high {
-    background: #ff9800;
-    color: white;
+    background: var(--warning);
+    color: var(--on-warning);
 }
 
 .risk-score-medium {
     background: var(--color-warning);
-    color: white;
+    color: var(--on-warning);
 }
 
 .risk-score-low {
     background: var(--color-success);
-    color: white;
+    color: var(--on-success);
 }
 
 .risk-score-improved {
-    background: #e8f5e9;
-    color: var(--color-success);
+    background: var(--success-glow);
+    color: var(--success);
 }
 </style>
 

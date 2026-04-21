@@ -5,8 +5,9 @@
    The panel is defined in _notification_center.html.twig
 #}
 
-<div class="notification-bell" data-controller="notifications">
-    {# Notification Bell Button #}
+{# FairyAurora v3.0 — Controller-Scope liegt auf <body> (base.html.twig),
+   damit Bell-Button und Panel den gleichen Stimulus-Scope teilen. #}
+<div class="notification-bell">
     <button type="button"
             class="notification-bell-btn-header"
             data-action="click->notifications#toggle"

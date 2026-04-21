@@ -29,14 +29,14 @@
         <a href="{{ path('app_compliance_mapping_seed_review', {origin: 'all'}) }}"
            class="btn btn-sm {% if filter == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}">
             {{ 'compliance.mapping.seed_review.filter.all'|trans({}, 'compliance') }}
-            <span class="badge text-bg-light ms-1">{{ counts.all|default(0) }}</span>
+            <span class="badge bg-body-secondary text-body ms-1">{{ counts.all|default(0) }}</span>
         </a>
         {% for origin, n in counts %}
             {% if origin != 'all' %}
                 <a href="{{ path('app_compliance_mapping_seed_review', {origin: origin}) }}"
                    class="btn btn-sm {% if filter == origin %}btn-primary{% else %}btn-outline-secondary{% endif %}">
                     <code>{{ origin }}</code>
-                    <span class="badge text-bg-light ms-1">{{ n }}</span>
+                    <span class="badge bg-body-secondary text-body ms-1">{{ n }}</span>
                 </a>
             {% endif %}
         {% endfor %}
