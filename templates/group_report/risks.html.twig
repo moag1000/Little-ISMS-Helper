@@ -52,13 +52,13 @@
                                     </td>
                                     <td><code class="small">{{ risk.tenant.code }}</code></td>
                                     <td>
-                                        <span class="badge {% if inherent >= 15 %}bg-danger{% elseif inherent >= 8 %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                                        <span class="badge {% if inherent >= 15 %}bg-danger{% elseif inherent >= 8 %}bg-warning-subtle text-warning{% else %}bg-success{% endif %}">
                                             {{ inherent }}
                                         </span>
                                     </td>
                                     <td>
                                         {% if residual > 0 %}
-                                            <span class="badge {% if residual >= 15 %}bg-danger{% elseif residual >= 8 %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                                            <span class="badge {% if residual >= 15 %}bg-danger{% elseif residual >= 8 %}bg-warning-subtle text-warning{% else %}bg-success{% endif %}">
                                                 {{ residual }}
                                             </span>
                                         {% else %}
@@ -97,7 +97,7 @@
                                         <code class="small text-muted ms-1">{{ tenant.code }}</code>
                                     </td>
                                     <td class="text-end">
-                                        <span class="badge bg-light text-dark border">{{ risks_by_tenant[tenant.code]|default(0) }}</span>
+                                        <span class="badge bg-body-secondary text-body border">{{ risks_by_tenant[tenant.code]|default(0) }}</span>
                                     </td>
                                 </tr>
                             {% endfor %}

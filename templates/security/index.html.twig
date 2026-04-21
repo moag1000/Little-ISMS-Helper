@@ -83,7 +83,7 @@
             {# OWASP 2025 RC1 Report Card #}
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="card-title mb-0">
                             <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>{{ 'security_reports.card.owasp_2025_title'|trans({}, 'security_reports') }}
                         </h2>
@@ -154,7 +154,7 @@
             {# OWASP 2021 Report Card #}
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="card-title mb-0">
                             <i class="bi bi-shield-check me-2" aria-hidden="true"></i>{{ 'security_reports.nav.owasp_2021'|trans({}, 'security_reports') }} (Legacy)
                         </h2>

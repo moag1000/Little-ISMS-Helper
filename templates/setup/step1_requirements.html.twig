@@ -28,7 +28,7 @@
         {{ faAlert.render(results.overall.message, 'danger', { withAlva: true, title: 'setup.step1.cannot_proceed'|trans({}, 'setup')|default('Voraussetzungen nicht erfüllt') })|raw }}
     {% endif %}
 
-    <h2 style="font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--fg-3); margin:24px 0 12px;">
+    <h2 class="fa-setup-section-title">
         {{ 'setup.step1.detailed_checks'|trans({}, 'setup') }}
     </h2>
 

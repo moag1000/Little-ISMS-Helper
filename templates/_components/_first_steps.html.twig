@@ -60,7 +60,7 @@
             {{ 'first_steps.title'|trans({}, 'dashboard') }}
         </h5>
         <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-light text-primary">
+            <span class="badge bg-body-secondary text-primary">
                 {{ done_count }}/{{ total_count }} {{ 'first_steps.completed'|trans({}, 'dashboard') }}
             </span>
             <form method="post" action="{{ path('app_dashboard_dismiss_first_steps') }}" class="d-inline">
@@ -109,7 +109,7 @@
                             <div class="small text-muted mt-1">{{ step.description }}</div>
                         </div>
                         <div class="text-end ms-2">
-                            <span class="badge bg-light text-secondary border" style="font-size: 0.7rem;">{{ step.norm }}</span>
+                            <span class="badge bg-body-secondary text-secondary border" style="font-size: 0.7rem;">{{ step.norm }}</span>
                         </div>
                     </div>
                 </div>

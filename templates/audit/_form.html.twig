@@ -17,7 +17,7 @@
 
 {# Basic Information #}
 <fieldset class="card mb-4">
-    <div class="card-header bg-light">
+    <div class="card-header bg-body-secondary">
         <legend class="h5 mb-0">
             <i class="bi bi-info-square" aria-hidden="true"></i>
             {{ 'audit.section.basic_info' }}
@@ -93,7 +93,7 @@
 {# Framework & Standards (Edit mode only) #}
 {% if is_edit_mode|default(false) and form.framework is defined %}
 <fieldset class="card mb-4">
-    <div class="card-header bg-light">
+    <div class="card-header bg-body-secondary">
         <legend class="h5 mb-0">
             <i class="bi bi-shield-check" aria-hidden="true"></i>
             {{ 'audit.section.frameworks' }}
@@ -125,7 +125,7 @@
 
 {# Schedule #}
 <fieldset class="card mb-4">
-    <div class="card-header bg-light">
+    <div class="card-header bg-body-secondary">
         <legend class="h5 mb-0">
             <i class="bi bi-calendar-event" aria-hidden="true"></i>
             {{ 'audit.section.schedule' }}
@@ -156,7 +156,7 @@
 
 {# Team & Responsibilities #}
 <fieldset class="card mb-4">
-    <div class="card-header bg-light">
+    <div class="card-header bg-body-secondary">
         <legend class="h5 mb-0">
             <i class="bi bi-people" aria-hidden="true"></i>
             {{ 'audit.section.team' }}
@@ -210,7 +210,7 @@
 {# Status & Results (if in form) #}
 {% if form.status is defined %}
 <fieldset class="card mb-4">
-    <div class="card-header bg-light">
+    <div class="card-header bg-body-secondary">
         <legend class="h5 mb-0">
             <i class="bi bi-flag" aria-hidden="true"></i>
             {{ 'audit.section.status' }}
@@ -244,7 +244,7 @@
 
 {# Objectives & Criteria #}
 <fieldset class="card mb-4">
-    <div class="card-header bg-light">
+    <div class="card-header bg-body-secondary">
         <legend class="h5 mb-0">
             <i class="bi bi-bullseye" aria-hidden="true"></i>
             {{ 'audit.section.objectives' }}
@@ -288,7 +288,7 @@
 
 {# Findings #}
 <fieldset class="card mb-4">
-    <div class="card-header bg-light">
+    <div class="card-header bg-body-secondary">
         <legend class="h5 mb-0">
             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
             {{ 'audit.section.findings' }}
@@ -332,7 +332,7 @@
 
 {# Recommendations & Follow-up #}
 <fieldset class="card mb-4">
-    <div class="card-header bg-light">
+    <div class="card-header bg-body-secondary">
         <legend class="h5 mb-0">
             <i class="bi bi-lightbulb" aria-hidden="true"></i>
             {{ 'audit.section.recommendations' }}
@@ -388,7 +388,7 @@
 {# Documentation (Edit mode only) #}
 {% if is_edit_mode|default(false) and form.evidenceCollected is defined %}
 <fieldset class="card mb-4">
-    <div class="card-header bg-light">
+    <div class="card-header bg-body-secondary">
         <legend class="h5 mb-0">
             <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
             {{ 'audit.section.documentation' }}

@@ -85,10 +85,10 @@
                             {% set sev = incident.severity %}
                             {% set sevBadge = {
                                 'critical': 'bg-danger',
-                                'high': 'bg-warning text-dark',
+                                'high': 'bg-warning-subtle text-warning',
                                 'medium': 'bg-info',
                                 'low': 'bg-secondary'
-                            }[sev]|default('bg-light text-dark border') %}
+                            }[sev]|default('bg-body-secondary text-body border') %}
                             <tr>
                                 <td class="small text-muted">{{ incident.detectedAt|date('Y-m-d H:i') }}</td>
                                 <td>

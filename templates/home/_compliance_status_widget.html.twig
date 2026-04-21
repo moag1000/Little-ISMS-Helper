@@ -52,7 +52,7 @@
             {% for framework in compliance_summary.frameworks %}
             <a href="{{ path(framework.route, framework.route_params) }}"
                class="d-flex align-items-center justify-content-between p-2 rounded mb-2 text-decoration-none border-start border-3 border-{{ framework.color }}"
-               style="background: var(--bs-{{ framework.color }}-bg-subtle, #f8f9fa);">
+               style="background: var(--bs-{{ framework.color }}-bg-subtle, var(--surface-2));">
                 <div class="d-flex align-items-center">
                     <i class="bi {{ framework.icon }} me-2 text-{{ framework.color }}" aria-hidden="true"></i>
                     <span class="fw-medium">{{ framework.code }}</span>

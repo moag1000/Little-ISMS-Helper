@@ -108,7 +108,7 @@
             {# Participants Section #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="mb-0">
                             <i class="bi bi-people" aria-hidden="true"></i> {{ 'training.participants'|trans({}, 'training')}}
                             {% include '_components/_badge.html.twig' with { variant: 'primary', content: training.attendeeCount ?? 0 } %}
@@ -130,7 +130,7 @@
             {% if training.materials %}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="mb-0">
                             <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'training.materials'|trans({}, 'training')}}
                         </h2>
@@ -146,7 +146,7 @@
             {% if training.feedback %}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="mb-0">
                             <i class="bi bi-chat-left-text" aria-hidden="true"></i> {{ 'training.feedback'|trans({}, 'training')}}
                         </h2>
@@ -163,7 +163,7 @@
             {# Action Buttons #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}
@@ -200,7 +200,7 @@
             {% if training.coveredControls is defined and training.coveredControls|length > 0 %}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="mb-0">
                             <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'training.covered_controls'|trans({}, 'training')}}
                             {% include '_components/_badge.html.twig' with { variant: 'primary', content: training.coveredControls|length } %}
@@ -231,7 +231,7 @@
             {% if training.complianceRequirements is defined and training.complianceRequirements|length > 0 %}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="mb-0">
                             <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'training.compliance_coverage'|trans({}, 'training') }}
                             {% include '_components/_badge.html.twig' with { variant: 'success', content: training.complianceRequirements|length } %}
@@ -253,7 +253,7 @@
             {% if training.status == 'completed' %}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="mb-0">
                             <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'training.statistics'|trans({}, 'training') }}
                         </h2>
@@ -286,7 +286,7 @@
             {# Metadata #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}

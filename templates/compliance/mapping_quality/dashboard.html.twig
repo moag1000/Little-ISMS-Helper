@@ -230,7 +230,7 @@
                     <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                 </button>
 
-                <div data-batch-analysis-target="log" class="mt-3" style="max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px; background: #f5f5f5; padding: 10px; border-radius: 4px; display: none;">
+                <div data-batch-analysis-target="log" class="mt-3 font-monospace small bg-body-secondary p-2 rounded" style="max-height: 200px; overflow-y: auto; display: none;">
                 </div>
             </div>
 
@@ -352,7 +352,7 @@
     {# Help Box #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-light">
+            <div class="card-header bg-body-secondary">
                 <h2 class="mb-0"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> {{ 'compliance.mapping_quality.help.title'|trans({}, 'compliance') }}</h2>
             </div>
         {% endblock %}

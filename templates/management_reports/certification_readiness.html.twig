@@ -35,7 +35,7 @@
                         {{ overall_score }}%
                     </h3>
                     <p class="text-muted mb-2">{{ 'cert_readiness.overall_score'|trans({}, 'management_reports') }}</p>
-                    <span class="badge fs-6 {% if recommendation == 'READY' %}bg-success{% elseif recommendation == 'CONDITIONAL' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                    <span class="badge fs-6 {% if recommendation == 'READY' %}bg-success{% elseif recommendation == 'CONDITIONAL' %}bg-warning-subtle text-warning{% else %}bg-danger{% endif %}">
                         {{ ('cert_readiness.recommendation.' ~ recommendation|lower)|trans({}, 'management_reports') }}
                     </span>
                 {% endblock %}
@@ -115,7 +115,7 @@
                                 {% if clause.status == 'complete' %}
                                     <span class="badge bg-success">{{ 'cert_readiness.status.complete'|trans({}, 'management_reports') }}</span>
                                 {% elseif clause.status == 'partial' %}
-                                    <span class="badge bg-warning text-dark">{{ 'cert_readiness.status.partial'|trans({}, 'management_reports') }}</span>
+                                    <span class="badge bg-warning-subtle text-warning">{{ 'cert_readiness.status.partial'|trans({}, 'management_reports') }}</span>
                                 {% else %}
                                     <span class="badge bg-danger">{{ 'cert_readiness.status.not_started'|trans({}, 'management_reports') }}</span>
                                 {% endif %}
@@ -148,7 +148,7 @@
                     <div class="card-header bg-info text-white">
                         <h3 class="h5 mb-0">
                             <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'cert_readiness.section.controls_not_started'|trans({}, 'management_reports') }}
-                            <span class="badge bg-light text-dark ms-2">{{ controls_not_started|length }}</span>
+                            <span class="badge bg-body-secondary text-body ms-2">{{ controls_not_started|length }}</span>
                         </h3>
                     </div>
                 {% endblock %}
@@ -170,10 +170,10 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
                 {% block card_header %}
-                    <div class="card-header bg-warning text-dark">
+                    <div class="card-header bg-warning-subtle text-warning">
                         <h3 class="h5 mb-0">
                             <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'cert_readiness.section.controls_in_progress'|trans({}, 'management_reports') }}
-                            <span class="badge bg-light text-dark ms-2">{{ controls_in_progress|length }}</span>
+                            <span class="badge bg-body-secondary text-body ms-2">{{ controls_in_progress|length }}</span>
                         </h3>
                     </div>
                 {% endblock %}
@@ -223,7 +223,7 @@
     {% if recommended_improvements|length > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4 shadow-sm' } %}
         {% block card_header %}
-            <div class="card-header bg-light">
+            <div class="card-header bg-body-secondary">
                 <h3 class="h5 mb-0">
                     <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'cert_readiness.section.recommended_improvements'|trans({}, 'management_reports') }}
                 </h3>

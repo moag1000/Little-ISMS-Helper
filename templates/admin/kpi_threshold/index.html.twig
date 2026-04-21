@@ -49,7 +49,7 @@
                                     <div class="text-muted small">{{ ('kpi_threshold.key.' ~ c.kpiKey)|trans({}, 'admin') }}</div>
                                 </td>
                                 <td><span class="badge bg-success">≥ {{ c.goodThreshold }}</span></td>
-                                <td><span class="badge bg-warning text-dark">≥ {{ c.warningThreshold }}</span></td>
+                                <td><span class="badge bg-warning-subtle text-warning">≥ {{ c.warningThreshold }}</span></td>
                                 <td>{{ c.updatedAt ? c.updatedAt|date('Y-m-d H:i') : c.createdAt|date('Y-m-d H:i') }}</td>
                                 <td class="text-end">
                                     <a href="{{ path('admin_kpi_threshold_edit', {id: c.id}) }}" class="btn btn-sm btn-outline-primary">

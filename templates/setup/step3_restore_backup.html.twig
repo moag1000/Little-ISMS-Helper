@@ -169,7 +169,7 @@
                         {% if not schema_created %}
                         {% embed '_components/_card.html.twig' with { 'class': 'border-warning mb-4' } %}
                             {% block card_header %}
-                                <div class="card-header bg-warning text-dark">
+                                <div class="card-header bg-warning-subtle text-warning">
                                     <h2 class="h5 mb-0">
                                         <i class="bi bi-database me-2" aria-hidden="true"></i>
                                         {{ 'setup.step3.schema.title'|trans({}, 'setup') }}
@@ -265,7 +265,7 @@
                         {# Skip Option #}
                         {% embed '_components/_card.html.twig' with { 'class': 'border-secondary' } %}
                             {% block card_header %}
-                                <div class="card-header bg-secondary text-white">
+                                <div class="card-header">
                                     <h2 class="h5 mb-0">
                                         <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
                                         {{ 'setup.restore.option_new_install'|trans({}, 'setup') }}

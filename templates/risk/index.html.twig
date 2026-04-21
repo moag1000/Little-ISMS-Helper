@@ -346,7 +346,7 @@
                             <i class="bi bi-person" aria-hidden="true"></i> {{ 'risk.index.table.person'|trans({}, 'risk') }}
                         </a>
                     {% elseif risk.location %}
-                        <a href="{{ path('app_location_show', {id: risk.location.id}) }}" class="badge bg-warning text-dark" title="{{ risk.location.name }}">
+                        <a href="{{ path('app_location_show', {id: risk.location.id}) }}" class="badge bg-warning-subtle text-warning" title="{{ risk.location.name }}">
                             <i class="bi bi-geo-alt" aria-hidden="true"></i> {{ 'risk.index.table.location'|trans({}, 'risk') }}
                         </a>
                     {% elseif risk.supplier %}

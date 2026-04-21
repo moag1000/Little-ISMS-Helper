@@ -2,7 +2,7 @@
  # Icons are semantic; text is always visible for screen readers and color-blind users. #}
 {% set status = log.reviewStatus %}
 {% set variants = {
-    'pending_review':    { class: 'bg-warning text-dark', icon: 'hourglass-split', labelKey: 'compliance_inheritance.status.pending_review' },
+    'pending_review':    { class: 'bg-warning-subtle text-warning', icon: 'hourglass-split', labelKey: 'compliance_inheritance.status.pending_review' },
     'source_updated':    { class: 'bg-danger',            icon: 'arrow-repeat',    labelKey: 'compliance_inheritance.status.source_updated' },
     'confirmed':         { class: 'bg-info text-dark',    icon: 'link-45deg',      labelKey: 'compliance_inheritance.status.confirmed' },
     'overridden':        { class: 'bg-secondary',         icon: 'pencil-square',   labelKey: 'compliance_inheritance.status.overridden' },

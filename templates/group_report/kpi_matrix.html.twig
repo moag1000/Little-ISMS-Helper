@@ -55,7 +55,7 @@
                                         {% if pct is null %}
                                             <span class="text-muted small" title="{{ 'group_report.kpi.n_a_help'|trans({}, 'group_report') }}">—</span>
                                         {% else %}
-                                            <span class="badge {% if pct >= 80 %}bg-success{% elseif pct >= 50 %}bg-warning text-dark{% else %}bg-danger{% endif %}"
+                                            <span class="badge {% if pct >= 80 %}bg-success{% elseif pct >= 50 %}bg-warning-subtle text-warning{% else %}bg-danger{% endif %}"
                                                   title="{{ cell.fulfilled }}/{{ cell.applicable }} {{ 'group_report.kpi.requirements'|trans({}, 'group_report') }}">
                                                 {{ pct }}%
                                             </span>

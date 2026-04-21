@@ -48,7 +48,7 @@
 
                         {# Corporate Audit Subsidiaries #}
                         {% if audit.auditedSubsidiaries|length > 0 %}
-                        <div class="mt-3 p-3 border border-primary rounded bg-light">
+                        <div class="mt-3 p-3 border border-primary rounded bg-body-secondary">
                             <div class="text-primary mb-2 fw-bold">
                                 <i class="bi bi-building" aria-hidden="true"></i> {{ 'audit.field.audited_subsidiaries'|trans({}, 'audit') }}
                             </div>
@@ -66,7 +66,7 @@
 
                         {# Scoped Assets #}
                         {% if audit.scopedAssets|length > 0 %}
-                        <div class="mt-3 p-3 border border-info rounded bg-light">
+                        <div class="mt-3 p-3 border border-info rounded bg-body-secondary">
                             <div class="text-info mb-2 fw-bold">
                                 <i class="bi bi-hdd-stack" aria-hidden="true"></i> {{ 'audit.field.scoped_assets'|trans({}, 'audit') }}
                             </div>
@@ -183,7 +183,7 @@
             {% if audit.recommendations or audit.conclusion %}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="mb-0">
                             <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'audit.section.recommendations'|trans({}, 'audit') }}
                         </h2>
@@ -212,7 +212,7 @@
             {# Action Buttons #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="h6 mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}
@@ -264,7 +264,7 @@
             {# Quick Stats #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="h6 mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'audit.quick_stats'|trans({}, 'audit') }}</h2>
                     </div>
                 {% endblock %}
@@ -295,7 +295,7 @@
             {# Metadata #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="h6 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}
@@ -323,7 +323,7 @@
 <div class="container-fluid py-4">
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-light">
+            <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
                     <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'audit.section.history'|trans({}, 'audit') }}
                     ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})

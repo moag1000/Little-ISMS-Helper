@@ -95,7 +95,7 @@
 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
     {% block card_body %}
     <h2>{{ 'location.section.address'|trans({}, 'locations') }}</h2>
-    <div class="info-box mt-2 bg-light">
+    <div class="info-box mt-2 bg-body-secondary">
         {% if location.address %}
             <p>{{ location.address }}</p>
         {% endif %}

@@ -172,7 +172,7 @@
         {% set dueDate = workflowInstance.dueDate %}
         {% set isOverdue = workflowInstance.isOverdue %}
 
-        <div class="workflow-inline-actions {% if not compact %}p-3 bg-light rounded border{% else %}p-2{% endif %}">
+        <div class="workflow-inline-actions {% if not compact %}p-3 bg-body-secondary rounded border{% else %}p-2{% endif %}">
             <div class="d-flex justify-content-between align-items-start {% if compact %}flex-column flex-md-row{% endif %} gap-2">
                 <div class="flex-grow-1">
                     <div class="d-flex align-items-center gap-2 mb-1">
