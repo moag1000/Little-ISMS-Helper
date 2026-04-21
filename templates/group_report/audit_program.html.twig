@@ -33,8 +33,8 @@
             {{ 'group_report.audit_program.no_subsidiaries'|trans({}, 'group_report') }}
         </div>
     {% else %}
-        <div class="card shadow-sm">
-            <div class="card-body p-0">
+        {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
+            {% block card_body %}
                 <div class="table-responsive">
                     <table class="table table-hover mb-0 align-middle" aria-label="{{ 'group_report.audit_program.title'|trans({}, 'group_report') }}">
                         <thead class="table-light">
@@ -102,15 +102,17 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-            <div class="card-footer small text-muted">
-                <strong>{{ 'group_report.soa.legend.title'|trans({}, 'group_report') }}:</strong>
-                <span class="badge bg-success">✓</span> {{ 'group_report.audit_program.legend.completed'|trans({}, 'group_report') }}
-                · <span class="badge bg-warning text-dark">◐</span> {{ 'group_report.audit_program.legend.in_progress'|trans({}, 'group_report') }}
-                · <span class="badge bg-info">◯</span> {{ 'group_report.audit_program.legend.planned'|trans({}, 'group_report') }}
-                · <span class="badge bg-light text-dark border">–</span> {{ 'group_report.audit_program.legend.missing'|trans({}, 'group_report') }}
-            </div>
-        </div>
+            {% endblock %}
+            {% block card_footer %}
+                <div class="card-footer small text-muted">
+                    <strong>{{ 'group_report.soa.legend.title'|trans({}, 'group_report') }}:</strong>
+                    <span class="badge bg-success">✓</span> {{ 'group_report.audit_program.legend.completed'|trans({}, 'group_report') }}
+                    · <span class="badge bg-warning text-dark">◐</span> {{ 'group_report.audit_program.legend.in_progress'|trans({}, 'group_report') }}
+                    · <span class="badge bg-info">◯</span> {{ 'group_report.audit_program.legend.planned'|trans({}, 'group_report') }}
+                    · <span class="badge bg-light text-dark border">–</span> {{ 'group_report.audit_program.legend.missing'|trans({}, 'group_report') }}
+                </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 </div>
 {% endblock %}
