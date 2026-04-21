@@ -374,6 +374,30 @@ html[data-theme="dark"] .keyboard-key {
 .card-subtitle { color: var(--fg-2); }
 .card-text { color: var(--fg-2); line-height: 1.55; }
 
+/* Aurora-Card-Heading-Kontrast — alle h1-h6 in Karten bekommen full-fg,
+   damit sie im Dark-Mode nicht auf fg-2/fg-3 absinken. */
+.card h1, .card h2, .card h3, .card h4, .card h5, .card h6,
+.card-header h1, .card-header h2, .card-header h3, .card-header h4, .card-header h5, .card-header h6,
+.card-body h1, .card-body h2, .card-body h3, .card-body h4, .card-body h5, .card-body h6,
+.widget-card h1, .widget-card h2, .widget-card h3, .widget-card h4, .widget-card h5, .widget-card h6,
+.kpi-card h1, .kpi-card h2, .kpi-card h3, .kpi-card h4, .kpi-card h5, .kpi-card h6,
+.stat-card h1, .stat-card h2, .stat-card h3, .stat-card h4, .stat-card h5, .stat-card h6,
+.fa-card--premium h1, .fa-card--premium h2, .fa-card--premium h3,
+.fa-card--premium h4, .fa-card--premium h5, .fa-card--premium h6 {
+    color: var(--fg);
+}
+/* Ausnahme: Karten-Header mit farbigem BG behalten on-color (weiß auf primary etc.) */
+.card-header.bg-primary h1, .card-header.bg-primary h2, .card-header.bg-primary h3,
+.card-header.bg-primary h4, .card-header.bg-primary h5, .card-header.bg-primary h6,
+.card-header.bg-success h1, .card-header.bg-success h2, .card-header.bg-success h3,
+.card-header.bg-success h4, .card-header.bg-success h5, .card-header.bg-success h6,
+.card-header.bg-danger h1, .card-header.bg-danger h2, .card-header.bg-danger h3,
+.card-header.bg-danger h4, .card-header.bg-danger h5, .card-header.bg-danger h6,
+.card-header.bg-warning h1, .card-header.bg-warning h2, .card-header.bg-warning h3,
+.card-header.bg-warning h4, .card-header.bg-warning h5, .card-header.bg-warning h6 {
+    color: var(--on-primary);
+}
+
 .card.border-primary,  .card.border-left-primary  { border-left: 4px solid var(--primary); }
 .card.border-success,  .card.border-left-success  { border-left: 4px solid var(--success); }
 .card.border-warning,  .card.border-left-warning  { border-left: 4px solid var(--warning); }

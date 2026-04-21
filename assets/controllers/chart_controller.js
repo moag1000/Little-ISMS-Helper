@@ -49,6 +49,31 @@ function getThemeColors() {
     };
 }
 
+/**
+ * Canvas cannot parse CSS vars. Resolve "var(--x)" strings to computed hex/rgba.
+ * Recurses through strings, arrays, and plain objects (backgroundColor, borderColor, etc.).
+ */
+function resolveCssVars(value, rootStyle) {
+    if (typeof value === 'string') {
+        const m = value.match(/^var\((--[a-zA-Z0-9-]+)(?:\s*,\s*(.+))?\)$/);
+        if (m) {
+            const resolved = rootStyle.getPropertyValue(m[1]).trim();
+            if (resolved) return resolved;
+            if (m[2]) return m[2].trim();
+        }
+        return value;
+    }
+    if (Array.isArray(value)) {
+        return value.map(v => resolveCssVars(v, rootStyle));
+    }
+    if (value && typeof value === 'object') {
+        const out = {};
+        for (const k in value) out[k] = resolveCssVars(value[k], rootStyle);
+        return out;
+    }
+    return value;
+}
+
 export default class extends Controller {
     static values = {
         type: String,
@@ -111,10 +136,14 @@ export default class extends Controller {
             options.plugins.legend.display = false;
         }
 
+        const rootStyle = getComputedStyle(document.documentElement);
+        const resolvedData = resolveCssVars(this.dataValue, rootStyle);
+        const resolvedOptions = resolveCssVars(options, rootStyle);
+
         this.chart = new Chart(this.element, {
             type: chartType,
-            data: this.dataValue,
-            options: options
+            data: resolvedData,
+            options: resolvedOptions
         });
 
         // Render HTML legend after chart is created
