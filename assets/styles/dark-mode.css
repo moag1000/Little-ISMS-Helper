@@ -192,7 +192,7 @@ html[data-theme="dark"] .alert-info,
 html[data-bs-theme="dark"] .alert-info,
 [data-theme="dark"] .alert.alert-info,
 [data-bs-theme="dark"] .alert.alert-info {
-    background-color: rgba(6, 182, 212, 0.15) !important;
+    background-color: var(--primary-tint) !important;
     border-color: rgba(6, 182, 212, 0.5) !important;
     color: #7dd3fc !important; /* sky-300 - light cyan text */
 }
@@ -201,7 +201,7 @@ html[data-theme="dark"] .alert-warning,
 html[data-bs-theme="dark"] .alert-warning,
 [data-theme="dark"] .alert.alert-warning,
 [data-bs-theme="dark"] .alert.alert-warning {
-    background-color: rgba(245, 158, 11, 0.15) !important;
+    background-color: var(--warning-glow) !important;
     border-color: rgba(245, 158, 11, 0.5) !important;
     color: #fcd34d !important; /* amber-300 - light amber text */
 }
@@ -210,7 +210,7 @@ html[data-theme="dark"] .alert-danger,
 html[data-bs-theme="dark"] .alert-danger,
 [data-theme="dark"] .alert.alert-danger,
 [data-bs-theme="dark"] .alert.alert-danger {
-    background-color: rgba(239, 68, 68, 0.15) !important;
+    background-color: var(--danger-glow) !important;
     border-color: rgba(239, 68, 68, 0.5) !important;
     color: #fca5a5 !important; /* red-300 - light red text */
 }
@@ -219,7 +219,7 @@ html[data-theme="dark"] .alert-success,
 html[data-bs-theme="dark"] .alert-success,
 [data-theme="dark"] .alert.alert-success,
 [data-bs-theme="dark"] .alert.alert-success {
-    background-color: rgba(16, 185, 129, 0.15) !important;
+    background-color: var(--success-glow) !important;
     border-color: rgba(16, 185, 129, 0.5) !important;
     color: #6ee7b7 !important; /* emerald-300 - light green text */
 }
@@ -301,22 +301,22 @@ html[data-bs-theme="dark"] .alert h6 {
 /* Bootstrap bg-*-subtle overrides for Dark Mode */
 [data-theme="dark"] .bg-warning-subtle,
 [data-bs-theme="dark"] .bg-warning-subtle {
-    background-color: rgba(245, 158, 11, 0.15) !important;
+    background-color: var(--warning-glow) !important;
 }
 
 [data-theme="dark"] .bg-danger-subtle,
 [data-bs-theme="dark"] .bg-danger-subtle {
-    background-color: rgba(239, 68, 68, 0.15) !important;
+    background-color: var(--danger-glow) !important;
 }
 
 [data-theme="dark"] .bg-success-subtle,
 [data-bs-theme="dark"] .bg-success-subtle {
-    background-color: rgba(16, 185, 129, 0.15) !important;
+    background-color: var(--success-glow) !important;
 }
 
 [data-theme="dark"] .bg-info-subtle,
 [data-bs-theme="dark"] .bg-info-subtle {
-    background-color: rgba(6, 182, 212, 0.15) !important;
+    background-color: var(--primary-tint) !important;
 }
 
 [data-theme="dark"] .bg-light,
@@ -522,7 +522,7 @@ select:focus,
 }
 
 [data-theme="dark"] .bg-primary {
-    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    background: linear-gradient(135deg, var(--primary-strong), var(--primary-hover)) !important;
     color: white !important;
     box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
 }
@@ -689,7 +689,7 @@ kbd {
 
 .theme-toggle-btn:hover {
     transform: scale(1.1) rotate(15deg);
-    box-shadow: 0 12px 32px rgba(6, 182, 212, 0.4);
+    box-shadow: 0 12px 32px var(--primary-glow);
 }
 
 .theme-toggle-btn:active {
@@ -1316,28 +1316,28 @@ button {
 /* Info/Warning/Success/Danger boxes in dark mode */
 [data-theme="dark"] .info-box,
 [data-bs-theme="dark"] .info-box {
-    background-color: rgba(6, 182, 212, 0.15) !important;
+    background-color: var(--primary-tint) !important;
     border-color: rgba(6, 182, 212, 0.5) !important;
     color: #7dd3fc !important;
 }
 
 [data-theme="dark"] .warning-box,
 [data-bs-theme="dark"] .warning-box {
-    background-color: rgba(245, 158, 11, 0.15) !important;
+    background-color: var(--warning-glow) !important;
     border-color: rgba(245, 158, 11, 0.5) !important;
     color: #fcd34d !important;
 }
 
 [data-theme="dark"] .success-box,
 [data-bs-theme="dark"] .success-box {
-    background-color: rgba(16, 185, 129, 0.15) !important;
+    background-color: var(--success-glow) !important;
     border-color: rgba(16, 185, 129, 0.5) !important;
     color: #6ee7b7 !important;
 }
 
 [data-theme="dark"] .danger-box,
 [data-bs-theme="dark"] .danger-box {
-    background-color: rgba(239, 68, 68, 0.15) !important;
+    background-color: var(--danger-glow) !important;
     border-color: rgba(239, 68, 68, 0.5) !important;
     color: #fca5a5 !important;
 }
@@ -1414,7 +1414,7 @@ button {
 /* Primary Button - Cyan gradient needs enhanced text */
 [data-theme="dark"] .btn-primary,
 [data-bs-theme="dark"] .btn-primary {
-    background: linear-gradient(135deg, var(--primary-hover), #0e7490) !important;
+    background: linear-gradient(135deg, var(--primary-strong), var(--primary-hover)) !important;
     border-color: var(--primary) !important;
     color: #ffffff !important;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
@@ -1423,7 +1423,7 @@ button {
 
 [data-theme="dark"] .btn-primary:hover,
 [data-bs-theme="dark"] .btn-primary:hover {
-    background: linear-gradient(135deg, #0e7490, #155e75) !important;
+    background: linear-gradient(135deg, var(--primary-strong), var(--primary-hover)) !important;
     box-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
 }
 
@@ -1478,7 +1478,7 @@ button {
 /* Info Button - Darker cyan for contrast */
 [data-theme="dark"] .btn-info,
 [data-bs-theme="dark"] .btn-info {
-    background: linear-gradient(135deg, var(--primary-hover), #0e7490) !important;
+    background: linear-gradient(135deg, var(--primary-strong), var(--primary-hover)) !important;
     border-color: var(--primary) !important;
     color: #ffffff !important;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
@@ -1487,7 +1487,7 @@ button {
 
 [data-theme="dark"] .btn-info:hover,
 [data-bs-theme="dark"] .btn-info:hover {
-    background: linear-gradient(135deg, #0e7490, #155e75) !important;
+    background: linear-gradient(135deg, var(--primary-strong), var(--primary-hover)) !important;
     box-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
 }
 
@@ -1516,7 +1516,7 @@ button {
 
 [data-theme="dark"] .btn-outline-primary:hover,
 [data-bs-theme="dark"] .btn-outline-primary:hover {
-    background: rgba(6, 182, 212, 0.15) !important;
+    background: var(--primary-tint) !important;
     color: #67e8f9 !important;
     border-color: var(--primary) !important;
 }
@@ -1530,7 +1530,7 @@ button {
 
 [data-theme="dark"] .btn-outline-success:hover,
 [data-bs-theme="dark"] .btn-outline-success:hover {
-    background: rgba(16, 185, 129, 0.15) !important;
+    background: var(--success-glow) !important;
     color: #6ee7b7 !important;
     border-color: var(--success) !important;
 }
@@ -1544,7 +1544,7 @@ button {
 
 [data-theme="dark"] .btn-outline-danger:hover,
 [data-bs-theme="dark"] .btn-outline-danger:hover {
-    background: rgba(239, 68, 68, 0.15) !important;
+    background: var(--danger-glow) !important;
     color: #fca5a5 !important;
     border-color: #f87171 !important;
 }
@@ -1558,7 +1558,7 @@ button {
 
 [data-theme="dark"] .btn-outline-warning:hover,
 [data-bs-theme="dark"] .btn-outline-warning:hover {
-    background: rgba(245, 158, 11, 0.15) !important;
+    background: var(--warning-glow) !important;
     color: #fcd34d !important;
     border-color: var(--warning) !important;
 }
@@ -1572,7 +1572,7 @@ button {
 
 [data-theme="dark"] .btn-outline-info:hover,
 [data-bs-theme="dark"] .btn-outline-info:hover {
-    background: rgba(6, 182, 212, 0.15) !important;
+    background: var(--primary-tint) !important;
     color: #67e8f9 !important;
     border-color: var(--primary) !important;
 }

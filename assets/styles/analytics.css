@@ -1026,3 +1026,11 @@
     background: var(--bg-secondary);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

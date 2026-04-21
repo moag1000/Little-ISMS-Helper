@@ -62,12 +62,6 @@
     --border-color: #e2e8f0;
     --border-color-light: #f1f5f9;
 
-    /* Neon Glow Colors */
-    --glow-cyan: 0 0 10px rgba(6, 182, 212, 0.3), 0 0 20px rgba(6, 182, 212, 0.2);
-    --glow-pink: 0 0 10px rgba(236, 72, 153, 0.3), 0 0 20px rgba(236, 72, 153, 0.2);
-    --glow-purple: 0 0 10px rgba(139, 92, 246, 0.3), 0 0 20px rgba(139, 92, 246, 0.2);
-    --glow-green: 0 0 10px rgba(16, 185, 129, 0.3), 0 0 20px rgba(16, 185, 129, 0.2);
-
     /* Spacing */
     --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;
@@ -85,18 +79,6 @@
     --shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.08);
     --shadow-md: 0 4px 8px rgba(15, 23, 42, 0.12);
     --shadow-lg: 0 8px 16px rgba(15, 23, 42, 0.16);
-    --shadow-neon: 0 0 15px rgba(6, 182, 212, 0.4);
-    --shadow-neon-pink: 0 0 15px rgba(236, 72, 153, 0.4);
-
-    /* Gradients - Cyberpunk Fairy Theme */
-    --gradient-primary: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    --gradient-success: linear-gradient(135deg, var(--success) 0%, #059669 100%);
-    --gradient-warning: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
-    --gradient-danger: linear-gradient(135deg, var(--danger) 0%, var(--danger) 100%);
-    --gradient-info: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-    --gradient-purple: linear-gradient(135deg, var(--accent) 0%, var(--accent) 100%);  /* Mystical purple aura */
-    --gradient-pink: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);    /* Fairy magic glow */
-
     /* Transitions */
     --transition-fast: 0.15s ease;
     --transition-normal: 0.2s ease;
@@ -3591,8 +3573,8 @@ table:not(.no-default-style) td {
 [data-theme="dark"] table:not(.no-default-style) th,
 [data-bs-theme="dark"] table:not(.no-default-style) td,
 [data-bs-theme="dark"] table:not(.no-default-style) th {
-    background-color: #1e293b !important;
-    color: #ffffff !important;
+    background-color: var(--surface) !important;
+    color: var(--fg) !important;
 }
 
 table:not(.no-default-style) thead th {
@@ -3614,13 +3596,13 @@ table:not(.no-default-style) tbody tr:hover {
 
 [data-theme="dark"] table:not(.no-default-style) tbody tr:hover,
 [data-bs-theme="dark"] table:not(.no-default-style) tbody tr:hover {
-    background-color: #334155 !important;
+    background: var(--surface-2) !important;
 }
 
 [data-theme="dark"] table:not(.no-default-style) tbody tr:hover td,
 [data-bs-theme="dark"] table:not(.no-default-style) tbody tr:hover td {
-    color: #ffffff !important;
-    background-color: #334155 !important;
+    color: var(--fg) !important;
+    background-color: var(--surface-2) !important;
 }
 
 /* Fix text-muted in tables for dark mode */

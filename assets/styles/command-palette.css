@@ -29,7 +29,7 @@
 .command-palette-container {
     background: var(--bg-elevated);
     border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(6, 182, 212, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px var(--primary-glow);
     border: 2px solid var(--color-secondary);
     width: 640px;
     max-width: 90vw;
@@ -165,7 +165,7 @@
 .command-item.selected {
     background: linear-gradient(90deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.05));
     border-color: var(--color-secondary);
-    box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+    box-shadow: 0 0 15px var(--primary-glow);
 }
 
 .command-item.selected {
@@ -245,7 +245,7 @@
     margin: 0 2px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", monospace;
     color: var(--color-secondary);
-    box-shadow: 0 0 8px rgba(6, 182, 212, 0.2);
+    box-shadow: 0 0 8px var(--primary-glow);
 }
 
 /* Utility */
