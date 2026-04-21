@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'compliance.mapping.seed_review.title'|trans({}, 'compliance') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index') },
+            { label: 'compliance.mapping.hub.title'|trans({}, 'compliance'), url: path('app_compliance_mapping_hub') },
+            { label: 'compliance.mapping.seed_review.title'|trans({}, 'compliance') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-person-check" aria-hidden="true"></i>
+                {{ 'compliance.mapping.seed_review.title'|trans({}, 'compliance') }}
+            </h1>
+            <p class="text-muted mb-0">{{ 'compliance.mapping.seed_review.subtitle'|trans({}, 'compliance') }}</p>
+        </div>
+    </div>
+
+    {% include '_components/_iso9001_analogy.html.twig' with { variant: 'quality' } %}
+
+    {# Filter-Buttons nach Herkunft #}
+    <div class="mb-3 d-flex flex-wrap gap-2">
+        <a href="{{ path('app_compliance_mapping_seed_review', {origin: 'all'}) }}"
+           class="btn btn-sm {% if filter == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+            {{ 'compliance.mapping.seed_review.filter.all'|trans({}, 'compliance') }}
+            <span class="badge text-bg-light ms-1">{{ counts.all|default(0) }}</span>
+        </a>
+        {% for origin, n in counts %}
+            {% if origin != 'all' %}
+                <a href="{{ path('app_compliance_mapping_seed_review', {origin: origin}) }}"
+                   class="btn btn-sm {% if filter == origin %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                    <code>{{ origin }}</code>
+                    <span class="badge text-bg-light ms-1">{{ n }}</span>
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {% if mappings|length == 0 %}
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle" aria-hidden="true"></i>
+            {{ 'compliance.mapping.seed_review.empty'|trans({}, 'compliance') }}
+        </div>
+    {% else %}
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <strong>
+                    {{ 'compliance.mapping.seed_review.queue_heading'|trans({'%count%': mappings|length}, 'compliance') }}
+                </strong>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>{{ 'compliance.mapping.seed_review.col.source'|trans({}, 'compliance') }}</th>
+                            <th>{{ 'compliance.mapping.seed_review.col.target'|trans({}, 'compliance') }}</th>
+                            <th>{{ 'compliance.mapping.seed_review.col.type'|trans({}, 'compliance') }}</th>
+                            <th>{{ 'compliance.mapping.seed_review.col.origin'|trans({}, 'compliance') }}</th>
+                            <th class="text-end">{{ 'compliance.mapping.seed_review.col.actions'|trans({}, 'compliance') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for m in mappings %}
+                            <tr>
+                                <td>
+                                    <small class="text-muted">{{ m.sourceRequirement.framework.code }}</small><br>
+                                    <a href="{{ path('app_compliance_mapping_show', {id: m.id}) }}">
+                                        <code>{{ m.sourceRequirement.requirementId }}</code>
+                                    </a>
+                                    <div class="small text-muted">{{ m.sourceRequirement.title|u.truncate(60, '…') }}</div>
+                                </td>
+                                <td>
+                                    <small class="text-muted">{{ m.targetRequirement.framework.code }}</small><br>
+                                    <code>{{ m.targetRequirement.requirementId }}</code>
+                                    <div class="small text-muted">{{ m.targetRequirement.title|u.truncate(60, '…') }}</div>
+                                </td>
+                                <td>
+                                    <span class="badge text-bg-{{ m.mappingBadgeClass }}">{{ m.mappingType }}</span>
+                                    <div class="small text-muted">{{ m.finalPercentage }}%</div>
+                                </td>
+                                <td>
+                                    <code class="small">{{ m.verifiedBy|default('—') }}</code>
+                                </td>
+                                <td class="text-end">
+                                    <form method="post"
+                                          action="{{ path('app_compliance_mapping_seed_review_approve', {id: m.id}) }}"
+                                          class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('seed_review_' ~ m.id) }}">
+                                        <input type="hidden" name="origin" value="{{ filter }}">
+                                        <button type="submit" class="btn btn-sm btn-success" title="{{ 'compliance.mapping.seed_review.action.approve'|trans({}, 'compliance') }}">
+                                            <i class="bi bi-check-lg" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                    <form method="post"
+                                          action="{{ path('app_compliance_mapping_seed_review_reject', {id: m.id}) }}"
+                                          class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('seed_review_' ~ m.id) }}">
+                                        <input type="hidden" name="origin" value="{{ filter }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="{{ 'compliance.mapping.seed_review.action.reject'|trans({}, 'compliance') }}">
+                                            <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

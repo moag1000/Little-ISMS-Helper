@@ -146,6 +146,22 @@ compliance:
     mapping:
         confirm:
             delete: 'Möchten Sie diese Zuordnung wirklich löschen?'
+        seed_review:
+            title: 'Seed-Review-Queue'
+            subtitle: 'Maschinell erstellte Mappings (Seeds, CSV-Import, Wizard, Migration) prüfen und freigeben.'
+            queue_heading: 'Ungeprüfte Mappings (%count%)'
+            empty: 'Alle maschinell erstellten Mappings sind geprüft. Gute Arbeit!'
+            filter:
+                all: 'Alle'
+            col:
+                source: 'Quelle'
+                target: 'Ziel'
+                type: 'Typ'
+                origin: 'Herkunft'
+                actions: 'Aktionen'
+            action:
+                approve: 'Freigeben'
+                reject: 'Ablehnen'
         import:
             title: 'CSV-Mapping-Import'
             description: 'Consultant-Mapping-Tabelle hochladen — mit Dry-Run-Preview vor dem Commit.'
@@ -214,6 +230,9 @@ compliance:
                 import:
                     title: 'CSV-Import'
                     desc: 'Consultant-Mapping-Tabellen hochladen mit Dry-Run-Preview.'
+                seed_review:
+                    title: 'Seed-Review-Queue'
+                    desc: 'Maschinell erstellte Mappings prüfen — Audit-Antwort auf „wer hat das gemacht?".'
             recent:
                 heading: 'Zuletzt geänderte Mappings'
                 all_link: 'Alle anzeigen'
