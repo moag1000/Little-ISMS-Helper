@@ -24,7 +24,7 @@
         <div class="col-lg-8">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header">
                         <h2 class="mb-0">
                             <i class="bi bi-qr-code" aria-hidden="true"></i>
                             {{ 'mfa.setup_totp.step1'|trans({}, 'mfa') }}
@@ -89,7 +89,7 @@
                     data-mfa-setup-error-text-value="{{ 'common.error'|trans({}, 'messages') }}"
                 {% endblock %}
                 {% block card_header %}
-                    <div class="card-header bg-success text-white">
+                    <div class="card-header">
                         <h2 class="mb-0">
                             <i class="bi bi-check-circle" aria-hidden="true"></i>
                             {{ 'mfa.setup_totp.step2'|trans({}, 'mfa') }}

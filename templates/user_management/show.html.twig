@@ -43,7 +43,7 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header">
                         <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'user.section.basic_info'|trans({}, 'user') }}</h2>
                     </div>
                 {% endblock %}
@@ -99,7 +99,7 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-success text-white">
+                    <div class="card-header">
                         <h2 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'user.section.security_status'|trans({}, 'user') }}</h2>
                     </div>
                 {% endblock %}
@@ -214,7 +214,7 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-info text-white">
+                    <div class="card-header">
                         <h2 class="mb-0"><i class="bi bi-key" aria-hidden="true"></i> {{ 'user.section.custom_roles'|trans({}, 'user') }}</h2>
                     </div>
                 {% endblock %}
