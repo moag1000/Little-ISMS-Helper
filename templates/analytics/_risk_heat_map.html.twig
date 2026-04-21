@@ -140,7 +140,8 @@
             <div class="details-header">
                 <h3 data-heat-map-target="detailsTitle">{{ 'analytics.details.risks_in_cell'|trans({}, 'analytics') }}</h3>
                 <button class="btn-close btn-sm"
-                        data-action="click->heat-map#closeDetails"></button>
+                        data-action="click->heat-map#closeDetails"
+                        aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
             </div>
             <div class="details-body" data-heat-map-target="detailsList">
                 {# Will be populated by JavaScript #}
