@@ -375,8 +375,12 @@
         {# Import map moved to head section to prevent Turbo reload conflicts #}
     {% endblock %}
 
-    {# PWA Service Worker Registration #}
-    <script>
+    {# PWA Service Worker Registration — data-turbo-eval="false" weil das Script
+       Listener einmalig global registriert; bei Turbo-Navigation darf es nicht
+       erneut laufen (würde 'let deferredPrompt' redeclarieren → SyntaxError).
+       Wraps zusätzlich in IIFE damit alle Identifier scope-lokal bleiben. #}
+    <script data-turbo-eval="false">
+        (function() {
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js', { scope: '/' })
@@ -426,6 +430,7 @@
             document.body.classList.add('offline');
             console.log('[PWA] Went offline');
         });
+        })();
     </script>
 </body>
 </html>
