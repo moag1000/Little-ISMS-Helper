@@ -49,7 +49,7 @@
                 {% endfor %}
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-arrow-repeat me-1" aria-hidden="true"></i>{{ 'wizard.update_comparison'|trans }}
+                        <i class="bi bi-arrow-repeat me-1" aria-hidden="true"></i>{{ 'wizard.update_comparison'|trans({}, 'wizard') }}
                     </button>
                 </div>
             </form>
@@ -83,11 +83,11 @@
                             'partial': 'warning',
                             'in_progress': 'info'
                         }[result.status]|default('danger') %}
-                        {% include '_components/_badge.html.twig' with { variant: status_variant, content: ('wizard.status.' ~ result.status)|trans } %}
+                        {% include '_components/_badge.html.twig' with { variant: status_variant, content: ('wizard.status.' ~ result.status)|trans({}, 'wizard') } %}
                         <div class="mt-3">
                             <small class="text-muted">
                                 <i class="bi bi-flag text-danger me-1" aria-hidden="true"></i>
-                                {{ result.critical_gap_count }} {{ 'wizard.critical_gaps'|trans }}
+                                {{ result.critical_gap_count }} {{ 'wizard.critical_gaps'|trans({}, 'wizard') }}
                             </small>
                         </div>
                     </div>
@@ -95,7 +95,7 @@
                 {% block card_footer %}
                     <div class="card-footer bg-transparent text-center">
                         <a href="{{ path('app_compliance_wizard_assess', {wizard: key}) }}" class="btn btn-sm btn-outline-{{ available_wizards[key].color|default('secondary') }}">
-                            {{ 'wizard.view_details'|trans }}
+                            {{ 'wizard.view_details'|trans({}, 'wizard') }}
                         </a>
                     </div>
                 {% endblock %}
@@ -108,7 +108,7 @@
     {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
         {% block card_header %}
             <div class="card-header">
-                <h2 class="card-title h5 mb-0">{{ 'wizard.category_comparison'|trans }}</h2>
+                <h2 class="card-title h5 mb-0">{{ 'wizard.category_comparison'|trans({}, 'wizard') }}</h2>
             </div>
         {% endblock %}
         {% block card_body %}
@@ -116,7 +116,7 @@
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th scope="col">{{ 'wizard.category'|trans }}</th>
+                            <th scope="col">{{ 'wizard.category'|trans({}, 'wizard') }}</th>
                             {% for key, result in results %}
                             <th scope="col" class="text-center" style="min-width: 120px;">
                                 {% include '_components/_badge.html.twig' with { variant: available_wizards[key].color|default('secondary'), content: result.framework } %}
@@ -136,7 +136,7 @@
                         {% for cat_key, cat_name in all_categories %}
                         <tr>
                             <td>
-                                <strong>{{ cat_name|trans }}</strong>
+                                <strong>{{ cat_name|trans({}, 'wizard') }}</strong>
                             </td>
                             {% for key, result in results %}
                             <td class="text-center">
@@ -169,7 +169,7 @@
                     </tbody>
                     <tfoot class="table-light">
                         <tr>
-                            <th scope="col">{{ 'wizard.overall'|trans }}</th>
+                            <th scope="col">{{ 'wizard.overall'|trans({}, 'wizard') }}</th>
                             {% for key, result in results %}
                             <th scope="col" class="text-center">
                                 <span class="fs-5 fw-bold
@@ -192,7 +192,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="card-title h5 mb-0">
-                    <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>{{ 'wizard.insights'|trans }}
+                    <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>{{ 'wizard.insights'|trans({}, 'wizard') }}
                 </h2>
             </div>
         {% endblock %}
@@ -221,42 +221,42 @@
             <div class="row">
                 <div class="col-md-4 text-center mb-3">
                     <div class="display-5 fw-bold text-primary">{{ avg_score }}%</div>
-                    <p class="text-muted mb-0">{{ 'wizard.average_compliance'|trans }}</p>
+                    <p class="text-muted mb-0">{{ 'wizard.average_compliance'|trans({}, 'wizard') }}</p>
                 </div>
                 <div class="col-md-4 text-center mb-3">
                     <div class="display-5 fw-bold text-success">{{ best_score }}%</div>
-                    <p class="text-muted mb-0">{{ 'wizard.best_framework'|trans }}: {{ best_framework }}</p>
+                    <p class="text-muted mb-0">{{ 'wizard.best_framework'|trans({}, 'wizard') }}: {{ best_framework }}</p>
                 </div>
                 <div class="col-md-4 text-center mb-3">
                     <div class="display-5 fw-bold text-danger">{{ worst_score }}%</div>
-                    <p class="text-muted mb-0">{{ 'wizard.needs_attention'|trans }}: {{ worst_framework }}</p>
+                    <p class="text-muted mb-0">{{ 'wizard.needs_attention'|trans({}, 'wizard') }}: {{ worst_framework }}</p>
                 </div>
             </div>
 
             <hr>
 
-            <h3 class="h6">{{ 'wizard.recommendations'|trans }}</h3>
+            <h3 class="h6">{{ 'wizard.recommendations'|trans({}, 'wizard') }}</h3>
             <ul>
                 {% if worst_score < 60 %}
-                <li>{{ 'wizard.rec_priority_framework'|trans({'%framework%': worst_framework}) }}</li>
+                <li>{{ 'wizard.rec_priority_framework'|trans({'%framework%': worst_framework}, 'wizard') }}</li>
                 {% endif %}
                 {% if avg_score < 80 %}
-                <li>{{ 'wizard.rec_improve_controls'|trans }}</li>
+                <li>{{ 'wizard.rec_improve_controls'|trans({}, 'wizard') }}</li>
                 {% endif %}
-                <li>{{ 'wizard.rec_regular_assessment'|trans }}</li>
+                <li>{{ 'wizard.rec_regular_assessment'|trans({}, 'wizard') }}</li>
             </ul>
         {% endblock %}
     {% endembed %}
     {% else %}
     <div class="alert alert-info">
-        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ 'wizard.select_frameworks_hint'|trans }}
+        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ 'wizard.select_frameworks_hint'|trans({}, 'wizard') }}
     </div>
     {% endif %}
 
     {# Navigation #}
     <div class="d-flex justify-content-between mt-4">
         <a href="{{ path('app_compliance_wizard_index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>{{ 'wizard.back_to_wizards'|trans }}
+            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>{{ 'wizard.back_to_wizards'|trans({}, 'wizard') }}
         </a>
     </div>
 </div>
