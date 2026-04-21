@@ -71,14 +71,14 @@
                 <div class="welcome-logo mb-4 d-flex justify-content-center">
                     {{ alva.render('happy', { size: 180, ariaLabel: 'welcome.logo_alt'|trans({}, 'welcome') })|raw }}
                 </div>
-                <h1 class="h3 text-muted mb-3">{{ 'welcome.headline'|trans({}, 'welcome') }}</h1>
-                <p class="lead text-muted mb-2">
+                <h1 class="h3 mb-3 welcome-hero__title">{{ 'welcome.headline'|trans({}, 'welcome') }}</h1>
+                <p class="lead mb-2 welcome-hero__lead">
                     {{ 'welcome.tagline'|trans({}, 'welcome') }}
                 </p>
 
                 {# Dynamic Compliance Status Line #}
                 {% if overall_compliance is defined and overall_compliance > 0 %}
-                    <p class="lead text-muted mb-4">
+                    <p class="lead mb-4 welcome-hero__lead">
                         {{ 'welcome.hero.status'|trans({
                             '%compliance%': overall_compliance,
                             '%urgent%': total_urgent_count|default(0),
