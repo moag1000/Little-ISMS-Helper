@@ -155,12 +155,15 @@
     --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
-    /* — Alva-CSS-Custom-Properties (für Logo-SVG und zentralen Character) — */
+    /* — Alva-CSS-Custom-Properties (für Logo-SVG und zentralen Character) —
+       alva-fg = Kopf/Körper-Fill (bright in Dark, dark in Light)
+       alva-ink = INVERSE (dark in Dark, light in Light) damit Face-Features
+                  auf dem Kopf-Fill IMMER sichtbar sind. */
     --alva-primary: var(--primary);
     --alva-accent:  var(--accent);
     --alva-aura:    var(--fairy-aura);
     --alva-fg:      var(--fg);
-    --alva-ink:     var(--fg);
+    --alva-ink:     var(--bg);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
