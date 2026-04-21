@@ -51,6 +51,10 @@ ui:
         tip: 'Tip: Press <kbd>Cmd</kbd>+<kbd>K</kbd> to open search'
     theme:
         toggle_title: 'Toggle Dark Mode (Current: %current%)'
+        switch_title: 'Switch color mode'
+        light: 'Light'
+        dark: 'Dark'
+        system: 'System'
     keyboard:
         navigation: Navigation
         select: Select

@@ -166,3 +166,124 @@ zu Data-Attributes + CSS-Var-Read.
 FA-10 ist der dominante Treiber. Begründung: viele bisher unentdeckte
 Templates + bestehender architektonischer Fehler (broken extends) +
 Inline-CSS-Pattern pro Template (keine Vererbung).
+
+---
+
+## IV. Stimulus-Controller (Agent-Scan 2026-04-21)
+
+**60 Controller total**: 50+ Aurora-agnostisch (KEEP_AS_IS), 5-7 Konflikt-Zonen.
+
+### Aurora-Konflikt-Zonen
+
+| Controller | Status | Handlung |
+|------------|--------|----------|
+| `toast` (toast_controller.js) | **DUPLICATE** von `aurora_alert` | konsolidieren → aurora_alert ersetzt |
+| `notifications` (notifications_controller.js) | **NEEDS_RESTYLE** | hardcoded `.text-success/.text-danger`-Classes → Aurora-Tokens |
+| `notification` (notification_controller.js) | **NEEDS_RESTYLE** | hardcoded `.notification-*`-CSS-Classes → Aurora-Anim-System |
+| `gdpr_breach_wizard` | **UNCLEAR** | prüfen auf hardcoded Hex in Step-Rendering |
+| `report_designer` | **UNCLEAR** | prüfen auf Chart-Colors |
+| `workflow_builder` | **UNCLEAR** | prüfen auf Node-Colors |
+
+### High-Use Controllers (breit genutzt)
+
+- `ui-actions` (95 Template-Uses) — print/confirm/copy, Aurora-agnostisch
+- `bulk-actions` (12 Uses) — reine Logik
+- `analytics` (9 Uses) — Tracking
+- `toggle` (6 Uses) — generic Show/Hide
+- `modal` (3 Uses) — WCAG-Modal mit Focus-Trap
+- `notifications` (2 Uses) — Notification-Center/Bell
+
+### Empfehlung
+
+- FA-3 MVP läuft ohne Breaking: die 55 anderen Controller brauchen nichts.
+- Toast→Aurora-Alert-Migration: 0,5 FTE-d (Flash-Bridge schon aurora_alert).
+- Notification-Restyle: 0,5 FTE-d (Bell-Dropdown in FA-9).
+- 3 Unclear-Controller: 1 FTE-d Audit + Patch.
+
+---
+
+## V. Modal / Dropdown / Bell (Agent-Scan 2026-04-21)
+
+**10 dedizierte Dropdown/Modal-Komponenten**. Recycle-Score für Plan § 20: **30-40 %**.
+
+### Tabelle
+
+| Name | Typ | Trigger | Aurora-Ready? | Callers |
+|------|-----|---------|---------------|---------|
+| Command Palette | Stimulus-Custom | ⌘K / Ctrl+P | **JA** (CSS-Vars) | 1 |
+| Notification Bell + Center | Stimulus-Custom | Click-Badge | TEIL (Logik OK) | 1+1 |
+| Quick View Modal | Stimulus-Custom | Space/Click | TEIL (Struktur OK, CSS minimal) | 2 |
+| User Menu | CSS-only Hover | Click Avatar | **NEIN** (hardcoded, kein var()) | 1 |
+| Mega Menu (2-Level) | Stimulus-Custom | Click Kategorie | TEIL (Stimulus OK) | 2 |
+| Global Search | Stimulus-Custom | ⌘K / Button | **JA** (CSS-Vars, fetch) | 1 |
+| Bulk Delete Modal | Bootstrap Modal | Click Delete | **NEIN** (hardcoded Danger) | 10 |
+| Dashboard Settings | Bootstrap Modal | Click Gear | TEIL (inline `<style>`) | 1 |
+| Preferences Modal | Stimulus-Custom | undefiniert | **NEIN** (hardcoded DE-Strings) | 1 |
+| Inheritance Review Panel | Inline Section | Embedded | NEIN (Bootstrap-only) | N/A |
+
+### Insights
+
+- **⌘K-Konflikt:** `command-palette` UND `global-search` lauschen beide auf ⌘K → Priorität prüfen
+- **Tenant-Switch FEHLT komplett** → neu bauen für Plan § 20
+- **API-Pattern existiert:** Global-Search nutzt `app_api_search` via fetch() — Blueprint für Aurora-Dropdown-Data-Loading
+
+### Empfehlung Plan § 20 Unified-Dropdown-Panel
+
+- Command-Palette + Global-Search als **Templates** für Aurora-Panel-Pattern (beide schon Aurora-kompatibel)
+- Mega-Menu 2-Level-Logik für Bell-Notifications übernehmen
+- User-Menu komplett neu (Stimulus + Aurora-Panel)
+- Bulk-Delete + Preferences-Modal neu als `_confirmation_dialog` (§ 29)
+
+---
+
+## VI. Stepper / Wizard / Multi-Step (Agent-Scan 2026-04-21)
+
+**8 existierende Multi-Step-Prozesse**, aber **kein unified Stepper**.
+
+### Tabelle
+
+| Prozess | Schritte | Pattern | Navigation | Progress | Controller |
+|---------|---------|---------|-----------|----------|------------|
+| Setup-Wizard | 11 | Vertical-Linear | Next/Back | Bootstrap %-Bar | `DeploymentWizardController` |
+| Compliance Import | 3 | **Horizontal Badge-Stepper** (reusable `_stepper.html.twig`!) | Next/Back | Badge 1/2/3 + Status-Icon | `ComplianceImportController` |
+| Mapping-Wizard | 4 | Stacked Card-Steps | Conditional (Step 2 skip) | keiner | inline Stimulus `mapping_wizard_controller` |
+| GDPR Breach Modal | 4 | Vertical Modal-Stepper | Next/Back | %-Bar + Text | `gdpr_breach_wizard_controller` |
+| Incident Response | 1-2 | Single Form | Submit | NIS2-Alert-Banner | `IncidentController` |
+| DPIA Assessment | - | Dashboard | Free-Nav | keiner | `DPIAController` |
+| Risk Treatment | 1 | Form + Matrix | Submit | keiner | `RiskController` |
+| BCM Exercise | - | Dashboard | Free-Nav | keiner | `BCMController` |
+
+### Kritische Befunde
+
+1. **Zwei unabhängige Stepper-Pattern**: Setup-Wizard (Vertical Linear) vs. Compliance-Import (Horizontal Badge). Kein Single-Point-of-Truth.
+2. **Kein 2-Col Alva-Left-Panel-Pattern existiert** — Plan § 13 muss neu gebaut werden, nichts zum Recyceln.
+3. **Compliance-Import `_stepper.html.twig`** ist der einzige komponentisierte Stepper — hat aber hardcoded 3 Steps, keine Slot-API.
+4. **4 Stepper-Engines parallel**: URL-Route (Setup), Twig-Variable (Compliance), JS-State (Mapping), Modal-State (GDPR) — keine Konvention.
+
+### Empfehlung FA-9 Aurora-Stepper
+
+- Neu bauen: `_aurora_stepper.html.twig` mit Slots (Nav, Form, Footer)
+- `aurora_stepper_controller.js` für Step-State + Validation-Flow + localStorage-Persistence
+- Migrationsreihenfolge:
+  1. Mapping-Wizard (4 Steps, JS schon da → einfachste Migration)
+  2. Compliance-Import (3 Steps, eigener Stepper → konsolidieren)
+  3. GDPR-Breach-Modal (4 Steps, aber Modal-gebunden → länger)
+  4. Setup-Wizard (11 Steps, URL-Route-basiert → FA-5 Scope)
+
+**FTE für unified Aurora-Stepper:** 2-3 FTE-d (passt zu FA-9 Scope 2,0 FTE-d knapp).
+
+---
+
+## Netto-FTE-Update (nach allen 6 Agent-Inventuren)
+
+| Phase | Plan (alt) | Agent-Revisiert | Delta |
+|-------|-----------|-----------------|-------|
+| FA-7  | 3,0 | 2,5 | -0,5 |
+| FA-9  | 2,0 | 2,5-3,0 | +0,5 |
+| FA-10 | 1,5 | 6,0 | **+4,5** |
+| **Total** | 36,0 | **40,5-41,0** | **+4,5 bis +5,0** |
+
+Zusätzlich (nicht in Phasen-Tabelle, aber relevant):
+- Toast-Controller-Konsolidierung: 0,5 FTE-d (in FA-3 oder FA-9 absorbiert)
+- 3 Unclear-Controller-Audits: 1,0 FTE-d (FA-7 absorbiert)
+- User-Menu + Preferences-Modal Neu-Bau: 1,5 FTE-d (FA-9 Scope)
