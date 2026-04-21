@@ -6,20 +6,31 @@
     <meta name="turbo-cache-control" content="no-cache">
     <title>{% block title %}{{ 'app.title'|trans({}, 'messages') }}{% endblock %}</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
-    {# PWA Support - Phase 8A #}
+    {# PWA Support - Phase 8A (FairyAurora v3.0) #}
     <link rel="manifest" href="{{ asset('manifest.json') }}">
-    <meta name="theme-color" content="#06b6d4">
+    <meta name="theme-color" content="#0284c7" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#38bdf8" media="(prefers-color-scheme: dark)">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ISMS Helper">
-    <link rel="apple-touch-icon" href="{{ asset('icons/icon-192x192.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('icons/icon-152x152.png') }}">
     <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('icons/icon-192x192.png') }}">
     <link rel="apple-touch-icon" sizes="512x512" href="{{ asset('icons/icon-512x512.png') }}">
     <meta name="msapplication-TileImage" content="{{ asset('icons/icon-144x144.png') }}">
-    <meta name="msapplication-TileColor" content="#0d1117">
+    <meta name="msapplication-TileColor" content="#0a0e1a">
+
+    {# Open Graph — Alva Brand #}
+    <meta property="og:image" content="{{ asset('og-image.png') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Little ISMS Helper">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{{ asset('og-image.png') }}">
 
     {# Skip Link Styles - WCAG 2.1 AA Requirement #}
     <style>

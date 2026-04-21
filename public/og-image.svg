@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="og-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0e1a"/>
+      <stop offset="60%" stop-color="#141829"/>
+      <stop offset="100%" stop-color="#0a0e1a"/>
+    </linearGradient>
+    <radialGradient id="og-glow" cx="30%" cy="50%" r="35%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="og-glow2" cx="75%" cy="55%" r="30%">
+      <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="og-aura" cx="50%" cy="55%" r="55%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.55"/>
+      <stop offset="55%" stop-color="#6366f1" stop-opacity="0.17"/>
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="og-wing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#a78bfa" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="og-brandmark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#og-bg)"/>
+  <rect width="1200" height="630" fill="url(#og-glow)"/>
+  <rect width="1200" height="630" fill="url(#og-glow2)"/>
+
+  <g stroke="#232845" stroke-width="0.5" opacity="0.4">
+    <line x1="0" y1="157" x2="1200" y2="157"/>
+    <line x1="0" y1="315" x2="1200" y2="315"/>
+    <line x1="0" y1="472" x2="1200" y2="472"/>
+    <line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="900" y1="0" x2="900" y2="630"/>
+  </g>
+
+  <g transform="translate(260, 195) scale(2.0)">
+    <circle cx="60" cy="62" r="56" fill="url(#og-aura)"/>
+    <path d="M55 50 Q20 30 14 54 Q16 72 44 66 Q52 62 55 52 Z" fill="url(#og-wing)"/>
+    <path d="M65 50 Q100 30 106 54 Q104 72 76 66 Q68 62 65 52 Z" fill="url(#og-wing)"/>
+    <path d="M56 64 Q34 72 32 86 Q40 92 54 82 Q58 76 56 66 Z" fill="url(#og-wing)" opacity="0.6"/>
+    <path d="M64 64 Q86 72 88 86 Q80 92 66 82 Q62 76 64 66 Z" fill="url(#og-wing)" opacity="0.6"/>
+    <path d="M60 44 Q64.5 46 64.5 54 Q63 58 63 62 Q64.5 66 64 74 Q62 80 60 82 Q58 80 56 74 Q55.5 66 57 62 Q57 58 55.5 54 Q55.5 46 60 44 Z" fill="#e9eaf5" opacity="0.92"/>
+    <ellipse cx="60" cy="39" rx="7.5" ry="8.5" fill="#e9eaf5" opacity="0.97"/>
+    <circle cx="60" cy="30" r="0.9" fill="#a78bfa"/>
+    <path d="M54 32.5 Q60 29.5 66 32.5" stroke="#a78bfa" stroke-width="0.7" stroke-linecap="round" fill="none" opacity="0.75"/>
+    <circle cx="57" cy="38" r="1.15" fill="#0a0e1a"/>
+    <circle cx="63" cy="38" r="1.15" fill="#0a0e1a"/>
+    <path d="M57.3 42.2 Q60 43.7 62.7 42.2" stroke="#0a0e1a" stroke-width="0.7" stroke-linecap="round" fill="none"/>
+    <line x1="55" y1="70" x2="36" y2="90" stroke="#a78bfa" stroke-width="1.3" stroke-linecap="round"/>
+    <circle cx="36" cy="90" r="2.8" fill="#a78bfa"/>
+    <circle cx="36" cy="90" r="5" fill="#a78bfa" opacity="0.25"/>
+  </g>
+
+  <g transform="translate(600, 250)">
+    <rect x="0" y="-40" width="48" height="48" rx="8" fill="url(#og-brandmark)"/>
+    <text x="24" y="-6" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" font-weight="700" fill="#0a0e1a">✦</text>
+    <text x="68" y="-8" font-family="system-ui, sans-serif" font-size="54" font-weight="600" fill="#e9eaf5" letter-spacing="-1">Little ISMS Helper</text>
+    <text x="68" y="34" font-family="ui-monospace, monospace" font-size="18" font-weight="500" fill="#38bdf8" letter-spacing="3" text-transform="uppercase">ISMS · ISO 27001 · NIS-2 · DORA</text>
+    <text x="68" y="110" font-family="system-ui, sans-serif" font-size="28" font-weight="400" fill="#b9bad4">Informationssicherheit mit Alva als Begleitung.</text>
+    <text x="68" y="148" font-family="system-ui, sans-serif" font-size="28" font-weight="400" fill="#b9bad4">Multi-Framework · Multi-Tenant · A11y-ready.</text>
+  </g>
+
+  <g stroke="#38bdf8" stroke-width="2" fill="none" opacity="0.7">
+    <path d="M40 40 L40 60 M40 40 L60 40"/>
+    <path d="M1160 40 L1160 60 M1160 40 L1140 40"/>
+    <path d="M40 590 L40 570 M40 590 L60 590"/>
+    <path d="M1160 590 L1160 570 M1160 590 L1140 590"/>
+  </g>
+</svg>
