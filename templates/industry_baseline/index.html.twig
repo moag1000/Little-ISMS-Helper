@@ -33,26 +33,29 @@
             {% for baseline in baselines %}
                 {% set applied = baseline.code in applied_codes %}
                 {% set inheritedRecord = inherited[baseline.code]|default(null) %}
+                {% set cardExtra = 'shadow-sm h-100' ~ (applied ? ' border-success' : (inheritedRecord ? ' border-info' : '')) %}
                 <div class="col">
-                    <div class="card shadow-sm h-100 {% if applied %}border-success{% elseif inheritedRecord %}border-info{% endif %}">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h2 class="h6 mb-0">
-                                <i class="bi bi-box-seam me-1" aria-hidden="true"></i>
-                                {{ baseline.name }}
-                            </h2>
-                            {% if applied %}
-                                <span class="badge bg-success">
-                                    <i class="bi bi-check-circle" aria-hidden="true"></i>
-                                    {{ 'industry_baseline.status.applied'|trans({}, 'industry_baseline') }}
-                                </span>
-                            {% elseif inheritedRecord %}
-                                <span class="badge bg-info" title="{{ 'industry_baseline.status.inherited_from'|trans({'%tenant%': inheritedRecord.tenant.name}, 'industry_baseline') }}">
-                                    <i class="bi bi-diagram-3" aria-hidden="true"></i>
-                                    {{ 'industry_baseline.status.inherited_short'|trans({}, 'industry_baseline') }}
-                                </span>
-                            {% endif %}
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { class: cardExtra } %}
+                        {% block card_header %}
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h2 class="h6 mb-0">
+                                    <i class="bi bi-box-seam me-1" aria-hidden="true"></i>
+                                    {{ baseline.name }}
+                                </h2>
+                                {% if applied %}
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                        {{ 'industry_baseline.status.applied'|trans({}, 'industry_baseline') }}
+                                    </span>
+                                {% elseif inheritedRecord %}
+                                    <span class="badge bg-info" title="{{ 'industry_baseline.status.inherited_from'|trans({'%tenant%': inheritedRecord.tenant.name}, 'industry_baseline') }}">
+                                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                                        {{ 'industry_baseline.status.inherited_short'|trans({}, 'industry_baseline') }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div class="mb-2 small">
                                 <span class="badge bg-secondary me-1">
                                     {{ ('industry_baseline.industry.' ~ baseline.industry)|trans({}, 'industry_baseline') }}
@@ -77,13 +80,15 @@
                                 <dt class="col-sm-5">{{ 'industry_baseline.field.fte_saved'|trans({}, 'industry_baseline') }}:</dt>
                                 <dd class="col-sm-7"><strong class="text-success">{{ baseline.fteDaysSavedEstimate|number_format(1) }}</strong></dd>
                             </dl>
-                        </div>
-                        <div class="card-footer bg-transparent border-top-0">
-                            <a href="{{ path('app_industry_baseline_show', {code: baseline.code}) }}" class="btn btn-outline-primary btn-sm w-100">
-                                {{ 'industry_baseline.action.details'|trans({}, 'industry_baseline') }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                    </div>
+                        {% endblock %}
+                        {% block card_footer %}
+                            <div class="card-footer bg-transparent border-top-0">
+                                <a href="{{ path('app_industry_baseline_show', {code: baseline.code}) }}" class="btn btn-outline-primary btn-sm w-100">
+                                    {{ 'industry_baseline.action.details'|trans({}, 'industry_baseline') }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             {% endfor %}
         </div>

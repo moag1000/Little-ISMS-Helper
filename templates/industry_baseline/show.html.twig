@@ -70,26 +70,30 @@
 
     <div class="row">
         <div class="col-md-7">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header">
-                    <h2 class="h5 mb-0">{{ 'industry_baseline.field.description'|trans({}, 'industry_baseline') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">{{ 'industry_baseline.field.description'|trans({}, 'industry_baseline') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p>{{ baseline.description|nl2br }}</p>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Preset Risks #}
             {% if baseline.presetRisks|length > 0 %}
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header">
-                        <h2 class="h5 mb-0">
-                            <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
-                            {{ 'industry_baseline.field.preset_risks'|trans({}, 'industry_baseline') }}
-                            <span class="badge bg-secondary ms-1">{{ baseline.presetRisks|length }}</span>
-                        </h2>
-                    </div>
-                    <div class="card-body p-0">
+                {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4', noPadding: true } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="h5 mb-0">
+                                <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
+                                {{ 'industry_baseline.field.preset_risks'|trans({}, 'industry_baseline') }}
+                                <span class="badge bg-secondary ms-1">{{ baseline.presetRisks|length }}</span>
+                            </h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         <table class="table table-hover mb-0 align-middle">
                             <thead class="table-light">
                                 <tr>
@@ -118,21 +122,23 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
 
             {# Preset Assets #}
             {% if baseline.presetAssets|length > 0 %}
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header">
-                        <h2 class="h5 mb-0">
-                            <i class="bi bi-box text-primary" aria-hidden="true"></i>
-                            {{ 'industry_baseline.field.preset_assets'|trans({}, 'industry_baseline') }}
-                            <span class="badge bg-secondary ms-1">{{ baseline.presetAssets|length }}</span>
-                        </h2>
-                    </div>
-                    <div class="card-body p-0">
+                {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4', noPadding: true } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="h5 mb-0">
+                                <i class="bi bi-box text-primary" aria-hidden="true"></i>
+                                {{ 'industry_baseline.field.preset_assets'|trans({}, 'industry_baseline') }}
+                                <span class="badge bg-secondary ms-1">{{ baseline.presetAssets|length }}</span>
+                            </h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         <table class="table table-hover mb-0 align-middle">
                             <thead class="table-light">
                                 <tr>
@@ -158,51 +164,57 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
 
             {# Preset Controls #}
             {% if baseline.presetApplicableControls|length > 0 %}
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header">
-                        <h2 class="h5 mb-0">
-                            <i class="bi bi-list-check text-success" aria-hidden="true"></i>
-                            {{ 'industry_baseline.field.preset_controls'|trans({}, 'industry_baseline') }}
-                            <span class="badge bg-secondary ms-1">{{ baseline.presetApplicableControls|length }}</span>
-                        </h2>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="h5 mb-0">
+                                <i class="bi bi-list-check text-success" aria-hidden="true"></i>
+                                {{ 'industry_baseline.field.preset_controls'|trans({}, 'industry_baseline') }}
+                                <span class="badge bg-secondary ms-1">{{ baseline.presetApplicableControls|length }}</span>
+                            </h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         <div class="d-flex flex-wrap gap-1">
                             {% for control in baseline.presetApplicableControls %}
                                 <code class="badge bg-light text-dark border">{{ control }}</code>
                             {% endfor %}
                         </div>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         </div>
 
         <div class="col-md-5">
-            <div class="card shadow-sm mb-4 border-success">
-                <div class="card-body text-center">
-                    <div class="small text-uppercase text-muted mb-1">
-                        <i class="bi bi-lightning-charge-fill text-success" aria-hidden="true"></i>
-                        {{ 'industry_baseline.field.fte_saved'|trans({}, 'industry_baseline') }}
+            {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4 border-success' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="small text-uppercase text-muted mb-1">
+                            <i class="bi bi-lightning-charge-fill text-success" aria-hidden="true"></i>
+                            {{ 'industry_baseline.field.fte_saved'|trans({}, 'industry_baseline') }}
+                        </div>
+                        <div class="display-4 fw-bold text-success mb-1">
+                            {{ baseline.fteDaysSavedEstimate|number_format(1, '.', ',') }}
+                            <small class="fs-5 text-muted">{{ 'industry_baseline.fte_suffix'|trans({}, 'industry_baseline') }}</small>
+                        </div>
+                        <div class="text-muted small">{{ 'industry_baseline.fte_subtitle'|trans({}, 'industry_baseline') }}</div>
                     </div>
-                    <div class="display-4 fw-bold text-success mb-1">
-                        {{ baseline.fteDaysSavedEstimate|number_format(1, '.', ',') }}
-                        <small class="fs-5 text-muted">{{ 'industry_baseline.fte_suffix'|trans({}, 'industry_baseline') }}</small>
-                    </div>
-                    <div class="text-muted small">{{ 'industry_baseline.fte_subtitle'|trans({}, 'industry_baseline') }}</div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-header">
-                    <h2 class="h5 mb-0">{{ 'industry_baseline.field.frameworks'|trans({}, 'industry_baseline') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">{{ 'industry_baseline.field.frameworks'|trans({}, 'industry_baseline') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="mb-0">
                         <dt>{{ 'industry_baseline.field.required_frameworks'|trans({}, 'industry_baseline') }}</dt>
                         <dd>
@@ -219,15 +231,17 @@
                             </dd>
                         {% endif %}
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {% if applied_record %}
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header">
-                        <h2 class="h5 mb-0">{{ 'industry_baseline.applied_record.title'|trans({}, 'industry_baseline') }}</h2>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="h5 mb-0">{{ 'industry_baseline.applied_record.title'|trans({}, 'industry_baseline') }}</h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         <dl class="small mb-0">
                             <dt>{{ 'industry_baseline.applied_record.applied_at'|trans({}, 'industry_baseline') }}</dt>
                             <dd>{{ applied_record.appliedAt|date('Y-m-d H:i') }}</dd>
@@ -238,8 +252,8 @@
                                 <pre class="small bg-body-tertiary p-2 mb-0">{{ applied_record.createdSummary|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre>
                             </dd>
                         </dl>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         </div>
     </div>
