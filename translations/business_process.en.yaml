@@ -1,6 +1,21 @@
 business_process:
   edit: Edit Business Process
   new: New Business Process
+  bia:
+    title: Business Impact Analysis
+    section:
+      financial_impact: Financial Impact
+      impact_assessment: Impact Assessment
+      data_reuse_recommendations: Automatic Recommendations (Data Reuse)
+    field:
+      damage_per_hour: Damage per Hour
+      damage_per_day: Damage per Day
+      reputational_impact: Reputational Damage
+      regulatory_impact: Regulatory Impact
+      operational_impact: Operational Impact
+      business_impact_score: Aggregated Business Impact Score
+      suggested_availability: Recommended Availability Value
+      not_specified: Not specified
   section:
     basic_info: Basic Information
     recovery_objectives: Recovery Objectives
