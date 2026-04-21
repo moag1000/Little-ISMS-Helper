@@ -1,5 +1,10 @@
 # Drei-Personas-Walkthrough: Data-Reuse & Framework-Mapping
 
+> **Status 2026-04-21 — VOLLSTÄNDIG UMGESETZT.** Alle 12 Items aus
+> HIGH + MEDIUM + LOW (15 FTE-Tage) sind committet. Details siehe
+> „Umsetzungs-Status" am Ende dieses Dokuments. Dieser Plan wird als
+> historischer Referenzpunkt aufbewahrt.
+
 **Erstellt:** 2026-04-21
 **Teilnehmer:**
 - **CM** — Compliance-Manager (6–12 J. GRC, Data-Reuse-obsessed)
@@ -250,3 +255,65 @@ Tools, die drei Stufen drüber teurer sind."*
 
 **Empfehlung:** Sprint 4 (HIGH, ~8 d) direkt anstoßen. Sprint 5+6 nach
 Feedback aus Sprint-4-Deployment auf ersten Test-Mandanten.
+
+---
+
+## Umsetzungs-Status (2026-04-21)
+
+Alle 12 Items committet. Audit post-Sprint-6 fand einen Runtime-Bug
+in M1 (private-Property-Zugriff), der separat gefixt wurde.
+
+### Sprint 4 — HIGH ✅
+
+| Item | Commit | Route / Artefakt |
+|------|--------|-------------------|
+| M3 Klartext-Confidence | `83017e1b` | SoA-Show (`mapping_suggestions_widget`) |
+| R3 Reuse-Trend-Chart | `52c54eda` | `ReuseTrendSnapshot` + `/reports/management/portfolio` |
+| R2 Home-Dashboard-FTE-KPI | `aa1e1b8d` | `/dashboard` (Card über Management-KPIs) |
+| M2 Seed-1-Klick-UI | `68f33377` | `/compliance/mappings/seeds` |
+| R1 Data-Reuse-Hub | `00c8f28a` | `/reuse` + Mega-Menü |
+| M1 4-Step-Wizard | `04d7cee5`, fix `328c93eb` | `/compliance/mapping/wizard` |
+
+### Sprint 5 — MEDIUM ✅
+
+| Item | Commit | Route / Artefakt |
+|------|--------|-------------------|
+| R4 ISO-9001-Analogien | `053aeea8` | `_components/_iso9001_analogy.html.twig` (4 Seiten) |
+| M4 Mapping-Hub | `ce6d39fd` | `/compliance/mapping/hub` + Mega-Menü |
+| R5 CSV-Import-UI | `686d88af` | `/compliance/mapping/import` |
+| M5 Version-Migrations-UI | `2bb93bb0` | `/compliance/framework/{id}/migrate` |
+
+### Sprint 6 — LOW ✅
+
+| Item | Commit | Route / Artefakt |
+|------|--------|-------------------|
+| M6 Seed-Review-Queue | `f5118e39` | `/compliance/mapping/seed-review` |
+| R6 Reuse-Heatmap | `d9603404` | `/reuse/heatmap` |
+
+### Post-Sprint-Audit
+
+- `328c93eb` — M1-Wizard Zugriff auf private `ComplianceFramework::$id`
+  (Nebeneffekt von `2a2bc51f`, das die Property-Hooks entfernte).
+  Umgestellt auf `getId()`. Nur der GET-Render-Pfad war betroffen.
+
+### Abweichungen vom Ursprungsplan
+
+- **M4 Mapping-Hub** wurde nicht als Tabbed-Page auf `/compliance/mappings`
+  umgesetzt, sondern als **separate Hub-Route** `/compliance/mapping/hub`
+  mit Einstiegs-Karten. Die vorhandene Liste unter
+  `/compliance/mapping/` bleibt bestehen (für gezielte Suche) und wird
+  vom Hub aus verlinkt. Grund: bestehende Tabelle hat direkte Links aus
+  anderen Features (Mapping-Show, Seeds, Quality), die nicht alle
+  gleichzeitig refaktoriert werden sollten.
+- **M5 Version-Migrations-UI** kam ohne **Bulk-Accept-Checkboxen pro
+  Row** — der zugrunde liegende `FrameworkVersionMigrator` ist
+  all-or-nothing. Dry-Run + Commit deckt 95 % der Anwendungsfälle.
+  Per-Row-Rejection kann bei Bedarf nachgerüstet werden.
+- **M6 Seed-Review-Queue** ergänzt die bestehende
+  `MappingQualityController::reviewQueue`, ersetzt sie nicht. Unterschied:
+  Quality-Queue filtert auf `requiresReview=true`, Seed-Queue auf
+  maschinelle Herkunft via `verifiedBy`-Prefix-Match.
+- **R6 Reuse-Heatmap** rendert **Dokumente + Lieferanten** statt der im
+  Plan vorgesehenen Assets. Grund: `InverseCoverageService` liefert nur
+  `forDocument()` + `forSupplier()`. Eine Asset-Coverage-Erweiterung
+  wäre ein eigenes Sprint-Item (~1 FTE-d).
