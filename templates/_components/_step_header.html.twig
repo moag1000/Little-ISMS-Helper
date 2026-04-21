@@ -1,0 +1,20 @@
+{#
+ # FairyAurora StepHeader — "Schritt N / M · Kind" + Titel + Sub
+ #
+ # Usage:
+ #   {% import '_components/_step_header.html.twig' as step %}
+ #   {{ step.render(1, 12, 'Technik', 'System-Check', 'Wir prüfen kurz die Voraussetzungen.') }}
+ #
+ # Plan § 4 Setup-Wizard Right-Panel.
+ #}
+
+{% macro render(num, total, kind = null, title = '', sub = null) %}
+    <div class="fa-step-header">
+        <div class="fa-step-header__meta">
+            {{ 'wizard.step_counter'|trans({'%current%': num, '%total%': total}, 'messages')|default('Schritt ' ~ num ~ ' / ' ~ total) }}
+            {% if kind %}<span class="fa-step-header__dot">·</span> {{ kind }}{% endif %}
+        </div>
+        <h1 class="fa-step-header__title">{{ title }}</h1>
+        {% if sub %}<p class="fa-step-header__sub">{{ sub }}</p>{% endif %}
+    </div>
+{% endmacro %}

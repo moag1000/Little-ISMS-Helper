@@ -1,0 +1,58 @@
+{#
+ # FairyAurora ToggleCard — Checkbox-Card mit Titel + Sub + optional Badge
+ #
+ # Usage (form-Kontext):
+ #   {% import '_components/_toggle_card.html.twig' as tc %}
+ #   {{ tc.render({
+ #       name: 'modules[]',
+ #       value: 'risk-management',
+ #       title: 'Risk-Management',
+ #       sub: 'ISO 27001 + NIS2 konforme Risikoerfassung',
+ #       badge: 'Core',
+ #       checked: true
+ #   }) }}
+ #
+ # Props:
+ #   name: Form-Name (required)
+ #   value: Checkbox-Value (required)
+ #   title: Headline (required)
+ #   sub: optionaler Sub-Text
+ #   badge: optionales Tag (rechts neben Titel)
+ #   checked: boolean
+ #   disabled: boolean
+ #   type: 'checkbox' | 'radio' (default: checkbox)
+ #   id: override default
+ #}
+
+{% macro render(props) %}
+    {% set id = props.id|default('fa-tc-' ~ props.name|default('x') ~ '-' ~ props.value|default('x'))|replace({'[':'', ']':'-', ' ':'-'}) %}
+    {% set type = props.type|default('checkbox') %}
+    {% set checked = props.checked|default(false) %}
+    {% set disabled = props.disabled|default(false) %}
+
+    <label for="{{ id }}" class="fa-toggle-card {% if checked %}is-on{% endif %} {% if disabled %}is-disabled{% endif %}">
+        <input id="{{ id }}"
+               type="{{ type }}"
+               name="{{ props.name }}"
+               value="{{ props.value }}"
+               class="fa-toggle-card__input"
+               {% if checked %}checked{% endif %}
+               {% if disabled %}disabled{% endif %}>
+        <span class="fa-toggle-card__box" aria-hidden="true">
+            <svg viewBox="0 0 14 14" width="10" height="10" fill="none">
+                <path d="M2 7 L6 11 L12 3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </span>
+        <div class="fa-toggle-card__body">
+            <div class="fa-toggle-card__title">
+                {{ props.title }}
+                {% if props.badge is defined and props.badge %}
+                    <span class="fa-toggle-card__badge">{{ props.badge }}</span>
+                {% endif %}
+            </div>
+            {% if props.sub is defined and props.sub %}
+                <div class="fa-toggle-card__sub">{{ props.sub }}</div>
+            {% endif %}
+        </div>
+    </label>
+{% endmacro %}

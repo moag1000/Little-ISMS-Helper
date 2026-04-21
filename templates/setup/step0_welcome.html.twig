@@ -1,101 +1,68 @@
-{% extends 'base.html.twig' %}
+{% extends 'setup/_layout.html.twig' %}
+{% trans_default_domain 'setup' %}
+{% set active_step = 'welcome' %}
 
-{% block title %}{{ 'setup.welcome.title'|trans({}, 'setup') }} - Deployment Wizard{% endblock %}
+{% block title %}{{ 'setup.welcome.title'|trans({}, 'setup') }}{% endblock %}
 
-{% block body %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            {# Flash Messages #}
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                        {{ message|trans }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'setup.common.close'|trans({}, 'setup') }}"></button>
-                    </div>
-                {% endfor %}
-            {% endfor %}
+{% block step_content %}
+    {% import '_components/_step_header.html.twig' as step_header %}
+    {% import '_components/_check_row.html.twig' as row %}
+    {% import '_components/_nav_bar.html.twig' as nav %}
 
-            {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg' } %}
-                {% block card_header %}
-                    <div class="card-header bg-primary text-white">
-                        <h1 class="mb-0">
-                            <i class="bi bi-magic me-2" aria-hidden="true"></i>
-                            {{ 'setup.welcome.header'|trans({}, 'setup') }}
-                        </h1>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    <div class="p-5">
-                        <div class="text-center mb-5">
-                            <i class="bi bi-shield text-primary" aria-hidden="true" style="font-size: 4rem;"></i>
-                            <h2 class="mt-3">{{ 'setup.welcome.greeting'|trans({}, 'setup') }}</h2>
-                            <p class="lead text-muted">
-                                {{ 'setup.welcome.description'|trans({}, 'setup') }}
-                            </p>
-                        </div>
+    {% for label, messages in app.flashes %}
+        {% import '_components/_alert.html.twig' as faAlert %}
+        {% for message in messages %}
+            {{ faAlert.render(message|trans, label == 'success' ? 'success' : (label in ['error','danger'] ? 'danger' : (label == 'warning' ? 'warning' : 'info')), { dismissible: true })|raw }}
+        {% endfor %}
+    {% endfor %}
 
-                        <div class="row g-4 mb-5">
-                            <div class="col-md-6">
-                                {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-primary' } %}
-                                    {% block card_body %}
-                                        <i class="bi bi-list-check text-primary  mb-3" aria-hidden="true"></i>
-                                        <p class="h5 mb-3">{{ 'setup.welcome.steps.title'|trans({}, 'setup') }}</p>
-                                        <ul class="list-unstyled">
-                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.welcome.steps.database'|trans({}, 'setup') }}</li>
-                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.welcome.steps.admin'|trans({}, 'setup') }}</li>
-                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.welcome.steps.requirements'|trans({}, 'setup') }}</li>
-                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.welcome.steps.modules'|trans({}, 'setup') }}</li>
-                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.welcome.steps.migrations'|trans({}, 'setup') }}</li>
-                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.welcome.steps.base_data'|trans({}, 'setup') }}</li>
-                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.welcome.steps.sample_data'|trans({}, 'setup') }}</li>
-                                        </ul>
-                                    {% endblock %}
-                                {% endembed %}
-                            </div>
-                            <div class="col-md-6">
-                                {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-info' } %}
-                                    {% block card_body %}
-                                        <i class="bi bi-clock text-info  mb-3" aria-hidden="true"></i>
-                                        <p class="h5 mb-3">{{ 'setup.welcome.requirements.title'|trans({}, 'setup') }}</p>
-                                        <ul class="list-unstyled">
-                                            <li><i class="bi bi-hourglass-split text-info me-2" aria-hidden="true"></i>{{ 'setup.welcome.requirements.duration'|trans({}, 'setup') }}</li>
-                                            <li><i class="bi bi-database text-info me-2" aria-hidden="true"></i>{{ 'setup.welcome.requirements.database'|trans({}, 'setup') }}</li>
-                                            <li><i class="bi bi-server text-info me-2" aria-hidden="true"></i>{{ 'setup.welcome.requirements.php'|trans({}, 'setup') }}</li>
-                                            <li><i class="bi bi-folder text-info me-2" aria-hidden="true"></i>{{ 'setup.welcome.requirements.permissions'|trans({}, 'setup') }}</li>
-                                        </ul>
-                                    {% endblock %}
-                                {% endembed %}
-                            </div>
-                        </div>
+    {{ step_header.render(1, 12, step.kind, 'setup.welcome.greeting'|trans({}, 'setup'), 'setup.welcome.description'|trans({}, 'setup'))|raw }}
 
-                        {% embed '_components/_card.html.twig' with { 'class': 'bg-light mb-4' } %}
-                            {% block card_body %}
-                                <p class="h5 mb-3">
-                                    <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                                    {{ 'setup.welcome.info.title'|trans({}, 'setup') }}
-                                </p>
-                                <p class="text-muted mb-2">
-                                    {{ 'setup.welcome.info.description'|trans({}, 'setup') }}
-                                </p>
-                                <ul class="mb-0">
-                                    <li>{{ 'setup.welcome.info.point1'|trans({}, 'setup') }}</li>
-                                    <li>{{ 'setup.welcome.info.point2'|trans({}, 'setup') }}</li>
-                                    <li>{{ 'setup.welcome.info.point3'|trans({}, 'setup') }}</li>
-                                </ul>
-                            {% endblock %}
-                        {% endembed %}
+    <div class="fa-setup-welcome-grid">
+        <section class="fa-setup-welcome-col">
+            <h3 class="fa-setup-welcome-col__title">
+                <i class="bi bi-list-check" aria-hidden="true"></i>
+                {{ 'setup.welcome.steps.title'|trans({}, 'setup') }}
+            </h3>
+            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.database'|trans({}, 'setup') })|raw }}
+            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.admin'|trans({}, 'setup') })|raw }}
+            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.requirements'|trans({}, 'setup') })|raw }}
+            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.modules'|trans({}, 'setup') })|raw }}
+            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.migrations'|trans({}, 'setup') })|raw }}
+            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.base_data'|trans({}, 'setup') })|raw }}
+            {{ row.render({ status: 'idle', label: 'setup.welcome.steps.sample_data'|trans({}, 'setup') })|raw }}
+        </section>
 
-                        <div class="d-grid">
-                            <a href="{{ path('setup_step1_requirements') }}" class="btn btn-lg btn-primary">
-                                <i class="bi bi-play me-2" aria-hidden="true"></i>
-                                {{ 'setup.welcome.start_button'|trans({}, 'setup') }}
-                            </a>
-                        </div>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
+        <section class="fa-setup-welcome-col">
+            <h3 class="fa-setup-welcome-col__title">
+                <i class="bi bi-clock" aria-hidden="true"></i>
+                {{ 'setup.welcome.requirements.title'|trans({}, 'setup') }}
+            </h3>
+            {{ row.render({ status: 'ok', label: 'setup.welcome.requirements.duration'|trans({}, 'setup') })|raw }}
+            {{ row.render({ status: 'ok', label: 'setup.welcome.requirements.database'|trans({}, 'setup') })|raw }}
+            {{ row.render({ status: 'ok', label: 'setup.welcome.requirements.php'|trans({}, 'setup') })|raw }}
+            {{ row.render({ status: 'ok', label: 'setup.welcome.requirements.permissions'|trans({}, 'setup') })|raw }}
+        </section>
     </div>
-</div>
+
+    <div class="fa-setup-welcome-info">
+        <h4 class="fa-setup-welcome-info__title">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            {{ 'setup.welcome.info.title'|trans({}, 'setup') }}
+        </h4>
+        <p class="fa-setup-welcome-info__desc">{{ 'setup.welcome.info.description'|trans({}, 'setup') }}</p>
+        <ul class="fa-setup-welcome-info__list">
+            <li>{{ 'setup.welcome.info.point1'|trans({}, 'setup') }}</li>
+            <li>{{ 'setup.welcome.info.point2'|trans({}, 'setup') }}</li>
+            <li>{{ 'setup.welcome.info.point3'|trans({}, 'setup') }}</li>
+        </ul>
+    </div>
+
+    {{ nav.render({
+        next: {
+            url: path('setup_step1_requirements'),
+            label: 'setup.welcome.start_button'|trans({}, 'setup'),
+            icon: 'bi-play-fill'
+        }
+    })|raw }}
 {% endblock %}

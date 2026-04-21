@@ -96,6 +96,10 @@ services:
     App\Twig\AlvaMoodExtension:
         tags: ['twig.extension']
 
+    # FairyAurora v3.0 — Setup-Flow-Array (12 Steps, DE+EN)
+    App\Twig\SetupFlowExtension:
+        tags: ['twig.extension']
+
     # Configure Data Import Service
     App\Service\DataImportService:
         arguments:

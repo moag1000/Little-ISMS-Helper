@@ -1,0 +1,25 @@
+{#
+ # FairyAurora Typewriter — Macro-Wrapper für typewriter-Stimulus-Controller
+ #
+ # Usage:
+ #   {% import '_components/_typewriter.html.twig' as tw %}
+ #   {{ tw.render('Hi, ich bin Alva.', { lang: 'de', skipLabel: '» Überspringen' }) }}
+ #}
+
+{% macro render(text, props = {}) %}
+    {% set lang = props.lang|default(app.request.locale|default('de')) %}
+    {% set skipLabel = props.skipLabel|default('wizard.skip_typewriter'|trans({}, 'messages')|default('» Überspringen')) %}
+
+    <span class="fa-typewriter"
+          data-controller="typewriter"
+          data-typewriter-text-value="{{ text }}"
+          data-typewriter-lang-value="{{ lang }}"
+          aria-live="polite">
+        <span class="fa-typewriter__text" data-typewriter-target="text"></span><span class="fa-typewriter__caret" data-typewriter-target="caret" aria-hidden="true">▍</span>
+        <button type="button"
+                class="fa-typewriter__skip"
+                data-typewriter-target="skip"
+                data-action="click->typewriter#skip"
+                hidden>{{ skipLabel }}</button>
+    </span>
+{% endmacro %}

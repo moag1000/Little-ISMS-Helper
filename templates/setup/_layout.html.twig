@@ -1,0 +1,126 @@
+{#
+ FairyAurora v3.0 — Setup-Wizard 2-Col Layout
+
+ Verwendung in Setup-Step-Templates:
+   extends 'setup/_layout.html.twig'
+   set active_step = 'requirements'   (Key aus SetupFlow)
+   block step_content:
+     step_header.render(step.num, total, step.kind, ...)
+     ... step-spezifischer Content ...
+     nav.render({ back: {...}, next: {...} })
+   endblock
+
+ Plan § 13 Pattern-Source-of-Truth (Onboarding-Pattern).
+#}
+
+{% import '_components/_brand.html.twig' as faBrand %}
+{% import '_components/_tech_backdrop.html.twig' as techBg %}
+{% import '_components/_onboarding_fairy.html.twig' as onFairy %}
+{% import '_components/_typewriter.html.twig' as tw %}
+{% import '_components/_step_header.html.twig' as step_header %}
+{% import '_components/_nav_bar.html.twig' as nav %}
+{% import '_components/_cyber_input.html.twig' as ci %}
+{% import '_components/_cyber_button.html.twig' as btn %}
+{% import '_components/_toggle_card.html.twig' as tc %}
+{% import '_components/_check_row.html.twig' as row %}
+
+{% set step = setup_flow(active_step|default('welcome')) %}
+{% set total = setup_flow_total() %}
+{% set phases = setup_flow_phases() %}
+
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ ('setup.' ~ active_step ~ '.title')|trans({}, 'setup')|default(step.line) }}{% endblock %} — Little ISMS Helper</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <meta name="theme-color" content="#0284c7" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#38bdf8" media="(prefers-color-scheme: dark)">
+
+    <link rel="preload" href="{{ asset('fonts/inter-500.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('fonts/inter-600.woff2') }}" as="font" type="font/woff2" crossorigin>
+
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('fa-theme');
+                var theme = (saved === 'light' || saved === 'dark' || saved === 'system') ? saved : 'light';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
+    {{ importmap(['app', 'styles']) }}
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}">
+</head>
+<body class="fa-setup-body">
+
+<div class="fa-setup-shell">
+    {# ──── LEFT PANEL (480px) ──────────────────────────────────────── #}
+    <aside class="fa-setup-left" aria-label="{{ 'wizard.companion'|trans({}, 'messages')|default('Alva — Begleiterin') }}">
+        {{ techBg.render(0.9)|raw }}
+        <span class="fa-setup-left__tick fa-setup-left__tick--tl" aria-hidden="true"></span>
+        <span class="fa-setup-left__tick fa-setup-left__tick--tr" aria-hidden="true"></span>
+        <span class="fa-setup-left__tick fa-setup-left__tick--bl" aria-hidden="true"></span>
+        <span class="fa-setup-left__tick fa-setup-left__tick--br" aria-hidden="true"></span>
+
+        <div class="fa-setup-left__brand">
+            {{ faBrand.render(size='lg')|raw }}
+        </div>
+
+        <div class="fa-setup-left__middle">
+            {{ onFairy.render(step.mood)|raw }}
+            <div>
+                <div class="fa-setup-left__alva-label">Alva · {{ 'wizard.companion_short'|trans({}, 'messages')|default('Begleiterin') }}</div>
+                <div class="fa-setup-left__line">
+                    {{ tw.render(step.line, { lang: app.request.locale })|raw }}
+                </div>
+                <div class="fa-setup-left__sub">{{ step.sub }}</div>
+            </div>
+        </div>
+
+        <div class="fa-setup-left__phase">
+            <div class="fa-setup-phase__head">
+                <span>{{ 'wizard.step_counter'|trans({'%current%': step.num, '%total%': total}, 'messages')|default('Schritt ' ~ step.num ~ ' / ' ~ total) }}</span>
+                <span class="fa-setup-phase__head-phase">{{ step.phase }}</span>
+            </div>
+            <div class="fa-setup-phase__bars" role="progressbar"
+                 aria-valuemin="1" aria-valuemax="{{ total }}" aria-valuenow="{{ step.num }}">
+                {% for i in 1..total %}
+                    {% set isDone = i < step.num %}
+                    {% set isActive = i == step.num %}
+                    <span class="fa-setup-phase__bar {% if isDone %}is-done{% endif %} {% if isActive %}is-active{% endif %}"></span>
+                {% endfor %}
+            </div>
+            <div class="fa-setup-phase__labels">
+                {% for p in phases %}
+                    {% set on = step.num >= p.range[0] and step.num <= p.range[1] %}
+                    <span class="{% if on %}is-on{% endif %}">{{ p.label }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </aside>
+
+    {# ──── RIGHT PANEL ─────────────────────────────────────────────── #}
+    <main class="fa-setup-right" role="main">
+        <div class="fa-setup-right__head">
+            <div class="fa-setup-right__head-status">
+                <span class="fa-setup-right__status-dot" aria-hidden="true"></span>
+                <span>Installer · v{{ app_version }} · {{ step.kind }}</span>
+            </div>
+        </div>
+        <div class="fa-setup-right__body">
+            <div class="fa-setup-right__content">
+                {% block step_content %}{% endblock %}
+            </div>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>
