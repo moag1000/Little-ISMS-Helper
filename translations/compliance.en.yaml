@@ -166,6 +166,11 @@ compliance:
     mapping:
         confirm:
             delete: 'Are you sure you want to delete this mapping?'
+        empty:
+            title: 'No framework mappings yet'
+            description: 'Cross-framework mappings link requirements between standards (e.g. NIS2 Art. 21.2 ↔ ISO 27001 A.5.24). Once created — reused as audit evidence and for inheritance calculation.'
+            action_wizard: 'Create with wizard (recommended)'
+            action_seeds: 'Load pre-built seed catalogs (1-click)'
         seed_review:
             title: 'Seed review queue'
             subtitle: 'Review and approve machine-created mappings (seeds, CSV import, wizard, migration).'

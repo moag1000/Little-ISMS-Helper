@@ -166,6 +166,11 @@ compliance:
     mapping:
         confirm:
             delete: 'Möchten Sie diese Zuordnung wirklich löschen?'
+        empty:
+            title: 'Noch keine Framework-Mappings angelegt'
+            description: 'Cross-Framework-Mappings verknüpfen Anforderungen zwischen Normen (z. B. NIS2 Art. 21.2 ↔ ISO 27001 A.5.24). Einmal angelegt — mehrfach genutzt als Audit-Nachweis und für Inheritance-Berechnung.'
+            action_wizard: 'Mit Wizard anlegen (empfohlen)'
+            action_seeds: 'Fertige Seed-Kataloge laden (1-Klick)'
         seed_review:
             title: 'Seed-Review-Queue'
             subtitle: 'Maschinell erstellte Mappings (Seeds, CSV-Import, Wizard, Migration) prüfen und freigeben.'
