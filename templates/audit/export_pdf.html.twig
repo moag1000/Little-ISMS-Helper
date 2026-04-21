@@ -8,17 +8,17 @@
             font-family: 'DejaVu Sans', sans-serif;
             font-size: 10pt;
             line-height: 1.4;
-            color: #1e293b;
+            color: var(--surface);
         }
         .header {
             text-align: center;
             margin-bottom: 20px;
             border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, #06b6d4 0%, #ec4899 50%, #8b5cf6 100%) 1;
+            border-image: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%) 1;
             padding-bottom: 15px;
         }
         .header h1 {
-            color: #0f172a;
+            color: var(--bg);
             margin: 0 0 5px 0;
             font-size: 18pt;
             text-transform: uppercase;
@@ -26,7 +26,7 @@
         }
         .header .audit-number {
             font-size: 12pt;
-            color: #06b6d4;
+            color: var(--primary);
             font-weight: bold;
         }
         .header .subtitle {
@@ -39,8 +39,8 @@
             page-break-inside: avoid;
         }
         .section-title {
-            background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
-            color: #06b6d4;
+            background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
+            color: var(--primary);
             padding: 8px 12px;
             font-size: 11pt;
             text-transform: uppercase;
@@ -59,15 +59,15 @@
             display: table-cell;
             width: 30%;
             padding: 6px 10px;
-            background: #f1f5f9;
+            background: var(--surface-2);
             font-weight: bold;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border);
             font-size: 9pt;
         }
         .info-value {
             display: table-cell;
             padding: 6px 10px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border);
             font-size: 9pt;
         }
         .status-badge {
@@ -83,8 +83,8 @@
         .status-completed { background: #d1fae5; color: #065f46; }
         .status-reported { background: #e0e7ff; color: #3730a3; }
         .content-box {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
+            background: var(--bg);
+            border: 1px solid var(--border);
             padding: 10px;
             margin: 5px 0;
             font-size: 9pt;
@@ -94,12 +94,12 @@
         }
         .finding-type {
             font-weight: bold;
-            color: #0f172a;
+            color: var(--bg);
             margin-bottom: 5px;
             font-size: 10pt;
         }
-        .finding-type.non-conformities { color: #dc2626; }
-        .finding-type.observations { color: #f59e0b; }
+        .finding-type.non-conformities { color: var(--danger); }
+        .finding-type.observations { color: var(--warning); }
         .finding-type.recommendations { color: #2563eb; }
         table.assets-table {
             width: 100%;
@@ -108,18 +108,18 @@
             font-size: 9pt;
         }
         table.assets-table th {
-            background: #1e293b;
-            color: #06b6d4;
+            background: var(--surface);
+            color: var(--primary);
             padding: 6px;
             text-align: left;
             border: 1px solid #334155;
         }
         table.assets-table td {
             padding: 5px 6px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border);
         }
         table.assets-table tr:nth-child(even) {
-            background: #f8fafc;
+            background: var(--bg);
         }
         .footer {
             position: fixed;
@@ -130,7 +130,7 @@
             font-size: 8pt;
             color: #94a3b8;
             padding: 10px;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid var(--border);
         }
         .page-break {
             page-break-before: always;

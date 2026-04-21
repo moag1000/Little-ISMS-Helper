@@ -4,25 +4,25 @@
     <meta charset="UTF-8">
     <title>{{ 'dora.ict_incident_report.title'|trans({}, 'dora') }}</title>
     <style>
-        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 20px; color: #1e293b; }
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 20px; color: var(--surface); }
         .header {
             text-align: center;
             margin-bottom: 20px;
-            border-bottom: 3px solid #7c3aed;
+            border-bottom: 3px solid var(--accent);
             padding-bottom: 10px;
         }
-        .header h1 { color: #7c3aed; margin: 0; font-size: 16pt; text-transform: uppercase; letter-spacing: 0.5pt; }
+        .header h1 { color: var(--accent); margin: 0; font-size: 16pt; text-transform: uppercase; letter-spacing: 0.5pt; }
         .header .subtitle { color: #475569; font-size: 9pt; margin-top: 3px; }
         .header .date { color: #64748b; font-size: 8pt; margin-top: 3px; }
 
-        .meta-grid { display: table; width: 100%; margin: 10px 0 15px 0; border: 1px solid #e2e8f0; }
+        .meta-grid { display: table; width: 100%; margin: 10px 0 15px 0; border: 1px solid var(--border); }
         .meta-row { display: table-row; }
-        .meta-label { display: table-cell; width: 30%; padding: 4px 8px; font-weight: bold; font-size: 8pt; color: #475569; text-transform: uppercase; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
-        .meta-value { display: table-cell; width: 70%; padding: 4px 8px; font-size: 9pt; border-bottom: 1px solid #e2e8f0; }
+        .meta-label { display: table-cell; width: 30%; padding: 4px 8px; font-weight: bold; font-size: 8pt; color: #475569; text-transform: uppercase; background: var(--bg); border-bottom: 1px solid var(--border); }
+        .meta-value { display: table-cell; width: 70%; padding: 4px 8px; font-size: 9pt; border-bottom: 1px solid var(--border); }
 
         .section { margin: 15px 0; page-break-inside: avoid; }
         .section h2 {
-            background: #7c3aed;
+            background: var(--accent);
             color: #ffffff;
             padding: 6px 10px;
             font-size: 10pt;
@@ -31,7 +31,7 @@
             letter-spacing: 0.3pt;
         }
         .section h3 {
-            color: #7c3aed;
+            color: var(--accent);
             font-size: 9pt;
             margin: 8px 0 4px 0;
             border-bottom: 1px solid #cbd5e1;
@@ -40,19 +40,19 @@
 
         table { width: 100%; border-collapse: collapse; margin: 8px 0; }
         th {
-            background: #1e293b;
+            background: var(--surface);
             color: #c4b5fd;
             padding: 5px 6px;
             text-align: left;
             font-size: 8pt;
             text-transform: uppercase;
         }
-        td { padding: 4px 6px; border-bottom: 1px solid #e2e8f0; font-size: 8pt; }
-        tr:nth-child(even) { background: #f8fafc; }
+        td { padding: 4px 6px; border-bottom: 1px solid var(--border); font-size: 8pt; }
+        tr:nth-child(even) { background: var(--bg); }
 
         .field-group { margin: 6px 0; }
         .field-label { font-weight: bold; font-size: 8pt; color: #475569; text-transform: uppercase; }
-        .field-value { font-size: 9pt; margin-top: 2px; padding: 4px 6px; background: #f8fafc; border-left: 3px solid #c4b5fd; }
+        .field-value { font-size: 9pt; margin-top: 2px; padding: 4px 6px; background: var(--bg); border-left: 3px solid #c4b5fd; }
         .field-value.empty { color: #94a3b8; font-style: italic; }
 
         .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
@@ -60,20 +60,20 @@
         .badge-warning { background: #fef3c7; color: #92400e; }
         .badge-success { background: #dcfce7; color: #166534; }
         .badge-info { background: #ede9fe; color: #5b21b6; }
-        .badge-major { background: #fecaca; color: #991b1b; border: 1px solid #dc2626; }
+        .badge-major { background: #fecaca; color: #991b1b; border: 1px solid var(--danger); }
         .badge-non-major { background: #dbeafe; color: #1e40af; }
 
         .criteria-list { list-style: none; padding: 0; margin: 4px 0; }
         .criteria-list li { padding: 2px 0; font-size: 8pt; }
         .criteria-list li::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 5px; border-radius: 2px; }
-        .criteria-met::before { background: #dc2626; }
-        .criteria-not-met::before { background: #e2e8f0; }
+        .criteria-met::before { background: var(--danger); }
+        .criteria-not-met::before { background: var(--border); }
 
-        .overdue { color: #dc2626; font-weight: bold; }
+        .overdue { color: var(--danger); font-weight: bold; }
         .compliant { color: #16a34a; font-weight: bold; }
         .pending { color: #d97706; font-weight: bold; }
 
-        .footer { position: fixed; bottom: 15px; left: 20px; right: 20px; text-align: center; font-size: 7pt; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 6px; }
+        .footer { position: fixed; bottom: 15px; left: 20px; right: 20px; text-align: center; font-size: 7pt; color: #94a3b8; border-top: 1px solid var(--border); padding-top: 6px; }
         .page-break { page-break-after: always; }
 
         @media print {

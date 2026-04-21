@@ -11,7 +11,7 @@
             border-bottom: 3px solid #6b7280;
             padding-bottom: 10px;
         }
-        .header h1 { color: #0f172a; margin: 0; font-size: 18pt; }
+        .header h1 { color: var(--bg); margin: 0; font-size: 18pt; }
         .header .date { color: #888; font-size: 9pt; margin-top: 3px; }
 
         .summary-box {
@@ -20,7 +20,7 @@
             padding: 15px;
             border: 2px solid #6b7280;
             border-radius: 8px;
-            background: #f8fafc;
+            background: var(--bg);
         }
         .summary-box .number { font-size: 36pt; font-weight: bold; color: #0ea5e9; }
         .summary-box .label { font-size: 11pt; color: #666; }
@@ -29,9 +29,9 @@
         .section h2 { background: #6b7280; color: white; padding: 6px; font-size: 10pt; margin: 0 0 8px 0; }
 
         table { width: 100%; border-collapse: collapse; margin: 8px 0; }
-        th { background: #0f172a; color: #06b6d4; padding: 5px; text-align: left; font-size: 8pt; }
+        th { background: var(--bg); color: var(--primary); padding: 5px; text-align: left; font-size: 8pt; }
         td { padding: 5px; border-bottom: 1px solid #ddd; font-size: 8pt; }
-        tr:nth-child(even) { background: #f8fafc; }
+        tr:nth-child(even) { background: var(--bg); }
 
         .badge { display: inline-block; padding: 2px 5px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
         .badge-danger { background: #fecaca; color: #991b1b; }

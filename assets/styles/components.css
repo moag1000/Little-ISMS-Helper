@@ -656,17 +656,17 @@
     border-radius: 12px;
     transition: width 0.6s ease, background-color 0.3s ease;
     position: relative;
-    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(90deg, var(--success) 0%, #059669 100%);
 }
 
 /* Color states for progress bar */
 .sla-progress-bar.sla-on-track {
-    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(90deg, var(--success) 0%, #059669 100%);
     box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
 }
 
 .sla-progress-bar.sla-at-risk {
-    background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+    background: linear-gradient(90deg, var(--warning) 0%, #d97706 100%);
     box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
 }
 
@@ -676,7 +676,7 @@
 }
 
 .sla-progress-bar.sla-overdue {
-    background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+    background: linear-gradient(90deg, var(--danger) 0%, var(--danger) 100%);
     box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
     animation: sla-pulse 2s ease-in-out infinite;
 }
@@ -784,11 +784,11 @@
 }
 
 .sla-progress-bar-mini.sla-on-track {
-    background: #10b981;
+    background: var(--success);
 }
 
 .sla-progress-bar-mini.sla-at-risk {
-    background: #f59e0b;
+    background: var(--warning);
 }
 
 .sla-progress-bar-mini.sla-critical {
@@ -796,7 +796,7 @@
 }
 
 .sla-progress-bar-mini.sla-overdue {
-    background: #ef4444;
+    background: var(--danger);
     animation: sla-pulse-mini 2s ease-in-out infinite;
 }
 
@@ -835,17 +835,17 @@
 }
 
 .sla-timeline-compact.sla-overdue .sla-info-mini {
-    color: #dc2626;
+    color: var(--danger);
 }
 
 /* Badge styling for SLA status */
 .badge.badge-sla-on-track {
-    background-color: #10b981;
+    background-color: var(--success);
     color: white;
 }
 
 .badge.badge-sla-at-risk {
-    background-color: #f59e0b;
+    background-color: var(--warning);
     color: white;
 }
 
@@ -855,7 +855,7 @@
 }
 
 .badge.badge-sla-overdue {
-    background-color: #ef4444;
+    background-color: var(--danger);
     color: white;
     animation: sla-pulse 2s ease-in-out infinite;
 }

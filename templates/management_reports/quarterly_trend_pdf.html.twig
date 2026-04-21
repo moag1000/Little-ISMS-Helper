@@ -4,22 +4,22 @@
     <meta charset="UTF-8">
     <title>{{ 'management_reports.quarterly_trend.pdf_title'|trans({}, 'management_reports') }}</title>
     <style>
-        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 20px; color: #1e293b; }
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 20px; color: var(--surface); }
         .header {
             text-align: center;
             margin-bottom: 20px;
             border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, #06b6d4 0%, #ec4899 50%, #8b5cf6 100%) 1;
+            border-image: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%) 1;
             padding-bottom: 10px;
         }
-        .header h1 { color: #0f172a; margin: 0; font-size: 16pt; text-transform: uppercase; letter-spacing: 0.5pt; }
+        .header h1 { color: var(--bg); margin: 0; font-size: 16pt; text-transform: uppercase; letter-spacing: 0.5pt; }
         .header .subtitle { color: #475569; font-size: 9pt; margin-top: 3px; }
         .header .date { color: #64748b; font-size: 8pt; margin-top: 3px; }
 
         .section { margin: 15px 0; page-break-inside: avoid; }
         .section h2 {
-            background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
-            color: #06b6d4;
+            background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
+            color: var(--primary);
             padding: 6px 10px;
             font-size: 10pt;
             margin: 0 0 8px 0;
@@ -29,15 +29,15 @@
 
         table { width: 100%; border-collapse: collapse; margin: 8px 0; }
         th {
-            background: #0f172a;
-            color: #06b6d4;
+            background: var(--bg);
+            color: var(--primary);
             padding: 5px 6px;
             text-align: left;
             font-size: 8pt;
             text-transform: uppercase;
         }
-        td { padding: 5px 6px; border-bottom: 1px solid #e2e8f0; font-size: 9pt; }
-        tr:nth-child(even) { background: #f8fafc; }
+        td { padding: 5px 6px; border-bottom: 1px solid var(--border); font-size: 9pt; }
+        tr:nth-child(even) { background: var(--bg); }
         .text-center { text-align: center; }
 
         .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
@@ -45,21 +45,21 @@
         .badge-warning { background: #fef3c7; color: #92400e; }
         .badge-success { background: #dcfce7; color: #166534; }
         .badge-info { background: #dbeafe; color: #1e40af; }
-        .badge-secondary { background: #e2e8f0; color: #475569; }
+        .badge-secondary { background: var(--border); color: #475569; }
 
         .progress-bar { background: #e5e7eb; height: 12px; border-radius: 6px; overflow: hidden; margin: 3px 0; }
         .progress-fill { height: 100%; border-radius: 6px; }
-        .progress-fill.danger { background: #dc2626; }
+        .progress-fill.danger { background: var(--danger); }
         .progress-fill.warning { background: #d97706; }
         .progress-fill.success { background: #16a34a; }
 
         .delta-positive { color: #16a34a; font-weight: bold; }
-        .delta-negative { color: #dc2626; font-weight: bold; }
+        .delta-negative { color: var(--danger); font-weight: bold; }
         .delta-neutral { color: #64748b; }
 
         .no-data { text-align: center; padding: 20px; color: #94a3b8; font-style: italic; font-size: 10pt; }
 
-        .footer { position: fixed; bottom: 15px; left: 20px; right: 20px; text-align: center; font-size: 7pt; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 6px; }
+        .footer { position: fixed; bottom: 15px; left: 20px; right: 20px; text-align: center; font-size: 7pt; color: #94a3b8; border-top: 1px solid var(--border); padding-top: 6px; }
     </style>
 </head>
 <body>

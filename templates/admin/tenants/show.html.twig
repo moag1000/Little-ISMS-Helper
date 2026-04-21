@@ -15,10 +15,10 @@
                 <img src="{{ asset(tenant.logoPath) }}"
                      alt="{{ tenant.name }}"
                      class="rounded me-3"
-                     style="width: 80px; height: 80px; object-fit: contain; border: 1px solid #dee2e6;">
+                     style="width: 80px; height: 80px; object-fit: contain; border: 1px solid var(--border);">
             {% else %}
                 <div class="bg-light rounded d-flex align-items-center justify-content-center me-3"
-                     style="width: 80px; height: 80px; border: 1px solid #dee2e6;">
+                     style="width: 80px; height: 80px; border: 1px solid var(--border);">
                     <i class="bi bi-building text-muted fs-2" aria-hidden="true"></i>
                 </div>
             {% endif %}

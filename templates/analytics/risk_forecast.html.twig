@@ -476,7 +476,7 @@
                         }, {
                             label: '{{ 'analytics.forecast.chart.predicted'|trans({}, 'analytics') }}',
                             data: [...Array(historical.length - 1).fill(null), historical.length > 0 ? historical[historical.length - 1].total : 0, ...predicted.map(p => p.total)],
-                            borderColor: '#ffc107',
+                            borderColor: 'var(--warning)',
                             borderDash: [5, 5],
                             backgroundColor: 'rgba(255, 193, 7, 0.1)',
                             fill: true
@@ -514,7 +514,7 @@
                         datasets: [{
                             label: '{{ 'analytics.forecast.velocity.net_change'|trans({}, 'analytics') }}',
                             data: changes,
-                            backgroundColor: changes.map(c => c > 0 ? '#dc3545' : '#198754')
+                            backgroundColor: changes.map(c => c > 0 ? 'var(--danger)' : '#198754')
                         }]
                     },
                     options: {
@@ -539,7 +539,7 @@
                         datasets: [{
                             data: [score, 100 - score],
                             backgroundColor: [
-                                score >= 80 ? '#198754' : (score >= 50 ? '#ffc107' : '#dc3545'),
+                                score >= 80 ? '#198754' : (score >= 50 ? 'var(--warning)' : 'var(--danger)'),
                                 '#e9ecef'
                             ],
                             circumference: 180,

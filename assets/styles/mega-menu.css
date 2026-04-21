@@ -109,12 +109,12 @@
 [data-bs-theme="dark"] .mega-menu-trigger.active,
 [data-theme="dark"] .mega-menu-trigger:hover,
 [data-theme="dark"] .mega-menu-trigger.active {
-    color: #22d3ee; /* Dark mode: Cyan-400 */
+    color: var(--primary); /* Dark mode: Cyan-400 */
 }
 
 [data-bs-theme="dark"] .mega-menu-trigger i:first-child,
 [data-theme="dark"] .mega-menu-trigger i:first-child {
-    color: #22d3ee; /* Dark mode: Cyan-400 */
+    color: var(--primary); /* Dark mode: Cyan-400 */
 }
 
 /* ====================================
@@ -359,7 +359,7 @@
     [data-bs-theme="dark"] .mega-menu-panel::before {
         background: var(--bg-secondary);
         border-bottom-color: var(--border-color);
-        color: #22d3ee;
+        color: var(--primary);
     }
 }
 

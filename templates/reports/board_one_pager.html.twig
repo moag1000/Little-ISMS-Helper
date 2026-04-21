@@ -10,7 +10,7 @@
             font-size: 8.5pt;
             margin: 0;
             padding: 0;
-            color: #1e293b;
+            color: var(--surface);
         }
 
         /* Header */
@@ -18,13 +18,13 @@
             display: table;
             width: 100%;
             border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, #06b6d4 0%, #ec4899 50%, #8b5cf6 100%) 1;
+            border-image: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%) 1;
             padding-bottom: 8px;
             margin-bottom: 12px;
         }
         .header-left { display: table-cell; vertical-align: middle; }
         .header-right { display: table-cell; vertical-align: middle; text-align: right; }
-        .header h1 { color: #0f172a; margin: 0; font-size: 15pt; text-transform: uppercase; letter-spacing: 0.5pt; }
+        .header h1 { color: var(--bg); margin: 0; font-size: 15pt; text-transform: uppercase; letter-spacing: 0.5pt; }
         .header .subtitle { color: #666; font-size: 9pt; margin-top: 2px; }
 
         /* RAG Status Cards */
@@ -34,7 +34,7 @@
             width: 25%;
             text-align: center;
             padding: 8px 6px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border);
         }
         .rag-cell h4 { margin: 0 0 4px 0; font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.3pt; color: #475569; }
         .rag-indicator {
@@ -47,7 +47,7 @@
         }
         .rag-green { background: #16a34a; }
         .rag-amber { background: #d97706; }
-        .rag-red { background: #dc2626; }
+        .rag-red { background: var(--danger); }
 
         /* Key Metrics */
         .metrics-grid { display: table; width: 100%; margin-bottom: 12px; }
@@ -55,20 +55,20 @@
             display: table-cell;
             width: 25%;
             padding: 8px 6px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border);
             text-align: center;
-            background: #f8fafc;
+            background: var(--bg);
         }
-        .metric-box .number { font-size: 18pt; font-weight: bold; color: #06b6d4; margin: 0; }
-        .metric-box .number.danger { color: #dc2626; }
+        .metric-box .number { font-size: 18pt; font-weight: bold; color: var(--primary); margin: 0; }
+        .metric-box .number.danger { color: var(--danger); }
         .metric-box .number.success { color: #16a34a; }
         .metric-box .number.warning { color: #d97706; }
         .metric-box .label { font-size: 7pt; color: #475569; text-transform: uppercase; font-weight: bold; letter-spacing: 0.3pt; }
         .metric-box .trend { font-size: 7pt; }
         .trend-up { color: #16a34a; }
-        .trend-down { color: #dc2626; }
+        .trend-down { color: var(--danger); }
         .trend-stable { color: #94a3b8; }
-        .trend-up-bad { color: #dc2626; }
+        .trend-up-bad { color: var(--danger); }
         .trend-down-good { color: #16a34a; }
 
         /* Two-column layout */
@@ -78,8 +78,8 @@
 
         /* Section headers */
         .section-header {
-            background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
-            color: #06b6d4;
+            background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
+            color: var(--primary);
             padding: 5px 8px;
             font-size: 9pt;
             font-weight: bold;
@@ -91,7 +91,7 @@
         /* Tables */
         table { width: 100%; border-collapse: collapse; }
         th {
-            background: #f1f5f9;
+            background: var(--surface-2);
             color: #475569;
             padding: 4px 6px;
             text-align: left;
@@ -99,7 +99,7 @@
             text-transform: uppercase;
             border-bottom: 1px solid #cbd5e1;
         }
-        td { padding: 4px 6px; font-size: 8pt; border-bottom: 1px solid #e2e8f0; }
+        td { padding: 4px 6px; font-size: 8pt; border-bottom: 1px solid var(--border); }
 
         /* Badges */
         .badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
@@ -113,8 +113,8 @@
         .progress-fill { height: 100%; border-radius: 5px; }
         .progress-fill.success { background: #16a34a; }
         .progress-fill.warning { background: #d97706; }
-        .progress-fill.danger { background: #dc2626; }
-        .progress-fill.info { background: #06b6d4; }
+        .progress-fill.danger { background: var(--danger); }
+        .progress-fill.info { background: var(--primary); }
 
         /* Compliance framework rows */
         .fw-row { margin-bottom: 5px; }
@@ -125,7 +125,7 @@
         /* Readiness checklist */
         .check-item { font-size: 7.5pt; padding: 1px 0; }
         .check-pass { color: #16a34a; }
-        .check-fail { color: #dc2626; }
+        .check-fail { color: var(--danger); }
 
         /* Footer */
         .footer {
@@ -136,7 +136,7 @@
             text-align: center;
             font-size: 7pt;
             color: #94a3b8;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid var(--border);
             padding-top: 4px;
         }
     </style>
@@ -149,7 +149,7 @@
             <div class="subtitle">{{ generated_at|date('d.m.Y') }}</div>
         </div>
         <div class="header-right">
-            <span style="font-size: 10pt; font-weight: bold; color: #0f172a;">Little ISMS Helper</span>
+            <span style="font-size: 10pt; font-weight: bold; color: var(--bg);">Little ISMS Helper</span>
         </div>
     </div>
 
@@ -263,7 +263,7 @@
                 {% for fw in framework_compliance %}
                 <div class="fw-row">
                     <span class="fw-name">{{ fw.name|length > 12 ? fw.name[:12] ~ '.' : fw.name }}</span>
-                    <span class="fw-pct {% if fw.percentage >= 80 %}success{% elseif fw.percentage >= 60 %}warning{% else %}danger{% endif %}" style="color: {% if fw.percentage >= 80 %}#16a34a{% elseif fw.percentage >= 60 %}#d97706{% else %}#dc2626{% endif %}">{{ fw.percentage }}%</span>
+                    <span class="fw-pct {% if fw.percentage >= 80 %}success{% elseif fw.percentage >= 60 %}warning{% else %}danger{% endif %}" style="color: {% if fw.percentage >= 80 %}#16a34a{% elseif fw.percentage >= 60 %}#d97706{% else %}var(--danger){% endif %}">{{ fw.percentage }}%</span>
                     <span class="fw-bar">
                         <div class="progress-bar-container">
                             <div class="progress-fill {% if fw.percentage >= 80 %}success{% elseif fw.percentage >= 60 %}warning{% else %}danger{% endif %}"

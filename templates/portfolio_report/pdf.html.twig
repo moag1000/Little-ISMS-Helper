@@ -4,27 +4,27 @@
     <meta charset="UTF-8">
     <title>{{ 'portfolio_report.title'|trans({}, 'portfolio_report') }} - {{ tenant.name }}</title>
     <style>
-        body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 10pt; margin: 0; padding: 20px; color: #0f172a; }
+        body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 10pt; margin: 0; padding: 20px; color: var(--bg); }
         .header { border-bottom: 3px solid #0ea5e9; padding-bottom: 10px; margin-bottom: 20px; }
-        .header h1 { margin: 0 0 6px 0; font-size: 18pt; color: #0f172a; }
+        .header h1 { margin: 0 0 6px 0; font-size: 18pt; color: var(--bg); }
         .header .meta { font-size: 9pt; color: #475569; }
-        .header .meta strong { color: #0f172a; }
+        .header .meta strong { color: var(--bg); }
 
         table { width: 100%; border-collapse: collapse; margin: 10px 0; }
         th, td { padding: 6px 8px; border: 1px solid #cbd5e1; text-align: center; font-size: 9pt; }
-        thead th { background: #0f172a; color: #f1f5f9; }
-        tbody th { background: #f1f5f9; text-align: left; color: #0f172a; }
+        thead th { background: var(--bg); color: var(--surface-2); }
+        tbody th { background: var(--surface-2); text-align: left; color: var(--bg); }
 
         .badge { display: inline-block; padding: 3px 8px; border-radius: 10px; font-size: 9pt; font-weight: bold; }
         .badge-success { background: #dcfce7; color: #166534; }
         .badge-warning { background: #fef3c7; color: #92400e; }
         .badge-danger  { background: #fecaca; color: #991b1b; }
-        .badge-muted   { background: #e2e8f0; color: #475569; }
+        .badge-muted   { background: var(--border); color: #475569; }
 
         .cell-meta { font-size: 8pt; color: #64748b; margin-top: 4px; }
         .cell-gaps { color: #b91c1c; }
 
-        .legend { font-size: 8pt; color: #475569; margin-top: 12px; padding: 8px; background: #f8fafc; border-left: 3px solid #0ea5e9; }
+        .legend { font-size: 8pt; color: #475569; margin-top: 12px; padding: 8px; background: var(--bg); border-left: 3px solid #0ea5e9; }
 
         .footer { margin-top: 30px; text-align: center; font-size: 8pt; color: #64748b; border-top: 1px solid #cbd5e1; padding-top: 8px; }
     </style>

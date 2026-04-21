@@ -310,7 +310,7 @@
                         labels: Object.keys(criticalityGroups),
                         datasets: [{
                             data: Object.values(criticalityGroups),
-                            backgroundColor: ['#dc3545', '#ffc107', '#0dcaf0', '#198754']
+                            backgroundColor: ['var(--danger)', 'var(--warning)', '#0dcaf0', '#198754']
                         }]
                     },
                     options: {
@@ -350,7 +350,7 @@
                         datasets: [{
                             label: '{{ 'analytics.assets.chart.asset_count'|trans({}, 'analytics') }}',
                             data: Object.values(probabilityGroups),
-                            backgroundColor: ['#198754', '#0dcaf0', '#ffc107', '#fd7e14', '#dc3545']
+                            backgroundColor: ['#198754', '#0dcaf0', 'var(--warning)', 'var(--warning)', 'var(--danger)']
                         }]
                     },
                     options: {

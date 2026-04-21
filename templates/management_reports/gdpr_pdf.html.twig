@@ -11,7 +11,7 @@
             border-bottom: 3px solid #1f2937;
             padding-bottom: 10px;
         }
-        .header h1 { color: #0f172a; margin: 0; font-size: 18pt; }
+        .header h1 { color: var(--bg); margin: 0; font-size: 18pt; }
         .header .subtitle { color: #666; font-size: 10pt; margin-top: 3px; }
         .header .date { color: #888; font-size: 9pt; margin-top: 3px; }
 
@@ -30,9 +30,9 @@
         .section h2 { background: #1f2937; color: white; padding: 6px; font-size: 10pt; margin: 0 0 8px 0; }
 
         table { width: 100%; border-collapse: collapse; margin: 8px 0; }
-        th { background: #0f172a; color: #06b6d4; padding: 5px; text-align: left; font-size: 8pt; }
+        th { background: var(--bg); color: var(--primary); padding: 5px; text-align: left; font-size: 8pt; }
         td { padding: 5px; border-bottom: 1px solid #ddd; font-size: 8pt; }
-        tr:nth-child(even) { background: #f8fafc; }
+        tr:nth-child(even) { background: var(--bg); }
 
         .badge { display: inline-block; padding: 2px 5px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
         .badge-danger { background: #fecaca; color: #991b1b; }
@@ -41,7 +41,7 @@
         .badge-info { background: #e0f2fe; color: #0369a1; }
 
         .alert { padding: 8px; margin: 10px 0; border-radius: 4px; font-size: 8pt; }
-        .alert-danger { background: #fecaca; color: #991b1b; border: 1px solid #f87171; }
+        .alert-danger { background: #fecaca; color: #991b1b; border: 1px solid var(--danger); }
         .alert-info { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
 
         .progress-bar { background: #e5e7eb; height: 12px; border-radius: 6px; overflow: hidden; }
@@ -99,7 +99,7 @@
                 <td>{{ report.by_severity.critical }}</td>
                 <td>
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: {{ report.total_breaches > 0 ? (report.by_severity.critical / report.total_breaches * 100) : 0 }}%; background: #dc2626;"></div>
+                        <div class="progress-fill" style="width: {{ report.total_breaches > 0 ? (report.by_severity.critical / report.total_breaches * 100) : 0 }}%; background: var(--danger);"></div>
                     </div>
                 </td>
             </tr>

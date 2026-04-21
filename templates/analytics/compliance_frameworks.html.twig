@@ -377,12 +377,12 @@
                             {
                                 label: '{{ 'analytics.compliance.chart.partial'|trans({}, 'analytics') }}',
                                 data: comparisonData.map(f => f.in_progress),
-                                backgroundColor: '#ffc107'
+                                backgroundColor: 'var(--warning)'
                             },
                             {
                                 label: '{{ 'analytics.compliance.chart.non_compliant'|trans({}, 'analytics') }}',
                                 data: comparisonData.map(f => f.not_started),
-                                backgroundColor: '#dc3545'
+                                backgroundColor: 'var(--danger)'
                             }
                         ]
                     },
@@ -409,7 +409,7 @@
                         labels: ['{{ 'analytics.compliance.chart.shared'|trans({}, 'analytics') }}', '{{ 'analytics.compliance.chart.unique'|trans({}, 'analytics') }}'],
                         datasets: [{
                             data: [totalShared, Math.max(0, totalFrameworks - totalShared)],
-                            backgroundColor: ['#198754', '#6c757d']
+                            backgroundColor: ['#198754', 'var(--fg-3)']
                         }]
                     },
                     options: {

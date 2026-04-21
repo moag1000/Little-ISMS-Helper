@@ -15,7 +15,7 @@
 }
 
 .risk-level-critical .risk-score {
-    background-color: var(--color-danger, #dc2626);
+    background-color: var(--color-danger, var(--danger));
     color: white;
 }
 
@@ -30,7 +30,7 @@
 }
 
 .risk-level-low .risk-score {
-    background-color: var(--color-success, #10b981);  /* Semantic green for low risk */
+    background-color: var(--color-success, var(--success));  /* Semantic green for low risk */
     color: white;
 }
 
@@ -614,12 +614,12 @@
 
 /* Link utilities - using theme colors */
 .link-primary {
-    color: var(--color-secondary, #06b6d4);  /* Cyberpunk cyan */
+    color: var(--color-secondary, var(--primary));  /* Cyberpunk cyan */
     text-decoration: none;
 }
 
 .link-primary:hover {
-    color: var(--color-secondary-hover, #0891b2);
+    color: var(--color-secondary-hover, var(--primary-hover));
     text-decoration: underline;
 }
 
@@ -1101,17 +1101,17 @@
 /* Status icon styles - using theme colors */
 .audit-icon-planned {
     font-size: 2rem;
-    color: var(--color-info, #06b6d4);
+    color: var(--color-info, var(--primary));
 }
 
 .audit-icon-in-progress {
     font-size: 2rem;
-    color: var(--color-warning, #f59e0b);
+    color: var(--color-warning, var(--warning));
 }
 
 .audit-icon-completed {
     font-size: 2rem;
-    color: var(--color-success, #10b981);
+    color: var(--color-success, var(--success));
 }
 
 .audit-icon-cancelled {
@@ -1123,19 +1123,19 @@
 .audit-count-planned {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--color-info, #06b6d4);
+    color: var(--color-info, var(--primary));
 }
 
 .audit-count-in-progress {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--color-warning, #f59e0b);
+    color: var(--color-warning, var(--warning));
 }
 
 .audit-count-completed {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--color-success, #10b981);
+    color: var(--color-success, var(--success));
 }
 
 .audit-count-cancelled {
@@ -1736,15 +1736,15 @@
 
 /* Document Index Modern Utilities - using theme colors */
 .color-pdf {
-    color: var(--color-danger, #ef4444);
+    color: var(--color-danger, var(--danger));
 }
 
 .color-image {
-    color: var(--color-info, #06b6d4);
+    color: var(--color-info, var(--primary));
 }
 
 .color-excel {
-    color: var(--color-success, #10b981);
+    color: var(--color-success, var(--success));
 }
 
 .color-other {
@@ -1807,7 +1807,7 @@
 /* Compliance Transitive Utilities */
 /* Gradient backgrounds for empty states - Cyberpunk Fairy Theme */
 .gradient-purple {
-    background: var(--gradient-purple, linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%));
+    background: var(--gradient-purple, linear-gradient(135deg, var(--accent) 0%, var(--accent) 100%));
     color: white;
     text-align: center;
     padding: 3rem;
@@ -1815,7 +1815,7 @@
 }
 
 .gradient-pink {
-    background: var(--gradient-pink, linear-gradient(135deg, #ec4899 0%, #db2777 100%));
+    background: var(--gradient-pink, linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%));
     color: white;
     text-align: center;
     padding: 3rem;
@@ -1867,7 +1867,7 @@
 }
 
 .btn-light-primary-flex {
-    color: var(--color-accent-purple, #8b5cf6);  /* Mystical purple aura */
+    color: var(--color-accent-purple, var(--accent));  /* Mystical purple aura */
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -2155,7 +2155,7 @@
 
 /* Compliance Index Utilities - Cyberpunk Fairy Emerald Gradient */
 .alert-gradient-success {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);  /* Emerald fairy dust */
+    background: linear-gradient(135deg, var(--success) 0%, #059669 100%);  /* Emerald fairy dust */
     color: white;
     border: none;
     margin-bottom: var(--spacing-lg);
@@ -2211,7 +2211,7 @@
 
 /* Dashboard Status Colors - using theme colors */
 .status-in-progress {
-    color: var(--color-warning, #f59e0b);
+    color: var(--color-warning, var(--warning));
 }
 
 .status-not-started {
@@ -2405,22 +2405,22 @@
    Audit Log Badges - Cyberpunk Fairy Theme
    ==================== */
 .badge-create {
-    background: var(--color-success, #10b981);  /* Emerald fairy dust */
+    background: var(--color-success, var(--success));  /* Emerald fairy dust */
     color: white;
 }
 
 .badge-update {
-    background: var(--color-warning, #f59e0b);  /* Amber caution sparkles */
+    background: var(--color-warning, var(--warning));  /* Amber caution sparkles */
     color: var(--text-inverse, #000);  /* Theme-aware dark text on amber */
 }
 
 .badge-delete {
-    background: var(--color-danger, #ef4444);  /* Alert flames */
+    background: var(--color-danger, var(--danger));  /* Alert flames */
     color: white;
 }
 
 .badge-view {
-    background: var(--color-info, #06b6d4);  /* Cyberpunk cyan glow */
+    background: var(--color-info, var(--primary));  /* Cyberpunk cyan glow */
     color: white;
 }
 
@@ -2430,31 +2430,31 @@
 }
 
 .badge-import {
-    background: var(--color-accent-purple, #8b5cf6);  /* Mystical purple aura */
+    background: var(--color-accent-purple, var(--accent));  /* Mystical purple aura */
     color: white;
 }
 
 /* Dark Mode - Audit Log Badges */
 [data-theme="dark"] .badge-create {
-    background: var(--color-success, #10b981);
+    background: var(--color-success, var(--success));
     color: #0f172a;
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
 }
 
 [data-theme="dark"] .badge-update {
-    background: var(--color-warning, #f59e0b);
+    background: var(--color-warning, var(--warning));
     color: #0f172a;
     box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
 }
 
 [data-theme="dark"] .badge-delete {
-    background: var(--color-danger, #ef4444);
+    background: var(--color-danger, var(--danger));
     color: white;
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
 }
 
 [data-theme="dark"] .badge-view {
-    background: var(--color-info, #06b6d4);
+    background: var(--color-info, var(--primary));
     color: #0f172a;
     box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
 }
@@ -2466,7 +2466,7 @@
 }
 
 [data-theme="dark"] .badge-import {
-    background: var(--color-accent-purple, #8b5cf6);  /* Mystical purple aura */
+    background: var(--color-accent-purple, var(--accent));  /* Mystical purple aura */
     color: white;
     box-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
 }
