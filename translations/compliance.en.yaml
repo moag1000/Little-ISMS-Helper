@@ -68,6 +68,7 @@ compliance:
         create_mappings_now: 'Create mappings now'
     unit:
         requirements: requirements
+        mappings: Mappings
     field:
         priority: 'Priority'
         framework_1: 'Framework 1'
