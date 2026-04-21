@@ -1,0 +1,31 @@
+{#
+ # FairyAurora Status-Pill — colored dot + mono-uppercase text + tint-bg + border
+ #
+ # Usage:
+ #   {% import '_components/_status_pill.html.twig' as pill %}
+ #   {{ pill.render('In Arbeit', 'primary') }}
+ #   {{ pill.render('Erfüllt', 'success', { icon: 'bi-check-circle' }) }}
+ #   {{ pill.render('23', 'accent', { size: 'sm' }) }}
+ #
+ # Props:
+ #   label: (required)
+ #   tone:  primary | accent | success | warning | danger | neutral  (default: neutral)
+ #   size:  sm | md  (default: md)
+ #   icon:  optional bootstrap-icon class (no dot rendered when icon given)
+ #   noDot: boolean — drop dot even without icon (for pure-label pills)
+ #}
+
+{% macro render(label, tone = 'neutral', props = {}) %}
+    {% set size = props.size|default('md') %}
+    {% set icon = props.icon|default(null) %}
+    {% set noDot = props.noDot|default(false) %}
+
+    <span class="fa-status-pill fa-status-pill--{{ tone }} fa-status-pill--{{ size }}">
+        {% if icon %}
+            <i class="bi {{ icon }}" aria-hidden="true"></i>
+        {% elseif not noDot %}
+            <span class="fa-status-pill__dot" aria-hidden="true"></span>
+        {% endif %}
+        <span class="fa-status-pill__label">{{ label }}</span>
+    </span>
+{% endmacro %}

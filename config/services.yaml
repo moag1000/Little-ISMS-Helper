@@ -86,6 +86,12 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    # FairyAurora v3.0 — App-Version aus composer.json für Brand-Component
+    App\Twig\AppVersionExtension:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+        tags: ['twig.extension']
+
     # Configure Data Import Service
     App\Service\DataImportService:
         arguments:

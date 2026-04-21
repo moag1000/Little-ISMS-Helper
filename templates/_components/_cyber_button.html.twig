@@ -1,0 +1,61 @@
+{#
+ # FairyAurora CyberButton — primary (notched-corner) / secondary / accent / ghost / danger
+ #
+ # Usage:
+ #   {% import '_components/_cyber_button.html.twig' as btn %}
+ #   {{ btn.render('Speichern', { variant: 'primary', icon: 'bi-check-lg' }) }}
+ #   {{ btn.link('/foo', 'Zur Übersicht', { variant: 'secondary' }) }}
+ #   {{ btn.submit('Absenden', { variant: 'primary' }) }}
+ #
+ # Props:
+ #   variant:  primary | secondary | accent | ghost | danger  (default: primary)
+ #   size:     sm | md | lg  (default: md)
+ #   icon:     bootstrap-icon class (default: null)
+ #   iconAfter: icon rendered after label (default: false)
+ #   fullWidth: boolean  (default: false)
+ #   disabled: boolean  (default: false)
+ #   loading:  boolean  (default: false)
+ #   attrs:    extra HTML attrs as map (default: {})
+ #}
+
+{% macro classes(variant, size, fullWidth, disabled, loading) %}
+fa-cyber-btn fa-cyber-btn--{{ variant|default('primary') }} fa-cyber-btn--{{ size|default('md') }}{% if fullWidth %} fa-cyber-btn--full{% endif %}{% if disabled %} is-disabled{% endif %}{% if loading %} is-loading{% endif %}
+{% endmacro %}
+
+{% macro body(label, props) %}
+    {% set icon = props.icon|default(null) %}
+    {% set iconAfter = props.iconAfter|default(false) %}
+    {% if icon and not iconAfter %}<i class="bi {{ icon }}" aria-hidden="true"></i>{% endif %}
+    <span class="fa-cyber-btn__label">{{ label }}</span>
+    {% if icon and iconAfter %}<i class="bi {{ icon }}" aria-hidden="true"></i>{% endif %}
+    {% if props.loading|default(false) %}
+        <span class="fa-cyber-btn__dots" aria-live="polite" aria-label="{{ 'common.loading'|trans({}, 'messages') }}">
+            <span></span><span></span><span></span>
+        </span>
+    {% endif %}
+{% endmacro %}
+
+{% macro attrs(attrs) %}
+    {% for k, v in attrs|default({}) %} {{ k }}="{{ v|e('html_attr') }}"{% endfor %}
+{% endmacro %}
+
+{% macro render(label, props = {}) %}
+    {% import _self as self %}
+    <button type="{{ props.type|default('button') }}"
+            class="{{ self.classes(props.variant, props.size, props.fullWidth, props.disabled, props.loading)|trim }}"
+            {% if props.disabled %}disabled aria-disabled="true"{% endif %}
+            {{ self.attrs(props.attrs) }}>{{ self.body(label, props) }}</button>
+{% endmacro %}
+
+{% macro submit(label, props = {}) %}
+    {% import _self as self %}
+    {{ self.render(label, props|merge({ type: 'submit' })) }}
+{% endmacro %}
+
+{% macro link(href, label, props = {}) %}
+    {% import _self as self %}
+    <a href="{{ href }}"
+       class="{{ self.classes(props.variant, props.size, props.fullWidth, props.disabled, props.loading)|trim }}"
+       {% if props.disabled %}aria-disabled="true" tabindex="-1"{% endif %}
+       {{ self.attrs(props.attrs) }}>{{ self.body(label, props) }}</a>
+{% endmacro %}

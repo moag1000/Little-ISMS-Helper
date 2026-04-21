@@ -1,0 +1,93 @@
+{#
+ # FairyAurora CyberInput — Input-Frame mit 4 Ecken-Tick-Markern
+ #
+ # Usage:
+ #   {% import '_components/_cyber_input.html.twig' as ci %}
+ #   {{ ci.render({ name: 'email', label: 'E-Mail', type: 'email', required: true }) }}
+ #   {{ ci.render({ name: 'foo', label: 'Foo', alvaBadge: true, hint: 'Alva hat das für dich vorbereitet' }) }}
+ #
+ # Props:
+ #   name:       (required)
+ #   label:      (required)
+ #   type:       text | email | password | number | tel | url | date | search (default: text)
+ #   value:      aktueller Wert
+ #   placeholder:
+ #   required:   boolean
+ #   disabled:   boolean
+ #   error:      Fehler-Text unter Input
+ #   hint:       Hilfe-Text unter Input
+ #   alvaBadge:  boolean — „✦ von Alva" Badge neben Label
+ #   id:         defaults to "fa-input-{name}"
+ #   autocomplete:
+ #   attrs:      extra HTML-Attrs als Map
+ #}
+
+{% macro render(p) %}
+    {% set id = p.id|default('fa-input-' ~ p.name) %}
+    {% set type = p.type|default('text') %}
+    {% set hasError = p.error is defined and p.error %}
+
+    <div class="fa-cyber-input {% if hasError %}has-error{% endif %} {% if p.disabled|default(false) %}is-disabled{% endif %}">
+        <div class="fa-cyber-input__header">
+            <label for="{{ id }}" class="fa-cyber-input__label">
+                {{ p.label }}{% if p.required|default(false) %} <span class="fa-cyber-input__req" aria-hidden="true">*</span>{% endif %}
+            </label>
+            {% if p.alvaBadge|default(false) %}
+                <span class="fa-cyber-input__alva-badge" title="{{ 'alva.badge_tooltip'|trans({}, 'messages') }}">
+                    <span>✦</span> {{ 'alva.badge_label'|trans({}, 'messages')|default('von Alva') }}
+                </span>
+            {% endif %}
+        </div>
+        <div class="fa-cyber-input__frame">
+            {# 4 Ecken-Tick-Marker #}
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--tl" aria-hidden="true"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--tr" aria-hidden="true"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--bl" aria-hidden="true"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--br" aria-hidden="true"></span>
+
+            <input id="{{ id }}"
+                   name="{{ p.name }}"
+                   type="{{ type }}"
+                   class="fa-cyber-input__field"
+                   {% if p.value is defined %}value="{{ p.value|e('html_attr') }}"{% endif %}
+                   {% if p.placeholder is defined %}placeholder="{{ p.placeholder|e('html_attr') }}"{% endif %}
+                   {% if p.required|default(false) %}required aria-required="true"{% endif %}
+                   {% if p.disabled|default(false) %}disabled{% endif %}
+                   {% if p.autocomplete is defined %}autocomplete="{{ p.autocomplete }}"{% endif %}
+                   {% if hasError %}aria-invalid="true" aria-describedby="{{ id }}-err"{% endif %}
+                   {% for k, v in p.attrs|default({}) %} {{ k }}="{{ v|e('html_attr') }}"{% endfor %}>
+        </div>
+        {% if hasError %}
+            <div id="{{ id }}-err" class="fa-cyber-input__error" role="alert">{{ p.error }}</div>
+        {% elseif p.hint is defined and p.hint %}
+            <div class="fa-cyber-input__hint">{{ p.hint }}</div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro select(p) %}
+    {% set id = p.id|default('fa-select-' ~ p.name) %}
+    {% set hasError = p.error is defined and p.error %}
+
+    <div class="fa-cyber-input fa-cyber-input--select {% if hasError %}has-error{% endif %}">
+        <div class="fa-cyber-input__header">
+            <label for="{{ id }}" class="fa-cyber-input__label">{{ p.label }}{% if p.required|default(false) %} <span class="fa-cyber-input__req">*</span>{% endif %}</label>
+        </div>
+        <div class="fa-cyber-input__frame">
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--tl"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--tr"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--bl"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--br"></span>
+            <select id="{{ id }}" name="{{ p.name }}" class="fa-cyber-input__field"
+                    {% if p.required|default(false) %}required{% endif %}
+                    {% if p.disabled|default(false) %}disabled{% endif %}>
+                {% for opt in p.options|default([]) %}
+                    <option value="{{ opt.value }}" {% if opt.value == p.value|default(null) %}selected{% endif %}>{{ opt.label }}</option>
+                {% endfor %}
+            </select>
+            <span class="fa-cyber-input__chevron" aria-hidden="true">▾</span>
+        </div>
+        {% if hasError %}<div class="fa-cyber-input__error" role="alert">{{ p.error }}</div>
+        {% elseif p.hint is defined %}<div class="fa-cyber-input__hint">{{ p.hint }}</div>{% endif %}
+    </div>
+{% endmacro %}

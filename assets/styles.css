@@ -19,3 +19,6 @@
 
 /* FairyAurora Bridge — MUST load LAST (overrides legacy :root tokens) */
 @import './styles/fairy-aurora-bridge.css';
+
+/* FairyAurora Components — Aurora-Primitives (Brand, CyberButton, CyberInput, Status-Pill) */
+@import './styles/fairy-aurora-components.css';
