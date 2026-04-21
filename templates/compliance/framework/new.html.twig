@@ -17,9 +17,9 @@
         <div class="col-lg-8">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header bg-success text-white">
+                    <div class="card-header">
                         <h2 class="mb-0">
-                            {{ 'compliance.framework.field.details'|trans({}, 'compliance') }}
+                            <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'compliance.framework.field.details'|trans({}, 'compliance') }}
                         </h2>
                     </div>
                 {% endblock %}
@@ -71,7 +71,7 @@
         <div class="col-lg-4">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header bg-info text-white">
+                    <div class="card-header">
                         <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.help'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}

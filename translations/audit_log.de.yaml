@@ -50,6 +50,7 @@ audit_log:
         no_entries: 'Keine Protokolleinträge gefunden.'
         no_entries_filtered: 'Keine Protokolleinträge für den ausgewählten Filter gefunden.'
         no_data_available: 'Keine Daten verfügbar'
+        no_user_activities: 'Keine Aktivitäten für diesen Benutzer gefunden.'
     action:
         back_to_health: 'Zurück zur Systemgesundheit'
     modal:

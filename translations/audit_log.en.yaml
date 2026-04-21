@@ -50,6 +50,7 @@ audit_log:
         no_entries: 'No log entries found.'
         no_entries_filtered: 'No audit log entries found for the selected filter.'
         no_data_available: 'No data available'
+        no_user_activities: 'No activities found for this user.'
     action:
         back_to_health: 'Back to Health'
     modal:

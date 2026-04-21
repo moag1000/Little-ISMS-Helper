@@ -72,7 +72,7 @@
 </div>
 {% else %}
 <div class="info-box mt-4">
-    <p>Keine Aktivitäten für diesen Benutzer gefunden.</p>
+    <p class="text-muted">{{ 'audit_log.message.no_user_activities'|trans({}, 'audit_log') }}</p>
 </div>
 {% endif %}
 

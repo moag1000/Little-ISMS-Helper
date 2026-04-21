@@ -164,6 +164,7 @@ compliance:
         confirm_question: 'Möchten Sie wirklich fortfahren?'
         second_confirm: 'Sind Sie sicher? Framework wird unwiderruflich gelöscht!'
     mapping:
+        overview: 'Mapping-Übersicht'
         confirm:
             delete: 'Möchten Sie diese Zuordnung wirklich löschen?'
         empty:
