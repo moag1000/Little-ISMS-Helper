@@ -180,8 +180,8 @@
                             {% include '_components/_badge.html.twig' with { variant: gap.statusBadgeClass, content: gap.status } %}
                         </td>
                         <td>
-                            <a href="{{ path('app_mapping_quality_review', {id: gap.mapping.id}) }}" class="btn btn-sm btn-primary">
-                                Details
+                            <a href="{{ path('app_mapping_quality_review', {id: gap.mapping.id}) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'compliance.mapping_quality.column.action'|trans({}, 'compliance') }}
                             </a>
                         </td>
                     </tr>
