@@ -1,0 +1,71 @@
+{#
+ # FairyAurora Alert — Aurora-styled alert with optional Alva-avatar
+ #
+ # Usage:
+ #   {% import '_components/_alert.html.twig' as alert %}
+ #   {{ alert.render('Erfolgreich gespeichert.', 'success') }}
+ #   {{ alert.render('Achtung, bitte prüfen.', 'warning', { withAlva: true, dismissible: true }) }}
+ #
+ # Tones:
+ #   primary | info | success | warning | danger
+ #
+ # Props:
+ #   withAlva:    boolean — rendert Alva-mini-avatar links (mood aus Tone gemapped)
+ #   dismissible: boolean — fügt Close-Button + data-controller="aurora-alert"
+ #   icon:        bi-* icon class (default: derived from tone)
+ #   title:       optional bold-header above body
+ #   actions:     raw HTML (z.B. Undo-Link)
+ #}
+
+{% import '_components/_alva.html.twig' as alva %}
+
+{% macro _iconFor(tone) %}
+    {%- if tone == 'success' -%}bi-check-circle-fill
+    {%- elseif tone == 'warning' -%}bi-exclamation-triangle-fill
+    {%- elseif tone == 'danger' -%}bi-x-circle-fill
+    {%- elseif tone == 'info' -%}bi-info-circle-fill
+    {%- else -%}bi-info-circle
+    {%- endif %}
+{% endmacro %}
+
+{% macro _moodFor(tone) %}
+    {%- if tone == 'success' -%}celebrating
+    {%- elseif tone == 'warning' -%}warning
+    {%- elseif tone == 'danger' -%}warning
+    {%- elseif tone == 'info' -%}thinking
+    {%- else -%}idle
+    {%- endif %}
+{% endmacro %}
+
+{% macro render(message, tone = 'info', props = {}) %}
+    {% import _self as self %}
+    {% set withAlva = props.withAlva|default(false) %}
+    {% set dismissible = props.dismissible|default(false) %}
+    {% set icon = props.icon|default(self._iconFor(tone)|trim) %}
+    {% set title = props.title|default(null) %}
+    {% set actions = props.actions|default(null) %}
+
+    <div class="fa-alert fa-alert--{{ tone }} {% if withAlva %}fa-alert--with-alva{% endif %} {% if dismissible %}fa-alert--dismissible{% endif %}"
+         role="alert"
+         {% if dismissible %}data-controller="aurora-alert"{% endif %}>
+        {% if withAlva %}
+            {{ alva.render(self._moodFor(tone)|trim, { size: 40, decorative: true, class: 'fa-alert__alva' }) }}
+        {% elseif icon %}
+            <i class="bi {{ icon }} fa-alert__icon" aria-hidden="true"></i>
+        {% endif %}
+
+        <div class="fa-alert__body">
+            {% if title %}<div class="fa-alert__title">{{ title }}</div>{% endif %}
+            <div class="fa-alert__message">
+                {% if message is iterable %}{{ message|join(', ') }}{% else %}{{ message|raw }}{% endif %}
+            </div>
+            {% if actions %}<div class="fa-alert__actions">{{ actions|raw }}</div>{% endif %}
+        </div>
+
+        {% if dismissible %}
+            <button type="button" class="fa-alert__close"
+                    data-action="click->aurora-alert#dismiss"
+                    aria-label="{{ 'common.close'|trans({}, 'messages') }}">×</button>
+        {% endif %}
+    </div>
+{% endmacro %}

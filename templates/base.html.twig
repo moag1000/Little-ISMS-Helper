@@ -296,18 +296,20 @@
         <main id="main-content" class="app-main" role="main">
             <div class="container" data-controller="turbo">
                 <div class="content">
-                    {# Flash Messages Container #}
-                    <div id="flash-messages" aria-live="polite" aria-atomic="true">
+                    {# Flash Messages — Aurora-styled alerts with Alva-avatar #}
+                    {% import '_components/_alert.html.twig' as faAlert %}
+                    {% set flashToneMap = {
+                        'success': 'success',
+                        'error':   'danger',
+                        'danger':  'danger',
+                        'warning': 'warning',
+                        'info':    'info',
+                        'notice':  'info'
+                    } %}
+                    <div id="flash-messages" class="fa-flash-messages" aria-live="polite" aria-atomic="true">
                         {% for label, messages in app.flashes %}
                             {% for message in messages %}
-                                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                                    {% if message is iterable %}
-                                        {{ message|join(', ') }}
-                                    {% else %}
-                                        {{ message|raw }}
-                                    {% endif %}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
-                                </div>
+                                {{ faAlert.render(message, flashToneMap[label]|default('info'), { withAlva: true, dismissible: true })|raw }}
                             {% endfor %}
                         {% endfor %}
                     </div>
