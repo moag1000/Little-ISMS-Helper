@@ -175,7 +175,7 @@ class ComplianceMappingController extends AbstractController
         $frameworksById = [];
         $requirementsByFramework = [];
         foreach ($frameworks as $fw) {
-            $id = $fw->id;
+            $id = $fw->getId();
             if ($id === null) {
                 continue;
             }
@@ -189,7 +189,7 @@ class ComplianceMappingController extends AbstractController
 
         foreach ($this->complianceRequirementRepository->findAll() as $req) {
             $fw = $req->getFramework();
-            $fwId = $fw?->id;
+            $fwId = $fw?->getId();
             $rId = $req->getId();
             if ($fwId === null || !isset($requirementsByFramework[$fwId]) || $rId === null) {
                 continue;
