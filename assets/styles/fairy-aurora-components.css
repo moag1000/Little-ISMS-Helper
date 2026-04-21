@@ -367,19 +367,8 @@
 .fa-status-pill--danger  { background: var(--danger-glow);  color: var(--danger);  border-color: var(--danger); }
 .fa-status-pill--neutral { background: var(--surface-2);    color: var(--fg-2);    border-color: var(--border); }
 
-/* ═══════════════════════════════════════════════════════════════════
-   Alva Character Mount (FA-2: minimal — FA-4 ersetzt durch 9-Mood-SVG)
-   ═══════════════════════════════════════════════════════════════════ */
-
-.fa-alva {
-    display: inline-block;
-    position: relative;
-}
-.fa-alva img {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
+/* Alva-Character-Styles wandern nach FA-4: assets/styles/alva.css
+   (9-Mood-SVG-Engine mit Aura, Bob, Wings, Face, Decorations, Reduced-Motion) */
 
 /* ═══════════════════════════════════════════════════════════════════
    Empty-State mit Alva-Anchor
@@ -698,6 +687,13 @@
 .header-system-status {
     display: inline-flex;
     align-items: center;
+}
+
+.header-alva {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
 }
 
 .header-actions {
