@@ -436,6 +436,93 @@ html[data-theme="dark"] .keyboard-key {
 .card-subtitle { color: var(--fg-2); }
 .card-text { color: var(--fg-2); line-height: 1.55; }
 
+/* ═══════════════════════════════════════════════════════════════════
+   Menü-/Sidebar-/Navigation-Typografie — Aurora-Harmonisierung
+   Zieht alle Menü-Schriften auf Inter (body-font) und behebt Dark-Mode-
+   Kontrastlücken für Modul-Labels/Sub-Items die historisch auf
+   --color-text / --color-text-muted hingen.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.app-sidebar,
+.app-sidebar *,
+.mega-menu,
+.mega-menu *,
+.header,
+.header *,
+.navbar,
+.navbar * {
+    font-family: var(--font-sans);
+}
+
+/* Primary-Navigation (Kategorien-Trigger in Sidebar) */
+.mega-menu-trigger,
+.app-sidebar .nav-link {
+    color: var(--fg-2);
+    font-weight: 500;
+    letter-spacing: -0.1px;
+}
+.mega-menu-trigger:hover,
+.mega-menu-trigger.active,
+.app-sidebar .nav-link:hover,
+.app-sidebar .nav-link.active {
+    color: var(--primary-strong);
+}
+html[data-theme="dark"] .mega-menu-trigger,
+html[data-theme="dark"] .app-sidebar .nav-link {
+    color: var(--fg);
+}
+html[data-theme="dark"] .mega-menu-trigger:hover,
+html[data-theme="dark"] .mega-menu-trigger.active,
+html[data-theme="dark"] .app-sidebar .nav-link:hover,
+html[data-theme="dark"] .app-sidebar .nav-link.active {
+    color: var(--primary);
+}
+
+/* Section-Titles (BSI / ISMS / BCM / GDPR etc.) — Mono-Font-Aurora-Style */
+.mega-menu-section-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--fg-2);
+    border-bottom-color: var(--border);
+}
+html[data-theme="dark"] .mega-menu-section-title {
+    color: var(--fg);
+}
+
+/* Sub-Item-Titles + Descriptions — Inter, Aurora-Farben */
+.mega-menu-link-title {
+    color: var(--fg);
+    font-weight: 600;
+    letter-spacing: -0.1px;
+}
+.mega-menu-link-desc {
+    color: var(--fg-2);
+}
+.mega-menu-links a {
+    color: var(--fg);
+}
+.mega-menu-links a:hover .mega-menu-link-desc,
+.mega-menu-links a.active .mega-menu-link-desc {
+    color: var(--fg);
+}
+html[data-theme="dark"] .mega-menu-link-title,
+html[data-theme="dark"] .mega-menu-links a {
+    color: var(--fg);
+}
+html[data-theme="dark"] .mega-menu-link-desc {
+    color: var(--fg-2);
+}
+
+/* Panel-Header (Kategorie-Titel) */
+.mega-menu-panel-title {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    color: var(--fg);
+}
+
 /* Bootstrap 5.3 reagiert auf [data-bs-theme="dark"] — App nutzt [data-theme="dark"].
    Ohne expliziten Override bleibt --bs-heading-color im Dark-Mode fast-schwarz.
    Fix: Aurora-fg global als Heading-Color. */
