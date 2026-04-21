@@ -90,6 +90,13 @@ soa:
     message:
         no_controls_filtered: 'No controls found matching the filter criteria.'
         auto_seeded: '%count% ISO 27001 Annex A controls were auto-loaded for this tenant.'
+        no_justification: 'No justification provided. Please add a justification for the applicability of this control.'
+        no_implementation_notes: 'No implementation notes provided.'
+        control_coverage: 'This control protects %count% asset(s) with a total value of €%value%.'
+        high_risk_assets: 'high-risk assets'
+        related_risks_info: 'These risks are linked to this control and should be considered during implementation.'
+        related_incidents_count: 'incidents affected this control.'
+        review_required: 'Due to incidents, the effectiveness of this control should be reviewed.'
     empty:
         no_controls_for_tenant:
             title: 'No ISO 27001 Annex A controls loaded for this tenant yet'

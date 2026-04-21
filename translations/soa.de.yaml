@@ -85,6 +85,13 @@ soa:
     message:
         no_controls_filtered: 'Keine Controls gefunden, die den Filterkriterien entsprechen.'
         auto_seeded: '%count% ISO 27001 Annex A Controls wurden automatisch für diesen Tenant geladen.'
+        no_justification: 'Keine Begründung hinterlegt. Bitte ergänzen Sie eine Begründung für die Anwendbarkeit dieser Maßnahme.'
+        no_implementation_notes: 'Keine Umsetzungshinweise hinterlegt.'
+        control_coverage: 'Diese Maßnahme schützt %count% Asset(s) mit einem Gesamtwert von €%value%.'
+        high_risk_assets: 'Assets mit hohem Risiko'
+        related_risks_info: 'Diese Risiken sind mit der Maßnahme verknüpft und sollten bei der Umsetzung berücksichtigt werden.'
+        related_incidents_count: 'Vorfälle betrafen diese Maßnahme.'
+        review_required: 'Aufgrund der Vorfälle sollte die Wirksamkeit dieser Maßnahme überprüft werden.'
     empty:
         no_controls_for_tenant:
             title: 'Noch keine ISO 27001 Annex A Controls für diesen Tenant'
