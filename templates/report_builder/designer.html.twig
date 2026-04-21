@@ -19,10 +19,10 @@
         </div>
         <div class="d-flex align-items-center gap-2">
             <button type="button" class="btn btn-sm btn-outline-light" data-action="click->report-designer#save">
-                <i class="bi bi-save" aria-hidden="true"></i> {{ 'action.save'|trans }}
+                <i class="bi bi-save" aria-hidden="true"></i> {{ 'action.save'|trans({}, 'report_builder') }}
             </button>
             <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="btn btn-sm btn-outline-info" target="_blank">
-                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'action.preview'|trans }}
+                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'action.preview'|trans({}, 'report_builder') }}
             </a>
             <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="btn btn-sm btn-danger">
                 <i class="bi bi-file-pdf" aria-hidden="true"></i> PDF
@@ -34,7 +34,7 @@
         {# Widget Library Sidebar #}
         <div class="widget-library bg-light border-end" style="width: 280px; overflow-y: auto;">
             <div class="p-3">
-                <h2 class="h6 mb-3"><i class="bi bi-grid-3x3-gap" aria-hidden="true"></i> {{ 'designer.widgets'|trans }}</h2>
+                <h2 class="h6 mb-3"><i class="bi bi-grid-3x3-gap" aria-hidden="true"></i> {{ 'designer.widgets'|trans({}, 'report_builder') }}</h2>
 
                 {% for categoryKey, category in widget_library %}
                 <div class="mb-3">
@@ -70,7 +70,7 @@
                 {# Report Header #}
                 <div class="report-header mb-4 pb-3 border-bottom">
                     <h1 class="h3" data-report-designer-target="reportTitle">{{ report.name }}</h1>
-                    <p class="text-muted mb-0">{{ report.description|default('designer.no_description'|trans) }}</p>
+                    <p class="text-muted mb-0">{{ report.description|default('designer.no_description'|trans({}, 'report_builder')) }}</p>
                 </div>
 
                 {# Widget Grid #}
@@ -100,7 +100,7 @@
                         </div>
                         <div class="widget-content" data-report-designer-target="widgetContent">
                             <div class="text-center py-4 text-muted">
-                                <i class="bi bi-hourglass-split" aria-hidden="true"></i> {{ 'designer.loading'|trans }}
+                                <i class="bi bi-hourglass-split" aria-hidden="true"></i> {{ 'designer.loading'|trans({}, 'report_builder') }}
                             </div>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
                     {% if report.widgets|length == 0 %}
                     <div class="drop-placeholder text-center py-5" data-report-designer-target="placeholder">
                         <i class="bi bi-plus-circle display-4 text-muted" aria-hidden="true"></i>
-                        <p class="mt-3 text-muted">{{ 'designer.drop_hint'|trans }}</p>
+                        <p class="mt-3 text-muted">{{ 'designer.drop_hint'|trans({}, 'report_builder') }}</p>
                     </div>
                     {% endif %}
                 </div>
@@ -120,14 +120,14 @@
         {# Settings Sidebar #}
         <div class="designer-settings bg-white border-start" style="width: 300px; overflow-y: auto;">
             <div class="p-3">
-                <h2 class="h6 mb-3"><i class="bi bi-sliders" aria-hidden="true"></i> {{ 'designer.settings'|trans }}</h2>
+                <h2 class="h6 mb-3"><i class="bi bi-sliders" aria-hidden="true"></i> {{ 'designer.settings'|trans({}, 'report_builder') }}</h2>
 
                 {# Report Settings #}
                 <div class="mb-4">
-                    <h3 class="small text-muted text-uppercase mb-2">{{ 'settings.report'|trans }}</h3>
+                    <h3 class="small text-muted text-uppercase mb-2">{{ 'settings.report'|trans({}, 'report_builder') }}</h3>
 
                     <div class="mb-3">
-                        <label class="form-label small">{{ 'form.category'|trans }}</label>
+                        <label class="form-label small">{{ 'form.category'|trans({}, 'report_builder') }}</label>
                         <select class="form-select form-select-sm" data-report-designer-target="categorySelect">
                             {% for key, label in categories %}
                             <option value="{{ key }}" {% if report.category == key %}selected{% endif %}>{{ label }}</option>
@@ -136,7 +136,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small">{{ 'form.layout'|trans }}</label>
+                        <label class="form-label small">{{ 'form.layout'|trans({}, 'report_builder') }}</label>
                         <select class="form-select form-select-sm" data-report-designer-target="layoutSelect" data-action="change->report-designer#changeLayout">
                             {% for key, label in layouts %}
                             <option value="{{ key }}" {% if report.layout == key %}selected{% endif %}>{{ label }}</option>
@@ -147,25 +147,25 @@
 
                 {# Date Range Filter #}
                 <div class="mb-4">
-                    <h3 class="small text-muted text-uppercase mb-2">{{ 'settings.filters'|trans }}</h3>
+                    <h3 class="small text-muted text-uppercase mb-2">{{ 'settings.filters'|trans({}, 'report_builder') }}</h3>
 
                     <div class="mb-3">
-                        <label class="form-label small">{{ 'filter.date_range'|trans }}</label>
+                        <label class="form-label small">{{ 'filter.date_range'|trans({}, 'report_builder') }}</label>
                         <select class="form-select form-select-sm" data-report-designer-target="dateRangeSelect">
-                            <option value="last_30_days">{{ 'filter.last_30_days'|trans }}</option>
-                            <option value="last_quarter">{{ 'filter.last_quarter'|trans }}</option>
-                            <option value="last_year">{{ 'filter.last_year'|trans }}</option>
-                            <option value="custom">{{ 'filter.custom'|trans }}</option>
+                            <option value="last_30_days">{{ 'filter.last_30_days'|trans({}, 'report_builder') }}</option>
+                            <option value="last_quarter">{{ 'filter.last_quarter'|trans({}, 'report_builder') }}</option>
+                            <option value="last_year">{{ 'filter.last_year'|trans({}, 'report_builder') }}</option>
+                            <option value="custom">{{ 'filter.custom'|trans({}, 'report_builder') }}</option>
                         </select>
                     </div>
                 </div>
 
                 {# Style Settings #}
                 <div class="mb-4">
-                    <h3 class="small text-muted text-uppercase mb-2">{{ 'settings.styles'|trans }}</h3>
+                    <h3 class="small text-muted text-uppercase mb-2">{{ 'settings.styles'|trans({}, 'report_builder') }}</h3>
 
                     <div class="mb-3">
-                        <label class="form-label small">{{ 'style.primary_color'|trans }}</label>
+                        <label class="form-label small">{{ 'style.primary_color'|trans({}, 'report_builder') }}</label>
                         <input type="color" class="form-control form-control-sm form-control-color"
                                value="{{ report.styles.primaryColor|default('#0d6efd') }}"
                                data-report-designer-target="primaryColor">
@@ -175,21 +175,21 @@
                         <input class="form-check-input" type="checkbox" id="showLogo"
                                {% if report.styles.headerLogo|default(true) %}checked{% endif %}
                                data-report-designer-target="showLogo">
-                        <label class="form-check-label small" for="showLogo">{{ 'style.show_logo'|trans }}</label>
+                        <label class="form-check-label small" for="showLogo">{{ 'style.show_logo'|trans({}, 'report_builder') }}</label>
                     </div>
 
                     <div class="form-check mb-2">
                         <input class="form-check-input" type="checkbox" id="showDate"
                                {% if report.styles.showGeneratedDate|default(true) %}checked{% endif %}
                                data-report-designer-target="showDate">
-                        <label class="form-check-label small" for="showDate">{{ 'style.show_date'|trans }}</label>
+                        <label class="form-check-label small" for="showDate">{{ 'style.show_date'|trans({}, 'report_builder') }}</label>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small">{{ 'style.orientation'|trans }}</label>
+                        <label class="form-label small">{{ 'style.orientation'|trans({}, 'report_builder') }}</label>
                         <select class="form-select form-select-sm" data-report-designer-target="orientation">
-                            <option value="portrait" {% if report.styles.pageOrientation|default('portrait') == 'portrait' %}selected{% endif %}>{{ 'style.portrait'|trans }}</option>
-                            <option value="landscape" {% if report.styles.pageOrientation|default('portrait') == 'landscape' %}selected{% endif %}>{{ 'style.landscape'|trans }}</option>
+                            <option value="portrait" {% if report.styles.pageOrientation|default('portrait') == 'portrait' %}selected{% endif %}>{{ 'style.portrait'|trans({}, 'report_builder') }}</option>
+                            <option value="landscape" {% if report.styles.pageOrientation|default('portrait') == 'landscape' %}selected{% endif %}>{{ 'style.landscape'|trans({}, 'report_builder') }}</option>
                         </select>
                     </div>
                 </div>
@@ -198,15 +198,15 @@
                 <div class="border-top pt-3">
                     <div class="d-grid gap-2">
                         <button type="button" class="btn btn-primary" data-action="click->report-designer#save">
-                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'action.save'|trans }}
+                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'action.save'|trans({}, 'report_builder') }}
                         </button>
                         <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#shareModal">
-                            <i class="bi bi-share" aria-hidden="true"></i> {{ 'action.share'|trans }}
+                            <i class="bi bi-share" aria-hidden="true"></i> {{ 'action.share'|trans({}, 'report_builder') }}
                         </button>
-                        <form method="post" action="{{ path('report_builder_delete', {id: report.id}) }}" onsubmit="return confirm('{{ 'confirm.delete'|trans|e('js') }}');">
+                        <form method="post" action="{{ path('report_builder_delete', {id: report.id}) }}" onsubmit="return confirm('{{ 'confirm.delete'|trans({}, 'report_builder')|e('js') }}');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ report.id) }}">
                             <button type="submit" class="btn btn-outline-danger w-100">
-                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'action.delete'|trans }}
+                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'action.delete'|trans({}, 'report_builder') }}
                             </button>
                         </form>
                     </div>
@@ -221,22 +221,22 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ 'modal.share.title'|trans }}</h5>
+                <h5 class="modal-title">{{ 'modal.share.title'|trans({}, 'report_builder') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p class="text-muted">{{ 'modal.share.description'|trans }}</p>
+                <p class="text-muted">{{ 'modal.share.description'|trans({}, 'report_builder') }}</p>
                 <div id="share-users-list">
                     <div class="text-center py-3">
                         <div class="spinner-border spinner-border-sm" role="status">
-                            <span class="visually-hidden">{{ 'loading'|trans }}</span>
+                            <span class="visually-hidden">{{ 'loading'|trans({}, 'report_builder') }}</span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'action.cancel'|trans }}</button>
-                <button type="button" class="btn btn-primary" data-action="click->report-designer#saveSharing">{{ 'action.save'|trans }}</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'action.cancel'|trans({}, 'report_builder') }}</button>
+                <button type="button" class="btn btn-primary" data-action="click->report-designer#saveSharing">{{ 'action.save'|trans({}, 'report_builder') }}</button>
             </div>
         </div>
     </div>
@@ -247,15 +247,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ 'modal.widget_config.title'|trans }}</h5>
+                <h5 class="modal-title">{{ 'modal.widget_config.title'|trans({}, 'report_builder') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="widget-config-form">
                 {# Dynamic content #}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'action.cancel'|trans }}</button>
-                <button type="button" class="btn btn-primary" data-action="click->report-designer#applyWidgetConfig">{{ 'action.apply'|trans }}</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'action.cancel'|trans({}, 'report_builder') }}</button>
+                <button type="button" class="btn btn-primary" data-action="click->report-designer#applyWidgetConfig">{{ 'action.apply'|trans({}, 'report_builder') }}</button>
             </div>
         </div>
     </div>

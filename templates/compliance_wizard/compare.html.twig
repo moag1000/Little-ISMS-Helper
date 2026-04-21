@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'wizard' %}
 
-{% block title %}{{ 'wizard.compare_title'|trans }} - {{ 'wizard.title'|trans }}{% endblock %}
+{% block title %}{{ 'wizard.compare_title'|trans({}, 'wizard') }} - {{ 'wizard.title'|trans({}, 'wizard') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -9,9 +9,9 @@
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="{{ path('app_compliance_wizard_index') }}">{{ 'wizard.title'|trans }}</a>
+                <a href="{{ path('app_compliance_wizard_index') }}">{{ 'wizard.title'|trans({}, 'wizard') }}</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'wizard.compare_title'|trans }}</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'wizard.compare_title'|trans({}, 'wizard') }}</li>
         </ol>
     </nav>
 
@@ -19,9 +19,9 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h2 mb-1">
-                <i class="bi bi-columns-gap me-2" aria-hidden="true"></i>{{ 'wizard.compare_title'|trans }}
+                <i class="bi bi-columns-gap me-2" aria-hidden="true"></i>{{ 'wizard.compare_title'|trans({}, 'wizard') }}
             </h1>
-            <p class="text-muted">{{ 'wizard.compare_subtitle'|trans }}</p>
+            <p class="text-muted">{{ 'wizard.compare_subtitle'|trans({}, 'wizard') }}</p>
         </div>
     </div>
 
@@ -30,7 +30,7 @@
         {% block card_body %}
             <form method="get" action="{{ path('app_compliance_wizard_compare') }}" class="row g-3 align-items-end">
                 <div class="col-auto">
-                    <label class="form-label">{{ 'wizard.select_frameworks'|trans }}:</label>
+                    <label class="form-label">{{ 'wizard.select_frameworks'|trans({}, 'wizard') }}:</label>
                 </div>
                 {% for key, wizard in available_wizards %}
                 <div class="col-auto">

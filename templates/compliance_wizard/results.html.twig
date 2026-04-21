@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'wizard' %}
 
-{% block title %}{{ 'wizard.results'|trans }} - {{ result.framework_name }}{% endblock %}
+{% block title %}{{ 'wizard.results'|trans({}, 'wizard') }} - {{ result.framework_name }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -9,12 +9,12 @@
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="{{ path('app_compliance_wizard_index') }}">{{ 'wizard.title'|trans }}</a>
+                <a href="{{ path('app_compliance_wizard_index') }}">{{ 'wizard.title'|trans({}, 'wizard') }}</a>
             </li>
             <li class="breadcrumb-item">
                 <a href="{{ path('app_compliance_wizard_start', {wizard: wizard}) }}">{{ result.framework_name }}</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'wizard.results'|trans }}</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'wizard.results'|trans({}, 'wizard') }}</li>
         </ol>
     </nav>
 
@@ -27,7 +27,7 @@
                         <div>
                             <h1 class="h3 mb-1">{{ result.framework_name }}</h1>
                             <p class="text-muted mb-0">
-                                {{ 'wizard.assessed_at'|trans }}: {{ result.assessed_at|date('d.m.Y H:i') }}
+                                {{ 'wizard.assessed_at'|trans({}, 'wizard') }}: {{ result.assessed_at|date('d.m.Y H:i') }}
                             </p>
                         </div>
                         <div class="text-end">
@@ -42,7 +42,7 @@
                                 {% elseif result.status == 'partial' %}bg-warning text-dark
                                 {% elseif result.status == 'in_progress' %}bg-info
                                 {% else %}bg-danger{% endif %}">
-                                {{ ('wizard.status.' ~ result.status)|trans }}
+                                {{ ('wizard.status.' ~ result.status)|trans({}, 'wizard') }}
                             </span>
                         </div>
                     </div>
@@ -55,10 +55,10 @@
                     <div class="d-flex flex-column justify-content-center h-100">
                         <div class="d-grid gap-2">
                             <a href="{{ path('app_compliance_wizard_export_pdf', {wizard: wizard}) }}" class="btn btn-primary">
-                                <i class="bi bi-file-pdf me-2" aria-hidden="true"></i>{{ 'wizard.export_pdf'|trans }}
+                                <i class="bi bi-file-pdf me-2" aria-hidden="true"></i>{{ 'wizard.export_pdf'|trans({}, 'wizard') }}
                             </a>
                             <a href="{{ path('app_compliance_wizard_start', {wizard: wizard}) }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>{{ 'wizard.run_again'|trans }}
+                                <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>{{ 'wizard.run_again'|trans({}, 'wizard') }}
                             </a>
                         </div>
                     </div>
@@ -71,7 +71,7 @@
     {% if result.critical_gap_count > 0 %}
     <div class="alert alert-danger mb-4">
         <h4 class="alert-heading h6">
-            <i class="bi bi-exclamation-octagon me-2" aria-hidden="true"></i>{{ 'wizard.critical_gaps_found'|trans({'%count%': result.critical_gap_count}) }}
+            <i class="bi bi-exclamation-octagon me-2" aria-hidden="true"></i>{{ 'wizard.critical_gaps_found'|trans({'%count%': result.critical_gap_count}, 'wizard') }}
         </h4>
         <ul class="mb-0">
             {% for gap in result.critical_gaps|slice(0, 5) %}
@@ -83,7 +83,7 @@
             </li>
             {% endfor %}
             {% if result.critical_gap_count > 5 %}
-            <li class="text-muted">{{ 'wizard.and_more'|trans({'%count%': result.critical_gap_count - 5}) }}</li>
+            <li class="text-muted">{{ 'wizard.and_more'|trans({'%count%': result.critical_gap_count - 5}, 'wizard') }}</li>
             {% endif %}
         </ul>
     </div>
@@ -92,7 +92,7 @@
     {# Categories #}
     <div class="row">
         <div class="col-12">
-            <h2 class="h5 mb-3">{{ 'wizard.categories_detail'|trans }}</h2>
+            <h2 class="h5 mb-3">{{ 'wizard.categories_detail'|trans({}, 'wizard') }}</h2>
         </div>
     </div>
 
@@ -107,7 +107,7 @@
                         {% else %}bg-danger bg-opacity-10{% endif %}">
                         <div class="d-flex align-items-center">
                             <i class="{{ category.icon|default('bi-check-circle') }} me-2"></i>
-                            <span class="fw-semibold">{{ category.name|trans }}</span>
+                            <span class="fw-semibold">{{ category.name|trans({}, 'wizard') }}</span>
                         </div>
                         <span class="badge
                             {% if category.score >= 80 %}bg-success
@@ -167,7 +167,7 @@
                     {# Gaps #}
                     {% if category.gaps|length > 0 %}
                     <div class="small">
-                        <strong class="text-danger">{{ 'wizard.gaps'|trans }}: {{ category.gap_count }}</strong>
+                        <strong class="text-danger">{{ 'wizard.gaps'|trans({}, 'wizard') }}: {{ category.gap_count }}</strong>
                         <ul class="list-unstyled mt-1 mb-0">
                             {% for gap in category.gaps|slice(0, 2) %}
                             <li class="text-truncate" title="{{ gap.title|trans({}, 'wizard') }}">
@@ -182,7 +182,7 @@
                 {% block card_footer %}
                     <div class="card-footer bg-transparent">
                         <a href="{{ path('app_compliance_wizard_category', {wizard: wizard, category: key}) }}" class="btn btn-sm btn-outline-secondary w-100">
-                            <i class="bi bi-eye me-1" aria-hidden="true"></i>{{ 'wizard.view_details'|trans }}
+                            <i class="bi bi-eye me-1" aria-hidden="true"></i>{{ 'wizard.view_details'|trans({}, 'wizard') }}
                         </a>
                     </div>
                 {% endblock %}
@@ -195,9 +195,9 @@
     {% if result.missing_modules|length > 0 %}
     <div class="alert alert-info mt-4">
         <h4 class="alert-heading h6">
-            <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>{{ 'wizard.improve_coverage'|trans }}
+            <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>{{ 'wizard.improve_coverage'|trans({}, 'wizard') }}
         </h4>
-        <p class="mb-2">{{ 'wizard.activate_for_better'|trans }}</p>
+        <p class="mb-2">{{ 'wizard.activate_for_better'|trans({}, 'wizard') }}</p>
         <ul class="mb-0">
             {% for mod in result.missing_modules %}
             <li><strong>{{ mod }}</strong></li>
@@ -209,10 +209,10 @@
     {# Navigation #}
     <div class="d-flex justify-content-between mt-4">
         <a href="{{ path('app_compliance_wizard_index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>{{ 'wizard.back_to_wizards'|trans }}
+            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>{{ 'wizard.back_to_wizards'|trans({}, 'wizard') }}
         </a>
         <a href="{{ path('app_compliance_wizard_compare', {wizards: [wizard]}) }}" class="btn btn-outline-primary">
-            <i class="bi bi-columns-gap me-1" aria-hidden="true"></i>{{ 'wizard.compare_with_others'|trans }}
+            <i class="bi bi-columns-gap me-1" aria-hidden="true"></i>{{ 'wizard.compare_with_others'|trans({}, 'wizard') }}
         </a>
     </div>
 </div>
