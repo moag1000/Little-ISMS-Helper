@@ -17,8 +17,6 @@
  #   actions:     raw HTML (z.B. Undo-Link)
  #}
 
-{% import '_components/_alva.html.twig' as alva %}
-
 {% macro _iconFor(tone) %}
     {%- if tone == 'success' -%}bi-check-circle-fill
     {%- elseif tone == 'warning' -%}bi-exclamation-triangle-fill
@@ -39,13 +37,17 @@
 
 {% macro render(message, tone = 'info', props = {}) %}
     {% import _self as self %}
+    {% import '_components/_alva.html.twig' as alva %}
     {% set withAlva = props.withAlva|default(false) %}
     {% set dismissible = props.dismissible|default(false) %}
     {% set icon = props.icon|default(self._iconFor(tone)|trim) %}
     {% set title = props.title|default(null) %}
     {% set actions = props.actions|default(null) %}
 
-    <div class="fa-alert fa-alert--{{ tone }} {% if withAlva %}fa-alert--with-alva{% endif %} {% if dismissible %}fa-alert--dismissible{% endif %}"
+    {# Legacy-kompatible Classes (alert alert-{tone} + flash-{tone}) behalten —
+       bestehende Tests und CSS-Selektoren referenzieren sie. #}
+    {% set legacyTone = tone == 'danger' ? 'danger' : (tone == 'info' ? 'info' : tone) %}
+    <div class="fa-alert fa-alert--{{ tone }} alert alert-{{ legacyTone }} flash-{{ legacyTone }} {% if withAlva %}fa-alert--with-alva{% endif %} {% if dismissible %}fa-alert--dismissible{% endif %}"
          role="alert"
          {% if dismissible %}data-controller="aurora-alert"{% endif %}>
         {% if withAlva %}

@@ -472,7 +472,7 @@ error:
         back: 'Go Back'
         login: Login
         retry: 'Try again'
-email:
+email_notification:
     footer:
         sent_by: 'This message was sent by Little ISMS Helper.'
         auto: 'Automatic notification'

@@ -42,9 +42,9 @@ fa-cyber-btn fa-cyber-btn--{{ variant|default('primary') }} fa-cyber-btn--{{ siz
 {% macro render(label, props = {}) %}
     {% import _self as self %}
     <button type="{{ props.type|default('button') }}"
-            class="{{ self.classes(props.variant, props.size, props.fullWidth, props.disabled, props.loading)|trim }}"
-            {% if props.disabled %}disabled aria-disabled="true"{% endif %}
-            {{ self.attrs(props.attrs) }}>{{ self.body(label, props) }}</button>
+            class="{{ self.classes(props.variant|default(null), props.size|default(null), props.fullWidth|default(false), props.disabled|default(false), props.loading|default(false))|trim }}"
+            {% if props.disabled|default(false) %}disabled aria-disabled="true"{% endif %}
+            {{ self.attrs(props.attrs|default({})) }}>{{ self.body(label, props) }}</button>
 {% endmacro %}
 
 {% macro submit(label, props = {}) %}
@@ -55,7 +55,7 @@ fa-cyber-btn fa-cyber-btn--{{ variant|default('primary') }} fa-cyber-btn--{{ siz
 {% macro link(href, label, props = {}) %}
     {% import _self as self %}
     <a href="{{ href }}"
-       class="{{ self.classes(props.variant, props.size, props.fullWidth, props.disabled, props.loading)|trim }}"
-       {% if props.disabled %}aria-disabled="true" tabindex="-1"{% endif %}
-       {{ self.attrs(props.attrs) }}>{{ self.body(label, props) }}</a>
+       class="{{ self.classes(props.variant|default(null), props.size|default(null), props.fullWidth|default(false), props.disabled|default(false), props.loading|default(false))|trim }}"
+       {% if props.disabled|default(false) %}aria-disabled="true" tabindex="-1"{% endif %}
+       {{ self.attrs(props.attrs|default({})) }}>{{ self.body(label, props) }}</a>
 {% endmacro %}
