@@ -19,6 +19,36 @@
         <p class="text-muted mb-0">{{ 'admin.data_repair.description'|trans({}, 'admin') }}</p>
     </div>
 
+    {# Sprint 10 / S10-2: Junior-Sorge „Titel klingt gefährlich" —
+     # explizite Warn-Leiste mit Reversibilitäts-Information. #}
+    <div class="alert alert-danger border-start border-5 border-danger shadow-sm" role="alert">
+        <h4 class="alert-heading mb-2">
+            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+            {{ 'admin.data_repair.safety.title'|trans({}, 'admin') }}
+        </h4>
+        <p class="mb-2">
+            <strong>{{ 'admin.data_repair.safety.lead'|trans({}, 'admin') }}</strong>
+        </p>
+        <ul class="mb-3 small">
+            <li>{{ 'admin.data_repair.safety.point_audit_log'|trans({}, 'admin') }}</li>
+            <li>{{ 'admin.data_repair.safety.point_backup'|trans({}, 'admin') }}</li>
+            <li>{{ 'admin.data_repair.safety.point_confirm'|trans({}, 'admin') }}</li>
+        </ul>
+        <div class="d-flex gap-2 align-items-center">
+            <a href="{{ path('data_backup_index') }}" class="btn btn-sm btn-outline-dark">
+                <i class="bi bi-hdd" aria-hidden="true"></i>
+                {{ 'admin.data_repair.safety.action_backup'|trans({}, 'admin') }}
+            </a>
+            <a href="{{ path('app_audit_log_index') }}" class="btn btn-sm btn-outline-dark">
+                <i class="bi bi-journal-text" aria-hidden="true"></i>
+                {{ 'admin.data_repair.safety.action_audit_log'|trans({}, 'admin') }}
+            </a>
+            <span class="small text-muted ms-auto">
+                {{ 'admin.data_repair.safety.role_hint'|trans({}, 'admin') }}
+            </span>
+        </div>
+    </div>
+
     {% for message in app.flashes('success') %}
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ message }}

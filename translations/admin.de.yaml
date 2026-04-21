@@ -195,6 +195,15 @@ admin:
     data_repair:
         title: 'Daten-Reparatur & Integrität'
         description: 'Datenintegritätsprobleme, Mandantenzuweisungen und defekte Referenzen erkennen und beheben'
+        safety:
+            title: 'Achtung — Live-Daten-Änderungen'
+            lead: 'Alle Buttons auf dieser Seite schreiben direkt in die Produktions-Datenbank. Es gibt keinen Dry-Run-Modus. Bitte vorher prüfen:'
+            point_audit_log: 'Jede Reparatur wird im Audit-Log (tamper-evident HMAC-SHA256-Chain) protokolliert und ist damit nachvollziehbar.'
+            point_backup: 'Vor Massen-Reparaturen (Fix-all-Orphans, Fix-Tenant-Mismatches) ein aktuelles Backup sicherstellen.'
+            point_confirm: 'Jeder Button zeigt einen Bestätigungs-Dialog — bitte sorgfältig lesen, bevor Sie „OK" klicken.'
+            action_backup: 'Backup prüfen'
+            action_audit_log: 'Audit-Log ansehen'
+            role_hint: 'Nur für ROLE_ADMIN sichtbar.'
         current_asset: 'Aktuelles Asset'
         assign_to_asset: 'Asset zuweisen'
         no_asset: 'Kein Asset'

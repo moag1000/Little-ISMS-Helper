@@ -195,6 +195,15 @@ admin:
     data_repair:
         title: 'Data Repair & Integrity'
         description: 'Detect and fix data integrity issues, tenant assignment problems, and broken references'
+        safety:
+            title: 'Caution — live data changes'
+            lead: 'Every button on this page writes directly to the production database. No dry-run mode is available. Please verify first:'
+            point_audit_log: 'Every repair is recorded in the audit log (tamper-evident HMAC-SHA256 chain) and remains traceable.'
+            point_backup: 'Before bulk repairs (Fix-all-Orphans, Fix-Tenant-Mismatches) ensure a recent backup exists.'
+            point_confirm: 'Every button shows a confirmation dialog — please read it carefully before clicking "OK".'
+            action_backup: 'Check backup'
+            action_audit_log: 'View audit log'
+            role_hint: 'Visible to ROLE_ADMIN only.'
         current_asset: 'Current Asset'
         assign_to_asset: 'Assign To Asset'
         no_asset: 'No Asset'
