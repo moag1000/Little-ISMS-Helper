@@ -36,7 +36,7 @@
         <div class="col-md-6 mb-4">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header">
                         <h2 class="mb-0">
                             <i class="bi bi-activity" aria-hidden="true"></i> {{ 'monitoring.performance.top_actions'|trans({}, 'monitoring') }} ({{ 'monitoring.performance.last_24h'|trans({}, 'monitoring') }})
                         </h2>
@@ -73,7 +73,7 @@
         <div class="col-md-6 mb-4">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header bg-success text-white">
+                    <div class="card-header">
                         <h2 class="mb-0">
                             <i class="bi bi-folder" aria-hidden="true"></i> {{ 'monitoring.performance.top_entities'|trans({}, 'monitoring') }} ({{ 'monitoring.performance.last_24h'|trans({}, 'monitoring') }})
                         </h2>
@@ -110,7 +110,7 @@
     {# System Resources #}
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
-            <div class="card-header bg-info text-white">
+            <div class="card-header">
                 <h2 class="mb-0">
                     <i class="bi bi-cpu" aria-hidden="true"></i> {{ 'monitoring.performance.system_resources'|trans({}, 'monitoring') }}
                 </h2>
