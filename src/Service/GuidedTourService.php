@@ -7,6 +7,8 @@ namespace App\Service;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\GuidedTourStepOverrideRepository;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
@@ -63,7 +65,26 @@ final class GuidedTourService
         private readonly ?ModuleConfigurationService $moduleConfig = null,
         private readonly ?GuidedTourStepOverrideRepository $overrideRepository = null,
         private readonly ?TenantContext $tenantContext = null,
+        private readonly ?UrlGeneratorInterface $urlGenerator = null,
+        private readonly ?RequestStack $requestStack = null,
     ) {
+    }
+
+    /**
+     * Generiere Locale-aware URL aus Route-Name. Fallback null wenn
+     * UrlGenerator nicht verfügbar (Tests ohne volle Router-Wiring).
+     */
+    private function urlFor(?string $routeName, array $params = []): ?string
+    {
+        if ($routeName === null || $this->urlGenerator === null) {
+            return null;
+        }
+        $locale = $this->requestStack?->getCurrentRequest()?->getLocale() ?? 'de';
+        try {
+            return $this->urlGenerator->generate($routeName, array_merge(['_locale' => $locale], $params));
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 
     /**
@@ -203,13 +224,15 @@ final class GuidedTourService
     /** @return list<array{id: string, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}> */
     private function juniorSteps(): array
     {
+        $dashboard = $this->urlFor('app_dashboard');
+        $assets = $this->urlFor('app_asset_index');
         return [
             [
                 'id' => 'welcome',
                 'target' => null,
                 'title_key' => 'guided_tour.junior.step.welcome.title',
                 'body_key' => 'guided_tour.junior.step.welcome.body',
-                'url' => null,
+                'url' => $dashboard,
                 'placement' => 'center',
             ],
             [
@@ -217,7 +240,7 @@ final class GuidedTourService
                 'target' => '[data-mega-menu-target="trigger"]',
                 'title_key' => 'guided_tour.junior.step.mega_menu.title',
                 'body_key' => 'guided_tour.junior.step.mega_menu.body',
-                'url' => null,
+                'url' => $dashboard,
                 'placement' => 'bottom',
             ],
             [
@@ -225,7 +248,7 @@ final class GuidedTourService
                 'target' => '.management-kpis-widget, .dashboard-stats, [data-role="kpi-grid"]',
                 'title_key' => 'guided_tour.junior.step.kpis.title',
                 'body_key' => 'guided_tour.junior.step.kpis.body',
-                'url' => null,
+                'url' => $dashboard,
                 'placement' => 'top',
             ],
             [
@@ -233,7 +256,7 @@ final class GuidedTourService
                 'target' => null,
                 'title_key' => 'guided_tour.junior.step.iso9001_bridge.title',
                 'body_key' => 'guided_tour.junior.step.iso9001_bridge.body',
-                'url' => null,
+                'url' => $dashboard,
                 'placement' => 'center',
             ],
             [
@@ -241,7 +264,7 @@ final class GuidedTourService
                 'target' => null,
                 'title_key' => 'guided_tour.junior.step.command_palette.title',
                 'body_key' => 'guided_tour.junior.step.command_palette.body',
-                'url' => null,
+                'url' => $dashboard,
                 'placement' => 'center',
             ],
             [
@@ -249,7 +272,7 @@ final class GuidedTourService
                 'target' => null,
                 'title_key' => 'guided_tour.junior.step.first_asset.title',
                 'body_key' => 'guided_tour.junior.step.first_asset.body',
-                'url' => null,
+                'url' => $assets,
                 'placement' => 'center',
             ],
             [
@@ -257,7 +280,7 @@ final class GuidedTourService
                 'target' => null,
                 'title_key' => 'guided_tour.junior.step.shortcuts.title',
                 'body_key' => 'guided_tour.junior.step.shortcuts.body',
-                'url' => null,
+                'url' => $dashboard,
                 'placement' => 'center',
             ],
         ];
@@ -266,54 +289,68 @@ final class GuidedTourService
     /** @return list<array{id: string, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}> */
     private function cmSteps(): array
     {
+        $dashboard = $this->urlFor('app_dashboard');
+        $mapping = $this->urlFor('app_compliance_mapping_hub');
+        $reuse = $this->urlFor('app_data_reuse_hub');
         return [
-            ['id' => 'welcome', 'target' => null, 'title_key' => 'guided_tour.cm.step.welcome.title', 'body_key' => 'guided_tour.cm.step.welcome.body', 'url' => null, 'placement' => 'center'],
-            ['id' => 'framework-dashboard', 'target' => null, 'title_key' => 'guided_tour.cm.step.framework_dashboard.title', 'body_key' => 'guided_tour.cm.step.framework_dashboard.body', 'url' => null, 'placement' => 'center'],
-            ['id' => 'mapping-hub', 'target' => null, 'title_key' => 'guided_tour.cm.step.mapping_hub.title', 'body_key' => 'guided_tour.cm.step.mapping_hub.body', 'url' => null, 'placement' => 'center'],
-            ['id' => 'reuse-hub', 'target' => null, 'title_key' => 'guided_tour.cm.step.reuse_hub.title', 'body_key' => 'guided_tour.cm.step.reuse_hub.body', 'url' => null, 'placement' => 'center'],
-            ['id' => 'seed-review', 'target' => null, 'title_key' => 'guided_tour.cm.step.seed_review.title', 'body_key' => 'guided_tour.cm.step.seed_review.body', 'url' => null, 'placement' => 'center'],
+            ['id' => 'welcome', 'target' => null, 'title_key' => 'guided_tour.cm.step.welcome.title', 'body_key' => 'guided_tour.cm.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
+            ['id' => 'framework-dashboard', 'target' => null, 'title_key' => 'guided_tour.cm.step.framework_dashboard.title', 'body_key' => 'guided_tour.cm.step.framework_dashboard.body', 'url' => $dashboard, 'placement' => 'center'],
+            ['id' => 'mapping-hub', 'target' => null, 'title_key' => 'guided_tour.cm.step.mapping_hub.title', 'body_key' => 'guided_tour.cm.step.mapping_hub.body', 'url' => $mapping, 'placement' => 'center'],
+            ['id' => 'reuse-hub', 'target' => null, 'title_key' => 'guided_tour.cm.step.reuse_hub.title', 'body_key' => 'guided_tour.cm.step.reuse_hub.body', 'url' => $reuse, 'placement' => 'center'],
+            ['id' => 'seed-review', 'target' => null, 'title_key' => 'guided_tour.cm.step.seed_review.title', 'body_key' => 'guided_tour.cm.step.seed_review.body', 'url' => $dashboard, 'placement' => 'center'],
         ];
     }
 
     /** @return list<array{id: string, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}> */
     private function cisoSteps(): array
     {
+        $cisoDash = $this->urlFor('app_dashboard_ciso');
         return [
-            ['id' => 'welcome', 'target' => null, 'title_key' => 'guided_tour.ciso.step.welcome.title', 'body_key' => 'guided_tour.ciso.step.welcome.body', 'url' => null, 'placement' => 'center'],
-            ['id' => 'board-export', 'target' => null, 'title_key' => 'guided_tour.ciso.step.board_export.title', 'body_key' => 'guided_tour.ciso.step.board_export.body', 'url' => null, 'placement' => 'center'],
-            ['id' => 'health-score', 'target' => null, 'title_key' => 'guided_tour.ciso.step.health_score.title', 'body_key' => 'guided_tour.ciso.step.health_score.body', 'url' => null, 'placement' => 'center'],
-            ['id' => 'framework-matrix', 'target' => null, 'title_key' => 'guided_tour.ciso.step.framework_matrix.title', 'body_key' => 'guided_tour.ciso.step.framework_matrix.body', 'url' => null, 'placement' => 'center'],
+            ['id' => 'welcome', 'target' => null, 'title_key' => 'guided_tour.ciso.step.welcome.title', 'body_key' => 'guided_tour.ciso.step.welcome.body', 'url' => $cisoDash, 'placement' => 'center'],
+            ['id' => 'board-export', 'target' => null, 'title_key' => 'guided_tour.ciso.step.board_export.title', 'body_key' => 'guided_tour.ciso.step.board_export.body', 'url' => $cisoDash, 'placement' => 'center'],
+            ['id' => 'health-score', 'target' => null, 'title_key' => 'guided_tour.ciso.step.health_score.title', 'body_key' => 'guided_tour.ciso.step.health_score.body', 'url' => $cisoDash, 'placement' => 'center'],
+            ['id' => 'framework-matrix', 'target' => null, 'title_key' => 'guided_tour.ciso.step.framework_matrix.title', 'body_key' => 'guided_tour.ciso.step.framework_matrix.body', 'url' => $cisoDash, 'placement' => 'center'],
         ];
     }
 
     /** @return list<array{id: string, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}> */
     private function isbSteps(): array
     {
+        $dashboard = $this->urlFor('app_dashboard');
+        $soa = $this->urlFor('app_soa_index');
+        $incidents = $this->urlFor('app_incident_index');
+        $workflows = $this->urlFor('app_workflow_index');
+        $auditLog = $this->urlFor('app_audit_log_index');
         return [
-            ['id' => 'welcome', 'target' => null, 'title_key' => 'guided_tour.isb.step.welcome.title', 'body_key' => 'guided_tour.isb.step.welcome.body', 'url' => null, 'placement' => 'center'],
-            ['id' => 'soa', 'target' => null, 'title_key' => 'guided_tour.isb.step.soa.title', 'body_key' => 'guided_tour.isb.step.soa.body', 'url' => null, 'placement' => 'center'],
-            ['id' => 'incidents', 'target' => null, 'title_key' => 'guided_tour.isb.step.incidents.title', 'body_key' => 'guided_tour.isb.step.incidents.body', 'url' => null, 'placement' => 'center'],
-            ['id' => 'workflows', 'target' => null, 'title_key' => 'guided_tour.isb.step.workflows.title', 'body_key' => 'guided_tour.isb.step.workflows.body', 'url' => null, 'placement' => 'center'],
-            ['id' => 'audit-log', 'target' => null, 'title_key' => 'guided_tour.isb.step.audit_log.title', 'body_key' => 'guided_tour.isb.step.audit_log.body', 'url' => null, 'placement' => 'center'],
+            ['id' => 'welcome', 'target' => null, 'title_key' => 'guided_tour.isb.step.welcome.title', 'body_key' => 'guided_tour.isb.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
+            ['id' => 'soa', 'target' => null, 'title_key' => 'guided_tour.isb.step.soa.title', 'body_key' => 'guided_tour.isb.step.soa.body', 'url' => $soa, 'placement' => 'center'],
+            ['id' => 'incidents', 'target' => null, 'title_key' => 'guided_tour.isb.step.incidents.title', 'body_key' => 'guided_tour.isb.step.incidents.body', 'url' => $incidents, 'placement' => 'center'],
+            ['id' => 'workflows', 'target' => null, 'title_key' => 'guided_tour.isb.step.workflows.title', 'body_key' => 'guided_tour.isb.step.workflows.body', 'url' => $workflows, 'placement' => 'center'],
+            ['id' => 'audit-log', 'target' => null, 'title_key' => 'guided_tour.isb.step.audit_log.title', 'body_key' => 'guided_tour.isb.step.audit_log.body', 'url' => $auditLog, 'placement' => 'center'],
         ];
     }
 
     /** @return list<array{id: string, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}> */
     private function riskOwnerSteps(): array
     {
+        $dashboard = $this->urlFor('app_dashboard');
+        $risks = $this->urlFor('app_risk_index');
         return [
-            ['id' => 'welcome', 'target' => null, 'title_key' => 'guided_tour.risk_owner.step.welcome.title', 'body_key' => 'guided_tour.risk_owner.step.welcome.body', 'url' => null, 'placement' => 'center'],
-            ['id' => 'my-risks', 'target' => null, 'title_key' => 'guided_tour.risk_owner.step.my_risks.title', 'body_key' => 'guided_tour.risk_owner.step.my_risks.body', 'url' => null, 'placement' => 'center'],
+            ['id' => 'welcome', 'target' => null, 'title_key' => 'guided_tour.risk_owner.step.welcome.title', 'body_key' => 'guided_tour.risk_owner.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
+            ['id' => 'my-risks', 'target' => null, 'title_key' => 'guided_tour.risk_owner.step.my_risks.title', 'body_key' => 'guided_tour.risk_owner.step.my_risks.body', 'url' => $risks, 'placement' => 'center'],
         ];
     }
 
     /** @return list<array{id: string, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}> */
     private function auditorSteps(): array
     {
+        $auditorDash = $this->urlFor('app_dashboard_auditor');
+        $documents = $this->urlFor('app_document_index');
+        $auditLog = $this->urlFor('app_audit_log_index');
         return [
-            ['id' => 'welcome', 'target' => null, 'title_key' => 'guided_tour.auditor.step.welcome.title', 'body_key' => 'guided_tour.auditor.step.welcome.body', 'url' => null, 'placement' => 'center'],
-            ['id' => 'documents', 'target' => null, 'title_key' => 'guided_tour.auditor.step.documents.title', 'body_key' => 'guided_tour.auditor.step.documents.body', 'url' => null, 'placement' => 'center'],
-            ['id' => 'audit-log', 'target' => null, 'title_key' => 'guided_tour.auditor.step.audit_log.title', 'body_key' => 'guided_tour.auditor.step.audit_log.body', 'url' => null, 'placement' => 'center'],
+            ['id' => 'welcome', 'target' => null, 'title_key' => 'guided_tour.auditor.step.welcome.title', 'body_key' => 'guided_tour.auditor.step.welcome.body', 'url' => $auditorDash, 'placement' => 'center'],
+            ['id' => 'documents', 'target' => null, 'title_key' => 'guided_tour.auditor.step.documents.title', 'body_key' => 'guided_tour.auditor.step.documents.body', 'url' => $documents, 'placement' => 'center'],
+            ['id' => 'audit-log', 'target' => null, 'title_key' => 'guided_tour.auditor.step.audit_log.title', 'body_key' => 'guided_tour.auditor.step.audit_log.body', 'url' => $auditLog, 'placement' => 'center'],
         ];
     }
 

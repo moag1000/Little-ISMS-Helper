@@ -55,9 +55,49 @@ export default class extends Controller {
         this.boundHandleKeydown = this.handleKeydown.bind(this);
         this.boundHandleResize = this.handleResize.bind(this);
 
+        // Resume-Check: wenn eine Tour vor einer Turbo-Navigation in localStorage
+        // gespeichert wurde, nehmen wir sie auf dieser Seite direkt wieder auf
+        // (ohne neuen Fetch — Steps liegen komplett im Resume-Blob).
+        if (this.tryResumeAfterNavigation()) {
+            return;
+        }
+
         if (this.autoStartValue && !this.isMobile()) {
             this.start({ params: { role: this.extractRoleFromUrl() } });
         }
+    }
+
+    tryResumeAfterNavigation() {
+        if (this.isMobile()) return false;
+        const key = this.storagePrefixValue + 'resume';
+        const raw = localStorage.getItem(key);
+        if (!raw) return false;
+        let payload;
+        try {
+            payload = JSON.parse(raw);
+        } catch (e) {
+            localStorage.removeItem(key);
+            return false;
+        }
+        // Resume-Blob nur kurzzeitig gültig (5 Minuten) damit verwaiste
+        // Blobs keine unerwartete Tour auf späteren Seiten triggern.
+        if (!payload?.steps || !Array.isArray(payload.steps) || (Date.now() - (payload.at ?? 0)) > 5 * 60 * 1000) {
+            localStorage.removeItem(key);
+            return false;
+        }
+        localStorage.removeItem(key);
+
+        this.steps = payload.steps;
+        this.currentIndex = Math.min(payload.index ?? 0, this.steps.length - 1);
+        this.tourId = payload.tour_id ?? this.extractRoleFromUrl();
+
+        this.previouslyFocusedElement = document.activeElement;
+        document.addEventListener('keydown', this.boundHandleKeydown);
+        window.addEventListener('resize', this.boundHandleResize);
+
+        this.buildUi();
+        this.renderCurrentStep();
+        return true;
     }
 
     disconnect() {
@@ -155,6 +195,7 @@ export default class extends Controller {
                 localStorage.setItem(this.storagePrefixValue + 'resume', JSON.stringify({
                     index: this.currentIndex,
                     steps: this.steps,
+                    tour_id: this.tourId,
                     at: Date.now(),
                 }));
             } catch (e) { /* quota */ }
