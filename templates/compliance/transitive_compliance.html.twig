@@ -471,7 +471,7 @@ function initializeMappingButton() {
             if (data.success) {
                 btnIcon.textContent = '✅';
                 btnText.textContent = data.message;
-                createBtn.style.background = '#10b981';
+                createBtn.style.background = 'var(--success)';
                 createBtn.style.color = 'white';
 
                 setTimeout(() => {
@@ -480,7 +480,7 @@ function initializeMappingButton() {
             } else {
                 btnIcon.textContent = '❌';
                 btnText.textContent = data.message || '{{ 'compliance.mapping_error.creating'|trans({}, 'compliance') }}';
-                createBtn.style.background = '#ef4444';
+                createBtn.style.background = 'var(--danger)';
                 createBtn.style.color = 'white';
 
                 setTimeout(() => {
@@ -496,7 +496,7 @@ function initializeMappingButton() {
         } catch (error) {
             btnIcon.textContent = '❌';
             btnText.textContent = '{{ 'common.error'|trans({}, 'messages') }}: ' + error.message;
-            createBtn.style.background = '#ef4444';
+            createBtn.style.background = 'var(--danger)';
             createBtn.style.color = 'white';
 
             setTimeout(() => {
@@ -600,7 +600,7 @@ function initializeHeaderMappingButton() {
                     // All done!
                     const message = `✅ ${totalCreated} {{ 'compliance.mapping_status.new_created'|trans({}, 'compliance') }}`;
                     createAllMappingsBtn.textContent = message;
-                    createAllMappingsBtn.style.background = '#10b981';
+                    createAllMappingsBtn.style.background = 'var(--success)';
                     createAllMappingsBtn.style.color = 'white';
 
                     // Reload page after 2 seconds

@@ -158,7 +158,7 @@
                                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                             />
                             <path class="circle"
-                                  stroke="{{ item.compliance_percentage >= 75 ? '#28a745' : (item.compliance_percentage >= 50 ? '#ffc107' : '#dc3545') }}"
+                                  stroke="{{ item.compliance_percentage >= 75 ? 'var(--success)' : (item.compliance_percentage >= 50 ? 'var(--warning)' : 'var(--danger)') }}"
                                   stroke-dasharray="{{ item.compliance_percentage }}, 100"
                                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                             />
@@ -334,7 +334,7 @@
 }
 
 .quick-access-item.mandatory:hover {
-    border-color: #dc3545;
+    border-color: var(--danger);
 }
 
 .quick-access-code {
@@ -372,7 +372,7 @@
     position: absolute;
     top: -5px;
     right: -5px;
-    background: #dc3545;
+    background: var(--danger);
     color: white;
     font-size: 0.7rem;
     font-weight: 700;

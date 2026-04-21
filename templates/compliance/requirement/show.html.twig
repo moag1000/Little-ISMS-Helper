@@ -231,7 +231,7 @@
                                 {# Visual Progress Bar #}
                                 <div class="progress mt-2" style="height: 8px;">
                                     <div data-fulfillment-target="progressBar" class="progress-bar" role="progressbar"
-                                         style="width: {{ fulfillment.fulfillmentPercentage }}%; background-color: {{ fulfillment.fulfillmentPercentage >= 75 ? '#28a745' : (fulfillment.fulfillmentPercentage >= 50 ? '#ffc107' : '#dc3545') }};"
+                                         style="width: {{ fulfillment.fulfillmentPercentage }}%; background-color: {{ fulfillment.fulfillmentPercentage >= 75 ? 'var(--success)' : (fulfillment.fulfillmentPercentage >= 50 ? 'var(--warning)' : 'var(--danger)') }};"
                                          aria-valuenow="{{ fulfillment.fulfillmentPercentage }}" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
 
@@ -296,7 +296,7 @@
                         sliderValue.textContent = value + '%';
                         sliderValue.className = 'badge bg-' + (value >= 75 ? 'success' : (value >= 50 ? 'warning' : 'danger'));
                         progressBar.style.width = value + '%';
-                        progressBar.style.backgroundColor = value >= 75 ? '#28a745' : (value >= 50 ? '#ffc107' : '#dc3545');
+                        progressBar.style.backgroundColor = value >= 75 ? 'var(--success)' : (value >= 50 ? 'var(--warning)' : 'var(--danger)');
                         progressBar.setAttribute('aria-valuenow', value);
                     }
 

@@ -40,7 +40,7 @@
 
         .widget-container {
             background: #fff;
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border);
             border-radius: 4px;
             padding: 10px;
             margin-bottom: 15px;
@@ -71,8 +71,8 @@
         }
 
         .kpi-success .kpi-value { color: #198754; }
-        .kpi-warning .kpi-value { color: #ffc107; }
-        .kpi-danger .kpi-value { color: #dc3545; }
+        .kpi-warning .kpi-value { color: var(--warning); }
+        .kpi-danger .kpi-value { color: var(--danger); }
         .kpi-primary .kpi-value { color: #0d6efd; }
         .kpi-info .kpi-value { color: #0dcaf0; }
 
@@ -85,7 +85,7 @@
 
         .data-table th,
         .data-table td {
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border);
             padding: 6px 8px;
             text-align: left;
         }
@@ -108,7 +108,7 @@
 
         .risk-matrix th,
         .risk-matrix td {
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border);
             padding: 8px;
             width: 50px;
             height: 40px;
@@ -121,8 +121,8 @@
 
         .risk-low { background: #198754; color: white; }
         .risk-medium { background: #0dcaf0; color: white; }
-        .risk-high { background: #ffc107; color: #333; }
-        .risk-critical { background: #dc3545; color: white; }
+        .risk-high { background: var(--warning); color: #333; }
+        .risk-critical { background: var(--danger); color: white; }
 
         /* Status Widget */
         .status-widget {
@@ -139,8 +139,8 @@
         }
 
         .status-green { background: #198754; }
-        .status-amber { background: #ffc107; }
-        .status-red { background: #dc3545; }
+        .status-amber { background: var(--warning); }
+        .status-red { background: var(--danger); }
 
         .status-label {
             font-size: 12pt;
@@ -164,7 +164,7 @@
         .report-footer {
             margin-top: 30px;
             padding-top: 15px;
-            border-top: 1px solid #dee2e6;
+            border-top: 1px solid var(--border);
             font-size: 8pt;
             color: #666;
         }

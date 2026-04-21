@@ -380,17 +380,17 @@
     gap: 0.5rem;
 }
 .alert { padding: 1rem; border-radius: 4px; margin: 1rem 0; }
-.alert-warning { background: #fef3c7; border-left: 4px solid #f59e0b; color: #92400e; }
+.alert-warning { background: #fef3c7; border-left: 4px solid var(--warning); color: #92400e; }
 .alert-info { background: #dbeafe; border-left: 4px solid #3b82f6; color: #1e40af; }
 .asset-info { padding: 1rem; background: #f9fafb; border-radius: 4px; }
 .badge-severity-critical { background: #7f1d1d; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-severity-high { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-severity-medium { background: #f59e0b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-severity-low { background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-classification-public { background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-severity-high { background: var(--danger); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-severity-medium { background: var(--warning); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-severity-low { background: var(--success); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-classification-public { background: var(--success); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 .badge-classification-internal { background: #3b82f6; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-classification-confidential { background: #f59e0b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-classification-restricted { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-classification-confidential { background: var(--warning); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-classification-restricted { background: var(--danger); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 /* Audit Log Styles */
 .audit-log-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
 .audit-log-item {
@@ -420,10 +420,10 @@
 .field-name { font-weight: bold; color: #6b7280; }
 .old-value {
     text-decoration: line-through;
-    color: #ef4444;
+    color: var(--danger);
 }
 .new-value {
-    color: #10b981;
+    color: var(--success);
     font-weight: 500;
 }
 /* Badge action styles now handled by BadgeExtension helper functions */
@@ -453,8 +453,8 @@
     }
     .alert-warning {
         background: #451a03;
-        border-left-color: #f59e0b;
-        color: #fbbf24;
+        border-left-color: var(--warning);
+        color: var(--warning);
     }
     .alert-info {
         background: #1e3a8a;
@@ -490,8 +490,8 @@
 }
 [data-bs-theme="dark"] .alert-warning {
     background: #451a03;
-    border-left-color: #f59e0b;
-    color: #fbbf24;
+    border-left-color: var(--warning);
+    color: var(--warning);
 }
 [data-bs-theme="dark"] .alert-info {
     background: #1e3a8a;

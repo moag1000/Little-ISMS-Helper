@@ -425,14 +425,14 @@
                             {{ quality_stats.low_confidence }}
                         ],
                         backgroundColor: [
-                            '#28a745',
-                            '#ffc107',
-                            '#dc3545'
+                            'var(--success)',
+                            'var(--warning)',
+                            'var(--danger)'
                         ],
                         borderColor: [
-                            '#28a745',
-                            '#ffc107',
-                            '#dc3545'
+                            'var(--success)',
+                            'var(--warning)',
+                            'var(--danger)'
                         ],
                         borderWidth: 2
                     }]
@@ -487,9 +487,9 @@
 
             const backgroundColors = gapLabels.map(label => {
                 if (label === 'CRITICAL') return '#721c24';
-                if (label === 'HIGH') return '#dc3545';
-                if (label === 'MEDIUM') return '#ffc107';
-                return '#6c757d';
+                if (label === 'HIGH') return 'var(--danger)';
+                if (label === 'MEDIUM') return 'var(--warning)';
+                return 'var(--fg-3)';
             });
 
             new Chart(gapStatsCtx, {

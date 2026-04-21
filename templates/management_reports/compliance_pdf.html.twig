@@ -11,7 +11,7 @@
             border-bottom: 3px solid #0ea5e9;
             padding-bottom: 10px;
         }
-        .header h1 { color: #0f172a; margin: 0; font-size: 18pt; }
+        .header h1 { color: var(--bg); margin: 0; font-size: 18pt; }
         .header .date { color: #888; font-size: 9pt; margin-top: 3px; }
 
         .compliance-score {
@@ -28,9 +28,9 @@
         .section h2 { background: #0ea5e9; color: white; padding: 6px; font-size: 10pt; margin: 0 0 8px 0; }
 
         table { width: 100%; border-collapse: collapse; margin: 8px 0; }
-        th { background: #0f172a; color: #06b6d4; padding: 5px; text-align: left; font-size: 8pt; }
+        th { background: var(--bg); color: var(--primary); padding: 5px; text-align: left; font-size: 8pt; }
         td { padding: 5px; border-bottom: 1px solid #ddd; font-size: 8pt; }
-        tr:nth-child(even) { background: #f8fafc; }
+        tr:nth-child(even) { background: var(--bg); }
 
         .badge { display: inline-block; padding: 2px 5px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
         .badge-success { background: #dcfce7; color: #166534; }
@@ -41,7 +41,7 @@
         .progress-fill { height: 100%; border-radius: 8px; }
         .progress-fill.success { background: #16a34a; }
         .progress-fill.warning { background: #d97706; }
-        .progress-fill.danger { background: #dc2626; }
+        .progress-fill.danger { background: var(--danger); }
 
         .footer { position: fixed; bottom: 10px; left: 15px; right: 15px; text-align: center; font-size: 7pt; color: #888; border-top: 1px solid #ddd; padding-top: 5px; }
     </style>
@@ -54,7 +54,7 @@
 
     {# Overall Compliance Score #}
     <div class="compliance-score">
-        <div class="number" style="color: {% if report.overall_compliance >= 80 %}#16a34a{% elseif report.overall_compliance >= 60 %}#d97706{% else %}#dc2626{% endif %};">
+        <div class="number" style="color: {% if report.overall_compliance >= 80 %}#16a34a{% elseif report.overall_compliance >= 60 %}#d97706{% else %}var(--danger){% endif %};">
             {{ report.overall_compliance }}%
         </div>
         <div class="label">Overall Compliance Rate</div>
@@ -141,7 +141,7 @@
             </p>
         </div>
         {% else %}
-        <div style="background: #fecaca; padding: 10px; border-radius: 5px; border: 1px solid #f87171;">
+        <div style="background: #fecaca; padding: 10px; border-radius: 5px; border: 1px solid var(--danger);">
             <strong style="color: #991b1b;">Immediate Action Required</strong>
             <p style="margin: 5px 0 0; font-size: 8pt; color: #991b1b;">
                 Your compliance rate is below acceptable levels. Prioritize control implementation and consider engaging compliance specialists.

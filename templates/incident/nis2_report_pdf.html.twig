@@ -16,14 +16,14 @@
         .header {
             text-align: center;
             border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, #06b6d4 0%, #ec4899 50%, #8b5cf6 100%) 1;
+            border-image: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%) 1;
             padding-bottom: 1cm;
             margin-bottom: 1cm;
         }
         .header h1 {
             margin: 0;
             font-size: 18pt;
-            color: #0f172a;
+            color: var(--bg);
             text-transform: uppercase;
             letter-spacing: 0.5pt;
         }
@@ -33,13 +33,13 @@
             margin-top: 0.3cm;
         }
         .meta-info {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            background: linear-gradient(135deg, var(--bg) 0%, var(--border) 100%);
             padding: 0.5cm;
             margin-bottom: 1cm;
-            border-left: 4px solid #06b6d4;
+            border-left: 4px solid var(--primary);
             border: 2px solid #cbd5e1;
             border-left-width: 4px;
-            border-left-color: #06b6d4;
+            border-left-color: var(--primary);
         }
         .meta-info table {
             width: 100%;
@@ -57,16 +57,16 @@
         }
         .section h2 {
             font-size: 14pt;
-            color: #06b6d4;
-            border-bottom: 2px solid #06b6d4;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
             padding-bottom: 0.2cm;
             margin-bottom: 0.5cm;
             padding-left: 10pt;
-            border-left: 4px solid #ec4899;
+            border-left: 4px solid var(--accent);
         }
         .section h3 {
             font-size: 12pt;
-            color: #1e293b;
+            color: var(--surface);
             margin-top: 0.5cm;
             margin-bottom: 0.3cm;
             font-weight: bold;
@@ -83,8 +83,8 @@
             text-align: left;
         }
         .timeline-table th {
-            background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
-            color: #06b6d4;
+            background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
+            color: var(--primary);
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.3pt;
@@ -99,17 +99,17 @@
             border: 1.5pt solid transparent;
         }
         .status-compliant {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
             border-color: #059669;
             color: white;
         }
         .status-overdue {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            border-color: #dc2626;
+            background: linear-gradient(135deg, var(--danger) 0%, var(--danger) 100%);
+            border-color: var(--danger);
             color: white;
         }
         .status-pending {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
             border-color: #d97706;
             color: white;
         }
@@ -128,7 +128,7 @@
         }
         .impact-label {
             font-weight: bold;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            background: linear-gradient(135deg, var(--bg) 0%, var(--border) 100%);
         }
         .footer {
             position: fixed;

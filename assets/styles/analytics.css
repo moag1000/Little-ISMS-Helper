@@ -613,11 +613,11 @@
 }
 
 .heat-map-legend .legend-color-high {
-    background: #dc3545;
+    background: var(--danger);
 }
 
 .heat-map-legend .legend-color-medium {
-    background: #ffc107;
+    background: var(--warning);
 }
 
 .heat-map-legend .legend-color-low {
@@ -634,11 +634,11 @@
 }
 
 [data-theme="dark"] .heat-map-legend .legend-color-medium {
-    background: #fbbf24;
+    background: var(--warning);
 }
 
 [data-theme="dark"] .heat-map-legend .legend-color-low {
-    background: #34d399;
+    background: var(--success);
 }
 
 /* ===============================
@@ -879,7 +879,7 @@
 }
 
 .heat-map-filters .filter-label i {
-    color: var(--color-secondary, #06b6d4);
+    color: var(--color-secondary, var(--primary));
 }
 
 .heat-map-filters .form-select-sm {
@@ -965,7 +965,7 @@
 .heat-map-details .risk-item-enhanced:hover {
     background: var(--bg-elevated, white);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-color: var(--color-secondary, #06b6d4);
+    border-color: var(--color-secondary, var(--primary));
     transform: translateX(3px);
 }
 
@@ -988,11 +988,11 @@
 }
 
 .heat-map-details .risk-title:hover {
-    color: var(--color-secondary, #06b6d4);
+    color: var(--color-secondary, var(--primary));
 }
 
 .heat-map-details .risk-title i {
-    color: var(--color-danger, #ef4444);
+    color: var(--color-danger, var(--danger));
     font-size: 0.9rem;
 }
 

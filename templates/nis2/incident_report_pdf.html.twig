@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>{{ 'nis2.incident_report.title'|trans({}, 'nis2') }}</title>
     <style>
-        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 20px; color: #1e293b; }
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 20px; color: var(--surface); }
         .header {
             text-align: center;
             margin-bottom: 20px;
@@ -46,19 +46,19 @@
 
         table { width: 100%; border-collapse: collapse; margin: 8px 0; }
         th {
-            background: #1e293b;
+            background: var(--surface);
             color: #93c5fd;
             padding: 5px 6px;
             text-align: left;
             font-size: 8pt;
             text-transform: uppercase;
         }
-        td { padding: 4px 6px; border-bottom: 1px solid #e2e8f0; font-size: 8pt; }
-        tr:nth-child(even) { background: #f8fafc; }
+        td { padding: 4px 6px; border-bottom: 1px solid var(--border); font-size: 8pt; }
+        tr:nth-child(even) { background: var(--bg); }
 
         .field-group { margin: 6px 0; }
         .field-label { font-weight: bold; font-size: 8pt; color: #475569; text-transform: uppercase; }
-        .field-value { font-size: 9pt; margin-top: 2px; padding: 4px 6px; background: #f8fafc; border-left: 3px solid #cbd5e1; }
+        .field-value { font-size: 9pt; margin-top: 2px; padding: 4px 6px; background: var(--bg); border-left: 3px solid #cbd5e1; }
         .field-value.empty { color: #94a3b8; font-style: italic; }
 
         .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
@@ -68,11 +68,11 @@
         .badge-info { background: #dbeafe; color: #1e40af; }
 
         .timeline-table td { font-size: 8pt; }
-        .overdue { color: #dc2626; font-weight: bold; }
+        .overdue { color: var(--danger); font-weight: bold; }
         .compliant { color: #16a34a; font-weight: bold; }
         .pending { color: #d97706; font-weight: bold; }
 
-        .footer { position: fixed; bottom: 15px; left: 20px; right: 20px; text-align: center; font-size: 7pt; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 6px; }
+        .footer { position: fixed; bottom: 15px; left: 20px; right: 20px; text-align: center; font-size: 7pt; color: #94a3b8; border-top: 1px solid var(--border); padding-top: 6px; }
         .page-break { page-break-after: always; }
 
         @media print {

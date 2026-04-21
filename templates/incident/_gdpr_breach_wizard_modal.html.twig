@@ -388,7 +388,7 @@
     flex-direction: column;
     width: 100%;
     background-color: var(--bg-elevated, #fff);
-    color: var(--text-primary, #1e293b);
+    color: var(--text-primary, var(--surface));
     border: 1px solid var(--border-color, rgba(0, 0, 0, 0.2));
     border-radius: 0.5rem;
     box-shadow: var(--shadow-lg, 0 0.5rem 1rem rgba(0, 0, 0, 0.5));
@@ -396,21 +396,21 @@
 
 /* Dark mode support for inner elements */
 .gdpr-wizard-content .modal-header {
-    border-bottom-color: var(--border-color, #dee2e6);
+    border-bottom-color: var(--border-color, var(--border));
 }
 
 .gdpr-wizard-content .modal-footer {
-    border-top-color: var(--border-color, #dee2e6);
+    border-top-color: var(--border-color, var(--border));
 }
 
 .gdpr-wizard-content .modal-body {
     background-color: var(--bg-elevated, #fff);
-    color: var(--text-primary, #1e293b);
+    color: var(--text-primary, var(--surface));
 }
 
 .gdpr-wizard-content .card {
-    background-color: var(--bg-secondary, #f8fafc);
-    border-color: var(--border-color, #dee2e6);
+    background-color: var(--bg-secondary, var(--bg));
+    border-color: var(--border-color, var(--border));
 }
 
 .gdpr-wizard-content .alert-info {
@@ -437,20 +437,20 @@
 
 /* Form check enhancements for wizard */
 .gdpr-wizard .form-check-input:checked {
-    background-color: #ffc107;
-    border-color: #ffc107;
+    background-color: var(--warning);
+    border-color: var(--warning);
 }
 
 .gdpr-wizard .form-check-label {
     cursor: pointer;
-    color: var(--text-primary, #1e293b);
+    color: var(--text-primary, var(--surface));
 }
 
 /* Dark mode specific overrides */
 [data-bs-theme="dark"] .gdpr-wizard-content,
 [data-theme="dark"] .gdpr-wizard-content {
-    background-color: var(--bg-elevated, #1e293b);
-    color: var(--text-primary, #f1f5f9);
+    background-color: var(--bg-elevated, var(--surface));
+    color: var(--text-primary, var(--surface-2));
     border-color: var(--border-color, #334155);
 }
 
@@ -462,7 +462,7 @@
 
 [data-bs-theme="dark"] .gdpr-wizard-content .bg-light,
 [data-theme="dark"] .gdpr-wizard-content .bg-light {
-    background-color: var(--bg-secondary, #0f172a) !important;
+    background-color: var(--bg-secondary, var(--bg)) !important;
 }
 
 [data-bs-theme="dark"] .gdpr-wizard-content .text-muted,

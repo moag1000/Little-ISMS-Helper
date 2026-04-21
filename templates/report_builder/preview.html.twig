@@ -102,7 +102,7 @@
                 </div>
                 {% elseif data.type in ['pie', 'doughnut'] %}
                 {# Pie/Doughnut Chart #}
-                <canvas class="chart-canvas" data-chart-type="{{ data.type }}" data-chart-labels="{{ data.labels|json_encode }}" data-chart-data="{{ data.data|json_encode }}" data-chart-colors="{{ data.colors|default(['#0d6efd', '#6c757d', '#198754', '#dc3545', '#ffc107'])|json_encode }}" height="200"></canvas>
+                <canvas class="chart-canvas" data-chart-type="{{ data.type }}" data-chart-labels="{{ data.labels|json_encode }}" data-chart-data="{{ data.data|json_encode }}" data-chart-colors="{{ data.colors|default(['#0d6efd', 'var(--fg-3)', '#198754', 'var(--danger)', 'var(--warning)'])|json_encode }}" height="200"></canvas>
                 {% elseif data.type == 'radar' %}
                 {# Radar Chart #}
                 <canvas class="chart-canvas" data-chart-type="radar" data-chart-labels="{{ data.labels|json_encode }}" data-chart-datasets="{{ data.datasets|json_encode }}" height="250"></canvas>
@@ -219,7 +219,7 @@
 
     .widget-preview-container {
         background: #fff;
-        border: 1px solid #dee2e6;
+        border: 1px solid var(--border);
         border-radius: 0.5rem;
         padding: 1rem;
     }

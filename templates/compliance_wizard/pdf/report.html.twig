@@ -55,9 +55,9 @@
             border-radius: 10px;
         }
         .score-box.compliant { background: #d1e7dd; border: 2px solid #198754; }
-        .score-box.partial { background: #fff3cd; border: 2px solid #ffc107; }
+        .score-box.partial { background: #fff3cd; border: 2px solid var(--warning); }
         .score-box.in_progress { background: #cff4fc; border: 2px solid #0dcaf0; }
-        .score-box.non_compliant { background: #f8d7da; border: 2px solid #dc3545; }
+        .score-box.non_compliant { background: #f8d7da; border: 2px solid var(--danger); }
         .score-box .score {
             font-size: 48pt;
             font-weight: bold;
@@ -65,7 +65,7 @@
         .score-box.compliant .score { color: #198754; }
         .score-box.partial .score { color: #856404; }
         .score-box.in_progress .score { color: #055160; }
-        .score-box.non_compliant .score { color: #dc3545; }
+        .score-box.non_compliant .score { color: var(--danger); }
         .score-box .status {
             font-size: 14pt;
             text-transform: uppercase;
@@ -76,7 +76,7 @@
             font-size: 16pt;
             margin: 30px 0 15px 0;
             padding-bottom: 5px;
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 1px solid var(--border);
         }
         h3 {
             font-size: 12pt;
@@ -89,7 +89,7 @@
         }
         table.data-table th,
         table.data-table td {
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border);
             padding: 8px 12px;
             text-align: left;
         }
@@ -111,8 +111,8 @@
             border-radius: 4px;
         }
         .progress-bar .fill.success { background: #198754; }
-        .progress-bar .fill.warning { background: #ffc107; }
-        .progress-bar .fill.danger { background: #dc3545; }
+        .progress-bar .fill.warning { background: var(--warning); }
+        .progress-bar .fill.danger { background: var(--danger); }
         .badge {
             display: inline-block;
             padding: 3px 8px;
@@ -125,13 +125,13 @@
         .badge.danger { background: #f8d7da; color: #842029; }
         .gap-item {
             background: #fff3cd;
-            border-left: 4px solid #ffc107;
+            border-left: 4px solid var(--warning);
             padding: 10px 15px;
             margin: 10px 0;
         }
         .gap-item.critical {
             background: #f8d7da;
-            border-left-color: #dc3545;
+            border-left-color: var(--danger);
         }
         .gap-item strong {
             display: block;
@@ -140,7 +140,7 @@
         .footer {
             margin-top: 50px;
             padding-top: 20px;
-            border-top: 1px solid #dee2e6;
+            border-top: 1px solid var(--border);
             font-size: 9pt;
             color: #666;
             text-align: center;
@@ -196,7 +196,7 @@
         This assessment evaluated {{ result.categories|length }} categories against the {{ config.name }} requirements.
         The overall compliance score is <strong>{{ result.overall_score }}%</strong>.
         {% if result.critical_gap_count > 0 %}
-        <strong style="color: #dc3545;">{{ result.critical_gap_count }} critical gaps</strong> require immediate attention.
+        <strong style="color: var(--danger);">{{ result.critical_gap_count }} critical gaps</strong> require immediate attention.
         {% else %}
         No critical gaps were identified.
         {% endif %}
@@ -275,7 +275,7 @@
                 <td>
                     {{ item.name|trans({}, 'wizard') }}
                     {% if item.gap %}
-                    <br><small style="color: #dc3545;">Gap: {{ item.gap.title|trans({}, 'wizard') }}</small>
+                    <br><small style="color: var(--danger);">Gap: {{ item.gap.title|trans({}, 'wizard') }}</small>
                     {% endif %}
                 </td>
                 <td>{{ item.score }}%</td>

@@ -17,9 +17,9 @@
         }
         h1 {
             font-size: 18pt;
-            color: #0f172a;
+            color: var(--bg);
             border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, #06b6d4 0%, #ec4899 50%, #8b5cf6 100%) 1;
+            border-image: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%) 1;
             padding-bottom: 10px;
             margin-bottom: 20px;
             text-transform: uppercase;
@@ -27,18 +27,18 @@
         }
         h2 {
             font-size: 14pt;
-            color: #06b6d4;
+            color: var(--primary);
             margin-top: 25px;
             margin-bottom: 10px;
             page-break-after: avoid;
-            border-bottom: 2px solid #06b6d4;
+            border-bottom: 2px solid var(--primary);
             padding-bottom: 5px;
             padding-left: 10pt;
-            border-left: 4px solid #ec4899;
+            border-left: 4px solid var(--accent);
         }
         h3 {
             font-size: 12pt;
-            color: #1e293b;
+            color: var(--surface);
             margin-top: 15px;
             margin-bottom: 8px;
             font-weight: bold;
@@ -50,8 +50,8 @@
             page-break-inside: avoid;
         }
         th {
-            background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
-            color: #06b6d4;
+            background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
+            color: var(--primary);
             font-weight: bold;
             padding: 8px;
             text-align: left;
@@ -69,9 +69,9 @@
             margin-bottom: 30px;
             border: 2px solid #cbd5e1;
             border-left-width: 4px;
-            border-left-color: #06b6d4;
+            border-left-color: var(--primary);
             padding: 15px;
-            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            background: linear-gradient(135deg, var(--bg) 0%, #ffffff 100%);
         }
         .badge {
             display: inline-block;
@@ -84,23 +84,23 @@
             border: 1.5pt solid transparent;
         }
         .badge-danger {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            border-color: #dc2626;
+            background: linear-gradient(135deg, var(--danger) 0%, var(--danger) 100%);
+            border-color: var(--danger);
             color: white;
         }
         .badge-warning {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
             border-color: #d97706;
             color: white;
         }
         .badge-success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
             border-color: #059669;
             color: white;
         }
         .badge-info {
-            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-            border-color: #0891b2;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            border-color: var(--primary-hover);
             color: white;
         }
         .header {
@@ -108,12 +108,12 @@
             margin-bottom: 30px;
         }
         .metadata {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            background: linear-gradient(135deg, var(--bg) 0%, var(--border) 100%);
             padding: 10px;
             margin-bottom: 20px;
             font-size: 9pt;
             border: 2px solid #cbd5e1;
-            border-left: 4px solid #06b6d4;
+            border-left: 4px solid var(--primary);
         }
         ul {
             margin: 5px 0;

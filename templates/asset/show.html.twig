@@ -435,7 +435,7 @@
 .cia-item { display: flex; align-items: center; gap: 1rem; }
 .cia-item .label { width: 150px; font-weight: bold; }
 .value-bar { flex: 1; height: 24px; background: var(--bs-secondary-bg); border-radius: 4px; overflow: hidden; }
-.value-bar .bar { height: 100%; background: linear-gradient(90deg, #10b981, #059669); }
+.value-bar .bar { height: 100%; background: linear-gradient(90deg, var(--success), #059669); }
 .cia-item .value { width: 50px; text-align: right; }
 .instruction-box, .policy-box {
     padding: 1rem;
@@ -445,10 +445,10 @@
     border-radius: 4px;
     white-space: pre-wrap;
 }
-.badge-classification-public { background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-classification-public { background: var(--success); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 .badge-classification-internal { background: #3b82f6; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-classification-confidential { background: #f59e0b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-classification-restricted { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-classification-confidential { background: var(--warning); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-classification-restricted { background: var(--danger); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 /* Data Reuse Sections */
 .controls-list, .risks-list, .incidents-list { display: flex; flex-direction: column; gap: 0.5rem; }
 .control-item, .risk-item, .incident-item {
@@ -492,15 +492,15 @@
 .field-name { font-weight: bold; color: var(--bs-secondary-color); }
 .old-value {
     text-decoration: line-through;
-    color: #ef4444;
+    color: var(--danger);
 }
 .new-value {
-    color: #10b981;
+    color: var(--success);
     font-weight: 500;
 }
-.badge-action-insert { background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-action-insert { background: var(--success); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 .badge-action-update { background: #3b82f6; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-action-delete { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-action-delete { background: var(--danger); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 
 /* Protection Analysis Styles */
 .protection-analysis .protection-card {

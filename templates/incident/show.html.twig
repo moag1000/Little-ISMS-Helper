@@ -607,7 +607,7 @@
 
 .gdpr-deadline-warning {
     background: rgba(220, 38, 38, 0.1);
-    border: 2px solid #dc2626;
+    border: 2px solid var(--danger);
     border-radius: 6px;
     padding: 0.75rem 1rem;
     display: flex;
@@ -618,7 +618,7 @@
 
 .gdpr-deadline-warning i {
     font-size: 1.25rem;
-    color: #dc2626;
+    color: var(--danger);
 }
 
 .workflow-actions {
@@ -633,18 +633,18 @@
     flex-wrap: wrap;
 }
 .badge-status-reported { background: #3b82f6; }
-.badge-status-in_investigation { background: #f59e0b; }
-.badge-status-in_resolution { background: #8b5cf6; }
-.badge-status-resolved { background: #10b981; }
+.badge-status-in_investigation { background: var(--warning); }
+.badge-status-in_resolution { background: var(--accent); }
+.badge-status-resolved { background: var(--success); }
 .badge-status-closed { background: #6b7280; }
 
 /* NIS2 Compliance Status Badges */
 .badge-nis2-not_applicable { background: #6b7280; }
-.badge-nis2-compliant { background: #10b981; }
-.badge-nis2-overdue { background: #dc2626; animation: pulse 2s infinite; }
-.badge-nis2-awaiting_early_warning { background: #f59e0b; }
+.badge-nis2-compliant { background: var(--success); }
+.badge-nis2-overdue { background: var(--danger); animation: pulse 2s infinite; }
+.badge-nis2-awaiting_early_warning { background: var(--warning); }
 .badge-nis2-awaiting_detailed { background: #3b82f6; }
-.badge-nis2-awaiting_final { background: #8b5cf6; }
+.badge-nis2-awaiting_final { background: var(--accent); }
 
 @keyframes pulse {
     0%, 100% { opacity: 1; }
@@ -653,7 +653,7 @@
 
 /* NIS2 Timeline Section */
 .nis2-timeline-section {
-    background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+    background: linear-gradient(135deg, var(--bg) 0%, #e0f2fe 100%);
     border-left: 4px solid #3b82f6;
     padding: 1.5rem;
     margin: 1.5rem 0;
@@ -688,12 +688,12 @@
 }
 
 .timeline-stage.completed {
-    border-color: #10b981;
+    border-color: var(--success);
     background: #f0fdf4;
 }
 
 .timeline-stage.overdue {
-    border-color: #dc2626;
+    border-color: var(--danger);
     background: #fef2f2;
     box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
@@ -811,23 +811,23 @@
 }
 .alert-warning {
     background: #fef3c7;
-    border-left: 4px solid #f59e0b;
+    border-left: 4px solid var(--warning);
     color: #92400e;
 }
 .badge-risk-high {
-    background: #ef4444;
+    background: var(--danger);
     color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
 }
 .badge-risk-medium {
-    background: #f59e0b;
+    background: var(--warning);
     color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
 }
 .badge-risk-low {
-    background: #10b981;
+    background: var(--success);
     color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
@@ -873,11 +873,11 @@
 }
 
 .text-danger {
-    color: #dc2626;
+    color: var(--danger);
 }
 
 .text-success {
-    color: #10b981;
+    color: var(--success);
 }
 
 /* Responsive adjustments */

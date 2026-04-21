@@ -9,11 +9,11 @@
             text-align: center;
             margin-bottom: 20px;
             border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, #06b6d4 0%, #ec4899 50%, #8b5cf6 100%) 1;
+            border-image: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%) 1;
             padding-bottom: 10px;
         }
         .header h1 {
-            color: #0f172a;
+            color: var(--bg);
             margin: 0;
             font-size: 20pt;
             text-transform: uppercase;
@@ -22,8 +22,8 @@
         .header .date { color: #666; font-size: 9pt; margin-top: 5px; }
         table { width: 100%; border-collapse: collapse; margin: 10px 0; }
         th {
-            background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
-            color: #06b6d4;
+            background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
+            color: var(--primary);
             padding: 8px;
             text-align: left;
             font-size: 9pt;
@@ -32,7 +32,7 @@
             letter-spacing: 0.3pt;
         }
         td { padding: 8px; border: 1px solid #ddd; font-size: 9pt; }
-        tr:nth-child(even) { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); }
+        tr:nth-child(even) { background: linear-gradient(135deg, var(--bg) 0%, var(--surface-2) 100%); }
         .risk-critical { background: #fee2e2; font-weight: bold; }
         .risk-high { background: #fed7aa; }
         .risk-medium { background: #fef3c7; }
@@ -47,11 +47,11 @@
             border: 1.5pt solid transparent;
         }
         .score-critical {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            border-color: #dc2626;
+            background: linear-gradient(135deg, var(--danger) 0%, var(--danger) 100%);
+            border-color: var(--danger);
         }
         .score-high {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
             border-color: #d97706;
         }
         .score-medium {
@@ -60,7 +60,7 @@
             color: #fff;
         }
         .score-low {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
             border-color: #059669;
         }
         .footer { position: fixed; bottom: 20px; text-align: center; font-size: 8pt; color: #666; }
@@ -106,7 +106,7 @@
         </tbody>
     </table>
 
-    <div style="margin-top: 30px; padding: 15px; background: #fef3c7; border-left: 4px solid #f59e0b;">
+    <div style="margin-top: 30px; padding: 15px; background: #fef3c7; border-left: 4px solid var(--warning);">
         <strong>{{ 'pdf.risk.legend'|trans({}, 'reports') }}:</strong><br>
         {{ 'pdf.risk.legend_text'|trans({}, 'reports') }}
     </div>

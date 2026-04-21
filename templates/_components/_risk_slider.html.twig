@@ -126,7 +126,7 @@
                             <div class="text-center">
                                 <div class="small text-muted mb-1">{{ 'risk.field.score'|trans({}, 'risk') }}</div>
                                 <span class="display-4 fw-bold" data-risk-slider-target="score"
-                                      style="color: {% if score >= 15 %}#dc3545{% elseif score >= 10 %}#fd7e14{% elseif score >= 5 %}#ffc107{% else %}#28a745{% endif %}">
+                                      style="color: {% if score >= 15 %}var(--danger){% elseif score >= 10 %}var(--warning){% elseif score >= 5 %}var(--warning){% else %}var(--success){% endif %}">
                                     {{ score }}
                                 </span>
                             </div>
@@ -136,7 +136,7 @@
                             <span data-risk-slider-target="level"
                                   class="badge fs-6"
                                   style="background-color: {% if score >= 15 %}#f8d7da{% elseif score >= 10 %}#ffe5d0{% elseif score >= 5 %}#fff3cd{% else %}#d4edda{% endif %};
-                                         color: {% if score >= 15 %}#dc3545{% elseif score >= 10 %}#fd7e14{% elseif score >= 5 %}#856404{% else %}#28a745{% endif %}">
+                                         color: {% if score >= 15 %}var(--danger){% elseif score >= 10 %}var(--warning){% elseif score >= 5 %}#856404{% else %}var(--success){% endif %}">
                                 {% if score >= 15 %}
                                     {{ 'risk.level.critical'|trans({}, 'risk') }}
                                 {% elseif score >= 10 %}

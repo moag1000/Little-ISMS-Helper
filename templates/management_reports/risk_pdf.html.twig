@@ -8,10 +8,10 @@
         .header {
             text-align: center;
             margin-bottom: 20px;
-            border-bottom: 3px solid #dc2626;
+            border-bottom: 3px solid var(--danger);
             padding-bottom: 10px;
         }
-        .header h1 { color: #0f172a; margin: 0; font-size: 18pt; }
+        .header h1 { color: var(--bg); margin: 0; font-size: 18pt; }
         .header .date { color: #888; font-size: 9pt; margin-top: 3px; }
 
         .stats-grid { display: table; width: 100%; margin: 15px 0; }
@@ -26,12 +26,12 @@
         .stat-box .label { font-size: 7pt; color: #666; text-transform: uppercase; }
 
         .section { margin: 15px 0; page-break-inside: avoid; }
-        .section h2 { background: #dc2626; color: white; padding: 6px; font-size: 10pt; margin: 0 0 8px 0; }
+        .section h2 { background: var(--danger); color: white; padding: 6px; font-size: 10pt; margin: 0 0 8px 0; }
 
         table { width: 100%; border-collapse: collapse; margin: 8px 0; }
-        th { background: #0f172a; color: #06b6d4; padding: 5px; text-align: left; font-size: 8pt; }
+        th { background: var(--bg); color: var(--primary); padding: 5px; text-align: left; font-size: 8pt; }
         td { padding: 5px; border-bottom: 1px solid #ddd; font-size: 8pt; }
-        tr:nth-child(even) { background: #f8fafc; }
+        tr:nth-child(even) { background: var(--bg); }
 
         .badge { display: inline-block; padding: 2px 5px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
         .badge-critical { background: #fecaca; color: #991b1b; }
@@ -56,7 +56,7 @@
             <div class="label">Total Risks</div>
         </div>
         <div class="stat-box">
-            <div class="number" style="color: #dc2626;">{{ report.level_counts.critical }}</div>
+            <div class="number" style="color: var(--danger);">{{ report.level_counts.critical }}</div>
             <div class="label">Critical</div>
         </div>
         <div class="stat-box">

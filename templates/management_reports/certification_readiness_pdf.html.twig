@@ -5,23 +5,23 @@
     <title>ISO 27001 Certification Readiness Assessment</title>
     <style>
         @page { margin: 15mm 12mm; size: A4 portrait; }
-        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 0; color: #1e293b; }
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 0; color: var(--surface); }
 
         .header {
             text-align: center;
             margin-bottom: 20px;
             border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, #06b6d4 0%, #ec4899 50%, #8b5cf6 100%) 1;
+            border-image: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%) 1;
             padding-bottom: 10px;
         }
-        .header h1 { color: #0f172a; margin: 0; font-size: 16pt; text-transform: uppercase; letter-spacing: 0.5pt; }
+        .header h1 { color: var(--bg); margin: 0; font-size: 16pt; text-transform: uppercase; letter-spacing: 0.5pt; }
         .header .subtitle { color: #666; font-size: 10pt; margin-top: 3px; }
         .header .date { color: #888; font-size: 9pt; margin-top: 3px; }
 
         .section { margin: 15px 0; page-break-inside: avoid; }
         .section h2 {
-            background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
-            color: #06b6d4;
+            background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
+            color: var(--primary);
             padding: 6px 8px;
             font-size: 10pt;
             margin: 0 0 8px 0;
@@ -35,14 +35,14 @@
             display: table-cell;
             width: 33.33%;
             padding: 10px 8px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border);
             text-align: center;
-            background: #f8fafc;
+            background: var(--bg);
         }
         .score-box .number { font-size: 22pt; font-weight: bold; margin: 0; }
         .score-box .number.success { color: #16a34a; }
         .score-box .number.warning { color: #d97706; }
-        .score-box .number.danger { color: #dc2626; }
+        .score-box .number.danger { color: var(--danger); }
         .score-box .label { font-size: 7.5pt; color: #475569; text-transform: uppercase; font-weight: bold; letter-spacing: 0.3pt; }
 
         .recommendation {
@@ -56,37 +56,37 @@
         }
         .recommendation.ready { background: #16a34a; }
         .recommendation.conditional { background: #d97706; }
-        .recommendation.not-ready { background: #dc2626; }
+        .recommendation.not-ready { background: var(--danger); }
 
         /* Tables */
         table { width: 100%; border-collapse: collapse; margin: 5px 0; }
         th {
-            background: #0f172a;
-            color: #06b6d4;
+            background: var(--bg);
+            color: var(--primary);
             padding: 5px 6px;
             text-align: left;
             font-size: 8pt;
             text-transform: uppercase;
         }
-        td { padding: 4px 6px; font-size: 8.5pt; border-bottom: 1px solid #e2e8f0; }
-        tr:nth-child(even) td { background: #f8fafc; }
+        td { padding: 4px 6px; font-size: 8.5pt; border-bottom: 1px solid var(--border); }
+        tr:nth-child(even) td { background: var(--bg); }
 
         /* Progress bar */
         .progress-bar-container { background: #e5e7eb; height: 12px; border-radius: 6px; overflow: hidden; display: inline-block; width: 80px; vertical-align: middle; }
         .progress-fill { height: 100%; border-radius: 6px; }
         .progress-fill.success { background: #16a34a; }
         .progress-fill.warning { background: #d97706; }
-        .progress-fill.danger { background: #dc2626; }
+        .progress-fill.danger { background: var(--danger); }
 
         /* Badges */
         .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 7pt; font-weight: bold; color: #fff; }
         .badge-success { background: #16a34a; }
-        .badge-warning { background: #d97706; color: #1e293b; }
-        .badge-danger { background: #dc2626; }
+        .badge-warning { background: #d97706; color: var(--surface); }
+        .badge-danger { background: var(--danger); }
 
         /* Gap list */
-        .gap-item { padding: 3px 0; font-size: 8.5pt; border-bottom: 1px solid #f1f5f9; }
-        .gap-critical { color: #dc2626; }
+        .gap-item { padding: 3px 0; font-size: 8.5pt; border-bottom: 1px solid var(--surface-2); }
+        .gap-critical { color: var(--danger); }
         .gap-recommended { color: #475569; }
 
         /* Two-column */
@@ -102,7 +102,7 @@
             text-align: center;
             font-size: 7pt;
             color: #94a3b8;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid var(--border);
             padding-top: 4px;
         }
     </style>
@@ -195,7 +195,7 @@
                 <tr><td>Total Applicable Controls</td><td><strong>{{ control_stats.total }}</strong></td></tr>
                 <tr><td>Implemented</td><td style="color: #16a34a;"><strong>{{ control_stats.implemented }}</strong></td></tr>
                 <tr><td>In Progress</td><td style="color: #d97706;"><strong>{{ control_stats.in_progress }}</strong></td></tr>
-                <tr><td>Not Started</td><td style="color: #dc2626;"><strong>{{ control_stats.not_started }}</strong></td></tr>
+                <tr><td>Not Started</td><td style="color: var(--danger);"><strong>{{ control_stats.not_started }}</strong></td></tr>
                 <tr><td>Not Applicable</td><td>{{ control_stats.not_applicable }}</td></tr>
                 <tr><td>Implementation Rate</td><td><strong>{{ control_percentage }}%</strong></td></tr>
             </tbody>
@@ -203,7 +203,7 @@
 
         {% if controls_not_started|length > 0 %}
         <div style="margin-top: 8px;">
-            <strong style="font-size: 8.5pt; color: #dc2626;">Controls Not Started ({{ controls_not_started|length }}):</strong>
+            <strong style="font-size: 8.5pt; color: var(--danger);">Controls Not Started ({{ controls_not_started|length }}):</strong>
             <div style="font-size: 7.5pt; color: #475569; margin-top: 3px;">
                 {% for control in controls_not_started[:15] %}
                     {{ control.id }}{% if not loop.last %}, {% endif %}
@@ -237,7 +237,7 @@
 
         {% if critical_gaps|length > 0 %}
         <div style="margin-bottom: 8px;">
-            <strong style="font-size: 9pt; color: #dc2626;">Critical Gaps (Must Fix Before Audit):</strong>
+            <strong style="font-size: 9pt; color: var(--danger);">Critical Gaps (Must Fix Before Audit):</strong>
             {% for gap in critical_gaps %}
             <div class="gap-item gap-critical">
                 &#10007; {{ gap.name|default(gap.check|default('Unknown')) }}

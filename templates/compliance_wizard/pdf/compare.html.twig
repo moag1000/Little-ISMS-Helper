@@ -45,7 +45,7 @@
             font-size: 15pt;
             margin: 26px 0 12px 0;
             padding-bottom: 4px;
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 1px solid var(--border);
         }
         h3 {
             font-size: 12pt;
@@ -62,7 +62,7 @@
             display: table-cell;
             vertical-align: top;
             width: 1%;
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border);
             border-radius: 6px;
             padding: 14px;
             background: #fff;
@@ -99,7 +99,7 @@
         }
         .score-success { color: #198754; }
         .score-warning { color: #b58900; }
-        .score-danger { color: #dc3545; }
+        .score-danger { color: var(--danger); }
         table.matrix {
             width: 100%;
             border-collapse: collapse;
@@ -108,7 +108,7 @@
         }
         table.matrix th,
         table.matrix td {
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border);
             padding: 6px 8px;
             text-align: left;
         }
@@ -132,12 +132,12 @@
         .badge.success  { background: #d1e7dd; color: #0f5132; }
         .badge.warning  { background: #fff3cd; color: #856404; }
         .badge.danger   { background: #f8d7da; color: #842029; }
-        .badge.muted    { background: #e9ecef; color: #6c757d; }
+        .badge.muted    { background: #e9ecef; color: var(--fg-3); }
         tfoot .badge { font-size: 10pt; }
         .footer {
             margin-top: 36px;
             padding-top: 16px;
-            border-top: 1px solid #dee2e6;
+            border-top: 1px solid var(--border);
             font-size: 8.5pt;
             color: #666;
             text-align: center;
