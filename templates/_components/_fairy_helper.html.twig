@@ -3,8 +3,8 @@
      title="{{ tooltip|default('Little ISMS Helper ist hier, um zu helfen!') }}"
      data-bs-toggle="tooltip"
      data-bs-placement="{{ placement|default('top') }}">
-    <img src="{{ asset('fairy_helper_v1.svg') }}"
-         alt="Fairy Helper"
+    <img src="{{ asset('logo.svg') }}"
+         alt="Alva"
          class="fairy-helper-svg {{ size|default('md') }} {% if working|default(false) %}is-working{% endif %}"
          style="{% if width is defined %}width: {{ width }};{% endif %} {% if height is defined %}height: {{ height }};{% endif %}">
 </div>

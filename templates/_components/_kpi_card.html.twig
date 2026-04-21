@@ -1,53 +1,103 @@
 {#
-  Reusable KPI Card Component
+  FairyAurora KPI Card — Aurora-Pattern mit Mono-Label + Big-Sans-Value + Delta-Chip + Sparkline
 
-  Usage:
+  Usage (Minimal):
   {% include '_components/_kpi_card.html.twig' with {
-      icon: 'bi-server',
-      label: 'Total Assets',
-      value: 42,
-      unit: '',
-      trend: '+12%',
-      variant: 'primary',
-      detail: 'corporate.stats.breakdown'|trans({'%own%': 15, '%inherited%': 20, '%subsidiaries%': 7}, 'tenant')
+      label: 'Offene Risiken',
+      value: 12
   } %}
 
-  Variants: primary, success, warning, danger, info
+  Usage (Voll):
+  {% include '_components/_kpi_card.html.twig' with {
+      icon: 'bi-shield-exclamation',
+      label: 'Offene Risiken',
+      value: 12,
+      unit: '',
+      trend: '+3',
+      delta: { value: '+3', direction: 'up', tone: 'danger' },
+      hint: 'seit letzter Woche',
+      sparkline: [8, 9, 11, 10, 12, 12, 12],
+      variant: 'primary',
+      emphasis: true,
+      link: '/risk'
+  } %}
+
+  Parameter:
+    label      - Mono-uppercase Label (required)
+    value      - Big value (required)
+    unit       - Optionale Einheit neben dem Value
+    icon       - bi-* icon class (optional)
+    trend      - Legacy-Text "+12%" / "-3" (fallback, wenn delta nicht gesetzt)
+    delta      - { value: '+3', direction: 'up'|'down', tone: 'success'|'danger'|'neutral' }
+    hint       - Sub-Text unter Delta (z.B. "seit letzter Woche")
+    sparkline  - array of numbers → SVG-Sparkline
+    variant    - primary|accent|success|warning|danger (default: primary) — Delta-Farbe + Accent-Strip
+    emphasis   - boolean → Top-Gradient-Line + primary-glow-shadow
+    link       - Optional URL → macht Card klickbar mit Arrow-Icon
+    detail     - Legacy-Detail-Text (rendered wenn gesetzt)
 #}
 
+{% import '_components/_sparkline.html.twig' as spark %}
+
 {% set variant = variant|default('primary') %}
-{% set icon = icon|default('bi-graph-up') %}
+{% set icon = icon|default(null) %}
 {% set trend = trend|default(null) %}
+{% set delta = delta|default(null) %}
+{% set hint = hint|default(null) %}
 {% set unit = unit|default('') %}
 {% set link = link|default(null) %}
 {% set detail = detail|default(null) %}
+{% set emphasis = emphasis|default(false) %}
+{% set sparkline = sparkline|default(null) %}
 
-<div class="kpi-card kpi-card-{{ variant }}">
-    <div class="kpi-card-icon">
-        <i class="bi {{ icon }}"></i>
-    </div>
-    <div class="kpi-card-content">
-        <div class="kpi-card-label">{{ label }}</div>
-        <div class="kpi-card-value">
-            {{ value }}
-            {% if unit %}
-                <span class="kpi-card-unit">{{ unit }}</span>
-            {% endif %}
+{# Auto-derive delta from legacy trend string if delta not explicitly given #}
+{% if trend and not delta %}
+    {% set direction = trend starts with '-' ? 'down' : 'up' %}
+    {% set tone = direction == 'up' ? 'success' : 'danger' %}
+    {% set delta = { value: trend, direction: direction, tone: tone } %}
+{% endif %}
+
+<div class="fa-kpi-card kpi-card kpi-card-{{ variant }} fa-kpi-card--{{ variant }} {% if emphasis %}fa-kpi-card--emphasis{% endif %} {% if link %}fa-kpi-card--linked{% endif %}">
+    {% if emphasis %}<span class="fa-kpi-card__topline" aria-hidden="true"></span>{% endif %}
+
+    {% if icon %}
+        <div class="fa-kpi-card__icon kpi-card-icon" aria-hidden="true">
+            <i class="bi {{ icon }}"></i>
         </div>
-        {% if detail %}
-            <div class="kpi-card-detail">
-                {{ detail }}
+    {% endif %}
+
+    <div class="fa-kpi-card__body kpi-card-content">
+        <div class="fa-kpi-card__label kpi-card-label">{{ label }}</div>
+
+        <div class="fa-kpi-card__value kpi-card-value">
+            <span class="fa-kpi-card__number">{{ value }}</span>
+            {% if unit %}<span class="fa-kpi-card__unit kpi-card-unit">{{ unit }}</span>{% endif %}
+        </div>
+
+        {% if delta %}
+            <div class="fa-kpi-card__delta kpi-card-trend trend-{{ delta.direction }}">
+                <i class="bi bi-arrow-{{ delta.direction }}" aria-hidden="true"></i>
+                <span class="fa-kpi-card__delta-value">{{ delta.value }}</span>
+                {% if hint %}<span class="fa-kpi-card__hint">· {{ hint }}</span>{% endif %}
             </div>
+        {% elseif hint %}
+            <div class="fa-kpi-card__hint-only">{{ hint }}</div>
         {% endif %}
-        {% if trend %}
-            <div class="kpi-card-trend {{ trend starts with '+' ? 'trend-up' : 'trend-down' }}">
-                <i class="bi {{ trend starts with '+' ? 'bi-arrow-up' : 'bi-arrow-down' }}"></i>
-                {{ trend }}
+
+        {% if detail %}
+            <div class="kpi-card-detail fa-kpi-card__detail">{{ detail }}</div>
+        {% endif %}
+
+        {% if sparkline %}
+            <div class="fa-kpi-card__sparkline">
+                {{ spark.render(sparkline, { tone: variant, width: 140, height: 32 }) }}
             </div>
         {% endif %}
     </div>
+
     {% if link %}
-        <a href="{{ link }}" class="kpi-card-link" data-turbo-action="advance" aria-label="{{ 'common.view_details'|trans({}, 'messages') }}">
+        <a href="{{ link }}" class="fa-kpi-card__link kpi-card-link" data-turbo-action="advance"
+           aria-label="{{ 'common.view_details'|trans({}, 'messages') }}">
             <i class="bi bi-arrow-right" aria-hidden="true"></i>
         </a>
     {% endif %}

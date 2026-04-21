@@ -1,0 +1,38 @@
+{#
+ # FairyAurora v3.0 — Alva Character Component (zentralisierter Mount)
+ #
+ # Usage:
+ #   {% import '_components/_alva.html.twig' as alva %}
+ #   {{ alva.render('idle') }}
+ #   {{ alva.render('warning', { size: 80 }) }}
+ #   {{ alva.render(mood, { size: 120, ariaLabel: 'Alva prüft die Daten' }) }}
+ #
+ # Moods (FA-2: minimal Implementation, FA-4 bringt volle 9-Mood-Engine):
+ #   idle | happy | thinking | focused | working | scanning | warning | celebrating | sleeping
+ #
+ # Props:
+ #   mood: (required, 1st arg) — Fallback auf 'idle'
+ #   size: Pixel (default 100)
+ #   ariaLabel: Screen-Reader-Label (default aus i18n alva.mood.{mood})
+ #   decorative: boolean — aria-hidden statt Label (default false)
+ #   class: zusätzliche CSS-Classes
+ #
+ # A11y: respektiert prefers-reduced-motion (statisch statt breathing).
+ #}
+
+{% macro render(mood = 'idle', props = {}) %}
+    {% set validMoods = ['idle', 'happy', 'thinking', 'focused', 'working', 'scanning', 'warning', 'celebrating', 'sleeping'] %}
+    {% set m = mood in validMoods ? mood : 'idle' %}
+    {% set size = props.size|default(100) %}
+    {% set decorative = props.decorative|default(false) %}
+    {% set classAttr = 'fa-alva fa-alva--' ~ m ~ (props.class is defined ? ' ' ~ props.class : '') %}
+
+    <div class="{{ classAttr }}"
+         style="width:{{ size }}px;height:{{ size }}px;"
+         {% if decorative %}aria-hidden="true"
+         {% else %}role="img" aria-label="{{ props.ariaLabel|default(('alva.mood.' ~ m)|trans({}, 'messages'))|default('Alva') }}"
+         {% endif %}>
+        {# FA-4 ersetzt diesen <img> durch dynamische SVG-Keyframe-Engine mit 9 Moods #}
+        <img src="{{ asset('logo.svg') }}" alt="" width="{{ size }}" height="{{ size }}" aria-hidden="true">
+    </div>
+{% endmacro %}
