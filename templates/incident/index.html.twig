@@ -68,8 +68,9 @@
     {% block card_body %}
         <div class="row">
             {% set statuses = {
-                'open': { label: 'incident.status.open'|trans({}, 'incident'), icon: 'bi-circle', color: 'danger' },
-                'in_progress': { label: 'incident.status.in_progress'|trans({}, 'incident'), icon: 'bi-arrow-repeat', color: 'warning' },
+                'reported': { label: 'incident.status.reported'|trans({}, 'incident'), icon: 'bi-exclamation-circle', color: 'danger' },
+                'in_investigation': { label: 'incident.status.in_investigation'|trans({}, 'incident'), icon: 'bi-search', color: 'warning' },
+                'in_resolution': { label: 'incident.status.in_resolution'|trans({}, 'incident'), icon: 'bi-arrow-repeat', color: 'info' },
                 'resolved': { label: 'incident.status.resolved'|trans({}, 'incident'), icon: 'bi-check-circle', color: 'success' },
                 'closed': { label: 'incident.status.closed'|trans({}, 'incident'), icon: 'bi-check-circle-fill', color: 'secondary' }
             } %}
@@ -107,10 +108,10 @@
     {% block card_body %}
         <div class="row">
             {% set severities = {
-                'critical': { label: 'incident.severity.critical'|trans({}, 'incident'), icon: '<i class="bi bi-exclamation-circle" aria-hidden="true"></i>', color: 'danger' },
-                'high': { label: 'incident.severity.high'|trans({}, 'incident'), icon: '🟠', color: 'warning' },
-                'medium': { label: 'incident.severity.medium'|trans({}, 'incident'), icon: '🟡', color: 'info' },
-                'low': { label: 'incident.severity.low'|trans({}, 'incident'), icon: '🟢', color: 'success' }
+                'critical': { label: 'incident.severity.critical'|trans({}, 'incident'), icon: '<i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>', color: 'danger' },
+                'high': { label: 'incident.severity.high'|trans({}, 'incident'), icon: '<i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>', color: 'warning' },
+                'medium': { label: 'incident.severity.medium'|trans({}, 'incident'), icon: '<i class="bi bi-exclamation-triangle" aria-hidden="true"></i>', color: 'info' },
+                'low': { label: 'incident.severity.low'|trans({}, 'incident'), icon: '<i class="bi bi-info-circle" aria-hidden="true"></i>', color: 'success' }
             } %}
             {% for severity, data in severities %}
                 {% set count = allIncidents|filter(i => i.severity == severity)|length %}

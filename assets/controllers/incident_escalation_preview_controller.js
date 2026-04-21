@@ -11,11 +11,12 @@ import { Controller } from '@hotwired/stimulus';
  * - Debounced AJAX calls (300ms)
  * - Loading states
  * - Error handling
- * - Responsive UI
+ * - i18n via translations value
  *
  * Usage:
  * <div data-controller="incident-escalation-preview"
- *      data-incident-escalation-preview-preview-url-value="{{ path('app_incident_escalation_preview') }}">
+ *      data-incident-escalation-preview-preview-url-value="{{ path('app_incident_escalation_preview') }}"
+ *      data-incident-escalation-preview-translations-value="{{ translations_json }}">
  *     <select data-incident-escalation-preview-target="severitySelect"></select>
  *     <input type="checkbox" data-incident-escalation-preview-target="breachCheckbox">
  *     <div data-incident-escalation-preview-target="previewPanel"></div>
@@ -30,7 +31,8 @@ export default class extends Controller {
     ];
 
     static values = {
-        previewUrl: String
+        previewUrl: String,
+        translations: { type: Object, default: {} }
     };
 
     connect() {
@@ -45,15 +47,20 @@ export default class extends Controller {
     }
 
     /**
+     * Get translated string with fallback
+     */
+    t(key, fallback) {
+        return this.translationsValue[key] || fallback || key;
+    }
+
+    /**
      * Update preview when severity or breach status changes
      */
     updatePreview() {
-        // Clear existing debounce timer
         if (this.debounceTimer) {
             clearTimeout(this.debounceTimer);
         }
 
-        // Debounce API call (300ms delay)
         this.debounceTimer = setTimeout(() => {
             this.fetchPreview();
         }, 300);
@@ -68,14 +75,11 @@ export default class extends Controller {
         // Handle data breach checkbox (can be radio buttons or checkbox)
         let dataBreachOccurred = false;
         if (this.hasBreachCheckboxTarget) {
-            // Check if it's a radio button group (expanded choice)
             const breachRadios = document.querySelectorAll('input[name="incident[dataBreachOccurred]"]');
             if (breachRadios.length > 1) {
-                // Radio button group
                 const checkedRadio = Array.from(breachRadios).find(radio => radio.checked);
                 dataBreachOccurred = checkedRadio && checkedRadio.value === '1';
             } else {
-                // Single checkbox
                 dataBreachOccurred = this.breachCheckboxTarget.checked;
             }
         }
@@ -86,7 +90,6 @@ export default class extends Controller {
             return;
         }
 
-        // Show loading state
         this.showLoading();
 
         try {
@@ -121,13 +124,8 @@ export default class extends Controller {
             return;
         }
 
-        // Show preview panel
         this.previewPanelTarget.style.display = 'block';
-
-        // Build HTML content
-        const html = this.buildPreviewHtml(preview);
-        this.previewContentTarget.innerHTML = html;
-
+        this.previewContentTarget.innerHTML = this.buildPreviewHtml(preview);
         this.isLoading = false;
     }
 
@@ -143,7 +141,7 @@ export default class extends Controller {
                 <div class="card-header bg-warning text-dark">
                     <h3 class="h6 mb-0">
                         <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-                        <span data-i18n="incident.escalation_preview.title">Escalation Preview</span>
+                        ${this.escapeHtml(this.t('title', 'Escalation Preview'))}
                     </h3>
                 </div>
                 <div class="card-body">
@@ -155,14 +153,14 @@ export default class extends Controller {
                 <div class="mb-3">
                     <h4 class="h6 mb-2">
                         <i class="bi bi-diagram-3" aria-hidden="true"></i>
-                        <span data-i18n="incident.escalation_preview.workflow_name">Workflow</span>
+                        ${this.escapeHtml(this.t('workflow_name', 'Workflow'))}
                     </h4>
                     <div class="d-flex align-items-center gap-2">
                         <strong>${this.escapeHtml(preview.workflow_name)}</strong>
-                        <span class="badge ${levelBadgeClass}">${levelText}</span>
+                        <span class="badge ${levelBadgeClass}">${this.escapeHtml(levelText)}</span>
                         <span class="badge bg-primary">
                             <i class="bi bi-lightning-fill" aria-hidden="true"></i>
-                            <span data-i18n="incident.escalation_preview.automatic">Automatic</span>
+                            ${this.escapeHtml(this.t('automatic', 'Automatic'))}
                         </span>
                     </div>
                 </div>
@@ -175,7 +173,7 @@ export default class extends Controller {
                 <div class="mb-3">
                     <h4 class="h6 mb-2">
                         <i class="bi bi-people" aria-hidden="true"></i>
-                        <span data-i18n="incident.escalation_preview.notified_users">Who will be notified:</span>
+                        ${this.escapeHtml(this.t('notified_users', 'Who will be notified:'))}
                     </h4>
                     <ul class="list-unstyled mb-0">
             `;
@@ -199,7 +197,7 @@ export default class extends Controller {
                     </ul>
                     <p class="mb-0 mt-2">
                         <span class="badge bg-info">
-                            ${preview.notified_users.length} <span data-i18n="incident.escalation_preview.emails">emails will be sent</span>
+                            ${preview.notified_users.length} ${this.escapeHtml(this.t('emails', 'emails will be sent'))}
                         </span>
                     </p>
                 </div>
@@ -211,7 +209,7 @@ export default class extends Controller {
             <div class="mb-3">
                 <h4 class="h6 mb-2">
                     <i class="bi bi-clock-history" aria-hidden="true"></i>
-                    <span data-i18n="incident.escalation_preview.sla_requirement">SLA Requirement</span>
+                    ${this.escapeHtml(this.t('sla_requirement', 'SLA Requirement'))}
                 </h4>
                 <div class="alert alert-info mb-0" role="alert">
                     <strong>${this.escapeHtml(preview.sla_description)}</strong>
@@ -226,14 +224,14 @@ export default class extends Controller {
                     <div class="alert alert-danger" role="alert">
                         <h4 class="alert-heading h6">
                             <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                            <span data-i18n="incident.escalation_preview.gdpr_warning">GDPR Data Breach - 72h Deadline</span>
+                            ${this.escapeHtml(this.t('gdpr_warning', 'GDPR Data Breach - 72h Deadline'))}
                         </h4>
                         <p class="mb-2">
-                            <strong><span data-i18n="incident.escalation_preview.gdpr_deadline">Deadline:</span></strong>
+                            <strong>${this.escapeHtml(this.t('gdpr_deadline', 'Deadline:'))}</strong>
                             ${this.formatDateTime(preview.gdpr_deadline)}
                         </p>
                         <p class="mb-0 small">
-                            <span data-i18n="incident.escalation_preview.gdpr_reference">GDPR Art. 33 requires notification to supervisory authority within 72 hours of becoming aware of the breach.</span>
+                            ${this.escapeHtml(this.t('gdpr_reference', 'GDPR Art. 33 requires notification to supervisory authority within 72 hours of becoming aware of the breach.'))}
                         </p>
                     </div>
                 </div>
@@ -246,7 +244,7 @@ export default class extends Controller {
                 <div class="mb-3">
                     <h4 class="h6 mb-2">
                         <i class="bi bi-shield-check" aria-hidden="true"></i>
-                        <span data-i18n="incident.escalation_preview.approval_required">Approval Required</span>
+                        ${this.escapeHtml(this.t('approval_required', 'Approval Required'))}
                     </h4>
                     <ol class="mb-2">
             `;
@@ -265,7 +263,7 @@ export default class extends Controller {
                     </ol>
                     <p class="mb-0">
                         <small>
-                            <strong><span data-i18n="incident.escalation_preview.estimated_time">Estimated Time:</span></strong>
+                            <strong>${this.escapeHtml(this.t('estimated_time', 'Estimated Time:'))}</strong>
                             ${this.escapeHtml(preview.estimated_completion_time)}
                         </small>
                     </p>
@@ -278,26 +276,26 @@ export default class extends Controller {
                     <div class="border-top pt-3">
                         <h4 class="h6 mb-2">
                             <i class="bi bi-check-circle" aria-hidden="true"></i>
-                            <span data-i18n="incident.escalation_preview.summary_title">What will happen:</span>
+                            ${this.escapeHtml(this.t('summary_title', 'What will happen:'))}
                         </h4>
                         <ul class="mb-0">
                             <li>
                                 <i class="bi bi-check text-success" aria-hidden="true"></i>
-                                <span data-i18n="incident.escalation_preview.actions.workflow_started">Workflow will start automatically</span>
+                                ${this.escapeHtml(this.t('action_workflow_started', 'Workflow will start automatically'))}
                             </li>
                             <li>
                                 <i class="bi bi-check text-success" aria-hidden="true"></i>
-                                <span data-i18n="incident.escalation_preview.actions.notifications_sent">Email notifications will be sent to ${preview.notified_users.length} stakeholder(s)</span>
+                                ${this.escapeHtml(this.t('action_notifications_sent', 'Email notifications will be sent to stakeholders'))}
                             </li>
                             ${preview.requires_approval ? `
                             <li>
                                 <i class="bi bi-check text-success" aria-hidden="true"></i>
-                                <span data-i18n="incident.escalation_preview.actions.approval_required">Approval steps will be initiated</span>
+                                ${this.escapeHtml(this.t('action_approval_required', 'Approval steps will be initiated'))}
                             </li>
                             ` : ''}
                             <li>
                                 <i class="bi bi-check text-success" aria-hidden="true"></i>
-                                <span data-i18n="incident.escalation_preview.actions.sla_tracked">SLA tracking will begin (${preview.sla_hours}h)</span>
+                                ${this.escapeHtml(this.t('action_sla_tracked', 'SLA tracking will begin'))} (${preview.sla_hours}h)
                             </li>
                         </ul>
                     </div>
@@ -320,9 +318,9 @@ export default class extends Controller {
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                            <span class="visually-hidden">${this.escapeHtml(this.t('loading', 'Loading...'))}</span>
                         </div>
-                        <span>Loading escalation preview...</span>
+                        <span>${this.escapeHtml(this.t('loading_preview', 'Loading escalation preview...'))}</span>
                     </div>
                 </div>
             </div>
@@ -337,7 +335,7 @@ export default class extends Controller {
         this.previewContentTarget.innerHTML = `
             <div class="alert alert-danger" role="alert">
                 <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                Failed to load escalation preview. Please try again.
+                ${this.escapeHtml(this.t('error', 'Failed to load escalation preview. Please try again.'))}
             </div>
         `;
     }
@@ -368,14 +366,15 @@ export default class extends Controller {
      * Get text for escalation level
      */
     getEscalationLevelText(level) {
-        const texts = {
+        const key = 'level_' + level;
+        const fallbacks = {
             'data_breach': 'Data Breach',
             'critical': 'Critical',
             'high': 'High',
             'medium': 'Medium',
             'low': 'Low'
         };
-        return texts[level] || level;
+        return this.t(key, fallbacks[level] || level);
     }
 
     /**

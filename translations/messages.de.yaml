@@ -1778,6 +1778,7 @@ common.report_regenerated: 'Bericht wurde neu generiert'
 common.regenerate: 'Neu generieren'
 common.error.unknown: 'Ein unbekannter Fehler ist aufgetreten'
 common.statistics: 'Statistiken'
+common.loading: 'Laden...'
 
 # Role comparison keys
 role.compare.system_badge: 'System'
