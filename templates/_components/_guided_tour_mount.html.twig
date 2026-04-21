@@ -1,0 +1,25 @@
+{#
+  Guided Tour mount point (Sprint 13).
+  Wird einmal pro Seite (typischerweise in base.html.twig) eingebunden.
+  Der eigentliche Controller läuft dann auf Demand — beim Click auf Banner
+  oder User-Dropdown-„Tour neu starten".
+
+  Der Mount selbst rendert nichts sichtbares. Popover, Backdrop, Highlight
+  werden vom Controller dynamisch in den Body eingefügt.
+#}
+{% if app.user %}
+    {% set tour_role = tour_role|default('junior') %}
+    <div data-controller="guided-tour"
+         data-guided-tour-steps-url-value="{{ path('app_guided_tour_steps', {role: tour_role}) }}"
+         data-guided-tour-complete-url-value="{{ path('app_guided_tour_complete', {role: tour_role}) }}"
+         data-guided-tour-csrf-value="{{ csrf_token('guided_tour_complete') }}"
+         data-guided-tour-auto-start-value="false"
+         data-guided-tour-i18n-next-value="{{ 'guided_tour.action.next'|trans({}, 'guided_tour') }}"
+         data-guided-tour-i18n-previous-value="{{ 'guided_tour.action.previous'|trans({}, 'guided_tour') }}"
+         data-guided-tour-i18n-finish-value="{{ 'guided_tour.action.finish'|trans({}, 'guided_tour') }}"
+         data-guided-tour-i18n-skip-value="{{ 'guided_tour.action.skip'|trans({}, 'guided_tour') }}"
+         data-guided-tour-i18n-mobile-title-value="{{ 'guided_tour.mobile.title'|trans({}, 'guided_tour') }}"
+         data-guided-tour-i18n-mobile-body-value="{{ 'guided_tour.mobile.body'|trans({}, 'guided_tour') }}"
+         hidden
+         aria-hidden="true"></div>
+{% endif %}

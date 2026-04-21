@@ -2,8 +2,23 @@
 
 **Erstellt:** 2026-04-21
 **Scope:** Rollenbasierte Einweisungs-Tour für Erst-Nutzer
-**Aufwand:** MVP ~4 FTE-d · Vollausbau ~8,5 FTE-d
-**Status:** 📅 geplant — offene Entscheidungen am Ende
+**Aufwand:** Vollausbau ~9,5 FTE-d
+**Status:** ✅ freigegeben — Entscheidungen fix, 3-Phasen-Umsetzung
+
+## ✅ Entscheidungen (2026-04-21)
+
+1. **Library:** Custom Stimulus-Controller (keine externe Dep) statt `driver.js`.
+   → +1,5 FTE-d gegenüber Library-Variante; dafür volle Kontrolle über
+   Styling, A11y, Turbo-Integration.
+2. **Scope:** Vollausbau — alle 6 Rollen + modul-bedingte Zusatz-Stopps
+   (BSI/GDPR/BCM) + Admin-Modul für Tour-Content-Konfigurierbarkeit +
+   S13-12 Admin-Report + S13-13 PDF-Export.
+3. **Umsetzung:** 3 Phasen (A Primary-Target / B Power-User /
+   C Edge-Rollen + Consultant-Extras).
+4. **Mobile:** < 768px deaktiviert, Hinweis auf Desktop-Version
+   (inline Info-Box statt Tour).
+5. **Re-Run:** Permanent erreichbar via Header-User-Dropdown +
+   Admin-„Tour für User X zurücksetzen"-Action.
 
 ---
 
@@ -190,45 +205,46 @@ User.completedTours = ["junior", "cm"]
 
 ---
 
-## 5. Sprint 13 Breakdown
+## 5. Sprint 13 Breakdown — 3 Phasen
+
+### Phase A — Primary Target (~3,5 FTE-d)
 
 | # | Item | FTE-d | Abhängigkeit |
 |---|------|-------|--------------|
-| S13-1 | `driver.js` via importmap + Stimulus-Wrapper | 0,5 | — |
+| S13-1 | Custom Stimulus-Controller (Step-Rendering, Backdrop, Focus-Trap, `prefers-reduced-motion`, Tastatur-Nav) + SCSS | 1,5 | — |
 | S13-2 | `GuidedTourService` + Role-Auto-Detect | 0,5 | — |
 | S13-3 | `User.completedTours` Migration + Entity | 0,25 | — |
-| S13-4 | Tour-Banner-Component + Dismiss-Cookie | 0,5 | S13-3 |
-| S13-5 | Junior-Tour (7 Steps) | 1,0 | S13-1 |
-| S13-6 | CM-Tour (5 Steps) | 0,75 | S13-1 |
-| S13-7 | CISO-Tour (4 Steps) | 0,5 | S13-1 |
-| S13-8 | ISB-Tour (5 Steps) | 0,75 | S13-1 |
-| S13-9 | Risk-Owner-Tour (2 Steps) | 0,25 | S13-1 |
-| S13-10 | Auditor-Tour (3 Steps) | 0,25 | S13-1 |
-| S13-11 | Übersetzungen DE+EN (~200 Keys) | 1,0 | S13-5..10 |
-| S13-12 | Admin-Report *„Tour-Completion pro User"* | 0,5 | S13-3 |
-| S13-13 | Tour-PDF-Export | 1,0 | S13-5..10 |
-| S13-14 | Tests + Accessibility-Check + Reduced-Motion | 0,75 | S13-5..10 |
-| | **Summe Vollausbau** | **8,5** | |
+| S13-4 | Tour-Banner + Launcher im User-Dropdown | 0,5 | S13-3 |
+| S13-5 | Junior-Tour (7 Steps) + DE/EN-Übersetzungen | 0,75 | S13-1 |
 
-### MVP (~4 FTE-d)
+### Phase B — Power-User-Rollen (~2,5 FTE-d)
 
-S13-1 + S13-2 + S13-3 + S13-4 + **nur** S13-5 Junior-Tour + 1/6 von
-S13-11 + S13-14 (Acc-Check). Weitere Rollen-Touren iterativ nachziehen.
+| # | Item | FTE-d | Abhängigkeit |
+|---|------|-------|--------------|
+| S13-6 | CM-Tour (5 Steps) + Übersetzungen | 0,75 | Phase A |
+| S13-7 | CISO-Tour (4 Steps) + Übersetzungen | 0,5 | Phase A |
+| S13-8 | ISB-Tour (5 Steps) + Übersetzungen | 0,75 | Phase A |
+| S13-14 | Tests + Accessibility-Check + Reduced-Motion | 0,5 | Phase A |
+
+### Phase C — Edge-Rollen & Consultant-Features (~3,5 FTE-d)
+
+| # | Item | FTE-d | Abhängigkeit |
+|---|------|-------|--------------|
+| S13-9 | Risk-Owner-Tour (2 Steps) + Übersetzungen | 0,25 | Phase A |
+| S13-10 | Auditor-Tour (3 Steps) + Übersetzungen | 0,25 | Phase A |
+| S13-9b | Modul-bedingte Zusatz-Stopps (BSI/GDPR/BCM) | 0,5 | S13-2 |
+| S13-12 | Admin-Report *„Tour-Completion pro User"* + CSV-Export | 0,5 | S13-3 |
+| S13-13 | Tour-PDF-Export (Icon-Illustrationen, kein Screenshot-Pipeline) | 1,0 | Phase A |
+| S13-15 | Admin-Modul für Tour-Content-Konfigurierbarkeit (Editor-View, DB-Override der Default-Steps) | 1,0 | Phase A |
+
+| | **Summe Vollausbau** | **9,5 FTE-d** | |
 
 ---
 
-## 6. Offene Entscheidungen
+## 6. Offene Entscheidungen — ✅ geklärt 2026-04-21
 
-1. **Library-Wahl:** `driver.js` (Empfehlung) oder Custom-Stimulus-
-   Controller (~1,5 FTE-d mehr, aber keine externe Dep)?
-2. **MVP oder Vollausbau?** Nur Junior-Tour zum Start (~4 FTE-d)
-   oder gleich alle 6 Rollen (~8,5 FTE-d)?
-3. **Consultant-Wünsche S13-12/13** (PDF-Export + Completion-
-   Tracking) — jetzt bauen, später, oder ganz skippen?
-4. **Tour-Content-Editierbarkeit** (Consultant-Wunsch c) — jetzt
-   bauen (+ ~2 FTE-d extra) oder später bei konkretem Kundenbedarf?
-5. **Mobile-Strategie:** Tour disabled auf < 768px + statische
-   Fallback-Seite bestätigen?
+Siehe Abschnitt oben (*Entscheidungen 2026-04-21*). Alle fünf Punkte
+sind entschieden, Umsetzung startet direkt mit Phase A.
 
 ---
 

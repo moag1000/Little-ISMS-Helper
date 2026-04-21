@@ -100,6 +100,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $skipWelcomePage = false;
 
+    /**
+     * Sprint 13 — Guided Tour. Liste der Tour-IDs, die der User
+     * durchlaufen hat (z. B. ['junior', 'cm']). Per ID, damit
+     * Role-Umstieg eines Users alte Completions nicht aufräumt.
+     *
+     * @var list<string>
+     */
+    #[ORM\Column(type: Types::JSON, options: ['default' => '[]'])]
+    private array $completedTours = [];
+
     #[ORM\ManyToOne(targetEntity: Tenant::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Tenant $tenant = null;
@@ -438,6 +448,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSkipWelcomePage(bool $skipWelcomePage): static
     {
         $this->skipWelcomePage = $skipWelcomePage;
+        return $this;
+    }
+
+    /** @return list<string> */
+    public function getCompletedTours(): array
+    {
+        return $this->completedTours;
+    }
+
+    public function hasCompletedTour(string $tourId): bool
+    {
+        return in_array($tourId, $this->completedTours, true);
+    }
+
+    public function markTourCompleted(string $tourId): static
+    {
+        if (!$this->hasCompletedTour($tourId)) {
+            $this->completedTours[] = $tourId;
+        }
+        return $this;
+    }
+
+    public function resetTour(string $tourId): static
+    {
+        $this->completedTours = array_values(array_filter(
+            $this->completedTours,
+            static fn(string $t): bool => $t !== $tourId,
+        ));
+        return $this;
+    }
+
+    public function resetAllTours(): static
+    {
+        $this->completedTours = [];
         return $this;
     }
 

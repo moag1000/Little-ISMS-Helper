@@ -1,0 +1,320 @@
+/* Guided Tour — Sprint 13 / S13-1
+ * Cyberpunk-Fee-Theme: cyan → pink → purple Gradient,
+ * fairy-sparkle-Animations, shimmer-shadow. Subtle, professional
+ * with a wink. Respects prefers-reduced-motion.
+ */
+
+.guided-tour-backdrop {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(15, 23, 42, 0.55) 0%,
+        rgba(2, 6, 23, 0.78) 100%
+    );
+    z-index: 10000;
+    pointer-events: auto;
+    animation: fairy-backdrop-fade 220ms ease-out;
+}
+
+@keyframes fairy-backdrop-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.guided-tour-highlight {
+    position: absolute;
+    border: 2px solid rgba(6, 182, 212, 0.85);
+    border-radius: 8px;
+    box-shadow:
+        0 0 0 9999px rgba(2, 6, 23, 0.55),
+        0 0 24px rgba(6, 182, 212, 0.55),
+        0 0 40px rgba(139, 92, 246, 0.35),
+        inset 0 0 12px rgba(236, 72, 153, 0.3);
+    z-index: 10001;
+    pointer-events: none;
+    transition: all 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: fairy-highlight-pulse 3s ease-in-out infinite;
+}
+
+@keyframes fairy-highlight-pulse {
+    0%, 100% {
+        box-shadow:
+            0 0 0 9999px rgba(2, 6, 23, 0.55),
+            0 0 24px rgba(6, 182, 212, 0.55),
+            0 0 40px rgba(139, 92, 246, 0.35),
+            inset 0 0 12px rgba(236, 72, 153, 0.3);
+    }
+    50% {
+        box-shadow:
+            0 0 0 9999px rgba(2, 6, 23, 0.55),
+            0 0 32px rgba(6, 182, 212, 0.75),
+            0 0 56px rgba(236, 72, 153, 0.45),
+            inset 0 0 16px rgba(139, 92, 246, 0.45);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .guided-tour-backdrop { animation: none; }
+    .guided-tour-highlight {
+        transition: none;
+        animation: none;
+    }
+}
+
+.guided-tour-popover {
+    position: absolute;
+    z-index: 10002;
+    background: #ffffff;
+    color: #0f172a;
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    max-width: 440px;
+    min-width: 340px;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+
+    /* Cyberpunk-Fee Double-Border: innerer pink-cyan gradient + äußerer subtle shadow */
+    box-shadow:
+        0 0 0 1px rgba(236, 72, 153, 0.22),
+        0 12px 40px rgba(6, 182, 212, 0.22),
+        0 24px 64px rgba(15, 23, 42, 0.28);
+
+    /* Shimmer-Border overlay */
+    position: absolute;
+}
+
+.guided-tour-popover::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 16px;
+    padding: 2px;
+    background: linear-gradient(
+        135deg,
+        rgba(6, 182, 212, 0.55) 0%,
+        rgba(139, 92, 246, 0.55) 45%,
+        rgba(236, 72, 153, 0.55) 100%
+    );
+    background-size: 200% 200%;
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: fairy-shimmer 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes fairy-shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .guided-tour-popover::before { animation: none; }
+}
+
+[data-theme="dark"] .guided-tour-popover {
+    background: #1e293b;
+    color: #f1f5f9;
+    box-shadow:
+        0 0 0 1px rgba(236, 72, 153, 0.3),
+        0 12px 40px rgba(6, 182, 212, 0.35),
+        0 24px 72px rgba(0, 0, 0, 0.55);
+}
+
+.guided-tour-popover-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.guided-tour-progress {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    /* Cyan-Pink-Gradient-Text */
+    background: linear-gradient(90deg, #06b6d4, #8b5cf6 50%, #ec4899);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.guided-tour-close {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: rgba(100, 116, 139, 0.8);
+    cursor: pointer;
+    padding: 0 0.25rem;
+    transition: color 180ms ease;
+}
+
+.guided-tour-close:hover {
+    color: #ec4899;
+}
+
+.guided-tour-title {
+    font-size: 1.1875rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Sparkle-Icon prefix (only first step of tour) */
+.guided-tour-title::before {
+    content: "✨";
+    font-size: 1rem;
+    animation: fairy-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes fairy-pulse {
+    0%, 100% { opacity: 0.85; transform: scale(1); }
+    50%      { opacity: 1;    transform: scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .guided-tour-title::before { animation: none; }
+}
+
+.guided-tour-body {
+    margin-bottom: 1.25rem;
+    color: #334155;
+}
+
+[data-theme="dark"] .guided-tour-body {
+    color: #cbd5e1;
+}
+
+.guided-tour-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    border-top: 1px solid rgba(139, 92, 246, 0.18);
+    padding-top: 0.75rem;
+}
+
+.guided-tour-nav {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Primary „Next/Finish"-Button: cyan-pink-gradient im Cyberpunk-Fee-Stil */
+.guided-tour-nav .btn-primary {
+    background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.35);
+    transition: all 220ms ease;
+}
+
+.guided-tour-nav .btn-primary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow:
+        0 4px 16px rgba(6, 182, 212, 0.45),
+        0 0 24px rgba(236, 72, 153, 0.35);
+}
+
+.guided-tour-nav .btn-primary:focus {
+    outline: 2px solid #ec4899;
+    outline-offset: 2px;
+}
+
+.guided-tour-mobile-hint {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+    z-index: 10010;
+    max-width: 480px;
+    margin: 0 auto;
+    border-left: 4px solid #8b5cf6;
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.22);
+}
+
+/* Banner auf dem Dashboard */
+.guided-tour-banner {
+    position: relative;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(
+        135deg,
+        rgba(6, 182, 212, 0.10) 0%,
+        rgba(139, 92, 246, 0.10) 50%,
+        rgba(236, 72, 153, 0.10) 100%
+    );
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.guided-tour-banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    padding: 1px;
+    background: linear-gradient(
+        135deg,
+        rgba(6, 182, 212, 0.45),
+        rgba(139, 92, 246, 0.45),
+        rgba(236, 72, 153, 0.45)
+    );
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.guided-tour-banner-icon {
+    font-size: 1.75rem;
+    color: #8b5cf6;
+    flex-shrink: 0;
+    animation: fairy-pulse 2.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .guided-tour-banner-icon { animation: none; }
+}
+
+.guided-tour-banner-content {
+    flex-grow: 1;
+}
+
+.guided-tour-banner-title {
+    font-weight: 600;
+    margin-bottom: 0.125rem;
+    background: linear-gradient(90deg, #06b6d4, #ec4899);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.guided-tour-banner-meta {
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+[data-theme="dark"] .guided-tour-banner-meta {
+    color: #94a3b8;
+}
+
+.guided-tour-banner-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
