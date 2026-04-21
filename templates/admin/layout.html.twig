@@ -56,10 +56,10 @@
             font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
-            color: #06b6d4;
+            color: var(--primary);
             letter-spacing: 0.5px;
-            text-shadow: 0 0 5px rgba(6, 182, 212, 0.3);
-            border-left: 2px solid rgba(6, 182, 212, 0.3);
+            text-shadow: 0 0 5px var(--primary-glow);
+            border-left: 2px solid var(--primary-glow);
         }
 
         .admin-sidebar ul {
@@ -83,22 +83,20 @@
         }
 
         .admin-sidebar ul li a:hover {
-            background: linear-gradient(90deg,
-                        rgba(6, 182, 212, 0.1),
-                        rgba(236, 72, 153, 0.05));
-            color: #06b6d4;
-            border-left: 3px solid #06b6d4;
+            background: linear-gradient(90deg, var(--primary-tint), var(--accent-tint));
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
             padding-left: calc(1rem - 3px);
-            box-shadow: inset 0 0 10px rgba(6, 182, 212, 0.1);
+            box-shadow: inset 0 0 10px var(--primary-glow);
         }
 
         .admin-sidebar ul li a.active {
-            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
-            color: white;
+            background: var(--brand-gradient);
+            color: #ffffff;
             font-weight: 500;
-            border-left: 3px solid #ec4899;
+            border-left: 3px solid var(--accent);
             padding-left: calc(1rem - 3px);
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3),
+            box-shadow: 0 0 15px var(--primary-glow),
                         inset 0 0 10px rgba(255, 255, 255, 0.1);
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
         }
@@ -156,26 +154,24 @@
 
         /* Dark mode support */
         [data-theme="dark"] .admin-sidebar {
-            background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-secondary) 100%);
-            box-shadow: inset -2px 0 10px rgba(6, 182, 212, 0.1);
+            background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+            box-shadow: inset -2px 0 10px var(--primary-glow);
         }
 
         [data-theme="dark"] .admin-sidebar ul li a {
-            color: var(--text-primary);
+            color: var(--fg);
         }
 
         [data-theme="dark"] .admin-sidebar ul li a:hover {
-            background: linear-gradient(90deg,
-                        rgba(6, 182, 212, 0.2),
-                        rgba(236, 72, 153, 0.1));
-            color: var(--color-primary);
-            box-shadow: inset 0 0 10px rgba(6, 182, 212, 0.2);
+            background: linear-gradient(90deg, var(--primary-tint), var(--accent-tint));
+            color: var(--primary);
+            box-shadow: inset 0 0 10px var(--primary-glow);
         }
 
         [data-theme="dark"] .admin-sidebar ul li a.active {
-            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
-            color: white;
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4),
+            background: var(--brand-gradient);
+            color: #ffffff;
+            box-shadow: 0 0 15px var(--primary-glow),
                         inset 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
