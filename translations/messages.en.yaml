@@ -1904,3 +1904,18 @@ reuse:
         requirements_in_frameworks: 'requirements in %fw% framework(s)'
     cta:
         portfolio: 'Trend and portfolio report'
+        heatmap: 'Reuse heatmap'
+    heatmap:
+        title: 'Reuse heatmap'
+        description: 'Which documents and suppliers carry the ISMS? Light tiles = low reuse, red tiles = load-bearing.'
+        legend:
+            title: 'Intensity:'
+            low: 'low'
+            medium: 'medium'
+            high: 'high'
+            top: 'top'
+        documents:
+            heading: 'Documents (%count%, max %max% requirements)'
+        suppliers:
+            heading: 'Suppliers (%count%, max %max% requirements)'
+        hint_monoculture: 'A few very-red tiles signal monoculture risk: if one artifact disappears, coverage across many frameworks collapses. Spread the load.'
