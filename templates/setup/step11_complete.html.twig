@@ -1,8 +1,9 @@
-{% extends 'base.html.twig' %}
+{% extends 'setup/_layout.html.twig' %}
+{% set active_step = 'complete' %}
 
 {% block title %}{{ 'setup.complete.title'|trans({}, 'setup') }} - Deployment Wizard{% endblock %}
 
-{% block body %}
+{% block step_content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-10">

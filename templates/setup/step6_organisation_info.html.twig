@@ -1,15 +1,16 @@
-{% extends 'base.html.twig' %}
+{% extends 'setup/_layout.html.twig' %}
+{% set active_step = 'organisation' %}
 
 {% block title %}{{ 'setup.organisation.title'|trans({}, 'setup') }} - Deployment Wizard{% endblock %}
 
-{% block head %}
+{% block step_head %}
     {{ parent() }}
     {# Disable Turbo cache to ensure CSRF tokens are always fresh #}
     <meta name="turbo-cache-control" content="no-cache">
 {% endblock %}
 
 
-{% block body %}
+{% block step_content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-10">

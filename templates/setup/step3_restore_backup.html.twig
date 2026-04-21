@@ -1,9 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends 'setup/_layout.html.twig' %}
+{% set active_step = 'backup' %}
 {% trans_default_domain 'setup' %}
 
 {% block title %}{{ 'setup.step3.title'|trans({}, 'setup') }}{% endblock %}
 
-{% block body %}
+{% block step_content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-10">
