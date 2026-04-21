@@ -65,7 +65,7 @@
                     <div class="row">
                         {% for code in backup_codes %}
                             <div class="col-md-6 mb-2">
-                                <div class="bg-light p-3 rounded border">
+                                <div class="bg-body-secondary p-3 rounded border">
                                     {% include '_components/_badge.html.twig' with { variant: 'secondary', content: loop.index, class: 'me-2' } %}
                                     <span class="font-monospace fw-bold">{{ code }}</span>
                                 </div>

@@ -57,7 +57,7 @@
             {% endembed %}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-warning text-dark' } %}
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-warning-subtle text-warning' } %}
                 {% block card_body %}
                     <i class="bi bi-calendar-event fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ report.management_reviews.this_year }}</h3>
@@ -72,7 +72,7 @@
         <div class="col-md-6 mb-4">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
                 {% block card_header %}
-                    <div class="card-header bg-warning text-dark">
+                    <div class="card-header bg-warning-subtle text-warning">
                         <h3 class="h5 mb-0">
                             <i class="bi bi-pie-chart" aria-hidden="true"></i>
                             {{ 'management_reports.audit.status_breakdown'|trans({}, 'management_reports') }}

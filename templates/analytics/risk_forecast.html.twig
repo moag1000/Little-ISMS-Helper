@@ -245,19 +245,19 @@
                 {% block card_body %}
                     <div class="row text-center">
                         <div class="col-md-3">
-                            <div class="p-3 bg-light rounded">
+                            <div class="p-3 bg-body-secondary rounded">
                                 <h4 class="text-danger mb-1">+{{ velocity.last_90_days.new_risks }}</h4>
                                 <small class="text-muted">{{ 'analytics.forecast.velocity.new_risks'|trans({}, 'analytics') }}</small>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="p-3 bg-light rounded">
+                            <div class="p-3 bg-body-secondary rounded">
                                 <h4 class="text-success mb-1">-{{ velocity.last_90_days.closed_risks }}</h4>
                                 <small class="text-muted">{{ 'analytics.forecast.velocity.closed_risks'|trans({}, 'analytics') }}</small>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="p-3 bg-light rounded">
+                            <div class="p-3 bg-body-secondary rounded">
                                 <h4 class="{% if velocity.last_90_days.net_change > 0 %}text-danger{% elseif velocity.last_90_days.net_change < 0 %}text-success{% else %}text-secondary{% endif %} mb-1">
                                     {% if velocity.last_90_days.net_change > 0 %}+{% endif %}{{ velocity.last_90_days.net_change }}
                                 </h4>
@@ -265,7 +265,7 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="p-3 bg-light rounded">
+                            <div class="p-3 bg-body-secondary rounded">
                                 <h4 class="text-info mb-1">{{ velocity.last_90_days.monthly_average }}</h4>
                                 <small class="text-muted">{{ 'analytics.forecast.velocity.avg_per_month'|trans({}, 'analytics') }}</small>
                             </div>
@@ -425,19 +425,19 @@
                 {% block card_body %}
                     <div class="row text-center">
                         <div class="col-md-4">
-                            <div class="p-3 bg-light rounded">
+                            <div class="p-3 bg-body-secondary rounded">
                                 <h4 class="mb-1">{{ anomalies.by_type.risk_spikes|default(0) }}</h4>
                                 <small class="text-muted">Risk Spikes</small>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="p-3 bg-light rounded">
+                            <div class="p-3 bg-body-secondary rounded">
                                 <h4 class="mb-1">{{ anomalies.by_type.incident_patterns|default(0) }}</h4>
                                 <small class="text-muted">Incident Patterns</small>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="p-3 bg-light rounded">
+                            <div class="p-3 bg-body-secondary rounded">
                                 <h4 class="mb-1">{{ anomalies.by_type.control_drift|default(0) }}</h4>
                                 <small class="text-muted">Control Drift</small>
                             </div>

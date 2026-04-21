@@ -173,7 +173,7 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-warning text-dark">
+                    <div class="card-header bg-warning-subtle text-warning">
                         <h2 class="mb-0"><i class="bi bi-shield" aria-hidden="true"></i> {{ 'user.section.system_roles'|trans({}, 'user') }}</h2>
                     </div>
                 {% endblock %}
@@ -251,7 +251,7 @@
         <div class="col-md-12">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-secondary text-white">
+                    <div class="card-header">
                         <h2 class="mb-0"><i class="bi bi-unlock" aria-hidden="true"></i> {{ 'user.section.all_permissions'|trans({}, 'user') }}</h2>
                     </div>
                 {% endblock %}
@@ -284,7 +284,7 @@
     {# Actions #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-dark text-white">
+            <div class="card-header">
                 <h2 class="mb-0"><i class="bi bi-gear" aria-hidden="true"></i> {{ 'user.section.actions'|trans({}, 'user') }}</h2>
             </div>
         {% endblock %}

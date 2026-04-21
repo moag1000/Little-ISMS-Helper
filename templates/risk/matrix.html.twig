@@ -173,22 +173,22 @@
 
 .cell-score {
     font-size: 12px;
-    color: #666;
+    color: var(--fg-3);
     position: absolute;
     top: 2px;
     left: 4px;
 }
 
-.risk-low { background-color: #d1fae5; }
-.risk-medium { background-color: #fef3c7; }
-.risk-high { background-color: #fed7aa; }
-.risk-critical { background-color: #fecaca; }
+.risk-low { background-color: var(--success-glow); }
+.risk-medium { background-color: var(--warning-glow); }
+.risk-high { background-color: color-mix(in srgb, var(--warning) 20%, transparent); }
+.risk-critical { background-color: var(--danger-glow); }
 
 /* Legend color boxes */
-.legend-color.risk-low { background-color: #d1fae5 !important; }
-.legend-color.risk-medium { background-color: #fef3c7 !important; }
-.legend-color.risk-high { background-color: #fed7aa !important; }
-.legend-color.risk-critical { background-color: #fecaca !important; }
+.legend-color.risk-low { background-color: var(--success-glow) !important; }
+.legend-color.risk-medium { background-color: var(--warning-glow) !important; }
+.legend-color.risk-high { background-color: color-mix(in srgb, var(--warning) 20%, transparent) !important; }
+.legend-color.risk-critical { background-color: var(--danger-glow) !important; }
 
 .risk-item {
     width: 12px;

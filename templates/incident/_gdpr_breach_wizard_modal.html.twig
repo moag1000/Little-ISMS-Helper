@@ -33,7 +33,7 @@
         <div class="gdpr-wizard-dialog">
             <div class="gdpr-wizard-content">
                 {# Modal Header #}
-                <div class="modal-header bg-warning text-dark">
+                <div class="modal-header bg-warning-subtle text-warning">
                     <div class="w-100">
                         <div class="modal-title h5" id="gdpr-wizard-title">
                             <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
@@ -282,7 +282,7 @@
 
                         {# Recommendation #}
                         <div class="card border-warning">
-                            <div class="card-header bg-warning text-dark">
+                            <div class="card-header bg-warning-subtle text-warning">
                                 <strong>{{ 'data_breach.wizard.recommendation_label'|trans({}, 'privacy') }}</strong>
                             </div>
                             <div class="card-body">
@@ -293,7 +293,7 @@
                         </div>
 
                         {# Legal References #}
-                        <div class="mt-4 p-3 bg-light border rounded">
+                        <div class="mt-4 p-3 bg-body-secondary border rounded">
                             <small class="text-muted">
                                 <strong>{{ 'data_breach.wizard.legal_references'|trans({}, 'privacy') }}:</strong><br>
                                 GDPR Art. 33 (Notification to supervisory authority)<br>
@@ -387,8 +387,8 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    background-color: var(--bg-elevated, #fff);
-    color: var(--text-primary, var(--surface));
+    background-color: var(--bg-elevated, var(--surface));
+    color: var(--text-primary, var(--fg));
     border: 1px solid var(--border-color, rgba(0, 0, 0, 0.2));
     border-radius: 0.5rem;
     box-shadow: var(--shadow-lg, 0 0.5rem 1rem rgba(0, 0, 0, 0.5));
@@ -404,8 +404,8 @@
 }
 
 .gdpr-wizard-content .modal-body {
-    background-color: var(--bg-elevated, #fff);
-    color: var(--text-primary, var(--surface));
+    background-color: var(--bg-elevated, var(--surface));
+    color: var(--text-primary, var(--fg));
 }
 
 .gdpr-wizard-content .card {
@@ -414,9 +414,9 @@
 }
 
 .gdpr-wizard-content .alert-info {
-    background-color: var(--bg-tertiary, #e0f2fe);
-    border-color: var(--border-color, #bae6fd);
-    color: var(--text-primary, #0c4a6e);
+    background-color: var(--bg-tertiary, var(--primary-tint));
+    border-color: var(--border-color, var(--primary-glow));
+    color: var(--text-primary, var(--primary-strong));
 }
 
 /* Wizard step animations */
@@ -451,22 +451,22 @@
 [data-theme="dark"] .gdpr-wizard-content {
     background-color: var(--bg-elevated, var(--surface));
     color: var(--text-primary, var(--surface-2));
-    border-color: var(--border-color, #334155);
+    border-color: var(--border-color, var(--border-strong));
 }
 
 [data-bs-theme="dark"] .gdpr-wizard-content .modal-header.bg-warning,
 [data-theme="dark"] .gdpr-wizard-content .modal-header.bg-warning {
-    background-color: #ca8a04 !important;
-    color: #ffffff !important;
+    background-color: var(--warning) !important;
+    color: var(--warning-text) !important;
 }
 
-[data-bs-theme="dark"] .gdpr-wizard-content .bg-light,
-[data-theme="dark"] .gdpr-wizard-content .bg-light {
+[data-bs-theme="dark"] .gdpr-wizard-content .bg-body-secondary,
+[data-theme="dark"] .gdpr-wizard-content .bg-body-secondary {
     background-color: var(--bg-secondary, var(--bg)) !important;
 }
 
 [data-bs-theme="dark"] .gdpr-wizard-content .text-muted,
 [data-theme="dark"] .gdpr-wizard-content .text-muted {
-    color: var(--text-secondary, #94a3b8) !important;
+    color: var(--text-secondary, var(--fg-3)) !important;
 }
 </style>

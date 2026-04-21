@@ -16,15 +16,15 @@
             justify-content: space-between;
             padding: 0.5rem 0.75rem;
             border-radius: 0.375rem;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            color: #111;
+            border: 1px solid var(--border);
+            color: var(--fg);
             text-decoration: none;
             min-height: 72px;
             transition: transform 0.1s ease;
         }
         .reuse-tile:hover {
             transform: translateY(-1px);
-            color: #111;
+            color: var(--fg);
         }
         .reuse-tile .tile-title {
             font-size: 0.8125rem;
@@ -39,11 +39,11 @@
             font-size: 1.1rem;
             font-weight: 700;
         }
-        .reuse-tile-b0 { background: #f3f4f6; color: #6b7280; }
+        .reuse-tile-b0 { background: var(--surface-2); color: var(--fg-3); }
         .reuse-tile-b1 { background: #fef3c7; }
         .reuse-tile-b2 { background: #fde68a; }
-        .reuse-tile-b3 { background: #fb923c; color: #fff; }
-        .reuse-tile-b4 { background: var(--danger); color: #fff; }
+        .reuse-tile-b3 { background: #fb923c; color: var(--on-primary, #fff); }
+        .reuse-tile-b4 { background: var(--danger); color: var(--on-primary, #fff); }
     </style>
 {% endblock %}
 
@@ -87,7 +87,7 @@
     {# Legende #}
     <div class="d-flex gap-3 flex-wrap align-items-center small mb-3">
         <strong>{{ 'reuse.heatmap.legend.title'|trans({}, 'messages') }}</strong>
-        <span><span class="d-inline-block reuse-tile-b0" style="width:18px;height:12px;border:1px solid #ccc;"></span> 0</span>
+        <span><span class="d-inline-block reuse-tile-b0" style="width:18px;height:12px;border:1px solid var(--border);"></span> 0</span>
         <span><span class="d-inline-block reuse-tile-b1" style="width:18px;height:12px;"></span> {{ 'reuse.heatmap.legend.low'|trans({}, 'messages') }}</span>
         <span><span class="d-inline-block reuse-tile-b2" style="width:18px;height:12px;"></span> {{ 'reuse.heatmap.legend.medium'|trans({}, 'messages') }}</span>
         <span><span class="d-inline-block reuse-tile-b3" style="width:18px;height:12px;"></span> {{ 'reuse.heatmap.legend.high'|trans({}, 'messages') }}</span>

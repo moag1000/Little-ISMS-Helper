@@ -65,7 +65,7 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
     {# CSV Template Download #}
     {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
         {% block card_header %}
-            <div class="card-header bg-secondary text-white">
+            <div class="card-header">
                 <h2 class="mb-0">
                     <i class="bi bi-download" aria-hidden="true"></i> {{ 'user.import.template_title'|trans({}, 'user') }}
                 </h2>

@@ -62,7 +62,7 @@
                     {% endif %}
                 {% endblock %}
                 {% block card_footer %}
-                    <div class="card-footer bg-light">
+                    <div class="card-footer bg-body-secondary">
                         <div class="d-grid gap-2">
                             <a href="{{ path('app_licenses') }}" class="btn btn-primary">
                                 <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>{{ 'reports.license_report.open'|trans({}, 'reports') }}
@@ -120,7 +120,7 @@
                     </div>
                 {% endblock %}
                 {% block card_footer %}
-                    <div class="card-footer bg-light">
+                    <div class="card-footer bg-body-secondary">
                         <div class="d-grid gap-2">
                             <a href="{{ path('app_security_report') }}" class="btn btn-danger">
                                 <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>{{ 'reports.security_report.open'|trans({}, 'reports') }}
@@ -150,7 +150,7 @@
                             <p class="text-muted small mb-2">
                                 {{ 'reports.license_report.update_description'|trans({}, 'reports') }}
                             </p>
-                            <div class="bg-light p-3 rounded">
+                            <div class="bg-body-secondary p-3 rounded">
                                 <code>./license-report.sh</code>
                             </div>
                         </div>
@@ -159,7 +159,7 @@
                             <p class="text-muted small mb-2">
                                 {{ 'reports.security_report.update_description'|trans({}, 'reports') }}
                             </p>
-                            <div class="bg-light p-3 rounded">
+                            <div class="bg-body-secondary p-3 rounded">
                                 <code>php scripts/generate-security-audit.php</code>
                             </div>
                         </div>

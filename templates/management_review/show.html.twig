@@ -70,7 +70,7 @@
             {# Inputs to the Review #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="h5 mb-0">
                             <i class="bi bi-inbox" aria-hidden="true"></i> {{ 'management_review.section.inputs'|trans({}, 'management_review') }}
                         </h2>
@@ -110,7 +110,7 @@
             {# Status of Previous Actions #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="h5 mb-0">
                             <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'management_review.section.followup'|trans({}, 'management_review') }}
                         </h2>
@@ -191,7 +191,7 @@
             {# Action Buttons #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="h5 mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}
@@ -266,7 +266,7 @@
             {# Metadata #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-body-secondary">
                         <h2 class="h5 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}

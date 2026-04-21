@@ -72,7 +72,7 @@
     {# Data Subject Section #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-light">
+            <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
                     <i class="bi bi-person" aria-hidden="true"></i>
                     {{ 'consent.section.data_subject'|trans({}, 'consent') }}
@@ -100,7 +100,7 @@
     {# Processing Activity Section #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-light">
+            <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
                     <i class="bi bi-gear" aria-hidden="true"></i>
                     {{ 'consent.section.processing_activity'|trans({}, 'consent') }}
@@ -134,7 +134,7 @@
     {# Consent Grant Section #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-light">
+            <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
                     <i class="bi bi-check-circle" aria-hidden="true"></i>
                     {{ 'consent.section.consent_grant'|trans({}, 'consent') }}
@@ -167,7 +167,7 @@
                 <div class="col-md-12">
                     <div class="detail-item">
                         <span class="label">{{ 'consent.field.consent_text'|trans({}, 'consent') }}:</span>
-                        <div class="value bg-light p-3 rounded mt-2">
+                        <div class="value bg-body-secondary p-3 rounded mt-2">
                             {{ consent.consentText }}
                         </div>
                     </div>
@@ -180,7 +180,7 @@
     {# Proof Documentation Section #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-light">
+            <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
                     <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
                     {{ 'consent.section.proof_documentation'|trans({}, 'consent') }}
@@ -210,7 +210,7 @@
     {% if consent.expiresAt %}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-light">
+            <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
                     <i class="bi bi-calendar-event" aria-hidden="true"></i>
                     {{ 'consent.section.expiry'|trans({}, 'consent') }}
@@ -229,7 +229,7 @@
     {# DPO Verification Section #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-light">
+            <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
                     <i class="bi bi-shield-check" aria-hidden="true"></i>
                     {{ 'consent.section.dpo_verification'|trans({}, 'consent') }}
@@ -265,7 +265,7 @@
     {% if consent.revokedAt %}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-light">
+            <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
                     <i class="bi bi-x-circle" aria-hidden="true"></i>
                     {{ 'consent.section.revocation'|trans({}, 'consent') }}
@@ -290,7 +290,7 @@
     {% if consent.notes %}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-light">
+            <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
                     <i class="bi bi-sticky" aria-hidden="true"></i>
                     {{ 'consent.section.notes'|trans({}, 'consent') }}
@@ -298,7 +298,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="bg-light p-3 rounded">
+            <div class="bg-body-secondary p-3 rounded">
                 {{ consent.notes }}
             </div>
         {% endblock %}
@@ -308,7 +308,7 @@
     {# Metadata Section #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-light">
+            <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
                     <i class="bi bi-info-circle" aria-hidden="true"></i>
                     {{ 'consent.section.metadata'|trans({}, 'consent') }}
@@ -417,7 +417,7 @@
     font-size: 1rem;
 }
 
-.card-header.bg-light {
+.card-header.bg-body-secondary {
     background-color: #f8f9fa !important;
 }
 </style>

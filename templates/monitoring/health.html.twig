@@ -101,7 +101,7 @@
                         {% if health_checks.schema.database_in_sync %}
                             <span class="badge bg-success">{{ 'monitoring.schema.in_sync'|trans({}, 'monitoring') }}</span>
                         {% else %}
-                            <span class="badge bg-warning text-dark">{{ health_checks.schema.pending_sql_count }} {{ 'monitoring.schema.pending'|trans({}, 'monitoring') }}</span>
+                            <span class="badge bg-warning-subtle text-warning">{{ health_checks.schema.pending_sql_count }} {{ 'monitoring.schema.pending'|trans({}, 'monitoring') }}</span>
                         {% endif %}
                     </dd>
                 </dl>

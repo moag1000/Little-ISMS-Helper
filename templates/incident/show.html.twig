@@ -424,7 +424,7 @@
                 {% if incident.affectedBusinessProcesses|length > 0 %}
                     <div class="row mb-3">
                         <div class="col-md-4">
-                            {% embed '_components/_card.html.twig' with { 'class': 'bg-light' } %}
+                            {% embed '_components/_card.html.twig' with { 'class': 'bg-body-secondary' } %}
                                 {% block card_body %}
                                     <div class="text-center">
                                         <div class="fs-5 fw-bold">{{ incident.affectedProcessCount }}</div>
@@ -437,7 +437,7 @@
                             {% endembed %}
                         </div>
                         <div class="col-md-4">
-                            {% embed '_components/_card.html.twig' with { 'class': 'bg-light' } %}
+                            {% embed '_components/_card.html.twig' with { 'class': 'bg-body-secondary' } %}
                                 {% block card_body %}
                                     <div class="text-center">
                                         <div class="fs-5">
@@ -455,7 +455,7 @@
                             {% endembed %}
                         </div>
                         <div class="col-md-4">
-                            {% embed '_components/_card.html.twig' with { 'class': 'bg-light' } %}
+                            {% embed '_components/_card.html.twig' with { 'class': 'bg-body-secondary' } %}
                                 {% block card_body %}
                                     <div class="text-center">
                                         <div class="fs-5 fw-bold">€{{ incident.calculateEstimatedFinancialImpact(24)|number_format(0) }}</div>
@@ -632,18 +632,18 @@
     gap: 0.5rem;
     flex-wrap: wrap;
 }
-.badge-status-reported { background: #3b82f6; }
+.badge-status-reported { background: var(--primary); }
 .badge-status-in_investigation { background: var(--warning); }
 .badge-status-in_resolution { background: var(--accent); }
 .badge-status-resolved { background: var(--success); }
-.badge-status-closed { background: #6b7280; }
+.badge-status-closed { background: var(--fg-3); }
 
 /* NIS2 Compliance Status Badges */
-.badge-nis2-not_applicable { background: #6b7280; }
+.badge-nis2-not_applicable { background: var(--fg-3); }
 .badge-nis2-compliant { background: var(--success); }
 .badge-nis2-overdue { background: var(--danger); animation: pulse 2s infinite; }
 .badge-nis2-awaiting_early_warning { background: var(--warning); }
-.badge-nis2-awaiting_detailed { background: #3b82f6; }
+.badge-nis2-awaiting_detailed { background: var(--primary); }
 .badge-nis2-awaiting_final { background: var(--accent); }
 
 @keyframes pulse {
@@ -653,15 +653,15 @@
 
 /* NIS2 Timeline Section */
 .nis2-timeline-section {
-    background: linear-gradient(135deg, var(--bg) 0%, #e0f2fe 100%);
-    border-left: 4px solid #3b82f6;
+    background: linear-gradient(135deg, var(--bg) 0%, var(--primary-tint) 100%);
+    border-left: 4px solid var(--primary);
     padding: 1.5rem;
     margin: 1.5rem 0;
     border-radius: 8px;
 }
 
 .nis2-timeline-section h3 {
-    color: #1e40af;
+    color: var(--primary-strong);
     margin-bottom: 0.5rem;
 }
 
@@ -689,18 +689,18 @@
 
 .timeline-stage.completed {
     border-color: var(--success);
-    background: #f0fdf4;
+    background: var(--success-glow);
 }
 
 .timeline-stage.overdue {
     border-color: var(--danger);
-    background: #fef2f2;
+    background: var(--danger-glow);
     box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
 .timeline-stage.pending {
-    border-color: #3b82f6;
-    background: #eff6ff;
+    border-color: var(--primary);
+    background: var(--primary-tint);
 }
 
 .timeline-icon {
@@ -728,26 +728,26 @@
 
 .timeline-completed {
     padding: 0.5rem;
-    background: #dcfce7;
+    background: var(--success-glow);
     border-radius: 4px;
-    color: #166534;
+    color: var(--success);
     font-weight: 500;
 }
 
 .timeline-overdue {
     padding: 0.5rem;
-    background: #fee2e2;
+    background: var(--danger-glow);
     border-radius: 4px;
-    color: #991b1b;
+    color: var(--danger);
     font-weight: 600;
     animation: pulse 2s infinite;
 }
 
 .timeline-countdown {
     padding: 0.5rem;
-    background: #fef3c7;
+    background: var(--warning-glow);
     border-radius: 4px;
-    color: #92400e;
+    color: var(--warning-text);
     font-weight: 500;
 }
 
@@ -797,7 +797,7 @@
     padding: 0.75rem;
     background: var(--bs-tertiary-bg);
     color: var(--bs-body-color);
-    border-left: 3px solid #3b82f6;
+    border-left: 3px solid var(--primary);
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -810,9 +810,9 @@
     margin: 1rem 0;
 }
 .alert-warning {
-    background: #fef3c7;
+    background: var(--warning-glow);
     border-left: 4px solid var(--warning);
-    color: #92400e;
+    color: var(--warning-text);
 }
 .badge-risk-high {
     background: var(--danger);
@@ -869,7 +869,7 @@
 }
 
 .change-item strong {
-    color: #374151;
+    color: var(--fg);
 }
 
 .text-danger {

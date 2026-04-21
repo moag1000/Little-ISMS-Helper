@@ -47,7 +47,7 @@
                     {# Section 1: Data Subject #}
                     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                         {% block card_header %}
-                            <div class="card-header bg-light">
+                            <div class="card-header bg-body-secondary">
                                 <h3 class="mb-0">
                                     <i class="bi bi-person" aria-hidden="true"></i>
                                     {{ 'consent.section.data_subject'|trans({}, 'consent') }}
@@ -69,7 +69,7 @@
                     {# Section 2: Processing Activity #}
                     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                         {% block card_header %}
-                            <div class="card-header bg-light">
+                            <div class="card-header bg-body-secondary">
                                 <h3 class="mb-0">
                                     <i class="bi bi-gear" aria-hidden="true"></i>
                                     {{ 'consent.section.processing_activity'|trans({}, 'consent') }}
@@ -91,7 +91,7 @@
                     {# Section 3: Consent Grant #}
                     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                         {% block card_header %}
-                            <div class="card-header bg-light">
+                            <div class="card-header bg-body-secondary">
                                 <h3 class="mb-0">
                                     <i class="bi bi-check-circle" aria-hidden="true"></i>
                                     {{ 'consent.section.consent_grant'|trans({}, 'consent') }}
@@ -121,7 +121,7 @@
                     {# Section 4: Proof Documentation #}
                     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                         {% block card_header %}
-                            <div class="card-header bg-light">
+                            <div class="card-header bg-body-secondary">
                                 <h3 class="mb-0">
                                     <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
                                     {{ 'consent.section.proof_documentation'|trans({}, 'consent') }}
@@ -140,7 +140,7 @@
                     {# Section 5: Expiry #}
                     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                         {% block card_header %}
-                            <div class="card-header bg-light">
+                            <div class="card-header bg-body-secondary">
                                 <h3 class="mb-0">
                                     <i class="bi bi-calendar-event" aria-hidden="true"></i>
                                     {{ 'consent.section.expiry'|trans({}, 'consent') }}
@@ -160,7 +160,7 @@
                     {# Section 6: Notes #}
                     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                         {% block card_header %}
-                            <div class="card-header bg-light">
+                            <div class="card-header bg-body-secondary">
                                 <h3 class="mb-0">
                                     <i class="bi bi-sticky" aria-hidden="true"></i>
                                     {{ 'consent.section.notes'|trans({}, 'consent') }}

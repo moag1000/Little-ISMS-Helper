@@ -67,14 +67,14 @@
                                         {% set derived = matrix[program.id][sub.code] %}
                                         <td class="text-center">
                                             {% if derived is null %}
-                                                <span class="badge bg-light text-dark border" title="{{ 'group_report.audit_program.cell.missing_help'|trans({}, 'group_report') }}">
+                                                <span class="badge bg-body-secondary text-body border" title="{{ 'group_report.audit_program.cell.missing_help'|trans({}, 'group_report') }}">
                                                     <i class="bi bi-dash" aria-hidden="true"></i>
                                                 </span>
                                             {% else %}
                                                 {% set status = derived.status %}
                                                 {% set cls = {
                                                     'completed': 'bg-success',
-                                                    'in_progress': 'bg-warning text-dark',
+                                                    'in_progress': 'bg-warning-subtle text-warning',
                                                     'planned': 'bg-info',
                                                     'draft': 'bg-secondary'
                                                 }[status]|default('bg-secondary') %}
@@ -107,9 +107,9 @@
                 <div class="card-footer small text-muted">
                     <strong>{{ 'group_report.soa.legend.title'|trans({}, 'group_report') }}:</strong>
                     <span class="badge bg-success">✓</span> {{ 'group_report.audit_program.legend.completed'|trans({}, 'group_report') }}
-                    · <span class="badge bg-warning text-dark">◐</span> {{ 'group_report.audit_program.legend.in_progress'|trans({}, 'group_report') }}
+                    · <span class="badge bg-warning-subtle text-warning">◐</span> {{ 'group_report.audit_program.legend.in_progress'|trans({}, 'group_report') }}
                     · <span class="badge bg-info">◯</span> {{ 'group_report.audit_program.legend.planned'|trans({}, 'group_report') }}
-                    · <span class="badge bg-light text-dark border">–</span> {{ 'group_report.audit_program.legend.missing'|trans({}, 'group_report') }}
+                    · <span class="badge bg-body-secondary text-body border">–</span> {{ 'group_report.audit_program.legend.missing'|trans({}, 'group_report') }}
                 </div>
             {% endblock %}
         {% endembed %}

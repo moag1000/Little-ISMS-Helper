@@ -39,7 +39,7 @@
                             </div>
                             <span class="badge
                                 {% if result.status == 'compliant' %}bg-success
-                                {% elseif result.status == 'partial' %}bg-warning text-dark
+                                {% elseif result.status == 'partial' %}bg-warning-subtle text-warning
                                 {% elseif result.status == 'in_progress' %}bg-info
                                 {% else %}bg-danger{% endif %}">
                                 {{ ('wizard.status.' ~ result.status)|trans({}, 'wizard') }}
@@ -111,7 +111,7 @@
                         </div>
                         <span class="badge
                             {% if category.score >= 80 %}bg-success
-                            {% elseif category.score >= 60 %}bg-warning text-dark
+                            {% elseif category.score >= 60 %}bg-warning-subtle text-warning
                             {% else %}bg-danger{% endif %}">
                             {{ category.score }}%
                         </span>

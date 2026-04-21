@@ -123,7 +123,7 @@
                                     <summary class="small text-muted" style="cursor: pointer;">
                                         <i class="bi bi-info-circle me-1" aria-hidden="true"></i>{{ 'wizard.view_details'|trans({}, 'wizard') }}
                                     </summary>
-                                    <div class="small bg-light p-2 rounded mt-1">
+                                    <div class="small bg-body-secondary p-2 rounded mt-1">
                                         {% for detailKey, detailValue in item.details %}
                                             {% if detailValue is not iterable %}
                                                 {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'me-1', content: detailKey ~ ': ' ~ detailValue } %}

@@ -253,7 +253,7 @@
                 {% if stats.unknown > 0 or stats.not_allowed > 0 %}
                     {% embed '_components/_card.html.twig' with { 'class': 'border-warning mb-4' } %}
                         {% block card_header %}
-                            <div class="card-header bg-warning text-dark">
+                            <div class="card-header bg-warning-subtle text-warning">
                                 <h2 class="card-title mb-0">
                                     <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>Handlungsbedarf
                                 </h2>

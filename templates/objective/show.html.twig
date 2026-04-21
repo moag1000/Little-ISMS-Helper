@@ -58,7 +58,7 @@
         <div class="col-lg-4">
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
-                    <div class="card-header bg-light"><h2 class="mb-0">{{ 'common.actions'|trans({}, 'messages') }}</h2></div>
+                    <div class="card-header bg-body-secondary"><h2 class="mb-0">{{ 'common.actions'|trans({}, 'messages') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     <div class="d-grid gap-2">
@@ -72,7 +72,7 @@
 
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header bg-light"><h2 class="mb-0">{{ 'common.metadata'|trans({}, 'messages') }}</h2></div>
+                    <div class="card-header bg-body-secondary"><h2 class="mb-0">{{ 'common.metadata'|trans({}, 'messages') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     <dl class="row mb-0 small">

@@ -30,7 +30,7 @@
     {# Data Breach Summary #}
     <div class="row mb-4">
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-dark text-white' } %}
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100' } %}
                 {% block card_body %}
                     <i class="bi bi-shield-exclamation fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ report.total_breaches }}</h3>
@@ -57,7 +57,7 @@
             {% endembed %}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-warning text-dark' } %}
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-warning-subtle text-warning' } %}
                 {% block card_body %}
                     <i class="bi bi-hourglass-split fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ report.notification_status.pending }}</h3>
@@ -72,7 +72,7 @@
         <div class="col-md-6 mb-4">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
                 {% block card_header %}
-                    <div class="card-header bg-dark text-white">
+                    <div class="card-header">
                         <h3 class="h5 mb-0">
                             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                             {{ 'management_reports.gdpr.by_severity'|trans({}, 'management_reports') }}

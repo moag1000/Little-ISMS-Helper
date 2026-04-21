@@ -189,7 +189,7 @@
     {# Orphaned Entities Section #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-warning text-dark">
+            <div class="card-header bg-warning-subtle text-warning">
                 <h2 class="mb-0">
                     <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.orphaned_entities'|trans({}, 'admin') }}
                 </h2>
@@ -456,7 +456,7 @@
     {% if risksWithoutAsset|length > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
         {% block card_header %}
-            <div class="card-header bg-warning text-dark">
+            <div class="card-header bg-warning-subtle text-warning">
                 <h2 class="mb-0">
                     <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.risk_asset_assignment'|trans({}, 'admin') }}
                 </h2>
@@ -527,7 +527,7 @@
     {% if incidentsWithoutAsset|length > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
         {% block card_header %}
-            <div class="card-header bg-warning text-dark">
+            <div class="card-header bg-warning-subtle text-warning">
                 <h2 class="mb-0">
                     <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.incident_asset_assignment'|trans({}, 'admin') }}
                 </h2>
@@ -599,7 +599,7 @@
     {% if controlsWithoutRisks|length > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
         {% block card_header %}
-            <div class="card-header bg-warning text-dark">
+            <div class="card-header bg-warning-subtle text-warning">
                 <h2 class="mb-0">
                     <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'admin.data_repair.controls_without_risks'|trans({}, 'admin') }}
                 </h2>
@@ -727,7 +727,7 @@
     {% if duplicates.audits is defined and duplicates.audits|length > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
         {% block card_header %}
-            <div class="card-header bg-warning text-dark">
+            <div class="card-header bg-warning-subtle text-warning">
                 <h2 class="mb-0">
                     <i class="bi bi-files" aria-hidden="true"></i> Duplicate Audit Numbers
                 </h2>
@@ -769,7 +769,7 @@
     {% if duplicates.assets is defined and duplicates.assets|length > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
         {% block card_header %}
-            <div class="card-header bg-warning text-dark">
+            <div class="card-header bg-warning-subtle text-warning">
                 <h2 class="mb-0">
                     <i class="bi bi-files" aria-hidden="true"></i> Duplicate Asset Names
                 </h2>

@@ -94,7 +94,7 @@
         {% if records|length > 0 %}
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
-                    <div class="card-header bg-secondary text-white"><h3 class="mb-0 h5">
+                    <div class="card-header"><h3 class="mb-0 h5">
                             <i class="bi bi-table" aria-hidden="true"></i> {{ entity }} - Preview (showing first {{ records|slice(0, 3)|length }} of {{ records|length }})
                         </h3>
                     </div>

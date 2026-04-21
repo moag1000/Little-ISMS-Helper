@@ -121,7 +121,7 @@
         <div class="col-md-6 col-lg-4 mb-4">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm border-dark' } %}
                 {% block card_header %}
-                    <div class="card-header bg-dark text-white">
+                    <div class="card-header">
                         <h2 class="mb-0"><i class="bi bi-graph-up-arrow" aria-hidden="true"></i> {{ 'reports.management.title'|trans({}, 'reports') }}</h2>
                     </div>
                 {% endblock %}
@@ -135,7 +135,7 @@
                     </ul>
                 {% endblock %}
                 {% block card_footer %}
-                    <div class="card-footer bg-light">
+                    <div class="card-footer bg-body-secondary">
                         <div class="d-grid">
                             <a href="{{ path('app_management_reports') }}" class="btn btn-sm btn-dark">
                                 <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'reports.management.view_all'|trans({}, 'reports') }}
@@ -150,7 +150,7 @@
         <div class="col-md-6 col-lg-4 mb-4">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm border-secondary' } %}
                 {% block card_header %}
-                    <div class="card-header bg-secondary text-white">
+                    <div class="card-header">
                         <h2 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'reports.scheduled.title'|trans({}, 'reports') }}</h2>
                     </div>
                 {% endblock %}
@@ -164,7 +164,7 @@
                     </ul>
                 {% endblock %}
                 {% block card_footer %}
-                    <div class="card-footer bg-light">
+                    <div class="card-footer bg-body-secondary">
                         <div class="d-grid">
                             <a href="{{ path('app_scheduled_report_index') }}" class="btn btn-sm btn-secondary">
                                 <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'reports.scheduled.manage'|trans({}, 'reports') }}
@@ -201,7 +201,7 @@
                     </div>
                 </div>
             {% endset %}
-            {{ cards.simple_card('reports.section.best_practices'|trans({}, 'reports'), 'lightbulb', best_practices_content, null, 'bg-light') }}
+            {{ cards.simple_card('reports.section.best_practices'|trans({}, 'reports'), 'lightbulb', best_practices_content, null, 'bg-body-secondary') }}
         </div>
     </div>
 </div>

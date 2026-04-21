@@ -21,8 +21,8 @@
                 <span class="badge bg-secondary">
                     {{ ('industry_baseline.industry.' ~ baseline.industry)|trans({}, 'industry_baseline') }}
                 </span>
-                <span class="badge bg-light text-dark border">v{{ baseline.version }}</span>
-                <span class="badge bg-light text-dark border">{{ baseline.source }}</span>
+                <span class="badge bg-body-secondary text-body border">v{{ baseline.version }}</span>
+                <span class="badge bg-body-secondary text-body border">{{ baseline.source }}</span>
             </p>
         </div>
         <div class="d-flex flex-column align-items-end gap-2">
@@ -113,7 +113,7 @@
                                         </td>
                                         <td><code>{{ risk.category|default('–') }}</code></td>
                                         <td>
-                                            <span class="badge {% if inherent >= 15 %}bg-danger{% elseif inherent >= 8 %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                                            <span class="badge {% if inherent >= 15 %}bg-danger{% elseif inherent >= 8 %}bg-warning-subtle text-warning{% else %}bg-success{% endif %}">
                                                 {{ inherent }}
                                             </span>
                                         </td>
@@ -183,7 +183,7 @@
                     {% block card_body %}
                         <div class="d-flex flex-wrap gap-1">
                             {% for control in baseline.presetApplicableControls %}
-                                <code class="badge bg-light text-dark border">{{ control }}</code>
+                                <code class="badge bg-body-secondary text-body border">{{ control }}</code>
                             {% endfor %}
                         </div>
                     {% endblock %}
@@ -226,7 +226,7 @@
                             <dt class="mt-2">{{ 'industry_baseline.field.recommended_frameworks'|trans({}, 'industry_baseline') }}</dt>
                             <dd>
                                 {% for code in baseline.recommendedFrameworks %}
-                                    <span class="badge bg-light text-dark border me-1">{{ code }}</span>
+                                    <span class="badge bg-body-secondary text-body border me-1">{{ code }}</span>
                                 {% endfor %}
                             </dd>
                         {% endif %}
