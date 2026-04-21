@@ -47,6 +47,7 @@ admin:
         tags: 'Tags'
         compliance_import: 'Compliance Import Wizard'
         tour_completion: 'Tour completion'
+        tour_content: 'Customize tour content'
     alert:
         inactive_users: 'Inactive users'
         unverified_users: 'Unverified users'
@@ -203,6 +204,25 @@ admin:
         no_frameworks_loaded: 'No Frameworks Loaded'
     panel:
         title: Title
+    tour_content:
+        title: 'Customize tour content'
+        description: 'Default texts for the onboarding tours live in <code>translations/guided_tour.*.yaml</code>. Here admins can set a <strong>tenant-specific override</strong> per tour + step + locale — e.g. "Here you find YOUR asset categories" instead of the generic wording. Empty field = default is used.'
+        scope_tenant_hint: 'Changes apply to tenant <strong>%tenant%</strong> only.'
+        scope_global: 'Save as system default (all tenants)'
+        scope_global_hint: 'SUPER_ADMIN only. Globally saved overrides apply when no tenant-specific override exists.'
+        global_hint: 'As SUPER_ADMIN you can tick "save as system default" on the edit page.'
+        edit_description: 'One block per step, two rows (DE + EN). Leave field empty = use default from translation file.'
+        steps: steps
+        step_id_hint: 'Internal step ID — both title and body are overridden together.'
+        title_label: 'Title override'
+        body_label: 'Body override (Markdown allowed)'
+        default: 'Default'
+        save: 'Save overrides'
+        reset_tour: 'Reset all overrides for this tour'
+        confirm_reset: 'Really delete all overrides for this tour? Defaults from the translation files will apply again.'
+        flash:
+            saved: '%changed% override(s) saved, %removed% removed.'
+            reset: '%count% override(s) deleted.'
     tour_completion:
         title: 'Tour completion'
         description: 'Which users have completed the onboarding tour for their role? ISO 27001 A.6.3 awareness-training evidence. Per user, the 6 available tours (junior / cm / ciso / isb / risk_owner / auditor) are shown as completed or not.'

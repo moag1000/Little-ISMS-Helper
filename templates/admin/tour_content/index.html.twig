@@ -1,0 +1,62 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}
+    <i class="bi bi-stars fairy-icon-sparkle" aria-hidden="true"></i>
+    {{ 'admin.tour_content.title'|trans({}, 'admin') }}
+{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.tour_content.title'|trans({}, 'admin') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    <p class="text-muted mb-3">
+        {{ 'admin.tour_content.description'|trans({}, 'admin')|raw }}
+    </p>
+
+    {% if scope_tenant %}
+        <div class="alert alert-info small">
+            <i class="bi bi-building" aria-hidden="true"></i>
+            {{ 'admin.tour_content.scope_tenant_hint'|trans({'%tenant%': scope_tenant.name}, 'admin') }}
+            {% if can_set_global %}
+                <br>
+                <span class="small">{{ 'admin.tour_content.global_hint'|trans({}, 'admin') }}</span>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="row g-3">
+        {% for tour in tours %}
+            {% set count = override_counts[tour.id]|default(0) %}
+            <div class="col-md-6 col-lg-4">
+                <a href="{{ path('admin_tour_content_edit', {tourId: tour.id}) }}"
+                   class="text-decoration-none">
+                    {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' ~ (count > 0 ? ' border-primary' : '') } %}
+                        {% block card_body %}
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h3 class="h6 mb-1">
+                                        <i class="bi bi-stars" aria-hidden="true"></i>
+                                        {{ ('guided_tour.' ~ tour.id ~ '.meta.label')|trans({}, 'guided_tour') }}
+                                    </h3>
+                                    <div class="small text-muted">
+                                        {{ tour.step_count }} {{ 'admin.tour_content.steps'|trans({}, 'admin') }}
+                                        · {{ tour.duration_min }} min
+                                    </div>
+                                </div>
+                                {% if count > 0 %}
+                                    <span class="badge text-bg-primary">{{ count }}</span>
+                                {% endif %}
+                            </div>
+                            <p class="small text-body mt-2 mb-0">
+                                {{ ('guided_tour.' ~ tour.id ~ '.meta.description')|trans({}, 'guided_tour') }}
+                            </p>
+                        {% endblock %}
+                    {% endembed %}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
