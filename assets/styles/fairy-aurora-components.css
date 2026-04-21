@@ -59,6 +59,51 @@ html[data-theme="dark"] .fa-brand-mark {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   App-Sidebar + Mega-Menu-Panel — Login-Pattern-BG (Gradient + Dots)
+   Macht App-Seitenleiste optisch konsistent mit Login/Setup-Wizard-
+   Left-Panel. Gradient (surface→bg) + subtile Dot-Pattern + Corner-Tick.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.app-sidebar,
+.mega-menu-panel {
+    background:
+        linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%),
+        radial-gradient(circle at 24px 24px, var(--primary-tint) 0.7px, transparent 1.2px);
+    background-size: 100% 100%, 48px 48px;
+    position: relative;
+}
+
+.app-sidebar > *,
+.mega-menu-panel > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Subtile Corner-Tick-Marker oben-links (Login-Aesthetik) */
+.app-sidebar::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 10px;
+    height: 10px;
+    border-top: 1px solid var(--primary);
+    border-left: 1px solid var(--primary);
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Dark-Mode — intensiver Dot-Pattern für Sichtbarkeit */
+html[data-theme="dark"] .app-sidebar,
+html[data-theme="dark"] .mega-menu-panel {
+    background:
+        linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%),
+        radial-gradient(circle at 24px 24px, rgba(56, 189, 248, 0.18) 0.8px, transparent 1.4px);
+    background-size: 100% 100%, 48px 48px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    Premium-Card — opt-in Aurora-Login-Pattern-Look für Dashboard-Cards.
    Usage: <div class="card fa-card--premium"> oder als Modifier.
    Gibt: Gradient-Top-Line + primary-Glow-Shadow + Surface-Gradient-BG.
