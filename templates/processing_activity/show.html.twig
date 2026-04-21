@@ -121,22 +121,22 @@
         <div class="tab-pane fade show active" id="overview" role="tabpanel">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
-                    <h2 class="h5">Basic Information</h2>
+                    <h2 class="h5">{{ 'processing_activity.section.basic_info'|trans({}, 'privacy') }}</h2>
                     <dl class="row">
-                        <dt class="col-sm-3">Name:</dt>
+                        <dt class="col-sm-3">{{ 'processing_activity.field.name'|trans({}, 'privacy') }}:</dt>
                         <dd class="col-sm-9">{{ processing_activity.name }}</dd>
 
-                        <dt class="col-sm-3">Description:</dt>
+                        <dt class="col-sm-3">{{ 'processing_activity.field.description'|trans({}, 'privacy') }}:</dt>
                         <dd class="col-sm-9">{{ processing_activity.description ?? '—' }}</dd>
 
-                        <dt class="col-sm-3">Purposes (Art. 30(1)(a)):</dt>
+                        <dt class="col-sm-3">{{ 'processing_activity.field.purposes'|trans({}, 'privacy') }} (Art. 30(1)(a)):</dt>
                         <dd class="col-sm-9">
                             {% for purpose in processing_activity.purposes %}
                                 {% include '_components/_badge.html.twig' with { variant: 'primary', content: purpose } %}
                             {% endfor %}
                         </dd>
 
-                        <dt class="col-sm-3">Legal Basis (Art. 6):</dt>
+                        <dt class="col-sm-3">{{ 'processing_activity.field.legal_basis'|trans({}, 'privacy') }} (Art. 6):</dt>
                         <dd class="col-sm-9">
                             <strong>{{ processing_activity.legalBasis }}</strong>
                             {% if processing_activity.legalBasisDetails %}
@@ -144,13 +144,13 @@
                             {% endif %}
                         </dd>
 
-                        <dt class="col-sm-3">Responsible Department:</dt>
+                        <dt class="col-sm-3">{{ 'processing_activity.field.responsible_department'|trans({}, 'privacy') }}:</dt>
                         <dd class="col-sm-9">{{ processing_activity.responsibleDepartment ?? '—' }}</dd>
 
-                        <dt class="col-sm-3">Contact Person:</dt>
+                        <dt class="col-sm-3">{{ 'processing_activity.field.contact_person'|trans({}, 'privacy') }}:</dt>
                         <dd class="col-sm-9">{{ processing_activity.contactPerson ? processing_activity.contactPerson.userIdentifier : '—' }}</dd>
 
-                        <dt class="col-sm-3">DPO:</dt>
+                        <dt class="col-sm-3">{{ 'processing_activity.field.data_protection_officer'|trans({}, 'privacy') }}:</dt>
                         <dd class="col-sm-9">{{ processing_activity.dataProtectionOfficer ? processing_activity.dataProtectionOfficer.userIdentifier : '—' }}</dd>
                     </dl>
                 {% endblock %}
@@ -161,23 +161,23 @@
         <div class="tab-pane fade" id="data" role="tabpanel">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
-                    <h2 class="h5">Data Subjects (Art. 30(1)(b))</h2>
+                    <h2 class="h5">{{ 'processing_activity.section.data_subjects'|trans({}, 'privacy') }}</h2>
                     <dl class="row">
-                        <dt class="col-sm-3">Categories:</dt>
+                        <dt class="col-sm-3">{{ 'processing_activity.field.data_subject_categories'|trans({}, 'privacy') }}:</dt>
                         <dd class="col-sm-9">
                             {% for category in processing_activity.dataSubjectCategories %}
                                 {% include '_components/_badge.html.twig' with { variant: 'info', content: category } %}
                             {% endfor %}
                         </dd>
-                        <dt class="col-sm-3">Estimated Count:</dt>
+                        <dt class="col-sm-3">{{ 'processing_activity.field.estimated_data_subjects_count'|trans({}, 'privacy') }}:</dt>
                         <dd class="col-sm-9">{{ processing_activity.estimatedDataSubjectsCount ?? '—' }}</dd>
                     </dl>
 
                     <hr>
 
-                    <h2 class="h5">Personal Data (Art. 30(1)(c))</h2>
+                    <h2 class="h5">{{ 'processing_activity.section.personal_data'|trans({}, 'privacy') }}</h2>
                     <dl class="row">
-                        <dt class="col-sm-3">Categories:</dt>
+                        <dt class="col-sm-3">{{ 'processing_activity.field.personal_data_categories'|trans({}, 'privacy') }}:</dt>
                         <dd class="col-sm-9">
                             {% for category in processing_activity.personalDataCategories %}
                                 {% include '_components/_badge.html.twig' with { variant: 'secondary', content: category } %}
@@ -185,36 +185,36 @@
                         </dd>
 
                         {% if processing_activity.processesSpecialCategories %}
-                            <dt class="col-sm-3">Special Categories (Art. 9):</dt>
+                            <dt class="col-sm-3">{{ 'processing_activity.field.processes_special_categories'|trans({}, 'privacy') }} (Art. 9):</dt>
                             <dd class="col-sm-9">
-                                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'YES' } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'common.yes'|trans({}, 'messages') } %}
                                 {% for detail in processing_activity.specialCategoriesDetails ?? [] %}
                                     {% include '_components/_badge.html.twig' with { variant: 'danger', content: detail } %}
                                 {% endfor %}
                                 {% if processing_activity.legalBasisSpecialCategories %}
-                                    <br><small>Legal basis: {{ processing_activity.legalBasisSpecialCategories }}</small>
+                                    <br><small class="text-muted">{{ 'processing_activity.field.legal_basis'|trans({}, 'privacy') }}: {{ processing_activity.legalBasisSpecialCategories }}</small>
                                 {% endif %}
                             </dd>
                         {% endif %}
 
                         {% if processing_activity.processesCriminalData %}
-                            <dt class="col-sm-3">Criminal Data (Art. 10):</dt>
-                            <dd class="col-sm-9">{% include '_components/_badge.html.twig' with { variant: 'warning', content: 'YES' } %}</dd>
+                            <dt class="col-sm-3">{{ 'processing_activity.field.processes_criminal_data'|trans({}, 'privacy') }} (Art. 10):</dt>
+                            <dd class="col-sm-9">{% include '_components/_badge.html.twig' with { variant: 'warning', content: 'common.yes'|trans({}, 'messages') } %}</dd>
                         {% endif %}
                     </dl>
 
                     <hr>
 
-                    <h2 class="h5">Retention (Art. 30(1)(f))</h2>
+                    <h2 class="h5">{{ 'processing_activity.section.retention'|trans({}, 'privacy') }}</h2>
                     <dl class="row">
-                        <dt class="col-sm-3">Retention Period:</dt>
+                        <dt class="col-sm-3">{{ 'processing_activity.field.retention_period'|trans({}, 'privacy') }}:</dt>
                         <dd class="col-sm-9">{{ processing_activity.retentionPeriod ?? '—' }}</dd>
                         {% if processing_activity.retentionPeriodDays %}
-                            <dt class="col-sm-3">Days:</dt>
+                            <dt class="col-sm-3">{{ 'processing_activity.field.retention_period_days'|trans({}, 'privacy') }}:</dt>
                             <dd class="col-sm-9">{{ processing_activity.retentionPeriodDays }}</dd>
                         {% endif %}
                         {% if processing_activity.retentionLegalBasis %}
-                            <dt class="col-sm-3">Legal Basis:</dt>
+                            <dt class="col-sm-3">{{ 'processing_activity.field.legal_basis'|trans({}, 'privacy') }}:</dt>
                             <dd class="col-sm-9">{{ processing_activity.retentionLegalBasis }}</dd>
                         {% endif %}
                     </dl>
@@ -226,14 +226,14 @@
         <div class="tab-pane fade" id="compliance" role="tabpanel">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
-                    <h2 class="h5">Compliance Checks (Art. 30)</h2>
+                    <h2 class="h5">{{ 'processing_activity.section.risk_assessment'|trans({}, 'privacy') }} (Art. 30)</h2>
                     {% embed '_components/_table.html.twig' with {
                         'noMargin': true
                     } %}
                         {% block table_head %}
                             <tr>
-                                <th scope="col">Check</th>
-                                <th scope="col">Status</th>
+                                <th scope="col">{{ 'processing_activity.field.description'|trans({}, 'privacy') }}</th>
+                                <th scope="col">{{ 'processing_activity.field.status'|trans({}, 'privacy') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body %}
@@ -252,7 +252,7 @@
                         {% endblock %}
                     {% endembed %}</div>
 
-                    <h2 class="h5 mt-4">Technical & Organizational Measures (Art. 30(1)(g))</h2>
+                    <h2 class="h5 mt-4">{{ 'processing_activity.section.security'|trans({}, 'privacy') }}</h2>
                     <p>{{ processing_activity.technicalOrganizationalMeasures ?? 'processing_activity.show.not_documented'|trans({}, 'privacy') }}</p>
 
                     {% if processing_activity.implementedControls|length > 0 %}

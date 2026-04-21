@@ -1,6 +1,21 @@
 business_process:
   new: Neuer Geschäftsprozess
   edit: Geschäftsprozess bearbeiten
+  bia:
+    title: Business Impact Analysis
+    section:
+      financial_impact: Finanzielle Auswirkungen
+      impact_assessment: Impact-Bewertung
+      data_reuse_recommendations: Automatische Empfehlungen (Data Reuse)
+    field:
+      damage_per_hour: Schaden pro Stunde
+      damage_per_day: Schaden pro Tag
+      reputational_impact: Reputationsschaden
+      regulatory_impact: Regulatorischer Impact
+      operational_impact: Operationaler Impact
+      business_impact_score: Aggregierter Business Impact Score
+      suggested_availability: Empfohlener Verfügbarkeitswert
+      not_specified: Nicht angegeben
   success:
     created: Geschäftsprozess erfolgreich erstellt.
     updated: Geschäftsprozess erfolgreich aktualisiert.
