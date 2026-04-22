@@ -73,7 +73,7 @@
                                 <th scope="col" class="text-center" style="width: {{ 70 / roles|length }}%">
                                     <div>{{ role.name }}</div>
                                     {% if role.isSystemRole %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark', content: 'role.compare.system_badge'|trans } %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'role.compare.system_badge'|trans } %}
                                     {% endif %}
                                 </th>
                             {% endfor %}

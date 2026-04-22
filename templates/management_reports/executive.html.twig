@@ -116,7 +116,7 @@
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark', content: 'management_reports.risk_level.high'|trans({}, 'management_reports') } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'management_reports.risk_level.high'|trans({}, 'management_reports') } %}
                             <span>{{ summary.risk_distribution.high }}</span>
                         </div>
                         <div class="progress" style="height: 20px;">
@@ -168,7 +168,7 @@
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark', content: 'management_reports.control_status.in_progress'|trans({}, 'management_reports') } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'management_reports.control_status.in_progress'|trans({}, 'management_reports') } %}
                             <span>{{ summary.control_status.in_progress }}</span>
                         </div>
                         <div class="progress" style="height: 20px;">

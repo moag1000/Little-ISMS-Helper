@@ -273,7 +273,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><i class="bi bi-book text-dark" aria-hidden="true"></i> {{ 'admin.dashboard.modules.trainings'|trans({}, 'admin') }}</td>
+                                <td><i class="bi bi-book" aria-hidden="true"></i> {{ 'admin.dashboard.modules.trainings'|trans({}, 'admin') }}</td>
                                 {% if currentTenant %}
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'dark', content: stats.modules.trainings.own } %}</td>
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'dark', content: stats.modules.trainings.own + stats.modules.trainings.inherited } %}</td>
@@ -363,7 +363,7 @@
                                             <p class="mb-1 small text-muted">
                                                 {{ log.entityType }} #{{ log.entityId }}
                                                 {% if log.username %}
-                                                    {% include '_components/_badge.html.twig' with { variant: 'light', class: 'text-dark', content: log.username } %}
+                                                    {% include '_components/_badge.html.twig' with { variant: 'light', content: log.username } %}
                                                 {% endif %}
                                             </p>
                                         </div>

@@ -168,7 +168,7 @@
                             <strong>{{ training.title }}</strong>
                             {{ inheritance.small_badge(training, currentTenant) }}
                             {% if training.mandatory %}
-                            {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-circle', content: 'training.mandatory_label'|trans({}, 'training'), class: 'text-dark ms-1' } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-circle', content: 'training.mandatory_label'|trans({}, 'training'), class: 'ms-1' } %}
                             {% endif %}
                         </td>
                         <td>
@@ -256,7 +256,7 @@
                             <strong>{{ training.title }}</strong>
                             {{ inheritance.small_badge(training, currentTenant) }}
                             {% if training.mandatory %}
-                            {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-circle', class: 'text-dark ms-1', content: '' } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-circle', class: 'ms-1', content: '' } %}
                             {% endif %}
                         </td>
                         <td>

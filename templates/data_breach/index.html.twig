@@ -229,7 +229,7 @@
                                         {% if hours < 0 %}
                                             {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'OVERDUE ' ~ (hours * -1)|number_format ~ 'h' } %}
                                         {% elseif hours < 24 %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark', content: hours|number_format ~ 'h left' } %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: hours|number_format ~ 'h left' } %}
                                         {% else %}
                                             {% include '_components/_badge.html.twig' with { variant: 'info', content: hours|number_format ~ 'h left' } %}
                                         {% endif %}

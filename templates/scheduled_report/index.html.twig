@@ -125,7 +125,7 @@
                                 {% if report.nextRunAt %}
                                 {{ report.nextRunAt|date('Y-m-d H:i') }}
                                 {% if report.isDue() %}
-                                {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark', content: 'scheduled_report.status.due'|trans({}, 'scheduled_reports') } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'scheduled_report.status.due'|trans({}, 'scheduled_reports') } %}
                                 {% endif %}
                                 {% else %}
                                 <span class="text-muted">-</span>

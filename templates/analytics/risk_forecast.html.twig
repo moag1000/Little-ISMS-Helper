@@ -382,7 +382,7 @@
                                         <i class="bi bi-exclamation-diamond me-2" aria-hidden="true"></i>
                                         {{ anomaly.type|replace({'_': ' '})|title }}
                                     </h5>
-                                    {% include '_components/_badge.html.twig' with { variant: 'light', class: 'text-dark', content: anomaly.severity|title } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'light', content: anomaly.severity|title } %}
                                 </div>
                             </div>
                         {% endblock %}

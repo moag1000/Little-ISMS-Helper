@@ -94,7 +94,7 @@
                                     {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'OVERDUE' } %}
                                     Supervisory authority notification exceeded 72-hour deadline by {{ item.hours_overdue|number_format }} hours.
                                 {% elseif item.type == 'pending_authority_notification' %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark', content: 'URGENT' } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'URGENT' } %}
                                     {{ item.hours_remaining|number_format }} hours remaining until 72-hour deadline.
                                 {% elseif item.type == 'pending_subject_notification' %}
                                     {% include '_components/_badge.html.twig' with { variant: 'info', content: 'PENDING' } %}

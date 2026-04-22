@@ -90,7 +90,7 @@
         <div class="col-md-6 col-lg-4 mb-4">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm border-' ~ category.color } %}
                 {% block card_header %}
-                    <div class="card-header bg-{{ category.color }} {% if category.color in ['warning', 'light'] %}text-dark{% else %}text-white{% endif %}">
+                    <div class="card-header bg-{{ category.color }}">
                         <h3 class="h5 mb-0">
                             <i class="bi bi-{{ category.icon }}" aria-hidden="true"></i>
                             {{ ('management_reports.category.' ~ category.key ~ '.title')|trans({}, 'management_reports') }}
