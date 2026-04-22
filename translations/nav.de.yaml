@@ -22,6 +22,7 @@ nav:
     compliance_wizard: 'Compliance Wizard'
     industry_baselines: 'Branchen-Baselines'
     group_report: 'Konzern-Reports'
+    management_reports: 'Management-Reports'
     treatment_plans: Behandlungspläne
     roles: 'Rollen & Berechtigungen'
     tenants: Mandanten
@@ -137,6 +138,7 @@ nav:
             compliance_wizard: 'Geführte Compliance-Prüfung'
             industry_baselines: 'Starter-Pakete pro Branche — ISMS nicht von null aufbauen'
             group_report: 'Konzernstruktur + NIS2-Registrierungsmatrix (Konzern-ISB/Group-CISO)'
+            management_reports: 'Board One-Pager, Executive Summary, Risk/BCM/Compliance-Berichte (PDF + Excel)'
             users: 'Benutzerkontenverwaltung'
             roles: 'Rollen und Berechtigungen'
             tenants: 'Mandantenverwaltung'

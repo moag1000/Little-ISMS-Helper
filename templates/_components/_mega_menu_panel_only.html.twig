@@ -34,6 +34,13 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.analytics'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        <li><a href="{{ path('app_management_reports') }}" class="{% if current_route starts with 'app_management_reports' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.management_reports'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.management_reports'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
                     </ul>
                 </div>
             </div>

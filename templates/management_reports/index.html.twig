@@ -137,6 +137,9 @@
                         <div class="col-md-6">
                             <h4 class="h6">{{ 'management_reports.quick_access.pdf_exports'|trans({}, 'management_reports') }}</h4>
                             <div class="d-flex flex-wrap gap-2 mb-3">
+                                <a href="{{ path('app_reports_board_one_pager_pdf') }}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-file-pdf" aria-hidden="true"></i> Board One-Pager
+                                </a>
                                 <a href="{{ path('app_management_reports_executive_pdf') }}" class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-file-pdf" aria-hidden="true"></i> Executive Summary
                                 </a>
