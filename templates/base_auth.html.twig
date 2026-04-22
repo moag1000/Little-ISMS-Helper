@@ -40,9 +40,10 @@
     </script>
 
     {% block stylesheets %}
-        {{ importmap(['app', 'styles']) }}
+        {# Bootstrap zuerst — Aurora-Styles kommen via importmap danach und überschreiben. #}
         <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}">
+        {{ importmap(['app', 'styles']) }}
     {% endblock %}
 </head>
 <body class="fa-auth-body">

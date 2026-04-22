@@ -72,15 +72,8 @@
         }
     </style>
 
-    {% block importmap %}
-        {# Import map in head with data-turbo-permanent to prevent reload on navigation #}
-        <div data-turbo-permanent id="importmap-container">
-            {{ importmap(['app', 'styles']) }}
-        </div>
-    {% endblock %}
-
     {% block stylesheets %}
-        {# Bootstrap CSS - Loaded locally to avoid CDN certificate issues #}
+        {# Bootstrap zuerst — Aurora (via importmap unten) kommt danach und überschreibt. #}
         <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 
         {# Bootstrap Icons - Loaded locally to avoid CDN certificate issues #}
@@ -159,6 +152,14 @@
                 box-shadow: 0 4px 12px var(--primary-glow);
             }
         </style>
+    {% endblock %}
+
+    {% block importmap %}
+        {# Aurora-Styles + App-JS — MUSS nach Bootstrap kommen, damit
+           Aurora-Overrides die Bootstrap-Defaults schlagen. #}
+        <div data-turbo-permanent id="importmap-container">
+            {{ importmap(['app', 'styles']) }}
+        </div>
     {% endblock %}
 </head>
 {% set is_setup_route = app.request.attributes.get('_route') starts with 'setup_' %}
