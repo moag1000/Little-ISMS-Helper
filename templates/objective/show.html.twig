@@ -24,21 +24,21 @@
                     <p class="lead">{{ objective.description }}</p>
 
                     <div class="row mb-3">
-                        <div class="col-md-6"><div class="fw-bold text-muted small text-uppercase mb-2">{{ 'objective.field.category'|trans({}, 'objective') }}</div><p>{{ objective.category }}</p></div>
-                        <div class="col-md-6"><div class="fw-bold text-muted small text-uppercase mb-2">{{ 'objective.field.responsible_person'|trans({}, 'objective') }}</div><p>{{ objective.responsiblePerson }}</p></div>
+                        <div class="col-md-6"><div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.field.category'|trans({}, 'objective') }}</div><p>{{ objective.category }}</p></div>
+                        <div class="col-md-6"><div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.field.responsible_person'|trans({}, 'objective') }}</div><p>{{ objective.responsiblePerson }}</p></div>
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-6"><div class="fw-bold text-muted small text-uppercase mb-2">{{ 'objective.field.target_date'|trans({}, 'objective') }}</div><p>{{ objective.targetDate|date('d.m.Y') }}</p></div>
-                        <div class="col-md-6"><div class="fw-bold text-muted small text-uppercase mb-2">{{ 'objective.field.achieved_date'|trans({}, 'objective') }}</div><p>{{ objective.achievedDate ? objective.achievedDate|date('d.m.Y') : '-' }}</p></div>
+                        <div class="col-md-6"><div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.field.target_date'|trans({}, 'objective') }}</div><p>{{ objective.targetDate|date('d.m.Y') }}</p></div>
+                        <div class="col-md-6"><div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.field.achieved_date'|trans({}, 'objective') }}</div><p>{{ objective.achievedDate ? objective.achievedDate|date('d.m.Y') : '-' }}</p></div>
                     </div>
 
                     {% if objective.measurableIndicators %}
-                    <div class="fw-bold text-muted small text-uppercase mb-2">{{ 'objective.field.measurable_indicators'|trans({}, 'objective') }}</div>
+                    <div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.field.measurable_indicators'|trans({}, 'objective') }}</div>
                     <p>{{ objective.measurableIndicators|nl2br }}</p>
                     {% endif %}
 
-                    <div class="fw-bold text-muted small text-uppercase mb-2">{{ 'objective.table.progress'|trans({}, 'objective') }}</div>
+                    <div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.table.progress'|trans({}, 'objective') }}</div>
                     <div class="progress mb-2" style="height: 30px;">
                         <div class="progress-bar {% if objective.progressPercentage >= 75 %}bg-success{% elseif objective.progressPercentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
                              style="width: {{ objective.progressPercentage }}%">
@@ -48,7 +48,7 @@
                     <p><strong>{{ 'objective.label.current'|trans({}, 'objective') }}:</strong> {{ objective.currentValue }} {{ objective.unit }} / <strong>{{ 'objective.label.target'|trans({}, 'objective') }}:</strong> {{ objective.targetValue }} {{ objective.unit }}</p>
 
                     {% if objective.progressNotes %}
-                    <div class="fw-bold text-muted small text-uppercase mb-2 mt-3">{{ 'objective.field.progress_notes'|trans({}, 'objective') }}</div>
+                    <div class="fw-semibold text-muted small text-uppercase mb-2 mt-3">{{ 'objective.field.progress_notes'|trans({}, 'objective') }}</div>
                     <div class="alert alert-info">{{ objective.progressNotes|nl2br }}</div>
                     {% endif %}
                 {% endblock %}

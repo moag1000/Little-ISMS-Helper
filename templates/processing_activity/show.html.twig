@@ -44,7 +44,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-bold">Completeness</div>
+                        <div class="text-muted mb-2 fw-semibold">Completeness</div>
                         {% set completeness = compliance_report.completeness_percentage %}
                         <div class="fs-2 fw-bold mb-0 {{ completeness == 100 ? 'text-success' : 'text-warning' }}">{{ completeness }}%</div>
                     </div>
@@ -55,7 +55,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-bold">Status</div>
+                        <div class="text-muted mb-2 fw-semibold">Status</div>
                         <div class="fs-4 fw-bold mb-0"><span class="{{ badge_status(processing_activity.status) }}">{{ processing_activity.status|upper }}</span></div>
                     </div>
                 {% endblock %}
@@ -65,11 +65,11 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-bold">Risk Level</div>
+                        <div class="text-muted mb-2 fw-semibold">Risk Level</div>
                         {% if processing_activity.riskLevel %}
                             <div class="fs-4 fw-bold mb-0"><span class="{{ badge_risk(processing_activity.riskLevel) }}">{{ processing_activity.riskLevel|upper }}</span></div>
                         {% else %}
-                            <div class="fs-4 fw-bold mb-0 text-muted">—</div>
+                            <div class="fs-4 fw-semibold mb-0 text-muted">—</div>
                         {% endif %}
                     </div>
                 {% endblock %}
@@ -79,7 +79,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-bold">DPIA Status</div>
+                        <div class="text-muted mb-2 fw-semibold">DPIA Status</div>
                         {% if processing_activity.requiresDPIA %}
                             {% if processing_activity.dpiaCompleted %}
                                 <div class="fs-4 fw-bold mb-0 text-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i></div>
@@ -89,7 +89,7 @@
                                 <small class="text-danger">Required</small>
                             {% endif %}
                         {% else %}
-                            <div class="fs-4 fw-bold mb-0 text-muted">Not Required</div>
+                            <div class="fs-4 fw-semibold mb-0 text-muted">Not Required</div>
                         {% endif %}
                     </div>
                 {% endblock %}

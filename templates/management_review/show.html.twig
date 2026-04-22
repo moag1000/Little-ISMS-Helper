@@ -79,28 +79,28 @@
                 {% block card_body %}
                     {% if review.changesRelevantToISMS %}
                     <div class="mb-3">
-                        <div class="text-muted small fw-bold">{{ 'management_review.changes_relevant_to_isms'|trans({}, 'management_review') }}</div>
+                        <div class="text-muted small fw-semibold">{{ 'management_review.changes_relevant_to_isms'|trans({}, 'management_review') }}</div>
                         <p>{{ review.changesRelevantToISMS|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if review.feedbackFromInterestedParties %}
                     <div class="mb-3">
-                        <div class="text-muted small fw-bold">{{ 'management_review.feedback_from_interested_parties'|trans({}, 'management_review') }}</div>
+                        <div class="text-muted small fw-semibold">{{ 'management_review.feedback_from_interested_parties'|trans({}, 'management_review') }}</div>
                         <p>{{ review.feedbackFromInterestedParties|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if review.auditResults %}
                     <div class="mb-3">
-                        <div class="text-muted small fw-bold">{{ 'management_review.audit_results'|trans({}, 'management_review') }}</div>
+                        <div class="text-muted small fw-semibold">{{ 'management_review.audit_results'|trans({}, 'management_review') }}</div>
                         <p>{{ review.auditResults|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if review.performanceEvaluation %}
                     <div class="mb-0">
-                        <div class="text-muted small fw-bold">{{ 'management_review.performance_evaluation'|trans({}, 'management_review') }}</div>
+                        <div class="text-muted small fw-semibold">{{ 'management_review.performance_evaluation'|trans({}, 'management_review') }}</div>
                         <p>{{ review.performanceEvaluation|nl2br }}</p>
                     </div>
                     {% endif %}
@@ -119,21 +119,21 @@
                 {% block card_body %}
                     {% if review.previousReviewActions %}
                     <div class="mb-3">
-                        <div class="text-muted small fw-bold">{{ 'management_review.previous_review_actions'|trans({}, 'management_review') }}</div>
+                        <div class="text-muted small fw-semibold">{{ 'management_review.previous_review_actions'|trans({}, 'management_review') }}</div>
                         <p>{{ review.previousReviewActions|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if review.nonConformitiesStatus %}
                     <div class="mb-3">
-                        <div class="text-muted small fw-bold">{{ 'management_review.nonconformities_status'|trans({}, 'management_review') }}</div>
+                        <div class="text-muted small fw-semibold">{{ 'management_review.nonconformities_status'|trans({}, 'management_review') }}</div>
                         <p>{{ review.nonConformitiesStatus|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if review.correctiveActionsStatus %}
                     <div class="mb-0">
-                        <div class="text-muted small fw-bold">{{ 'management_review.corrective_actions_status'|trans({}, 'management_review') }}</div>
+                        <div class="text-muted small fw-semibold">{{ 'management_review.corrective_actions_status'|trans({}, 'management_review') }}</div>
                         <p>{{ review.correctiveActionsStatus|nl2br }}</p>
                     </div>
                     {% endif %}
@@ -152,21 +152,21 @@
                 {% block card_body %}
                     {% if review.opportunitiesForImprovement %}
                     <div class="mb-3">
-                        <div class="text-muted small fw-bold">{{ 'management_review.opportunities_for_improvement'|trans({}, 'management_review') }}</div>
+                        <div class="text-muted small fw-semibold">{{ 'management_review.opportunities_for_improvement'|trans({}, 'management_review') }}</div>
                         <p>{{ review.opportunitiesForImprovement|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if review.resourceNeeds %}
                     <div class="mb-3">
-                        <div class="text-muted small fw-bold">{{ 'management_review.resource_needs'|trans({}, 'management_review') }}</div>
+                        <div class="text-muted small fw-semibold">{{ 'management_review.resource_needs'|trans({}, 'management_review') }}</div>
                         <p>{{ review.resourceNeeds|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if review.decisions %}
                     <div class="mb-3">
-                        <div class="text-muted small fw-bold">{{ 'management_review.decisions'|trans({}, 'management_review') }}</div>
+                        <div class="text-muted small fw-semibold">{{ 'management_review.decisions'|trans({}, 'management_review') }}</div>
                         <div class="alert alert-warning">
                             <strong><i class="bi bi-gavel" aria-hidden="true"></i> {{ 'management_review.management_decisions'|trans({}, 'management_review') }}</strong>
                             <p class="mb-0 mt-2">{{ review.decisions|nl2br }}</p>
@@ -176,7 +176,7 @@
 
                     {% if review.actionItems %}
                     <div class="mb-0">
-                        <div class="text-muted small fw-bold">{{ 'management_review.action_items'|trans({}, 'management_review') }}</div>
+                        <div class="text-muted small fw-semibold">{{ 'management_review.action_items'|trans({}, 'management_review') }}</div>
                         <div class="alert alert-info">
                             <strong><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'management_review.action_items_label'|trans({}, 'management_review') }}</strong>
                             <p class="mb-0 mt-2">{{ review.actionItems|nl2br }}</p>

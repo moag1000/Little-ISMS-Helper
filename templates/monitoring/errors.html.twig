@@ -19,7 +19,7 @@
                 {% embed '_components/_card.html.twig' with { 'class': 'border-danger' } %}
                     {% block card_body %}
                         <div class="text-center">
-                            <div class="card-title text-muted fw-bold">{{ 'monitoring.errors.total'|trans({}, 'monitoring') }}</div>
+                            <div class="card-title text-muted fw-semibold">{{ 'monitoring.errors.total'|trans({}, 'monitoring') }}</div>
                             <p class="display-6 text-danger">{{ error_stats.total }}</p>
                             <small>{{ 'monitoring.errors.shown'|trans({'%count%': errors|length}, 'monitoring') }}</small>
                         </div>
@@ -30,7 +30,7 @@
                 {% embed '_components/_card.html.twig' with { 'class': 'border-warning' } %}
                     {% block card_body %}
                         <div class="text-center">
-                            <div class="card-title text-muted fw-bold">{{ 'monitoring.errors.file_size'|trans({}, 'monitoring') }}</div>
+                            <div class="card-title text-muted fw-semibold">{{ 'monitoring.errors.file_size'|trans({}, 'monitoring') }}</div>
                             <p class="display-6 text-warning small">{{ error_stats.file_size }}</p>
                             <small>{{ 'monitoring.errors.log_file_size'|trans({}, 'monitoring') }}</small>
                         </div>
@@ -40,7 +40,7 @@
             <div class="col-md-6">
                 {% embed '_components/_card.html.twig' with { 'class': 'border-info' } %}
                     {% block card_body %}
-                        <div class="card-title text-muted fw-bold">{{ 'monitoring.by_level'|trans({}, 'monitoring')}}</div>
+                        <div class="card-title text-muted fw-semibold">{{ 'monitoring.by_level'|trans({}, 'monitoring')}}</div>
                         {% for level, count in error_stats.by_level %}
                             <div class="d-flex justify-content-between mb-2">
                                 {% include '_components/_badge.html.twig' with { variant: level == 'ERROR' ? 'danger' : (level == 'WARNING' ? 'warning' : 'info'), content: level } %}

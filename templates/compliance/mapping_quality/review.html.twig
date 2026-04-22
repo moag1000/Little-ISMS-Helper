@@ -35,7 +35,7 @@
         {% block card_body %}
             <div class="row">
                 <div class="col-md-5">
-                    <p class="fw-bold text-muted">{{ 'mapping_review.field.source_requirement'|trans({}, 'compliance') }}</p>
+                    <p class="fw-semibold text-muted small text-uppercase">{{ 'mapping_review.field.source_requirement'|trans({}, 'compliance') }}</p>
                     <p class="fw-bold">{% include '_components/_badge.html.twig' with { variant: 'primary', content: mapping.sourceRequirement.framework.code } %} {{ mapping.sourceRequirement.requirementId }}</p>
                     <p><strong>{{ mapping.sourceRequirement.title }}</strong></p>
                     <p class="text-muted small">{{ mapping.sourceRequirement.description|slice(0, 200) }}...</p>
@@ -50,7 +50,7 @@
                     <p class="fs-3">→</p>
                 </div>
                 <div class="col-md-5">
-                    <p class="fw-bold text-muted">{{ 'mapping_review.field.target_requirement'|trans({}, 'compliance') }}</p>
+                    <p class="fw-semibold text-muted small text-uppercase">{{ 'mapping_review.field.target_requirement'|trans({}, 'compliance') }}</p>
                     <p class="fw-bold">{% include '_components/_badge.html.twig' with { variant: 'success', content: mapping.targetRequirement.framework.code } %} {{ mapping.targetRequirement.requirementId }}</p>
                     <p><strong>{{ mapping.targetRequirement.title }}</strong></p>
                     <p class="text-muted small">{{ mapping.targetRequirement.description|slice(0, 200) }}...</p>

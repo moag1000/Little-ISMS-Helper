@@ -37,7 +37,7 @@
                 {% block card_body %}
                     <div class="row">
                         <div class="col-md-5">
-                            <p class="fw-bold text-muted">{{ 'compliance.field.source_requirement'|trans({}, 'compliance') }}</p>
+                            <p class="fw-semibold text-muted small text-uppercase">{{ 'compliance.field.source_requirement'|trans({}, 'compliance') }}</p>
                             {% embed '_components/_card.html.twig' %}
                                 {% block card_body %}
                                     {% include '_components/_badge.html.twig' with { variant: 'secondary', content: mapping.sourceRequirement.framework.code, class: 'mb-2' } %}
@@ -55,7 +55,7 @@
                             </div>
                         </div>
                         <div class="col-md-5">
-                            <p class="fw-bold text-muted">{{ 'compliance.field.target_requirements'|trans({}, 'compliance') }}</p>
+                            <p class="fw-semibold text-muted small text-uppercase">{{ 'compliance.field.target_requirements'|trans({}, 'compliance') }}</p>
                             {% embed '_components/_card.html.twig' %}
                                 {% block card_body %}
                                     {% include '_components/_badge.html.twig' with { variant: 'secondary', content: mapping.targetRequirement.framework.code, class: 'mb-2' } %}

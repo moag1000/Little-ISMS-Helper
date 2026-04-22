@@ -31,7 +31,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-bold">{{ 'processing_activity.stat.total'|trans({}, 'privacy')}}</div>
+                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.stat.total'|trans({}, 'privacy')}}</div>
                         <div class="fs-2 fw-bold mb-0">{{ statistics.total }}</div>
                         <small class="text-success">{{ statistics.active }} {{ 'processing_activity.stat.active'|trans({}, 'privacy')}}</small>
                     </div>
@@ -42,7 +42,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-bold">{{ 'processing_activity.stat.compliance_score'|trans({}, 'privacy')}}</div>
+                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.stat.compliance_score'|trans({}, 'privacy')}}</div>
                         <div class="fs-2 fw-bold mb-0
                             {% if compliance_score.overall_score >= 80 %}text-success
                             {% elseif compliance_score.overall_score >= 60 %}text-warning
@@ -58,7 +58,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-bold">{{ 'processing_activity.stat.high_risk'|trans({}, 'privacy')}}</div>
+                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.stat.high_risk'|trans({}, 'privacy')}}</div>
                         <div class="fs-2 fw-bold mb-0">{{ statistics.high_risk }}</div>
                         <small class="text-danger">{{ statistics.missing_dpia }} {{ 'processing_activity.stat.missing_dpia'|trans({}, 'privacy')}}</small>
                     </div>
@@ -69,7 +69,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-bold">{{ 'processing_activity.stat.special_categories'|trans({}, 'privacy')}}</div>
+                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.stat.special_categories'|trans({}, 'privacy')}}</div>
                         <div class="fs-2 fw-bold mb-0">{{ statistics.special_categories }}</div>
                         <small class="text-muted">{{ 'processing_activity.stat.art9_data'|trans({}, 'privacy')}}</small>
                     </div>
