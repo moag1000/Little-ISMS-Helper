@@ -41,7 +41,7 @@
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'ciso.kpi.overall_compliance'|trans({}, 'dashboards') }}</h6>
+                            <div class="small fw-semibold text-muted mb-1">{{ 'ciso.kpi.overall_compliance'|trans({}, 'dashboards') }}</div>
                             <h2 class="mb-0 {% if dashboard.summary.overall_compliance >= 80 %}text-success{% elseif dashboard.summary.overall_compliance >= 60 %}text-warning{% else %}text-danger{% endif %}">
                                 {{ dashboard.summary.overall_compliance }}%
                             </h2>
@@ -58,8 +58,8 @@
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'ciso.kpi.control_implementation'|trans({}, 'dashboards') }}</h6>
-                            <h2 class="mb-0">{{ dashboard.summary.control_implementation }}%</h2>
+                            <div class="small fw-semibold text-muted mb-1">{{ 'ciso.kpi.control_implementation'|trans({}, 'dashboards') }}</div>
+                            <h2 class="mb-0 {% if dashboard.summary.control_implementation >= 80 %}text-success{% elseif dashboard.summary.control_implementation >= 60 %}text-warning{% else %}text-danger{% endif %}">{{ dashboard.summary.control_implementation }}%</h2>
                         </div>
                         <div class="bg-success bg-opacity-10 rounded-circle p-2">
                             <i class="bi bi-toggles fs-4 text-success" aria-hidden="true"></i>
@@ -73,7 +73,7 @@
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'ciso.kpi.high_risks'|trans({}, 'dashboards') }}</h6>
+                            <div class="small fw-semibold text-muted mb-1">{{ 'ciso.kpi.high_risks'|trans({}, 'dashboards') }}</div>
                             <h2 class="mb-0 {% if dashboard.summary.high_risks > 10 %}text-danger{% elseif dashboard.summary.high_risks > 5 %}text-warning{% else %}text-success{% endif %}">
                                 {{ dashboard.summary.high_risks }}
                             </h2>
@@ -90,7 +90,7 @@
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'ciso.kpi.risk_trend'|trans({}, 'dashboards') }}</h6>
+                            <div class="small fw-semibold text-muted mb-1">{{ 'ciso.kpi.risk_trend'|trans({}, 'dashboards') }}</div>
                             <h2 class="mb-0">
                                 {% if dashboard.summary.risk_trend == 'increasing' %}
                                     <span class="text-danger"><i class="bi bi-arrow-up" aria-hidden="true"></i> {{ 'trend.increasing'|trans({}, 'dashboards') }}</span>

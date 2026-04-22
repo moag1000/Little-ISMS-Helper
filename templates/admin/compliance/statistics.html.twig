@@ -23,7 +23,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'border-primary' } %}
                 {% block card_body %}
                     <div class="text-center">
-                        <h2 class="text-muted mb-1 h6">{{ 'admin.compliance.total_available'|trans({}, 'admin') }}</h2>
+                        <div class="small fw-semibold text-muted mb-1">{{ 'admin.compliance.total_available'|trans({}, 'admin') }}</div>
                         <p class="mb-0 h2">{{ statistics.total_available }}</p>
                         <i class="bi bi-box fs-3 text-primary opacity-25" aria-hidden="true"></i>
                     </div>
@@ -34,7 +34,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'border-success' } %}
                 {% block card_body %}
                     <div class="text-center">
-                        <h2 class="text-muted mb-1 h6">{{ 'admin.compliance.loaded'|trans({}, 'admin') }}</h2>
+                        <div class="small fw-semibold text-muted mb-1">{{ 'admin.compliance.loaded'|trans({}, 'admin') }}</div>
                         <p class="mb-0 text-success h2">{{ statistics.total_loaded }}</p>
                         <i class="bi bi-check-circle fs-3 text-success opacity-25" aria-hidden="true"></i>
                     </div>
@@ -45,7 +45,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'border-secondary' } %}
                 {% block card_body %}
                     <div class="text-center">
-                        <h2 class="text-muted mb-1 h6">{{ 'admin.compliance.not_loaded'|trans({}, 'admin') }}</h2>
+                        <div class="small fw-semibold text-muted mb-1">{{ 'admin.compliance.not_loaded'|trans({}, 'admin') }}</div>
                         <p class="mb-0 text-secondary h2">{{ statistics.total_not_loaded }}</p>
                         <i class="bi bi-x-circle fs-3 text-secondary opacity-25" aria-hidden="true"></i>
                     </div>
@@ -56,7 +56,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'border-danger' } %}
                 {% block card_body %}
                     <div class="text-center">
-                        <h2 class="text-muted mb-1 h6">{{ 'admin.compliance.mandatory_missing'|trans({}, 'admin') }}</h2>
+                        <div class="small fw-semibold text-muted mb-1">{{ 'admin.compliance.mandatory_missing'|trans({}, 'admin') }}</div>
                         <p class="mb-0 text-danger h2">{{ statistics.mandatory_not_loaded }}</p>
                         <i class="bi bi-exclamation-triangle fs-3 text-danger opacity-25" aria-hidden="true"></i>
                     </div>

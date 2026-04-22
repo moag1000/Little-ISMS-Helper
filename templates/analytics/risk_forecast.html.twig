@@ -33,7 +33,7 @@
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'analytics.forecast.kpi.current_risks'|trans({}, 'analytics') }}</h6>
+                            <div class="small fw-semibold text-muted mb-1">{{ 'analytics.forecast.kpi.current_risks'|trans({}, 'analytics') }}</div>
                             <h2 class="mb-0">{{ current_count }}</h2>
                         </div>
                         <i class="bi bi-exclamation-triangle display-6 text-primary" aria-hidden="true"></i>
@@ -46,7 +46,7 @@
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'analytics.forecast.kpi.predicted'|trans({}, 'analytics') }}</h6>
+                            <div class="small fw-semibold text-muted mb-1">{{ 'analytics.forecast.kpi.predicted'|trans({}, 'analytics') }}</div>
                             <h2 class="mb-0 {% if predicted_count > current_count %}text-danger{% else %}text-success{% endif %}">
                                 {{ predicted_count }}
                             </h2>
@@ -62,7 +62,7 @@
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'analytics.forecast.kpi.risk_velocity'|trans({}, 'analytics') }}</h6>
+                            <div class="small fw-semibold text-muted mb-1">{{ 'analytics.forecast.kpi.risk_velocity'|trans({}, 'analytics') }}</div>
                             <h2 class="mb-0 {% if net_velocity > 0 %}text-danger{% elseif net_velocity < 0 %}text-success{% endif %}">
                                 {% if net_velocity > 0 %}+{% endif %}{{ net_velocity }}
                             </h2>
@@ -78,7 +78,7 @@
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'analytics.forecast.kpi.appetite_compliance'|trans({}, 'analytics') }}</h6>
+                            <div class="small fw-semibold text-muted mb-1">{{ 'analytics.forecast.kpi.appetite_compliance'|trans({}, 'analytics') }}</div>
                             <h2 class="mb-0 {% if appetite.compliance_score >= 80 %}text-success{% elseif appetite.compliance_score >= 50 %}text-warning{% else %}text-danger{% endif %}">
                                 {{ appetite.compliance_score }}%
                             </h2>

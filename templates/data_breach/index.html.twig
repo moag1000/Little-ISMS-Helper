@@ -40,7 +40,7 @@
     {# Overall Compliance Score #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}
         {% block card_body %}
-            <h6 class="text-muted mb-2">{{ 'privacy.data_breach.score.heading'|trans({}, 'privacy') }}</h6>
+            <div class="small fw-semibold text-muted mb-2">{{ 'privacy.data_breach.score.heading'|trans({}, 'privacy') }}</div>
             {% set score = compliance_score.overall_score %}
             <h1 class="display-1 mb-0
                 {% if score >= 80 %}text-success

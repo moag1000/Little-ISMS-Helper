@@ -127,7 +127,7 @@
                             </div>
                         </div>
                     </div>
-                    <h6 class="text-muted">{{ 'risk_manager.by_strategy'|trans({}, 'dashboards') }}</h6>
+                    <div class="small fw-semibold text-muted mb-1">{{ 'risk_manager.by_strategy'|trans({}, 'dashboards') }}</div>
                     {% for strategy, count in dashboard.treatment_pipeline.by_strategy %}
                         {% if strategy != 'untreated' %}
                         <div class="d-flex justify-content-between align-items-center mb-2">
