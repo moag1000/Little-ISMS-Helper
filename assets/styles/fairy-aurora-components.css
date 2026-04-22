@@ -2266,39 +2266,8 @@ html[data-theme="dark"] .mega-menu-link-desc {
     color: var(--fg);
 }
 
-/* Bootstrap 5.3 reagiert auf [data-bs-theme="dark"] — App nutzt [data-theme="dark"].
-   Ohne expliziten Override bleibt --bs-heading-color im Dark-Mode fast-schwarz.
-   Fix: Aurora-fg global als Heading-Color. */
-:root {
-    --bs-heading-color: var(--fg);
-    /* Nav-Link-Tokens — Bootstrap nutzt [data-bs-theme], App [data-theme].
-       Ohne Override bleiben nav-links im Dark-Mode bei Legacy-Dark-Gray hängen. */
-    --bs-nav-link-color: var(--fg-2);
-    --bs-nav-link-hover-color: var(--primary-strong);
-    --bs-nav-link-disabled-color: var(--fg-3);
-    --bs-nav-tabs-link-active-color: var(--primary-strong);
-    --bs-nav-tabs-link-active-bg: var(--surface);
-    --bs-nav-tabs-link-active-border-color: var(--border) var(--border) var(--surface);
-    --bs-nav-tabs-border-color: var(--border);
-    --bs-nav-pills-link-active-color: var(--on-primary);
-    --bs-nav-pills-link-active-bg: var(--primary-strong);
-}
-html[data-theme="dark"] {
-    --bs-nav-link-hover-color: var(--primary);
-    --bs-nav-tabs-link-active-color: var(--primary);
-    --bs-nav-pills-link-active-color: var(--on-primary);
-    --bs-nav-pills-link-active-bg: var(--primary);
-}
-@media (prefers-color-scheme: dark) {
-    html[data-theme="system"] {
-        --bs-nav-link-hover-color: var(--primary);
-        --bs-nav-tabs-link-active-color: var(--primary);
-        --bs-nav-pills-link-active-color: var(--on-primary);
-        --bs-nav-pills-link-active-bg: var(--primary);
-    }
-}
-
-/* Explizite nav-link-active Override — einige Templates rendern mit
+/* --bs-*-Tokens sind jetzt vollständig in fairy-aurora.css definiert.
+   Explizite nav-link-active Override — einige Templates rendern mit
    Bootstrap-Legacy-Farben, der Token-Pfad allein reicht nicht immer. */
 .nav-link { color: var(--bs-nav-link-color); }
 .nav-link:hover,
@@ -2675,3 +2644,533 @@ small.text-muted,
     border-color: var(--border) !important;
     color: var(--fg) !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Dropdown — Aurora-Override (beide Modi)
+   Bootstrap-Defaults ignorieren [data-theme]; wir überschreiben explizit.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.dropdown-menu {
+    background-color: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+html[data-theme="dark"] .dropdown-menu {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+.dropdown-item {
+    color: var(--fg);
+    transition: background-color var(--t-fast) var(--ease-out),
+                color var(--t-fast) var(--ease-out);
+}
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: var(--surface-2);
+    color: var(--fg);
+}
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: var(--primary-strong);
+    color: var(--on-primary);
+}
+html[data-theme="dark"] .dropdown-item.active,
+html[data-theme="dark"] .dropdown-item:active {
+    background-color: var(--primary);
+    color: var(--on-primary);
+}
+.dropdown-item.disabled,
+.dropdown-item:disabled {
+    color: var(--fg-3);
+}
+.dropdown-divider { border-top-color: var(--border); }
+.dropdown-header  { color: var(--fg-2); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Modal — Aurora-Override (beide Modi)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.modal-content {
+    background-color: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+}
+.modal-header {
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+}
+.modal-footer {
+    background-color: var(--surface);
+    border-top: 1px solid var(--border);
+}
+.modal-body { color: var(--fg); }
+/* Backdrop: theme-invariant dunkel */
+.modal-backdrop { background-color: rgba(10, 14, 26, 0.6); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Accordion — Aurora-Override (beide Modi)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.accordion-item {
+    background-color: var(--surface);
+    color: var(--fg);
+    border-color: var(--border);
+}
+.accordion-button {
+    background-color: var(--surface);
+    color: var(--fg);
+    border-radius: 0;
+    box-shadow: none;
+}
+.accordion-button:hover {
+    background-color: var(--surface-2);
+}
+.accordion-button:not(.collapsed) {
+    background-color: var(--primary-tint);
+    color: var(--primary-strong);
+    box-shadow: inset 0 -1px 0 var(--border);
+}
+html[data-theme="dark"] .accordion-button:not(.collapsed) {
+    color: var(--primary);
+}
+.accordion-button::after {
+    /* Bootstrap nutzt hardcoded SVG-filter; wir passen die Farbe per filter an */
+    filter: brightness(0) saturate(100%) invert(40%) sepia(0%) saturate(0%) hue-rotate(0deg);
+}
+html[data-theme="dark"] .accordion-button::after {
+    filter: brightness(0) saturate(100%) invert(100%);
+}
+.accordion-button:not(.collapsed)::after {
+    filter: brightness(0) saturate(100%) invert(25%) sepia(80%) saturate(600%) hue-rotate(185deg);
+}
+html[data-theme="dark"] .accordion-button:not(.collapsed)::after {
+    filter: brightness(0) saturate(100%) invert(70%) sepia(80%) saturate(400%) hue-rotate(170deg);
+}
+.accordion-body {
+    background-color: var(--surface);
+    color: var(--fg);
+}
+.accordion-button:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   List-Group — Aurora-Override (beide Modi)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.list-group-item {
+    background-color: var(--surface);
+    color: var(--fg);
+    border-color: var(--border);
+}
+.list-group-item-action {
+    color: var(--fg);
+}
+.list-group-item-action:hover,
+.list-group-item-action:focus {
+    background-color: var(--surface-2);
+    color: var(--fg);
+}
+.list-group-item-action:active {
+    background-color: var(--surface-3);
+    color: var(--fg);
+}
+.list-group-item.active {
+    background-color: var(--primary-strong);
+    color: var(--on-primary);
+    border-color: var(--primary-strong);
+}
+html[data-theme="dark"] .list-group-item.active {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+.list-group-item.disabled,
+.list-group-item:disabled {
+    color: var(--fg-3);
+    background-color: var(--surface);
+}
+
+/* Semantic list-group-item-* variants */
+.list-group-item-primary {
+    background-color: var(--primary-tint);
+    color: var(--primary-strong);
+    border-color: var(--primary-glow);
+}
+.list-group-item-success {
+    background-color: var(--success-glow);
+    color: var(--success-strong);
+    border-color: var(--success-glow);
+}
+.list-group-item-warning {
+    background-color: var(--warning-glow);
+    color: var(--warning-strong);
+    border-color: var(--warning-glow);
+}
+.list-group-item-danger {
+    background-color: var(--danger-glow);
+    color: var(--danger-strong);
+    border-color: var(--danger-glow);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Pagination — Aurora-Override (beide Modi)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.page-link {
+    background-color: var(--surface);
+    color: var(--primary-strong);
+    border-color: var(--border);
+    transition: background-color var(--t-fast) var(--ease-out),
+                color var(--t-fast) var(--ease-out),
+                border-color var(--t-fast) var(--ease-out);
+}
+html[data-theme="dark"] .page-link {
+    color: var(--primary);
+}
+.page-link:hover {
+    background-color: var(--surface-2);
+    color: var(--primary-hover);
+    border-color: var(--border);
+}
+.page-item.active .page-link {
+    background-color: var(--primary-strong);
+    color: var(--on-primary);
+    border-color: var(--primary-strong);
+}
+html[data-theme="dark"] .page-item.active .page-link {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--on-primary);
+}
+.page-item.disabled .page-link {
+    background-color: var(--surface);
+    color: var(--fg-3);
+    border-color: var(--border);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Offcanvas — Aurora-Override (beide Modi)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.offcanvas,
+.offcanvas-start,
+.offcanvas-end,
+.offcanvas-top,
+.offcanvas-bottom {
+    background-color: var(--surface);
+    color: var(--fg);
+    border-color: var(--border);
+}
+.offcanvas-header {
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+}
+.offcanvas-body { color: var(--fg); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Popover — Aurora-Override (beide Modi)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.popover {
+    background-color: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+html[data-theme="dark"] .popover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+.popover-header {
+    background-color: var(--surface-2);
+    color: var(--fg);
+    border-bottom: 1px solid var(--border);
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+}
+.popover-body { color: var(--fg); }
+/* Arrow: light-mode zeigt --surface; dark zeigt surface */
+.popover .popover-arrow::after { border-color: transparent; }
+.bs-popover-auto[data-popper-placement^="top"] .popover-arrow::after,
+.bs-popover-top .popover-arrow::after {
+    border-top-color: var(--surface);
+}
+.bs-popover-auto[data-popper-placement^="bottom"] .popover-arrow::after,
+.bs-popover-bottom .popover-arrow::after {
+    border-bottom-color: var(--surface-2); /* header-bg matches */
+}
+.bs-popover-auto[data-popper-placement^="start"] .popover-arrow::after,
+.bs-popover-start .popover-arrow::after {
+    border-left-color: var(--surface);
+}
+.bs-popover-auto[data-popper-placement^="end"] .popover-arrow::after,
+.bs-popover-end .popover-arrow::after {
+    border-right-color: var(--surface);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Tooltip — Aurora-Override (beide Modi)
+   Tooltip = invertierter BG (fg auf surface) für maximalen Kontrast.
+   Dark-Mode: surface-2 auf fg — ebenfalls maximaler Kontrast.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.tooltip-inner {
+    background-color: var(--fg);
+    color: var(--surface);
+    border-radius: var(--r-sm);
+}
+html[data-theme="dark"] .tooltip-inner {
+    background-color: var(--surface-2);
+    color: var(--fg);
+    border: 1px solid var(--border);
+}
+/* Tooltip-Arrow anpassen */
+.bs-tooltip-auto[data-popper-placement^="top"] .tooltip-arrow::before,
+.bs-tooltip-top .tooltip-arrow::before { border-top-color: var(--fg); }
+.bs-tooltip-auto[data-popper-placement^="bottom"] .tooltip-arrow::before,
+.bs-tooltip-bottom .tooltip-arrow::before { border-bottom-color: var(--fg); }
+.bs-tooltip-auto[data-popper-placement^="start"] .tooltip-arrow::before,
+.bs-tooltip-start .tooltip-arrow::before { border-left-color: var(--fg); }
+.bs-tooltip-auto[data-popper-placement^="end"] .tooltip-arrow::before,
+.bs-tooltip-end .tooltip-arrow::before { border-right-color: var(--fg); }
+html[data-theme="dark"] .bs-tooltip-auto[data-popper-placement^="top"] .tooltip-arrow::before,
+html[data-theme="dark"] .bs-tooltip-top .tooltip-arrow::before { border-top-color: var(--surface-2); }
+html[data-theme="dark"] .bs-tooltip-auto[data-popper-placement^="bottom"] .tooltip-arrow::before,
+html[data-theme="dark"] .bs-tooltip-bottom .tooltip-arrow::before { border-bottom-color: var(--surface-2); }
+html[data-theme="dark"] .bs-tooltip-auto[data-popper-placement^="start"] .tooltip-arrow::before,
+html[data-theme="dark"] .bs-tooltip-start .tooltip-arrow::before { border-left-color: var(--surface-2); }
+html[data-theme="dark"] .bs-tooltip-auto[data-popper-placement^="end"] .tooltip-arrow::before,
+html[data-theme="dark"] .bs-tooltip-end .tooltip-arrow::before { border-right-color: var(--surface-2); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-Toast — Aurora-Override (beide Modi)
+   Achtung: Aurora nutzt .fa-alert--toast für eigene Toasts.
+   Diese Regeln greifen auf Bootstrap-native .toast-Elemente.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.toast {
+    background-color: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+html[data-theme="dark"] .toast {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+.toast-header {
+    background-color: var(--surface-2);
+    color: var(--fg);
+    border-bottom: 1px solid var(--border);
+}
+.toast-body { color: var(--fg); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-.table — Aurora-Override (beide Modi)
+   Ergänzt die vorhandene table-Styling-Basis in app.css.
+   Setzt explizit die --bs-table-*-Tokens um Bootstrap-interne
+   Stripe/Hover-Rules zu steuern.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.table {
+    --bs-table-bg:          var(--surface);
+    --bs-table-color:       var(--fg);
+    --bs-table-border-color: var(--border);
+    --bs-table-striped-bg:  var(--surface-2);
+    --bs-table-striped-color: var(--fg);
+    --bs-table-hover-bg:    var(--surface-3);
+    --bs-table-hover-color: var(--fg);
+    --bs-table-active-bg:   var(--surface-3);
+    --bs-table-active-color: var(--fg);
+    color: var(--fg);
+    border-color: var(--border);
+}
+.table > :not(caption) > * > * {
+    background-color: var(--bs-table-bg);
+    color: var(--bs-table-color);
+    border-bottom-color: var(--bs-table-border-color);
+}
+.table > thead {
+    background-color: var(--surface-2);
+    color: var(--fg);
+}
+.table > thead > tr > th {
+    background-color: var(--surface-2);
+    color: var(--fg);
+    border-bottom: 2px solid var(--border);
+    font-weight: 600;
+}
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: var(--surface-2);
+    color: var(--fg);
+}
+.table-hover > tbody > tr:hover > * {
+    background-color: var(--surface-3);
+    color: var(--fg);
+}
+.table-bordered > :not(caption) > * { border-color: var(--border); }
+.table-bordered > :not(caption) > * > * {
+    border: 1px solid var(--border);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Form-Switch + Form-Range — Aurora-Override
+   ═══════════════════════════════════════════════════════════════════ */
+
+.form-switch .form-check-input {
+    background-color: var(--surface-3);
+    border-color: var(--border-strong);
+    /* Bootstrap nutzt background-image für den Track-Icon */
+}
+.form-switch .form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+.form-switch .form-check-input:focus {
+    box-shadow: 0 0 0 3px var(--primary-glow);
+    border-color: var(--primary);
+}
+
+.form-range::-webkit-slider-thumb {
+    background-color: var(--primary);
+}
+.form-range::-moz-range-thumb {
+    background-color: var(--primary);
+    border: none;
+}
+.form-range::-webkit-slider-runnable-track {
+    background-color: var(--surface-3);
+    border-radius: var(--r-pill);
+}
+.form-range::-moz-range-track {
+    background-color: var(--surface-3);
+}
+.form-range:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Input-Group — Aurora-Override
+   ═══════════════════════════════════════════════════════════════════ */
+
+.input-group-text {
+    background-color: var(--surface-2);
+    color: var(--fg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+}
+.input-group > .form-control:focus,
+.input-group > .form-select:focus {
+    z-index: 3;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Progress — Aurora-Override (beide Modi)
+   Überschreibt das app.css-Override, das noch hardcoded rgba nutzt.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.progress {
+    background-color: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    overflow: hidden;
+}
+.progress-bar {
+    background-color: var(--primary-strong);
+    color: var(--on-primary);
+}
+html[data-theme="dark"] .progress-bar {
+    background-color: var(--primary);
+}
+.progress-bar.bg-success { background-color: var(--success-strong) !important; }
+.progress-bar.bg-warning { background-color: var(--warning) !important; color: var(--on-warning) !important; }
+.progress-bar.bg-danger  { background-color: var(--danger) !important; color: var(--on-danger) !important; }
+.progress-bar.bg-info    { background-color: var(--primary) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Spinner (Bootstrap .spinner-border / .spinner-grow) — Aurora-Override
+   .spinner-border nutzt currentColor — passt zu Aurora.
+   Wir stellen sicher dass das Eltern-Element die richtige Farbe hat.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.spinner-border {
+    color: var(--primary);
+}
+.spinner-border.text-success { color: var(--success) !important; }
+.spinner-border.text-warning { color: var(--warning) !important; }
+.spinner-border.text-danger  { color: var(--danger)  !important; }
+.spinner-grow {
+    background-color: var(--primary);
+}
+.spinner-grow.text-success { background-color: var(--success) !important; }
+.spinner-grow.text-warning { background-color: var(--warning) !important; }
+.spinner-grow.text-danger  { background-color: var(--danger)  !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Btn-Close — Aurora-Override (beide Modi)
+   Bootstrap rendert .btn-close als SVG-data-url; wir nutzen filter.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Light-Mode: dunkles X auf hellem Surface */
+.btn-close {
+    filter: brightness(0) saturate(100%) invert(20%) sepia(10%) saturate(600%) hue-rotate(220deg);
+    opacity: 0.7;
+}
+.btn-close:hover { opacity: 1; }
+/* Dark-Mode: helles X auf dunklem Surface */
+html[data-theme="dark"] .btn-close {
+    filter: brightness(0) saturate(100%) invert(90%);
+    opacity: 0.7;
+}
+html[data-theme="dark"] .btn-close:hover { opacity: 1; }
+
+/* Ausnahmen: Close auf farbigem Header (z.B. bg-danger) immer weiß */
+.modal-header.bg-danger .btn-close,
+.alert-danger .btn-close {
+    filter: brightness(0) saturate(100%) invert(100%) !important;
+    opacity: 0.9;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Nav-Tabs / Nav-Pills — explizite Component-Fixes
+   (--bs-*-Tokens gesetzt in fairy-aurora.css; hier
+   zusätzliche Selektoren für Templates die nicht Bootstrap-Vars nutzen)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.nav-tabs {
+    border-bottom: 1px solid var(--border);
+}
+.nav-tabs .nav-link {
+    color: var(--fg-2);
+    border: 1px solid transparent;
+    border-radius: var(--r-md) var(--r-md) 0 0;
+}
+.nav-tabs .nav-link:hover,
+.nav-tabs .nav-link:focus {
+    color: var(--primary-strong);
+    border-color: var(--border) var(--border) transparent;
+    background-color: var(--surface-2);
+}
+html[data-theme="dark"] .nav-tabs .nav-link:hover,
+html[data-theme="dark"] .nav-tabs .nav-link:focus {
+    color: var(--primary);
+}
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+    color: var(--primary-strong);
+    background-color: var(--surface);
+    border-color: var(--border) var(--border) var(--surface);
+}
+html[data-theme="dark"] .nav-tabs .nav-link.active,
+html[data-theme="dark"] .nav-tabs .nav-item.show .nav-link {
+    color: var(--primary);
+    background-color: var(--surface);
+    border-color: var(--border) var(--border) var(--surface);
+}
+
+/* Tab-Content */
+.tab-content { color: var(--fg); }
+.tab-pane { color: var(--fg); }
