@@ -22,6 +22,7 @@ nav:
     compliance_wizard: 'Compliance Wizard'
     industry_baselines: 'Industry Baselines'
     group_report: 'Group Reports'
+    management_reports: 'Management Reports'
     treatment_plans: 'Treatment Plans'
     roles: 'Roles & Permissions'
     tenants: Tenants
@@ -137,6 +138,7 @@ nav:
             compliance_wizard: 'Guided compliance assessment'
             industry_baselines: 'Per-industry starter packs — do not bootstrap from zero'
             group_report: 'Corporate tree + NIS2 registration matrix (Group-CISO)'
+            management_reports: 'Board One-Pager, Executive Summary, Risk/BCM/Compliance reports (PDF + Excel)'
             users: 'User account management'
             roles: 'Roles and permissions'
             tenants: 'Multi-tenant administration'

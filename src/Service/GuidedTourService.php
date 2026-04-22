@@ -247,11 +247,13 @@ final class GuidedTourService
     private function cisoSteps(): array
     {
         $cisoDash = $this->urlFor('app_dashboard_ciso');
+        $managementReports = $this->urlFor('app_management_reports');
+        $frameworks = $this->urlFor('app_analytics_compliance_frameworks');
         return [
             ['id' => 'welcome', 'icon' => 'bi-shield-lock', 'target' => null, 'title_key' => 'guided_tour.ciso.step.welcome.title', 'body_key' => 'guided_tour.ciso.step.welcome.body', 'url' => $cisoDash, 'placement' => 'center'],
-            ['id' => 'board-export', 'icon' => 'bi-file-earmark-slides', 'target' => null, 'title_key' => 'guided_tour.ciso.step.board_export.title', 'body_key' => 'guided_tour.ciso.step.board_export.body', 'url' => $cisoDash, 'placement' => 'center'],
+            ['id' => 'board-export', 'icon' => 'bi-file-earmark-slides', 'target' => null, 'title_key' => 'guided_tour.ciso.step.board_export.title', 'body_key' => 'guided_tour.ciso.step.board_export.body', 'url' => $managementReports, 'placement' => 'center'],
             ['id' => 'health-score', 'icon' => 'bi-heart-pulse', 'target' => null, 'title_key' => 'guided_tour.ciso.step.health_score.title', 'body_key' => 'guided_tour.ciso.step.health_score.body', 'url' => $cisoDash, 'placement' => 'center'],
-            ['id' => 'framework-matrix', 'icon' => 'bi-grid-3x3', 'target' => null, 'title_key' => 'guided_tour.ciso.step.framework_matrix.title', 'body_key' => 'guided_tour.ciso.step.framework_matrix.body', 'url' => $cisoDash, 'placement' => 'center'],
+            ['id' => 'framework-matrix', 'icon' => 'bi-grid-3x3', 'target' => null, 'title_key' => 'guided_tour.ciso.step.framework_matrix.title', 'body_key' => 'guided_tour.ciso.step.framework_matrix.body', 'url' => $frameworks, 'placement' => 'center'],
         ];
     }
 
