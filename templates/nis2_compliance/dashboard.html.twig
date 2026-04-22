@@ -173,7 +173,7 @@
         <div class="col-md-3">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
-                    <div class="h6 card-title text-muted">
+                    <div class="small fw-semibold text-muted mb-1">
                         <i class="bi bi-shield-lock" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.mfa.title'|trans({}, 'messages') }}
                     </div>
@@ -192,7 +192,7 @@
         <div class="col-md-3">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
-                    <div class="h6 card-title text-muted">
+                    <div class="small fw-semibold text-muted mb-1">
                         <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.incident_reporting.title'|trans({}, 'messages') }}
                     </div>
@@ -212,7 +212,7 @@
         <div class="col-md-3">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
-                    <div class="h6 card-title text-muted">
+                    <div class="small fw-semibold text-muted mb-1">
                         <i class="bi bi-bug" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.vulnerability.title'|trans({}, 'messages') }}
                     </div>
@@ -231,7 +231,7 @@
         <div class="col-md-3">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
-                    <div class="h6 card-title text-muted">
+                    <div class="small fw-semibold text-muted mb-1">
                         <i class="bi bi-download" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.patch.title'|trans({}, 'messages') }}
                     </div>

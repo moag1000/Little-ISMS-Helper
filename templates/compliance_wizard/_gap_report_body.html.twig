@@ -21,9 +21,9 @@
     <div class="col-md-4">
         {% embed '_components/_card.html.twig' with { class: 'border-0 shadow-sm h-100' } %}
             {% block card_body %}
-                <h2 class="h6 text-muted mb-2">
+                <div class="small fw-semibold text-muted mb-2">
                     <i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>{{ 'gap_report.summary.total_effort'|trans({}, 'gap_report') }}
-                </h2>
+                </div>
                 <div class="display-6 fw-bold">{{ total_effort_days|number_format(1, '.', ',') }}</div>
                 <small class="text-muted">{{ 'gap_report.unit.person_days'|trans({}, 'gap_report') }}</small>
             {% endblock %}
@@ -32,9 +32,9 @@
     <div class="col-md-4">
         {% embed '_components/_card.html.twig' with { class: 'border-0 shadow-sm h-100' } %}
             {% block card_body %}
-                <h2 class="h6 text-muted mb-2">
+                <div class="small fw-semibold text-muted mb-2">
                     <i class="bi bi-lightning-charge text-success me-1" aria-hidden="true"></i>{{ 'gap_report.summary.quick_wins'|trans({}, 'gap_report') }}
-                </h2>
+                </div>
                 <div class="display-6 fw-bold text-success">{{ quick_wins|length }}</div>
                 <small class="text-muted">{{ 'gap_report.summary.quick_wins_hint'|trans({}, 'gap_report') }}</small>
             {% endblock %}
@@ -43,9 +43,9 @@
     <div class="col-md-4">
         {% embed '_components/_card.html.twig' with { class: 'border-0 shadow-sm h-100' } %}
             {% block card_body %}
-                <h2 class="h6 text-muted mb-2">
+                <div class="small fw-semibold text-muted mb-2">
                     <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i>{{ 'gap_report.summary.coverage'|trans({}, 'gap_report') }}
-                </h2>
+                </div>
                 <div class="display-6 fw-bold">{{ effort_estimated_count }}</div>
                 <small class="text-muted">
                     {{ 'gap_report.summary.coverage_hint'|trans({'%unestimated%': effort_unestimated_count}, 'gap_report') }}
