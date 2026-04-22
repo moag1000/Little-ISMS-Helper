@@ -10,8 +10,8 @@
     left: 50%;
     transform: translateX(-50%) translateY(20px);
     z-index: 1000;
-    background: linear-gradient(135deg, var(--fg) 0%, var(--fg-2) 100%);
-    color: white;
+    background: linear-gradient(135deg, var(--primary-strong) 0%, var(--accent-strong) 100%);
+    color: var(--on-primary);
     border-radius: var(--border-radius-lg);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4), 0 0 30px rgba(6, 182, 212, 0.4);
     border: 2px solid var(--primary);
