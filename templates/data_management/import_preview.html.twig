@@ -17,7 +17,7 @@
             {% embed '_components/_card.html.twig' with {borderColor: 'primary'} %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="card-title text-muted fw-bold">Total Entities</div>
+                        <div class="card-title text-muted fw-semibold">Total Entities</div>
                         <p class="display-6 text-primary">{{ stats|length }}</p>
                     </div>
                 {% endblock %}
@@ -27,7 +27,7 @@
             {% embed '_components/_card.html.twig' with {borderColor: 'success'} %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="card-title text-muted fw-bold">Total Records</div>
+                        <div class="card-title text-muted fw-semibold">Total Records</div>
                         <p class="display-6 text-success">
                             {% set total = 0 %}
                             {% for entity, count in stats %}
@@ -43,7 +43,7 @@
             {% embed '_components/_card.html.twig' with {borderColor: 'info'} %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="card-title text-muted fw-bold">Status</div>
+                        <div class="card-title text-muted fw-semibold">Status</div>
                         <p class="display-6 text-info small">Preview</p>
                     </div>
                 {% endblock %}

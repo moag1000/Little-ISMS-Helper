@@ -36,7 +36,7 @@
             {# Detailed View - Expandable #}
             <div class="checklist-details" data-toggle-target="content" style="display: none;">
                 <div class="detail-section">
-                    <div class="fw-bold mb-2 text-muted" style="font-size: 0.9rem;">{{ 'checklist.requirement_description'|trans({}, 'audit') }}:</div>
+                    <div class="fw-semibold mb-2 text-muted" style="font-size: 0.9rem;">{{ 'checklist.requirement_description'|trans({}, 'audit') }}:</div>
                     <p>{{ item.requirement.description }}</p>
                 </div>
 
@@ -78,7 +78,7 @@
 
                 {% if item.requirement.hasDetailedRequirements() %}
                     <div class="detail-section">
-                        <div class="fw-bold mb-2 text-muted" style="font-size: 0.9rem;">{{ 'checklist.detailed_requirements'|trans({'%count%': item.requirement.detailedRequirements|length}, 'audit') }}:</div>
+                        <div class="fw-semibold mb-2 text-muted" style="font-size: 0.9rem;">{{ 'checklist.detailed_requirements'|trans({'%count%': item.requirement.detailedRequirements|length}, 'audit') }}:</div>
                         <div class="detailed-requirements-list">
                             {% for detailed in item.requirement.detailedRequirements %}
                                 <div class="detailed-req">

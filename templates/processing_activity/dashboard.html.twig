@@ -24,7 +24,7 @@
     {# Overall Compliance Score #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}
         {% block card_body %}
-            <div class="text-muted mb-2 fw-bold">Overall VVT Compliance Score</div>
+            <div class="text-muted mb-2 fw-semibold">Overall VVT Compliance Score</div>
             {% set score = compliance_score.overall_score %}
             <div class="display-1 mb-0
                 {% if score >= 80 %}text-success
@@ -46,7 +46,7 @@
         <div class="col-md-4">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
-                    <div class="text-muted fw-bold">Total Activities</div>
+                    <div class="text-muted fw-semibold">Total Activities</div>
                     <div class="fs-2 fw-bold">{{ statistics.total }}</div>
                     <div class="mt-2">
                         <small class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ statistics.active }} active</small>
@@ -57,7 +57,7 @@
         <div class="col-md-4">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
-                    <div class="text-muted fw-bold">High Risk</div>
+                    <div class="text-muted fw-semibold">High Risk</div>
                     <div class="fs-2 fw-bold text-warning">{{ statistics.high_risk }}</div>
                     <div class="mt-2">
                         <small class="text-danger"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ statistics.missing_dpia }} missing DPIA</small>
@@ -68,7 +68,7 @@
         <div class="col-md-4">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
-                    <div class="text-muted fw-bold">Completeness Rate</div>
+                    <div class="text-muted fw-semibold">Completeness Rate</div>
                     <div class="fs-2 fw-bold">{{ statistics.completeness_rate }}%</div>
                     <div class="progress mt-2" style="height: 10px;">
                         <div class="progress-bar bg-success" style="width: {{ statistics.completeness_rate }}%"></div>

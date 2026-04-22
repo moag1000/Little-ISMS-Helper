@@ -19,7 +19,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'border-primary' } %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="card-title text-muted fw-bold">{{ 'audit_log.stats.total_entries'|trans({}, 'audit_log') }}</div>
+                        <div class="card-title text-muted fw-semibold">{{ 'audit_log.stats.total_entries'|trans({}, 'audit_log') }}</div>
                         <p class="display-6 text-primary">{{ statistics.total }}</p>
                     </div>
                 {% endblock %}
@@ -28,7 +28,7 @@
         <div class="col-md-4">
             {% embed '_components/_card.html.twig' with { 'class': 'border-success' } %}
                 {% block card_body %}
-                    <div class="card-title text-muted fw-bold">{{ 'audit_log.stats.top_actions'|trans({}, 'audit_log') }}</div>
+                    <div class="card-title text-muted fw-semibold">{{ 'audit_log.stats.top_actions'|trans({}, 'audit_log') }}</div>
                     {% for stat in statistics.action_stats|slice(0, 5) %}
                         <div class="d-flex justify-content-between">
                             {% include '_components/_badge.html.twig' with { variant: 'primary', content: stat.action } %}
@@ -41,7 +41,7 @@
         <div class="col-md-4">
             {% embed '_components/_card.html.twig' with { 'class': 'border-info' } %}
                 {% block card_body %}
-                    <div class="card-title text-muted fw-bold">{{ 'audit_log.stats.top_entities'|trans({}, 'audit_log') }}</div>
+                    <div class="card-title text-muted fw-semibold">{{ 'audit_log.stats.top_entities'|trans({}, 'audit_log') }}</div>
                     {% for stat in statistics.entity_stats|slice(0, 5) %}
                         <div class="d-flex justify-content-between">
                             <span>{{ stat.entityType }}</span>

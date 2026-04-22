@@ -30,7 +30,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-bold">Affected Processes</div>
+                        <div class="text-muted mb-2 fw-semibold">Affected Processes</div>
                         <div class="fs-2 mb-0">{{ analysis.affected_processes.total_count }}</div>
                         {% if analysis.affected_processes.critical_count > 0 %}
                             {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'mt-2', content: analysis.affected_processes.critical_count ~ ' Critical' } %}
@@ -44,7 +44,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-bold">Financial Impact</div>
+                        <div class="text-muted mb-2 fw-semibold">Financial Impact</div>
                         <div class="fs-2 mb-0">€{{ analysis.financial_impact.total_eur|number_format(0, '.', ',') }}</div>
                         <small class="text-muted">€{{ analysis.financial_impact.per_hour_eur|number_format(2) }}/hour</small>
                     </div>
@@ -56,7 +56,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-bold">Recovery Priority</div>
+                        <div class="text-muted mb-2 fw-semibold">Recovery Priority</div>
                         <div class="fs-3 mb-0">
                             {% set priority_class = {
                                 'immediate': 'danger',
@@ -76,7 +76,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-bold">RTO Compliance</div>
+                        <div class="text-muted mb-2 fw-semibold">RTO Compliance</div>
                         {% if analysis.rto_compliance.is_compliant %}
                             <div class="fs-3 mb-0 text-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Compliant</div>
                         {% else %}

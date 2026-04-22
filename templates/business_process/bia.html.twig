@@ -78,11 +78,11 @@
         {% block card_body %}
             <div class="row">
                 <div class="col-md-6">
-                    <div class="small text-muted text-uppercase fw-bold mb-1">{{ 'business_process.bia.field.damage_per_hour'|trans({}, 'business_process') }}</div>
+                    <div class="small text-muted text-uppercase fw-semibold mb-1">{{ 'business_process.bia.field.damage_per_hour'|trans({}, 'business_process') }}</div>
                     <p class="h3">{{ bia_data.financial_impact_hour ? (bia_data.financial_impact_hour|number_format(2, ',', '.') ~ ' €') : 'business_process.bia.field.not_specified'|trans({}, 'business_process') }}</p>
                 </div>
                 <div class="col-md-6">
-                    <div class="small text-muted text-uppercase fw-bold mb-1">{{ 'business_process.bia.field.damage_per_day'|trans({}, 'business_process') }}</div>
+                    <div class="small text-muted text-uppercase fw-semibold mb-1">{{ 'business_process.bia.field.damage_per_day'|trans({}, 'business_process') }}</div>
                     <p class="h3">{{ bia_data.financial_impact_day ? (bia_data.financial_impact_day|number_format(2, ',', '.') ~ ' €') : 'business_process.bia.field.not_specified'|trans({}, 'business_process') }}</p>
                 </div>
             </div>
@@ -107,7 +107,7 @@
         {% block card_body %}
             <div class="row">
                 <div class="col-md-4">
-                    <div class="small text-muted text-uppercase fw-bold mb-2">{{ 'business_process.bia.field.reputational_impact'|trans({}, 'business_process') }}</div>
+                    <div class="small text-muted text-uppercase fw-semibold mb-2">{{ 'business_process.bia.field.reputational_impact'|trans({}, 'business_process') }}</div>
                     <div class="progress progress-h-30">
                         <div class="progress-bar bg-danger" role="progressbar"
                              style="width: {{ (bia_data.reputational_impact / 5 * 100) }}%">
@@ -116,7 +116,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="small text-muted text-uppercase fw-bold mb-2">{{ 'business_process.bia.field.regulatory_impact'|trans({}, 'business_process') }}</div>
+                    <div class="small text-muted text-uppercase fw-semibold mb-2">{{ 'business_process.bia.field.regulatory_impact'|trans({}, 'business_process') }}</div>
                     <div class="progress progress-h-30">
                         <div class="progress-bar bg-warning" role="progressbar"
                              style="width: {{ (bia_data.regulatory_impact / 5 * 100) }}%">
@@ -125,7 +125,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="small text-muted text-uppercase fw-bold mb-2">{{ 'business_process.bia.field.operational_impact'|trans({}, 'business_process') }}</div>
+                    <div class="small text-muted text-uppercase fw-semibold mb-2">{{ 'business_process.bia.field.operational_impact'|trans({}, 'business_process') }}</div>
                     <div class="progress progress-h-30">
                         <div class="progress-bar bg-info" role="progressbar"
                              style="width: {{ (bia_data.operational_impact / 5 * 100) }}%">
@@ -135,7 +135,7 @@
                 </div>
             </div>
             <div class="mt-3">
-                <div class="small text-muted text-uppercase fw-bold mb-2">{{ 'business_process.bia.field.business_impact_score'|trans({}, 'business_process') }}</div>
+                <div class="small text-muted text-uppercase fw-semibold mb-2">{{ 'business_process.bia.field.business_impact_score'|trans({}, 'business_process') }}</div>
                 <div class="progress progress-h-40">
                     <div class="progress-bar {% if bia_data.business_impact_score >= 4 %}bg-danger{% elseif bia_data.business_impact_score >= 3 %}bg-warning{% else %}bg-success{% endif %}"
                          role="progressbar"
@@ -155,7 +155,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="small text-muted text-uppercase fw-bold mb-2">{{ 'business_process.bia.field.suggested_availability'|trans({}, 'business_process') }}</div>
+            <div class="small text-muted text-uppercase fw-semibold mb-2">{{ 'business_process.bia.field.suggested_availability'|trans({}, 'business_process') }}</div>
             <p class="lead">
                 {{ 'business_process.bia.field.rto_recommendation_intro'|trans({'%rto%': bia_data.rto}, 'business_process') }}
                 {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'fs-5', content: bia_data.suggested_availability ~ '/5' } %}
