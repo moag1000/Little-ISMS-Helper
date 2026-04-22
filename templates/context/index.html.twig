@@ -131,13 +131,13 @@
                 {% endblock %}
                 {% block card_body %}
                     <div class="mb-3">
-                        <label class="text-muted small">{{ 'context.field.organization_name'|trans({}, 'context') }}</label>
+                        <label class="small">{{ 'context.field.organization_name'|trans({}, 'context') }}</label>
                         <div class="h4 mb-0">{{ context.organizationName }}</div>
                     </div>
 
                     {% if context.ismsScope %}
                     <div class="mb-3">
-                        <label class="text-muted small">
+                        <label class="small">
                             <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
                             {{ 'context.field.isms_scope'|trans({}, 'context') }}
                         </label>
@@ -147,7 +147,7 @@
 
                     {% if context.scopeExclusions %}
                     <div class="mb-3">
-                        <label class="text-muted small">
+                        <label class="small">
                             <i class="bi bi-x-circle text-danger" aria-hidden="true"></i>
                             {{ 'context.field.scope_exclusions'|trans({}, 'context') }}
                         </label>
@@ -188,7 +188,7 @@
                 {% block card_body %}
                     {% if context.externalIssues %}
                     <div class="mb-3">
-                        <label class="text-muted small">
+                        <label class="small">
                             <i class="bi bi-globe" aria-hidden="true"></i>
                             {{ 'context.field.external_issues'|trans({}, 'context') }}
                         </label>
@@ -198,7 +198,7 @@
 
                     {% if context.internalIssues %}
                     <div class="mb-3">
-                        <label class="text-muted small">
+                        <label class="small">
                             <i class="bi bi-building" aria-hidden="true"></i>
                             {{ 'context.field.internal_issues'|trans({}, 'context') }}
                         </label>
@@ -236,7 +236,7 @@
                    context.interestedParties wird zusätzlich angezeigt wenn
                    vorhanden (Migrations-Phase) mit Hinweis zur Umpflege. #}
                 <div class="col-md-6">
-                    <label class="text-muted small mb-2">
+                    <label class="small mb-2">
                         <i class="bi bi-people-fill text-primary" aria-hidden="true"></i>
                         {{ 'context.section.interested_parties'|trans({}, 'context') }}
                         {% if interestedPartiesList is defined and interestedPartiesList|length > 0 %}
@@ -285,7 +285,7 @@
                 </div>
                 <div class="col-md-6">
                     {% if context.interestedPartiesRequirements %}
-                    <label class="text-muted small mb-2">
+                    <label class="small mb-2">
                         <i class="bi bi-list-check text-success" aria-hidden="true"></i>
                         {{ 'context.field.interested_parties_requirements'|trans({}, 'context') }}
                     </label>
@@ -315,7 +315,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="requirement-box">
-                        <label class="text-muted small mb-2">
+                        <label class="small mb-2">
                             <i class="bi bi-file-earmark-text text-warning" aria-hidden="true"></i>
                             {{ 'context.section.legal_requirements'|trans({}, 'context') }}
                         </label>
@@ -328,7 +328,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="requirement-box">
-                        <label class="text-muted small mb-2">
+                        <label class="small mb-2">
                             <i class="bi bi-file-earmark-ruled text-info" aria-hidden="true"></i>
                             {{ 'context.section.regulatory_requirements'|trans({}, 'context') }}
                         </label>
@@ -341,7 +341,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="requirement-box">
-                        <label class="text-muted small mb-2">
+                        <label class="small mb-2">
                             <i class="bi bi-file-earmark-check text-success" aria-hidden="true"></i>
                             {{ 'context.section.contractual_obligations'|trans({}, 'context') }}
                         </label>
