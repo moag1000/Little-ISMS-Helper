@@ -18,7 +18,7 @@
                 {% block card_body %}
                     {# Shared Content Preview #}
                     <div class="mb-4">
-                        <h2 class="h6 text-muted mb-3">{{ 'share.content_preview'|trans({}, 'messages') }}</h2>
+                        <h2 class="h6 mb-3">{{ 'share.content_preview'|trans({}, 'messages') }}</h2>
 
                         {% if title %}
                         <div class="mb-2">
@@ -72,7 +72,7 @@
                     <hr>
 
                     {# Action Selection #}
-                    <h2 class="h6 text-muted mb-3">{{ 'share.select_action'|trans({}, 'messages') }}</h2>
+                    <h2 class="h6 mb-3">{{ 'share.select_action'|trans({}, 'messages') }}</h2>
 
                     <form action="{{ path('app_share_process') }}" method="post">
                         <input type="hidden" name="title" value="{{ title }}">
