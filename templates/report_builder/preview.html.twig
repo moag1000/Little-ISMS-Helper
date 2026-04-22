@@ -93,7 +93,8 @@
                                 {% set count = data.matrix[y][x]|default(0) %}
                                 {% set score = y * x %}
                                 {% set bgClass = score >= 15 ? 'bg-danger' : (score >= 8 ? 'bg-warning' : (score >= 4 ? 'bg-info' : 'bg-success')) %}
-                                <td class="{{ bgClass }} text-white">{{ count > 0 ? count : '' }}</td>
+                                {% set fgClass = score >= 8 and score < 15 ? '' : 'text-white' %}
+                                <td class="{{ bgClass }} {{ fgClass }}">{{ count > 0 ? count : '' }}</td>
                                 {% endfor %}
                             </tr>
                             {% endfor %}
