@@ -2202,12 +2202,12 @@ tbody tr {
 }
 
 [data-theme="dark"] tbody {
-    background-color: var(--fg);
+    background-color: var(--surface);
 }
 
 [data-theme="dark"] tbody tr {
     border-bottom-color: var(--border);
-    background-color: var(--fg);
+    background-color: var(--surface);
 }
 
 tbody tr:hover {
@@ -2224,7 +2224,7 @@ tbody td {
 }
 
 [data-theme="dark"] tbody td {
-    color: var(--bs-gray-200);
+    color: var(--fg);
 }
 
 /* Sticky Table Headers */
@@ -2604,7 +2604,8 @@ textarea::placeholder,
     color: var(--fg);
 }
 
-[data-theme="dark"] .form-control {
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select {
     background: var(--surface);
     color: var(--fg);
     border-color: var(--border);
@@ -2630,7 +2631,7 @@ textarea.form-control {
 /* Progress Bar - Cyberpunk Style */
 .progress {
     height: 24px;
-    background-color: var(--fg);
+    background-color: var(--surface-3);
     border-radius: var(--border-radius-sm);
     overflow: hidden;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
