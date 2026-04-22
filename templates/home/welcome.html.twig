@@ -13,7 +13,7 @@
                         <div class="card-header bg-warning-subtle d-flex align-items-center">
                             <i class="bi bi-bell-fill text-warning me-2" aria-hidden="true"></i>
                             <h2 class="h5 mb-0">{{ 'welcome.urgent_tasks.title'|trans({}, 'welcome') }}</h2>
-                            {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark ms-auto', content: total_urgent_count } only %}
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'ms-auto', content: total_urgent_count } only %}
                         </div>
                     {% endblock %}
                     {% block card_body %}
@@ -31,7 +31,7 @@
                                                 } only %}
                                             </div>
                                             <div class="flex-grow-1">
-                                                <div class="fw-semibold text-dark">
+                                                <div class="fw-semibold">
                                                     {{ task.title|trans({'%count%': task.count}, 'welcome') }}
                                                 </div>
                                                 {% if task.top_item_name is defined and task.top_item_name %}
@@ -130,7 +130,7 @@
                                             <div class="card-body">
                                                 <div class="d-flex align-items-center mb-2">
                                                     <i class="bi {{ wizard.icon }} text-{{ wizard.color }} me-2" style="font-size: 1.5rem;" aria-hidden="true"></i>
-                                                    <h3 class="h6 mb-0 text-dark">{{ wizard.code }}</h3>
+                                                    <h3 class="h6 mb-0">{{ wizard.code }}</h3>
                                                 </div>
                                                 <div class="progress mb-2" style="height: 8px;">
                                                     <div class="progress-bar bg-{{ wizard.color }}"
@@ -190,7 +190,7 @@
                                             icon: module.icon
                                         } only %}
                                     </div>
-                                    <h3 class="h6 mb-2 text-dark">{{ module.name_key|trans({}, 'welcome') }}</h3>
+                                    <h3 class="h6 mb-2">{{ module.name_key|trans({}, 'welcome') }}</h3>
                                     {% if module.count is not null %}
                                         {% include '_components/_badge.html.twig' with { variant: module.color, content: module.count } only %}
                                     {% endif %}

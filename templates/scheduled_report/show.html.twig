@@ -172,7 +172,7 @@
                             <strong>{{ 'scheduled_report.next_run'|trans({}, 'scheduled_reports') }}:</strong><br>
                             {{ report.nextRunAt|date('Y-m-d H:i') }}
                             {% if report.isDue() %}
-                            {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark', content: 'scheduled_report.status.due'|trans({}, 'scheduled_reports') } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'scheduled_report.status.due'|trans({}, 'scheduled_reports') } %}
                             {% endif %}
                         </p>
                         {% endif %}
