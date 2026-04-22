@@ -284,6 +284,216 @@ html * {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-CSS-Var-Aliases — Token-Layer
+   Mappe Aurora-Tokens auf --bs-*-Vars, damit Bootstrap-interne Rules
+   (die wir nicht alle explizit überschreiben) automatisch Aurora-
+   Farben erhalten. Gilt für alle Themes; Dark-Forks am Ende.
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+    /* — Flächen / Text — */
+    --bs-body-bg:               var(--bg);
+    --bs-body-color:            var(--fg);
+    --bs-secondary-bg:          var(--surface-2);
+    --bs-tertiary-bg:           var(--surface-3);
+    --bs-body-secondary-color:  var(--fg-2);
+    --bs-body-tertiary-color:   var(--fg-3);
+    --bs-emphasis-color:        var(--fg);
+    --bs-heading-color:         var(--fg);
+
+    /* — Borders — */
+    --bs-border-color:              var(--border);
+    --bs-border-color-translucent:  var(--border);
+
+    /* — Links — */
+    --bs-link-color:       var(--primary-strong);
+    --bs-link-hover-color: var(--primary-hover);
+
+    /* — Primary — */
+    --bs-primary:                   var(--primary);
+    --bs-primary-rgb:               2, 132, 199;
+    --bs-primary-bg-subtle:         var(--primary-tint);
+    --bs-primary-border-subtle:     var(--primary-glow);
+    --bs-primary-text-emphasis:     var(--primary-strong);
+
+    /* — Success — */
+    --bs-success:                   var(--success);
+    --bs-success-bg-subtle:         var(--success-glow);
+    --bs-success-border-subtle:     var(--success-glow);
+    --bs-success-text-emphasis:     var(--success-strong);
+
+    /* — Warning — */
+    --bs-warning:                   var(--warning);
+    --bs-warning-bg-subtle:         var(--warning-glow);
+    --bs-warning-border-subtle:     var(--warning-glow);
+    --bs-warning-text-emphasis:     var(--warning-strong);
+
+    /* — Danger — */
+    --bs-danger:                    var(--danger);
+    --bs-danger-bg-subtle:          var(--danger-glow);
+    --bs-danger-border-subtle:      var(--danger-glow);
+    --bs-danger-text-emphasis:      var(--danger-strong);
+
+    /* — Info (= primary) — */
+    --bs-info:                      var(--primary);
+    --bs-info-bg-subtle:            var(--primary-tint);
+    --bs-info-border-subtle:        var(--primary-glow);
+    --bs-info-text-emphasis:        var(--primary-strong);
+
+    /* — Dropdown — */
+    --bs-dropdown-bg:               var(--surface);
+    --bs-dropdown-color:            var(--fg);
+    --bs-dropdown-border-color:     var(--border);
+    --bs-dropdown-link-color:       var(--fg);
+    --bs-dropdown-link-hover-color: var(--fg);
+    --bs-dropdown-link-hover-bg:    var(--surface-2);
+    --bs-dropdown-link-active-color: var(--on-primary);
+    --bs-dropdown-link-active-bg:   var(--primary-strong);
+    --bs-dropdown-header-color:     var(--fg-2);
+    --bs-dropdown-divider-bg:       var(--border);
+
+    /* — Modal — */
+    --bs-modal-bg:                  var(--surface);
+    --bs-modal-color:               var(--fg);
+    --bs-modal-border-color:        var(--border);
+    --bs-modal-header-border-color: var(--border);
+    --bs-modal-footer-border-color: var(--border);
+
+    /* — Offcanvas — */
+    --bs-offcanvas-bg:              var(--surface);
+    --bs-offcanvas-color:           var(--fg);
+    --bs-offcanvas-border-color:    var(--border);
+
+    /* — Accordion — */
+    --bs-accordion-bg:              var(--surface);
+    --bs-accordion-color:           var(--fg);
+    --bs-accordion-border-color:    var(--border);
+    --bs-accordion-btn-bg:          var(--surface);
+    --bs-accordion-btn-color:       var(--fg);
+    --bs-accordion-active-bg:       var(--primary-tint);
+    --bs-accordion-active-color:    var(--primary-strong);
+
+    /* — Breadcrumb — */
+    --bs-breadcrumb-divider-color:  var(--fg-3);
+
+    /* — Pagination — */
+    --bs-pagination-bg:             var(--surface);
+    --bs-pagination-color:          var(--primary-strong);
+    --bs-pagination-border-color:   var(--border);
+    --bs-pagination-hover-bg:       var(--surface-2);
+    --bs-pagination-hover-color:    var(--primary-hover);
+    --bs-pagination-hover-border-color: var(--border);
+    --bs-pagination-active-bg:      var(--primary-strong);
+    --bs-pagination-active-color:   var(--on-primary);
+    --bs-pagination-active-border-color: var(--primary-strong);
+    --bs-pagination-disabled-bg:    var(--surface);
+    --bs-pagination-disabled-color: var(--fg-3);
+    --bs-pagination-disabled-border-color: var(--border);
+
+    /* — List-Group — */
+    --bs-list-group-bg:             var(--surface);
+    --bs-list-group-color:          var(--fg);
+    --bs-list-group-border-color:   var(--border);
+    --bs-list-group-action-color:   var(--fg);
+    --bs-list-group-action-hover-bg: var(--surface-2);
+    --bs-list-group-action-hover-color: var(--fg);
+    --bs-list-group-active-bg:      var(--primary-strong);
+    --bs-list-group-active-color:   var(--on-primary);
+    --bs-list-group-active-border-color: var(--primary-strong);
+    --bs-list-group-disabled-bg:    var(--surface);
+    --bs-list-group-disabled-color: var(--fg-3);
+
+    /* — Table — */
+    --bs-table-bg:                  var(--surface);
+    --bs-table-color:               var(--fg);
+    --bs-table-border-color:        var(--border);
+    --bs-table-striped-bg:          var(--surface-2);
+    --bs-table-striped-color:       var(--fg);
+    --bs-table-hover-bg:            var(--surface-3);
+    --bs-table-hover-color:         var(--fg);
+    --bs-table-active-bg:           var(--surface-3);
+    --bs-table-active-color:        var(--fg);
+
+    /* — Toast — */
+    --bs-toast-bg:                  var(--surface);
+    --bs-toast-color:               var(--fg);
+    --bs-toast-border-color:        var(--border);
+    --bs-toast-header-bg:           var(--surface-2);
+    --bs-toast-header-color:        var(--fg);
+    --bs-toast-header-border-color: var(--border);
+
+    /* — Popover — */
+    --bs-popover-bg:                var(--surface);
+    --bs-popover-color:             var(--fg);
+    --bs-popover-border-color:      var(--border);
+    --bs-popover-header-bg:         var(--surface-2);
+    --bs-popover-header-color:      var(--fg);
+    --bs-popover-body-color:        var(--fg);
+
+    /* — Tooltip — */
+    --bs-tooltip-bg:                var(--fg);
+    --bs-tooltip-color:             var(--surface);
+
+    /* — Nav — (already set further below; kept here for global context) */
+    --bs-nav-link-color:            var(--fg-2);
+    --bs-nav-link-hover-color:      var(--primary-strong);
+    --bs-nav-link-disabled-color:   var(--fg-3);
+    --bs-nav-tabs-link-active-color: var(--primary-strong);
+    --bs-nav-tabs-link-active-bg:   var(--surface);
+    --bs-nav-tabs-link-active-border-color: var(--border) var(--border) var(--surface);
+    --bs-nav-tabs-border-color:     var(--border);
+    --bs-nav-pills-link-active-color: var(--on-primary);
+    --bs-nav-pills-link-active-bg:  var(--primary-strong);
+
+    /* — Form — */
+    --bs-form-control-bg:           var(--surface);
+    --bs-form-control-color:        var(--fg);
+    --bs-form-control-disabled-bg:  var(--surface-2);
+    --bs-form-select-bg:            var(--surface);
+    --bs-form-select-color:         var(--fg);
+    --bs-form-select-disabled-bg:   var(--surface-2);
+    --bs-form-check-input-bg:       var(--surface);
+    --bs-form-check-input-border:   var(--border-strong);
+    --bs-focus-ring-color:          var(--primary-glow);
+    --bs-input-btn-focus-box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* Dark-Mode-Forks: Active-Backgrounds auf helleres --primary
+   (Dark: --primary ist hell auf dunkel = AAA, nicht --primary-strong) */
+html[data-theme="dark"] {
+    --bs-primary-rgb:               56, 189, 248;
+    --bs-link-color:                var(--primary);
+    --bs-link-hover-color:          var(--primary-hover);
+    --bs-dropdown-link-active-bg:   var(--primary);
+    --bs-pagination-active-bg:      var(--primary);
+    --bs-pagination-active-color:   var(--on-primary);
+    --bs-pagination-active-border-color: var(--primary);
+    --bs-list-group-active-bg:      var(--primary);
+    --bs-list-group-active-border-color: var(--primary);
+    --bs-nav-pills-link-active-bg:  var(--primary);
+    --bs-accordion-active-color:    var(--primary);
+    --bs-tooltip-bg:                var(--surface-2);
+    --bs-tooltip-color:             var(--fg);
+}
+@media (prefers-color-scheme: dark) {
+    html[data-theme="system"] {
+        --bs-primary-rgb:               56, 189, 248;
+        --bs-link-color:                var(--primary);
+        --bs-link-hover-color:          var(--primary-hover);
+        --bs-dropdown-link-active-bg:   var(--primary);
+        --bs-pagination-active-bg:      var(--primary);
+        --bs-pagination-active-color:   var(--on-primary);
+        --bs-pagination-active-border-color: var(--primary);
+        --bs-list-group-active-bg:      var(--primary);
+        --bs-list-group-active-border-color: var(--primary);
+        --bs-nav-pills-link-active-bg:  var(--primary);
+        --bs-accordion-active-color:    var(--primary);
+        --bs-tooltip-bg:                var(--surface-2);
+        --bs-tooltip-color:             var(--fg);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    Base-Typography-Anwendung
    ═══════════════════════════════════════════════════════════════════ */
 
