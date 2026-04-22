@@ -219,7 +219,7 @@
                     {# Corporate Structure Information #}
                     {% if tenant.isPartOfCorporateStructure %}
                         <hr>
-                        <h3 class="text-muted mb-3 h6">
+                        <h3 class="mb-3 h6">
                             <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'corporate.section.structure'|trans({}, 'tenant') }}
                         </h3>
                         {% embed '_components/_table.html.twig' with {
@@ -297,7 +297,7 @@
                              data-tenant-governance-delete-error-text-value="{{ 'corporate.granular.flash.error'|trans({}, 'tenant') }}"
                              data-tenant-governance-organization-label-value="{{ 'corporate.inheritance.organization'|trans({}, 'tenant') }}">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h3 class="text-muted mb-0 h6">
+                            <h3 class="mb-0 h6">
                                 <i class="bi bi-building-gear" aria-hidden="true"></i> {{ 'corporate.inheritance.title'|trans({}, 'tenant') }}
                             </h3>
                             {% if tenant.isCorporateParent %}
@@ -320,7 +320,7 @@
                         {% if tenant.parent %}
                             <hr>
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h3 class="text-muted mb-0 h6">
+                                <h3 class="mb-0 h6">
                                     <i class="bi bi-gear" aria-hidden="true"></i> {{ 'corporate.granular.title'|trans({}, 'tenant') }}
                                 </h3>
                                 <button type="button" class="btn btn-sm btn-success"
@@ -385,7 +385,7 @@
 
                     {% if tenant.settings %}
                         <hr>
-                        <h3 class="text-muted mb-2 h6">{{ 'tenant.field.settings'|trans({}, 'tenant') }}</h3>
+                        <h3 class="mb-2 h6">{{ 'tenant.field.settings'|trans({}, 'tenant') }}</h3>
                         <pre class="bg-body-secondary p-3 rounded small"><code>{{ tenant.settings|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</code></pre>
                     {% endif %}
                 {% endblock %}

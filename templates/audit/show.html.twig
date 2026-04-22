@@ -157,7 +157,7 @@
                 {% block card_body %}
                     {% if audit.findings %}
                     <div class="mb-3">
-                        <h3 class="h6 text-muted">{{ 'audit.findings'|trans({}, 'audit') }}</h3>
+                        <h3 class="h6">{{ 'audit.findings'|trans({}, 'audit') }}</h3>
                         <p>{{ audit.findings|nl2br }}</p>
                     </div>
                     {% endif %}
@@ -192,14 +192,14 @@
                 {% block card_body %}
                     {% if audit.recommendations %}
                     <div class="mb-3">
-                        <h3 class="h6 text-muted">{{ 'audit.recommendations'|trans({}, 'audit') }}</h3>
+                        <h3 class="h6">{{ 'audit.recommendations'|trans({}, 'audit') }}</h3>
                         <p>{{ audit.recommendations|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.conclusion %}
                     <div class="mb-0">
-                        <h3 class="h6 text-muted">{{ 'audit.conclusion'|trans({}, 'audit') }}</h3>
+                        <h3 class="h6">{{ 'audit.conclusion'|trans({}, 'audit') }}</h3>
                         <p>{{ audit.conclusion|nl2br }}</p>
                     </div>
                     {% endif %}
