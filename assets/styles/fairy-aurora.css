@@ -352,6 +352,15 @@ html * {
     --bs-dropdown-header-color:     var(--fg-2);
     --bs-dropdown-divider-bg:       var(--border);
 
+    /* — Card (Bootstrap 5.3 Native-Tokens) — */
+    --bs-card-bg:                   var(--surface);
+    --bs-card-color:                var(--fg);
+    --bs-card-border-color:         var(--border);
+    --bs-card-cap-bg:               var(--surface-2);
+    --bs-card-cap-color:            var(--fg);
+    --bs-card-subtitle-color:       var(--fg-2);
+    --bs-card-title-color:          var(--fg);
+
     /* — Modal — */
     --bs-modal-bg:                  var(--surface);
     --bs-modal-color:               var(--fg);
