@@ -12,6 +12,8 @@ use App\Entity\Risk;
 use App\Entity\User;
 use App\Entity\Tenant;
 use App\Repository\UserRepository;
+use App\Service\RiskApprovalConfigResolver;
+use App\Service\RiskApprovalConfigView;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -37,10 +39,10 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
  */
 class RiskAcceptanceWorkflowService
 {
-    // Approval level thresholds (from Appendix B of audit report)
-    private const int APPROVAL_AUTOMATIC = 3;     // Score <= 3: Auto-accept
-    private const int APPROVAL_MANAGER = 7;       // Score 4-7: Manager approval
-    private const int APPROVAL_EXECUTIVE = 25;    // Score 8-25: Executive approval
+    // Hardcoded Fallback-Werte falls Tenant keine Config hat (Phase 8L.F1:
+    // Werte wanderten in RiskApprovalConfig-Entity per Tenant). Die Defaults
+    // hier sind identisch zu den vorherigen PHP-Constants und werden vom
+    // Resolver gespiegelt (RiskApprovalConfigView::defaults()).
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -49,7 +51,8 @@ class RiskAcceptanceWorkflowService
         private readonly EmailNotificationService $emailNotificationService,
         private readonly UserRepository $userRepository,
         private readonly AuditLogger $auditLogger,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly RiskApprovalConfigResolver $approvalConfigResolver,
     ) {}
 
     /**
@@ -183,11 +186,15 @@ class RiskAcceptanceWorkflowService
     public function determineApprovalLevel(Risk $risk): string
     {
         $residualScore = $risk->getResidualRiskLevel();
-        if ($residualScore <= self::APPROVAL_AUTOMATIC) {
+        $tenant = $risk->getTenant();
+        $config = $tenant instanceof Tenant
+            ? $this->approvalConfigResolver->resolveFor($tenant)
+            : RiskApprovalConfigView::defaults();
+
+        if ($residualScore <= $config->thresholdAutomatic) {
             return 'automatic';
         }
-
-        if ($residualScore <= self::APPROVAL_MANAGER) {
+        if ($residualScore <= $config->thresholdManager) {
             return 'manager';
         }
         return 'executive';
@@ -462,30 +469,36 @@ class RiskAcceptanceWorkflowService
     }
 
     /**
-     * Get approval thresholds configuration
+     * Get approval thresholds configuration — tenant-specific wenn Risk übergeben,
+     * sonst defaults. Werte kommen aus RiskApprovalConfig (Phase 8L.F1).
      *
      * @return array Approval level configuration
      */
-    public function getApprovalThresholds(): array
+    public function getApprovalThresholds(?Risk $risk = null): array
     {
+        $tenant = $risk?->getTenant();
+        $config = $tenant instanceof Tenant
+            ? $this->approvalConfigResolver->resolveFor($tenant)
+            : RiskApprovalConfigView::defaults();
+
         return [
             'automatic' => [
-                'max_score' => self::APPROVAL_AUTOMATIC,
+                'max_score' => $config->thresholdAutomatic,
                 'label' => 'Automatic Acceptance',
-                'description' => 'Low risks (score ≤ 3) are automatically accepted'
+                'description' => sprintf('Low risks (score ≤ %d) are automatically accepted', $config->thresholdAutomatic),
             ],
             'manager' => [
-                'min_score' => self::APPROVAL_AUTOMATIC + 1,
-                'max_score' => self::APPROVAL_MANAGER,
+                'min_score' => $config->thresholdAutomatic + 1,
+                'max_score' => $config->thresholdManager,
                 'label' => 'Manager Approval Required',
-                'description' => 'Medium risks (score 4-7) require manager approval'
+                'description' => sprintf('Medium risks (score %d-%d) require manager approval', $config->thresholdAutomatic + 1, $config->thresholdManager),
             ],
             'executive' => [
-                'min_score' => self::APPROVAL_MANAGER + 1,
-                'max_score' => self::APPROVAL_EXECUTIVE,
+                'min_score' => $config->thresholdManager + 1,
+                'max_score' => $config->thresholdExecutive,
                 'label' => 'Executive Approval Required',
-                'description' => 'High/Critical risks (score 8-25) require executive approval'
-            ]
+                'description' => sprintf('High/Critical risks (score %d-%d) require executive approval', $config->thresholdManager + 1, $config->thresholdExecutive),
+            ],
         ];
     }
 }

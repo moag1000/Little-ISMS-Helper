@@ -40,6 +40,12 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
+        // Phase 8L.F1: neuer Resolver-Dependency. Default-View (3/7/25)
+        // reicht für Tests — Verhalten identisch zu den alten Const-Werten.
+        $approvalResolver = $this->createMock(\App\Service\RiskApprovalConfigResolver::class);
+        $approvalResolver->method('resolveFor')
+            ->willReturn(\App\Service\RiskApprovalConfigView::defaults());
+
         $this->service = new RiskAcceptanceWorkflowService(
             $this->entityManager,
             $this->riskAppetiteService,
@@ -47,7 +53,8 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
             $this->emailNotificationService,
             $this->userRepository,
             $this->auditLogger,
-            $this->logger
+            $this->logger,
+            $approvalResolver,
         );
     }
 
