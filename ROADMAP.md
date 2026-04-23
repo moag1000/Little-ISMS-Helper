@@ -1222,6 +1222,153 @@ Vertraulichkeitsstufen werden pro Tenant konfigurierbar. Alle Reports, Exports, 
 
 ---
 
+### 📅 Phase 8L: Quick-Config — Geschäftliche Schwellwerte aus Code holen
+
+**Zeitraum:** TBD (MUSS vor nächstem Enterprise-Sales-Cycle)
+**Status:** 📅 Backlog — Senior-Consultant-Audit vom 2026-04-23 (Rapport `a050f86be4a963da9`)
+**Priorität:** HOCH (Blocker für Konzern-Kunden-Onboarding)
+**Aufwand:** ~12 Entwicklungstage
+
+**Trigger**
+Consultant-Feedback: "Approval-Schwellwerte in `RiskAcceptanceWorkflowService::APPROVAL_AUTOMATIC=3, MANAGER=7, EXECUTIVE=25` als `private const` ist inakzeptabel für jede Organisation mit eigener Risikopolitik — ein Finanzdienstleister hat andere Schwellen als ein Maschinenbauer." Incident-SLAs ähnlich (`SLA_CRITICAL=2h` hardcoded in `IncidentEscalationWorkflowService`).
+
+**Scope**
+1. **Approval-Schwellwerte raus aus PHP-Code** (3–5 Tage) — `RiskAcceptanceWorkflowService` liest aus `RiskAppetite`-Entity oder neuer `RiskApprovalConfig`-Entity pro Tenant. Admin-UI zum Editieren.
+2. **Incident-SLAs pro Tenant** (4–6 Tage) — neue `IncidentSlaConfig`-Entity (Severity → Response-Time-Hours). Escalation-Service liest dynamisch.
+3. **E-Mail-Branding pro Tenant** (2–3 Tage) — Absender-Name, Absender-Adresse, Logo-URL, Footer-Text als Tenant-Config. `EmailService` liest aus Tenant-Context.
+4. **Audit-Log-Retention-Setting** (1 Tag) — `SystemSettings`-Key `audit_log_retention_days` (Default 730, ISO 27001 Clause 9.1-konform). Cron-Command zum Purgen älterer Einträge.
+
+**Outcome**
+Erster konkreter Konzern-Selling-Point: "Approval-Policies und Incident-SLAs sind per Tenant konfigurierbar." White-Label-Fähigkeit für Holding-Töchter.
+
+---
+
+### 📅 Phase 8M: Holding-Inheritance-Foundation
+
+**Zeitraum:** TBD (nach 8L)
+**Status:** 📅 Backlog — Consultant-Rapport `a050f86be4a963da9`
+**Priorität:** HOCH (erster Holding-USP: Konzern-Governance ohne Code-Customization)
+**Aufwand:** ~10 Entwicklungstage
+**Vorbedingung:** Phase 8L abgeschlossen
+
+**Trigger**
+`Tenant.parent` existiert seit Phase 9.P1, aber **Konfigurations-Inheritance nahezu nicht genutzt**. Holding-Admin kann keine Konzernrichtlinien setzen, die Töchter nicht unterschreiten dürfen.
+
+**Scope**
+1. **Risk-Appetite Holding-Ceiling** (3–5 Tage) — Holding-Tenant setzt Konzern-Maximaltoleranz pro Risk-Kategorie, Child-Tenants haben eigene Appetites aber dürfen Holding-Wert nie überschreiten. Validation-Service, Konzern-CISO-Dashboard ("Rogue-Subsidiary"-Indikator).
+2. **KPI-Threshold Holding-Fallback** (2–3 Tage) — `KpiThresholdConfig` um Holding-Lookup erweitern: Children ohne eigene Config erben Holding-Werte statt Service-Defaults.
+3. **Password-Policy Holding-Floor** (1–2 Tage) — Holding setzt Mindest-Länge + Komplexität, Children dürfen nur strenger sein. Enforcement in `SystemSettings`-Resolver.
+4. **Holding-spezifische Rollen** (2 Tage) — `ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR` für Holding-Tenant-User. Voter-Anpassung für Konzern-übergreifende Read-Only-Views ohne `SUPER_ADMIN`.
+
+**Outcome**
+Holding-Admin kann Konzernrichtlinien setzen, die bindend für Töchter sind. Konzern-CISO sieht Abweichungen/Lockerungen ohne `SUPER_ADMIN`-Rechte.
+
+---
+
+### 📅 Phase 9A: Config-Infrastructure — `SystemSettings` per Tenant
+
+**Zeitraum:** TBD (Q3 2026)
+**Status:** 📅 Backlog — Consultant-Rapport `a050f86be4a963da9`
+**Priorität:** HOCH (fundamentale Infrastruktur, entblockt 9B/9C)
+**Aufwand:** ~18 Entwicklungstage
+**Vorbedingung:** 8L + 8M (operative Erfahrung mit Inheritance-Pattern)
+
+**Trigger**
+`SystemSettings`-Entity hat **kein `tenant_id`** — alle Compliance-Policy-Einstellungen, Session-Lifetime, Password-Min-Length gelten global pro Installation. Kernmangel laut Consultant: "Das ist die fundamentale Infrastruktur-Investition."
+
+**Scope**
+1. **Schema-Migration** `SystemSettings.tenant_id` nullable hinzufügen (null = global/Holding-Baseline, gesetzt = Tenant-Override)
+2. **Generischer Inheritance-Resolver-Service** mit 4 Mustern:
+   - `Floor` (Holding-Wert als Minimum, Child nur strenger) — Password-Policy, Retention
+   - `Ceiling` (Holding-Wert als Maximum, Child nur strenger) — Session-Timeout, Incident-SLA
+   - `Fallback` (Holding-Wert als Default, Child überschreibt frei) — KPI-Thresholds, Branding
+   - `Bindend-Extend` (Child darf nur ergänzen, nicht reduzieren) — Classification-Schema, Framework-Auswahl
+3. **Admin-UI Tenant-Settings** mit Inheritance-Badge ("Von Holding geerbt" / "Override aktiv" / "Nicht überschreibbar")
+4. **Audit-Logging** jedes Tenant-Overrides mit Begründungs-Feld
+
+**Outcome**
+Fundament für alle weiteren Tenant-Konfigurationen. Kein Workaround mehr nötig. Phase 9B/9C bauen direkt darauf auf.
+
+---
+
+### 📅 Phase 9B: Schema-Konfigurierbarkeit
+
+**Zeitraum:** TBD (nach 9A)
+**Status:** 📅 Backlog — Consultant-Rapport `a050f86be4a963da9`. Subsumiert Phase 8K (Classification).
+**Priorität:** HOCH (Enterprise-Feature-Parität mit verinice)
+**Aufwand:** ~22 Entwicklungstage
+**Vorbedingung:** Phase 9A (braucht Config-Infrastructure)
+
+**Trigger**
+Risiko-Matrix fix 5×5, Classification fix 4-stufig, Incident-Kategorien fix 6-stufig. Konzerne mit ISO-31010-Präferenz (3×3 oder 6×6) oder TISAX-5-stufiger Classification können nicht migrieren.
+
+**Scope**
+1. **Risk-Matrix-Größe Tenant-konfigurierbar** (8–12 Tage) — neue `RiskMatrixConfig`-Entity (3×3, 4×4, 5×5, 6×6). `RiskMatrixService` liest dynamisch. Holding gibt erlaubte Größen vor. `LIKELIHOOD_LABELS`/`IMPACT_LABELS` ins Translation-System (auch N-1 Quick Win).
+2. **Data-Classification-Schema als DB-Entity** (10–15 Tage) — subsumiert **Phase 8K Option A** komplett. `DataClassificationLevel`-Entity pro Tenant, Holding-Floor+Extend-Inheritance. `Asset.dataClassification` bleibt Code-String (keine FK-Migration). `Assert\Choice` raus, Lookup-Service mit Redis-Cache.
+3. **Incident-Kategorien Tenant-erweiterbar** (3–4 Tage) — Holding-Baseline (6 Default-Kategorien), Child darf ergänzen.
+
+**Outcome**
+verinice-Ebene für Kernkonfigurationen. Konzern-Onboarding ohne Code-Änderung möglich. TISAX-Enterprise-Kunden-ready.
+
+**Merke:** Phase 8K wird mit 9B zusammengelegt (Classification ist Teil des größeren Schema-Themas; separate Phase ist redundant).
+
+---
+
+### 📅 Phase 9C: Market-Positioning — verinice-Feature-Parität für 80 %-Use-Cases
+
+**Zeitraum:** TBD (nach 9B)
+**Status:** 📅 Backlog — Consultant-Rapport `a050f86be4a963da9`
+**Priorität:** MITTEL (differenzierter Pitch gegen verinice / HiScout)
+**Aufwand:** ~12 Entwicklungstage
+**Vorbedingung:** Phase 9B
+
+**Scope**
+1. **Control-Maturity-Level 0–5** (2–3 Tage) — CMMI-Stil, `Control.maturityLevel` Feld. Tenant-optional (KMU: 0–3 reicht). Ergänzt bestehendes `implementationPercentage`.
+2. **Custom-Rollen-Builder** (5–6 Tage) — Tenant-spezifische Rollen auf Basis existierender Permissions. System-Rollen bleiben global.
+3. **Framework-Auswahl Holding-Mandatierung** (2 Tage) — Holding aktiviert Pflicht-Frameworks, Child opt-out nur mit Begründung (Audit-Log).
+4. **Vier-Augen-Action-Registry konfigurierbar** (4–6 Tage) — statt 4 hardcoded `FourEyesApprovalRequest::ACTION_*`, Tenant kann beliebige Actions als 4-Augen-Pflicht markieren.
+
+**Outcome**
+Feature-Parität mit verinice für die 80 %-Anwendungsfälle. LIH wird ernstzunehmende Alternative statt preiswerte Nische.
+
+---
+
+### 📅 Phase 8N: Workflow-Step-SLAs (optional, mit 9C)
+
+**Status:** 📅 Backlog
+**Aufwand:** ~5–7 Tage
+
+**Scope:** Regulatory-SLAs (GDPR 72h, NIS2 24h/72h, DORA 4h) bleiben fix (nicht konfigurierbar — Gesetz). Aber **interne Step-SLAs** (CISO-Response 1 vs. 2 Tage etc.) in `GenerateRegulatoryWorkflowsCommand` aktuell hardcoded. Template-Ansatz: pro Workflow-Step-Template eine optionale Tenant-Override-Duration.
+
+---
+
+### 📅 Phase 8-QW: Quick Wins (parallel zu 8L ausführbar)
+
+**Status:** 📅 Backlog, je ½–2 Tage
+**Aufwand total:** ~5 Tage
+
+| Quick Win | Aufwand | Scope |
+|---|---|---|
+| **QW-1** Risk-Matrix-Labels ins i18n | 0.5 Tage | `LIKELIHOOD_LABELS`/`IMPACT_LABELS` raus aus PHP-Constants, rein in `risk.{de,en}.yaml` |
+| **QW-2** Risk-Appetite 1.5x-Faktor als Property | 0.5 Tage | `maxAcceptableRisk * 1.5` Puffer-Faktor als konfigurierbare Property auf `RiskAppetite` |
+| **QW-3** Document-Classification-Default per Tenant | 1 Tag | `SystemSetting` `document_default_classification` (Default 'internal') |
+| **QW-4** Password-Min-Holding-Floor | 0.5 Tage | `SystemSettings`-Resolver erzwingt Holding-Mindestwert |
+| **QW-5** Supplier-Kritikalitäts-Stufen Tenant-erweiterbar | 2 Tage | DORA-ICT-Criticality-Schema erweiterbar |
+
+---
+
+### 📅 Bewusst hardcoded (Consultant-Freigabe 2026-04-23)
+
+**Nicht konfigurierbar machen** — regulatorische Festwerte:
+- GDPR 72h-Datenschutzbehörden-Meldefrist (DSGVO Art. 33)
+- NIS2 24h Early-Warning + 72h Detailed Notification (NIS2 Art. 23)
+- DORA 4h Initial Reporting für Major Incidents (EBA/BaFin)
+- Control-Status-Lifecycle (`not_started → planned → in_progress → implemented → verified`) — ISO 27001-Kompatibilität
+- TISAX-Assessment-Level (`AL2`, `AL3`) — VDA/ENX-Vorgabe
+- GDPR Art. 6 Rechtsgrundlagen-Enum — gesetzlicher Katalog
+
+---
+
 ## 🏢 Phase 9: Holding/Konzern-Struktur (P1 + P2 ✅, P3 optional)
 
 **Zeitraum:** 2026 Q2–Q3
