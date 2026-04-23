@@ -284,3 +284,27 @@ corporate:
             error: Error
         confirm:
             delete: Delete
+    email:
+        title: 'Email Branding'
+        subtitle: 'Sender, logo, and footer for emails per tenant. Empty fields inherit from the holding parent, then SystemSettings, then default.'
+        section:
+            branding: 'Branding Settings'
+            effective: 'Effective Values (after fallback cascade)'
+        effective_hint: 'These values are used when sending — if your own fields are empty, they come from parent tenant or SystemSettings.'
+        field:
+            from_name: 'Sender Name'
+            from_address: 'Sender Email Address'
+            logo_url: 'Logo URL (HTTPS)'
+            footer_text: 'Footer Text'
+            support_address: 'Support Email Address'
+        help:
+            from_name: 'Appears in the "From" field. Example: ACME Inc. Compliance.'
+            from_address: 'Sender address. Must be authorized in the mail server (SPF/DKIM).'
+            logo_url: 'Full HTTPS URL to the logo (shown at the top of HTML emails).'
+            footer_text: 'Legal notes / signature below email. Max 2000 characters, plain text.'
+            support_address: 'Reply-to / support contact — may differ from sender.'
+        hint:
+            fallback: 'Empty field → parent tenant → SystemSettings (category=email) → hardcoded default.'
+        logo_url:
+            https_only: 'HTTPS URLs only (otherwise mixed content in HTML emails).'
+        saved: 'Email branding saved.'
