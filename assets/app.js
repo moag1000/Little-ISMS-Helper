@@ -16,6 +16,22 @@ import './csrf_protection.js';
 import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;
 
+// Chart.js global für Template-Inline-Scripts (report_builder, analytics, compliance)
+// Registriert alle Komponenten einmalig; Stimulus-Chart-Controller nutzt denselben Global.
+import {
+    Chart,
+    ArcElement, BarElement, LineElement, PointElement,
+    CategoryScale, LinearScale, RadialLinearScale, TimeScale,
+    Title, Tooltip, Legend, Filler, SubTitle
+} from 'chart.js';
+
+Chart.register(
+    ArcElement, BarElement, LineElement, PointElement,
+    CategoryScale, LinearScale, RadialLinearScale, TimeScale,
+    Title, Tooltip, Legend, Filler, SubTitle
+);
+window.Chart = Chart;
+
 // Initialize Bootstrap tooltips on page load and Turbo navigation
 function initTooltips() {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
