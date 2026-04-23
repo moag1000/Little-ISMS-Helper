@@ -1,0 +1,29 @@
+incident_sla:
+    title: 'Incident SLAs'
+    subtitle: 'Response times per severity per tenant. Applies in addition to regulatory deadlines (GDPR 72h / NIS2 24h / DORA 4h — these remain fixed).'
+    section:
+        list: 'Severity List'
+        edit: 'Edit SLA'
+    edit:
+        title: 'SLA: %severity%'
+    back_to_list: 'Back to list'
+    severity:
+        low: 'Low'
+        medium: 'Medium'
+        high: 'High'
+        critical: 'Critical'
+        breach: 'Data Breach'
+    field:
+        severity: 'Severity'
+        response_hours: 'Response Time (hours)'
+        escalation_hours: 'Escalation Time (hours)'
+        resolution_hours: 'Resolution Time (hours)'
+        note: 'Note'
+    help:
+        response_hours: 'Deadline for first response after detection. Must be greater than 0.'
+        escalation_hours: 'Optional: after this time escalate if no acknowledgement.'
+        resolution_hours: 'Optional: soft KPI for dashboard. No automatic escalation.'
+    updated_at: 'Last updated'
+    saved: 'SLA saved.'
+    hint:
+        regulatory: 'Regulatory deadlines (GDPR Art. 33, NIS2 Art. 23, DORA Art. 19) apply additionally and remain fixed. Values set here are internal business SLAs.'

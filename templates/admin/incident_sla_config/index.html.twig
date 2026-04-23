@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'incident_sla.title'|trans({}, 'incident_sla') }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row mb-3">
+        <div class="col">
+            <h1>
+                <i class="bi bi-stopwatch" aria-hidden="true"></i>
+                {{ 'incident_sla.title'|trans({}, 'incident_sla') }}
+            </h1>
+            <p class="lead">{{ 'incident_sla.subtitle'|trans({}, 'incident_sla') }}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-10">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-list-ol" aria-hidden="true"></i>
+                            {{ 'incident_sla.section.list'|trans({}, 'incident_sla') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th scope="col">{{ 'incident_sla.field.severity'|trans({}, 'incident_sla') }}</th>
+                                    <th scope="col">{{ 'incident_sla.field.response_hours'|trans({}, 'incident_sla') }}</th>
+                                    <th scope="col">{{ 'incident_sla.field.escalation_hours'|trans({}, 'incident_sla') }}</th>
+                                    <th scope="col">{{ 'incident_sla.field.resolution_hours'|trans({}, 'incident_sla') }}</th>
+                                    <th scope="col">{{ 'incident_sla.updated_at'|trans({}, 'incident_sla') }}</th>
+                                    <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for config in configs %}
+                                    {% set variant = (config.severity == 'breach' or config.severity == 'critical') ? 'danger' : (config.severity == 'high' ? 'warning' : (config.severity == 'medium' ? 'info' : 'secondary')) %}
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-{{ variant }}">
+                                                {{ ('incident_sla.severity.' ~ config.severity)|trans({}, 'incident_sla') }}
+                                            </span>
+                                        </td>
+                                        <td><strong>{{ config.responseHours }}h</strong></td>
+                                        <td>{{ config.escalationHours ? config.escalationHours ~ 'h' : '—' }}</td>
+                                        <td>{{ config.resolutionHours ? config.resolutionHours ~ 'h' : '—' }}</td>
+                                        <td class="small text-muted">
+                                            {{ config.updatedAt ? config.updatedAt|date('d.m.Y H:i') : '—' }}
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="{{ path('app_admin_incident_sla_config_edit', {id: config.id}) }}"
+                                               class="btn btn-sm btn-outline-primary"
+                                               aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="alert alert-info small mb-0 mt-3">
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        {{ 'incident_sla.hint.regulatory'|trans({}, 'incident_sla') }}
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+</div>
+{% endblock %}

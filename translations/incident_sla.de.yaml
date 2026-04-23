@@ -1,0 +1,29 @@
+incident_sla:
+    title: 'Incident-SLAs'
+    subtitle: 'Response-Zeiten pro Severity pro Mandant. Gilt zusätzlich zu regulatorischen Fristen (GDPR 72h / NIS2 24h / DORA 4h — die bleiben fix).'
+    section:
+        list: 'Severity-Liste'
+        edit: 'SLA bearbeiten'
+    edit:
+        title: 'SLA: %severity%'
+    back_to_list: 'Zurück zur Übersicht'
+    severity:
+        low: 'Niedrig'
+        medium: 'Mittel'
+        high: 'Hoch'
+        critical: 'Kritisch'
+        breach: 'Data-Breach'
+    field:
+        severity: 'Severity'
+        response_hours: 'Response-Zeit (Stunden)'
+        escalation_hours: 'Eskalations-Zeit (Stunden)'
+        resolution_hours: 'Resolution-Zeit (Stunden)'
+        note: 'Notiz'
+    help:
+        response_hours: 'Frist für die erste Reaktion nach Detection. Muss größer als 0 sein.'
+        escalation_hours: 'Optional: nach dieser Zeit wird eskaliert wenn kein Acknowledgement.'
+        resolution_hours: 'Optional: Soft-KPI für Dashboard. Wird nicht automatisch eskaliert.'
+    updated_at: 'Zuletzt geändert'
+    saved: 'SLA gespeichert.'
+    hint:
+        regulatory: 'Regulatorische Fristen (GDPR Art. 33, NIS2 Art. 23, DORA Art. 19) gelten zusätzlich und bleiben unveränderbar. Die hier gesetzten Werte sind interne Business-SLAs.'

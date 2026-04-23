@@ -45,13 +45,22 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $this->urlGenerator->method('generate')
             ->willReturn('https://example.com/incident/1');
 
+        // Phase 8L.F2: SLA-Resolver liefert Default-Werte identisch zu den alten
+        // Const-Werten (SLA_LOW=48 etc.) — Test-Verhalten unverändert.
+        $slaResolver = $this->createMock(\App\Service\IncidentSlaConfigResolver::class);
+        $slaResolver->method('resolveFor')
+            ->willReturnCallback(function ($tenant, string $severity) {
+                return \App\Service\IncidentSlaView::fromDefault($severity);
+            });
+
         $this->service = new IncidentEscalationWorkflowService(
             $this->workflowService,
             $this->emailService,
             $this->userRepository,
             $this->auditLogger,
             $this->logger,
-            $this->urlGenerator
+            $this->urlGenerator,
+            $slaResolver,
         );
     }
 
