@@ -72,7 +72,7 @@
                                 {% set variant = level_variant[m.level] ?? 'secondary' %}
                                 <tr>
                                     <td>
-                                        <span class="badge bg-body-secondary text-body border">{{ code }}</span>
+                                        <span class="badge bg-body-secondary border">{{ code }}</span>
                                         <span class="ms-1">{{ row.framework.name }}</span>
                                     </td>
                                     <td>
@@ -274,13 +274,18 @@
 </div>
 
 <style>
-/* Quick Access Bar */
+/* Quick Access Bar — Aurora-Tokens, theme-aware */
 .quick-access-bar {
-    background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-md);
+    background: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     padding: var(--spacing-lg);
     margin-bottom: var(--spacing-lg);
+}
+html[data-theme="dark"] .quick-access-bar {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .quick-access-header {
@@ -293,12 +298,13 @@
 .quick-access-header h3 {
     margin: 0;
     font-size: 1.1rem;
-    color: var(--color-primary);
+    color: var(--primary-strong);
 }
+html[data-theme="dark"] .quick-access-header h3 { color: var(--primary); }
 
 .quick-access-hint {
     font-size: 0.8rem;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
 }
 
 .quick-access-items {
@@ -312,11 +318,14 @@
     flex-direction: column;
     align-items: center;
     padding: var(--spacing-md);
-    background: var(--color-background);
-    border-radius: var(--border-radius);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
     text-decoration: none;
-    color: var(--color-text);
-    transition: all 0.2s;
+    color: var(--fg);
+    transition: transform var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out),
+                border-color var(--t-fast) var(--ease-out),
+                background-color var(--t-fast) var(--ease-out);
     min-width: 100px;
     position: relative;
     border: 2px solid transparent;
@@ -324,13 +333,13 @@
 
 .quick-access-item:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--color-primary);
-    background: white;
+    box-shadow: 0 4px 12px var(--primary-glow);
+    border-color: var(--primary);
+    background: var(--surface);
 }
 
 .quick-access-item.mandatory {
-    border-color: rgba(220, 53, 69, 0.3);
+    border-color: var(--danger-glow);
 }
 
 .quick-access-item.mandatory:hover {
@@ -340,9 +349,10 @@
 .quick-access-code {
     font-weight: 700;
     font-size: 1rem;
-    color: var(--color-primary);
+    color: var(--primary-strong);
     margin-bottom: var(--spacing-xs);
 }
+html[data-theme="dark"] .quick-access-code { color: var(--primary); }
 
 .quick-access-progress {
     width: 100%;
@@ -351,8 +361,8 @@
 
 .progress-bar-mini {
     height: 6px;
-    background: var(--color-border);
-    border-radius: 3px;
+    background: var(--surface-3);
+    border-radius: var(--r-sm);
     overflow: hidden;
     margin-bottom: 4px;
 }
@@ -361,11 +371,14 @@
     height: 100%;
     transition: width 0.3s;
 }
+.progress-fill-mini.progress-success { background: var(--success); }
+.progress-fill-mini.progress-warning { background: var(--warning); }
+.progress-fill-mini.progress-danger  { background: var(--danger); }
 
 .progress-text {
     font-size: 0.75rem;
     font-weight: 600;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
 }
 
 .mandatory-indicator {
@@ -373,7 +386,7 @@
     top: -5px;
     right: -5px;
     background: var(--danger);
-    color: white;
+    color: var(--on-danger);
     font-size: 0.7rem;
     font-weight: 700;
     width: 18px;
@@ -382,9 +395,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.4);
+    box-shadow: 0 2px 4px var(--danger-glow);
 }
 
+/* Framework-Grid + Card */
 .framework-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
@@ -393,21 +407,27 @@
 }
 
 .framework-card {
-    background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-md);
+    background: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out);
+}
+html[data-theme="dark"] .framework-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .framework-card:hover {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 8px 24px var(--primary-glow);
 }
 
 .framework-header {
     padding: var(--spacing-lg);
-    color: white;
+    color: var(--on-primary);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -417,6 +437,7 @@
     margin: 0;
     font-size: 1.5rem;
     font-weight: bold;
+    color: inherit;
 }
 
 .framework-subtitle {
@@ -427,6 +448,8 @@
 
 .framework-body {
     padding: var(--spacing-xl);
+    background: var(--surface);
+    color: var(--fg);
     text-align: center;
 }
 
@@ -460,16 +483,17 @@
 }
 
 .circular-chart .percentage {
-    fill: var(--color-primary);
+    fill: var(--primary-strong);
     font-size: 0.5em;
     font-weight: bold;
     text-anchor: middle;
 }
+html[data-theme="dark"] .circular-chart .percentage { fill: var(--primary); }
 
 .compliance-label {
     text-align: center;
     margin-top: var(--spacing-sm);
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
     font-size: 0.9rem;
 }
 
@@ -480,8 +504,8 @@
     gap: var(--spacing-xl);
     margin: var(--spacing-lg) 0;
     padding: var(--spacing-md);
-    background: var(--color-background);
-    border-radius: var(--border-radius);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
 }
 
 .quick-stat {
@@ -492,13 +516,14 @@
     display: block;
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--color-primary);
+    color: var(--primary-strong);
     margin-bottom: var(--spacing-xs);
 }
+html[data-theme="dark"] .quick-value { color: var(--primary); }
 
 .quick-label {
     font-size: 0.85rem;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
 }
 
 .btn-block {
@@ -515,12 +540,13 @@
     display: flex;
     justify-content: space-between;
     padding: var(--spacing-xs) 0;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
 }
 
 .info-row .label {
     font-weight: 600;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
 }
 
 .compliance-progress {
@@ -532,17 +558,19 @@
     justify-content: space-between;
     margin-bottom: var(--spacing-xs);
     font-weight: 600;
+    color: var(--fg);
 }
 
 .progress-value {
-    color: var(--color-primary);
+    color: var(--primary-strong);
     font-size: 1.2rem;
 }
+html[data-theme="dark"] .progress-value { color: var(--primary); }
 
 .progress-bar {
     height: 24px;
-    background: var(--color-background);
-    border-radius: var(--border-radius);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
     overflow: hidden;
 }
 
@@ -565,12 +593,13 @@
 .stat-value {
     font-size: 2rem;
     font-weight: bold;
-    color: var(--color-primary);
+    color: var(--primary-strong);
 }
+html[data-theme="dark"] .stat-value { color: var(--primary); }
 
 .stat-label {
     font-size: 0.85rem;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
 }
 
 .framework-actions {
@@ -589,8 +618,9 @@
 .stat-box {
     text-align: center;
     padding: var(--spacing-lg);
-    background: var(--color-background);
-    border-radius: var(--border-radius);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+    color: var(--fg);
 }
 
 .stat-icon {
@@ -601,11 +631,12 @@
 .stat-number {
     font-size: 2.5rem;
     font-weight: bold;
-    color: var(--color-primary);
+    color: var(--primary-strong);
 }
+html[data-theme="dark"] .stat-number { color: var(--primary); }
 
 .stat-text {
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
     margin-top: var(--spacing-xs);
 }
 
@@ -618,6 +649,7 @@
 .benefit-item {
     text-align: center;
     padding: var(--spacing-md);
+    color: var(--fg);
 }
 
 .benefit-icon {
@@ -628,13 +660,14 @@
 .benefit-item strong {
     display: block;
     margin-bottom: var(--spacing-sm);
-    color: var(--color-primary);
+    color: var(--primary-strong);
     font-size: 1.1rem;
 }
+html[data-theme="dark"] .benefit-item strong { color: var(--primary); }
 
 .benefit-item p {
     margin: 0;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
     font-size: 0.9rem;
 }
 </style>
