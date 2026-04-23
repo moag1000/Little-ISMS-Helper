@@ -81,3 +81,21 @@ audit_log:
     changes: Changes
     old_values: 'Old Values'
     new_values: 'New Values'
+    retention:
+        title: 'Audit Log Retention Period'
+        subtitle: 'Central retention policy for all audit log entries.'
+        setting_title: 'Set Retention Period'
+        field:
+            days: 'Retention Period (days)'
+            help: 'Between %min% and %max% days. Default: %default% (equals 2 years, ISO 27001 Clause 9.1).'
+        warning: 'Change only after consultation with Data Protection / Compliance. GDPR Art. 5.1(e) requires minimization; NIS2 Art. 21.2 requires at least 365 days.'
+        saved: 'Retention period saved.'
+        csrf_invalid: 'Security token invalid. Please try again.'
+        error:
+            min: 'Retention period must be at least 365 days (NIS2 Art. 21.2).'
+            max: 'Retention period must not exceed 3650 days (10 years).'
+        compliance_title: 'Regulatory Basis'
+        compliance:
+            gdpr: 'Storage limitation — personal data must not be kept longer than necessary.'
+            nis2: 'Audit logs must be retained for at least 12 months.'
+            iso: 'Event logging — verifiable retention required.'

@@ -336,6 +336,9 @@
                         <a href="{{ path('app_audit_log_index') }}" class="btn btn-outline-info">
                             <i class="bi bi-journal-text" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.view_logs'|trans({}, 'admin') }}
                         </a>
+                        <a href="{{ path('app_admin_audit_retention') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-archive" aria-hidden="true"></i> {{ 'audit_log.retention.title'|trans({}, 'audit_log') }}
+                        </a>
                     </div>
                 {% endblock %}
             {% endembed %}

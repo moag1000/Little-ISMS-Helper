@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'audit_log.retention.title'|trans({}, 'audit_log') }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row mb-3">
+        <div class="col">
+            <h1>
+                <i class="bi bi-archive" aria-hidden="true"></i>
+                {{ 'audit_log.retention.title'|trans({}, 'audit_log') }}
+            </h1>
+            <p class="lead">{{ 'audit_log.retention.subtitle'|trans({}, 'audit_log') }}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-sliders" aria-hidden="true"></i>
+                            {{ 'audit_log.retention.setting_title'|trans({}, 'audit_log') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <form method="post" action="{{ path('app_admin_audit_retention') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('audit_retention') }}">
+
+                        <div class="mb-3">
+                            <label for="retention_days" class="form-label fw-semibold">
+                                {{ 'audit_log.retention.field.days'|trans({}, 'audit_log') }}
+                            </label>
+                            <input type="number"
+                                   class="form-control"
+                                   id="retention_days"
+                                   name="retention_days"
+                                   value="{{ retention_days }}"
+                                   min="{{ min_days }}"
+                                   max="{{ max_days }}"
+                                   step="1"
+                                   required
+                                   aria-describedby="retention_help">
+                            <div id="retention_help" class="form-text">
+                                {{ 'audit_log.retention.field.help'|trans({'%min%': min_days, '%max%': max_days, '%default%': default_days}, 'audit_log') }}
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning small mb-3">
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            {{ 'audit_log.retention.warning'|trans({}, 'audit_log') }}
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save" aria-hidden="true"></i>
+                                {{ 'common.save'|trans({}, 'messages') }}
+                            </button>
+                        </div>
+                    </form>
+                {% endblock %}
+            {% endembed %}
+
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h6 mb-0">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            {{ 'audit_log.retention.compliance_title'|trans({}, 'audit_log') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">DSGVO Art. 5.1(e)</dt>
+                        <dd class="col-sm-8">{{ 'audit_log.retention.compliance.gdpr'|trans({}, 'audit_log') }}</dd>
+
+                        <dt class="col-sm-4">NIS2 Art. 21.2</dt>
+                        <dd class="col-sm-8">{{ 'audit_log.retention.compliance.nis2'|trans({}, 'audit_log') }}</dd>
+
+                        <dt class="col-sm-4">ISO 27001 Clause 9.1</dt>
+                        <dd class="col-sm-8">{{ 'audit_log.retention.compliance.iso'|trans({}, 'audit_log') }}</dd>
+                    </dl>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+</div>
+{% endblock %}

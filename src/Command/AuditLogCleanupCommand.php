@@ -3,6 +3,8 @@
 namespace App\Command;
 
 use App\Repository\AuditLogRepository;
+use App\Repository\SystemSettingsRepository;
+use App\Service\AuditLogger;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -59,23 +61,33 @@ The <info>%command.name%</info> command cleans up old audit logs according to re
 TXT)]
 class AuditLogCleanupCommand
 {
-    public function __construct(private readonly AuditLogRepository $auditLogRepository, private readonly EntityManagerInterface $entityManager, private readonly int $retentionDays = 365)
-    {
+    /** Hardcoded fallback wenn SystemSettings-Lookup fehlschlägt (Robustheit). */
+    private const int DEFAULT_RETENTION_DAYS = 730;
+    /** NIS2 Art. 21.2 — mind. 12 Monate. */
+    private const int MIN_RETENTION_DAYS = 365;
+
+    public function __construct(
+        private readonly AuditLogRepository $auditLogRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly SystemSettingsRepository $systemSettingsRepository,
+        private readonly AuditLogger $auditLogger,
+    ) {
     }
 
     public function __invoke(
         #[Option(description: 'Show which logs would be deleted without actually deleting them', name: 'dry-run')]
         bool $dryRun = false,
-        #[Option(description: 'Number of days to retain audit logs (overrides config)', name: 'retention-days')]
+        #[Option(description: 'Number of days to retain audit logs (overrides SystemSettings)', name: 'retention-days')]
         ?int $retentionDays = null,
         ?SymfonyStyle $symfonyStyle = null
     ): int
     {
-        // Use configured retention days if not overridden
-        $retentionDays ??= $this->retentionDays;
+        // Resolve retention from SystemSettings (global Setting, kein Tenant-Override)
+        // Ceiling: Wenn Setting gelöscht oder korrupt → DEFAULT_RETENTION_DAYS (730, ISO 27001 Clause 9.1).
+        $retentionDays ??= $this->resolveRetentionDays();
 
         // NIS2 Compliance Check: minimum 12 months (365 days)
-        if ($retentionDays < 365) {
+        if ($retentionDays < self::MIN_RETENTION_DAYS) {
             $symfonyStyle->error([
                 'Retention period must be at least 365 days (12 months) for NIS2 Art. 21.2 compliance!',
                 sprintf('Requested: %d days', $retentionDays),
@@ -141,6 +153,22 @@ class AuditLogCleanupCommand
         $deletedCount = $this->auditLogRepository->deleteOldLogs($cutoffDate);
         $this->entityManager->flush();
         $duration = round(microtime(true) - $startTime, 2);
+
+        // Meta-Evidence: den Lösch-Vorgang selbst in den Audit-Log schreiben.
+        $this->auditLogger->logCustom(
+            action: 'audit_log_purge',
+            entityType: 'AuditLog',
+            entityId: null,
+            newValues: [
+                'deleted_count' => $deletedCount,
+                'cutoff_date' => $cutoffDate->format('Y-m-d H:i:s'),
+                'retention_days' => $retentionDays,
+                'duration_seconds' => $duration,
+            ],
+            description: sprintf('Purged %d audit log entries older than %s (retention: %d days)', $deletedCount, $cutoffDate->format('Y-m-d'), $retentionDays),
+            userName: 'system:audit-log:cleanup',
+        );
+
         $symfonyStyle->section('Results');
         $symfonyStyle->success([
             sprintf('Successfully deleted %d audit log entries', $deletedCount),
@@ -148,7 +176,21 @@ class AuditLogCleanupCommand
             sprintf('Retention policy: %d days (%d months)', $retentionDays, round($retentionDays / 30)),
             'DSGVO Art. 5.1(e): ✅ Compliant',
             'NIS2 Art. 21.2: ✅ Compliant',
+            'Purge-Vorgang selbst als AuditLog-Eintrag erzeugt (Meta-Evidence).',
         ]);
         return Command::SUCCESS;
+    }
+
+    /**
+     * Read retention from SystemSettings (category=audit, key=retention_days).
+     * Falls Setting fehlt oder korrupt → hardcoded Default (ISO 27001 Clause 9.1).
+     */
+    private function resolveRetentionDays(): int
+    {
+        $raw = $this->systemSettingsRepository->getSetting('audit', 'retention_days', self::DEFAULT_RETENTION_DAYS);
+        if (!is_int($raw) && !(is_string($raw) && ctype_digit($raw))) {
+            return self::DEFAULT_RETENTION_DAYS;
+        }
+        return (int) $raw;
     }
 }
