@@ -1023,7 +1023,7 @@ class RestoreService
         $uniqueFieldsMap = [
             'Role' => ['name'],
             'User' => ['email'],
-            'Tenant' => ['slug'],
+            'Tenant' => ['code'],  // Tenant uses 'code' (UniqueEntity), NOT 'slug'
             'Permission' => ['name'],
             'ComplianceFramework' => ['code'],
             'Control' => ['controlId'],
@@ -1052,6 +1052,14 @@ class RestoreService
             'Location' => 6,
             'Supplier' => 7,
             'SystemSettings' => 8,
+
+            // Configuration entities (Phase 8 / QW-5) — FK: Tenant, User
+            'RiskApprovalConfig' => 9,
+            'IncidentSlaConfig' => 9,
+            'SupplierCriticalityLevel' => 9,
+            'KpiThresholdConfig' => 9,
+            'Tag' => 9,             // FK: Tenant only
+            'EntityTag' => 9,       // FK: Tag, User — must come after Tag
 
             // Framework/Control entities (depend on base)
             'ComplianceFramework' => 10,
@@ -1085,34 +1093,48 @@ class RestoreService
             'DataProtectionImpactAssessment' => 41,
             'DataBreach' => 42,
             'Consent' => 43,
+            'DataSubjectRequest' => 44,  // FK: ProcessingActivity, Tenant, User
 
             // Documents & Training
             'Document' => 45,
             'Training' => 46,
 
-            // Audit & Reviews
+            // Audit & Reviews — AuditFinding depends on InternalAudit
             'InternalAudit' => 50,
             'AuditChecklist' => 51,
-            'ManagementReview' => 52,
+            'AuditFinding' => 52,        // FK: Tenant, InternalAudit, Control, User
+            'CorrectiveAction' => 53,    // FK: Tenant, AuditFinding, User
+            'AuditFreeze' => 54,         // FK: Tenant, User (tamper-evident)
+            'ManagementReview' => 55,
+
+            // DORA — ManyToMany on AuditFinding (already restored at 52)
+            'ThreatLedPenetrationTest' => 56,  // FK: Tenant; M2M: AuditFinding
 
             // Context & Objectives
-            'ISMSContext' => 55,
-            'ISMSObjective' => 56,
-            'CorporateGovernance' => 57,
+            'ISMSContext' => 58,
+            'ISMSObjective' => 59,
+            'CorporateGovernance' => 60,
 
             // Operations
-            'ChangeRequest' => 60,
-            'CryptographicOperation' => 61,
-            'PhysicalAccessLog' => 62,
+            'ChangeRequest' => 62,
+            'CryptographicOperation' => 63,
+            'PhysicalAccessLog' => 64,
+            'FourEyesApprovalRequest' => 65,  // FK: Tenant, User (requester/approver/reviewer)
 
             // Mapping entities (depend on requirements and controls)
-            'ComplianceMapping' => 65,
-            'MappingGapItem' => 66,
+            'ComplianceMapping' => 67,
+            'MappingGapItem' => 68,
 
             // Workflows
             'Workflow' => 70,
             'WorkflowStep' => 71,
             'WorkflowInstance' => 72,
+
+            // Reports & Snapshots
+            'ScheduledReport' => 75,
+            'CustomReport' => 76,
+            'AppliedBaseline' => 77,    // FK: Tenant, User
+            'KpiSnapshot' => 78,        // FK: Tenant
 
             // User Preferences
             'DashboardLayout' => 80,
