@@ -345,6 +345,9 @@
                         <a href="{{ path('app_admin_tenant_email_branding') }}" class="btn btn-outline-secondary">
                             <i class="bi bi-envelope-paper" aria-hidden="true"></i> {{ 'tenant.email.title'|trans({}, 'tenant') }}
                         </a>
+                        <a href="{{ path('app_admin_incident_sla_config') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-stopwatch" aria-hidden="true"></i> {{ 'incident_sla.title'|trans({}, 'incident_sla') }}
+                        </a>
                     </div>
                 {% endblock %}
             {% endembed %}

@@ -60,8 +60,22 @@ class IncidentEscalationWorkflowService
         private readonly UserRepository $userRepository,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
-        private readonly UrlGeneratorInterface $urlGenerator
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly IncidentSlaConfigResolver $slaResolver,
     ) {}
+
+    /**
+     * Phase 8L.F2: SLA aus Tenant-Config für gegebene Severity. Fällt auf
+     * hardcoded Default zurück wenn Tenant oder Config fehlt.
+     */
+    private function getSlaHours(Incident $incident, string $severity): int
+    {
+        $tenant = $incident->getTenant();
+        if (!$tenant instanceof \App\Entity\Tenant) {
+            return \App\Entity\IncidentSlaConfig::DEFAULTS[$severity] ?? 24;
+        }
+        return $this->slaResolver->resolveFor($tenant, $severity)->responseHours;
+    }
 
     /**
      * Automatically escalate incident based on severity and breach status
@@ -184,7 +198,7 @@ class IncidentEscalationWorkflowService
         $management = $this->findUsersByRole('ROLE_MANAGER');
 
         // Calculate SLA deadline
-        $slaDeadline = new DateTimeImmutable()->modify('+' . self::SLA_CRITICAL . ' hours');
+        $slaDeadline = new DateTimeImmutable()->modify('+' . $this->getSlaHours($incident, 'critical') . ' hours');
 
         // Create workflow for critical incident response
         $workflowInstance = $this->workflowService->startWorkflow(
@@ -239,7 +253,7 @@ class IncidentEscalationWorkflowService
             'workflow_started' => $workflowInstance instanceof WorkflowInstance,
             'workflow_instance' => $workflowInstance,
             'sla_deadline' => $slaDeadline,
-            'sla_hours' => self::SLA_CRITICAL,
+            'sla_hours' => $this->getSlaHours($incident, 'critical'),
             'notified_users' => $notifiedUsers,
             'requires_approval' => false,
             'auto_notification' => true,
@@ -261,7 +275,7 @@ class IncidentEscalationWorkflowService
         $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
         $ciso = $this->findUserByRole('ROLE_CISO');
 
-        $slaDeadline = new DateTimeImmutable()->modify('+' . self::SLA_HIGH . ' hours');
+        $slaDeadline = new DateTimeImmutable()->modify('+' . $this->getSlaHours($incident, 'high') . ' hours');
 
         // Create workflow for high severity response
         $workflowInstance = $this->workflowService->startWorkflow(
@@ -309,7 +323,7 @@ class IncidentEscalationWorkflowService
             'workflow_started' => $workflowInstance instanceof WorkflowInstance,
             'workflow_instance' => $workflowInstance,
             'sla_deadline' => $slaDeadline,
-            'sla_hours' => self::SLA_HIGH,
+            'sla_hours' => $this->getSlaHours($incident, 'high'),
             'notified_users' => $notifiedUsers,
             'requires_approval' => false,
             'auto_notification' => true,
@@ -324,7 +338,7 @@ class IncidentEscalationWorkflowService
     private function escalateMedium(Incident $incident): array
     {
         $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
-        $slaDeadline = new DateTimeImmutable()->modify('+' . self::SLA_MEDIUM . ' hours');
+        $slaDeadline = new DateTimeImmutable()->modify('+' . $this->getSlaHours($incident, 'medium') . ' hours');
 
         $workflowInstance = $this->workflowService->startWorkflow(
             'Incident',
@@ -362,7 +376,7 @@ class IncidentEscalationWorkflowService
             'workflow_started' => $workflowInstance instanceof WorkflowInstance,
             'workflow_instance' => $workflowInstance,
             'sla_deadline' => $slaDeadline,
-            'sla_hours' => self::SLA_MEDIUM,
+            'sla_hours' => $this->getSlaHours($incident, 'medium'),
             'notified_users' => $incidentManager instanceof User ? [$incidentManager] : [],
             'requires_approval' => false,
             'auto_notification' => true,
@@ -377,7 +391,7 @@ class IncidentEscalationWorkflowService
     private function escalateLow(Incident $incident): array
     {
         $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
-        $slaDeadline = new DateTimeImmutable()->modify('+' . self::SLA_LOW . ' hours');
+        $slaDeadline = new DateTimeImmutable()->modify('+' . $this->getSlaHours($incident, 'low') . ' hours');
 
         // Generate incident URL for email
         $incidentUrl = $this->urlGenerator->generate(
@@ -404,7 +418,7 @@ class IncidentEscalationWorkflowService
             'workflow_started' => false,
             'workflow_instance' => null,
             'sla_deadline' => $slaDeadline,
-            'sla_hours' => self::SLA_LOW,
+            'sla_hours' => $this->getSlaHours($incident, 'low'),
             'notified_users' => $incidentManager instanceof User ? [$incidentManager] : [],
             'requires_approval' => false,
             'auto_notification' => true,
@@ -558,11 +572,11 @@ class IncidentEscalationWorkflowService
 
         // Get SLA hours
         $slaHours = match ($escalationLevel) {
-            'data_breach' => self::SLA_BREACH,
-            'critical' => self::SLA_CRITICAL,
-            'high' => self::SLA_HIGH,
-            'medium' => self::SLA_MEDIUM,
-            default => self::SLA_LOW,
+            'data_breach' => $this->getSlaHours($incident, 'breach'),
+            'critical' => $this->getSlaHours($incident, 'critical'),
+            'high' => $this->getSlaHours($incident, 'high'),
+            'medium' => $this->getSlaHours($incident, 'medium'),
+            default => $this->getSlaHours($incident, 'low'),
         };
 
         // Build SLA description
