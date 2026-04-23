@@ -46,6 +46,31 @@ class Tenant
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $logoPath = null;
 
+    // Phase 8L.F3 — E-Mail-Branding. null = Fallback-Kaskade greift
+    // (Tenant → Ancestors → SystemSettings → Hardcoded).
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Length(max: 100)]
+    private ?string $emailFromName = null;
+
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Email]
+    #[Assert\Length(max: 180)]
+    private ?string $emailFromAddress = null;
+
+    #[ORM\Column(length: 500, nullable: true)]
+    #[Assert\Url(requireTld: true)]
+    #[Assert\Regex(pattern: '#^https://#', message: 'tenant.email.logo_url.https_only')]
+    private ?string $emailLogoUrl = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\Length(max: 2000)]
+    private ?string $emailFooterText = null;
+
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Email]
+    #[Assert\Length(max: 180)]
+    private ?string $emailSupportAddress = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?DateTimeImmutable $createdAt = null;
 
@@ -288,6 +313,22 @@ class Tenant
         $this->settings = $settings;
         return $this;
     }
+
+    // Phase 8L.F3 — E-Mail-Branding Getter/Setter
+    public function getEmailFromName(): ?string { return $this->emailFromName; }
+    public function setEmailFromName(?string $v): static { $this->emailFromName = $v; return $this; }
+
+    public function getEmailFromAddress(): ?string { return $this->emailFromAddress; }
+    public function setEmailFromAddress(?string $v): static { $this->emailFromAddress = $v; return $this; }
+
+    public function getEmailLogoUrl(): ?string { return $this->emailLogoUrl; }
+    public function setEmailLogoUrl(?string $v): static { $this->emailLogoUrl = $v; return $this; }
+
+    public function getEmailFooterText(): ?string { return $this->emailFooterText; }
+    public function setEmailFooterText(?string $v): static { $this->emailFooterText = $v; return $this; }
+
+    public function getEmailSupportAddress(): ?string { return $this->emailSupportAddress; }
+    public function setEmailSupportAddress(?string $v): static { $this->emailSupportAddress = $v; return $this; }
 
     public function getLogoPath(): ?string
     {

@@ -22,8 +22,11 @@ class EmailNotificationServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->mailer = $this->createMock(MailerInterface::class);
+        // Phase 8L.F3: Resolver ist optional (?). Test läuft mit null-Resolver,
+        // Service fällt auf Constructor-Defaults zurück.
         $this->service = new EmailNotificationService(
             $this->mailer,
+            null,
             'test@example.com',
             'Test ISMS'
         );

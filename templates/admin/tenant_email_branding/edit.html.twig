@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'tenant.email.title'|trans({}, 'tenant') }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row mb-3">
+        <div class="col">
+            <h1>
+                <i class="bi bi-envelope-paper" aria-hidden="true"></i>
+                {{ 'tenant.email.title'|trans({}, 'tenant') }}
+            </h1>
+            <p class="lead">{{ 'tenant.email.subtitle'|trans({}, 'tenant') }}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-gear" aria-hidden="true"></i>
+                            {{ 'tenant.email.section.branding'|trans({}, 'tenant') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    {{ form_start(form) }}
+                        <div class="mb-3">{{ form_row(form.emailFromName, { attr: { class: 'form-control' } }) }}</div>
+                        <div class="mb-3">{{ form_row(form.emailFromAddress, { attr: { class: 'form-control' } }) }}</div>
+                        <div class="mb-3">{{ form_row(form.emailLogoUrl, { attr: { class: 'form-control' } }) }}</div>
+                        <div class="mb-3">{{ form_row(form.emailFooterText, { attr: { class: 'form-control' } }) }}</div>
+                        <div class="mb-3">{{ form_row(form.emailSupportAddress, { attr: { class: 'form-control' } }) }}</div>
+                        <div class="alert alert-info small mb-3">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            {{ 'tenant.email.hint.fallback'|trans({}, 'tenant') }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save" aria-hidden="true"></i>
+                            {{ 'common.save'|trans({}, 'messages') }}
+                        </button>
+                    {{ form_end(form) }}
+                {% endblock %}
+            {% endembed %}
+
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h6 mb-0">
+                            <i class="bi bi-check-circle" aria-hidden="true"></i>
+                            {{ 'tenant.email.section.effective'|trans({}, 'tenant') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <p class="small mb-2">{{ 'tenant.email.effective_hint'|trans({}, 'tenant') }}</p>
+                    <dl class="row mb-0 small">
+                        <dt class="col-sm-4">{{ 'tenant.email.field.from_name'|trans({}, 'tenant') }}</dt>
+                        <dd class="col-sm-8"><code>{{ effective.fromName }}</code></dd>
+                        <dt class="col-sm-4">{{ 'tenant.email.field.from_address'|trans({}, 'tenant') }}</dt>
+                        <dd class="col-sm-8"><code>{{ effective.fromAddress }}</code></dd>
+                        {% if effective.logoUrl %}
+                            <dt class="col-sm-4">{{ 'tenant.email.field.logo_url'|trans({}, 'tenant') }}</dt>
+                            <dd class="col-sm-8"><code>{{ effective.logoUrl }}</code></dd>
+                        {% endif %}
+                        {% if effective.supportAddress %}
+                            <dt class="col-sm-4">{{ 'tenant.email.field.support_address'|trans({}, 'tenant') }}</dt>
+                            <dd class="col-sm-8"><code>{{ effective.supportAddress }}</code></dd>
+                        {% endif %}
+                    </dl>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+</div>
+{% endblock %}

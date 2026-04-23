@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use App\Entity\Incident;
 use App\Entity\InternalAudit;
 use App\Entity\Risk;
+use App\Entity\Tenant;
 use App\Entity\Training;
 use App\Entity\Control;
 use App\Entity\WorkflowInstance;
@@ -40,9 +41,25 @@ class EmailNotificationService
 {
     public function __construct(
         private readonly MailerInterface $mailer,
+        private readonly ?TenantEmailBrandingResolver $brandingResolver = null,
         private readonly string $fromEmail = 'noreply@little-isms.local',
         private readonly string $fromName = 'Little ISMS Helper'
     ) {
+    }
+
+    /**
+     * Phase 8L.F3 — resolves From-Address aus Tenant-Branding (inkl.
+     * Ancestor-Kaskade, SystemSettings, Hardcoded-Default). Helper für
+     * alle 17+ Send-Methoden.
+     */
+    private function createFromAddress(?Tenant $tenant = null): Address
+    {
+        if ($this->brandingResolver instanceof TenantEmailBrandingResolver) {
+            $branding = $this->brandingResolver->resolveFor($tenant);
+            return new Address($branding->fromAddress, $branding->fromName);
+        }
+        // Fallback für Tests / frühe DI-Phasen: alte Constructor-Args.
+        return new Address($this->fromEmail, $this->fromName);
     }
 
     public function sendIncidentNotification(Incident $incident, array $recipients): void
@@ -52,7 +69,7 @@ class EmailNotificationService
             $safeTitle = $this->sanitizeEmailSubject($incident->getTitle());
 
             $email = new TemplatedEmail()
-                ->from(new Address($this->fromEmail, $this->fromName))
+                ->from($this->createFromAddress())
                 ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
                 ->subject('[ISMS Alert] New Incident: ' . $safeTitle)
                 ->htmlTemplate('emails/incident_notification.html.twig')
@@ -71,7 +88,7 @@ class EmailNotificationService
             $safeTitle = $this->sanitizeEmailSubject($incident->getTitle());
 
             $email = new TemplatedEmail()
-                ->from(new Address($this->fromEmail, $this->fromName))
+                ->from($this->createFromAddress())
                 ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
                 ->subject('[ISMS Update] Incident Updated: ' . $safeTitle)
                 ->htmlTemplate('emails/incident_update.html.twig')
@@ -91,7 +108,7 @@ class EmailNotificationService
             $safeTitle = $this->sanitizeEmailSubject($internalAudit->getTitle());
 
             $email = new TemplatedEmail()
-                ->from(new Address($this->fromEmail, $this->fromName))
+                ->from($this->createFromAddress())
                 ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
                 ->subject('[ISMS Reminder] Upcoming Audit: ' . $safeTitle)
                 ->htmlTemplate('emails/audit_due_notification.html.twig')
@@ -110,7 +127,7 @@ class EmailNotificationService
             $safeTitle = $this->sanitizeEmailSubject($training->getTitle());
 
             $email = new TemplatedEmail()
-                ->from(new Address($this->fromEmail, $this->fromName))
+                ->from($this->createFromAddress())
                 ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
                 ->subject('[ISMS Reminder] Upcoming Training: ' . $safeTitle)
                 ->htmlTemplate('emails/training_due_notification.html.twig')
@@ -129,7 +146,7 @@ class EmailNotificationService
             $safeSubject = $this->sanitizeEmailSubject($subject);
 
             $email = new TemplatedEmail()
-                ->from(new Address($this->fromEmail, $this->fromName))
+                ->from($this->createFromAddress())
                 ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
                 ->subject($safeSubject)
                 ->htmlTemplate($template)
@@ -146,7 +163,7 @@ class EmailNotificationService
             $safeControlId = $this->sanitizeEmailSubject($control->getControlId());
 
             $email = new TemplatedEmail()
-                ->from(new Address($this->fromEmail, $this->fromName))
+                ->from($this->createFromAddress())
                 ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
                 ->subject('[ISMS Reminder] Control Target Date Approaching: ' . $safeControlId)
                 ->htmlTemplate('emails/control_due_notification.html.twig')
@@ -165,7 +182,7 @@ class EmailNotificationService
             $safeWorkflowName = $this->sanitizeEmailSubject($workflowInstance->getWorkflow()->getName());
 
             $email = new TemplatedEmail()
-                ->from(new Address($this->fromEmail, $this->fromName))
+                ->from($this->createFromAddress())
                 ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
                 ->subject('[ISMS Alert] Overdue Workflow Approval: ' . $safeWorkflowName)
                 ->htmlTemplate('emails/workflow_overdue_notification.html.twig')
@@ -191,7 +208,7 @@ class EmailNotificationService
             $safeStepName = $this->sanitizeEmailSubject($workflowStep->getName());
 
             $email = new TemplatedEmail()
-                ->from(new Address($this->fromEmail, $this->fromName))
+                ->from($this->createFromAddress())
                 ->to($recipient->getEmail())
                 ->subject('[ISMS Action Required] Approval Needed: ' . $safeStepName . ' - ' . $safeWorkflowName)
                 ->htmlTemplate('emails/workflow_assignment_notification.html.twig')
@@ -219,7 +236,7 @@ class EmailNotificationService
             $safeStepName = $this->sanitizeEmailSubject($workflowStep->getName());
 
             $email = new TemplatedEmail()
-                ->from(new Address($this->fromEmail, $this->fromName))
+                ->from($this->createFromAddress())
                 ->to($recipient->getEmail())
                 ->subject('[ISMS Info] Workflow Update: ' . $safeStepName . ' - ' . $safeWorkflowName)
                 ->htmlTemplate('emails/workflow_notification_step.html.twig')
@@ -245,7 +262,7 @@ class EmailNotificationService
             $safeWorkflowName = $this->sanitizeEmailSubject($workflowInstance->getWorkflow()->getName());
 
             $email = new TemplatedEmail()
-                ->from(new Address($this->fromEmail, $this->fromName))
+                ->from($this->createFromAddress())
                 ->to($recipient->getEmail())
                 ->subject('[ISMS Warning] Workflow Deadline in ' . $daysRemaining . ' days: ' . $safeWorkflowName)
                 ->htmlTemplate('emails/workflow_deadline_warning.html.twig')
@@ -273,7 +290,7 @@ class EmailNotificationService
         $safeTitle = $this->sanitizeEmailSubject($risk->getTitle());
 
         $templatedEmail = new TemplatedEmail()
-            ->from(new Address($this->fromEmail, $this->fromName))
+            ->from($this->createFromAddress())
             ->to($user->getEmail())
             ->subject('[ISMS Action Required] Risk Acceptance Approval: ' . $safeTitle)
             ->htmlTemplate('emails/risk_acceptance_request.html.twig')
@@ -301,7 +318,7 @@ class EmailNotificationService
         $safeTitle = $this->sanitizeEmailSubject($risk->getTitle());
 
         $templatedEmail = new TemplatedEmail()
-            ->from(new Address($this->fromEmail, $this->fromName))
+            ->from($this->createFromAddress())
             ->to($riskOwner->getEmail())
             ->subject('[ISMS Info] Risk Acceptance Approved: ' . $safeTitle)
             ->htmlTemplate('emails/risk_acceptance_approved.html.twig')
@@ -330,7 +347,7 @@ class EmailNotificationService
         $safeTitle = $this->sanitizeEmailSubject($risk->getTitle());
 
         $templatedEmail = new TemplatedEmail()
-            ->from(new Address($this->fromEmail, $this->fromName))
+            ->from($this->createFromAddress())
             ->to($riskOwner->getEmail())
             ->subject('[ISMS Alert] Risk Acceptance Rejected: ' . $safeTitle)
             ->htmlTemplate('emails/risk_acceptance_rejected.html.twig')
@@ -364,7 +381,7 @@ class EmailNotificationService
         $severityLabel = strtoupper($severity);
 
         $templatedEmail = new TemplatedEmail()
-            ->from(new Address($this->fromEmail, $this->fromName))
+            ->from($this->createFromAddress())
             ->to($user->getEmail())
             ->subject("[ISMS Alert - {$severityLabel}] Incident Escalation: {$safeTitle}")
             ->htmlTemplate('emails/incident_escalation.html.twig')
@@ -394,7 +411,7 @@ class EmailNotificationService
         $safeTitle = $this->sanitizeEmailSubject($incident->getTitle());
 
         $templatedEmail = new TemplatedEmail()
-            ->from(new Address($this->fromEmail, $this->fromName))
+            ->from($this->createFromAddress())
             ->to($user->getEmail())
             ->subject("[URGENT - DATA BREACH] GDPR 72h Notification Required: {$safeTitle}")
             ->htmlTemplate('emails/data_breach_notification.html.twig')
