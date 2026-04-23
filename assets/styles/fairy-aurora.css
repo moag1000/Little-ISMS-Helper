@@ -309,6 +309,27 @@ html * {
     --bs-link-color:       var(--primary-strong);
     --bs-link-hover-color: var(--primary-hover);
 
+    /* Phase 8QW-follow: Bootstrap 5.3 Utility-Klassen (.bg-body-secondary etc.)
+       nutzen intern rgba(var(--bs-*-rgb), var(--bs-bg-opacity)) für Opacity-
+       Support. Ohne die -rgb-Varianten fallen sie auf Bootstrap-Defaults zurück
+       und ignorieren unsere Aurora-Mapping via --bs-secondary-bg.
+       Alle -rgb-Werte sind comma-separated R,G,B OHNE rgb()-Wrapper. */
+
+    /* — Surface/Body RGB (für .bg-body, .bg-body-secondary, .bg-body-tertiary) — */
+    --bs-body-bg-rgb:               245, 246, 250;   /* --bg #f5f6fa */
+    --bs-secondary-bg-rgb:          238, 240, 249;   /* --surface-2 #eef0f9 */
+    --bs-tertiary-bg-rgb:           229, 232, 244;   /* --surface-3 #e5e8f4 */
+
+    /* — Text/Emphasis RGB — */
+    --bs-body-color-rgb:            30, 27, 75;      /* --fg #1e1b4b */
+    --bs-emphasis-color-rgb:        30, 27, 75;      /* --fg #1e1b4b */
+
+    /* — Link RGB (für link-opacity-Utilities) — */
+    --bs-link-color-rgb:            3, 105, 161;     /* --primary-strong #0369a1 */
+
+    /* — Secondary RGB (für .bg-secondary, .btn-secondary etc.) — */
+    --bs-secondary-rgb:             108, 117, 125;   /* Bootstrap-kompatibles neutral */
+
     /* — Primary — */
     --bs-primary:                   var(--primary);
     --bs-primary-rgb:               2, 132, 199;
@@ -318,27 +339,34 @@ html * {
 
     /* — Success — */
     --bs-success:                   var(--success);
+    --bs-success-rgb:               5, 150, 105;     /* --success #059669 */
     --bs-success-bg-subtle:         var(--success-glow);
     --bs-success-border-subtle:     var(--success-glow);
     --bs-success-text-emphasis:     var(--success-strong);
 
     /* — Warning — */
     --bs-warning:                   var(--warning);
+    --bs-warning-rgb:               217, 119, 6;     /* --warning #d97706 */
     --bs-warning-bg-subtle:         var(--warning-glow);
     --bs-warning-border-subtle:     var(--warning-glow);
     --bs-warning-text-emphasis:     var(--warning-strong);
 
     /* — Danger — */
     --bs-danger:                    var(--danger);
+    --bs-danger-rgb:                220, 38, 38;     /* --danger #dc2626 */
     --bs-danger-bg-subtle:          var(--danger-glow);
     --bs-danger-border-subtle:      var(--danger-glow);
     --bs-danger-text-emphasis:      var(--danger-strong);
 
     /* — Info (= primary) — */
     --bs-info:                      var(--primary);
+    --bs-info-rgb:                  2, 132, 199;     /* same as --primary #0284c7 */
     --bs-info-bg-subtle:            var(--primary-tint);
     --bs-info-border-subtle:        var(--primary-glow);
     --bs-info-text-emphasis:        var(--primary-strong);
+
+    /* — Secondary text-emphasis (for .text-bg-secondary, alert-secondary etc.) — */
+    --bs-secondary-text-emphasis:   var(--fg-2);
 
     /* — Dropdown — */
     --bs-dropdown-bg:               var(--surface);
@@ -470,7 +498,42 @@ html * {
 /* Dark-Mode-Forks: Active-Backgrounds auf helleres --primary
    (Dark: --primary ist hell auf dunkel = AAA, nicht --primary-strong) */
 html[data-theme="dark"] {
+    /* — Surface/Body RGB (dark values) — */
+    --bs-body-bg-rgb:               10, 14, 26;      /* --bg #0a0e1a */
+    --bs-secondary-bg-rgb:          30, 33, 57;      /* --surface-2 #1e2139 */
+    --bs-tertiary-bg-rgb:           40, 45, 72;      /* --surface-3 #282d48 */
+
+    /* — Text/Emphasis RGB (dark values) — */
+    --bs-body-color-rgb:            233, 234, 245;   /* --fg #e9eaf5 */
+    --bs-emphasis-color-rgb:        233, 234, 245;   /* --fg #e9eaf5 */
+
+    /* — Link RGB (dark: --primary #38bdf8) — */
+    --bs-link-color-rgb:            56, 189, 248;    /* --primary #38bdf8 */
+
+    /* — Primary — */
     --bs-primary-rgb:               56, 189, 248;
+
+    /* — Success RGB (dark: #34d399) — */
+    --bs-success-rgb:               52, 211, 153;
+
+    /* — Warning RGB (dark: #fbbf24) — */
+    --bs-warning-rgb:               251, 191, 36;
+
+    /* — Danger RGB (dark: #f87171) — */
+    --bs-danger-rgb:                248, 113, 113;
+
+    /* — Info RGB (dark: same as primary #38bdf8) — */
+    --bs-info-rgb:                  56, 189, 248;
+
+    /* — Text-emphasis vars (dark overrides) — */
+    --bs-secondary-text-emphasis:   var(--fg-2);
+    --bs-success-text-emphasis:     var(--success-strong);
+    --bs-warning-text-emphasis:     var(--warning-strong);
+    --bs-danger-text-emphasis:      var(--danger-strong);
+    --bs-info-text-emphasis:        var(--primary);
+    --bs-primary-text-emphasis:     var(--primary);
+
+    /* — Active/Nav overrides — */
     --bs-link-color:                var(--primary);
     --bs-link-hover-color:          var(--primary-hover);
     --bs-dropdown-link-active-bg:   var(--primary);
@@ -486,7 +549,36 @@ html[data-theme="dark"] {
 }
 @media (prefers-color-scheme: dark) {
     html[data-theme="system"] {
+        /* — Surface/Body RGB (dark values) — */
+        --bs-body-bg-rgb:               10, 14, 26;
+        --bs-secondary-bg-rgb:          30, 33, 57;
+        --bs-tertiary-bg-rgb:           40, 45, 72;
+
+        /* — Text/Emphasis RGB (dark values) — */
+        --bs-body-color-rgb:            233, 234, 245;
+        --bs-emphasis-color-rgb:        233, 234, 245;
+
+        /* — Link RGB (dark) — */
+        --bs-link-color-rgb:            56, 189, 248;
+
+        /* — Primary — */
         --bs-primary-rgb:               56, 189, 248;
+
+        /* — Semantic RGB (dark) — */
+        --bs-success-rgb:               52, 211, 153;
+        --bs-warning-rgb:               251, 191, 36;
+        --bs-danger-rgb:                248, 113, 113;
+        --bs-info-rgb:                  56, 189, 248;
+
+        /* — Text-emphasis vars (dark overrides) — */
+        --bs-secondary-text-emphasis:   var(--fg-2);
+        --bs-success-text-emphasis:     var(--success-strong);
+        --bs-warning-text-emphasis:     var(--warning-strong);
+        --bs-danger-text-emphasis:      var(--danger-strong);
+        --bs-info-text-emphasis:        var(--primary);
+        --bs-primary-text-emphasis:     var(--primary);
+
+        /* — Active/Nav overrides — */
         --bs-link-color:                var(--primary);
         --bs-link-hover-color:          var(--primary-hover);
         --bs-dropdown-link-active-bg:   var(--primary);
