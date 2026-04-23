@@ -1026,7 +1026,7 @@ class RiskController extends AbstractController
         }
 
         // Get approval thresholds for display
-        $thresholds = $this->riskAcceptanceWorkflowService->getApprovalThresholds();
+        $thresholds = $this->riskAcceptanceWorkflowService->getApprovalThresholds($risk);
         $requiredLevel = $this->riskAcceptanceWorkflowService->determineApprovalLevel($risk);
 
         return $this->render('risk/request_acceptance.html.twig', [

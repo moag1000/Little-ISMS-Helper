@@ -1,0 +1,25 @@
+risk_approval_config:
+    title: 'Risk-Approval-Schwellwerte'
+    subtitle: 'Bis zu welchem Risk-Score automatisch akzeptiert, Manager-Approval oder Executive-Approval erforderlich ist. Gilt pro Mandant.'
+    section:
+        thresholds: 'Schwellwerte (Risk-Score Likelihood × Impact)'
+        last_change: 'Letzte Änderung'
+    field:
+        automatic: 'Automatische Akzeptanz bis Score'
+        manager: 'Manager-Approval bis Score'
+        executive: 'Executive-Approval bis Score'
+        note: 'Notiz / Begründung (optional)'
+    help:
+        automatic: 'Risiken mit diesem Score oder darunter werden ohne weitere Freigabe akzeptiert. Default: 3.'
+        manager: 'Risiken über Automatik-Schwelle bis zu diesem Score brauchen Manager-Approval. Default: 7.'
+        executive: 'Risiken über Manager-Schwelle bis zu diesem Score brauchen Executive-Approval. Default: 25. Maximum bei 5×5-Matrix: 25.'
+        note: 'Kurz dokumentieren, warum die Schwellwerte so gesetzt sind (z. B. Vorstandsbeschluss, Branchenvorgabe).'
+    hint:
+        order: 'Die Werte müssen aufsteigend sein: Automatik < Manager < Executive.'
+    saved: 'Schwellwerte gespeichert.'
+    updated_at: 'Geändert am'
+    updated_by: 'Geändert von'
+    error:
+        range: 'Der Wert muss zwischen {{ min }} und {{ max }} liegen.'
+        automatic_lt_manager: 'Automatik-Schwelle muss kleiner als Manager-Schwelle sein.'
+        manager_lt_executive: 'Manager-Schwelle muss kleiner als Executive-Schwelle sein.'

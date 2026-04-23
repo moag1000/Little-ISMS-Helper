@@ -1,0 +1,25 @@
+risk_approval_config:
+    title: 'Risk Approval Thresholds'
+    subtitle: 'Determines up to which risk score an automatic acceptance applies, or manager / executive approval is required. Per tenant.'
+    section:
+        thresholds: 'Thresholds (risk score = likelihood × impact)'
+        last_change: 'Last change'
+    field:
+        automatic: 'Automatic acceptance up to score'
+        manager: 'Manager approval up to score'
+        executive: 'Executive approval up to score'
+        note: 'Note / rationale (optional)'
+    help:
+        automatic: 'Risks at or below this score are accepted without further approval. Default: 3.'
+        manager: 'Risks above the automatic threshold up to this score require manager approval. Default: 7.'
+        executive: 'Risks above the manager threshold up to this score require executive approval. Default: 25. Maximum for a 5×5 matrix: 25.'
+        note: 'Briefly document why the thresholds are set this way (e.g. board resolution, industry baseline).'
+    hint:
+        order: 'Values must be ascending: automatic < manager < executive.'
+    saved: 'Thresholds saved.'
+    updated_at: 'Updated at'
+    updated_by: 'Updated by'
+    error:
+        range: 'The value must be between {{ min }} and {{ max }}.'
+        automatic_lt_manager: 'Automatic threshold must be less than manager threshold.'
+        manager_lt_executive: 'Manager threshold must be less than executive threshold.'

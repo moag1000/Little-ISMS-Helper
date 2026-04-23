@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'risk_approval_config.title'|trans({}, 'risk_approval_config') }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row mb-3">
+        <div class="col">
+            <h1>
+                <i class="bi bi-sliders" aria-hidden="true"></i>
+                {{ 'risk_approval_config.title'|trans({}, 'risk_approval_config') }}
+            </h1>
+            <p class="lead">{{ 'risk_approval_config.subtitle'|trans({}, 'risk_approval_config') }}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-gear" aria-hidden="true"></i>
+                            {{ 'risk_approval_config.section.thresholds'|trans({}, 'risk_approval_config') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.thresholdAutomatic) }}
+                            {{ form_widget(form.thresholdAutomatic, { attr: { class: 'form-control' } }) }}
+                            {{ form_help(form.thresholdAutomatic) }}
+                            {{ form_errors(form.thresholdAutomatic) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.thresholdManager) }}
+                            {{ form_widget(form.thresholdManager, { attr: { class: 'form-control' } }) }}
+                            {{ form_help(form.thresholdManager) }}
+                            {{ form_errors(form.thresholdManager) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.thresholdExecutive) }}
+                            {{ form_widget(form.thresholdExecutive, { attr: { class: 'form-control' } }) }}
+                            {{ form_help(form.thresholdExecutive) }}
+                            {{ form_errors(form.thresholdExecutive) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.note) }}
+                            {{ form_widget(form.note, { attr: { class: 'form-control' } }) }}
+                            {{ form_help(form.note) }}
+                            {{ form_errors(form.note) }}
+                        </div>
+                        <div class="alert alert-info small mb-3">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            {{ 'risk_approval_config.hint.order'|trans({}, 'risk_approval_config') }}
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save" aria-hidden="true"></i>
+                                {{ 'common.save'|trans({}, 'messages') }}
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                {% endblock %}
+            {% endembed %}
+
+            {% if config.updatedAt %}
+                {% embed '_components/_card.html.twig' %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h3 class="h6 mb-0">
+                                <i class="bi bi-clock-history" aria-hidden="true"></i>
+                                {{ 'risk_approval_config.section.last_change'|trans({}, 'risk_approval_config') }}
+                            </h3>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <dl class="row mb-0">
+                            <dt class="col-sm-3">{{ 'risk_approval_config.updated_at'|trans({}, 'risk_approval_config') }}</dt>
+                            <dd class="col-sm-9">{{ config.updatedAt|date('d.m.Y H:i') }}</dd>
+                            {% if config.updatedBy %}
+                                <dt class="col-sm-3">{{ 'risk_approval_config.updated_by'|trans({}, 'risk_approval_config') }}</dt>
+                                <dd class="col-sm-9">{{ config.updatedBy.email }}</dd>
+                            {% endif %}
+                            {% if config.note %}
+                                <dt class="col-sm-3">{{ 'risk_approval_config.field.note'|trans({}, 'risk_approval_config') }}</dt>
+                                <dd class="col-sm-9">{{ config.note }}</dd>
+                            {% endif %}
+                        </dl>
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
