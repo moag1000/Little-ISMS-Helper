@@ -148,7 +148,7 @@
                     <div class="card-header">
                         <h3 class="h5 mb-0">
                             <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'cert_readiness.section.controls_not_started'|trans({}, 'management_reports') }}
-                            <span class="badge bg-body-secondary text-body ms-2">{{ controls_not_started|length }}</span>
+                            <span class="badge bg-body-secondary ms-2">{{ controls_not_started|length }}</span>
                         </h3>
                     </div>
                 {% endblock %}
@@ -173,7 +173,7 @@
                     <div class="card-header bg-warning-subtle text-warning">
                         <h3 class="h5 mb-0">
                             <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'cert_readiness.section.controls_in_progress'|trans({}, 'management_reports') }}
-                            <span class="badge bg-body-secondary text-body ms-2">{{ controls_in_progress|length }}</span>
+                            <span class="badge bg-body-secondary ms-2">{{ controls_in_progress|length }}</span>
                         </h3>
                     </div>
                 {% endblock %}

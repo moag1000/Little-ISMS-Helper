@@ -60,8 +60,8 @@
                                 <span class="badge bg-secondary me-1">
                                     {{ ('industry_baseline.industry.' ~ baseline.industry)|trans({}, 'industry_baseline') }}
                                 </span>
-                                <span class="badge bg-body-secondary text-body border">v{{ baseline.version }}</span>
-                                <span class="badge bg-body-secondary text-body border">{{ baseline.source }}</span>
+                                <span class="badge bg-body-secondary border">v{{ baseline.version }}</span>
+                                <span class="badge bg-body-secondary border">{{ baseline.source }}</span>
                             </div>
                             <p class="small text-muted mb-3">{{ baseline.description|u.truncate(200, '…') }}</p>
                             <dl class="row small mb-3">

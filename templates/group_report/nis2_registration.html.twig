@@ -107,8 +107,8 @@
                                 'essential': 'bg-danger',
                                 'important': 'bg-warning-subtle text-warning',
                                 'not_regulated': 'bg-secondary',
-                                'unknown': 'bg-body-secondary text-body border'
-                            }[class]|default('bg-body-secondary text-body border') %}
+                                'unknown': 'bg-body-secondary border'
+                            }[class]|default('bg-body-secondary border') %}
                             <tr>
                                 <td>
                                     {% if tenant is same as(root) %}
@@ -123,7 +123,7 @@
                                     {% if tenant.legalName %}
                                         {{ tenant.legalName }}
                                         {% if tenant.legalForm %}
-                                            <span class="badge bg-body-secondary text-body border">{{ tenant.legalForm }}</span>
+                                            <span class="badge bg-body-secondary border">{{ tenant.legalForm }}</span>
                                         {% endif %}
                                     {% else %}
                                         <span class="text-muted">—</span>
