@@ -42,7 +42,9 @@ class IncidentSlaConfigController extends AbstractController
         $tenant = $this->requireTenant();
 
         // Defaults ggf. anlegen (Idempotent) — falls Migration für neuen Tenant noch nicht lief.
+        // Repository persists ohne flush → wir flushen hier selbst.
         $this->repository->ensureDefaultsFor($tenant);
+        $this->entityManager->flush();
 
         $configs = $this->repository->findByTenant($tenant);
         // Nach Severity-Reihenfolge sortieren: breach, critical, high, medium, low

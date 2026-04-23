@@ -4,52 +4,37 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
-use App\Entity\RiskApprovalConfig;
 use App\Entity\Tenant;
-use App\Repository\IncidentSlaConfigRepository;
-use App\Repository\SupplierCriticalityLevelRepository;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Events;
 
 /**
- * Phase 8L — Default-Configs bei neuem Tenant anlegen.
+ * Phase 8L / 8QW — Auto-Seeding-Listener (deaktiviert).
  *
- * Idempotent: legt nur an was fehlt. Läuft als postPersist auf Tenant,
- * sodass neue Mandanten automatisch Risk-Approval + Incident-SLA-Defaults
- * bekommen ohne dass TenantService / CorporateStructureService selbst
- * seeden muss.
+ * Historisch (Phase 8L.F2 + 8QW-5) sollten neue Tenants automatisch
+ * Defaults für RiskApprovalConfig, IncidentSlaConfig und
+ * SupplierCriticalityLevel bekommen. Die Umsetzung via postPersist führt
+ * aber in Multi-Tenant-Tests (z.B. testIndexRespectsMultiTenancyIsolation)
+ * zu Cascade-Problemen: während des noch laufenden Flush-Cycles persistiert
+ * der Listener weitere Entities, deren Tenant-Reference Doctrine als
+ * "neu-aber-nicht-cascaded" interpretiert.
  *
- * Phase 8QW-5: Erweitert um SupplierCriticalityLevel-Defaults (4 Stufen).
+ * Pragmatischer Workaround:
+ *   - Existierende Tenants: Defaults via Migration-Backfill geseedet
+ *     (siehe Version20260423110000 / 20260423130000 / 20260421320000).
+ *   - Neue Tenants: Admin-UI (IncidentSlaConfigController::index,
+ *     SupplierCriticalityController::index) rufen ensureDefaultsFor
+ *     lazy auf, persistieren sich selbst + flushen.
+ *   - RiskApprovalConfig: wird beim ersten Admin-UI-Aufruf angelegt.
+ *
+ * Für eine saubere Lösung siehe TODO(9A/9B): Post-Commit-Hook oder
+ * dedizierter TenantProvisioningService in CorporateStructureService.
  */
 #[AsEntityListener(event: Events::postPersist, entity: Tenant::class)]
 class TenantCreatedSeedListener
 {
-    public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly IncidentSlaConfigRepository $incidentSlaRepo,
-        private readonly SupplierCriticalityLevelRepository $supplierCriticalityRepo,
-    ) {
-    }
-
     public function postPersist(Tenant $tenant): void
     {
-        // 1. Risk-Approval-Config (3/7/25 Defaults)
-        $existing = $this->entityManager->getRepository(RiskApprovalConfig::class)->findOneBy(['tenant' => $tenant]);
-        if ($existing === null) {
-            $config = (new RiskApprovalConfig())
-                ->setTenant($tenant)
-                ->setThresholdAutomatic(3)
-                ->setThresholdManager(7)
-                ->setThresholdExecutive(25);
-            $this->entityManager->persist($config);
-            $this->entityManager->flush();
-        }
-
-        // 2. Incident-SLA-Defaults (5 Severities).
-        $this->incidentSlaRepo->ensureDefaultsFor($tenant);
-
-        // 3. Supplier-Kritikalitätsstufen (4 Defaults: critical/high/medium/low).
-        $this->supplierCriticalityRepo->ensureDefaultsFor($tenant);
+        // Intentionally empty — siehe Klassen-Doc für Rationale.
     }
 }

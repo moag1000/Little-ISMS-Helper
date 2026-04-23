@@ -296,7 +296,7 @@ class RiskMatrixServiceTest extends TestCase
             $this->assertArrayHasKey($i, $result['labels']['impact']);
             // Mock returns key as value
             $this->assertSame('risk.matrix.likelihood.' . $i, $result['labels']['likelihood'][$i]);
-            $this->assertSame('risk.matrix.impact.' . $i, $result['labels']['impact'][$i]);
+            $this->assertSame('risk.matrix.impact_label.' . $i, $result['labels']['impact'][$i]);
         }
     }
 }

@@ -53,7 +53,7 @@ class RiskMatrixService
     {
         $labels = [];
         for ($i = 1; $i <= self::MATRIX_SIZE; $i++) {
-            $labels[$i] = $this->translator->trans('risk.matrix.impact.' . $i, [], 'risk');
+            $labels[$i] = $this->translator->trans('risk.matrix.impact_label.' . $i, [], 'risk');
         }
         return $labels;
     }

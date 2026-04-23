@@ -1,17 +1,4 @@
 risk:
-  matrix:
-    likelihood:
-      1: 'Sehr selten'
-      2: 'Selten'
-      3: 'Gelegentlich'
-      4: 'Wahrscheinlich'
-      5: 'Sehr wahrscheinlich'
-    impact:
-      1: 'Unbedeutend'
-      2: 'Gering'
-      3: 'Moderat'
-      4: 'Hoch'
-      5: 'Kritisch'
   prefill:
     title_from_vulnerability: 'Risiko aus Schwachstelle: %title%'
     title_from_incident: 'Risiko aus Vorfall: %title%'
@@ -326,6 +313,18 @@ risk:
       medium: Mittel (5-9)
       low: Niedrig (1-4)
     cell_title: 'Wahrscheinlichkeit: %probability% | Auswirkung: %impact%'
+    likelihood:
+      1: 'Sehr selten'
+      2: 'Selten'
+      3: 'Gelegentlich'
+      4: 'Wahrscheinlich'
+      5: 'Sehr wahrscheinlich'
+    impact_label:
+      1: 'Unbedeutend'
+      2: 'Gering'
+      3: 'Moderat'
+      4: 'Hoch'
+      5: 'Kritisch'
   acceptance:
     title: Risikoakzeptanz beantragen
     request: Antrag auf Risikoakzeptanz
