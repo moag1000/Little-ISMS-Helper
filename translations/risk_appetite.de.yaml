@@ -20,6 +20,7 @@ risk_appetite:
     field:
         category: Kategorie
         max_acceptable_risk: 'Max. akzeptables Risiko'
+        review_buffer_multiplier: 'Review-Puffer-Faktor'
         description: Beschreibung
         status: Status
         is_active: Aktiv
@@ -34,6 +35,7 @@ risk_appetite:
         category_empty: 'Kategorie eingeben oder "Global" wählen'
         category: 'Leer lassen für globale Risikobereitschaft, oder Kategorie angeben (z.B. Finanziell, IT, Compliance)'
         max_acceptable_risk: 'Maximaler akzeptabler Risikowert auf einer Skala von 1-25 (Wahrscheinlichkeit × Auswirkung)'
+        review_buffer_multiplier: 'Faktor für die Review-Zone: Risikoscore zwischen MaxAkzeptabel und MaxAkzeptabel × Faktor erfordert Review (Standard 1.5, Bereich 1.0–3.0)'
         description: 'Detaillierte Beschreibung und Begründung für diese Risikobereitschaft'
         is_active: 'Ist dieser Risikoappetit aktuell gültig?'
         approved_by: 'Person, die diese Risikobereitschaft formal genehmigt hat (ISO 27005)'
@@ -42,6 +44,7 @@ risk_appetite:
         category_max_length: 'Die Kategorie darf maximal 100 Zeichen lang sein'
         max_acceptable_risk_required: 'Bitte geben Sie den maximalen akzeptablen Risikowert an'
         max_acceptable_risk_range: 'Der Risikowert muss zwischen 1 und 25 liegen'
+        review_buffer_multiplier_range: 'Der Review-Puffer-Faktor muss zwischen 1.0 und 3.0 liegen'
         description_required: 'Bitte geben Sie eine Beschreibung an'
     stats:
         total: 'Einträge gesamt'

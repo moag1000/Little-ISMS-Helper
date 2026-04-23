@@ -238,7 +238,7 @@ class RiskAppetite
         if ($riskScore <= $this->maxAcceptableRisk) {
             return 'acceptable';
         }
-        if ($riskScore <= $this->maxAcceptableRisk * 1.5) {
+        if ($riskScore <= $this->maxAcceptableRisk * $this->reviewBufferMultiplier) {
             return 'review_required';
         }
         return 'exceeds_appetite';
@@ -265,6 +265,37 @@ class RiskAppetite
             return 0.0;
         }
         return round(($riskScore / $this->maxAcceptableRisk) * 100, 2);
+    }
+
+    /**
+     * Review buffer multiplier for the "review_required" zone.
+     *
+     * A risk score above maxAcceptableRisk but below
+     * maxAcceptableRisk × reviewBufferMultiplier is classified as
+     * 'review_required' rather than 'exceeds_appetite'.
+     *
+     * Default: 1.5 (preserves historic behaviour before QW-2).
+     * Range: 1.0–3.0
+     */
+    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
+    #[Groups(['risk_appetite:read', 'risk_appetite:write'])]
+    #[Assert\NotNull]
+    #[Assert\Range(
+        notInRangeMessage: 'risk_appetite.validation.review_buffer_multiplier_range',
+        min: 1.0,
+        max: 3.0,
+    )]
+    private float $reviewBufferMultiplier = 1.5;
+
+    public function getReviewBufferMultiplier(): float
+    {
+        return $this->reviewBufferMultiplier;
+    }
+
+    public function setReviewBufferMultiplier(float $reviewBufferMultiplier): static
+    {
+        $this->reviewBufferMultiplier = $reviewBufferMultiplier;
+        return $this;
     }
 
     /**

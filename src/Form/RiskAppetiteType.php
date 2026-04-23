@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -71,6 +72,26 @@ class RiskAppetiteType extends AbstractType
                     'class' => 'form-check-label'
                 ],
                 'help' => 'risk_appetite.help.is_active'
+            ])
+            ->add('reviewBufferMultiplier', NumberType::class, [
+                'label' => 'risk_appetite.field.review_buffer_multiplier',
+                'required' => true,
+                'scale' => 1,
+                'attr' => [
+                    'class' => 'form-control',
+                    'min' => '1.0',
+                    'max' => '3.0',
+                    'step' => '0.1',
+                ],
+                'help' => 'risk_appetite.help.review_buffer_multiplier',
+                'constraints' => [
+                    new Assert\NotNull(),
+                    new Assert\Range(
+                        notInRangeMessage: 'risk_appetite.validation.review_buffer_multiplier_range',
+                        min: 1.0,
+                        max: 3.0,
+                    ),
+                ],
             ])
             ->add('approvedBy', EntityType::class, [
                 'label' => 'risk_appetite.field.approved_by',
