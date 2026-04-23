@@ -1,41 +1,37 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_auth.html.twig' %}
 
-{# Security: Generic error page for all other errors (prevents information disclosure) #}
+{# Generic fallback für alle anderen Error-Codes (502/503/504 etc.).
+   Erbt Auth-Shell damit wir keine App-Abhängigkeiten brauchen, wenn die
+   App selbst gerade kaputt ist. Keine Information-Disclosure — generischer
+   Text unabhängig vom tatsächlichen Fehler. #}
 
 {% block title %}{{ 'error.generic.title'|trans({}, 'messages') }}{% endblock %}
 
+{% block auth_mood %}warning{% endblock %}
+{% block auth_alva_line %}{{ 'error.generic.alva_line'|trans({}, 'messages')|default('Etwas stimmt nicht.') }}{% endblock %}
+{% block auth_alva_sub %}{{ 'error.generic.alva_sub'|trans({}, 'messages')|default('Probier es gleich nochmal oder geh zurück zum Dashboard.') }}{% endblock %}
+
 {% block body %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <div class="error-template">
-                <h1 class="display-1">{{ 'error.generic.heading'|trans({}, 'messages') }}</h1>
-                <h2>{{ 'error.generic.subheading'|trans({}, 'messages') }}</h2>
-                <div class="error-details mt-4">
-                    <p class="lead">{{ 'error.generic.message'|trans({}, 'messages') }}</p>
-                    <p>{{ 'error.generic.help'|trans({}, 'messages') }}</p>
-                </div>
-                <div class="error-actions mt-4">
-                    <a href="{{ path('app_home') }}" class="btn btn-primary btn-lg">
-                        <i class="bi bi-house" aria-hidden="true"></i> {{ 'error.action.homepage'|trans({}, 'messages') }}
-                    </a>
-                    <a href="javascript:history.back()" class="btn btn-outline-secondary btn-lg">
-                        <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'error.action.back'|trans({}, 'messages') }}
-                    </a>
-                </div>
+    {% import '_components/_cyber_button.html.twig' as btn %}
+    <div class="fa-auth-form">
+        <header class="fa-auth-form__head">
+            <div class="fa-auth-form__eyebrow">{{ 'error.code_label_generic'|trans({}, 'messages')|default('Fehler') }}</div>
+            <h1 class="fa-auth-form__title">{{ 'error.generic.heading'|trans({}, 'messages') }}</h1>
+            <p class="fa-auth-form__desc">{{ 'error.generic.message'|trans({}, 'messages') }}</p>
+            {% if 'error.generic.help'|trans({}, 'messages') != 'error.generic.help' %}
+                <p class="fa-auth-form__desc">{{ 'error.generic.help'|trans({}, 'messages') }}</p>
+            {% endif %}
+        </header>
+
+        {% if request_id is defined %}
+            <div style="margin: 8px 0; padding: 8px 12px; background: var(--surface-2); border-radius: var(--r-md); font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em;">
+                Request-ID: <span style="color: var(--fg);">{{ request_id }}</span>
             </div>
+        {% endif %}
+
+        <div style="display:flex; gap: 10px; margin-top: 8px; flex-wrap: wrap;">
+            {{ btn.link('javascript:location.reload()', 'error.action.retry'|trans({}, 'messages')|default('Nochmal versuchen'), { variant: 'primary', icon: 'bi-arrow-clockwise' }) }}
+            {{ btn.link(path('app_home'), 'error.action.homepage'|trans({}, 'messages'), { variant: 'secondary', icon: 'bi-house' }) }}
         </div>
     </div>
-</div>
-
-<style>
-    .error-template {
-        padding: 40px 15px;
-        text-align: center;
-    }
-    .error-template h1 {
-        font-size: 8em;
-        color: #dc3545;
-    }
-</style>
 {% endblock %}
