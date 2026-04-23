@@ -29,14 +29,14 @@
         .admin-wrapper {
             background: var(--bg);
             padding: var(--spacing-xl);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-sm);
+            border-radius: var(--r-md);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         [data-theme="dark"] .admin-wrapper,
         [data-bs-theme="dark"] .admin-wrapper {
-            background: var(--bg-elevated);
-            color: var(--text-primary);
+            background: var(--surface);
+            color: var(--fg);
         }
 
         /* Hide admin sidebar - using mega menu instead */
@@ -177,19 +177,19 @@
         }
 
         [data-theme="dark"] .admin-sidebar .sidebar-section-title {
-            color: var(--text-muted);
+            color: var(--fg-3);
         }
 
         [data-theme="dark"] .admin-header {
-            border-bottom-color: var(--border-color);
+            border-bottom-color: var(--border);
         }
 
         [data-theme="dark"] .admin-header h1 {
-            color: var(--text-primary);
+            color: var(--fg);
         }
 
         [data-theme="dark"] .admin-header p {
-            color: var(--text-secondary);
+            color: var(--fg-2);
         }
 
         /* Responsive adjustments */
