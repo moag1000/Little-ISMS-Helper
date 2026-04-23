@@ -131,7 +131,7 @@
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_attrs %}id="batchAnalysisCard" data-controller="batch-analysis" data-batch-analysis-url-value="{{ path('app_mapping_quality_batch_analyze') }}" data-total-unanalyzed="{{ quality_stats.unanalyzed_mappings }}"{% endblock %}
         {% block card_header %}
-            <div class="card-header {% if quality_stats.unanalyzed_mappings > 0 %}bg-info{% else %}bg-secondary{% endif %} text-white">
+            <div class="card-header{% if quality_stats.unanalyzed_mappings > 0 %} bg-info{% endif %}">
                 <h3 class="mb-0">{{ 'compliance.mapping_quality.batch_analysis.title'|trans({}, 'compliance') }}</h3>
             </div>
         {% endblock %}

@@ -131,7 +131,7 @@
     {% if high_priority_gaps is not empty %}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-danger text-white">
+            <div class="card-header bg-danger">
                 <h3 class="mb-0">{{ 'compliance.mapping_quality.gaps.critical_high'|trans({}, 'compliance') }} ({{ high_priority_gaps|length }})</h3>
             </div>
         {% endblock %}
