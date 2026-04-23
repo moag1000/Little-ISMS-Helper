@@ -29,6 +29,14 @@ class BackupService
         'Supplier',
         'SystemSettings',
 
+        // Configuration entities (Phase 8 / QW-5)
+        'RiskApprovalConfig',       // Phase 8L.F1 — FK: Tenant, User
+        'IncidentSlaConfig',        // Phase 8L.F2 — FK: Tenant, User
+        'SupplierCriticalityLevel', // Phase 8QW-5 — FK: Tenant
+        'KpiThresholdConfig',       // FK: Tenant
+        'Tag',                      // FK: Tenant
+        'EntityTag',                // FK: Tag, User
+
         // ISMS Core
         'Asset',
         'Control',
@@ -58,6 +66,7 @@ class BackupService
         'DataProtectionImpactAssessment',
         'DataBreach',
         'Consent',
+        'DataSubjectRequest',       // DSGVO Art. 15-22 — FK: Tenant, User, ProcessingActivity
 
         // Documents & Training
         'Document',
@@ -66,7 +75,13 @@ class BackupService
         // Audit & Reviews
         'InternalAudit',
         'AuditChecklist',
+        'AuditFinding',             // H-01 — FK: Tenant, InternalAudit, Control, User
+        'CorrectiveAction',         // FK: Tenant, AuditFinding, User
+        'AuditFreeze',              // H-01 tamper-evident — FK: Tenant, User
         'ManagementReview',
+
+        // DORA / Penetration Testing
+        'ThreatLedPenetrationTest', // DORA Art. 26 — FK: Tenant; ManyToMany: AuditFinding
 
         // Context & Objectives
         'ISMSContext',
@@ -78,11 +93,18 @@ class BackupService
         'ChangeRequest',
         'CryptographicOperation',
         'PhysicalAccessLog',
+        'FourEyesApprovalRequest',  // FK: Tenant, User (requester/approver/reviewer)
 
         // Workflows
         'Workflow',
         'WorkflowStep',
         'WorkflowInstance',
+
+        // Reports & Snapshots
+        'ScheduledReport',          // FK: User (tenantId as raw int)
+        'CustomReport',             // FK: User (tenantId as raw int)
+        'AppliedBaseline',          // FK: Tenant, User
+        'KpiSnapshot',              // FK: Tenant
 
         // User Preferences (optional but useful)
         'DashboardLayout',
