@@ -448,7 +448,8 @@ class ManagementReportService
         // This year's audits
         $thisYear = (new DateTime())->format('Y');
         $auditsThisYear = array_filter($audits, function ($a) use ($thisYear): bool {
-            $date = $a->getAuditDate();
+            // Vorzugsweise tatsächliches Datum (durchgeführt), sonst geplantes Datum.
+            $date = $a->getActualDate() ?? $a->getPlannedDate();
             return $date !== null && $date->format('Y') === $thisYear;
         });
 
