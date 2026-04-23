@@ -7,6 +7,7 @@ namespace App\EventListener;
 use App\Entity\RiskApprovalConfig;
 use App\Entity\Tenant;
 use App\Repository\IncidentSlaConfigRepository;
+use App\Repository\SupplierCriticalityLevelRepository;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Events;
@@ -18,6 +19,8 @@ use Doctrine\ORM\Events;
  * sodass neue Mandanten automatisch Risk-Approval + Incident-SLA-Defaults
  * bekommen ohne dass TenantService / CorporateStructureService selbst
  * seeden muss.
+ *
+ * Phase 8QW-5: Erweitert um SupplierCriticalityLevel-Defaults (4 Stufen).
  */
 #[AsEntityListener(event: Events::postPersist, entity: Tenant::class)]
 class TenantCreatedSeedListener
@@ -25,6 +28,7 @@ class TenantCreatedSeedListener
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly IncidentSlaConfigRepository $incidentSlaRepo,
+        private readonly SupplierCriticalityLevelRepository $supplierCriticalityRepo,
     ) {
     }
 
@@ -44,5 +48,8 @@ class TenantCreatedSeedListener
 
         // 2. Incident-SLA-Defaults (5 Severities).
         $this->incidentSlaRepo->ensureDefaultsFor($tenant);
+
+        // 3. Supplier-Kritikalitätsstufen (4 Defaults: critical/high/medium/low).
+        $this->supplierCriticalityRepo->ensureDefaultsFor($tenant);
     }
 }

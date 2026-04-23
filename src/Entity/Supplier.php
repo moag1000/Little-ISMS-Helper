@@ -113,11 +113,13 @@ class Supplier
     private ?string $serviceProvided = null;
 
     /**
-     * Criticality: critical, high, medium, low
+     * Criticality code — references SupplierCriticalityLevel.code for this tenant.
+     * Phase 8QW-5: Assert\Choice removed; validation is now via tenant-specific
+     * SupplierCriticalityLevel lookup (FK-style). Existing canonical codes
+     * (critical/high/medium/low) remain valid via seeded default records.
      */
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
-    #[Assert\Choice(choices: ['critical', 'high', 'medium', 'low'])]
     #[Groups(['supplier:read', 'supplier:write'])]
     private ?string $criticality = 'medium';
 

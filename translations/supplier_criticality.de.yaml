@@ -1,0 +1,38 @@
+supplier_criticality:
+    title: 'Lieferanten-Kritikalitätsstufen'
+    subtitle: 'Tenant-spezifische Kritikalitätsskala für Lieferantenbewertungen'
+    action:
+        new: 'Neue Stufe anlegen'
+        edit: 'Stufe bearbeiten'
+    empty: 'Noch keine Kritikalitätsstufen definiert.'
+    confirm_delete: 'Diese Kritikalitätsstufe wirklich löschen? Bestehende Lieferanten behalten ihren Wert.'
+    field:
+        code: 'Code'
+        label_de: 'Bezeichnung (DE)'
+        label_en: 'Bezeichnung (EN)'
+        sort_order: 'Reihenfolge'
+        color: 'Farbe'
+        is_default: 'Standard'
+        is_active: 'Aktiv'
+    placeholder:
+        code: 'z.B. critical, high, medium, low'
+        color: '-- Farbe auswählen --'
+    help:
+        code: 'Maschinenlesbarer Bezeichner (Kleinbuchstaben, Ziffern, Unterstrich). Unveränderlich nach Anlage.'
+        code_immutable: 'Der Code kann nach der Anlage nicht mehr geändert werden.'
+        sort_order: 'Sortierreihenfolge im Dropdown (kleiner = weiter oben). Beispiel: 10 = ganz oben.'
+        is_default: 'Wird als Vorauswahl in neuen Lieferantenformularen gesetzt.'
+    color:
+        danger: 'Rot (danger)'
+        warning: 'Gelb (warning)'
+        info: 'Blau (info)'
+        secondary: 'Grau (secondary)'
+        success: 'Grün (success)'
+        primary: 'Primär (primary)'
+        dark: 'Dunkel (dark)'
+    validation:
+        code_pattern: 'Code darf nur Kleinbuchstaben, Ziffern und Unterstriche enthalten.'
+    flash:
+        created: 'Kritikalitätsstufe erfolgreich angelegt.'
+        updated: 'Kritikalitätsstufe erfolgreich aktualisiert.'
+        deleted: 'Kritikalitätsstufe erfolgreich gelöscht.'

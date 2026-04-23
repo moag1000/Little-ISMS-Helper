@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'supplier_criticality.title'|trans({}, 'supplier_criticality') }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row mb-3">
+        <div class="col">
+            <h1>
+                <i class="bi bi-layers" aria-hidden="true"></i>
+                {{ 'supplier_criticality.title'|trans({}, 'supplier_criticality') }}
+            </h1>
+            <p class="lead">{{ 'supplier_criticality.subtitle'|trans({}, 'supplier_criticality') }}</p>
+        </div>
+        <div class="col-auto d-flex align-items-start">
+            <a href="{{ path('app_admin_supplier_criticality_new') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                {{ 'supplier_criticality.action.new'|trans({}, 'supplier_criticality') }}
+            </a>
+        </div>
+    </div>
+
+    {% for flash_type, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ flash_type === 'error' ? 'danger' : flash_type }} alert-dismissible fade show" role="alert">
+                {{ message|trans({}, 'supplier_criticality') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
+            {% if levels is empty %}
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-inbox fs-2" aria-hidden="true"></i>
+                    <p class="mt-2">{{ 'supplier_criticality.empty'|trans({}, 'supplier_criticality') }}</p>
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>{{ 'supplier_criticality.field.sort_order'|trans({}, 'supplier_criticality') }}</th>
+                                <th>{{ 'supplier_criticality.field.code'|trans({}, 'supplier_criticality') }}</th>
+                                <th>{{ 'supplier_criticality.field.label_de'|trans({}, 'supplier_criticality') }}</th>
+                                <th>{{ 'supplier_criticality.field.label_en'|trans({}, 'supplier_criticality') }}</th>
+                                <th>{{ 'supplier_criticality.field.color'|trans({}, 'supplier_criticality') }}</th>
+                                <th>{{ 'supplier_criticality.field.is_default'|trans({}, 'supplier_criticality') }}</th>
+                                <th>{{ 'supplier_criticality.field.is_active'|trans({}, 'supplier_criticality') }}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for level in levels %}
+                            <tr>
+                                <td>{{ level.sortOrder }}</td>
+                                <td><code>{{ level.code }}</code></td>
+                                <td>{{ level.labelDe }}</td>
+                                <td>{{ level.labelEn }}</td>
+                                <td>
+                                    {% if level.color %}
+                                        <span class="badge bg-{{ level.color }}">{{ level.color }}</span>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if level.isDefault %}
+                                        <span class="badge bg-success"><i class="bi bi-check-circle" aria-hidden="true"></i></span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if level.isActive %}
+                                        <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <a href="{{ path('app_admin_supplier_criticality_edit', {id: level.id}) }}"
+                                       class="btn btn-sm btn-outline-secondary me-1">
+                                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                                    </a>
+                                    <form action="{{ path('app_admin_supplier_criticality_delete', {id: level.id}) }}"
+                                          method="post" class="d-inline"
+                                          onsubmit="return confirm('{{ 'supplier_criticality.confirm_delete'|trans({}, 'supplier_criticality') }}')">
+                                        <input type="hidden" name="_token"
+                                               value="{{ csrf_token('delete_supplier_criticality_' ~ level.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}
