@@ -1179,6 +1179,46 @@ Dokument ohne Nacharbeit nutzbar.
 | 8F | AI-Features | 📅 | Risk Scoring, Auto-Classification |
 | 8G | Interactive Help & Onboarding | ✅ | Guided Tours (6 Rollen), Contextual Help, Keyboard-Shortcuts-Cheat-Sheet — abgeschlossen 2026-04-21, siehe `.claude/GUIDED_TOUR_PLAN.md` |
 | 8I | Enhanced Search & Navigation | 📅 | Command Palette Contextual Actions, Global Search Filters |
+| 8K | Configurable Classification Schemas | 📅 | Vertraulichkeitsstufen pro Tenant konfigurierbar (siehe unten) |
+
+---
+
+### 📅 Phase 8K: Configurable Classification Schemas
+
+**Zeitraum:** TBD (mittlere Priorität, blockt Custom-Tenant-Compliance-Szenarien)
+**Status:** 📅 Backlog — Audit + Proposal 2026-04-23 erstellt
+**Trigger:** Consultant-Feedback: aktuelle 4 hardcoded Stufen (`public/internal/confidential/restricted`) decken nicht BSI-Schutzbedarf (`normal/hoch/sehr_hoch`), TISAX-5er-Skala (`…/strictly_confidential/prototype`) oder kundenspezifische Schemas ab.
+
+**Ziel**
+Vertraulichkeitsstufen werden pro Tenant konfigurierbar. Alle Reports, Exports, Badges, Filter-Dropdowns und Validations lesen dynamisch aus einem zentralen Service statt hardcoded Choice-Listen.
+
+**Vorher-Audit (Ist-Zustand 2026-04-23)**
+- 3 Entity-Felder (`Asset.dataClassification`, `Asset.tisaxInformationClassification`, `Document.tisaxInformationClassification`, `CryptographicOperation.dataClassification`) mit je eigenen / teils fehlenden Constraints
+- `Asset.tisaxInformationClassification` + `Document.tisaxInformationClassification` sind Dead-Code (kein Form, kein Template rendert sie)
+- Parallele Konzepte auf Asset: `confidentialityValue` (int 1–5, BSI-CIA) vs. `dataClassification` (string, ISO) — kein Mapping
+- Hardcoded Choices nur in `AssetType`; keine `ClassificationLevel`-Enum/Entity
+- `BadgeExtension::CLASSIFICATION_MAP` hardcoded mit 4 Werten
+- PDF-Wasserzeichen `'CONFIDENTIAL'` hardcoded in `ManagementReportController` + `soa/report_pdf_v2.html.twig`
+
+**Umsetzungs-Optionen (Audit-Rapport `a1c8457a804841a83`)**
+- **Option A (empfohlen):** `ClassificationLevel`-Entity pro Tenant (`code, label_de, label_en, sortOrder, color, isDefault, isActive`). `Asset.dataClassification` bleibt String-Code (keine FK-Migration nötig). Lookup-Service übersetzt Code → Label/Farbe. Admin-UI für CRUD.
+- Option B: `TenantConfiguration`-Key-Value-Store mit JSON-Werten. Einfacher DB-Footprint, aber schwaches Typing, i18n umständlich.
+- Option C: 3 Preset-Schemas (ISO 27001 / BSI / TISAX) via `Tenant.classificationScheme`-Feld. Keine DB-Entity, aber keine Custom-Labels.
+
+**Scope Option A (~26 Dateien)**
+- **Neu:** `src/Entity/ClassificationLevel.php`, `src/Repository/ClassificationLevelRepository.php`, `src/Form/Admin/ClassificationLevelType.php`, `src/Controller/Admin/ClassificationLevelController.php`, `templates/admin/classification_level/*.html.twig`, Seeding-Command `app:seed-classification-levels`, 1 Migration
+- **Anpassen:** `Asset`/`Document`/`CryptographicOperation` (Constraints), `AssetType` (dynamische Choices via Service), `BadgeExtension` (dynamisches Mapping mit Redis-Cache), `ManagementReportService`, `ScheduledReportService`, `DashboardStatisticsService`, `AssetController` (Filter), `ManagementReportController` (Excel + PDF-Wasserzeichen-Config aus `Tenant`), 9 Templates, 3 Translation-Files
+
+**Voraussetzungen (bereits erledigt 2026-04-23)**
+- ✅ Bug-Fixes in `management_reports/assets.html.twig` + `assets_pdf.html.twig` (Title-Case vs. Lowercase, `asset.classification` → `asset.dataClassification`)
+- ✅ `risk/show.html.twig` — `dataClassification|upper` ohne `trans` → korrekt lokalisiert
+- ✅ Translations-Leiche `asset.classification.secret` entfernt
+- ✅ `Asset->getClassification()` → `getDataClassification()` in Controller/Service/Scheduled (Commit `9fdd2167`)
+
+**Folge-Arbeit (separater Sprint)**
+- TISAX-Classification aus `Asset`/`Document` entweder via Form exponieren oder ersatzlos entfernen
+- `CryptographicOperation.dataClassification` mit `Assert\Choice` (oder FK) sichern
+- PDF-Wasserzeichen-Default aus `Tenant`-Konfiguration statt hardcoded
 
 ---
 

@@ -207,7 +207,7 @@
                                 {% if risk.asset.dataClassification %}
                                     <p><strong>{{ 'asset.field.classification'|trans({}, 'asset') }}:</strong>
                                         <span class="{{ badge_classification(risk.asset.dataClassification) }}">
-                                            {{ risk.asset.dataClassification|upper }}
+                                            {{ ('asset.classification.' ~ risk.asset.dataClassification|lower)|trans({}, 'asset') }}
                                         </span>
                                     </p>
                                 {% endif %}

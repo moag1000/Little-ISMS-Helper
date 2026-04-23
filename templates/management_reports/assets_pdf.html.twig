@@ -81,14 +81,17 @@
                 <th scope="col">Count</th>
             </tr>
             {% for classification, count in report.by_classification %}
+                {% set code = classification|lower %}
+                {% set is_known = code in ['public','internal','confidential','restricted'] %}
+                {% set label = is_known ? ('asset.classification.' ~ code)|trans({}, 'asset') : classification %}
             <tr>
                 <td>
-                    {% if classification == 'Confidential' or classification == 'Restricted' %}
-                    <span class="badge badge-danger">{{ classification }}</span>
-                    {% elseif classification == 'Internal' %}
-                    <span class="badge badge-warning">{{ classification }}</span>
+                    {% if code in ['confidential','restricted'] %}
+                    <span class="badge badge-danger">{{ label }}</span>
+                    {% elseif code == 'internal' %}
+                    <span class="badge badge-warning">{{ label }}</span>
                     {% else %}
-                    <span class="badge badge-success">{{ classification }}</span>
+                    <span class="badge badge-success">{{ label }}</span>
                     {% endif %}
                 </td>
                 <td>{{ count }}</td>
@@ -117,13 +120,17 @@
                 <td>{{ asset.name|slice(0, 30) }}{% if asset.name|length > 30 %}...{% endif %}</td>
                 <td>{{ asset.assetType }}</td>
                 <td>
-                    {% set classification = asset.classification|default('Unclassified') %}
-                    {% if classification == 'Confidential' or classification == 'Restricted' %}
-                    <span class="badge badge-danger">{{ classification }}</span>
-                    {% elseif classification == 'Internal' %}
-                    <span class="badge badge-warning">{{ classification }}</span>
+                    {% set code = (asset.dataClassification ?? '')|lower %}
+                    {% set is_known = code in ['public','internal','confidential','restricted'] %}
+                    {% set label = is_known ? ('asset.classification.' ~ code)|trans({}, 'asset') : ('management_reports.assets.no_classification'|trans({}, 'management_reports')) %}
+                    {% if code in ['confidential','restricted'] %}
+                    <span class="badge badge-danger">{{ label }}</span>
+                    {% elseif code == 'internal' %}
+                    <span class="badge badge-warning">{{ label }}</span>
+                    {% elseif code == 'public' %}
+                    <span class="badge badge-success">{{ label }}</span>
                     {% else %}
-                    <span class="badge badge-success">{{ classification }}</span>
+                    <span class="badge badge-secondary">{{ label }}</span>
                     {% endif %}
                 </td>
                 <td>{{ asset.owner ? asset.owner.email|slice(0, 20) : '-' }}</td>
