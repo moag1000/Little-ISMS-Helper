@@ -120,13 +120,13 @@
 /* Custom modal content - only for non-Bootstrap modals */
 .modal:not(.fade) .modal-content {
     background: var(--surface);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
     padding: var(--spacing-xl);
     max-width: 600px;
     width: 90%;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: var(--shadow-lg), 0 0 30px var(--primary-glow);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 30px var(--primary-glow);
     position: relative;
     z-index: 1001;
     transform: scale(0.9);
@@ -206,9 +206,9 @@
 
 .notification {
     background: var(--surface);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
     padding: var(--spacing-md) var(--spacing-lg);
-    box-shadow: var(--shadow-lg), 0 0 20px var(--primary-glow);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 20px var(--primary-glow);
     min-width: 300px;
     max-width: 400px;
     pointer-events: all;
@@ -232,25 +232,25 @@
 .notification-success {
     border-color: var(--success);
     background: var(--success-glow);
-    box-shadow: var(--shadow-lg), 0 0 10px var(--success-glow), 0 0 20px var(--success-glow);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 10px var(--success-glow), 0 0 20px var(--success-glow);
 }
 
 .notification-error {
     border-color: var(--danger);
     background: var(--danger-glow);
-    box-shadow: var(--shadow-lg), 0 0 20px var(--danger-glow);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 20px var(--danger-glow);
 }
 
 .notification-warning {
     border-color: var(--warning);
     background: var(--warning-glow);
-    box-shadow: var(--shadow-lg), 0 0 20px var(--warning-glow);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 20px var(--warning-glow);
 }
 
 .notification-info {
     border-color: var(--primary);
     background: var(--primary-tint);
-    box-shadow: var(--shadow-lg), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
 .notification-header {
@@ -302,7 +302,7 @@
 .filter-panel {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
     padding: var(--spacing-lg);
     margin-bottom: var(--spacing-xl);
 }
@@ -329,7 +329,7 @@
 .filter-control select {
     padding: var(--spacing-sm);
     border: 1px solid var(--border);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
     font-size: 1rem;
 }
 
@@ -366,7 +366,7 @@
     width: 100%;
     padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) 2.5rem;
     border: 1px solid var(--border);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
     font-size: 1rem;
     transition: all 0.2s;
 }
@@ -389,7 +389,7 @@
 /* Collapsible Section */
 .collapsible {
     border: 1px solid var(--border);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
     margin-bottom: var(--spacing-md);
     overflow: hidden;
 }
@@ -489,7 +489,7 @@
     background: var(--surface);
     border: 1px solid var(--border);
     padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -504,8 +504,8 @@
     min-width: 200px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--border-radius-sm);
-    box-shadow: var(--shadow-md);
+    border-radius: var(--r-sm);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     margin-top: var(--spacing-xs);
     z-index: 100;
 }
@@ -567,7 +567,7 @@
     background-color: var(--fg);
     color: white;
     text-align: center;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
     padding: var(--spacing-xs) var(--spacing-sm);
     position: absolute;
     z-index: 1000;
@@ -608,7 +608,7 @@
 .sla-timeline {
     background: var(--surface);
     border: 2px solid var(--border);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
     padding: var(--spacing-md);
     margin: var(--spacing-md) 0;
     transition: all var(--t-base) var(--ease-out);
@@ -753,7 +753,7 @@
     align-items: center;
     gap: var(--spacing-xs);
     padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
     background: var(--surface-2);
     border: 1px solid var(--border);
     transition: all var(--t-fast) var(--ease-out);

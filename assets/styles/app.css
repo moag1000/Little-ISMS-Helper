@@ -18,15 +18,9 @@
     --spacing-xl: 2rem;
     --spacing-2xl: 3rem;
 
-    /* Border Radius */
-    --border-radius: 8px;
-    --border-radius-sm: 4px;
-    --border-radius-lg: 12px;
-
-    /* Shadows - Enhanced for Cyberpunk */
-    --shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.08);
-    --shadow-md: 0 4px 8px rgba(15, 23, 42, 0.12);
-    --shadow-lg: 0 8px 16px rgba(15, 23, 42, 0.16);
+    /* Border Radius — use Aurora tokens: --r-sm, --r-md, --r-lg */
+    --border-radius-sm: var(--r-sm);
+    --border-radius-lg: var(--r-lg);
 }
 
 /* Reset und Basis */
@@ -213,7 +207,7 @@ body {
     box-shadow:
         inset 0 0 0 1px rgba(236, 72, 153, 0.2),
         0 0 20px rgba(236, 72, 153, 0.15);
-    border-radius: var(--border-radius, 8px);
+    border-radius: var(--r-md);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -527,7 +521,7 @@ body {
         rgba(139, 92, 246, 0.05) 100%
     );
     border: 1px solid rgba(236, 72, 153, 0.2);
-    border-radius: var(--border-radius, 8px);
+    border-radius: var(--r-md);
     color: var(--fg);
 }
 
@@ -626,7 +620,7 @@ body {
         rgba(6, 182, 212, 0.05) 100%
     );
     border: 1px dashed rgba(236, 72, 153, 0.3);
-    border-radius: var(--border-radius, 8px);
+    border-radius: var(--r-md);
     font-size: 0.8125rem;
     color: var(--fg);
     cursor: pointer;
@@ -1133,7 +1127,7 @@ body {
     padding: var(--spacing-lg) 0;
     overflow-y: auto;
     overflow-x: hidden;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     position: sticky;
     top: 0;
     align-self: flex-start;
@@ -1305,7 +1299,7 @@ body {
     color: var(--fg); /* Using CSS var */
     text-decoration: none;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
     border-left: 0;
     position: relative;
     overflow: hidden;
@@ -1342,7 +1336,7 @@ body {
                 rgba(139, 92, 246, 0.15),
                 transparent);
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
 }
 
 .app-sidebar nav:not(#main-navigation) a::after {
@@ -1480,7 +1474,7 @@ body {
     transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     background: rgba(0, 0, 0, 0.2);
     margin: 0 var(--spacing-xs);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
 }
 
 .app-sidebar .submenu.expanded {
@@ -1569,8 +1563,8 @@ body {
 .content {
     background: var(--surface);
     padding: var(--spacing-md);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-sm);
+    border-radius: var(--r-md);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     animation: fadeIn var(--t-slow) var(--ease-out);
 }
 
@@ -1617,8 +1611,8 @@ h3 {
 .card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-sm);
+    border-radius: var(--r-md);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: all var(--t-base) var(--ease-out);
     position: relative;
     overflow: hidden;
@@ -1709,12 +1703,12 @@ h3 {
 }
 
 .card-hoverable:hover {
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     transform: translateY(-2px);
 }
 
 .card:hover {
-    box-shadow: var(--shadow-lg),
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08),
                 0 0 25px rgba(6, 182, 212, 0.3),
                 0 0 15px rgba(236, 72, 153, 0.2),
                 0 0 10px rgba(139, 92, 246, 0.15);
@@ -1725,13 +1719,13 @@ h3 {
 
 @keyframes card-glow {
     0%, 100% {
-        box-shadow: var(--shadow-lg),
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08),
                     0 0 25px rgba(6, 182, 212, 0.3),
                     0 0 15px rgba(236, 72, 153, 0.2),
                     0 0 10px rgba(139, 92, 246, 0.15);
     }
     50% {
-        box-shadow: var(--shadow-lg),
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08),
                     0 0 30px rgba(6, 182, 212, 0.4),
                     0 0 20px rgba(236, 72, 153, 0.3),
                     0 0 15px rgba(139, 92, 246, 0.2);
@@ -1749,9 +1743,9 @@ h3 {
 .kpi-card {
     background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
     border: 1px solid var(--border);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
     padding: var(--spacing-lg);
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: all var(--t-base) var(--ease-out);
     position: relative;
     overflow: hidden;
@@ -1769,7 +1763,7 @@ h3 {
 }
 
 .kpi-card:hover {
-    box-shadow: var(--shadow-lg),
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08),
                 0 0 20px rgba(6, 182, 212, 0.3),
                 0 0 10px rgba(236, 72, 153, 0.2);
     transform: translateY(-6px) scale(1.02);
@@ -1814,14 +1808,14 @@ h3 {
 
 .module-card {
     border: 1px solid var(--border);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
     padding: var(--spacing-lg);
     transition: all var(--t-base) var(--ease-out);
     background: var(--surface);
 }
 
 .module-card:hover {
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     transform: translateY(-4px);
     border-color: var(--primary);
 }
@@ -1846,13 +1840,13 @@ h3 {
     background-blend-mode: normal, multiply;
     color: var(--surface);
     text-decoration: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
     transition: all var(--t-base) var(--ease-out);
     border: 1px solid var(--primary);
     cursor: pointer;
     font-size: 1rem;
     font-weight: 600; /* Increased from 500 for better readability */
-    box-shadow: var(--shadow-sm), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
     position: relative;
     overflow: hidden;
     /* WCAG AA: Text shadow improves contrast ratio */
@@ -1880,7 +1874,7 @@ h3 {
 
 .btn:hover {
     background: linear-gradient(135deg, var(--primary-hover), var(--accent));
-    box-shadow: var(--shadow-md),
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06),
                 0 0 20px rgba(6, 182, 212, 0.6),
                 0 0 15px rgba(236, 72, 153, 0.4),
                 0 0 10px rgba(139, 92, 246, 0.3);
@@ -1896,12 +1890,12 @@ h3 {
 .btn-secondary {
     background: linear-gradient(135deg, var(--fg-2), var(--fg-3));
     border-color: var(--fg-2);
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .btn-secondary:hover {
     background: linear-gradient(135deg, var(--fg-3), var(--surface-3));
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .btn-success {
@@ -1910,7 +1904,7 @@ h3 {
                 linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25));
     background-blend-mode: normal, multiply;
     border-color: var(--success);
-    box-shadow: var(--shadow-sm), 0 0 10px var(--success-glow), 0 0 20px var(--success-glow);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 0 10px var(--success-glow), 0 0 20px var(--success-glow);
     font-weight: 600;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8),
                  0 2px 6px rgba(0, 0, 0, 0.5);
@@ -1920,7 +1914,7 @@ h3 {
     background: linear-gradient(135deg, var(--success-strong), var(--success-strong)),
                 linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3));
     background-blend-mode: normal, multiply;
-    box-shadow: var(--shadow-md),
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06),
                 0 0 20px rgba(16, 185, 129, 0.6),
                 0 0 10px rgba(16, 185, 129, 0.4);
     transform: translateY(-3px) scale(1.02);
@@ -1934,7 +1928,7 @@ h3 {
                 linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
     background-blend-mode: normal, multiply;
     border-color: var(--danger);
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     font-weight: 600;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8),
                  0 2px 6px rgba(0, 0, 0, 0.5);
@@ -1944,7 +1938,7 @@ h3 {
     background: linear-gradient(135deg, var(--danger), var(--danger-strong)),
                 linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25));
     background-blend-mode: normal, multiply;
-    box-shadow: var(--shadow-md),
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06),
                 0 0 20px rgba(239, 68, 68, 0.6),
                 0 0 10px rgba(239, 68, 68, 0.4);
     transform: translateY(-3px) scale(1.02);
@@ -2055,7 +2049,7 @@ h3 {
 
 .btn-loading:hover {
     transform: none;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 /* Spinner - Bootstrap-like */
@@ -2092,7 +2086,7 @@ h3 {
 .success-box,
 .danger-box {
     padding: var(--spacing-md);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
     margin: var(--spacing-md) 0;
     border-left: 4px solid;
 }
@@ -2150,8 +2144,8 @@ h3 {
 .table-container {
     overflow-x: auto;
     margin: var(--spacing-xl) 0;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-sm);
+    border-radius: var(--r-md);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 table {
@@ -2282,7 +2276,7 @@ tbody td {
 .badge {
     display: inline-block;
     padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
     font-size: 0.875rem;
     font-weight: 500;
     transition: all 0.2s ease;
@@ -2405,7 +2399,7 @@ tbody td {
     padding: 0.5rem 0.75rem;
     background: var(--bg);
     border-left: 3px solid var(--danger);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
 }
 
 .form-required-legend .required {
@@ -2426,7 +2420,7 @@ tbody td {
 /* Fieldset base styling - looks like card */
 fieldset {
     border: 1px solid var(--border);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
     padding: 0;
     margin-bottom: 1rem;
     background: var(--surface);
@@ -2441,7 +2435,7 @@ fieldset legend {
     width: 100%;
     font-size: 1.125rem;
     font-weight: 600;
-    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
     color: var(--fg);
     float: none;  /* Override browser default */
 }
@@ -2597,7 +2591,7 @@ textarea::placeholder,
     width: 100%;
     padding: var(--spacing-sm);
     border: 1px solid var(--border);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
     font-size: 1rem;
     transition: all var(--t-base) var(--ease-out);
     background: var(--surface);
@@ -2632,7 +2626,7 @@ textarea.form-control {
 .progress {
     height: 24px;
     background-color: var(--surface-3);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
     overflow: hidden;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
     border: 1px solid rgba(6, 182, 212, 0.3);
@@ -2692,7 +2686,7 @@ textarea.form-control {
 .stat-item {
     padding: var(--spacing-md);
     background: var(--surface-2);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
     border-left: 3px solid var(--primary);
 }
 
@@ -2742,7 +2736,7 @@ textarea.form-control {
     gap: var(--spacing-xs);
     background: rgba(6, 182, 212, 0.1);
     padding: var(--spacing-xs);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
     border: 1px solid rgba(6, 182, 212, 0.3);
     box-shadow: inset 0 0 10px rgba(6, 182, 212, 0.1);
 }
@@ -2751,7 +2745,7 @@ textarea.form-control {
     padding: var(--spacing-xs) var(--spacing-md);
     color: var(--surface);
     text-decoration: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--r-sm);
     font-weight: 600;
     font-size: 0.875rem;
     transition: all var(--t-base) var(--ease-out);

@@ -23,7 +23,7 @@
    =============================== */
 [data-theme="dark"] .kpi-card:hover,
 [data-bs-theme="dark"] .kpi-card:hover {
-    box-shadow: var(--shadow-md), 0 0 20px rgba(56, 189, 248, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 20px rgba(56, 189, 248, 0.15);
 }
 
 [data-theme="dark"] .kpi-card::after,

@@ -69,8 +69,8 @@
 .skeleton-card {
     padding: var(--spacing-lg);
     background: var(--surface);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-sm);
+    border-radius: var(--r-md);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .skeleton-badge {
@@ -87,8 +87,8 @@
     gap: var(--spacing-md);
     padding: var(--spacing-lg);
     background: var(--surface);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-sm);
+    border-radius: var(--r-md);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     border-left: 4px solid var(--border);
 }
 

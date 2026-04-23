@@ -100,7 +100,7 @@
     margin-bottom: 20px;
     border: 2px solid rgba(6, 182, 212, 0.2);
     border-radius: 12px;
-    box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.1)), 0 0 15px rgba(6, 182, 212, 0.05);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 0 15px rgba(6, 182, 212, 0.05);
     background: var(--surface);
     overflow: hidden;
     transition: all 0.3s ease;
@@ -108,7 +108,7 @@
 
 .analytics-card:hover {
     border-color: var(--primary);
-    box-shadow: var(--shadow-md), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
 .analytics-card .card-header {
@@ -310,7 +310,7 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
-    box-shadow: var(--shadow-lg, 0 8px 24px rgba(0,0,0,0.15));
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     z-index: 10;
 }
 
@@ -383,7 +383,7 @@
     border-radius: 12px;
     color: white;
     margin-bottom: 20px;
-    box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint), var(--shadow-lg);
+    box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint), 0 8px 24px rgba(0, 0, 0, 0.08);
     border: 2px solid var(--accent);
 }
 
