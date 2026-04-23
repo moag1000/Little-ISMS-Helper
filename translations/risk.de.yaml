@@ -1,4 +1,17 @@
 risk:
+  matrix:
+    likelihood:
+      1: 'Sehr selten'
+      2: 'Selten'
+      3: 'Gelegentlich'
+      4: 'Wahrscheinlich'
+      5: 'Sehr wahrscheinlich'
+    impact:
+      1: 'Unbedeutend'
+      2: 'Gering'
+      3: 'Moderat'
+      4: 'Hoch'
+      5: 'Kritisch'
   prefill:
     title_from_vulnerability: 'Risiko aus Schwachstelle: %title%'
     title_from_incident: 'Risiko aus Vorfall: %title%'

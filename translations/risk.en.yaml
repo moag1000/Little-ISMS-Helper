@@ -1,4 +1,17 @@
 risk:
+  matrix:
+    likelihood:
+      1: 'Very rare'
+      2: 'Rare'
+      3: 'Occasional'
+      4: 'Probable'
+      5: 'Very probable'
+    impact:
+      1: 'Negligible'
+      2: 'Minor'
+      3: 'Moderate'
+      4: 'High'
+      5: 'Critical'
   prefill:
     title_from_vulnerability: 'Risk derived from vulnerability: %title%'
     title_from_incident: 'Risk derived from incident: %title%'
