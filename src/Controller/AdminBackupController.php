@@ -20,7 +20,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[IsGranted('ROLE_ADMIN')]
+// Backup/restore operations require SUPER_ADMIN (global, cross-tenant scope)
+#[IsGranted('ROLE_SUPER_ADMIN')]
 class AdminBackupController extends AbstractController
 {
     public function __construct(
@@ -43,6 +44,10 @@ class AdminBackupController extends AbstractController
     #[Route('/admin/data/backup/create', name: 'data_backup_create', methods: ['POST'])]
     public function createBackup(Request $request): JsonResponse
     {
+        if (!$this->isCsrfTokenValid('data_backup_create', $request->request->get('_token'))) {
+            return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         try {
             $includeAuditLog = $request->request->getBoolean('include_audit_log', true);
             $includeUserSessions = $request->request->getBoolean('include_user_sessions', false);
@@ -113,6 +118,10 @@ class AdminBackupController extends AbstractController
     #[Route('/admin/data/backup/upload', name: 'data_backup_upload', methods: ['POST'])]
     public function uploadBackup(Request $request): JsonResponse
     {
+        if (!$this->isCsrfTokenValid('data_backup_upload', $request->request->get('_token'))) {
+            return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         try {
             /** @var UploadedFile|null $file */
             $file = $request->files->get('backup_file');
@@ -164,8 +173,12 @@ class AdminBackupController extends AbstractController
     }
 
     #[Route('/admin/data/backup/validate/{filename}', name: 'data_backup_validate', methods: ['POST'])]
-    public function validateBackup(string $filename): JsonResponse
+    public function validateBackup(string $filename, Request $request): JsonResponse
     {
+        if (!$this->isCsrfTokenValid('data_backup_validate', $request->request->get('_token'))) {
+            return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         try {
             // Validate filename
             if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
@@ -243,6 +256,10 @@ class AdminBackupController extends AbstractController
     #[Route('/admin/data/backup/restore/{filename}', name: 'data_backup_restore', methods: ['POST'])]
     public function restoreBackup(string $filename, Request $request): JsonResponse
     {
+        if (!$this->isCsrfTokenValid('data_backup_restore', $request->request->get('_token'))) {
+            return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         try {
             // Validate filename
             if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
@@ -301,9 +318,13 @@ class AdminBackupController extends AbstractController
         }
     }
 
-    #[Route('/admin/data/backup/delete/{filename}', name: 'data_backup_delete', methods: ['DELETE'])]
-    public function deleteBackup(string $filename): JsonResponse
+    #[Route('/admin/data/backup/delete/{filename}', name: 'data_backup_delete', methods: ['POST'])]
+    public function deleteBackup(string $filename, Request $request): JsonResponse
     {
+        if (!$this->isCsrfTokenValid('data_backup_delete', $request->request->get('_token'))) {
+            return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         try {
             // Validate filename
             if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {

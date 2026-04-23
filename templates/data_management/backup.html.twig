@@ -22,6 +22,7 @@
                         {{ 'data_management.backup.create.description'|trans({}, 'admin') }}
                     </p>
                     <form id="createBackupForm">
+                        <input type="hidden" name="_token" value="{{ csrf_token('data_backup_create') }}">
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="includeAuditLog" name="include_audit_log" checked>
@@ -66,6 +67,7 @@
                         {{ 'data_management.backup.upload.description'|trans({}, 'admin') }}
                     </p>
                     <form id="uploadBackupForm">
+                        <input type="hidden" name="_token" value="{{ csrf_token('data_backup_upload') }}">
                         <div class="mb-3">
                             <label for="backupFile" class="form-label">{{ 'data_management.backup.upload.select_file'|trans({}, 'admin') }}</label>
                             <input type="file" class="form-control" id="backupFile" name="backup_file" accept=".json,.gz">
@@ -124,7 +126,7 @@
                                         <td>{{ (backup.size / 1024 / 1024)|number_format(2) }} MB</td>
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
-                                                <button type="button" class="btn btn-outline-primary validate-backup" data-filename="{{ backup.filename }}">
+                                                <button type="button" class="btn btn-outline-primary validate-backup" data-filename="{{ backup.filename }}" data-token="{{ csrf_token('data_backup_validate') }}">
                                                     <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'data_management.backup.action.validate'|trans({}, 'admin') }}
                                                 </button>
                                                 <button type="button" class="btn btn-outline-info preview-backup" data-filename="{{ backup.filename }}">
@@ -136,7 +138,7 @@
                                                 <button type="button" class="btn btn-outline-warning restore-backup" data-filename="{{ backup.filename }}">
                                                     <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'data_management.backup.action.restore_action'|trans({}, 'admin') }}
                                                 </button>
-                                                <button type="button" class="btn btn-outline-danger delete-backup" data-filename="{{ backup.filename }}">
+                                                <button type="button" class="btn btn-outline-danger delete-backup" data-filename="{{ backup.filename }}" data-token="{{ csrf_token('data_backup_delete') }}">
                                                     <i class="bi bi-trash" aria-hidden="true"></i> {{ 'data_management.backup.action.delete'|trans({}, 'admin') }}
                                                 </button>
                                             </div>
@@ -171,6 +173,7 @@
 
                     <form id="restoreForm">
                         <input type="hidden" id="restoreFilename" name="filename">
+                        <input type="hidden" name="_token" value="{{ csrf_token('data_backup_restore') }}">
 
                         <div class="mb-3">
                             <label class="form-label fw-bold" for="strategyDefault">{{ 'data_management.backup.restore.missing_field_strategy'|trans({}, 'admin') }}:</label>
@@ -544,14 +547,19 @@
             document.querySelectorAll('.validate-backup').forEach(btn => {
                 btn.addEventListener('click', async function() {
                     const filename = this.getAttribute('data-filename');
+                    const csrfToken = this.getAttribute('data-token');
                     const row = this.closest('tr');
 
                     this.disabled = true;
                     this.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
 
+                    const validateFormData = new FormData();
+                    validateFormData.append('_token', csrfToken);
+
                     try {
                         const response = await fetch(`{{ path('data_backup_validate', {filename: '__FILENAME__'}) }}`.replace('__FILENAME__', filename), {
-                            method: 'POST'
+                            method: 'POST',
+                            body: validateFormData
                         });
 
                         const result = await response.json();
@@ -794,14 +802,19 @@
             document.querySelectorAll('.delete-backup').forEach(btn => {
                 btn.addEventListener('click', async function() {
                     const filename = this.getAttribute('data-filename');
+                    const csrfToken = this.getAttribute('data-token');
 
                     if (!confirm('{{ 'data_management.backup.confirm_delete'|trans({'%filename%': ''}, 'admin') }}' + filename + '?')) {
                         return;
                     }
 
+                    const deleteFormData = new FormData();
+                    deleteFormData.append('_token', csrfToken);
+
                     try {
                         const response = await fetch(`{{ path('data_backup_delete', {filename: '__FILENAME__'}) }}`.replace('__FILENAME__', filename), {
-                            method: 'DELETE'
+                            method: 'POST',
+                            body: deleteFormData
                         });
 
                         const result = await response.json();
