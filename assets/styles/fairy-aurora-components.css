@@ -2146,6 +2146,16 @@ html[data-theme="dark"] .keyboard-key {
 
 /* ═══════════════════════════════════════════════════════════════════
    Bootstrap-Card → Aurora-Card-Look (Dashboard-Unifikation)
+   ═══════════════════════════════════════════════════════════════════
+   Spezifitäts-Strategie:
+   - Bootstrap .card-header / .card-footer:  (0,1,0)
+   - Bootstrap .card-header:first-child:     (0,2,0) — border-radius only
+   - Bootstrap .card-footer:last-child:      (0,2,0) — border-radius only
+   - Bootstrap .card>.list-group+.card-footer: (0,3,0) — border-top:0
+   Lösung: Aurora schreibt .card > .card-header / .card > .card-footer
+   mit Spezifität (0,2,0) → schlägt Bootstrap 1-Klassen-Regeln und
+   liegt gleichauf mit Bootstrap-Pseudo-Klassen-Regeln (Aurora gewinnt
+   per Load-Order, da Aurora nach Bootstrap lädt).
    ═══════════════════════════════════════════════════════════════════ */
 
 .card {
@@ -2161,6 +2171,23 @@ html[data-theme="dark"] .keyboard-key {
     border-color: var(--border-strong);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
+
+/* (0,2,0) — beats Bootstrap's .card-header (0,1,0) and equals
+   Bootstrap's .card-header:first-child (0,2,0); Aurora wins by load order */
+.card > .card-header {
+    background-color: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+    padding: 14px 18px;
+    font-weight: 600;
+    letter-spacing: -0.1px;
+    /* Inner top-radius matches the card's outer radius minus border width */
+    border-top-left-radius: calc(var(--r-lg) - 1px);
+    border-top-right-radius: calc(var(--r-lg) - 1px);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+/* Keep flat selectors as aliases so .card-header outside .card also works */
 .card-header {
     background-color: var(--surface-2);
     border-bottom: 1px solid var(--border);
@@ -2169,15 +2196,53 @@ html[data-theme="dark"] .keyboard-key {
     font-weight: 600;
     letter-spacing: -0.1px;
 }
+
 .card-body { color: var(--fg); padding: 18px; }
+
+/* (0,2,0) — beats Bootstrap's .card-footer (0,1,0) and equals
+   Bootstrap's .card-footer:last-child (0,2,0); Aurora wins by load order.
+   Also overrides Bootstrap's .card>.card-header+.list-group,.card>.list-group+.card-footer
+   { border-top:0 } (0,3,0) needs a separate rule below. */
+.card > .card-footer {
+    background-color: var(--surface-2);
+    border-top: 1px solid var(--border);
+    color: var(--fg-2);
+    /* Inner bottom-radius matches the card's outer radius minus border width */
+    border-bottom-left-radius: calc(var(--r-lg) - 1px);
+    border-bottom-right-radius: calc(var(--r-lg) - 1px);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+/* Flat alias for .card-footer used outside .card context */
 .card-footer {
     background-color: var(--surface-2);
     border-top: 1px solid var(--border);
     color: var(--fg-2);
 }
+
+/* Bootstrap (0,3,0): .card>.list-group+.card-footer { border-top:0 }
+   Re-apply Aurora border when a list-group precedes the footer.
+   Specificity (0,3,0) equals Bootstrap, Aurora wins by load order. */
+.card > .list-group + .card-footer {
+    border-top: 1px solid var(--border);
+}
+
 .card-title { color: var(--fg); font-weight: 600; }
 .card-subtitle { color: var(--fg-2); }
 .card-text { color: var(--fg-2); line-height: 1.55; }
+
+/* Bootstrap .card-header-tabs .nav-link.active (0,3,0) sets
+   background-color:var(--bs-card-bg). Since --bs-card-bg is overridden
+   to var(--surface) via token layer, this already resolves correctly.
+   Explicit rule only needed if tab active state shows wrong BG. */
+.card-header-tabs .nav-link.active {
+    background-color: var(--surface);
+    border-bottom-color: var(--surface);
+}
+
+/* card-img: no color/bg overrides needed; just ensure radius aligns */
+.card > .card-img-top { border-radius: calc(var(--r-lg) - 1px) calc(var(--r-lg) - 1px) 0 0; }
+.card > .card-img-bottom { border-radius: 0 0 calc(var(--r-lg) - 1px) calc(var(--r-lg) - 1px); }
 
 /* ═══════════════════════════════════════════════════════════════════
    Menü-/Sidebar-/Navigation-Typografie — Aurora-Harmonisierung
@@ -2335,19 +2400,28 @@ html[data-theme="dark"] .nav-pills .show > .nav-link {
 .card.border-info,     .card.border-left-info     { border-left: 4px solid var(--primary); }
 .card.border-accent,   .card.border-left-accent   { border-left: 4px solid var(--accent); }
 
-.card-header.bg-primary {
+/* (0,2,0) — same specificity as .card > .card-header; wins by source order
+   (these rules come after, so they override the base .card > .card-header above) */
+.card-header.bg-primary,
+.card > .card-header.bg-primary {
     background: var(--brand-gradient);
     color: var(--on-primary);
     border-bottom: none;
+    border-top-left-radius: calc(var(--r-lg) - 1px);
+    border-top-right-radius: calc(var(--r-lg) - 1px);
 }
 .card-header.bg-primary h1,
 .card-header.bg-primary h2,
 .card-header.bg-primary h3,
 .card-header.bg-primary h4 { color: var(--on-primary); margin: 0; }
-.card-header.bg-success { background: var(--success-strong); color: var(--on-success); }
-.card-header.bg-warning { background: var(--warning);        color: var(--on-warning); }
-.card-header.bg-danger  { background: var(--danger);         color: var(--on-danger); }
-.card-header.bg-info    { background: var(--primary-strong); color: var(--on-primary); }
+.card-header.bg-success,
+.card > .card-header.bg-success { background: var(--success-strong); color: var(--on-success); }
+.card-header.bg-warning,
+.card > .card-header.bg-warning { background: var(--warning);        color: var(--on-warning); }
+.card-header.bg-danger,
+.card > .card-header.bg-danger  { background: var(--danger);         color: var(--on-danger); }
+.card-header.bg-info,
+.card > .card-header.bg-info    { background: var(--primary-strong); color: var(--on-primary); }
 
 /* Schutz gegen Bootstrap-Utility-Override: `.text-white !important` würde
    sonst auf farbigem Card-Header das Aurora on-color überfahren
