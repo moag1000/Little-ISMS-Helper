@@ -349,7 +349,7 @@ class ManagementReportController extends AbstractController
                 $asset->getId(),
                 $asset->getName(),
                 $asset->getAssetType(),
-                $asset->getClassification(),
+                $asset->getDataClassification(),
                 $asset->getOwner() ? $asset->getOwner()->getEmail() : '-',
                 $asset->getLocation() ? $asset->getLocation()->getName() : '-',
                 $asset->getStatus(),

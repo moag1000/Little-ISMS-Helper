@@ -532,7 +532,7 @@ class ScheduledReportService
                 $asset->getId(),
                 $asset->getName(),
                 $asset->getAssetType(),
-                $asset->getClassification() ?? 'Unclassified',
+                $asset->getDataClassification() ?? 'Unclassified',
                 $asset->getOwner() ? $asset->getOwner()->getEmail() : '-',
                 $asset->getStatus() ?? 'Active',
             ];
