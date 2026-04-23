@@ -1,0 +1,38 @@
+supplier_criticality:
+    title: 'Supplier Criticality Levels'
+    subtitle: 'Tenant-specific criticality scale for supplier assessments'
+    action:
+        new: 'Add new level'
+        edit: 'Edit level'
+    empty: 'No criticality levels defined yet.'
+    confirm_delete: 'Really delete this criticality level? Existing suppliers will keep their value.'
+    field:
+        code: 'Code'
+        label_de: 'Label (DE)'
+        label_en: 'Label (EN)'
+        sort_order: 'Sort order'
+        color: 'Color'
+        is_default: 'Default'
+        is_active: 'Active'
+    placeholder:
+        code: 'e.g. critical, high, medium, low'
+        color: '-- Select color --'
+    help:
+        code: 'Machine-readable identifier (lowercase, digits, underscore). Immutable after creation.'
+        code_immutable: 'The code cannot be changed after creation.'
+        sort_order: 'Sort position in dropdowns (lower = higher up). Example: 10 = top.'
+        is_default: 'Pre-selected in new supplier forms.'
+    color:
+        danger: 'Red (danger)'
+        warning: 'Yellow (warning)'
+        info: 'Blue (info)'
+        secondary: 'Gray (secondary)'
+        success: 'Green (success)'
+        primary: 'Primary (primary)'
+        dark: 'Dark (dark)'
+    validation:
+        code_pattern: 'Code must contain only lowercase letters, digits, and underscores.'
+    flash:
+        created: 'Criticality level created successfully.'
+        updated: 'Criticality level updated successfully.'
+        deleted: 'Criticality level deleted successfully.'

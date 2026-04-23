@@ -3,6 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Supplier;
+use App\Entity\SupplierCriticalityLevel;
+use App\Entity\Tenant;
+use App\Repository\SupplierCriticalityLevelRepository;
+use App\Service\TenantContext;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -16,8 +20,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SupplierType extends AbstractType
 {
+    public function __construct(
+        private readonly SupplierCriticalityLevelRepository $criticalityRepo,
+        private readonly TenantContext $tenantContext,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // Build dynamic criticality choices from tenant-specific levels.
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $criticalityChoices = $this->buildCriticalityChoices($tenant);
         $builder
             ->add('name', TextType::class, [
                 'label' => 'supplier.field.name',
@@ -84,13 +97,8 @@ class SupplierType extends AbstractType
             ->add('criticality', ChoiceType::class, [
                 'label' => 'supplier.field.criticality',
                 'help' => 'supplier.help.criticality',
-                'choices' => [
-                    'supplier.criticality.critical' => 'critical',
-                    'supplier.criticality.high' => 'high',
-                    'supplier.criticality.medium' => 'medium',
-                    'supplier.criticality.low' => 'low',
-                ],
-                'choice_translation_domain' => 'suppliers',
+                'choices' => $criticalityChoices,
+                'choice_translation_domain' => false, // Labels already translated via getLabel()
                 'required' => true,
             ])
             ->add('status', ChoiceType::class, [
@@ -400,5 +408,34 @@ class SupplierType extends AbstractType
             'data_class' => Supplier::class,
             'translation_domain' => 'suppliers',
         ]);
+    }
+
+    /**
+     * Build criticality choices from tenant-specific levels.
+     * Falls back to hardcoded 4-level defaults when no levels are configured
+     * (ensures the form always works even on fresh/legacy tenants).
+     *
+     * @return array<string, string>
+     */
+    private function buildCriticalityChoices(?Tenant $tenant): array
+    {
+        if ($tenant instanceof Tenant) {
+            $levels = $this->criticalityRepo->findActiveByTenant($tenant);
+            if (!empty($levels)) {
+                $choices = [];
+                foreach ($levels as $level) {
+                    $choices[$level->getLabelDe()] = $level->getCode();
+                }
+                return $choices;
+            }
+        }
+
+        // Fallback to canonical 4-level defaults (matches seeded records).
+        return [
+            'Kritisch' => 'critical',
+            'Hoch' => 'high',
+            'Mittel' => 'medium',
+            'Gering' => 'low',
+        ];
     }
 }

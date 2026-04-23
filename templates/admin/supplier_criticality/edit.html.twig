@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'supplier_criticality.action.edit'|trans({}, 'supplier_criticality') }}: {{ level.code }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row mb-3">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_admin_supplier_criticality_index') }}">
+                            {{ 'supplier_criticality.title'|trans({}, 'supplier_criticality') }}
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">{{ level.labelDe }}</li>
+                </ol>
+            </nav>
+            <h1>
+                <i class="bi bi-pencil" aria-hidden="true"></i>
+                {{ 'supplier_criticality.action.edit'|trans({}, 'supplier_criticality') }}:
+                <code>{{ level.code }}</code>
+            </h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.code) }}
+                            {{ form_widget(form.code) }}
+                            <div class="form-text text-muted">
+                                <i class="bi bi-lock" aria-hidden="true"></i>
+                                {{ 'supplier_criticality.help.code_immutable'|trans({}, 'supplier_criticality') }}
+                            </div>
+                            {{ form_errors(form.code) }}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.labelDe) }}
+                                {{ form_widget(form.labelDe) }}
+                                {{ form_errors(form.labelDe) }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.labelEn) }}
+                                {{ form_widget(form.labelEn) }}
+                                {{ form_errors(form.labelEn) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.sortOrder) }}
+                                {{ form_widget(form.sortOrder) }}
+                                {{ form_help(form.sortOrder) }}
+                                {{ form_errors(form.sortOrder) }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.color) }}
+                                {{ form_widget(form.color) }}
+                                {{ form_errors(form.color) }}
+                            </div>
+                        </div>
+                        <div class="mb-3 form-check">
+                            {{ form_widget(form.isDefault) }}
+                            {{ form_label(form.isDefault) }}
+                            {{ form_help(form.isDefault) }}
+                        </div>
+                        <div class="mb-3 form-check">
+                            {{ form_widget(form.isActive) }}
+                            {{ form_label(form.isActive) }}
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save" aria-hidden="true"></i>
+                                {{ 'common.save'|trans({}, 'messages') }}
+                            </button>
+                            <a href="{{ path('app_admin_supplier_criticality_index') }}" class="btn btn-outline-secondary">
+                                {{ 'common.cancel'|trans({}, 'messages') }}
+                            </a>
+                        </div>
+                    {{ form_end(form) }}
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+</div>
+{% endblock %}
