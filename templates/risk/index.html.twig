@@ -394,20 +394,20 @@
     text-align: center;
     padding: var(--spacing-lg);
     background: white;
-    border-radius: var(--border-radius);
-    border: 2px solid var(--color-border);
+    border-radius: var(--r-md);
+    border: 2px solid var(--border);
     transition: all 0.2s;
 }
 
 .risk-level-card:hover {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-.risk-level-card.risk-critical { border-color: var(--color-danger); }
+.risk-level-card.risk-critical { border-color: var(--danger); }
 .risk-level-card.risk-high { border-color: var(--warning); }
-.risk-level-card.risk-medium { border-color: var(--color-warning); }
-.risk-level-card.risk-low { border-color: var(--color-success); }
+.risk-level-card.risk-medium { border-color: var(--warning); }
+.risk-level-card.risk-low { border-color: var(--success); }
 
 .risk-level-icon {
     font-size: 2.5rem;
@@ -416,14 +416,14 @@
 
 .risk-level-label {
     font-size: 0.875rem;
-    color: var(--color-text-muted);
+    color: var(--fg-3);
     margin-bottom: var(--spacing-xs);
 }
 
 .risk-level-count {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--color-primary);
+    color: var(--primary-strong);
 }
 
 /* Treatment Stats */
@@ -432,8 +432,8 @@
     align-items: center;
     gap: var(--spacing-md);
     padding: var(--spacing-md);
-    background: var(--color-bg);
-    border-radius: var(--border-radius);
+    background: var(--bg);
+    border-radius: var(--r-md);
 }
 
 .treatment-icon {
@@ -449,18 +449,18 @@
 
 .treatment-label {
     font-size: 0.875rem;
-    color: var(--color-text-muted);
+    color: var(--fg-3);
 }
 
 .treatment-count {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--color-primary);
+    color: var(--primary-strong);
 }
 
 .treatment-percent {
     font-size: 0.75rem;
-    color: var(--color-text-muted);
+    color: var(--fg-3);
 }
 
 /* Risk Score Badges */
@@ -477,7 +477,7 @@
 }
 
 .risk-score-critical {
-    background: var(--color-danger);
+    background: var(--danger);
     color: white;
 }
 
@@ -487,12 +487,12 @@
 }
 
 .risk-score-medium {
-    background: var(--color-warning);
+    background: var(--warning);
     color: var(--on-warning);
 }
 
 .risk-score-low {
-    background: var(--color-success);
+    background: var(--success);
     color: var(--on-success);
 }
 

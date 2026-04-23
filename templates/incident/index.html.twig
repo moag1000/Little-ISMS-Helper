@@ -335,15 +335,15 @@
     gap: var(--spacing-md);
     padding: var(--spacing-lg);
     background: var(--bs-body-bg, white);
-    border-radius: var(--border-radius);
-    border: 2px solid var(--color-border);
+    border-radius: var(--r-md);
+    border: 2px solid var(--border);
     transition: all 0.2s;
     color: var(--bs-body-color, inherit);
 }
 
 .status-card:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .status-icon {
@@ -353,7 +353,7 @@
     align-items: center;
     justify-content: center;
     font-size: 24px;
-    background: var(--color-bg);
+    background: var(--bg);
     border-radius: 50%;
 }
 
@@ -363,14 +363,14 @@
 
 .status-label {
     font-size: 0.875rem;
-    color: var(--color-text-muted);
+    color: var(--fg-3);
     margin-bottom: 4px;
 }
 
 .status-count {
     font-size: 1.75rem;
     font-weight: 700;
-    color: var(--color-primary);
+    color: var(--primary-strong);
 }
 
 /* Severity Badges */
@@ -378,20 +378,20 @@
     text-align: center;
     padding: var(--spacing-lg);
     background: var(--bs-body-bg, white);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
     border: 2px solid;
     transition: all 0.2s;
     color: var(--bs-body-color, inherit);
 }
 
-.severity-badge.severity-critical { border-color: var(--color-danger); }
-.severity-badge.severity-high { border-color: var(--color-warning); }
-.severity-badge.severity-medium { border-color: var(--color-info); }
-.severity-badge.severity-low { border-color: var(--color-success); }
+.severity-badge.severity-critical { border-color: var(--danger); }
+.severity-badge.severity-high { border-color: var(--warning); }
+.severity-badge.severity-medium { border-color: var(--primary); }
+.severity-badge.severity-low { border-color: var(--success); }
 
 .severity-badge:hover {
     transform: scale(1.05);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .severity-icon {
@@ -401,14 +401,14 @@
 
 .severity-label {
     font-size: 0.875rem;
-    color: var(--color-text-muted);
+    color: var(--fg-3);
     margin-bottom: 4px;
 }
 
 .severity-count {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--color-primary);
+    color: var(--primary-strong);
 }
 </style>
 

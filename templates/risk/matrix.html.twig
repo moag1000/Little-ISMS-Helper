@@ -61,19 +61,19 @@
                 <div class="matrix-legend">
                     <h3>{{ 'risk.matrix.legend_title'|trans({}, 'risk') }}</h3>
                     <div class="legend-items" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; margin-top: 1rem;">
-                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
+                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; white-space: nowrap; position: relative;">
                             <span class="legend-color risk-critical" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
                             <span style="display: inline-block;">{{ 'risk.matrix.level.critical'|trans({}, 'risk') }}</span>
                         </div>
-                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
+                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; white-space: nowrap; position: relative;">
                             <span class="legend-color risk-high" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
                             <span style="display: inline-block;">{{ 'risk.matrix.level.high'|trans({}, 'risk') }}</span>
                         </div>
-                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
+                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; white-space: nowrap; position: relative;">
                             <span class="legend-color risk-medium" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
                             <span style="display: inline-block;">{{ 'risk.matrix.level.medium'|trans({}, 'risk') }}</span>
                         </div>
-                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
+                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; white-space: nowrap; position: relative;">
                             <span class="legend-color risk-low" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
                             <span style="display: inline-block;">{{ 'risk.matrix.level.low'|trans({}, 'risk') }}</span>
                         </div>
@@ -103,7 +103,7 @@
     transform: rotate(180deg);
     font-weight: bold;
     font-size: 18px;
-    color: var(--text-primary);
+    color: var(--fg);
     margin-right: 0.5rem;
 }
 
@@ -111,7 +111,7 @@
     text-align: center;
     font-weight: bold;
     font-size: 18px;
-    color: var(--text-primary);
+    color: var(--fg);
     margin-top: 0.5rem;
     width: 100%;
 }
@@ -138,7 +138,7 @@
     justify-content: center;
     font-weight: 600;
     font-size: 14px;
-    color: var(--color-text-muted);
+    color: var(--fg-3);
 }
 
 .x-axis-labels .axis-label {
@@ -151,7 +151,7 @@
     grid-template-columns: repeat(5, 100px);
     grid-template-rows: repeat(5, 100px);
     gap: 2px;
-    background: var(--border-color);
+    background: var(--border);
     padding: 2px;
 }
 
@@ -160,8 +160,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
+    background: var(--surface);
+    border: 1px solid var(--border);
     cursor: pointer;
     transition: transform 0.2s;
 }
@@ -208,7 +208,7 @@
 .matrix-legend {
     margin-top: 2rem;
     padding: 1rem;
-    background: var(--bg-secondary);
+    background: var(--bg);
     border-radius: 8px;
     width: 100%;
 }
@@ -230,8 +230,8 @@
     align-items: center !important;
     gap: 0.625rem !important;
     padding: 0.5rem 1rem !important;
-    background: var(--bg-primary) !important;
-    border: 1px solid var(--border-color) !important;
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
     border-radius: 6px !important;
     font-size: 0.875rem !important;
     font-weight: 500 !important;
