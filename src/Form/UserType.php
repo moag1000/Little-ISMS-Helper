@@ -5,6 +5,8 @@ namespace App\Form;
 use App\Entity\User;
 use App\Entity\Role;
 use App\Entity\Tenant;
+use App\Service\PasswordPolicyResolver;
+use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -28,7 +30,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UserType extends AbstractType
 {
     public function __construct(
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly PasswordPolicyResolver $passwordPolicyResolver,
+        private readonly TenantContext $tenantContext,
     ) {
     }
 
@@ -110,7 +114,10 @@ class UserType extends AbstractType
                     ? 'Leer lassen, um Passwort unverändert zu lassen'
                     : 'Optional für lokale Authentifizierung. Leer lassen für Azure-Authentifizierung.',
                 'constraints' => $isEdit ? [] : [
-                    new Assert\Length(min: 8, minMessage: 'Das Passwort muss mindestens {{ limit }} Zeichen lang sein.'),
+                    new Assert\Length(
+                        min: $this->resolvePasswordMinLength(),
+                        minMessage: 'Das Passwort muss mindestens {{ limit }} Zeichen lang sein.'
+                    ),
                 ],
             ])
         ;
@@ -203,5 +210,18 @@ class UserType extends AbstractType
             'attr' => ['novalidate' => 'novalidate'], // Use HTML5 validation
             'translation_domain' => 'user',
         ]);
+    }
+
+    /**
+     * Resolve the effective password minimum length via PasswordPolicyResolver.
+     * Falls back to 8 when no tenant context is available (CLI / early-boot).
+     */
+    private function resolvePasswordMinLength(): int
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant instanceof Tenant) {
+            return $this->passwordPolicyResolver->resolveFor($tenant);
+        }
+        return 8;
     }
 }
