@@ -178,19 +178,19 @@
 
 .framework-card {
     background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-md);
+    border-radius: var(--r-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .framework-card:hover {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .framework-card.loaded {
-    border: 2px solid var(--color-success);
+    border: 2px solid var(--success);
 }
 
 .framework-card-header {
@@ -233,12 +233,12 @@
     display: flex;
     justify-content: space-between;
     padding: var(--spacing-xs) 0;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--border);
 }
 
 .info-item .label {
     font-weight: 600;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
 }
 
 .info-item .value {
@@ -247,7 +247,7 @@
 
 .framework-description {
     margin: var(--spacing-md) 0;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
     font-size: 0.9rem;
     line-height: 1.5;
 }
@@ -265,8 +265,8 @@
 .stat-box {
     text-align: center;
     padding: var(--spacing-lg);
-    background: var(--color-background);
-    border-radius: var(--border-radius);
+    background: var(--surface);
+    border-radius: var(--r-md);
 }
 
 .stat-icon {
@@ -277,11 +277,11 @@
 .stat-number {
     font-size: 2.5rem;
     font-weight: bold;
-    color: var(--color-primary);
+    color: var(--primary-strong);
 }
 
 .stat-text {
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
     margin-top: var(--spacing-xs);
 }
 
@@ -294,15 +294,15 @@
 .framework-modules {
     margin: var(--spacing-md) 0;
     padding: var(--spacing-md);
-    background: var(--color-background);
-    border-radius: var(--border-radius);
+    background: var(--surface);
+    border-radius: var(--r-md);
 }
 
 .modules-title {
     font-size: 0.9rem;
     font-weight: 600;
     margin: 0 0 var(--spacing-sm) 0;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
 }
 
 .modules-list {
@@ -316,7 +316,7 @@
     align-items: center;
     gap: var(--spacing-xs);
     padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
     font-size: 0.85rem;
     transition: all 0.2s;
 }
@@ -343,7 +343,7 @@
 
 .module-activate-link {
     margin-left: var(--spacing-xs);
-    color: var(--color-primary);
+    color: var(--primary-strong);
     text-decoration: none;
     font-weight: 600;
     font-size: 0.8rem;
@@ -351,7 +351,7 @@
 }
 
 .module-activate-link:hover {
-    color: var(--color-primary-dark);
+    color: var(--primary-hover);
     text-decoration: underline;
 }
 </style>
