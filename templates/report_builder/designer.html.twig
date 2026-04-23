@@ -12,7 +12,7 @@
                 <i class="bi bi-arrow-left" aria-hidden="true"></i>
             </a>
             <div>
-                <input type="text" class="form-control form-control-sm bg-body-secondary text-body border-secondary"
+                <input type="text" class="form-control form-control-sm bg-body-secondary border-secondary"
                        value="{{ report.name }}" data-report-designer-target="nameInput" style="max-width: 300px;">
             </div>
             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'v' ~ report.version } %}
@@ -66,7 +66,7 @@
 
         {# Canvas Area #}
         <div class="designer-canvas flex-grow-1 p-4 overflow-auto" style="background: var(--surface-2);">
-            <div class="canvas-container mx-auto bg-white shadow rounded p-4" style="max-width: 1200px; min-height: 800px;">
+            <div class="canvas-container mx-auto bg-body shadow rounded p-4" style="max-width: 1200px; min-height: 800px;">
                 {# Report Header #}
                 <div class="report-header mb-4 pb-3 border-bottom">
                     <h1 class="h3" data-report-designer-target="reportTitle">{{ report.name }}</h1>
@@ -118,7 +118,7 @@
         </div>
 
         {# Settings Sidebar #}
-        <div class="designer-settings bg-white border-start" style="width: 300px; overflow-y: auto;">
+        <div class="designer-settings bg-body border-start" style="width: 300px; overflow-y: auto;">
             <div class="p-3">
                 <h2 class="h6 mb-3"><i class="bi bi-sliders" aria-hidden="true"></i> {{ 'designer.settings'|trans({}, 'report_builder') }}</h2>
 

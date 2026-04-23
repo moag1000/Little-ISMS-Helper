@@ -203,7 +203,7 @@
 #}
 {% macro simple_card(title, icon, content, footer, header_class, border_class, actions) %}
     <div class="card shadow-sm {{ border_class|default('') }}">
-        <div class="card-header {{ header_class|default('bg-white') }} d-flex justify-content-between align-items-center">
+        <div class="card-header {{ header_class|default('bg-body-secondary') }} d-flex justify-content-between align-items-center">
             <h3 class="mb-0">
                 {% if icon %}
                     <i class="bi bi-{{ icon }}" aria-hidden="true"></i>
