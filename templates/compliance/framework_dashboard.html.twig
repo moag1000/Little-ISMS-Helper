@@ -401,7 +401,7 @@
                                     {% include '_components/_badge.html.twig' with { variant: requirement.priority == 'critical' ? 'danger' : (requirement.priority == 'high' ? 'warning' : 'secondary'), content: requirement.priority|upper } %}
                                     {% set fulfillment = fulfillments[requirement.id] %}
                                     <div class="progress-mini">
-                                        <div class="progress-fill" style="width: {{ fulfillment.fulfillmentPercentage }}%; background: {{ fulfillment.fulfillmentPercentage >= 75 ? 'var(--color-success)' : (fulfillment.fulfillmentPercentage >= 50 ? 'var(--color-warning)' : 'var(--color-danger)') }};"></div>
+                                        <div class="progress-fill" style="width: {{ fulfillment.fulfillmentPercentage }}%; background: {{ fulfillment.fulfillmentPercentage >= 75 ? 'var(--success)' : (fulfillment.fulfillmentPercentage >= 50 ? 'var(--warning)' : 'var(--danger)') }};"></div>
                                     </div>
                                     <span class="percentage">{{ fulfillment.fulfillmentPercentage }}%</span>
                                     {% if requirement.hasDetailedRequirements() %}
@@ -518,24 +518,24 @@
 }
 
 .compliance-breadcrumb .breadcrumb-item a {
-    color: var(--color-primary);
+    color: var(--primary-strong);
     text-decoration: none;
     transition: color 0.2s;
 }
 
 .compliance-breadcrumb .breadcrumb-item a:hover {
-    color: var(--color-primary-dark);
+    color: var(--primary-hover);
     text-decoration: underline;
 }
 
 .compliance-breadcrumb .breadcrumb-item.active {
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
     font-weight: 600;
 }
 
 .compliance-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
     content: "›";
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
 }
 
 /* Framework Switcher */
@@ -546,12 +546,12 @@
 .framework-switcher select {
     min-width: 150px;
     background: white;
-    border: 2px solid var(--color-primary);
-    border-radius: var(--border-radius);
+    border: 2px solid var(--primary-strong);
+    border-radius: var(--r-md);
     padding: 0.4rem 2rem 0.4rem 0.8rem;
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--color-primary);
+    color: var(--primary-strong);
     cursor: pointer;
     transition: all 0.2s;
     appearance: none;
@@ -562,13 +562,13 @@
 }
 
 .framework-switcher select:hover {
-    border-color: var(--color-primary-dark);
+    border-color: var(--primary-hover);
     box-shadow: 0 0 0 3px rgba(103, 126, 234, 0.1);
 }
 
 .framework-switcher select:focus {
     outline: none;
-    border-color: var(--color-primary);
+    border-color: var(--primary-strong);
     box-shadow: 0 0 0 3px rgba(103, 126, 234, 0.2);
 }
 
@@ -577,8 +577,8 @@
     gap: var(--spacing-md);
     padding: var(--spacing-lg);
     background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-sm);
+    border-radius: var(--r-md);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     margin-bottom: var(--spacing-lg);
     flex-wrap: wrap;
 }
@@ -591,14 +591,14 @@
 
 .stat-label {
     font-size: 0.85rem;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
     margin-bottom: var(--spacing-xs);
 }
 
 .stat-value {
     font-size: 1.8rem;
     font-weight: bold;
-    color: var(--color-primary);
+    color: var(--primary-strong);
 }
 
 .tabs {
@@ -608,7 +608,7 @@
 .tab-nav {
     display: flex;
     gap: var(--spacing-sm);
-    border-bottom: 2px solid var(--color-border);
+    border-bottom: 2px solid var(--border);
     margin-bottom: var(--spacing-lg);
 }
 
@@ -619,17 +619,17 @@
     border-bottom: 3px solid transparent;
     cursor: pointer;
     font-weight: 600;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
     transition: all 0.2s;
 }
 
 .tab-button:hover {
-    color: var(--color-primary);
+    color: var(--primary-strong);
 }
 
 .tab-button.active {
-    color: var(--color-primary);
-    border-bottom-color: var(--color-primary);
+    color: var(--primary-strong);
+    border-bottom-color: var(--primary-strong);
 }
 
 .tab-content {
@@ -650,24 +650,24 @@
     display: flex;
     justify-content: space-between;
     padding: var(--spacing-sm) 0;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--border);
 }
 
 .info-item .label {
     font-weight: 600;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
 }
 
 .recommendation-item {
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-md);
-    background: var(--color-background);
-    border-radius: var(--border-radius);
-    border-left: 4px solid var(--color-primary);
+    background: var(--surface);
+    border-radius: var(--r-md);
+    border-left: 4px solid var(--primary-strong);
 }
 
 .recommendation-item.priority-high {
-    border-left-color: var(--color-danger);
+    border-left-color: var(--danger);
 }
 
 .recommendation-header {
@@ -680,7 +680,7 @@
 .recommendation-action {
     margin-top: var(--spacing-sm);
     padding-top: var(--spacing-sm);
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--border);
 }
 
 .requirements-list {
@@ -689,8 +689,8 @@
 }
 
 .requirement-item {
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
     margin-bottom: var(--spacing-sm);
     overflow: hidden;
 }
@@ -705,7 +705,7 @@
 }
 
 .requirement-header:hover {
-    background: var(--color-background);
+    background: var(--surface);
 }
 
 .requirement-info {
@@ -717,7 +717,7 @@
 
 .requirement-id {
     font-weight: bold;
-    color: var(--color-primary);
+    color: var(--primary-strong);
     min-width: 80px;
 }
 
@@ -730,7 +730,7 @@
 .progress-mini {
     width: 100px;
     height: 8px;
-    background: var(--color-background);
+    background: var(--surface);
     border-radius: 4px;
     overflow: hidden;
 }
@@ -757,11 +757,11 @@
 
 .requirement-details {
     padding: 0 var(--spacing-md) var(--spacing-md);
-    background: var(--color-background);
+    background: var(--surface);
 }
 
 .detailed-requirements {
-    border-left: 2px solid var(--color-primary);
+    border-left: 2px solid var(--primary-strong);
     padding-left: var(--spacing-md);
 }
 
@@ -770,7 +770,7 @@
     justify-content: space-between;
     align-items: center;
     padding: var(--spacing-sm) 0;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--border);
 }
 
 .detailed-requirement:last-child {
@@ -779,7 +779,7 @@
 
 .detailed-id {
     font-weight: 600;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
     margin-right: var(--spacing-sm);
 }
 
@@ -799,12 +799,12 @@
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-md);
     background: white;
-    border-radius: var(--border-radius);
-    border-left: 4px solid var(--color-warning);
+    border-radius: var(--r-md);
+    border-left: 4px solid var(--warning);
 }
 
 .gap-item.priority-critical {
-    border-left-color: var(--color-danger);
+    border-left-color: var(--danger);
 }
 
 .gap-header {
@@ -825,9 +825,9 @@
     align-items: center;
     gap: var(--spacing-lg);
     padding: var(--spacing-xl);
-    background: var(--gradient-success);
+    background: linear-gradient(135deg, var(--success), var(--success-strong));
     color: white;
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
     margin-bottom: var(--spacing-lg);
 }
 
@@ -847,8 +847,8 @@
 /* Workflow Steps Card */
 .workflow-steps-card {
     background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-md);
+    border-radius: var(--r-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     padding: var(--spacing-xl);
     margin-bottom: var(--spacing-lg);
 }
@@ -860,7 +860,7 @@
 
 .workflow-header h2 {
     margin: 0 0 var(--spacing-xs) 0;
-    color: var(--color-primary);
+    color: var(--primary-strong);
 }
 
 .workflow-steps {
@@ -872,20 +872,20 @@
 .workflow-step {
     position: relative;
     padding: var(--spacing-lg);
-    border-radius: var(--border-radius);
-    border: 2px solid var(--color-border);
-    background: var(--color-background);
+    border-radius: var(--r-md);
+    border: 2px solid var(--border);
+    background: var(--surface);
     transition: all 0.3s;
 }
 
 .workflow-step.active {
-    border-color: var(--color-primary);
-    background: rgba(var(--color-primary-rgb), 0.05);
+    border-color: var(--primary-strong);
+    background: rgba(var(--primary-rgb), 0.05);
 }
 
 .workflow-step.completed {
-    border-color: var(--color-success);
-    background: rgba(var(--color-success-rgb), 0.05);
+    border-color: var(--success);
+    background: rgba(var(--success-rgb), 0.05);
 }
 
 .workflow-step .step-icon {
@@ -897,18 +897,18 @@
 .workflow-step .step-content h3 {
     font-size: 1rem;
     margin: 0 0 var(--spacing-xs) 0;
-    color: var(--color-text);
+    color: var(--fg);
 }
 
 .workflow-step .step-content p {
     font-size: 0.9rem;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
     margin: 0 0 var(--spacing-sm) 0;
 }
 
 .workflow-step .step-action {
     display: inline-block;
-    color: var(--color-primary);
+    color: var(--primary-strong);
     text-decoration: none;
     font-weight: 600;
     font-size: 0.9rem;
@@ -916,7 +916,7 @@
 }
 
 .workflow-step .step-action:hover {
-    color: var(--color-primary-dark);
+    color: var(--primary-hover);
     text-decoration: underline;
 }
 
@@ -928,8 +928,8 @@
     padding: var(--spacing-xl);
     background: linear-gradient(135deg, var(--primary), var(--accent));
     color: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-lg);
+    border-radius: var(--r-md);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     margin-bottom: var(--spacing-lg);
 }
 
@@ -972,7 +972,7 @@
 
 .next-action-content .btn {
     background: white;
-    color: var(--color-primary);
+    color: var(--primary-strong);
     font-weight: 600;
 }
 
@@ -1006,7 +1006,7 @@
 
 .module-card {
     padding: var(--spacing-lg);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
     transition: all 0.2s;
     border: 2px solid;
 }
@@ -1023,7 +1023,7 @@
 
 .module-card:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .module-status {
@@ -1053,12 +1053,12 @@
 .module-title {
     margin: 0 0 var(--spacing-sm) 0;
     font-size: 1.1rem;
-    color: var(--color-text);
+    color: var(--fg);
 }
 
 .module-description {
     margin: 0 0 var(--spacing-md) 0;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
     font-size: 0.9rem;
     line-height: 1.5;
 }
