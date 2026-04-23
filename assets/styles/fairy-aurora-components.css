@@ -2349,6 +2349,19 @@ html[data-theme="dark"] .nav-pills .show > .nav-link {
 .card-header.bg-danger  { background: var(--danger);         color: var(--on-danger); }
 .card-header.bg-info    { background: var(--primary-strong); color: var(--on-primary); }
 
+/* Schutz gegen Bootstrap-Utility-Override: `.text-white !important` würde
+   sonst auf farbigem Card-Header das Aurora on-color überfahren
+   (v.a. Dark-Mode: weiß auf hellem --primary = unlesbar). */
+.card-header.bg-primary .text-white,
+.card-header.bg-success .text-white,
+.card-header.bg-info .text-white,
+.card-header.bg-danger .text-white {
+    color: var(--on-primary) !important;
+}
+.card-header.bg-warning .text-white {
+    color: var(--on-warning) !important;
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    Bootstrap-Form-Control → Aurora-Look
    ═══════════════════════════════════════════════════════════════════ */
@@ -2634,7 +2647,7 @@ small.text-muted,
 /* ═══════════════════════════════════════════════════════════════════
    Legacy dark-mode.css Bootstrap-Overrides vereinheitlichen —
    diese drei Klassen werden in dark-mode.css mit [data-theme="dark"]
-   und !important überschrieben, aber mit falschem var(--bg-secondary).
+   und !important überschrieben, aber mit faltem var(--surface-2).
    Die Bridge stellt hier sicher, dass Aurora-Tokens fließen.
    ═══════════════════════════════════════════════════════════════════ */
 
