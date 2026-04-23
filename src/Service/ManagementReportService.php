@@ -503,7 +503,7 @@ class ManagementReportService
         // Group by classification
         $byClassification = [];
         foreach ($assets as $asset) {
-            $classification = $asset->getClassification() ?? 'Unclassified';
+            $classification = $asset->getDataClassification() ?? 'Unclassified';
             if (!isset($byClassification[$classification])) {
                 $byClassification[$classification] = [];
             }
