@@ -97,12 +97,12 @@
 <style>
 .checklist-items {
     background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-sm);
+    border-radius: var(--r-md);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .checklist-item {
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--border);
 }
 
 .checklist-item:last-child {
@@ -143,7 +143,7 @@
 
 .req-id {
     font-weight: bold;
-    color: var(--color-primary);
+    color: var(--primary-strong);
     min-width: 100px;
     font-size: 0.9rem;
 }
@@ -160,8 +160,8 @@
 
 .status-select {
     padding: var(--spacing-xs) var(--spacing-sm);
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
     background: white;
     cursor: pointer;
     min-width: 150px;
@@ -170,7 +170,7 @@
 .expand-icon {
     transition: transform 0.2s;
     font-size: 0.8rem;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
 }
 
 .checklist-item.expanded .expand-icon {
@@ -189,29 +189,29 @@
     display: block;
     font-weight: 600;
     margin-bottom: var(--spacing-xs);
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
     font-size: 0.9rem;
 }
 
 .detail-section p {
     margin: 0;
     padding: var(--spacing-sm);
-    background: var(--color-background);
-    border-radius: var(--border-radius);
+    background: var(--surface);
+    border-radius: var(--r-md);
     font-size: 0.9rem;
 }
 
 .detail-section.alert-warning {
     background: rgba(255, 193, 7, 0.1);
     padding: var(--spacing-md);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
 }
 
 .form-control {
     width: 100%;
     padding: var(--spacing-sm);
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
     font-family: inherit;
     font-size: 0.9rem;
 }
@@ -223,20 +223,20 @@
 
 .score-value {
     font-weight: bold;
-    color: var(--color-primary);
+    color: var(--primary-strong);
     min-width: 50px;
     display: inline-block;
 }
 
 .detailed-requirements-list {
-    background: var(--color-background);
-    border-radius: var(--border-radius);
+    background: var(--surface);
+    border-radius: var(--r-md);
     padding: var(--spacing-sm);
 }
 
 .detailed-req {
     padding: var(--spacing-xs) 0;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--border);
     font-size: 0.85rem;
 }
 
@@ -246,7 +246,7 @@
 
 .detailed-id {
     font-weight: 600;
-    color: var(--color-primary);
+    color: var(--primary-strong);
     margin-right: var(--spacing-sm);
 }
 </style>
