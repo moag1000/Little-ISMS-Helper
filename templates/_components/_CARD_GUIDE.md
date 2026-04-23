@@ -359,8 +359,8 @@ All card variants have comprehensive dark mode support:
 - Standard shadows
 
 **Dark Mode:**
-- Elevated backgrounds (`var(--bg-elevated)`)
-- Adaptive borders (`var(--border-color)`)
+- Elevated backgrounds (`var(--surface)`)
+- Adaptive borders (`var(--border)`)
 - Enhanced shadows
 - Gradient effects with glow
 
