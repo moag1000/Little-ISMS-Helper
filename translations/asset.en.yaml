@@ -146,7 +146,6 @@ asset:
     public: Public
     internal: Internal
     confidential: Confidential
-    secret: Secret
     restricted: Restricted
   confirm:
     delete: Really delete this asset?

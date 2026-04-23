@@ -149,8 +149,7 @@ asset:
     public: Öffentlich
     internal: Intern
     confidential: Vertraulich
-    secret: Geheim
-    restricted: Restricted
+    restricted: Streng vertraulich
   confirm:
     delete: Dieses Asset wirklich löschen?
   warning:
