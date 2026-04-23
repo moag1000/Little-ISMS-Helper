@@ -78,7 +78,13 @@ class SupplierCriticalityLevelRepository extends ServiceEntityRepository
      */
     public function ensureDefaultsFor(Tenant $tenant): void
     {
-        if (count($this->findAllByTenant($tenant)) > 0) {
+        // findBy (kein DQL) — triggert keinen sub-flush im Kontext eines
+        // postPersist-Events. Ein Tenant.id kann null sein wenn die Entity
+        // noch nicht gespeichert wurde; in dem Fall bricht findBy ab.
+        if ($tenant->getId() === null) {
+            return;
+        }
+        if (count($this->findBy(['tenant' => $tenant], ['id' => 'ASC'], 1)) > 0) {
             return;
         }
 
@@ -102,6 +108,7 @@ class SupplierCriticalityLevelRepository extends ServiceEntityRepository
                 ->setIsActive(true);
             $em->persist($level);
         }
-        $em->flush();
+        // Kein flush() — Aufrufer (TenantCreatedSeedListener::postFlush oder
+        // Admin-Controller /admin/supplier-criticality) flusht explizit.
     }
 }

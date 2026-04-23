@@ -36,6 +36,13 @@ class SupplierCriticalityController extends AbstractController
     public function index(): Response
     {
         $tenant = $this->requireTenant();
+
+        // Lazy-Seeding für Tenants ohne Defaults (z.B. nach Migration-Backfill
+        // übersehen oder in Tests). Idempotent — persist() ohne flush im Repo,
+        // Controller flusht selbst.
+        $this->repository->ensureDefaultsFor($tenant);
+        $this->entityManager->flush();
+
         $levels = $this->repository->findAllByTenant($tenant);
 
         return $this->render('admin/supplier_criticality/index.html.twig', [

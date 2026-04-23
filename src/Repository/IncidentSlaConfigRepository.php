@@ -37,6 +37,9 @@ class IncidentSlaConfigRepository extends ServiceEntityRepository
      */
     public function ensureDefaultsFor(Tenant $tenant): void
     {
+        if ($tenant->getId() === null) {
+            return;
+        }
         $existing = array_map(fn (IncidentSlaConfig $c) => $c->getSeverity(), $this->findByTenant($tenant));
         $em = $this->getEntityManager();
         foreach (IncidentSlaConfig::DEFAULTS as $severity => $hours) {
@@ -47,6 +50,7 @@ class IncidentSlaConfigRepository extends ServiceEntityRepository
             $row->setTenant($tenant)->setSeverity($severity)->setResponseHours($hours);
             $em->persist($row);
         }
-        $em->flush();
+        // Kein flush() — Aufrufer (TenantCreatedSeedListener::postFlush oder
+        // Admin-Controller) flusht explizit. So kein nested-flush-Problem.
     }
 }
