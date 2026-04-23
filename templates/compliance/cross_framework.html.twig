@@ -162,7 +162,7 @@
                             <td>
                                 <div class="mapping-strength">
                                     <div class="strength-bar">
-                                        <div class="strength-fill" style="width: {{ mapping.mappingPercentage }}%; background: {{ mapping.mappingPercentage >= 100 ? 'var(--color-success)' : (mapping.mappingPercentage >= 50 ? 'var(--color-warning)' : 'var(--color-secondary)') }};"></div>
+                                        <div class="strength-fill" style="width: {{ mapping.mappingPercentage }}%; background: {{ mapping.mappingPercentage >= 100 ? 'var(--success)' : (mapping.mappingPercentage >= 50 ? 'var(--warning)' : 'var(--primary)') }};"></div>
                                     </div>
                                     <span class="strength-value">{{ mapping.mappingPercentage }}%</span>
                                 </div>
@@ -239,7 +239,7 @@
 .matrix-table th,
 .matrix-table td {
     padding: var(--spacing-md);
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--border);
     text-align: center;
 }
 
@@ -267,13 +267,13 @@
 
 .matrix-header-content strong {
     font-size: 1.1rem;
-    color: var(--color-primary);
+    color: var(--primary-strong);
     font-weight: 700;
 }
 
 .matrix-header-content .framework-name {
     font-size: 0.7rem;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
     font-weight: 400;
     line-height: 1.2;
     max-width: 120px;
@@ -296,13 +296,13 @@
 
 .matrix-row-content strong {
     font-size: 1.05rem;
-    color: var(--color-primary);
+    color: var(--primary-strong);
     font-weight: 700;
 }
 
 .matrix-row-content .framework-name {
     font-size: 0.7rem;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
     font-weight: 400;
     line-height: 1.2;
 }
@@ -318,29 +318,29 @@
 }
 
 .matrix-value.self {
-    color: var(--color-secondary);
+    color: var(--primary);
 }
 
 .matrix-value.coverage-high {
-    color: var(--color-success);
+    color: var(--success);
 }
 
 .matrix-value.coverage-medium {
-    color: var(--color-warning);
+    color: var(--warning);
 }
 
 .matrix-value.coverage-low {
-    color: var(--color-danger);
+    color: var(--danger);
 }
 
 .matrix-value.coverage-none {
-    color: var(--color-text-tertiary);
+    color: var(--fg-3);
 }
 
 .matrix-detail {
     display: block;
     font-size: 0.75rem;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
 }
 
 .matrix-legend {
@@ -349,8 +349,8 @@
     gap: var(--spacing-lg);
     margin-top: var(--spacing-md);
     padding: var(--spacing-md);
-    background: var(--color-background);
-    border-radius: var(--border-radius);
+    background: var(--surface);
+    border-radius: var(--r-md);
 }
 
 .legend-item {
@@ -366,23 +366,23 @@
 }
 
 .legend-color.coverage-high {
-    background: var(--color-success);
+    background: var(--success);
 }
 
 .legend-color.coverage-medium {
-    background: var(--color-warning);
+    background: var(--warning);
 }
 
 .legend-color.coverage-low {
-    background: var(--color-danger);
+    background: var(--danger);
 }
 
 .mapping-summary {
     display: flex;
     justify-content: space-around;
     padding: var(--spacing-lg);
-    background: var(--color-background);
-    border-bottom: 1px solid var(--color-border);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
 }
 
 .summary-stat {
@@ -405,12 +405,12 @@
 .summary-value {
     font-size: 2rem;
     font-weight: bold;
-    color: var(--color-primary);
+    color: var(--primary-strong);
 }
 
 .summary-label {
     font-size: 0.85rem;
-    color: var(--color-text-secondary);
+    color: var(--fg-2);
 }
 
 .mapping-strength {
@@ -422,7 +422,7 @@
 .strength-bar {
     flex: 1;
     height: 8px;
-    background: var(--color-background);
+    background: var(--surface);
     border-radius: 4px;
     overflow: hidden;
 }
@@ -445,7 +445,7 @@
 }
 
 .explanation-item h4 {
-    color: var(--color-primary);
+    color: var(--primary-strong);
     margin-bottom: var(--spacing-sm);
 }
 
