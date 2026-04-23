@@ -86,9 +86,9 @@
    ==================== */
 .kpi-card {
     background: var(--surface);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
     padding: var(--spacing-lg);
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
@@ -115,7 +115,7 @@
 }
 
 .kpi-card:hover {
-    box-shadow: var(--shadow-md), 0 0 20px rgba(6, 182, 212, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 0 20px rgba(6, 182, 212, 0.1);
     transform: translateY(-2px);
 }
 
@@ -128,7 +128,7 @@
 }
 
 .kpi-card-success:hover {
-    box-shadow: var(--shadow-md), 0 0 10px var(--success-glow), 0 0 20px var(--success-glow);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 0 10px var(--success-glow), 0 0 20px var(--success-glow);
 }
 
 .kpi-card-warning {
@@ -144,7 +144,7 @@
 }
 
 .kpi-card-info:hover {
-    box-shadow: var(--shadow-md), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
 .kpi-card-icon {
@@ -838,7 +838,7 @@
     padding: var(--spacing-2xl) var(--spacing-xl);
     text-align: center;
     background: var(--bg);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
     border: 2px dashed var(--border);
     margin: var(--spacing-xl) 0;
 }
@@ -852,7 +852,7 @@
     align-items: center;
     justify-content: center;
     margin-bottom: var(--spacing-lg);
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .empty-state-icon i {
@@ -901,8 +901,8 @@
     top: 70px;
     z-index: 10;
     background: var(--surface);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-md);
+    border-radius: var(--r-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     padding: var(--spacing-md) var(--spacing-lg);
     margin-bottom: var(--spacing-lg);
     animation: slideInDown 0.2s ease;
@@ -946,7 +946,7 @@
    Related Items
    ==================== */
 .related-items-card {
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .related-items-card .card-header h5 {
@@ -1080,22 +1080,22 @@
 /* Status card backgrounds - using theme-aware light variants */
 .bg-audit-planned {
     background: var(--primary-tint);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
 }
 
 .bg-audit-in-progress {
     background: var(--warning-glow);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
 }
 
 .bg-audit-completed {
     background: var(--success-glow);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
 }
 
 .bg-audit-cancelled {
     background: rgba(148, 163, 184, 0.1);  /* slate-400 */
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
 }
 
 /* Status icon styles - using theme colors */
@@ -1753,22 +1753,22 @@
 
 .bg-pdf-light {
     background: var(--danger-glow);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
 }
 
 .bg-image-light {
     background: var(--primary-tint);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
 }
 
 .bg-excel-light {
     background: var(--success-glow);
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
 }
 
 .bg-other-light {
     background: rgba(148, 163, 184, 0.1);  /* slate-400 */
-    border-radius: var(--border-radius);
+    border-radius: var(--r-md);
 }
 
 .icon-search-empty {
@@ -2490,9 +2490,9 @@
         margin-bottom: 1rem;
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: var(--border-radius, 8px);
+        border-radius: var(--r-md);
         padding: 0.75rem;
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
     .table-stacked tbody td {
