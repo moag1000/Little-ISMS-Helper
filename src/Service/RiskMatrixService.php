@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Risk;
 use App\Repository\RiskRepository;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Risk Matrix Service
@@ -16,7 +17,7 @@ use App\Repository\RiskRepository;
  * - Automatic risk level calculation (critical, high, medium, low)
  * - Statistical analysis and grouping by risk level
  * - Chart.js heatmap data generation
- * - Localized likelihood and impact labels
+ * - Localized likelihood and impact labels (via TranslatorInterface + risk domain)
  * - CSS class and color mappings for visualization
  *
  * Risk Scoring:
@@ -28,28 +29,34 @@ use App\Repository\RiskRepository;
 class RiskMatrixService
 {
     private const int MATRIX_SIZE = 5;
-    private const array LIKELIHOOD_LABELS = [
-        1 => 'Sehr selten',
-        2 => 'Selten',
-        3 => 'Gelegentlich',
-        4 => 'Wahrscheinlich',
-        5 => 'Sehr wahrscheinlich',
-    ];
-
-    private const array IMPACT_LABELS = [
-        1 => 'Unbedeutend',
-        2 => 'Gering',
-        3 => 'Moderat',
-        4 => 'Hoch',
-        5 => 'Kritisch',
-    ];
 
     public function __construct(
         private readonly RiskRepository $riskRepository,
+        private readonly TranslatorInterface $translator,
         private readonly int $criticalThreshold = 20,
         private readonly int $highThreshold = 12,
         private readonly int $mediumThreshold = 6
     ) {}
+
+    /** @return array<int, string> */
+    private function getLikelihoodLabels(): array
+    {
+        $labels = [];
+        for ($i = 1; $i <= self::MATRIX_SIZE; $i++) {
+            $labels[$i] = $this->translator->trans('risk.matrix.likelihood.' . $i, [], 'risk');
+        }
+        return $labels;
+    }
+
+    /** @return array<int, string> */
+    private function getImpactLabels(): array
+    {
+        $labels = [];
+        for ($i = 1; $i <= self::MATRIX_SIZE; $i++) {
+            $labels[$i] = $this->translator->trans('risk.matrix.impact.' . $i, [], 'risk');
+        }
+        return $labels;
+    }
 
     /**
      * Generiert die Risk Assessment Matrix mit allen Risiken
@@ -119,8 +126,8 @@ class RiskMatrixService
         return [
             'matrix' => $matrix,
             'labels' => [
-                'likelihood' => self::LIKELIHOOD_LABELS,
-                'impact' => self::IMPACT_LABELS,
+                'likelihood' => $this->getLikelihoodLabels(),
+                'impact' => $this->getImpactLabels(),
             ],
             'statistics' => $statistics,
             'riskLevels' => $riskLevels,

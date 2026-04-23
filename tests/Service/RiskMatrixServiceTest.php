@@ -6,6 +6,7 @@ use App\Entity\Risk;
 use App\Repository\RiskRepository;
 use App\Service\RiskMatrixService;
 use PHPUnit\Framework\TestCase;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RiskMatrixServiceTest extends TestCase
 {
@@ -15,7 +16,12 @@ class RiskMatrixServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->riskRepository = $this->createMock(RiskRepository::class);
-        $this->service = new RiskMatrixService($this->riskRepository);
+        $translator = $this->createMock(TranslatorInterface::class);
+        // Return the translation key so existing label assertions stay comparable.
+        $translator->method('trans')->willReturnCallback(
+            static fn(string $id): string => $id
+        );
+        $this->service = new RiskMatrixService($this->riskRepository, $translator);
     }
 
     public function testCalculateRiskLevelForCritical(): void
@@ -280,12 +286,17 @@ class RiskMatrixServiceTest extends TestCase
         $this->assertArrayHasKey('likelihood', $result['labels']);
         $this->assertArrayHasKey('impact', $result['labels']);
 
-        // Check likelihood labels
-        $this->assertEquals('Sehr selten', $result['labels']['likelihood'][1]);
-        $this->assertEquals('Sehr wahrscheinlich', $result['labels']['likelihood'][5]);
+        // Labels are now resolved via TranslatorInterface (risk domain).
+        // The mock returns the translation key — verify keys 1..5 are present.
+        $this->assertCount(5, $result['labels']['likelihood']);
+        $this->assertCount(5, $result['labels']['impact']);
 
-        // Check impact labels
-        $this->assertEquals('Unbedeutend', $result['labels']['impact'][1]);
-        $this->assertEquals('Kritisch', $result['labels']['impact'][5]);
+        for ($i = 1; $i <= 5; $i++) {
+            $this->assertArrayHasKey($i, $result['labels']['likelihood']);
+            $this->assertArrayHasKey($i, $result['labels']['impact']);
+            // Mock returns key as value
+            $this->assertSame('risk.matrix.likelihood.' . $i, $result['labels']['likelihood'][$i]);
+            $this->assertSame('risk.matrix.impact.' . $i, $result['labels']['impact'][$i]);
+        }
     }
 }
