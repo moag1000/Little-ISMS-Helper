@@ -31,7 +31,7 @@
 
             {% embed '_components/_card.html.twig' with { 'class': 'border-warning mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-warning">
+                    <div class="card-header bg-warning-subtle text-warning">
                         <div class="d-flex justify-content-between align-items-center">
                             <h2 class="mb-0">{{ 'mfa.backup_codes.codes'|trans({}, 'mfa') }}</h2>
                             {% include '_components/_badge.html.twig' with { variant: 'dark', content: backup_codes|length ~ ' ' ~ 'mfa.backup_codes.codes_count'|trans({}, 'mfa') } %}

@@ -95,7 +95,7 @@
             {% if is_edit %}
                 {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
                     {% block card_header %}
-                        <div class="card-header bg-warning">
+                        <div class="card-header bg-warning-subtle text-warning">
                             <h2 class="mb-0">
                                 <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'workflow.section.danger_zone'|trans({}, 'workflows') }}
                             </h2>
