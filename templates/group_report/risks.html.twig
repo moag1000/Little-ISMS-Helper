@@ -97,7 +97,7 @@
                                         <code class="small text-muted ms-1">{{ tenant.code }}</code>
                                     </td>
                                     <td class="text-end">
-                                        <span class="badge bg-body-secondary text-body border">{{ risks_by_tenant[tenant.code]|default(0) }}</span>
+                                        <span class="badge bg-body-secondary border">{{ risks_by_tenant[tenant.code]|default(0) }}</span>
                                     </td>
                                 </tr>
                             {% endfor %}

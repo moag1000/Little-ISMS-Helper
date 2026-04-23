@@ -82,7 +82,7 @@
                                 'high': 'bg-warning-subtle text-warning',
                                 'medium': 'bg-info',
                                 'low': 'bg-secondary'
-                            }[crit]|default('bg-body-secondary text-body border') %}
+                            }[crit]|default('bg-body-secondary border') %}
                             <tr>
                                 <td>
                                     <strong>{{ rep.name }}</strong>
@@ -95,7 +95,7 @@
                                         <code class="small">{{ rep.leiCode }}</code>
                                         <span class="badge bg-success ms-1">LEI</span>
                                     {% else %}
-                                        <span class="badge bg-body-secondary text-body border" title="{{ 'group_report.suppliers.no_lei_help'|trans({}, 'group_report') }}">
+                                        <span class="badge bg-body-secondary border" title="{{ 'group_report.suppliers.no_lei_help'|trans({}, 'group_report') }}">
                                             {{ 'group_report.suppliers.matched_by_name'|trans({}, 'group_report') }}
                                         </span>
                                     {% endif %}
@@ -112,7 +112,7 @@
                                         <span class="badge bg-primary me-1">{{ refCount }}×</span>
                                     {% endif %}
                                     {% for code in group.tenant_codes %}
-                                        <code class="badge bg-body-secondary text-body border me-1">{{ code }}</code>
+                                        <code class="badge bg-body-secondary border me-1">{{ code }}</code>
                                     {% endfor %}
                                 </td>
                                 <td class="small text-muted">{{ rep.serviceProvided|default('—')|u.truncate(80, '…') }}</td>

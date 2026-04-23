@@ -26,7 +26,7 @@
         {% for tier, entries in tiers %}
             <li class="mb-2">
                 <div class="small text-muted">
-                    <span class="badge bg-body-secondary text-body border">T{{ tier }}</span>
+                    <span class="badge bg-body-secondary border">T{{ tier }}</span>
                     <span class="ms-1">{{ 'supplier.subcontractor.tier'|trans({}, 'suppliers') }} {{ tier }}</span>
                 </div>
                 <ul class="list-unstyled ms-3 mt-1">
@@ -42,7 +42,7 @@
                             <div>
                                 <strong>{{ entry.name|default('—') }}</strong>
                                 {% if entry.country|default('') %}
-                                    <span class="badge bg-body-secondary text-body border ms-1">{{ entry.country }}</span>
+                                    <span class="badge bg-body-secondary border ms-1">{{ entry.country }}</span>
                                 {% endif %}
                                 {% if crit %}
                                     <span class="badge text-bg-{{ crit_variant }} ms-1">

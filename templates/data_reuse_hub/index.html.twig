@@ -46,21 +46,21 @@
                     <div class="small text-muted">{{ 'reuse.fte.subtitle'|trans({}, 'messages') }}</div>
                 </div>
                 <div class="d-flex flex-column align-items-end gap-1">
-                    <span class="badge bg-body-secondary text-body border">
+                    <span class="badge bg-body-secondary border">
                         <i class="bi bi-file-earmark" aria-hidden="true"></i>
                         {{ 'reuse.stats.documents'|trans({
                             '%reused%': stats.documents_reused,
                             '%total%': stats.documents_total
                         }, 'messages') }}
                     </span>
-                    <span class="badge bg-body-secondary text-body border">
+                    <span class="badge bg-body-secondary border">
                         <i class="bi bi-building" aria-hidden="true"></i>
                         {{ 'reuse.stats.suppliers'|trans({
                             '%reused%': stats.suppliers_reused,
                             '%total%': stats.suppliers_total
                         }, 'messages') }}
                     </span>
-                    <span class="badge bg-body-secondary text-body border">
+                    <span class="badge bg-body-secondary border">
                         <i class="bi bi-ui-checks" aria-hidden="true"></i>
                         {{ 'reuse.stats.requirements'|trans({'%count%': stats.requirements_total}, 'messages') }}
                     </span>

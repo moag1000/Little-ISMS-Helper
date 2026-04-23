@@ -146,7 +146,7 @@
                                 <tbody>
                                     {% for layer_code, layer in report.by_layer %}
                                         <tr>
-                                            <th scope="row"><span class="badge bg-body-secondary text-body border">{{ layer_code }}</span></th>
+                                            <th scope="row"><span class="badge bg-body-secondary border">{{ layer_code }}</span></th>
                                             <td>{{ layer.name }}</td>
                                             <td class="text-end">{{ layer.aggregate.fulfilled }} / {{ layer.aggregate.total }}</td>
                                             <td class="text-end">
@@ -186,7 +186,7 @@
                             <div class="card-header d-flex justify-content-between align-items-start">
                                 <div>
                                     <div class="small text-muted">
-                                        <span class="badge bg-body-secondary text-body border">{{ baustein.layer }}</span>
+                                        <span class="badge bg-body-secondary border">{{ baustein.layer }}</span>
                                         <span class="ms-1">{{ code }}</span>
                                     </div>
                                     <div class="fw-semibold">{{ baustein.name }}</div>
