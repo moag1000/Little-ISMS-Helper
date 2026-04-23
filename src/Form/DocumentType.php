@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Document;
+use App\Repository\SystemSettingsRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -15,8 +16,24 @@ use Symfony\Component\Validator\Constraints\File;
 
 class DocumentType extends AbstractType
 {
+    public function __construct(
+        private readonly SystemSettingsRepository $systemSettingsRepository,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var Document|null $document */
+        $document = $builder->getData();
+        $defaultClassification = (string) $this->systemSettingsRepository->getSetting(
+            'document',
+            'default_classification',
+            'internal'
+        );
+        // Use existing value when editing; fall back to setting for new documents.
+        $classificationDefault = ($document instanceof Document && $document->getTisaxInformationClassification() !== null)
+            ? $document->getTisaxInformationClassification()
+            : $defaultClassification;
         $builder
             ->add('originalFilename', TextType::class, [
                 'label' => 'document.field.name',
@@ -50,6 +67,21 @@ class DocumentType extends AbstractType
                 ],
                 'required' => true,
                     'choice_translation_domain' => 'document',
+            ])
+            ->add('tisaxInformationClassification', ChoiceType::class, [
+                'label' => 'document.field.data_classification',
+                'required' => false,
+                'placeholder' => 'document.placeholder.data_classification',
+                'data' => $classificationDefault,
+                'choices' => [
+                    'document.classification.public' => 'public',
+                    'document.classification.internal' => 'internal',
+                    'document.classification.confidential' => 'confidential',
+                    'document.classification.strictly_confidential' => 'strictly_confidential',
+                ],
+                'choice_translation_domain' => 'document',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'document.help.data_classification',
             ])
             // Phase 9.P2.1 — holding policy inheritance flags. Only
             // meaningful on a holding tenant; standalone tenants can
