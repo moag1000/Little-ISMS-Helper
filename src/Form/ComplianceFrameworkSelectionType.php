@@ -36,13 +36,15 @@ class ComplianceFrameworkSelectionType extends AbstractType
                 'choices' => $choices,
                 'expanded' => true,
                 'multiple' => true,
-                'data' => ['ISO27001'], // ISO 27001 is pre-selected
+                // Kein 'data' hier — die Pre-Selection (Mandatory + Recommended)
+                // kommt aus dem Controller via createForm($type, ['frameworks' => […]]).
+                // Ein hardcodiertes 'data' würde die Controller-Pre-Selection überschreiben.
                 'attr' => [
                     'class' => 'compliance-framework-selection',
                 ],
                 'help' => 'setup.compliance.frameworks_help',
                 'translation_domain' => 'setup',
-                    'choice_translation_domain' => 'compliance',
+                'choice_translation_domain' => 'compliance',
             ]);
     }
 
