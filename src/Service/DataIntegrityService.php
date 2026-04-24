@@ -106,11 +106,13 @@ class DataIntegrityService
         $orphaned = [];
         $metadataFactory = $this->entityManager->getMetadataFactory();
 
+        // User wird ausgeschlossen — Super-Admins dürfen legitim tenant-los sein.
+        $excludedClasses = [Tenant::class, \App\Entity\User::class];
+
         foreach ($metadataFactory->getAllMetadata() as $metadata) {
             $className = $metadata->getName();
 
-            // Überspringe den Tenant selbst und User (haben keine tenant-Spalte)
-            if ($className === Tenant::class || !$metadata->hasAssociation('tenant')) {
+            if (in_array($className, $excludedClasses, true) || !$metadata->hasAssociation('tenant')) {
                 continue;
             }
 

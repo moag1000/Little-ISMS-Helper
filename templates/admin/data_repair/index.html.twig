@@ -204,59 +204,30 @@
                 </div>
             {% else %}
                 <div class="alert alert-warning">
-                    <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.orphans_found'|trans({}, 'admin') }}
+                    <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong>
+                    {{ 'admin.data_repair.orphans_found'|trans({}, 'admin') }}
+                    — {{ 'admin.data_repair.total_orphans'|trans({'%count%': totalOrphans}, 'admin') }}
                 </div>
 
-                {# 8H.4 migrated — 3 orphan-count summary cards #}
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        {% embed '_components/_card.html.twig' with { class: 'text-center' } %}
-                            {% block card_body %}
-                                <h3 class="text-danger">{{ orphanedAssets|length }}</h3>
-                                <p class="mb-0">{{ 'admin.data_repair.orphaned_assets'|trans({}, 'admin') }}</p>
-                            {% endblock %}
-                        {% endembed %}
-                    </div>
-                    <div class="col-md-4">
-                        {% embed '_components/_card.html.twig' with { class: 'text-center' } %}
-                            {% block card_body %}
-                                <h3 class="text-danger">{{ orphanedRisks|length }}</h3>
-                                <p class="mb-0">{{ 'admin.data_repair.orphaned_risks'|trans({}, 'admin') }}</p>
-                            {% endblock %}
-                        {% endembed %}
-                    </div>
-                    <div class="col-md-4">
-                        {% embed '_components/_card.html.twig' with { class: 'text-center' } %}
-                            {% block card_body %}
-                                <h3 class="text-danger">{{ orphanedIncidents|length }}</h3>
-                                <p class="mb-0">{{ 'admin.data_repair.orphaned_incidents'|trans({}, 'admin') }}</p>
-                            {% endblock %}
-                        {% endembed %}
-                    </div>
+                {# Dynamischer Orphan-Count-Grid — pro detektiertem Entity-Typ eine Karte.
+                   Zeigt auch seltene/seit Refactor neu erkannte Typen (Controls, Workflows, …). #}
+                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 mb-3">
+                    {% for key, entities in orphanedEntities %}
+                        {% if entities|length > 0 %}
+                            <div class="col">
+                                {% embed '_components/_card.html.twig' with { class: 'text-center h-100' } %}
+                                    {% block card_body %}
+                                        <h3 class="text-danger mb-1">{{ entities|length }}</h3>
+                                        <p class="mb-0 small text-uppercase">{{ key|replace({'_': ' '}) }}</p>
+                                    {% endblock %}
+                                {% endembed %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
 
-                {# Alle weiteren Orphan-Typen (Supplier, Location, Document, BCPlan, …)
-                   ohne hardcoded-Template-Section — scannt generisch alle vom Service
-                   gefundenen Entity-Typen. #}
-                {% set otherOrphans = {} %}
-                {% for key, entities in orphanedEntities %}
-                    {% if key not in ['assets', 'risks', 'incidents'] and entities|length > 0 %}
-                        {% set otherOrphans = otherOrphans|merge({(key): entities|length}) %}
-                    {% endif %}
-                {% endfor %}
-                {% if otherOrphans|length > 0 %}
-                    <div class="alert alert-warning mb-3">
-                        <p class="mb-2"><strong><i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ 'admin.data_repair.additional_orphans'|trans({}, 'admin') }}:</strong></p>
-                        <div class="d-flex flex-wrap gap-2">
-                            {% for key, count in otherOrphans %}
-                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: (key|replace({'_': ' '}) ~ ': ' ~ count) } %}
-                            {% endfor %}
-                        </div>
-                        <p class="small text-muted mb-0 mt-2">{{ 'admin.data_repair.additional_orphans_hint'|trans({}, 'admin') }}</p>
-                    </div>
-                {% endif %}
-
-                {# Bulk Assignment Form #}
+                {# Bulk Assignment Form — Entity-Type-Dropdown dynamisch aus allen
+                   detektierten Orphan-Typen. #}
                 <form method="post" action="{{ path('admin_data_repair_assign_orphans') }}" class="mb-4">
                     <input type="hidden" name="_token" value="{{ csrf_token('assign_orphans') }}">
                     <div class="row align-items-end">
@@ -272,10 +243,12 @@
                         <div class="col-md-4">
                             <label for="entity_type" class="form-label">{{ 'admin.data_repair.entity_type'|trans({}, 'admin') }}</label>
                             <select name="entity_type" id="entity_type" class="form-select" required>
-                                <option value="all">{{ 'admin.data_repair.all_orphans'|trans({}, 'admin') }}</option>
-                                <option value="assets">{{ 'admin.data_repair.assets_only'|trans({}, 'admin') }} ({{ orphanedAssets|length }})</option>
-                                <option value="risks">{{ 'admin.data_repair.risks_only'|trans({}, 'admin') }} ({{ orphanedRisks|length }})</option>
-                                <option value="incidents">{{ 'admin.data_repair.incidents_only'|trans({}, 'admin') }} ({{ orphanedIncidents|length }})</option>
+                                <option value="all">{{ 'admin.data_repair.all_orphans'|trans({}, 'admin') }} ({{ totalOrphans }})</option>
+                                {% for key, entities in orphanedEntities %}
+                                    {% if entities|length > 0 %}
+                                        <option value="{{ key }}">{{ key|replace({'_': ' '})|title }} ({{ entities|length }})</option>
+                                    {% endif %}
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="col-md-4">
