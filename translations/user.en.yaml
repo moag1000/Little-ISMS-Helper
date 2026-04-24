@@ -202,6 +202,7 @@ user:
             preferences: Preferences
             security: Security
             current_avatar: 'Current Avatar'
+            alva: 'Alva Companion'
         field:
             language: Language
             timezone: Timezone
@@ -217,6 +218,20 @@ user:
             updated: 'Profile successfully updated'
             password_changed: 'Password successfully changed'
             avatar_deleted: 'Avatar successfully deleted'
+            alva_settings: 'Alva Companion settings saved'
+        alva:
+            enabled_label: 'Show Alva Companion'
+            size_label: 'Companion Size'
+            position_label: 'Dock Position'
+            size:
+                sm: 'Small (56 px)'
+                md: 'Medium (80 px)'
+                lg: 'Large (112 px)'
+            position:
+                bottom-right: 'Bottom-Right'
+                bottom-left: 'Bottom-Left'
+                top-right: 'Top-Right'
+                top-left: 'Top-Left'
 user_management:
     import_irreversible: 'Warning: User import cannot be undone. Please ensure your CSV file is correctly formatted.'
 

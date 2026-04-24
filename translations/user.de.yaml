@@ -202,6 +202,7 @@ user:
             preferences: Einstellungen
             security: Sicherheit
             current_avatar: 'Aktuelles Profilbild'
+            alva: 'Alva-Begleiter'
         field:
             language: Sprache
             timezone: Zeitzone
@@ -217,6 +218,20 @@ user:
             updated: 'Profil erfolgreich aktualisiert'
             password_changed: 'Passwort erfolgreich geändert'
             avatar_deleted: 'Profilbild erfolgreich gelöscht'
+            alva_settings: 'Alva-Begleiter-Einstellungen gespeichert'
+        alva:
+            enabled_label: 'Alva-Begleiter anzeigen'
+            size_label: 'Größe des Begleiters'
+            position_label: 'Andockposition'
+            size:
+                sm: 'Klein (56 px)'
+                md: 'Mittel (80 px)'
+                lg: 'Groß (112 px)'
+            position:
+                bottom-right: 'Unten rechts'
+                bottom-left: 'Unten links'
+                top-right: 'Oben rechts'
+                top-left: 'Oben links'
 user_management:
     import_irreversible: 'Warnung: Der Benutzerimport kann nicht rückgängig gemacht werden. Bitte stellen Sie sicher, dass die CSV-Datei korrekt formatiert ist.'
 

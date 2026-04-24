@@ -61,3 +61,10 @@ document.addEventListener('DOMContentLoaded', initTooltips);
 
 // NOTE: CSS is loaded separately via assets/styles.css (see importmap.php)
 // This avoids AssetMapper issues with CSS imports from JavaScript at APP_DEBUG=0
+
+// FairyAurora v4.0 — Alva empty-state integration
+// Templates that render an empty state can dispatch the custom event 'alva:empty'
+// (e.g. document.dispatchEvent(new CustomEvent('alva:empty'))) to signal Alva.
+document.addEventListener('alva:empty', () => {
+    window.alvaBus?.emit({ mood: 'curious', reason: 'empty-state' });
+});

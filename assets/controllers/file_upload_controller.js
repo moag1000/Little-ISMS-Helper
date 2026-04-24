@@ -293,6 +293,9 @@ export default class extends Controller {
             formData.append(`files[${index}]`, file);
         });
 
+        // Alva: signal thinking/working while upload is in flight
+        window.alvaBus?.emit({ mood: 'working', reason: 'upload-in-progress' });
+
         try {
             const response = await fetch(this.uploadUrlValue, {
                 method: 'POST',
@@ -306,6 +309,9 @@ export default class extends Controller {
                 const result = await response.json();
                 this.showSuccess(this.uploadSuccessValue);
 
+                // Alva: celebrate successful upload
+                window.alvaBus?.emit({ mood: 'celebrating', reason: 'upload-complete', ttlMs: 3000 });
+
                 // Reload or redirect
                 setTimeout(() => {
                     window.location.reload();
@@ -314,6 +320,8 @@ export default class extends Controller {
                 throw new Error('Upload failed');
             }
         } catch (error) {
+            // Alva: alert on upload failure
+            window.alvaBus?.emit({ mood: 'alert', reason: 'upload-failed', ttlMs: 3000 });
             this.showError(this.uploadErrorValue);
         }
     }
