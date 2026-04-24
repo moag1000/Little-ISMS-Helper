@@ -8,8 +8,9 @@
  # Nutzt fa-toggle-card-Pattern mit Symfony-Form-Widget im Inneren. #}
 {% macro framework_card(child, framework, classification, bucket) %}
     {% set bucketTone = bucket == 'mandatory' ? 'danger' : (bucket == 'recommended' ? 'warning' : 'neutral') %}
-    {# Kein for="…" — Input ist im Label genested; zusätzlich for=… löst Double-Toggle-Bug aus (Click zählt doppelt → Netto-Null). #}
-    <label class="fa-toggle-card fa-toggle-card--bucket fa-toggle-card--bucket-{{ bucket }}">
+    {# Kein for="…" — Input ist im Label genested; zusätzlich for=… löst Double-Toggle-Bug aus (Click zählt doppelt → Netto-Null).
+       .is-on initial-state server-seitig setzen (Fallback falls :has() nicht greift). #}
+    <label class="fa-toggle-card fa-toggle-card--bucket fa-toggle-card--bucket-{{ bucket }}{% if child.vars.checked %} is-on{% endif %}{% if child.vars.disabled %} is-disabled{% endif %}">
         <input type="checkbox"
                id="{{ child.vars.id }}"
                name="{{ child.vars.full_name }}"
@@ -133,4 +134,17 @@
        dass Symfony die frameworks-Checkboxes ein zweites Mal ausgibt. #}
     {{ form_widget(form._token) }}
     {{ form_end(form, {'render_rest': false}) }}
+
+    {# Toggle-Card-State-Sync: :has() reicht für moderne Browser nicht überall,
+       plus .is-on soll auch nach Klick server-seitigem Zustand entsprechen. #}
+    <script data-turbo-eval="false">
+        (function () {
+            document.querySelectorAll('.fa-toggle-card .fa-toggle-card__input').forEach(function (input) {
+                input.addEventListener('change', function () {
+                    var card = input.closest('.fa-toggle-card');
+                    if (card) card.classList.toggle('is-on', input.checked);
+                });
+            });
+        })();
+    </script>
 {% endblock %}
