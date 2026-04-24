@@ -5,6 +5,7 @@
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
@@ -27,56 +28,37 @@
     {# Quick Stats Row #}
     <div class="row mb-4">
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'primary', 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="kpi-card-value">{{ summary.summary.total_assets }}</div>
-                            <div class="kpi-card-label">{{ 'management_reports.stats.assets'|trans({}, 'management_reports') }}</div>
-                        </div>
-                        <i class="bi bi-server fs-1 text-primary" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                icon: 'server',
+                label: 'management_reports.stats.assets'|trans({}, 'management_reports'),
+                value: summary.summary.total_assets,
+                variant: 'primary'
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'danger', 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="kpi-card-value">{{ summary.risk_distribution.critical + summary.risk_distribution.high }}</div>
-                            <div class="kpi-card-label">{{ 'management_reports.stats.high_risks'|trans({}, 'management_reports') }}</div>
-                        </div>
-                        <i class="bi bi-exclamation-triangle fs-1 text-danger" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                icon: 'exclamation-triangle',
+                label: 'management_reports.stats.high_risks'|trans({}, 'management_reports'),
+                value: summary.risk_distribution.critical + summary.risk_distribution.high,
+                variant: 'danger'
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'success', 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="kpi-card-value">{{ summary.summary.compliance_percentage }}%</div>
-                            <div class="kpi-card-label">{{ 'management_reports.stats.compliance'|trans({}, 'management_reports') }}</div>
-                        </div>
-                        <i class="bi bi-shield-check fs-1 text-success" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                icon: 'shield-check',
+                label: 'management_reports.stats.compliance'|trans({}, 'management_reports'),
+                value: summary.summary.compliance_percentage,
+                unit: '%',
+                variant: 'success'
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'warning', 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="kpi-card-value">{{ summary.incident_summary.open }}</div>
-                            <div class="kpi-card-label">{{ 'management_reports.stats.open_incidents'|trans({}, 'management_reports') }}</div>
-                        </div>
-                        <i class="bi bi-bell fs-1 text-warning" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                icon: 'bell',
+                label: 'management_reports.stats.open_incidents'|trans({}, 'management_reports'),
+                value: summary.incident_summary.open,
+                variant: 'warning'
+            }) }}
         </div>
     </div>
 

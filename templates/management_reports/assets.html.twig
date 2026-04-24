@@ -4,6 +4,7 @@
 {% block title %}{{ 'management_reports.assets.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -30,17 +31,12 @@
     {# Total Assets #}
     <div class="row mb-4">
         <div class="col-md-4">
-            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'primary', 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="kpi-card-value">{{ report.total_assets }}</div>
-                            <div class="kpi-card-label">{{ 'management_reports.assets.total'|trans({}, 'management_reports') }}</div>
-                        </div>
-                        <i class="bi bi-server fs-1 text-primary" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                icon: 'server',
+                label: 'management_reports.assets.total'|trans({}, 'management_reports'),
+                value: report.total_assets,
+                variant: 'primary'
+            }) }}
         </div>
         <div class="col-md-8">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
