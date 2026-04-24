@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'locations' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'location.title.list'|trans({}, 'locations') }} - Little ISMS Helper{% endblock %}
 
@@ -14,17 +15,16 @@
     } %}
 </div>
 
-<div class="page-header">
-    <div>
-        <h1>{{ 'location.title.list'|trans({}, 'locations') }}</h1>
-        <p class="text-muted">{{ 'location.description.overview'|trans({}, 'locations') }}</p>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_location_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'location.action.create'|trans({}, 'locations') }}
-        </a>
-    </div>
-</div>
+{{ _fa_page_header.render({
+    badge: { icon: 'geo-alt', label: 'nav.locations'|trans({}, 'nav') },
+    title: 'location.title.list'|trans({}, 'locations'),
+    subtitle: 'location.description.overview'|trans({}, 'locations'),
+    actions: [
+        { label: 'location.action.create'|trans({}, 'locations'), variant: 'primary', icon: 'plus-circle', href: path('app_location_new') }
+    ]
+}) }}
+
+<main class="fa-aurora-surface">
 
 {# Statistics Cards #}
 <div class="kpi-grid">
@@ -119,4 +119,5 @@
         {% endfor %}
     {% endblock %}
 {% endembed %}
+</main>
 {% endblock %}

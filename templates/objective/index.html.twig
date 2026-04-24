@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'objective'%}
 {% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'objective.page.title'|trans({}, 'objective') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -12,12 +13,15 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2"><i class="bi bi-target" aria-hidden="true"></i> {{ 'objective.page.title'|trans({}, 'objective') }}</h1>
-        {% if is_granted('ROLE_ADMIN') %}
-        <a href="{{ path('app_objective_new') }}" class="btn btn-primary"><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'objective.action.add_new'|trans({}, 'objective') }}</a>
-        {% endif %}
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'target', label: 'nav.objectives'|trans({}, 'nav') },
+        title: 'objective.page.title'|trans({}, 'objective'),
+        actions: is_granted('ROLE_ADMIN') ? [
+            { label: 'objective.action.add_new'|trans({}, 'objective'), variant: 'primary', icon: 'plus-circle', href: path('app_objective_new') }
+        ] : []
+    }) }}
+
+    <main class="fa-aurora-surface">
 
     <turbo-frame id="objective-stats">
         <div class="row mb-4">
@@ -83,5 +87,6 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </main>
 </div>
 {% endblock %}
