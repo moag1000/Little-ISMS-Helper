@@ -132,6 +132,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::JSON, options: ['default' => '[]'])]
     private array $completedTours = [];
 
+    // -------------------------------------------------------------------------
+    // FairyAurora v4.0 — Alva Companion user preferences
+    // -------------------------------------------------------------------------
+
+    /**
+     * Whether the Alva companion dock is shown to this user.
+     * Default: true (visible by default to showcase v4.0 delight).
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
+    private bool $alvaCompanionEnabled = true;
+
+    /**
+     * Size of the Alva dock widget.
+     * Allowed values: 'sm' | 'md' | 'lg'
+     */
+    #[ORM\Column(length: 8, options: ['default' => 'md'])]
+    private string $alvaCompanionSize = 'md';
+
+    /**
+     * Corner position of the Alva dock on screen.
+     * Allowed values: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'
+     */
+    #[ORM\Column(length: 20, options: ['default' => 'bottom-right'])]
+    private string $alvaCompanionPosition = 'bottom-right';
+
     #[ORM\ManyToOne(targetEntity: Tenant::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Tenant $tenant = null;
@@ -592,5 +617,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
         return $count;
+    }
+
+    // -------------------------------------------------------------------------
+    // FairyAurora v4.0 — Alva Companion getters / setters
+    // -------------------------------------------------------------------------
+
+    public function isAlvaCompanionEnabled(): bool
+    {
+        return $this->alvaCompanionEnabled;
+    }
+
+    /** Alias for Twig (app.user.alvaCompanionEnabled) */
+    public function getAlvaCompanionEnabled(): bool
+    {
+        return $this->alvaCompanionEnabled;
+    }
+
+    public function setAlvaCompanionEnabled(bool $alvaCompanionEnabled): static
+    {
+        $this->alvaCompanionEnabled = $alvaCompanionEnabled;
+        return $this;
+    }
+
+    public function getAlvaCompanionSize(): string
+    {
+        return $this->alvaCompanionSize;
+    }
+
+    public function setAlvaCompanionSize(string $alvaCompanionSize): static
+    {
+        $this->alvaCompanionSize = $alvaCompanionSize;
+        return $this;
+    }
+
+    public function getAlvaCompanionPosition(): string
+    {
+        return $this->alvaCompanionPosition;
+    }
+
+    public function setAlvaCompanionPosition(string $alvaCompanionPosition): static
+    {
+        $this->alvaCompanionPosition = $alvaCompanionPosition;
+        return $this;
     }
 }
