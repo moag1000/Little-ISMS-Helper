@@ -3,28 +3,20 @@
 
 {% block title %}{{ 'risk_manager.title'|trans({}, 'dashboards') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
 {% block body %}
-<div class="role-dashboard risk-manager-dashboard">
-    {# Page Header #}
-    <div class="page-header mb-4">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h1>
-                    <i class="bi bi-bar-chart-line text-warning" aria-hidden="true"></i>
-                    {{ 'risk_manager.title'|trans({}, 'dashboards') }}
-                </h1>
-                <p class="text-muted mb-0">{{ 'risk_manager.subtitle'|trans({}, 'dashboards') }}</p>
-            </div>
-            <div class="btn-group">
-                <a href="{{ path('app_dashboard') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-house" aria-hidden="true"></i> {{ 'action.standard_dashboard'|trans({}, 'dashboards') }}
-                </a>
-                <a href="{{ path('app_risk_index') }}" class="btn btn-outline-warning">
-                    <i class="bi bi-list" aria-hidden="true"></i> {{ 'action.risk_register'|trans({}, 'dashboards') }}
-                </a>
-            </div>
-        </div>
-    </div>
+<main class="fa-aurora-surface role-dashboard risk-manager-dashboard">
+    {# Page Header — Aurora v4 fa-page-header #}
+    {{ _fa_page_header.render({
+        badge:    { icon: 'bar-chart-line', label: 'risk_manager.badge'|trans({}, 'dashboards') },
+        title:    'risk_manager.title'|trans({}, 'dashboards'),
+        subtitle: 'risk_manager.subtitle'|trans({}, 'dashboards'),
+        actions: [
+            { label: 'action.standard_dashboard'|trans({}, 'dashboards'), variant: 'ghost',   icon: 'house', href: path('app_dashboard') },
+            { label: 'action.risk_register'|trans({}, 'dashboards'),      variant: 'primary', icon: 'list',  href: path('app_risk_index') }
+        ]
+    }) }}
 
     {# Phase 8H.1: Skeleton placeholder during first paint. #}
     <div data-controller="skeleton" data-skeleton-duration-value="600">
@@ -329,5 +321,5 @@
 
         </div>{# /skeleton-content #}
     </div>{# /skeleton-controller #}
-</div>
+</main>
 {% endblock %}

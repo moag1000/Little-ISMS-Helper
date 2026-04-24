@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
 
 {% block title %}{{ 'reports.compliance.title'|trans({}, 'reports') }}{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
+<main class="fa-aurora-surface container-fluid">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -11,12 +13,12 @@
         ]
     } %}
 
-    {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
-        title: 'reports.compliance.title'|trans({}, 'reports'),
-        subtitle: 'reports.compliance.subtitle'|trans({}, 'reports'),
-        icon: 'bi-file-earmark-bar-graph'
-    } %}
+    {# Page Header — Aurora v4 fa-page-header #}
+    {{ _fa_page_header.render({
+        badge:    { icon: 'file-earmark-bar-graph', label: 'reports.badge'|trans({}, 'aurora_components') },
+        title:    'reports.compliance.title'|trans({}, 'reports'),
+        subtitle: 'reports.compliance.subtitle'|trans({}, 'reports')
+    }) }}
 
     <div class="row">
         {# License Report Card #}
@@ -77,7 +79,7 @@
         <div class="col-lg-6 mb-4">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_header %}
-                    <div class="card-header bg-danger text-white">
+                    <div class="card-header" style="border-left: 3px solid var(--danger);">
                         <h2 class="card-title mb-0">
                             <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>{{ 'reports.security_report.title'|trans({}, 'reports') }}
                         </h2>
@@ -188,27 +190,5 @@
             </div>
         </div>
     </div>
-</div>
-
-<style>
-.card {
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.card-footer {
-    border-top: 1px solid rgba(0, 0, 0, 0.125);
-}
-
-code {
-    background-color: var(--surface-2);
-    padding: 0.2rem 0.4rem;
-    border-radius: 3px;
-    font-size: 0.9em;
-}
-</style>
+</main>
 {% endblock %}

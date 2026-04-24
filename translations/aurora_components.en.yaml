@@ -1,0 +1,6 @@
+# FairyAurora v4 Component micro-copy — English
+# Domain: aurora_components
+# Used for placeholder/default labels in fa-page-header, fa-empty-state, fa-hero
+
+reports:
+    badge: Reports

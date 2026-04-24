@@ -36,6 +36,7 @@ risk:
 ciso:
     title: 'CISO-Dashboard'
     subtitle: 'Strategische Übersicht zur Informationssicherheit'
+    badge: 'CISO'
     kpi:
         overall_compliance: 'Gesamtkonformität'
         control_implementation: 'Maßnahmenimplementierung'
@@ -63,6 +64,7 @@ ciso:
 risk_manager:
     title: 'Risikomanager-Dashboard'
     subtitle: 'Operative Risikoübersicht und Behandlungsstatus'
+    badge: 'Risikomanager'
     kpi:
         total_risks: 'Gesamtrisiken'
         high_critical: 'Hoch/Kritisch'
@@ -99,6 +101,7 @@ risk_manager:
 auditor:
     title: 'Auditor-Dashboard'
     subtitle: 'Audit-Planung und Nachweissammlung'
+    badge: 'Auditor'
     kpi:
         audits_ytd: 'Audits (YTD)'
         upcoming: 'Bevorstehend'
@@ -137,6 +140,7 @@ auditor:
 board:
     title: 'Vorstands-Dashboard'
     subtitle: 'Führungsübersicht zur Informationssicherheit'
+    badge: 'Vorstand'
     rag:
         security: 'Sicherheit'
         compliance: 'Compliance'
