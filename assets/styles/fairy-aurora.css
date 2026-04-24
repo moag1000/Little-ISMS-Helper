@@ -141,7 +141,7 @@
 
     /* — v4 Alva-Companion Dock — */
     --alva-dock-offset-x: 24px;
-    --alva-dock-offset-y: 24px;
+    --alva-dock-offset-y: 72px;  /* clears footer / status-bar / Symfony dev-toolbar */
     --alva-z: 9500;
 
     /* — Typografie — */
