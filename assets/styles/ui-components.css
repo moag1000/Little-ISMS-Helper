@@ -105,7 +105,7 @@
     right: 0;
     width: 100px;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.05));
+    background: linear-gradient(90deg, transparent, var(--primary-tint));
     opacity: 0;
     transition: opacity var(--t-base) var(--ease-out);
 }
@@ -115,7 +115,7 @@
 }
 
 .kpi-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 0 20px rgba(6, 182, 212, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 0 20px var(--primary-tint);
     transform: translateY(-2px);
 }
 
@@ -2450,13 +2450,13 @@
 [data-theme="dark"] .badge-delete {
     background: var(--danger);
     color: white;
-    box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 0 8px var(--danger-tint);
 }
 
 [data-theme="dark"] .badge-view {
     background: var(--primary);
     color: var(--on-primary);
-    box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+    box-shadow: 0 0 8px var(--primary-glow);
 }
 
 [data-theme="dark"] .badge-export {
@@ -2468,7 +2468,7 @@
 [data-theme="dark"] .badge-import {
     background: var(--accent);  /* Mystical purple aura */
     color: white;
-    box-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 0 8px var(--accent-tint);
 }
 
 /* ============================================

@@ -176,7 +176,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--fg);
-    text-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+    text-shadow: 0 0 20px var(--primary-tint);
 }
 
 .modal:not(.fade) .modal-close {
@@ -662,7 +662,7 @@
 /* Color states for progress bar */
 .sla-progress-bar.sla-on-track {
     background: linear-gradient(90deg, var(--success) 0%, var(--success-strong) 100%);
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 10px var(--success-tint);
 }
 
 .sla-progress-bar.sla-at-risk {

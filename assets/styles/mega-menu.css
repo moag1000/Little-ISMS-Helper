@@ -59,7 +59,7 @@
 }
 
 .mega-menu-trigger:hover {
-    background: rgba(6, 182, 212, 0.08);
+    background: var(--primary-tint);
     border-left-color: var(--primary);
     color: var(--primary);
 }
@@ -71,7 +71,7 @@
 }
 
 .mega-menu-trigger.active {
-    background: rgba(6, 182, 212, 0.12);
+    background: var(--primary-tint);
     border-left-color: var(--primary);
     color: var(--primary);
 }
@@ -219,7 +219,7 @@
 }
 
 .mega-menu-links a:hover {
-    background: rgba(6, 182, 212, 0.06);
+    background: var(--primary-tint);
     border-left-color: var(--primary);
     transform: translateX(2px);
 }
@@ -230,7 +230,7 @@
 }
 
 .mega-menu-links a.active {
-    background: rgba(6, 182, 212, 0.12);
+    background: var(--primary-tint);
     border-left-color: var(--primary);
     color: var(--primary);
     font-weight: 600;
