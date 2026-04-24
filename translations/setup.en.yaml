@@ -224,10 +224,13 @@ setup:
         header: 'Step 4: Create Administrator Account'
         description: 'Create the first administrator account for your ISMS installation.'
         first_name: 'First Name'
+        first_name_placeholder: 'e.g. Maria'
         last_name: 'Last Name'
+        last_name_placeholder: 'e.g. Musterfrau'
         email: 'Email Address'
         email_help: 'This email will be used for login and notifications.'
         password: 'Password'
+        password_help: 'At least 8 characters with uppercase, lowercase, and a digit.'
         password_confirm: 'Confirm Password'
         password_requirements:
             title: 'Password Requirements:'

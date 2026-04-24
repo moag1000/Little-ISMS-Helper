@@ -29,7 +29,7 @@
                 <span class="fa-cyber-input__tick fa-cyber-input__tick--tr"></span>
                 <span class="fa-cyber-input__tick fa-cyber-input__tick--bl"></span>
                 <span class="fa-cyber-input__tick fa-cyber-input__tick--br"></span>
-                {{ form_widget(form.firstName, {'attr': {'class': 'fa-cyber-input__field', 'required': 'required'}}) }}
+                {{ form_widget(form.firstName, {'attr': {'class': 'fa-cyber-input__field', 'required': 'required', 'placeholder': 'setup.admin.first_name_placeholder'|trans({}, 'setup')}}) }}
             </div>
             {{ form_errors(form.firstName) }}
         </div>
@@ -40,7 +40,7 @@
                 <span class="fa-cyber-input__tick fa-cyber-input__tick--tr"></span>
                 <span class="fa-cyber-input__tick fa-cyber-input__tick--bl"></span>
                 <span class="fa-cyber-input__tick fa-cyber-input__tick--br"></span>
-                {{ form_widget(form.lastName, {'attr': {'class': 'fa-cyber-input__field', 'required': 'required'}}) }}
+                {{ form_widget(form.lastName, {'attr': {'class': 'fa-cyber-input__field', 'required': 'required', 'placeholder': 'setup.admin.last_name_placeholder'|trans({}, 'setup')}}) }}
             </div>
             {{ form_errors(form.lastName) }}
         </div>
@@ -69,6 +69,7 @@
                 <span class="fa-cyber-input__tick fa-cyber-input__tick--br"></span>
                 {{ form_widget(form.password.first, {'attr': {'class': 'fa-cyber-input__field', 'required': 'required', 'type': 'password'}}) }}
             </div>
+            <div class="fa-cyber-input__hint">{{ 'setup.admin.password_help'|trans({}, 'setup') }}</div>
             {{ form_errors(form.password.first) }}
         </div>
         <div class="fa-setup-form__col">

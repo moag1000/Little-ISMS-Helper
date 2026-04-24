@@ -2494,6 +2494,37 @@ html[data-theme="dark"] .nav-pills .show > .nav-link {
 }
 .form-check-label { color: var(--fg); }
 
+.form-switch .form-check-input {
+    background-color: var(--surface-2);
+    border-color: var(--border-strong);
+}
+.form-switch .form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+/* .required Pflichtfeld-Marker (Form-Field-Component + inline) */
+.required,
+label .required,
+.form-label .required { color: var(--danger); margin-left: 2px; font-weight: 600; }
+
+/* Bootstrap Floating Labels (form-floating) — Aurora-Kontraste */
+.form-floating > label {
+    color: var(--fg-3);
+    font-weight: 500;
+    padding: 1rem 0.75rem;
+}
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label {
+    color: var(--primary);
+    opacity: 0.85;
+}
+.form-floating > .form-control,
+.form-floating > .form-select { background-color: var(--surface); }
+.form-floating > .form-control:focus,
+.form-floating > .form-control:not(:placeholder-shown) { background-color: var(--surface); }
+
 /* ═══════════════════════════════════════════════════════════════════
    Bootstrap-Badge → Aurora-Status-Pill-Look
    ═══════════════════════════════════════════════════════════════════ */

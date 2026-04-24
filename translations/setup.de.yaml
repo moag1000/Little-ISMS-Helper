@@ -224,10 +224,13 @@ setup:
         header: 'Schritt 4: Administrator-Konto erstellen'
         description: 'Erstellen Sie das erste Administrator-Konto für Ihre ISMS-Installation.'
         first_name: 'Vorname'
+        first_name_placeholder: 'z.B. Maria'
         last_name: 'Nachname'
+        last_name_placeholder: 'z.B. Musterfrau'
         email: 'E-Mail-Adresse'
         email_help: 'Diese E-Mail wird für die Anmeldung und Benachrichtigungen verwendet.'
         password: 'Passwort'
+        password_help: 'Mindestens 8 Zeichen, mit Groß-, Kleinbuchstaben und Zahl.'
         password_confirm: 'Passwort bestätigen'
         password_requirements:
             title: 'Passwort-Anforderungen:'
