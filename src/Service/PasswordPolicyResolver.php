@@ -10,13 +10,25 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Phase 8QW-4 — Resolver für Passwort-Mindestlänge mit Holding-Floor-Logik.
+ * Phase 8QW-4 / 8M.4 — Resolver für Passwort-Mindestlänge mit Holding-Floor-Logik.
  *
  * Sicherheitsprinzip: Ein Mandant darf nur strenger sein als seine
  * Ancestor-Tenants (Floor-Pattern = Maximum über die Holding-Kette).
+ *
+ * Merge-Semantik: Floor (max() über alle Werte in der Kette).
+ * Die Holding-Hierarchie setzt ein Minimum. Child-Tenants dürfen die
+ * Mindestlänge nur erhöhen (strenger machen), niemals senken.
+ *
  * Aktuell liest der Resolver die globale SystemSetting 'security.password_min_length'
- * als absolutes Minimum. Die Holding-Walk-Logik ist bereits vorbereitet,
- * damit Phase 9A tenant-spezifische Settings ohne API-Änderung einbauen kann.
+ * als absolutes Minimum. Die Holding-Walk-Architektur ist vollständig aktiviert
+ * (Phase 8M.4) — sobald Phase 9A tenant-spezifische SystemSettings einführt,
+ * genügt es, getTenantSpecificMinLength() zu implementieren.
+ *
+ * Cache-Invalidation: invalidate(null) löscht den Gesamt-Cache (z.B. nach
+ * globaler Setting-Änderung). invalidate($tenant) löscht nur den Tenant-Eintrag.
+ *
+ * TODO(9A): getTenantSpecificMinLength() mit SystemSettingsRepository::getSettingForTenant()
+ * implementieren, sobald SystemSettings.tenant_id verfügbar ist.
  *
  * Request-scoped Array-Cache — eine DB-Query pro Request reicht.
  */
