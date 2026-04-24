@@ -469,6 +469,78 @@ Always use semantic heading levels:
 
 ---
 
-**Last Updated:** 2025-11-19
-**Version:** 2.0 (Post UI/UX Audit Consolidation)
-**Related:** Issue 3.1 - Card Standardization, Issue 3.2 - Card Header Inconsistency
+## Anti-Patterns — Do NOT mix Bootstrap color-utilities with `.card`
+
+### ❌ Forbidden: Bootstrap hero-tile on Aurora card
+
+```twig
+{# BAD — silently falls back to neutral Aurora surface #}
+{% embed '_components/_card.html.twig' with { 'class': 'bg-primary text-white h-100' } %}
+    {% block card_body %}
+        <h3 class="mb-0">42</h3>
+        <small>Total Risks</small>
+    {% endblock %}
+{% endembed %}
+```
+
+**Why it breaks:** Aurora's `.card { background-color: var(--surface); color: var(--fg); }` (in `fairy-aurora-components.css:2168`) has the same CSS specificity (0,1,0) as Bootstrap's `.bg-primary`, but Aurora loads *after* Bootstrap. So the utility class is silently overridden — the dev intends a blue hero tile, users see a neutral gray card.
+
+The same trap applies to every `bg-<color>`, `bg-<color>-subtle`, `text-white`, `text-<color>` placed on an outer `.card` element.
+
+### ✅ Correct: Aurora-native KPI variant
+
+```twig
+{# GOOD — renders neutral card + colored accent (left border + icon) #}
+{% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'primary', 'class': 'h-100' } %}
+    {% block card_body %}
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <div class="kpi-card-value">42</div>
+                <div class="kpi-card-label">Total Risks</div>
+            </div>
+            <i class="bi bi-shield fs-1 text-primary" aria-hidden="true"></i>
+        </div>
+    {% endblock %}
+{% endembed %}
+```
+
+### Mapping table — when porting legacy code
+
+| Legacy Bootstrap hero | Aurora KPI |
+|---|---|
+| `bg-primary text-white` | `variant: 'kpi', borderColor: 'primary'` + `text-primary` on icon |
+| `bg-success text-white` | `variant: 'kpi', borderColor: 'success'` + `text-success` on icon |
+| `bg-warning text-white` | `variant: 'kpi', borderColor: 'warning'` + `text-warning` on icon |
+| `bg-warning-subtle text-warning` | same as above |
+| `bg-danger text-white` | `variant: 'kpi', borderColor: 'danger'` + `text-danger` on icon |
+| `bg-info text-white` | `variant: 'kpi', borderColor: 'info'` + `text-info` on icon |
+
+Replace `<h3 class="mb-0">` → `<div class="kpi-card-value">` and `<small>` → `<div class="kpi-card-label">`.
+
+### Card-header bg overrides
+
+Do NOT write `<div class="card-header bg-<color>-subtle">` or `<div class="card-header bg-<color> text-white">`. Aurora's `.card > .card-header` already owns header styling (`fairy-aurora-components.css:2184`). If you need a tonal accent, use a left-border:
+
+```twig
+<div class="card-header" style="border-left: 3px solid var(--primary-strong);">
+    ...
+</div>
+```
+
+### Where Bootstrap utilities DO still work
+
+These are fine — they map to Aurora tokens via `--bs-<color>-rgb` and render correctly in both themes:
+
+- `<span class="badge bg-<color>">` — badges
+- `<div class="progress-bar bg-<color>">` — progress bars
+- `<button class="btn btn-<color>">` / `btn-outline-<color>` — buttons
+- `<div class="alert alert-<color>">` — alerts
+- Bootstrap spacing (`m-*`, `p-*`, `gap-*`) and flex (`d-flex`, `justify-content-*`) — always fine
+
+**Rule of thumb:** Bootstrap utility classes on **smaller elements** are fine. On outer `.card` / `.card-header`, they lose to Aurora and you must use Aurora variants instead.
+
+---
+
+**Last Updated:** 2026-04-24
+**Version:** 2.1 (Anti-patterns section added after management_reports rewrite, commit 38f064aa)
+**Related:** Issue 3.1 - Card Standardization, Issue 3.2 - Card Header Inconsistency, Aurora-Load-Order-Precedence

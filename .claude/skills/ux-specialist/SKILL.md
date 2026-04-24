@@ -318,21 +318,24 @@ font-family: var(--font-mono);  /* JetBrains Mono for codes, IDs, metrics, secti
 {{ form_end(form) }}
 ```
 
-**Cards**:
+**Cards** (prefer the Aurora component over raw Bootstrap):
 ```twig
-<div class="card">
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="card-title mb-0">Card Title</h5>
-    <button class="btn btn-sm btn-outline-primary">Action</button>
-  </div>
-  <div class="card-body">
-    <p class="card-text">Content goes here</p>
-  </div>
-  <div class="card-footer text-muted">
-    Footer info
-  </div>
-</div>
+{% include '_components/_card.html.twig' with {
+    'title': 'Card Title',
+    'headerIcon': 'bi-info-circle',
+    'actions': '<button class="btn btn-sm btn-outline-primary">Action</button>',
+    'body': '<p>Content goes here</p>',
+    'footer': 'Footer info'
+} %}
 ```
+
+See `templates/_components/_CARD_GUIDE.md` for variants (`default`, `kpi`, `stat`, `widget`, `feature`, `bordered`) + full anti-patterns section.
+
+**Critical card anti-patterns** (read `_CARD_GUIDE.md` §"Anti-Patterns" before working on any KPI/hero-tile):
+- ❌ `bg-primary text-white` on an outer `.card` — silently overridden by Aurora's `.card { background: var(--surface) }` (load-order precedence). Dev intends blue hero tile, users see neutral gray.
+- ❌ `bg-<color>-subtle` / `bg-<color> text-white` on `.card-header` — same problem, Aurora's `.card > .card-header` wins.
+- ✅ For KPI/hero tiles use `variant: 'kpi', borderColor: '<color>'` + `.kpi-card-value` / `.kpi-card-label` inside + `text-<color>` on the icon. Aurora renders a neutral card with a colored left-border + colored icon — works in both themes.
+- ✅ Bootstrap utilities on **smaller elements** still work fine: `.badge bg-<color>`, `.progress-bar bg-<color>`, `.btn btn-<color>`, `.alert alert-<color>`, spacing/flex utilities. Only the outer `.card` / `.card-header` is the trap.
 
 ### Multi-Tenancy Considerations
 
