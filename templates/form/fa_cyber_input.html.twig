@@ -14,16 +14,16 @@
       - form_row          Main wrapper + header + frame + tick marks + hint + errors
       - form_label        Adds .fa-cyber-input__label class
       - form_label_required  Renders the red asterisk as .fa-cyber-input__req
-      - form_widget_simple   Adds .fa-cyber-input__input (strips Bootstrap border)
+      - form_widget_simple   Adds .fa-cyber-input__field (strips Bootstrap border)
       - textarea_widget      Same as above for <textarea>
-      - choice_widget        Routes expanded (radio/checkbox) through Bootstrap, collapsed gets .fa-cyber-input__input
+      - choice_widget        Routes expanded (radio/checkbox) through Bootstrap, collapsed gets .fa-cyber-input__field
       - form_errors          Renders errors as .fa-cyber-input__errors list below the frame
       - button_row           Buttons rendered plain (not wrapped in cyber-input frame)
 
     Blocks inherited unchanged from bootstrap_5_layout.html.twig:
       - form_widget (dispatches to type-specific blocks)
       - choice_widget_expanded (radio/checkbox groups — Bootstrap look)
-      - choice_widget_collapsed (select — receives .fa-cyber-input__input via choice_widget)
+      - choice_widget_collapsed (select — receives .fa-cyber-input__field via choice_widget)
       - file_widget
       - date_widget, time_widget, datetime_widget
       - money_widget, percent_widget, range_widget
@@ -85,13 +85,13 @@
 {# ─── Simple inputs (text, email, password, number, tel, url, …) ─────────── #}
 {% block form_widget_simple %}
     {%- set type = type|default('text') -%}
-    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__input')|trim}) -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__field')|trim}) -%}
     {{- parent() -}}
 {% endblock %}
 
 {# ─── Textarea ───────────────────────────────────────────────────────────── #}
 {% block textarea_widget %}
-    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__input')|trim}) -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__field')|trim}) -%}
     {{- parent() -}}
 {% endblock %}
 
@@ -100,7 +100,7 @@
     {%- if expanded -%}
         {{- block('choice_widget_expanded') -}}
     {%- else -%}
-        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__input')|trim}) -%}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__field')|trim}) -%}
         {{- block('choice_widget_collapsed') -}}
     {%- endif -%}
 {% endblock %}

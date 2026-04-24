@@ -469,9 +469,9 @@ html[data-theme="dark"] .fa-card--premium {
    so we need to outrank Bootstrap's base rules. Specificity here uses
    :where() + class-stacking to stay authoritative without resorting to
    !important:
-     .fa-cyber-input__frame .fa-cyber-input__input  → 0,2,0 beats Bootstrap 0,1,0
+     .fa-cyber-input__frame .fa-cyber-input__field, .fa-cyber-input__frame .fa-cyber-input__input  → 0,2,0 beats Bootstrap 0,1,0
    Also handle Bootstrap classes rendered inside our frame as aliases. */
-.fa-cyber-input__frame .fa-cyber-input__input,
+.fa-cyber-input__frame .fa-cyber-input__field, .fa-cyber-input__frame .fa-cyber-input__input,
 .fa-cyber-input__frame > .form-control,
 .fa-cyber-input__frame > .form-select,
 .fa-cyber-input__frame > textarea {
@@ -490,13 +490,13 @@ html[data-theme="dark"] .fa-card--premium {
     min-height: auto;
     height: auto;
 }
-.fa-cyber-input__frame .fa-cyber-input__input::placeholder,
+.fa-cyber-input__frame .fa-cyber-input__field, .fa-cyber-input__frame .fa-cyber-input__input::placeholder,
 .fa-cyber-input__frame > .form-control::placeholder {
     color: var(--fg-3);
 }
 /* :focus state: Bootstrap sets border-color + box-shadow with hardcoded blue.
    Our frame owns the focus-glow — kill Bootstrap's input-level focus. */
-.fa-cyber-input__frame .fa-cyber-input__input:focus,
+.fa-cyber-input__frame .fa-cyber-input__field, .fa-cyber-input__frame .fa-cyber-input__input:focus,
 .fa-cyber-input__frame > .form-control:focus,
 .fa-cyber-input__frame > .form-select:focus,
 .fa-cyber-input__frame > textarea:focus {
@@ -506,7 +506,7 @@ html[data-theme="dark"] .fa-card--premium {
     background-color: transparent;
     color: var(--fg);
 }
-.fa-cyber-input__frame .fa-cyber-input__input:disabled,
+.fa-cyber-input__frame .fa-cyber-input__field, .fa-cyber-input__frame .fa-cyber-input__input:disabled,
 .fa-cyber-input__frame > .form-control:disabled,
 .fa-cyber-input__frame > .form-select:disabled {
     color: var(--fg-3);
@@ -516,7 +516,7 @@ html[data-theme="dark"] .fa-card--premium {
 /* Select appearance: strip native OS chevron so our frame stays clean */
 .fa-cyber-input__frame > select,
 .fa-cyber-input__frame > .form-select,
-select.fa-cyber-input__input {
+select.fa-cyber-input__field, select.fa-cyber-input__input {
     appearance: none;
     -webkit-appearance: none;
     cursor: pointer;
