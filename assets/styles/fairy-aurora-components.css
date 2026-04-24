@@ -3939,3 +3939,53 @@ button.fa-filter-chip.fa-filter-chip--active {
     color: var(--primary);
     font-weight: 600;
 }
+
+
+/* ==========================================================================
+   Aurora v4 — Raw `.form-control` bridge
+   ==========================================================================
+   Raw <input class="form-control"> usages (search bars, filter inputs,
+   import forms, admin quick-edits) bypass Symfony's form-theme layer and
+   therefore don't get the `.fa-cyber-input` frame. This bridge ensures
+   they still render with Aurora tokens + the same focus-glow as cyber-input.
+
+   Only applies when the element is NOT inside a .fa-cyber-input container
+   (to avoid double-styling properly themed forms).
+   ========================================================================== */
+.form-control:not(.fa-cyber-input .form-control):not(.fa-cyber-input__input),
+.form-select:not(.fa-cyber-input .form-select):not(.fa-cyber-input__input) {
+    background-color: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    transition: border-color var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out);
+}
+.form-control:not(.fa-cyber-input .form-control):hover,
+.form-select:not(.fa-cyber-input .form-select):hover {
+    border-color: var(--border-strong);
+}
+.form-control:not(.fa-cyber-input .form-control):focus,
+.form-select:not(.fa-cyber-input .form-select):focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+    outline: none;
+}
+.form-control:not(.fa-cyber-input .form-control):disabled,
+.form-select:not(.fa-cyber-input .form-select):disabled {
+    background-color: var(--surface-2);
+    color: var(--fg-3);
+    cursor: not-allowed;
+}
+.form-control.is-invalid:not(.fa-cyber-input .form-control),
+.form-select.is-invalid:not(.fa-cyber-input .form-select) {
+    border-color: var(--danger);
+}
+.form-control.is-invalid:not(.fa-cyber-input .form-control):focus,
+.form-select.is-invalid:not(.fa-cyber-input .form-select):focus {
+    box-shadow: 0 0 0 3px var(--danger-glow);
+}
+.form-label:not(.fa-cyber-input__label) {
+    color: var(--fg-2);
+    font-weight: 500;
+}
