@@ -4,6 +4,7 @@ namespace App\Service;
 
 use DateTime;
 use Exception;
+use App\Entity\Tenant;
 use App\Entity\UserSession;
 use RuntimeException;
 use InvalidArgumentException;
@@ -146,25 +147,38 @@ class BackupService
     }
 
     /**
-     * Create a backup of all productive data
+     * Create a backup of all productive data.
      *
-     * @param bool $includeAuditLog Include audit log in backup
-     * @param bool $includeUserSessions Include user sessions in backup
-     * @param bool $includeFiles When true, collect file-path references for ZIP packaging
+     * When $tenantScope is provided, only entities belonging to that tenant (and its
+     * subsidiaries for holding tenants) are included.  Entities without a `tenant`
+     * association (e.g. Role, Permission, SystemSettings) are silently skipped and
+     * their names are recorded in metadata.skipped_global_entities.
+     *
+     * @param bool        $includeAuditLog    Include audit log in backup
+     * @param bool        $includeUserSessions Include user sessions in backup
+     * @param bool        $includeFiles       When true, collect file-path references for ZIP packaging
+     * @param Tenant|null $tenantScope        When set, restricts backup to this tenant's data
      * @return array Backup data with metadata
      * @throws Exception If an error occurs during backup creation
      * @throws RuntimeException If backup cannot be compressed
-     *
      */
     public function createBackup(
         bool $includeAuditLog = true,
         bool $includeUserSessions = false,
-        bool $includeFiles = true
+        bool $includeFiles = true,
+        ?Tenant $tenantScope = null
     ): array {
+        // Determine scope tree (self + all subsidiaries for holding tenants)
+        $scopeIds = $this->resolveScopeIds($tenantScope);
+        $scopeType = $this->resolveScopeType($tenantScope);
+
         $this->logger->info('Starting backup creation', [
-            'include_audit_log' => $includeAuditLog,
+            'include_audit_log'   => $includeAuditLog,
             'include_user_sessions' => $includeUserSessions,
-            'include_files' => $includeFiles,
+            'include_files'       => $includeFiles,
+            'tenant_scope'        => $tenantScope?->getId(),
+            'scope_type'          => $scopeType,
+            'scope_ids'           => $scopeIds,
         ]);
 
         $backup = [
@@ -178,10 +192,14 @@ class BackupService
                 'files_included'     => false, // updated below if files are packaged
                 'file_count'         => 0,
                 'created_at'         => (new DateTime())->format('c'),
+                'scope_type'         => $scopeType,
+                'tenant_scope'       => $scopeIds,
             ],
-            'data'       => [],
-            'statistics' => [],
+            'data'                       => [],
+            'statistics'                 => [],
         ];
+
+        $skippedGlobalEntities = [];
 
         // Backup productive entities
         foreach (self::PRODUCTIVE_ENTITIES as $entityName) {
@@ -191,22 +209,35 @@ class BackupService
                 continue;
             }
 
+            // When a tenant scope is active, skip entities without a tenant association
+            if ($tenantScope !== null && !$this->entityHasTenantField($entityClass)) {
+                $skippedGlobalEntities[] = $entityName;
+                $this->logger->debug('Skipping global entity (no tenant field) in tenant-scoped backup', [
+                    'entity' => $entityName,
+                ]);
+                continue;
+            }
+
             try {
-                $entities = $this->entityManager->getRepository($entityClass)->findAll();
+                $entities = $this->fetchEntities($entityClass, $scopeIds);
                 $backup['data'][$entityName] = $this->serializeEntities($entities);
                 $backup['statistics'][$entityName] = count($entities);
 
                 $this->logger->info('Backed up entity', [
                     'entity' => $entityName,
-                    'count' => count($entities),
+                    'count'  => count($entities),
                 ]);
             } catch (Exception $e) {
                 $this->logger->error('Error backing up entity', [
                     'entity' => $entityName,
-                    'error' => $e->getMessage(),
+                    'error'  => $e->getMessage(),
                 ]);
                 throw $e;
             }
+        }
+
+        if ($skippedGlobalEntities !== []) {
+            $backup['metadata']['skipped_global_entities'] = $skippedGlobalEntities;
         }
 
         // Collect file references for optional ZIP packaging
@@ -218,11 +249,11 @@ class BackupService
         // Backup audit log if requested
         if ($includeAuditLog) {
             try {
-                $auditLogs = $this->entityManager->getRepository(AuditLog::class)->findAll();
-                $backup['data']['AuditLog'] = $this->serializeEntities($auditLogs);
-                $backup['statistics']['AuditLog'] = count($auditLogs);
+                $entities = $this->fetchEntities(AuditLog::class, $scopeIds);
+                $backup['data']['AuditLog'] = $this->serializeEntities($entities);
+                $backup['statistics']['AuditLog'] = count($entities);
 
-                $this->logger->info('Backed up audit log', ['count' => count($auditLogs)]);
+                $this->logger->info('Backed up audit log', ['count' => count($entities)]);
             } catch (Exception $e) {
                 $this->logger->error('Error backing up audit log', ['error' => $e->getMessage()]);
             }
@@ -233,7 +264,7 @@ class BackupService
             $sessionClass = UserSession::class;
             if (class_exists($sessionClass)) {
                 try {
-                    $sessions = $this->entityManager->getRepository($sessionClass)->findAll();
+                    $sessions = $this->fetchEntities($sessionClass, $scopeIds);
                     $backup['data']['UserSession'] = $this->serializeEntities($sessions);
                     $backup['statistics']['UserSession'] = count($sessions);
 
@@ -246,10 +277,88 @@ class BackupService
 
         $this->logger->info('Backup creation completed', [
             'total_entities' => count($backup['statistics']),
-            'total_records' => array_sum($backup['statistics']),
+            'total_records'  => array_sum($backup['statistics']),
         ]);
 
         return $backup;
+    }
+
+    // ------------------------------------------------------------------
+    // Tenant-scope helpers
+    // ------------------------------------------------------------------
+
+    /**
+     * Resolve the list of tenant IDs that belong to the given scope.
+     * Returns an empty array when $tenantScope is null (= global backup).
+     *
+     * @return int[]
+     */
+    public function resolveScopeIds(?Tenant $tenantScope): array
+    {
+        if ($tenantScope === null) {
+            return [];
+        }
+
+        $ids = [$tenantScope->getId()];
+        foreach ($tenantScope->getAllSubsidiaries() as $subsidiary) {
+            $ids[] = $subsidiary->getId();
+        }
+
+        return array_filter($ids, fn($id): bool => $id !== null);
+    }
+
+    /**
+     * Return 'global', 'holding', or 'single' depending on the scope.
+     */
+    private function resolveScopeType(?Tenant $tenantScope): string
+    {
+        if ($tenantScope === null) {
+            return 'global';
+        }
+
+        return $tenantScope->getAllSubsidiaries() !== [] ? 'holding' : 'single';
+    }
+
+    /**
+     * Check whether an entity class has a `tenant` single-valued association.
+     */
+    private function entityHasTenantField(string $entityClass): bool
+    {
+        try {
+            $metadata = $this->entityManager->getClassMetadata($entityClass);
+            foreach ($metadata->getAssociationNames() as $name) {
+                if ($name === 'tenant' && $metadata->isSingleValuedAssociation($name)) {
+                    return true;
+                }
+            }
+        } catch (Exception) {
+            // Entity not registered with Doctrine (e.g. in tests) → treat as no tenant field
+        }
+
+        return false;
+    }
+
+    /**
+     * Fetch entities for an entity class, optionally filtered by tenant scope IDs.
+     *
+     * When $scopeIds is empty (global backup) all rows are returned via findAll().
+     * When $scopeIds is non-empty, a QueryBuilder filters `e.tenant IN (:scope)` —
+     * but only if the entity has a `tenant` association; otherwise findAll() is used.
+     *
+     * @param int[] $scopeIds
+     * @return object[]
+     */
+    private function fetchEntities(string $entityClass, array $scopeIds): array
+    {
+        if ($scopeIds === [] || !$this->entityHasTenantField($entityClass)) {
+            return $this->entityManager->getRepository($entityClass)->findAll();
+        }
+
+        $qb = $this->entityManager->getRepository($entityClass)->createQueryBuilder('e');
+        $qb->andWhere('e.tenant IN (:scope)')
+            ->setParameter('scope', $scopeIds);
+
+        return $qb->getQuery()->getResult();
     }
 
     /**
