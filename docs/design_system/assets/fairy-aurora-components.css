@@ -1,0 +1,4146 @@
+/*
+ * FairyAurora v3.0 — Component-Layer
+ *
+ * Styles für die in templates/_components/ definierten Aurora-Primitive:
+ *  - _brand
+ *  - _cyber_button
+ *  - _cyber_input (input + select)
+ *  - _status_pill
+ *
+ * Token-Nutzung: ausschließlich CSS-Custom-Properties aus fairy-aurora.css.
+ * Keine Hex-Werte hier — sonst bricht Light/Dark-Switch.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   Brand
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--fg);
+    transition: opacity var(--t-fast) var(--ease-out);
+}
+.fa-brand:hover { opacity: 0.92; }
+.fa-brand:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 4px;
+    border-radius: var(--r-sm);
+}
+
+.fa-brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-md);
+    background: var(--brand-gradient);
+    box-shadow: 0 0 12px var(--primary-glow),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+    animation: fa-brand-breathe 3s ease-in-out infinite;
+    position: relative;
+}
+/* Dark-Mode: extra heller Außen-Ring, damit das Logo sich vom dunklen
+   Seiten-Hintergrund-Gradient (surface→bg) klar absetzt. */
+html[data-theme="dark"] .fa-brand-mark {
+    box-shadow: 0 0 12px var(--primary-glow),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.3),
+                0 0 0 1px rgba(56, 189, 248, 0.35);
+}
+
+.fa-brand-sparkle {
+    color: #ffffff;
+    font-size: 0.55em;
+    line-height: 1;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   App-Wide Tech-Backdrop — subtle Circuit-Optics on <body>
+   Schaltkreis-Optik wie Login-Sidebar, dezent app-weit als Hintergrund.
+   Content-Container bleiben transparent, damit BG durchscheint.
+   ═══════════════════════════════════════════════════════════════════ */
+
+body {
+    background-color: var(--bg);
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 900' preserveAspectRatio='xMidYMid slice'%3E%3Cg stroke='%230284c7' stroke-width='0.7' fill='none' opacity='0.22'%3E%3Cpath d='M 0 120 L 240 120 L 270 150 L 520 150' stroke-linecap='round'/%3E%3Cpath d='M 1200 260 L 900 260 L 870 290 L 640 290' stroke-linecap='round'/%3E%3Cpath d='M 0 460 L 320 460 L 350 430 L 560 430' stroke-linecap='round'/%3E%3Cpath d='M 1200 640 L 820 640 L 790 670 L 620 670' stroke-linecap='round'/%3E%3Cpath d='M 140 780 L 380 780' stroke-linecap='round'/%3E%3Cpath d='M 700 820 L 1060 820' stroke-linecap='round'/%3E%3C/g%3E%3Cg fill='%237c3aed' opacity='0.5'%3E%3Ccircle cx='240' cy='120' r='2.2'/%3E%3Ccircle cx='520' cy='150' r='2.2'/%3E%3Ccircle cx='900' cy='260' r='2.2'/%3E%3Ccircle cx='640' cy='290' r='2.2'/%3E%3Ccircle cx='320' cy='460' r='2.2'/%3E%3Ccircle cx='560' cy='430' r='2.2'/%3E%3Ccircle cx='820' cy='640' r='2.2'/%3E%3Ccircle cx='620' cy='670' r='2.2'/%3E%3C/g%3E%3C/svg%3E"),
+        radial-gradient(circle at 32px 32px, rgba(2, 132, 199, 0.22) 0.9px, transparent 1.6px);
+    background-size: cover, 64px 64px;
+    background-position: center center, 0 0;
+    background-repeat: no-repeat, repeat;
+    background-attachment: fixed, fixed;
+}
+
+html[data-theme="dark"] body {
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 900' preserveAspectRatio='xMidYMid slice'%3E%3Cg stroke='%2338bdf8' stroke-width='0.7' fill='none' opacity='0.32'%3E%3Cpath d='M 0 120 L 240 120 L 270 150 L 520 150' stroke-linecap='round'/%3E%3Cpath d='M 1200 260 L 900 260 L 870 290 L 640 290' stroke-linecap='round'/%3E%3Cpath d='M 0 460 L 320 460 L 350 430 L 560 430' stroke-linecap='round'/%3E%3Cpath d='M 1200 640 L 820 640 L 790 670 L 620 670' stroke-linecap='round'/%3E%3Cpath d='M 140 780 L 380 780' stroke-linecap='round'/%3E%3Cpath d='M 700 820 L 1060 820' stroke-linecap='round'/%3E%3C/g%3E%3Cg fill='%23a78bfa' opacity='0.6'%3E%3Ccircle cx='240' cy='120' r='2.2'/%3E%3Ccircle cx='520' cy='150' r='2.2'/%3E%3Ccircle cx='900' cy='260' r='2.2'/%3E%3Ccircle cx='640' cy='290' r='2.2'/%3E%3Ccircle cx='320' cy='460' r='2.2'/%3E%3Ccircle cx='560' cy='430' r='2.2'/%3E%3Ccircle cx='820' cy='640' r='2.2'/%3E%3Ccircle cx='620' cy='670' r='2.2'/%3E%3C/g%3E%3C/svg%3E"),
+        radial-gradient(circle at 32px 32px, rgba(56, 189, 248, 0.22) 1px, transparent 1.8px);
+}
+
+/* Content-Areas transparent, damit Body-Pattern durchscheint */
+.app-main,
+.app-content,
+main.app-main,
+main > .container,
+main > .container-fluid {
+    background: transparent;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   App-Sidebar + Mega-Menu-Panel — Login-Pattern-BG (Gradient + Dots)
+   Macht App-Seitenleiste optisch konsistent mit Login/Setup-Wizard-
+   Left-Panel. Gradient (surface→bg) + subtile Dot-Pattern + Corner-Tick.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.app-sidebar,
+.mega-menu-panel {
+    background:
+        linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%),
+        /* Circuit-Traces als SVG-data-url (wie Login-TechBackdrop) */
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 800' preserveAspectRatio='xMidYMid slice'%3E%3Cg stroke='%230284c7' stroke-width='0.55' fill='none' opacity='0.12'%3E%3Cpath d='M 0 160 L 140 160 L 170 190 L 290 190' stroke-linecap='round'/%3E%3Cpath d='M 600 280 L 460 280 L 430 310 L 340 310' stroke-linecap='round'/%3E%3Cpath d='M 60 560 L 180 560 L 210 530 L 330 530' stroke-linecap='round'/%3E%3Cpath d='M 520 620 L 400 620' stroke-linecap='round'/%3E%3C/g%3E%3Cg fill='%237c3aed' opacity='0.3'%3E%3Ccircle cx='140' cy='160' r='1.8'/%3E%3Ccircle cx='290' cy='190' r='1.8'/%3E%3Ccircle cx='460' cy='280' r='1.8'/%3E%3Ccircle cx='340' cy='310' r='1.8'/%3E%3Ccircle cx='180' cy='560' r='1.8'/%3E%3Ccircle cx='330' cy='530' r='1.8'/%3E%3Ccircle cx='400' cy='620' r='1.8'/%3E%3C/g%3E%3C/svg%3E"),
+        radial-gradient(circle at 24px 24px, var(--primary-tint) 0.7px, transparent 1.2px);
+    background-size: 100% 100%, 100% 100%, 48px 48px;
+    background-position: 0 0, center center, 0 0;
+    background-repeat: no-repeat, no-repeat, repeat;
+    position: relative;
+}
+
+.app-sidebar > *,
+.mega-menu-panel > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Subtile Corner-Tick-Marker oben-links (Login-Aesthetik) */
+.app-sidebar::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 10px;
+    height: 10px;
+    border-top: 1px solid var(--primary);
+    border-left: 1px solid var(--primary);
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Dark-Mode — intensiver Dot-Pattern + hellere Circuit-Farben für Kontrast */
+html[data-theme="dark"] .app-sidebar,
+html[data-theme="dark"] .mega-menu-panel {
+    background:
+        linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 800' preserveAspectRatio='xMidYMid slice'%3E%3Cg stroke='%2338bdf8' stroke-width='0.55' fill='none' opacity='0.22'%3E%3Cpath d='M 0 160 L 140 160 L 170 190 L 290 190' stroke-linecap='round'/%3E%3Cpath d='M 600 280 L 460 280 L 430 310 L 340 310' stroke-linecap='round'/%3E%3Cpath d='M 60 560 L 180 560 L 210 530 L 330 530' stroke-linecap='round'/%3E%3Cpath d='M 520 620 L 400 620' stroke-linecap='round'/%3E%3C/g%3E%3Cg fill='%23a78bfa' opacity='0.5'%3E%3Ccircle cx='140' cy='160' r='1.8'/%3E%3Ccircle cx='290' cy='190' r='1.8'/%3E%3Ccircle cx='460' cy='280' r='1.8'/%3E%3Ccircle cx='340' cy='310' r='1.8'/%3E%3Ccircle cx='180' cy='560' r='1.8'/%3E%3Ccircle cx='330' cy='530' r='1.8'/%3E%3Ccircle cx='400' cy='620' r='1.8'/%3E%3C/g%3E%3C/svg%3E"),
+        radial-gradient(circle at 24px 24px, rgba(56, 189, 248, 0.18) 0.8px, transparent 1.4px);
+    background-size: 100% 100%, 100% 100%, 48px 48px;
+    background-position: 0 0, center center, 0 0;
+    background-repeat: no-repeat, no-repeat, repeat;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Premium-Card — opt-in Aurora-Login-Pattern-Look für Dashboard-Cards.
+   Usage: <div class="card fa-card--premium"> oder als Modifier.
+   Gibt: Gradient-Top-Line + primary-Glow-Shadow + Surface-Gradient-BG.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-card--premium,
+.card.fa-card--premium {
+    position: relative;
+    background: linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: 0 0 0 1px var(--primary-glow),
+                0 8px 24px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    transition: box-shadow var(--t-fast) var(--ease-out),
+                transform var(--t-fast) var(--ease-out);
+}
+.fa-card--premium::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--brand-gradient);
+}
+.fa-card--premium:hover {
+    box-shadow: 0 0 0 1px var(--primary),
+                0 10px 28px var(--primary-glow);
+    transform: translateY(-1px);
+}
+html[data-theme="dark"] .fa-card--premium {
+    box-shadow: 0 0 0 1px var(--primary-glow),
+                0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.fa-brand-text { display: flex; flex-direction: column; min-width: 0; }
+.fa-brand-name {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    color: var(--fg);
+    line-height: 1.1;
+    white-space: nowrap;
+}
+.fa-brand-version {
+    font-family: var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    margin-top: 2px;
+}
+@keyframes fa-brand-breathe {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.02); box-shadow: 0 0 16px var(--primary-glow); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .fa-brand-mark { animation: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CyberButton
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-cyber-btn {
+    /* Layout */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    text-decoration: none;
+    line-height: 1;
+    white-space: nowrap;
+    user-select: none;
+    transition: transform var(--t-fast) var(--ease-out),
+                background-color var(--t-fast) var(--ease-out),
+                border-color var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out),
+                color var(--t-fast) var(--ease-out);
+    position: relative;
+}
+.fa-cyber-btn:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+.fa-cyber-btn.is-disabled,
+.fa-cyber-btn[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+.fa-cyber-btn.is-loading .fa-cyber-btn__label { opacity: 0.5; }
+
+/* — Sizes — */
+.fa-cyber-btn--sm { padding: 6px 12px; font-size: 12px; border-radius: var(--r-sm); }
+.fa-cyber-btn--md { padding: 9px 16px; font-size: 13px; border-radius: var(--r-md); }
+.fa-cyber-btn--lg { padding: 12px 22px; font-size: 15px; border-radius: var(--r-md); }
+.fa-cyber-btn--full { width: 100%; }
+
+/* — Primary: notched-corner (top-left + bottom-right chamfer) — */
+.fa-cyber-btn--primary {
+    background: var(--primary-strong);
+    color: var(--on-primary);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    box-shadow: 0 0 12px var(--primary-glow);
+    clip-path: polygon(
+        8px 0, 100% 0,
+        100% calc(100% - 8px), calc(100% - 8px) 100%,
+        0 100%, 0 8px
+    );
+}
+.fa-cyber-btn--primary:hover:not(.is-disabled) {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 0 20px var(--primary-glow);
+}
+.fa-cyber-btn--primary:active:not(.is-disabled) {
+    transform: translateY(0);
+    box-shadow: 0 0 8px var(--primary-glow);
+}
+
+/* — Secondary: transparent + border-strong — */
+.fa-cyber-btn--secondary {
+    background: transparent;
+    color: var(--fg);
+    border-color: var(--border-strong);
+}
+.fa-cyber-btn--secondary:hover:not(.is-disabled) {
+    background: var(--surface-2);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+/* — Accent: violet-tint — */
+.fa-cyber-btn--accent {
+    background: var(--accent-tint);
+    color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 12px var(--accent-glow);
+}
+.fa-cyber-btn--accent:hover:not(.is-disabled) {
+    background: var(--accent-strong);
+    color: var(--on-accent);
+    transform: translateY(-1px);
+    box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* — Ghost: minimal — */
+.fa-cyber-btn--ghost {
+    background: transparent;
+    color: var(--fg-2);
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.fa-cyber-btn--ghost:hover:not(.is-disabled) {
+    color: var(--primary);
+    background: var(--primary-tint);
+}
+
+/* — Danger: destructive — */
+.fa-cyber-btn--danger {
+    background: transparent;
+    color: var(--danger);
+    border-color: var(--danger);
+}
+.fa-cyber-btn--danger:hover:not(.is-disabled) {
+    background: var(--danger-strong);
+    color: var(--on-danger);
+    transform: translateY(-1px);
+    box-shadow: 0 0 15px var(--danger-glow);
+}
+
+/* — Loading-Dots — */
+.fa-cyber-btn__dots {
+    display: inline-flex;
+    gap: 3px;
+    margin-left: 6px;
+}
+.fa-cyber-btn__dots > span {
+    width: 4px; height: 4px;
+    background: currentColor;
+    border-radius: 50%;
+    animation: fa-btn-dots 1.2s var(--ease-in-out) infinite;
+}
+.fa-cyber-btn__dots > span:nth-child(2) { animation-delay: 0.15s; }
+.fa-cyber-btn__dots > span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes fa-btn-dots {
+    0%, 100% { opacity: 0.3; transform: translateY(0); }
+    50%      { opacity: 1;   transform: translateY(-2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .fa-cyber-btn,
+    .fa-cyber-btn__dots > span { animation: none !important; transition: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CyberInput
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-cyber-input {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.fa-cyber-input__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+.fa-cyber-input__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+.fa-cyber-input__req { color: var(--danger); margin-left: 2px; }
+.fa-cyber-input__alva-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: var(--accent-tint);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: var(--r-pill);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.fa-cyber-input__frame {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    transition: border-color var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out);
+}
+.fa-cyber-input__frame:hover { border-color: var(--border-strong); }
+.fa-cyber-input__frame:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* 4-Corner-Tick-Marker */
+.fa-cyber-input__tick {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    pointer-events: none;
+    border-color: var(--primary);
+    opacity: 0.6;
+    transition: opacity var(--t-fast) var(--ease-out);
+}
+.fa-cyber-input__tick--tl { top: -1px; left: -1px; border-top: 1px solid; border-left: 1px solid; }
+.fa-cyber-input__tick--tr { top: -1px; right: -1px; border-top: 1px solid; border-right: 1px solid; }
+.fa-cyber-input__tick--bl { bottom: -1px; left: -1px; border-bottom: 1px solid; border-left: 1px solid; }
+.fa-cyber-input__tick--br { bottom: -1px; right: -1px; border-bottom: 1px solid; border-right: 1px solid; }
+.fa-cyber-input__frame:focus-within .fa-cyber-input__tick { opacity: 1; }
+
+.fa-cyber-input__field {
+    width: 100%;
+    padding: 10px 12px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.4;
+    border-radius: var(--r-md);
+}
+.fa-cyber-input__field::placeholder { color: var(--fg-3); }
+.fa-cyber-input__field:disabled { cursor: not-allowed; opacity: 0.6; }
+
+/* Select-Variant */
+.fa-cyber-input--select .fa-cyber-input__field {
+    appearance: none;
+    padding-right: 32px;
+    cursor: pointer;
+}
+.fa-cyber-input__chevron {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--fg-3);
+    font-size: 12px;
+}
+
+.fa-cyber-input__hint,
+.fa-cyber-input__error {
+    font-size: 12px;
+    line-height: 1.4;
+}
+.fa-cyber-input__hint  { color: var(--fg-3); }
+.fa-cyber-input__error { color: var(--danger); }
+
+.fa-cyber-input.has-error .fa-cyber-input__frame { border-color: var(--danger); }
+.fa-cyber-input.has-error .fa-cyber-input__tick   { border-color: var(--danger); opacity: 0.9; }
+.fa-cyber-input.has-error .fa-cyber-input__frame:focus-within {
+    box-shadow: 0 0 0 3px var(--danger-glow);
+}
+.fa-cyber-input.is-disabled { opacity: 0.6; }
+
+/* ── Symfony form-theme additions (fa_cyber_input.html.twig) ────────────── */
+/* Bootstrap's .form-control has 0,1,0 specificity and sets its own border,
+   background, box-shadow on :focus (hardcoded #86b7fe). Symfony's form-theme
+   renders inputs with BOTH classes (.form-control .fa-cyber-input__input),
+   so we need to outrank Bootstrap's base rules. Specificity here uses
+   :where() + class-stacking to stay authoritative without resorting to
+   !important:
+     .fa-cyber-input__frame .fa-cyber-input__field, .fa-cyber-input__frame .fa-cyber-input__input  → 0,2,0 beats Bootstrap 0,1,0
+   Also handle Bootstrap classes rendered inside our frame as aliases. */
+.fa-cyber-input__frame .fa-cyber-input__field, .fa-cyber-input__frame .fa-cyber-input__input,
+.fa-cyber-input__frame > .form-control,
+.fa-cyber-input__frame > .form-select,
+.fa-cyber-input__frame > textarea {
+    width: 100%;
+    padding: 10px 14px;
+    background-color: transparent;
+    background-image: none;
+    color: var(--fg);
+    border: 0;
+    border-radius: inherit;
+    box-shadow: none;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.4;
+    outline: none;
+    min-height: auto;
+    height: auto;
+}
+.fa-cyber-input__frame .fa-cyber-input__field, .fa-cyber-input__frame .fa-cyber-input__input::placeholder,
+.fa-cyber-input__frame > .form-control::placeholder {
+    color: var(--fg-3);
+}
+/* :focus state: Bootstrap sets border-color + box-shadow with hardcoded blue.
+   Our frame owns the focus-glow — kill Bootstrap's input-level focus. */
+.fa-cyber-input__frame .fa-cyber-input__field, .fa-cyber-input__frame .fa-cyber-input__input:focus,
+.fa-cyber-input__frame > .form-control:focus,
+.fa-cyber-input__frame > .form-select:focus,
+.fa-cyber-input__frame > textarea:focus {
+    border: 0;
+    box-shadow: none;
+    outline: none;
+    background-color: transparent;
+    color: var(--fg);
+}
+.fa-cyber-input__frame .fa-cyber-input__field, .fa-cyber-input__frame .fa-cyber-input__input:disabled,
+.fa-cyber-input__frame > .form-control:disabled,
+.fa-cyber-input__frame > .form-select:disabled {
+    color: var(--fg-3);
+    cursor: not-allowed;
+    background-color: transparent;
+}
+/* Select appearance: strip native OS chevron so our frame stays clean */
+.fa-cyber-input__frame > select,
+.fa-cyber-input__frame > .form-select,
+select.fa-cyber-input__field, select.fa-cyber-input__input {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    /* Custom chevron via background-image so users still see dropdown affordance */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='currentColor'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 12px;
+    padding-right: 36px;
+}
+/* Bootstrap's .form-floating remnant: if a floating-label wrapper ever lands
+   inside our frame (e.g. legacy template), flatten it — no shrink-anim, no
+   double-padding. */
+.fa-cyber-input__frame > .form-floating,
+.fa-cyber-input__frame > .form-floating > .form-control {
+    padding: 0;
+    height: auto;
+}
+.fa-cyber-input__frame > .form-floating > label {
+    display: none;
+}
+/* Error list rendered by form_errors block */
+.fa-cyber-input__errors {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12px;
+    color: var(--danger);
+}
+/* Checkboxes / Radios: flatten the frame so tick-marks don't surround them  */
+.fa-cyber-input .form-check,
+.fa-cyber-input .form-check-inline {
+    padding-top: 4px;
+}
+.fa-cyber-input:has(> .fa-cyber-input__frame > .form-check) .fa-cyber-input__frame,
+.fa-cyber-input:has(> .fa-cyber-input__frame > .form-check-group) .fa-cyber-input__frame {
+    border: 0;
+    padding: 0;
+    box-shadow: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Status-Pill
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid;
+    border-radius: var(--r-pill);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.fa-status-pill--sm { padding: 2px 8px;  font-size: 9px; }
+.fa-status-pill--md { padding: 4px 10px; font-size: 10px; }
+
+.fa-status-pill__dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 4px currentColor;
+    flex-shrink: 0;
+}
+.fa-status-pill > .bi { font-size: 1em; }
+
+/* Tones */
+.fa-status-pill--primary { background: var(--primary-tint); color: var(--primary); border-color: var(--primary); }
+.fa-status-pill--accent  { background: var(--accent-tint);  color: var(--accent);  border-color: var(--accent); }
+.fa-status-pill--success { background: var(--success-glow); color: var(--success); border-color: var(--success); }
+.fa-status-pill--warning { background: var(--warning-glow); color: var(--warning-text); border-color: var(--warning); }
+.fa-status-pill--danger  { background: var(--danger-glow);  color: var(--danger);  border-color: var(--danger); }
+.fa-status-pill--neutral { background: var(--surface-2);    color: var(--fg-2);    border-color: var(--border); }
+
+/* Alva-Character-Styles wandern nach FA-4: assets/styles/alva.css
+   (9-Mood-SVG-Engine mit Aura, Bob, Wings, Face, Decorations, Reduced-Motion) */
+
+/* ═══════════════════════════════════════════════════════════════════
+   Empty-State mit Alva-Anchor
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 48px 24px;
+    text-align: center;
+    min-height: 280px;
+}
+
+.fa-empty-state__alva {
+    opacity: 0.95;
+    margin-bottom: 8px;
+}
+
+.fa-empty-state__title {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0;
+    max-width: 440px;
+    line-height: 1.35;
+}
+
+.fa-empty-state__desc {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--fg-2);
+    margin: 0;
+    max-width: 480px;
+    line-height: 1.55;
+}
+
+.fa-empty-state__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Sparkline
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-sparkline {
+    display: inline-block;
+    vertical-align: middle;
+}
+.fa-sparkline--primary  { color: var(--primary); }
+.fa-sparkline--accent   { color: var(--accent); }
+.fa-sparkline--success  { color: var(--success); }
+.fa-sparkline--warning  { color: var(--warning); }
+.fa-sparkline--danger   { color: var(--danger); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   KPI-Card — Aurora-Pattern (überschreibt Legacy .kpi-card-Variante)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-kpi-card {
+    position: relative;
+    display: flex;
+    gap: 14px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    transition: border-color var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out),
+                transform var(--t-fast) var(--ease-out);
+    overflow: hidden;
+}
+
+.fa-kpi-card__topline {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--brand-gradient);
+}
+
+.fa-kpi-card--emphasis {
+    background: linear-gradient(145deg, var(--surface), var(--surface-2));
+    box-shadow: 0 0 0 1px var(--primary-glow), 0 4px 18px var(--primary-glow);
+    border-color: transparent;
+}
+
+.fa-kpi-card--linked { cursor: pointer; }
+.fa-kpi-card--linked:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 14px var(--primary-glow);
+    transform: translateY(-1px);
+}
+
+.fa-kpi-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    background: var(--primary-tint);
+    color: var(--primary);
+    border-radius: var(--r-md);
+    font-size: 16px;
+}
+.fa-kpi-card--accent  .fa-kpi-card__icon { background: var(--accent-tint);  color: var(--accent); }
+.fa-kpi-card--success .fa-kpi-card__icon { background: var(--success-glow); color: var(--success); }
+.fa-kpi-card--warning .fa-kpi-card__icon { background: var(--warning-glow); color: var(--warning); }
+.fa-kpi-card--danger  .fa-kpi-card__icon { background: var(--danger-glow);  color: var(--danger); }
+
+.fa-kpi-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.fa-kpi-card__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+
+.fa-kpi-card__value {
+    display: baseline;
+    gap: 4px;
+    line-height: 1;
+}
+.fa-kpi-card__number {
+    font-family: var(--font-sans);
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--fg);
+    letter-spacing: -0.02em;
+}
+.fa-kpi-card__unit {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-3);
+    margin-left: 4px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.fa-kpi-card__delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+}
+.fa-kpi-card__delta.trend-up   { color: var(--success); }
+.fa-kpi-card__delta.trend-down { color: var(--danger); }
+.fa-kpi-card__hint,
+.fa-kpi-card__hint-only {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--fg-3);
+    font-weight: 400;
+}
+
+.fa-kpi-card__sparkline {
+    margin-top: 6px;
+    margin-left: -4px;
+}
+
+.fa-kpi-card__link {
+    align-self: flex-start;
+    color: var(--fg-3);
+    text-decoration: none;
+    font-size: 18px;
+    transition: color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+}
+.fa-kpi-card__link:hover {
+    color: var(--primary);
+    transform: translateX(2px);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Flash-Messages + Aurora-Alert
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-flash-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+.fa-flash-messages:empty { display: none; }
+
+.fa-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: var(--r-md);
+    position: relative;
+    animation: fa-alert-enter var(--t-slow) var(--ease-out);
+}
+@keyframes fa-alert-enter {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.fa-alert.is-dismissing {
+    animation: fa-alert-exit var(--t-base) var(--ease-in-out) forwards;
+}
+@keyframes fa-alert-exit {
+    to { opacity: 0; transform: translateX(20px); max-height: 0; margin: 0; padding-top: 0; padding-bottom: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .fa-alert, .fa-alert.is-dismissing { animation: none; }
+}
+
+.fa-alert__icon   { font-size: 18px; line-height: 1.2; flex-shrink: 0; margin-top: 1px; }
+.fa-alert__alva   { flex-shrink: 0; margin-top: -2px; }
+.fa-alert__body   { flex: 1; min-width: 0; }
+.fa-alert__title  { font-family: var(--font-sans); font-weight: 600; font-size: 14px; color: var(--fg); margin-bottom: 2px; }
+.fa-alert__message{ font-family: var(--font-sans); font-size: 13px; line-height: 1.5; color: var(--fg); }
+.fa-alert__actions{ margin-top: 8px; display: flex; gap: 8px; }
+.fa-alert__close {
+    background: transparent;
+    border: none;
+    color: var(--fg-3);
+    font-size: 22px;
+    line-height: 1;
+    padding: 0 4px;
+    cursor: pointer;
+    transition: color var(--t-fast) var(--ease-out);
+    align-self: flex-start;
+}
+.fa-alert__close:hover { color: var(--fg); }
+
+/* Tone-Variants */
+.fa-alert--primary { border-left-color: var(--primary); }
+.fa-alert--primary .fa-alert__icon { color: var(--primary); }
+.fa-alert--info    { border-left-color: var(--primary); background: var(--primary-tint); }
+.fa-alert--info    .fa-alert__icon { color: var(--primary); }
+.fa-alert--success { border-left-color: var(--success); background: var(--success-glow); }
+.fa-alert--success .fa-alert__icon { color: var(--success); }
+.fa-alert--warning { border-left-color: var(--warning); background: var(--warning-glow); }
+.fa-alert--warning .fa-alert__icon { color: var(--warning); }
+.fa-alert--warning .fa-alert__message { color: var(--warning-text); }
+.fa-alert--danger  { border-left-color: var(--danger); background: var(--danger-glow); }
+.fa-alert--danger  .fa-alert__icon { color: var(--danger); }
+
+/* Toast-Variant (stacked top-right, Progress-Bar) */
+.fa-alert--toast {
+    min-width: 320px;
+    max-width: 420px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+    position: relative;
+    padding-bottom: 14px;
+}
+.fa-alert__progress {
+    position: absolute;
+    left: 0; bottom: 0;
+    height: 2px;
+    background: currentColor;
+    opacity: 0.4;
+    animation: fa-alert-progress linear forwards;
+}
+@keyframes fa-alert-progress {
+    from { width: 100%; }
+    to   { width: 0%; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .fa-alert__progress { animation: none; width: 100%; }
+}
+
+/* Toast-Container (bleibt .toast-container für Kompat, styled nach Aurora) */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: var(--z-toast, 9999);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+.toast-container > * { pointer-events: auto; }
+
+@media (max-width: 639.98px) {
+    .toast-container { top: 10px; right: 10px; left: 10px; }
+    .fa-alert--toast { min-width: 0; max-width: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Mode-Switch (3-State Light / Dark / System)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-mode-switch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--fg-2);
+    cursor: pointer;
+    position: relative;
+    transition: border-color var(--t-fast) var(--ease-out),
+                color var(--t-fast) var(--ease-out),
+                background-color var(--t-fast) var(--ease-out);
+}
+.fa-mode-switch:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-tint);
+}
+.fa-mode-switch:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.fa-mode-switch__icon {
+    font-size: 16px;
+    line-height: 1;
+    position: absolute;
+    opacity: 0;
+    transform: scale(0.6) rotate(-30deg);
+    transition: opacity var(--t-fast) var(--ease-out),
+                transform var(--t-fast) var(--ease-out);
+}
+.fa-mode-switch[data-current-mode="light"]  .fa-mode-switch__icon--light,
+.fa-mode-switch[data-current-mode="dark"]   .fa-mode-switch__icon--dark,
+.fa-mode-switch[data-current-mode="system"] .fa-mode-switch__icon--system {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+}
+@media (prefers-reduced-motion: reduce) {
+    .fa-mode-switch__icon { transition: opacity var(--t-instant); transform: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Topbar-Layout-Adjustments (FA-3 Shell)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.header-system-status {
+    display: inline-flex;
+    align-items: center;
+}
+
+.header-alva {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+}
+
+.header-actions {
+    gap: 10px !important;
+}
+
+.header-logo {
+    min-width: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Step-Header (Setup-Wizard Right-Panel)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-step-header { margin-bottom: 20px; }
+.fa-step-header__meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+.fa-step-header__dot { margin: 0 4px; color: var(--primary); }
+.fa-step-header__title {
+    font-family: var(--font-sans);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--fg);
+    margin: 8px 0 0 0;
+    line-height: 1.2;
+}
+.fa-step-header__sub {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--fg-2);
+    margin: 10px 0 0 0;
+    line-height: 1.55;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CheckRow — Status + Label + Value + Hint
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-check-row {
+    display: grid;
+    grid-template-columns: 20px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--border);
+    border-radius: var(--r-sm);
+    margin-bottom: 6px;
+}
+.fa-check-row__glyph {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 13px;
+    text-align: center;
+}
+.fa-check-row__label {
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--fg);
+}
+.fa-check-row__hint {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--fg-3);
+    margin-top: 1px;
+}
+.fa-check-row__value {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+}
+
+.fa-check-row--ok    { border-left-color: var(--success); }
+.fa-check-row--ok    .fa-check-row__glyph,
+.fa-check-row--ok    .fa-check-row__value { color: var(--success); }
+.fa-check-row--warn  { border-left-color: var(--warning); }
+.fa-check-row--warn  .fa-check-row__glyph,
+.fa-check-row--warn  .fa-check-row__value { color: var(--warning-text); }
+.fa-check-row--err   { border-left-color: var(--danger); }
+.fa-check-row--err   .fa-check-row__glyph,
+.fa-check-row--err   .fa-check-row__value { color: var(--danger); }
+.fa-check-row--idle  .fa-check-row__glyph { color: var(--fg-3); }
+.fa-check-row--idle  .fa-check-row__value { color: var(--fg-2); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   ToggleCard — Checkbox-Card
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-toggle-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    position: relative;
+    transition: border-color var(--t-fast) var(--ease-out),
+                background-color var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out);
+}
+.fa-toggle-card:hover:not(.is-disabled) { border-color: var(--border-strong); }
+.fa-toggle-card.is-on {
+    background: var(--primary-tint);
+    border-color: var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow), inset 0 0 0 1px var(--primary-tint);
+}
+.fa-toggle-card.is-disabled { opacity: 0.5; cursor: not-allowed; }
+
+.fa-toggle-card__input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0; height: 0;
+}
+.fa-toggle-card__box {
+    width: 14px; height: 14px;
+    border-radius: 2px;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: background-color var(--t-fast), border-color var(--t-fast);
+    color: var(--on-primary);
+}
+.fa-toggle-card__box svg { display: block; opacity: 0; transition: opacity var(--t-fast); }
+.fa-toggle-card.is-on .fa-toggle-card__box,
+.fa-toggle-card:has(.fa-toggle-card__input:checked) .fa-toggle-card__box { background: var(--primary); border-color: var(--primary); }
+.fa-toggle-card.is-on .fa-toggle-card__box svg,
+.fa-toggle-card:has(.fa-toggle-card__input:checked) .fa-toggle-card__box svg { opacity: 1; }
+.fa-toggle-card:has(.fa-toggle-card__input:checked) {
+    border-color: var(--primary);
+    background: var(--primary-tint);
+}
+.fa-toggle-card__input:focus-visible + .fa-toggle-card__box,
+.fa-toggle-card:has(.fa-toggle-card__input:focus-visible) .fa-toggle-card__box {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+.fa-toggle-card__body { flex: 1; min-width: 0; }
+.fa-toggle-card__title {
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.fa-toggle-card__badge {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 1px 4px;
+    background: var(--accent-tint);
+    border-radius: 2px;
+}
+.fa-toggle-card__sub {
+    color: var(--fg-3);
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    margin-top: 2px;
+    line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   NavBar (Wizard-Navigation)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+.fa-nav-bar__left,
+.fa-nav-bar__right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TechBackdrop
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-tech-backdrop {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   OnboardingFairy Compound (Alva + Aura + Orbit)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-onboarding-fairy {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fa-onboarding-fairy__aura {
+    position: absolute;
+    inset: 36px;
+    background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+    filter: blur(8px);
+    animation: fa-onboard-pulse 3.5s ease-in-out infinite;
+    border-radius: 50%;
+    pointer-events: none;
+}
+.fa-onboarding-fairy--happy      .fa-onboarding-fairy__aura,
+.fa-onboarding-fairy--celebrating .fa-onboarding-fairy__aura,
+.fa-onboarding-fairy--working    .fa-onboarding-fairy__aura {
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+}
+
+.fa-onboarding-fairy__orbit {
+    position: absolute;
+    inset: 0;
+    animation: fa-onboard-orbit 18s linear infinite;
+}
+
+.fa-onboarding-fairy__character {
+    position: relative;
+    z-index: 1;
+    transition: transform var(--t-magic) var(--ease-out);
+}
+.fa-onboarding-fairy--happy    .fa-onboarding-fairy__character { transform: rotate(4deg); }
+.fa-onboarding-fairy--focused  .fa-onboarding-fairy__character { transform: rotate(-2deg); }
+.fa-onboarding-fairy--working  .fa-onboarding-fairy__character { transform: rotate(6deg); }
+
+@keyframes fa-onboard-pulse {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50%      { opacity: 0.9;  transform: scale(1.1); }
+}
+@keyframes fa-onboard-orbit {
+    to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .fa-onboarding-fairy__aura,
+    .fa-onboarding-fairy__orbit { animation: none; }
+    .fa-onboarding-fairy__character { transition: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Typewriter
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-typewriter {
+    display: inline;
+    position: relative;
+}
+.fa-typewriter__text { white-space: pre-wrap; }
+.fa-typewriter__caret {
+    display: inline-block;
+    color: var(--accent);
+    animation: fa-typewriter-caret 0.8s step-end infinite;
+    margin-left: 1px;
+}
+@keyframes fa-typewriter-caret { 50% { opacity: 0; } }
+.fa-typewriter__skip {
+    display: inline-block;
+    margin-left: 12px;
+    padding: 2px 8px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--fg-3);
+    cursor: pointer;
+    transition: color var(--t-fast), border-color var(--t-fast);
+}
+.fa-typewriter__skip:hover { color: var(--primary); border-color: var(--primary); }
+.fa-typewriter__skip[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) {
+    .fa-typewriter__caret { animation: none; display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Setup-Wizard 2-Col Layout (Left 480 / Right flex)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-setup-shell {
+    display: flex;
+    min-height: 100vh;
+    background: var(--bg);
+}
+
+.fa-setup-left {
+    width: 480px;
+    flex-shrink: 0;
+    position: relative;
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 36px;
+    overflow: hidden;
+}
+.fa-setup-left__tick {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    z-index: 2;
+    pointer-events: none;
+}
+.fa-setup-left__tick--tl { top: 16px;    left: 16px;   border-top: 1px solid var(--primary);    border-left: 1px solid var(--primary); }
+.fa-setup-left__tick--tr { top: 16px;    right: 16px;  border-top: 1px solid var(--primary);    border-right: 1px solid var(--primary); }
+.fa-setup-left__tick--bl { bottom: 16px; left: 16px;   border-bottom: 1px solid var(--primary); border-left: 1px solid var(--primary); }
+.fa-setup-left__tick--br { bottom: 16px; right: 16px;  border-bottom: 1px solid var(--primary); border-right: 1px solid var(--primary); }
+
+.fa-setup-left__brand { position: relative; z-index: 1; }
+.fa-setup-left__middle {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    gap: 14px;
+    text-align: center;
+}
+.fa-setup-left__alva-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+.fa-setup-left__alva-label::before,
+.fa-setup-left__alva-label::after {
+    content: '';
+    width: 14px;
+    height: 1px;
+    background: var(--accent);
+    display: inline-block;
+}
+.fa-setup-left__line {
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.3px;
+    min-height: 50px;
+    max-width: 340px;
+}
+.fa-setup-left__sub {
+    color: var(--fg-3);
+    font-size: 12.5px;
+    margin-top: 8px;
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    font-style: italic;
+    max-width: 340px;
+}
+
+.fa-setup-left__phase {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.fa-setup-phase__head {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+.fa-setup-phase__head-phase { color: var(--primary); }
+.fa-setup-phase__bars {
+    display: flex;
+    gap: 3px;
+}
+.fa-setup-phase__bar {
+    flex: 1;
+    height: 3px;
+    background: var(--surface-3);
+    border-radius: 1px;
+}
+.fa-setup-phase__bar.is-done   { background: var(--primary); opacity: 0.7; }
+.fa-setup-phase__bar.is-active { background: var(--primary); box-shadow: 0 0 8px var(--primary-glow); }
+.fa-setup-phase__labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+}
+.fa-setup-phase__labels span.is-on { color: var(--fg); font-weight: 600; }
+
+.fa-setup-right {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    padding: 32px 48px;
+    overflow: auto;
+}
+.fa-setup-right__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+.fa-setup-right__head-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.fa-setup-right__status-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 6px var(--success-glow);
+}
+.fa-setup-right__body { flex: 1; display: flex; flex-direction: column; }
+.fa-setup-right__content { flex: 1; }
+
+/* Mobile < lg: Left-Panel → Top-Strip */
+@media (max-width: 1023.98px) {
+    .fa-setup-shell { flex-direction: column; }
+    .fa-setup-left {
+        width: 100%;
+        padding: 20px 24px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+    .fa-setup-left__middle { flex-direction: row; gap: 16px; text-align: left; }
+    .fa-onboarding-fairy { width: 80px; height: 80px; flex-shrink: 0; }
+    .fa-onboarding-fairy__orbit { display: none; }
+    .fa-setup-left__line { font-size: 14px; min-height: 0; max-width: none; }
+    .fa-setup-left__sub { display: none; }
+    .fa-setup-right { padding: 24px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Setup-Welcome Step (Proof-of-Concept)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-setup-welcome-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 24px 0;
+}
+@media (max-width: 767.98px) {
+    .fa-setup-welcome-grid { grid-template-columns: 1fr; }
+}
+
+.fa-setup-welcome-col__title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin: 0 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.fa-setup-welcome-info {
+    background: var(--primary-tint);
+    border: 1px solid var(--primary);
+    border-radius: var(--r-md);
+    padding: 16px 18px;
+    margin: 24px 0;
+}
+.fa-setup-welcome-info__title {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0 0 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.fa-setup-welcome-info__desc {
+    font-size: 13px;
+    color: var(--fg-2);
+    margin: 0 0 10px 0;
+    line-height: 1.55;
+}
+.fa-setup-welcome-info__list {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 13px;
+    color: var(--fg-2);
+    line-height: 1.7;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Legacy Setup-Step Content Neutralisierung
+   Legacy-Templates haben .container mt-5 + .row + .col-md-10 im
+   step_content — zusammen mit fa-setup-right__padding ist das doppelt.
+   Reset damit Bootstrap-Container nicht extra Constraints auflegen.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-setup-right__content > .container,
+.fa-setup-right__content > .container-fluid,
+.fa-setup-right__content .fa-setup-legacy-wrapper > .container {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.fa-setup-right__content > .container > .row,
+.fa-setup-right__content .fa-setup-legacy-wrapper > .container > .row {
+    margin: 0;
+}
+.fa-setup-right__content > .container > .row > [class*="col-"],
+.fa-setup-right__content .fa-setup-legacy-wrapper > .container > .row > [class*="col-"] {
+    max-width: none;
+    padding: 0;
+    flex: 0 0 100%;
+}
+
+/* Legacy mt-5 im setup-context → kein extra top-Margin (Layout hat Padding) */
+.fa-setup-right__content > .container.mt-5,
+.fa-setup-right__content .fa-setup-legacy-wrapper > .container.mt-5 {
+    margin-top: 0 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Deep-Rewrite Setup-Step Patterns (FA-5b)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Admin-User + frameworks 2-col Form-Grid */
+.fa-setup-form { display: flex; flex-direction: column; gap: 14px; }
+.fa-setup-form__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+@media (max-width: 639.98px) {
+    .fa-setup-form__grid { grid-template-columns: 1fr; }
+}
+.fa-setup-form__col { display: flex; flex-direction: column; gap: 6px; }
+
+/* Section-Title (Mono-Uppercase, Primary-Color) */
+.fa-setup-section-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin: 20px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.fa-setup-section-title i { font-size: 14px; }
+
+/* Toggle-Card-Grid für Module + Framework-Selection */
+.fa-toggle-card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+@media (max-width: 767.98px) {
+    .fa-toggle-card-grid { grid-template-columns: 1fr; }
+}
+
+/* Toggle-Card erweitert für Module-Meta (Dependencies + Required-By) */
+.fa-toggle-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    color: var(--fg-3);
+}
+.fa-toggle-card__meta i { font-size: 12px; }
+
+/* Bucket-spezifische Variants (mandatory/recommended/optional) */
+.fa-toggle-card--bucket-mandatory {
+    border-left: 4px solid var(--danger);
+}
+.fa-toggle-card--bucket-recommended {
+    border-left: 4px solid var(--warning);
+}
+.fa-toggle-card--bucket-optional {
+    border-left: 4px solid var(--border-strong);
+}
+.fa-toggle-card__reason {
+    margin-top: 8px;
+    padding: 6px 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    font-size: 11px;
+    color: var(--fg-2);
+    line-height: 1.5;
+}
+.fa-toggle-card__reason i { color: var(--warning); margin-right: 4px; }
+
+/* Bucket-Header (Pills + Hint-Text) */
+.fa-setup-bucket-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0 10px;
+    flex-wrap: wrap;
+}
+.fa-setup-bucket-hint {
+    font-size: 12px;
+    color: var(--fg-3);
+    font-style: italic;
+}
+
+/* Summary-Bar unten (modules selected count) */
+.fa-setup-modules-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+    padding: 14px 16px;
+    background: var(--primary-tint);
+    border: 1px solid var(--primary);
+    border-radius: var(--r-md);
+    font-size: 13px;
+    color: var(--fg);
+}
+.fa-setup-modules-summary i { font-size: 16px; color: var(--primary); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Step11 Complete — Celebration-Layout
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-setup-complete {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.fa-setup-complete__hero {
+    text-align: center;
+    padding: 20px 0 10px;
+}
+.fa-setup-complete__title {
+    font-family: var(--font-sans);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 16px 0 8px;
+    letter-spacing: -0.5px;
+}
+.fa-setup-complete__subtitle {
+    font-size: 14px;
+    color: var(--fg-2);
+    margin: 0;
+    line-height: 1.55;
+}
+
+.fa-setup-complete__stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+@media (max-width: 1023.98px) {
+    .fa-setup-complete__stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 639.98px) {
+    .fa-setup-complete__stats { grid-template-columns: 1fr; }
+}
+
+.fa-setup-complete__section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 16px 18px;
+}
+.fa-setup-complete__section-title {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.fa-setup-complete__section-title i { color: var(--primary); font-size: 16px; }
+
+.fa-setup-complete__next-steps {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--fg-2);
+    font-size: 13px;
+    line-height: 1.7;
+}
+.fa-setup-complete__next-steps li { margin-bottom: 4px; }
+
+.fa-setup-complete__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+.fa-setup-complete__secondary-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+@media (max-width: 639.98px) {
+    .fa-setup-complete__secondary-actions { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Auth-Layout (Login / MFA / Password-Reset / Verify-Email)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-auth-body { margin: 0; background: var(--bg); min-height: 100vh; color: var(--fg); font-family: var(--font-sans); }
+
+.fa-auth-shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+.fa-auth-left {
+    width: 480px;
+    flex-shrink: 0;
+    position: relative;
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 36px;
+    overflow: hidden;
+}
+.fa-auth-left__brand { position: relative; z-index: 1; }
+.fa-auth-left__middle {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    gap: 14px;
+    text-align: center;
+}
+.fa-auth-left__line {
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.3px;
+    max-width: 340px;
+    min-height: 30px;
+}
+.fa-auth-left__sub {
+    color: var(--fg-3);
+    font-size: 12.5px;
+    margin-top: 8px;
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    font-style: italic;
+    max-width: 340px;
+}
+.fa-auth-left__footer {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--fg-3);
+    text-align: center;
+}
+.fa-auth-left__footer p { margin: 0; }
+
+.fa-auth-right {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    background: var(--bg);
+}
+.fa-auth-right__inner {
+    width: 100%;
+    max-width: 420px;
+}
+
+/* Form-Inhalte */
+.fa-auth-form { display: flex; flex-direction: column; gap: 14px; }
+.fa-auth-form__head { margin-bottom: 10px; }
+.fa-auth-form__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.fa-auth-form__title {
+    font-family: var(--font-sans);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--fg);
+    margin: 6px 0 0 0;
+    line-height: 1.2;
+}
+.fa-auth-form__desc {
+    font-size: 13px;
+    color: var(--fg-2);
+    margin: 10px 0 0 0;
+    line-height: 1.55;
+}
+.fa-auth-form__form { display: flex; flex-direction: column; gap: 14px; }
+.fa-auth-form__help {
+    font-size: 12px;
+    color: var(--fg-3);
+    text-align: center;
+    margin: 8px 0 0 0;
+}
+
+.fa-auth-remember {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--fg-2);
+    cursor: pointer;
+    user-select: none;
+}
+.fa-auth-remember input { accent-color: var(--primary); }
+
+.fa-auth-form__divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 0;
+    color: var(--fg-3);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+.fa-auth-form__divider::before,
+.fa-auth-form__divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.fa-auth-form__oauth {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.fa-auth-oauth-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 9px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--fg);
+    text-decoration: none;
+    transition: border-color var(--t-fast), background-color var(--t-fast);
+}
+.fa-auth-oauth-btn:hover {
+    border-color: var(--primary);
+    background: var(--primary-tint);
+}
+.fa-auth-oauth-btn__logo { flex-shrink: 0; }
+
+.fa-auth-details {
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    color: var(--fg-2);
+}
+.fa-auth-details summary {
+    cursor: pointer;
+    color: var(--primary);
+    padding: 4px 0;
+    font-weight: 500;
+}
+.fa-auth-details summary:hover { color: var(--primary-hover); }
+.fa-auth-details__body {
+    margin: 6px 0 0 0;
+    padding: 8px 10px;
+    background: var(--surface-2);
+    border-radius: var(--r-sm);
+    color: var(--fg-3);
+    line-height: 1.5;
+}
+
+.fa-auth-form__footer-link {
+    text-align: center;
+    margin-top: 6px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+.fa-auth-cancel-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--fg-3);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color var(--t-fast);
+}
+.fa-auth-cancel-link:hover { color: var(--danger); }
+
+/* Mobile < lg: Left-Panel → Top-Strip */
+@media (max-width: 1023.98px) {
+    .fa-auth-shell { flex-direction: column; }
+    .fa-auth-left {
+        width: 100%;
+        padding: 20px 24px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+    .fa-auth-left__middle { flex-direction: row; gap: 16px; text-align: left; padding: 8px 0; }
+    .fa-auth-left .fa-onboarding-fairy { width: 80px; height: 80px; flex-shrink: 0; }
+    .fa-auth-left .fa-onboarding-fairy__orbit { display: none; }
+    .fa-auth-left__line { font-size: 15px; min-height: 0; max-width: none; }
+    .fa-auth-left__sub { display: none; }
+    .fa-auth-left__footer { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bridge-Migration: Komponenten-Regeln aus fairy-aurora-bridge.css
+   (Ehemals letzter Layer; hier weiterhin gültig als Aurora-native Regeln)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   Globale Typografie-Migration: body/html/form-elements auf Inter
+   ═══════════════════════════════════════════════════════════════════ */
+
+body,
+input,
+select,
+textarea,
+button {
+    font-family: var(--font-sans);
+    color: var(--fg);
+}
+
+code,
+kbd,
+samp,
+pre,
+.font-mono,
+.mono,
+[class*="badge"] .mono,
+small.mono {
+    font-family: var(--font-mono);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Aurora-Typografie: h1–h6, p, strong, .lead, .display-*
+   Setzt Aurora-Font + Farbe für alle Überschriften global (höchste
+   Cascade-Priorität: bridge lädt zuletzt).
+   ═══════════════════════════════════════════════════════════════════ */
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    color: var(--fg);
+    letter-spacing: -0.2px;
+    line-height: 1.25;
+}
+
+h1 { letter-spacing: -0.5px; }
+h2 { letter-spacing: -0.3px; }
+
+p {
+    color: var(--fg);
+    line-height: 1.55;
+}
+
+strong, b {
+    font-weight: 600;
+    color: var(--fg);
+}
+
+/* Bootstrap .display-* — großformatige Hero-Überschriften */
+.display-1, .display-2, .display-3,
+.display-4, .display-5, .display-6 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--fg);
+}
+
+/* Bootstrap .lead — Hero-Paragraph */
+.lead {
+    font-size: 1.125rem;
+    color: var(--fg-2);
+    line-height: 1.6;
+}
+
+/* Bootstrap h1–h6 utility classes */
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    color: var(--fg);
+    letter-spacing: -0.2px;
+}
+
+/* Inline code — Mono-Font für Code/IDs/Versionen */
+code:not([class]) {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background: var(--surface-2);
+    color: var(--accent);
+    padding: 1px 5px;
+    border-radius: var(--r-sm);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Mono-Label-Utility (Metadaten, Versions-Strings, Shortcuts)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-mono-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Aurora-Gradient-BG-Utility (Hero-BG, Empty-States, Welcome)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-aurora-bg {
+    background: var(--aurora-gradient);
+    min-height: 100%;
+}
+
+.fa-brand-gradient {
+    background: var(--brand-gradient);
+    color: #ffffff;
+}
+
+.fa-focus-ring:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-Button → Aurora-CyberButton-Look (global unification)
+   Bestehende 1000+ .btn.btn-primary-Calls bekommen damit Aurora-Stil
+   ohne Template-Änderung. Die "echten" fa-cyber-btn (mit Notch) bleiben
+   das Premium-Pattern für Primary-Actions in neuen Components.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.btn {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    border-radius: var(--r-md);
+    transition: background-color var(--t-fast) var(--ease-out),
+                border-color var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out),
+                transform var(--t-fast) var(--ease-out),
+                color var(--t-fast) var(--ease-out);
+}
+.btn:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.btn.btn-primary,
+.btn-primary {
+    background-color: var(--primary-strong);
+    border-color: var(--primary-strong);
+    color: var(--on-primary);
+    box-shadow: 0 0 10px var(--primary-glow);
+}
+.btn.btn-primary:hover:not(:disabled):not(.disabled),
+.btn-primary:hover:not(:disabled):not(.disabled) {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    color: var(--on-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 0 16px var(--primary-glow);
+}
+
+.btn.btn-outline-primary,
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+    background-color: transparent;
+}
+.btn.btn-outline-primary:hover:not(:disabled):not(.disabled),
+.btn-outline-primary:hover:not(:disabled):not(.disabled) {
+    background-color: var(--primary-strong);
+    border-color: var(--primary-strong);
+    color: var(--on-primary);
+}
+
+.btn.btn-secondary,
+.btn-secondary {
+    background-color: transparent;
+    border-color: var(--border-strong);
+    color: var(--fg);
+}
+.btn.btn-secondary:hover:not(:disabled):not(.disabled),
+.btn-secondary:hover:not(:disabled):not(.disabled) {
+    background-color: var(--surface-2);
+    border-color: var(--primary);
+    color: var(--fg);
+    transform: translateY(-1px);
+}
+
+.btn.btn-outline-secondary,
+.btn-outline-secondary {
+    color: var(--fg-2);
+    border-color: var(--border-strong);
+    background-color: transparent;
+}
+.btn.btn-outline-secondary:hover:not(:disabled):not(.disabled),
+.btn-outline-secondary:hover:not(:disabled):not(.disabled) {
+    background-color: var(--surface-2);
+    border-color: var(--primary);
+    color: var(--fg);
+}
+
+.btn.btn-success,
+.btn-success {
+    background-color: var(--success-strong);
+    border-color: var(--success-strong);
+    color: var(--on-success);
+}
+.btn.btn-warning,
+.btn-warning {
+    background-color: var(--warning);
+    border-color: var(--warning);
+    color: var(--on-warning);
+}
+.btn.btn-danger,
+.btn-danger {
+    background-color: var(--danger);
+    border-color: var(--danger);
+    color: var(--on-danger);
+}
+.btn.btn-outline-danger,
+.btn-outline-danger {
+    color: var(--danger);
+    border-color: var(--danger);
+    background-color: transparent;
+}
+.btn.btn-outline-danger:hover:not(:disabled):not(.disabled),
+.btn-outline-danger:hover:not(:disabled):not(.disabled) {
+    background-color: var(--danger);
+    color: var(--on-danger);
+}
+
+.btn.btn-info,
+.btn-info {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--on-primary);
+}
+.btn.btn-link,
+.btn-link {
+    color: var(--primary);
+    text-decoration: none;
+}
+.btn.btn-link:hover,
+.btn-link:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+    text-decoration-color: var(--primary);
+    text-underline-offset: 3px;
+}
+
+/* Disabled-States konsistent */
+.btn:disabled,
+.btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   <kbd> — Tastenkürzel-Badges (hohe Lesbarkeit in Light + Dark)
+   ═══════════════════════════════════════════════════════════════════ */
+
+kbd,
+.kbd,
+.keyboard-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    padding: 2px 8px;
+    background: var(--surface-2);
+    color: var(--fg);
+    border: 1px solid var(--border-strong);
+    border-bottom-width: 2px;
+    border-radius: var(--r-sm);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+    white-space: nowrap;
+}
+/* Dark-Mode: deutlicher Kontrast durch helleren BG + subtile primary-glow */
+html[data-theme="dark"] kbd,
+html[data-theme="dark"] .kbd,
+html[data-theme="dark"] .keyboard-key {
+    background: var(--surface-3);
+    color: var(--fg);
+    border-color: var(--border-strong);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(56, 189, 248, 0.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-Card → Aurora-Card-Look (Dashboard-Unifikation)
+   ═══════════════════════════════════════════════════════════════════
+   Spezifitäts-Strategie:
+   - Bootstrap .card-header / .card-footer:  (0,1,0)
+   - Bootstrap .card-header:first-child:     (0,2,0) — border-radius only
+   - Bootstrap .card-footer:last-child:      (0,2,0) — border-radius only
+   - Bootstrap .card>.list-group+.card-footer: (0,3,0) — border-top:0
+   Lösung: Aurora schreibt .card > .card-header / .card > .card-footer
+   mit Spezifität (0,2,0) → schlägt Bootstrap 1-Klassen-Regeln und
+   liegt gleichauf mit Bootstrap-Pseudo-Klassen-Regeln (Aurora gewinnt
+   per Load-Order, da Aurora nach Bootstrap lädt).
+   ═══════════════════════════════════════════════════════════════════ */
+
+.card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    color: var(--fg);
+    transition: border-color var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out);
+}
+.card:hover {
+    border-color: var(--border-strong);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+/* Preserve colored left-accent on hover — otherwise .card:hover (0,2,0)
+   overrides the colored border-left from .card.border-<color> (0,2,0) and
+   the accent disappears when the user hovers. */
+.card.border-primary:hover { border-left-color: var(--primary); }
+.card.border-success:hover { border-left-color: var(--success); }
+.card.border-warning:hover { border-left-color: var(--warning); }
+.card.border-danger:hover  { border-left-color: var(--danger); }
+.card.border-info:hover    { border-left-color: var(--primary); }
+.card.border-accent:hover  { border-left-color: var(--accent); }
+
+/* (0,2,0) — beats Bootstrap's .card-header (0,1,0) and equals
+   Bootstrap's .card-header:first-child (0,2,0); Aurora wins by load order */
+.card > .card-header {
+    background-color: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+    padding: 14px 18px;
+    font-weight: 600;
+    letter-spacing: -0.1px;
+    /* Inner top-radius matches the card's outer radius minus border width */
+    border-top-left-radius: calc(var(--r-lg) - 1px);
+    border-top-right-radius: calc(var(--r-lg) - 1px);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+/* Keep flat selectors as aliases so .card-header outside .card also works */
+.card-header {
+    background-color: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+    padding: 14px 18px;
+    font-weight: 600;
+    letter-spacing: -0.1px;
+}
+
+.card-body { color: var(--fg); padding: 18px; }
+
+/* (0,2,0) — beats Bootstrap's .card-footer (0,1,0) and equals
+   Bootstrap's .card-footer:last-child (0,2,0); Aurora wins by load order.
+   Also overrides Bootstrap's .card>.card-header+.list-group,.card>.list-group+.card-footer
+   { border-top:0 } (0,3,0) needs a separate rule below. */
+.card > .card-footer {
+    background-color: var(--surface-2);
+    border-top: 1px solid var(--border);
+    color: var(--fg-2);
+    /* Inner bottom-radius matches the card's outer radius minus border width */
+    border-bottom-left-radius: calc(var(--r-lg) - 1px);
+    border-bottom-right-radius: calc(var(--r-lg) - 1px);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+/* Flat alias for .card-footer used outside .card context */
+.card-footer {
+    background-color: var(--surface-2);
+    border-top: 1px solid var(--border);
+    color: var(--fg-2);
+}
+
+/* Bootstrap (0,3,0): .card>.list-group+.card-footer { border-top:0 }
+   Re-apply Aurora border when a list-group precedes the footer.
+   Specificity (0,3,0) equals Bootstrap, Aurora wins by load order. */
+.card > .list-group + .card-footer {
+    border-top: 1px solid var(--border);
+}
+
+/* Bootstrap's .card-header:first-child + .card-footer:last-child + .card-body
+   pseudo rules (0,2,0) affect border-radius when the header/footer is the
+   first/last child. Aurora's .card > .card-header (0,2,0) tied on specificity
+   and relied on load-order. Bump Aurora's specificity to (0,3,0) via :first-child
+   / :last-child so Aurora wins regardless of import order. */
+.card > .card-header:first-child {
+    background-color: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+    border-top-left-radius: calc(var(--r-lg) - 1px);
+    border-top-right-radius: calc(var(--r-lg) - 1px);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.card > .card-footer:last-child {
+    background-color: var(--surface-2);
+    border-top: 1px solid var(--border);
+    color: var(--fg-2);
+    border-bottom-left-radius: calc(var(--r-lg) - 1px);
+    border-bottom-right-radius: calc(var(--r-lg) - 1px);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+/* When a .card-body is the only child (no header, no footer), it owns all
+   four corners. Bootstrap sets this via .card-body:first-child:last-child
+   (0,3,0); Aurora matches to enforce the token-based radius. */
+.card > .card-body:only-child {
+    border-radius: calc(var(--r-lg) - 1px);
+}
+
+.card-title { color: var(--fg); font-weight: 600; }
+.card-subtitle { color: var(--fg-2); }
+.card-text { color: var(--fg-2); line-height: 1.55; }
+
+/* Bootstrap .card-header-tabs .nav-link.active (0,3,0) sets
+   background-color:var(--bs-card-bg). Since --bs-card-bg is overridden
+   to var(--surface) via token layer, this already resolves correctly.
+   Explicit rule only needed if tab active state shows wrong BG. */
+.card-header-tabs .nav-link.active {
+    background-color: var(--surface);
+    border-bottom-color: var(--surface);
+}
+
+/* card-img: no color/bg overrides needed; just ensure radius aligns */
+.card > .card-img-top { border-radius: calc(var(--r-lg) - 1px) calc(var(--r-lg) - 1px) 0 0; }
+.card > .card-img-bottom { border-radius: 0 0 calc(var(--r-lg) - 1px) calc(var(--r-lg) - 1px); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Menü-/Sidebar-/Navigation-Typografie — Aurora-Harmonisierung
+   Zieht alle Menü-Schriften auf Inter (body-font) und behebt Dark-Mode-
+   Kontrastlücken für Modul-Labels/Sub-Items die historisch auf
+   --color-text / --color-text-muted hingen.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.app-sidebar,
+.app-sidebar *,
+.mega-menu,
+.mega-menu *,
+.header,
+.header *,
+.navbar,
+.navbar * {
+    font-family: var(--font-sans);
+}
+
+/* Primary-Navigation (Kategorien-Trigger in Sidebar) */
+.mega-menu-trigger,
+.app-sidebar .nav-link {
+    color: var(--fg-2);
+    font-weight: 500;
+    letter-spacing: -0.1px;
+}
+.mega-menu-trigger:hover,
+.mega-menu-trigger.active,
+.app-sidebar .nav-link:hover,
+.app-sidebar .nav-link.active {
+    color: var(--primary-strong);
+}
+html[data-theme="dark"] .mega-menu-trigger,
+html[data-theme="dark"] .app-sidebar .nav-link {
+    color: var(--fg);
+}
+html[data-theme="dark"] .mega-menu-trigger:hover,
+html[data-theme="dark"] .mega-menu-trigger.active,
+html[data-theme="dark"] .app-sidebar .nav-link:hover,
+html[data-theme="dark"] .app-sidebar .nav-link.active {
+    color: var(--primary);
+}
+
+/* Section-Titles (BSI / ISMS / BCM / GDPR etc.) — Mono-Font-Aurora-Style */
+.mega-menu-section-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--fg-2);
+    border-bottom-color: var(--border);
+}
+html[data-theme="dark"] .mega-menu-section-title {
+    color: var(--fg);
+}
+
+/* Sub-Item-Titles + Descriptions — Inter, Aurora-Farben */
+.mega-menu-link-title {
+    color: var(--fg);
+    font-weight: 600;
+    letter-spacing: -0.1px;
+}
+.mega-menu-link-desc {
+    color: var(--fg-2);
+}
+.mega-menu-links a {
+    color: var(--fg);
+}
+.mega-menu-links a:hover .mega-menu-link-desc,
+.mega-menu-links a.active .mega-menu-link-desc {
+    color: var(--fg);
+}
+html[data-theme="dark"] .mega-menu-link-title,
+html[data-theme="dark"] .mega-menu-links a {
+    color: var(--fg);
+}
+html[data-theme="dark"] .mega-menu-link-desc {
+    color: var(--fg-2);
+}
+
+/* Panel-Header (Kategorie-Titel) */
+.mega-menu-panel-title {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    color: var(--fg);
+}
+
+/* --bs-*-Tokens sind jetzt vollständig in fairy-aurora.css definiert.
+   Explizite nav-link-active Override — einige Templates rendern mit
+   Bootstrap-Legacy-Farben, der Token-Pfad allein reicht nicht immer. */
+.nav-link { color: var(--bs-nav-link-color); }
+.nav-link:hover,
+.nav-link:focus { color: var(--bs-nav-link-hover-color); }
+.nav-link.active,
+.nav-link.show,
+.nav-link[aria-current="page"] {
+    color: var(--primary-strong);
+    font-weight: 600;
+}
+html[data-theme="dark"] .nav-link.active,
+html[data-theme="dark"] .nav-link.show,
+html[data-theme="dark"] .nav-link[aria-current="page"] {
+    color: var(--primary);
+}
+/* Pills-Variante: aktiver Pill bekommt Primary-BG und on-primary-Text */
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    background-color: var(--primary-strong);
+    color: var(--on-primary);
+}
+html[data-theme="dark"] .nav-pills .nav-link.active,
+html[data-theme="dark"] .nav-pills .show > .nav-link {
+    background-color: var(--primary);
+    color: var(--on-primary);
+}
+
+/* Aurora-Card-Heading-Kontrast — alle h1-h6 (Semantic UND .h1-.h6-Utility)
+   in Karten bekommen full-fg, damit sie im Dark-Mode nicht auf fg-2/fg-3 absinken.
+   Wichtig: .h1-.h6 Bootstrap-Utility (z.B. <h3 class="h6">) muss auch matchen. */
+.card h1, .card h2, .card h3, .card h4, .card h5, .card h6,
+.card .h1, .card .h2, .card .h3, .card .h4, .card .h5, .card .h6,
+.card-header h1, .card-header h2, .card-header h3, .card-header h4, .card-header h5, .card-header h6,
+.card-header .h1, .card-header .h2, .card-header .h3, .card-header .h4, .card-header .h5, .card-header .h6,
+.card-body h1, .card-body h2, .card-body h3, .card-body h4, .card-body h5, .card-body h6,
+.card-body .h1, .card-body .h2, .card-body .h3, .card-body .h4, .card-body .h5, .card-body .h6,
+.widget-card h1, .widget-card h2, .widget-card h3, .widget-card h4, .widget-card h5, .widget-card h6,
+.widget-card .h1, .widget-card .h2, .widget-card .h3, .widget-card .h4, .widget-card .h5, .widget-card .h6,
+.kpi-card h1, .kpi-card h2, .kpi-card h3, .kpi-card h4, .kpi-card h5, .kpi-card h6,
+.kpi-card .h1, .kpi-card .h2, .kpi-card .h3, .kpi-card .h4, .kpi-card .h5, .kpi-card .h6,
+.stat-card h1, .stat-card h2, .stat-card h3, .stat-card h4, .stat-card h5, .stat-card h6,
+.stat-card .h1, .stat-card .h2, .stat-card .h3, .stat-card .h4, .stat-card .h5, .stat-card .h6,
+.fa-card--premium h1, .fa-card--premium h2, .fa-card--premium h3,
+.fa-card--premium h4, .fa-card--premium h5, .fa-card--premium h6,
+.fa-card--premium .h1, .fa-card--premium .h2, .fa-card--premium .h3,
+.fa-card--premium .h4, .fa-card--premium .h5, .fa-card--premium .h6 {
+    color: var(--fg);
+}
+/* Ausnahme: Karten-Header mit farbigem BG behalten on-color (weiß auf primary etc.) */
+.card-header.bg-primary h1, .card-header.bg-primary h2, .card-header.bg-primary h3,
+.card-header.bg-primary h4, .card-header.bg-primary h5, .card-header.bg-primary h6,
+.card-header.bg-success h1, .card-header.bg-success h2, .card-header.bg-success h3,
+.card-header.bg-success h4, .card-header.bg-success h5, .card-header.bg-success h6,
+.card-header.bg-danger h1, .card-header.bg-danger h2, .card-header.bg-danger h3,
+.card-header.bg-danger h4, .card-header.bg-danger h5, .card-header.bg-danger h6,
+.card-header.bg-warning h1, .card-header.bg-warning h2, .card-header.bg-warning h3,
+.card-header.bg-warning h4, .card-header.bg-warning h5, .card-header.bg-warning h6 {
+    color: var(--on-primary);
+}
+
+.card.border-primary,  .card.border-left-primary  { border-left: 4px solid var(--primary); }
+.card.border-success,  .card.border-left-success  { border-left: 4px solid var(--success); }
+.card.border-warning,  .card.border-left-warning  { border-left: 4px solid var(--warning); }
+.card.border-danger,   .card.border-left-danger   { border-left: 4px solid var(--danger); }
+.card.border-info,     .card.border-left-info     { border-left: 4px solid var(--primary); }
+.card.border-accent,   .card.border-left-accent   { border-left: 4px solid var(--accent); }
+
+/* (0,2,0) — same specificity as .card > .card-header; wins by source order
+   (these rules come after, so they override the base .card > .card-header above) */
+.card-header.bg-primary,
+.card > .card-header.bg-primary {
+    background: var(--brand-gradient);
+    color: var(--on-primary);
+    border-bottom: none;
+    border-top-left-radius: calc(var(--r-lg) - 1px);
+    border-top-right-radius: calc(var(--r-lg) - 1px);
+}
+.card-header.bg-primary h1,
+.card-header.bg-primary h2,
+.card-header.bg-primary h3,
+.card-header.bg-primary h4 { color: var(--on-primary); margin: 0; }
+.card-header.bg-success,
+.card > .card-header.bg-success { background: var(--success-strong); color: var(--on-success); }
+.card-header.bg-warning,
+.card > .card-header.bg-warning { background: var(--warning);        color: var(--on-warning); }
+.card-header.bg-danger,
+.card > .card-header.bg-danger  { background: var(--danger);         color: var(--on-danger); }
+.card-header.bg-info,
+.card > .card-header.bg-info    { background: var(--primary-strong); color: var(--on-primary); }
+
+/* Schutz gegen Bootstrap-Utility-Override: `.text-white !important` würde
+   sonst auf farbigem Card-Header das Aurora on-color überfahren
+   (v.a. Dark-Mode: weiß auf hellem --primary = unlesbar). */
+.card-header.bg-primary .text-white,
+.card-header.bg-success .text-white,
+.card-header.bg-info .text-white,
+.card-header.bg-danger .text-white {
+    color: var(--on-primary) !important;
+}
+.card-header.bg-warning .text-white {
+    color: var(--on-warning) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-Form-Control → Aurora-Look
+   ═══════════════════════════════════════════════════════════════════ */
+
+.form-control,
+.form-select {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    transition: border-color var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out);
+}
+.form-control::placeholder { color: var(--fg-3); }
+.form-control:hover,
+.form-select:hover { border-color: var(--border-strong); }
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--surface);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+    color: var(--fg);
+    outline: none;
+}
+.form-control:disabled,
+.form-select:disabled {
+    background-color: var(--surface-2);
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+.form-label { color: var(--fg); font-weight: 500; margin-bottom: 6px; }
+.form-text { color: var(--fg-3); font-size: 12px; }
+
+.form-control.is-invalid,
+.form-select.is-invalid,
+.was-validated .form-control:invalid { border-color: var(--danger); }
+.form-control.is-invalid:focus,
+.was-validated .form-control:invalid:focus { box-shadow: 0 0 0 3px var(--danger-glow); }
+.form-control.is-valid,
+.form-select.is-valid { border-color: var(--success); }
+.invalid-feedback { color: var(--danger); font-size: 12px; }
+.valid-feedback   { color: var(--success); font-size: 12px; }
+
+.form-check-input {
+    border-color: var(--border-strong);
+    background-color: var(--surface);
+}
+.form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+.form-check-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+.form-check-label { color: var(--fg); }
+
+.form-switch .form-check-input {
+    background-color: var(--surface-2);
+    border-color: var(--border-strong);
+}
+.form-switch .form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+/* .required Pflichtfeld-Marker (Form-Field-Component + inline) */
+.required,
+label .required,
+.form-label .required { color: var(--danger); margin-left: 2px; font-weight: 600; }
+
+/* Bootstrap Floating Labels (form-floating) — Aurora-Kontraste */
+.form-floating > label {
+    color: var(--fg-3);
+    font-weight: 500;
+    padding: 1rem 0.75rem;
+}
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label {
+    color: var(--primary);
+    opacity: 0.85;
+}
+.form-floating > .form-control,
+.form-floating > .form-select { background-color: var(--surface); }
+.form-floating > .form-control:focus,
+.form-floating > .form-control:not(:placeholder-shown) { background-color: var(--surface); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-Badge → Aurora-Status-Pill-Look
+   ═══════════════════════════════════════════════════════════════════ */
+
+.badge {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    border-radius: var(--r-pill);
+    padding: 3px 9px;
+}
+.badge.text-bg-primary,
+.badge.bg-primary    { background-color: var(--primary-strong) !important; color: var(--on-primary) !important; }
+.badge.text-bg-success,
+.badge.bg-success    { background-color: var(--success-strong) !important; color: var(--on-success) !important; }
+.badge.text-bg-warning,
+.badge.bg-warning    { background-color: var(--warning) !important; color: var(--on-warning) !important; }
+.badge.text-bg-danger,
+.badge.bg-danger     { background-color: var(--danger) !important; color: var(--on-danger) !important; }
+.badge.text-bg-info,
+.badge.bg-info       { background-color: var(--primary) !important; color: var(--on-primary) !important; }
+.badge.text-bg-secondary,
+.badge.bg-secondary  { background-color: var(--surface-2) !important; color: var(--fg-2) !important; border: 1px solid var(--border); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-Alert → Aurora-Alert (Legacy-Usages ohne _alert-Macro)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.alert {
+    border-radius: var(--r-md);
+    border-left-width: 4px;
+    color: var(--fg);
+    background: var(--surface);
+    border-color: var(--border);
+}
+.alert-primary,
+.alert-info {
+    background: var(--primary-tint);
+    border-color: var(--primary);
+    border-left-color: var(--primary);
+    color: var(--fg);
+}
+.alert-success {
+    background: var(--success-glow);
+    border-color: var(--success);
+    border-left-color: var(--success);
+    color: var(--fg);
+}
+.alert-warning {
+    background: var(--warning-glow);
+    border-color: var(--warning);
+    border-left-color: var(--warning);
+    color: var(--warning-text);
+}
+.alert-danger {
+    background: var(--danger-glow);
+    border-color: var(--danger);
+    border-left-color: var(--danger);
+    color: var(--fg);
+}
+.alert-light {
+    background: var(--surface-2);
+    border-color: var(--border);
+    border-left-color: var(--border-strong);
+    color: var(--fg);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-Text-Utilities → Aurora-Farben (Dark-Mode-Fix für .text-dark)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* .text-dark zeigt in Bootstrap fix #212529 — in Dark-Mode unlesbar.
+   In Aurora muss das Default-Text-Farbe werden (var(--fg)), damit
+   Dashboard-Karten-Labels sichtbar bleiben. */
+.text-dark  { color: var(--fg)   !important; }
+.text-body  { color: var(--fg)   !important; }
+.text-light { color: var(--fg-2) !important; }
+/* text-muted: --fg-2 statt --fg-3 — Dark-Mode-Lesbarkeit für Card-Body
+   (Mapping-Hub etc.). Für Metadata-kleines-grau: <small class="text-muted"> */
+.text-muted { color: var(--fg-2) !important; }
+.text-secondary { color: var(--fg-2) !important; }
+small.text-muted,
+.text-muted.small,
+.form-text,
+.form-text.text-muted,
+.fa-text-meta { color: var(--fg-3) !important; }
+.text-primary   { color: var(--primary) !important; }
+.text-success   { color: var(--success) !important; }
+.text-warning   { color: var(--warning-text) !important; }
+.text-danger    { color: var(--danger)  !important; }
+.text-info      { color: var(--primary) !important; }
+.text-white     { color: #ffffff !important; }
+
+/* Bootstrap-text-bg-* kombiniert BG + Text */
+.text-bg-primary   { background-color: var(--primary-strong) !important; color: var(--on-primary) !important; }
+.text-bg-success   { background-color: var(--success-strong) !important; color: var(--on-success) !important; }
+.text-bg-warning   { background-color: var(--warning) !important; color: var(--on-warning) !important; }
+.text-bg-danger    { background-color: var(--danger)  !important; color: var(--on-danger)  !important; }
+.text-bg-info      { background-color: var(--primary) !important; color: var(--on-primary) !important; }
+.text-bg-secondary { background-color: var(--surface-2) !important; color: var(--fg) !important; }
+
+/* Bootstrap-bg-* Utilities */
+.bg-light       { background-color: var(--surface-2) !important; }
+.bg-dark        { background-color: var(--bg) !important; }
+.bg-white       { background-color: var(--surface) !important; }
+.bg-body        { background-color: var(--bg) !important; }
+.bg-body-tertiary  { background-color: var(--surface-2) !important; }
+.bg-body-secondary { background-color: var(--surface-2) !important; }
+
+/* Solide bg-* Utilities (card-header bg-primary, docker-pw-highlight etc.) */
+.bg-primary    { background-color: var(--primary-strong) !important; color: var(--on-primary) !important; }
+.bg-success    { background-color: var(--success-strong) !important; color: var(--on-success) !important; }
+.bg-warning    { background-color: var(--warning)        !important; color: var(--on-warning) !important; }
+.bg-danger     { background-color: var(--danger)         !important; color: var(--on-danger)  !important; }
+.bg-info       { background-color: var(--primary)        !important; color: var(--on-primary) !important; }
+.bg-secondary  { background-color: var(--surface-2)      !important; color: var(--fg)         !important; }
+
+/* Farbige bg-* Container erben on-Color an alle Text-Kinder (Icons, p, small, strong) */
+.bg-primary *:not(.btn):not(a.btn):not(.badge),
+.bg-success *:not(.btn):not(a.btn):not(.badge),
+.bg-warning *:not(.btn):not(a.btn):not(.badge),
+.bg-danger  *:not(.btn):not(a.btn):not(.badge),
+.bg-info    *:not(.btn):not(a.btn):not(.badge)    { color: inherit; }
+
+/* Bootstrap-border-* Utilities (1px Akzent-Borders, z.B. alert.border-success) */
+.border-primary { border-color: var(--primary) !important; }
+.border-success { border-color: var(--success) !important; }
+.border-warning { border-color: var(--warning) !important; }
+.border-danger  { border-color: var(--danger)  !important; }
+.border-info    { border-color: var(--primary) !important; }
+.border-secondary { border-color: var(--border-strong) !important; }
+
+/* btn-close (Alert-Dismiss × + Modal-Close) — Aurora-Kontrast + Dark-Mode */
+.btn-close {
+    opacity: 0.65;
+    transition: opacity 0.15s ease;
+}
+.btn-close:hover,
+.btn-close:focus-visible { opacity: 1; }
+[data-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+.alert-warning .btn-close,
+.bg-warning .btn-close { filter: none; }
+
+/* *-subtle (Bootstrap 5.3) für Badge/Icon-Hintergründe */
+.bg-primary-subtle  { background-color: var(--primary-tint) !important; }
+.bg-success-subtle  { background-color: var(--success-glow) !important; }
+.bg-warning-subtle  { background-color: var(--warning-glow) !important; }
+.bg-danger-subtle   { background-color: var(--danger-glow)  !important; }
+.bg-info-subtle     { background-color: var(--primary-tint) !important; }
+.bg-light-subtle    { background-color: var(--surface-2)    !important; }
+
+/* Opacity-Utility "bg-opacity-*" bleibt Bootstrap (nutzt CSS-Vars intern, OK) */
+
+/* ═══════════════════════════════════════════════════════════════════
+   Kontrast-Rettung innerhalb subtle-BG-Container:
+   Bootstrap-Link-Color kann Text unter <a> übernehmen und Kontrast
+   brechen. Hier forcieren wir lesbare Aurora-Farben.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.bg-warning-subtle,
+.bg-danger-subtle,
+.bg-success-subtle,
+.bg-info-subtle,
+.bg-primary-subtle,
+.bg-light-subtle { color: var(--fg); }
+
+.bg-warning-subtle a:not(.btn),
+.bg-danger-subtle a:not(.btn),
+.bg-success-subtle a:not(.btn),
+.bg-info-subtle a:not(.btn),
+.bg-primary-subtle a:not(.btn),
+.bg-light-subtle a:not(.btn) {
+    color: var(--fg);
+}
+
+.bg-warning-subtle .text-dark,
+.bg-danger-subtle .text-dark,
+.bg-success-subtle .text-dark,
+.bg-info-subtle .text-dark,
+.bg-primary-subtle .text-dark { color: var(--fg) !important; }
+
+.bg-warning-subtle .text-muted,
+.bg-danger-subtle .text-muted,
+.bg-success-subtle .text-muted,
+.bg-info-subtle .text-muted,
+.bg-primary-subtle .text-muted { color: var(--fg-2) !important; }
+
+/* .lead (Bootstrap Hero-Paragraph) — Aurora-contrast */
+.lead { color: var(--fg); }
+.lead.text-muted { color: var(--fg-2) !important; }
+
+/* Welcome-Hero (welcome.html.twig) — explizite Klassen damit text-muted
+   nicht mehr nötig ist, aber Hero bleibt als leichter Farb-Akzent sichtbar. */
+.welcome-hero__title { color: var(--fg); font-weight: 500; }
+.welcome-hero__lead { color: var(--fg-2); }
+
+/* Alle *-muted in kontrastkritischen Kontexten heben auf fg-2, damit
+   Kompatibilität mit alten Templates bleibt aber Lesbarkeit wächst. */
+.card .text-muted,
+.card-body .text-muted,
+.alert .text-muted,
+.fa-alert .text-muted,
+td.text-muted,
+th.text-muted { color: var(--fg-2) !important; }
+
+/* Micro-Meta weiterhin dezent (small-tags, form-hints, mono-labels) */
+small.text-muted,
+.text-muted.small,
+.form-text,
+.fa-text-meta { color: var(--fg-3) !important; }
+
+/* Bootstrap text-opacity-XX wirkt sonst auf --bs-body-color
+   und macht alles blass. Aurora setzt volle opacity-Kontrolle: */
+.text-body-emphasis { color: var(--fg) !important; }
+.text-body-secondary { color: var(--fg-2) !important; }
+.text-body-tertiary  { color: var(--fg-3) !important; }
+
+/* Border-Utilities auf Aurora-Farben */
+.border         { border-color: var(--border) !important; }
+.border-primary { border-color: var(--primary) !important; }
+.border-success { border-color: var(--success) !important; }
+.border-warning { border-color: var(--warning) !important; }
+.border-danger  { border-color: var(--danger)  !important; }
+.border-info    { border-color: var(--primary) !important; }
+.border-light   { border-color: var(--border) !important; }
+.border-dark    { border-color: var(--border-strong) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Legacy .kpi-card — Aurora-Farb-Override (Bug #2: Dark-Mode)
+   Überschreibt hardcoded Hintergrundfarben und Textfarben in allen
+   Themes. .fa-kpi-card (Aurora-Komponent) ist davon unabhängig.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.kpi-card {
+    background: var(--surface) !important;
+    border-color: var(--border) !important;
+    color: var(--fg) !important;
+}
+
+.kpi-card .label,
+.kpi-card-label,
+.kpi-card .kpi-card-label {
+    color: var(--fg-3) !important;
+}
+
+.kpi-card .value,
+.kpi-card-value {
+    color: var(--fg) !important;
+}
+
+.kpi-card .unit,
+.kpi-card-unit {
+    color: var(--fg-3) !important;
+}
+
+.kpi-card-icon {
+    background: var(--surface-2) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Legacy dark-mode.css Bootstrap-Overrides vereinheitlichen —
+   diese drei Klassen werden in dark-mode.css mit [data-theme="dark"]
+   und !important überschrieben, aber mit faltem var(--surface-2).
+   Die Bridge stellt hier sicher, dass Aurora-Tokens fließen.
+   ═══════════════════════════════════════════════════════════════════ */
+
+[data-theme="dark"] .card-header,
+[data-theme="dark"] .widget-header {
+    background-color: var(--surface-2) !important;
+    border-color: var(--border) !important;
+    color: var(--fg) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Dropdown — Aurora-Override (beide Modi)
+   Bootstrap-Defaults ignorieren [data-theme]; wir überschreiben explizit.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.dropdown-menu {
+    background-color: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+html[data-theme="dark"] .dropdown-menu {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+.dropdown-item {
+    color: var(--fg);
+    transition: background-color var(--t-fast) var(--ease-out),
+                color var(--t-fast) var(--ease-out);
+}
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: var(--surface-2);
+    color: var(--fg);
+}
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: var(--primary-strong);
+    color: var(--on-primary);
+}
+html[data-theme="dark"] .dropdown-item.active,
+html[data-theme="dark"] .dropdown-item:active {
+    background-color: var(--primary);
+    color: var(--on-primary);
+}
+.dropdown-item.disabled,
+.dropdown-item:disabled {
+    color: var(--fg-3);
+}
+.dropdown-divider { border-top-color: var(--border); }
+.dropdown-header  { color: var(--fg-2); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Modal — Aurora-Override (beide Modi)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.modal-content {
+    background-color: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+}
+.modal-header {
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+}
+.modal-footer {
+    background-color: var(--surface);
+    border-top: 1px solid var(--border);
+}
+.modal-body { color: var(--fg); }
+/* Backdrop: theme-invariant dunkel */
+.modal-backdrop { background-color: rgba(10, 14, 26, 0.6); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Accordion — Aurora-Override (beide Modi)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.accordion {
+    /* Bootstrap chevron-SVGs Aurora-gefärbt via data-URL statt filter-Trick.
+       Collapsed: fg-2 (sekundär), Expanded: primary-strong / im Dark primary. */
+    --bs-accordion-btn-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%234c4a73'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    --bs-accordion-btn-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230369a1'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    --bs-accordion-btn-icon-transform: rotate(-180deg);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+html[data-theme="dark"] .accordion,
+html[data-theme="system"] .accordion {
+    --bs-accordion-btn-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23b9bad4'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    --bs-accordion-btn-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2338bdf8'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+.accordion-item {
+    background-color: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    transition: border-color var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out);
+}
+.accordion-item:has(.accordion-button:not(.collapsed)) {
+    border-color: var(--primary-glow);
+    box-shadow: 0 0 0 1px var(--primary-glow);
+}
+.accordion-item:first-of-type,
+.accordion-item:last-of-type,
+.accordion-item:not(:first-of-type) {
+    border-radius: var(--r-md);
+}
+.accordion-header {
+    margin: 0;
+}
+.accordion-button {
+    background-color: var(--surface);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    border-radius: var(--r-md);
+    box-shadow: none;
+    transition: background-color var(--t-fast) var(--ease-out),
+                color var(--t-fast) var(--ease-out);
+}
+.accordion-button:hover {
+    background-color: var(--surface-2);
+    color: var(--fg);
+}
+.accordion-button:not(.collapsed) {
+    background-color: var(--primary-tint);
+    color: var(--primary-strong);
+    border-radius: var(--r-md) var(--r-md) 0 0;
+    box-shadow: inset 0 -1px 0 var(--border);
+}
+html[data-theme="dark"] .accordion-button:not(.collapsed) {
+    color: var(--primary);
+}
+.accordion-body {
+    background-color: var(--surface);
+    color: var(--fg);
+    padding: 16px;
+}
+.accordion-button:focus,
+.accordion-button:focus-visible {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+    outline: none;
+}
+/* Flush-Variante: keine Gaps, keine Rounded-Corners, keine Glow-Border */
+.accordion-flush {
+    gap: 0;
+}
+.accordion-flush .accordion-item {
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+}
+.accordion-flush .accordion-item:has(.accordion-button:not(.collapsed)) {
+    box-shadow: none;
+}
+.accordion-flush .accordion-button,
+.accordion-flush .accordion-button:not(.collapsed) {
+    border-radius: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   List-Group — Aurora-Override (beide Modi)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.list-group-item {
+    background-color: var(--surface);
+    color: var(--fg);
+    border-color: var(--border);
+}
+.list-group-item-action {
+    color: var(--fg);
+}
+.list-group-item-action:hover,
+.list-group-item-action:focus {
+    background-color: var(--surface-2);
+    color: var(--fg);
+}
+.list-group-item-action:active {
+    background-color: var(--surface-3);
+    color: var(--fg);
+}
+.list-group-item.active {
+    background-color: var(--primary-strong);
+    color: var(--on-primary);
+    border-color: var(--primary-strong);
+}
+html[data-theme="dark"] .list-group-item.active {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+.list-group-item.disabled,
+.list-group-item:disabled {
+    color: var(--fg-3);
+    background-color: var(--surface);
+}
+
+/* Semantic list-group-item-* variants */
+.list-group-item-primary {
+    background-color: var(--primary-tint);
+    color: var(--primary-strong);
+    border-color: var(--primary-glow);
+}
+.list-group-item-success {
+    background-color: var(--success-glow);
+    color: var(--success-strong);
+    border-color: var(--success-glow);
+}
+.list-group-item-warning {
+    background-color: var(--warning-glow);
+    color: var(--warning-strong);
+    border-color: var(--warning-glow);
+}
+.list-group-item-danger {
+    background-color: var(--danger-glow);
+    color: var(--danger-strong);
+    border-color: var(--danger-glow);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Pagination — Aurora-Override (beide Modi)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.page-link {
+    background-color: var(--surface);
+    color: var(--primary-strong);
+    border-color: var(--border);
+    transition: background-color var(--t-fast) var(--ease-out),
+                color var(--t-fast) var(--ease-out),
+                border-color var(--t-fast) var(--ease-out);
+}
+html[data-theme="dark"] .page-link {
+    color: var(--primary);
+}
+.page-link:hover {
+    background-color: var(--surface-2);
+    color: var(--primary-hover);
+    border-color: var(--border);
+}
+.page-item.active .page-link {
+    background-color: var(--primary-strong);
+    color: var(--on-primary);
+    border-color: var(--primary-strong);
+}
+html[data-theme="dark"] .page-item.active .page-link {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--on-primary);
+}
+.page-item.disabled .page-link {
+    background-color: var(--surface);
+    color: var(--fg-3);
+    border-color: var(--border);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Offcanvas — Aurora-Override (beide Modi)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.offcanvas,
+.offcanvas-start,
+.offcanvas-end,
+.offcanvas-top,
+.offcanvas-bottom {
+    background-color: var(--surface);
+    color: var(--fg);
+    border-color: var(--border);
+}
+.offcanvas-header {
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+}
+.offcanvas-body { color: var(--fg); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Popover — Aurora-Override (beide Modi)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.popover {
+    background-color: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+html[data-theme="dark"] .popover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+.popover-header {
+    background-color: var(--surface-2);
+    color: var(--fg);
+    border-bottom: 1px solid var(--border);
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+}
+.popover-body { color: var(--fg); }
+/* Arrow: light-mode zeigt --surface; dark zeigt surface */
+.popover .popover-arrow::after { border-color: transparent; }
+.bs-popover-auto[data-popper-placement^="top"] .popover-arrow::after,
+.bs-popover-top .popover-arrow::after {
+    border-top-color: var(--surface);
+}
+.bs-popover-auto[data-popper-placement^="bottom"] .popover-arrow::after,
+.bs-popover-bottom .popover-arrow::after {
+    border-bottom-color: var(--surface-2); /* header-bg matches */
+}
+.bs-popover-auto[data-popper-placement^="start"] .popover-arrow::after,
+.bs-popover-start .popover-arrow::after {
+    border-left-color: var(--surface);
+}
+.bs-popover-auto[data-popper-placement^="end"] .popover-arrow::after,
+.bs-popover-end .popover-arrow::after {
+    border-right-color: var(--surface);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Tooltip — Aurora-Override (beide Modi)
+   Tooltip = invertierter BG (fg auf surface) für maximalen Kontrast.
+   Dark-Mode: surface-2 auf fg — ebenfalls maximaler Kontrast.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.tooltip-inner {
+    background-color: var(--fg);
+    color: var(--surface);
+    border-radius: var(--r-sm);
+}
+html[data-theme="dark"] .tooltip-inner {
+    background-color: var(--surface-2);
+    color: var(--fg);
+    border: 1px solid var(--border);
+}
+/* Tooltip-Arrow anpassen */
+.bs-tooltip-auto[data-popper-placement^="top"] .tooltip-arrow::before,
+.bs-tooltip-top .tooltip-arrow::before { border-top-color: var(--fg); }
+.bs-tooltip-auto[data-popper-placement^="bottom"] .tooltip-arrow::before,
+.bs-tooltip-bottom .tooltip-arrow::before { border-bottom-color: var(--fg); }
+.bs-tooltip-auto[data-popper-placement^="start"] .tooltip-arrow::before,
+.bs-tooltip-start .tooltip-arrow::before { border-left-color: var(--fg); }
+.bs-tooltip-auto[data-popper-placement^="end"] .tooltip-arrow::before,
+.bs-tooltip-end .tooltip-arrow::before { border-right-color: var(--fg); }
+html[data-theme="dark"] .bs-tooltip-auto[data-popper-placement^="top"] .tooltip-arrow::before,
+html[data-theme="dark"] .bs-tooltip-top .tooltip-arrow::before { border-top-color: var(--surface-2); }
+html[data-theme="dark"] .bs-tooltip-auto[data-popper-placement^="bottom"] .tooltip-arrow::before,
+html[data-theme="dark"] .bs-tooltip-bottom .tooltip-arrow::before { border-bottom-color: var(--surface-2); }
+html[data-theme="dark"] .bs-tooltip-auto[data-popper-placement^="start"] .tooltip-arrow::before,
+html[data-theme="dark"] .bs-tooltip-start .tooltip-arrow::before { border-left-color: var(--surface-2); }
+html[data-theme="dark"] .bs-tooltip-auto[data-popper-placement^="end"] .tooltip-arrow::before,
+html[data-theme="dark"] .bs-tooltip-end .tooltip-arrow::before { border-right-color: var(--surface-2); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-Toast — Aurora-Override (beide Modi)
+   Achtung: Aurora nutzt .fa-alert--toast für eigene Toasts.
+   Diese Regeln greifen auf Bootstrap-native .toast-Elemente.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.toast {
+    background-color: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+html[data-theme="dark"] .toast {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+.toast-header {
+    background-color: var(--surface-2);
+    color: var(--fg);
+    border-bottom: 1px solid var(--border);
+}
+.toast-body { color: var(--fg); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Bootstrap-.table — Aurora-Override (beide Modi)
+   Ergänzt die vorhandene table-Styling-Basis in app.css.
+   Setzt explizit die --bs-table-*-Tokens um Bootstrap-interne
+   Stripe/Hover-Rules zu steuern.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.table {
+    --bs-table-bg:          var(--surface);
+    --bs-table-color:       var(--fg);
+    --bs-table-border-color: var(--border);
+    --bs-table-striped-bg:  var(--surface-2);
+    --bs-table-striped-color: var(--fg);
+    --bs-table-hover-bg:    var(--surface-3);
+    --bs-table-hover-color: var(--fg);
+    --bs-table-active-bg:   var(--surface-3);
+    --bs-table-active-color: var(--fg);
+    color: var(--fg);
+    border-color: var(--border);
+}
+.table > :not(caption) > * > * {
+    background-color: var(--bs-table-bg);
+    color: var(--bs-table-color);
+    border-bottom-color: var(--bs-table-border-color);
+}
+.table > thead {
+    background-color: var(--surface-2);
+    color: var(--fg);
+}
+.table > thead > tr > th {
+    background-color: var(--surface-2);
+    color: var(--fg);
+    border-bottom: 2px solid var(--border);
+    font-weight: 600;
+}
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: var(--surface-2);
+    color: var(--fg);
+}
+.table-hover > tbody > tr:hover > * {
+    background-color: var(--surface-3);
+    color: var(--fg);
+}
+.table-bordered > :not(caption) > * { border-color: var(--border); }
+.table-bordered > :not(caption) > * > * {
+    border: 1px solid var(--border);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Form-Switch + Form-Range — Aurora-Override
+   ═══════════════════════════════════════════════════════════════════ */
+
+.form-switch .form-check-input {
+    background-color: var(--surface-3);
+    border-color: var(--border-strong);
+    /* Bootstrap nutzt background-image für den Track-Icon */
+}
+.form-switch .form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+.form-switch .form-check-input:focus {
+    box-shadow: 0 0 0 3px var(--primary-glow);
+    border-color: var(--primary);
+}
+
+.form-range::-webkit-slider-thumb {
+    background-color: var(--primary);
+}
+.form-range::-moz-range-thumb {
+    background-color: var(--primary);
+    border: none;
+}
+.form-range::-webkit-slider-runnable-track {
+    background-color: var(--surface-3);
+    border-radius: var(--r-pill);
+}
+.form-range::-moz-range-track {
+    background-color: var(--surface-3);
+}
+.form-range:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Input-Group — Aurora-Override
+   ═══════════════════════════════════════════════════════════════════ */
+
+.input-group-text {
+    background-color: var(--surface-2);
+    color: var(--fg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+}
+.input-group > .form-control:focus,
+.input-group > .form-select:focus {
+    z-index: 3;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Progress — Aurora-Override (beide Modi)
+   Überschreibt das app.css-Override, das noch hardcoded rgba nutzt.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.progress {
+    background-color: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    overflow: hidden;
+}
+.progress-bar {
+    background-color: var(--primary-strong);
+    color: var(--on-primary);
+}
+html[data-theme="dark"] .progress-bar {
+    background-color: var(--primary);
+}
+.progress-bar.bg-success { background-color: var(--success-strong) !important; }
+.progress-bar.bg-warning { background-color: var(--warning) !important; color: var(--on-warning) !important; }
+.progress-bar.bg-danger  { background-color: var(--danger) !important; color: var(--on-danger) !important; }
+.progress-bar.bg-info    { background-color: var(--primary) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Spinner (Bootstrap .spinner-border / .spinner-grow) — Aurora-Override
+   .spinner-border nutzt currentColor — passt zu Aurora.
+   Wir stellen sicher dass das Eltern-Element die richtige Farbe hat.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.spinner-border {
+    color: var(--primary);
+}
+.spinner-border.text-success { color: var(--success) !important; }
+.spinner-border.text-warning { color: var(--warning) !important; }
+.spinner-border.text-danger  { color: var(--danger)  !important; }
+.spinner-grow {
+    background-color: var(--primary);
+}
+.spinner-grow.text-success { background-color: var(--success) !important; }
+.spinner-grow.text-warning { background-color: var(--warning) !important; }
+.spinner-grow.text-danger  { background-color: var(--danger)  !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Btn-Close — Aurora-Override (beide Modi)
+   Bootstrap rendert .btn-close als SVG-data-url; wir nutzen filter.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Light-Mode: dunkles X auf hellem Surface */
+.btn-close {
+    filter: brightness(0) saturate(100%) invert(20%) sepia(10%) saturate(600%) hue-rotate(220deg);
+    opacity: 0.7;
+}
+.btn-close:hover { opacity: 1; }
+/* Dark-Mode: helles X auf dunklem Surface */
+html[data-theme="dark"] .btn-close {
+    filter: brightness(0) saturate(100%) invert(90%);
+    opacity: 0.7;
+}
+html[data-theme="dark"] .btn-close:hover { opacity: 1; }
+
+/* Ausnahmen: Close auf farbigem Header (z.B. bg-danger) immer weiß */
+.modal-header.bg-danger .btn-close,
+.alert-danger .btn-close {
+    filter: brightness(0) saturate(100%) invert(100%) !important;
+    opacity: 0.9;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Nav-Tabs / Nav-Pills — explizite Component-Fixes
+   (--bs-*-Tokens gesetzt in fairy-aurora.css; hier
+   zusätzliche Selektoren für Templates die nicht Bootstrap-Vars nutzen)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.nav-tabs {
+    border-bottom: 1px solid var(--border);
+}
+.nav-tabs .nav-link {
+    color: var(--fg-2);
+    border: 1px solid transparent;
+    border-radius: var(--r-md) var(--r-md) 0 0;
+}
+.nav-tabs .nav-link:hover,
+.nav-tabs .nav-link:focus {
+    color: var(--primary-strong);
+    border-color: var(--border) var(--border) transparent;
+    background-color: var(--surface-2);
+}
+html[data-theme="dark"] .nav-tabs .nav-link:hover,
+html[data-theme="dark"] .nav-tabs .nav-link:focus {
+    color: var(--primary);
+}
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+    color: var(--primary-strong);
+    background-color: var(--surface);
+    border-color: var(--border) var(--border) var(--surface);
+}
+html[data-theme="dark"] .nav-tabs .nav-link.active,
+html[data-theme="dark"] .nav-tabs .nav-item.show .nav-link {
+    color: var(--primary);
+    background-color: var(--surface);
+    border-color: var(--border) var(--border) var(--surface);
+}
+
+/* Tab-Content */
+.tab-content { color: var(--fg); }
+.tab-pane { color: var(--fg); }
+
+
+/* ==========================================================================
+   Wizard Busy Overlay — transparent overlay used by wizard_busy_controller
+   during long-running Setup-Assistant requests (Restore, Migration, Seeding).
+   ========================================================================== */
+form.wizard-busy {
+    position: relative;
+}
+.wizard-busy-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(var(--bs-body-bg-rgb, 255, 255, 255), 0.82);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    border-radius: inherit;
+    pointer-events: all;
+    cursor: wait;
+}
+.wizard-busy-overlay__inner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    background: var(--surface, var(--bs-body-bg));
+    color: var(--fg, var(--bs-body-color));
+    border: 1px solid var(--border, var(--bs-border-color));
+    border-radius: var(--r-md, 8px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+}
+.wizard-busy-overlay__text {
+    max-width: 32rem;
+}
+html[data-theme="dark"] .wizard-busy-overlay {
+    background: rgba(var(--bs-body-bg-rgb, 23, 26, 32), 0.85);
+}
+
+
+/* ==========================================================================
+   Aurora v4 — fa-aurora-surface utility
+   ==========================================================================
+   Opt-in background layer that brings the Setup-Wizard / Login atmosphere
+   to any page. Usage:
+     <main class="fa-aurora-surface">                 (default radial gradient)
+     <main class="fa-aurora-surface fa-aurora-surface--dots">  (+ circuit dots)
+     <main class="fa-aurora-surface fa-aurora-surface--subtle"> (lower opacity)
+     <main class="fa-aurora-surface fa-aurora-surface--hero">   (higher opacity)
+
+   Background layers stack in this order (top→bottom):
+     1. circuit-dot SVG (variant --dots only)
+     2. radial gradient from --primary-tint (top-left)
+     3. radial gradient from --accent-tint (bottom-right)
+     4. solid --surface base
+
+   Opacity is controlled via --_pattern-opacity (internal var), set by the
+   variant class so the utility remains single-rule.
+   ========================================================================== */
+.fa-aurora-surface {
+    --_pattern-opacity: var(--pattern-opacity-default);
+    position: relative;
+    background:
+        radial-gradient(circle at 12% 18%, color-mix(in oklab, var(--primary-tint) calc(var(--_pattern-opacity) * 1000%), transparent) 0%, transparent 55%),
+        radial-gradient(circle at 88% 82%, color-mix(in oklab, var(--accent-tint) calc(var(--_pattern-opacity) * 1000%), transparent) 0%, transparent 55%),
+        var(--surface);
+}
+.fa-aurora-surface--subtle { --_pattern-opacity: var(--pattern-opacity-subtle); }
+.fa-aurora-surface--hero   { --_pattern-opacity: var(--pattern-opacity-hero); }
+
+.fa-aurora-surface--dots {
+    background-image:
+        radial-gradient(circle, color-mix(in oklab, var(--primary) 20%, transparent) 1px, transparent 1px),
+        radial-gradient(circle at 12% 18%, color-mix(in oklab, var(--primary-tint) calc(var(--_pattern-opacity) * 1000%), transparent) 0%, transparent 55%),
+        radial-gradient(circle at 88% 82%, color-mix(in oklab, var(--accent-tint) calc(var(--_pattern-opacity) * 1000%), transparent) 0%, transparent 55%);
+    background-size: 24px 24px, 100% 100%, 100% 100%;
+    background-color: var(--surface);
+    background-position: 0 0, 0 0, 100% 100%;
+    background-repeat: repeat, no-repeat, no-repeat;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .fa-aurora-surface { transition: background 0.4s ease-out; }
+}
+
+/* ==========================================================================
+   Aurora v4 Phase 2 — fa-page-header
+   ==========================================================================
+   Replaces ad-hoc <h1> + <small> + breadcrumb combos.
+   Bottom border uses brand-gradient-line token.
+   ========================================================================== */
+
+.fa-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 20px 16px;
+    border-bottom: 2px solid transparent;
+    border-image: var(--brand-gradient-line) 1;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.fa-page-header__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.fa-page-header__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: var(--r-pill);
+    background: var(--brand-gradient-soft);
+    border: 1px solid var(--primary-tint);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--primary);
+    align-self: flex-start;
+}
+
+html[data-theme="dark"] .fa-page-header__badge {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.fa-page-header__badge i { font-size: 12px; }
+
+.fa-page-header__title {
+    font-family: var(--font-sans);
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-weight: 700;
+    color: var(--fg);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.fa-page-header__subtitle {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--fg-2);
+    margin: 0;
+    line-height: 1.45;
+}
+
+.fa-page-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+    .fa-page-header { flex-direction: column; }
+    .fa-page-header__actions { width: 100%; }
+}
+
+/* ==========================================================================
+   Aurora v4 Phase 2 — fa-section
+   ==========================================================================
+   Replaces ad-hoc <div class="container mt-5"> + <h3> section wrappers.
+   Header divider: 1px gradient from --primary-tint to transparent.
+   ========================================================================== */
+
+.fa-section {
+    margin-bottom: 32px;
+}
+
+.fa-section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid transparent;
+    border-image: linear-gradient(90deg, var(--primary-tint), transparent) 1;
+}
+
+.fa-section__title {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.fa-section__tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.fa-section__body {
+    /* content flows naturally; no forced padding so tables / charts bleed to edge */
+}
+
+.fa-section__footer {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--fg-2);
+}
+
+/* fa-link — inline hyperlink style used in section footers */
+.fa-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--t-fast) var(--ease-out);
+}
+.fa-link:hover { color: var(--primary-hover); text-decoration: underline; }
+.fa-link:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: var(--r-xs);
+}
+
+/* ==========================================================================
+   Aurora v4 Phase 2 — fa-feature-card
+   ==========================================================================
+   Replaces inconsistent KPI / stat tiles.
+   Left accent bar driven by semantic variant; hover glow in matching color.
+   Coexists with legacy .kpi-card — does NOT touch those rules.
+   ========================================================================== */
+
+.fa-feature-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 18px 20px 18px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    transition:
+        border-color var(--t-fast) var(--ease-out),
+        box-shadow   var(--t-fast) var(--ease-out);
+}
+
+/* Left accent bar */
+.fa-feature-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: var(--r-lg) 0 0 var(--r-lg);
+    background: var(--_fc-color, var(--primary));
+}
+
+/* Variant tokens */
+.fa-feature-card--primary { --_fc-color: var(--primary); --_fc-glow: var(--primary-glow); --_fc-tint: var(--primary-tint); }
+.fa-feature-card--success { --_fc-color: var(--success); --_fc-glow: var(--success-glow); --_fc-tint: color-mix(in oklab, var(--success) 10%, transparent); }
+.fa-feature-card--warning { --_fc-color: var(--warning); --_fc-glow: var(--warning-glow); --_fc-tint: color-mix(in oklab, var(--warning) 10%, transparent); }
+.fa-feature-card--danger  { --_fc-color: var(--danger);  --_fc-glow: var(--danger-glow);  --_fc-tint: color-mix(in oklab, var(--danger)  10%, transparent); }
+
+.fa-feature-card:hover {
+    border-color: var(--_fc-color, var(--primary));
+    box-shadow: 0 0 0 3px var(--_fc-glow, var(--primary-glow));
+}
+
+.fa-feature-card__icon-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-md);
+    background: var(--_fc-tint, var(--primary-tint));
+    color: var(--_fc-color, var(--primary));
+    font-size: 18px;
+    align-self: flex-start;
+    flex-shrink: 0;
+}
+
+.fa-feature-card__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    margin: 0;
+}
+
+.fa-feature-card__value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    line-height: 1;
+}
+
+.fa-feature-card__value {
+    font-family: var(--font-sans);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--fg);
+    letter-spacing: -0.02em;
+}
+
+.fa-feature-card__unit {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--fg-3);
+}
+
+.fa-feature-card__hint {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--fg-3);
+    margin: 0;
+}
+
+.fa-feature-card__sparkline {
+    margin-top: 4px;
+    opacity: 0.85;
+}
+
+/* ==========================================================================
+   Aurora v4 Phase 3 — fa-empty-state (active / macro variant)
+   ==========================================================================
+   Coexists with the existing .fa-empty-state passive rules above (line ~509).
+   The macro wrapper adds .fa-empty-state--active to enable the aurora surface.
+   ========================================================================== */
+
+.fa-empty-state--active {
+    position: relative;
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    /* Aurora-pattern background at ~20% opacity via --subtle variant */
+    background:
+        radial-gradient(circle at 12% 18%, color-mix(in oklab, var(--primary-tint) calc(var(--pattern-opacity-subtle) * 1000%), transparent) 0%, transparent 55%),
+        radial-gradient(circle at 88% 82%, color-mix(in oklab, var(--accent-tint) calc(var(--pattern-opacity-subtle) * 1000%), transparent) 0%, transparent 55%),
+        var(--surface);
+    border: 1px solid var(--border);
+}
+
+/* ==========================================================================
+   Aurora v4 Phase 3 — fa-hero
+   ==========================================================================
+   Welcome-after-login banners + module start pages.
+   Uses --hero opacity for background; Alva anchored left at lg size.
+   Glow border mirrors fa-card--premium pattern.
+   ========================================================================== */
+
+.fa-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 40px 40px 40px 32px;
+    border-radius: var(--r-2xl);
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 8% 40%, color-mix(in oklab, var(--primary-tint) calc(var(--pattern-opacity-hero) * 1000%), transparent) 0%, transparent 55%),
+        radial-gradient(circle at 92% 60%, color-mix(in oklab, var(--accent-tint) calc(var(--pattern-opacity-hero) * 1000%), transparent) 0%, transparent 55%),
+        var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 20%, transparent),
+                0 8px 32px color-mix(in oklab, var(--primary) 8%, transparent);
+}
+
+html[data-theme="dark"] .fa-hero {
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 35%, transparent),
+                0 8px 40px color-mix(in oklab, var(--primary) 12%, transparent);
+}
+
+.fa-hero__alva {
+    flex-shrink: 0;
+    opacity: 0.95;
+}
+
+.fa-hero__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.fa-hero__title {
+    font-family: var(--font-sans);
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 700;
+    color: var(--fg);
+    margin: 0;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.fa-hero__subtitle {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--fg-2);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.fa-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+@media (max-width: 640px) {
+    .fa-hero { flex-direction: column; align-items: flex-start; padding: 24px; }
+    .fa-hero__alva { align-self: center; }
+}
+
+/* ==========================================================================
+   Aurora v4 Phase 3 — fa-filter-chip standalone + active state
+   ==========================================================================
+   The passive .fa-filter-chip is already defined in fairy-aurora-edge.css.
+   Here we add the --active modifier and the chip-group wrapper for the macro.
+   ========================================================================== */
+
+/* Active (selected) state */
+.fa-filter-chip--active {
+    background: var(--primary-tint);
+    border-color: var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Chip group — horizontal row of toggle chips */
+.fa-filter-chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+/* Button-reset so <button> renders like a chip */
+button.fa-filter-chip {
+    cursor: pointer;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--fg-2);
+    padding: 4px 12px;
+    line-height: 1.4;
+    transition:
+        background-color var(--t-fast) var(--ease-out),
+        border-color     var(--t-fast) var(--ease-out),
+        color            var(--t-fast) var(--ease-out);
+}
+
+button.fa-filter-chip:hover:not(.fa-filter-chip--active) {
+    background: var(--surface-3);
+    border-color: var(--border-strong);
+    color: var(--fg);
+}
+
+button.fa-filter-chip.fa-filter-chip--active {
+    background: var(--primary-tint);
+    border-color: var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+
+/* ==========================================================================
+   Aurora v4 — Raw `.form-control` bridge
+   ==========================================================================
+   Raw <input class="form-control"> usages (search bars, filter inputs,
+   import forms, admin quick-edits) bypass Symfony's form-theme layer and
+   therefore don't get the `.fa-cyber-input` frame. This bridge ensures
+   they still render with Aurora tokens + the same focus-glow as cyber-input.
+
+   Only applies when the element is NOT inside a .fa-cyber-input container
+   (to avoid double-styling properly themed forms).
+   ========================================================================== */
+.form-control:not(.fa-cyber-input .form-control):not(.fa-cyber-input__input),
+.form-select:not(.fa-cyber-input .form-select):not(.fa-cyber-input__input) {
+    background-color: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    transition: border-color var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out);
+}
+/* Bootstrap .form-floating (0,2,0) overrides our raw bridge (0,1,0 on base
+   props). Target .form-floating > .form-control with matching specificity so
+   Aurora border-token + focus-glow still win. */
+.form-floating > .form-control,
+.form-floating > .form-select {
+    background-color: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+}
+.form-floating > .form-control:hover,
+.form-floating > .form-select:hover { border-color: var(--border-strong); }
+.form-floating > .form-control:focus,
+.form-floating > .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+    outline: none;
+}
+.form-floating > label { color: var(--fg-3); }
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label { color: var(--primary); }
+.form-control:not(.fa-cyber-input .form-control):hover,
+.form-select:not(.fa-cyber-input .form-select):hover {
+    border-color: var(--border-strong);
+}
+.form-control:not(.fa-cyber-input .form-control):focus,
+.form-select:not(.fa-cyber-input .form-select):focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+    outline: none;
+}
+.form-control:not(.fa-cyber-input .form-control):disabled,
+.form-select:not(.fa-cyber-input .form-select):disabled {
+    background-color: var(--surface-2);
+    color: var(--fg-3);
+    cursor: not-allowed;
+}
+.form-control.is-invalid:not(.fa-cyber-input .form-control),
+.form-select.is-invalid:not(.fa-cyber-input .form-select) {
+    border-color: var(--danger);
+}
+.form-control.is-invalid:not(.fa-cyber-input .form-control):focus,
+.form-select.is-invalid:not(.fa-cyber-input .form-select):focus {
+    box-shadow: 0 0 0 3px var(--danger-glow);
+}
+.form-label:not(.fa-cyber-input__label) {
+    color: var(--fg-2);
+    font-weight: 500;
+}
+
+
+/* ==========================================================================
+   Aurora v4 — Tom-Select Theme-Override
+   ==========================================================================
+   Tom-Select lib ships `tom-select.default.min.css` with hardcoded #303030
+   text + light grey borders. Aurora tokens must win — override with matching
+   specificity (.ts-* alone = 0,1,0; selector-stacking = 0,2,0).
+   ========================================================================== */
+.ts-wrapper.ts-wrapper,
+.ts-control.ts-control,
+.ts-dropdown.ts-dropdown {
+    color: var(--fg);
+    font-family: var(--font-sans);
+    background-color: var(--surface);
+}
+.ts-wrapper.ts-wrapper .ts-control {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--fg);
+    min-height: 40px;
+    padding: 6px 10px;
+    box-shadow: none;
+}
+.ts-wrapper.ts-wrapper .ts-control:hover { border-color: var(--border-strong); }
+.ts-wrapper.ts-wrapper.focus .ts-control,
+.ts-wrapper.ts-wrapper .ts-control:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+.ts-wrapper.ts-wrapper.disabled .ts-control {
+    background-color: var(--surface-2);
+    color: var(--fg-3);
+    cursor: not-allowed;
+}
+/* Input inside control (search field of select) */
+.ts-control > input {
+    color: var(--fg);
+    background: transparent !important;
+}
+.ts-control > input::placeholder { color: var(--fg-3); }
+/* Selected-items chips in multi-select */
+.ts-wrapper.ts-wrapper .ts-control > .item {
+    background-color: var(--primary-tint);
+    color: var(--primary-strong);
+    border: 1px solid var(--primary);
+    border-radius: var(--r-sm);
+    padding: 2px 8px;
+    margin: 2px;
+}
+.ts-wrapper.ts-wrapper .ts-control > .item.active {
+    background-color: var(--primary);
+    color: var(--on-primary);
+}
+/* Dropdown panel */
+.ts-dropdown.ts-dropdown {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--fg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    margin-top: 4px;
+}
+.ts-dropdown .option { color: var(--fg); padding: 8px 12px; }
+.ts-dropdown .option:hover,
+.ts-dropdown .option.active { background-color: var(--primary-tint); color: var(--primary-strong); }
+.ts-dropdown .option.selected { background-color: var(--primary); color: var(--on-primary); }
+.ts-dropdown .no-results,
+.ts-dropdown .create {
+    color: var(--fg-3);
+    padding: 10px 12px;
+}
+/* Inside our cyber-input frame: flatten Tom-Select's own border — frame owns it */
+.fa-cyber-input__frame .ts-wrapper .ts-control,
+.fa-cyber-input__frame > .ts-wrapper .ts-control {
+    border: 0;
+    box-shadow: none;
+    min-height: auto;
+    padding: 6px 10px;
+}
