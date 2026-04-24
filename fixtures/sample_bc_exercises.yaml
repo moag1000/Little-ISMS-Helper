@@ -1,5 +1,7 @@
 bc_exercises:
   - name: 'Tabletop-Übung 2025-Q3: IT-Service-Ausfall Frankfurt'
+    testedPlans:
+      - 'ref:bc_plan:BCP-001 IT-Service-Ausfall (Primärsystem)'
     exerciseType: 'tabletop'
     description: 'Diskussionsbasierte Übung zum BCP-001 IT-Service-Ausfall. Szenario: Totalausfall RZ Frankfurt durch Stromausfall Rechenzentrumsbetreiber.'
     scope: 'Alle BC-Rollen IT-Operations, Service-Manager, Application-Owner, CISO. Umfasst: Failover-Entscheidung, Kommunikationskaskade, DNS-Umstellung. Explizit ausgeschlossen: tatsächliche technische Aktivierung.'
@@ -38,6 +40,8 @@ bc_exercises:
     reportDate: '2025-09-25'
 
   - name: 'Walkthrough 2025-Q2: Gebäude-Evakuierung HQ'
+    testedPlans:
+      - 'ref:bc_plan:BCP-002 Gebäude-Nichtverfügbarkeit HQ München'
     exerciseType: 'walkthrough'
     description: 'Schritt-für-Schritt-Durchgang des BCP-002 Evakuierungs- und Ausweichprozesses. Keine tatsächliche Evakuierung, aber physischer Walkthrough der Routen.'
     scope: 'Facility-Team, HR, Brandschutzhelfer, Ersthelfer. Umfasst: Evakuierungsrouten, Sammelpunkte, Ausweichbüro-Aktivierung. Ausgeschlossen: tatsächliches Sperren des Gebäudes.'
@@ -73,6 +77,8 @@ bc_exercises:
     reportDate: '2025-06-05'
 
   - name: 'Simulation 2025-Q4: Ransomware-Angriff (Red-Team)'
+    testedPlans:
+      - 'ref:bc_plan:BCP-005 Cyber-Crisis / Ransomware-Angriff'
     exerciseType: 'simulation'
     description: 'Simulierter Ransomware-Angriff als Red-Team-Übung mit externem IR-Partner. Test des BCP-005 Cyber-Crisis-Plans unter realistischen Zeitdruckbedingungen.'
     scope: 'Gesamtes IR-Team, CISO, CIO, DPO, Legal, Kommunikation, Geschäftsführung. Live-Simulation in isolierter Staging-Umgebung, keine Produktionssysteme.'
@@ -113,6 +119,9 @@ bc_exercises:
     reportDate: '2025-11-08'
 
   - name: 'Disaster-Recovery-Test 2025-Q2: Full-Failover RZ Berlin'
+    testedPlans:
+      - 'ref:bc_plan:BCP-001 IT-Service-Ausfall (Primärsystem)'
+      - 'ref:bc_plan:BCP-005 Cyber-Crisis / Ransomware-Angriff'
     exerciseType: 'full_test'
     description: 'Vollständiger DR-Test mit echtem Failover der Produktivsysteme auf das DR-Rechenzentrum Berlin. Durchführung im Wartungsfenster.'
     scope: 'Alle produktiven Systeme (ERP, CRM, Mail, Fileshare), IT-Ops, Netzwerk, Application-Owner. Echtes Failover mit echten Daten, kontrolliertes Wartungsfenster.'
@@ -149,6 +158,8 @@ bc_exercises:
     reportDate: '2025-06-28'
 
   - name: 'Component-Test 2025-Q3: Backup-Restore kritische DB'
+    testedPlans:
+      - 'ref:bc_plan:BCP-001 IT-Service-Ausfall (Primärsystem)'
     exerciseType: 'component_test'
     description: 'Isolierter Restore-Test der produktiven PostgreSQL-Datenbank aus Immutable-Backup in Sandbox-Umgebung.'
     scope: 'DBA-Team, Senior Admin. Ausschließlich Backup-Restore-Prozess, keine Produktionsauswirkung.'
@@ -181,6 +192,8 @@ bc_exercises:
     reportDate: '2025-08-10'
 
   - name: 'Tabletop-Übung 2026-Q1: Lieferketten-Unterbrechung Cloud-Provider'
+    testedPlans:
+      - 'ref:bc_plan:BCP-003 Lieferkette-Unterbrechung'
     exerciseType: 'tabletop'
     description: 'Geplante Tabletop-Übung zum BCP-003 Lieferkette. Szenario: plötzlicher Ausfall des Haupt-Cloud-Providers AWS (regional).'
     scope: 'Einkauf, Legal, IT, CISO, DPO, Finance, GF-Vertreter'

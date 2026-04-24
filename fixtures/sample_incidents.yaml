@@ -1,5 +1,9 @@
 incidents:
   - title: 'Phishing-E-Mail führt zu Kompromittierung von Zugangsdaten'
+    affectedAssets:
+      - 'ref:asset:Email-Server MAIL-01'
+      - 'ref:asset:Mitarbeiter-Laptops (50 Stück)'
+      - 'ref:asset:Active Directory Server AD-01'
     description: 'Ein Mitarbeiter hat auf eine Phishing-E-Mail reagiert und seine Active Directory-Zugangsdaten auf einer gefälschten Login-Seite eingegeben.'
     category: 'phishing'
     severity: 'high'
@@ -17,6 +21,8 @@ incidents:
     lessons_learned: 'Multi-Faktor-Authentifizierung ist essentiell, regelmäßige Schulungen notwendig'
 
   - title: 'Ausfall des Hauptdatenbankservers durch Hardwaredefekt'
+    affectedAssets:
+      - 'ref:asset:Datenbankserver DB-PROD-01'
     description: 'Der primäre Datenbankserver ist aufgrund eines Festplattendefekts ausgefallen.'
     category: 'system_failure'
     severity: 'critical'
@@ -34,6 +40,9 @@ incidents:
     lessons_learned: 'Redundanz bei kritischen Komponenten ist essentiell'
 
   - title: 'Versehentliche Löschung von Kundendaten'
+    affectedAssets:
+      - 'ref:asset:Kundendatenbank'
+      - 'ref:asset:CRM-System'
     description: 'Ein Mitarbeiter hat versehentlich einen falschen SQL-Befehl ausgeführt und Kundendaten gelöscht.'
     category: 'data_loss'
     severity: 'high'
@@ -51,6 +60,9 @@ incidents:
     lessons_learned: 'Least-Privilege-Prinzip konsequent umsetzen'
 
   - title: 'DDoS-Angriff auf Webserver'
+    affectedAssets:
+      - 'ref:asset:Webserver WEB-PROD-01'
+      - 'ref:asset:Firewall FW-MAIN-01'
     description: 'Ein DDoS-Angriff hat die Webserver überlastet und zu temporärer Nichtverfügbarkeit geführt.'
     category: 'malware'
     severity: 'medium'
@@ -68,6 +80,8 @@ incidents:
     lessons_learned: 'Externe DDoS-Schutzservices sind für öffentliche Services essentiell'
 
   - title: 'Malware-Infektion auf Mitarbeiter-Laptop'
+    affectedAssets:
+      - 'ref:asset:Mitarbeiter-Laptops (50 Stück)'
     description: 'Ein Mitarbeiter-Laptop wurde mit Malware infiziert durch Download aus unsicherer Quelle.'
     category: 'malware'
     severity: 'medium'
@@ -85,6 +99,8 @@ incidents:
     lessons_learned: 'Endpoint-Protection muss aktuell und zentral verwaltet werden'
 
   - title: 'Unbefugter Zugriff auf Netzwerk-Share'
+    affectedAssets:
+      - 'ref:asset:Active Directory Server AD-01'
     description: 'Ein ehemaliger Mitarbeiter hatte noch Zugriff auf Netzwerk-Shares nach Austritt.'
     category: 'unauthorized_access'
     severity: 'high'
@@ -102,6 +118,9 @@ incidents:
     lessons_learned: 'Automatisierte Identity-Lifecycle-Prozesse sind kritisch'
 
   - title: 'Datenverlust durch fehlerhafte Migration'
+    affectedAssets:
+      - 'ref:asset:CRM-System'
+      - 'ref:asset:Personalakten-System'
     description: 'Bei einer Datenmigration auf neuen Server sind durch Skript-Fehler Daten verloren gegangen.'
     category: 'data_loss'
     severity: 'medium'
