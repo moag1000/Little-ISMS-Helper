@@ -1,5 +1,6 @@
 business_continuity_plans:
   - name: 'BCP-001 IT-Service-Ausfall (Primärsystem)'
+    businessProcess: 'ref:business_process:IT-Support und Helpdesk'
     description: 'Notfallplan bei Totalausfall kritischer IT-Dienste (ERP, CRM, E-Mail) im Rechenzentrum Frankfurt. Aktivierung bei Nichtverfügbarkeit > 2 Stunden.'
     planOwner: 'Leiter IT-Operations'
     bcTeam: 'IT-Operations, Netzwerk-Team, Application-Owner, Service Desk, CISO'
@@ -64,6 +65,7 @@ business_continuity_plans:
     bsiPhase: 'umsetzung'
 
   - name: 'BCP-002 Gebäude-Nichtverfügbarkeit HQ München'
+    businessProcess: 'ref:business_process:Kundenauftragsabwicklung'
     description: 'Notfallplan bei Nichtverfügbarkeit des Hauptstandorts München (Feuer, Überschwemmung, behördliche Sperrung, Bombendrohung).'
     planOwner: 'Facility Manager'
     bcTeam: 'Facility Management, HR, IT, Kommunikation, Arbeitsschutz, Empfang'
@@ -126,6 +128,7 @@ business_continuity_plans:
     bsiPhase: 'umsetzung'
 
   - name: 'BCP-003 Lieferkette-Unterbrechung'
+    businessProcess: 'ref:business_process:Online-Shop Betrieb'
     description: 'Notfallplan bei Ausfall kritischer Lieferanten (Cloud-Provider, SaaS-Anbieter, Hardware-Lieferant, Zahlungsdienstleister).'
     planOwner: 'Leiter Einkauf & Supplier-Management'
     bcTeam: 'Einkauf, Legal, IT, CISO, Finance'
@@ -183,6 +186,7 @@ business_continuity_plans:
     bsiPhase: 'konzeption'
 
   - name: 'BCP-004 Pandemie / Massenerkrankung'
+    businessProcess: 'ref:business_process:Gehaltsabrechnung'
     description: 'Notfallplan bei pandemischer Lage oder Ausfall > 30% der Belegschaft (Grippe, COVID-Varianten, Noro-Virus).'
     planOwner: 'HR-Leitung'
     bcTeam: 'HR, Arbeitsschutz, IT, Leitung Kommunikation, Betriebsarzt, Betriebsrat'
@@ -242,6 +246,7 @@ business_continuity_plans:
     bsiPhase: 'aufrechterhaltung'
 
   - name: 'BCP-005 Cyber-Crisis / Ransomware-Angriff'
+    businessProcess: 'ref:business_process:Backup und Disaster Recovery'
     description: 'Notfallplan bei schwerwiegendem Cyber-Angriff mit Verschlüsselung/Datenexfiltration. Kombination ISO 27001 A.5.29 + ISO 22301.'
     planOwner: 'CISO'
     bcTeam: 'CISO, CIO, IT-Security, Incident Response Team, Legal, DPO, Leitung Kommunikation, GF'

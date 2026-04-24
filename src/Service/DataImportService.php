@@ -431,6 +431,7 @@ class DataImportService
             'dpias' => DataProtectionImpactAssessment::class,
             'data_subject_requests' => DataSubjectRequest::class,
             'bc_plans' => BusinessContinuityPlan::class,
+            'business_continuity_plans' => BusinessContinuityPlan::class,
             'bc_exercises' => BCExercise::class,
             'crisis_teams' => CrisisTeam::class,
             'suppliers' => Supplier::class,
@@ -446,7 +447,84 @@ class DataImportService
     }
 
     /**
-     * Erstellt Entity aus Array-Daten
+     * Natural-Key-Feld pro Entity-Typ — wird für ref:-Lookups genutzt.
+     * Fehlt ein Mapping → kein ref-Resolving möglich.
+     *
+     * @return array<string, string>
+     */
+    private function referenceNaturalKeys(): array
+    {
+        return [
+            'asset' => 'name',
+            'risk' => 'title',
+            'incident' => 'title',
+            'control' => 'identifier',
+            'business_process' => 'name',
+            'processing_activity' => 'name',
+            'supplier' => 'name',
+            'location' => 'name',
+            'person' => 'fullName',
+            'document' => 'filename',
+            'internal_audit' => 'title',
+            'training' => 'title',
+            'management_review' => 'title',
+            'interested_party' => 'name',
+            'ismsobjective' => 'title',
+            'risk_appetite' => 'category',
+            'bc_plan' => 'name',
+            'bc_exercise' => 'name',
+            'crisis_team' => 'teamName',
+            'compliance_framework' => 'code',
+            'compliance_requirement' => 'identifier',
+            'dpia' => 'title',
+            'data_breach' => 'referenceNumber',
+            'consent' => 'dataSubjectIdentifier',
+            'data_subject_request' => 'referenceNumber',
+            'tenant' => 'code',
+            'user' => 'email',
+        ];
+    }
+
+    /**
+     * Löst Strings der Form "ref:<type>:<natural-key>" zur Entity auf.
+     * Nutzt das Natural-Key-Feld aus referenceNaturalKeys(). Für unbekannte
+     * Typen oder fehlende Referenzen: null + Log-Eintrag.
+     */
+    private function resolveReference(string $value): ?object
+    {
+        if (!str_starts_with($value, 'ref:')) {
+            return null;
+        }
+        $parts = explode(':', $value, 3);
+        if (count($parts) !== 3) {
+            return null;
+        }
+        [$prefix, $type, $key] = $parts;
+        $entityClass = $this->resolveEntityClass($type)
+            ?? $this->resolveEntityClass($type . 's')
+            ?? null;
+        if ($entityClass === null) {
+            $this->addLog("Unknown ref-type '{$type}' in reference '{$value}'");
+            return null;
+        }
+        $keys = $this->referenceNaturalKeys();
+        $keyField = $keys[$type] ?? $keys[rtrim($type, 's')] ?? null;
+        if ($keyField === null) {
+            $this->addLog("No natural-key field registered for ref-type '{$type}'");
+            return null;
+        }
+
+        $entity = $this->entityManager->getRepository($entityClass)->findOneBy([$keyField => $key]);
+        if ($entity === null) {
+            $this->addLog("Reference not found: {$entityClass}.{$keyField} = '{$key}' (from '{$value}')");
+        }
+        return $entity;
+    }
+
+    /**
+     * Erstellt Entity aus Array-Daten.
+     * Unterstützt scalar values, Datum-Strings (Reflection auf Setter-Typ),
+     * ref:-Strings (Entity-Lookup per Natural-Key) und Collections.
      */
     private function createEntity(string $entityClass, array $data): object
     {
@@ -454,6 +532,27 @@ class DataImportService
 
         foreach ($data as $property => $value) {
             $setter = 'set' . ucfirst((string) $property);
+            $adder = 'add' . ucfirst(rtrim((string) $property, 's'));
+
+            // ref:-Syntax auflösen (single oder list of refs)
+            if (is_string($value) && str_starts_with($value, 'ref:')) {
+                $resolved = $this->resolveReference($value);
+                if ($resolved === null) {
+                    continue;  // Log in resolveReference
+                }
+                $value = $resolved;
+            } elseif (is_array($value) && $this->isRefList($value)) {
+                // Collection-Refs: nutze adder() sofern vorhanden
+                if (method_exists($entity, $adder)) {
+                    foreach ($value as $ref) {
+                        $resolved = $this->resolveReference((string) $ref);
+                        if ($resolved !== null) {
+                            $entity->$adder($resolved);
+                        }
+                    }
+                    continue;
+                }
+            }
 
             if (!method_exists($entity, $setter)) {
                 continue;
@@ -475,8 +574,6 @@ class DataImportService
                 } catch (\ReflectionException) {
                     // Reflection konnte Typ nicht lesen — String durchlassen, setter wirft ggf.
                 }
-            } elseif ($value instanceof DateTime) {
-                // already correct type, keep as-is
             }
 
             try {
@@ -487,6 +584,22 @@ class DataImportService
         }
 
         return $entity;
+    }
+
+    /**
+     * Prüft ob ein Array nur ref:-Strings enthält (für Collection-Properties).
+     */
+    private function isRefList(array $arr): bool
+    {
+        if (empty($arr) || !array_is_list($arr)) {
+            return false;
+        }
+        foreach ($arr as $item) {
+            if (!is_string($item) || !str_starts_with($item, 'ref:')) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

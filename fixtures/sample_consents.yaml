@@ -1,6 +1,7 @@
 consents:
   - dataSubjectIdentifier: 'max.mustermann@example.com'
     identifierType: 'email'
+    processingActivity: 'ref:processing_activity:Newsletter-Versand'
     purposes:
       - 'Newsletter-Versand'
       - 'Produktinformationen'
@@ -23,6 +24,7 @@ consents:
 
   - dataSubjectIdentifier: 'lisa.schneider@example.de'
     identifierType: 'email'
+    processingActivity: 'ref:processing_activity:Cookie-Consent-Management und Einwilligungsprotokoll'
     purposes:
       - 'Marketing-Cookies'
       - 'Personalisierte Werbung'
@@ -49,6 +51,7 @@ consents:
 
   - dataSubjectIdentifier: 'K-2024-00421'
     identifierType: 'customer_id'
+    processingActivity: 'ref:processing_activity:Cookie-Consent-Management und Einwilligungsprotokoll'
     purposes:
       - 'Werbetracking'
       - 'Analyse des Nutzungsverhaltens'
@@ -71,6 +74,7 @@ consents:
 
   - dataSubjectIdentifier: 'dr.klaus.weber@example.org'
     identifierType: 'email'
+    processingActivity: 'ref:processing_activity:CRM / Kunden- und Interessentenverwaltung'
     purposes:
       - 'Teilnahme an Anwenderstudie 2024'
       - 'Wissenschaftliche Auswertung von Befragungsdaten'
@@ -92,6 +96,7 @@ consents:
 
   - dataSubjectIdentifier: 'anna.hoffmann@example.com'
     identifierType: 'email'
+    processingActivity: 'ref:processing_activity:Mitarbeiter-Stammdaten und Personalakte'
     purposes:
       - 'Veroeffentlichung von Mitarbeiterfotos auf Unternehmenswebsite'
       - 'Nutzung von Fotos in Social-Media-Kanaelen (LinkedIn, XING)'
@@ -112,6 +117,7 @@ consents:
 
   - dataSubjectIdentifier: 'thomas.becker@example.net'
     identifierType: 'email'
+    processingActivity: 'ref:processing_activity:CRM / Kunden- und Interessentenverwaltung'
     purposes:
       - 'Weitergabe an externen Bonitaetsdienstleister (SCHUFA)'
       - 'Bonitaetspruefung fuer Ratenkauf'
