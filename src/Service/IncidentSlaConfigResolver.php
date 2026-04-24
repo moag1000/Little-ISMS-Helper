@@ -48,6 +48,15 @@ final readonly class IncidentSlaView
  * nie brechen).
  *
  * Cache pro (Tenant-ID, Severity).
+ *
+ * Phase 8M.2 — Ceiling-Merge pro Severity:
+ * Ein Holding-Parent setzt Maximum-Stunden. Child-Tenants dürfen nur
+ * NIEDRIGERE (schnellere/strengere) Stunden setzen. Null bedeutet
+ * „kein Wert gesetzt" — minNullable() behandelt das korrekt.
+ * Merge-Semantik: min(child, parent) für alle drei Hours-Felder.
+ *
+ * Cache-Invalidation: wie RiskApprovalConfigResolver — bei Ancestor-
+ * Änderung müssen Child-Caches ebenfalls invalidiert werden.
  */
 class IncidentSlaConfigResolver
 {
@@ -68,15 +77,37 @@ class IncidentSlaConfigResolver
             return $this->cache[$cacheKey];
         }
 
-        $entity = $this->repository->findByTenantAndSeverity($tenant, $severity);
-        if (!$entity instanceof IncidentSlaConfig) {
+        // Eigene Config des Child-Tenants (oder Default wenn keine vorhanden)
+        $childEntity = $this->repository->findByTenantAndSeverity($tenant, $severity);
+        if (!$childEntity instanceof IncidentSlaConfig) {
             $this->logger->warning('No IncidentSlaConfig for tenant/severity — using default', [
                 'tenant_id' => $tenantId,
                 'severity' => $severity,
             ]);
             $view = IncidentSlaView::fromDefault($severity);
         } else {
-            $view = IncidentSlaView::fromEntity($entity);
+            $view = IncidentSlaView::fromEntity($childEntity);
+        }
+
+        // 8M.2: Ceiling-Merge pro Severity — Ancestor-Walk (Parent zuerst, Root zuletzt).
+        // min() stellt sicher, dass Child nicht laxere SLAs als Holding-Parent bekommt.
+        foreach ($tenant->getAllAncestors() as $ancestor) {
+            $ancestorEntity = $this->repository->findByTenantAndSeverity($ancestor, $severity);
+            if (!$ancestorEntity instanceof IncidentSlaConfig) {
+                continue;
+            }
+            $ancestorView = IncidentSlaView::fromEntity($ancestorEntity);
+            $view = new IncidentSlaView(
+                severity:        $severity,
+                responseHours:   min($view->responseHours, $ancestorView->responseHours),
+                escalationHours: $this->minNullable($view->escalationHours, $ancestorView->escalationHours),
+                resolutionHours: $this->minNullable($view->resolutionHours, $ancestorView->resolutionHours),
+            );
+            $this->logger->debug('IncidentSlaConfigResolver: ceiling-merge with ancestor', [
+                'tenant_id' => $tenantId,
+                'ancestor_id' => $ancestor->getId(),
+                'severity' => $severity,
+            ]);
         }
 
         return $this->cache[$cacheKey] = $view;
@@ -90,5 +121,21 @@ class IncidentSlaConfigResolver
                 unset($this->cache[$key]);
             }
         }
+    }
+
+    /**
+     * Ceiling für nullable int: wenn einer der Werte null ist, wird der andere
+     * zurückgegeben (null = „kein Limit gesetzt" = unendlich lax).
+     * Wenn beide null → null (kein Limit in der Kette gesetzt).
+     */
+    private function minNullable(?int $a, ?int $b): ?int
+    {
+        if ($a === null) {
+            return $b;
+        }
+        if ($b === null) {
+            return $a;
+        }
+        return min($a, $b);
     }
 }
