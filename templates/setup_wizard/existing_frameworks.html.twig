@@ -46,7 +46,7 @@
 
             {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg', 'form': form, 'available_frameworks': available_frameworks } only %}
                 {% block card_header %}
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header">
                         <h1 class="h3 mb-0">
                             <i class="bi bi-collection me-2" aria-hidden="true"></i>
                             {{ 'existing_frameworks.header'|trans({}, 'setup_wizard') }}

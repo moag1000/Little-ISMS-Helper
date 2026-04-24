@@ -10,7 +10,7 @@
         <div class="col-md-10">
 {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg' } %}
                 {% block card_header %}
-                    <div class="card-header bg-info text-white">
+                    <div class="card-header">
                         <h1 class="h3 mb-0">
                             <i class="bi bi-cloud-upload-alt me-2" aria-hidden="true"></i>
                             {{ 'setup.step3.header'|trans({}, 'setup') }}
@@ -196,7 +196,7 @@
                         {% if schema_created %}
                         {% embed '_components/_card.html.twig' with { 'class': 'border-info mb-4' } %}
                             {% block card_header %}
-                                <div class="card-header bg-info text-white">
+                                <div class="card-header">
                                     <h2 class="h5 mb-0">
                                         <i class="bi bi-cloud-upload-alt me-2" aria-hidden="true"></i>
                                         {{ 'setup.step3.restore.title'|trans({}, 'setup') }}
