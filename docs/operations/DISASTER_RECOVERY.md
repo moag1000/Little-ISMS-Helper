@@ -335,12 +335,11 @@ echo "APP_SECRET=abc123..." >> .env.local
 php bin/console cache:clear
 ```
 
-**Option 2 — Verschlüsselte Werte nach Restore manuell neu eingeben:**
+**Option 2 — Verschlüsselte SystemSettings beim Restore überspringen:**
 ```bash
-# Nach dem Restore in der Admin-UI:
-# Admin > Einstellungen > SystemSettings
-# Betroffene Felder werden als "[verschlüsselt — bitte neu eingeben]" angezeigt
-# Neue Werte manuell eingeben und speichern
+# Via RestoreService-Options: 'skip_entities' => ['SystemSettings']
+# Oder Admin-UI-Checkbox "SystemSettings überspringen" (falls gesetzt).
+# Nach Restore: Admin > Einstellungen > SystemSettings manuell befüllen.
 ```
 
 **Option 3 — Backup ohne verschlüsselte Felder erstellen (bei bekannten Problemen):**
@@ -366,7 +365,7 @@ Jedes Backup enthält in den Metadaten einen SHA-256-Hash über den gesamten `da
 }
 ```
 
-Der Hash wird beim Erstellen des Backups berechnet (`hash('sha256', json_encode($backup['data']))`). Beim Restore wird dieser Hash **nicht automatisch erneut geprüft** — er dient als manuelles Prüfmittel.
+Der Hash wird beim Erstellen des Backups berechnet (`hash('sha256', json_encode($backup['data']))`). Beim Restore wird der Hash **automatisch verifiziert** (`RestoreService::verifyIntegrity()`) — bei Mismatch bricht der Restore mit `RuntimeException: Backup integrity check failed: sha256 mismatch` ab. Legacy-Backups ohne `sha256` laufen weiter und erzeugen eine Warnung im Ergebnis. Ops können zusätzlich manuell per Script prüfen (siehe unten).
 
 ### Manuelle Integritätsprüfung
 
