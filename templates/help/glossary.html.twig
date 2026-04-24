@@ -229,6 +229,39 @@
                         </div>
                     </div>
                 </div>
+
+                {# Module #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="basics">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-module" aria-expanded="false" aria-controls="glossary-module">
+                            <strong>{{ 'help.glossary.term.module.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-module" class="accordion-collapse collapse" data-bs-parent="#glossaryBasics">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.module.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Guided Tour #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="basics">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-guided-tour" aria-expanded="false" aria-controls="glossary-guided-tour">
+                            <strong>{{ 'help.glossary.term.guided_tour.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-guided-tour" class="accordion-collapse collapse" data-bs-parent="#glossaryBasics">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.guided_tour.definition'|trans({}, 'help') }}</p>
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-arrow-left-right me-2" aria-hidden="true"></i>
+                                <strong>{{ 'help.glossary.analogy_label'|trans({}, 'help') }}</strong>
+                                {{ 'help.glossary.term.guided_tour.analogy'|trans({}, 'help') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {# ===== Risikomanagement ===== #}
@@ -578,6 +611,90 @@
                         </div>
                     </div>
                 </div>
+
+                {# Risk Lifecycle Status #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="risk">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-risk-lifecycle-status" aria-expanded="false" aria-controls="glossary-risk-lifecycle-status">
+                            <strong>{{ 'help.glossary.term.risk_lifecycle_status.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-risk-lifecycle-status" class="accordion-collapse collapse" data-bs-parent="#glossaryRisk">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.risk_lifecycle_status.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Gross vs. Net Risk #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="risk">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-gross-net-risk" aria-expanded="false" aria-controls="glossary-gross-net-risk">
+                            <strong>{{ 'help.glossary.term.gross_net_risk.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-gross-net-risk" class="accordion-collapse collapse" data-bs-parent="#glossaryRisk">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.gross_net_risk.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Risk Landscape #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="risk">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-risk-landscape" aria-expanded="false" aria-controls="glossary-risk-landscape">
+                            <strong>{{ 'help.glossary.term.risk_landscape.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-risk-landscape" class="accordion-collapse collapse" data-bs-parent="#glossaryRisk">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.risk_landscape.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Correlated Risks #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="risk">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-correlated-risks" aria-expanded="false" aria-controls="glossary-correlated-risks">
+                            <strong>{{ 'help.glossary.term.correlated_risks.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-correlated-risks" class="accordion-collapse collapse" data-bs-parent="#glossaryRisk">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.correlated_risks.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Appetite Exceedance #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="risk">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-appetite-exceedance" aria-expanded="false" aria-controls="glossary-appetite-exceedance">
+                            <strong>{{ 'help.glossary.term.appetite_exceedance.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-appetite-exceedance" class="accordion-collapse collapse" data-bs-parent="#glossaryRisk">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.appetite_exceedance.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Risk Prioritization #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="risk">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-risk-prioritization" aria-expanded="false" aria-controls="glossary-risk-prioritization">
+                            <strong>{{ 'help.glossary.term.risk_prioritization.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-risk-prioritization" class="accordion-collapse collapse" data-bs-parent="#glossaryRisk">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.risk_prioritization.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {# ===== Compliance & Audit ===== #}
@@ -859,6 +976,132 @@
                         </div>
                     </div>
                 </div>
+
+                {# Fulfillment Percentage #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="compliance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-fulfillment-percentage" aria-expanded="false" aria-controls="glossary-fulfillment-percentage">
+                            <strong>{{ 'help.glossary.term.fulfillment_percentage.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-fulfillment-percentage" class="accordion-collapse collapse" data-bs-parent="#glossaryCompliance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.fulfillment_percentage.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Compliance Requirement #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="compliance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-compliance-requirement" aria-expanded="false" aria-controls="glossary-compliance-requirement">
+                            <strong>{{ 'help.glossary.term.compliance_requirement.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-compliance-requirement" class="accordion-collapse collapse" data-bs-parent="#glossaryCompliance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.compliance_requirement.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Confidence Score #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="compliance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-confidence-score" aria-expanded="false" aria-controls="glossary-confidence-score">
+                            <strong>{{ 'help.glossary.term.confidence_score.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-confidence-score" class="accordion-collapse collapse" data-bs-parent="#glossaryCompliance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.confidence_score.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Seed Catalog #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="compliance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-seed-catalog" aria-expanded="false" aria-controls="glossary-seed-catalog">
+                            <strong>{{ 'help.glossary.term.seed_catalog.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-seed-catalog" class="accordion-collapse collapse" data-bs-parent="#glossaryCompliance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.seed_catalog.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Gap Analysis #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="compliance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-gap-analysis" aria-expanded="false" aria-controls="glossary-gap-analysis">
+                            <strong>{{ 'help.glossary.term.gap_analysis.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-gap-analysis" class="accordion-collapse collapse" data-bs-parent="#glossaryCompliance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.gap_analysis.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Surveillance Audit #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="compliance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-surveillance-audit" aria-expanded="false" aria-controls="glossary-surveillance-audit">
+                            <strong>{{ 'help.glossary.term.surveillance_audit.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-surveillance-audit" class="accordion-collapse collapse" data-bs-parent="#glossaryCompliance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.surveillance_audit.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Audit Program #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="compliance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-audit-program" aria-expanded="false" aria-controls="glossary-audit-program">
+                            <strong>{{ 'help.glossary.term.audit_program.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-audit-program" class="accordion-collapse collapse" data-bs-parent="#glossaryCompliance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.audit_program.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Evidence #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="compliance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-evidence" aria-expanded="false" aria-controls="glossary-evidence">
+                            <strong>{{ 'help.glossary.term.evidence.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-evidence" class="accordion-collapse collapse" data-bs-parent="#glossaryCompliance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.evidence.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Compliance Inheritance #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="compliance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-compliance-inheritance" aria-expanded="false" aria-controls="glossary-compliance-inheritance">
+                            <strong>{{ 'help.glossary.term.compliance_inheritance.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-compliance-inheritance" class="accordion-collapse collapse" data-bs-parent="#glossaryCompliance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.compliance_inheritance.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {# ===== BCM ===== #}
@@ -1121,6 +1364,90 @@
                     <div id="glossary-tlpt" class="accordion-collapse collapse" data-bs-parent="#glossaryBcm">
                         <div class="accordion-body">
                             <p>{{ 'help.glossary.term.tlpt.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Activation Criteria #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="bcm">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-activation-criteria" aria-expanded="false" aria-controls="glossary-activation-criteria">
+                            <strong>{{ 'help.glossary.term.activation_criteria.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-activation-criteria" class="accordion-collapse collapse" data-bs-parent="#glossaryBcm">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.activation_criteria.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Alternative Site #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="bcm">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-alternative-site" aria-expanded="false" aria-controls="glossary-alternative-site">
+                            <strong>{{ 'help.glossary.term.alternative_site.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-alternative-site" class="accordion-collapse collapse" data-bs-parent="#glossaryBcm">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.alternative_site.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Process Criticality #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="bcm">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-process-criticality" aria-expanded="false" aria-controls="glossary-process-criticality">
+                            <strong>{{ 'help.glossary.term.process_criticality.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-process-criticality" class="accordion-collapse collapse" data-bs-parent="#glossaryBcm">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.process_criticality.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Dependency Analysis #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="bcm">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-dependency-analysis" aria-expanded="false" aria-controls="glossary-dependency-analysis">
+                            <strong>{{ 'help.glossary.term.dependency_analysis.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-dependency-analysis" class="accordion-collapse collapse" data-bs-parent="#glossaryBcm">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.dependency_analysis.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Exercise Report #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="bcm">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-exercise-report" aria-expanded="false" aria-controls="glossary-exercise-report">
+                            <strong>{{ 'help.glossary.term.exercise_report.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-exercise-report" class="accordion-collapse collapse" data-bs-parent="#glossaryBcm">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.exercise_report.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Readiness Score #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="bcm">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-readiness-score" aria-expanded="false" aria-controls="glossary-readiness-score">
+                            <strong>{{ 'help.glossary.term.readiness_score.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-readiness-score" class="accordion-collapse collapse" data-bs-parent="#glossaryBcm">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.readiness_score.definition'|trans({}, 'help') }}</p>
                         </div>
                     </div>
                 </div>
@@ -1445,6 +1772,118 @@
                         </div>
                     </div>
                 </div>
+
+                {# Special Categories #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="privacy">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-special-categories" aria-expanded="false" aria-controls="glossary-special-categories">
+                            <strong>{{ 'help.glossary.term.special_categories.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-special-categories" class="accordion-collapse collapse" data-bs-parent="#glossaryPrivacy">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.special_categories.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Data Subject Rights #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="privacy">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-data-subject-rights" aria-expanded="false" aria-controls="glossary-data-subject-rights">
+                            <strong>{{ 'help.glossary.term.data_subject_rights.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-data-subject-rights" class="accordion-collapse collapse" data-bs-parent="#glossaryPrivacy">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.data_subject_rights.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# AVV/DPA #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="privacy">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-avv-dpa" aria-expanded="false" aria-controls="glossary-avv-dpa">
+                            <strong>{{ 'help.glossary.term.avv_dpa.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-avv-dpa" class="accordion-collapse collapse" data-bs-parent="#glossaryPrivacy">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.avv_dpa.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Breach Notification Deadline #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="privacy">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-breach-notification-deadline" aria-expanded="false" aria-controls="glossary-breach-notification-deadline">
+                            <strong>{{ 'help.glossary.term.breach_notification_deadline.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-breach-notification-deadline" class="accordion-collapse collapse" data-bs-parent="#glossaryPrivacy">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.breach_notification_deadline.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Purpose Limitation #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="privacy">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-purpose-limitation" aria-expanded="false" aria-controls="glossary-purpose-limitation">
+                            <strong>{{ 'help.glossary.term.purpose_limitation.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-purpose-limitation" class="accordion-collapse collapse" data-bs-parent="#glossaryPrivacy">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.purpose_limitation.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Accountability #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="privacy">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-accountability" aria-expanded="false" aria-controls="glossary-accountability">
+                            <strong>{{ 'help.glossary.term.accountability.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-accountability" class="accordion-collapse collapse" data-bs-parent="#glossaryPrivacy">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.accountability.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Legitimate Interest Assessment #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="privacy">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-legitimate-interest-assessment" aria-expanded="false" aria-controls="glossary-legitimate-interest-assessment">
+                            <strong>{{ 'help.glossary.term.legitimate_interest_assessment.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-legitimate-interest-assessment" class="accordion-collapse collapse" data-bs-parent="#glossaryPrivacy">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.legitimate_interest_assessment.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Automated Decision-Making #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="privacy">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-automated-decision-making" aria-expanded="false" aria-controls="glossary-automated-decision-making">
+                            <strong>{{ 'help.glossary.term.automated_decision_making.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-automated-decision-making" class="accordion-collapse collapse" data-bs-parent="#glossaryPrivacy">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.automated_decision_making.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {# ===== Operations ===== #}
@@ -1615,6 +2054,148 @@
                     <div id="glossary-sla-ops" class="accordion-collapse collapse" data-bs-parent="#glossaryOperations">
                         <div class="accordion-body">
                             <p>{{ 'help.glossary.term.sla_ops.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Bulk Actions #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="operations">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-bulk-actions" aria-expanded="false" aria-controls="glossary-bulk-actions">
+                            <strong>{{ 'help.glossary.term.bulk_actions.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-bulk-actions" class="accordion-collapse collapse" data-bs-parent="#glossaryOperations">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.bulk_actions.definition'|trans({}, 'help') }}</p>
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-arrow-left-right me-2" aria-hidden="true"></i>
+                                <strong>{{ 'help.glossary.analogy_label'|trans({}, 'help') }}</strong>
+                                {{ 'help.glossary.term.bulk_actions.analogy'|trans({}, 'help') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Command Palette #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="operations">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-command-palette" aria-expanded="false" aria-controls="glossary-command-palette">
+                            <strong>{{ 'help.glossary.term.command_palette.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-command-palette" class="accordion-collapse collapse" data-bs-parent="#glossaryOperations">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.command_palette.definition'|trans({}, 'help') }}</p>
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-arrow-left-right me-2" aria-hidden="true"></i>
+                                <strong>{{ 'help.glossary.analogy_label'|trans({}, 'help') }}</strong>
+                                {{ 'help.glossary.term.command_palette.analogy'|trans({}, 'help') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Audit Trail #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="operations">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-audit-trail" aria-expanded="false" aria-controls="glossary-audit-trail">
+                            <strong>{{ 'help.glossary.term.audit_trail.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-audit-trail" class="accordion-collapse collapse" data-bs-parent="#glossaryOperations">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.audit_trail.definition'|trans({}, 'help') }}</p>
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-arrow-left-right me-2" aria-hidden="true"></i>
+                                <strong>{{ 'help.glossary.analogy_label'|trans({}, 'help') }}</strong>
+                                {{ 'help.glossary.term.audit_trail.analogy'|trans({}, 'help') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Idempotent #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="operations">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-idempotent" aria-expanded="false" aria-controls="glossary-idempotent">
+                            <strong>{{ 'help.glossary.term.idempotent.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-idempotent" class="accordion-collapse collapse" data-bs-parent="#glossaryOperations">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.idempotent.definition'|trans({}, 'help') }}</p>
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-arrow-left-right me-2" aria-hidden="true"></i>
+                                <strong>{{ 'help.glossary.analogy_label'|trans({}, 'help') }}</strong>
+                                {{ 'help.glossary.term.idempotent.analogy'|trans({}, 'help') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Workflow Auto-Progression #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="operations">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-workflow-auto-progression" aria-expanded="false" aria-controls="glossary-workflow-auto-progression">
+                            <strong>{{ 'help.glossary.term.workflow_auto_progression.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-workflow-auto-progression" class="accordion-collapse collapse" data-bs-parent="#glossaryOperations">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.workflow_auto_progression.definition'|trans({}, 'help') }}</p>
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-arrow-left-right me-2" aria-hidden="true"></i>
+                                <strong>{{ 'help.glossary.analogy_label'|trans({}, 'help') }}</strong>
+                                {{ 'help.glossary.term.workflow_auto_progression.analogy'|trans({}, 'help') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Workflow Template vs. Instance #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="operations">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-workflow-template-instance" aria-expanded="false" aria-controls="glossary-workflow-template-instance">
+                            <strong>{{ 'help.glossary.term.workflow_template_instance.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-workflow-template-instance" class="accordion-collapse collapse" data-bs-parent="#glossaryOperations">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.workflow_template_instance.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Completeness Score #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="operations">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-completeness-score" aria-expanded="false" aria-controls="glossary-completeness-score">
+                            <strong>{{ 'help.glossary.term.completeness_score.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-completeness-score" class="accordion-collapse collapse" data-bs-parent="#glossaryOperations">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.completeness_score.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Data Reuse Hub #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="operations">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-data-reuse-hub" aria-expanded="false" aria-controls="glossary-data-reuse-hub">
+                            <strong>{{ 'help.glossary.term.data_reuse_hub.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-data-reuse-hub" class="accordion-collapse collapse" data-bs-parent="#glossaryOperations">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.data_reuse_hub.definition'|trans({}, 'help') }}</p>
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-arrow-left-right me-2" aria-hidden="true"></i>
+                                <strong>{{ 'help.glossary.analogy_label'|trans({}, 'help') }}</strong>
+                                {{ 'help.glossary.term.data_reuse_hub.analogy'|trans({}, 'help') }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1886,6 +2467,34 @@
                                 <strong>{{ 'help.glossary.analogy_label'|trans({}, 'help') }}</strong>
                                 {{ 'help.glossary.term.risk_assessment.analogy'|trans({}, 'help') }}
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Corporate Structure #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="governance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-corporate-structure" aria-expanded="false" aria-controls="glossary-corporate-structure">
+                            <strong>{{ 'help.glossary.term.corporate_structure.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-corporate-structure" class="accordion-collapse collapse" data-bs-parent="#glossaryGovernance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.corporate_structure.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Delta Assessment #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="governance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-delta-assessment" aria-expanded="false" aria-controls="glossary-delta-assessment">
+                            <strong>{{ 'help.glossary.term.delta_assessment.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-delta-assessment" class="accordion-collapse collapse" data-bs-parent="#glossaryGovernance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.delta_assessment.definition'|trans({}, 'help') }}</p>
                         </div>
                     </div>
                 </div>

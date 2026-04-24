@@ -184,6 +184,13 @@ help:
             tenant:
                 name: "Tenant (Mandant)"
                 definition: "Ein eigenstaendiger Mandant im Tool mit eigenen Assets, Risiken, Controls und Benutzern, strikt getrennt von anderen Mandanten. Ermoeglicht den Betrieb mehrerer ISMS in einer Installation."
+            module:
+                name: "Modul"
+                definition: "Funktional abgegrenzter Baustein des Tools der unabhaengig aktiviert/deaktiviert werden kann. Beispiele: Asset Management, Risk Management, BCM, Multi-Framework Compliance. Pflichtmodule (Core ISMS, User Management) immer aktiv. Optionale Module je nach Bedarf."
+            guided_tour:
+                name: "Gefuehrte Tour"
+                definition: "Interaktive Einfuehrung die wichtige Bereiche Schritt fuer Schritt erklaert. Highlight-Rahmen zeigt auf UI-Elemente mit Erklaertext. Verschiedene Touren je Rolle (Junior, ISB, CISO, Auditor). Jederzeit ueber Benutzermenue neu startbar."
+                analogy: "Wie Erstschulung fuer neue QMS-Software — digital und jederzeit wiederholbar."
             threat:
                 name: "Bedrohung (Threat)"
                 definition: "Eine potenzielle Ursache fuer einen Sicherheitsvorfall. Beispiele: Hackerangriff, Feuer, Mitarbeiterfehler. Bedrohungen nutzen Schwachstellen aus."
@@ -355,6 +362,33 @@ help:
             c5:
                 name: "C5 (Cloud Computing Compliance Criteria Catalogue)"
                 definition: "BSI-Standard fuer Cloud-Sicherheit. 17 Bereiche mit Mindestanforderungen an sichere Cloud-Dienste. Fuer oeffentliche Auftraggeber in Deutschland oft verpflichtend."
+            fulfillment_percentage:
+                name: "Erfuellungsgrad"
+                definition: "Prozentualer Fortschritt (0-100%) der Umsetzung einer Compliance-Anforderung. Im Tool pro Anforderung erfasst und aggregiert zum Framework-Gesamtfortschritt auf dem Dashboard."
+            compliance_requirement:
+                name: "Compliance-Anforderung"
+                definition: "Eine einzelne normative Forderung innerhalb eines Frameworks, z.B. ISO 27001 A.8.1 oder DORA Art. 6. Im Tool global definiert, mandantenspezifischer Umsetzungsstand separat verfolgt. Verknuepfbar mit Controls und Nachweisdokumenten."
+            confidence_score:
+                name: "Konfidenzwert (Mapping-Qualitaet)"
+                definition: "Qualitaetsindikator (low/medium/high) fuer Cross-Framework-Mappings. Algorithmisch berechnet aus textueller Aehnlichkeit und Keyword-Ueberlappung. Niedrige Konfidenz → Mapping landet in Review-Queue zur manuellen Pruefung."
+            seed_catalog:
+                name: "Seed-Katalog (vorgefertigte Mappings)"
+                definition: "Vorgefertigte Cross-Framework-Zuordnungen die per Knopfdruck geladen werden. 8 verfuegbar: GDPR, NIS2, DORA, TISAX, BSI, C5:2026, SOC 2, GDPR-ISO27701 — jeweils zu ISO 27001. Idempotent: bereits vorhandene Paare werden uebersprungen. Nach Laden muessen Mappings in der Review-Queue freigegeben werden."
+            gap_analysis:
+                name: "Gap-Analyse (automatisiert)"
+                definition: "Systematische Identifikation von Luecken: fehlende Controls, Teilabdeckung, Scope-Unterschiede, zusaetzliche Anforderungen, fehlende Nachweise. Jede Luecke erhaelt Prioritaet, geschaetzten Aufwand in Stunden und Handlungsempfehlung."
+            surveillance_audit:
+                name: "Ueberwachungsaudit"
+                definition: "Jaehrliches Audit durch Zertifizierungsstelle zwischen drejaehrigen Re-Zertifizierungen. Im Tool als Audit-Freeze-Snapshot gesichert: SoA-Stand, Erfuellungsgrade, Risiken und KPIs werden tamper-evident mit SHA-256-Hash fixiert."
+            audit_program:
+                name: "Auditprogramm"
+                definition: "Geplanter Zeitplan interner Audits ueber ein Jahr (ISO 27001 Klausel 9.2). Im Tool mit Status-Lifecycle (geplant, in Durchfuehrung, abgeschlossen, berichtet) und Scope-Typen (ISMS-weit, Framework, Asset, Standort, Abteilung)."
+            evidence:
+                name: "Nachweis (Evidence)"
+                definition: "Dokumentierter Beleg dass eine Anforderung erfuellt ist. Im Tool auf zwei Ebenen: (1) strukturiert ueber Dokumentenverknuepfung, (2) als Freitext-Beschreibung. Fehlende Nachweise werden automatisch als evidence_gap in der Gap-Analyse markiert — haeufiges Audit-Finding."
+            compliance_inheritance:
+                name: "Compliance-Vererbung"
+                definition: "Mechanismus durch den Erfuellungsnachweise eines Basis-Frameworks automatisch als Vorschlaege fuer ein Ziel-Framework uebernommen werden. Basiert auf Cross-Framework-Mappings. Vorschlaege landen in Review-Queue — nie automatisch, immer Vier-Augen-Prinzip."
             vulnerability_scan:
                 name: "Schwachstellenscan (Vulnerability Scan)"
                 definition: "Automatisierte Pruefung von Systemen auf bekannte Sicherheitsluecken (CVEs). Regelmaessig und nach Aenderungen durchfuehren. Ergebnisse fliessen ins Patch-Management."
@@ -367,6 +401,36 @@ help:
             sla_ops:
                 name: "SLA (Service Level Agreement)"
                 definition: "Vereinbarung ueber Leistungskennzahlen: Verfuegbarkeit, Reaktionszeiten, Wiederherstellungszeiten. Im ISMS besonders relevant fuer Cloud-Dienste und ausgelagerte IT (Annex A.5.20)."
+            bulk_actions:
+                name: "Massenaktionen (Bulk Actions)"
+                definition: "Mehrere Eintraege per Checkbox markieren und eine Aktion auf alle gleichzeitig ausfuehren: Loeschen, Exportieren, Tag zuweisen. Die Aktionsleiste erscheint erst bei Auswahl."
+                analogy: "Wie Sammelkorrektur im QMS: statt 30 Dokumente einzeln aendern, alle markieren und in einem Schritt."
+            command_palette:
+                name: "Befehlspalette (Cmd+P / Strg+P)"
+                definition: "Schnellsuche per Tastenkuerzel. Tippen Sie einen Begriff und springen Sie direkt zu jeder Seite, Aktion oder Admin-Funktion — schneller als durchs Menue."
+                analogy: "Wie Spotlight auf dem Mac — aber fuer alle Tool-Funktionen."
+            audit_trail:
+                name: "Pruefprotokoll (Audit Trail)"
+                definition: "Automatisches lueckenloses Protokoll aller Aenderungen: Wer hat wann was erstellt, geaendert oder geloescht? NICHT zu verwechseln mit einem Audit (= geplante Pruefung nach Klausel 9.2). Kryptographisch gesichert (HMAC-Kette) gegen Manipulation."
+                analogy: "Wie das Aenderungsprotokoll gelenkter Dokumente im QMS — aber automatisch fuer ALLES im System."
+            idempotent:
+                name: "Idempotent"
+                definition: "Eigenschaft einer Admin-Funktion (z.B. Loader-Fixer): Beliebig oft ausfuehrbar, immer gleiches Ergebnis. Erstes Mal ergaenzt fehlende Daten, danach passiert nichts. Keine Angst vor versehentlichem Doppelklick."
+                analogy: "Wie ein Lichtschalter der bereits an ist — nochmal druecken aendert nichts."
+            workflow_auto_progression:
+                name: "Automatische Workflow-Weiterleitung"
+                definition: "Workflows ruecken automatisch zum naechsten Schritt vor sobald die noetigen Felder ausgefuellt sind. Beispiel: DSB traegt Schweregrad ein → Schritt 'DSB-Bewertung' gilt als erledigt → weiter zu CISO. Kein manuelles Genehmigen noetig."
+                analogy: "Wie ein Pruefplan im QMS der automatisch zum naechsten Schritt springt wenn der vorherige vollstaendig ist."
+            workflow_template_instance:
+                name: "Workflow-Vorlage vs. Workflow-Instanz"
+                definition: "Vorlage definiert Schritte, Rollen, Bedingungen (z.B. 'DSGVO-Datenpanne 6 Schritte'). Instanz ist ein konkreter Durchlauf an einem bestimmten Objekt (z.B. Datenpanne #42) mit eigenem Status, Fristen und Historie."
+            completeness_score:
+                name: "Vollstaendigkeits-Score"
+                definition: "Prozentwert (0-100%) der anzeigt wie viele Pflichtfelder eines Objekts ausgefuellt sind. Berechnet fuer ISMS-Kontext, BC-Plaene, DPIAs und VVT. Ergaenzend zum Readiness-Score: Vollstaendigkeit allein bedeutet nicht Einsatzbereitschaft."
+            data_reuse_hub:
+                name: "Wiederverwendungs-Zentrale (Data Reuse Hub)"
+                definition: "Uebersichtsseite die zeigt welche Dokumente und Lieferanten am meisten 'Last tragen' — als Nachweis fuer Anforderungen aus mehreren Frameworks. Zeigt FTE-Einsparung, Top-10 Dokumente/Lieferanten und Heatmap fuer Klumpenrisiken."
+                analogy: "Wie ein QM-Handbuch das gleichzeitig ISO 9001, 14001 und 45001 abdeckt — der Hub zeigt welche Dokumente diese Mehrfachnutzung leisten."
             information_security_policy:
                 name: "Informationssicherheitsleitlinie"
                 definition: "Oberstes ISMS-Dokument — von der Geschaeftsleitung verabschiedet. Definiert Ziele, Geltungsbereich und Grundsaetze der Informationssicherheit. Muss fuer alle Mitarbeiter zugaenglich sein."
@@ -378,6 +442,12 @@ help:
                 name: "Risikobewertung (Risk Assessment)"
                 definition: "Systematischer Prozess: Risiken identifizieren → Eintrittswahrscheinlichkeit und Auswirkung bewerten → priorisieren. Muss regelmaessig und bei wesentlichen Aenderungen wiederholt werden (Klausel 6.1.2)."
                 analogy: "Risiken und Chancen aus 9001 (Klausel 6.1) — gleicher Ansatz, aber mit formaler Bewertungsmatrix."
+            corporate_structure:
+                name: "Konzernstruktur (Holding / Tochtergesellschaft)"
+                definition: "Hierarchische Tenant-Beziehung: Mutter-Tenant (Holding) mit Tochter-Tenants (Subsidiaries). Drei Governance-Modelle: Hierarchisch, Geteilte Verantwortung, Unabhaengig. Konzern-ISB kann uebergreifend lesen. Richtlinien und Incidents koennen als 'sichtbar fuer Holding' markiert werden."
+            delta_assessment:
+                name: "Delta-Bewertung"
+                definition: "Analyse wie weit ein Basis-Framework (z.B. ISO 27001) ein neues Ziel-Framework (z.B. NIS2) bereits abdeckt. Berechnet automatisch: vorhandene Mappings, offene Gaps, FTE-Einsparung. Excel-Export fuer Management-Review."
             bcms:
                 name: "BCMS (Business Continuity Management System)"
                 definition: "Managementsystem fuer Geschaeftskontinuitaet — analog zum ISMS, aber fokussiert auf Aufrechterhaltung kritischer Prozesse bei Stoerungen. Kann eigenstaendig (ISO 22301) oder als Teil des ISMS betrieben werden."
@@ -421,6 +491,24 @@ help:
             tlpt:
                 name: "TLPT (Threat-Led Penetration Testing)"
                 definition: "Bedrohungsgesteuerter Penetrationstest, verpflichtend unter DORA fuer systemrelevante Finanzinstitute. Simuliert realistische Angriffsszenarien. Alle 3 Jahre durch externe Tester."
+            activation_criteria:
+                name: "Aktivierungskriterien"
+                definition: "Vordefinierte Bedingungen bei deren Eintreten ein BC-Plan aktiviert wird (z.B. 'Serverausfall > 4h'). Im Tool Pflichtfeld jedes BC-Plans — ohne Kriterien weiss im Ernstfall niemand ob der Plan greift."
+            alternative_site:
+                name: "Alternativstandort"
+                definition: "Ausweichstandort fuer Notbetrieb. Im Tool wird pro BC-Plan Standort, Adresse und Kapazitaet dokumentiert. Varianten: Cold Site (leer, guenstig), Warm Site (teilweise ausgestattet), Hot Site (sofort betriebsbereit)."
+            process_criticality:
+                name: "Geschaeftsprozess-Kritikalitaet"
+                definition: "Einstufung: Critical, High, Medium, Low. Ergebnis der BIA — bestimmt RTO/RPO-Vorgaben und Wiederanlaufreihenfolge. Im Tool als farbkodierter Filter (Rot = Critical, Gelb = High)."
+            dependency_analysis:
+                name: "Abhaengigkeitsanalyse"
+                definition: "Systematische Erfassung der Upstream- und Downstream-Abhaengigkeiten zwischen Prozessen. Im Tool als Prozess-zu-Prozess-Verknuepfung. Zeigt Dominoeffekte bei Ausfaellen und identifiziert Single Points of Failure."
+            exercise_report:
+                name: "Uebungsbericht"
+                definition: "Strukturierte Dokumentation einer BC-Uebung: Was lief gut, Verbesserungsbereiche, Feststellungen, Massnahmen, Lessons Learned. Gilt erst als vollstaendig wenn alle Abschnitte befuellt und 'Bericht abgeschlossen' gesetzt ist."
+            readiness_score:
+                name: "Bereitschafts-Score"
+                definition: "Automatisch berechneter Wert (0-100) fuer BC-Plan-Einsatzbereitschaft: Pflichtabschnitte (40%), aktuelle Tests (30%), aktuelle Reviews (20%), Status Aktiv (10%). Unter 60% signalisiert dringenden Handlungsbedarf."
 
             personal_data:
                 name: "Personenbezogene Daten"
@@ -477,6 +565,30 @@ help:
             pims:
                 name: "PIMS (Privacy Information Management System)"
                 definition: "Erweiterung des ISMS um datenschutzspezifische Anforderungen nach ISO 27701. Ergaenzt ISO 27001 Controls um Privacy-Controls. Seit ISO 27701:2025 eigenstaendig zertifizierbar."
+            special_categories:
+                name: "Besondere Kategorien personenbezogener Daten (Art. 9)"
+                definition: "Besonders schuetzenswerte Daten: Gesundheit, Biometrie, Genetik, Religion, politische Meinung, Gewerkschaftszugehoerigkeit, Sexualleben. Verarbeitung nur mit Ausnahme nach Art. 9(2). Im Tool als Checkbox bei VVT, Data Breach und DSFA — aktiviert automatisch Hochrisiko-Flag."
+            data_subject_rights:
+                name: "Betroffenenrechte (Art. 15-22 DSGVO)"
+                definition: "Rechte natuerlicher Personen: Auskunft (15), Berichtigung (16), Loeschung (17), Einschraenkung (18), Datenuebertragbarkeit (20), Widerspruch (21), Schutz vor automatisierten Entscheidungen (22). Frist: 1 Monat. Im Tool als eigenes Modul mit Fristenueberwachung."
+            avv_dpa:
+                name: "Auftragsverarbeitungsvertrag (AVV / DPA)"
+                definition: "Vertrag zwischen Verantwortlichem und Auftragsverarbeiter nach Art. 28(3). Regelt Gegenstand, Dauer, Datenkategorien, TOMs, Unterauftragsverarbeiter. Im Tool Pflichtfeld bei Lieferanten mit DSGVO-Rolle Auftragsverarbeiter."
+            breach_notification_deadline:
+                name: "72-Stunden-Meldefrist (Art. 33 DSGVO)"
+                definition: "Nach Bekanntwerden einer Datenschutzverletzung muss die Aufsichtsbehoerde innerhalb von 72 Stunden informiert werden. Das Tool berechnet die Frist automatisch, zeigt verbleibende Stunden und eskaliert bei Ueberschreitung."
+            purpose_limitation:
+                name: "Zweckbindung (Art. 5(1)(b))"
+                definition: "Personenbezogene Daten duerfen nur fuer festgelegte, eindeutige und legitime Zwecke erhoben und nicht zweckwidrig weiterverarbeitet werden. Jede VVT muss mindestens einen Zweck angeben."
+            accountability:
+                name: "Rechenschaftspflicht (Art. 5(2))"
+                definition: "Der Verantwortliche muss DSGVO-Einhaltung nicht nur einhalten, sondern belegen koennen. Das Tool unterstuetzt durch Audit-Logs, versionierte Dokumente, exportierbare PDFs und Genehmigungsworkflows."
+            legitimate_interest_assessment:
+                name: "Interessenabwaegung (LIA)"
+                definition: "Dreistufige Pruefung bei Art. 6(1)(f): (1) Berechtigtes Interesse? (2) Verarbeitung erforderlich? (3) Ueberwiegen Betroffeneninteressen? Im Tool wird bei Auswahl 'Berechtigtes Interesse' das Begruendungsfeld Pflicht."
+            automated_decision_making:
+                name: "Automatisierte Entscheidungsfindung / Profiling (Art. 22)"
+                definition: "Entscheidungen die ausschliesslich auf automatisierter Verarbeitung beruhen und rechtliche Wirkung entfalten (z.B. Kreditscoring). Im Tool als Pflichtfeld bei VVT und DSFA."
 
             risk_matrix:
                 name: "Risikomatrix (Heatmap)"
@@ -523,6 +635,24 @@ help:
             risk_appetite_statement:
                 name: "Risikoappetit-Erklaerung"
                 definition: "Formales Dokument der Geschaeftsleitung: Wie viel Risiko pro Kategorie tragbar? Definiert Schwellenwerte auf der Risikomatrix. Im Tool pro Tenant konfigurierbar mit automatischer Pruefung bei jeder Bewertung."
+            risk_lifecycle_status:
+                name: "Risikostatus (Lebenszyklus)"
+                definition: "Jedes Risiko durchlaeuft sechs Status: Identifiziert → Bewertet → Behandelt → Ueberwacht → Geschlossen oder Akzeptiert. Bestimmt welche Aktionen moeglich sind. Im Risikoregister filterbar."
+            gross_net_risk:
+                name: "Bruttobewertung vs. Nettobewertung"
+                definition: "Brutto (Inherent Risk) = Wahrscheinlichkeit x Auswirkung OHNE Massnahmen. Netto (Residual Risk) = NACH Wirkung der Controls. Das Tool berechnet die Risikoreduktion automatisch in Prozent."
+            risk_landscape:
+                name: "Risikolandschaft (Portfolio-Ansicht)"
+                definition: "Gesamtansicht aller Risiken — aggregiert nach Kategorie, Behandlungsstrategie, Status und Schweregrad. Im Tool als 5x5-Heatmap und Portfolio-Report mit 12-Monats-Trend. Unverzichtbar fuer Management Reviews."
+            correlated_risks:
+                name: "Korrelierte Risiken (Risikokonzentration)"
+                definition: "Risiken die dasselbe Asset betreffen und sich gegenseitig verstaerken koennen. Faellt ein Asset aus, materialisieren sich alle verknuepften Risiken gleichzeitig. Das Tool erkennt Korrelationen automatisch und berechnet einen kombinierten Score."
+            appetite_exceedance:
+                name: "Schwellenwertuberschreitung"
+                definition: "Wenn das Residualrisiko den Risk-Appetite-Schwellenwert uebersteigt. Das Tool berechnet Ueberschreitung in Punkten/Prozent und blockiert die formale Risikoakzeptanz automatisch — weitere Massnahmen erforderlich."
+            risk_prioritization:
+                name: "Risikopriorisierung"
+                definition: "Automatische Rangfolge nach Dringlichkeit aus drei Faktoren: Residualrisiko-Hoehe, Grad der Appetite-Ueberschreitung und Prioritaetsstufe. Dashboard zeigt Top-10."
 
     tour:
         steps: "Schritte"
