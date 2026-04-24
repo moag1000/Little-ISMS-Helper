@@ -208,27 +208,9 @@
     gap: 0.5rem;
 }
 
-/* Primary „Next/Finish"-Button: cyan-pink-gradient im Cyberpunk-Fee-Stil */
-.guided-tour-nav .btn-primary {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%);
-    border: none;
-    color: var(--on-primary);
-    font-weight: 600;
-    box-shadow: 0 2px 8px var(--accent-tint);
-    transition: all 220ms ease;
-}
-
-.guided-tour-nav .btn-primary:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow:
-        0 4px 16px var(--primary-glow),
-        0 0 24px var(--accent-tint);
-}
-
-.guided-tour-nav .btn-primary:focus {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-}
+/* .btn-primary styling delegated to Aurora v4 bridge
+   (fairy-aurora-components.css). Removed the cyan-pink-gradient
+   override — one consistent button identity app-wide. */
 
 .guided-tour-mobile-hint {
     position: fixed;
