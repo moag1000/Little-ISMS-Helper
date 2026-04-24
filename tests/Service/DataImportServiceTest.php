@@ -2,6 +2,7 @@
 
 namespace App\Tests\Service;
 
+use App\Repository\SampleDataImportRepository;
 use App\Repository\TenantRepository;
 use App\Service\DataImportService;
 use App\Service\ModuleConfigurationService;
@@ -20,6 +21,7 @@ class DataImportServiceTest extends TestCase
     private MockObject $kernel;
     private MockObject $moduleConfigService;
     private MockObject $tenantRepository;
+    private MockObject $sampleImportRepository;
     private DataImportService $service;
     private string $projectDir;
 
@@ -29,6 +31,7 @@ class DataImportServiceTest extends TestCase
         $this->kernel = $this->createMock(KernelInterface::class);
         $this->moduleConfigService = $this->createMock(ModuleConfigurationService::class);
         $this->tenantRepository = $this->createMock(TenantRepository::class);
+        $this->sampleImportRepository = $this->createMock(SampleDataImportRepository::class);
         $this->projectDir = sys_get_temp_dir() . '/test_project';
 
         // Create temporary project directory
@@ -41,6 +44,7 @@ class DataImportServiceTest extends TestCase
             $this->kernel,
             $this->moduleConfigService,
             $this->tenantRepository,
+            $this->sampleImportRepository,
             $this->projectDir
         );
     }
@@ -157,7 +161,9 @@ class DataImportServiceTest extends TestCase
         $this->moduleConfigService->method('getSampleData')
             ->willReturn($sampleData);
 
-        $this->entityManager->expects($this->once())
+        // flush() may be called multiple times since SampleDataImportRepository
+        // integration writes its own tracking row. Use atLeastOnce() to stay robust.
+        $this->entityManager->expects($this->atLeastOnce())
             ->method('flush');
 
         $selectedSamples = [
