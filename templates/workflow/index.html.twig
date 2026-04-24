@@ -4,31 +4,27 @@
 {% block title %}{{ 'workflow.title.list'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_macros/cards.html.twig' as cards %}
 {% import '_macros/workflow.html.twig' as workflow_macros %}
 
-<div class="container-fluid py-4">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'nav.workflows'|trans({}, 'nav') }
-        ]
-    } %}
-</div>
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.workflows'|trans({}, 'nav') }
+    ]
+} %}
 
-<div class="page-header">
-    <div>
-        <h1>{{ 'workflow.title.list'|trans({}, 'workflows') }}</h1>
-        <p class="text-muted">{{ 'workflow.description.overview'|trans({}, 'workflows') }}</p>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_workflow_definitions') }}" class="btn btn-secondary">
-            <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'workflow.action.definitions'|trans({}, 'workflows') }}
-        </a>
-        <a href="{{ path('app_workflow_pending') }}" class="btn btn-primary">
-            <i class="bi bi-hourglass-split" aria-hidden="true"></i> {{ 'workflow.action.pending'|trans({}, 'workflows') }}
-        </a>
-    </div>
-</div>
+{{ _fa_page_header.render({
+    badge: { icon: 'diagram-3', label: 'nav.workflows'|trans({}, 'nav') },
+    title: 'workflow.title.list'|trans({}, 'workflows'),
+    subtitle: 'workflow.description.overview'|trans({}, 'workflows'),
+    actions: [
+        { label: 'workflow.action.definitions'|trans({}, 'workflows'), variant: 'ghost', icon: 'list-check', href: path('app_workflow_definitions') },
+        { label: 'workflow.action.pending'|trans({}, 'workflows'), variant: 'primary', icon: 'hourglass-split', href: path('app_workflow_pending') }
+    ]
+}) }}
+
+<main class="fa-aurora-surface">
 
 {# Statistics Cards #}
 <div class="kpi-grid">
@@ -270,4 +266,5 @@
     {% endif %}
 {% endfor %}
 
+</main>
 {% endblock %}

@@ -11,31 +11,27 @@
 {% endblock %}
 
 {% block body %}
-<div class="container-fluid py-4">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'nav.soa'|trans({}, 'nav') }
-        ]
-    } %}
-</div>
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-<div class="page-header">
-    <div>
-        <h1>{{ 'soa.page.title'|trans({}, 'soa') }}</h1>
-        <p class="text-muted">{{ 'soa.page.subtitle'|trans({}, 'soa') }}</p>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_soa_export') }}" class="btn btn-outline-success" data-turbo="false" title="{{ 'soa.action.export_html'|trans({}, 'soa') }}">
-            <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'soa.action.export_html'|trans({}, 'soa') }}
-        </a>
-        <a href="{{ path('app_soa_export_pdf') }}" class="btn btn-success" data-turbo="false" title="{{ 'soa.action.export_pdf'|trans({}, 'soa') }}">
-            <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> {{ 'soa.action.export_pdf'|trans({}, 'soa') }}
-        </a>
-        <a href="{{ path('app_soa_preview_pdf') }}" class="btn btn-outline-primary" title="{{ 'soa.action.preview_pdf'|trans({}, 'soa') }}" target="_blank">
-            <i class="bi bi-eye" aria-hidden="true"></i> {{ 'soa.action.preview_pdf'|trans({}, 'soa') }}
-        </a>
-    </div>
-</div>
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.soa'|trans({}, 'nav') }
+    ]
+} %}
+
+{{ _fa_page_header.render({
+    badge: { icon: 'shield-check', label: 'nav.soa'|trans({}, 'nav') },
+    title: 'soa.page.title'|trans({}, 'soa'),
+    subtitle: 'soa.page.subtitle'|trans({}, 'soa'),
+    actions: [
+        { label: 'soa.action.export_html'|trans({}, 'soa'), variant: 'ghost', icon: 'file-earmark-text', href: path('app_soa_export') },
+        { label: 'soa.action.export_pdf'|trans({}, 'soa'), variant: 'secondary', icon: 'file-earmark-pdf', href: path('app_soa_export_pdf') },
+        { label: 'soa.action.preview_pdf'|trans({}, 'soa'), variant: 'ghost', icon: 'eye', href: path('app_soa_preview_pdf') }
+    ]
+}) }}
+{# TODO: export/preview actions above use Turbo navigation; add data-turbo="false" via custom markup if full-page download is required #}
+
+<main class="fa-aurora-surface">
 
 {# View Filter #}
 {% if currentTenant %}
@@ -316,4 +312,5 @@
     <p>{{ 'soa.message.no_controls_filtered'|trans({}, 'soa') }}</p>
 </div>
 {% endif %}
+</main>
 {% endblock %}

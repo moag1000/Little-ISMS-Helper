@@ -6,26 +6,28 @@
 {% block title %}{{ 'supplier.title'|trans({}, 'suppliers') }}{% endblock %}
 
 {% block body %}
-<div class="container">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'nav.suppliers'|trans({}, 'nav') }
-        ]
-    } %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-    <div class="page-header">
-        <h1>{{ 'supplier.page.title'|trans({}, 'suppliers') }}</h1>
-        <div class="d-flex gap-2">
-            {% if doraActive ?? false %}
-                <a href="{{ path('app_dora_register_export_csv') }}"
-                   class="btn btn-outline-primary"
-                   aria-label="{{ 'dora.register_export.aria'|trans({}, 'dora') }}">
-                    <i class="bi bi-download me-1" aria-hidden="true"></i>{{ 'dora.register_export.button'|trans({}, 'dora') }}
-                </a>
-            {% endif %}
-            <a href="{{ path('app_supplier_new') }}" class="btn btn-primary">{{ 'supplier.action.add_new'|trans({}, 'suppliers') }}</a>
-        </div>
-    </div>
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.suppliers'|trans({}, 'nav') }
+    ]
+} %}
+
+{% set supplierActions = [
+    { label: 'supplier.action.add_new'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus-lg', href: path('app_supplier_new') }
+] %}
+{% if doraActive ?? false %}
+    {% set supplierActions = [{ label: 'dora.register_export.button'|trans({}, 'dora'), variant: 'ghost', icon: 'download', href: path('app_dora_register_export_csv') }] | merge(supplierActions) %}
+{% endif %}
+{{ _fa_page_header.render({
+    badge: { icon: 'truck', label: 'nav.suppliers'|trans({}, 'nav') },
+    title: 'supplier.page.title'|trans({}, 'suppliers'),
+    actions: supplierActions
+}) }}
+
+<main class="fa-aurora-surface">
+<div class="container">
 
     {% if currentTenant %}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } %}
@@ -247,4 +249,5 @@
 .stat-value.warning { color: var(--warning); }
 .stat-value.danger { color: var(--danger); }
 </style>
+</main>
 {% endblock %}
