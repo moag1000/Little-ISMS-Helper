@@ -107,7 +107,9 @@ class AdminBackupControllerTest extends WebTestCase
         $this->adminUser->setEmail('admin_' . $uniqueId . '@example.com');
         $this->adminUser->setFirstName('Admin');
         $this->adminUser->setLastName('User');
-        $this->adminUser->setRoles(['ROLE_ADMIN']);
+        // SUPER_ADMIN needed because backup index/download/upload/validate/preview/delete
+        // all require ROLE_SUPER_ADMIN (global-data operations per 04bae7acf + Prio-C).
+        $this->adminUser->setRoles(['ROLE_SUPER_ADMIN']);
         $this->adminUser->setPassword('hashed_password');
         $this->adminUser->setTenant($this->testTenant);
         $this->adminUser->setIsActive(true);
@@ -119,6 +121,28 @@ class AdminBackupControllerTest extends WebTestCase
     private function loginAsUser(User $user): void
     {
         $this->client->loginUser($user);
+    }
+
+    /**
+     * Execute a same-origin JSON request. The SameOriginCsrfTokenManager
+     * accepts any token value when both `Sec-Fetch-Site: same-origin` and a
+     * token parameter are present (cf. config/packages/csrf.yaml).
+     *
+     * @param array<string, mixed> $params Post parameters (will carry `_token=same-origin`)
+     */
+    private function sameOriginRequest(string $method, string $uri, array $params = [], array $files = []): void
+    {
+        // 'csrf-token' matches Symfony's default cookie name, which the
+        // SameOriginCsrfTokenManager accepts regardless of length (the
+        // `$token->getValue() !== $this->cookieName` branch in isTokenValid).
+        $params['_token'] = 'csrf-token';
+        $this->client->request(
+            $method,
+            $uri,
+            $params,
+            $files,
+            ['HTTP_SEC_FETCH_SITE' => 'same-origin']
+        );
     }
 
     // ========== BACKUP INDEX TESTS ==========
@@ -168,7 +192,7 @@ class AdminBackupControllerTest extends WebTestCase
     public function testCreateBackupExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->client->request('POST', '/en/admin/data/backup/create');
+        $this->sameOriginRequest('POST', '/en/admin/data/backup/create');
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
@@ -198,7 +222,8 @@ class AdminBackupControllerTest extends WebTestCase
     public function testUploadBackupWithoutFileReturnsError(): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->client->request('POST', '/en/admin/data/backup/upload');
+        // CSRF in controller uses `data_backup_upload` token id.
+        $this->sameOriginRequest('POST', '/en/admin/data/backup/upload');
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 

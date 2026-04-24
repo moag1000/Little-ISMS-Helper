@@ -46,6 +46,9 @@
     {# Modal Backdrop #}
     <div class="command-palette-modal" data-command-palette-target="modal">
         <div class="command-palette-container">
+            {# Alva mascot #}
+            {% import '_components/_alva.html.twig' as faAlva %}
+            <span class="command-palette-alva" aria-hidden="true">{{ faAlva.render('thinking', { size: 24 })|raw }}</span>
             {# Search Input #}
             <div class="command-palette-search">
                 <i class="bi bi-search command-palette-search-icon" aria-hidden="true"></i>

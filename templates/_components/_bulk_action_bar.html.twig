@@ -175,6 +175,8 @@
     {% set actions = actions|default(['delete', 'export']) %}
 
     <div class="bulk-action-bar" data-bulk-actions-target="actionBar" hidden>
+        {% import '_components/_alva.html.twig' as faAlva %}
+        <span class="bulk-action-alva" aria-hidden="true">{{ faAlva.render('happy', { size: 20 })|raw }}</span>
         <div class="bulk-selection-info" role="status" aria-live="polite" aria-atomic="true">
             <span class="bulk-selection-count" data-bulk-actions-target="count">0</span>
             <span class="bulk-selection-label">{{ 'bulk_actions.selected'|trans({}, 'messages') }}</span>

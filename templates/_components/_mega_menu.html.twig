@@ -140,6 +140,21 @@
                 </button>
             </li>
             {% endif %}
+
+            {# Help & Resources - always visible #}
+            <li class="mega-menu-category" role="none">
+                <button class="mega-menu-trigger {% if current_route starts with 'app_help_' %}active{% endif %}"
+                        data-mega-menu-target="trigger"
+                        data-category="help"
+                        data-action="click->mega-menu#toggle"
+                        role="menuitem"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    <i class="bi bi-question-circle" aria-hidden="true"></i>
+                    <span>{{ 'nav.mega.category.help'|trans({}, 'nav') }}</span>
+                    <i class="bi bi-chevron-right mega-menu-arrow" aria-hidden="true"></i>
+                </button>
+            </li>
         </ul>
     </div>
 

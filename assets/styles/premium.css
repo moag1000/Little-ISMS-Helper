@@ -28,14 +28,13 @@
     opacity: 0.3;
 }
 
-.hero-section::after {
-    content: '🧚‍♀️';
+.hero-section .hero-alva {
     position: absolute;
     top: 40px;
     right: 60px;
-    font-size: 80px;
     opacity: 0.15;
     animation: float 3s ease-in-out infinite;
+    pointer-events: none;
 }
 
 .hero-content {

@@ -24,12 +24,11 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.bulk-action-bar::before {
-    content: '🧚‍♀️';
+.bulk-action-bar .bulk-action-alva {
     position: absolute;
     left: -20px;
-    font-size: 24px;
     animation: float 2s ease-in-out infinite;
+    pointer-events: none;
 }
 
 @keyframes float {

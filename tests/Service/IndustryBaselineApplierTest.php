@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use App\Command\LoadIndustryBaselinesCommand;
 use App\Entity\AppliedBaseline;
 use App\Entity\IndustryBaseline;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Service\IndustryBaselineApplier;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Input\ArrayInput;
 
 /**
  * Sanity check that the seeded industry baselines apply cleanly to a
@@ -21,9 +25,21 @@ final class IndustryBaselineApplierTest extends KernelTestCase
     {
         self::bootKernel();
         $container = self::getContainer();
+        $em = $container->get('doctrine.orm.entity_manager');
+
+        // Idempotent seeding: CI runs against a fresh DB where baselines haven't
+        // been loaded yet. The command is idempotent (create-or-update), so calling
+        // it here is safe in environments where fixtures already ran.
+        $repo = $em->getRepository(IndustryBaseline::class);
+        if ($repo->findOneBy(['code' => 'BL-GENERIC-v1']) === null) {
+            $command = $container->get(LoadIndustryBaselinesCommand::class);
+            $command(new SymfonyStyle(new ArrayInput([]), new NullOutput()));
+            $em->clear();
+        }
+
         return [
             'applier' => $container->get(IndustryBaselineApplier::class),
-            'em' => $container->get('doctrine.orm.entity_manager'),
+            'em' => $em,
         ];
     }
 

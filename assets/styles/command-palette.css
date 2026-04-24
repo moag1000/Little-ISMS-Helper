@@ -43,14 +43,13 @@
     position: relative;
 }
 
-.command-palette-container::before {
-    content: '🧚‍♀️';
+.command-palette-container .command-palette-alva {
     position: absolute;
     top: 12px;
     right: 12px;
-    font-size: 20px;
     opacity: 0.6;
     animation: float 3s ease-in-out infinite;
+    pointer-events: none;
 }
 
 @keyframes float {

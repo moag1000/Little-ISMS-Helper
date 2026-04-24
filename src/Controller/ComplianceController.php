@@ -910,7 +910,7 @@ class ComplianceController extends AbstractController
                     $targetFramework
                 );
 
-                if ($transitive['requirements_helped'] > 0) {
+                if (($transitive['requirements_helped'] ?? 0) > 0) {
                     $transitiveAnalysis[] = $transitive;
                 }
 
@@ -1146,7 +1146,7 @@ class ComplianceController extends AbstractController
                     $targetFramework
                 );
 
-                if ($transitive['requirements_helped'] > 0) {
+                if (($transitive['requirements_helped'] ?? 0) > 0) {
                     $transitiveAnalysis[] = $transitive;
                 }
 
@@ -1253,7 +1253,7 @@ class ComplianceController extends AbstractController
                 $coverage = $this->complianceMappingRepository->calculateFrameworkCoverage($framework, $targetFramework);
                 $transitive = $this->complianceMappingRepository->getTransitiveCompliance($framework, $targetFramework);
 
-                if ($transitive['requirements_helped'] > 0) {
+                if (($transitive['requirements_helped'] ?? 0) > 0) {
                     $transitiveAnalysis[] = $transitive;
                 }
 
