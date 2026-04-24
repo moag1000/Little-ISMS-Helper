@@ -3,6 +3,7 @@
 {% block title %}{{ 'audit_management.title'|trans({}, 'audit')}}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 <div class="container-fluid">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
@@ -44,37 +45,33 @@
 
     {# KPI Cards #}
     <div class="kpi-grid">
-        {% include '_components/_kpi_card.html.twig' with {
-            icon: 'bi-clipboard-check',
+        {{ _fa_feature_card.render({
+            icon: 'clipboard-check',
             label: 'audit.kpi.total'|trans({}, 'audit'),
             value: total,
-            variant: 'primary',
-            link: null
-        } %}
+            variant: 'primary'
+        }) }}
 
-        {% include '_components/_kpi_card.html.twig' with {
-            icon: 'bi-calendar-event',
+        {{ _fa_feature_card.render({
+            icon: 'calendar-event',
             label: 'audit.kpi.upcoming'|trans({}, 'audit'),
             value: upcomingCount,
-            variant: 'info',
-            link: null
-        } %}
+            variant: 'primary'
+        }) }}
 
-        {% include '_components/_kpi_card.html.twig' with {
-            icon: 'bi-hourglass-split',
+        {{ _fa_feature_card.render({
+            icon: 'hourglass-split',
             label: 'audit.kpi.in_progress'|trans({}, 'audit'),
             value: inProgressAudits,
-            variant: 'warning',
-            link: null
-        } %}
+            variant: 'warning'
+        }) }}
 
-        {% include '_components/_kpi_card.html.twig' with {
-            icon: 'bi-check-circle',
+        {{ _fa_feature_card.render({
+            icon: 'check-circle',
             label: 'audit.kpi.completed'|trans({}, 'audit'),
             value: completedAudits,
-            variant: 'success',
-            link: null
-        } %}
+            variant: 'success'
+        }) }}
     </div>
 
     {# Status Overview Section #}

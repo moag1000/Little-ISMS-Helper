@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'incident' %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'incident.header.title'|trans({}, 'incident') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -23,39 +24,39 @@
 
 {# KPI Cards Grid #}
 <div class="kpi-grid kpi-grid-responsive">
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-bug',
+    {{ _fa_feature_card.render({
+        icon: 'bug',
         label: 'incident.kpi.total'|trans({}, 'incident'),
         value: allIncidents|length,
         variant: 'primary'
-    } %}
+    }) }}
 
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-exclamation-circle',
+    {{ _fa_feature_card.render({
+        icon: 'exclamation-circle',
         label: 'incident.kpi.open'|trans({}, 'incident'),
         value: openIncidents|length,
         variant: openIncidents|length > 0 ? 'danger' : 'success',
-        link: '#filter-open'
-    } %}
+        href: '#filter-open'
+    }) }}
 
     {% set criticalIncidents = allIncidents|filter(i => i.severity == 'critical')|length %}
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-shield-fill-exclamation',
+    {{ _fa_feature_card.render({
+        icon: 'shield-fill-exclamation',
         label: 'incident.kpi.critical'|trans({}, 'incident'),
         value: criticalIncidents,
         variant: 'warning'
-    } %}
+    }) }}
 
     {% set avgResolutionDays = allIncidents|filter(i => i.status == 'resolved')|length > 0
         ? ((allIncidents|filter(i => i.status == 'resolved')|reduce((carry, i) => carry + (i.resolvedAt ? (i.resolvedAt.diff(i.occurredAt).days) : 0), 0)) / (allIncidents|filter(i => i.status == 'resolved')|length))|round(1)
         : 0 %}
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-clock-history',
+    {{ _fa_feature_card.render({
+        icon: 'clock-history',
         label: 'incident.kpi.avg_resolution'|trans({}, 'incident'),
         value: avgResolutionDays,
         unit: 'incident.kpi.unit.days'|trans({}, 'incident'),
-        variant: 'info'
-    } %}
+        variant: 'primary'
+    }) }}
 </div>
 
 {# Status Overview #}

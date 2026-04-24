@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'consent' %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'consent.header.title'|trans({}, 'consent') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -23,38 +24,38 @@
 
 {# KPI Cards Grid #}
 <div class="kpi-grid kpi-grid-responsive">
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-hand-thumbs-up',
+    {{ _fa_feature_card.render({
+        icon: 'hand-thumbs-up',
         label: 'consent.kpi.total'|trans({}, 'consent'),
         value: consents|length,
         variant: 'primary'
-    } %}
+    }) }}
 
     {% set activeConsents = consents|filter(c => c.status == 'active')|length %}
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-check-circle',
+    {{ _fa_feature_card.render({
+        icon: 'check-circle',
         label: 'consent.kpi.active'|trans({}, 'consent'),
         value: activeConsents,
-        variant: activeConsents > 0 ? 'success' : 'secondary',
-        link: '#filter-active'
-    } %}
+        variant: activeConsents > 0 ? 'success' : 'primary',
+        href: '#filter-active'
+    }) }}
 
     {% set pendingConsents = consents|filter(c => c.status == 'pending_verification')|length %}
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-hourglass',
+    {{ _fa_feature_card.render({
+        icon: 'hourglass',
         label: 'consent.kpi.pending'|trans({}, 'consent'),
         value: pendingConsents,
-        variant: pendingConsents > 0 ? 'warning' : 'secondary',
-        link: '#filter-pending'
-    } %}
+        variant: pendingConsents > 0 ? 'warning' : 'primary',
+        href: '#filter-pending'
+    }) }}
 
     {% set revokedConsents = consents|filter(c => c.status == 'revoked')|length %}
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-x-circle',
+    {{ _fa_feature_card.render({
+        icon: 'x-circle',
         label: 'consent.kpi.revoked'|trans({}, 'consent'),
         value: revokedConsents,
-        variant: revokedConsents > 0 ? 'danger' : 'secondary'
-    } %}
+        variant: revokedConsents > 0 ? 'danger' : 'primary'
+    }) }}
 </div>
 
 {# Status Overview #}

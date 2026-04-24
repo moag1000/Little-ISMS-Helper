@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'asset' %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'asset.modern.header.title'|trans({}, 'asset')}} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -57,32 +58,32 @@
 
 {# KPI Cards Grid #}
 <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-server',
+    {{ _fa_feature_card.render({
+        icon: 'server',
         label: 'asset.modern.kpi.total'|trans({}, 'asset'),
         value: detailedStats.total,
-        detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant')) : null,
+        hint: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant')) : null,
         variant: 'primary',
-        link: '#all-assets'
-    } %}
+        href: '#all-assets'
+    }) }}
 
     {% set criticalAssets = assets|filter(a => a.confidentialityValue >= 4 or a.integrityValue >= 4 or a.availabilityValue >= 4)|length %}
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-shield-exclamation',
+    {{ _fa_feature_card.render({
+        icon: 'shield-exclamation',
         label: 'asset.modern.kpi.critical'|trans({}, 'asset'),
         value: criticalAssets,
         variant: 'danger',
-        link: '#filter-critical'
-    } %}
+        href: '#filter-critical'
+    }) }}
 
     {% set avgCIA = (assets|reduce((carry, asset) => carry + asset.confidentialityValue + asset.integrityValue + asset.availabilityValue, 0) / (assets|length > 0 ? assets|length * 3 : 1))|round(1) %}
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-bar-chart',
+    {{ _fa_feature_card.render({
+        icon: 'bar-chart',
         label: 'asset.modern.kpi.avg_cia'|trans({}, 'asset'),
         value: avgCIA,
         unit: 'asset.modern.kpi.unit.out_of_5'|trans({}, 'asset'),
-        variant: 'info'
-    } %}
+        variant: 'primary'
+    }) }}
 
     {% set assetsWithRisks = 0 %}
     {% for asset in assets %}
@@ -90,13 +91,13 @@
             {% set assetsWithRisks = assetsWithRisks + 1 %}
         {% endif %}
     {% endfor %}
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-exclamation-triangle',
+    {{ _fa_feature_card.render({
+        icon: 'exclamation-triangle',
         label: 'asset.modern.kpi.with_risks'|trans({}, 'asset'),
         value: assetsWithRisks,
         unit: '/ ' ~ assets|length,
         variant: 'warning'
-    } %}
+    }) }}
 </div>
 
 {# Type Distribution Chart #}
