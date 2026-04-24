@@ -12,6 +12,8 @@ use App\Entity\InternalAudit;
 use App\Entity\Training;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Entity\Tenant;
+use App\Repository\TenantRepository;
 use DateTime;
 use ReflectionClass;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,8 +51,20 @@ class DataImportService
         private readonly EntityManagerInterface $entityManager,
         private readonly KernelInterface $kernel,
         private readonly ModuleConfigurationService $moduleConfigurationService,
+        private readonly TenantRepository $tenantRepository,
         private readonly string $projectDir
     ) {
+    }
+
+    /**
+     * Liefert den für Import-Zwecke zu verwendenden Tenant.
+     * Im Setup-Wizard ist das der erste (einzige) Tenant — typischerweise
+     * 'default' aus step6_organisation_info.
+     */
+    private function resolveImportTenant(): ?Tenant
+    {
+        return $this->tenantRepository->findOneBy(['code' => 'default'])
+            ?? $this->tenantRepository->findOneBy([]);
     }
 
     /**
@@ -262,6 +276,7 @@ class DataImportService
     private function importEntities(array $data): int
     {
         $count = 0;
+        $tenant = $this->resolveImportTenant();
 
         foreach ($data as $entityType => $entities) {
             $entityClass = $this->resolveEntityClass($entityType);
@@ -274,6 +289,13 @@ class DataImportService
             foreach ($entities as $entityData) {
                 try {
                     $entity = $this->createEntity($entityClass, $entityData);
+                    // Setup-Imports ohne User-Session → Tenant aus DB setzen,
+                    // sonst landen Entities mit tenant_id=NULL und sind durch
+                    // TenantFilter im Modul unsichtbar (nur in Count-Queries
+                    // ohne Filter noch zählbar).
+                    if ($tenant && method_exists($entity, 'setTenant') && method_exists($entity, 'getTenant') && $entity->getTenant() === null) {
+                        $entity->setTenant($tenant);
+                    }
                     $this->entityManager->persist($entity);
                     $count++;
                 } catch (Exception $e) {
