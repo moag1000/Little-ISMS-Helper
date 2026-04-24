@@ -32,20 +32,22 @@ class TranslationChecker:
         self.templates_dir = Path(templates_dir)
         self.issues: List[TranslationIssue] = []
 
-        # Valid translation domains (from actual .de.yaml files)
-        self.valid_domains = {
-            'messages', 'nav', 'mfa', 'tenant', 'role_management', 'dashboard',
-            'bulk_delete', 'session', 'field', 'admin', 'analytics', 'asset',
-            'audit_log', 'audit', 'bc_exercises', 'bc_plans', 'bcm', 'business_process',
-            'change_requests', 'compliance', 'context', 'control', 'crisis_team',
-            'crypto', 'document', 'incident', 'interested_parties', 'locations',
-            'management_review', 'monitoring', 'objective', 'patches', 'people',
-            'physical_access', 'privacy', 'reports', 'risk_appetite',
-            'risk_treatment_plan', 'risk', 'security', 'security_reports',
-            'soa', 'suppliers', 'training', 'ui', 'user', 'validators',
-            'vulnerabilities', 'workflows', 'threat', 'consent', 'emails', 'assets',
-            'setup', 'notifications'
-        }
+        # Valid translation domains — dynamisch aus translations/*.{de,en}.yaml
+        # gelesen. Vermeidet Drift wenn neue Domains hinzugefügt werden
+        # (z.B. Phase 8L: audit_log, risk_approval_config, incident_sla,
+        # supplier_criticality etc.).
+        translations_dir = Path(__file__).resolve().parent.parent.parent / 'translations'
+        self.valid_domains = set()
+        if translations_dir.exists():
+            for yaml_file in translations_dir.rglob('*.de.yaml'):
+                domain = yaml_file.stem.replace('.de', '')
+                self.valid_domains.add(domain)
+            for yaml_file in translations_dir.rglob('*.en.yaml'):
+                domain = yaml_file.stem.replace('.en', '')
+                self.valid_domains.add(domain)
+        # Fallback falls translations/ fehlt:
+        if not self.valid_domains:
+            self.valid_domains = {'messages'}
 
         # Patterns for HTML attributes that should be translated
         self.translatable_attributes = {
