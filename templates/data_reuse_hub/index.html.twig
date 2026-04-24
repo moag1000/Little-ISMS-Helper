@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'reuse.page.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -10,25 +11,17 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-start mb-3">
-        <div>
-            <h1 class="h3 mb-1">
-                <i class="bi bi-arrows-collapse" aria-hidden="true"></i>
-                {{ 'reuse.page.title'|trans({}, 'messages') }}
-            </h1>
-            <p class="text-muted mb-0">{{ 'reuse.page.description'|trans({}, 'messages') }}</p>
-        </div>
-        <div class="d-flex gap-2">
-            <a href="{{ path('app_data_reuse_heatmap') }}" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-grid-3x3-gap" aria-hidden="true"></i>
-                {{ 'reuse.cta.heatmap'|trans({}, 'messages') }}
-            </a>
-            <a href="{{ path('app_management_reports_portfolio') }}" class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
-                {{ 'reuse.cta.portfolio'|trans({}, 'messages') }}
-            </a>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'arrows-collapse', label: 'reuse.page.title'|trans({}, 'messages') },
+        title: 'reuse.page.title'|trans({}, 'messages'),
+        subtitle: 'reuse.page.description'|trans({}, 'messages'),
+        actions: [
+            { label: 'reuse.cta.heatmap'|trans({}, 'messages'), variant: 'ghost', icon: 'grid-3x3-gap', href: path('app_data_reuse_heatmap') },
+            { label: 'reuse.cta.portfolio'|trans({}, 'messages'), variant: 'primary', icon: 'graph-up-arrow', href: path('app_management_reports_portfolio') }
+        ]
+    }) }}
+
+    <main class="fa-aurora-surface">
 
     {# Hero KPI — FTE-saved, identisch zur Home-Landing-Karte — 8H.4 migrated #}
     {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-4 border-success' } %}
@@ -174,5 +167,6 @@
         <i class="bi bi-info-circle" aria-hidden="true"></i>
         {{ 'reuse.page.footer_hint'|trans({}, 'messages') }}
     </div>
+    </main>
 </div>
 {% endblock %}

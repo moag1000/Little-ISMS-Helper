@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'incident' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'incident.header.title'|trans({}, 'incident') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -12,15 +13,16 @@
     ]
 } %}
 
-{# Page Header with Actions #}
-{% include '_components/_page_header.html.twig' with {
+{{ _fa_page_header.render({
+    badge: { icon: 'bug', label: 'incident.breadcrumb'|trans({}, 'incident') },
     title: 'incident.header.title'|trans({}, 'incident'),
     subtitle: 'incident.header.subtitle'|trans({}, 'incident'),
-    icon: 'bi-bug',
     actions: [
-        { label: 'incident.header.action.report'|trans({}, 'incident'), url: path('app_incident_new'), variant: 'danger', icon: 'bi-exclamation-circle' }
+        { label: 'incident.header.action.report'|trans({}, 'incident'), variant: 'danger', icon: 'exclamation-circle', href: path('app_incident_new') }
     ]
-} %}
+}) }}
+
+<main class="fa-aurora-surface">
 
 {# KPI Cards Grid #}
 <div class="kpi-grid kpi-grid-responsive">
@@ -327,6 +329,8 @@
     {% endblock %}
 {% endembed %}
 {% endif %}
+
+</main>
 
 <style>
 /* Status Cards */

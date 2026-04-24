@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'data_subject_request' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'dsr.page.index_title'|trans({}, 'data_subject_request') }}{% endblock %}
 
@@ -12,14 +13,16 @@
         ]
     } only %}
 
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
+        badge: { icon: 'person-raised-hand', label: 'dsr.breadcrumb.data_subject_requests'|trans({}, 'data_subject_request') },
         title: 'dsr.page.index_title'|trans({}, 'data_subject_request'),
         subtitle: 'dsr.page.index_subtitle'|trans({}, 'data_subject_request'),
-        icon: 'bi-person-raised-hand',
         actions: [
-            { label: 'dsr.action.new'|trans({}, 'data_subject_request'), url: path('app_data_subject_request_new'), variant: 'primary', icon: 'bi-plus-lg' }
+            { label: 'dsr.action.new'|trans({}, 'data_subject_request'), variant: 'primary', icon: 'plus-lg', href: path('app_data_subject_request_new') }
         ]
-    } only %}
+    }) }}
+
+    <main class="fa-aurora-surface">
 
     {# Overdue Alert #}
     {% if statistics.overdue_count > 0 %}
@@ -201,5 +204,6 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </main>
 </div>
 {% endblock %}
