@@ -133,6 +133,43 @@ class ProfileController extends AbstractController
         ]);
     }
 
+    #[Route('/profile/alva-settings', name: 'app_profile_alva_settings', methods: ['POST'])]
+    public function alvaSettings(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid('alva_settings_' . $user->getId(), $request->request->get('_token'))) {
+            $this->addFlash('danger', $translator->trans('common.error', [], 'messages'));
+            return $this->redirectToRoute('app_profile', ['_locale' => $request->getLocale()]);
+        }
+
+        $enabled = $request->request->getBoolean('alva_companion_enabled', false);
+        $size = $request->request->getString('alva_companion_size', 'md');
+        $position = $request->request->getString('alva_companion_position', 'bottom-right');
+
+        // Whitelist allowed values
+        if (!in_array($size, ['sm', 'md', 'lg'], true)) {
+            $size = 'md';
+        }
+        if (!in_array($position, ['bottom-right', 'bottom-left', 'top-right', 'top-left'], true)) {
+            $position = 'bottom-right';
+        }
+
+        $user->setAlvaCompanionEnabled($enabled);
+        $user->setAlvaCompanionSize($size);
+        $user->setAlvaCompanionPosition($position);
+
+        $entityManager->flush();
+
+        $this->addFlash('success', $translator->trans('user.profile.success.alva_settings', [], 'user'));
+
+        return $this->redirectToRoute('app_profile', ['_locale' => $request->getLocale()]);
+    }
+
     #[Route('/profile/avatar/delete', name: 'app_profile_avatar_delete', methods: ['POST'])]
     public function deleteAvatar(
         Request $request,

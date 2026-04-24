@@ -93,6 +93,9 @@ export default class extends Controller {
             submitter.dataset.originalText = submitter.innerHTML;
             submitter.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Wird gespeichert...';
         }
+
+        // Alva: signal thinking while Turbo form is in flight
+        window.alvaBus?.emit({ mood: 'thinking', reason: 'submitting' });
     }
 
     handleSubmitEnd(event) {
@@ -106,6 +109,14 @@ export default class extends Controller {
                 delete submitter.dataset.originalText;
             }
         }
+
+        // Alva: signal success or failure after Turbo form submission
+        const success = event.detail?.success !== false;
+        window.alvaBus?.emit({
+            mood: success ? 'happy' : 'alert',
+            reason: success ? 'submit-ok' : 'submit-fail',
+            ttlMs: 2500,
+        });
 
         // Auto-dismiss notifications after successful submission
         if (event.detail.success) {

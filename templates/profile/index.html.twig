@@ -134,6 +134,91 @@
                 {% endblock %}
             {% endembed %}
 
+            {# Alva Companion Settings Card — FairyAurora v4.0 Phase 4 #}
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">
+                            <i class="bi bi-stars" aria-hidden="true"></i>
+                            {{ 'user.profile.section.alva'|trans({}, 'user') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    {% import '_components/_alva.html.twig' as faAlvaPrev %}
+                    <form method="post" action="{{ path('app_profile_alva_settings') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('alva_settings_' ~ user.id) }}">
+
+                        {# Preview + controls side-by-side on md+ #}
+                        <div class="row align-items-center g-3">
+                            <div class="col-auto d-none d-md-block">
+                                {{ faAlvaPrev.render(user.alvaCompanionEnabled ? 'idle' : 'sleeping', { size: 72, decorative: true })|raw }}
+                            </div>
+                            <div class="col">
+                                {# Enabled toggle #}
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           role="switch"
+                                           id="alvaEnabled"
+                                           name="alva_companion_enabled"
+                                           value="1"
+                                           {% if user.alvaCompanionEnabled %}checked{% endif %}>
+                                    <label class="form-check-label fw-semibold" for="alvaEnabled">
+                                        {{ 'user.profile.alva.enabled_label'|trans({}, 'user') }}
+                                    </label>
+                                </div>
+
+                                <div class="row g-3">
+                                    {# Size radio group #}
+                                    <div class="col-sm-6">
+                                        <p class="fw-semibold mb-2">{{ 'user.profile.alva.size_label'|trans({}, 'user') }}</p>
+                                        {% for sz in ['sm', 'md', 'lg'] %}
+                                            <div class="form-check">
+                                                <input class="form-check-input"
+                                                       type="radio"
+                                                       name="alva_companion_size"
+                                                       id="alvaSize{{ sz }}"
+                                                       value="{{ sz }}"
+                                                       {% if user.alvaCompanionSize == sz %}checked{% endif %}>
+                                                <label class="form-check-label" for="alvaSize{{ sz }}">
+                                                    {{ ('user.profile.alva.size.' ~ sz)|trans({}, 'user') }}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    {# Position radio group #}
+                                    <div class="col-sm-6">
+                                        <p class="fw-semibold mb-2">{{ 'user.profile.alva.position_label'|trans({}, 'user') }}</p>
+                                        {% for pos in ['bottom-right', 'bottom-left', 'top-right', 'top-left'] %}
+                                            <div class="form-check">
+                                                <input class="form-check-input"
+                                                       type="radio"
+                                                       name="alva_companion_position"
+                                                       id="alvaPos{{ pos|replace({'-': ''}) }}"
+                                                       value="{{ pos }}"
+                                                       {% if user.alvaCompanionPosition == pos %}checked{% endif %}>
+                                                <label class="form-check-label" for="alvaPos{{ pos|replace({'-': ''}) }}">
+                                                    {{ ('user.profile.alva.position.' ~ pos)|trans({}, 'user') }}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                {{ 'common.save'|trans({}, 'messages') }}
+                            </button>
+                        </div>
+                    </form>
+                {% endblock %}
+            {% endembed %}
+
             {# MFA Status Card #}
             {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
                 {% block card_header %}
