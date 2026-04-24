@@ -204,13 +204,19 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
+    App\Command\RestoreBackupCommand:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
     # Configure Web Push Service
     App\Service\WebPushService:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
-    # Configure Restore Service
-    App\Service\RestoreService: ~
+    # Configure Restore Service — inject ManagerRegistry for best-effort EM reset
+    App\Service\RestoreService:
+        arguments:
+            $registry: '@doctrine'
 
     # ISB MINOR-4: Mailer TLS pre-flight check. DSN must be injected
     # explicitly because %env()% cannot be autowired into a scalar arg.

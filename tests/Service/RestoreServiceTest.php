@@ -1083,5 +1083,278 @@ class RestoreServiceTest extends TestCase
         // The success of the round-trip is verified by the absence of a RuntimeException.
         $this->assertTrue($result['success']);
     }
+
+    // ------------------------------------------------------------------ //
+    // P5 — Best-effort restore tests                                       //
+    // ------------------------------------------------------------------ //
+
+    /**
+     * Build a minimal mock environment shared by P5 tests.
+     * Returns the Connection mock so individual tests can verify interactions.
+     */
+    private function mockBestEffortEnvironment(?ClassMetadata $metadata = null): Connection
+    {
+        $connection = $this->createMock(Connection::class);
+        $connection->method('executeStatement')->willReturn(1);
+        $connection->method('isTransactionActive')->willReturn(true);
+        // Savepoint methods return void — just configure them to do nothing
+        $connection->method('createSavepoint')->willReturnMap([]);
+        $connection->method('releaseSavepoint')->willReturnMap([]);
+        $connection->method('rollbackSavepoint')->willReturnMap([]);
+        $connection->method('setNestTransactionsWithSavepoints')->willReturnMap([]);
+
+        $eventManager = $this->createMock(EventManager::class);
+        $eventManager->method('getListeners')->willReturn([]);
+
+        $this->entityManager->method('getConnection')->willReturn($connection);
+        $this->entityManager->method('getEventManager')->willReturn($eventManager);
+        $this->entityManager->method('isOpen')->willReturn(true);
+
+        if ($metadata !== null) {
+            $this->entityManager->method('getClassMetadata')->willReturn($metadata);
+
+            $repo = $this->createMock(EntityRepository::class);
+            $repo->method('find')->willReturn(null);
+            $repo->method('findOneBy')->willReturn(null);
+            $this->entityManager->method('getRepository')->willReturn($repo);
+        }
+
+        return $connection;
+    }
+
+    /**
+     * P5 T1 — Clean backup in best_effort mode must produce zero failures
+     * and behave identically to strict mode for valid data.
+     */
+    public function testBestEffortEmptyFailuresOnCleanBackup(): void
+    {
+        $backup = [
+            'metadata' => ['version' => '1.0'],
+            'data'     => [],
+        ];
+
+        $this->mockBestEffortEnvironment();
+
+        $result = $this->service->restoreFromBackup($backup, [
+            'dry_run'    => false,
+            'best_effort' => true,
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertArrayHasKey('failures', $result);
+        $this->assertSame([], $result['failures'],
+            'Clean backup in best_effort mode must produce zero failures');
+    }
+
+    /**
+     * P5 T2 — When the final flush for an entity-type throws (simulating FK violation),
+     * best_effort records a failure entry. Other entity-types continue.
+     *
+     * Strategy: the pre-savepoint flush (position 0 in loop) must succeed so the
+     * savepoint can be created. The FINAL entity-type flush must throw.
+     * We use a counter: first N-1 calls succeed; the last (final flush) throws.
+     */
+    public function testBestEffortSkipsRowWithFKViolation(): void
+    {
+        $fieldMapping = new FieldMapping(type: 'string', fieldName: 'name', columnName: 'name');
+        $fieldMapping->nullable = true;
+
+        $metadata = $this->createMock(ClassMetadata::class);
+        $metadata->method('getFieldNames')->willReturn(['id', 'name']);
+        $metadata->method('getFieldMapping')->willReturn($fieldMapping);
+        $metadata->method('getTypeOfField')->willReturn('string');
+        $metadata->method('getAssociationNames')->willReturn([]);
+        $metadata->method('isSingleValuedAssociation')->willReturn(false);
+        $metadata->method('getAssociationMappings')->willReturn([]);
+        $metadata->method('getTableName')->willReturn('role');
+        $metadata->generatorType = ClassMetadata::GENERATOR_TYPE_AUTO;
+        $metadata->idGenerator   = new \Doctrine\ORM\Id\IdentityGenerator();
+
+        $connection = $this->mockBestEffortEnvironment($metadata);
+
+        // Make persist() throw on the second call (second row), simulating a per-row FK violation.
+        // This is caught by the per-row try-catch in restoreEntity().
+        $persistCallCount = 0;
+        $this->entityManager->method('persist')->willReturnCallback(
+            function () use (&$persistCallCount): void {
+                $persistCallCount++;
+                if ($persistCallCount === 2) {
+                    throw new \RuntimeException('Integrity constraint violation: 1452 FK constraint failed on row 2');
+                }
+            }
+        );
+
+        $backup = [
+            'metadata' => ['version' => '1.0'],
+            'data'     => [
+                'Role' => [
+                    ['id' => 1, 'name' => 'ROLE_USER'],
+                    ['id' => 2, 'name' => 'ROLE_ADMIN'],
+                ],
+            ],
+        ];
+
+        $result = $this->service->restoreFromBackup($backup, [
+            'dry_run'     => false,
+            'best_effort' => true,
+        ]);
+
+        $this->assertArrayHasKey('failures', $result);
+        // At least one failure was recorded (the second row that threw on persist)
+        $this->assertNotEmpty($result['failures'],
+            'Expected at least one failure entry for the FK-violating persist');
+
+        $entityNames = array_column($result['failures'], 'entity');
+        $this->assertContains('Role', $entityNames,
+            'Failure must be attributed to the Role entity');
+
+        // Row ID 2 must be the one that failed
+        $roleFailures = array_filter($result['failures'], fn($f) => $f['entity'] === 'Role');
+        $failedRowIds = array_column(array_values($roleFailures), 'row_id');
+        $this->assertContains(2, $failedRowIds,
+            'The failure must capture the row ID of the failing row');
+    }
+
+    /**
+     * P5 T3 — Strict mode (best_effort=false) must NOT swallow row errors;
+     * it should let the exception bubble up or record it as a warning (existing behaviour).
+     * The key assertion is that 'failures' key in the result is always present.
+     */
+    public function testStrictModeAlwaysIncludesFailuresKeyInResult(): void
+    {
+        $backup = [
+            'metadata' => ['version' => '1.0'],
+            'data'     => [],
+        ];
+
+        $this->mockBestEffortEnvironment();
+
+        $result = $this->service->restoreFromBackup($backup, [
+            'dry_run'     => false,
+            'best_effort' => false, // strict
+        ]);
+
+        $this->assertTrue($result['success']);
+        // Even in strict mode, the failures key must be present (just empty)
+        $this->assertArrayHasKey('failures', $result,
+            'failures key must always be present in the result, even in strict mode');
+        $this->assertSame([], $result['failures']);
+    }
+
+    /**
+     * P5 T4 — SHA256 mismatch in best_effort mode must NOT throw; instead it must
+     * record a failure and continue. In strict mode it must throw.
+     */
+    public function testBestEffortSurvivesSha256Mismatch(): void
+    {
+        $data = ['Role' => [['id' => 1, 'name' => 'ROLE_USER']]];
+
+        $backup = [
+            'metadata' => [
+                'version' => '1.0',
+                'sha256'  => 'deadbeef', // intentionally wrong
+            ],
+            'data' => $data,
+        ];
+
+        $this->mockBestEffortEnvironment();
+
+        // best_effort=true: must NOT throw, must record integrity failure
+        $result = $this->service->restoreFromBackup($backup, [
+            'dry_run'    => true,
+            'best_effort' => true,
+        ]);
+
+        $this->assertArrayHasKey('failures', $result);
+        $integrityFailure = array_filter(
+            $result['failures'],
+            fn(array $f): bool => $f['entity'] === '__integrity__'
+        );
+        $this->assertNotEmpty($integrityFailure,
+            'Best-effort SHA256 mismatch must produce an __integrity__ failure record');
+    }
+
+    /**
+     * P5 T5 — Strict mode SHA256 mismatch must throw RuntimeException.
+     */
+    public function testStrictModeSha256MismatchThrows(): void
+    {
+        $data = ['Role' => [['id' => 1, 'name' => 'ROLE_USER']]];
+
+        $backup = [
+            'metadata' => [
+                'version' => '1.0',
+                'sha256'  => 'deadbeef', // wrong
+            ],
+            'data' => $data,
+        ];
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('/sha256 mismatch/');
+
+        $this->service->restoreFromBackup($backup, [
+            'dry_run'     => true,
+            'best_effort' => false, // strict — must throw
+        ]);
+    }
+
+    /**
+     * P5 T6 — Encrypted SystemSetting with wrong APP_SECRET in best_effort mode.
+     * The row must be skipped with a failure entry; no exception thrown.
+     */
+    public function testBestEffortReportsEncryptedFieldFailure(): void
+    {
+        // Encrypt with a DIFFERENT key than the service uses
+        $wrongKeyService = new BackupEncryptionService('totally_wrong_secret_key');
+        $envelope        = $wrongKeyService->encryptValue('super-secret-value');
+
+        $data = [
+            'SystemSettings' => [
+                ['id' => 42, 'key' => 'smtp_password', 'value' => $envelope],
+            ],
+        ];
+
+        $backup = [
+            'metadata' => [
+                'version' => '1.0',
+                'sha256'  => hash('sha256', (string) json_encode($data)),
+            ],
+            'data' => $data,
+        ];
+
+        $connection = $this->createMock(Connection::class);
+        $connection->method('executeStatement')->willReturn(1);
+        $connection->method('isTransactionActive')->willReturn(true);
+        $connection->method('createSavepoint')->willReturnMap([]);
+        $connection->method('releaseSavepoint')->willReturnMap([]);
+        $connection->method('rollbackSavepoint')->willReturnMap([]);
+        $connection->method('setNestTransactionsWithSavepoints')->willReturnMap([]);
+
+        $eventManager = $this->createMock(EventManager::class);
+        $eventManager->method('getListeners')->willReturn([]);
+
+        $this->entityManager->method('getConnection')->willReturn($connection);
+        $this->entityManager->method('getEventManager')->willReturn($eventManager);
+        $this->entityManager->method('isOpen')->willReturn(true);
+
+        // Must NOT throw even though decryption will fail
+        $result = $this->service->restoreFromBackup($backup, [
+            'dry_run'     => true,
+            'best_effort' => true,
+        ]);
+
+        $this->assertArrayHasKey('failures', $result);
+        $systemSettingsFailures = array_filter(
+            $result['failures'],
+            fn(array $f): bool => $f['entity'] === 'SystemSettings'
+        );
+        $this->assertNotEmpty($systemSettingsFailures,
+            'Best-effort decryption failure must produce a SystemSettings failure record');
+
+        // The row ID must be captured
+        $failure = array_values($systemSettingsFailures)[0];
+        $this->assertSame(42, $failure['row_id'],
+            'Failure record must include the row ID of the failing SystemSettings row');
+    }
 }
 

@@ -399,6 +399,7 @@ class AdminBackupController extends AbstractController
                 'skip_entities' => $request->request->all('skip_entities') ?? [],
                 'dry_run' => $request->request->getBoolean('dry_run', false),
                 'clear_before_restore' => $request->request->getBoolean('clear_before_restore', false),
+                'best_effort' => $request->request->getBoolean('best_effort', false),
                 'admin_password' => $request->request->get('admin_password', ''),
             ];
 
@@ -422,6 +423,7 @@ class AdminBackupController extends AbstractController
                     : 'Wiederherstellung erfolgreich abgeschlossen',
                 'statistics'   => $result['statistics'],
                 'warnings'     => $result['warnings'],
+                'failures'     => $result['failures'] ?? [],
                 'dry_run'      => $result['dry_run'],
                 'tenant_scope' => $targetTenantScope?->getId(),
             ]);

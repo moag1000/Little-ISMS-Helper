@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Service\BackupEncryptionService;
+use Doctrine\Persistence\ManagerRegistry;
 use InvalidArgumentException;
 use Exception;
 use Doctrine\DBAL\Exception as DBALException;
@@ -44,12 +47,16 @@ class RestoreService
     private array $warnings = [];
     private array $statistics = [];
 
+    /** Accumulated row-level failures when best_effort=true. */
+    private array $failures = [];
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
-        private readonly ?BackupEncryptionService $backupEncryption = null
+        private readonly ?BackupEncryptionService $backupEncryption = null,
+        private readonly ?ManagerRegistry $registry = null,
     ) {
     }
 
@@ -223,12 +230,34 @@ class RestoreService
     public function restoreFromBackup(array $backup, array $options = [], ?Tenant $targetTenantScope = null): array
     {
         $this->statistics = [];
-        $this->warnings = [];
+        $this->warnings   = [];
+        $this->failures   = [];
 
         // --- SHA256 integrity check (Feature 1) ---
         // verifyIntegrity() may return a legacy-backup warning. We collect it here so it
         // survives the validateBackup() call that follows (which resets $this->warnings).
-        $integrityWarning = $this->verifyIntegrity($backup);
+        // In best_effort mode a hash mismatch is demoted to a warning + failure record.
+        $bestEffort = (bool) ($options['best_effort'] ?? false);
+        try {
+            $integrityWarning = $this->verifyIntegrity($backup);
+        } catch (RuntimeException $integrityException) {
+            if ($bestEffort) {
+                $this->logger->warning('Best-effort: SHA256 mismatch — continuing anyway', [
+                    'error' => $integrityException->getMessage(),
+                ]);
+                $integrityWarning = 'Best-effort: ' . $integrityException->getMessage();
+                $this->failures[] = [
+                    'entity'        => '__integrity__',
+                    'row_index'     => null,
+                    'row_id'        => null,
+                    'error_class'   => $integrityException::class,
+                    'error_message' => $integrityException->getMessage(),
+                    'original_data' => [],
+                ];
+            } else {
+                throw $integrityException;
+            }
+        }
 
         // Resolve scope IDs for the target tenant (empty = global)
         $targetScopeIds = $this->resolveTenantScopeIds($targetTenantScope);
@@ -255,6 +284,7 @@ class RestoreService
             'skip_entities' => [],
             'dry_run' => false,
             'clear_before_restore' => false, // New option: clear all data before restore
+            'best_effort' => false,          // P5: opt-in — skip failing rows instead of aborting
         ], $options);
 
         // Validate first (this resets $this->warnings internally)
@@ -319,8 +349,19 @@ class RestoreService
             $this->logger->info('Disabled Doctrine lifecycle event listeners for restore');
 
             // Decrypt sensitive SystemSettings values before restore (Feature 2).
+            // In best_effort mode, per-row decryption failures are caught inside
+            // restoreEntity() when $options['best_effort'] is true.
             if ($this->backupEncryption !== null && isset($backup['data']['SystemSettings'])) {
-                $backup['data']['SystemSettings'] = $this->decryptSystemSettingsValues($backup['data']['SystemSettings']);
+                if ($options['best_effort']) {
+                    // Defer decryption to per-row level inside restoreEntity() so
+                    // a bad key on one row does not abort the whole entity-type.
+                    // We mark the rows so restoreEntity() knows they need decryption.
+                    $backup['data']['SystemSettings'] = $this->markSystemSettingsForDecryption(
+                        $backup['data']['SystemSettings']
+                    );
+                } else {
+                    $backup['data']['SystemSettings'] = $this->decryptSystemSettingsValues($backup['data']['SystemSettings']);
+                }
             }
 
             // Order entities by dependency (users and tenants first)
@@ -345,6 +386,17 @@ class RestoreService
             // Must be AFTER clearExistingData to avoid ALTER TABLE's implicit COMMIT
             $this->entityManager->beginTransaction();
             $this->logger->info('Started transaction for entity restoration');
+
+            // Enable nested transactions (savepoints) when best_effort mode is active.
+            if ($options['best_effort']) {
+                try {
+                    $connection->setNestTransactionsWithSavepoints(true);
+                } catch (\Throwable) {
+                    // Driver may not support savepoints — best-effort will still work
+                    // but without savepoint isolation (row errors abort the entity-type batch).
+                    $this->logger->warning('Best-effort: driver does not support nested savepoints — row isolation disabled');
+                }
+            }
 
             // First pass: restore all scalar fields and single-valued (ManyToOne/OneToOne) associations
             foreach ($orderedEntities as $orderedEntity) {
@@ -372,7 +424,68 @@ class RestoreService
                     ]);
                 }
 
-                $this->restoreEntity($entityClass, $orderedEntity, $entities, $options);
+                if ($options['best_effort']) {
+                    // Wrap each entity-type in a savepoint so a hard failure on flush
+                    // only rolls back that entity-type, not the whole restore.
+                    $spName = 'sp_' . preg_replace('/[^a-zA-Z0-9]/', '_', $orderedEntity);
+                    $savepointCreated = false;
+                    try {
+                        $connection->createSavepoint($spName);
+                        $savepointCreated = true;
+                    } catch (\Throwable) {
+                        // Savepoint creation failed — fall through without savepoint isolation
+                    }
+
+                    try {
+                        $this->restoreEntity($entityClass, $orderedEntity, $entities, $options);
+                        if ($savepointCreated) {
+                            try {
+                                $connection->releaseSavepoint($spName);
+                            } catch (\Throwable) {
+                                // Non-critical; continue
+                            }
+                        }
+                    } catch (\Throwable $entityTypeError) {
+                        // Entity-type level failure in best_effort mode
+                        $this->logger->warning('Best-effort: entity-type restore failed, rolling back savepoint', [
+                            'entity' => $orderedEntity,
+                            'error'  => $entityTypeError->getMessage(),
+                        ]);
+
+                        if ($savepointCreated) {
+                            try {
+                                $connection->rollbackSavepoint($spName);
+                            } catch (\Throwable) {
+                                // Ignore rollback errors
+                            }
+                        }
+
+                        $this->failures[] = [
+                            'entity'        => $orderedEntity,
+                            'row_index'     => null,
+                            'row_id'        => null,
+                            'error_class'   => $entityTypeError::class,
+                            'error_message' => $entityTypeError->getMessage(),
+                            'original_data' => [],
+                        ];
+
+                        // If EntityManager was closed by the error, try to reopen it
+                        if (!$this->entityManager->isOpen() && $this->registry !== null) {
+                            try {
+                                $this->registry->resetManager();
+                                $this->logger->info('Best-effort: EntityManager was reset after entity-type failure', [
+                                    'entity' => $orderedEntity,
+                                ]);
+                            } catch (\Throwable $resetError) {
+                                $this->logger->warning('Best-effort: could not reset EntityManager', [
+                                    'error' => $resetError->getMessage(),
+                                ]);
+                            }
+                        }
+                    }
+                } else {
+                    $this->restoreEntity($entityClass, $orderedEntity, $entities, $options);
+                }
             }
 
             // Second pass: restore ManyToMany associations via direct DBAL pivot-table inserts.
@@ -449,11 +562,12 @@ class RestoreService
 
                     // Return partial success with warnings
                     return [
-                        'success' => false,
-                        'message' => 'Wiederherstellung teilweise fehlgeschlagen: Der EntityManager wurde während des Vorgangs geschlossen. Einige Daten wurden möglicherweise nicht gespeichert. Bitte aktivieren Sie "Bestehende Daten löschen" und versuchen Sie es erneut.',
+                        'success'    => false,
+                        'message'    => 'Wiederherstellung teilweise fehlgeschlagen: Der EntityManager wurde während des Vorgangs geschlossen. Einige Daten wurden möglicherweise nicht gespeichert. Bitte aktivieren Sie "Bestehende Daten löschen" und versuchen Sie es erneut.',
                         'statistics' => $this->statistics,
-                        'warnings' => $this->warnings,
-                        'dry_run' => $options['dry_run'],
+                        'warnings'   => $this->warnings,
+                        'failures'   => $this->failures,
+                        'dry_run'    => $options['dry_run'],
                     ];
                 }
 
@@ -506,10 +620,11 @@ class RestoreService
             }
 
             return [
-                'success' => true,
+                'success'    => true,
                 'statistics' => $this->statistics,
-                'warnings' => $this->warnings,
-                'dry_run' => $options['dry_run'],
+                'warnings'   => $this->warnings,
+                'failures'   => $this->failures,
+                'dry_run'    => $options['dry_run'],
             ];
         } catch (Exception $e) {
             // Try to rollback, but EntityManager might be closed
@@ -551,11 +666,12 @@ class RestoreService
             // Check if this is an EntityManager closed error
             if (str_contains($e->getMessage(), 'EntityManager is closed')) {
                 return [
-                    'success' => false,
-                    'message' => 'Der EntityManager wurde geschlossen (Datenbankfehler). Bitte aktivieren Sie "Bestehende Daten löschen" um Konflikte zu vermeiden.',
+                    'success'    => false,
+                    'message'    => 'Der EntityManager wurde geschlossen (Datenbankfehler). Bitte aktivieren Sie "Bestehende Daten löschen" um Konflikte zu vermeiden.',
                     'statistics' => $this->statistics,
-                    'warnings' => $this->warnings,
-                    'dry_run' => $options['dry_run'],
+                    'warnings'   => $this->warnings,
+                    'failures'   => $this->failures,
+                    'dry_run'    => $options['dry_run'],
                 ];
             }
 
@@ -944,7 +1060,13 @@ class RestoreService
     }
 
     /**
-     * Restore a single entity type
+     * Restore a single entity type.
+     *
+     * When $options['best_effort'] is true, per-row failures are caught, recorded
+     * in $this->failures, and the loop continues with the next row.
+     * Batch savepoints (per 100 rows) protect already-flushed rows from being
+     * rolled back by a single bad row; on error the batch savepoint is rolled
+     * back and we switch to per-row savepoints to isolate the culprit.
      */
     private function restoreEntity(string $entityClass, string $entityName, array $entities, array $options): void
     {
@@ -952,6 +1074,9 @@ class RestoreService
             'entity' => $entityName,
             'count' => count($entities),
         ]);
+
+        $bestEffort  = (bool) ($options['best_effort'] ?? false);
+        $connection  = $this->entityManager->getConnection();
 
         $classMetadata = $this->entityManager->getClassMetadata($entityClass);
         $entityRepository = $this->entityManager->getRepository($entityClass);
@@ -981,7 +1106,51 @@ class RestoreService
         // Get unique constraint fields for this entity (e.g., 'name' for Role)
         $uniqueFields = $this->getUniqueConstraintFields($entityName);
 
+        // Best-effort batch savepoint configuration
+        $batchSize     = 100; // savepoint per N rows
+        $batchSpName   = null;
+        $batchStart    = 0;
+        $batchErrored  = false; // true when current batch had an error and we're in per-row mode
+
         foreach ($entities as $index => $data) {
+            // Decrypt SystemSettings value on the fly when best_effort deferred decryption
+            if ($bestEffort && $entityName === 'SystemSettings' && isset($data['__needs_decrypt__'])) {
+                try {
+                    $data = $this->decryptSystemSettingRow($data);
+                } catch (\Throwable $decryptError) {
+                    $this->logger->warning('Best-effort: decryption failed for SystemSetting row', [
+                        'row_id' => $data['id'] ?? null,
+                        'error'  => $decryptError->getMessage(),
+                    ]);
+                    $this->failures[] = [
+                        'entity'        => $entityName,
+                        'row_index'     => $index,
+                        'row_id'        => $data['id'] ?? null,
+                        'error_class'   => $decryptError::class,
+                        'error_message' => $decryptError->getMessage(),
+                        'original_data' => $data,
+                    ];
+                    $stats['errors']++;
+                    continue;
+                }
+            }
+
+            // --- Batch savepoint management (best_effort only) ---
+            if ($bestEffort && !$batchErrored) {
+                $posInBatch = $index - $batchStart;
+
+                if ($posInBatch === 0) {
+                    // Start a new batch savepoint
+                    $batchSpName = 'sp_batch_' . preg_replace('/[^a-zA-Z0-9]/', '_', $entityName) . '_' . $index;
+                    try {
+                        $this->entityManager->flush(); // flush pending before savepoint
+                        $connection->createSavepoint($batchSpName);
+                    } catch (\Throwable) {
+                        $batchSpName = null; // savepoints not supported
+                    }
+                }
+            }
+
             try {
                 // Check if EntityManager is still open
                 if (!$this->entityManager->isOpen()) {
@@ -1370,8 +1539,68 @@ class RestoreService
                 } else {
                     $stats['created']++;
                 }
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 $stats['errors']++;
+
+                if ($bestEffort) {
+                    // Record failure and continue with the next row
+                    $this->failures[] = [
+                        'entity'        => $entityName,
+                        'row_index'     => $index,
+                        'row_id'        => $data['id'] ?? null,
+                        'error_class'   => $e::class,
+                        'error_message' => $e->getMessage(),
+                        'original_data' => $data,
+                    ];
+                    $this->logger->warning('Best-effort: row restore failed, skipping', [
+                        'entity'    => $entityName,
+                        'index'     => $index,
+                        'row_id'    => $data['id'] ?? null,
+                        'error'     => $e->getMessage(),
+                    ]);
+
+                    // On batch error: rollback the batch savepoint, then switch to per-row mode
+                    if ($batchSpName !== null && !$batchErrored) {
+                        try {
+                            $this->entityManager->clear(); // detach pending entities
+                            $connection->rollbackSavepoint($batchSpName);
+                            $this->logger->info('Best-effort: rolled back batch savepoint', [
+                                'savepoint' => $batchSpName,
+                                'entity'    => $entityName,
+                            ]);
+                        } catch (\Throwable) {
+                            // Ignore savepoint rollback errors
+                        }
+                        $batchSpName  = null;
+                        $batchErrored = true; // switch to per-row mode for the rest of this entity-type
+                    }
+
+                    // If EntityManager was closed, try to reopen via registry
+                    if (!$this->entityManager->isOpen()) {
+                        if ($this->registry !== null) {
+                            try {
+                                $this->registry->resetManager();
+                                $this->logger->info('Best-effort: EntityManager reset after row failure', [
+                                    'entity' => $entityName,
+                                    'index'  => $index,
+                                ]);
+                            } catch (\Throwable $resetError) {
+                                $this->logger->warning('Best-effort: could not reset EntityManager, aborting entity-type', [
+                                    'entity' => $entityName,
+                                    'error'  => $resetError->getMessage(),
+                                ]);
+                                break;
+                            }
+                        } else {
+                            $this->warnings[] = 'EntityManager closed due to database error. Restore aborted.';
+                            break;
+                        }
+                    }
+
+                    continue; // next row
+                }
+
+                // Strict mode: record warning and abort entity-type on closed EM
                 $this->warnings[] = sprintf(
                     'Error restoring %s entity at index %d: %s',
                     $entityName,
@@ -1390,6 +1619,23 @@ class RestoreService
                     break;
                 }
             }
+
+            // --- Release batch savepoint after every $batchSize rows (best_effort) ---
+            if ($bestEffort && !$batchErrored && $batchSpName !== null) {
+                $posInBatch = ($index - $batchStart) + 1;
+                if ($posInBatch >= $batchSize) {
+                    // Flush and release this batch's savepoint
+                    try {
+                        $this->entityManager->flush();
+                        $connection->releaseSavepoint($batchSpName);
+                    } catch (\Throwable) {
+                        // Non-critical — savepoints may not be supported
+                    }
+                    $batchSpName  = null;
+                    $batchStart   = $index + 1;
+                    $batchErrored = false;
+                }
+            }
         }
 
         // Flush all entities of this type at once
@@ -1400,37 +1646,81 @@ class RestoreService
                     'count' => $stats['created'] + $stats['updated'],
                 ]);
                 $this->entityManager->flush();
+
+                // Release any open batch savepoint after the final flush
+                if ($bestEffort && $batchSpName !== null) {
+                    try {
+                        $connection->releaseSavepoint($batchSpName);
+                    } catch (\Throwable) {
+                        // Non-critical
+                    }
+                }
+
                 $this->logger->info('Successfully flushed entities', [
                     'entity' => $entityName,
                     'created' => $stats['created'],
                     'updated' => $stats['updated'],
                 ]);
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 $stats['errors']++;
-                $this->warnings[] = sprintf(
-                    'Error flushing %s entities (database constraint error): %s',
-                    $entityName,
-                    $e->getMessage()
-                );
-                $this->logger->error('Error flushing entities', [
-                    'entity' => $entityName,
-                    'error' => $e->getMessage(),
-                    'error_class' => $e::class,
-                    'trace' => $e->getTraceAsString(),
-                    'created_count' => $stats['created'],
-                    'updated_count' => $stats['updated'],
-                ]);
 
-                // Check if EntityManager is closed
-                if (!$this->entityManager->isOpen()) {
+                if ($bestEffort) {
+                    // Record the flush failure but do not throw
+                    $this->failures[] = [
+                        'entity'        => $entityName,
+                        'row_index'     => null,
+                        'row_id'        => null,
+                        'error_class'   => $e::class,
+                        'error_message' => 'Flush error: ' . $e->getMessage(),
+                        'original_data' => [],
+                    ];
+                    $this->logger->warning('Best-effort: flush error for entity-type', [
+                        'entity' => $entityName,
+                        'error'  => $e->getMessage(),
+                    ]);
+
+                    // Rollback open batch savepoint on flush error
+                    if ($batchSpName !== null) {
+                        try {
+                            $connection->rollbackSavepoint($batchSpName);
+                        } catch (\Throwable) {
+                            // Ignore
+                        }
+                    }
+
+                    if (!$this->entityManager->isOpen() && $this->registry !== null) {
+                        try {
+                            $this->registry->resetManager();
+                        } catch (\Throwable) {
+                            // Ignore
+                        }
+                    }
+                } else {
                     $this->warnings[] = sprintf(
-                        'EntityManager closed after %s flush error. Remaining entities will be skipped.',
-                        $entityName
+                        'Error flushing %s entities (database constraint error): %s',
+                        $entityName,
+                        $e->getMessage()
                     );
-                    $this->logger->critical('EntityManager closed after flush error', [
+                    $this->logger->error('Error flushing entities', [
                         'entity' => $entityName,
                         'error' => $e->getMessage(),
+                        'error_class' => $e::class,
+                        'trace' => $e->getTraceAsString(),
+                        'created_count' => $stats['created'],
+                        'updated_count' => $stats['updated'],
                     ]);
+
+                    // Check if EntityManager is closed
+                    if (!$this->entityManager->isOpen()) {
+                        $this->warnings[] = sprintf(
+                            'EntityManager closed after %s flush error. Remaining entities will be skipped.',
+                            $entityName
+                        );
+                        $this->logger->critical('EntityManager closed after flush error', [
+                            'entity' => $entityName,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
                 }
             }
         } else {
@@ -1784,6 +2074,63 @@ class RestoreService
 
         $this->logger->info('Backup integrity check passed', ['sha256' => $storedHash]);
         return null;
+    }
+
+    /**
+     * Get the accumulated row-level failures from the last best-effort restore.
+     *
+     * @return array<int, array{entity: string, row_index: int|null, row_id: mixed, error_class: string, error_message: string, original_data: array}>
+     */
+    public function getFailures(): array
+    {
+        return $this->failures;
+    }
+
+    /**
+     * Mark SystemSettings rows for deferred per-row decryption in best_effort mode.
+     * Rows that need decryption get a special '__needs_decrypt__' flag.
+     *
+     * @param array<int, array<string, mixed>> $rows
+     * @return array<int, array<string, mixed>>
+     */
+    private function markSystemSettingsForDecryption(array $rows): array
+    {
+        if ($this->backupEncryption === null) {
+            return $rows;
+        }
+
+        foreach ($rows as &$row) {
+            $value = $row['value'] ?? null;
+            if ($this->backupEncryption->isEncrypted($value)) {
+                $row['__needs_decrypt__'] = true;
+            }
+        }
+        unset($row);
+
+        return $rows;
+    }
+
+    /**
+     * Decrypt a single SystemSettings row in best_effort deferred mode.
+     *
+     * @param array<string, mixed> $row
+     * @return array<string, mixed>
+     * @throws RuntimeException When decryption fails (e.g. wrong APP_SECRET).
+     */
+    private function decryptSystemSettingRow(array $row): array
+    {
+        if ($this->backupEncryption === null) {
+            unset($row['__needs_decrypt__']);
+            return $row;
+        }
+
+        $value = $row['value'] ?? null;
+        if ($this->backupEncryption->isEncrypted($value)) {
+            $row['value'] = $this->backupEncryption->decryptValue($value);
+        }
+        unset($row['__needs_decrypt__']);
+
+        return $row;
     }
 
     /**
