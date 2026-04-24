@@ -4063,3 +4063,84 @@ button.fa-filter-chip.fa-filter-chip--active {
     color: var(--fg-2);
     font-weight: 500;
 }
+
+
+/* ==========================================================================
+   Aurora v4 — Tom-Select Theme-Override
+   ==========================================================================
+   Tom-Select lib ships `tom-select.default.min.css` with hardcoded #303030
+   text + light grey borders. Aurora tokens must win — override with matching
+   specificity (.ts-* alone = 0,1,0; selector-stacking = 0,2,0).
+   ========================================================================== */
+.ts-wrapper.ts-wrapper,
+.ts-control.ts-control,
+.ts-dropdown.ts-dropdown {
+    color: var(--fg);
+    font-family: var(--font-sans);
+    background-color: var(--surface);
+}
+.ts-wrapper.ts-wrapper .ts-control {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--fg);
+    min-height: 40px;
+    padding: 6px 10px;
+    box-shadow: none;
+}
+.ts-wrapper.ts-wrapper .ts-control:hover { border-color: var(--border-strong); }
+.ts-wrapper.ts-wrapper.focus .ts-control,
+.ts-wrapper.ts-wrapper .ts-control:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+.ts-wrapper.ts-wrapper.disabled .ts-control {
+    background-color: var(--surface-2);
+    color: var(--fg-3);
+    cursor: not-allowed;
+}
+/* Input inside control (search field of select) */
+.ts-control > input {
+    color: var(--fg);
+    background: transparent !important;
+}
+.ts-control > input::placeholder { color: var(--fg-3); }
+/* Selected-items chips in multi-select */
+.ts-wrapper.ts-wrapper .ts-control > .item {
+    background-color: var(--primary-tint);
+    color: var(--primary-strong);
+    border: 1px solid var(--primary);
+    border-radius: var(--r-sm);
+    padding: 2px 8px;
+    margin: 2px;
+}
+.ts-wrapper.ts-wrapper .ts-control > .item.active {
+    background-color: var(--primary);
+    color: var(--on-primary);
+}
+/* Dropdown panel */
+.ts-dropdown.ts-dropdown {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--fg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    margin-top: 4px;
+}
+.ts-dropdown .option { color: var(--fg); padding: 8px 12px; }
+.ts-dropdown .option:hover,
+.ts-dropdown .option.active { background-color: var(--primary-tint); color: var(--primary-strong); }
+.ts-dropdown .option.selected { background-color: var(--primary); color: var(--on-primary); }
+.ts-dropdown .no-results,
+.ts-dropdown .create {
+    color: var(--fg-3);
+    padding: 10px 12px;
+}
+/* Inside our cyber-input frame: flatten Tom-Select's own border — frame owns it */
+.fa-cyber-input__frame .ts-wrapper .ts-control,
+.fa-cyber-input__frame > .ts-wrapper .ts-control {
+    border: 0;
+    box-shadow: none;
+    min-height: auto;
+    padding: 6px 10px;
+}
