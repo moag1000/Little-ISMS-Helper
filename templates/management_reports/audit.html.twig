@@ -30,38 +30,54 @@
     {# Audit Summary #}
     <div class="row mb-4">
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-primary text-white' } %}
+            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'primary', 'class': 'h-100' } %}
                 {% block card_body %}
-                    <i class="bi bi-clipboard-check fs-1" aria-hidden="true"></i>
-                    <h3 class="display-5">{{ report.audits.total }}</h3>
-                    <small>{{ 'management_reports.audit.total_audits'|trans({}, 'management_reports') }}</small>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="kpi-card-value">{{ report.audits.total }}</div>
+                            <div class="kpi-card-label">{{ 'management_reports.audit.total_audits'|trans({}, 'management_reports') }}</div>
+                        </div>
+                        <i class="bi bi-clipboard-check fs-1 text-primary" aria-hidden="true"></i>
+                    </div>
                 {% endblock %}
             {% endembed %}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-success text-white' } %}
+            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'success', 'class': 'h-100' } %}
                 {% block card_body %}
-                    <i class="bi bi-calendar-check fs-1" aria-hidden="true"></i>
-                    <h3 class="display-5">{{ report.audits.this_year }}</h3>
-                    <small>{{ 'management_reports.audit.this_year'|trans({}, 'management_reports') }}</small>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="kpi-card-value">{{ report.audits.this_year }}</div>
+                            <div class="kpi-card-label">{{ 'management_reports.audit.this_year'|trans({}, 'management_reports') }}</div>
+                        </div>
+                        <i class="bi bi-calendar-check fs-1 text-success" aria-hidden="true"></i>
+                    </div>
                 {% endblock %}
             {% endembed %}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-info text-white' } %}
+            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'info', 'class': 'h-100' } %}
                 {% block card_body %}
-                    <i class="bi bi-people fs-1" aria-hidden="true"></i>
-                    <h3 class="display-5">{{ report.management_reviews.total }}</h3>
-                    <small>{{ 'management_reports.audit.total_reviews'|trans({}, 'management_reports') }}</small>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="kpi-card-value">{{ report.management_reviews.total }}</div>
+                            <div class="kpi-card-label">{{ 'management_reports.audit.total_reviews'|trans({}, 'management_reports') }}</div>
+                        </div>
+                        <i class="bi bi-people fs-1 text-info" aria-hidden="true"></i>
+                    </div>
                 {% endblock %}
             {% endembed %}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-warning-subtle text-warning' } %}
+            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'warning', 'class': 'h-100' } %}
                 {% block card_body %}
-                    <i class="bi bi-calendar-event fs-1" aria-hidden="true"></i>
-                    <h3 class="display-5">{{ report.management_reviews.this_year }}</h3>
-                    <small>{{ 'management_reports.audit.reviews_this_year'|trans({}, 'management_reports') }}</small>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="kpi-card-value">{{ report.management_reviews.this_year }}</div>
+                            <div class="kpi-card-label">{{ 'management_reports.audit.reviews_this_year'|trans({}, 'management_reports') }}</div>
+                        </div>
+                        <i class="bi bi-calendar-event fs-1 text-warning" aria-hidden="true"></i>
+                    </div>
                 {% endblock %}
             {% endembed %}
         </div>
@@ -72,7 +88,7 @@
         <div class="col-md-6 mb-4">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
                 {% block card_header %}
-                    <div class="card-header bg-warning-subtle text-warning">
+                    <div class="card-header">
                         <h3 class="h5 mb-0">
                             <i class="bi bi-pie-chart" aria-hidden="true"></i>
                             {{ 'management_reports.audit.status_breakdown'|trans({}, 'management_reports') }}

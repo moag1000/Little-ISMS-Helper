@@ -27,53 +27,53 @@
     {# Quick Stats Row #}
     <div class="row mb-4">
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'bg-primary text-white h-100' } %}
+            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'primary', 'class': 'h-100' } %}
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">{{ summary.summary.total_assets }}</h3>
-                            <small>{{ 'management_reports.stats.assets'|trans({}, 'management_reports') }}</small>
+                            <div class="kpi-card-value">{{ summary.summary.total_assets }}</div>
+                            <div class="kpi-card-label">{{ 'management_reports.stats.assets'|trans({}, 'management_reports') }}</div>
                         </div>
-                        <i class="bi bi-server fs-1 opacity-50" aria-hidden="true"></i>
+                        <i class="bi bi-server fs-1 text-primary" aria-hidden="true"></i>
                     </div>
                 {% endblock %}
             {% endembed %}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'bg-danger text-white h-100' } %}
+            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'danger', 'class': 'h-100' } %}
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">{{ summary.risk_distribution.critical + summary.risk_distribution.high }}</h3>
-                            <small>{{ 'management_reports.stats.high_risks'|trans({}, 'management_reports') }}</small>
+                            <div class="kpi-card-value">{{ summary.risk_distribution.critical + summary.risk_distribution.high }}</div>
+                            <div class="kpi-card-label">{{ 'management_reports.stats.high_risks'|trans({}, 'management_reports') }}</div>
                         </div>
-                        <i class="bi bi-exclamation-triangle fs-1 opacity-50" aria-hidden="true"></i>
+                        <i class="bi bi-exclamation-triangle fs-1 text-danger" aria-hidden="true"></i>
                     </div>
                 {% endblock %}
             {% endembed %}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'bg-success text-white h-100' } %}
+            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'success', 'class': 'h-100' } %}
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">{{ summary.summary.compliance_percentage }}%</h3>
-                            <small>{{ 'management_reports.stats.compliance'|trans({}, 'management_reports') }}</small>
+                            <div class="kpi-card-value">{{ summary.summary.compliance_percentage }}%</div>
+                            <div class="kpi-card-label">{{ 'management_reports.stats.compliance'|trans({}, 'management_reports') }}</div>
                         </div>
-                        <i class="bi bi-shield-check fs-1 opacity-50" aria-hidden="true"></i>
+                        <i class="bi bi-shield-check fs-1 text-success" aria-hidden="true"></i>
                     </div>
                 {% endblock %}
             {% endembed %}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'bg-warning-subtle text-warning h-100' } %}
+            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'warning', 'class': 'h-100' } %}
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">{{ summary.incident_summary.open }}</h3>
-                            <small>{{ 'management_reports.stats.open_incidents'|trans({}, 'management_reports') }}</small>
+                            <div class="kpi-card-value">{{ summary.incident_summary.open }}</div>
+                            <div class="kpi-card-label">{{ 'management_reports.stats.open_incidents'|trans({}, 'management_reports') }}</div>
                         </div>
-                        <i class="bi bi-bell fs-1 opacity-50" aria-hidden="true"></i>
+                        <i class="bi bi-bell fs-1 text-warning" aria-hidden="true"></i>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -90,7 +90,7 @@
         <div class="col-md-6 col-lg-4 mb-4">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm border-' ~ category.color } %}
                 {% block card_header %}
-                    <div class="card-header bg-{{ category.color }}">
+                    <div class="card-header">
                         <h3 class="h5 mb-0">
                             <i class="bi bi-{{ category.icon }}" aria-hidden="true"></i>
                             {{ ('management_reports.category.' ~ category.key ~ '.title')|trans({}, 'management_reports') }}

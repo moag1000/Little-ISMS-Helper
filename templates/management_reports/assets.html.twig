@@ -30,11 +30,15 @@
     {# Total Assets #}
     <div class="row mb-4">
         <div class="col-md-4">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-primary text-white' } %}
+            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'primary', 'class': 'h-100' } %}
                 {% block card_body %}
-                    <i class="bi bi-server fs-1" aria-hidden="true"></i>
-                    <h3 class="display-3">{{ report.total_assets }}</h3>
-                    <p class="mb-0">{{ 'management_reports.assets.total'|trans({}, 'management_reports') }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="kpi-card-value">{{ report.total_assets }}</div>
+                            <div class="kpi-card-label">{{ 'management_reports.assets.total'|trans({}, 'management_reports') }}</div>
+                        </div>
+                        <i class="bi bi-server fs-1 text-primary" aria-hidden="true"></i>
+                    </div>
                 {% endblock %}
             {% endembed %}
         </div>
