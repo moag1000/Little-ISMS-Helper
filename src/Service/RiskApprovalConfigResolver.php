@@ -51,6 +51,17 @@ final readonly class RiskApprovalConfigView
  *
  * Request-scoped Cache (array) — Config ändert selten, eine DB-Query
  * pro Request reicht. Kein APCu/Redis (Premature Optimization).
+ *
+ * Phase 8M.1 — Ceiling-Merge mit Holding-Hierarchie:
+ * Ein Holding-Parent setzt Maximum-Schwellwerte. Child-Tenants dürfen
+ * nur NIEDRIGERE (strengere) Werte setzen, nie höhere (laxere).
+ * Merge-Semantik: min(child, parent) für alle drei Threshold-Felder.
+ *
+ * Cache-Invalidation: Admin-Controller ruft invalidate() für den
+ * betroffenen Tenant auf. Da Ancestor-Werte in den Child-Cache
+ * einfließen, MUSS bei Änderung eines Ancestor-Tenants auch der
+ * Child-Cache invalidiert werden. Empfehlung: nach Speichern einer
+ * Ancestor-Config alle bekannten Subsidiaries invalidieren.
  */
 class RiskApprovalConfigResolver
 {
@@ -70,14 +81,34 @@ class RiskApprovalConfigResolver
             return $this->cache[$tenantId];
         }
 
-        $entity = $this->repository->findByTenant($tenant);
-        if (!$entity instanceof RiskApprovalConfig) {
+        // Eigene Config des Child-Tenants (oder Defaults wenn keine vorhanden)
+        $childEntity = $this->repository->findByTenant($tenant);
+        if (!$childEntity instanceof RiskApprovalConfig) {
             $this->logger->warning('No RiskApprovalConfig for tenant — using defaults', [
                 'tenant_id' => $tenantId,
             ]);
             $view = RiskApprovalConfigView::defaults();
         } else {
-            $view = RiskApprovalConfigView::fromEntity($entity);
+            $view = RiskApprovalConfigView::fromEntity($childEntity);
+        }
+
+        // 8M.1: Ceiling-Merge — Ancestor-Walk (Parent zuerst, Root zuletzt).
+        // min() stellt sicher, dass Child nicht laxer als Holding-Parent werden kann.
+        foreach ($tenant->getAllAncestors() as $ancestor) {
+            $ancestorEntity = $this->repository->findByTenant($ancestor);
+            if (!$ancestorEntity instanceof RiskApprovalConfig) {
+                continue;
+            }
+            $ancestorView = RiskApprovalConfigView::fromEntity($ancestorEntity);
+            $view = new RiskApprovalConfigView(
+                thresholdAutomatic: min($view->thresholdAutomatic, $ancestorView->thresholdAutomatic),
+                thresholdManager:   min($view->thresholdManager,   $ancestorView->thresholdManager),
+                thresholdExecutive: min($view->thresholdExecutive, $ancestorView->thresholdExecutive),
+            );
+            $this->logger->debug('RiskApprovalConfigResolver: ceiling-merge with ancestor', [
+                'tenant_id' => $tenantId,
+                'ancestor_id' => $ancestor->getId(),
+            ]);
         }
 
         if ($tenantId !== null) {
@@ -88,6 +119,10 @@ class RiskApprovalConfigResolver
 
     /**
      * Cache nach Entity-Update invalidieren (Admin-UI ruft das auf).
+     *
+     * Wichtig: Wird ein Ancestor-Tenant geändert, müssen auch alle
+     * Child-Tenant-Caches invalidiert werden, da deren aufgelöste Werte
+     * vom Ancestor abhängen.
      */
     public function invalidate(Tenant $tenant): void
     {
