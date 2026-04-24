@@ -1,0 +1,12 @@
+data:
+    alva:
+        busy:
+            backup_create: "Alva erstellt das Backup — das kann bei großen Datenmengen einige Minuten dauern."
+            backup_upload: "Alva lädt das Backup hoch und verarbeitet es — bitte warten."
+            backup_restore: "Alva stellt das Backup wieder her — Fenster bitte nicht schließen."
+            backup_delete: "Alva löscht das Backup — einen Moment bitte."
+            export: "Alva exportiert die Daten — das kann bei vielen Einträgen etwas dauern."
+            import_preview: "Alva analysiert die Importdatei — bitte warten."
+            import_execute: "Alva führt den Import durch — Fenster bitte nicht schließen."
+    backup:
+        restore_dry_run: "Test-Lauf (keine Änderungen)"

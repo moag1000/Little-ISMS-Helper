@@ -21,7 +21,9 @@
                     <p class="text-muted">
                         {{ 'data_management.backup.create.description'|trans({}, 'admin') }}
                     </p>
-                    <form id="createBackupForm">
+                    <form id="createBackupForm"
+                          data-controller="wizard-busy"
+                          data-wizard-busy-message-value="{{ 'data.alva.busy.backup_create'|trans({}, 'data_management') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('data_backup_create') }}">
                         <div class="mb-3">
                             <div class="form-check">
@@ -66,7 +68,9 @@
                     <p class="text-muted">
                         {{ 'data_management.backup.upload.description'|trans({}, 'admin') }}
                     </p>
-                    <form id="uploadBackupForm">
+                    <form id="uploadBackupForm"
+                          data-controller="wizard-busy"
+                          data-wizard-busy-message-value="{{ 'data.alva.busy.backup_upload'|trans({}, 'data_management') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('data_backup_upload') }}">
                         <div class="mb-3">
                             <label for="backupFile" class="form-label">{{ 'data_management.backup.upload.select_file'|trans({}, 'admin') }}</label>
@@ -261,6 +265,9 @@
                 </div>
                 <div class="backup-modal-footer">
                     <button type="button" class="btn btn-secondary backup-modal-close">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                    <button type="button" class="btn btn-outline-secondary" id="dryRunRestoreBtn">
+                        <i class="bi bi-shield-check me-2" aria-hidden="true"></i>{{ 'data.backup.restore_dry_run'|trans({}, 'data_management') }}
+                    </button>
                     <button type="button" class="btn btn-warning" id="confirmRestoreBtn">
                         <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.start_restore'|trans({}, 'admin') }}
                     </button>
@@ -415,6 +422,17 @@
 
             window.backupPageInitialized = true;
 
+            // Helper: reset wizard-busy controller overlay on AJAX forms (no Turbo redirect fires).
+            // Dispatches a synthetic turbo:submit-end that the controller recognises as a
+            // failed/non-redirect submission so it re-enables the form and hides the overlay.
+            function resetWizardBusy(form) {
+                const event = new CustomEvent('turbo:submit-end', {
+                    bubbles: true,
+                    detail: { formSubmission: { formElement: form }, success: false },
+                });
+                document.dispatchEvent(event);
+            }
+
             // Bootstrap is available globally via window.bootstrap (loaded in app.js)
             // Create Backup Form
             const createBackupBtn = document.getElementById('createBackupBtn');
@@ -470,6 +488,7 @@
                         </div>
                     `;
                 } finally {
+                    resetWizardBusy(createBackupForm);
                     createBackupBtn.disabled = false;
                     createBackupBtn.innerHTML = '<i class="bi bi-cloud-download me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.create_now'|trans({}, 'admin') }}';
                 }
@@ -538,6 +557,7 @@
                         </div>
                     `;
                 } finally {
+                    resetWizardBusy(uploadBackupForm);
                     uploadBackupBtn.disabled = false;
                     uploadBackupBtn.innerHTML = '<i class="bi bi-cloud-upload me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.upload'|trans({}, 'admin') }}';
                 }
@@ -739,15 +759,23 @@
                 });
             });
 
-            document.getElementById('confirmRestoreBtn')?.addEventListener('click', async function() {
+            // Shared restore logic — used by both the real-restore and dry-run buttons.
+            async function executeRestore(forceDryRun) {
                 const filename = document.getElementById('restoreFilename').value;
                 const restoreStatus = document.getElementById('restoreStatus');
-                const confirmBtn = this;
+                const confirmBtn = document.getElementById('confirmRestoreBtn');
+                const dryRunBtn = document.getElementById('dryRunRestoreBtn');
 
                 confirmBtn.disabled = true;
+                dryRunBtn.disabled = true;
                 confirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>{{ 'data_management.backup.action.restoring'|trans({}, 'admin') }}';
 
                 const formData = new FormData(document.getElementById('restoreForm'));
+
+                // Override dry_run when the dedicated dry-run button is clicked.
+                if (forceDryRun) {
+                    formData.set('dry_run', '1');
+                }
 
                 try {
                     const response = await fetch(`{{ path('data_backup_restore', {filename: '__FILENAME__'}) }}`.replace('__FILENAME__', filename), {
@@ -758,7 +786,21 @@
                     const result = await response.json();
 
                     if (result.success) {
-                        let html = `<div class="alert alert-success"><i class="bi bi-check-circle" aria-hidden="true"></i> <strong>${result.message}</strong>`;
+                        const isDryRun = result.dry_run === true;
+                        let html = isDryRun
+                            ? `<div class="alert alert-info"><i class="bi bi-shield-check" aria-hidden="true"></i> <strong>${result.message}</strong>`
+                            : `<div class="alert alert-success"><i class="bi bi-check-circle" aria-hidden="true"></i> <strong>${result.message}</strong>`;
+
+                        if (isDryRun) {
+                            // Count total simulated entities
+                            let totalSimulated = 0;
+                            if (result.statistics) {
+                                for (const stats of Object.values(result.statistics)) {
+                                    totalSimulated += (stats.created || 0) + (stats.updated || 0) + (stats.skipped || 0);
+                                }
+                            }
+                            html += `<br><small>{{ 'data_management.backup.restore.dry_run_simulated'|trans({}, 'admin') }}: ${totalSimulated}</small>`;
+                        }
 
                         if (result.statistics) {
                             html += '<br><br><strong>{{ 'data_management.backup.restore.statistics'|trans({}, 'admin') }}:</strong><table class="table table-sm mt-2">';
@@ -777,14 +819,14 @@
                             html += '</ul>';
                         }
 
-                        if (!result.dry_run) {
+                        if (!isDryRun) {
                             html += '<br><small class="text-muted">{{ 'data_management.backup.restore.page_reload'|trans({}, 'admin') }}</small>';
                         }
 
                         html += '</div>';
                         restoreStatus.innerHTML = html;
 
-                        if (!result.dry_run) {
+                        if (!isDryRun) {
                             setTimeout(() => location.reload(), 3000);
                         }
                     } else {
@@ -794,8 +836,17 @@
                     restoreStatus.innerHTML = `<div class="alert alert-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}</div>`;
                 } finally {
                     confirmBtn.disabled = false;
+                    dryRunBtn.disabled = false;
                     confirmBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.start_restore'|trans({}, 'admin') }}';
                 }
+            }
+
+            document.getElementById('confirmRestoreBtn')?.addEventListener('click', function() {
+                executeRestore(false);
+            });
+
+            document.getElementById('dryRunRestoreBtn')?.addEventListener('click', function() {
+                executeRestore(true);
             });
 
             // Delete Backup

@@ -142,7 +142,9 @@
                 The actual import execution is not yet implemented. This preview shows what would be imported.
             </div>
 
-            <form method="post" action="{{ path('data_import_execute') }}">
+            <form method="post" action="{{ path('data_import_execute') }}"
+                  data-controller="wizard-busy"
+                  data-wizard-busy-message-value="{{ 'data.alva.busy.import_execute'|trans({}, 'data_management') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('data_import_execute') }}">
 
                 <div class="d-grid gap-2">

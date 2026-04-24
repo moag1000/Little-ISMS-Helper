@@ -424,6 +424,7 @@ data_management:
             admin_password_help: 'Passwörter werden aus Sicherheitsgründen nicht im Backup gespeichert. Geben Sie hier ein neues Passwort für den ersten Admin-Benutzer an, damit Sie sich nach der Wiederherstellung einloggen können.'
             dry_run: 'Testlauf durchführen (empfohlen)'
             dry_run_help: 'Keine Daten werden tatsächlich geändert'
+            dry_run_simulated: 'Simulierte Einträge (kein Schreiben in die Datenbank)'
             statistics: 'Statistiken'
             stat_entity: 'Entity'
             stat_created: 'Erstellt'

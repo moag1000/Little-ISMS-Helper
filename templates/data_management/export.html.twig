@@ -28,7 +28,9 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <form method="post" action="{{ path('data_export_execute') }}">
+            <form method="post" action="{{ path('data_export_execute') }}"
+                  data-controller="wizard-busy"
+                  data-wizard-busy-message-value="{{ 'data.alva.busy.export'|trans({}, 'data_management') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('data_export') }}">
 
                 {# Export Format #}

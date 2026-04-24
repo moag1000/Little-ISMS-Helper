@@ -28,7 +28,9 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <form method="post" action="{{ path('data_import_upload') }}" enctype="multipart/form-data">
+            <form method="post" action="{{ path('data_import_upload') }}" enctype="multipart/form-data"
+                  data-controller="wizard-busy"
+                  data-wizard-busy-message-value="{{ 'data.alva.busy.import_preview'|trans({}, 'data_management') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('data_import') }}">
 
                 <div class="mb-4">
