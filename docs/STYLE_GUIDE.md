@@ -231,6 +231,25 @@ Use Bootstrap's font size utilities:
 - `noPadding` - Remove card-body padding (for tables/lists)
 - `class` - Additional CSS classes
 
+**⚠️ Aurora Load-Order Trap — do NOT use Bootstrap color-utilities on `.card`:**
+
+```twig
+{# ❌ BAD — silently overridden by Aurora's .card { background: var(--surface) } #}
+{% embed '_components/_card.html.twig' with { 'class': 'bg-primary text-white' } %}
+
+{# ✅ GOOD — Aurora-native KPI variant #}
+{% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'primary' } %}
+    {% block card_body %}
+        <div class="kpi-card-value">42</div>
+        <div class="kpi-card-label">Total Risks</div>
+    {% endblock %}
+{% endembed %}
+```
+
+Same trap applies to `.card-header` — Aurora's `.card > .card-header { background: var(--surface-2) }` wins over any `bg-<color>` / `bg-<color>-subtle`. Full anti-patterns list: [`templates/_components/_CARD_GUIDE.md`](../templates/_components/_CARD_GUIDE.md) §"Anti-Patterns".
+
+Bootstrap utilities on smaller elements (badges, progress-bars, buttons, alerts, spacing/flex) are fine — the trap is only the outer `.card` / `.card-header`.
+
 ---
 
 ## Buttons

@@ -255,6 +255,17 @@ $dataBreach->setNotificationRequired(true);
    var(--bs-bg-opacity))`. Without the `-rgb` twin of a mapped token, Bootstrap
    falls back to hardcoded defaults and ignores Aurora mapping entirely. All
    color/bg tokens need both `--bs-X` and `--bs-X-rgb` in light AND dark forks.
+9. **Do NOT use Bootstrap `bg-*` / `text-white` on `.card` or `.card-header`** —
+   Aurora's `.card { background: var(--surface) }` and
+   `.card > .card-header { background: var(--surface-2) }` (in
+   `fairy-aurora-components.css`) win by load-order + equal specificity. The
+   utility class is silently ignored — dev intends a blue hero tile, users see a
+   neutral gray card. For KPI/hero tiles use `variant: 'kpi', borderColor:
+   '<primary|success|warning|danger|info>'` + `.kpi-card-value` /
+   `.kpi-card-label` inside + `text-<color>` on the icon. Utilities on smaller
+   elements (`.badge bg-*`, `.progress-bar bg-*`, `.btn btn-*`, `.alert
+   alert-*`, spacing/flex) still work. Full anti-pattern list in
+   `templates/_components/_CARD_GUIDE.md` §"Anti-Patterns".
 
 ## Configuration Files
 
