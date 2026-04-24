@@ -432,6 +432,26 @@
     {# Bulk Delete Confirmation Dialog #}
     {% include '_components/_bulk_delete_confirmation.html.twig' %}
 
+    {# FairyAurora v4.0 — Alva Companion Dock (Phase 4)
+       Shown to authenticated users on non-setup routes who have the companion enabled. #}
+    {% if is_granted('IS_AUTHENTICATED_FULLY')
+        and app.user is not null
+        and not is_setup_route
+        and app.user.alvaCompanionEnabled is defined
+        and app.user.alvaCompanionEnabled %}
+        {% import '_components/_alva.html.twig' as faAlvaDock %}
+        {% set _dockPos  = app.user.alvaCompanionPosition is defined and app.user.alvaCompanionPosition ? app.user.alvaCompanionPosition : 'bottom-right' %}
+        {% set _dockSize = app.user.alvaCompanionSize is defined and app.user.alvaCompanionSize ? app.user.alvaCompanionSize : 'md' %}
+        {% set _dockPx   = { 'sm': 56, 'md': 80, 'lg': 112 } %}
+        <div class="fa-alva-dock fa-alva-dock--pos-{{ _dockPos }}"
+             data-controller="alva-dock"
+             data-alva-dock-size-value="{{ _dockSize }}"
+             data-alva-dock-enabled-value="true"
+             data-turbo-permanent>
+            {{ faAlvaDock.render('idle', { size: _dockPx[_dockSize]|default(80), decorative: true })|raw }}
+        </div>
+    {% endif %}
+
     {# Global translations for JavaScript #}
     <script>
         window.translations = {

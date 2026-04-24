@@ -23,6 +23,9 @@
 /* FairyAurora Alva — 9-Mood-Character-Engine */
 @import './styles/alva.css';
 
+/* FairyAurora v4.0 Alva Companion Dock — fixed positioning + size variants */
+@import './styles/alva-dock.css';
+
 /* FairyAurora Responsive — Breakpoint-Overrides (Plan § 15) */
 @import './styles/fairy-aurora-responsive.css';
 
