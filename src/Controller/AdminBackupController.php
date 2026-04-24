@@ -87,7 +87,8 @@ class AdminBackupController extends AbstractController
     public function downloadBackup(string $filename): Response
     {
         // Validate filename to prevent directory traversal (accept both backup_ and uploaded_ files)
-        if (!preg_match('/^(backup_|uploaded_)\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.(json\.gz|json|gz)$/', $filename)) {
+        // Supports .zip (format 2.0), .json.gz, .json, and bare .gz (legacy)
+        if (!preg_match('/^(backup_|uploaded_)\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.(zip|json\.gz|json|gz)$/', $filename)) {
             throw $this->createNotFoundException('Invalid backup filename');
         }
 
@@ -107,7 +108,11 @@ class AdminBackupController extends AbstractController
         });
 
         // Set content type based on file extension
-        $contentType = str_ends_with($filename, '.gz') ? 'application/gzip' : 'application/json';
+        $contentType = match (true) {
+            str_ends_with($filename, '.zip') => 'application/zip',
+            str_ends_with($filename, '.gz')  => 'application/gzip',
+            default                          => 'application/json',
+        };
         $streamedResponse->headers->set('Content-Type', $contentType);
         $streamedResponse->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
         $streamedResponse->headers->set('Content-Length', (string) filesize($filepath));
@@ -133,14 +138,14 @@ class AdminBackupController extends AbstractController
                 ], Response::HTTP_BAD_REQUEST);
             }
 
-            // Validate file extension
-            $allowedExtensions = ['json', 'gz'];
+            // Validate file extension (.zip added for format 2.0 backups with embedded files)
+            $allowedExtensions = ['json', 'gz', 'zip'];
             $extension = $file->getClientOriginalExtension();
 
             if (!in_array($extension, $allowedExtensions)) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Ungültiges Dateiformat. Nur .json oder .gz Dateien sind erlaubt.',
+                    'message' => 'Ungültiges Dateiformat. Nur .json, .gz oder .zip Dateien sind erlaubt.',
                 ], Response::HTTP_BAD_REQUEST);
             }
 
