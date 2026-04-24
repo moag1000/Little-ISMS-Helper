@@ -170,7 +170,7 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
                 {% block card_header %}
-                    <div class="card-header bg-warning-subtle text-warning">
+                    <div class="card-header">
                         <h3 class="h5 mb-0">
                             <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'cert_readiness.section.controls_in_progress'|trans({}, 'management_reports') }}
                             <span class="badge bg-body-secondary ms-2">{{ controls_in_progress|length }}</span>
@@ -198,7 +198,7 @@
     {% if critical_gaps|length > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4 shadow-sm border-danger' } %}
         {% block card_header %}
-            <div class="card-header bg-danger text-white">
+            <div class="card-header">
                 <h3 class="h5 mb-0">
                     <i class="bi bi-exclamation-octagon" aria-hidden="true"></i> {{ 'cert_readiness.section.critical_gaps'|trans({}, 'management_reports') }}
                 </h3>

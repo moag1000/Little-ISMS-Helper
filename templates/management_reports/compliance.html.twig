@@ -50,10 +50,16 @@
     {# Overall Compliance #}
     <div class="row mb-4">
         <div class="col-md-4">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-' ~ (report.overall_compliance >= 80 ? 'success' : (report.overall_compliance >= 60 ? 'warning' : 'danger')) ~ ' text-white' } %}
+            {% set compliance_color = report.overall_compliance >= 80 ? 'success' : (report.overall_compliance >= 60 ? 'warning' : 'danger') %}
+            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': compliance_color, 'class': 'h-100' } %}
                 {% block card_body %}
-                    <h3 class="display-3">{{ report.overall_compliance }}%</h3>
-                    <p class="mb-0">{{ 'management_reports.compliance.overall'|trans({}, 'management_reports') }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="kpi-card-value">{{ report.overall_compliance }}%</div>
+                            <div class="kpi-card-label">{{ 'management_reports.compliance.overall'|trans({}, 'management_reports') }}</div>
+                        </div>
+                        <i class="bi bi-clipboard-check fs-1 text-{{ compliance_color }}" aria-hidden="true"></i>
+                    </div>
                 {% endblock %}
             {% endembed %}
         </div>
