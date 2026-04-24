@@ -463,28 +463,80 @@ html[data-theme="dark"] .fa-card--premium {
 .fa-cyber-input.is-disabled { opacity: 0.6; }
 
 /* ── Symfony form-theme additions (fa_cyber_input.html.twig) ────────────── */
-/* Maps Symfony's fa-cyber-input__input onto the existing __field visual    */
-.fa-cyber-input__input {
+/* Bootstrap's .form-control has 0,1,0 specificity and sets its own border,
+   background, box-shadow on :focus (hardcoded #86b7fe). Symfony's form-theme
+   renders inputs with BOTH classes (.form-control .fa-cyber-input__input),
+   so we need to outrank Bootstrap's base rules. Specificity here uses
+   :where() + class-stacking to stay authoritative without resorting to
+   !important:
+     .fa-cyber-input__frame .fa-cyber-input__input  → 0,2,0 beats Bootstrap 0,1,0
+   Also handle Bootstrap classes rendered inside our frame as aliases. */
+.fa-cyber-input__frame .fa-cyber-input__input,
+.fa-cyber-input__frame > .form-control,
+.fa-cyber-input__frame > .form-select,
+.fa-cyber-input__frame > textarea {
     width: 100%;
     padding: 10px 14px;
-    background: transparent;
+    background-color: transparent;
+    background-image: none;
     color: var(--fg);
     border: 0;
     border-radius: inherit;
+    box-shadow: none;
     font-family: var(--font-sans);
     font-size: 14px;
     line-height: 1.4;
     outline: none;
+    min-height: auto;
+    height: auto;
 }
-.fa-cyber-input__input::placeholder { color: var(--fg-3); }
-.fa-cyber-input__input:disabled {
+.fa-cyber-input__frame .fa-cyber-input__input::placeholder,
+.fa-cyber-input__frame > .form-control::placeholder {
+    color: var(--fg-3);
+}
+/* :focus state: Bootstrap sets border-color + box-shadow with hardcoded blue.
+   Our frame owns the focus-glow — kill Bootstrap's input-level focus. */
+.fa-cyber-input__frame .fa-cyber-input__input:focus,
+.fa-cyber-input__frame > .form-control:focus,
+.fa-cyber-input__frame > .form-select:focus,
+.fa-cyber-input__frame > textarea:focus {
+    border: 0;
+    box-shadow: none;
+    outline: none;
+    background-color: transparent;
+    color: var(--fg);
+}
+.fa-cyber-input__frame .fa-cyber-input__input:disabled,
+.fa-cyber-input__frame > .form-control:disabled,
+.fa-cyber-input__frame > .form-select:disabled {
     color: var(--fg-3);
     cursor: not-allowed;
+    background-color: transparent;
 }
-/* Select appearance */
+/* Select appearance: strip native OS chevron so our frame stays clean */
+.fa-cyber-input__frame > select,
+.fa-cyber-input__frame > .form-select,
 select.fa-cyber-input__input {
     appearance: none;
+    -webkit-appearance: none;
     cursor: pointer;
+    /* Custom chevron via background-image so users still see dropdown affordance */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='currentColor'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 12px;
+    padding-right: 36px;
+}
+/* Bootstrap's .form-floating remnant: if a floating-label wrapper ever lands
+   inside our frame (e.g. legacy template), flatten it — no shrink-anim, no
+   double-padding. */
+.fa-cyber-input__frame > .form-floating,
+.fa-cyber-input__frame > .form-floating > .form-control {
+    padding: 0;
+    height: auto;
+}
+.fa-cyber-input__frame > .form-floating > label {
+    display: none;
 }
 /* Error list rendered by form_errors block */
 .fa-cyber-input__errors {
@@ -3961,6 +4013,28 @@ button.fa-filter-chip.fa-filter-chip--active {
     transition: border-color var(--t-fast) var(--ease-out),
                 box-shadow var(--t-fast) var(--ease-out);
 }
+/* Bootstrap .form-floating (0,2,0) overrides our raw bridge (0,1,0 on base
+   props). Target .form-floating > .form-control with matching specificity so
+   Aurora border-token + focus-glow still win. */
+.form-floating > .form-control,
+.form-floating > .form-select {
+    background-color: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+}
+.form-floating > .form-control:hover,
+.form-floating > .form-select:hover { border-color: var(--border-strong); }
+.form-floating > .form-control:focus,
+.form-floating > .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+    outline: none;
+}
+.form-floating > label { color: var(--fg-3); }
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label { color: var(--primary); }
 .form-control:not(.fa-cyber-input .form-control):hover,
 .form-select:not(.fa-cyber-input .form-select):hover {
     border-color: var(--border-strong);
