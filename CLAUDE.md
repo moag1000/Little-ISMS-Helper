@@ -234,6 +234,27 @@ $dataBreach->setNotificationRequired(true);
 3. **Foreign key order** - Restore/delete entities in dependency order
 4. **Bootstrap not loaded** - Check `window.bootstrap` before using modals
 5. **Turbo cache issues** - Clear cache or disable for problematic pages
+6. **Migrations: avoid `PREPARE/EXECUTE`-pattern** — 17 existing migrations (Phase 8,
+   Versions `20260418*`, `20260419*`, `20260420140000`) use dynamic SQL with
+   `SET @sql := IF(...) ; PREPARE stmt FROM @sql ; EXECUTE stmt ; DEALLOCATE`
+   for "idempotent" ALTER/CREATE. This pattern silently fails in Doctrine
+   Migrations: the migration is recorded as `executed` but the actual DDL never
+   runs. Symptoms: `Column not found` errors, missing tables.
+   - **New migrations**: use plain `ALTER TABLE` / `CREATE TABLE IF NOT EXISTS`
+     statements directly. Do NOT wrap in PREPARE/EXECUTE.
+   - **Recovery**: run `php bin/console app:schema:reconcile --dry-run` then
+     `php bin/console app:schema:reconcile` to bring schema in sync with
+     entity metadata. Non-destructive for additive changes.
+7. **Bootstrap vs Aurora class precedence** — Bootstrap selectors with higher
+   specificity (`.card > .card-footer` = 0,2,0) beat our Aurora `.card-footer`
+   (0,1,0). Aurora component CSS must use `.card > .card-{header,footer}`
+   patterns to match Bootstrap's specificity. Token-level overrides
+   (`--bs-card-*`) are preferred where Bootstrap uses them internally.
+8. **Bootstrap utility classes need `--bs-*-rgb` companions** — Bootstrap 5.3
+   utilities like `.bg-body-secondary` render as `rgba(var(--bs-secondary-bg-rgb),
+   var(--bs-bg-opacity))`. Without the `-rgb` twin of a mapped token, Bootstrap
+   falls back to hardcoded defaults and ignores Aurora mapping entirely. All
+   color/bg tokens need both `--bs-X` and `--bs-X-rgb` in light AND dark forks.
 
 ## Configuration Files
 
