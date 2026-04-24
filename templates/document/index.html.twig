@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'documents' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'document.title'|trans({}, 'document') }}{% endblock %}
 
@@ -70,39 +71,35 @@
 
     {# KPI Cards #}
     <div class="kpi-grid">
-        {% include '_components/_kpi_card.html.twig' with {
-            icon: 'bi-file-earmark-text',
+        {{ _fa_feature_card.render({
+            icon: 'file-earmark-text',
             label: 'document.kpi.total_documents'|trans({}, 'document'),
             value: total,
-            detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages')) : null,
-            variant: 'primary',
-            link: null
-        } %}
+            hint: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages')) : null,
+            variant: 'primary'
+        }) }}
 
-        {% include '_components/_kpi_card.html.twig' with {
-            icon: 'bi-hdd',
+        {{ _fa_feature_card.render({
+            icon: 'hdd',
             label: 'document.kpi.total_size'|trans({}, 'document'),
             value: totalSizeMB,
             unit: 'MB',
-            variant: 'info',
-            link: null
-        } %}
+            variant: 'primary'
+        }) }}
 
-        {% include '_components/_kpi_card.html.twig' with {
-            icon: 'bi-file-pdf',
+        {{ _fa_feature_card.render({
+            icon: 'file-pdf',
             label: 'document.type.pdf'|trans({}, 'document'),
             value: pdfDocs,
-            variant: 'danger',
-            link: null
-        } %}
+            variant: 'danger'
+        }) }}
 
-        {% include '_components/_kpi_card.html.twig' with {
-            icon: 'bi-file-earmark-spreadsheet',
+        {{ _fa_feature_card.render({
+            icon: 'file-earmark-spreadsheet',
             label: 'document.type.excel'|trans({}, 'document'),
             value: excelDocs,
-            variant: 'success',
-            link: null
-        } %}
+            variant: 'success'
+        }) }}
     </div>
 
     {# Document Type Distribution #}

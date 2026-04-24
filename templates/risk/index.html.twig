@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'risk.modern.header.title'|trans({}, 'risk')}} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -59,43 +60,43 @@
 
 {# KPI Cards Grid #}
 <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-exclamation-triangle',
+    {{ _fa_feature_card.render({
+        icon: 'exclamation-triangle',
         label: 'risk.modern.kpi.total'|trans({}, 'risk'),
         value: detailedStats.total,
-        detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages')) : null,
+        hint: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages')) : null,
         variant: 'primary',
-        link: '#all-risks'
-    } %}
+        href: '#all-risks'
+    }) }}
 
     {# ISO 27001 compliant thresholds #}
     {% set criticalRisks = risks|filter(r => r.getRiskScore() >= 20)|length %}
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-shield-fill-exclamation',
+    {{ _fa_feature_card.render({
+        icon: 'shield-fill-exclamation',
         label: 'risk.modern.kpi.critical'|trans({}, 'risk'),
         value: criticalRisks,
         variant: 'danger',
-        trend: criticalRisks > 0 ? '-' : '+0',
-        link: '#filter-critical'
-    } %}
+        hint: criticalRisks > 0 ? '↓' : '↑ 0',
+        href: '#filter-critical'
+    }) }}
 
     {% set highRisks = risks|filter(r => r.getRiskScore() >= 12 and r.getRiskScore() < 20)|length %}
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-exclamation-circle',
+    {{ _fa_feature_card.render({
+        icon: 'exclamation-circle',
         label: 'risk.modern.kpi.high'|trans({}, 'risk'),
         value: highRisks,
         variant: 'warning',
-        link: '#filter-high'
-    } %}
+        href: '#filter-high'
+    }) }}
 
     {% set avgResidualRisk = risks|length > 0 ? (risks|reduce((carry, risk) => carry + risk.getResidualRiskLevel(), 0) / risks|length)|round(1) : 0 %}
-    {% include '_components/_kpi_card.html.twig' with {
-        icon: 'bi-graph-down',
+    {{ _fa_feature_card.render({
+        icon: 'graph-down',
         label: 'risk.modern.kpi.avg_residual'|trans({}, 'risk'),
         value: avgResidualRisk,
         unit: 'risk.modern.kpi.unit.max'|trans({}, 'risk'),
         variant: avgResidualRisk < 8 ? 'success' : 'warning'
-    } %}
+    }) }}
 </div>
 
 {# Risk Matrix Overview #}

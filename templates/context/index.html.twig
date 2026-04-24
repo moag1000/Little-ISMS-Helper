@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'context' %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'context_management.title'|trans({}, 'context') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -55,40 +56,37 @@
 
     {# KPI Cards #}
     <div class="kpi-grid">
-        {% include '_components/_kpi_card.html.twig' with {
-            icon: 'bi-check-circle',
+        {{ _fa_feature_card.render({
+            icon: 'check-circle',
             label: 'context.kpi.completeness'|trans({}, 'context'),
             value: completenessPercentage,
             unit: '%',
-            variant: completenessPercentage >= 75 ? 'success' : (completenessPercentage >= 50 ? 'warning' : 'danger'),
-            link: null
-        } %}
+            variant: completenessPercentage >= 75 ? 'success' : (completenessPercentage >= 50 ? 'warning' : 'danger')
+        }) }}
 
-        {% include '_components/_kpi_card.html.twig' with {
-            icon: 'bi-bullseye',
+        {{ _fa_feature_card.render({
+            icon: 'bullseye',
             label: 'context.kpi.active_goals'|trans({}, 'context'),
             value: objectives|length,
-            variant: 'info',
-            link: path('app_objective_index')
-        } %}
+            variant: 'primary',
+            href: path('app_objective_index')
+        }) }}
 
-        {% include '_components/_kpi_card.html.twig' with {
-            icon: 'bi-calendar-check',
+        {{ _fa_feature_card.render({
+            icon: 'calendar-check',
             label: daysSinceReview ? 'context.kpi.days_since_review'|trans({}, 'context') : 'context.kpi.last_review'|trans({}, 'context'),
             value: daysSinceReview ?? '-',
             unit: daysSinceReview ? (daysSinceReview == 1 ? 'context.unit.day'|trans({}, 'context') : 'context.unit.days'|trans({}, 'context')) : '',
-            variant: daysSinceReview ? (daysSinceReview > 365 ? 'danger' : (daysSinceReview > 180 ? 'warning' : 'success')) : 'secondary',
-            link: null
-        } %}
+            variant: daysSinceReview ? (daysSinceReview > 365 ? 'danger' : (daysSinceReview > 180 ? 'warning' : 'success')) : 'primary'
+        }) }}
 
-        {% include '_components/_kpi_card.html.twig' with {
-            icon: 'bi-calendar-event',
+        {{ _fa_feature_card.render({
+            icon: 'calendar-event',
             label: daysUntilReview ? 'context.kpi.days_until_review'|trans({}, 'context') : 'context.kpi.next_review'|trans({}, 'context'),
             value: daysUntilReview ?? '-',
             unit: daysUntilReview ? (daysUntilReview == 1 ? 'context.unit.day'|trans({}, 'context') : 'context.unit.days'|trans({}, 'context')) : '',
-            variant: daysUntilReview ? (daysUntilReview < 30 ? 'warning' : (daysUntilReview < 0 ? 'danger' : 'info')) : 'secondary',
-            link: null
-        } %}
+            variant: daysUntilReview ? (daysUntilReview < 30 ? 'warning' : (daysUntilReview < 0 ? 'danger' : 'primary')) : 'primary'
+        }) }}
     </div>
 
     {# Overdue Review Warning #}
