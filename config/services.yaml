@@ -67,6 +67,10 @@ parameters:
     app.compliance.gap_report.quick_win_effort_percentile: 20
     app.compliance.gap_report.quick_win_min_gap_percent: 10
 
+    # Backup notifier defaults (override via env if needed).
+    app.backup_notifier.from_email: 'noreply@little-isms-helper.local'
+    app.backup_notifier.subject_prefix: '[ISMS Backup]'
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -186,6 +190,17 @@ services:
 
     # Configure Backup Service
     App\Service\BackupService:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    # Backup notifier — sends plain-text e-mail on success/failure
+    App\Service\BackupNotifier:
+        arguments:
+            $fromEmail: '%app.backup_notifier.from_email%'
+            $subjectPrefix: '%app.backup_notifier.subject_prefix%'
+
+    # Backup CLI commands need $projectDir injected explicitly
+    App\Command\PruneBackupsCommand:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
