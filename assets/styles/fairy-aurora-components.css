@@ -1006,9 +1006,16 @@ html[data-theme="dark"] .fa-card--premium {
     color: var(--on-primary);
 }
 .fa-toggle-card__box svg { display: block; opacity: 0; transition: opacity var(--t-fast); }
-.fa-toggle-card.is-on .fa-toggle-card__box { background: var(--primary); border-color: var(--primary); }
-.fa-toggle-card.is-on .fa-toggle-card__box svg { opacity: 1; }
-.fa-toggle-card__input:focus-visible + .fa-toggle-card__box {
+.fa-toggle-card.is-on .fa-toggle-card__box,
+.fa-toggle-card:has(.fa-toggle-card__input:checked) .fa-toggle-card__box { background: var(--primary); border-color: var(--primary); }
+.fa-toggle-card.is-on .fa-toggle-card__box svg,
+.fa-toggle-card:has(.fa-toggle-card__input:checked) .fa-toggle-card__box svg { opacity: 1; }
+.fa-toggle-card:has(.fa-toggle-card__input:checked) {
+    border-color: var(--primary);
+    background: var(--primary-tint);
+}
+.fa-toggle-card__input:focus-visible + .fa-toggle-card__box,
+.fa-toggle-card:has(.fa-toggle-card__input:focus-visible) .fa-toggle-card__box {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
@@ -3370,3 +3377,43 @@ html[data-theme="dark"] .nav-tabs .nav-item.show .nav-link {
 /* Tab-Content */
 .tab-content { color: var(--fg); }
 .tab-pane { color: var(--fg); }
+
+
+/* ==========================================================================
+   Wizard Busy Overlay — transparent overlay used by wizard_busy_controller
+   during long-running Setup-Assistant requests (Restore, Migration, Seeding).
+   ========================================================================== */
+form.wizard-busy {
+    position: relative;
+}
+.wizard-busy-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(var(--bs-body-bg-rgb, 255, 255, 255), 0.82);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    border-radius: inherit;
+    pointer-events: all;
+    cursor: wait;
+}
+.wizard-busy-overlay__inner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    background: var(--surface, var(--bs-body-bg));
+    color: var(--fg, var(--bs-body-color));
+    border: 1px solid var(--border, var(--bs-border-color));
+    border-radius: var(--r-md, 8px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+}
+.wizard-busy-overlay__text {
+    max-width: 32rem;
+}
+html[data-theme="dark"] .wizard-busy-overlay {
+    background: rgba(var(--bs-body-bg-rgb, 23, 26, 32), 0.85);
+}

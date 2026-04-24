@@ -12,6 +12,15 @@ setup:
         import: 'Import'
         copy: 'Copy'
 
+    alva:
+        busy:
+            default: 'Alva is working on it — one moment please.'
+            schema: 'Alva is building the database schema. This may take a few minutes for larger datasets.'
+            restore: 'Alva is restoring the backup. Please do not close this window — this may take several minutes.'
+            repair: 'Alva is repairing orphan entries and resetting the database — please wait.'
+            base_data: 'Alva is importing master data (roles, framework defaults) — one moment please.'
+            sample_data: 'Alva is loading sample data (demo risks, assets, controls) — this takes a few seconds.'
+
     # Index/Landing Page
     already_complete:
         title: 'Setup Already Complete'
@@ -99,6 +108,7 @@ setup:
     step1:
         title: 'Step 1: System Requirements - Deployment Wizard'
         header: 'Step 1: Check System Requirements'
+        cannot_proceed: 'Prerequisites not met'
         detailed_checks: 'Detailed Checks:'
         status:
             success: 'successful'
@@ -453,6 +463,7 @@ setup:
             iso27701_2025_newer: 'Newer version with AI governance — ISO 27701:2019 is usually sufficient for certification.'
             iso22301_bcm: 'Business continuity is a strong anchor for critical infrastructure or financial services — otherwise optional.'
             iso27005: 'Detailed risk-management methodology — ISO 27001 Clause 6.1 implementation usually suffices.'
+            iso27005_risk: 'Detailed risk-management methodology — ISO 27001 Clause 6.1 implementation usually suffices.'
             bsi_c5: 'Cloud provider in DE — BSI C5:2020 attestation is market-standard for public-sector customers.'
             bsi_c5_2026: 'C5:2026 — newer edition with container + PQC readiness, relevant from January 2027.'
             soc2: 'US/SaaS market standard — often contractually required by US customers.'

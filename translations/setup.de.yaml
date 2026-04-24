@@ -12,6 +12,15 @@ setup:
         import: 'Importieren'
         copy: 'Kopieren'
 
+    alva:
+        busy:
+            default: 'Alva kümmert sich gerade darum – einen Moment bitte.'
+            schema: 'Alva baut das Datenbank-Schema auf. Bei großen Datenmengen kann das einige Minuten dauern.'
+            restore: 'Alva stellt das Backup wieder her. Bitte das Fenster nicht schließen – das kann mehrere Minuten dauern.'
+            repair: 'Alva repariert verwaiste Einträge und setzt die Datenbank zurück – bitte warten.'
+            base_data: 'Alva importiert die Stammdaten (Rollen, Framework-Defaults) – einen Moment bitte.'
+            sample_data: 'Alva lädt Beispieldaten (Demo-Risiken, -Assets, -Controls) – das dauert ein paar Sekunden.'
+
     # Index/Landing Page
     already_complete:
         title: 'Setup bereits abgeschlossen'
@@ -99,6 +108,7 @@ setup:
     step1:
         title: 'Schritt 1: System-Anforderungen - Deployment Wizard'
         header: 'Schritt 1: System-Anforderungen prüfen'
+        cannot_proceed: 'Voraussetzungen nicht erfüllt'
         detailed_checks: 'Detaillierte Prüfungen:'
         status:
             success: 'erfolgreich'
@@ -453,6 +463,7 @@ setup:
             iso27701_2025_newer: 'Neuere Version mit AI-Governance — ISO 27701:2019 reicht meist für Zertifizierung.'
             iso22301_bcm: 'Business-Continuity ist bei kritischer Infrastruktur oder Finanzdienstleistern wichtiger Anker — ansonsten optional.'
             iso27005: 'Detaillierte Risk-Management-Methodik — meist reicht die ISO-27001-Clause-6.1 Umsetzung.'
+            iso27005_risk: 'Detaillierte Risk-Management-Methodik — meist reicht die ISO-27001-Clause-6.1 Umsetzung.'
             bsi_c5: 'Cloud-Provider in DE — BSI C5:2020 Testat ist Markt-Standard für öffentliche Auftraggeber.'
             bsi_c5_2026: 'C5:2026 — neuere Fassung mit Container + PQC-Readiness, ab Januar 2027 relevant.'
             soc2: 'US-/SaaS-Markt-Standard — wird häufig vertraglich von US-Kunden verlangt.'
