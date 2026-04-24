@@ -1,0 +1,565 @@
+{% extends 'base.html.twig' %}
+
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_hero.html.twig' as _fa_hero %}
+{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+{% import '_components/_alva.html.twig' as alva %}
+
+{% block title %}Aurora v4 Living Styleguide{% endblock %}
+
+{% block body %}
+<meta name="turbo-cache-control" content="no-cache">
+
+<main class="fa-aurora-surface" style="min-height:100vh; padding-bottom: 4rem;">
+    <div class="container-xl py-4">
+
+        {# ── Top navigation ────────────────────────────────────────────── #}
+        <nav class="d-flex flex-wrap gap-2 mb-4 p-3" style="background:var(--surface-2); border-radius:var(--radius-lg,8px); border:1px solid var(--border);">
+            <span style="color:var(--fg-2); font-size:.75rem; align-self:center; margin-right:.5rem;">Jump to:</span>
+            <a href="#sec-surface"      class="fa-filter-chip">Aurora Surfaces</a>
+            <a href="#sec-page-header"  class="fa-filter-chip">fa-page-header</a>
+            <a href="#sec-section"      class="fa-filter-chip">fa-section</a>
+            <a href="#sec-feature-card" class="fa-filter-chip">fa-feature-card</a>
+            <a href="#sec-empty-state"  class="fa-filter-chip">fa-empty-state</a>
+            <a href="#sec-hero"         class="fa-filter-chip">fa-hero</a>
+            <a href="#sec-filter-chip"  class="fa-filter-chip">fa-filter-chip</a>
+            <a href="#sec-alva"         class="fa-filter-chip">Alva moods</a>
+            <a href="#sec-cyber-btn"    class="fa-filter-chip">fa-cyber-btn</a>
+            <a href="#sec-tokens"       class="fa-filter-chip">Aurora tokens</a>
+        </nav>
+
+        {# ── Page header ───────────────────────────────────────────────── #}
+        {{ _fa_page_header.render({
+            badge:    { icon: 'palette2', label: 'Dev only' },
+            title:    'Aurora v4 Living Styleguide',
+            subtitle: 'Every FairyAurora component with live preview and copy-paste Twig snippet.',
+            actions: [
+                { label: 'Source',   variant: 'ghost',   icon: 'github',    href: '#' },
+                { label: 'Phase 5',  variant: 'primary',  icon: 'stars',     href: '#' }
+            ]
+        }) }}
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# 1. AURORA SURFACE VARIANTS                                      #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="sec-surface">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">Aurora Surface Variants</h2>
+            </div>
+            <div class="fa-section__body">
+
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="fa-aurora-surface d-flex align-items-center justify-content-center fw-semibold"
+                             style="height:200px; border-radius:var(--radius-lg,8px); border:1px solid var(--border); color:var(--fg);">
+                            .fa-aurora-surface
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="fa-aurora-surface--subtle d-flex align-items-center justify-content-center fw-semibold"
+                             style="height:200px; border-radius:var(--radius-lg,8px); border:1px solid var(--border); color:var(--fg);">
+                            .fa-aurora-surface--subtle
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="fa-aurora-surface--hero d-flex align-items-center justify-content-center fw-semibold"
+                             style="height:200px; border-radius:var(--radius-lg,8px); border:1px solid var(--border); color:var(--fg);">
+                            .fa-aurora-surface--hero
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="fa-aurora-surface--dots d-flex align-items-center justify-content-center fw-semibold"
+                             style="height:200px; border-radius:var(--radius-lg,8px); border:1px solid var(--border); color:var(--fg);">
+                            .fa-aurora-surface--dots
+                        </div>
+                    </div>
+                </div>
+
+                <details>
+                    <summary style="cursor:pointer; color:var(--primary); margin-bottom:.5rem;">Code kopieren</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto;"><code>{% verbatim %}<div class="fa-aurora-surface">…default aurora…</div>
+<div class="fa-aurora-surface--subtle">…subtle variant…</div>
+<div class="fa-aurora-surface--hero">…hero variant…</div>
+<div class="fa-aurora-surface--dots">…dots variant…</div>{% endverbatim %}</code></pre>
+                </details>
+            </div>
+        </section>
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# 2. FA-PAGE-HEADER                                               #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="sec-page-header">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">fa-page-header</h2>
+            </div>
+            <div class="fa-section__body">
+
+                <div class="mb-3" style="background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-lg,8px); padding:1.5rem;">
+                    {{ _fa_page_header.render({
+                        badge:    { icon: 'shield-lock', label: 'ISMS' },
+                        title:    'Risikoübersicht',
+                        subtitle: 'Alle offenen Risiken der aktuellen Periode.',
+                        actions: [
+                            { label: 'Filter',    variant: 'ghost',   icon: 'funnel',  href: '#' },
+                            { label: 'Neu',       variant: 'primary', icon: 'plus',    href: '#' }
+                        ]
+                    }) }}
+                </div>
+
+                <details>
+                    <summary style="cursor:pointer; color:var(--primary); margin-bottom:.5rem;">Code kopieren</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto;"><code>{% verbatim %}{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{{ _fa_page_header.render({
+    badge:    { icon: 'shield-lock', label: 'ISMS' },
+    title:    'Risikoübersicht',
+    subtitle: 'Alle offenen Risiken der aktuellen Periode.',
+    actions: [
+        { label: 'Filter', variant: 'ghost',   icon: 'funnel', href: path('risk_index') },
+        { label: 'Neu',    variant: 'primary',  icon: 'plus',   href: path('risk_new') }
+    ]
+}) }}{% endverbatim %}</code></pre>
+                </details>
+            </div>
+        </section>
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# 3. FA-SECTION                                                   #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="sec-section">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">fa-section</h2>
+            </div>
+            <div class="fa-section__body">
+
+                <div class="mb-3">
+                    {{ _fa_section.render({
+                        title:  'Neueste Aktivität',
+                        tools:  '<button class="fa-filter-chip fa-filter-chip--active" type="button">Heute</button>
+                                 <button class="fa-filter-chip" type="button">Woche</button>
+                                 <button class="fa-filter-chip" type="button">Monat</button>',
+                        body:   '<p style="color:var(--fg-2);">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula mauris in erat accumsan, vel varius odio lacinia. Suspendisse potenti.</p>',
+                        footer: '<a href="#" class="fa-link">Alle anzeigen &rarr;</a>'
+                    }) }}
+                </div>
+
+                <details>
+                    <summary style="cursor:pointer; color:var(--primary); margin-bottom:.5rem;">Code kopieren</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto;"><code>{% verbatim %}{% import '_components/_fa_section.html.twig' as _fa_section %}
+
+{{ _fa_section.render({
+    title:  'Neueste Aktivität',
+    tools:  '<button class="fa-filter-chip fa-filter-chip--active" type="button">Heute</button>
+             <button class="fa-filter-chip" type="button">Woche</button>',
+    body:   '<p>Lorem ipsum dolor sit amet…</p>',
+    footer: '<a href="#" class="fa-link">Alle anzeigen →</a>'
+}) }}{% endverbatim %}</code></pre>
+                </details>
+            </div>
+        </section>
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# 4. FA-FEATURE-CARD                                              #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="sec-feature-card">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">fa-feature-card</h2>
+            </div>
+            <div class="fa-section__body">
+
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6 col-lg-3">
+                        {{ _fa_feature_card.render({
+                            label:   'SLA erfüllt',
+                            value:   '98.4',
+                            unit:    '%',
+                            variant: 'success',
+                            icon:    'check-circle-fill',
+                            hint:    '+2.1% seit letzter Woche'
+                        }) }}
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        {{ _fa_feature_card.render({
+                            label:   'Offene Risiken',
+                            value:   '12',
+                            unit:    '',
+                            variant: 'warning',
+                            icon:    'exclamation-triangle-fill',
+                            hint:    '3 neu diese Woche'
+                        }) }}
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        {{ _fa_feature_card.render({
+                            label:   'Kritische Vorfälle',
+                            value:   '2',
+                            unit:    '',
+                            variant: 'danger',
+                            icon:    'shield-exclamation',
+                            hint:    'Eskalation erforderlich'
+                        }) }}
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        {{ _fa_feature_card.render({
+                            label:   'Controls aktiv',
+                            value:   '87',
+                            unit:    '/ 93',
+                            variant: 'primary',
+                            icon:    'toggles-on',
+                            hint:    '6 ausstehend'
+                        }) }}
+                    </div>
+                </div>
+
+                <details>
+                    <summary style="cursor:pointer; color:var(--primary); margin-bottom:.5rem;">Code kopieren</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto;"><code>{% verbatim %}{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
+{{ _fa_feature_card.render({
+    label:   'SLA erfüllt',
+    value:   '98.4',
+    unit:    '%',
+    variant: 'success',    {# success | warning | danger | primary #}
+    icon:    'check-circle-fill',
+    hint:    '+2.1% seit letzter Woche'
+}) }}
+
+{# Clickable tile — add href #}
+{{ _fa_feature_card.render({
+    label:   'Offene Risiken',
+    value:   '12',
+    variant: 'warning',
+    icon:    'exclamation-triangle-fill',
+    href:    path('risk_index')
+}) }}{% endverbatim %}</code></pre>
+                </details>
+            </div>
+        </section>
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# 5. FA-EMPTY-STATE                                               #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="sec-empty-state">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">fa-empty-state</h2>
+            </div>
+            <div class="fa-section__body">
+
+                <div class="mb-3">
+                    {{ _fa_empty_state.render({
+                        mood:    'curious',
+                        title:   'Noch keine Dokumente vorhanden',
+                        text:    'Laden Sie das erste Dokument hoch oder wählen Sie eine Vorlage, um loszulegen.',
+                        actions: [
+                            { label: 'Dokument hochladen', variant: 'primary', icon: 'upload',        href: '#' },
+                            { label: 'Vorlage wählen',     variant: 'ghost',   icon: 'file-earmark',  href: '#' }
+                        ]
+                    }) }}
+                </div>
+
+                <details>
+                    <summary style="cursor:pointer; color:var(--primary); margin-bottom:.5rem;">Code kopieren</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto;"><code>{% verbatim %}{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{{ _fa_empty_state.render({
+    mood:    'curious',   {# idle|happy|thinking|focused|working|scanning|warning|celebrating|sleeping #}
+    title:   'Noch keine Dokumente vorhanden',
+    text:    'Laden Sie das erste Dokument hoch oder wählen Sie eine Vorlage.',
+    actions: [
+        { label: 'Hochladen',     variant: 'primary', icon: 'upload',       href: path('document_new') },
+        { label: 'Vorlage wählen', variant: 'ghost',  icon: 'file-earmark', href: '#' }
+    ]
+}) }}{% endverbatim %}</code></pre>
+                </details>
+            </div>
+        </section>
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# 6. FA-HERO                                                      #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="sec-hero">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">fa-hero</h2>
+            </div>
+            <div class="fa-section__body">
+
+                <div class="mb-3">
+                    {{ _fa_hero.render({
+                        mood:     'happy',
+                        title:    'Willkommen zurück, Max',
+                        subtitle: 'Heute warten 3 Aufgaben in der Inbox auf Sie. Ihr ISMS-Status ist aktuell.',
+                        actions:  [
+                            { label: "Los geht's", variant: 'primary', icon: 'arrow-right-circle', href: '#' }
+                        ]
+                    }) }}
+                </div>
+
+                <details>
+                    <summary style="cursor:pointer; color:var(--primary); margin-bottom:.5rem;">Code kopieren</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto;"><code>{% verbatim %}{% import '_components/_fa_hero.html.twig' as _fa_hero %}
+
+{{ _fa_hero.render({
+    mood:     'happy',    {# idle|happy|thinking|focused|working|scanning|warning|celebrating|sleeping #}
+    title:    'Willkommen zurück, {{ app.user.displayName }}',
+    subtitle: 'Heute warten 3 Aufgaben in der Inbox auf Sie.',
+    actions:  [
+        { label: "Los geht's", variant: 'primary', icon: 'arrow-right-circle', href: path('dashboard') }
+    ]
+}) }}{% endverbatim %}</code></pre>
+                </details>
+            </div>
+        </section>
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# 7. FA-FILTER-CHIP                                               #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="sec-filter-chip">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">fa-filter-chip</h2>
+            </div>
+            <div class="fa-section__body">
+
+                {# Single chips #}
+                <p class="mb-2" style="color:var(--fg-2); font-size:.875rem;">Single chips:</p>
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    {{ _fa_filter_chip.render('Alle',  { active: false }) }}
+                    {{ _fa_filter_chip.render('Heute', { active: true  }) }}
+                    {{ _fa_filter_chip.render('Mit Icon', { active: false, icon: 'funnel' }) }}
+                </div>
+
+                {# Group #}
+                <p class="mb-2" style="color:var(--fg-2); font-size:.875rem;">Chip group (activeIndex=1):</p>
+                <div class="mb-4">
+                    {{ _fa_filter_chip.group(['Heute', 'Woche', 'Monat', 'Quartal'], 1) }}
+                </div>
+
+                {# Group with hrefs #}
+                <p class="mb-2" style="color:var(--fg-2); font-size:.875rem;">Chip group with hrefs:</p>
+                <div class="mb-3">
+                    {{ _fa_filter_chip.group([
+                        { label: 'Offen',       href: '?status=open'   },
+                        { label: 'In Bearbeitung', href: '?status=wip' },
+                        { label: 'Geschlossen', href: '?status=closed' }
+                    ], 0) }}
+                </div>
+
+                <details>
+                    <summary style="cursor:pointer; color:var(--primary); margin-bottom:.5rem;">Code kopieren</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto;"><code>{% verbatim %}{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+
+{# Single chip — as <button> #}
+{{ _fa_filter_chip.render('Heute', { active: true }) }}
+
+{# Single chip — as <a> with icon #}
+{{ _fa_filter_chip.render('Filter', { active: false, icon: 'funnel', href: '?filter=1' }) }}
+
+{# Group — string labels, second chip active #}
+{{ _fa_filter_chip.group(['Heute', 'Woche', 'Monat'], 1) }}
+
+{# Group — objects with hrefs #}
+{{ _fa_filter_chip.group([
+    { label: 'Offen',       href: '?status=open'   },
+    { label: 'In Bearbeitung', href: '?status=wip' },
+    { label: 'Geschlossen', href: '?status=closed' }
+], 0) }}{% endverbatim %}</code></pre>
+                </details>
+            </div>
+        </section>
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# 8. ALVA 9 MOODS MATRIX                                         #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="sec-alva">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">Alva — 9 Moods Matrix</h2>
+            </div>
+            <div class="fa-section__body">
+
+                <div class="row g-3 mb-3">
+                    {% for mood in ['idle', 'happy', 'thinking', 'focused', 'working', 'scanning', 'warning', 'celebrating', 'sleeping'] %}
+                        <div class="col-6 col-sm-4 col-lg-2" style="text-align:center;">
+                            <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-lg,8px); padding:1rem; display:inline-flex; flex-direction:column; align-items:center; gap:.5rem; width:100%;">
+                                {{ alva.render(mood, { size: 80, decorative: true }) }}
+                                <span style="color:var(--fg-2); font-size:.75rem; font-family:monospace;">{{ mood }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <details>
+                    <summary style="cursor:pointer; color:var(--primary); margin-bottom:.5rem;">Code kopieren</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto;"><code>{% verbatim %}{% import '_components/_alva.html.twig' as alva %}
+
+{# Decorative (no aria role) #}
+{{ alva.render('happy', { size: 96, decorative: true }) }}
+
+{# Accessible (with aria-label) #}
+{{ alva.render('warning', { size: 80, ariaLabel: 'Alva warnt vor einem Risiko' }) }}
+
+{# Available moods: #}
+{# idle | happy | thinking | focused | working | scanning | warning | celebrating | sleeping #}{% endverbatim %}</code></pre>
+                </details>
+            </div>
+        </section>
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# 9. FA-CYBER-BTN VARIANTS                                        #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="sec-cyber-btn">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">fa-cyber-btn variants</h2>
+            </div>
+            <div class="fa-section__body">
+
+                <div class="mb-3">
+                    <p class="mb-2" style="color:var(--fg-2); font-size:.875rem;">Variants:</p>
+                    <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                        <a href="#" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="bi bi-check-circle" aria-hidden="true"></i>
+                            <span class="fa-cyber-btn__label">Primary</span>
+                        </a>
+                        <a href="#" class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
+                            <span class="fa-cyber-btn__label">Ghost</span>
+                        </a>
+                        <a href="#" class="fa-cyber-btn fa-cyber-btn--secondary">
+                            <i class="bi bi-archive" aria-hidden="true"></i>
+                            <span class="fa-cyber-btn__label">Secondary</span>
+                        </a>
+                        <a href="#" class="fa-cyber-btn fa-cyber-btn--accent">
+                            <i class="bi bi-stars" aria-hidden="true"></i>
+                            <span class="fa-cyber-btn__label">Accent</span>
+                        </a>
+                        <a href="#" class="fa-cyber-btn fa-cyber-btn--danger">
+                            <i class="bi bi-trash" aria-hidden="true"></i>
+                            <span class="fa-cyber-btn__label">Danger</span>
+                        </a>
+                    </div>
+
+                    <p class="mb-2" style="color:var(--fg-2); font-size:.875rem;">Sizes:</p>
+                    <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                        <a href="#" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                            <span class="fa-cyber-btn__label">Small (sm)</span>
+                        </a>
+                        <a href="#" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <span class="fa-cyber-btn__label">Default</span>
+                        </a>
+                        <a href="#" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
+                            <span class="fa-cyber-btn__label">Large (lg)</span>
+                        </a>
+                    </div>
+
+                    <p class="mb-2" style="color:var(--fg-2); font-size:.875rem;">Disabled state:</p>
+                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                        <button class="fa-cyber-btn fa-cyber-btn--primary" disabled aria-disabled="true">
+                            <span class="fa-cyber-btn__label">Disabled Primary</span>
+                        </button>
+                        <button class="fa-cyber-btn fa-cyber-btn--ghost" disabled aria-disabled="true">
+                            <span class="fa-cyber-btn__label">Disabled Ghost</span>
+                        </button>
+                    </div>
+                </div>
+
+                <details>
+                    <summary style="cursor:pointer; color:var(--primary); margin-bottom:.5rem;">Code kopieren</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto;"><code>{% verbatim %}{# As <a> link #}
+<a href="{{ path('route') }}" class="fa-cyber-btn fa-cyber-btn--primary">
+    <i class="bi bi-plus" aria-hidden="true"></i>
+    <span class="fa-cyber-btn__label">Neu</span>
+</a>
+
+{# As <button> #}
+<button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+    <span class="fa-cyber-btn__label">Speichern</span>
+</button>
+
+{# Variants: primary | ghost | secondary | accent | danger #}
+{# Sizes:    fa-cyber-btn--sm | (default) | fa-cyber-btn--lg #}
+{# Disabled: add disabled attr + aria-disabled="true" #}
+
+{# In page-header actions — use variant + icon via macro: #}
+{# { label: 'Neu', variant: 'primary', icon: 'plus', href: '#' } #}{% endverbatim %}</code></pre>
+                </details>
+            </div>
+        </section>
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# 10. AURORA TOKENS REFERENCE                                     #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="sec-tokens">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">Aurora Design Tokens</h2>
+            </div>
+            <div class="fa-section__body">
+
+                <p class="mb-3" style="color:var(--fg-2); font-size:.875rem;">
+                    All colors must be referenced via CSS custom properties — never hardcode hex values.
+                    Source of truth: <code>assets/styles/fairy-aurora.css</code>
+                </p>
+
+                <div class="table-responsive">
+                    <table class="table" style="color:var(--fg);">
+                        <thead>
+                            <tr style="border-bottom:1px solid var(--border);">
+                                <th style="color:var(--fg-2); font-weight:500; width:40px;"></th>
+                                <th style="color:var(--fg-2); font-weight:500;">Token</th>
+                                <th style="color:var(--fg-2); font-weight:500;">Usage</th>
+                                <th style="color:var(--fg-2); font-weight:500;">CSS Usage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set tokens = [
+                                { token: '--primary',         usage: 'Primary brand colour — interactive elements, key accents' },
+                                { token: '--primary-strong',  usage: 'Darker primary for hover states and borders' },
+                                { token: '--primary-tint',    usage: 'Very light primary tint for backgrounds, highlights' },
+                                { token: '--accent',          usage: 'Secondary accent (Alva wand glow, sparkles)' },
+                                { token: '--accent-tint',     usage: 'Light accent tint — subtle callout backgrounds' },
+                                { token: '--success',         usage: 'Positive states — SLA met, controls active, OK' },
+                                { token: '--warning',         usage: 'Caution states — pending items, medium risks' },
+                                { token: '--danger',          usage: 'Error / critical states — incidents, high risks' },
+                                { token: '--surface',         usage: 'Page-level background surface' },
+                                { token: '--surface-2',       usage: 'Card / panel surface (slightly raised)' },
+                                { token: '--fg',              usage: 'Primary text foreground' },
+                                { token: '--fg-2',            usage: 'Secondary / muted text' },
+                                { token: '--fg-3',            usage: 'Tertiary / placeholder text' },
+                                { token: '--border',          usage: 'Default border colour' },
+                                { token: '--border-strong',   usage: 'Stronger border for emphasis or dividers' }
+                            ] %}
+                            {% for t in tokens %}
+                                <tr style="border-bottom:1px solid var(--border);">
+                                    <td>
+                                        <span style="display:inline-block; width:40px; height:40px; border-radius:6px; background:var({{ t.token }}); border:1px solid var(--border);" title="{{ t.token }}"></span>
+                                    </td>
+                                    <td><code style="color:var(--primary);">var({{ t.token }})</code></td>
+                                    <td style="color:var(--fg-2); font-size:.875rem;">{{ t.usage }}</td>
+                                    <td><code style="color:var(--fg-3); font-size:.8rem;">color: var({{ t.token }})</code></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <details>
+                    <summary style="cursor:pointer; color:var(--primary); margin-bottom:.5rem;">Code kopieren</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto;"><code>{% verbatim %}{# CORRECT — always use CSS custom properties #}
+<span style="color: var(--primary);">Primary text</span>
+<div style="background: var(--surface-2); border: 1px solid var(--border);">Card</div>
+
+{# WRONG — never use hardcoded hex #}
+{# <span style="color: #0284c7;">Primary text</span>  ← stylelint will catch this #}
+
+{# Token categories: #}
+{# Brand:    --primary, --primary-strong, --primary-tint, --accent, --accent-tint #}
+{# Semantic: --success, --warning, --danger #}
+{# Surface:  --surface, --surface-2 #}
+{# Text:     --fg, --fg-2, --fg-3 #}
+{# Border:   --border, --border-strong #}{% endverbatim %}</code></pre>
+                </details>
+            </div>
+        </section>
+
+    </div>{# /container-xl #}
+</main>
+{% endblock %}
