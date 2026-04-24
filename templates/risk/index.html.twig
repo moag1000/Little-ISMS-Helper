@@ -6,6 +6,7 @@
 {% block title %}{{ 'risk.modern.header.title'|trans({}, 'risk')}} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -13,19 +14,17 @@
     ]
 } %}
 
-{# Page Header with Actions #}
-{% include '_components/_page_header.html.twig' with {
+{{ _fa_page_header.render({
+    badge: { icon: 'exclamation-triangle', label: 'nav.risks'|trans({}, 'nav') },
     title: 'risk.modern.header.title'|trans({}, 'risk'),
     subtitle: 'risk.modern.header.subtitle'|trans({}, 'risk'),
-    icon: 'bi-exclamation-triangle',
     actions: [
-        { label: 'risk.modern.header.action.new'|trans({}, 'risk'), url: path('app_risk_new'), variant: 'primary', icon: 'bi-plus-circle' },
-        { label: 'risk.modern.header.action.matrix'|trans({}, 'risk'), url: path('app_risk_matrix'), variant: 'info', icon: 'bi-grid-3x3' },
-        { label: 'risk.modern.header.action.export_pdf'|trans({}, 'risk'), url: path('app_risk_export_pdf'), variant: 'danger', icon: 'bi-file-pdf', turbo: false },
-        { label: 'risk.modern.header.action.export_excel'|trans({}, 'risk'), url: path('app_risk_export_excel'), variant: 'success', icon: 'bi-file-earmark-excel', turbo: false },
-        { label: 'risk.modern.header.action.export_csv'|trans({}, 'risk'), url: path('app_risk_export'), variant: 'secondary', icon: 'bi-download', turbo: false }
+        { label: 'risk.modern.header.action.new'|trans({}, 'risk'), variant: 'primary', icon: 'plus-lg', href: path('app_risk_new') },
+        { label: 'risk.modern.header.action.matrix'|trans({}, 'risk'), variant: 'ghost', icon: 'grid-3x3', href: path('app_risk_matrix') }
     ]
-} %}
+}) }}
+
+<main class="fa-aurora-surface">
 
 {# View Filter #}
 {% if currentTenant %}
@@ -503,4 +502,5 @@
 }
 </style>
 
+</main>
 {% endblock %}

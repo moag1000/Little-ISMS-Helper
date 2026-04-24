@@ -3,6 +3,7 @@
 {% block title %}{{ 'role_management.title.list'|trans({}, 'role_management') }} - Little ISMS Helper{% endblock %}
 
 {% block admin_content %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_macros/cards.html.twig' as cards %}
 
 {% include '_components/_breadcrumb.html.twig' with {
@@ -12,17 +13,16 @@
     ]
 } %}
 
-<div class="page-header">
-    <div>
-        <h1>{{ 'role_management.title.list'|trans({}, 'role_management') }}</h1>
-        <p class="text-muted">{{ 'role_management.description.overview'|trans({}, 'role_management') }}</p>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('role_management_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'role_management.action.create'|trans({}, 'role_management') }}
-        </a>
-    </div>
-</div>
+{{ _fa_page_header.render({
+    badge: { icon: 'shield-lock', label: 'nav.roles'|trans({}, 'nav') },
+    title: 'role_management.title.list'|trans({}, 'role_management'),
+    subtitle: 'role_management.description.overview'|trans({}, 'role_management'),
+    actions: [
+        { label: 'role_management.action.create'|trans({}, 'role_management'), variant: 'primary', icon: 'plus-lg', href: path('role_management_new') }
+    ]
+}) }}
+
+<main class="fa-aurora-surface">
 
 {# Statistics Cards #}
 <div class="kpi-grid">
@@ -105,4 +105,5 @@
         {% endfor %}
     {% endblock %}
 {% endembed %}
+</main>
 {% endblock admin_content %}
