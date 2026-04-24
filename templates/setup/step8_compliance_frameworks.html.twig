@@ -8,8 +8,8 @@
  # Nutzt fa-toggle-card-Pattern mit Symfony-Form-Widget im Inneren. #}
 {% macro framework_card(child, framework, classification, bucket) %}
     {% set bucketTone = bucket == 'mandatory' ? 'danger' : (bucket == 'recommended' ? 'warning' : 'neutral') %}
-    <label class="fa-toggle-card fa-toggle-card--bucket fa-toggle-card--bucket-{{ bucket }}"
-           for="{{ child.vars.id }}">
+    {# Kein for="…" — Input ist im Label genested; zusätzlich for=… löst Double-Toggle-Bug aus (Click zählt doppelt → Netto-Null). #}
+    <label class="fa-toggle-card fa-toggle-card--bucket fa-toggle-card--bucket-{{ bucket }}">
         <input type="checkbox"
                id="{{ child.vars.id }}"
                name="{{ child.vars.full_name }}"
