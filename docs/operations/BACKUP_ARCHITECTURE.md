@@ -312,7 +312,7 @@ $backup['metadata']['sha256'] = hash('sha256', (string) json_encode($backup['dat
 
 The hash covers only the `data` section (not `metadata`) to avoid a chicken-and-egg problem where the hash itself would be part of the hashed content.
 
-**Verification** is not performed automatically by `RestoreService`. The SHA-256 is intended as a manual integrity check that ops can run before initiating a restore (see [DISASTER_RECOVERY.md §5](DISASTER_RECOVERY.md#5-integritätsprüfung-sha-256)).
+**Verification is automatic.** `RestoreService::verifyIntegrity()` runs at the very start of `restoreFromBackup()` (before validation). On mismatch it throws `RuntimeException('Backup integrity check failed: sha256 mismatch (expected …, got …)')`. Legacy backups without `sha256` emit a warning but continue, so old backups remain restorable. Ops can still re-compute the hash manually as a smoke test (see [DISASTER_RECOVERY.md §5](DISASTER_RECOVERY.md#5-integritätsprüfung-sha-256)).
 
 ---
 
@@ -337,7 +337,7 @@ A setting key is considered sensitive when it contains any of these substrings (
 
 ### Decryption on Restore
 
-`RestoreService` does not currently automatically decrypt encrypted envelopes — this is a planned enhancement. Until then, encrypted values stored as `{"__encrypted": true, ...}` are treated as opaque objects. Operators must re-enter sensitive SystemSettings manually after cross-host restore.
+`RestoreService` automatically decrypts encrypted envelopes before entity hydration. The envelope is detected via `BackupEncryptionService::isEncrypted()` (checks for the `__encrypted: true` marker), and the original plaintext is restored via `decryptValue()`. If the restoring host's `APP_SECRET` does not match the source host's, decryption fails with a `RuntimeException('Encrypted secret could not be decrypted — ensure APP_SECRET matches the source environment, or replace the secret manually after restore')`. In that case, ops can skip encrypted SystemSettings via `skip_entities` option or copy `APP_SECRET` from the source environment.
 
 ---
 
