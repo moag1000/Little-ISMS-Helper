@@ -78,13 +78,13 @@ Die Software implementiert ein **datenzentrisches ISMS-Managementsystem mit inte
 
 ### Technologie-Stack
 
-- **Backend**: PHP 8.4, Symfony 7.3
+- **Backend**: PHP 8.4, Symfony 7.4
 - **Database**: PostgreSQL/MySQL mit Doctrine ORM
 - **Frontend**: Twig Templates, Symfony UX (Turbo, Stimulus)
 - **Charts**: Chart.js für Analytics-Visualisierungen
 - **Authentication**: Lokale Auth + Azure AD (OAuth 2.0, SAML)
 - **Export**: TCPDF (PDF), PhpSpreadsheet (Excel)
-- **Testing**: PHPUnit mit 122+ Tests
+- **Testing**: PHPUnit mit 4,067+ Tests
 
 ### Architektur-Prinzipien
 
@@ -193,7 +193,7 @@ public function suggestRisksFromIncidents(): array
 getProtectedAssetValue(): int          // Zeile 341 - Aggregiert CIA-Werte geschützter Assets
 getHighRiskAssetCount(): int           // Zeile 354 - Zählt hochriskante Assets
 getEffectivenessScore(): float         // Zeile 363 - Vergleicht Vorfälle vor/nach Implementierung
-needsReview(): bool                    // Zeile 396 - Trigger aus Incident-Daten
+isReviewNeeded(): bool                 // Zeile 396 - Trigger aus Incident-Daten
 getTrainingStatus(): array             // Zeile 460 - Identifiziert Training-Gaps
 ```
 
@@ -317,12 +317,11 @@ hasUnmitigatedHighRisks(): bool        // Zeile 457 - Automatische Alert-Erkennu
 **Datenwiederverwendung:**
 - Training-Abdeckung wird für Controls nachgewiesen (Control.getTrainingStatus())
 - Schulungseffektivität kann mit Control-Implementierungsgrad korreliert werden (Training.getTrainingEffectiveness())
-- Kritische Controls mit niedriger Schulungsabdeckung werden identifiziert (Training.addressesCriticalControls())
+- Kritische Controls mit niedriger Schulungsabdeckung werden identifiziert
 
 **Training Data Reuse (Training.php):**
 ```php
 getTrainingEffectiveness(): ?float     // Zeile 282 - Korreliert Training mit Control-Implementierung
-addressesCriticalControls(): bool      // Zeile 316 - Verknüpft Training mit kritischen Controls
 ```
 
 #### **4.9 ISMS Context & Objectives**
@@ -511,19 +510,19 @@ public function calculateDataReuseValue(ComplianceRequirement $requirement): arr
 **Audit Logger Service:**
 ```php
 // AuditLogger.php
-public function logCreate(object $entity, User $user, array $context = []): void
+public function logCreate(string $entityType, ?int $entityId, array $newValues, ?string $description = null): void
 {
     // Logged automatisch bei postPersist Event
     // Zeile 30-50
 }
 
-public function logUpdate(object $entity, User $user, array $oldValues, array $newValues): void
+public function logUpdate(string $entityType, ?int $entityId, array $oldValues, array $newValues, ?string $description = null): void
 {
     // Logged automatisch bei postUpdate Event mit Diff
     // Zeile 52-80
 }
 
-public function logDelete(object $entity, User $user): void
+public function logDelete(string $entityType, ?int $entityId, array $oldValues, ?string $description = null): void
 {
     // Logged automatisch bei preRemove Event
     // Zeile 82-100
@@ -738,7 +737,7 @@ public function logDelete(object $entity, User $user): void
 - Cross-Tenant-Reports für Service-Provider
 - Tenant-Admin-Rolle für Self-Service-Verwaltung
 
-**Status:** Grundlegende Entity vorhanden, vollständige Integration in Entwicklung
+**Status:** Vollständig implementiert (tenant_id auf allen Entities, TenantFilter, TenantContext)
 
 ---
 
@@ -793,7 +792,7 @@ public function logDelete(object $entity, User $user): void
 - Anzahl applicable Controls (vs. not_applicable)
 - Implementation Status Distribution (not_started, in_progress, implemented)
 - Average Implementation Percentage
-- Controls mit Review-Bedarf (needsReview() = true)
+- Controls mit Review-Bedarf (isReviewNeeded() = true)
 
 **Incident Management:**
 - Incidents pro Kategorie (Data Breach, Malware, Phishing, etc.)
@@ -940,9 +939,9 @@ Der **Little ISMS Helper** adressiert die Herausforderung der Mehrfacherfassung 
 ### Kernmerkmale
 
 ✅ **Data Reuse Architecture** - 4 Core Services für intelligente Datenwiederverwendung
-✅ **23 Entities** - Vollständiges ISMS-Datenmodell mit 5 Compliance-Frameworks
-✅ **13 Services** - Geschäftslogik für Compliance, Risk Intelligence, Protection Requirements
-✅ **24 Controller** - Komplette Web-UI für alle ISMS-Prozesse
+✅ **78 Entities** - Vollständiges ISMS-Datenmodell mit 23 Compliance-Frameworks
+✅ **130 Services** - Geschäftslogik für Compliance, Risk Intelligence, Protection Requirements
+✅ **112 Controller** - Komplette Web-UI für alle ISMS-Prozesse
 ✅ **Multi-Framework Support** - ISO 27001, TISAX, DORA mit Cross-Framework-Mappings
 ✅ **Workflow Engine** - Automatisierte Genehmigungs- und Eskalationsprozesse
 ✅ **Analytics Dashboard** - Risk Heat Maps, Compliance Radar, Trend Charts
@@ -961,8 +960,8 @@ Die Lösung ist primär für **kleine und mittelständische Unternehmen** konzip
 
 ### Technologie
 
-- **Modern**: PHP 8.4, Symfony 7.3, PostgreSQL/MySQL
-- **Getestet**: 122+ PHPUnit-Tests für Core-Funktionalität
+- **Modern**: PHP 8.4, Symfony 7.4, PostgreSQL/MySQL
+- **Getestet**: 4,067+ PHPUnit-Tests für Core-Funktionalität
 - **Sicher**: RBAC, Audit Logging, CSRF-Protection, Input Validation
 - **Skalierbar**: Multi-Tenancy-fähig für SaaS-Betrieb
 - **Integrierbar**: REST API (in Vorbereitung) für Integrationen

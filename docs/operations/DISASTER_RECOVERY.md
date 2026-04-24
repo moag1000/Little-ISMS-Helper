@@ -31,7 +31,7 @@
 
 | Kategorie | Enthalten | Hinweis |
 |-----------|-----------|---------|
-| Alle produktiven DB-Zeilen (73 Entities) | Ja | Vollständige Wiederherstellung aller ISMS-Daten |
+| Alle produktiven DB-Zeilen (54 Entities) | Ja | Vollständige Wiederherstellung aller ISMS-Daten |
 | Audit-Log (`AuditLog`) | Ja, wenn `--include-audit-log` | Standard: aktiviert in Admin-UI |
 | User-Sessions (`UserSession`) | Nur wenn explizit gewählt | Standard: deaktiviert |
 | Hochgeladene Dateien (Dokumente, Tenant-Logos) | Ja, wenn Backup als ZIP erstellt | `files_included: true` in Metadaten |
@@ -67,9 +67,17 @@
 
 **URL:** `/admin/data/backup` (lokale Instanz: `https://isms.example.com/admin/data/backup`)
 
-### 2.2 Kein dediziertes CLI-Backup-Command vorhanden
+### 2.2 CLI-Backup via `app:backup:create` und `app:backup:restore`
 
-Die Backup-Funktionalität ist ausschließlich über die Admin-UI (`AdminBackupController`) erreichbar. Es existiert kein separates Symfony-Console-Command für Backups.
+Die Backup-Funktionalität ist über die Admin-UI (`AdminBackupController`) sowie über dedizierte Symfony-Console-Commands erreichbar:
+
+```bash
+# Backup über CLI erstellen
+php bin/console app:backup:create
+
+# Backup über CLI wiederherstellen
+php bin/console app:backup:restore var/backups/backup_YYYY-MM-DD_HH-MM-SS.json.gz
+```
 
 Für automatisierte (cron-basierte) Backups kann die API direkt aufgerufen werden:
 
@@ -116,8 +124,7 @@ Backups werden in `var/backups/` gespeichert:
 **Voraussetzung:** DB-Schema ist noch kompatibel mit dem Backup.
 
 ```bash
-# 1. Application in Maintenance-Modus versetzen
-php bin/console maintenance:enable  # oder Apache/Nginx down
+# 1. Application in Maintenance-Modus versetzen (Apache/Nginx down oder Wartungsseite aktivieren)
 
 # 2. Schema auf Backup-Stand bringen (falls Migrations gerollt wurden)
 #    Backup enthält schema_version in metadata — prüfen:

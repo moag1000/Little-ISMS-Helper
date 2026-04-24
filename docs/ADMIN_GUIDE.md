@@ -68,9 +68,9 @@ The admin panel integrates seamlessly into the main application navigation:
 | Module Management | `/admin/modules` | Manage system modules |
 | Compliance Management | `/admin/compliance` | Manage compliance frameworks |
 | License Management | `/admin/licensing` | View license information |
-| User Management | `/admin/user-management` | Manage users and roles |
+| User Management | `/admin/users` | Manage users and roles |
 | System Monitoring | `/admin/monitoring` | System health dashboard |
-| Data Management | `/admin/data-management` | Backup and data operations |
+| Data Management | `/admin/data/backup` | Backup and data operations |
 
 ---
 
@@ -320,7 +320,7 @@ Access at `/admin/monitoring/health`
 | **Database** | Connection status and response time | < 100ms: Good, < 500ms: Warning, >= 500ms: Critical |
 | **Disk Space** | Available disk space | > 20%: Good, > 10%: Warning, <= 10%: Critical |
 | **PHP** | Version and required extensions | PHP 8.4+, All extensions loaded |
-| **Symfony** | Framework version | 6.4+ |
+| **Symfony** | Framework version | 7.4+ |
 | **Cache** | Cache directory writable | Writable: Good |
 | **Logs** | Log directory writable | Writable: Good |
 
@@ -358,7 +358,7 @@ Create and manage PostgreSQL backups:
 
 #### Creating a Backup
 
-1. Navigate to **Data Management** > **Backup** (`/admin/data-management/backup`)
+1. Navigate to **Data Management** > **Backup** (`/admin/data/backup`)
 2. Click **Create Backup** button
 3. System creates backup using `pg_dump`
 4. Backup stored in `var/backups/` directory
@@ -399,7 +399,7 @@ Export application data in JSON or CSV format:
 
 #### Entity Selection
 
-1. Navigate to **Data Export** (`/admin/data-management/export`)
+1. Navigate to **Data Export** (`/admin/data/export`)
 2. Select export format:
    - **JSON**: Preserves data types, recommended for re-import
    - **CSV**: Compatible with spreadsheet applications
@@ -413,7 +413,7 @@ Export application data in JSON or CSV format:
 
 **Status**: Preview mode only (execution not implemented)
 
-1. Navigate to **Data Import** (`/admin/data-management/import`)
+1. Navigate to **Data Import** (`/admin/data/import`)
 2. Upload JSON export file
 3. Preview import data and statistics
 4. Review entity breakdown
@@ -536,9 +536,9 @@ Export application data in JSON or CSV format:
 - Script permissions
 
 **Solutions**:
-- Verify `license-report.sh` exists in project root
+- Verify `license-report.sh` exists at `scripts/tools/license-report.sh`
 - Run `composer install`
-- Make script executable: `chmod +x license-report.sh`
+- Make script executable: `chmod +x scripts/tools/license-report.sh`
 
 #### 5. MFA Reset Doesn't Work
 

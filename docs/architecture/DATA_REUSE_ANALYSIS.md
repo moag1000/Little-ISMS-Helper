@@ -38,33 +38,17 @@ Maximale Wiederverwendung eingegebener Daten über alle ISMS-Module hinweg.
 
 ## ❌ Fehlende kritische Beziehungen
 
-### 1. **Asset ↔ Incident** (KRITISCH)
-**Problem**: Incidents erfassen nicht, welche Assets betroffen waren
-**Impact**:
-- Keine Asset-spezifische Incident-Historie
-- Keine Risikobewertung basierend auf Asset-Vorfällen
-- Keine Identifikation von "High-Risk Assets"
+### ~~1. **Asset ↔ Incident** (KRITISCH)~~ ✅ IMPLEMENTED
+**Implementierung**: `Incident.affectedAssets` ManyToMany-Beziehung
+- Asset-spezifische Incident-Historie verfügbar
+- Risikobewertung basierend auf Asset-Vorfällen möglich
+- Identifikation von "High-Risk Assets" über Incident-Daten
 
-**Lösung**: Many-to-Many Beziehung
-
-**Data Reuse Potential**:
-- Asset Risk Profile: "Dieses Asset hatte 5 Incidents in 12 Monaten"
-- Asset Criticality: "Assets mit vielen Incidents = höhere Kritikalität"
-- Incident Patterns: "Welche Asset-Typen sind am häufigsten betroffen?"
-
-### 2. **Risk ↔ Incident** (KRITISCH)
-**Problem**: Keine Verbindung zwischen realisierten Risiken und Incidents
-**Impact**:
-- Keine Validierung von Risikoeinschätzungen
-- Kein Lerneffekt aus Incidents für Risk Assessment
-- Keine Priorisierung basierend auf tatsächlichen Vorfällen
-
-**Lösung**: Many-to-Many Beziehung (ein Incident kann mehrere Risiken realisieren)
-
-**Data Reuse Potential**:
-- Risk Validation: "Dieses Risiko trat tatsächlich ein - 3x im letzten Jahr"
-- Probability Adjustment: "Eingetretene Risiken → höhere Wahrscheinlichkeit"
-- Impact Validation: "Tatsächlicher Impact vs. geschätzter Impact"
+### ~~2. **Risk ↔ Incident** (KRITISCH)~~ ✅ IMPLEMENTED
+**Implementierung**: `Risk.incidents` ManyToMany mit Data-Reuse-Methoden
+- Risk Validation: realisierte Risiken mit tatsächlichen Incidents verknüpft
+- Probability Adjustment basierend auf eingetretenen Risiken
+- Impact Validation: tatsächlicher vs. geschätzter Impact vergleichbar
 
 ### 3. **Control ↔ Asset** (WICHTIG)
 **Problem**: Keine direkte Zuordnung welche Controls welche Assets schützen

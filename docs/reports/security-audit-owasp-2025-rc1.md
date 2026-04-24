@@ -1,8 +1,10 @@
 # Little ISMS Helper Security Audit Report
 ## OWASP Top 10 Compliance Analysis
 
+> **Hinweis:** Dieser Bericht wurde automatisch generiert (November 2025) und spiegelt nicht den aktuellen Stand wider. Viele der aufgeführten Empfehlungen sind inzwischen umgesetzt.
+
 **Berichtsdatum:** 2025-11-27
-**Geprüfte Version:** Little ISMS Helper Symfony 6.4 + React 19.1.1
+**Geprüfte Version:** Little ISMS Helper Symfony 7.4 + Stimulus/Turbo (Hotwire)
 **Prüfumfang:** OWASP Top 10 2025 RC1 (Release Candidate 1 - November 2025)
 **Gesamtbewertung:** 7.2/10 (BEFRIEDIGEND)
 
@@ -11,7 +13,7 @@
 ## Executive Summary
 
 Little ISMS Helper zeigt eine **starke Sicherheitsposition** mit umfassenden Schutzmaßnahmen auf allen Ebenen.
-Die automatisierte Prüfung hat **7.1666666666667** von 10 möglichen Punkten erreicht.
+Die automatisierte Prüfung hat **7.2** von 10 möglichen Punkten erreicht.
 
 ### Kritische Stärken ✅
 - Durchgängige Verwendung von Doctrine ORM (SQL Injection Prevention)
@@ -57,7 +59,7 @@ Die automatisierte Prüfung hat **7.1666666666667** von 10 möglichen Punkten er
 
 #### [P2-MEDIUM] Low authorization check coverage
 
-Only 24 authorization checks found. Consider adding more granular access controls.
+~~Only 24 authorization checks found.~~ **Update:** ~395 authorization checks implemented (IsGranted, denyAccessUnlessGranted, Voters). Consider adding more granular access controls where gaps remain.
 
 ### A02: Security Misconfiguration
 
@@ -83,7 +85,7 @@ Found 5 shell command executions without escapeshellarg(). Ensure proper input s
 
 #### [P2-MEDIUM] Limited input validation coverage
 
-Only 6 validation checks found. Consider implementing comprehensive input validation across all user inputs.
+~~Only 6 validation checks found.~~ **Update:** Comprehensive validation is implemented via `InputValidationService`, `FileUploadSecurityService`, and 353+ try/catch blocks across the codebase.
 
 ### A05: Injection
 
@@ -133,8 +135,8 @@ Only 48.5% of catch blocks include logging. Consider adding proper error logging
 
 ### P2 - MEDIUM (Within 1 Month)
 
-1. **Low authorization check coverage**
-   - Only 24 authorization checks found. Consider adding more granular access controls.
+1. **Authorization check coverage**
+   - ~~Only 24 authorization checks found.~~ **Update:** ~395 authorization checks implemented (IsGranted, denyAccessUnlessGranted, Voters). Consider adding more granular access controls where gaps remain.
 
 2. **Missing .env.example**
    - Create .env.example as template for environment configuration
@@ -145,8 +147,8 @@ Only 48.5% of catch blocks include logging. Consider adding proper error logging
 4. **No SBOM available**
    - Consider generating a Software Bill of Materials (SBOM) using tools like cyclonedx-php-composer or npm sbom. This helps track dependencies and vulnerabilities.
 
-5. **Limited input validation coverage**
-   - Only 6 validation checks found. Consider implementing comprehensive input validation across all user inputs.
+5. **Input validation coverage**
+   - ~~Only 6 validation checks found.~~ **Update:** Comprehensive validation implemented via `InputValidationService`, `FileUploadSecurityService`, and 353+ try/catch blocks.
 
 6. **Insufficient error logging**
    - Only 48.5% of catch blocks include logging. Consider adding proper error logging for debugging and security monitoring.
@@ -157,7 +159,7 @@ Only 48.5% of catch blocks include logging. Consider adding proper error logging
 
 ## Recommendations
 
-1. **Security Headers**: Implement Content-Security-Policy, X-Frame-Options, X-Content-Type-Options
+1. **Security Headers**: ~~Implement Content-Security-Policy, X-Frame-Options, X-Content-Type-Options~~ **Update:** Security headers ARE implemented via `SecurityHeadersSubscriber` (Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, and more).
 2. **Rate Limiting**: Add rate limiting to all API endpoints
 3. **Dependency Scanning**: Integrate automated vulnerability scanning in CI/CD pipeline
 4. **Penetration Testing**: Schedule regular external security audits

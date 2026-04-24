@@ -6,7 +6,7 @@ Das Little-ISMS-Helper hat ein **komplettes UI/UX-Upgrade** erhalten mit moderne
 
 ### 🎯 Top 3 Features
 
-1. **⌘K Command Palette** - Instant Navigation zu jeder Funktion
+1. **⌘P Command Palette** - Instant Navigation zu jeder Funktion
 2. **🔔 Toast Notifications** - Moderne, unaufdringliche Benachrichtigungen
 3. **⌨️ Keyboard Shortcuts** - Professionelle Shortcuts für Power Users
 
@@ -16,7 +16,7 @@ Das Little-ISMS-Helper hat ein **komplettes UI/UX-Upgrade** erhalten mit moderne
 
 ### 1. Command Palette öffnen
 ```
-Drücke: ⌘K (Mac) oder Ctrl+K (Windows)
+Drücke: ⌘P (Mac) oder Ctrl+P (Windows)
 Tippe: "asset"
 Enter: Navigiere zu Assets
 ```
@@ -113,7 +113,7 @@ symfony server:start
 
 ### 4. Testen
 - Öffne `http://localhost:8000`
-- Drücke `⌘K` für Command Palette
+- Drücke `⌘P` für Command Palette
 - Drücke `?` für Shortcuts
 
 ---
@@ -140,7 +140,7 @@ Prüfe ob in `base.html.twig` die neuen CSS-Dateien importiert sind:
 ## 🎯 Nächste Schritte
 
 1. ✅ **Lerne die Shortcuts**: Drücke `?`
-2. ✅ **Nutze Command Palette**: Drücke `⌘K`
+2. ✅ **Nutze Command Palette**: Drücke `⌘P`
 3. ✅ **Modernisiere deine Module**: Nutze die Komponenten
 4. ✅ **Lies die Vollständige Doku**: `docs/UI_UX_IMPLEMENTATION.md`
 

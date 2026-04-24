@@ -104,7 +104,7 @@ Oder in Plesk:
 ### Schritt 4: PHP-Einstellungen in Plesk prüfen
 
 1. **PHP-Einstellungen öffnen**
-2. **PHP-Version prüfen:** Mindestens PHP 8.2
+2. **PHP-Version prüfen:** Mindestens PHP 8.4
 3. **PHP-Handler:** "FPM durch Apache bedient" auswählen
 4. **Erforderliche PHP-Erweiterungen aktivieren:**
    - pdo
@@ -316,7 +316,7 @@ Die Symfony AssetMapper-Assets wurden nicht installiert. Das `public/assets/` Ve
    - Erstellt versionierte Dateinamen (z.B. app-6zxcGag.css, stimulus-abc123.js)
    - **Ohne beide Befehle fehlen CSS/JS in Produktion!**
 
-   **Hinweis:** Bootstrap Icons werden über CDN geladen (siehe base.html.twig), nicht über AssetMapper.
+   **Hinweis:** Bootstrap Icons werden lokal über AssetMapper geladen (siehe base.html.twig).
 
 3. **Verifizieren Sie, dass die Dateien erstellt wurden:**
    ```bash
@@ -357,65 +357,41 @@ composer run-script auto-scripts
 
 **⚠️ Spezialfall: Bootstrap Icons fehlen**
 
-**UPDATE:** Bootstrap Icons werden jetzt über CDN geladen und nicht mehr über AssetMapper!
-
-**Aktueller Stand (seit letztem Update):**
-Bootstrap Icons werden über CDN in `templates/base.html.twig` geladen:
-```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+**Aktueller Stand:**
+Bootstrap Icons werden lokal über den AssetMapper geladen:
+```twig
+<link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}">
 ```
 
-**Warum CDN?**
-AssetMapper hat ein bekanntes Problem (GitHub Issue #52620) mit dem `fonts/` Unterordner von Bootstrap Icons. Die Font-Dateien werden nicht korrekt kopiert, was zu fehlenden Icons führt. Der CDN-Ansatz ist:
-- ✅ Zuverlässig und funktioniert sofort
-- ✅ Schnell (jsDelivr ist weltweit gecached)
-- ✅ Mit SRI-Hash gesichert
-- ✅ Kein Troubleshooting nötig
-- ✅ CSP ist konfiguriert für jsDelivr (in `SecurityHeadersSubscriber.php`)
+Die Icons werden via `importmap:install` heruntergeladen und von `asset-map:compile` nach `public/assets/` kompiliert. Kein CDN-Zugriff zur Laufzeit erforderlich.
 
 **Falls Bootstrap Icons trotzdem fehlen:**
 
-**Symptom 1: CSP blockiert Bootstrap Icons Fonts**
-
-Browser-Konsole zeigt:
-```
-Loading the font 'https://cdn.jsdelivr.net/.../bootstrap-icons.woff2' violates
-the following Content Security Policy directive: "font-src 'self' data: ..."
-```
-
-**Lösung:** CSP muss jsDelivr für Fonts erlauben (bereits im Code enthalten):
-```php
-// src/EventSubscriber/SecurityHeadersSubscriber.php
-"font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net"
-```
-
-Nach Git-Pull sollte das automatisch behoben sein. Falls nicht, prüfen Sie die Datei manuell.
-
-**Symptom 2: CDN-Link fehlt**
-
-1. **Prüfen Sie, ob der CDN-Link in base.html.twig vorhanden ist:**
+1. **Prüfen Sie, ob der lokale Asset-Link in base.html.twig vorhanden ist:**
    ```bash
    grep "bootstrap-icons" templates/base.html.twig
-   # Sollte den CDN-Link zeigen
+   # Sollte den lokalen Asset-Pfad zeigen
    ```
 
-2. **Prüfen Sie, ob der alte Import auskommentiert ist:**
+2. **Prüfen Sie, ob Bootstrap Icons heruntergeladen wurden:**
    ```bash
-   grep "bootstrap-icons" assets/app.js
-   # Sollte auskommentiert sein: // import 'bootstrap-icons/...
+   ls -la public/assets/vendor/bootstrap-icons/
+   # Sollte font/ Verzeichnis mit bootstrap-icons.min.css und .woff2 Dateien zeigen
    ```
 
-3. **Cache leeren und Assets neu kompilieren:**
+3. **Bootstrap Icons neu installieren und kompilieren:**
    ```bash
-   rm -rf var/cache/prod/*
-   php bin/console cache:clear --env=prod
+   php bin/console importmap:install
    php bin/console asset-map:compile
    ```
 
-4. **Browser Cache leeren:** Strg+F5 (oder Cmd+Shift+R)
+4. **Cache leeren:**
+   ```bash
+   rm -rf var/cache/prod/*
+   php bin/console cache:clear --env=prod
+   ```
 
-**Kein Zugriff auf jsDelivr CDN?**
-Falls Ihre Server-Firewall jsDelivr blockiert, können Sie Bootstrap Icons lokal in `assets/vendor/bootstrap-icons/` installieren und den Import-Pfad in `assets/app.js` anpassen. Siehe ältere Version dieser Dokumentation für Details.
+5. **Browser Cache leeren:** Strg+F5 (oder Cmd+Shift+R)
 
 ### Fehler: Content Security Policy (CSP) blockiert Scripts ⚠️
 
@@ -879,7 +855,7 @@ php bin/console cache:warmup --env=prod
 
 **⚠️ WICHTIG - Reihenfolge beachten:**
 - **Schritt 1 MUSS VOR Schritt 2 ausgeführt werden!**
-  - `importmap:install` lädt externe Pakete (Bootstrap Icons, Chart.js, etc.) von jsDelivr herunter
+  - `importmap:install` lädt externe Pakete (Bootstrap Icons lokal, Chart.js, etc.) von jsDelivr herunter
   - Ohne Schritt 1 fehlen Bootstrap Icons und andere externe Dependencies!
 - **Schritt 2 MUSS NACH Schritt 1 ausgeführt werden!**
   - `asset-map:compile` kompiliert ALLE Assets (inkl. heruntergeladene externe Pakete)
@@ -901,7 +877,7 @@ Dieses Script überprüft automatisch alle kritischen Punkte unten und gibt deta
 **Manuelle Checkliste:**
 - [ ] Document Root auf `public` Verzeichnis gesetzt
 - [ ] .htaccess Datei in `public` Verzeichnis vorhanden
-- [ ] PHP-Version >= 8.2
+- [ ] PHP-Version >= 8.4
 - [ ] Alle PHP-Erweiterungen aktiviert
 - [ ] Composer Dependencies installiert (`composer install --no-dev --optimize-autoloader`)
 - [ ] ⚠️ **KRITISCH:** Assets installiert (Verzeichnis `public/assets/` existiert)
@@ -998,7 +974,7 @@ Bei weiteren Problemen:
 
 **⚠️ WICHTIG - Reihenfolge der Asset-Befehle:**
 - Schritt 5 (importmap:install) MUSS VOR Schritt 6 (asset-map:compile) ausgeführt werden!
-- `importmap:install` lädt Bootstrap Icons von jsDelivr herunter
+- `importmap:install` lädt Bootstrap Icons und andere externe Pakete herunter (werden lokal serviert)
 - `asset-map:compile` kompiliert dann alle Assets inkl. Bootstrap Icons
 - **Ohne beide Schritte fehlen CSS/JS/Icons komplett!**
 
