@@ -10,7 +10,13 @@
     {% set bucketTone = bucket == 'mandatory' ? 'danger' : (bucket == 'recommended' ? 'warning' : 'neutral') %}
     <label class="fa-toggle-card fa-toggle-card--bucket fa-toggle-card--bucket-{{ bucket }}"
            for="{{ child.vars.id }}">
-        {{ form_widget(child, {'attr': {'class': 'fa-toggle-card__input'}}) }}
+        <input type="checkbox"
+               id="{{ child.vars.id }}"
+               name="{{ child.vars.full_name }}"
+               value="{{ child.vars.value }}"
+               class="fa-toggle-card__input"
+               {% if child.vars.checked %}checked{% endif %}
+               {% if child.vars.disabled %}disabled{% endif %}>
         <span class="fa-toggle-card__box" aria-hidden="true">
             <svg viewBox="0 0 14 14" width="10" height="10" fill="none">
                 <path d="M2 7 L6 11 L12 3" stroke="currentColor" stroke-width="2.5"
