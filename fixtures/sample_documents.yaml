@@ -1,0 +1,110 @@
+documents:
+  - filename: 'isms-leitlinie-v3.pdf'
+    originalFilename: 'ISMS-Leitlinie_v3.0.pdf'
+    mimeType: 'application/pdf'
+    fileSize: 285400
+    filePath: '/uploads/policies/isms-leitlinie-v3.pdf'
+    category: 'policy'
+    description: 'Informationssicherheits-Leitlinie der Geschäftsführung (ISO 27001 A.5.1). Übergeordnetes Dokument zur Festlegung von Zielen, Verantwortlichkeiten und Grundsätzen des ISMS.'
+    status: 'approved'
+    isPublic: true
+    isArchived: false
+    tisaxInformationClassification: 'internal'
+    inheritable: true
+    overrideAllowed: false
+
+  - filename: 'richtlinie-zugangskontrolle-v2.pdf'
+    originalFilename: 'Richtlinie_Zugangskontrolle_v2.1.pdf'
+    mimeType: 'application/pdf'
+    fileSize: 198320
+    filePath: '/uploads/policies/richtlinie-zugangskontrolle-v2.pdf'
+    category: 'policy'
+    description: 'Richtlinie zur Zugangs- und Zugriffskontrolle (ISO 27001 A.5.15–A.5.18). Regelt Benutzerkonten, Passwörter, Berechtigungsvergabe und Reviews.'
+    status: 'approved'
+    isPublic: false
+    isArchived: false
+    tisaxInformationClassification: 'internal'
+
+  - filename: 'kryptorichtlinie-v1.pdf'
+    originalFilename: 'Richtlinie_Kryptographie_v1.2.pdf'
+    mimeType: 'application/pdf'
+    fileSize: 145200
+    filePath: '/uploads/policies/kryptorichtlinie-v1.pdf'
+    category: 'policy'
+    description: 'Kryptographie-Richtlinie nach ISO 27001 A.8.24. Definiert zugelassene Algorithmen, Schlüssellängen und Key-Management.'
+    status: 'approved'
+    isPublic: false
+    isArchived: false
+    tisaxInformationClassification: 'confidential'
+
+  - filename: 'verfahrensanweisung-incident-response.docx'
+    originalFilename: 'VA_Incident_Response_v2.0.docx'
+    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    fileSize: 87440
+    filePath: '/uploads/procedures/verfahrensanweisung-incident-response.docx'
+    category: 'procedure'
+    description: 'Verfahrensanweisung zur Behandlung von Sicherheitsvorfällen (ISO 27001 A.5.24–A.5.27). Inkl. Eskalationsmatrix und 72h-Meldefristen.'
+    status: 'approved'
+    isPublic: false
+    isArchived: false
+    tisaxInformationClassification: 'internal'
+
+  - filename: 'clean-desk-anweisung.pdf'
+    originalFilename: 'Arbeitsanweisung_Clean-Desk_v1.1.pdf'
+    mimeType: 'application/pdf'
+    fileSize: 62180
+    filePath: '/uploads/instructions/clean-desk-anweisung.pdf'
+    category: 'instruction'
+    description: 'Clean-Desk- und Clear-Screen-Policy (ISO 27001 A.7.7). Verbindlich für alle Mitarbeiter an Büroarbeitsplätzen.'
+    status: 'approved'
+    isPublic: true
+    isArchived: false
+    tisaxInformationClassification: 'public'
+
+  - filename: 'richtlinie-lieferantenmanagement-draft.docx'
+    originalFilename: 'Richtlinie_Lieferantenmanagement_v1.0_DRAFT.docx'
+    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    fileSize: 112300
+    filePath: '/uploads/drafts/richtlinie-lieferantenmanagement-draft.docx'
+    category: 'policy'
+    description: 'Entwurf: Lieferanten- und Dienstleister-Management-Richtlinie (ISO 27001 A.5.19–A.5.23). Noch in Abstimmung mit Einkauf und Rechtsabteilung.'
+    status: 'draft'
+    isPublic: false
+    isArchived: false
+    tisaxInformationClassification: 'internal'
+
+  - filename: 'backup-konzept-review.pdf'
+    originalFilename: 'Backup-und-Restore-Konzept_v2.0_REVIEW.pdf'
+    mimeType: 'application/pdf'
+    fileSize: 241800
+    filePath: '/uploads/review/backup-konzept-review.pdf'
+    category: 'concept'
+    description: 'Technisches Backup- und Wiederherstellungskonzept (ISO 27001 A.8.13). Aktuell im Review durch IT-Leitung und CISO, geplanter Freigabetermin nächster Monat.'
+    status: 'review'
+    isPublic: false
+    isArchived: false
+    tisaxInformationClassification: 'confidential'
+
+  - filename: 'awareness-material-phishing.pptx'
+    originalFilename: 'Awareness_Phishing-Erkennung_v2.0.pptx'
+    mimeType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    fileSize: 4820000
+    filePath: '/uploads/training/awareness-material-phishing.pptx'
+    category: 'training_material'
+    description: 'Awareness-Schulungsmaterial zur Erkennung von Phishing-E-Mails. Grundlage für die jährliche Pflichtschulung (ISO 27001 A.6.3).'
+    status: 'approved'
+    isPublic: false
+    isArchived: false
+    tisaxInformationClassification: 'internal'
+
+  - filename: 'risikomanagement-verfahren.pdf'
+    originalFilename: 'VA_Risikomanagement_v1.3.pdf'
+    mimeType: 'application/pdf'
+    fileSize: 176400
+    filePath: '/uploads/procedures/risikomanagement-verfahren.pdf'
+    category: 'procedure'
+    description: 'Verfahrensanweisung Informationssicherheits-Risikomanagement (ISO 27001 Clause 6.1.2, 8.2). Methodik zur Bewertung nach Schadenshöhe und Eintrittswahrscheinlichkeit.'
+    status: 'approved'
+    isPublic: false
+    isArchived: false
+    tisaxInformationClassification: 'internal'

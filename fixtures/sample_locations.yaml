@@ -1,0 +1,95 @@
+locations:
+  - name: 'Hauptquartier München (HQ)'
+    locationType: 'building'
+    code: 'HQ-MUC'
+    description: 'Hauptsitz des Unternehmens in München-Schwabing. 5 Etagen mit ca. 320 Arbeitsplätzen, Konferenzräumen, Empfang und Kantine. Sitz der Geschäftsführung.'
+    address: 'Leopoldstraße 250'
+    city: 'München'
+    country: 'Deutschland'
+    postalCode: '80807'
+    securityLevel: 'controlled'
+    requiresBadgeAccess: true
+    requiresEscort: false
+    cameraMonitored: true
+    accessControlSystem: 'Kaba evolo Plus mit RFID-Badges, 24/7 Empfang, separate Hochsicherheitsbereiche (IT, Vorstand, Archiv) mit Zweitfaktor (PIN)'
+    responsiblePerson: 'Jürgen Hoffmann (Facility Manager)'
+    capacity: 380
+    squareMeters: '5400.00'
+    active: true
+    notes: 'BSI IT-Grundschutz Standort-Kategorie "mittel". Brandmeldeanlage VdS-zertifiziert. Einbruchmeldeanlage Klasse C. Zwei Fluchttreppenhäuser, Tiefgarage mit Schranken + RFID. Besucher nur via Empfang mit Voranmeldung.'
+
+  - name: 'Rechenzentrum Frankfurt (Primary)'
+    locationType: 'datacenter'
+    code: 'RZ-FRA'
+    description: 'Primäres Rechenzentrum im Equinix FR4 Colocation. 16 Racks für Produktions-Workloads (ERP, CRM, Mail, DB, SAN, Core-Switches). Cross-Connect zu AWS Direct Connect.'
+    address: 'Kleyerstraße 90 (Equinix FR4)'
+    city: 'Frankfurt am Main'
+    country: 'Deutschland'
+    postalCode: '60326'
+    securityLevel: 'high_security'
+    requiresBadgeAccess: true
+    requiresEscort: true
+    cameraMonitored: true
+    accessControlSystem: 'Equinix Smart Hands + Biometrie (Iris-Scan), 2FA-Badges, Mantrap-Schleuse, 24/7-Security-Personal. Zutritt nur für 6 gelistete Admins + ad-hoc Wartungs-Genehmigung.'
+    responsiblePerson: 'Markus Fischer (Senior Admin IT-Operations)'
+    capacity: 10
+    squareMeters: '48.00'
+    active: true
+    notes: 'Tier-IV-äquivalent (Equinix). Redundante Stromversorgung 2N, USV + Diesel-Generator (72h), Klima N+1, Löschanlage Novec 1230. Kritische Infrastruktur - Zutritt nur mit dokumentiertem Change oder IR-Alarm. Wartungsfenster So 02:00-06:00.'
+
+  - name: 'Rechenzentrum Berlin (DR-Site)'
+    locationType: 'datacenter'
+    code: 'RZ-BER'
+    description: 'Disaster-Recovery-Rechenzentrum als Hot-Standby zum RZ Frankfurt. PostgreSQL Streaming Replication, VMware SRM, 8 Racks. Aktiviert bei Failover.'
+    address: 'Musterstraße 42'
+    city: 'Berlin'
+    country: 'Deutschland'
+    postalCode: '10115'
+    securityLevel: 'high_security'
+    requiresBadgeAccess: true
+    requiresEscort: true
+    cameraMonitored: true
+    accessControlSystem: 'Interxion FRA14 Standard: RFID + biometrisches Fingerprint-System, Mantrap, 24/7 Security, Zutrittsberechtigung auf 8 Admins begrenzt.'
+    responsiblePerson: 'Hanna Vogel (Netzwerk-Lead, Site-Verantwortliche Berlin)'
+    capacity: 8
+    squareMeters: '24.00'
+    active: true
+    notes: 'Geografische Trennung zu Frankfurt (> 500 km) für DR-Zwecke. Eigener ISP-Provider (nicht Telekom), um Single-Point-of-Failure zu vermeiden. Quartalsweiser Vor-Ort-Audit-Besuch durch IT-Lead. Bei Aktivierung: Failover-Runbook RB-001.'
+
+  - name: 'Außendienstbüro Hamburg'
+    locationType: 'office'
+    code: 'BRO-HH'
+    description: 'Vertriebsstandort in der Hamburger Innenstadt. 12 Arbeitsplätze, 2 Konferenzräume für Kundentermine, repräsentative Empfangsfläche.'
+    address: 'Jungfernstieg 30'
+    city: 'Hamburg'
+    country: 'Deutschland'
+    postalCode: '20354'
+    securityLevel: 'restricted'
+    requiresBadgeAccess: true
+    requiresEscort: false
+    cameraMonitored: false
+    accessControlSystem: 'Digitales Schließsystem (DOM Tapkey) mit Smartphone-App. Schließung um 19:00 automatisch. Einbruchmeldeanlage an Wachdienst (Securitas) angeschlossen.'
+    responsiblePerson: 'Christine Maier (Standortleiterin Hamburg)'
+    capacity: 15
+    squareMeters: '220.00'
+    active: true
+    notes: 'Gemieteter Büroraum in Bürohaus mit 24/7 Objektschutz. Keine kritischen IT-Systeme vor Ort (Fat-Client-Lösung, VPN zu HQ). Besprechungsraum "Alster" mit Videokonferenz (Cisco Webex). Parkplätze im Parkhaus nebenan, Mitarbeiter-Kontingente.'
+
+  - name: 'Home-Office-Arbeitsplätze (Richtlinie)'
+    locationType: 'other'
+    code: 'HO-POLICY'
+    description: 'Virtueller Standort für alle Home-Office-Arbeitsplätze. Enthält keine physische Adresse, sondern repräsentiert die Home-Office-Richtlinie + technische Infrastruktur (VPN, MDM).'
+    address: null
+    city: null
+    country: 'Deutschland'
+    postalCode: null
+    securityLevel: 'restricted'
+    requiresBadgeAccess: false
+    requiresEscort: false
+    cameraMonitored: false
+    accessControlSystem: 'Zero-Trust-VPN (Cloudflare Access) mit Entra-ID-Authentifizierung + Conditional Access, MFA via Authenticator, MDM-verwalteter Firmenlaptop (Intune), Compliance-Policy: Geräte-Verschlüsselung (BitLocker), aktuelle Patches, EDR aktiv.'
+    responsiblePerson: 'Thomas Becker (IT-Operations) + Klaus Wagner (HR)'
+    capacity: 280
+    squareMeters: null
+    active: true
+    notes: 'Home-Office-Richtlinie v2.1 (gültig ab 2024-06-01): Bis zu 3 Tage/Woche Home-Office möglich für HO-fähige Rollen. Voraussetzungen: Firmenlaptop, abschließbarer Schrank für Ausdrucke, Datenschutzerklärung unterschrieben. Keine Bearbeitung personenbezogener Daten in öffentlichen Räumen. Bildschirm-Sichtschutzfolie für Außendienst-Laptops Pflicht. Bei Pandemie-Stufe 3: Skalierung auf 100% Home-Office möglich (siehe BCP-004).'

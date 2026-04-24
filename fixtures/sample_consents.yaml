@@ -1,0 +1,133 @@
+consents:
+  - dataSubjectIdentifier: 'max.mustermann@example.com'
+    identifierType: 'email'
+    purposes:
+      - 'Newsletter-Versand'
+      - 'Produktinformationen'
+    grantedAt: '2024-01-15 10:30:00'
+    consentMethod: 'double_opt_in'
+    consentText: 'Ich moechte regelmaessig den Newsletter mit Produktinformationen, Fachartikeln und Einladungen zu Events erhalten. Die Einwilligung kann ich jederzeit mit Wirkung fuer die Zukunft widerrufen.'
+    consentChannel: 'website'
+    proofMetadata:
+      ip: '93.184.216.34'
+      user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+      form_version: '2.1'
+      double_opt_in_confirmed_at: '2024-01-15 10:32:15'
+    documentedAt: '2024-01-15 10:32:20'
+    status: 'active'
+    isVerifiedByDpo: true
+    verifiedAt: '2024-01-16 09:00:00'
+    isRevoked: false
+    expiresAt: '2027-01-15 10:30:00'
+    notes: 'Standard-Newsletter-Einwilligung via Double-Opt-In ueber die Unternehmenswebsite.'
+
+  - dataSubjectIdentifier: 'lisa.schneider@example.de'
+    identifierType: 'email'
+    purposes:
+      - 'Marketing-Cookies'
+      - 'Personalisierte Werbung'
+      - 'Remarketing'
+    grantedAt: '2024-03-22 14:12:00'
+    consentMethod: 'checkbox'
+    consentText: 'Ich willige ein, dass auf meinem Geraet Marketing-Cookies gesetzt werden und meine Nutzungsdaten zur Anzeige personalisierter Werbung und zum Remarketing (Google Ads, Meta) verwendet werden.'
+    consentChannel: 'website'
+    proofMetadata:
+      ip: '81.169.145.12'
+      user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)'
+      cmp_version: 'Usercentrics 2.54'
+      tcf_string: 'CQHKJsAQHKJsAAKA7ACBEEsBgAAAAAAAAAwIIAAABxmABlCAA'
+      selected_vendors:
+        - 'google_ads'
+        - 'meta_ads'
+    documentedAt: '2024-03-22 14:12:05'
+    status: 'active'
+    isVerifiedByDpo: true
+    verifiedAt: '2024-03-23 11:00:00'
+    isRevoked: false
+    expiresAt: '2025-03-22 14:12:00'
+    notes: 'Cookie-Consent ueber das CMP. Jaehrliche Erneuerung gemaess DSK-Orientierungshilfe.'
+
+  - dataSubjectIdentifier: 'K-2024-00421'
+    identifierType: 'customer_id'
+    purposes:
+      - 'Werbetracking'
+      - 'Analyse des Nutzungsverhaltens'
+    grantedAt: '2024-05-08 16:45:00'
+    consentMethod: 'checkbox'
+    consentText: 'Ich bin damit einverstanden, dass mein Nutzungsverhalten innerhalb der Kundenportal-App mit Matomo Analytics zur Verbesserung der Services analysiert wird. Eine Uebertragung an Dritte findet nicht statt.'
+    consentChannel: 'website'
+    proofMetadata:
+      app_version: '3.4.1'
+      platform: 'iOS'
+      tracking_scope: 'internal_matomo_only'
+    documentedAt: '2024-05-08 16:45:10'
+    status: 'revoked'
+    isVerifiedByDpo: true
+    verifiedAt: '2024-05-09 08:30:00'
+    isRevoked: true
+    revokedAt: '2024-09-12 19:33:00'
+    revocationMethod: 'website'
+    notes: 'Kunde hat ueber das Praeferenzzentrum widerrufen. Tracking-Stopp in Matomo bestaetigt.'
+
+  - dataSubjectIdentifier: 'dr.klaus.weber@example.org'
+    identifierType: 'email'
+    purposes:
+      - 'Teilnahme an Anwenderstudie 2024'
+      - 'Wissenschaftliche Auswertung von Befragungsdaten'
+    grantedAt: '2024-04-03 11:00:00'
+    consentMethod: 'written_form'
+    consentText: 'Ich willige in die Teilnahme an der Anwenderstudie "Usability im ISMS-Tool 2024" ein. Meine Antworten und Beobachtungsdaten werden pseudonymisiert ausgewertet und in aggregierter Form in einer wissenschaftlichen Publikation veroeffentlicht. Die Einwilligung kann ich bis zum Abschluss der Publikation widerrufen.'
+    consentChannel: 'paper_form'
+    proofMetadata:
+      form_id: 'STUDY-2024-USABILITY-017'
+      study_lead: 'Prof. Dr. Mueller'
+      ethics_approval: 'EK-2024-045'
+    documentedAt: '2024-04-04 09:15:00'
+    status: 'active'
+    isVerifiedByDpo: true
+    verifiedAt: '2024-04-05 14:00:00'
+    isRevoked: false
+    expiresAt: '2026-04-03 11:00:00'
+    notes: 'Forschungseinwilligung mit Ethikvotum. Papier-Formular gescannt und als Nachweisdokument verknuepft.'
+
+  - dataSubjectIdentifier: 'anna.hoffmann@example.com'
+    identifierType: 'email'
+    purposes:
+      - 'Veroeffentlichung von Mitarbeiterfotos auf Unternehmenswebsite'
+      - 'Nutzung von Fotos in Social-Media-Kanaelen (LinkedIn, XING)'
+    grantedAt: '2024-02-01 09:00:00'
+    consentMethod: 'written_form'
+    consentText: 'Ich willige ein, dass waehrend des Team-Events am 25.01.2024 aufgenommene Fotos, auf denen ich zu sehen bin, auf der Unternehmenswebsite sowie den LinkedIn- und XING-Kanaelen des Unternehmens veroeffentlicht werden. Die Einwilligung erfolgt freiwillig, ein Widerruf ist jederzeit moeglich.'
+    consentChannel: 'paper_form'
+    proofMetadata:
+      event: 'Kickoff-Event Q1-2024'
+      photo_reference: 'EVENT-2024-01-IMG-042,EVENT-2024-01-IMG-117'
+      form_id: 'KUG-EWE-2024-018'
+    documentedAt: '2024-02-02 10:30:00'
+    status: 'active'
+    isVerifiedByDpo: true
+    verifiedAt: '2024-02-05 15:45:00'
+    isRevoked: false
+    notes: 'KUG-Einwilligung (Kunst- und Urheberrechtsgesetz / DSGVO Art. 6 Abs. 1 lit. a). Photograph beauftragt per separatem AV-Vertrag.'
+
+  - dataSubjectIdentifier: 'thomas.becker@example.net'
+    identifierType: 'email'
+    purposes:
+      - 'Weitergabe an externen Bonitaetsdienstleister (SCHUFA)'
+      - 'Bonitaetspruefung fuer Ratenkauf'
+    grantedAt: '2024-07-19 17:22:00'
+    consentMethod: 'checkbox'
+    consentText: 'Ich willige ein, dass zur Durchfuehrung einer Bonitaetspruefung meine Name, Anschrift, Geburtsdatum und Vertragsdaten an die SCHUFA Holding AG uebermittelt werden. Die Einwilligung ist freiwillig und kann jederzeit mit Wirkung fuer die Zukunft widerrufen werden. Die Einwilligung ist Voraussetzung fuer den Abschluss eines Ratenkaufvertrages.'
+    consentChannel: 'website'
+    proofMetadata:
+      ip: '79.227.88.14'
+      user_agent: 'Mozilla/5.0 (Linux; Android 13)'
+      order_reference: 'ORD-2024-45812'
+      separate_checkbox: true
+      purpose_granularity: 'per_recipient'
+    documentedAt: '2024-07-19 17:22:08'
+    status: 'pending_verification'
+    isVerifiedByDpo: false
+    isRevoked: false
+    expiresAt: '2029-07-19 17:22:00'
+    notes: 'Wartend auf DPO-Review. Trennung Einwilligung Weitergabe von allgemeiner Vertragseinwilligung dokumentiert.'

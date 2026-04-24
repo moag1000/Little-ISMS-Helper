@@ -1,0 +1,204 @@
+data_breaches:
+  - referenceNumber: 'BREACH-2024-001'
+    title: 'Fehlgeleitete E-Mail mit Kundenliste an externen Empfaenger'
+    status: 'closed'
+    severity: 'low'
+    detectedAt: '2024-02-14 09:15:00'
+    affectedDataSubjects: 87
+    dataCategories:
+      - 'identification'
+      - 'contact'
+    dataSubjectCategories:
+      - 'customers'
+    breachNature: 'Mitarbeiter des Vertriebs versendete eine Excel-Liste mit Namen, E-Mail-Adressen und Kundennummern von 87 Bestandskunden versehentlich an einen externen Auftragnehmer statt an die interne Vertriebsleitung.'
+    likelyConsequences: 'Geringes Risiko: Empfaenger ist ein vertraglich gebundener Dienstleister mit NDA. Keine sensitiven Daten enthalten. Verarbeitung zu anderen Zwecken ausgeschlossen.'
+    measuresTaken: 'Sofortige Kontaktaufnahme mit dem externen Empfaenger. Schriftliche Bestaetigung der Loeschung der E-Mail inkl. Papierkorb eingeholt. Dokumentation im Breach-Register.'
+    mitigationMeasures: 'Awareness-Schulung fuer das Vertriebsteam durchgefuehrt. E-Mail-Vorlage mit Empfaengerpruefung eingefuehrt.'
+    requiresAuthorityNotification: false
+    noNotificationReason: 'Nach Art. 33 Abs. 1 DSGVO: Risiko fuer Rechte und Freiheiten natuerlicher Personen ist voraussichtlich gering. Empfaenger vertraglich gebunden, Loeschung bestaetigt. Dokumentiert gemaess Art. 33 Abs. 5.'
+    requiresSubjectNotification: false
+    noSubjectNotificationReason: 'Kein hohes Risiko gemaess Art. 34 Abs. 1 DSGVO.'
+    riskLevel: 'low'
+    riskAssessment: 'Interessensabwaegung: vertragliche Absicherung des Empfaengers, nachgewiesene Loeschung, keine sensitiven Daten. Eintrittswahrscheinlichkeit eines Schadens: sehr gering.'
+    specialCategoriesAffected: false
+    criminalDataAffected: false
+    rootCause: 'Unaufmerksamkeit beim Versand, aehnliche E-Mail-Adressen im Outlook-Autocomplete.'
+    lessonsLearned: 'Outlook-Autocomplete-Verhalten ist Risikoquelle. Empfaengerpruefung vor Versand besonders bei Anhaengen notwendig.'
+    followUpActions:
+      - action: 'Schulung Vertriebsteam durchgefuehrt'
+        status: 'completed'
+        due_date: '2024-02-28'
+      - action: 'E-Mail-Template mit Bestaetigungsdialog einfuehren'
+        status: 'completed'
+        due_date: '2024-03-15'
+
+  - referenceNumber: 'BREACH-2024-002'
+    title: 'Diebstahl eines Firmenlaptops waehrend Dienstreise'
+    status: 'authority_notified'
+    severity: 'high'
+    detectedAt: '2024-05-22 18:45:00'
+    affectedDataSubjects: 340
+    dataCategories:
+      - 'identification'
+      - 'contact'
+      - 'financial'
+      - 'contract_data'
+    dataSubjectCategories:
+      - 'customers'
+      - 'employees'
+    breachNature: 'Einem Mitarbeiter des Aussendienstes wurde waehrend einer Dienstreise der Firmenlaptop aus dem Hotelzimmer entwendet. Der Laptop enthielt lokal gespeicherte Kundendaten (Angebote, Vertragsentwuerfe) sowie E-Mail-Archive.'
+    likelyConsequences: 'Mittleres bis hohes Risiko: Potenzieller Zugriff auf Kontaktdaten, Umsatzdaten und Vertragsinhalte. Identitaetsdiebstahl und gezielte Phishing-Angriffe gegen betroffene Kunden moeglich.'
+    measuresTaken: 'Remote-Wipe ueber MDM initiiert (BitLocker-Verschluesselung aktiv). Polizeiliche Anzeige erstattet. Active-Directory-Zugang des Geraetes gesperrt. Passwoerter zuruecksetzen lassen. Aufsichtsbehoerde innerhalb der 72h-Frist informiert.'
+    mitigationMeasures: 'Geraeteverschluesselung (BitLocker) hat unautorisierten Zugriff verhindert. Betroffene Personen wurden informiert. MDM-Richtlinie auf Auto-Lock nach 5 Minuten verschaerft.'
+    supervisoryAuthorityNotifiedAt: '2024-05-24 14:30:00'
+    supervisoryAuthorityName: 'Bayerisches Landesamt fuer Datenschutzaufsicht (BayLDA)'
+    supervisoryAuthorityReference: 'BayLDA-2024-05-1172'
+    notificationMethod: 'online_portal'
+    requiresAuthorityNotification: true
+    requiresSubjectNotification: true
+    dataSubjectsNotifiedAt: '2024-05-27 09:00:00'
+    subjectNotificationMethod: 'email'
+    subjectsNotified: 338
+    riskLevel: 'high'
+    riskAssessment: 'Hohes Risiko trotz BitLocker-Verschluesselung aufgrund der Datenart (Finanzdaten) und Anzahl der Betroffenen. Vorsorgliche Benachrichtigung gemaess Art. 34 DSGVO.'
+    specialCategoriesAffected: false
+    criminalDataAffected: false
+    rootCause: 'Laptop wurde im Hotelzimmer unbeaufsichtigt gelassen, Hotelsafe nicht genutzt. Organisatorische Regelungen fuer Dienstreisen nicht ausreichend bekannt.'
+    lessonsLearned: 'BitLocker-Verschluesselung ist effektiv. Lokale Datenspeicherung sollte minimiert werden (Cloud-First). Dienstreise-Richtlinie muss geschaerft und jaehrlich geschult werden.'
+    followUpActions:
+      - action: 'Dienstreise-Richtlinie aktualisiert'
+        status: 'completed'
+        due_date: '2024-06-30'
+      - action: 'MDM auf Zero-Trust-Konzept umstellen'
+        status: 'in_progress'
+        due_date: '2024-12-31'
+      - action: 'Awareness-Kampagne Dienstreisen'
+        status: 'completed'
+        due_date: '2024-07-31'
+
+  - referenceNumber: 'BREACH-2024-003'
+    title: 'Ransomware-Angriff auf Fileserver mit HR-Daten'
+    status: 'subjects_notified'
+    severity: 'critical'
+    detectedAt: '2024-08-05 04:12:00'
+    affectedDataSubjects: 195
+    dataCategories:
+      - 'identification'
+      - 'contact'
+      - 'financial'
+      - 'tax_data'
+      - 'bank_details'
+      - 'health'
+    dataSubjectCategories:
+      - 'employees'
+      - 'former_employees'
+    breachNature: 'Ransomware-Angriff (LockBit-Variante) auf den zentralen HR-Fileserver. Angreifer hatten vor der Verschluesselung nachweislich Datenexfiltration durchgefuehrt (Double Extortion). Exfiltrierte Daten umfassen Personalakten-Auszuege, Gehaltslisten und arbeitsmedizinische Befunde.'
+    likelyConsequences: 'Sehr hohes Risiko: Veroeffentlichung der Daten im Darknet angedroht. Identitaetsdiebstahl, Kreditbetrug, sozialer Schaden. Gesundheitsdaten als besondere Kategorie gemaess Art. 9 DSGVO.'
+    measuresTaken: 'Inzident-Team aktiviert. Betroffene Systeme sofort isoliert. Forensische Analyse durch externen DFIR-Dienstleister. Wiederherstellung aus Offline-Backup. Meldung an BSI (NIS2) und BayLDA binnen 24h bzw. 72h. Strafanzeige gegen Unbekannt. Keine Loesegeldzahlung.'
+    mitigationMeasures: 'Datenleak-Monitoring im Darknet eingerichtet. Angebot zur Kreditsperre fuer betroffene Mitarbeiter. Kostenloser Identitaetsschutz-Service fuer 24 Monate.'
+    supervisoryAuthorityNotifiedAt: '2024-08-07 22:45:00'
+    supervisoryAuthorityName: 'Bayerisches Landesamt fuer Datenschutzaufsicht (BayLDA)'
+    supervisoryAuthorityReference: 'BayLDA-2024-08-2198'
+    notificationMethod: 'online_portal'
+    notificationDelayReason: 'Erste 48 Stunden fokussiert auf Schadensbegrenzung und forensische Beweissicherung. Vorabmeldung bereits nach 26h erfolgt, vollstaendige Meldung innerhalb der Frist.'
+    requiresAuthorityNotification: true
+    requiresSubjectNotification: true
+    dataSubjectsNotifiedAt: '2024-08-10 10:00:00'
+    subjectNotificationMethod: 'letter'
+    subjectsNotified: 195
+    riskLevel: 'high'
+    riskAssessment: 'Kritisches Risiko aufgrund der Datenart (inkl. Gesundheitsdaten und Bankverbindungen), nachgewiesener Exfiltration und drohender Veroeffentlichung im Darknet.'
+    specialCategoriesAffected: true
+    criminalDataAffected: false
+    rootCause: 'Kompromittierter Service-Account mit ueberhoehten Rechten, fehlende Netzwerksegmentierung zwischen User-LAN und HR-Fileserver, veraltete Windows-Server-Version ohne aktuelle Patches.'
+    lessonsLearned: 'Zero-Trust-Netzwerksegmentierung ueberfaellig. Privileged-Access-Management (PAM) fuer Service-Accounts muss priorisiert werden. Offline-Backups haben Wiederherstellung ermoeglicht.'
+    followUpActions:
+      - action: 'Netzwerksegmentierung (VLAN + Firewall)'
+        status: 'in_progress'
+        due_date: '2025-03-31'
+      - action: 'PAM-Loesung (CyberArk) einfuehren'
+        status: 'planned'
+        due_date: '2025-06-30'
+      - action: 'Patch-Management-Prozess ueberarbeitet'
+        status: 'completed'
+        due_date: '2024-10-15'
+      - action: 'Darknet-Monitoring-Service'
+        status: 'in_progress'
+        due_date: '2026-08-10'
+
+  - referenceNumber: 'BREACH-2024-004'
+    title: 'Unberechtigter Zugriff eines ausgeschiedenen Mitarbeiters auf CRM'
+    status: 'under_assessment'
+    severity: 'medium'
+    detectedAt: '2024-11-12 11:20:00'
+    affectedDataSubjects: 0
+    dataCategories:
+      - 'identification'
+      - 'contact'
+      - 'communication_history'
+    dataSubjectCategories:
+      - 'customers'
+    breachNature: 'Ein zum 31.10.2024 ausgeschiedener Mitarbeiter hatte ueber einen uebersehenen persoenlichen Zugang (abweichender E-Mail-Alias) am 08.11.2024 auf das CRM zugegriffen und Kundendaten eingesehen. Zugriffslogs zeigen Anmeldungen und Datenansichten, aber keine nachgewiesene Exports oder Weitergabe.'
+    likelyConsequences: 'Mittleres Risiko: Potenzieller Abfluss von Vertriebsinformationen an Wettbewerber, moegliche Nutzung fuer eigene Geschaeftsanbahnung. Noch keine konkreten Anhaltspunkte fuer Schaden bei Betroffenen.'
+    measuresTaken: 'Zugang sofort gesperrt. Forensische Sicherung der CRM-Logs. Rechtsanwalt eingeschaltet zur Pruefung von UWG-Verstoessen. DPO-Assessment laeuft.'
+    mitigationMeasures: 'Offboarding-Checkliste wird ueberarbeitet. Identity-Lifecycle-Management-Review gestartet. Alle Accounts auf verwaiste Zugaenge geprueft.'
+    requiresAuthorityNotification: true
+    requiresSubjectNotification: false
+    noSubjectNotificationReason: 'Aktuell kein hohes Risiko gemaess Art. 34 Abs. 1 DSGVO erkennbar, da keine Weitergabe nachgewiesen. Neubewertung nach Abschluss der forensischen Analyse.'
+    riskLevel: 'medium'
+    riskAssessment: 'Bewertung laeuft. Erste Einschaetzung: Zugriff erfolgte, Exfiltration nicht nachgewiesen. Risiko abhaengig vom Ergebnis der Forensik.'
+    specialCategoriesAffected: false
+    criminalDataAffected: false
+    rootCause: 'Luecke im Offboarding-Prozess: Nebenaccount (alias-basiert) wurde bei der HR-gesteuerten Deaktivierung nicht erfasst. Fehlende zentrale Identity-Governance.'
+    followUpActions:
+      - action: 'Forensische Analyse CRM-Logs'
+        status: 'in_progress'
+        due_date: '2024-12-15'
+      - action: 'Offboarding-Checkliste erweitern'
+        status: 'in_progress'
+        due_date: '2024-12-31'
+      - action: 'Joiner-Mover-Leaver-Prozess digitalisieren'
+        status: 'planned'
+        due_date: '2025-06-30'
+
+  - referenceNumber: 'BREACH-2024-005'
+    title: 'Datenpanne bei Auftragsverarbeiter (Druckdienstleister)'
+    status: 'authority_notified'
+    severity: 'medium'
+    detectedAt: '2024-09-18 13:00:00'
+    affectedDataSubjects: 2150
+    dataCategories:
+      - 'identification'
+      - 'contact'
+      - 'financial'
+    dataSubjectCategories:
+      - 'customers'
+    breachNature: 'Unser Druck- und Versanddienstleister fuer Rechnungen meldete uns einen Konfigurationsfehler in seinem Druckworkflow. Ueber einen Zeitraum von 3 Tagen wurden Rechnungen an falsche Empfaenger versendet - Adressfelder wurden durch Offset-Fehler verschoben. 2150 Kunden erhielten fremde Rechnungen mit Namen, Rechnungsbetraegen und IBAN-Teilinformationen.'
+    likelyConsequences: 'Mittleres Risiko: Offenlegung von Namen, Kaufbetraegen und teilweise IBAN-Fragmenten an unbekannte Empfaenger. Potenzielle Social-Engineering-Angriffe durch Kenntnis der Geschaeftsbeziehung.'
+    measuresTaken: 'Meldung des AV-Partners innerhalb 22h nach Kenntnis geprueft. Gemeinsamer Incident-Call durchgefuehrt. Aufsichtsbehoerde gemeldet. Betroffene Kunden ueber Fehler informiert. Rueckrufaktion ueber Brief und E-Mail gestartet.'
+    mitigationMeasures: 'AV-Partner hat 4-Augen-Review fuer Konfigurationsaenderungen eingefuehrt. Test-Druckauflagen vor Massenversand als neuer Prozessstandard. Vertragsanpassung mit strengeren SLAs bei Meldung.'
+    supervisoryAuthorityNotifiedAt: '2024-09-20 16:00:00'
+    supervisoryAuthorityName: 'Bayerisches Landesamt fuer Datenschutzaufsicht (BayLDA)'
+    supervisoryAuthorityReference: 'BayLDA-2024-09-2455'
+    notificationMethod: 'online_portal'
+    requiresAuthorityNotification: true
+    requiresSubjectNotification: true
+    dataSubjectsNotifiedAt: '2024-09-24 08:00:00'
+    subjectNotificationMethod: 'letter'
+    subjectsNotified: 2150
+    riskLevel: 'medium'
+    riskAssessment: 'Art. 34 DSGVO-Benachrichtigung aufgrund der Tragweite und Finanzdatenbezug vorsorglich durchgefuehrt, auch wenn IBAN nur teilweise sichtbar war.'
+    specialCategoriesAffected: false
+    criminalDataAffected: false
+    rootCause: 'Konfigurationsfehler im Druckworkflow beim AV. Fehlerhafte Koordinaten fuer das Adressfeld nach einem Template-Update. Keine Testdrucke vor Massenversand.'
+    lessonsLearned: 'AV-Monitoring muss verbessert werden. Jaehrlicher AV-Audit gemaess Art. 28 DSGVO beim Druckdienstleister nachholen. Incident-Meldefristen im AV-Vertrag verkuerzen (24h statt 48h).'
+    followUpActions:
+      - action: 'AV-Audit Druckdienstleister'
+        status: 'completed'
+        due_date: '2024-11-30'
+      - action: 'AV-Vertragsanpassung Meldefristen'
+        status: 'completed'
+        due_date: '2024-12-15'
+      - action: 'AV-Monitoring-Framework aufbauen'
+        status: 'in_progress'
+        due_date: '2025-03-31'
