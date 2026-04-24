@@ -1,0 +1,124 @@
+{% use "bootstrap_5_layout.html.twig" %}
+
+{#
+    Aurora v4 Cyber-Input Form Theme for Symfony
+
+    Renders every form row using the .fa-cyber-input visual pattern:
+    - Monospace uppercase label OUTSIDE the frame
+    - Bordered frame with 4-corner tick-marks
+    - Focus-within glow via CSS
+
+    CSS lives in assets/styles/fairy-aurora-components.css (lines ~347-460 + appended rules).
+
+    Blocks overridden here:
+      - form_row          Main wrapper + header + frame + tick marks + hint + errors
+      - form_label        Adds .fa-cyber-input__label class
+      - form_label_required  Renders the red asterisk as .fa-cyber-input__req
+      - form_widget_simple   Adds .fa-cyber-input__input (strips Bootstrap border)
+      - textarea_widget      Same as above for <textarea>
+      - choice_widget        Routes expanded (radio/checkbox) through Bootstrap, collapsed gets .fa-cyber-input__input
+      - form_errors          Renders errors as .fa-cyber-input__errors list below the frame
+      - button_row           Buttons rendered plain (not wrapped in cyber-input frame)
+
+    Blocks inherited unchanged from bootstrap_5_layout.html.twig:
+      - form_widget (dispatches to type-specific blocks)
+      - choice_widget_expanded (radio/checkbox groups — Bootstrap look)
+      - choice_widget_collapsed (select — receives .fa-cyber-input__input via choice_widget)
+      - file_widget
+      - date_widget, time_widget, datetime_widget
+      - money_widget, percent_widget, range_widget
+      - hidden_widget (no visible output)
+      - form_start, form_end
+      - form_rest
+#}
+
+{# ─── Main row wrapper ───────────────────────────────────────────────────── #}
+{% block form_row %}
+    {%- set widget_attr = {} -%}
+    {%- if help is not empty -%}
+        {%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}
+    {%- endif -%}
+
+    {%- set row_classes = ['fa-cyber-input'] -%}
+    {%- if errors|length > 0 -%}
+        {%- set row_classes = row_classes|merge(['has-error']) -%}
+    {%- endif -%}
+    {%- if disabled -%}
+        {%- set row_classes = row_classes|merge(['is-disabled']) -%}
+    {%- endif -%}
+
+    <div class="{{ row_classes|join(' ') }}">
+        {%- if label is not same as false -%}
+        <div class="fa-cyber-input__header">
+            {{- form_label(form) -}}
+        </div>
+        {%- endif -%}
+        <div class="fa-cyber-input__frame">
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--tl" aria-hidden="true"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--tr" aria-hidden="true"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--bl" aria-hidden="true"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--br" aria-hidden="true"></span>
+            {{- form_widget(form, widget_attr) -}}
+        </div>
+        {%- if help is not empty -%}
+            <small id="{{ id }}_help" class="fa-cyber-input__hint">
+                {{- help|trans(help_translation_parameters, translation_domain) -}}
+            </small>
+        {%- endif -%}
+        {{- form_errors(form) -}}
+    </div>
+{% endblock %}
+
+{# ─── Label ──────────────────────────────────────────────────────────────── #}
+{% block form_label %}
+    {%- if label is not same as false -%}
+        {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' fa-cyber-input__label')|trim}) -%}
+        {{- parent() -}}
+    {%- endif -%}
+{% endblock %}
+
+{# ─── Required asterisk ──────────────────────────────────────────────────── #}
+{% block form_label_required %}
+    <span class="fa-cyber-input__req" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
+{% endblock %}
+
+{# ─── Simple inputs (text, email, password, number, tel, url, …) ─────────── #}
+{% block form_widget_simple %}
+    {%- set type = type|default('text') -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__input')|trim}) -%}
+    {{- parent() -}}
+{% endblock %}
+
+{# ─── Textarea ───────────────────────────────────────────────────────────── #}
+{% block textarea_widget %}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__input')|trim}) -%}
+    {{- parent() -}}
+{% endblock %}
+
+{# ─── Choice (select / radio / checkbox groups) ──────────────────────────── #}
+{% block choice_widget %}
+    {%- if expanded -%}
+        {{- block('choice_widget_expanded') -}}
+    {%- else -%}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__input')|trim}) -%}
+        {{- block('choice_widget_collapsed') -}}
+    {%- endif -%}
+{% endblock %}
+
+{# ─── Error list ─────────────────────────────────────────────────────────── #}
+{% block form_errors %}
+    {%- if errors|length > 0 -%}
+        <ul class="fa-cyber-input__errors" role="alert">
+            {%- for error in errors -%}
+                <li>{{ error.message }}</li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{% endblock %}
+
+{# ─── Buttons: skip cyber-input frame, render plain ──────────────────────── #}
+{% block button_row %}
+    <div class="mb-3">
+        {{- form_widget(form) -}}
+    </div>
+{% endblock %}
