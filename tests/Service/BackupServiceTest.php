@@ -83,7 +83,7 @@ class BackupServiceTest extends TestCase
         $this->assertArrayHasKey('metadata', $backup);
         $this->assertArrayHasKey('data', $backup);
         $this->assertArrayHasKey('statistics', $backup);
-        $this->assertEquals('1.0', $backup['metadata']['version']);
+        $this->assertEquals(\App\Service\BackupService::BACKUP_FORMAT_VERSION, $backup['metadata']['version']);
         $this->assertArrayHasKey('created_at', $backup['metadata']);
     }
 
@@ -346,6 +346,108 @@ class BackupServiceTest extends TestCase
             ->method('info');
 
         $this->service->createBackup(false, false);
+    }
+
+    // ------------------------------------------------------------------ //
+    // A3 — Schema-Version + Format-Version Tests                          //
+    // ------------------------------------------------------------------ //
+
+    public function testCreateBackupMetadataContainsFormatVersion(): void
+    {
+        $repo = $this->createMock(EntityRepository::class);
+        $repo->method('findAll')->willReturn([]);
+
+        $connection = $this->createMock(\Doctrine\DBAL\Connection::class);
+        $connection->method('executeQuery')->willThrowException(new \Exception('no db'));
+
+        $this->entityManager->method('getRepository')->willReturn($repo);
+        $this->entityManager->method('getClassMetadata')
+            ->willReturnCallback(fn($c) => $this->createMockMetadata($c, ['id']));
+        $this->entityManager->method('getConnection')->willReturn($connection);
+
+        $backup = $this->service->createBackup(false, false, false);
+
+        $this->assertEquals(
+            \App\Service\BackupService::BACKUP_FORMAT_VERSION,
+            $backup['metadata']['version'],
+            'metadata.version must equal BACKUP_FORMAT_VERSION constant'
+        );
+        $this->assertArrayHasKey('app_version',     $backup['metadata'], 'metadata must contain app_version');
+        $this->assertArrayHasKey('schema_version',  $backup['metadata'], 'metadata must contain schema_version');
+        $this->assertArrayHasKey('php_version',     $backup['metadata'], 'metadata must contain php_version');
+        $this->assertArrayHasKey('symfony_version', $backup['metadata'], 'metadata must contain symfony_version');
+        $this->assertArrayHasKey('files_included',  $backup['metadata'], 'metadata must contain files_included');
+        $this->assertArrayHasKey('file_count',      $backup['metadata'], 'metadata must contain file_count');
+    }
+
+    public function testCreateBackupFilesIncludedFalseWhenNoFilesExist(): void
+    {
+        $repo = $this->createMock(EntityRepository::class);
+        $repo->method('findAll')->willReturn([]);
+
+        $connection = $this->createMock(\Doctrine\DBAL\Connection::class);
+        $connection->method('executeQuery')->willThrowException(new \Exception('no db'));
+
+        $this->entityManager->method('getRepository')->willReturn($repo);
+        $this->entityManager->method('getClassMetadata')
+            ->willReturnCallback(fn($c) => $this->createMockMetadata($c, ['id']));
+        $this->entityManager->method('getConnection')->willReturn($connection);
+
+        // With includeFiles=true but no actual files on disk → should fall back to JSON
+        $backup   = $this->service->createBackup(false, false, true);
+        $filepath = $this->service->saveBackupToFile($backup);
+
+        // Must NOT be a ZIP because there are no real file references
+        $this->assertStringNotContainsString('.zip', $filepath, 'Without actual files, backup must not be a ZIP');
+        $this->assertFileExists($filepath);
+    }
+
+    // ------------------------------------------------------------------ //
+    // A1 — ZIP detection / loading tests                                  //
+    // ------------------------------------------------------------------ //
+
+    public function testLoadBackupFromFileDetectsZipByMagicBytes(): void
+    {
+        if (!class_exists(\ZipArchive::class)) {
+            $this->markTestSkipped('ZipArchive extension not available');
+        }
+
+        $backupData = [
+            'metadata' => [
+                'version'        => '2.0',
+                'files_included' => true,
+                'file_count'     => 0,
+            ],
+            'data'       => ['User' => []],
+            'statistics' => [],
+        ];
+
+        $zipPath = $this->projectDir . '/test_backup.zip';
+        $zip     = new \ZipArchive();
+        $zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+        $zip->addFromString('backup.json', json_encode($backupData));
+        $zip->close();
+
+        $loaded = $this->service->loadBackupFromFile($zipPath);
+
+        $this->assertArrayHasKey('data', $loaded, 'ZIP backup must be loaded correctly');
+        $this->assertArrayHasKey('User', $loaded['data']);
+        $this->assertArrayHasKey('_extracted_file_count', $loaded['metadata'], 'Must have _extracted_file_count after ZIP load');
+    }
+
+    public function testListBackupsIncludesZipFiles(): void
+    {
+        $backupDir = $this->projectDir . '/var/backups';
+        mkdir($backupDir, 0755, true);
+
+        file_put_contents($backupDir . '/backup_2025-01-01_10-00-00.zip', 'test');
+        file_put_contents($backupDir . '/backup_2025-01-01_11-00-00.json.gz', 'test');
+
+        $backups = $this->service->listBackups();
+
+        $filenames = array_column($backups, 'filename');
+        $this->assertContains('backup_2025-01-01_10-00-00.zip', $filenames, 'ZIP backup must appear in listing');
+        $this->assertContains('backup_2025-01-01_11-00-00.json.gz', $filenames, 'GZ backup must appear in listing');
     }
 
     private function createMockUser(int $id, string $email): MockObject

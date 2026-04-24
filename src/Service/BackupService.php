@@ -10,12 +10,29 @@ use InvalidArgumentException;
 use DateTimeInterface;
 use Composer\InstalledVersions;
 use App\Entity\AuditLog;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use ZipArchive;
 
 class BackupService
 {
+    /** Current backup format version (2.0 adds ZIP+files support). */
+    public const string BACKUP_FORMAT_VERSION = '2.0';
+
+    /** Minimum format version that can still be restored (legacy JSON-only). */
+    public const string MIN_COMPATIBLE_VERSION = '1.0';
+
+    /**
+     * File-reference fields per entity: [entityName => fieldName].
+     * Values stored in the DB are relative paths under public/ (Document)
+     * or relative paths under public/ (Tenant logo).
+     */
+    private const array FILE_REFERENCE_FIELDS = [
+        'Document' => 'filePath',   // stored as '/uploads/documents/foo.pdf'
+        'Tenant'   => 'logoPath',   // stored as 'uploads/tenants/logo.png'
+    ];
     // Entities that contain productive user data
     // Order matters: entities with foreign keys must come after their dependencies
     private const array PRODUCTIVE_ENTITIES = [
@@ -133,27 +150,36 @@ class BackupService
      *
      * @param bool $includeAuditLog Include audit log in backup
      * @param bool $includeUserSessions Include user sessions in backup
+     * @param bool $includeFiles When true, collect file-path references for ZIP packaging
      * @return array Backup data with metadata
      * @throws Exception If an error occurs during backup creation
      * @throws RuntimeException If backup cannot be compressed
      *
      */
-    public function createBackup(bool $includeAuditLog = true, bool $includeUserSessions = false): array
-    {
+    public function createBackup(
+        bool $includeAuditLog = true,
+        bool $includeUserSessions = false,
+        bool $includeFiles = true
+    ): array {
         $this->logger->info('Starting backup creation', [
             'include_audit_log' => $includeAuditLog,
             'include_user_sessions' => $includeUserSessions,
+            'include_files' => $includeFiles,
         ]);
 
         $backup = [
             'metadata' => [
-                'version' => '1.0',
-                'created_at' => new DateTime()->format('c'),
-                'application_version' => $this->getApplicationVersion(),
-                'php_version' => PHP_VERSION,
-                'doctrine_version' => $this->getDoctrineVersion(),
+                'version'            => self::BACKUP_FORMAT_VERSION,
+                'app_version'        => $this->getApplicationVersion(),
+                'schema_version'     => $this->getSchemaVersion(),
+                'php_version'        => PHP_VERSION,
+                'symfony_version'    => \Symfony\Component\HttpKernel\Kernel::VERSION,
+                'doctrine_version'   => $this->getDoctrineVersion(),
+                'files_included'     => false, // updated below if files are packaged
+                'file_count'         => 0,
+                'created_at'         => (new DateTime())->format('c'),
             ],
-            'data' => [],
+            'data'       => [],
             'statistics' => [],
         ];
 
@@ -181,6 +207,12 @@ class BackupService
                 ]);
                 throw $e;
             }
+        }
+
+        // Collect file references for optional ZIP packaging
+        if ($includeFiles) {
+            $fileRefs = $this->collectFileReferences($backup['data']);
+            $backup['metadata']['_file_refs'] = $fileRefs; // internal; used by saveBackupToFile()
         }
 
         // Backup audit log if requested
@@ -221,11 +253,23 @@ class BackupService
     }
 
     /**
-     * Save backup to file
+     * Save backup to file.
      *
-     * @param array $backup Backup data
-     * @param string|null $filename Optional filename
-     * @return string Path to backup file
+     * When the backup array contains resolvable file references
+     * (i.e. createBackup() was called with $includeFiles=true and actual files exist),
+     * a ZIP archive is produced:
+     *
+     *   backup_YYYY-MM-DD_HH-ii-ss.zip
+     *   ├── backup.json
+     *   └── files/
+     *       ├── documents/uuid.pdf
+     *       └── tenant_logos/logo.png
+     *
+     * When no files exist (or $includeFiles was false), the legacy .json.gz is produced.
+     *
+     * @param array $backup Backup data (returned by createBackup())
+     * @param string|null $filename Optional base filename (without extension)
+     * @return string Absolute path to the produced file (.zip or .json.gz)
      */
     public function saveBackupToFile(array $backup, ?string $filename = null): string
     {
@@ -235,11 +279,91 @@ class BackupService
             throw new FileException('Could not create backup directory: ' . $backupDir);
         }
 
-        if ($filename === null) {
-            $filename = 'backup_' . date('Y-m-d_H-i-s') . '.json';
+        $baseName = $filename ?? ('backup_' . date('Y-m-d_H-i-s'));
+        // Strip any extension the caller may have included
+        $baseName = preg_replace('/\.(json|zip|gz).*$/', '', $baseName) ?? $baseName;
+
+        // Determine whether we should build a ZIP with embedded files
+        $fileRefs = $backup['metadata']['_file_refs'] ?? [];
+        $existingFileRefs = $this->filterExistingFiles($fileRefs);
+
+        if ($existingFileRefs !== []) {
+            return $this->saveAsZip($backup, $existingFileRefs, $backupDir, $baseName);
         }
 
-        $filepath = $backupDir . '/' . $filename;
+        // Fallback: legacy .json + optional .gz
+        return $this->saveAsJson($backup, $backupDir, $baseName);
+    }
+
+    /**
+     * Build a ZIP archive containing backup.json + all referenced files.
+     *
+     * @param array  $backup          Full backup array (metadata._file_refs will be stripped before embedding)
+     * @param array  $fileRefs        Map of zipPath → absoluteLocalPath for files that exist on disk
+     * @param string $backupDir       Absolute directory where the ZIP is written
+     * @param string $baseName        Filename without extension
+     * @return string Absolute path to the produced .zip file
+     */
+    private function saveAsZip(array $backup, array $fileRefs, string $backupDir, string $baseName): string
+    {
+        if (!class_exists(ZipArchive::class)) {
+            $this->logger->warning('ZipArchive not available, falling back to JSON-only backup');
+            return $this->saveAsJson($backup, $backupDir, $baseName);
+        }
+
+        $zipPath = $backupDir . '/' . $baseName . '.zip';
+
+        // Update metadata counts and remove internal _file_refs before embedding
+        $backup['metadata']['files_included'] = true;
+        $backup['metadata']['file_count']     = count($fileRefs);
+        unset($backup['metadata']['_file_refs']);
+
+        $json = json_encode($backup, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if ($json === false) {
+            throw new RuntimeException('Failed to encode backup data to JSON: ' . json_last_error_msg());
+        }
+
+        $zip = new ZipArchive();
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            throw new RuntimeException('Could not create ZIP archive: ' . $zipPath);
+        }
+
+        $zip->addFromString('backup.json', $json);
+
+        foreach ($fileRefs as $zipEntryPath => $localAbsPath) {
+            // Security: validate that the zip entry path stays within files/
+            $safeEntry = $this->sanitizeZipEntryPath($zipEntryPath);
+            if ($safeEntry === null) {
+                $this->logger->warning('Skipping file reference with unsafe ZIP path', [
+                    'path' => $zipEntryPath,
+                ]);
+                continue;
+            }
+            $zip->addFile($localAbsPath, 'files/' . $safeEntry);
+        }
+
+        $zip->close();
+
+        $this->logger->info('Backup saved as ZIP archive', [
+            'file'       => $zipPath,
+            'size'       => filesize($zipPath),
+            'file_count' => count($fileRefs),
+        ]);
+
+        return $zipPath;
+    }
+
+    /**
+     * Save backup as plain JSON (optionally gzip-compressed) — legacy format.
+     */
+    private function saveAsJson(array $backup, string $backupDir, string $baseName): string
+    {
+        // Strip internal key before writing
+        unset($backup['metadata']['_file_refs']);
+        $backup['metadata']['files_included'] = false;
+        $backup['metadata']['file_count']     = 0;
+
+        $filepath = $backupDir . '/' . $baseName . '.json';
 
         $json = json_encode($backup, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         if ($json === false) {
@@ -257,8 +381,8 @@ class BackupService
         $finalPath = file_exists($filepath . '.gz') ? $filepath . '.gz' : $filepath;
 
         $this->logger->info('Backup saved to file', [
-            'file' => $finalPath,
-            'size' => filesize($finalPath),
+            'file'       => $finalPath,
+            'size'       => filesize($finalPath),
             'compressed' => file_exists($filepath . '.gz'),
         ]);
 
@@ -279,10 +403,12 @@ class BackupService
         }
 
         // Include both created backups (backup_*) and uploaded files (uploaded_*)
-        // Support both compressed (.gz) and uncompressed (.json) files
+        // Support compressed (.gz), uncompressed (.json), and ZIP (.zip) files
         $files = array_merge(
+            glob($backupDir . '/backup_*.zip') ?: [],
             glob($backupDir . '/backup_*.json.gz') ?: [],
             glob($backupDir . '/backup_*.json') ?: [],
+            glob($backupDir . '/uploaded_*.zip') ?: [],
             glob($backupDir . '/uploaded_*.json.gz') ?: [],
             glob($backupDir . '/uploaded_*.json') ?: [],
             glob($backupDir . '/uploaded_*.gz') ?: []
@@ -305,7 +431,16 @@ class BackupService
     }
 
     /**
-     * Load backup from file
+     * Load backup from file.
+     *
+     * Supports three formats automatically detected by magic bytes / extension:
+     *  - ZIP archive (.zip): extracts backup.json and optionally restores files
+     *  - gzip-compressed JSON (.json.gz / .gz)
+     *  - Plain JSON (.json)
+     *
+     * When a ZIP is loaded, the method also extracts embedded files into
+     * public/uploads/ (path-traversal-safe) and populates
+     * $backup['metadata']['_extracted_file_count'] for callers.
      *
      * @param string $filepath Path to backup file
      * @return array Backup data
@@ -314,6 +449,11 @@ class BackupService
     {
         if (!file_exists($filepath)) {
             throw new InvalidArgumentException('Backup file not found: ' . $filepath);
+        }
+
+        // Auto-detect ZIP by magic bytes (PK\x03\x04) for robustness
+        if ($this->isZipFile($filepath)) {
+            return $this->loadFromZip($filepath);
         }
 
         // Decompress if needed
@@ -337,6 +477,181 @@ class BackupService
         }
 
         return $backup;
+    }
+
+    /**
+     * Load backup from a ZIP archive.
+     *
+     * Extracts backup.json and copies embedded files to public/uploads/
+     * with path-traversal protection.
+     */
+    private function loadFromZip(string $filepath): array
+    {
+        if (!class_exists(ZipArchive::class)) {
+            throw new RuntimeException('ZipArchive extension is not available — cannot read ZIP backup');
+        }
+
+        $zip = new ZipArchive();
+        if ($zip->open($filepath) !== true) {
+            throw new RuntimeException('Failed to open ZIP backup: ' . $filepath);
+        }
+
+        $jsonContent = $zip->getFromName('backup.json');
+        if ($jsonContent === false) {
+            $zip->close();
+            throw new RuntimeException('ZIP backup does not contain backup.json');
+        }
+
+        $backup = json_decode($jsonContent, true);
+        if ($backup === null) {
+            $zip->close();
+            throw new RuntimeException('Failed to decode backup JSON from ZIP: ' . json_last_error_msg());
+        }
+
+        // Extract embedded files into public/uploads/ (before entity restore so paths resolve)
+        $extractedCount = 0;
+        $publicDir = $this->projectDir . '/public';
+
+        for ($i = 0; $i < $zip->count(); $i++) {
+            $entryName = $zip->getNameIndex($i);
+
+            // Only process entries under files/
+            if (!str_starts_with((string) $entryName, 'files/')) {
+                continue;
+            }
+
+            $relativePath = substr((string) $entryName, strlen('files/'));
+            if ($relativePath === '' || $relativePath === false) {
+                continue;
+            }
+
+            // Security: path-traversal check — resolved path must stay inside public/uploads/
+            $targetPath = realpath($publicDir . '/uploads') . '/' . ltrim($relativePath, '/');
+            $uploadsBase = realpath($publicDir . '/uploads') . '/';
+
+            if (!str_starts_with($targetPath, $uploadsBase)) {
+                $this->logger->warning('Skipping file with unsafe path in ZIP', ['entry' => $entryName]);
+                continue;
+            }
+
+            $targetDir = dirname($targetPath);
+            if (!is_dir($targetDir) && !mkdir($targetDir, 0755, true) && !is_dir($targetDir)) {
+                $this->logger->warning('Could not create target directory for extracted file', [
+                    'dir' => $targetDir,
+                ]);
+                continue;
+            }
+
+            $content = $zip->getFromIndex($i);
+            if ($content !== false && file_put_contents($targetPath, $content) !== false) {
+                $extractedCount++;
+            } else {
+                $this->logger->warning('Failed to extract file from ZIP', ['entry' => $entryName]);
+            }
+        }
+
+        $zip->close();
+
+        $backup['metadata']['_extracted_file_count'] = $extractedCount;
+
+        $this->logger->info('Loaded backup from ZIP', [
+            'file'            => $filepath,
+            'extracted_files' => $extractedCount,
+        ]);
+
+        return $backup;
+    }
+
+    /**
+     * Detect ZIP format via magic bytes (PK header: 0x50 0x4B 0x03 0x04).
+     */
+    private function isZipFile(string $filepath): bool
+    {
+        $handle = fopen($filepath, 'rb');
+        if ($handle === false) {
+            return false;
+        }
+        $header = fread($handle, 4);
+        fclose($handle);
+        return $header !== false && $header === "PK\x03\x04";
+    }
+
+    /**
+     * Collect all file references from the serialized entity data.
+     *
+     * Returns a map of [zipEntryPath => absoluteLocalPath].
+     * Only entities listed in FILE_REFERENCE_FIELDS are scanned.
+     *
+     * @param array $data Serialized entity data (backup['data'])
+     * @return array<string, string> zipEntryPath => absoluteLocalPath
+     */
+    private function collectFileReferences(array $data): array
+    {
+        $refs = [];
+
+        foreach (self::FILE_REFERENCE_FIELDS as $entityName => $field) {
+            $entities = $data[$entityName] ?? [];
+            foreach ($entities as $entityData) {
+                $relativePath = $entityData[$field] ?? null;
+                if ($relativePath === null || $relativePath === '') {
+                    continue;
+                }
+
+                // Normalize: strip leading slash
+                $relativePath = ltrim((string) $relativePath, '/');
+
+                $absPath = $this->projectDir . '/public/' . $relativePath;
+
+                if (!file_exists($absPath) || !is_file($absPath)) {
+                    continue;
+                }
+
+                // Derive a safe ZIP entry path based on entity type
+                $zipEntry = match ($entityName) {
+                    'Document' => 'documents/' . basename($absPath),
+                    'Tenant'   => 'tenant_logos/' . basename($absPath),
+                    default    => $entityName . '/' . basename($absPath),
+                };
+
+                $refs[$zipEntry] = $absPath;
+            }
+        }
+
+        return $refs;
+    }
+
+    /**
+     * Filter file references to only those whose local file actually exists.
+     *
+     * @param array $fileRefs Raw file refs (may include non-existent paths)
+     * @return array Filtered refs
+     */
+    private function filterExistingFiles(array $fileRefs): array
+    {
+        return array_filter($fileRefs, fn(string $absPath): bool => file_exists($absPath) && is_file($absPath));
+    }
+
+    /**
+     * Sanitize a ZIP entry path to prevent path traversal.
+     *
+     * Returns null if the path is unsafe (contains .., absolute segments, etc.).
+     */
+    private function sanitizeZipEntryPath(string $path): ?string
+    {
+        // Normalize directory separators
+        $path = str_replace('\\', '/', $path);
+
+        // Reject absolute paths and traversal sequences
+        if (str_starts_with($path, '/') || str_contains($path, '..') || str_contains($path, ':')) {
+            return null;
+        }
+
+        // Allow only safe characters (alphanumeric, dash, underscore, dot, slash)
+        if (!preg_match('#^[a-zA-Z0-9/_.\-]+$#', $path)) {
+            return null;
+        }
+
+        return $path;
     }
 
     /**
@@ -426,6 +741,30 @@ class BackupService
         if (file_exists($composerFile)) {
             $composer = json_decode(file_get_contents($composerFile), true);
             return $composer['version'] ?? 'unknown';
+        }
+        return 'unknown';
+    }
+
+    /**
+     * Get the latest applied Doctrine migration version.
+     *
+     * Reads from the doctrine_migration_versions table via DBAL to avoid
+     * Doctrine ORM entity manager overhead.
+     */
+    private function getSchemaVersion(): string
+    {
+        try {
+            $connection = $this->entityManager->getConnection();
+            $result = $connection->executeQuery(
+                'SELECT version FROM doctrine_migration_versions ORDER BY executed_at DESC LIMIT 1'
+            );
+            $row = $result->fetchAssociative();
+            if ($row !== false && isset($row['version'])) {
+                // Strip the namespace prefix for readability: keep only the timestamp part
+                return preg_replace('/^.*\\\\/', '', (string) $row['version']) ?? (string) $row['version'];
+            }
+        } catch (Exception) {
+            // Table may not exist in test environments or on fresh installs
         }
         return 'unknown';
     }
