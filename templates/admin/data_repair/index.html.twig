@@ -196,7 +196,9 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            {% if orphanedAssets|length == 0 and orphanedRisks|length == 0 and orphanedIncidents|length == 0 %}
+            {% set totalOrphans = 0 %}
+            {% for entities in orphanedEntities %}{% set totalOrphans = totalOrphans + entities|length %}{% endfor %}
+            {% if totalOrphans == 0 %}
                 <div class="alert alert-success mb-0">
                     <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.data_repair.no_orphans'|trans({}, 'admin') }}
                 </div>
@@ -232,6 +234,27 @@
                         {% endembed %}
                     </div>
                 </div>
+
+                {# Alle weiteren Orphan-Typen (Supplier, Location, Document, BCPlan, …)
+                   ohne hardcoded-Template-Section — scannt generisch alle vom Service
+                   gefundenen Entity-Typen. #}
+                {% set otherOrphans = {} %}
+                {% for key, entities in orphanedEntities %}
+                    {% if key not in ['assets', 'risks', 'incidents'] and entities|length > 0 %}
+                        {% set otherOrphans = otherOrphans|merge({(key): entities|length}) %}
+                    {% endif %}
+                {% endfor %}
+                {% if otherOrphans|length > 0 %}
+                    <div class="alert alert-warning mb-3">
+                        <p class="mb-2"><strong><i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ 'admin.data_repair.additional_orphans'|trans({}, 'admin') }}:</strong></p>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for key, count in otherOrphans %}
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: (key|replace({'_': ' '}) ~ ': ' ~ count) } %}
+                            {% endfor %}
+                        </div>
+                        <p class="small text-muted mb-0 mt-2">{{ 'admin.data_repair.additional_orphans_hint'|trans({}, 'admin') }}</p>
+                    </div>
+                {% endif %}
 
                 {# Bulk Assignment Form #}
                 <form method="post" action="{{ path('admin_data_repair_assign_orphans') }}" class="mb-4">

@@ -248,6 +248,8 @@ admin:
     data_repair:
         title: 'Data Repair & Integrity'
         description: 'Detect and fix data integrity issues, tenant assignment problems, and broken references'
+        additional_orphans: 'Additional entity types with tenant-less rows'
+        additional_orphans_hint: 'Automatically detected for any Doctrine entity with a tenant association. "Assign all orphans" above reassigns these too.'
         safety:
             title: 'Caution — live data changes'
             lead: 'Every button on this page writes directly to the production database. No dry-run mode is available. Please verify first:'

@@ -248,6 +248,8 @@ admin:
     data_repair:
         title: 'Daten-Reparatur & Integrität'
         description: 'Datenintegritätsprobleme, Mandantenzuweisungen und defekte Referenzen erkennen und beheben'
+        additional_orphans: 'Weitere Entity-Typen mit tenant-losen Einträgen'
+        additional_orphans_hint: 'Werden automatisch erkannt, sobald sie einer Doctrine-Entity mit tenant-Assoziation angehören. „Alle Orphans zuweisen" oben reassigniert auch diese.'
         safety:
             title: 'Achtung — Live-Daten-Änderungen'
             lead: 'Alle Buttons auf dieser Seite schreiben direkt in die Produktions-Datenbank. Es gibt keinen Dry-Run-Modus. Bitte vorher prüfen:'
