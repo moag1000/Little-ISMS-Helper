@@ -1,5 +1,6 @@
 data_subject_requests:
   - requestType: 'access'
+    processingActivity: 'ref:processing_activity:CRM / Kunden- und Interessentenverwaltung'
     status: 'completed'
     dataSubjectName: 'Petra Schmidt'
     dataSubjectEmail: 'petra.schmidt@example.com'
@@ -15,6 +16,7 @@ data_subject_requests:
     notes: 'Kundin hat positiv auf die Auskunft reagiert. Keine Folgeanfrage zur Richtigstellung oder Loeschung. Zeitaufwand: 4.5 Stunden Bearbeitung verteilt auf 3 Fachbereiche.'
 
   - requestType: 'erasure'
+    processingActivity: 'ref:processing_activity:Newsletter-Versand'
     status: 'completed'
     dataSubjectName: 'Michael Weber'
     dataSubjectEmail: 'michael.weber@example.de'
@@ -30,6 +32,7 @@ data_subject_requests:
     notes: 'Standardfall Art. 17. Keine Komplikationen. Loeschprotokoll abgelegt.'
 
   - requestType: 'portability'
+    processingActivity: 'ref:processing_activity:CRM / Kunden- und Interessentenverwaltung'
     status: 'in_progress'
     dataSubjectName: 'Sandra Fischer'
     dataSubjectEmail: 'sandra.fischer@example.com'
@@ -43,6 +46,7 @@ data_subject_requests:
     notes: 'Bearbeitung laeuft. Export-Skript wird erstellt: JSON fuer Profildaten, CSV fuer Bestellhistorie. Herausforderung: Keine Standard-Export-Funktion im Legacy-Shopsystem. Voraussichtliche Fertigstellung: 15.12.2024.'
 
   - requestType: 'objection'
+    processingActivity: 'ref:processing_activity:CRM / Kunden- und Interessentenverwaltung'
     status: 'completed'
     dataSubjectName: 'Dr. Robert Hoffmann'
     dataSubjectEmail: 'r.hoffmann@example.net'
@@ -58,6 +62,7 @@ data_subject_requests:
     notes: 'Schnell und vollstaendig bearbeitet. Widerspruchsrecht gegen Direktwerbung ist absolut (Art. 21 Abs. 3 DSGVO). Keine Interessenabwaegung noetig.'
 
   - requestType: 'rectification'
+    processingActivity: 'ref:processing_activity:CRM / Kunden- und Interessentenverwaltung'
     status: 'completed'
     dataSubjectName: 'Julia Bauer'
     dataSubjectEmail: 'julia.bauer@example.com'
@@ -73,6 +78,7 @@ data_subject_requests:
     notes: 'Einfacher Standardfall. Bearbeitungszeit 3 Tage. Art. 19 DSGVO (Mitteilung an Empfaenger) beachtet.'
 
   - requestType: 'access'
+    processingActivity: 'ref:processing_activity:Mitarbeiter-Stammdaten und Personalakte'
     status: 'extended'
     dataSubjectName: 'Andreas Lehmann'
     dataSubjectEmail: 'andreas.lehmann@example.org'

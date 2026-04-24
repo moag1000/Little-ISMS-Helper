@@ -1,5 +1,6 @@
 data_breaches:
   - referenceNumber: 'BREACH-2024-001'
+    processingActivity: 'ref:processing_activity:CRM / Kunden- und Interessentenverwaltung'
     title: 'Fehlgeleitete E-Mail mit Kundenliste an externen Empfaenger'
     status: 'closed'
     severity: 'low'
@@ -33,6 +34,7 @@ data_breaches:
         due_date: '2024-03-15'
 
   - referenceNumber: 'BREACH-2024-002'
+    processingActivity: 'ref:processing_activity:Mitarbeiter-Stammdaten und Personalakte'
     title: 'Diebstahl eines Firmenlaptops waehrend Dienstreise'
     status: 'authority_notified'
     severity: 'high'
@@ -77,6 +79,7 @@ data_breaches:
         due_date: '2024-07-31'
 
   - referenceNumber: 'BREACH-2024-003'
+    processingActivity: 'ref:processing_activity:Mitarbeiter-Stammdaten und Personalakte'
     title: 'Ransomware-Angriff auf Fileserver mit HR-Daten'
     status: 'subjects_notified'
     severity: 'critical'
@@ -127,6 +130,7 @@ data_breaches:
         due_date: '2026-08-10'
 
   - referenceNumber: 'BREACH-2024-004'
+    processingActivity: 'ref:processing_activity:CRM / Kunden- und Interessentenverwaltung'
     title: 'Unberechtigter Zugriff eines ausgeschiedenen Mitarbeiters auf CRM'
     status: 'under_assessment'
     severity: 'medium'
@@ -162,6 +166,7 @@ data_breaches:
         due_date: '2025-06-30'
 
   - referenceNumber: 'BREACH-2024-005'
+    processingActivity: 'ref:processing_activity:CRM / Kunden- und Interessentenverwaltung'
     title: 'Datenpanne bei Auftragsverarbeiter (Druckdienstleister)'
     status: 'authority_notified'
     severity: 'medium'
