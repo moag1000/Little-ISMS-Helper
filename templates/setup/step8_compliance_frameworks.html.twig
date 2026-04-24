@@ -129,5 +129,8 @@
         </div>
     </div>
 
-    {{ form_end(form) }}
+    {# Explizit CSRF-Token rendern, danach form_end ohne render_rest — verhindert,
+       dass Symfony die frameworks-Checkboxes ein zweites Mal ausgibt. #}
+    {{ form_widget(form._token) }}
+    {{ form_end(form, {'render_rest': false}) }}
 {% endblock %}
