@@ -10,3 +10,6 @@ data:
             import_execute: "Alva führt den Import durch — Fenster bitte nicht schließen."
     backup:
         restore_dry_run: "Test-Lauf (keine Änderungen)"
+        best_effort_restore: "Best-Effort-Modus (Fehler überspringen, teilweisen Restore akzeptieren)"
+        best_effort_restore_help: "Wenn aktiviert, werden einzelne Zeilen, die fehlschlagen (z. B. FK-Verletzungen, ungültige Werte), übersprungen und protokolliert. Der Restore wird mit der nächsten Zeile fortgesetzt. Mit Vorsicht verwenden — der wiederhergestellte Datensatz kann unvollständig sein."
+        best_effort_failures: "Übersprungene Zeilen"

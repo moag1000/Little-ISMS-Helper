@@ -252,6 +252,16 @@
 
                         <div class="mb-3">
                             <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="bestEffort" name="best_effort" value="1">
+                                <label class="form-check-label" for="bestEffort">
+                                    <strong>{{ 'data.backup.best_effort_restore'|trans({}, 'data_management') }}</strong>
+                                    <small class="text-muted d-block">{{ 'data.backup.best_effort_restore_help'|trans({}, 'data_management') }}</small>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="dryRun" name="dry_run" checked>
                                 <label class="form-check-label" for="dryRun">
                                     <strong>{{ 'data_management.backup.restore.dry_run'|trans({}, 'admin') }}</strong>
@@ -817,6 +827,18 @@
                                 html += `<li>${warning}</li>`;
                             });
                             html += '</ul>';
+                        }
+
+                        if (result.failures && result.failures.length > 0) {
+                            const failureCount = result.failures.length;
+                            const collapseId = 'restoreFailuresCollapse';
+                            html += `<br><details class="mt-2"><summary class="text-warning fw-bold">&#9888; {{ 'data.backup.best_effort_failures'|trans({}, 'data_management') }}: ${failureCount}</summary>`;
+                            html += '<ul class="mt-2 mb-0" style="font-size:0.875em">';
+                            result.failures.forEach(f => {
+                                const rowInfo = f.row_id !== null ? ` (ID&nbsp;${f.row_id})` : (f.row_index !== null ? ` (row&nbsp;${f.row_index})` : '');
+                                html += `<li><strong>${f.entity}</strong>${rowInfo}: ${f.error_message}</li>`;
+                            });
+                            html += '</ul></details>';
                         }
 
                         if (!isDryRun) {

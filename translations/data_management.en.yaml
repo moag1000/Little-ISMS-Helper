@@ -10,3 +10,6 @@ data:
             import_execute: "Alva is executing the import — please do not close this window."
     backup:
         restore_dry_run: "Dry-run (no changes applied)"
+        best_effort_restore: "Best-effort mode (skip errors, accept partial restore)"
+        best_effort_restore_help: "When enabled, individual rows that fail (e.g. FK violations, invalid values) are skipped and recorded. The restore continues with the next row. Use with caution — the restored dataset may be incomplete."
+        best_effort_failures: "Skipped rows"
