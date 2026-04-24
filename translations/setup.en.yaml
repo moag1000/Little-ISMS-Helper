@@ -120,6 +120,7 @@ setup:
         extensions:
             title: 'PHP Extensions'
             missing: 'Missing Extensions:'
+            missing_count: 'missing'
         database:
             title: 'Database'
         permissions:

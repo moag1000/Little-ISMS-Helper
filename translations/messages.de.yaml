@@ -1921,6 +1921,8 @@ wizard:
     step_counter: 'Schritt %current% / %total%'
     companion: 'Alva — Begleiterin'
     companion_short: 'Begleiterin'
+    skip_typewriter: '» Überspringen'
+    navigation: 'Wizard-Navigation'
     actions: 'Aktionen'
     active_modules: 'Aktive Module'
     assessed_at: 'Bewertet am'

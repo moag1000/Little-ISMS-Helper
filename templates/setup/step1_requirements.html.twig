@@ -45,7 +45,7 @@
     {{ row.render({
         status: statusMap[results.extensions.status]|default('idle'),
         label: 'setup.step1.extensions.title'|trans({}, 'setup'),
-        value: results.extensions.missing|length == 0 ? 'OK' : (results.extensions.missing|length ~ ' ' ~ 'fehlen'|trans({}, 'setup')|default('fehlen')),
+        value: results.extensions.missing|length == 0 ? 'OK' : (results.extensions.missing|length ~ ' ' ~ 'setup.step1.extensions.missing_count'|trans({}, 'setup')),
         hint: results.extensions.missing|length > 0 ? results.extensions.missing|join(', ') : results.extensions.message
     })|raw }}
 
