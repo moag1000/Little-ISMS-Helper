@@ -2585,36 +2585,12 @@ textarea::placeholder,
     border-color: var(--success);
 }
 
-.form-control {
-    width: 100%;
-    padding: var(--spacing-sm);
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-    font-size: 1rem;
-    transition: all var(--t-base) var(--ease-out);
-    background: var(--surface);
-    color: var(--fg);
-}
+/* Aurora v4: .form-control base + dark-theme + :focus rules moved to
+   fairy-aurora-components.css (form-control bridge). app.css legacy rules
+   had redundant tokens + a gradient-on-focus background that clashed with
+   the fa-cyber-input frame-owned focus-glow.
 
-[data-theme="dark"] .form-control,
-[data-theme="dark"] .form-select {
-    background: var(--surface);
-    color: var(--fg);
-    border-color: var(--border);
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px var(--primary-tint), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
-    background: linear-gradient(135deg, var(--primary-tint), var(--accent-tint));
-}
-
-[data-theme="dark"] .form-control:focus {
-    border-color: var(--fg);
-    background: var(--surface);
-}
-
+   Retained only: textarea min-height (ergonomic tweak, not theme-related) */
 textarea.form-control {
     resize: vertical;
     min-height: 100px;
