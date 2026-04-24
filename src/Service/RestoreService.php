@@ -4,6 +4,7 @@ namespace App\Service;
 
 use InvalidArgumentException;
 use Exception;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Id\AssignedGenerator;
@@ -238,6 +239,7 @@ class RestoreService
             $this->entityManager->beginTransaction();
             $this->logger->info('Started transaction for entity restoration');
 
+            // First pass: restore all scalar fields and single-valued (ManyToOne/OneToOne) associations
             foreach ($orderedEntities as $orderedEntity) {
                 if (in_array($orderedEntity, $options['skip_entities'])) {
                     $this->logger->info('Skipping entity as per options', ['entity' => $orderedEntity]);
@@ -252,6 +254,26 @@ class RestoreService
                 }
 
                 $this->restoreEntity($entityClass, $orderedEntity, $entities, $options);
+            }
+
+            // Second pass: restore ManyToMany associations via direct DBAL pivot-table inserts.
+            // Must run AFTER all entity rows are flushed (done inside restoreEntity) so that all
+            // referenced IDs exist in the database when we write the pivot rows.
+            // Skipped in dry_run mode because the transaction is rolled back anyway.
+            if (!$options['dry_run'] && $this->entityManager->isOpen()) {
+                $this->logger->info('Starting ManyToMany second-pass restore');
+                foreach ($orderedEntities as $orderedEntity) {
+                    if (in_array($orderedEntity, $options['skip_entities'])) {
+                        continue;
+                    }
+                    $entities     = $backup['data'][$orderedEntity] ?? [];
+                    $entityClass  = 'App\\Entity\\' . $orderedEntity;
+                    if (!class_exists($entityClass) || $entities === []) {
+                        continue;
+                    }
+                    $this->restoreManyToManyAssociations($entityClass, $orderedEntity, $entities);
+                }
+                $this->logger->info('ManyToMany second-pass restore completed');
             }
 
             if ($options['dry_run']) {
@@ -427,6 +449,13 @@ class RestoreService
     {
         $this->logger->info('Clearing existing data before restore');
 
+        $connection = $this->entityManager->getConnection();
+
+        // Step 1: Collect and DELETE all ManyToMany pivot tables first (before DQL entity deletes).
+        // DQL DELETE FROM Entity does not touch pivot tables — without this step orphan FK rows
+        // remain in the pivot tables after a clear_before_restore restore, corrupting the dataset.
+        $this->clearPivotTables($entityNames, $skipEntities, $connection);
+
         foreach ($entityNames as $entityName) {
             if (in_array($entityName, $skipEntities)) {
                 continue;
@@ -484,6 +513,212 @@ class RestoreService
                     'entity' => $entityName,
                     'error' => $e->getMessage(),
                 ]);
+            }
+        }
+    }
+
+    /**
+     * Delete all ManyToMany pivot table rows for the entities that are about to be cleared.
+     *
+     * Called as first step of clearExistingData() so that the subsequent DQL DELETE FROM Entity
+     * does not leave orphan FK entries in pivot tables.
+     *
+     * Only owning-side associations are processed — each physical pivot table is owned by exactly
+     * one side of the relationship, so we emit one DELETE per pivot table.
+     *
+     * @param array                         $entityNames  List of entity short names (e.g. "Asset")
+     * @param array                         $skipEntities Entity names to skip
+     * @param \Doctrine\DBAL\Connection     $connection   DBAL connection (FK_CHECKS already disabled)
+     */
+    private function clearPivotTables(array $entityNames, array $skipEntities, \Doctrine\DBAL\Connection $connection): void
+    {
+        $clearedPivots = [];
+
+        foreach ($entityNames as $entityName) {
+            if (in_array($entityName, $skipEntities)) {
+                continue;
+            }
+
+            $entityClass = 'App\\Entity\\' . $entityName;
+            if (!class_exists($entityClass)) {
+                continue;
+            }
+
+            try {
+                $classMetadata = $this->entityManager->getClassMetadata($entityClass);
+            } catch (Exception) {
+                continue;
+            }
+
+            foreach ($classMetadata->getAssociationMappings() as $mapping) {
+                if ($mapping['type'] !== ClassMetadata::MANY_TO_MANY) {
+                    continue;
+                }
+                if (!$mapping['isOwningSide']) {
+                    continue; // inverse side shares the same physical pivot — skip to avoid double-DELETE
+                }
+
+                $pivotTable = $mapping['joinTable']['name'] ?? null;
+                if ($pivotTable === null || in_array($pivotTable, $clearedPivots)) {
+                    continue; // already processed this pivot table
+                }
+
+                try {
+                    $connection->executeStatement(sprintf('DELETE FROM `%s`', $pivotTable));
+                    $clearedPivots[] = $pivotTable;
+                    $this->logger->info('Cleared ManyToMany pivot table', ['pivot' => $pivotTable, 'owner' => $entityName]);
+                } catch (Exception $e) {
+                    $this->warnings[] = sprintf('Failed to clear pivot table %s: %s', $pivotTable, $e->getMessage());
+                    $this->logger->warning('Failed to clear pivot table', [
+                        'pivot' => $pivotTable,
+                        'owner' => $entityName,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+        }
+
+        $this->logger->info('Pivot table cleanup completed', ['cleared_pivot_count' => count($clearedPivots)]);
+    }
+
+    /**
+     * Restore ManyToMany associations for a batch of entity data via direct DBAL inserts into
+     * the pivot tables.
+     *
+     * This is called in a second pass — AFTER all entity rows have been flushed — so that all
+     * referenced entity IDs already exist in the database when we write the pivot rows.
+     *
+     * Design decisions:
+     * - Only owning-side associations are processed (inverse side shares the same physical pivot).
+     * - In clear_before_restore mode original IDs are preserved, so backup IDs == DB IDs.
+     * - In non-clear mode the entities were inserted with their original IDs as well (UPDATE path),
+     *   so backup IDs still resolve correctly.
+     * - INSERT IGNORE (ON DUPLICATE KEY) provides idempotency at no cost.
+     * - Batch-inserts (VALUES-tuples) reduce round-trips for large collections.
+     *
+     * @param string $entityClass  Fully qualified entity class name
+     * @param string $entityName   Short name (e.g. "Asset")
+     * @param array  $entities     Array of serialized entity data from the backup
+     */
+    private function restoreManyToManyAssociations(string $entityClass, string $entityName, array $entities): void
+    {
+        try {
+            $classMetadata = $this->entityManager->getClassMetadata($entityClass);
+        } catch (Exception $e) {
+            $this->logger->warning('Could not load metadata for ManyToMany restore', [
+                'entity' => $entityName,
+                'error' => $e->getMessage(),
+            ]);
+            return;
+        }
+
+        $connection = $this->entityManager->getConnection();
+        $m2mStats = [];
+
+        foreach ($classMetadata->getAssociationMappings() as $field => $mapping) {
+            if ($mapping['type'] !== ClassMetadata::MANY_TO_MANY) {
+                continue;
+            }
+            if (!$mapping['isOwningSide']) {
+                continue; // inverse side does not own the pivot — skip
+            }
+
+            $pivotTable    = $mapping['joinTable']['name'] ?? null;
+            $joinCols      = $mapping['joinTable']['joinColumns'] ?? [];   // owner FK columns
+            $invJoinCols   = $mapping['joinTable']['inverseJoinColumns'] ?? []; // target FK columns
+
+            if ($pivotTable === null || $joinCols === [] || $invJoinCols === []) {
+                continue;
+            }
+
+            $ownerCol  = $joinCols[0]['name'];
+            $targetCol = $invJoinCols[0]['name'];
+            $idsKey    = $field . '_ids';
+
+            // Collect all VALUE tuples for batch insert
+            $tuples = [];
+
+            foreach ($entities as $data) {
+                $ownerId = $data['id'] ?? null;
+                if ($ownerId === null) {
+                    continue;
+                }
+                if (!isset($data[$idsKey]) || !is_array($data[$idsKey])) {
+                    continue;
+                }
+
+                foreach ($data[$idsKey] as $targetIdData) {
+                    // Backup stores IDs as ['id' => X] arrays
+                    $targetId = is_array($targetIdData) ? ($targetIdData['id'] ?? null) : $targetIdData;
+                    if ($targetId === null) {
+                        continue;
+                    }
+                    $tuples[] = [$ownerId, $targetId];
+                }
+            }
+
+            if ($tuples === []) {
+                continue;
+            }
+
+            // INSERT IGNORE in batches of 500 to avoid oversized SQL statements
+            $batchSize   = 500;
+            $inserted    = 0;
+            $totalTuples = count($tuples);
+
+            for ($offset = 0; $offset < $totalTuples; $offset += $batchSize) {
+                $batch      = array_slice($tuples, $offset, $batchSize);
+                $valueParts = [];
+                $params     = [];
+
+                foreach ($batch as [$ownerId, $targetId]) {
+                    $valueParts[] = '(?, ?)';
+                    $params[]     = $ownerId;
+                    $params[]     = $targetId;
+                }
+
+                $sql = sprintf(
+                    'INSERT IGNORE INTO `%s` (`%s`, `%s`) VALUES %s',
+                    $pivotTable,
+                    $ownerCol,
+                    $targetCol,
+                    implode(', ', $valueParts)
+                );
+
+                try {
+                    $inserted += $connection->executeStatement($sql, $params);
+                } catch (Exception $e) {
+                    $this->warnings[] = sprintf(
+                        'ManyToMany restore failed for %s.%s (pivot=%s): %s',
+                        $entityName,
+                        $field,
+                        $pivotTable,
+                        $e->getMessage()
+                    );
+                    $this->logger->warning('ManyToMany pivot insert failed', [
+                        'entity'   => $entityName,
+                        'field'    => $field,
+                        'pivot'    => $pivotTable,
+                        'error'    => $e->getMessage(),
+                    ]);
+                }
+            }
+
+            $m2mStats[$field] = ['pivot' => $pivotTable, 'tuples' => $totalTuples, 'inserted' => $inserted];
+
+            $this->logger->info('Restored ManyToMany association', [
+                'entity'  => $entityName,
+                'field'   => $field,
+                'pivot'   => $pivotTable,
+                'tuples'  => $totalTuples,
+                'inserted' => $inserted,
+            ]);
+        }
+
+        if ($m2mStats !== []) {
+            // Merge stats into existing entity statistics
+            if (isset($this->statistics[$entityName]) && is_array($this->statistics[$entityName])) {
+                $this->statistics[$entityName]['m2m'] = $m2mStats;
             }
         }
     }
@@ -917,7 +1152,8 @@ class RestoreService
                             }
                         }
                     }
-                    // Skip collections (ManyToMany, OneToMany) for now - they're more complex
+                    // Collections (ManyToMany) are handled in the second pass via restoreManyToManyAssociations().
+                    // OneToMany is always managed by the owning Many side (ManyToOne), so no action needed here.
                 }
 
                 // Persist entity

@@ -10,6 +10,7 @@ use App\Service\RestoreService;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\FieldMapping;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Common\EventManager;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -408,16 +409,187 @@ class RestoreServiceTest extends TestCase
         $this->assertEmpty($stats); // No restore performed yet
     }
 
+    /**
+     * Audit-Befund: ManyToMany-Collections wurden stillschweigend übergangen.
+     * Prüft, dass restoreManyToManyAssociations() INSERT IGNORE-Statements
+     * für owning-side ManyToMany-Assoziationen in die Pivot-Tabelle schreibt.
+     */
+    public function testManyToManyAssociationsAreRestored(): void
+    {
+        // Build a minimal backup with one Asset that has two dependsOn IDs
+        $backup = [
+            'metadata' => ['version' => '1.0'],
+            'data' => [
+                'Asset' => [
+                    [
+                        'id'          => 1,
+                        'name'        => 'Server A',
+                        'dependsOn_ids' => [['id' => 2], ['id' => 3]],
+                    ],
+                ],
+            ],
+        ];
+
+        $pivotInserted = null;
+
+        $connection = $this->createMock(Connection::class);
+        $connection->method('executeStatement')
+            ->willReturnCallback(function (string $sql, array $params = []) use (&$pivotInserted) {
+                // Capture the first INSERT IGNORE call targeting a pivot table
+                if (str_contains($sql, 'INSERT IGNORE') && str_contains($sql, 'asset_dependencies')) {
+                    $pivotInserted = ['sql' => $sql, 'params' => $params];
+                }
+                return 1;
+            });
+
+        $eventManager = $this->createMock(EventManager::class);
+        $eventManager->method('getListeners')->willReturn([]);
+
+        // ClassMetadata for Asset must report the dependsOn ManyToMany owning-side mapping
+        $fieldMapping = new FieldMapping(type: 'string', fieldName: 'name', columnName: 'name');
+        $fieldMapping->nullable = true;
+
+        $assetMetadata = $this->createMock(ClassMetadata::class);
+        $assetMetadata->method('getFieldNames')->willReturn(['id', 'name']);
+        $assetMetadata->method('getAssociationNames')->willReturn(['dependsOn', 'dependentAssets']);
+        $assetMetadata->method('isSingleValuedAssociation')->willReturn(false);
+        $assetMetadata->method('getFieldMapping')->willReturn($fieldMapping);
+        $assetMetadata->method('getTableName')->willReturn('asset');
+        $assetMetadata->method('getAssociationMappings')->willReturn([
+            'dependsOn' => [
+                'type'         => ClassMetadata::MANY_TO_MANY,
+                'isOwningSide' => true,
+                'fieldName'    => 'dependsOn',
+                'targetEntity' => 'App\\Entity\\Asset',
+                'joinTable'    => [
+                    'name'               => 'asset_dependencies',
+                    'joinColumns'        => [['name' => 'dependent_asset_id']],
+                    'inverseJoinColumns' => [['name' => 'depends_on_asset_id']],
+                ],
+            ],
+            'dependentAssets' => [
+                'type'         => ClassMetadata::MANY_TO_MANY,
+                'isOwningSide' => false,
+                'fieldName'    => 'dependentAssets',
+                'targetEntity' => 'App\\Entity\\Asset',
+                'joinTable'    => [],
+            ],
+        ]);
+        $assetMetadata->generatorType = ClassMetadata::GENERATOR_TYPE_AUTO;
+        $assetMetadata->idGenerator   = new \Doctrine\ORM\Id\IdentityGenerator();
+
+        $assetRepository = $this->createMock(EntityRepository::class);
+        $assetRepository->method('find')->willReturn(null);
+        $assetRepository->method('findOneBy')->willReturn(null);
+
+        $this->entityManager->method('getConnection')->willReturn($connection);
+        $this->entityManager->method('getEventManager')->willReturn($eventManager);
+        $this->entityManager->method('isOpen')->willReturn(true);
+        $this->entityManager->method('getClassMetadata')->willReturn($assetMetadata);
+        $this->entityManager->method('getRepository')->willReturn($assetRepository);
+        $this->entityManager->method('getReference')->willReturn(null);
+
+        $result = $this->service->restoreFromBackup($backup, ['dry_run' => false]);
+
+        $this->assertTrue($result['success']);
+
+        // The pivot INSERT IGNORE must have been issued with owner-ID=1 and both target IDs
+        $this->assertNotNull($pivotInserted, 'Expected INSERT IGNORE into asset_dependencies pivot table');
+        $this->assertStringContainsString('INSERT IGNORE', $pivotInserted['sql']);
+        $this->assertStringContainsString('asset_dependencies', $pivotInserted['sql']);
+        $this->assertContains(1, $pivotInserted['params']); // owner ID
+        $this->assertContains(2, $pivotInserted['params']); // first target
+        $this->assertContains(3, $pivotInserted['params']); // second target
+    }
+
+    /**
+     * Audit-Befund: DQL DELETE FROM Entity löscht keine Pivot-Tabellen.
+     * Prüft, dass clearExistingData() vor den Entity-DELETEs die Pivot-Tabellen leert.
+     */
+    public function testPivotTablesAreClearedBeforeEntityDelete(): void
+    {
+        $backup = [
+            'metadata' => ['version' => '1.0'],
+            'data' => [
+                'Asset' => [],
+            ],
+        ];
+
+        $deletedTables = [];
+
+        $connection = $this->createMock(Connection::class);
+        $connection->method('executeStatement')
+            ->willReturnCallback(function (string $sql) use (&$deletedTables) {
+                // Capture DELETE statements targeting pivot tables
+                if (preg_match('/DELETE FROM `([^`]+)`/', $sql, $m)) {
+                    $deletedTables[] = $m[1];
+                }
+                return 1;
+            });
+
+        $eventManager = $this->createMock(EventManager::class);
+        $eventManager->method('getListeners')->willReturn([]);
+
+        // Minimal metadata for Asset: one owning-side ManyToMany (asset_dependencies)
+        $fieldMapping2 = new FieldMapping(type: 'string', fieldName: 'name', columnName: 'name');
+        $fieldMapping2->nullable = true;
+
+        $assetMetadata = $this->createMock(ClassMetadata::class);
+        $assetMetadata->method('getFieldNames')->willReturn(['id', 'name']);
+        $assetMetadata->method('getAssociationNames')->willReturn(['dependsOn']);
+        $assetMetadata->method('isSingleValuedAssociation')->willReturn(false);
+        $assetMetadata->method('getFieldMapping')->willReturn($fieldMapping2);
+        $assetMetadata->method('getTableName')->willReturn('asset');
+        $assetMetadata->method('getAssociationMappings')->willReturn([
+            'dependsOn' => [
+                'type'         => ClassMetadata::MANY_TO_MANY,
+                'isOwningSide' => true,
+                'fieldName'    => 'dependsOn',
+                'targetEntity' => 'App\\Entity\\Asset',
+                'joinTable'    => [
+                    'name'               => 'asset_dependencies',
+                    'joinColumns'        => [['name' => 'dependent_asset_id']],
+                    'inverseJoinColumns' => [['name' => 'depends_on_asset_id']],
+                ],
+            ],
+        ]);
+        $assetMetadata->generatorType = ClassMetadata::GENERATOR_TYPE_AUTO;
+        $assetMetadata->idGenerator   = new \Doctrine\ORM\Id\IdentityGenerator();
+
+        $assetRepository = $this->createMock(EntityRepository::class);
+        $assetRepository->method('find')->willReturn(null);
+
+        $this->entityManager->method('getConnection')->willReturn($connection);
+        $this->entityManager->method('getEventManager')->willReturn($eventManager);
+        $this->entityManager->method('isOpen')->willReturn(true);
+        $this->entityManager->method('getClassMetadata')->willReturn($assetMetadata);
+        $this->entityManager->method('getRepository')->willReturn($assetRepository);
+
+        $result = $this->service->restoreFromBackup($backup, [
+            'clear_before_restore' => true,
+            'dry_run'              => false,
+        ]);
+
+        $this->assertTrue($result['success']);
+
+        // The pivot table must have been DELETEd before (or independently from) entity deletion
+        $this->assertContains(
+            'asset_dependencies',
+            $deletedTables,
+            'Expected pivot table asset_dependencies to be cleared during clear_before_restore'
+        );
+    }
+
     private function createMockMetadata(string $entityClass): MockObject
     {
+        $fieldMapping = new FieldMapping(type: 'string', fieldName: 'name', columnName: 'name');
+        $fieldMapping->nullable = true;
+
         $metadata = $this->createMock(ClassMetadata::class);
         $metadata->method('getFieldNames')->willReturn(['id', 'name', 'slug', 'email']);
         $metadata->method('getAssociationNames')->willReturn([]);
         $metadata->method('isSingleValuedAssociation')->willReturn(false);
-        $metadata->method('getFieldMapping')->willReturn([
-            'type' => 'string',
-            'nullable' => true,
-        ]);
+        $metadata->method('getFieldMapping')->willReturn($fieldMapping);
         $metadata->generatorType = ClassMetadata::GENERATOR_TYPE_AUTO;
         $metadata->idGenerator = new \Doctrine\ORM\Id\IdentityGenerator();
 
