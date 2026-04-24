@@ -20,17 +20,6 @@
     color: var(--fg-3);
 }
 
-/* Bootstrap Buttons in Dark Mode */
-[data-theme="dark"] .btn-secondary {
-    background-color: var(--surface-2);
-    border-color: var(--border);
-    color: var(--fg);
-}
-
-[data-theme="dark"] .btn-secondary:hover {
-    background-color: var(--bg);
-}
-
 /* Page Header */
 [data-theme="dark"] .page-header {
     border-bottom-color: var(--border);
