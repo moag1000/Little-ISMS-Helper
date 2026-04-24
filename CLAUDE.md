@@ -267,6 +267,29 @@ $dataBreach->setNotificationRequired(true);
    alert-*`, spacing/flex) still work. Full anti-pattern list in
    `templates/_components/_CARD_GUIDE.md` §"Anti-Patterns".
 
+## Aurora v4 Components (prefer these for new UI)
+
+Macro library under `templates/_components/_fa_*.html.twig`. Live preview +
+copyable snippets at `/dev/design-system` (dev env only).
+
+| Component | Use for | Macro file |
+|---|---|---|
+| `fa-page-header` | Module landing-page header (badge + title + subtitle + actions) | `_fa_page_header.html.twig` |
+| `fa-section` | Section wrapper with title + tools + footer | `_fa_section.html.twig` |
+| `fa-feature-card` | KPI tile (replaces legacy `.kpi-card` / `variant:'kpi'`) | `_fa_feature_card.html.twig` |
+| `fa-empty-state` | Empty state with Alva mood + CTA | `_fa_empty_state.html.twig` |
+| `fa-hero` | Welcome-banner + module intro | `_fa_hero.html.twig` |
+| `fa-filter-chip` | Filter chip + chip-group | `_fa_filter_chip.html.twig` |
+| `.fa-aurora-surface` | Opt-in page-level Aurora atmosphere (CSS utility, not macro) | — |
+
+Import pattern: `{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}`.
+Legacy `.kpi-card` / `variant:'kpi'` still works for backward-compat but emits
+a dev-env console deprecation warning.
+
+Stylelint (`npm run stylelint`) bans raw hex in 14 color-valued properties
+app-wide; use Aurora tokens only. Allow-list: `fairy-aurora.css` (SoT),
+`alva.css` (SVG brand fills), vendor bootstrap*.css.
+
 ## Configuration Files
 
 - `config/services.yaml` - Service definitions
