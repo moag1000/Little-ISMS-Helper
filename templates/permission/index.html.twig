@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block admin_title %}{{ 'permission.title'|trans({}, 'messages') }}{% endblock %}
 {% block admin_subtitle %}
@@ -10,6 +11,13 @@
 {% endblock %}
 
 {% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-check', label: 'admin.nav.permissions'|trans({}, 'admin') },
+        title: 'permission.title'|trans({}, 'messages'),
+        subtitle: 'permission.subtitle'|trans({}, 'messages')
+    }) }}
+
+    <main class="fa-aurora-surface">
     {# Statistics Cards #}
     <div class="row mb-4">
         <div class="col-md-3">
@@ -126,4 +134,5 @@
             <i class="bi bi-info-circle" aria-hidden="true"></i> Keine Berechtigungen gefunden.
         </div>
     {% endif %}
+    </main>
 {% endblock %}

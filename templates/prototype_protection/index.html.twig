@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'prototype_protection.page.index_title'|trans({}, 'prototype_protection') }}{% endblock %}
 
@@ -27,21 +28,16 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h1 class="h3 mb-1">
-                <i class="bi bi-shield-lock" aria-hidden="true"></i>
-                {{ 'prototype_protection.page.index_title'|trans({}, 'prototype_protection') }}
-            </h1>
-            <p class="text-muted mb-0 small">{{ 'prototype_protection.page.index_description'|trans({}, 'prototype_protection') }}</p>
-        </div>
-        <div>
-            <a href="{{ path('app_prototype_protection_new') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle" aria-hidden="true"></i>
-                {{ 'prototype_protection.action.new'|trans({}, 'prototype_protection') }}
-            </a>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-lock', label: 'nav.compliance'|trans({}, 'nav') },
+        title: 'prototype_protection.page.index_title'|trans({}, 'prototype_protection'),
+        subtitle: 'prototype_protection.page.index_description'|trans({}, 'prototype_protection'),
+        actions: [
+            { label: 'prototype_protection.action.new'|trans({}, 'prototype_protection'), variant: 'primary', icon: 'plus-circle', href: path('app_prototype_protection_new') }
+        ]
+    }) }}
+
+    <main class="fa-aurora-surface">
 
     {% if expiring|length > 0 %}
         <div class="alert alert-warning">
@@ -131,5 +127,6 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </main>
 </div>
 {% endblock %}

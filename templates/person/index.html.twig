@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'people' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'person.title.list'|trans({}, 'messages') }} - Little ISMS Helper{% endblock %}
 
@@ -14,17 +15,16 @@
     } %}
 </div>
 
-<div class="page-header">
-    <div>
-        <h1>{{ 'person.title.list'|trans({}, 'messages') }}</h1>
-        <p class="text-muted">{{ 'person.description.overview'|trans({}, 'messages') }}</p>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_person_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'person.action.create'|trans({}, 'messages') }}
-        </a>
-    </div>
-</div>
+{{ _fa_page_header.render({
+    badge: { icon: 'people', label: 'nav.people'|trans({}, 'nav') },
+    title: 'person.title.list'|trans({}, 'messages'),
+    subtitle: 'person.description.overview'|trans({}, 'messages'),
+    actions: [
+        { label: 'person.action.create'|trans({}, 'messages'), variant: 'primary', icon: 'plus-circle', href: path('app_person_new') }
+    ]
+}) }}
+
+<main class="fa-aurora-surface">
 
 {# Statistics Cards #}
 <div class="kpi-grid">
@@ -113,4 +113,5 @@
         {% endfor %}
     {% endblock %}
 {% endembed %}
+</main>
 {% endblock %}

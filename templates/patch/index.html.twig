@@ -2,6 +2,7 @@
 {% trans_default_domain 'patches' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'patch.title'|trans({}, 'patches') }} - {{ parent() }}{% endblock %}
 
@@ -13,12 +14,15 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-patch-check" aria-hidden="true"></i> {{ 'patch.title'|trans({}, 'patches') }}</h1>
-        <a href="{{ path('app_patch_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'patch.new'|trans({}, 'patches') }}
-        </a>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'patch-check', label: 'nav.patches'|trans({}, 'nav') },
+        title: 'patch.title'|trans({}, 'patches'),
+        actions: [
+            { label: 'patch.new'|trans({}, 'patches'), variant: 'primary', icon: 'plus-circle', href: path('app_patch_new') }
+        ]
+    }) }}
+
+    <main class="fa-aurora-surface">
 
     {# View Filter #}
     {% if currentTenant %}
@@ -118,5 +122,6 @@
             {% endblock %}
         {% endembed %}
     {% endif %}
+    </main>
 </div>
 {% endblock %}
