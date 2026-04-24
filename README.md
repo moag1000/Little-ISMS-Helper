@@ -380,6 +380,15 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 | [ISO 27001 Implementation](docs/compliance/ISO_COMPLIANCE_IMPLEMENTATION_SUMMARY.md) | ISO 27001:2022 Implementation Details |
 | [Security Architecture](docs/security/SECURITY.md) | Security Architecture & Best Practices |
 
+### Disaster Recovery
+
+| Dokument | Beschreibung |
+|----------|--------------|
+| [DISASTER_RECOVERY.md](docs/operations/DISASTER_RECOVERY.md) | Ops-Runbook: Backup-Scope, Restore-Szenarien, APP_SECRET-Handling, Fehlerdiagnose |
+| [BACKUP_ARCHITECTURE.md](docs/operations/BACKUP_ARCHITECTURE.md) | Entwickler-Referenz: Format 2.0, Entity-Coverage, Dependency-Order, ManyToMany-Restore |
+
+Backups (Format 2.0) umfassen alle 54 Entitätstypen inkl. Uploaded Files (ZIP), SHA-256-Integritäts-Seal und optionale AES-256-GCM-Verschlüsselung sensibler SystemSettings. Wiederherstellung erfolgt über **Admin > Datenverwaltung > Backup** (CSRF-geschützt) oder durch direkten Upload + Restore in der Admin-UI.
+
 ---
 
 ## 🛠️ Technologie-Stack
