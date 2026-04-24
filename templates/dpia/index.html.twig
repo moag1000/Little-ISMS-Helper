@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% block title %}{{ 'dpia.index.title'|trans({}, 'privacy')}}{% endblock %}
 
 {% block body %}
@@ -11,15 +12,17 @@
         ]
     } %}
 
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
+        badge: { icon: 'clipboard-check', label: 'DPIA / DSFA' },
         title: 'dpia.index.page_title'|trans({}, 'privacy'),
         subtitle: 'dpia.index.page_subtitle'|trans({}, 'privacy'),
-        icon: 'bi-clipboard-check',
         actions: [
-            { label: 'dpia.index.button_dashboard'|trans({}, 'privacy'), url: path('app_dpia_dashboard'), variant: 'primary', icon: 'bi-speedometer2' },
-            { label: 'dpia.index.button_new_dpia'|trans({}, 'privacy'), url: path('app_dpia_new'), variant: 'success', icon: 'bi-plus-lg' }
+            { label: 'dpia.index.button_dashboard'|trans({}, 'privacy'), variant: 'ghost', icon: 'speedometer2', href: path('app_dpia_dashboard') },
+            { label: 'dpia.index.button_new_dpia'|trans({}, 'privacy'), variant: 'primary', icon: 'plus-lg', href: path('app_dpia_new') }
         ]
-    } %}
+    }) }}
+
+    <main class="fa-aurora-surface">
 
     {# Overall Compliance Score #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}
@@ -249,5 +252,6 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </main>
 </div>
 {% endblock %}

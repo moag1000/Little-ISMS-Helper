@@ -2,6 +2,7 @@
 {% trans_default_domain 'documents' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'document.title'|trans({}, 'document') }}{% endblock %}
 
@@ -15,20 +16,16 @@
         ]
     } %}
 
-    {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
+        badge: { icon: 'file-earmark-text', label: 'document.title'|trans({}, 'document') },
         title: 'document.title'|trans({}, 'document'),
         subtitle: 'document.subtitle'|trans({}, 'document'),
-        icon: 'bi-file-earmark-text',
         actions: [
-            {
-                label: 'document.action.upload'|trans({}, 'document'),
-                url: path('app_document_new'),
-                variant: 'primary',
-                icon: 'bi-cloud-upload'
-            }
+            { label: 'document.action.upload'|trans({}, 'document'), variant: 'primary', icon: 'cloud-upload', href: path('app_document_new') }
         ]
-    } %}
+    }) }}
+
+    <main class="fa-aurora-surface">
 
     {# View Filter #}
     {% if currentTenant %}
@@ -334,6 +331,7 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </main>
 </div>
 
 <style>
