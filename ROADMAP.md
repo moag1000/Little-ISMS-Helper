@@ -34,7 +34,7 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 
 **Finaler Stand:**
 - **Technische Vollständigkeit:** 95%+
-- **Test Coverage:** ~65% (3652 Tests, 9607 Assertions)
+- **Test Coverage:** ~65% (4067+ Tests)
 - **Test Success Rate:** 100% (alle Tests bestehen)
 - **Zertifizierungsbereitschaft:** ISO 27001: 96%, ISO 22301: 100%, **NIS2: 90%+** ✅
 
@@ -49,13 +49,13 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 - ✅ Phase 6O: Proactive Compliance Monitoring (Review Reminders, 72h Breach Alerts, Risk Slider)
 
 ### ✅ Weitere abgeschlossene Arbeiten
-- ✅ Phase 6B: Test Coverage (3652 Tests, 9607 Assertions, 100% Success Rate)
+- ✅ Phase 6B: Test Coverage (4067+ Tests, 100% Success Rate)
   - ✅ Umfangreiche Test-Suite
   - ✅ 100% Success Rate
   - ✅ Compliance-Tests für Multi-Framework Support
   - ✅ Workflow Service Tests (6 neue Test-Klassen)
-- ✅ Phase 6K: Internationalisierung (i18n) Vervollständigung (~98% abgeschlossen)
-  - ✅ Translation domain architecture (81 domains × 2 languages = 162 YAML files)
+- ✅ Phase 6K: Internationalisierung (i18n) Vervollständigung (100% — 0 missing DE+EN)
+  - ✅ Translation domain architecture (87 domains × 2 languages = 174 YAML files)
   - ✅ Translation quality checker script (HARDCODED_TEXT, INVALID_DOMAIN, NO_DOMAIN, UNTRANSLATED_ATTRIBUTE)
   - ✅ Fixed 100+ translation issues (56× 'audits'→'audit', 2× 'controls'→'control', etc.)
   - ✅ Added {% trans_default_domain %} to 14 templates
@@ -1458,16 +1458,18 @@ Beliebig viele `AppliedBaseline` pro Tenant sind heute schon möglich (z. B. Pro
 ## 📈 Projekt-Metriken
 
 ### Aktueller Stand (Apr 2026 - Phase 9 P1+P2 abgeschlossen)
-- **Codezeilen:** ~167,400+ LOC (src/ PHP)
-- **Entities:** 73 Doctrine Entities
-- **Controllers:** 104 Controllers
-- **Templates:** 487+ Twig Templates
-- **Services:** 121+ Business Logic Services
-- **Commands:** 77+ Console Commands
-- **Tests:** 3,919+ Tests, 100% passing
+- **Codezeilen:** ~174,800+ LOC (src/ PHP)
+- **Entities:** 78 Doctrine Entities
+- **Controllers:** 112 Controllers
+- **Templates:** 531+ Twig Templates
+- **Services:** 130+ Business Logic Services
+- **Commands:** 82+ Console Commands
+- **Tests:** 4,067+ Tests, 100% passing
 - **API Endpoints:** 50+ REST Endpoints (+17 Report Builder API, +7 Wizard API)
 - **Report Types:** 25+ Widgets (Custom Report Builder)
-- **Translation Files:** 162 YAML files (81 domains × 2 languages)
+- **Translation Files:** 174 YAML files (87 domains × 2 languages)
+- **Glossary:** 171 Begriffe
+- **Compliance Frameworks:** 23 (ISO 27001, ISO 22301, ISO 27005, ISO 27701, NIS2, NIS2UmsuCG, DORA, TISAX, BSI IT-Grundschutz, BSI C5:2020, BSI C5:2026, GDPR/DSGVO, BDSG, EU AI Act, SOC 2, NIST CSF, CIS Controls, TKG, KRITIS, PCI DSS, HIPAA, CCPA, LGPD)
 
 ---
 
@@ -1482,11 +1484,11 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 | **PHP Syntax Errors** | 0 | 0 | ✅ Erreicht |
 | **Twig Template Errors** | 0 | 0 | ✅ Erreicht |
 | **Container Lint Errors** | 0 | 0 | ✅ Erreicht |
-| **i18n Abdeckung** | ~98% | 100% | 🔄 In Arbeit |
+| **i18n Abdeckung** | 100% | 100% | ✅ Erreicht |
 
 ### Test Coverage Verbesserung (Backlog)
-- 📅 Service Tests für alle 121+ Services
-- 📅 Controller Tests für alle 104 Controllers
+- 📅 Service Tests für alle 130+ Services
+- 📅 Controller Tests für alle 112 Controllers
 - 📅 Repository Tests für komplexe Queries
 - 📅 Integration Tests für Workflows
 
@@ -1514,7 +1516,7 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 - **Reporting:** Art. 23 Compliance durch Scheduled Reports
 
 ### BSI IT-Grundschutz
-- **Aktuell:** 90 % ✅ (Tool-Grün)
+- **Aktuell:** 99%+ ✅ (Tool-Grün)
 - **Absicherungsstufen** (basis/standard/kern) + **Anforderungstypen** (MUSS/SOLLTE/KANN) als ComplianceRequirement-Felder + UI-Filter
 - **Schutzbedarfsvererbung** (BSI 3.6 Maximumprinzip) via `Asset.dependsOn` + `AssetDependencyService`
 - **BSI 200-2 Phasenmodell** via `Tenant.bsiPhase`
@@ -1577,4 +1579,4 @@ Tenant-Override-Modul für Tour-Content, Static-Help-Handouts mit
 Print-CSS statt PDF-Pipeline — siehe `.claude/GUIDED_TOUR_PLAN.md`).
 Audit-Doc 78 → 98 → Residual-Budget 19 → 0 FTE-d. Alle 7 Ziel-Frameworks Tool-🟢,
 BSI IT-Grundschutz auf 99%+.
-**Naechste Aktualisierung:** Nach Cutting `v2.7.0` + Phase 9 Holding-Struktur.
+**Naechste Aktualisierung:** Nach Cutting `v2.7.0`.
