@@ -15,6 +15,7 @@ use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\KpiSnapshotRepository;
 use App\Repository\KpiThresholdConfigRepository;
+use App\Service\KpiThresholdConfigResolver;
 use App\Repository\ManagementReviewRepository;
 use App\Repository\RiskAppetiteRepository;
 use App\Repository\RiskRepository;
@@ -73,6 +74,7 @@ class DashboardStatisticsService
         private readonly ?RiskAppetiteRepository $riskAppetiteRepository = null,
         private readonly ?KpiThresholdConfigRepository $thresholdConfigRepository = null,
         private readonly ?KpiSnapshotRepository $kpiSnapshotRepository = null,
+        private readonly ?KpiThresholdConfigResolver $kpiThresholdConfigResolver = null,
         private readonly ?CacheInterface $cache = null,
         private readonly ?BsiGrundschutzCheckService $bsiGrundschutzCheckService = null,
     ) {
@@ -88,21 +90,35 @@ class DashboardStatisticsService
 
     /**
      * Tenant-aware getStatus — prefers override from kpi_threshold_config.
+     *
+     * Phase 8M.3: Wenn KpiThresholdConfigResolver injiziert ist, wird dieser
+     * bevorzugt (Holding-Fallback-Kaskade). Andernfalls Fallback auf den
+     * direkten Repository-Zugriff (Legacy-Pfad für Backward-Compatibility).
      */
     private function getStatusFor(string $kpiKey, int $value, int $goodDefault, int $warningDefault, ?Tenant $tenant): string
     {
         $good = $goodDefault;
         $warning = $warningDefault;
-        if ($tenant instanceof Tenant && $this->thresholdConfigRepository !== null) {
-            if ($this->thresholdOverrideTenantId !== $tenant->getId() || $this->thresholdOverrides === null) {
-                $this->thresholdOverrides = $this->thresholdConfigRepository->getThresholdMap($tenant);
-                $this->thresholdOverrideTenantId = $tenant->getId();
-            }
-            if (isset($this->thresholdOverrides[$kpiKey])) {
-                $good = $this->thresholdOverrides[$kpiKey]['good'];
-                $warning = $this->thresholdOverrides[$kpiKey]['warning'];
+
+        if ($tenant instanceof Tenant) {
+            // Bevorzugter Pfad: KpiThresholdConfigResolver (inkl. Holding-Fallback-Kaskade)
+            if ($this->kpiThresholdConfigResolver !== null) {
+                $view = $this->kpiThresholdConfigResolver->resolveFor($tenant, $kpiKey, $goodDefault, $warningDefault);
+                $good = $view->goodThreshold;
+                $warning = $view->warningThreshold;
+            } elseif ($this->thresholdConfigRepository !== null) {
+                // Legacy-Pfad: direkter Repository-Zugriff (kein Holding-Merge)
+                if ($this->thresholdOverrideTenantId !== $tenant->getId() || $this->thresholdOverrides === null) {
+                    $this->thresholdOverrides = $this->thresholdConfigRepository->getThresholdMap($tenant);
+                    $this->thresholdOverrideTenantId = $tenant->getId();
+                }
+                if (isset($this->thresholdOverrides[$kpiKey])) {
+                    $good = $this->thresholdOverrides[$kpiKey]['good'];
+                    $warning = $this->thresholdOverrides[$kpiKey]['warning'];
+                }
             }
         }
+
         if ($value >= $good) {
             return 'good';
         }
