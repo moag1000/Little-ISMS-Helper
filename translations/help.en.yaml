@@ -98,6 +98,10 @@ help:
             risk: "Risk Management"
             compliance: "Compliance & Audit"
             bcm: "Business Continuity (BCM)"
+            privacy: "Privacy & GDPR"
+            operations: "Operations & Incidents"
+            governance: "Governance & Management"
+            technical: "Technical & Infrastructure"
 
         term:
             isms:
@@ -166,6 +170,257 @@ help:
             bia:
                 name: "BIA (Business Impact Analysis)"
                 definition: "Analysis of which business processes are how critical."
+            scope:
+                name: "Scope"
+                definition: "The boundary of the ISMS. Defines which locations, departments, processes, and IT systems are covered (Clause 4.3)."
+                analogy: "Equivalent to the QMS scope from Clause 4.3 — same logic, same clause number."
+            context:
+                name: "Context of the Organization"
+                definition: "The internal and external issues that influence the ISMS (Clause 4.1). Regulatory requirements, market environment, organizational culture, and expectations of interested parties (Clause 4.2)."
+                analogy: "Identical to Clause 4.1 in ISO 9001 — you already know this."
+            annex_a:
+                name: "Annex A"
+                definition: "The normative annex of ISO 27001 containing 93 reference controls in 4 themes: Organizational (A.5), People (A.6), Physical (A.7), Technological (A.8). Forms the basis for the SoA."
+            tenant:
+                name: "Tenant"
+                definition: "An independent organizational unit in the tool with its own assets, risks, controls, and users, strictly separated from other tenants. Allows operating multiple ISMS in a single installation."
+            threat:
+                name: "Threat"
+                definition: "A potential cause of a security incident. Examples: hacker attack, fire, human error. Threats exploit vulnerabilities."
+            vulnerability:
+                name: "Vulnerability"
+                definition: "A weakness in a system or process that can be exploited by a threat. Examples: missing patches, weak passwords. Risk = Threat x Vulnerability x Impact."
+            risk_tolerance:
+                name: "Risk Tolerance"
+                definition: "Specific thresholds beyond which a risk is no longer acceptable. While Risk Appetite describes the general willingness, Risk Tolerance defines the measurable boundary (e.g., 'no single risk above 15 points')."
+            nis2:
+                name: "NIS2"
+                definition: "EU Directive for cybersecurity. Applies to operators of essential and important entities. Requires security measures, incident reporting, and risk management."
+            dora:
+                name: "DORA"
+                definition: "EU Regulation for digital operational resilience of the financial sector. Requires IT risk management, incident reporting, resilience testing, and third-party risk management. Mandatory since January 2025."
+            tisax:
+                name: "TISAX"
+                definition: "Automotive industry standard for information security based on the VDA ISA questionnaire. Builds on ISO 27001, adds automotive-specific requirements such as prototype protection."
+            bsi_grundschutz:
+                name: "BSI IT-Grundschutz"
+                definition: "German standard from the BSI with a catalog of concrete building blocks for typical IT scenarios. Complementary to ISO 27001 — many measures map 1:1."
+            audit_finding:
+                name: "Audit Finding"
+                definition: "Result from an audit examination: major nonconformity (Major NC), minor nonconformity (Minor NC), observation, or opportunity for improvement."
+                analogy: "Audit findings from 9001 Clause 9.2 — same types, same methodology."
+            nonconformity:
+                name: "Nonconformity"
+                definition: "Non-fulfillment of a requirement. Major NC = systematic failure. Minor NC = isolated deviation. In certification audits, major NCs can prevent certification."
+                analogy: "Identical to nonconformity in 9001 (Clause 10.2) — same terminology."
+            corrective_action:
+                name: "Corrective Action"
+                definition: "Action to eliminate the cause of a nonconformity. Must be planned, implemented, and verified for effectiveness (Clause 10.1)."
+                analogy: "CAPA from ISO 9001 (Clause 10.2) — nearly identical concept."
+            gdpr_dsgvo:
+                name: "GDPR"
+                definition: "EU regulation governing personal data protection. Key obligations: lawfulness, purpose limitation, data minimization, data subject rights, breach notification. Fines up to EUR 20M or 4% annual turnover."
+            data_breach:
+                name: "Data Breach"
+                definition: "Breach of protection of personal data (GDPR Art. 4(12)). Must be reported to the supervisory authority within 72 hours. Not every security incident is a data breach — only when personal data is affected."
+            processing_activity:
+                name: "Processing Activity"
+                definition: "Any operation on personal data: collection, storage, transmission, deletion. All must be documented in the Records of Processing Activities (GDPR Art. 30)."
+            data_subject_request:
+                name: "Data Subject Request (DSR)"
+                definition: "Request by a data subject under GDPR Art. 15-22: access, rectification, erasure, restriction, portability, or objection. Deadline: one month."
+            incident:
+                name: "Security Incident"
+                definition: "Event compromising confidentiality, integrity, or availability of information. Unlike a Data Breach, an Incident concerns information security in general, not specifically personal data."
+                analogy: "Comparable to nonconformity from 9001 — but reactive to security events."
+            patch_management:
+                name: "Patch Management"
+                definition: "Systematic process for identifying, evaluating, and deploying software updates and security patches. Reduces technical vulnerabilities (Annex A.8.8)."
+            change_request:
+                name: "Change Request"
+                definition: "Formal request to change an IT system, process, or configuration. Must be reviewed for security impact before implementation (Annex A.8.32)."
+                analogy: "Like a change request in 9001 (Clause 6.3) — formalized with impact assessment."
+            awareness_training:
+                name: "Awareness & Training"
+                definition: "Measures to educate employees about information security: awareness training, phishing tests, policy briefings. Required by Clause 7.2/7.3, operationalized through Annex A.6.3."
+                analogy: "Competence and awareness from 9001 (Clause 7.2/7.3) — identical HLS requirement."
+            document_control:
+                name: "Document Control"
+                definition: "Management of ISMS documents: creation, review, approval, versioning, and archiving. Ensures the current version is always in use (Clause 7.5)."
+                analogy: "Documented information from 9001 (Clause 7.5) — practically identical."
+            supplier_security:
+                name: "Supplier Security"
+                definition: "Assessment and management of information security at suppliers. Includes security requirements in contracts and regular assessment (Annex A.5.19-5.22)."
+                analogy: "Supplier evaluation from 9001 (Clause 8.4) — same logic, extended with security aspects."
+            pdca:
+                name: "PDCA Cycle"
+                definition: "Plan-Do-Check-Act: fundamental improvement model. Forms the ISMS structure — from risk analysis (Plan) through control implementation (Do) and audits (Check) to improvement (Act)."
+                analogy: "Identical to the PDCA cycle in 9001 — the same fundamental principle."
+            hls:
+                name: "HLS (High Level Structure)"
+                definition: "Common framework structure shared by all ISO management system standards (Clauses 1-10). This is why ISO 9001, 14001, and 27001 share the same chapter structure — facilitates integration."
+                analogy: "This is exactly why 27001 feels familiar — you already know Clauses 4-10."
+            kpi:
+                name: "KPI (Key Performance Indicator)"
+                definition: "Measurable metric for evaluating ISMS performance (Clause 9.1). Examples: percentage of implemented controls, mean resolution time, training completion rate. Stored as daily snapshots in the tool."
+                analogy: "QMS metrics from 9001 (Clause 9.1) — same concept, different metrics."
+            maturity:
+                name: "Maturity Level"
+                definition: "Assessment of how mature a process implementation is, typically 0 (non-existent) to 5 (optimized). Helps the CISO assess overall ISMS health and set priorities."
+            four_eyes_principle:
+                name: "Four-Eyes Principle"
+                definition: "Security principle requiring approval from a second person for critical actions. Implemented as an approval workflow in the tool, e.g., for risk acceptance or control changes."
+            segregation_of_duties:
+                name: "Segregation of Duties (SoD)"
+                definition: "No single person should perform all steps of a critical process alone. Example: whoever requests a change must not approve it (Annex A.5.3)."
+            least_privilege:
+                name: "Least Privilege"
+                definition: "Every user receives only the minimum permissions necessary. Access to information only when there is a business need (Annex A.5.15, A.8.2)."
+            defense_in_depth:
+                name: "Defense in Depth"
+                definition: "Security strategy using multiple overlapping layers of protection. If one measure fails, the next ones catch the threat. No single control is sufficient alone."
+            cross_framework_mapping:
+                name: "Cross-Framework Mapping"
+                definition: "Linking requirements across different frameworks (e.g., ISO 27001 A.5.1 ↔ NIS2 Art. 21). Enables reuse of existing evidence — one measure covers multiple frameworks."
+            transitive_compliance:
+                name: "Transitive Compliance"
+                definition: "If Framework A maps to B and B maps to C, transitive coverage from A to C emerges. The tool calculates these chains automatically."
+            data_reuse:
+                name: "Data Reuse"
+                definition: "Core principle of the tool: information captured once (assets, risks, controls) is automatically reused across all relevant contexts — without duplicate entry."
+            industry_baseline:
+                name: "Industry Baseline"
+                definition: "Pre-configured starter pack for a tenant based on its industry. Contains typical assets, risks, controls, and framework recommendations. Build your ISMS not from zero."
+            mttr:
+                name: "MTTR (Mean Time to Resolve)"
+                definition: "Average time from incident detection to resolution. Key management metric — shows how quickly the organization responds."
+            compliance_gap:
+                name: "Compliance Gap"
+                definition: "Difference between target (framework requirements) and current state (implemented measures). Basis for prioritization and budget planning."
+            encryption:
+                name: "Encryption"
+                definition: "Transformation of plaintext into unreadable ciphertext. Protects confidentiality at rest and in transit. Annex A.8.24."
+            mfa:
+                name: "MFA (Multi-Factor Authentication)"
+                definition: "Authentication using at least two different factors: knowledge (password), possession (token/smartphone), or biometrics. Implemented as TOTP in the tool."
+            network_segmentation:
+                name: "Network Segmentation"
+                definition: "Division of a network into isolated zones to limit attack propagation. Part of the defense-in-depth strategy."
+            siem:
+                name: "SIEM"
+                definition: "System for centralized collection, correlation, and analysis of security events. Enables real-time detection of attacks and anomalies (Annex A.8.16)."
+            access_control:
+                name: "Access Control"
+                definition: "Rules and mechanisms determining who may access which information. Distinguish: physical entry (to building), logical access (to system), data access (to information/functions)."
+            information_classification:
+                name: "Information Classification"
+                definition: "Categorization of information by protection needs: public, internal, confidential, strictly confidential. Determines which protection measures apply (Annex A.5.12)."
+            backup_recovery:
+                name: "Backup & Recovery"
+                definition: "Regular backup copies and tested recovery procedures. Best practice: 3-2-1 rule (3 copies, 2 media, 1 offsite)."
+            logging_monitoring:
+                name: "Logging & Monitoring"
+                definition: "Recording security-relevant events and continuous monitoring for anomalies. Implemented as audit log in the tool. Essential for incident detection."
+                analogy: "Comparable to control of records in 9001 (Clause 7.5) — but significantly more extensive."
+            baustein:
+                name: "Building Block (BSI IT-Grundschutz)"
+                definition: "Modular security building block in the BSI IT-Grundschutz Compendium. Covers a specific topic (e.g., SYS.1.1 General Server). Each block contains requirements (MUSS/SOLLTE/KANN)."
+            elementare_gefaehrdung:
+                name: "Elementary Threat (BSI)"
+                definition: "One of 47 fundamental threats in the BSI model (G 0.1 to G 0.47). Examples: G 0.14 Espionage, G 0.28 Software vulnerabilities. Used for risk analysis per BSI 200-3."
+            absicherungsstufe:
+                name: "Protection Level (BSI)"
+                definition: "Three levels in BSI IT-Grundschutz: Basic (MUSS only), Standard (MUSS + SOLLTE), Core (highest protection for critical assets). The tool shows compliance per level."
+            schutzbedarfsfeststellung:
+                name: "Protection Needs Assessment"
+                definition: "Systematic determination of protection needs for all assets based on basic values (C/I/A). Result: normal, high, or very high. Basis for selecting building blocks."
+                analogy: "Like risk analysis in 9001 (Clause 6.1) — but more formalized with three-level assessment per basic value."
+            modellierung:
+                name: "Modeling (BSI IT-Grundschutz)"
+                definition: "Assignment of BSI building blocks to actual target objects (servers, networks, applications). Produces the individual target configuration. The tool partially automates this via asset types."
+            interested_parties:
+                name: "Interested Parties"
+                definition: "Persons or organizations that influence or are affected by the ISMS: customers, regulators, employees, suppliers, shareholders. Their requirements must be considered (Clause 4.2)."
+                analogy: "Identical to 'interested parties' from 9001 Clause 4.2."
+            continual_improvement:
+                name: "Continual Improvement"
+                definition: "Ongoing enhancement of ISMS effectiveness through analysis of audit results, KPIs, incidents, and management reviews. The PDCA cycle is the tool for this (Clause 10.2)."
+                analogy: "Continual improvement from 9001 (Clause 10.3) — identical principle."
+            risk_owner:
+                name: "Risk Owner"
+                definition: "Person with authority and responsibility to manage a risk. Typically the business unit head, not the ISB. Decides on treatment strategy and accepts residual risk."
+            asset_owner:
+                name: "Asset Owner"
+                definition: "Person responsible for protecting an information asset. Determines classification and access rules. Does not need to be the technical operator (Annex A.5.9)."
+            c5:
+                name: "C5 (Cloud Computing Compliance Criteria Catalogue)"
+                definition: "BSI standard for cloud security. 17 domains with minimum requirements for secure cloud services. Often mandatory for public sector clients in Germany."
+            vulnerability_scan:
+                name: "Vulnerability Scan"
+                definition: "Automated testing of systems for known security vulnerabilities (CVEs). Perform regularly and after changes. Results feed into patch management."
+            penetration_test:
+                name: "Penetration Test"
+                definition: "Targeted, authorized attack attempt on IT systems. Manual and deeper than vulnerability scans. Formalized under DORA as TLPT (Art. 26)."
+            escalation:
+                name: "Escalation"
+                definition: "Structured forwarding to a higher decision level when deadlines are exceeded or severity requires it. Automated in the tool: severity + data breach → workflow escalation."
+            sla_ops:
+                name: "SLA (Service Level Agreement)"
+                definition: "Agreement on performance metrics: availability, response times, recovery times. In ISMS especially relevant for cloud services and outsourced IT (Annex A.5.20)."
+            information_security_policy:
+                name: "Information Security Policy"
+                definition: "Top-level ISMS document — approved by top management. Defines objectives, scope, and principles of information security. Must be accessible to all employees."
+                analogy: "Like the quality policy in 9001 (Clause 5.2) — same requirement, different content."
+            certification_audit:
+                name: "Certification Audit"
+                definition: "External audit by accredited body (e.g., TUeV, DEKRA). Stage 1: document review, Stage 2: on-site audit. Certificate valid for 3 years with annual surveillance audits."
+            risk_assessment:
+                name: "Risk Assessment"
+                definition: "Systematic process: identify risks → assess likelihood and impact → prioritize. Must be repeated regularly and after significant changes (Clause 6.1.2)."
+                analogy: "Risks and opportunities from 9001 (Clause 6.1) — same approach, but with formal assessment matrix."
+            bcms:
+                name: "BCMS"
+                definition: "Management system for business continuity — analogous to the ISMS, but focused on maintaining critical processes during disruptions. Can be standalone (ISO 22301) or part of the ISMS."
+                analogy: "Just as QMS is for quality, BCMS is for business continuity — same HLS structure."
+            mbco:
+                name: "MBCO"
+                definition: "Minimum acceptable performance level during emergency operations. Example: 'Customer service must handle at least 30% of inquiries.' Defines the lower boundary between bearable and no longer acceptable."
+            bc_strategy:
+                name: "Business Continuity Strategy"
+                definition: "Overarching approach to protecting critical processes: measures BEFORE disruption (prevention), DURING (emergency operations), and AFTER (recovery). Derived from the BIA."
+            notbetrieb:
+                name: "Emergency Operations Mode"
+                definition: "Degraded operations after BC plan activation. Only most critical functions run — with reduced resources or workarounds. Goal: ensure MBCO until normal operations restored."
+            wiederanlauf:
+                name: "Recovery / Resumption"
+                definition: "Phase after emergency operations: gradual return to normal. Distinguish: recovery (bring systems up), resumption (restart processes), normal operations (everything as before). RTO measures time to recovery."
+            crisis_management:
+                name: "Crisis Management"
+                definition: "Leadership and coordination in a crisis. The crisis team assumes decision authority, coordinates communication, and manages resources. Activation follows defined escalation criteria."
+            crisis_team:
+                name: "Crisis Team"
+                definition: "Pre-defined team that takes control during crises. BSI 200-4 distinguishes: strategic (management), operational (ISB, IT head), and technical emergency team (hands-on recovery)."
+            crisis_communication:
+                name: "Crisis Communication"
+                definition: "Structured internal and external communication during a crisis. Pre-approved templates and clear approval processes significantly speed up response."
+            tabletop_exercise:
+                name: "Tabletop Exercise"
+                definition: "Discussion-based BC exercise: scenario walked through at the table without system activation. Cost-effective, identifies gaps in plans. Recommended as entry point."
+            full_scale_exercise:
+                name: "Full-Scale Exercise"
+                definition: "Realistic exercise with activation of BC plans, crisis team, and possibly alternate sites. Highest effort and insight. DORA requires similar tests (TLPT)."
+            supply_chain_continuity:
+                name: "Supply Chain Continuity"
+                definition: "Ensuring business continuity when critical suppliers fail: identify critical suppliers, assess their RTO/RPO, document alternative suppliers."
+            single_point_of_failure:
+                name: "Single Point of Failure (SPOF)"
+                definition: "Component whose failure brings the entire process to a halt — without redundancy. Identifying and eliminating SPOFs is a core BIA objective."
+            notfallvorsorge:
+                name: "Emergency Preparedness"
+                definition: "All preventive measures BEFORE an emergency: BC plans, crisis teams, exercises, alternate sites, backup tests. BSI 200-4 calls this the 'emergency preparedness concept'."
+            tlpt:
+                name: "TLPT (Threat-Led Penetration Testing)"
+                definition: "Threat-led penetration test, mandatory under DORA for systemically important financial institutions. Simulates realistic attack scenarios. Every 3 years by external testers."
 
     tour:
         steps: "steps"

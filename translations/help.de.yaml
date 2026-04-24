@@ -98,6 +98,10 @@ help:
             risk: "Risikomanagement"
             compliance: "Compliance & Audit"
             bcm: "Business Continuity (BCM)"
+            privacy: "Datenschutz & DSGVO"
+            operations: "Betrieb & Vorfälle"
+            governance: "Governance & Management"
+            technical: "Technik & Infrastruktur"
 
         term:
             isms:
@@ -166,6 +170,257 @@ help:
             bia:
                 name: "BIA (Business Impact Analysis)"
                 definition: "Analyse welche Geschaeftsprozesse wie kritisch sind."
+            scope:
+                name: "Scope (Anwendungsbereich)"
+                definition: "Der Anwendungsbereich des ISMS. Definiert welche Standorte, Abteilungen, Prozesse und IT-Systeme abgedeckt werden (Klausel 4.3)."
+                analogy: "Entspricht dem QMS-Anwendungsbereich aus Klausel 4.3 — gleiche Logik, gleiche Klauselnummer."
+            context:
+                name: "Kontext der Organisation"
+                definition: "Die internen und externen Themen, die das ISMS beeinflussen (Klausel 4.1). Regulatorische Anforderungen, Marktumfeld, Unternehmenskultur und Erwartungen interessierter Parteien (Klausel 4.2)."
+                analogy: "Identisch mit Klausel 4.1 in ISO 9001 — Sie kennen das bereits."
+            annex_a:
+                name: "Annex A (Anhang A)"
+                definition: "Der normative Anhang von ISO 27001 mit 93 Referenz-Controls in 4 Themen: Organisatorisch (A.5), Personell (A.6), Physisch (A.7), Technologisch (A.8). Bildet die Grundlage fuer die SoA."
+            tenant:
+                name: "Tenant (Mandant)"
+                definition: "Ein eigenstaendiger Mandant im Tool mit eigenen Assets, Risiken, Controls und Benutzern, strikt getrennt von anderen Mandanten. Ermoeglicht den Betrieb mehrerer ISMS in einer Installation."
+            threat:
+                name: "Bedrohung (Threat)"
+                definition: "Eine potenzielle Ursache fuer einen Sicherheitsvorfall. Beispiele: Hackerangriff, Feuer, Mitarbeiterfehler. Bedrohungen nutzen Schwachstellen aus."
+            vulnerability:
+                name: "Schwachstelle (Vulnerability)"
+                definition: "Eine Schwaeche in einem System oder Prozess, die von einer Bedrohung ausgenutzt werden kann. Beispiele: fehlende Patches, schwache Passwoerter. Risiko = Bedrohung x Schwachstelle x Auswirkung."
+            risk_tolerance:
+                name: "Risikotoleranz (Risk Tolerance)"
+                definition: "Konkrete Schwellenwerte, ab denen ein Risiko nicht mehr akzeptabel ist. Waehrend Risk Appetite die generelle Bereitschaft beschreibt, definiert Risk Tolerance die messbare Grenze (z.B. 'kein Einzelrisiko ueber 15 Punkte')."
+            nis2:
+                name: "NIS2"
+                definition: "EU-Richtlinie zur Cybersicherheit, in Deutschland umgesetzt durch das NIS2UmsuCG. Betrifft Betreiber wesentlicher und wichtiger Einrichtungen. Verlangt Sicherheitsmassnahmen, Meldepflichten und Risikomanagement."
+            dora:
+                name: "DORA (Digital Operational Resilience Act)"
+                definition: "EU-Verordnung fuer die digitale Betriebsstabilitaet des Finanzsektors. Verlangt IT-Risikomanagement, Incident-Meldewesen, Resilienztests und Lieferantensteuerung. Seit Januar 2025 verpflichtend."
+            tisax:
+                name: "TISAX"
+                definition: "Branchenstandard der Automobilindustrie fuer Informationssicherheit, basierend auf dem VDA ISA-Fragebogen. Baut auf ISO 27001 auf, ergaenzt automobilspezifische Anforderungen wie Prototypenschutz."
+            bsi_grundschutz:
+                name: "BSI IT-Grundschutz"
+                definition: "Deutscher Standard des BSI mit einem Massnahmenkatalog (IT-Grundschutz-Kompendium) fuer typische IT-Szenarien. Komplementaer zu ISO 27001 — viele Massnahmen lassen sich 1:1 mappen."
+            audit_finding:
+                name: "Audit-Feststellung (Audit Finding)"
+                definition: "Ergebnis einer Auditueberpruefung: schwere Nichtkonformitaet (Major NC), leichte Nichtkonformitaet (Minor NC), Beobachtung (Observation) oder Verbesserungsmoeglichkeit."
+                analogy: "Auditfeststellungen aus 9001 Klausel 9.2 — gleiche Typen, gleiche Methodik."
+            nonconformity:
+                name: "Nichtkonformitaet (Nonconformity)"
+                definition: "Nichterfuellung einer Anforderung. Major NC = systematisches Versagen. Minor NC = einzelne Abweichung. Bei Zertifizierungsaudits koennen Major NCs das Zertifikat verhindern."
+                analogy: "Identisch zu Nichtkonformitaet in 9001 (Klausel 10.2) — gleiche Terminologie."
+            corrective_action:
+                name: "Korrekturmassnahme (Corrective Action)"
+                definition: "Massnahme zur Beseitigung der Ursache einer Nichtkonformitaet. Muss geplant, umgesetzt und auf Wirksamkeit ueberprueft werden (Klausel 10.1)."
+                analogy: "CAPA aus ISO 9001 (Klausel 10.2) — fast identisches Konzept."
+            gdpr_dsgvo:
+                name: "DSGVO / GDPR"
+                definition: "EU-Datenschutz-Grundverordnung. Regelt den Schutz personenbezogener Daten. Zentrale Pflichten: Rechtmaessigkeit, Zweckbindung, Datenminimierung, Betroffenenrechte, Meldepflichten. Bussgelder bis 20 Mio. EUR oder 4% Jahresumsatz."
+            data_breach:
+                name: "Datenschutzvorfall (Data Breach)"
+                definition: "Verletzung des Schutzes personenbezogener Daten (DSGVO Art. 4 Nr. 12). Muss innerhalb von 72 Stunden an die Aufsichtsbehoerde gemeldet werden. Nicht jeder Sicherheitsvorfall ist ein Data Breach — nur wenn personenbezogene Daten betroffen sind."
+            processing_activity:
+                name: "Verarbeitungstaetigkeit"
+                definition: "Jeder Vorgang der Verarbeitung personenbezogener Daten: Erheben, Speichern, Uebermitteln, Loeschen. Alle muessen im VVT dokumentiert werden (DSGVO Art. 30)."
+            data_subject_request:
+                name: "Betroffenenanfrage (DSR)"
+                definition: "Anfrage einer betroffenen Person gemaess DSGVO Art. 15-22: Auskunft, Berichtigung, Loeschung, Einschraenkung, Datenuebertragbarkeit oder Widerspruch. Frist: ein Monat."
+            incident:
+                name: "Sicherheitsvorfall (Incident)"
+                definition: "Ereignis das die Vertraulichkeit, Integritaet oder Verfuegbarkeit von Informationen beeintraechtigt. Unterschied zum Data Breach: Incidents betreffen Informationssicherheit allgemein, Data Breaches spezifisch personenbezogene Daten."
+                analogy: "Vergleichbar mit Nichtkonformitaet aus 9001 — aber reaktiv auf Sicherheitsereignisse."
+            patch_management:
+                name: "Patch-Management"
+                definition: "Systematischer Prozess zum Identifizieren, Bewerten und Einspielen von Software-Updates und Sicherheitspatches. Reduziert technische Schwachstellen (Annex A.8.8)."
+            change_request:
+                name: "Aenderungsantrag (Change Request)"
+                definition: "Formaler Antrag zur Aenderung eines IT-Systems, Prozesses oder einer Konfiguration. Muss vor Umsetzung auf Sicherheitsauswirkungen geprueft werden (Annex A.8.32)."
+                analogy: "Wie Aenderungsantrag in 9001 (Klausel 6.3) — formalisiert mit Auswirkungsbewertung."
+            awareness_training:
+                name: "Sensibilisierung & Schulung"
+                definition: "Massnahmen fuer Mitarbeiter-Wissen ueber Informationssicherheit: Awareness-Schulungen, Phishing-Tests, Richtlinien-Einweisungen. Pflicht nach Klausel 7.2/7.3, operationalisiert durch Annex A.6.3."
+                analogy: "Kompetenz und Bewusstsein aus 9001 (Klausel 7.2/7.3) — identische HLS-Anforderung."
+            document_control:
+                name: "Dokumentenlenkung"
+                definition: "Verwaltung der ISMS-Dokumente: Erstellung, Pruefung, Freigabe, Versionierung und Archivierung. Stellt sicher, dass immer die aktuelle Version verwendet wird (Klausel 7.5)."
+                analogy: "Dokumentierte Information aus 9001 (Klausel 7.5) — praktisch identisch."
+            supplier_security:
+                name: "Lieferantensicherheit"
+                definition: "Bewertung und Steuerung der Informationssicherheit bei Lieferanten. Umfasst Sicherheitsanforderungen in Vertraegen und regelmaessige Bewertung (Annex A.5.19-5.22)."
+                analogy: "Lieferantenbewertung aus 9001 (Klausel 8.4) — gleiche Logik, erweitert um Sicherheitsaspekte."
+            pdca:
+                name: "PDCA-Zyklus"
+                definition: "Plan-Do-Check-Act: Grundlegendes Verbesserungsmodell. Bildet die ISMS-Struktur — von Risikoanalyse (Plan) ueber Massnahmenumsetzung (Do) und Audits (Check) bis Verbesserung (Act)."
+                analogy: "Identisch mit dem PDCA-Zyklus in 9001 — das gleiche Grundprinzip."
+            hls:
+                name: "HLS (High Level Structure)"
+                definition: "Gemeinsame Grundstruktur aller ISO-Managementsystem-Normen (Klauseln 1-10). Deshalb haben ISO 9001, 14001 und 27001 die gleiche Kapitelstruktur — erleichtert die Integration."
+                analogy: "Genau deshalb fuehlen Sie sich in 27001 zu Hause — Klauseln 4-10 kennen Sie bereits."
+            kpi:
+                name: "KPI (Kennzahl)"
+                definition: "Messbare Kennzahl zur Bewertung der ISMS-Leistung (Klausel 9.1). Beispiele: Anteil umgesetzter Controls, mittlere Behebungszeit, Schulungsquote. Im Tool als tagesaktuelle Snapshots gespeichert."
+                analogy: "QMS-Kennzahlen aus 9001 (Klausel 9.1) — gleiches Konzept, andere Metriken."
+            maturity:
+                name: "Reifegrad (Maturity Level)"
+                definition: "Bewertung wie ausgereift ein Prozess umgesetzt ist, typischerweise 0 (nicht vorhanden) bis 5 (optimiert). Hilft dem CISO, den ISMS-Gesamtzustand einzuschaetzen und Prioritaeten zu setzen."
+            four_eyes_principle:
+                name: "Vier-Augen-Prinzip"
+                definition: "Sicherheitsprinzip: kritische Aktionen benoetigen die Genehmigung einer zweiten Person. Im Tool als Freigabe-Workflow implementiert, z.B. fuer Risikoakzeptanz oder Control-Aenderungen."
+            segregation_of_duties:
+                name: "Funktionstrennung (SoD)"
+                definition: "Keine einzelne Person soll alle Schritte eines kritischen Prozesses allein durchfuehren koennen. Beispiel: Wer eine Aenderung beantragt, darf sie nicht selbst genehmigen (Annex A.5.3)."
+            least_privilege:
+                name: "Minimale Berechtigung (Least Privilege)"
+                definition: "Jeder Benutzer erhaelt nur die minimal notwendigen Berechtigungen. Zugang zu Informationen nur bei dienstlicher Notwendigkeit (Annex A.5.15, A.8.2)."
+            defense_in_depth:
+                name: "Verteidigung in der Tiefe"
+                definition: "Sicherheitsstrategie mit mehreren ueberlagerten Schutzschichten. Wenn eine Massnahme versagt, greifen die naechsten. Kein einzelner Control ist allein ausreichend."
+            cross_framework_mapping:
+                name: "Cross-Framework-Mapping"
+                definition: "Zuordnung der Anforderungen verschiedener Frameworks zueinander (z.B. ISO 27001 A.5.1 ↔ NIS2 Art. 21). Ermoeglicht Wiederverwendung bereits erfuellter Nachweise — eine Massnahme deckt mehrere Frameworks ab."
+            transitive_compliance:
+                name: "Transitive Compliance"
+                definition: "Wenn Framework A auf B gemappt ist und B auf C, ergibt sich eine transitive Abdeckung von A nach C. Das Tool berechnet diese Ketten automatisch."
+            data_reuse:
+                name: "Data Reuse (Datenwiederverwendung)"
+                definition: "Kernprinzip des Tools: Einmal erfasste Informationen (Assets, Risiken, Controls) werden automatisch in allen relevanten Kontexten wiederverwendet — ohne doppelte Erfassung."
+            industry_baseline:
+                name: "Branchen-Baseline"
+                definition: "Vorkonfiguriertes Starter-Paket fuer einen Mandanten basierend auf seiner Branche. Enthaelt typische Assets, Risiken, Controls und Framework-Empfehlungen. ISMS nicht von null aufbauen."
+            mttr:
+                name: "MTTR (Mean Time to Resolve)"
+                definition: "Durchschnittliche Zeit von Erkennung eines Vorfalls bis Behebung. Wichtige Management-Kennzahl — zeigt Reaktionsgeschwindigkeit der Organisation."
+            compliance_gap:
+                name: "Compliance-Luecke (Gap)"
+                definition: "Differenz zwischen Soll (Framework-Anforderungen) und Ist (umgesetzte Massnahmen). Grundlage fuer Priorisierung und Budgetplanung."
+            encryption:
+                name: "Verschluesselung (Encryption)"
+                definition: "Umwandlung von Klartext in unlesbaren Chiffretext. Schuetzt Vertraulichkeit bei Speicherung (at rest) und Uebertragung (in transit). Annex A.8.24."
+            mfa:
+                name: "MFA (Multi-Faktor-Authentifizierung)"
+                definition: "Authentifizierung durch mindestens zwei verschiedene Faktoren: Wissen (Passwort), Besitz (Token/Smartphone) oder Biometrie. Im Tool als TOTP implementiert."
+            network_segmentation:
+                name: "Netzwerksegmentierung"
+                definition: "Aufteilung eines Netzwerks in isolierte Zonen, um Angriffsausbreitung zu begrenzen. Teil der Defense-in-Depth-Strategie."
+            siem:
+                name: "SIEM (Security Information and Event Management)"
+                definition: "System zur zentralen Sammlung, Korrelation und Analyse von Sicherheitsereignissen. Ermoeglicht Echtzeit-Erkennung von Angriffen und Anomalien (Annex A.8.16)."
+            access_control:
+                name: "Zugriffskontrolle (Access Control)"
+                definition: "Regeln und Mechanismen, die bestimmen wer auf welche Informationen zugreifen darf. Unterscheide: Zutritt (physisch), Zugang (logisch zum System), Zugriff (auf Daten/Funktionen)."
+            information_classification:
+                name: "Informationsklassifizierung"
+                definition: "Einstufung von Informationen nach Schutzbedarf: oeffentlich, intern, vertraulich, streng vertraulich. Bestimmt welche Schutzmassnahmen anzuwenden sind (Annex A.5.12)."
+            backup_recovery:
+                name: "Datensicherung & Wiederherstellung"
+                definition: "Regelmaessige Sicherungskopien und getestete Wiederherstellungsverfahren. Best Practice: 3-2-1-Regel (3 Kopien, 2 Medien, 1 extern)."
+            logging_monitoring:
+                name: "Protokollierung & Ueberwachung"
+                definition: "Aufzeichnung sicherheitsrelevanter Ereignisse und laufende Ueberwachung auf Anomalien. Im Tool als Audit-Log implementiert. Unverzichtbar fuer Incident Detection."
+                analogy: "Vergleichbar mit Lenkung von Aufzeichnungen in 9001 (Klausel 7.5) — nur deutlich umfangreicher."
+            baustein:
+                name: "Baustein (BSI IT-Grundschutz)"
+                definition: "Modularer Sicherheitsbaustein im BSI IT-Grundschutz-Kompendium. Deckt ein spezifisches Thema ab (z.B. SYS.1.1 Allgemeiner Server). Jeder Baustein enthaelt Anforderungen (MUSS/SOLLTE/KANN)."
+            elementare_gefaehrdung:
+                name: "Elementare Gefaehrdung (BSI)"
+                definition: "Eine der 47 grundlegenden Bedrohungen im BSI-Modell (G 0.1 bis G 0.47). Beispiele: G 0.14 Ausspaehen, G 0.28 Software-Schwachstellen. Werden fuer die Risikoanalyse nach BSI 200-3 verwendet."
+            absicherungsstufe:
+                name: "Absicherungsstufe (BSI)"
+                definition: "Drei Stufen im BSI IT-Grundschutz: Basis-Absicherung (nur MUSS), Standard-Absicherung (MUSS + SOLLTE), Kern-Absicherung (hoechster Schutz fuer kritische Assets). Das Tool zeigt Compliance pro Stufe."
+            schutzbedarfsfeststellung:
+                name: "Schutzbedarfsfeststellung"
+                definition: "Systematische Ermittlung des Schutzbedarfs aller Assets anhand der Grundwerte (C/I/A). Ergebnis: normal, hoch oder sehr hoch. Basis fuer Auswahl passender Bausteine."
+                analogy: "Wie Risikoanalyse in 9001 (Klausel 6.1) — nur formalisierter mit dreistufiger Bewertung pro Grundwert."
+            modellierung:
+                name: "Modellierung (BSI IT-Grundschutz)"
+                definition: "Zuordnung von BSI-Bausteinen zu den tatsaechlichen Zielobjekten (Server, Netze, Anwendungen). Ergibt die individuelle Soll-Konfiguration. Das Tool automatisiert dies teilweise ueber Asset-Typen."
+            interested_parties:
+                name: "Interessierte Parteien (Stakeholder)"
+                definition: "Personen oder Organisationen die das ISMS beeinflussen oder davon betroffen sind: Kunden, Regulierer, Mitarbeiter, Lieferanten, Gesellschafter. Deren Anforderungen muessen beruecksichtigt werden (Klausel 4.2)."
+                analogy: "Identisch mit 'interessierte Parteien' aus 9001 Klausel 4.2."
+            continual_improvement:
+                name: "Kontinuierliche Verbesserung (KVP)"
+                definition: "Fortlaufende Steigerung der ISMS-Wirksamkeit durch Analyse von Auditergebnissen, KPIs, Vorfaellen und Management Reviews. Der PDCA-Zyklus ist das Werkzeug dafuer (Klausel 10.2)."
+                analogy: "KVP aus 9001 (Klausel 10.3) — identisches Prinzip."
+            risk_owner:
+                name: "Risikoeigentuemer (Risk Owner)"
+                definition: "Person mit der Befugnis und Verantwortung, ein Risiko zu managen. Typischerweise der Fachbereichsleiter, nicht der ISB. Entscheidet ueber Behandlungsstrategie und akzeptiert das Restrisiko."
+            asset_owner:
+                name: "Asset-Eigentuemer (Asset Owner)"
+                definition: "Person die fuer den Schutz eines Informationswerts verantwortlich ist. Bestimmt Klassifizierung und Zugriffsregeln. Muss nicht der technische Betreiber sein (Annex A.5.9)."
+            c5:
+                name: "C5 (Cloud Computing Compliance Criteria Catalogue)"
+                definition: "BSI-Standard fuer Cloud-Sicherheit. 17 Bereiche mit Mindestanforderungen an sichere Cloud-Dienste. Fuer oeffentliche Auftraggeber in Deutschland oft verpflichtend."
+            vulnerability_scan:
+                name: "Schwachstellenscan (Vulnerability Scan)"
+                definition: "Automatisierte Pruefung von Systemen auf bekannte Sicherheitsluecken (CVEs). Regelmaessig und nach Aenderungen durchfuehren. Ergebnisse fliessen ins Patch-Management."
+            penetration_test:
+                name: "Penetrationstest (Pentest)"
+                definition: "Gezielter, autorisierter Angriffsversuch auf IT-Systeme. Manuell und tiefergehend als Vulnerability Scans. Unter DORA als TLPT formalisiert (Art. 26)."
+            escalation:
+                name: "Eskalation"
+                definition: "Strukturierte Weiterleitung an eine hoehere Entscheidungsebene bei Fristueberschreitung oder hohem Schweregrad. Im Tool automatisiert: Severity + Data Breach → Workflow-Eskalation."
+            sla_ops:
+                name: "SLA (Service Level Agreement)"
+                definition: "Vereinbarung ueber Leistungskennzahlen: Verfuegbarkeit, Reaktionszeiten, Wiederherstellungszeiten. Im ISMS besonders relevant fuer Cloud-Dienste und ausgelagerte IT (Annex A.5.20)."
+            information_security_policy:
+                name: "Informationssicherheitsleitlinie"
+                definition: "Oberstes ISMS-Dokument — von der Geschaeftsleitung verabschiedet. Definiert Ziele, Geltungsbereich und Grundsaetze der Informationssicherheit. Muss fuer alle Mitarbeiter zugaenglich sein."
+                analogy: "Wie die Qualitaetspolitik in 9001 (Klausel 5.2) — gleiche Anforderung, anderer Inhalt."
+            certification_audit:
+                name: "Zertifizierungsaudit"
+                definition: "Externes Audit durch akkreditierte Stelle (z.B. TUEV, DEKRA). Stage 1: Dokumentenpruefung, Stage 2: Vor-Ort-Pruefung. Zertifikat gilt 3 Jahre mit jaehrlichen Ueberwachungsaudits."
+            risk_assessment:
+                name: "Risikobewertung (Risk Assessment)"
+                definition: "Systematischer Prozess: Risiken identifizieren → Eintrittswahrscheinlichkeit und Auswirkung bewerten → priorisieren. Muss regelmaessig und bei wesentlichen Aenderungen wiederholt werden (Klausel 6.1.2)."
+                analogy: "Risiken und Chancen aus 9001 (Klausel 6.1) — gleicher Ansatz, aber mit formaler Bewertungsmatrix."
+            bcms:
+                name: "BCMS (Business Continuity Management System)"
+                definition: "Managementsystem fuer Geschaeftskontinuitaet — analog zum ISMS, aber fokussiert auf Aufrechterhaltung kritischer Prozesse bei Stoerungen. Kann eigenstaendig (ISO 22301) oder als Teil des ISMS betrieben werden."
+                analogy: "Wie das QMS fuer Qualitaet ist, ist das BCMS fuer Geschaeftskontinuitaet — gleiche HLS-Struktur."
+            mbco:
+                name: "MBCO (Minimum Business Continuity Objective)"
+                definition: "Minimal akzeptables Leistungsniveau im Notbetrieb. Beispiel: 'Kundenservice muss mindestens 30% der Anfragen bearbeiten.' Definiert die Untergrenze zwischen tragbar und nicht mehr akzeptabel."
+            bc_strategy:
+                name: "Kontinuitaetsstrategie (BC Strategy)"
+                definition: "Uebergeordneter Ansatz zum Schutz kritischer Prozesse: Massnahmen VOR einem Ausfall (Praevention), WAEHREND (Notbetrieb) und DANACH (Wiederherstellung). Leitet sich aus der BIA ab."
+            notbetrieb:
+                name: "Notbetrieb (Emergency Operations)"
+                definition: "Eingeschraenkter Betrieb nach BC-Plan-Aktivierung. Nur kritischste Funktionen laufen — mit reduzierten Ressourcen oder Workarounds. Ziel: MBCO sicherstellen bis Normalbetrieb wiederhergestellt."
+            wiederanlauf:
+                name: "Wiederanlauf (Recovery)"
+                definition: "Phase nach dem Notbetrieb: schrittweise Rueckkehr zum Normalbetrieb. Unterscheide: Wiederanlauf (Systeme hochfahren), Geschaeftsfortfuehrung (Prozesse aufnehmen), Normalbetrieb (alles wie vorher). RTO misst Zeit bis Wiederanlauf."
+            crisis_management:
+                name: "Krisenmanagement"
+                definition: "Fuehrung und Koordination in einer Krisensituation. Der Krisenstab uebernimmt Entscheidungsbefugnis, koordiniert Kommunikation und steuert Ressourcen. Aktivierung ueber definierte Eskalationskriterien."
+            crisis_team:
+                name: "Krisenstab (Crisis Team)"
+                definition: "Vordefiniertes Team das bei Krisen die Steuerung uebernimmt. BSI 200-4 unterscheidet: strategischer Krisenstab (Geschaeftsleitung), operativer Krisenstab (ISB, IT-Leiter) und technisches Notfallteam (Hands-on)."
+            crisis_communication:
+                name: "Krisenkommunikation"
+                definition: "Strukturierte interne und externe Kommunikation waehrend einer Krise. Vorgefertigte Textbausteine und klare Freigabeprozesse beschleunigen die Reaktion erheblich."
+            tabletop_exercise:
+                name: "Planspiel (Tabletop Exercise)"
+                definition: "Diskussionsbasierte BC-Uebung: Szenario wird am Tisch durchgesprochen ohne Systemaktivierung. Kosteneffizient, identifiziert Luecken in Plaenen. Empfohlen als Einstieg."
+            full_scale_exercise:
+                name: "Volluebung (Full-Scale Exercise)"
+                definition: "Realitaetsnahe Uebung mit Aktivierung von BC-Plaenen, Krisenstab und ggf. Ausweichstandort. Hoechster Aufwand und Erkenntnisgewinn. DORA verlangt aehnliche Tests (TLPT)."
+            supply_chain_continuity:
+                name: "Lieferketten-Kontinuitaet"
+                definition: "Geschaeftskontinuitaet bei Ausfall kritischer Lieferanten sicherstellen: Kritische Lieferanten identifizieren, deren RTO/RPO bewerten, Alternativlieferanten dokumentieren."
+            single_point_of_failure:
+                name: "Single Point of Failure (SPOF)"
+                definition: "Komponente deren Ausfall den gesamten Prozess zum Stillstand bringt — ohne Redundanz. SPOFs zu identifizieren und beseitigen ist Kernziel der BIA."
+            notfallvorsorge:
+                name: "Notfallvorsorge (Emergency Preparedness)"
+                definition: "Alle vorbeugenden Massnahmen VOR einem Notfall: BC-Plaene, Krisenstab, Uebungen, Ausweichstandorte, Backup-Tests. BSI 200-4 spricht vom 'Notfallvorsorgekonzept'."
+            tlpt:
+                name: "TLPT (Threat-Led Penetration Testing)"
+                definition: "Bedrohungsgesteuerter Penetrationstest, verpflichtend unter DORA fuer systemrelevante Finanzinstitute. Simuliert realistische Angriffsszenarien. Alle 3 Jahre durch externe Tester."
 
     tour:
         steps: "Schritte"
