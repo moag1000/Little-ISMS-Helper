@@ -3,39 +3,41 @@
    Help overlay and trigger button
    ============================================ */
 
-/* Floating Trigger Button - Cyberpunk Fairy */
+/* Floating Trigger Button — Aurora-native (v4) */
 .keyboard-shortcuts-trigger {
     position: fixed;
-    bottom: 24px;
-    left: 24px;
-    width: 48px;
-    height: 48px;
+    bottom: var(--alva-dock-offset-y, 24px);
+    left: var(--alva-dock-offset-x, 24px);
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: white;
-    border: 2px solid var(--accent);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
+    background: var(--surface);
+    color: var(--primary-strong);
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
-    transition: all 0.2s ease;
-    z-index: 1000;
+    font-size: 18px;
+    transition: border-color var(--t-fast, 0.15s) var(--ease-out, ease-out),
+                box-shadow var(--t-fast, 0.15s) var(--ease-out, ease-out),
+                color var(--t-fast, 0.15s) var(--ease-out, ease-out);
+    z-index: calc(var(--alva-z, 9500) - 10);
+}
+.keyboard-shortcuts-trigger:hover,
+.keyboard-shortcuts-trigger:focus-visible {
+    color: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-tint), 0 2px 8px rgba(0, 0, 0, 0.1);
+    outline: none;
 }
 
-.keyboard-shortcuts-trigger::after {
-    content: '✨';
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    font-size: 14px;
-}
-
-.keyboard-shortcuts-trigger:hover {
-    background: linear-gradient(135deg, var(--accent), var(--accent));
-    transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), 0 0 25px var(--primary-glow);
+/* Collision-avoidance: when Alva-Dock occupies the same corner, stack the
+   keyboard trigger above Alva with a vertical offset. Uses :has() which is
+   supported in all evergreen browsers (Safari 15.4+, Chrome 105+, FF 121+). */
+body:has(.fa-alva-dock--pos-bottom-left) .keyboard-shortcuts-trigger {
+    bottom: calc(var(--alva-dock-offset-y, 24px) + 96px);
 }
 
 /* Modal */

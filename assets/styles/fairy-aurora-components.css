@@ -2178,6 +2178,15 @@ html[data-theme="dark"] .keyboard-key {
     border-color: var(--border-strong);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
+/* Preserve colored left-accent on hover — otherwise .card:hover (0,2,0)
+   overrides the colored border-left from .card.border-<color> (0,2,0) and
+   the accent disappears when the user hovers. */
+.card.border-primary:hover { border-left-color: var(--primary); }
+.card.border-success:hover { border-left-color: var(--success); }
+.card.border-warning:hover { border-left-color: var(--warning); }
+.card.border-danger:hover  { border-left-color: var(--danger); }
+.card.border-info:hover    { border-left-color: var(--primary); }
+.card.border-accent:hover  { border-left-color: var(--accent); }
 
 /* (0,2,0) — beats Bootstrap's .card-header (0,1,0) and equals
    Bootstrap's .card-header:first-child (0,2,0); Aurora wins by load order */
@@ -2232,6 +2241,36 @@ html[data-theme="dark"] .keyboard-key {
    Specificity (0,3,0) equals Bootstrap, Aurora wins by load order. */
 .card > .list-group + .card-footer {
     border-top: 1px solid var(--border);
+}
+
+/* Bootstrap's .card-header:first-child + .card-footer:last-child + .card-body
+   pseudo rules (0,2,0) affect border-radius when the header/footer is the
+   first/last child. Aurora's .card > .card-header (0,2,0) tied on specificity
+   and relied on load-order. Bump Aurora's specificity to (0,3,0) via :first-child
+   / :last-child so Aurora wins regardless of import order. */
+.card > .card-header:first-child {
+    background-color: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+    border-top-left-radius: calc(var(--r-lg) - 1px);
+    border-top-right-radius: calc(var(--r-lg) - 1px);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.card > .card-footer:last-child {
+    background-color: var(--surface-2);
+    border-top: 1px solid var(--border);
+    color: var(--fg-2);
+    border-bottom-left-radius: calc(var(--r-lg) - 1px);
+    border-bottom-right-radius: calc(var(--r-lg) - 1px);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+/* When a .card-body is the only child (no header, no footer), it owns all
+   four corners. Bootstrap sets this via .card-body:first-child:last-child
+   (0,3,0); Aurora matches to enforce the token-based radius. */
+.card > .card-body:only-child {
+    border-radius: calc(var(--r-lg) - 1px);
 }
 
 .card-title { color: var(--fg); font-weight: 600; }
