@@ -5,6 +5,7 @@
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
@@ -13,20 +14,16 @@
         ]
     } %}
 
-    <div class="page-header">
-        <div>
-            <h1>{{ 'bcm.page.title'|trans({}, 'bcm') }}</h1>
-            <p class="text-muted">{{ 'bcm.page.subtitle'|trans({}, 'bcm') }}</p>
-        </div>
-        <div class="button-group">
-            <a href="{{ path('app_bcm_data_reuse') }}" class="btn btn-secondary">
-                <i class="bi bi-link-45deg" aria-hidden="true"></i> {{ 'bcm.action.data_reuse'|trans({}, 'bcm') }}
-            </a>
-            <a href="{{ path('app_business_process_new') }}" class="btn btn-primary">
-                <i class="bi bi-plus-lg" aria-hidden="true"></i> {{ 'bcm.action.add_process'|trans({}, 'bcm') }}
-            </a>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'diagram-3', label: 'bcm.page.title'|trans({}, 'bcm') },
+        title: 'bcm.page.title'|trans({}, 'bcm'),
+        subtitle: 'bcm.page.subtitle'|trans({}, 'bcm'),
+        actions: [
+            { label: 'bcm.action.data_reuse'|trans({}, 'bcm'), href: path('app_bcm_data_reuse'), variant: 'ghost', icon: 'link-45deg' },
+            { label: 'bcm.action.add_process'|trans({}, 'bcm'), href: path('app_business_process_new'), variant: 'primary', icon: 'plus-lg' }
+        ]
+    }) }}
+    <main class="fa-aurora-surface">
 
     {# KPI Overview Cards #}
     <div class="kpi-grid">
@@ -185,6 +182,7 @@
             </div>
         {% endblock %}
     {% endembed %}
+    </main>
 </div>
 
 <style>

@@ -6,6 +6,7 @@
 {% block title %}{{ 'business_process.index.title'|trans({}, 'business_process') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 <div class="container-fluid">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -14,12 +15,14 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>{{ 'business_process.index.page_title'|trans({}, 'business_process') }}</h1>
-        <a href="{{ path('app_business_process_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'business_process.index.new_process'|trans({}, 'business_process') }}
-        </a>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'diagram-3', label: 'business_process.index.title'|trans({}, 'business_process') },
+        title: 'business_process.index.page_title'|trans({}, 'business_process'),
+        actions: [
+            { label: 'business_process.index.new_process'|trans({}, 'business_process'), href: path('app_business_process_new'), variant: 'primary', icon: 'plus-circle' }
+        ]
+    }) }}
+    <main class="fa-aurora-surface">
 
     {# Notifications Container for Turbo Streams #}
     <div id="notifications" class="mb-3"></div>
@@ -165,6 +168,7 @@
             {% endblock %}
         {% endembed %}
     </turbo-frame>
+    </main>
 </div>
 
 {# Note: Loading indicator is now handled via CSS variable or JavaScript for i18n #}
