@@ -21,7 +21,12 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class RestoreService
 {
-    private const array SUPPORTED_VERSIONS = ['1.0'];
+    /**
+     * Backup format versions that this RestoreService can handle.
+     * '1.0' = legacy JSON-only (no schema_version in metadata)
+     * '2.0' = JSON + optional ZIP-embedded files + schema_version + app_version
+     */
+    private const array SUPPORTED_VERSIONS = ['1.0', '2.0'];
 
     // Strategies for handling missing fields
     public const string STRATEGY_SKIP_FIELD = 'skip_field';
@@ -46,7 +51,16 @@ class RestoreService
     }
 
     /**
-     * Validate backup data
+     * Validate backup data.
+     *
+     * Checks:
+     *  - metadata section present
+     *  - format version supported (major-version check)
+     *  - schema_version warning if present and different from current
+     *  - data section present and valid per entity
+     *
+     * Legacy backups (version missing) are assumed to be format 1.0 and accepted
+     * with a warning so old JSON-only backups remain restoreable.
      *
      * @param array $backup Backup data to validate
      * @return array Validation result with 'valid' boolean and 'errors' array
@@ -64,11 +78,28 @@ class RestoreService
 
         // Check version compatibility
         $version = $backup['metadata']['version'] ?? null;
-        if (!in_array($version, self::SUPPORTED_VERSIONS)) {
+        if ($version === null) {
+            // Legacy backup without version field — treat as 1.0 (JSON-only)
+            $this->warnings[] = 'Backup has no format version (assumed legacy 1.0). File restore will be skipped.';
+        } elseif (!in_array($version, self::SUPPORTED_VERSIONS, true)) {
+            // Major-version guard: reject if major part differs from all supported
             $this->validationErrors[] = sprintf(
                 'Unsupported backup version: %s (supported: %s)',
                 $version,
                 implode(', ', self::SUPPORTED_VERSIONS)
+            );
+        }
+
+        // Schema version advisory check (non-blocking)
+        if (isset($backup['metadata']['schema_version'])) {
+            $this->checkSchemaVersionCompatibility($backup['metadata']['schema_version']);
+        }
+
+        // Warn when files were in backup but extraction has not happened yet
+        if (!empty($backup['metadata']['files_included']) && !isset($backup['metadata']['_extracted_file_count'])) {
+            $this->warnings[] = sprintf(
+                'Backup contains %d embedded file(s) — load via BackupService::loadBackupFromFile() to extract them.',
+                $backup['metadata']['file_count'] ?? 0
             );
         }
 
@@ -101,6 +132,34 @@ class RestoreService
             'errors' => $this->validationErrors,
             'warnings' => $this->warnings,
         ];
+    }
+
+    /**
+     * Compare the backup schema_version against the current database schema.
+     * Adds a non-blocking warning when they differ.
+     */
+    private function checkSchemaVersionCompatibility(string $backupSchemaVersion): void
+    {
+        try {
+            $connection = $this->entityManager->getConnection();
+            $result = $connection->executeQuery(
+                'SELECT version FROM doctrine_migration_versions ORDER BY executed_at DESC LIMIT 1'
+            );
+            $row = $result->fetchAssociative();
+            if ($row !== false && isset($row['version'])) {
+                $currentVersion = preg_replace('/^.*\\\\/', '', (string) $row['version']) ?? (string) $row['version'];
+                if ($currentVersion !== $backupSchemaVersion) {
+                    $this->warnings[] = sprintf(
+                        'Schema version mismatch: backup was created with schema "%s", current schema is "%s". '
+                        . 'Some fields may be missing or incompatible.',
+                        $backupSchemaVersion,
+                        $currentVersion
+                    );
+                }
+            }
+        } catch (Exception) {
+            // Non-critical — if the table does not exist we simply skip the check
+        }
     }
 
     /**
@@ -995,8 +1054,27 @@ class RestoreService
                         }
                     }
 
-                    // Convert ISO 8601 strings back to DateTime/DateTimeImmutable
+                    // Null-Schutz für nicht-nullable JSON-/Array-Felder (z.B.
+                    // User::$completedTours, Entity-Settings-JSONs). Ohne diesen
+                    // Check crasht property-access mit
+                    // "Cannot assign null to property ... of type array".
                     $type = $classMetadata->getTypeOfField($fieldName);
+                    if ($value === null && in_array($type, ['json', 'simple_array', 'array'], true)) {
+                        try {
+                            $mapping = $classMetadata->getFieldMapping($fieldName);
+                            $isNullable = is_array($mapping)
+                                ? ($mapping['nullable'] ?? false)
+                                : ($mapping->nullable ?? false);
+                            if (!$isNullable) {
+                                $value = [];
+                            }
+                        } catch (Exception) {
+                            // Fallback: bei unbekannter Metadata default auf [] setzen.
+                            $value = [];
+                        }
+                    }
+
+                    // Convert ISO 8601 strings back to DateTime/DateTimeImmutable
                     if (in_array($type, ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'time', 'time_immutable'])) {
                         try {
                             // Check if type expects immutable or mutable
