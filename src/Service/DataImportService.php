@@ -12,7 +12,10 @@ use App\Entity\InternalAudit;
 use App\Entity\Training;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Entity\SampleDataImport;
 use App\Entity\Tenant;
+use App\Entity\User;
+use App\Repository\SampleDataImportRepository;
 use App\Repository\TenantRepository;
 use DateTime;
 use ReflectionClass;
@@ -47,11 +50,19 @@ class DataImportService
 {
     private array $importLog = [];
 
+    /**
+     * Laufzeit-Kontext eines aktuell aktiven Sample-Imports.
+     * Wird vor importFromFile() gesetzt, damit importEntities() die
+     * angelegten Entities tracken kann. Null zwischen Imports.
+     */
+    private ?array $activeImportContext = null;
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly KernelInterface $kernel,
         private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly TenantRepository $tenantRepository,
+        private readonly SampleDataImportRepository $sampleImportRepository,
         private readonly string $projectDir
     ) {
     }
@@ -125,11 +136,12 @@ class DataImportService
     /**
      * Importiert Beispiel-Daten
      */
-    public function importSampleData(array $selectedSamples, array $activeModules): array
+    public function importSampleData(array $selectedSamples, array $activeModules, ?Tenant $tenant = null, ?User $importedBy = null): array
     {
         $this->importLog = [];
         $sampleData = $this->moduleConfigurationService->getSampleData();
         $results = [];
+        $tenant = $tenant ?? $this->resolveImportTenant();
 
         foreach ($selectedSamples as $sampleKey => $selected) {
             if (!$selected) {
@@ -169,19 +181,28 @@ class DataImportService
 
             // Führe Import durch
             if (isset($data['command'])) {
+                // Commands tracken wir (noch) nicht — keine Entity-IDs zurück.
                 $result = $this->executeCommand($data['command']);
                 $results[] = [
                     'name' => $data['name'],
                     'status' => $result['success'] ? 'success' : 'error',
                     'message' => $result['message'],
                     'output' => $result['output'] ?? null,
+                    'removable' => false,
                 ];
             } elseif (isset($data['file'])) {
+                $this->activeImportContext = [
+                    'sampleKey' => $sampleKey,
+                    'tenant' => $tenant,
+                    'importedBy' => $importedBy,
+                ];
                 $result = $this->importFromFile($data['file']);
+                $this->activeImportContext = null;
                 $results[] = [
                     'name' => $data['name'],
                     'status' => $result['success'] ? 'success' : 'error',
                     'message' => $result['message'],
+                    'removable' => true,
                 ];
             }
         }
@@ -276,7 +297,9 @@ class DataImportService
     private function importEntities(array $data): int
     {
         $count = 0;
-        $tenant = $this->resolveImportTenant();
+        $ctx = $this->activeImportContext;
+        $tenant = $ctx['tenant'] ?? $this->resolveImportTenant();
+        $created = [];
 
         foreach ($data as $entityType => $entities) {
             $entityClass = $this->resolveEntityClass($entityType);
@@ -297,6 +320,7 @@ class DataImportService
                         $entity->setTenant($tenant);
                     }
                     $this->entityManager->persist($entity);
+                    $created[] = $entity;
                     $count++;
                 } catch (Exception $e) {
                     $this->addLog("Error creating entity {$entityClass}: " . $e->getMessage());
@@ -305,9 +329,66 @@ class DataImportService
         }
 
         $this->entityManager->flush();
+
+        // Tracking-Records nach dem Flush (damit Entity-IDs existieren).
+        if ($ctx !== null && $count > 0) {
+            foreach ($created as $entity) {
+                if (!method_exists($entity, 'getId') || $entity->getId() === null) {
+                    continue;
+                }
+                $track = new SampleDataImport();
+                $track->setSampleKey($ctx['sampleKey']);
+                $track->setEntityClass($entity::class);
+                $track->setEntityId((int) $entity->getId());
+                $track->setTenant($ctx['tenant']);
+                $track->setImportedBy($ctx['importedBy']);
+                $this->entityManager->persist($track);
+            }
+            $this->entityManager->flush();
+        }
+
         $this->addLog("Imported {$count} entities");
 
         return $count;
+    }
+
+    /**
+     * Entfernt alle via importSampleData angelegten Entities eines Sample-Keys
+     * für den angegebenen Tenant. Löscht Entities in umgekehrter Insert-Reihenfolge
+     * (neueste zuerst), damit Self-FK-Ketten keine Probleme machen.
+     *
+     * @return array{success: bool, removed: int, errors: array<int, string>}
+     */
+    public function removeSampleData(string $sampleKey, Tenant $tenant): array
+    {
+        $trackedImports = $this->sampleImportRepository->findByKey($sampleKey, $tenant);
+        // Umgekehrt sortieren → FK-sicherer, neueste Inserts zuerst gelöscht.
+        usort($trackedImports, fn(SampleDataImport $a, SampleDataImport $b) => $b->getId() <=> $a->getId());
+
+        $removed = 0;
+        $errors = [];
+
+        foreach ($trackedImports as $track) {
+            try {
+                $entity = $this->entityManager->find($track->getEntityClass(), $track->getEntityId());
+                if ($entity !== null) {
+                    $this->entityManager->remove($entity);
+                    $removed++;
+                }
+                $this->entityManager->remove($track);
+            } catch (Exception $e) {
+                $errors[] = sprintf('%s#%d: %s', $track->getEntityClass(), $track->getEntityId(), $e->getMessage());
+            }
+        }
+
+        try {
+            $this->entityManager->flush();
+        } catch (Exception $e) {
+            $errors[] = 'Flush: ' . $e->getMessage();
+            return ['success' => false, 'removed' => 0, 'errors' => $errors];
+        }
+
+        return ['success' => empty($errors), 'removed' => $removed, 'errors' => $errors];
     }
 
     /**
