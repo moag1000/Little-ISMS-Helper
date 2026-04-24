@@ -1862,6 +1862,8 @@ wizard:
     step_counter: 'Step %current% / %total%'
     companion: 'Alva — companion'
     companion_short: 'companion'
+    skip_typewriter: '» Skip'
+    navigation: 'Wizard navigation'
     actions: 'Actions'
     active_modules: 'Active Modules'
     assessed_at: 'Assessed At'

@@ -120,6 +120,7 @@ setup:
         extensions:
             title: 'PHP-Extensions'
             missing: 'Fehlende Extensions:'
+            missing_count: 'fehlen'
         database:
             title: 'Datenbank'
         permissions:
