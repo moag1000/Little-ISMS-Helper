@@ -33,7 +33,7 @@ final class ExistingFrameworksController extends AbstractController
     public function index(Request $request): Response
     {
         $form = $this->createForm(ExistingFrameworksType::class, null, [
-            'frameworks' => $this->frameworkLoader->getAvailableFrameworks(),
+            'available_frameworks' => $this->frameworkLoader->getAvailableFrameworks(),
         ]);
         $form->handleRequest($request);
 
@@ -50,7 +50,7 @@ final class ExistingFrameworksController extends AbstractController
 
         return $this->render('setup_wizard/existing_frameworks.html.twig', [
             'form' => $form->createView(),
-            'frameworks' => $this->frameworkLoader->getAvailableFrameworks(),
+            'available_frameworks' => $this->frameworkLoader->getAvailableFrameworks(),
         ]);
     }
 
