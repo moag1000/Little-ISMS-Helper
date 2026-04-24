@@ -422,6 +422,108 @@ help:
                 name: "TLPT (Threat-Led Penetration Testing)"
                 definition: "Threat-led penetration test, mandatory under DORA for systemically important financial institutions. Simulates realistic attack scenarios. Every 3 years by external testers."
 
+            personal_data:
+                name: "Personal Data"
+                definition: "Any information relating to an identified or identifiable natural person (GDPR Art. 4(1)). Includes name, email, IP address, even pseudonymized data if re-identification is possible."
+            legal_basis:
+                name: "Legal Basis"
+                definition: "Every processing of personal data requires a legal basis from Art. 6(1) GDPR: (a) consent, (b) contract, (c) legal obligation, (d) vital interests, (e) public interest, (f) legitimate interest."
+            consent_privacy:
+                name: "Consent"
+                definition: "Freely given, informed, and unambiguous indication of wishes for a specific processing purpose (GDPR Art. 7). Must be revocable at any time. For special categories (Art. 9), explicit consent is required."
+            data_minimization:
+                name: "Data Minimization"
+                definition: "GDPR principle: Only collect personal data actually necessary for the purpose (Art. 5(1)(c)). No stockpiling. Closely linked to purpose limitation."
+            tom:
+                name: "TOM (Technical and Organizational Measures)"
+                definition: "Protection measures per GDPR Art. 32: encryption, pseudonymization, access control, backup, training. Linked to ISO 27001 controls in the tool (Data Reuse — no double maintenance)."
+                analogy: "Comparable to infrastructure measures from 9001 (Clause 7.1.3/7.1.4) — but more formalized and privacy-specific."
+            pseudonymization:
+                name: "Pseudonymization"
+                definition: "Processing so that data can no longer be attributed to a person without additional information (GDPR Art. 4(5)). Example: replace name with user ID. Unlike anonymization, pseudonymized data remains personal data."
+            anonymization:
+                name: "Anonymization"
+                definition: "Irreversible alteration of personal data so attribution is no longer possible even with additional knowledge. Anonymized data is NOT subject to GDPR. True anonymization is technically difficult — often only pseudonymization is achievable."
+            privacy_by_design:
+                name: "Privacy by Design / Privacy by Default"
+                definition: "Privacy must be built into systems from the start (by Design) and privacy-friendly defaults must be standard (by Default). Example: opt-in instead of opt-out, data minimization as default."
+            data_processor:
+                name: "Data Processor"
+                definition: "Organization processing personal data on behalf of the controller (GDPR Art. 28). Examples: cloud provider, payroll service. Requires a data processing agreement (DPA) with defined instructions and TOMs."
+            data_controller:
+                name: "Data Controller"
+                definition: "Organization that determines purposes and means of personal data processing (GDPR Art. 4(7)). Bears primary responsibility for GDPR compliance."
+            joint_controller:
+                name: "Joint Controllers"
+                definition: "Two or more controllers jointly determining purposes and means (GDPR Art. 26). Must agree on who fulfills which obligations. Data subjects can exercise rights against any controller."
+            third_country_transfer:
+                name: "Third Country Transfer"
+                definition: "Transfer of personal data outside the EEA (GDPR Art. 44-49). Only permitted with safeguards: adequacy decision (Art. 45), SCCs (Art. 46), Binding Corporate Rules (Art. 47)."
+            scc:
+                name: "SCC (Standard Contractual Clauses)"
+                definition: "EU Commission-prescribed contract clauses for third-country transfers (Art. 46(2)(c)). New version since June 2021 with 4 modules. Most common instrument for US transfers since Schrems II."
+            retention_period:
+                name: "Retention Period"
+                definition: "Period for how long personal data may be stored (Art. 5(1)(e)). Must be deleted after expiry. Often prescribed by law: 10 years commercial, 6 years tax."
+            deletion_concept:
+                name: "Deletion Concept"
+                definition: "Documented procedure for when and how personal data is deleted. Defines retention periods per data type, deletion methods (logical vs. physical), responsibilities, and exceptions."
+            dpo_role:
+                name: "DPO (Data Protection Officer)"
+                definition: "Independent data protection oversight role. Mandatory when 20+ persons are engaged in automated processing (§38 BDSG) or large-scale processing of special categories. Advises, monitors, and serves as contact point."
+            supervisory_authority:
+                name: "Supervisory Authority (DPA)"
+                definition: "State authority monitoring GDPR compliance: BfDI (federal) and 16 state data protection authorities. Responsible for complaints, investigations, fines up to EUR 20M or 4% turnover."
+            pims:
+                name: "PIMS (Privacy Information Management System)"
+                definition: "Extension of the ISMS with privacy-specific requirements per ISO 27701. Adds privacy controls to ISO 27001. Independently certifiable since ISO 27701:2025."
+
+            risk_matrix:
+                name: "Risk Matrix (Heatmap)"
+                definition: "5x5 assessment grid: likelihood (Y) against impact (X). Risk score 1-25 with color coding: green (1-3), yellow (4-9), orange (10-15), red (16-25). Interactive heatmap with clickable cells in the tool."
+            likelihood:
+                name: "Likelihood"
+                definition: "How likely is the risk to occur? Scale 1-5: Rare (1), Unlikely (2), Possible (3), Likely (4), Almost Certain (5). The tool automatically adjusts likelihood when linked incidents occur."
+            impact_risk:
+                name: "Impact"
+                definition: "How severe is the damage if the risk materializes? Scale 1-5: Negligible (1), Minor (2), Moderate (3), Major (4), Critical (5). The tool derives impact automatically from linked asset values."
+            risk_score:
+                name: "Risk Score"
+                definition: "Product of likelihood x impact (1-25). Determines position in risk matrix and treatment urgency. Calculated for gross (before measures) and net risk (after measures)."
+            risk_register:
+                name: "Risk Register"
+                definition: "Central documentation of all identified risks with assessment, treatment status, owners, and review dates. Main view at /risk/ in the tool — filterable by status, category, and severity."
+            treatment_plan:
+                name: "Risk Treatment Plan"
+                definition: "Concrete action plan: what, who, by when, with what budget. Contains linked ISO 27001 controls. Status: Planned → In Progress → Completed → Verified."
+            risk_acceptance_formal:
+                name: "Formal Risk Acceptance"
+                definition: "Documented decision to consciously bear a residual risk — with justification, conditions, and approval at appropriate management level. Four-eyes workflow in the tool. Must be reviewed at least annually."
+            risk_category:
+                name: "Risk Category"
+                definition: "Grouping: Strategic (business model), Operational (disruptions), Financial (losses, fines), Compliance (regulatory), Technical (IT failures, cyberattacks), Reputational (image). Helps with aggregation and reporting."
+            risk_aggregation:
+                name: "Risk Aggregation (Portfolio View)"
+                definition: "Summary view of all risks: distribution across categories, concentration risks, trends. In the tool as dashboard heatmap and portfolio report with 12-month trend."
+            schutzbedarfsvererbung:
+                name: "Protection Needs Inheritance (Maximum Principle)"
+                definition: "BSI principle: If Asset A depends on Asset B, A inherits at least the protection needs of B. The tool calculates this automatically via asset dependencies."
+            asset_risk_link:
+                name: "Asset-Risk Linking"
+                definition: "Assets are directly linked to risks. Enables automatic impact calculation from asset value, automatic protection needs inheritance, and shows in asset detail which risks affect it. Data Reuse: captured once, visible everywhere."
+            kri:
+                name: "KRI (Key Risk Indicator)"
+                definition: "Early warning indicators signaling rising risks BEFORE they materialize. Examples: failed logins, patch backlog, overdue treatments. Displayed as dashboard metrics with traffic light colors and trend arrows."
+            risk_review:
+                name: "Risk Review"
+                definition: "Regular check whether assessment and treatment are still current. Triggers: scheduled (at least annually), after incidents, after significant changes. The tool shows overdue reviews on the dashboard."
+            control_effectiveness:
+                name: "Control Effectiveness"
+                definition: "How well does a measure reduce risk (0-100%)? The tool automatically calculates residual risk from this. Must be verified after every incident and audit."
+            risk_appetite_statement:
+                name: "Risk Appetite Statement"
+                definition: "Formal management document: How much risk is bearable per category? Defines thresholds on the risk matrix. Configurable per tenant in the tool with automatic check during every assessment."
+
     tour:
         steps: "steps"
         print: "Print"

@@ -422,6 +422,108 @@ help:
                 name: "TLPT (Threat-Led Penetration Testing)"
                 definition: "Bedrohungsgesteuerter Penetrationstest, verpflichtend unter DORA fuer systemrelevante Finanzinstitute. Simuliert realistische Angriffsszenarien. Alle 3 Jahre durch externe Tester."
 
+            personal_data:
+                name: "Personenbezogene Daten"
+                definition: "Alle Informationen die sich auf eine identifizierte oder identifizierbare natuerliche Person beziehen (DSGVO Art. 4 Nr. 1). Dazu gehoeren Name, E-Mail, IP-Adresse, auch pseudonymisierte Daten wenn Zuordnung moeglich."
+            legal_basis:
+                name: "Rechtsgrundlage (Legal Basis)"
+                definition: "Jede Verarbeitung personenbezogener Daten braucht eine Rechtsgrundlage aus Art. 6(1) DSGVO: (a) Einwilligung, (b) Vertragerfuellung, (c) rechtliche Verpflichtung, (d) lebenswichtige Interessen, (e) oeffentliches Interesse, (f) berechtigtes Interesse."
+            consent_privacy:
+                name: "Einwilligung (Consent)"
+                definition: "Freiwillige, informierte und unmissverstaendliche Willensbekundung fuer einen bestimmten Verarbeitungszweck (DSGVO Art. 7). Muss jederzeit widerrufbar sein. Fuer besondere Datenkategorien (Art. 9) ist ausdrueckliche Einwilligung erforderlich."
+            data_minimization:
+                name: "Datenminimierung"
+                definition: "DSGVO-Grundsatz: Nur personenbezogene Daten erheben die fuer den Zweck tatsaechlich erforderlich sind (Art. 5(1)(c)). Keine Vorratsdatenspeicherung. Eng verbunden mit Zweckbindung."
+            tom:
+                name: "TOM (Technische und Organisatorische Massnahmen)"
+                definition: "Schutzmassnahmen nach DSGVO Art. 32: Verschluesselung, Pseudonymisierung, Zugriffskontrolle, Backup, Schulung. Im Tool mit ISO 27001 Controls verknuepft (Data Reuse — keine doppelte Pflege)."
+                analogy: "Vergleichbar mit Infrastrukturmassnahmen aus 9001 (Klausel 7.1.3/7.1.4) — nur formalisierter und datenschutzspezifisch."
+            pseudonymization:
+                name: "Pseudonymisierung"
+                definition: "Verarbeitung so dass Daten ohne zusaetzliche Informationen nicht mehr einer Person zugeordnet werden koennen (DSGVO Art. 4 Nr. 5). Beispiel: Name durch User-ID ersetzen. Unterschied zur Anonymisierung: Pseudonymisierte Daten bleiben personenbezogen."
+            anonymization:
+                name: "Anonymisierung"
+                definition: "Irreversible Veraenderung personenbezogener Daten sodass Zuordnung auch mit Zusatzwissen nicht mehr moeglich ist. Anonymisierte Daten fallen NICHT unter die DSGVO. Echte Anonymisierung ist technisch schwierig — oft nur Pseudonymisierung erreichbar."
+            privacy_by_design:
+                name: "Privacy by Design / Privacy by Default"
+                definition: "Datenschutz muss von Anfang an in Systeme eingebaut werden (by Design) und datenschutzfreundliche Voreinstellungen muessen Standard sein (by Default). Beispiel: Opt-In statt Opt-Out, Datensparsamkeit als Default."
+            data_processor:
+                name: "Auftragsverarbeiter (Data Processor)"
+                definition: "Organisation die personenbezogene Daten im Auftrag des Verantwortlichen verarbeitet (DSGVO Art. 28). Beispiele: Cloud-Anbieter, Lohnbuero. Braucht einen Auftragsverarbeitungsvertrag (AVV/DPA) mit definierten Weisungen und TOMs."
+            data_controller:
+                name: "Verantwortlicher (Data Controller)"
+                definition: "Die Organisation die ueber Zwecke und Mittel der Verarbeitung personenbezogener Daten entscheidet (DSGVO Art. 4 Nr. 7). Traegt die Hauptverantwortung fuer DSGVO-Compliance."
+            joint_controller:
+                name: "Gemeinsam Verantwortliche (Joint Controllers)"
+                definition: "Zwei oder mehr Verantwortliche die gemeinsam ueber Zwecke und Mittel entscheiden (DSGVO Art. 26). Muessen Vereinbarung treffen wer welche Pflichten erfuellt. Betroffene koennen Rechte gegen jeden geltend machen."
+            third_country_transfer:
+                name: "Drittlandtransfer"
+                definition: "Uebermittlung personenbezogener Daten ausserhalb des EWR (DSGVO Art. 44-49). Nur zulaessig mit Garantien: Angemessenheitsbeschluss (Art. 45), Standardvertragsklauseln/SCCs (Art. 46), Binding Corporate Rules (Art. 47)."
+            scc:
+                name: "SCC (Standardvertragsklauseln)"
+                definition: "Von der EU-Kommission vorgegebene Vertragsklauseln fuer Drittlandtransfers (Art. 46(2)(c)). Seit Juni 2021 neue Fassung mit 4 Modulen (C2C, C2P, P2C, P2P). Haeufigstes Instrument fuer US-Transfers seit Schrems II."
+            retention_period:
+                name: "Aufbewahrungsfrist / Loeschfrist"
+                definition: "Zeitraum wie lange personenbezogene Daten gespeichert werden duerfen (Art. 5(1)(e)). Nach Ablauf muss geloescht werden. Oft gesetzlich vorgegeben: 10 Jahre HGB, 6 Jahre AO."
+            deletion_concept:
+                name: "Loeschkonzept"
+                definition: "Dokumentiertes Verfahren wann und wie personenbezogene Daten geloescht werden. Definiert Loeschfristen pro Datenart, Loeschmethoden (logisch vs. physisch), Verantwortlichkeiten und Ausnahmen."
+            dpo_role:
+                name: "DSB / DPO (Datenschutzbeauftragter)"
+                definition: "Unabhaengige Kontrollinstanz fuer Datenschutz. Pflicht ab 20 Personen mit automatisierter Verarbeitung (§38 BDSG) oder bei umfangreicher Verarbeitung besonderer Kategorien. Beraet, ueberwacht und ist Anlaufstelle fuer Betroffene und Aufsichtsbehoerden."
+            supervisory_authority:
+                name: "Datenschutz-Aufsichtsbehoerde"
+                definition: "Staatliche Behoerde die DSGVO-Einhaltung ueberwacht: BfDI (Bund) und 16 Landesdatenschutzbeauftragte (Laender). Zustaendig fuer Beschwerden, Untersuchungen, Bussgelder bis 20 Mio. EUR oder 4% Umsatz."
+            pims:
+                name: "PIMS (Privacy Information Management System)"
+                definition: "Erweiterung des ISMS um datenschutzspezifische Anforderungen nach ISO 27701. Ergaenzt ISO 27001 Controls um Privacy-Controls. Seit ISO 27701:2025 eigenstaendig zertifizierbar."
+
+            risk_matrix:
+                name: "Risikomatrix (Heatmap)"
+                definition: "5x5-Bewertungsraster: Eintrittswahrscheinlichkeit (Y) gegen Schadensauswirkung (X). Risk Score 1-25 mit Farbcodierung: Gruen (1-3), Gelb (4-9), Orange (10-15), Rot (16-25). Im Tool als interaktive Heatmap mit klickbaren Zellen."
+            likelihood:
+                name: "Eintrittswahrscheinlichkeit (Likelihood)"
+                definition: "Wie wahrscheinlich tritt das Risiko ein? Skala 1-5: Selten (1), Unwahrscheinlich (2), Moeglich (3), Wahrscheinlich (4), Fast sicher (5). Das Tool passt die Wahrscheinlichkeit automatisch an wenn verknuepfte Incidents auftreten."
+            impact_risk:
+                name: "Schadensauswirkung (Impact)"
+                definition: "Wie schwer ist der Schaden bei Risikoeintritt? Skala 1-5: Vernachlaessigbar (1), Gering (2), Moderat (3), Erheblich (4), Kritisch (5). Das Tool leitet den Impact automatisch aus dem Wert verknuepfter Assets ab."
+            risk_score:
+                name: "Risikobewertungszahl (Risk Score)"
+                definition: "Produkt aus Wahrscheinlichkeit x Auswirkung (1-25). Bestimmt die Position in der Risikomatrix und Dringlichkeit der Behandlung. Wird fuer Brutto- (vor Massnahmen) und Netto-Risiko (nach Massnahmen) berechnet."
+            risk_register:
+                name: "Risikoregister"
+                definition: "Zentrale Dokumentation aller identifizierten Risiken mit Bewertung, Behandlungsstatus, Verantwortlichen und Review-Terminen. Im Tool die Hauptansicht unter /risk/ — filterbar nach Status, Kategorie und Schweregrad."
+            treatment_plan:
+                name: "Risikobehandlungsplan"
+                definition: "Konkreter Massnahmenplan: Was wird getan, wer ist verantwortlich, bis wann, mit welchem Budget. Enthaelt verknuepfte ISO 27001 Controls. Status: Geplant → In Umsetzung → Abgeschlossen → Verifiziert."
+            risk_acceptance_formal:
+                name: "Formale Risikoakzeptanz"
+                definition: "Dokumentierte Entscheidung ein Restrisiko bewusst zu tragen — mit Begruendung, Bedingungen und Genehmigung auf passender Managementebene. Im Tool als Vier-Augen-Workflow. Muss mindestens jaehrlich ueberprueft werden."
+            risk_category:
+                name: "Risikokategorie"
+                definition: "Gruppierung: Strategisch (Geschaeftsmodell), Operativ (Betriebsunterbrechungen), Finanziell (Verluste, Bussgelder), Compliance (Normverstoesse), Technisch (IT-Ausfaelle, Cyberangriffe), Reputational (Imageschaeden). Hilft bei Aggregation und Reporting."
+            risk_aggregation:
+                name: "Risikoaggregation (Portfolio-Sicht)"
+                definition: "Zusammenfassende Betrachtung aller Risiken: Verteilung ueber Kategorien, Klumpenrisiken, Trends. Im Tool als Dashboard-Heatmap und Portfolio-Report mit 12-Monats-Trend."
+            schutzbedarfsvererbung:
+                name: "Schutzbedarfsvererbung (Maximumprinzip)"
+                definition: "BSI-Prinzip: Wenn Asset A von Asset B abhaengt, erbt A mindestens den Schutzbedarf von B. Das Tool berechnet dies automatisch ueber Asset-Abhaengigkeiten."
+            asset_risk_link:
+                name: "Asset-Risiko-Verknuepfung"
+                definition: "Assets werden direkt mit Risiken verknuepft. Ermoeglicht automatische Impact-Berechnung aus Asset-Wert, automatische Schutzbedarfs-Uebernahme und zeigt im Asset-Detail welche Risiken darauf lasten. Data Reuse: einmal erfasst, ueberall sichtbar."
+            kri:
+                name: "KRI (Key Risk Indicator)"
+                definition: "Fruehwarnindikatoren die auf steigende Risiken hinweisen BEVOR sie eintreten. Beispiele: fehlgeschlagene Logins, Patch-Rueckstand, ueberfaellige Behandlungen. Im Tool als Dashboard-Metriken mit Ampelfarben und Trend-Pfeilen."
+            risk_review:
+                name: "Risikoueberpruefung (Risk Review)"
+                definition: "Regelmaessige Pruefung ob Bewertung und Behandlung noch aktuell sind. Ausloser: planmaessig (mind. jaehrlich), nach Vorfaellen, nach wesentlichen Aenderungen. Das Tool zeigt ueberfaellige Reviews im Dashboard."
+            control_effectiveness:
+                name: "Massnahmenwirksamkeit (Control Effectiveness)"
+                definition: "Wie gut reduziert eine Massnahme das Risiko (0-100%)? Das Tool berechnet daraus automatisch das Restrisiko. Muss nach jedem Vorfall und Audit ueberprueft werden."
+            risk_appetite_statement:
+                name: "Risikoappetit-Erklaerung"
+                definition: "Formales Dokument der Geschaeftsleitung: Wie viel Risiko pro Kategorie tragbar? Definiert Schwellenwerte auf der Risikomatrix. Im Tool pro Tenant konfigurierbar mit automatischer Pruefung bei jeder Bewertung."
+
     tour:
         steps: "Schritte"
         print: "Drucken"
