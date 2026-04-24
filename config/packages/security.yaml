@@ -65,15 +65,24 @@ security:
 
     # Role hierarchy - higher roles inherit permissions from lower roles
     role_hierarchy:
-        ROLE_AUDITOR:       ROLE_USER
-        ROLE_MANAGER:       [ROLE_USER, ROLE_AUDITOR]
-        ROLE_ADMIN:         [ROLE_USER, ROLE_AUDITOR, ROLE_MANAGER]
-        ROLE_SUPER_ADMIN:   [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
-        # Phase 9.P1.6 — Konzern-ISB / Group-CISO modifier role.
-        # Intentionally inherits only ROLE_USER: GROUP_CISO is a read-across
-        # capability *on top of* whatever other role the user holds. Does
-        # not grant write or delete across the holding tree.
-        ROLE_GROUP_CISO:    ROLE_USER
+        ROLE_AUDITOR:           ROLE_USER
+        ROLE_MANAGER:           [ROLE_USER, ROLE_AUDITOR]
+        ROLE_ADMIN:             [ROLE_USER, ROLE_AUDITOR, ROLE_MANAGER]
+        ROLE_SUPER_ADMIN:       [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH, ROLE_GROUP_CISO, ROLE_KONZERN_AUDITOR]
+        # Phase 8M.5 / 9.P1.6 — Holding-Rollen für Konzern-Strukturen.
+        #
+        # ROLE_GROUP_CISO: Konzern-ISB / Group-CISO.
+        #   Lese-quer-Kapazität über alle Tochter-Tenants hinweg (Group-Dashboards,
+        #   Risk-Register, SOA-Übersichten). Darf Einzel-Tenant-Configs NICHT ändern.
+        #   Inherits ROLE_AUDITOR: kann alle ISMS-Dokumente und das Risk-Register lesen,
+        #   aber keine Schreib-/Lösch-Operationen ausführen.
+        #   Einsatz: Board-Dashboards, Group-Reports, Portfolio-Übersicht.
+        ROLE_GROUP_CISO:        ROLE_AUDITOR
+        # ROLE_KONZERN_AUDITOR: Read-Only auf alle Tochter-Tenants.
+        #   Nur Lese-Zugriff — für externe oder interne Konzern-Auditoren, die
+        #   alle Subsidiaries prüfen müssen, ohne Schreibrechte zu haben.
+        #   Einsatz: Konzerninterne Audits, Regulierungs-Reviews, Portfolio-Berichte.
+        ROLE_KONZERN_AUDITOR:   ROLE_AUDITOR
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used

@@ -19,6 +19,28 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    // -------------------------------------------------------------------------
+    // Phase 8M.5 — Holding-Rollen (Konzern-Strukturen)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Konzern-ISB / Group-CISO. Lese-quer-Kapazität über alle Tochter-Tenants.
+     * Inherits ROLE_AUDITOR — kann ISMS-Dokumente und Risk-Register lesen,
+     * aber keine Schreib-/Lösch-Operationen ausführen.
+     * Einsatz: Board-Dashboards, Group-Reports, Portfolio-Übersicht.
+     */
+    public const ROLE_GROUP_CISO = 'ROLE_GROUP_CISO';
+
+    /**
+     * Read-Only auf alle Tochter-Tenants. Für externe oder interne Konzern-Auditoren,
+     * die alle Subsidiaries prüfen müssen, ohne Schreibrechte zu haben.
+     * Inherits ROLE_AUDITOR.
+     * Einsatz: Konzerninterne Audits, Regulierungs-Reviews, Portfolio-Berichte.
+     */
+    public const ROLE_KONZERN_AUDITOR = 'ROLE_KONZERN_AUDITOR';
+
+    // -------------------------------------------------------------------------
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

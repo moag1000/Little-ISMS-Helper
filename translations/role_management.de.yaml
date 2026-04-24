@@ -64,6 +64,15 @@ role:
     risk_manager: Risikomanager
     auditor: Auditor
     admin: Administrator
+    group_ciso: 'Konzern-CISO'
+    konzern_auditor: 'Konzern-Auditor'
+    holding:
+        group_ciso:
+            label: 'Konzern-CISO'
+            description: 'Mandantenübergreifender Lesezugriff für Konzern-ISBs. Kann alle Tochter-Dashboards, Risk-Register und SOA-Übersichten einsehen. Darf Einzel-Tenant-Konfigurationen nicht ändern.'
+        konzern_auditor:
+            label: 'Konzern-Auditor'
+            description: 'Nur-Lese-Zugriff auf alle Tochter-Tenants. Für interne oder externe Konzern-Auditoren, die alle Tochtergesellschaften prüfen müssen, ohne Schreibrechte zu besitzen.'
     compare:
         title: 'Rollen vergleichen'
         select_roles: 'Rollen zum Vergleich auswählen'
