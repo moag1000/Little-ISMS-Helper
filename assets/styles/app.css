@@ -54,13 +54,13 @@
 button:focus-visible {
     outline: 3px solid var(--accent);
     outline-offset: 3px;
-    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.3);
+    box-shadow: 0 0 0 3px var(--accent-tint);
 }
 
 [data-theme="dark"] .btn:focus-visible,
 [data-theme="dark"] button:focus-visible {
     outline-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.4);
+    box-shadow: 0 0 0 3px var(--accent-tint);
 }
 
 /* Enhanced focus for form inputs to override default */
@@ -70,7 +70,7 @@ textarea:focus-visible {
     outline: 3px solid var(--primary) !important;
     outline-offset: 2px;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
+    box-shadow: 0 0 0 3px var(--primary-tint), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
 [data-theme="dark"] input:focus-visible,
@@ -205,8 +205,8 @@ body {
 .fairy-magic-glow {
     position: relative;
     box-shadow:
-        inset 0 0 0 1px rgba(236, 72, 153, 0.2),
-        0 0 20px rgba(236, 72, 153, 0.15);
+        inset 0 0 0 1px var(--accent-tint),
+        0 0 20px var(--accent-tint);
     border-radius: var(--r-md);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -219,7 +219,7 @@ body {
     background: linear-gradient(
         135deg,
         transparent 40%,
-        rgba(236, 72, 153, 0.1) 50%,
+        var(--accent-tint) 50%,
         transparent 60%
     );
     background-size: 200% 200%;
@@ -230,9 +230,9 @@ body {
 
 .fairy-magic-glow:hover {
     box-shadow:
-        inset 0 0 0 1px rgba(236, 72, 153, 0.3),
-        0 0 30px rgba(236, 72, 153, 0.25),
-        0 0 10px rgba(6, 182, 212, 0.15);
+        inset 0 0 0 1px var(--accent-tint),
+        0 0 30px var(--accent-glow),
+        0 0 10px var(--primary-tint);
     transform: translateY(-1px);
 }
 
@@ -255,8 +255,8 @@ body {
     align-items: center;
     gap: 0.375rem;
     background: linear-gradient(135deg,
-        rgba(236, 72, 153, 0.9) 0%,
-        rgba(139, 92, 246, 0.85) 100%);
+        var(--accent) 0%,
+        var(--accent-glow) 100%);
     color: white;
     border-radius: 100px;
     padding: 0.25rem 0.75rem;
@@ -264,14 +264,14 @@ body {
     font-weight: 500;
     letter-spacing: 0.02em;
     text-transform: uppercase;
-    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.25);
+    box-shadow: 0 2px 8px var(--accent-tint);
     border: none;
     transition: all 0.2s ease;
 }
 
 .fairy-badge:hover {
     transform: scale(1.02);
-    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.35);
+    box-shadow: 0 4px 12px var(--accent-glow);
 }
 
 .fairy-badge::before {
@@ -285,7 +285,7 @@ body {
     border-left: 3px solid var(--accent) !important;
     background: linear-gradient(
         90deg,
-        rgba(236, 72, 153, 0.04) 0%,
+        var(--accent-tint) 0%,
         transparent 30%
     ) !important;
     transition: all 0.2s ease;
@@ -293,7 +293,7 @@ body {
 
 .fairy-field-automatic:focus {
     border-left-color: var(--accent) !important;
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+    box-shadow: 0 0 0 3px var(--accent-tint);
 }
 
 /* Helper text for automatic fields */
@@ -347,7 +347,7 @@ body {
     transition: all 0.2s ease;
     box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(236, 72, 153, 0.2);
+        0 0 0 1px var(--accent-tint);
     z-index: 100;
 }
 
@@ -395,7 +395,7 @@ body {
     background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
     box-shadow:
         0 4px 16px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(236, 72, 153, 0.3);
+        0 0 0 1px var(--accent-tint);
 }
 
 /* Bootstrap Tooltip - Subtle fairy shimmer on appear */
@@ -405,7 +405,7 @@ body {
 
 @keyframes fairy-tooltip-appear {
     0% {
-        box-shadow: 0 0 12px rgba(236, 72, 153, 0.4);
+        box-shadow: 0 0 12px var(--accent-glow);
     }
     100% {
         box-shadow: none;
@@ -426,8 +426,8 @@ body {
 
 @keyframes fairy-fresh-appear {
     0% {
-        background-color: rgba(236, 72, 153, 0.12);
-        box-shadow: inset 0 0 20px rgba(236, 72, 153, 0.1);
+        background-color: var(--accent-tint);
+        box-shadow: inset 0 0 20px var(--accent-tint);
     }
     100% {
         background-color: transparent;
@@ -469,7 +469,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
     .fairy-fresh-entry {
         animation: none;
-        background-color: rgba(236, 72, 153, 0.05);
+        background-color: var(--accent-tint);
     }
     .fairy-timestamp-fresh::after {
         animation: none;
@@ -487,7 +487,7 @@ body {
     z-index: 9998;
     opacity: 0;
     transition: opacity 0.5s ease;
-    box-shadow: inset 0 0 100px rgba(236, 72, 153, 0);
+    box-shadow: inset 0 0 100px transparent;
 }
 
 .fairy-session-warning-active {
@@ -497,10 +497,10 @@ body {
 
 @keyframes fairy-session-pulse {
     0%, 100% {
-        box-shadow: inset 0 0 60px rgba(236, 72, 153, 0.08);
+        box-shadow: inset 0 0 60px var(--accent-tint);
     }
     50% {
-        box-shadow: inset 0 0 100px rgba(236, 72, 153, 0.15);
+        box-shadow: inset 0 0 100px var(--accent-tint);
     }
 }
 
@@ -517,10 +517,10 @@ body {
     padding: 1rem 1.25rem;
     background: linear-gradient(
         135deg,
-        rgba(236, 72, 153, 0.08) 0%,
-        rgba(139, 92, 246, 0.05) 100%
+        var(--accent-tint) 0%,
+        var(--accent-tint) 100%
     );
-    border: 1px solid rgba(236, 72, 153, 0.2);
+    border: 1px solid var(--accent-tint);
     border-radius: var(--r-md);
     color: var(--fg);
 }
@@ -545,24 +545,24 @@ body {
 [data-theme="dark"] .fairy-field-automatic {
     background: linear-gradient(
         90deg,
-        rgba(236, 72, 153, 0.08) 0%,
+        var(--accent-tint) 0%,
         transparent 30%
     ) !important;
 }
 
 [data-theme="dark"] .fairy-magic-glow {
     box-shadow:
-        inset 0 0 0 1px rgba(236, 72, 153, 0.25),
-        0 0 25px rgba(236, 72, 153, 0.2);
+        inset 0 0 0 1px var(--accent-tint),
+        0 0 25px var(--accent-glow);
 }
 
 [data-theme="dark"] .fairy-alert {
     background: linear-gradient(
         135deg,
-        rgba(236, 72, 153, 0.12) 0%,
-        rgba(139, 92, 246, 0.08) 100%
+        var(--accent-tint) 0%,
+        var(--accent-tint) 100%
     );
-    border-color: rgba(236, 72, 153, 0.3);
+    border-color: var(--accent-tint);
 }
 
 /* Animations - Smooth and subtle */
@@ -584,12 +584,12 @@ body {
 
 @keyframes fairy-sparkle {
     0%, 100% {
-        filter: drop-shadow(0 0 8px rgba(236, 72, 153, 0.6));
+        filter: drop-shadow(0 0 8px var(--accent-glow));
         opacity: 1;
     }
     50% {
-        filter: drop-shadow(0 0 12px rgba(236, 72, 153, 0.8))
-                drop-shadow(0 0 4px rgba(6, 182, 212, 0.4));
+        filter: drop-shadow(0 0 12px var(--accent-glow))
+                drop-shadow(0 0 4px var(--primary-glow));
         opacity: 0.85;
     }
 }
@@ -616,10 +616,10 @@ body {
     padding: 0.5rem 0.875rem;
     background: linear-gradient(
         135deg,
-        rgba(236, 72, 153, 0.08) 0%,
-        rgba(6, 182, 212, 0.05) 100%
+        var(--accent-tint) 0%,
+        var(--primary-tint) 100%
     );
-    border: 1px dashed rgba(236, 72, 153, 0.3);
+    border: 1px dashed var(--accent-tint);
     border-radius: var(--r-md);
     font-size: 0.8125rem;
     color: var(--fg);
@@ -630,10 +630,10 @@ body {
 .fairy-suggestion:hover {
     background: linear-gradient(
         135deg,
-        rgba(236, 72, 153, 0.12) 0%,
-        rgba(6, 182, 212, 0.08) 100%
+        var(--accent-tint) 0%,
+        var(--primary-tint) 100%
     );
-    border-color: rgba(236, 72, 153, 0.5);
+    border-color: var(--accent-glow);
     transform: translateY(-1px);
 }
 
@@ -670,8 +670,8 @@ body {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(236, 72, 153, 0.2),
-        rgba(6, 182, 212, 0.2),
+        var(--accent-tint),
+        var(--primary-tint),
         transparent
     );
     animation: fairy-workflow-sweep 1.5s ease-out forwards;
@@ -687,9 +687,9 @@ body {
 }
 
 @keyframes fairy-workflow-pulse {
-    0% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4); }
-    50% { box-shadow: 0 0 0 8px rgba(236, 72, 153, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); }
+    0% { box-shadow: 0 0 0 0 var(--accent-glow); }
+    50% { box-shadow: 0 0 0 8px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
 }
 
 /* 3. Bulk Actions - Completion feedback */
@@ -698,7 +698,7 @@ body {
 }
 
 @keyframes fairy-bulk-flash {
-    0% { background-color: rgba(236, 72, 153, 0.15); }
+    0% { background-color: var(--accent-tint); }
     100% { background-color: transparent; }
 }
 
@@ -706,10 +706,10 @@ body {
     background: linear-gradient(
         90deg,
         var(--bg) 0%,
-        rgba(236, 72, 153, 0.1) 50%,
+        var(--accent-tint) 50%,
         var(--bg) 100%
     );
-    border: 1px solid rgba(236, 72, 153, 0.2);
+    border: 1px solid var(--accent-tint);
 }
 
 .fairy-bulk-action {
@@ -729,7 +729,7 @@ body {
 
 .fairy-bulk-action:hover {
     transform: scale(1.02);
-    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+    box-shadow: 0 4px 12px var(--accent-glow);
 }
 
 .fairy-bulk-action::before {
@@ -743,7 +743,7 @@ body {
     border-left: 2px solid var(--accent);
     background: linear-gradient(
         90deg,
-        rgba(236, 72, 153, 0.06) 0%,
+        var(--accent-tint) 0%,
         transparent 50%
     );
 }
@@ -771,13 +771,13 @@ body {
 @keyframes fairy-onboarding-glow {
     0%, 100% {
         box-shadow:
-            0 0 0 4px rgba(236, 72, 153, 0.2),
-            0 0 20px rgba(236, 72, 153, 0.15);
+            0 0 0 4px var(--accent-tint),
+            0 0 20px var(--accent-tint);
     }
     50% {
         box-shadow:
-            0 0 0 6px rgba(236, 72, 153, 0.3),
-            0 0 30px rgba(236, 72, 153, 0.2);
+            0 0 0 6px var(--accent-tint),
+            0 0 30px var(--accent-glow);
     }
 }
 
@@ -810,7 +810,7 @@ body {
 
 @keyframes fairy-correct-flash {
     0% {
-        background-color: rgba(236, 72, 153, 0.15);
+        background-color: var(--accent-tint);
         border-color: var(--accent);
     }
     100% {
@@ -843,15 +843,15 @@ body {
 [data-theme="dark"] .fairy-suggestion {
     background: linear-gradient(
         135deg,
-        rgba(236, 72, 153, 0.12) 0%,
-        rgba(6, 182, 212, 0.08) 100%
+        var(--accent-tint) 0%,
+        var(--primary-tint) 100%
     );
 }
 
 [data-theme="dark"] .fairy-search-priority {
     background: linear-gradient(
         90deg,
-        rgba(236, 72, 153, 0.1) 0%,
+        var(--accent-tint) 0%,
         transparent 50%
     );
 }
@@ -860,7 +860,7 @@ body {
     background: linear-gradient(
         90deg,
         var(--surface-2) 0%,
-        rgba(236, 72, 153, 0.15) 50%,
+        var(--accent-tint) 50%,
         var(--surface-2) 100%
     );
 }
@@ -930,10 +930,10 @@ body {
 
 @keyframes fairy-filter-pulse {
     0%, 100% {
-        box-shadow: 0 0 0 0 rgba(236, 72, 153, 0);
+        box-shadow: 0 0 0 0 transparent;
     }
     50% {
-        box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.15);
+        box-shadow: 0 0 0 4px var(--accent-tint);
     }
 }
 
@@ -957,12 +957,12 @@ body {
 
 @keyframes fairy-upload-glow {
     0% {
-        background-color: rgba(236, 72, 153, 0.15);
-        box-shadow: 0 0 20px rgba(236, 72, 153, 0.2);
+        background-color: var(--accent-tint);
+        box-shadow: 0 0 20px var(--accent-glow);
     }
     70% {
-        background-color: rgba(236, 72, 153, 0.08);
-        box-shadow: 0 0 10px rgba(236, 72, 153, 0.1);
+        background-color: var(--accent-tint);
+        box-shadow: 0 0 10px var(--accent-tint);
     }
     100% {
         background-color: transparent;
@@ -980,7 +980,7 @@ body {
         background: linear-gradient(
             90deg,
             transparent 0%,
-            rgba(236, 72, 153, 0.2) 50%,
+            var(--accent-tint) 50%,
             transparent 100%
         );
         background-size: 200% 100%;
@@ -1096,10 +1096,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg,
-                rgba(15, 23, 42, 0.85) 0%,
-                rgba(30, 41, 59, 0.75) 50%,
-                rgba(15, 23, 42, 0.85) 100%);
+    background: color-mix(in oklab, var(--bg) 70%, transparent);
     backdrop-filter: blur(4px); /* iOS Safari blur effect */
     -webkit-backdrop-filter: blur(4px);
     z-index: calc(var(--z-fixed) - 1); /* 499 - below sidebar, above page content */
@@ -1171,13 +1168,14 @@ body {
 [data-bs-theme="dark"] .app-sidebar {
     background: linear-gradient(180deg, var(--bg) 0%, var(--surface) 50%, var(--bg) 100%);
     border-right: 3px solid transparent;
-    border-image: linear-gradient(180deg,
-                  rgba(6, 182, 212, 0.6),
-                  rgba(236, 72, 153, 0.4),
-                  rgba(139, 92, 246, 0.3),
-                  rgba(6, 182, 212, 0.6)) 1;
-    box-shadow: 2px 0 30px rgba(6, 182, 212, 0.15),
-                inset -1px 0 20px rgba(6, 182, 212, 0.05);
+    border-image: linear-gradient(
+  180deg,
+  var(--primary) 0%,
+  var(--accent) 50%,
+  var(--primary) 100%
+) 1;
+    box-shadow: 2px 0 30px var(--primary-tint),
+                inset -1px 0 20px var(--primary-tint);
 }
 
 /* Dark Mode Scrollbar */
@@ -1195,8 +1193,8 @@ body {
                 var(--primary) 0%,
                 var(--accent) 50%,
                 var(--accent) 100%);
-    border: 1px solid rgba(6, 182, 212, 0.3);
-    box-shadow: 0 0 15px rgba(6, 182, 212, 0.6),
+    border: 1px solid var(--primary-tint);
+    box-shadow: 0 0 15px var(--primary-glow),
                 inset 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
@@ -1206,10 +1204,10 @@ body {
                 var(--primary) 0%,
                 var(--accent) 50%,
                 var(--accent-hover) 100%);
-    box-shadow: 0 0 20px rgba(6, 182, 212, 0.9),
-                0 0 10px rgba(236, 72, 153, 0.6),
+    box-shadow: 0 0 20px var(--primary-glow),
+                0 0 10px var(--accent-glow),
                 inset 0 0 15px rgba(255, 255, 255, 0.2);
-    border-color: rgba(6, 182, 212, 0.6);
+    border-color: var(--primary-glow);
 }
 
 [data-theme="dark"] .app-sidebar::-webkit-scrollbar-thumb:active,
@@ -1218,8 +1216,8 @@ body {
                 var(--primary-hover) 0%,
                 var(--accent) 50%,
                 var(--accent-hover) 100%);
-    box-shadow: 0 0 25px rgba(6, 182, 212, 1),
-                0 0 15px rgba(236, 72, 153, 0.8);
+    box-shadow: 0 0 25px var(--primary-glow),
+                0 0 15px var(--accent-glow);
 }
 
 [data-theme="dark"] .app-sidebar,
@@ -1275,17 +1273,17 @@ body {
 [data-theme="dark"] .app-sidebar .nav-divider,
 [data-bs-theme="dark"] .app-sidebar .nav-divider {
     color: var(--primary);
-    text-shadow: 0 0 15px rgba(6, 182, 212, 0.8),
-                 0 0 5px rgba(6, 182, 212, 0.5);
+    text-shadow: 0 0 15px var(--primary-glow),
+                 0 0 5px var(--primary-glow);
 }
 
 [data-theme="dark"] .app-sidebar .nav-divider::before,
 [data-bs-theme="dark"] .app-sidebar .nav-divider::before {
     background: linear-gradient(180deg,
                 transparent,
-                rgba(6, 182, 212, 0.8),
+                var(--primary-glow),
                 transparent);
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+    box-shadow: 0 0 10px var(--primary-glow);
 }
 
 /* Sidebar Links - Light Mode */
@@ -1313,7 +1311,7 @@ body {
     min-width: 24px;
     text-align: center;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    filter: drop-shadow(0 0 3px rgba(6, 182, 212, 0.3));
+    filter: drop-shadow(0 0 3px var(--primary-tint));
 }
 
 .app-sidebar nav:not(#main-navigation) a span {
@@ -1332,8 +1330,8 @@ body {
     width: 0;
     height: 100%;
     background: linear-gradient(90deg,
-                rgba(6, 182, 212, 0.25),
-                rgba(139, 92, 246, 0.15),
+                var(--primary-tint),
+                var(--accent-tint),
                 transparent);
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: var(--r-sm);
@@ -1356,21 +1354,21 @@ body {
 
 .app-sidebar nav:not(#main-navigation) a:hover::after {
     background: linear-gradient(180deg, var(--primary), var(--accent));
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
+    box-shadow: 0 0 10px var(--primary-glow);
 }
 
 .app-sidebar nav:not(#main-navigation) a:hover {
     color: white;
-    background: rgba(6, 182, 212, 0.1);
+    background: var(--primary-tint);
     padding-left: calc(var(--spacing-md) + 4px);
-    text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+    text-shadow: 0 0 10px var(--primary-glow);
     transform: translateX(2px);
 }
 
 .app-sidebar nav:not(#main-navigation) a:hover i {
     color: var(--primary);
     transform: scale(1.12) rotate(-5deg);
-    filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.8));
+    filter: drop-shadow(0 0 8px var(--primary-glow));
 }
 
 .app-sidebar nav:not(#main-navigation) a:hover span {
@@ -1381,39 +1379,39 @@ body {
 .app-sidebar nav:not(#main-navigation) a.active {
     /* WCAG AA: Solid gradient background ensures 4.5:1 contrast with white text */
     background: linear-gradient(135deg,
-                rgba(6, 182, 212, 0.35) 0%,
-                rgba(139, 92, 246, 0.3) 100%),
+                var(--primary-tint) 0%,
+                var(--accent-tint) 100%),
                 linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
     background-blend-mode: normal, multiply;
     color: white;
     padding-left: calc(var(--spacing-md) + 4px);
-    box-shadow: 0 2px 15px rgba(6, 182, 212, 0.3),
+    box-shadow: 0 2px 15px var(--primary-tint),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8),
-                 0 0 15px rgba(6, 182, 212, 0.6);
+                 0 0 15px var(--primary-glow);
     font-weight: 600;
-    border: 1px solid rgba(6, 182, 212, 0.4);
+    border: 1px solid var(--primary-tint);
 }
 
 .app-sidebar nav:not(#main-navigation) a.active::before {
     width: 100%;
     background: linear-gradient(90deg,
-                rgba(6, 182, 212, 0.15),
-                rgba(139, 92, 246, 0.1),
+                var(--primary-tint),
+                var(--accent-tint),
                 transparent);
 }
 
 .app-sidebar nav:not(#main-navigation) a.active::after {
     background: linear-gradient(180deg, var(--primary), var(--accent), var(--accent));
     width: 4px;
-    box-shadow: 0 0 15px rgba(6, 182, 212, 0.8),
-                0 0 10px rgba(236, 72, 153, 0.5);
+    box-shadow: 0 0 15px var(--primary-glow),
+                0 0 10px var(--accent-glow);
 }
 
 .app-sidebar nav:not(#main-navigation) a.active i {
     color: var(--primary);
     transform: scale(1.2);
-    filter: drop-shadow(0 0 10px rgba(6, 182, 212, 1));
+    filter: drop-shadow(0 0 10px var(--primary-glow));
 }
 
 .app-sidebar nav:not(#main-navigation) a.active span {
@@ -1437,8 +1435,8 @@ body {
 [data-theme="dark"] .app-sidebar nav:not(#main-navigation) a.active {
     /* WCAG AA: Enhanced contrast in dark mode */
     background: linear-gradient(135deg,
-                rgba(6, 182, 212, 0.4) 0%,
-                rgba(139, 92, 246, 0.35) 100%),
+                var(--primary-tint) 0%,
+                var(--accent-tint) 100%),
                 linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3));
     background-blend-mode: normal, multiply;
     color: white;
@@ -1509,7 +1507,7 @@ body {
     letter-spacing: 1px;
     opacity: 0.8;
     user-select: none;
-    border-top: 1px solid rgba(6, 182, 212, 0.2);
+    border-top: 1px solid var(--primary-tint);
     margin-top: var(--spacing-xs);
 }
 
@@ -1709,9 +1707,9 @@ h3 {
 
 .card:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08),
-                0 0 25px rgba(6, 182, 212, 0.3),
-                0 0 15px rgba(236, 72, 153, 0.2),
-                0 0 10px rgba(139, 92, 246, 0.15);
+                0 0 25px var(--primary-glow),
+                0 0 15px var(--accent-tint),
+                0 0 10px var(--accent-tint);
     transform: translateY(-4px);
     border-color: var(--primary);
     animation: card-glow 2s ease-in-out infinite;
@@ -1720,15 +1718,15 @@ h3 {
 @keyframes card-glow {
     0%, 100% {
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08),
-                    0 0 25px rgba(6, 182, 212, 0.3),
-                    0 0 15px rgba(236, 72, 153, 0.2),
-                    0 0 10px rgba(139, 92, 246, 0.15);
+                    0 0 25px var(--primary-glow),
+                    0 0 15px var(--accent-tint),
+                    0 0 10px var(--accent-tint);
     }
     50% {
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08),
-                    0 0 30px rgba(6, 182, 212, 0.4),
-                    0 0 20px rgba(236, 72, 153, 0.3),
-                    0 0 15px rgba(139, 92, 246, 0.2);
+                    0 0 30px var(--primary-glow),
+                    0 0 20px var(--accent-glow),
+                    0 0 15px var(--accent-tint);
     }
 }
 
@@ -1764,8 +1762,8 @@ h3 {
 
 .kpi-card:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08),
-                0 0 20px rgba(6, 182, 212, 0.3),
-                0 0 10px rgba(236, 72, 153, 0.2);
+                0 0 20px var(--primary-glow),
+                0 0 10px var(--accent-tint);
     transform: translateY(-6px) scale(1.02);
 }
 
@@ -1875,9 +1873,9 @@ h3 {
 .btn:hover {
     background: linear-gradient(135deg, var(--primary-hover), var(--accent));
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06),
-                0 0 20px rgba(6, 182, 212, 0.6),
-                0 0 15px rgba(236, 72, 153, 0.4),
-                0 0 10px rgba(139, 92, 246, 0.3);
+                0 0 20px var(--primary-glow),
+                0 0 15px var(--accent-glow),
+                0 0 10px var(--accent-tint);
     transform: translateY(-3px) scale(1.02);
     border-color: var(--accent);
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
@@ -2092,7 +2090,7 @@ h3 {
 }
 
 .info-box {
-    background-color: rgba(6, 182, 212, 0.1);
+    background-color: var(--primary-tint);
     border-color: var(--primary);
     color: var(--fg);
 }
@@ -2608,8 +2606,8 @@ textarea::placeholder,
 .form-control:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.02), rgba(236, 72, 153, 0.02));
+    box-shadow: 0 0 0 3px var(--primary-tint), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
+    background: linear-gradient(135deg, var(--primary-tint), var(--accent-tint));
 }
 
 [data-theme="dark"] .form-control:focus {
@@ -2629,7 +2627,7 @@ textarea.form-control {
     border-radius: var(--r-sm);
     overflow: hidden;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
-    border: 1px solid rgba(6, 182, 212, 0.3);
+    border: 1px solid var(--primary-tint);
 }
 
 .progress-bar {
@@ -2698,7 +2696,7 @@ textarea.form-control {
 
 /* Loading Spinner - Cyberpunk Fairy Style */
 .spinner {
-    border: 3px solid rgba(6, 182, 212, 0.1);
+    border: 3px solid var(--primary-tint);
     border-top: 3px solid var(--primary);
     border-right: 3px solid var(--accent);
     border-bottom: 3px solid var(--accent);
@@ -2734,11 +2732,11 @@ textarea.form-control {
 .language-switcher {
     display: flex;
     gap: var(--spacing-xs);
-    background: rgba(6, 182, 212, 0.1);
+    background: var(--primary-tint);
     padding: var(--spacing-xs);
     border-radius: var(--r-sm);
-    border: 1px solid rgba(6, 182, 212, 0.3);
-    box-shadow: inset 0 0 10px rgba(6, 182, 212, 0.1);
+    border: 1px solid var(--primary-tint);
+    box-shadow: inset 0 0 10px var(--primary-tint);
 }
 
 .lang-btn {
@@ -2762,7 +2760,7 @@ textarea.form-control {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, var(--primary-tint), transparent);
     transition: left 0.5s;
 }
 
@@ -2772,19 +2770,19 @@ textarea.form-control {
 
 .lang-btn:hover {
     opacity: 1;
-    background: rgba(6, 182, 212, 0.2);
+    background: var(--primary-tint);
     border-color: var(--primary);
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.5),
-                inset 0 0 10px rgba(6, 182, 212, 0.2);
-    text-shadow: 0 0 5px rgba(6, 182, 212, 0.8);
+    box-shadow: 0 0 10px var(--primary-glow),
+                inset 0 0 10px var(--primary-tint);
+    text-shadow: 0 0 5px var(--primary-glow);
 }
 
 .lang-btn.active {
     background: linear-gradient(135deg, var(--primary), var(--accent));
     opacity: 1;
     border-color: var(--accent);
-    box-shadow: 0 0 15px rgba(6, 182, 212, 0.6),
-                0 0 10px rgba(236, 72, 153, 0.4),
+    box-shadow: 0 0 15px var(--primary-glow),
+                0 0 10px var(--accent-glow),
                 inset 0 0 10px rgba(255, 255, 255, 0.1);
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
@@ -2825,7 +2823,7 @@ textarea.form-control {
 .detail-section {
     margin-top: var(--spacing-lg);
     padding-top: var(--spacing-md);
-    border-top: 1px solid rgba(6, 182, 212, 0.15);
+    border-top: 1px solid var(--primary-tint);
 }
 
 .detail-section h3 {
@@ -2934,7 +2932,7 @@ textarea.form-control {
 }
 
 .user-dropdown-item:hover {
-    background: rgba(6, 182, 212, 0.1);
+    background: var(--primary-tint);
     color: var(--primary);
 }
 
@@ -2953,8 +2951,8 @@ textarea.form-control {
 
 .fairy-logout:hover {
     background: linear-gradient(90deg,
-        rgba(236, 72, 153, 0.15),
-        rgba(139, 92, 246, 0.1));
+        var(--accent-tint),
+        var(--accent-tint));
     color: var(--accent);
 }
 
@@ -3001,16 +2999,16 @@ textarea.form-control {
     border-top: 2px solid transparent;
     border-image: linear-gradient(90deg,
                   transparent,
-                  rgba(6, 182, 212, 0.3),
-                  rgba(236, 72, 153, 0.2),
-                  rgba(139, 92, 246, 0.2),
+                  var(--primary-tint),
+                  var(--accent-tint),
+                  var(--accent-tint),
                   transparent) 1;
-    background: linear-gradient(180deg, transparent, rgba(6, 182, 212, 0.02));
+    background: linear-gradient(180deg, transparent, var(--primary-tint));
 }
 
 [data-theme="dark"] .footer {
     color: var(--fg-2);
-    background: linear-gradient(180deg, transparent, rgba(6, 182, 212, 0.05));
+    background: linear-gradient(180deg, transparent, var(--primary-tint));
 }
 
 .footer p {
@@ -3018,12 +3016,12 @@ textarea.form-control {
 }
 
 .footer kbd {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(236, 72, 153, 0.15));
-    border: 1px solid rgba(6, 182, 212, 0.3);
+    background: linear-gradient(135deg, var(--primary-tint), var(--accent-tint));
+    border: 1px solid var(--primary-tint);
     padding: 0.125rem 0.375rem;
     border-radius: 3px;
     font-size: 0.875rem;
-    box-shadow: 0 0 5px rgba(6, 182, 212, 0.2);
+    box-shadow: 0 0 5px var(--primary-tint);
 }
 
 .footer a {
@@ -3033,7 +3031,7 @@ textarea.form-control {
 
 .footer a:hover {
     color: var(--accent);
-    text-shadow: 0 0 8px rgba(6, 182, 212, 0.6);
+    text-shadow: 0 0 8px var(--primary-glow);
 }
 
 /* Utility Classes */
@@ -3251,7 +3249,7 @@ textarea.form-control {
 
 .widget.drag-over {
     border: 2px dashed var(--primary);
-    background: rgba(6, 182, 212, 0.05);
+    background: var(--primary-tint);
 }
 
 /* ============================================================

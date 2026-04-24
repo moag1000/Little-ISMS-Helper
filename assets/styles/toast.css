@@ -21,7 +21,7 @@
     background: var(--surface);
     color: var(--fg);
     border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 0 20px rgba(6, 182, 212, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 0 20px var(--primary-tint);
     padding: 16px;
     display: flex;
     align-items: flex-start;
@@ -60,7 +60,7 @@
     border-color: var(--success);
     background: var(--surface);
     border-left: 4px solid var(--success);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 0 20px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 0 20px var(--success-tint);
 }
 
 .toast-success .toast-icon {
@@ -71,7 +71,7 @@
     border-color: var(--danger);
     background: var(--surface);
     border-left: 4px solid var(--danger);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 0 20px rgba(239, 68, 68, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 0 20px var(--danger-tint);
 }
 
 .toast-error .toast-icon {
@@ -82,7 +82,7 @@
     border-color: var(--warning);
     background: var(--surface);
     border-left: 4px solid var(--warning);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 0 20px rgba(245, 158, 11, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 0 20px var(--warning-tint);
 }
 
 .toast-warning .toast-icon {
@@ -93,7 +93,7 @@
     border-color: var(--primary);
     background: var(--surface);
     border-left: 4px solid var(--primary);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 0 20px rgba(6, 182, 212, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 0 20px var(--primary-tint);
 }
 
 .toast-info .toast-icon {

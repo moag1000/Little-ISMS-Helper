@@ -35,7 +35,7 @@
 .keyboard-shortcuts-trigger:hover {
     background: linear-gradient(135deg, var(--accent), var(--accent));
     transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), 0 0 25px rgba(6, 182, 212, 0.6);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), 0 0 25px var(--primary-glow);
 }
 
 /* Modal */
@@ -64,7 +64,7 @@
 .keyboard-shortcuts-container {
     background: var(--surface);
     border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(6, 182, 212, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px var(--primary-glow);
     border: 2px solid var(--primary);
     width: 900px;
     max-width: 90vw;
