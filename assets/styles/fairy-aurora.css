@@ -132,6 +132,18 @@
         linear-gradient(180deg, #f5f6fa 0%, #eef0f9 100%);
     --brand-gradient: linear-gradient(135deg, var(--primary), var(--accent));
 
+    /* — v4 Aurora-Pattern + Brand-Accent-Varianten — */
+    --pattern-opacity-subtle:  0.04;
+    --pattern-opacity-default: 0.08;
+    --pattern-opacity-hero:    0.16;
+    --brand-gradient-soft: linear-gradient(90deg, var(--primary-tint), var(--accent-tint));
+    --brand-gradient-line: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+
+    /* — v4 Alva-Companion Dock — */
+    --alva-dock-offset-x: 24px;
+    --alva-dock-offset-y: 24px;
+    --alva-z: 9500;
+
     /* — Typografie — */
     --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
                  "Helvetica Neue", Arial, sans-serif;
