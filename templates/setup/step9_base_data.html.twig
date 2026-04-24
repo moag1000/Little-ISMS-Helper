@@ -72,7 +72,9 @@
                         </div>
 
                         {# Import Action #}
-                        <form method="post" action="{{ path('setup_step9_base_data_import') }}">
+                        <form method="post" action="{{ path('setup_step9_base_data_import') }}"
+                              data-controller="wizard-busy"
+                              data-wizard-busy-message-value="{{ 'setup.alva.busy.base_data'|trans({}, 'setup') }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('setup_base_data') }}">
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{{ path('setup_step8_compliance_frameworks') }}" class="btn btn-outline-secondary">

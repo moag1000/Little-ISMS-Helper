@@ -44,7 +44,7 @@
                 {% endblock %}
             {% endembed %}
 
-            {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg' } only %}
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg', 'form': form, 'available_frameworks': available_frameworks } only %}
                 {% block card_header %}
                     <div class="card-header bg-primary text-white">
                         <h1 class="h3 mb-0">
@@ -79,7 +79,7 @@
                         <div class="row g-4">
                             {# Left panel: already certified #}
                             <div class="col-lg-6">
-                                {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-success' } only %}
+                                {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-success', 'form': form, 'available_frameworks': available_frameworks } only %}
                                     {% block card_header %}
                                         <div class="card-header bg-success-subtle">
                                             <h2 class="h5 mb-0">
@@ -135,7 +135,7 @@
 
                             {# Right panel: newly added #}
                             <div class="col-lg-6">
-                                {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-primary' } only %}
+                                {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-primary', 'form': form, 'available_frameworks': available_frameworks } only %}
                                     {% block card_header %}
                                         <div class="card-header bg-primary-subtle">
                                             <h2 class="h5 mb-0">
