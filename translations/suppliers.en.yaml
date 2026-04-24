@@ -79,6 +79,37 @@ supplier:
         risk_level: 'Risk Level'
         nace_code: 'NACE Code (Rev.2)'
         country_of_head_office: 'Country of Head Office (ISO-3166)'
+        # DORA (Digital Operational Resilience Act) — Art. 28 Register of Information
+        lei_code: 'LEI Code (ISO 17442)'
+        ict_criticality: 'ICT Criticality (DORA)'
+        ict_function_type: 'ICT Function Type'
+        substitutability: 'Substitutability'
+        has_exit_strategy: 'Exit strategy documented'
+        has_subcontractors: 'Uses subcontractors'
+        subcontractor_chain: 'Subcontractor chain'
+        processing_locations: 'Processing locations (ISO-3166)'
+        last_dora_audit_date: 'Last DORA audit'
+        # GDPR — Art. 28 Processor
+        gdpr_processor_status: 'Data protection role (GDPR Art. 28)'
+        gdpr_av_contract_signed: 'DPA signed (GDPR Art. 28)'
+        gdpr_av_contract_date: 'DPA signed on'
+        gdpr_transfer_mechanism: 'Third-country transfer mechanism'
+    ict_criticality:
+        critical: 'Critical (DORA Art. 28.2)'
+        important: 'Important (DORA)'
+        non_ict: 'Non-ICT service'
+    substitutability:
+        easy: 'Easy to substitute'
+        medium: 'Medium'
+        hard: 'Hard to substitute'
+    gdpr_processor_status:
+        controller: 'Controller (Art. 4(7) GDPR)'
+        processor: 'Processor (Art. 28 GDPR)'
+        joint_controller: 'Joint controller (Art. 26 GDPR)'
+        none: 'No personal data'
+    tooltip:
+        security_score: 'Security score 0–100 (see assessment framework).'
+        criticality: 'Supplier criticality for your operations.'
     help:
         name: 'Official name of the supplier or service provider.'
         description: 'Brief description of the supplier and their role for your organization.'

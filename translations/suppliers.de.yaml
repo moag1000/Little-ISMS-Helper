@@ -79,6 +79,38 @@ supplier:
         risk_level: 'Risikostufe (ISO 27001 Anhang A 5.19: Lieferantenbeziehungen)'
         nace_code: 'NACE-Code (Rev.2)'
         country_of_head_office: 'Hauptsitz (ISO-3166)'
+        # DORA (Digital Operational Resilience Act) — Art. 28 Register of Information
+        lei_code: 'LEI-Code (ISO 17442)'
+        ict_criticality: 'ICT-Kritikalität (DORA)'
+        ict_function_type: 'ICT-Funktionstyp'
+        substitutability: 'Austauschbarkeit'
+        has_exit_strategy: 'Exit-Strategie dokumentiert'
+        has_subcontractors: 'Nutzt Unterauftragsverarbeiter'
+        subcontractor_chain: 'Unterauftragnehmer-Kette'
+        processing_locations: 'Verarbeitungsstandorte (ISO-3166)'
+        last_dora_audit_date: 'Letztes DORA-Audit'
+        # DSGVO (GDPR) — Art. 28 Auftragsverarbeitung
+        gdpr_processor_status: 'Datenschutz-Rolle (DSGVO Art. 28)'
+        gdpr_av_contract_signed: 'AVV unterzeichnet (DSGVO Art. 28)'
+        gdpr_av_contract_date: 'AVV unterzeichnet am'
+        gdpr_transfer_mechanism: 'Datenübermittlungs-Mechanismus (Drittland)'
+    # Enum-Werte für DORA/DSGVO-Felder (FormType choice_translation_domain => 'suppliers')
+    ict_criticality:
+        critical: 'Kritisch (DORA Art. 28.2)'
+        important: 'Wichtig (DORA)'
+        non_ict: 'Nicht-ICT-Dienst'
+    substitutability:
+        easy: 'Leicht ersetzbar'
+        medium: 'Mittel ersetzbar'
+        hard: 'Schwer ersetzbar'
+    gdpr_processor_status:
+        controller: 'Verantwortlicher (Art. 4 Nr. 7 DSGVO)'
+        processor: 'Auftragsverarbeiter (Art. 28 DSGVO)'
+        joint_controller: 'Gemeinsam Verantwortlicher (Art. 26 DSGVO)'
+        none: 'Keine personenbezogenen Daten'
+    tooltip:
+        security_score: 'Sicherheitsbewertung 0–100 (siehe Bewertungsrahmen).'
+        criticality: 'Kritikalität des Lieferanten für Ihren Geschäftsbetrieb.'
     help:
         name: 'Offizieller Name des Lieferanten oder Dienstleisters.'
         description: 'Kurze Beschreibung des Lieferanten und seiner Rolle für Ihr Unternehmen.'
