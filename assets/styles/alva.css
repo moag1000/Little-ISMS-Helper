@@ -84,9 +84,9 @@
 .fa-alva--happy      .fa-alva__aura-mid   { stop-color: var(--accent);   stop-opacity: 0.216; }
 .fa-alva--happy      .fa-alva__aura-outer { stop-color: var(--accent);   stop-opacity: 0; }
 
-.fa-alva--celebrating .fa-alva__aura-inner { stop-color: #ec4899; stop-opacity: 0.85; }
-.fa-alva--celebrating .fa-alva__aura-mid   { stop-color: #ec4899; stop-opacity: 0.255; }
-.fa-alva--celebrating .fa-alva__aura-outer { stop-color: #ec4899; stop-opacity: 0; }
+.fa-alva--celebrating .fa-alva__aura-inner { stop-color: var(--alva-celebrating); stop-opacity: 0.85; }
+.fa-alva--celebrating .fa-alva__aura-mid   { stop-color: var(--alva-celebrating); stop-opacity: 0.255; }
+.fa-alva--celebrating .fa-alva__aura-outer { stop-color: var(--alva-celebrating); stop-opacity: 0; }
 
 .fa-alva--working    .fa-alva__aura-inner { stop-color: var(--accent);   stop-opacity: 0.6; }
 .fa-alva--working    .fa-alva__aura-mid   { stop-color: var(--accent);   stop-opacity: 0.18; }
