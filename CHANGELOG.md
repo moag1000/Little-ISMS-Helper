@@ -5,6 +5,137 @@ All notable changes to Little ISMS Helper will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — Migration Housekeeping
+
+### Breaking
+
+- **Migrationen konsolidiert**: 47 Doctrine-Migrationen seit v2.6.0 (Tag `97dd7ae5`) wurden
+  in eine einzige Squash-Migration `Version20260424150000` zusammengefasst.
+  Alte Files liegen archiviert in `migrations/legacy/` (nicht gelöscht, da
+  `doctrine_migration_versions` noch die alten Versionen referenziert).
+- **Upgrade-Pfad von v2.6.0 (fresh install)**:
+  `php bin/console doctrine:migrations:migrate` führt die Squash-Migration durch —
+  alle 47 Schema-States in einem idempotenten Lauf.
+- **Existing installs** (die alle 47 bereits applied haben): Squash-Migration ist
+  **no-op** — alle ALTER/CREATE-Statements prüfen via `information_schema` ob
+  Spalten/Tables/FKs existieren, bevor sie SQL absetzen. Kein PREPARE/EXECUTE-Pattern.
+- **Rollback**: Automatischer Rollback via `down()` ist nicht unterstützt.
+  Restore from backup oder Reapply der einzelnen Migrationen aus `migrations/legacy/`.
+
+### Technical
+
+- `migrations/Version20260424150000.php`: konsolidierte Squash-Migration (470+ Zeilen),
+  Sections: CREATE TABLE IF NOT EXISTS → safeAddColumn() → Daten-Backfills → safeAddFK().
+- `migrations/legacy/`: 47 archivierte Migrations-Files (Version20260417173835 bis Version20260423130000).
+- Helpers `safeAddColumn`, `safeAddFK`, `safeDropFK`, `safeModifyColumn` ersetzen
+  das fragile PREPARE/EXECUTE-Pattern aus den alten Migrations.
+
+### FairyAurora v3.0 Design System
+
+- Complete CSS migration from legacy tokens to Aurora token system across all templates
+- Dark mode deep-fixes across 108+ templates (hardcoded `background: white` replaced with CSS variables in 8 CSS files)
+- Bootstrap loaded before Aurora to fix cascade order
+- Card-header color normalization: removed cosmetic `bg-primary`/`bg-success` overrides
+- Alva character face visibility fix in dark mode
+- Text contrast fixes for `text-muted` in subtle backgrounds
+- App sidebar + mega-menu with gradient backdrop on Aurora tokens
+- Chart.js colors bound to Aurora CSS custom properties
+- Guided tour per-step icons + resume-after-navigation support
+- WCAG contrast improvements throughout (incident status/severity cards, Bootstrap subtle alert variants)
+
+### Setup Wizard Stabilization
+
+- 8 bug fixes for Step 8 framework selection (double-toggle, checkbox submit, toggle state persistence)
+- Alva busy indicator during framework loading
+- Missing i18n keys added for wizard translation domain
+- Sample data import now sets tenant from wizard context
+- Mandatory frameworks pre-selected by default in Step 8
+
+### Holding & Corporate Governance (Phase 8M / 9)
+
+- New roles: `ROLE_GROUP_CISO` and `ROLE_KONZERN_AUDITOR`
+- 5 Holding-Inheritance config resolvers: Risk Approval, Incident SLA, KPI Thresholds, Password Policy, E-Mail Branding
+- Tenant-scoped configuration with holding ceiling/floor merge strategy
+
+### Backup & Disaster Recovery
+
+- ZIP backup format with files, schema version metadata, and round-trip integrity test
+- Tenant-scoped backup + restore for multi-tenant isolation
+- Best-effort restore mode with row-level failure tracking
+- `app:backup:repair` command (salvage-what-you-can for corrupt backups)
+- `app:backup:prune`, `app:backup:scheduled-create`, `app:backup:notify` commands
+- Disaster recovery runbook documentation
+- ManyToMany collection restore fix
+
+### Data Integrity & Repair
+
+- Dynamic orphan detection for ALL tenant entities
+- Generic reassign route for orphan repair
+- TenantFilter + `confirm_hash` fixes for data repair safety
+- `app:schema:reconcile` command for silent-failed migration detection
+
+### Glossary Expansion (20 to 171 terms)
+
+- Batch 1: 38 terms from 4 personas (Junior, CISO, CM, Consultant)
+- Batch 2: 39 terms from ISMS + BCM specialists
+- Batch 3: 33 terms from DPO + Risk specialists
+- Final batch: 41 terms from all 6 specialist daily-work audits
+- 8 categories: basics, risk, compliance, bcm, privacy, operations, governance, technical
+- ISO 9001 analogies added on relevant terms
+
+### Navigation & Help
+
+- New "Help & Resources" mega-menu category with glossary, ISO 9001 bridge, and keyboard shortcuts
+- Fairy emoji replaced with Alva SVG character across all templates
+- Guided tour texts improved (raw URLs replaced with menu references)
+
+### Translation & i18n
+
+- 0 missing translations in DE and EN (verified by `debug:translation`)
+- Explicit translation domains added to 7 templates (~70 `|trans` calls)
+- Dynamic translation keys verified against YAML (consent enum aliases added)
+- 36 missing dashboard KPI labels added
+- SoA message translations added
+- Compliance industry enum translations restructured
+
+### Dark Mode & CSS
+
+- All hardcoded `background: white` replaced with CSS variables across 8 CSS files
+- Incident status/severity cards dark-mode compatible
+- Bootstrap subtle variants for alert colors in dark mode
+
+### Incident Module UX
+
+- Critical bug fix: status filter mismatch (open KPI showed 0)
+- Status overview cards: 4 to 5 cards matching entity statuses
+- ~20 hardcoded English strings converted to translation keys
+- Emojis replaced with Bootstrap Icons
+- Stimulus escalation preview controller fully i18n-enabled
+- NIS2 compliance statuses added to EN translations
+
+### Tenant Configuration (Phase 8L / 8QW)
+
+- Risk matrix labels in translation system
+- Risk appetite review-buffer-multiplier configurable per tenant
+- Document classification default via SystemSetting
+- Supplier criticality level configurable per tenant
+- Incident SLAs per tenant + severity configurable
+- Approval thresholds per tenant configurable
+- Audit log retention editable via Admin UI
+- E-mail branding per tenant with holding fallback
+
+### Admin Panel
+
+- Sample data module (import + remove)
+- Loader-Fixer idempotent pattern for framework catalog management
+
+### Documentation Metrics Update
+
+- All metrics in CLAUDE.md, README.md, ROADMAP.md, CHANGELOG.md updated to Apr 2026 actuals
+- Entities 73, Controllers 104, Services 121, Commands 77, Templates 487, Translations 162 (81 domains), Tests 3919, LOC 167k
+
+---
+
 ## [3.0.0] — 2026-04-21 🌸 FairyAurora Design-Reset
 
 **Major Design-Reset**: komplette Migration vom "Cyberpunk-Fairy"-Theme
