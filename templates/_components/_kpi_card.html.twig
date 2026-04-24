@@ -1,4 +1,28 @@
 {#
+  ⚠️ DEPRECATED (Aurora v4.0) — use `fa-feature-card` instead.
+
+  Replacement pattern:
+    {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+    {{ _fa_feature_card.render({
+        label: 'Offene Risiken',
+        value: 12,
+        icon: 'shield-exclamation',       {# no 'bi-' prefix #}
+        variant: 'primary',
+        hint: '+3 seit letzter Woche',
+        href: '/risk'
+    }) }}
+
+  Field mapping (legacy → fa-feature-card):
+    icon        → icon (drop 'bi-' prefix)
+    trend       → hint (prepend ↑/↓ Unicode for direction)
+    detail      → hint
+    link        → href
+    info/secondary variants → primary
+  See `/dev/design-system` for live preview + full macro API.
+
+  This legacy include still works for backward compat but emits a deprecation
+  warning in dev env. Scheduled removal: Aurora v5.
+
   FairyAurora KPI Card — Aurora-Pattern mit Mono-Label + Big-Sans-Value + Delta-Chip + Sparkline
 
   Usage (Minimal):
@@ -102,3 +126,11 @@
         </a>
     {% endif %}
 </div>
+
+{% if app.environment == 'dev' %}
+<script>
+    if (typeof console !== 'undefined' && console.warn) {
+        console.warn('[Aurora v4 Deprecation] _components/_kpi_card.html.twig — migrate to _components/_fa_feature_card.html.twig. See /dev/design-system for API.');
+    }
+</script>
+{% endif %}

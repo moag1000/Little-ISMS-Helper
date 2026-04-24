@@ -337,6 +337,27 @@ See `templates/_components/_CARD_GUIDE.md` for variants (`default`, `kpi`, `stat
 - ✅ For KPI/hero tiles use `variant: 'kpi', borderColor: '<color>'` + `.kpi-card-value` / `.kpi-card-label` inside + `text-<color>` on the icon. Aurora renders a neutral card with a colored left-border + colored icon — works in both themes.
 - ✅ Bootstrap utilities on **smaller elements** still work fine: `.badge bg-<color>`, `.progress-bar bg-<color>`, `.btn btn-<color>`, `.alert alert-<color>`, spacing/flex utilities. Only the outer `.card` / `.card-header` is the trap.
 
+### Aurora v4 Component Library (prefer these for new UI)
+
+Macro library under `templates/_components/_fa_*.html.twig` — import via `{% import '_components/_fa_<name>.html.twig' as _fa_<name> %}`. Live preview + copyable snippets at `/dev/design-system` (dev env only).
+
+| Component | Use for |
+|---|---|
+| `_fa_page_header` | Module landing-page header: badge + title + subtitle + actions + brand-gradient underline |
+| `_fa_section` | Section wrapper: title + tools slot (filter-chips) + body + optional footer |
+| `_fa_feature_card` | KPI tile — **replaces legacy `.kpi-card` / `variant:'kpi'`**. Signature: `render({label, value, unit?, variant: primary\|success\|warning\|danger, icon, hint?, sparkline?, href?})`. |
+| `_fa_empty_state` | Empty state with Alva mood + 1-2 CTAs |
+| `_fa_hero` | Welcome banner / module intro with Alva + title + subtitle + action |
+| `_fa_filter_chip` | Filter chip `render({label, icon?, href?, active?})` + group `group(items, activeIndex)` |
+
+**Page-level atmosphere:** wrap `<main>` or top-level container in `.fa-aurora-surface` (base), `--subtle` (low opacity), `--hero` (landing pages), or `--dots` (+ circuit-pattern). CSS utility, no macro — just a class.
+
+**Alva companion:** `window.alvaBus.emit({mood, ttlMs?})` controls the dockered Alva globally. Moods: `idle`, `happy`, `thinking`, `focused`, `working`, `scanning`, `warning`, `celebrating`, `sleeping`. Already wired to Upload + Turbo-Submit + `alva:empty` custom events. User can toggle / resize / reposition in `/profile`.
+
+**Legacy `.kpi-card` deprecation:** still renders for backward compat but emits a console.warn in dev env. Don't extend it — migrate to `_fa_feature_card` instead.
+
+**Stylelint hex-ban:** `npm run stylelint` bans raw hex in 14 color-valued properties. Use Aurora tokens (`var(--primary)`, `var(--success-tint)`, etc.). Allow-list: `fairy-aurora.css` (SoT), `alva.css` (SVG brand).
+
 ### Multi-Tenancy Considerations
 
 - All UI must respect tenant context (no data leakage across tenants)
