@@ -2600,7 +2600,42 @@ small.text-muted,
 .bg-dark        { background-color: var(--bg) !important; }
 .bg-white       { background-color: var(--surface) !important; }
 .bg-body        { background-color: var(--bg) !important; }
-.bg-body-tertiary { background-color: var(--surface-2) !important; }
+.bg-body-tertiary  { background-color: var(--surface-2) !important; }
+.bg-body-secondary { background-color: var(--surface-2) !important; }
+
+/* Solide bg-* Utilities (card-header bg-primary, docker-pw-highlight etc.) */
+.bg-primary    { background-color: var(--primary-strong) !important; color: var(--on-primary) !important; }
+.bg-success    { background-color: var(--success-strong) !important; color: var(--on-success) !important; }
+.bg-warning    { background-color: var(--warning)        !important; color: var(--on-warning) !important; }
+.bg-danger     { background-color: var(--danger)         !important; color: var(--on-danger)  !important; }
+.bg-info       { background-color: var(--primary)        !important; color: var(--on-primary) !important; }
+.bg-secondary  { background-color: var(--surface-2)      !important; color: var(--fg)         !important; }
+
+/* Farbige bg-* Container erben on-Color an alle Text-Kinder (Icons, p, small, strong) */
+.bg-primary *:not(.btn):not(a.btn):not(.badge),
+.bg-success *:not(.btn):not(a.btn):not(.badge),
+.bg-warning *:not(.btn):not(a.btn):not(.badge),
+.bg-danger  *:not(.btn):not(a.btn):not(.badge),
+.bg-info    *:not(.btn):not(a.btn):not(.badge)    { color: inherit; }
+
+/* Bootstrap-border-* Utilities (1px Akzent-Borders, z.B. alert.border-success) */
+.border-primary { border-color: var(--primary) !important; }
+.border-success { border-color: var(--success) !important; }
+.border-warning { border-color: var(--warning) !important; }
+.border-danger  { border-color: var(--danger)  !important; }
+.border-info    { border-color: var(--primary) !important; }
+.border-secondary { border-color: var(--border-strong) !important; }
+
+/* btn-close (Alert-Dismiss × + Modal-Close) — Aurora-Kontrast + Dark-Mode */
+.btn-close {
+    opacity: 0.65;
+    transition: opacity 0.15s ease;
+}
+.btn-close:hover,
+.btn-close:focus-visible { opacity: 1; }
+[data-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+.alert-warning .btn-close,
+.bg-warning .btn-close { filter: none; }
 
 /* *-subtle (Bootstrap 5.3) für Badge/Icon-Hintergründe */
 .bg-primary-subtle  { background-color: var(--primary-tint) !important; }
