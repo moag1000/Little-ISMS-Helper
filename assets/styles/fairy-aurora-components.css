@@ -4530,3 +4530,82 @@ button.fa-filter-chip.fa-filter-chip--active {
 .badge.text-bg-warning   { background-color: color-mix(in oklab, var(--warning) 12%, var(--surface)) !important; color: var(--warning-strong) !important; }
 .badge.bg-danger-subtle,
 .badge.text-bg-danger    { background-color: color-mix(in oklab, var(--danger) 12%, var(--surface)) !important; color: var(--danger-strong) !important; }
+
+
+/* ==========================================================================
+   Aurora v4 — Navigation button-likes (.page-link, .dropdown-item, .nav-link)
+   ========================================================================== */
+
+/* Bootstrap .pagination > .page-link — pagination items */
+.pagination .page-link {
+    color: var(--fg-2);
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 13px;
+}
+.pagination .page-link:hover {
+    color: var(--primary-strong);
+    background-color: var(--primary-tint);
+    border-color: var(--primary);
+    z-index: 2;
+}
+.pagination .page-link:focus-visible {
+    box-shadow: 0 0 0 3px var(--primary-glow);
+    outline: none;
+}
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-strong);
+    border-color: var(--primary-strong);
+    color: var(--on-primary);
+}
+.pagination .page-item.disabled .page-link {
+    color: var(--fg-3);
+    background-color: var(--surface-2);
+    border-color: var(--border);
+}
+
+/* .dropdown-menu + .dropdown-item — dropdown menu items */
+.dropdown-menu {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    padding: 4px;
+    color: var(--fg);
+}
+.dropdown-item {
+    color: var(--fg);
+    padding: 6px 10px;
+    border-radius: var(--r-sm);
+    font-size: 13px;
+}
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: var(--primary-tint);
+    color: var(--primary-strong);
+}
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: var(--primary-strong);
+    color: var(--on-primary);
+}
+.dropdown-item.disabled,
+.dropdown-item:disabled {
+    color: var(--fg-3);
+    background-color: transparent;
+    cursor: not-allowed;
+}
+.dropdown-divider {
+    border-top: 1px solid var(--border);
+    margin: 4px 0;
+}
+.dropdown-header {
+    color: var(--fg-3);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 8px 10px 4px;
+}
