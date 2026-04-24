@@ -13,6 +13,12 @@ This document describes the security features implemented in Little ISMS Helper,
   - `RiskVoter` - Risk access control with multi-tenancy
   - `IncidentVoter` - Incident access control with multi-tenancy
   - `ControlVoter` - Control access control with multi-tenancy
+  - `ComplianceInheritanceVoter` - Compliance inheritance access control
+  - `EntityVoter` - Generic entity access control
+  - `PermissionVoter` - Permission management access control
+  - `RoleVoter` - Role management access control
+  - `TagVoter` - Tag access control
+  - `UserVoter` - User management access control
 
 - **Authorization checks:**
   - `#[IsGranted('ROLE_USER')]` on all controllers
@@ -31,9 +37,7 @@ bin/console debug:voter AssetVoter
 - **Enhanced Session Security** (`config/packages/framework.yaml`):
   - `cookie_secure: 'auto'` - HTTPS only in production
   - `cookie_httponly: true` - Prevents JavaScript access to session cookie (XSS protection)
-  - `cookie_samesite: 'strict'` - Strict CSRF protection (cookie only sent with same-site requests)
-  - `sid_length: 48` - Longer session IDs (harder to guess/brute force, default: 32)
-  - `sid_bits_per_character: 6` - More entropy per character (default: 4)
+  - `cookie_samesite: 'lax'` - CSRF protection (cookie sent with same-site and top-level navigation requests)
   - `gc_maxlifetime: 3600` - Session lifetime: 1 hour
 
 - **Session Fixation Protection** (`config/packages/security.yaml`):
@@ -41,9 +45,9 @@ bin/console debug:voter AssetVoter
   - `invalidate_session: true` on logout - Completely invalidates session on logout
 
 - **Remember Me Cookie Security**:
-  - `secure: true` - HTTPS only
+  - `secure: auto` - HTTPS only in production, HTTP allowed in development
   - `httponly: true` - No JavaScript access
-  - `samesite: 'strict'` - CSRF protection
+  - `samesite: 'lax'` - CSRF protection
   - `lifetime: 604800` - 1 week maximum
 
 - **TLS/HTTPS Enforcement**:
@@ -56,7 +60,7 @@ bin/console debug:voter AssetVoter
 
 1. **SQL Injection Prevention:**
    - Doctrine ORM with prepared statements
-   - No raw SQL queries
+   - Raw SQL limited to backup/restore operations (SET FOREIGN_KEY_CHECKS, batch inserts)
 
 2. **XSS Prevention:**
    - Twig auto-escaping enabled (`autoescape: 'html'`)
@@ -133,9 +137,7 @@ symfony check:security
 
 - **Session Security** (see A02 above):
   - 1-hour session lifetime with garbage collection
-  - Secure, HttpOnly, SameSite=strict cookies
-  - 48-character session IDs with high entropy (50% longer than default)
-  - 6 bits per character (maximum entropy, 50% more than default)
+  - Secure, HttpOnly, SameSite=lax cookies
   - Session fixation protection (automatic session regeneration on login)
   - Session invalidation on logout
 
@@ -146,12 +148,10 @@ symfony check:security
 
 - **CSRF Protection**:
   - Enabled on all forms (`enable_csrf: true`)
-  - SameSite cookie attribute (`strict`)
+  - SameSite cookie attribute (`lax`)
   - Token validation on form submissions
 
 **Recommendations:**
-- Implement password complexity requirements
-- Add Multi-Factor Authentication (MFA)
 - Implement progressive account lockout after failed attempts
 - Add password breach detection (HaveIBeenPwned API)
 
@@ -335,12 +335,12 @@ grep "SUSPICIOUS_ACTIVITY\|ACCESS_DENIED" var/log/prod.log
 
 Priority improvements:
 
-1. **Multi-Factor Authentication (MFA)**
-2. **Password complexity requirements**
+1. ✅ **Multi-Factor Authentication (MFA)** - IMPLEMENTED
+2. ✅ **Password complexity requirements** - IMPLEMENTED (PasswordPolicyResolver)
 3. **Account lockout mechanism**
 4. **IP whitelisting for admin panel**
 5. **API authentication (JWT/OAuth)**
-6. **Enhanced audit logging (database)**
+6. ✅ **Enhanced audit logging (database)** - IMPLEMENTED
 7. **Real-time security monitoring**
 8. **Automated vulnerability scanning**
 

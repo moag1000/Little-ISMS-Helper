@@ -35,6 +35,11 @@ Das System protokolliert Änderungen an folgenden Entitäten:
 - ComplianceRequirement
 - ComplianceFramework
 - ComplianceMapping
+- Supplier
+- InterestedParty
+- BusinessContinuityPlan
+- BCExercise
+- ChangeRequest
 
 ### Erfasste Informationen
 
@@ -126,7 +131,7 @@ $auditLogger->logDelete(
 // Anzeige sensibler Daten protokollieren
 $auditLogger->logView(
     string $entityType,
-    int $entityId,
+    ?int $entityId,
     ?string $description = null
 ): void
 
@@ -240,10 +245,7 @@ Das Audit Logging System erfüllt folgende Compliance-Anforderungen:
 
 ### ISO 27001
 
-- **A.12.4.1**: Ereignisprotokollierung
-- **A.12.4.2**: Schutz von Protokollinformationen
-- **A.12.4.3**: Administrator- und Betreiberprotokolle
-- **A.12.4.4**: Zeitsynchronisation
+- **A.8.15**: Protokollierung (ISO 27001:2022 — umfasst Ereignisprotokollierung, Schutz von Protokollinformationen, Administrator- und Betreiberprotokolle sowie Zeitsynchronisation)
 
 ### DSGVO
 
@@ -293,11 +295,13 @@ Derzeit verwendet das System einen einfachen Mechanismus zur Benutzererkennung. 
 
 ```php
 use Symfony\Bundle\SecurityBundle\Security;
+use App\Service\AuditLogIntegrityService;
 
 public function __construct(
     private EntityManagerInterface $entityManager,
     private RequestStack $requestStack,
-    private Security $security // Neu hinzufügen
+    private Security $security, // bereits injiziert
+    private AuditLogIntegrityService $integrityService // bereits injiziert
 ) {}
 
 private function getCurrentUserName(): string

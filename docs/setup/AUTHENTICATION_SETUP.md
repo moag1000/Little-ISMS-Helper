@@ -16,7 +16,7 @@ Das Little ISMS Helper Framework implementiert ein ausgefeiltes Benutzer-, Rolle
 
 - **Granulare Berechtigungen**: Feinkörnige Kontrolle über einzelne Aktionen (view, create, edit, delete, approve, export)
 - **Rollenverwaltung**: Vordefinierte und benutzerdefinierte Rollen
-- **Rollenhierarchie**: ROLE_USER < ROLE_AUDITOR < ROLE_MANAGER < ROLE_ADMIN < ROLE_SUPER_ADMIN
+- **Rollenhierarchie**: ROLE_USER < ROLE_AUDITOR < ROLE_MANAGER < ROLE_ADMIN < ROLE_SUPER_ADMIN (zusätzliche Sonderrollen: ROLE_GROUP_CISO, ROLE_KONZERN_AUDITOR)
 - **Security Voters**: Automatische Berechtigungsprüfung auf Entity-Ebene
 
 ## Einrichtung
@@ -225,6 +225,8 @@ Admin-Benutzer können auf die Rollenverwaltung unter `/admin/roles` zugreifen:
 
 ### Report (Berichte)
 - `report.view`, `report.create`, `report.export`
+
+> **Hinweis**: Das System verfügt über 50+ Berechtigungen in vielen weiteren Kategorien (z.B. supplier, document, workflow, training, bcm, dpia, change_request u.v.m.). Die obige Liste zeigt nur die wichtigsten Kernkategorien.
 
 ## Programmierung mit Berechtigungen
 

@@ -21,7 +21,7 @@ Guidelines for Claude Code in this repository.
 
 **Multi-tenancy:** All entities use `tenant_id` field. `TenantContext` service manages context.
 
-**RBAC:** USER → AUDITOR → MANAGER → ADMIN → SUPER_ADMIN with 35+ permissions.
+**RBAC:** USER → AUDITOR → MANAGER → ADMIN → SUPER_ADMIN with 50+ permissions.
 
 ## Essential Commands
 
@@ -54,14 +54,14 @@ php bin/console lint:twig templates/  # validate all templates
 ## Architecture Quick Guide
 
 **Directory Layout:**
-- `src/Entity/` - Doctrine entities (73 total, all with `tenant_id`)
+- `src/Entity/` - Doctrine entities (78 total, all with `tenant_id`)
 - `src/Service/` - Business logic (121 services)
 - `src/Controller/` - HTTP handlers (104 controllers)
-- `src/Command/` - Console commands (77 total)
+- `src/Command/` - Console commands (82 total)
 - `src/Security/Voter/` - Authorization voters
 - `templates/` - Twig templates
 - `assets/controllers/` - Stimulus JS controllers
-- `translations/` - Translation files (162 YAML files organized by domain)
+- `translations/` - Translation files (174 YAML files organized by domain)
 
 **Key Services:**
 - `RiskService`, `AssetService`, `ControlService` - Core CRUD
@@ -108,7 +108,7 @@ Custom modals (like command palette) use CSS classes instead of Bootstrap Modal 
 The application uses domain-specific translation files instead of monolithic `messages.*.yaml` files.
 
 Structure:
-- `translations/` contains 162 YAML files (81 domains × 2 languages)
+- `translations/` contains 174 YAML files (87 domains × 2 languages)
 - Each functional area has its own domain: `nav`, `mfa`, `tenant`, `role_management`, etc.
 - `messages.{de,en}.yaml` remains as fallback for common/cross-domain terms
 
@@ -123,7 +123,7 @@ Usage in Twig templates:
 {{ 'common.save'|trans({}, 'messages') }}
 ```
 
-Available domains (81 total):
+Available domains (87 total):
 - **Navigation:** nav, dashboard, ui, help, welcome
 - **Access Control:** mfa, role_management, session, user, security, four_eyes
 - **ISMS Core:** assets, risk, control, incident, audits, audit_log, audit_freeze, soa, context, risk_appetite, risk_treatment_plan

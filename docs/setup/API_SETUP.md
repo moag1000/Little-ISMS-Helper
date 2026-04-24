@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document provides comprehensive setup instructions for the Little ISMS Helper REST API, built with Symfony 7.3 and API Platform 4.2.3.
+This document provides comprehensive setup instructions for the Little ISMS Helper REST API, built with Symfony 7.4 and API Platform 4.3.
+
+> **Note:** The API currently exposes 18 API resource entities (not just the 6 listed below). The endpoint table documents the original set; additional resources are available at `/api` via the Swagger UI.
 
 ## Features
 
@@ -578,5 +580,5 @@ For issues or questions:
 
 **Last Updated:** 2024-11-06
 **Version:** 1.0.0
-**Symfony:** 7.3
-**API Platform:** 4.2.3
+**Symfony:** 7.4
+**API Platform:** 4.3

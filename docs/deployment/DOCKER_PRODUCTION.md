@@ -101,7 +101,7 @@ Das `isms_data` Volume enthält:
 # Admin Portal → Database → Create Backup
 
 # Methode 2: Via Console
-docker-compose -f docker-compose.prod.yml exec app php bin/console app:backup-data
+docker-compose -f docker-compose.prod.yml exec app php bin/console app:backup:create
 
 # Methode 3: Volume-Backup
 docker run --rm -v isms_data:/data -v $(pwd):/backup alpine tar czf /backup/isms_backup_$(date +%Y%m%d).tar.gz /data
@@ -114,7 +114,7 @@ docker run --rm -v isms_data:/data -v $(pwd):/backup alpine tar czf /backup/isms
 # Admin Portal → Database → Restore Backup
 
 # Methode 2: Via Console
-docker-compose -f docker-compose.prod.yml exec app php bin/console app:restore-data /var/www/html/var/backups/backup_YYYY-MM-DD.json.gz
+docker-compose -f docker-compose.prod.yml exec app php bin/console app:backup:restore /var/www/html/var/backups/backup_YYYY-MM-DD.json.gz
 
 # Methode 3: Volume-Restore
 docker run --rm -v isms_data:/data -v $(pwd):/backup alpine tar xzf /backup/isms_backup_YYYYMMDD.tar.gz -C /

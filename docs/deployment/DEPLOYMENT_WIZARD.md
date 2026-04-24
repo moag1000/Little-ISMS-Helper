@@ -2,7 +2,9 @@
 
 ## Übersicht
 
-Der **10-Schritte Deployment Wizard** führt Sie Schritt für Schritt durch die komplette Einrichtung Ihres Little ISMS Helper Systems - **keine manuelle Konfiguration nötig!** Er übernimmt die Datenbank-Konfiguration, Admin-User-Erstellung, Email-Setup, Organisations-Informationen, Module-Auswahl, intelligente Compliance-Framework-Empfehlungen und den Import von Basis- und Beispieldaten.
+Der **12-Schritte Deployment Wizard** führt Sie Schritt für Schritt durch die komplette Einrichtung Ihres Little ISMS Helper Systems - **keine manuelle Konfiguration nötig!** Er übernimmt die Datenbank-Konfiguration, Admin-User-Erstellung, Email-Setup, Organisations-Informationen, Module-Auswahl, intelligente Compliance-Framework-Empfehlungen und den Import von Basis- und Beispieldaten.
+
+> **Hinweis:** Der Wizard umfasst 12 Schritte, darunter Schritt 0 (Welcome/Willkommensseite) und Schritt 3 (Backup wiederherstellen), die nachträglich hinzugefügt wurden.
 
 ## Features
 
@@ -97,11 +99,11 @@ Diese Daten werden für intelligente Compliance-Framework-Empfehlungen genutzt.
 
 #### Schritt 5: System-Anforderungen prüfen
 Der Wizard prüft automatisch:
-- ✅ PHP 8.2+ mit erforderlichen Extensions (pdo, mbstring, intl, xml, etc.)
+- ✅ PHP 8.4+ mit erforderlichen Extensions (pdo, mbstring, intl, xml, etc.)
 - ✅ Datenbank-Konnektivität
 - ✅ Schreibrechte für Verzeichnisse (var/, config/)
 - ✅ Memory Limit (empfohlen: 256MB+)
-- ✅ Symfony 7.3+
+- ✅ Symfony 7.4
 
 **Beheben Sie alle kritischen Fehler, bevor Sie fortfahren.**
 
@@ -321,10 +323,10 @@ rm config/active_modules.yaml
 **Lösung**:
 ```bash
 # Ubuntu/Debian
-sudo apt-get install php8.2-{pdo,pdo-mysql,mbstring,intl,xml,json,zip,opcache}
+sudo apt-get install php8.4-{pdo,pdo-mysql,mbstring,intl,xml,json,zip,opcache}
 
 # macOS (Homebrew)
-brew install php@8.2
+brew install php@8.4
 ```
 
 ### "Datenbank nicht konfiguriert"
@@ -427,7 +429,7 @@ Bei Fragen oder Problemen:
 - `DataImportService`: Importiert Basis- und Beispieldaten
 
 **Controller**:
-- `DeploymentWizardController`: 10-Schritt Wizard mit intelligenter Framework-Auswahl
+- `DeploymentWizardController`: 12-Schritt Wizard mit intelligenter Framework-Auswahl
 - `ModuleManagementController`: Nachträgliche Modulverwaltung
 
 **Templates**:

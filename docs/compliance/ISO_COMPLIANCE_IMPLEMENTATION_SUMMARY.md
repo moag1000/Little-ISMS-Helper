@@ -111,7 +111,11 @@ Provides:
 
 ## Database Migration
 
-**File:** `migrations/Version20251108000001.php`
+The required schema changes are applied via standard Doctrine migrations. Run:
+
+```bash
+php bin/console doctrine:migrations:migrate --no-interaction
+```
 
 Creates:
 - 5 main tables (supplier, interested_party, business_continuity_plan, bc_exercise, change_request)
@@ -193,13 +197,14 @@ Methods:
 
 ## Next Steps for 100% Compliance
 
-1. Create Twig templates for UI (currently only API and controllers exist)
-2. Add automated testing for BC plans
-3. Implement automated reminder notifications for:
+1. ✅ DONE — Twig templates for UI created (all CRUD views implemented)
+2. ✅ DONE — MFA (Multi-Factor Authentication) implemented (TOTP, WebAuthn, backup codes)
+3. Add automated testing for BC plans
+4. Implement automated reminder notifications for:
    - Overdue supplier assessments
    - Overdue BC plan tests
    - Overdue interested party communications
-4. Add compliance reporting dashboard
+5. Add compliance reporting dashboard
 
 ## Files Summary
 
@@ -217,8 +222,8 @@ Methods:
 
 ## Technical Details
 
-- **Language:** PHP 8.2+
-- **Framework:** Symfony 6.x
+- **Language:** PHP 8.4+
+- **Framework:** Symfony 7.4
 - **ORM:** Doctrine
 - **API:** API Platform 3.x
 - **Database:** MySQL/MariaDB compatible
