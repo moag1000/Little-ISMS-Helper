@@ -143,52 +143,25 @@ class DataRepairController extends AbstractController
             $count++;
         };
 
-        switch ($entityType) {
-            case 'assets':
-                $orphaned = $this->assetRepository->createQueryBuilder('a')
-                    ->where('a.tenant IS NULL')
-                    ->getQuery()
-                    ->getResult();
-                foreach ($orphaned as $entity) {
-                    $assignFn($entity, 'Asset');
+        // Generisch: Service liefert bereits alle Orphans keyed by entity-type.
+        // 'all' iteriert komplett, sonst nur die gewählte Kategorie.
+        $allOrphans = $this->dataIntegrityService->findAllOrphanedEntities();
+        if ($entityType === 'all') {
+            foreach ($allOrphans as $entities) {
+                foreach ($entities as $entity) {
+                    $assignFn($entity, (new \ReflectionClass($entity))->getShortName());
                 }
-                break;
-
-            case 'risks':
-                $orphaned = $this->riskRepository->createQueryBuilder('r')
-                    ->where('r.tenant IS NULL')
-                    ->getQuery()
-                    ->getResult();
-                foreach ($orphaned as $entity) {
-                    $assignFn($entity, 'Risk');
-                }
-                break;
-
-            case 'incidents':
-                $orphaned = $this->incidentRepository->createQueryBuilder('i')
-                    ->where('i.tenant IS NULL')
-                    ->getQuery()
-                    ->getResult();
-                foreach ($orphaned as $entity) {
-                    $assignFn($entity, 'Incident');
-                }
-                break;
-
-            case 'all':
-                // Alle Orphans aller Entity-Typen — generischer Scan via Service.
-                // Vermeidet hardcoded Asset/Risk/Incident-Liste, deckt auch
-                // seltenere Typen (Supplier, Location, Document, BCPlan, …) ab.
-                $allOrphans = $this->dataIntegrityService->findAllOrphanedEntities();
-                foreach ($allOrphans as $entities) {
-                    foreach ($entities as $entity) {
-                        $assignFn($entity, (new \ReflectionClass($entity))->getShortName());
-                    }
-                }
-                break;
-
-            default:
-                $this->addFlash('error', $this->translator->trans('admin.data_repair.invalid_entity_type'));
-                return $this->redirectToRoute('admin_data_repair_index');
+            }
+        } elseif (isset($allOrphans[$entityType])) {
+            foreach ($allOrphans[$entityType] as $entity) {
+                $assignFn($entity, (new \ReflectionClass($entity))->getShortName());
+            }
+        } else {
+            if ($filterWasEnabled) {
+                $filters->enable('tenant_filter');
+            }
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.invalid_entity_type'));
+            return $this->redirectToRoute('admin_data_repair_index');
         }
 
         $this->entityManager->flush();
