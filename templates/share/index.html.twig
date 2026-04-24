@@ -3,6 +3,14 @@
 {% block title %}{{ 'share.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{{ _fa_page_header.render({
+    badge: { icon: 'share', label: 'share.title'|trans({}, 'messages') },
+    title: 'share.title'|trans({}, 'messages')
+}) }}
+
+<main class="fa-aurora-surface">
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
@@ -116,4 +124,5 @@
         </div>
     </div>
 </div>
+</main>
 {% endblock %}

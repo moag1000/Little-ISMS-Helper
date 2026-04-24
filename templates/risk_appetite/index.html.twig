@@ -4,30 +4,26 @@
 {% block title %}{{ 'risk_appetite.title'|trans({}, 'risk_appetite') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_macros/cards.html.twig' as cards %}
 
-<div class="container">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index') },
-            { label: 'nav.risk_appetite'|trans({}, 'nav') }
-        ]
-    } %}
-</div>
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index') },
+        { label: 'nav.risk_appetite'|trans({}, 'nav') }
+    ]
+} %}
 
-<div class="page-header">
-    <div>
-        <h1><i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'risk_appetite.title'|trans({}, 'risk_appetite') }}</h1>
-        <p class="text-muted">{{ 'risk_appetite.description'|trans({}, 'risk_appetite') }}</p>
-    </div>
-    <div class="button-group">
-        {% if is_granted('ROLE_ADMIN') %}
-        <a href="{{ path('app_risk_appetite_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'risk_appetite.new'|trans({}, 'risk_appetite') }}
-        </a>
-        {% endif %}
-    </div>
-</div>
+{{ _fa_page_header.render({
+    badge: { icon: 'speedometer2', label: 'nav.risk_appetite'|trans({}, 'nav') },
+    title: 'risk_appetite.title'|trans({}, 'risk_appetite'),
+    subtitle: 'risk_appetite.description'|trans({}, 'risk_appetite'),
+    actions: is_granted('ROLE_ADMIN') ? [
+        { label: 'risk_appetite.new'|trans({}, 'risk_appetite'), variant: 'primary', icon: 'plus-lg', href: path('app_risk_appetite_new') }
+    ] : []
+}) }}
+
+<main class="fa-aurora-surface">
 
 <div class="stats-grid mb-4">
     <div class="col-auto">
@@ -215,4 +211,5 @@
     {% endblock %}
 {% endembed %}
 {% endif %}
+</main>
 {% endblock %}
