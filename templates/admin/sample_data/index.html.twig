@@ -1,0 +1,118 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+
+{% block title %}{{ 'admin.sample_data.title'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block admin_title %}
+    <i class="bi bi-database-fill-add" aria-hidden="true"></i> {{ 'admin.sample_data.title'|trans({}, 'admin') }}
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
+            { label: 'admin.sample_data.title'|trans({}, 'admin') }
+        ]
+    } %}
+
+    <p class="text-muted mb-4">{{ 'admin.sample_data.description'|trans({}, 'admin') }}</p>
+
+    <div class="alert alert-info">
+        <strong>{{ 'admin.sample_data.tenant_label'|trans({}, 'admin') }}:</strong> {{ tenant.name }}
+        — {{ 'admin.sample_data.total_imported'|trans({'%count%': totalImported}, 'admin') }}
+    </div>
+
+    {% embed '_components/_card.html.twig' with { class: 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h2 class="h5 mb-0">
+                    <i class="bi bi-plus-square" aria-hidden="true"></i> {{ 'admin.sample_data.import_section'|trans({}, 'admin') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            <form method="post" action="{{ path('admin_sample_data_import') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('sample_data_import') }}">
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 40px;"></th>
+                                <th scope="col">{{ 'admin.sample_data.col_name'|trans({}, 'admin') }}</th>
+                                <th scope="col">{{ 'admin.sample_data.col_description'|trans({}, 'admin') }}</th>
+                                <th scope="col">{{ 'admin.sample_data.col_modules'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="text-end">{{ 'admin.sample_data.col_status'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="text-end">{{ 'admin.sample_data.col_actions'|trans({}, 'admin') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sample in samples %}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox"
+                                               class="form-check-input"
+                                               name="samples[{{ sample.key }}]"
+                                               value="1"
+                                               id="sample_{{ sample.key }}"
+                                               {% if not sample.modules_ok %}disabled{% endif %}>
+                                    </td>
+                                    <td>
+                                        <label for="sample_{{ sample.key }}" class="fw-semibold mb-0">{{ sample.name }}</label>
+                                    </td>
+                                    <td class="text-muted small">{{ sample.description }}</td>
+                                    <td>
+                                        {% for m in sample.required_modules %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: m } %}
+                                        {% else %}
+                                            <span class="text-muted small">—</span>
+                                        {% endfor %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if sample.imported %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'admin.sample_data.imported_count'|trans({'%count%': sample.count}, 'admin') } %}
+                                        {% elseif not sample.modules_ok %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'admin.sample_data.modules_missing'|trans({}, 'admin') } %}
+                                        {% else %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'admin.sample_data.not_imported'|trans({}, 'admin') } %}
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if sample.imported and sample.removable %}
+                                            <form method="post"
+                                                  action="{{ path('admin_sample_data_remove', {sampleKey: sample.key}) }}"
+                                                  class="d-inline"
+                                                  data-controller="ui-actions"
+                                                  data-action="submit->ui-actions#confirm"
+                                                  data-ui-actions-message-param="{{ 'admin.sample_data.confirm_remove'|trans({'%name%': sample.name, '%count%': sample.count}, 'admin') }}">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('sample_data_remove_' ~ sample.key) }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="bi bi-trash" aria-hidden="true"></i> {{ 'admin.sample_data.remove_button'|trans({}, 'admin') }}
+                                                </button>
+                                            </form>
+                                        {% elseif sample.imported and not sample.removable %}
+                                            <small class="text-muted">{{ 'admin.sample_data.not_removable'|trans({}, 'admin') }}</small>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-end mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-download" aria-hidden="true"></i> {{ 'admin.sample_data.import_button'|trans({}, 'admin') }}
+                    </button>
+                </div>
+            </form>
+        {% endblock %}
+    {% endembed %}
+
+    <div class="alert alert-warning">
+        <strong><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'admin.sample_data.note_title'|trans({}, 'admin') }}:</strong>
+        {{ 'admin.sample_data.note_message'|trans({}, 'admin') }}
+    </div>
+</div>
+{% endblock %}

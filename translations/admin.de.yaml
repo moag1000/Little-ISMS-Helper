@@ -41,6 +41,7 @@ admin:
         export: Export
         import: Import
         data_repair: Daten-Reparatur
+        sample_data: Beispieldaten
         licensing: Lizenzierung
         license_management: Lizenz-Verwaltung
         kpi_thresholds: 'KPI-Schwellwerte'
@@ -245,6 +246,31 @@ admin:
         confirm_reset: 'Alle Tour-Markierungen für %user% wirklich zurücksetzen? Der Nutzer sieht das Einweisungs-Banner beim nächsten Login wieder.'
         empty: 'Keine Benutzer entsprechen den aktuellen Filtern.'
         audit_hint: 'Dieser Report ist als <strong>Audit-Nachweis</strong> für ISO 27001 Annex A.6.3 (Information Security Awareness, Education and Training) nutzbar. Er zeigt wer wann in die Tool-Bedienung eingeführt wurde — pro Rolle eine eigene Tour mit rollen-spezifischem Content.'
+    sample_data:
+        title: 'Beispieldaten'
+        description: 'Demo-Datensätze (Assets, Risiken, Geschäftsprozesse …) für den aktuellen Mandanten importieren oder wieder entfernen.'
+        tenant_label: 'Aktueller Mandant'
+        total_imported: '%count% Beispiel-Einträge insgesamt importiert'
+        import_section: 'Verfügbare Datensätze'
+        col_name: 'Datensatz'
+        col_description: 'Beschreibung'
+        col_modules: 'Module'
+        col_status: 'Status'
+        col_actions: 'Aktionen'
+        imported_count: '%count% importiert'
+        not_imported: 'nicht importiert'
+        modules_missing: 'Modul fehlt'
+        import_button: 'Ausgewählte importieren'
+        remove_button: 'Entfernen'
+        confirm_remove: '„%name%" mit %count% Einträgen wirklich entfernen?'
+        not_removable: 'nur via CLI entfernbar'
+        removed: '%count% Einträge aus „%key%" entfernt.'
+        remove_partial: '%count% Einträge entfernt, %errors% Fehler. Details in den folgenden Meldungen.'
+        nothing_selected: 'Keine Datensätze ausgewählt.'
+        no_tenant: 'Kein Mandanten-Kontext verfügbar — bitte vorher einen Mandanten auswählen.'
+        note_title: 'Hinweis'
+        note_message: 'Beispieldaten werden gezielt mit dem aktuellen Mandanten verknüpft und lassen sich später nur hier wieder entfernen (Ausnahme: command-basierte Imports wie TISAX/DORA, die über die CLI rückgängig gemacht werden müssen).'
+
     data_repair:
         title: 'Daten-Reparatur & Integrität'
         description: 'Datenintegritätsprobleme, Mandantenzuweisungen und defekte Referenzen erkennen und beheben'

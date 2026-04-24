@@ -41,6 +41,7 @@ admin:
         export: Export
         import: Import
         data_repair: 'Data Repair'
+        sample_data: 'Sample Data'
         licensing: Licensing
         license_management: 'License Management'
         kpi_thresholds: 'KPI Thresholds'
@@ -245,6 +246,31 @@ admin:
         confirm_reset: 'Reset all tour markers for %user%? The user will see the onboarding banner again on next login.'
         empty: 'No users match the current filters.'
         audit_hint: 'This report is usable as <strong>audit evidence</strong> for ISO 27001 Annex A.6.3 (Information Security Awareness, Education and Training). It shows who was onboarded when — each role has its own tour with role-specific content.'
+    sample_data:
+        title: 'Sample Data'
+        description: 'Import or remove demo datasets (assets, risks, business processes, …) for the current tenant.'
+        tenant_label: 'Current tenant'
+        total_imported: '%count% sample records imported in total'
+        import_section: 'Available datasets'
+        col_name: 'Dataset'
+        col_description: 'Description'
+        col_modules: 'Modules'
+        col_status: 'Status'
+        col_actions: 'Actions'
+        imported_count: '%count% imported'
+        not_imported: 'not imported'
+        modules_missing: 'module missing'
+        import_button: 'Import selected'
+        remove_button: 'Remove'
+        confirm_remove: 'Really remove "%name%" with %count% records?'
+        not_removable: 'CLI removal only'
+        removed: '%count% records from "%key%" removed.'
+        remove_partial: '%count% records removed, %errors% errors. See subsequent messages for details.'
+        nothing_selected: 'No datasets selected.'
+        no_tenant: 'No tenant context available — please select a tenant first.'
+        note_title: 'Note'
+        note_message: 'Sample data is linked to the current tenant and can only be removed here (exception: command-based imports like TISAX/DORA, which need CLI rollback).'
+
     data_repair:
         title: 'Data Repair & Integrity'
         description: 'Detect and fix data integrity issues, tenant assignment problems, and broken references'
