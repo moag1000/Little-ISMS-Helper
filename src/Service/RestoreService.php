@@ -477,17 +477,32 @@ class RestoreService
                 );
                 $deleted = $query->execute();
 
-                // Reset AUTO_INCREMENT to 1 after clearing table
-                // This ensures that restored entities can use their original IDs
+                // Reset AUTO_INCREMENT to 1 after clearing table — so that
+                // restored entities can use their original IDs.
+                //
+                // DB-Dialect-aware: MySQL/MariaDB nutzen `ALTER TABLE ... AUTO_INCREMENT`,
+                // PostgreSQL hätte `ALTER SEQUENCE ... RESTART`, SQLite hat keinen Bedarf
+                // (AUTO_INCREMENT startet automatisch neu nach DELETE ohne ROWID-Gap).
+                // Symfony-App ist aktuell MySQL-only — wir probieren MySQL-Syntax
+                // und loggen Warning falls nicht unterstützt (non-critical).
                 try {
                     $connection = $this->entityManager->getConnection();
-                    $connection->executeStatement(
-                        sprintf('ALTER TABLE %s AUTO_INCREMENT = 1', $tableName)
-                    );
-                    $this->logger->debug('Reset AUTO_INCREMENT for table', [
-                        'entity' => $entityName,
-                        'table' => $tableName,
-                    ]);
+                    $platform = $connection->getDatabasePlatform()::class;
+                    $isMysql = stripos($platform, 'MySQL') !== false || stripos($platform, 'MariaDB') !== false;
+                    if ($isMysql) {
+                        $connection->executeStatement(
+                            sprintf('ALTER TABLE %s AUTO_INCREMENT = 1', $tableName)
+                        );
+                        $this->logger->debug('Reset AUTO_INCREMENT for table', [
+                            'entity' => $entityName,
+                            'table' => $tableName,
+                        ]);
+                    } else {
+                        $this->logger->debug('AUTO_INCREMENT reset skipped (non-MySQL platform)', [
+                            'platform' => $platform,
+                            'table' => $tableName,
+                        ]);
+                    }
                 } catch (Exception $autoIncrementException) {
                     // Non-critical - log but continue
                     $this->logger->warning('Failed to reset AUTO_INCREMENT', [
