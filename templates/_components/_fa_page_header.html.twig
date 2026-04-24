@@ -1,0 +1,67 @@
+{#
+ # FairyAurora v4.0 — fa-page-header macro
+ #
+ # Replaces ad-hoc <h1> + <small> + breadcrumb combos with a consistent
+ # page-level header that includes an optional badge, display-font title,
+ # optional subtitle, and right-aligned action buttons.
+ #
+ # Usage:
+ #   {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+ #   {{ _fa_page_header.render({
+ #       badge:    { icon: 'shield-lock', label: 'ISMS' },
+ #       title:    'Dashboard',
+ #       subtitle: 'Übersicht Ihrer Sicherheitskennzahlen',
+ #       actions: [
+ #           { label: 'Filter', variant: 'ghost', icon: 'funnel', href: '#' },
+ #           { label: 'Neu',    variant: 'primary', icon: 'plus', href: '#' }
+ #       ]
+ #   }) }}
+ #
+ # action variants: primary | ghost | secondary | accent | danger
+ # action attrs:    optional map of extra HTML attributes (e.g. data-* )
+ #}
+
+{% macro render(props = {}) %}
+    {% set actions = props.actions|default([]) %}
+    <header class="fa-page-header" role="banner">
+        <div class="fa-page-header__meta">
+            {# Optional badge chip #}
+            {% if props.badge is defined and props.badge %}
+                <span class="fa-page-header__badge" aria-hidden="true">
+                    {% if props.badge.icon is defined and props.badge.icon %}
+                        <i class="bi bi-{{ props.badge.icon }}" aria-hidden="true"></i>
+                    {% endif %}
+                    {{ props.badge.label|default('') }}
+                </span>
+            {% endif %}
+
+            {# Title (display font) #}
+            {% if props.title is defined and props.title %}
+                <h1 class="fa-page-header__title">{{ props.title }}</h1>
+            {% endif %}
+
+            {# Optional subtitle #}
+            {% if props.subtitle is defined and props.subtitle %}
+                <p class="fa-page-header__subtitle">{{ props.subtitle }}</p>
+            {% endif %}
+        </div>
+
+        {# Right-aligned actions #}
+        {% if actions|length > 0 %}
+            <div class="fa-page-header__actions">
+                {% for action in actions %}
+                    {% set variant = action.variant|default('ghost') %}
+                    {% set extraAttrs = action.attrs|default({}) %}
+                    <a href="{{ action.href|default('#') }}"
+                       class="fa-cyber-btn fa-cyber-btn--{{ variant }} fa-cyber-btn--sm"
+                       {% for attr, val in extraAttrs %}{{ attr }}="{{ val }}"{% endfor %}>
+                        {% if action.icon is defined and action.icon %}
+                            <i class="bi bi-{{ action.icon }}" aria-hidden="true"></i>
+                        {% endif %}
+                        <span class="fa-cyber-btn__label">{{ action.label }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </header>
+{% endmacro %}
