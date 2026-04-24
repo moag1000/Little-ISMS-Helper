@@ -1859,6 +1859,9 @@ dora:
 
 # Wizard (Compliance Assessment)
 wizard:
+    step_counter: 'Step %current% / %total%'
+    companion: 'Alva — companion'
+    companion_short: 'companion'
     actions: 'Actions'
     active_modules: 'Active Modules'
     assessed_at: 'Assessed At'
