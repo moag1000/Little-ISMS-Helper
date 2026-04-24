@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'report_builder' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'page.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -12,16 +13,16 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2 mb-0">
-            <i class="bi bi-palette" aria-hidden="true"></i> {{ 'page.title'|trans }}
-        </h1>
-        <a href="{{ path('report_builder_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-lg" aria-hidden="true"></i> {{ 'action.create'|trans }}
-        </a>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'palette', label: 'nav.reports'|trans({}, 'nav') },
+        title: 'page.title'|trans,
+        subtitle: 'page.subtitle'|trans,
+        actions: [
+            { label: 'action.create'|trans, variant: 'primary', icon: 'plus-lg', href: path('report_builder_new') }
+        ]
+    }) }}
 
-    <p class="text-muted mb-4">{{ 'page.subtitle'|trans }}</p>
+    <main class="fa-aurora-surface">
 
     {# Quick Actions #}
     <div class="row mb-4">
@@ -198,6 +199,7 @@
             {% endif %}
         </div>
     </div>
+    </main>
 </div>
 
 <style>

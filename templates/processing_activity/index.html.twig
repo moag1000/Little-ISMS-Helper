@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% block title %}{{ 'processing_activity.title'|trans({}, 'privacy')}}{% endblock %}
 
 {% block body %}
@@ -12,18 +13,20 @@
         ]
     } %}
 
-    {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {# TODO: export actions (PDF/CSV) use plain href links; data-turbo-disabled is not available in fa-cyber-btn #}
+    {{ _fa_page_header.render({
+        badge: { icon: 'file-earmark-text', label: 'processing_activity.breadcrumb.vvt'|trans({}, 'privacy') },
         title: 'processing_activity.title'|trans({}, 'privacy'),
         subtitle: 'processing_activity.subtitle'|trans({}, 'privacy'),
-        icon: 'bi-file-earmark-text',
         actions: [
-            { label: 'processing_activity.button.dashboard'|trans({}, 'privacy'), url: path('app_processing_activity_dashboard'), variant: 'outline-primary', icon: 'bi-speedometer2' },
-            { label: 'processing_activity.button.export_pdf'|trans({}, 'privacy'), url: path('app_processing_activity_export_pdf'), variant: 'outline-secondary', icon: 'bi-file-earmark-pdf', turbo: false },
-            { label: 'processing_activity.button.export_csv'|trans({}, 'privacy'), url: path('app_processing_activity_export_csv'), variant: 'outline-secondary', icon: 'bi-filetype-csv', turbo: false },
-            { label: 'processing_activity.button.new'|trans({}, 'privacy'), url: path('app_processing_activity_new'), variant: 'primary', icon: 'bi-plus-lg' }
+            { label: 'processing_activity.button.dashboard'|trans({}, 'privacy'), variant: 'ghost', icon: 'speedometer2', href: path('app_processing_activity_dashboard') },
+            { label: 'processing_activity.button.export_pdf'|trans({}, 'privacy'), variant: 'ghost', icon: 'file-earmark-pdf', href: path('app_processing_activity_export_pdf') },
+            { label: 'processing_activity.button.export_csv'|trans({}, 'privacy'), variant: 'ghost', icon: 'filetype-csv', href: path('app_processing_activity_export_csv') },
+            { label: 'processing_activity.button.new'|trans({}, 'privacy'), variant: 'primary', icon: 'plus-lg', href: path('app_processing_activity_new') }
         ]
-    } %}
+    }) }}
+
+    <main class="fa-aurora-surface">
 
     {# Statistics Cards #}
     <div class="row mb-4">
@@ -227,5 +230,6 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </main>
 </div>
 {% endblock %}
