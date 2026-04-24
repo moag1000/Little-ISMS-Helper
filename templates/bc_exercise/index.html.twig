@@ -5,6 +5,7 @@
 {% block title %}{{ 'bc_exercises.page.title'|trans({}, 'bc_exercises') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -13,10 +14,14 @@
         ]
     } %}
 
-    <div class="page-header">
-        <h1>{{ 'bc_exercises.page.header'|trans({}, 'bc_exercises') }}</h1>
-        <a href="{{ path('app_bc_exercise_new') }}" class="btn btn-primary">{{ 'bc_exercises.action.add_new'|trans({}, 'bc_exercises') }}</a>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'clipboard-data', label: 'bc_exercises.page.title'|trans({}, 'bc_exercises') },
+        title: 'bc_exercises.page.header'|trans({}, 'bc_exercises'),
+        actions: [
+            { label: 'bc_exercises.action.add_new'|trans({}, 'bc_exercises'), href: path('app_bc_exercise_new'), variant: 'primary', icon: 'plus-lg' }
+        ]
+    }) }}
+    <main class="fa-aurora-surface">
 
     {% if statistics %}
     <div class="row mb-4">
@@ -108,6 +113,7 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </main>
 </div>
 
 <style>

@@ -1,10 +1,9 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'audit_log' %}
 
-{% block admin_title %}{{ 'audit_log.page.title'|trans({}, 'audit_log') }}{% endblock %}
-{% block admin_subtitle %}
-    <p class="text-muted">{{ 'audit_log.page.subtitle'|trans({}, 'audit_log') }}</p>
-{% endblock %}
+{# Title/subtitle suppressed — fa-page-header renders these inside admin_content #}
+{% block admin_title %}{% endblock %}
+{% block admin_subtitle %}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -36,12 +35,23 @@
 {% endblock %}
 
 {% block admin_content %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
         { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
         { label: 'audit_log.page.title'|trans({}, 'audit_log') }
     ]
 } %}
+
+{{ _fa_page_header.render({
+    badge: { icon: 'journal-text', label: 'audit_log.page.title'|trans({}, 'audit_log') },
+    title: 'audit_log.page.title'|trans({}, 'audit_log'),
+    subtitle: 'audit_log.page.subtitle'|trans({}, 'audit_log'),
+    actions: [
+        { label: 'audit_log.filter.statistics'|trans({}, 'audit_log'), href: path('app_audit_log_statistics'), variant: 'ghost', icon: 'graph-up' }
+    ]
+}) }}
+<main class="fa-aurora-surface">
 
 <div class="info-box">
     <h2>{{ 'audit_log.section.statistics'|trans({}, 'audit_log') }}</h2>
@@ -245,4 +255,6 @@
     {{ 'audit_log.message.no_entries'|trans({}, 'audit_log') }}
 </div>
 {% endif %}
+
+</main>
 {% endblock %}

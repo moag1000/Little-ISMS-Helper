@@ -5,6 +5,7 @@
 {% block title %}{{ 'asset.modern.header.title'|trans({}, 'asset')}} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -12,16 +13,16 @@
     ]
 } %}
 
-{# Page Header with Actions #}
-{% include '_components/_page_header.html.twig' with {
+{{ _fa_page_header.render({
+    badge: { icon: 'server', label: 'asset.modern.header.title'|trans({}, 'asset') },
     title: 'asset.modern.header.title'|trans({}, 'asset'),
     subtitle: 'asset.modern.header.subtitle'|trans({}, 'asset'),
-    icon: 'bi-server',
     actions: [
-        { label: 'asset.action.print_all_labels'|trans({}, 'asset'), url: path('app_asset_qr_labels_bulk'), variant: 'outline-secondary', icon: 'bi-qr-code', turbo: false },
-        { label: 'asset.action.create'|trans({}, 'asset'), url: path('app_asset_new'), variant: 'primary', icon: 'bi-plus-circle' }
+        { label: 'asset.action.print_all_labels'|trans({}, 'asset'), href: path('app_asset_qr_labels_bulk'), variant: 'ghost', icon: 'qr-code' },
+        { label: 'asset.action.create'|trans({}, 'asset'), href: path('app_asset_new'), variant: 'primary', icon: 'plus-lg' }
     ]
-} %}
+}) }}
+<main class="fa-aurora-surface">
 
 {# Tenant View Filter (Multi-Tenant Support) #}
 {% if currentTenant %}
@@ -327,4 +328,5 @@
 {% endembed %}
 {% endif %}
 
+</main>
 {% endblock %}

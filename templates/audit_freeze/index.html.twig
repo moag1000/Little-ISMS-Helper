@@ -3,6 +3,7 @@
 {% block title %}{{ 'audit_freeze.title'|trans({}, 'audit_freeze') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -10,19 +11,15 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-        <div>
-            <h1 class="h2 mb-1">
-                <i class="bi bi-snow text-primary" aria-hidden="true"></i>
-                {{ 'audit_freeze.title'|trans({}, 'audit_freeze') }}
-            </h1>
-            <p class="text-muted mb-0">{{ 'audit_freeze.subtitle'|trans({}, 'audit_freeze') }}</p>
-        </div>
-        <a href="{{ path('app_audit_freeze_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i>
-            {{ 'audit_freeze.action.create'|trans({}, 'audit_freeze') }}
-        </a>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'snow', label: 'audit_freeze.title'|trans({}, 'audit_freeze') },
+        title: 'audit_freeze.title'|trans({}, 'audit_freeze'),
+        subtitle: 'audit_freeze.subtitle'|trans({}, 'audit_freeze'),
+        actions: [
+            { label: 'audit_freeze.action.create'|trans({}, 'audit_freeze'), href: path('app_audit_freeze_new'), variant: 'primary', icon: 'plus-circle' }
+        ]
+    }) }}
+    <main class="fa-aurora-surface">
 
     {# Filters #}
     <div class="card shadow-sm mb-4">
@@ -114,5 +111,6 @@
             {% endif %}
         </div>
     </div>
+    </main>
 </div>
 {% endblock %}
