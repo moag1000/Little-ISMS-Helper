@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Service\BackupEncryptionService;
 use InvalidArgumentException;
 use Exception;
 use Doctrine\DBAL\Exception as DBALException;
@@ -47,7 +48,8 @@ class RestoreService
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
-        private readonly UserPasswordHasherInterface $userPasswordHasher
+        private readonly UserPasswordHasherInterface $userPasswordHasher,
+        private readonly ?BackupEncryptionService $backupEncryption = null
     ) {
     }
 
@@ -223,13 +225,16 @@ class RestoreService
         $this->statistics = [];
         $this->warnings = [];
 
+        // --- SHA256 integrity check (Feature 1) ---
+        // verifyIntegrity() may return a legacy-backup warning. We collect it here so it
+        // survives the validateBackup() call that follows (which resets $this->warnings).
+        $integrityWarning = $this->verifyIntegrity($backup);
+
         // Resolve scope IDs for the target tenant (empty = global)
         $targetScopeIds = $this->resolveTenantScopeIds($targetTenantScope);
 
-        // Collect cross-tenant warning BEFORE validateBackup() resets $this->warnings.
-        // validateBackup() calls $this->warnings = [] so we save the warning in a local variable
-        // and merge it back into $this->warnings after validation.
-        $prependWarnings = [];
+        // Collect warnings that must survive the validateBackup() reset into a local variable.
+        $prependWarnings = array_filter([$integrityWarning]);
         if ($targetTenantScope !== null) {
             $backupScopeIds = $backup['metadata']['tenant_scope'] ?? [];
             if ($backupScopeIds !== [] && array_intersect($targetScopeIds, $backupScopeIds) === []) {
@@ -312,6 +317,11 @@ class RestoreService
                 }
             }
             $this->logger->info('Disabled Doctrine lifecycle event listeners for restore');
+
+            // Decrypt sensitive SystemSettings values before restore (Feature 2).
+            if ($this->backupEncryption !== null && isset($backup['data']['SystemSettings'])) {
+                $backup['data']['SystemSettings'] = $this->decryptSystemSettingsValues($backup['data']['SystemSettings']);
+            }
 
             // Order entities by dependency (users and tenants first)
             $orderedEntities = $this->orderEntitiesByDependency(array_keys($backup['data']));
@@ -1737,4 +1747,72 @@ class RestoreService
     {
         return $this->statistics;
     }
+
+    // ------------------------------------------------------------------
+    // Integrity & encryption helpers (Feature 1 + 2)
+    // ------------------------------------------------------------------
+
+    /**
+     * Verify the SHA256 integrity seal of the backup data section.
+     *
+     * - If `metadata.sha256` is present: recompute hash over `data` and throw on mismatch.
+     * - If `metadata.sha256` is absent (legacy backup): log a warning and return the warning
+     *   string so the caller can re-apply it after the next `validateBackup()` reset.
+     *
+     * @return string|null Warning message for legacy backups without a hash, null otherwise.
+     * @throws RuntimeException When the hash does not match.
+     */
+    private function verifyIntegrity(array $backup): ?string
+    {
+        $storedHash = $backup['metadata']['sha256'] ?? null;
+
+        if ($storedHash === null) {
+            $warning = 'Legacy backup restored without SHA256 integrity verification — hash absent in metadata.';
+            $this->logger->warning($warning);
+            return $warning;
+        }
+
+        $actualHash = hash('sha256', (string) json_encode($backup['data'] ?? []));
+
+        if (!hash_equals($storedHash, $actualHash)) {
+            throw new RuntimeException(sprintf(
+                'Backup integrity check failed: sha256 mismatch (expected %s, got %s)',
+                $storedHash,
+                $actualHash
+            ));
+        }
+
+        $this->logger->info('Backup integrity check passed', ['sha256' => $storedHash]);
+        return null;
+    }
+
+    /**
+     * Decrypt sensitive SystemSettings values that were encrypted during backup.
+     *
+     * Rows with non-encrypted `value` fields are returned unchanged.
+     *
+     * @param array<int, array<string, mixed>> $rows Serialised SystemSettings rows from backup.
+     * @return array<int, array<string, mixed>> Rows with decrypted values.
+     * @throws RuntimeException When decryption fails (e.g. wrong APP_SECRET).
+     */
+    private function decryptSystemSettingsValues(array $rows): array
+    {
+        if ($this->backupEncryption === null) {
+            return $rows;
+        }
+
+        foreach ($rows as &$row) {
+            $value = $row['value'] ?? null;
+            if (!$this->backupEncryption->isEncrypted($value)) {
+                continue;
+            }
+
+            // decryptValue() throws RuntimeException with a clear message on failure.
+            $row['value'] = $this->backupEncryption->decryptValue($value);
+        }
+        unset($row);
+
+        return $rows;
+    }
 }
+

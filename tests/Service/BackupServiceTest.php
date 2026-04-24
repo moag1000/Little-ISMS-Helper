@@ -5,6 +5,7 @@ namespace App\Tests\Service;
 use App\Entity\AuditLog;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Service\BackupEncryptionService;
 use App\Service\BackupService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -20,6 +21,7 @@ class BackupServiceTest extends TestCase
     private MockObject $logger;
     private string $projectDir;
     private BackupService $service;
+    private BackupEncryptionService $encryptionService;
 
     protected function setUp(): void
     {
@@ -32,10 +34,13 @@ class BackupServiceTest extends TestCase
             mkdir($this->projectDir, 0755, true);
         }
 
+        $this->encryptionService = new BackupEncryptionService('test_secret_for_backup_tests');
+
         $this->service = new BackupService(
             $this->entityManager,
             $this->logger,
-            $this->projectDir
+            $this->projectDir,
+            $this->encryptionService
         );
     }
 
@@ -670,4 +675,167 @@ class BackupServiceTest extends TestCase
         }
         rmdir($dir);
     }
+
+    // ------------------------------------------------------------------ //
+    // P1 — SHA256 integrity seal                                          //
+    // ------------------------------------------------------------------ //
+
+    public function testCreateBackupContainsSha256InMetadata(): void
+    {
+        $repo = $this->createMock(EntityRepository::class);
+        $repo->method('findAll')->willReturn([]);
+
+        $connection = $this->createMock(\Doctrine\DBAL\Connection::class);
+        $connection->method('executeQuery')->willThrowException(new \Exception('no db'));
+
+        $this->entityManager->method('getRepository')->willReturn($repo);
+        $this->entityManager->method('getClassMetadata')
+            ->willReturnCallback(fn($c) => $this->createMockMetadata($c, ['id']));
+        $this->entityManager->method('getConnection')->willReturn($connection);
+
+        $backup = $this->service->createBackup(false, false, false);
+
+        $this->assertArrayHasKey('sha256', $backup['metadata'], 'metadata must contain sha256 field');
+        $this->assertIsString($backup['metadata']['sha256']);
+        $this->assertMatchesRegularExpression('/^[0-9a-f]{64}$/', $backup['metadata']['sha256'], 'sha256 must be a 64-char hex string');
+    }
+
+    public function testSha256HashMatchesDataSection(): void
+    {
+        $repo = $this->createMock(EntityRepository::class);
+        $repo->method('findAll')->willReturn([]);
+
+        $connection = $this->createMock(\Doctrine\DBAL\Connection::class);
+        $connection->method('executeQuery')->willThrowException(new \Exception('no db'));
+
+        $this->entityManager->method('getRepository')->willReturn($repo);
+        $this->entityManager->method('getClassMetadata')
+            ->willReturnCallback(fn($c) => $this->createMockMetadata($c, ['id']));
+        $this->entityManager->method('getConnection')->willReturn($connection);
+
+        $backup = $this->service->createBackup(false, false, false);
+
+        $expected = hash('sha256', (string) json_encode($backup['data']));
+        $this->assertSame($expected, $backup['metadata']['sha256'], 'sha256 must be hash of json_encode(data)');
+    }
+
+    // ------------------------------------------------------------------ //
+    // P1 — Encrypted SystemSettings                                       //
+    // ------------------------------------------------------------------ //
+
+    /**
+     * Build a mock SystemSettings-like entity row with the given key+value,
+     * backed by a ClassMetadata mock that exposes those fields.
+     */
+    private function buildSystemSettingsMetadata(string $key, mixed $value): MockObject
+    {
+        $metadata = $this->createMock(ClassMetadata::class);
+        $metadata->method('getFieldNames')->willReturn(['id', 'key', 'value']);
+        $metadata->method('getAssociationNames')->willReturn([]);
+        $metadata->method('getFieldValue')->willReturnCallback(
+            function ($entity, $field) use ($key, $value) {
+                return match ($field) {
+                    'id'    => 1,
+                    'key'   => $key,
+                    'value' => $value,
+                    default => null,
+                };
+            }
+        );
+        return $metadata;
+    }
+
+    public function testSystemSettingsWithSensitiveKeyIsEncryptedInBackup(): void
+    {
+        // Create a minimal mock entity object (stdClass works since metadata drives serialisation)
+        $setting = new \stdClass();
+
+        $settingsRepo = $this->createMock(EntityRepository::class);
+        $settingsRepo->method('findAll')->willReturn([$setting]);
+
+        $emptyRepo = $this->createMock(EntityRepository::class);
+        $emptyRepo->method('findAll')->willReturn([]);
+
+        $connection = $this->createMock(\Doctrine\DBAL\Connection::class);
+        $connection->method('executeQuery')->willThrowException(new \Exception('no db'));
+
+        $this->entityManager->method('getRepository')->willReturnCallback(
+            function ($class) use ($settingsRepo, $emptyRepo) {
+                return $class === 'App\\Entity\\SystemSettings' ? $settingsRepo : $emptyRepo;
+            }
+        );
+
+        $sensitiveKey   = 'smtp_password';
+        $sensitiveValue = 'my-super-secret';
+
+        $this->entityManager->method('getClassMetadata')->willReturnCallback(
+            function ($class) use ($sensitiveKey, $sensitiveValue) {
+                if ($class === 'App\\Entity\\SystemSettings' || $class === \stdClass::class) {
+                    return $this->buildSystemSettingsMetadata($sensitiveKey, $sensitiveValue);
+                }
+                return $this->createMockMetadata($class, ['id']);
+            }
+        );
+        $this->entityManager->method('getConnection')->willReturn($connection);
+
+        $backup = $this->service->createBackup(false, false, false);
+
+        $this->assertArrayHasKey('SystemSettings', $backup['data']);
+        $row = $backup['data']['SystemSettings'][0] ?? null;
+        $this->assertNotNull($row, 'SystemSettings row must be present');
+
+        // The value must be an encrypted envelope, not the plain string.
+        $this->assertTrue(
+            $this->encryptionService->isEncrypted($row['value']),
+            'Sensitive value must be replaced with an encrypted envelope'
+        );
+
+        // The envelope must decrypt back to the original value.
+        $decrypted = $this->encryptionService->decryptValue($row['value']);
+        $this->assertSame($sensitiveValue, $decrypted);
+    }
+
+    public function testSystemSettingsWithNonSensitiveKeyIsNotEncrypted(): void
+    {
+        $setting = new \stdClass();
+
+        $settingsRepo = $this->createMock(EntityRepository::class);
+        $settingsRepo->method('findAll')->willReturn([$setting]);
+
+        $emptyRepo = $this->createMock(EntityRepository::class);
+        $emptyRepo->method('findAll')->willReturn([]);
+
+        $connection = $this->createMock(\Doctrine\DBAL\Connection::class);
+        $connection->method('executeQuery')->willThrowException(new \Exception('no db'));
+
+        $this->entityManager->method('getRepository')->willReturnCallback(
+            function ($class) use ($settingsRepo, $emptyRepo) {
+                return $class === 'App\\Entity\\SystemSettings' ? $settingsRepo : $emptyRepo;
+            }
+        );
+
+        $nonSensitiveKey   = 'smtp_host';
+        $nonSensitiveValue = 'mail.example.com';
+
+        $this->entityManager->method('getClassMetadata')->willReturnCallback(
+            function ($class) use ($nonSensitiveKey, $nonSensitiveValue) {
+                if ($class === 'App\\Entity\\SystemSettings' || $class === \stdClass::class) {
+                    return $this->buildSystemSettingsMetadata($nonSensitiveKey, $nonSensitiveValue);
+                }
+                return $this->createMockMetadata($class, ['id']);
+            }
+        );
+        $this->entityManager->method('getConnection')->willReturn($connection);
+
+        $backup = $this->service->createBackup(false, false, false);
+
+        $row = $backup['data']['SystemSettings'][0] ?? null;
+        $this->assertNotNull($row);
+        $this->assertFalse(
+            $this->encryptionService->isEncrypted($row['value']),
+            'Non-sensitive value must NOT be encrypted'
+        );
+        $this->assertSame($nonSensitiveValue, $row['value']);
+    }
 }
+

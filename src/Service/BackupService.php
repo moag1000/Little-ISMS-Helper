@@ -142,7 +142,8 @@ class BackupService
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
-        private readonly string $projectDir
+        private readonly string $projectDir,
+        private readonly ?BackupEncryptionService $backupEncryption = null
     ) {
     }
 
@@ -274,6 +275,14 @@ class BackupService
                 }
             }
         }
+
+        // Encrypt sensitive SystemSettings values before computing the hash.
+        if ($this->backupEncryption !== null && isset($backup['data']['SystemSettings'])) {
+            $backup['data']['SystemSettings'] = $this->encryptSystemSettingsValues($backup['data']['SystemSettings']);
+        }
+
+        // SHA256 integrity seal: hash over the data section only (not metadata, to avoid chicken-egg).
+        $backup['metadata']['sha256'] = hash('sha256', (string) json_encode($backup['data']));
 
         $this->logger->info('Backup creation completed', [
             'total_entities' => count($backup['statistics']),
@@ -892,5 +901,38 @@ class BackupService
             // Fallback if Composer runtime API is not available
         }
         return 'unknown';
+    }
+
+    /**
+     * Encrypt sensitive values in the serialised SystemSettings data.
+     *
+     * Only `value` fields whose corresponding `key` matches a known sensitive
+     * pattern (secret, password, api_key, …) are replaced with an AES-256-GCM
+     * envelope. All other rows are returned unchanged.
+     *
+     * @param array<int, array<string, mixed>> $rows Serialised SystemSettings rows.
+     * @return array<int, array<string, mixed>> Rows with sensitive values encrypted.
+     */
+    private function encryptSystemSettingsValues(array $rows): array
+    {
+        if ($this->backupEncryption === null) {
+            return $rows;
+        }
+
+        foreach ($rows as &$row) {
+            $key   = (string) ($row['key'] ?? '');
+            $value = $row['value'] ?? null;
+
+            if ($key === '' || $value === null || !$this->backupEncryption->isSensitiveKey($key)) {
+                continue;
+            }
+
+            // Encrypt the value (stringify non-string scalars first so the cipher input is predictable).
+            $plaintext = is_string($value) ? $value : (string) json_encode($value);
+            $row['value'] = $this->backupEncryption->encryptValue($plaintext);
+        }
+        unset($row);
+
+        return $rows;
     }
 }

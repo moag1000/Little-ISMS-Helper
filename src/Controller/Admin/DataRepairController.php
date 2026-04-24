@@ -507,21 +507,13 @@ class DataRepairController extends AbstractController
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
+        // Guard 2 (confirm_hash-Drift-Check) entfernt — CSRF + JS-Bestätigungs-
+        // Dialog reichen; der Hash war fragil, weil Orphan-Counts sich zwischen
+        // Render und Submit ändern können (z.B. neue Imports) und der Nutzer
+        // dann aus einer gültigen Aktion ausgeschlossen wird.
         $totalFixed = 0;
-        $hashMismatchTotal = null;
-        $this->withoutTenantFilter(function () use ($tenant, $request, &$totalFixed, &$hashMismatchTotal): void {
+        $this->withoutTenantFilter(function () use ($tenant, &$totalFixed): void {
             $orphaned = $this->dataIntegrityService->findAllOrphanedEntities();
-
-            $expectedTotal = 0;
-            foreach ($orphaned as $entities) {
-                $expectedTotal += count($entities);
-            }
-            $expectedHash = hash('sha256', $expectedTotal . '|' . $tenant->getId());
-            $submittedHash = (string) $request->request->get('confirm_hash', '');
-            if (!hash_equals($expectedHash, $submittedHash)) {
-                $hashMismatchTotal = $expectedTotal;
-                return;
-            }
 
             foreach ($orphaned as $className => $entities) {
                 foreach ($entities as $entity) {
@@ -543,15 +535,6 @@ class DataRepairController extends AbstractController
 
             $this->entityManager->flush();
         });
-
-        if ($hashMismatchTotal !== null) {
-            $this->addFlash('danger', $this->translator->trans(
-                'admin.data_repair.bulk_confirm_hash_mismatch',
-                ['%expected%' => $hashMismatchTotal],
-                'admin',
-            ));
-            return $this->redirectToRoute('admin_data_repair_index');
-        }
 
         $this->addFlash('success', $this->translator->trans('admin.data_repair.fixed_all_orphans', [
             '%count%' => $totalFixed,

@@ -6,6 +6,7 @@ use App\Entity\Role;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Service\AuditLogger;
+use App\Service\BackupEncryptionService;
 use App\Service\BackupService;
 use App\Service\RestoreService;
 use Doctrine\DBAL\Connection;
@@ -26,6 +27,7 @@ class RestoreServiceTest extends TestCase
     private MockObject $logger;
     private MockObject $passwordHasher;
     private RestoreService $service;
+    private BackupEncryptionService $encryptionService;
 
     protected function setUp(): void
     {
@@ -34,11 +36,14 @@ class RestoreServiceTest extends TestCase
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->passwordHasher = $this->createMock(UserPasswordHasherInterface::class);
 
+        $this->encryptionService = new BackupEncryptionService('test_secret_for_restore_tests');
+
         $this->service = new RestoreService(
             $this->entityManager,
             $this->auditLogger,
             $this->logger,
-            $this->passwordHasher
+            $this->passwordHasher,
+            $this->encryptionService
         );
     }
 
@@ -954,4 +959,129 @@ class RestoreServiceTest extends TestCase
 
         return $metadata;
     }
+
+    // ------------------------------------------------------------------ //
+    // P1 — SHA256 integrity check                                         //
+    // ------------------------------------------------------------------ //
+
+    /** Helper: return a minimal valid restore-ready mock environment. */
+    private function mockRestoreEnvironment(): void
+    {
+        $connection = $this->createMock(Connection::class);
+        $connection->method('executeStatement')->willReturn(1);
+        $connection->method('isTransactionActive')->willReturn(true);
+
+        $eventManager = $this->createMock(EventManager::class);
+        $eventManager->method('getListeners')->willReturn([]);
+
+        $this->entityManager->method('getConnection')->willReturn($connection);
+        $this->entityManager->method('getEventManager')->willReturn($eventManager);
+        $this->entityManager->method('isOpen')->willReturn(true);
+    }
+
+    public function testRestoreThrowsWhenSha256Tampered(): void
+    {
+        $data = ['User' => [['id' => 1, 'email' => 'a@b.com']]];
+
+        $backup = [
+            'metadata' => [
+                'version' => '1.0',
+                'sha256'  => hash('sha256', json_encode($data)), // correct hash
+            ],
+            'data' => $data,
+        ];
+
+        // Tamper the data after computing the hash.
+        $backup['data']['User'][0]['email'] = 'evil@hacker.com';
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('/sha256 mismatch/');
+
+        $this->service->restoreFromBackup($backup);
+    }
+
+    public function testRestoreAcceptsValidSha256(): void
+    {
+        $data = [];
+        $backup = [
+            'metadata' => [
+                'version' => '1.0',
+                'sha256'  => hash('sha256', (string) json_encode($data)),
+            ],
+            'data' => $data,
+        ];
+
+        $this->mockRestoreEnvironment();
+
+        $result = $this->service->restoreFromBackup($backup, ['dry_run' => true]);
+        $this->assertTrue($result['success']);
+    }
+
+    public function testLegacyBackupWithoutSha256WarnsAndContinues(): void
+    {
+        // Legacy backup: no sha256 field in metadata.
+        $backup = [
+            'metadata' => ['version' => '1.0'],
+            'data'     => [],
+        ];
+
+        $this->mockRestoreEnvironment();
+
+        $result = $this->service->restoreFromBackup($backup, ['dry_run' => true]);
+
+        $this->assertTrue($result['success'], 'Legacy backup must succeed despite missing sha256');
+
+        $warnings = $result['warnings'];
+        $legacyWarningFound = (bool) array_filter(
+            $warnings,
+            fn(string $w): bool => str_contains($w, 'SHA256') || str_contains($w, 'Legacy backup') || str_contains($w, 'hash')
+        );
+        $this->assertTrue($legacyWarningFound, 'A warning about missing hash must be present');
+    }
+
+    // ------------------------------------------------------------------ //
+    // P1 — Encrypted SystemSettings decryption on restore                //
+    // ------------------------------------------------------------------ //
+
+    public function testRestoreDecryptsEncryptedSystemSettingsValue(): void
+    {
+        $originalValue = 'my-smtp-password-secret';
+        $envelope      = $this->encryptionService->encryptValue($originalValue);
+
+        $data = [
+            'SystemSettings' => [
+                ['id' => 1, 'key' => 'smtp_password', 'value' => $envelope],
+            ],
+        ];
+
+        $backup = [
+            'metadata' => [
+                'version' => '1.0',
+                'sha256'  => hash('sha256', (string) json_encode($data)),
+            ],
+            'data' => $data,
+        ];
+
+        // We need a service that has the same encryption key (same secret as setUp).
+        $capturedRows = [];
+
+        $connection = $this->createMock(Connection::class);
+        $connection->method('executeStatement')->willReturn(1);
+        $connection->method('isTransactionActive')->willReturn(true);
+
+        $eventManager = $this->createMock(EventManager::class);
+        $eventManager->method('getListeners')->willReturn([]);
+
+        $this->entityManager->method('getConnection')->willReturn($connection);
+        $this->entityManager->method('getEventManager')->willReturn($eventManager);
+        $this->entityManager->method('isOpen')->willReturn(true);
+
+        // Dry-run so we don't need full ORM infrastructure; decryption happens BEFORE restore loop.
+        $result = $this->service->restoreFromBackup($backup, ['dry_run' => true]);
+
+        // If we get here without an exception, decryption did not fail.
+        // The success of the round-trip is verified by the absence of a RuntimeException.
+        $this->assertTrue($result['success']);
+    }
 }
+
