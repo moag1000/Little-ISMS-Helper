@@ -3417,3 +3417,49 @@ form.wizard-busy {
 html[data-theme="dark"] .wizard-busy-overlay {
     background: rgba(var(--bs-body-bg-rgb, 23, 26, 32), 0.85);
 }
+
+
+/* ==========================================================================
+   Aurora v4 — fa-aurora-surface utility
+   ==========================================================================
+   Opt-in background layer that brings the Setup-Wizard / Login atmosphere
+   to any page. Usage:
+     <main class="fa-aurora-surface">                 (default radial gradient)
+     <main class="fa-aurora-surface fa-aurora-surface--dots">  (+ circuit dots)
+     <main class="fa-aurora-surface fa-aurora-surface--subtle"> (lower opacity)
+     <main class="fa-aurora-surface fa-aurora-surface--hero">   (higher opacity)
+
+   Background layers stack in this order (top→bottom):
+     1. circuit-dot SVG (variant --dots only)
+     2. radial gradient from --primary-tint (top-left)
+     3. radial gradient from --accent-tint (bottom-right)
+     4. solid --surface base
+
+   Opacity is controlled via --_pattern-opacity (internal var), set by the
+   variant class so the utility remains single-rule.
+   ========================================================================== */
+.fa-aurora-surface {
+    --_pattern-opacity: var(--pattern-opacity-default);
+    position: relative;
+    background:
+        radial-gradient(circle at 12% 18%, color-mix(in oklab, var(--primary-tint) calc(var(--_pattern-opacity) * 1000%), transparent) 0%, transparent 55%),
+        radial-gradient(circle at 88% 82%, color-mix(in oklab, var(--accent-tint) calc(var(--_pattern-opacity) * 1000%), transparent) 0%, transparent 55%),
+        var(--surface);
+}
+.fa-aurora-surface--subtle { --_pattern-opacity: var(--pattern-opacity-subtle); }
+.fa-aurora-surface--hero   { --_pattern-opacity: var(--pattern-opacity-hero); }
+
+.fa-aurora-surface--dots {
+    background-image:
+        radial-gradient(circle, color-mix(in oklab, var(--primary) 20%, transparent) 1px, transparent 1px),
+        radial-gradient(circle at 12% 18%, color-mix(in oklab, var(--primary-tint) calc(var(--_pattern-opacity) * 1000%), transparent) 0%, transparent 55%),
+        radial-gradient(circle at 88% 82%, color-mix(in oklab, var(--accent-tint) calc(var(--_pattern-opacity) * 1000%), transparent) 0%, transparent 55%);
+    background-size: 24px 24px, 100% 100%, 100% 100%;
+    background-color: var(--surface);
+    background-position: 0 0, 0 0, 100% 100%;
+    background-repeat: repeat, no-repeat, no-repeat;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .fa-aurora-surface { transition: background 0.4s ease-out; }
+}
