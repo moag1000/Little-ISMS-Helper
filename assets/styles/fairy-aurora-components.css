@@ -4144,3 +4144,389 @@ button.fa-filter-chip.fa-filter-chip--active {
     min-height: auto;
     padding: 6px 10px;
 }
+
+
+/* ==========================================================================
+   Aurora v4 — Bootstrap .btn → Aurora token bridge
+   ==========================================================================
+   Every .btn.btn-<variant> usage across the app adopts fa-cyber-btn visual
+   identity without template sweeps:
+   - Mono-uppercase-bold typography
+   - Aurora-token backgrounds (no hardcoded blue)
+   - Hover lift + focus-glow consistent with .fa-cyber-btn
+   - Disabled state via opacity
+
+   Specificity: .btn.btn-<x> = 0,2,0 matches Bootstrap's own .btn.btn-<x>
+   rules — wins by load order (Aurora loads later in styles.css chain).
+   ========================================================================== */
+
+/* Base .btn — core typography + transitions from fa-cyber-btn */
+.btn {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    border: 1px solid transparent;
+    transition: transform var(--t-fast) var(--ease-out),
+                background-color var(--t-fast) var(--ease-out),
+                border-color var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out),
+                color var(--t-fast) var(--ease-out);
+}
+.btn:focus-visible,
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+.btn:disabled,
+.btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Sizes aligned with fa-cyber-btn scale */
+.btn-sm { padding: 6px 12px; font-size: 12px; border-radius: var(--r-sm); }
+.btn-lg { padding: 12px 22px; font-size: 15px; border-radius: var(--r-md); }
+
+/* Solid variants — mono-uppercase + primary-strong bg */
+.btn.btn-primary {
+    background-color: var(--primary-strong);
+    border-color: var(--primary-strong);
+    color: var(--on-primary);
+    text-transform: uppercase;
+    box-shadow: 0 0 12px var(--primary-glow);
+}
+.btn.btn-primary:hover:not(:disabled):not(.disabled) {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    color: var(--on-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 0 20px var(--primary-glow);
+}
+.btn.btn-primary:active:not(:disabled) {
+    background-color: var(--primary-hover);
+    transform: translateY(0);
+    box-shadow: 0 0 8px var(--primary-glow);
+}
+
+.btn.btn-success {
+    background-color: var(--success-strong);
+    border-color: var(--success-strong);
+    color: var(--on-success);
+    text-transform: uppercase;
+    box-shadow: 0 0 12px var(--success-glow);
+}
+.btn.btn-success:hover:not(:disabled):not(.disabled) {
+    background-color: var(--success);
+    border-color: var(--success);
+    transform: translateY(-1px);
+    box-shadow: 0 0 20px var(--success-glow);
+}
+
+.btn.btn-warning {
+    background-color: var(--warning-strong);
+    border-color: var(--warning-strong);
+    color: var(--on-warning);
+    text-transform: uppercase;
+    box-shadow: 0 0 12px var(--warning-glow);
+}
+.btn.btn-warning:hover:not(:disabled):not(.disabled) {
+    background-color: var(--warning);
+    border-color: var(--warning);
+    transform: translateY(-1px);
+    box-shadow: 0 0 20px var(--warning-glow);
+}
+
+.btn.btn-danger {
+    background-color: var(--danger-strong);
+    border-color: var(--danger-strong);
+    color: var(--on-danger);
+    text-transform: uppercase;
+    box-shadow: 0 0 12px var(--danger-glow);
+}
+.btn.btn-danger:hover:not(:disabled):not(.disabled) {
+    background-color: var(--danger);
+    border-color: var(--danger);
+    transform: translateY(-1px);
+    box-shadow: 0 0 20px var(--danger-glow);
+}
+
+.btn.btn-info {
+    background-color: var(--primary-strong);
+    border-color: var(--primary-strong);
+    color: var(--on-primary);
+    text-transform: uppercase;
+    box-shadow: 0 0 12px var(--primary-glow);
+}
+.btn.btn-info:hover:not(:disabled):not(.disabled) {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn.btn-secondary {
+    background-color: transparent;
+    border-color: var(--border-strong);
+    color: var(--fg);
+    text-transform: none;
+}
+.btn.btn-secondary:hover:not(:disabled):not(.disabled) {
+    background-color: var(--surface-2);
+    border-color: var(--primary);
+    color: var(--fg);
+    transform: translateY(-1px);
+}
+
+.btn.btn-dark {
+    background-color: var(--fg);
+    border-color: var(--fg);
+    color: var(--surface);
+}
+.btn.btn-dark:hover:not(:disabled):not(.disabled) {
+    background-color: var(--fg-2);
+    border-color: var(--fg-2);
+    transform: translateY(-1px);
+}
+
+.btn.btn-light {
+    background-color: var(--surface-2);
+    border-color: var(--border);
+    color: var(--fg);
+}
+.btn.btn-light:hover:not(:disabled):not(.disabled) {
+    background-color: var(--surface-3);
+    transform: translateY(-1px);
+}
+
+/* Outline variants — transparent bg + colored border + text matching variant */
+.btn.btn-outline-primary {
+    background-color: transparent;
+    border-color: var(--primary);
+    color: var(--primary-strong);
+}
+.btn.btn-outline-primary:hover:not(:disabled):not(.disabled) {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--on-primary);
+    transform: translateY(-1px);
+}
+
+.btn.btn-outline-secondary {
+    background-color: transparent;
+    border-color: var(--border-strong);
+    color: var(--fg-2);
+}
+.btn.btn-outline-secondary:hover:not(:disabled):not(.disabled) {
+    background-color: var(--surface-2);
+    border-color: var(--primary);
+    color: var(--fg);
+    transform: translateY(-1px);
+}
+
+.btn.btn-outline-success {
+    background-color: transparent;
+    border-color: var(--success);
+    color: var(--success-strong);
+}
+.btn.btn-outline-success:hover:not(:disabled):not(.disabled) {
+    background-color: var(--success);
+    border-color: var(--success);
+    color: var(--on-success);
+    transform: translateY(-1px);
+}
+
+.btn.btn-outline-warning {
+    background-color: transparent;
+    border-color: var(--warning);
+    color: var(--warning-strong);
+}
+.btn.btn-outline-warning:hover:not(:disabled):not(.disabled) {
+    background-color: var(--warning);
+    border-color: var(--warning);
+    color: var(--on-warning);
+    transform: translateY(-1px);
+}
+
+.btn.btn-outline-danger {
+    background-color: transparent;
+    border-color: var(--danger);
+    color: var(--danger);
+}
+.btn.btn-outline-danger:hover:not(:disabled):not(.disabled) {
+    background-color: var(--danger-strong);
+    border-color: var(--danger-strong);
+    color: var(--on-danger);
+    transform: translateY(-1px);
+}
+
+.btn.btn-outline-info {
+    background-color: transparent;
+    border-color: var(--primary);
+    color: var(--primary-strong);
+}
+.btn.btn-outline-info:hover:not(:disabled):not(.disabled) {
+    background-color: var(--primary);
+    color: var(--on-primary);
+    transform: translateY(-1px);
+}
+
+.btn.btn-outline-dark {
+    background-color: transparent;
+    border-color: var(--fg);
+    color: var(--fg);
+}
+.btn.btn-outline-dark:hover:not(:disabled):not(.disabled) {
+    background-color: var(--fg);
+    color: var(--surface);
+    transform: translateY(-1px);
+}
+
+/* Link-style — no border, underline on hover */
+.btn.btn-link {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--primary-strong);
+    text-decoration: none;
+    text-transform: none;
+}
+.btn.btn-link:hover:not(:disabled):not(.disabled) {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+/* btn-close (Bootstrap's X-icon close button for modals/alerts) */
+.btn-close {
+    background-color: transparent;
+    color: var(--fg-3);
+    opacity: 0.7;
+}
+.btn-close:hover { opacity: 1; color: var(--fg); }
+
+
+/* ==========================================================================
+   Aurora v4 — Bootstrap .alert → Aurora token bridge
+   ==========================================================================
+   Matches the .fa-alert visual pattern from docs/design_system:
+   - 3px left-border in tone color
+   - tint-background
+   - fg in tone-strong shade for high contrast
+   ========================================================================== */
+
+.alert {
+    border: 1px solid var(--border);
+    border-left-width: 3px;
+    border-radius: var(--r-md);
+    color: var(--fg);
+    background-color: var(--surface);
+    padding: 12px 16px;
+}
+
+.alert.alert-info,
+.alert.alert-primary {
+    background-color: var(--primary-tint);
+    border-color: var(--primary);
+    border-left-color: var(--primary);
+    color: var(--primary-strong);
+}
+.alert.alert-success {
+    background-color: color-mix(in oklab, var(--success) 8%, var(--surface));
+    border-color: var(--success);
+    border-left-color: var(--success);
+    color: var(--success-strong);
+}
+.alert.alert-warning {
+    background-color: color-mix(in oklab, var(--warning) 8%, var(--surface));
+    border-color: var(--warning);
+    border-left-color: var(--warning);
+    color: var(--warning-strong);
+}
+.alert.alert-danger {
+    background-color: color-mix(in oklab, var(--danger) 8%, var(--surface));
+    border-color: var(--danger);
+    border-left-color: var(--danger);
+    color: var(--danger-strong);
+}
+.alert.alert-secondary,
+.alert.alert-light,
+.alert.alert-dark {
+    background-color: var(--surface-2);
+    border-color: var(--border);
+    border-left-color: var(--border-strong);
+    color: var(--fg);
+}
+.alert a,
+.alert .alert-link {
+    color: inherit;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+/* -subtle Bootstrap variants (lighter tone) — same mapping */
+.alert.alert-info-subtle,
+.alert.alert-primary-subtle { background-color: var(--primary-tint); color: var(--primary-strong); }
+.alert.alert-success-subtle { background-color: color-mix(in oklab, var(--success) 8%, var(--surface)); color: var(--success-strong); }
+.alert.alert-warning-subtle { background-color: color-mix(in oklab, var(--warning) 8%, var(--surface)); color: var(--warning-strong); }
+.alert.alert-danger-subtle  { background-color: color-mix(in oklab, var(--danger) 8%, var(--surface)); color: var(--danger-strong); }
+
+
+/* ==========================================================================
+   Aurora v4 — Bootstrap .badge → fa-status-pill visual bridge
+   ==========================================================================
+   Badges in tables, cards, lists adopt pill-style: tinted bg + tone border
+   + tone-strong text, compact padding.
+   ========================================================================== */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: var(--r-pill);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.2;
+}
+.badge.bg-primary,
+.badge.bg-info {
+    background-color: var(--primary-tint) !important;
+    color: var(--primary-strong) !important;
+    border: 1px solid var(--primary);
+}
+.badge.bg-success {
+    background-color: color-mix(in oklab, var(--success) 12%, var(--surface)) !important;
+    color: var(--success-strong) !important;
+    border: 1px solid var(--success);
+}
+.badge.bg-warning {
+    background-color: color-mix(in oklab, var(--warning) 12%, var(--surface)) !important;
+    color: var(--warning-strong) !important;
+    border: 1px solid var(--warning);
+}
+.badge.bg-danger {
+    background-color: color-mix(in oklab, var(--danger) 12%, var(--surface)) !important;
+    color: var(--danger-strong) !important;
+    border: 1px solid var(--danger);
+}
+.badge.bg-secondary,
+.badge.bg-light {
+    background-color: var(--surface-2) !important;
+    color: var(--fg-2) !important;
+    border: 1px solid var(--border);
+}
+.badge.bg-dark {
+    background-color: var(--fg) !important;
+    color: var(--surface) !important;
+    border: 1px solid var(--fg);
+}
+/* Bootstrap's -subtle variants match same tokens */
+.badge.bg-primary-subtle,
+.badge.text-bg-primary   { background-color: var(--primary-tint) !important; color: var(--primary-strong) !important; }
+.badge.bg-success-subtle,
+.badge.text-bg-success   { background-color: color-mix(in oklab, var(--success) 12%, var(--surface)) !important; color: var(--success-strong) !important; }
+.badge.bg-warning-subtle,
+.badge.text-bg-warning   { background-color: color-mix(in oklab, var(--warning) 12%, var(--surface)) !important; color: var(--warning-strong) !important; }
+.badge.bg-danger-subtle,
+.badge.text-bg-danger    { background-color: color-mix(in oklab, var(--danger) 12%, var(--surface)) !important; color: var(--danger-strong) !important; }
