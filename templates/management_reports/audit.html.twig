@@ -4,6 +4,7 @@
 {% block title %}{{ 'management_reports.audit.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -30,56 +31,36 @@
     {# Audit Summary #}
     <div class="row mb-4">
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'primary', 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="kpi-card-value">{{ report.audits.total }}</div>
-                            <div class="kpi-card-label">{{ 'management_reports.audit.total_audits'|trans({}, 'management_reports') }}</div>
-                        </div>
-                        <i class="bi bi-clipboard-check fs-1 text-primary" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                icon: 'clipboard-check',
+                label: 'management_reports.audit.total_audits'|trans({}, 'management_reports'),
+                value: report.audits.total,
+                variant: 'primary'
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'success', 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="kpi-card-value">{{ report.audits.this_year }}</div>
-                            <div class="kpi-card-label">{{ 'management_reports.audit.this_year'|trans({}, 'management_reports') }}</div>
-                        </div>
-                        <i class="bi bi-calendar-check fs-1 text-success" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                icon: 'calendar-check',
+                label: 'management_reports.audit.this_year'|trans({}, 'management_reports'),
+                value: report.audits.this_year,
+                variant: 'success'
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'info', 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="kpi-card-value">{{ report.management_reviews.total }}</div>
-                            <div class="kpi-card-label">{{ 'management_reports.audit.total_reviews'|trans({}, 'management_reports') }}</div>
-                        </div>
-                        <i class="bi bi-people fs-1 text-info" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                icon: 'people',
+                label: 'management_reports.audit.total_reviews'|trans({}, 'management_reports'),
+                value: report.management_reviews.total,
+                variant: 'primary'
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'warning', 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="kpi-card-value">{{ report.management_reviews.this_year }}</div>
-                            <div class="kpi-card-label">{{ 'management_reports.audit.reviews_this_year'|trans({}, 'management_reports') }}</div>
-                        </div>
-                        <i class="bi bi-calendar-event fs-1 text-warning" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                icon: 'calendar-event',
+                label: 'management_reports.audit.reviews_this_year'|trans({}, 'management_reports'),
+                value: report.management_reviews.this_year,
+                variant: 'warning'
+            }) }}
         </div>
     </div>
 

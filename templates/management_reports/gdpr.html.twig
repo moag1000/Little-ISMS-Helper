@@ -4,6 +4,7 @@
 {% block title %}{{ 'management_reports.gdpr.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -39,43 +40,28 @@
             {% endembed %}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'primary', 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="kpi-card-value">{{ report.this_year }}</div>
-                            <div class="kpi-card-label">{{ 'management_reports.gdpr.this_year'|trans({}, 'management_reports') }}</div>
-                        </div>
-                        <i class="bi bi-calendar fs-1 text-primary" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                icon: 'calendar',
+                label: 'management_reports.gdpr.this_year'|trans({}, 'management_reports'),
+                value: report.this_year,
+                variant: 'primary'
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'success', 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="kpi-card-value">{{ report.notification_status.notified }}</div>
-                            <div class="kpi-card-label">{{ 'management_reports.gdpr.notified'|trans({}, 'management_reports') }}</div>
-                        </div>
-                        <i class="bi bi-check-circle fs-1 text-success" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                icon: 'check-circle',
+                label: 'management_reports.gdpr.notified'|trans({}, 'management_reports'),
+                value: report.notification_status.notified,
+                variant: 'success'
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': 'warning', 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="kpi-card-value">{{ report.notification_status.pending }}</div>
-                            <div class="kpi-card-label">{{ 'management_reports.gdpr.pending_notification'|trans({}, 'management_reports') }}</div>
-                        </div>
-                        <i class="bi bi-hourglass-split fs-1 text-warning" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                icon: 'hourglass-split',
+                label: 'management_reports.gdpr.pending_notification'|trans({}, 'management_reports'),
+                value: report.notification_status.pending,
+                variant: 'warning'
+            }) }}
         </div>
     </div>
 

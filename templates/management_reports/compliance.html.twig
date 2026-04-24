@@ -4,6 +4,7 @@
 {% block title %}{{ 'management_reports.compliance.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -51,17 +52,13 @@
     <div class="row mb-4">
         <div class="col-md-4">
             {% set compliance_color = report.overall_compliance >= 80 ? 'success' : (report.overall_compliance >= 60 ? 'warning' : 'danger') %}
-            {% embed '_components/_card.html.twig' with { 'variant': 'kpi', 'borderColor': compliance_color, 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="kpi-card-value">{{ report.overall_compliance }}%</div>
-                            <div class="kpi-card-label">{{ 'management_reports.compliance.overall'|trans({}, 'management_reports') }}</div>
-                        </div>
-                        <i class="bi bi-clipboard-check fs-1 text-{{ compliance_color }}" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                icon: 'clipboard-check',
+                label: 'management_reports.compliance.overall'|trans({}, 'management_reports'),
+                value: report.overall_compliance,
+                unit: '%',
+                variant: compliance_color
+            }) }}
         </div>
         <div class="col-md-8">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
