@@ -5,6 +5,7 @@
 {% block title %}{{ 'consent.header.title'|trans({}, 'consent') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -12,15 +13,15 @@
     ]
 } %}
 
-{# Page Header with Actions #}
-{% include '_components/_page_header.html.twig' with {
+{{ _fa_page_header.render({
+    badge: { icon: 'hand-thumbs-up', label: 'consent.header.title'|trans({}, 'consent') },
     title: 'consent.header.title'|trans({}, 'consent'),
     subtitle: 'consent.header.subtitle'|trans({}, 'consent'),
-    icon: 'bi-hand-thumbs-up',
     actions: [
-        { label: 'consent.header.action.new'|trans({}, 'consent'), url: path('app_consent_new'), variant: 'primary', icon: 'bi-plus-circle' }
+        { label: 'consent.header.action.new'|trans({}, 'consent'), href: path('app_consent_new'), variant: 'primary', icon: 'plus-lg' }
     ]
-} %}
+}) }}
+<main class="fa-aurora-surface">
 
 {# KPI Cards Grid #}
 <div class="kpi-grid kpi-grid-responsive">
@@ -295,6 +296,8 @@
     color: var(--primary-strong);
 }
 </style>
+
+</main>
 
 {# Search & Filter functionality #}
 <script>

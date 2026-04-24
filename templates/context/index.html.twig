@@ -5,6 +5,7 @@
 {% block title %}{{ 'context_management.title'|trans({}, 'context') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 <div class="container-fluid">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
@@ -14,27 +15,17 @@
         ]
     } %}
 
-    {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
+        badge: { icon: 'building', label: 'context_management.title'|trans({}, 'context') },
         title: 'context_management.title'|trans({}, 'context'),
         subtitle: 'context.info.subtitle'|trans({}, 'context'),
-        icon: 'bi-building',
         actions: context ? [
-            {
-                label: 'context.link.edit'|trans({}, 'context'),
-                url: path('app_context_edit'),
-                variant: 'primary',
-                icon: 'bi-pencil'
-            }
+            { label: 'context.link.edit'|trans({}, 'context'), href: path('app_context_edit'), variant: 'primary', icon: 'pencil' }
         ] : [
-            {
-                label: 'context.link.create'|trans({}, 'context'),
-                url: path('app_context_edit'),
-                variant: 'primary',
-                icon: 'bi-plus-circle'
-            }
+            { label: 'context.link.create'|trans({}, 'context'), href: path('app_context_edit'), variant: 'primary', icon: 'plus-circle' }
         ]
-    } %}
+    }) }}
+    <main class="fa-aurora-surface">
 
     {% if context %}
     {# ISO 27001 Clause Information #}
@@ -563,6 +554,7 @@
         {% endblock %}
     {% endembed %}
     {% endif %}
+    </main>
 </div>
 
 <style>

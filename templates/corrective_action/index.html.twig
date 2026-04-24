@@ -3,8 +3,13 @@
 {% block title %}{{ 'corrective_action.page.title'|trans({}, 'audits') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{{ _fa_page_header.render({
+    badge: { icon: 'tools', label: 'corrective_action.page.title'|trans({}, 'audits') },
+    title: 'corrective_action.page.title'|trans({}, 'audits')
+}) }}
+<main class="fa-aurora-surface">
 <div class="container-fluid py-4">
-    <h1 class="h3 mb-4">{{ 'corrective_action.page.title'|trans({}, 'audits') }}</h1>
 
     {% if overdue_count > 0 %}
         <div class="alert alert-warning" role="alert">
@@ -61,4 +66,5 @@
         {% endblock %}
     {% endembed %}
 </div>
+</main>
 {% endblock %}
