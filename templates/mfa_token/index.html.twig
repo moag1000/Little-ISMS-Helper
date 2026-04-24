@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block admin_title %}{{ 'mfa_token.title'|trans({}, 'mfa') }}{% endblock %}
 {% block admin_subtitle %}
@@ -12,6 +13,14 @@
             { label: 'nav.mfa'|trans({}, 'nav') }
         ]
     } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-lock', label: 'nav.mfa'|trans({}, 'nav') },
+        title: 'mfa_token.title'|trans({}, 'mfa'),
+        subtitle: 'mfa_token.subtitle'|trans({}, 'mfa')
+    }) }}
+
+    <main class="fa-aurora-surface">
 
     {# Statistics Cards #}
     <div class="row mb-4">
@@ -180,4 +189,5 @@
             {% endembed %}
         {% endfor %}
     {% endif %}
+    </main>
 {% endblock %}

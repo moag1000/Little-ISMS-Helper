@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}Lizenzinformationen{% endblock %}
 
@@ -12,12 +13,13 @@
         ]
     } %}
 
-    {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
+        badge: { icon: 'file-text', label: 'Lizenzen' },
         title: 'Lizenzinformationen',
-        subtitle: 'Third-Party Software Attributions & Compliance',
-        icon: 'bi-file-text'
-    } %}
+        subtitle: 'Third-Party Software Attributions & Compliance'
+    }) }}
+
+    <main class="fa-aurora-surface">
 
     <div class="row">
         <div class="col-lg-3 mb-4">
@@ -114,6 +116,7 @@
             {% endembed %}
         </div>
     </div>
+    </main>
 </div>
 
 <style>
