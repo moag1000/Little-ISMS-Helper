@@ -116,6 +116,14 @@ class DataRepairController extends AbstractController
         }
 
         $count = 0;
+        // TenantFilter muss für Orphan-Queries aus — sonst AND tenant_id = :current
+        // widerspricht WHERE tenant IS NULL und liefert 0.
+        $filters = $this->entityManager->getFilters();
+        $filterWasEnabled = $filters->isEnabled('tenant_filter');
+        if ($filterWasEnabled) {
+            $filters->disable('tenant_filter');
+        }
+
         // Audit-log each reassignment per entity (ISB MAJOR-1). The per-entity
         // granularity lets an auditor answer "who moved entity X into tenant Y"
         // without reverse-engineering a diff.
@@ -167,29 +175,14 @@ class DataRepairController extends AbstractController
                 break;
 
             case 'all':
-                // Assign all orphaned entities to the selected tenant
-                $orphanedAssets = $this->assetRepository->createQueryBuilder('a')
-                    ->where('a.tenant IS NULL')
-                    ->getQuery()
-                    ->getResult();
-                foreach ($orphanedAssets as $entity) {
-                    $assignFn($entity, 'Asset');
-                }
-
-                $orphanedRisks = $this->riskRepository->createQueryBuilder('r')
-                    ->where('r.tenant IS NULL')
-                    ->getQuery()
-                    ->getResult();
-                foreach ($orphanedRisks as $entity) {
-                    $assignFn($entity, 'Risk');
-                }
-
-                $orphanedIncidents = $this->incidentRepository->createQueryBuilder('i')
-                    ->where('i.tenant IS NULL')
-                    ->getQuery()
-                    ->getResult();
-                foreach ($orphanedIncidents as $orphanedIncident) {
-                    $assignFn($orphanedIncident, 'Incident');
+                // Alle Orphans aller Entity-Typen — generischer Scan via Service.
+                // Vermeidet hardcoded Asset/Risk/Incident-Liste, deckt auch
+                // seltenere Typen (Supplier, Location, Document, BCPlan, …) ab.
+                $allOrphans = $this->dataIntegrityService->findAllOrphanedEntities();
+                foreach ($allOrphans as $entities) {
+                    foreach ($entities as $entity) {
+                        $assignFn($entity, (new \ReflectionClass($entity))->getShortName());
+                    }
                 }
                 break;
 
@@ -199,6 +192,10 @@ class DataRepairController extends AbstractController
         }
 
         $this->entityManager->flush();
+
+        if ($filterWasEnabled) {
+            $filters->enable('tenant_filter');
+        }
 
         $this->addFlash('success', $this->translator->trans('admin.data_repair.assigned_count', [
             '%count%' => $count,

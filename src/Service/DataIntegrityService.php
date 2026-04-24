@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Tenant;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
@@ -72,60 +73,68 @@ class DataIntegrityService
 
     /**
      * Find all entities without tenant assignment
+     *
+     * WICHTIG: TenantFilter muss hier deaktiviert sein, sonst kombiniert
+     * Doctrine das "tenant IS NULL" mit dem automatischen
+     * "tenant_id = :current" zu einer widersprüchlichen Bedingung
+     * und liefert 0 Resultate zurück. Orphans bleiben unsichtbar.
      */
     public function findAllOrphanedEntities(): array
     {
-        $orphaned = [
-            'assets' => $this->assetRepository->createQueryBuilder('e')
-                ->where('e.tenant IS NULL')
-                ->getQuery()->getResult(),
-            'risks' => $this->riskRepository->createQueryBuilder('e')
-                ->where('e.tenant IS NULL')
-                ->getQuery()->getResult(),
-            'incidents' => $this->incidentRepository->createQueryBuilder('e')
-                ->where('e.tenant IS NULL')
-                ->getQuery()->getResult(),
-            'audits' => $this->auditRepository->createQueryBuilder('e')
-                ->where('e.tenant IS NULL')
-                ->getQuery()->getResult(),
-            'documents' => $this->documentRepository->createQueryBuilder('e')
-                ->where('e.tenant IS NULL')
-                ->getQuery()->getResult(),
-            'trainings' => $this->trainingRepository->createQueryBuilder('e')
-                ->where('e.tenant IS NULL')
-                ->getQuery()->getResult(),
-            'business_processes' => $this->businessProcessRepository->createQueryBuilder('e')
-                ->where('e.tenant IS NULL')
-                ->getQuery()->getResult(),
-            'bc_plans' => $this->bcPlanRepository->createQueryBuilder('e')
-                ->where('e.tenant IS NULL')
-                ->getQuery()->getResult(),
-            'data_breaches' => $this->dataBreachRepository->createQueryBuilder('e')
-                ->where('e.tenant IS NULL')
-                ->getQuery()->getResult(),
-            'processing_activities' => $this->processingActivityRepository->createQueryBuilder('e')
-                ->where('e.tenant IS NULL')
-                ->getQuery()->getResult(),
-            'suppliers' => $this->supplierRepository->createQueryBuilder('e')
-                ->where('e.tenant IS NULL')
-                ->getQuery()->getResult(),
-            'locations' => $this->locationRepository->createQueryBuilder('e')
-                ->where('e.tenant IS NULL')
-                ->getQuery()->getResult(),
-            'people' => $this->personRepository->createQueryBuilder('e')
-                ->where('e.tenant IS NULL')
-                ->getQuery()->getResult(),
-        ];
-
-        if ($this->dataSubjectRequestRepository !== null) {
-            $orphaned['data_subject_requests'] = $this->dataSubjectRequestRepository->createQueryBuilder('e')
-                ->where('e.tenant IS NULL')->getQuery()->getResult();
-        }
-        if ($this->kpiSnapshotRepository !== null) {
-            $orphaned['kpi_snapshots'] = $this->kpiSnapshotRepository->createQueryBuilder('e')
-                ->where('e.tenant IS NULL')->getQuery()->getResult();
+        $filters = $this->entityManager->getFilters();
+        $wasEnabled = $filters->isEnabled('tenant_filter');
+        if ($wasEnabled) {
+            $filters->disable('tenant_filter');
         }
 
+        try {
+            return $this->queryOrphanedEntities();
+        } finally {
+            if ($wasEnabled) {
+                $filters->enable('tenant_filter');
+            }
+        }
+    }
+
+    /**
+     * Generischer Scan: alle Doctrine-gemappten Entities mit tenant-Assoziation
+     * auf NULL-Tenant prüfen. Entdeckt automatisch neue Entity-Typen — kein
+     * Ctor-Argument pro Entity-Klasse mehr nötig.
+     */
+    private function queryOrphanedEntities(): array
+    {
+        $orphaned = [];
+        $metadataFactory = $this->entityManager->getMetadataFactory();
+
+        foreach ($metadataFactory->getAllMetadata() as $metadata) {
+            $className = $metadata->getName();
+
+            // Überspringe den Tenant selbst und User (haben keine tenant-Spalte)
+            if ($className === Tenant::class || !$metadata->hasAssociation('tenant')) {
+                continue;
+            }
+
+            // Abstract/Mapped-Superclass können nicht direkt abgefragt werden
+            if ($metadata->isMappedSuperclass || $metadata->isEmbeddedClass) {
+                continue;
+            }
+
+            $orphans = $this->entityManager->createQueryBuilder()
+                ->select('e')
+                ->from($className, 'e')
+                ->where('e.tenant IS NULL')
+                ->getQuery()->getResult();
+
+            if (count($orphans) > 0) {
+                // Key ist kurzer Entity-Name in snake_case-Plural (z.B. DataBreach → data_breaches)
+                $shortName = substr($className, strrpos($className, '\\') + 1);
+                $snake = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $shortName));
+                $key = $snake . (str_ends_with($snake, 's') ? '' : 's');
+                $orphaned[$key] = $orphans;
+            }
+        }
+
+        ksort($orphaned);
         return $orphaned;
     }
 
