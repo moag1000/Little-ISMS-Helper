@@ -64,6 +64,15 @@ role:
     risk_manager: 'Risk Manager'
     auditor: Auditor
     admin: Admin
+    group_ciso: 'Group CISO'
+    konzern_auditor: 'Group Auditor'
+    holding:
+        group_ciso:
+            label: 'Group CISO'
+            description: 'Cross-tenant read access for Group-CISOs. Can view all subsidiary dashboards, risk registers, and SOA overviews. Cannot modify individual tenant configurations.'
+        konzern_auditor:
+            label: 'Group Auditor'
+            description: 'Read-only access across all subsidiary tenants. For internal or external group auditors who need to review all subsidiaries without write permissions.'
     compare:
         title: 'Compare Roles'
         select_roles: 'Select Roles to Compare'
