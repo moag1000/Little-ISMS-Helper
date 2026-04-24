@@ -6,6 +6,7 @@ use App\Entity\Role;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Service\AuditLogger;
+use App\Service\BackupService;
 use App\Service\RestoreService;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -800,6 +801,142 @@ class RestoreServiceTest extends TestCase
         @rmdir($projectDir . '/var/backups');
         @rmdir($projectDir . '/var');
         @rmdir($projectDir);
+    }
+
+    // ------------------------------------------------------------------ //
+    // C2 — Tenant-scoped restore tests                                   //
+    // ------------------------------------------------------------------ //
+
+    /**
+     * C2 T1: Tenant-scoped restore must leave other tenants' entities untouched.
+     *
+     * Backup contains two users:
+     *   - User A: tenant_id = ['id' => 1]   (Tenant A scope)
+     *   - User B: tenant_id = ['id' => 2]   (Tenant B scope)
+     *
+     * Restore is called with targetTenantScope = Tenant A (id=1).
+     *
+     * Assert:
+     *  - Only one entity is persisted (User A)
+     *  - User B is silently skipped (no persist call for it)
+     */
+    public function testTenantScopedRestoreLeavesOtherTenantsUntouched(): void
+    {
+        $backup = [
+            'metadata' => [
+                'version'      => '1.0',
+                'tenant_scope' => [1],
+                'scope_type'   => 'single',
+            ],
+            'data' => [
+                'User' => [
+                    ['id' => 1, 'email' => 'a@example.com', 'tenant_id' => ['id' => 1]],
+                    ['id' => 2, 'email' => 'b@example.com', 'tenant_id' => ['id' => 2]],
+                ],
+            ],
+        ];
+
+        $tenantA = $this->createMock(Tenant::class);
+        $tenantA->method('getId')->willReturn(1);
+        $tenantA->method('getAllSubsidiaries')->willReturn([]);
+
+        $fieldMapping = new FieldMapping(type: 'string', fieldName: 'email', columnName: 'email');
+        $fieldMapping->nullable = true;
+
+        $userMetadata = $this->createMock(ClassMetadata::class);
+        $userMetadata->method('getFieldNames')->willReturn(['id', 'email']);
+        $userMetadata->method('getFieldMapping')->willReturn($fieldMapping);
+        $userMetadata->method('getTypeOfField')->willReturn('string');
+        $userMetadata->method('getAssociationNames')->willReturn(['tenant']);
+        $userMetadata->method('isSingleValuedAssociation')->willReturnCallback(
+            fn(string $name): bool => $name === 'tenant'
+        );
+        $userMetadata->method('getAssociationMappings')->willReturn([]);
+        $userMetadata->generatorType = ClassMetadata::GENERATOR_TYPE_AUTO;
+        $userMetadata->idGenerator   = new \Doctrine\ORM\Id\IdentityGenerator();
+
+        $userRepository = $this->createMock(EntityRepository::class);
+        $userRepository->method('find')->willReturn(null);
+        $userRepository->method('findOneBy')->willReturn(null);
+
+        $connection = $this->createMock(Connection::class);
+        $connection->method('executeStatement')->willReturn(1);
+        $connection->method('isTransactionActive')->willReturn(true);
+
+        $eventManager = $this->createMock(EventManager::class);
+        $eventManager->method('getListeners')->willReturn([]);
+
+        $persistedEntities = [];
+        $this->entityManager->method('getConnection')->willReturn($connection);
+        $this->entityManager->method('getEventManager')->willReturn($eventManager);
+        $this->entityManager->method('isOpen')->willReturn(true);
+        $this->entityManager->method('getClassMetadata')->willReturn($userMetadata);
+        $this->entityManager->method('getRepository')->willReturn($userRepository);
+        $this->entityManager->method('getReference')->willReturn(null);
+        $this->entityManager->method('persist')->willReturnCallback(
+            function ($entity) use (&$persistedEntities): void {
+                $persistedEntities[] = $entity;
+            }
+        );
+
+        $result = $this->service->restoreFromBackup($backup, ['dry_run' => false], $tenantA);
+
+        $this->assertTrue($result['success'], 'Tenant-scoped restore must succeed');
+
+        // Only 1 entity (User A) should have been created, User B must be skipped
+        $this->assertArrayHasKey('User', $result['statistics']);
+        $this->assertEquals(1, $result['statistics']['User']['created'],
+            'Only User A (in scope) must be created; User B must be skipped');
+    }
+
+    /**
+     * C2 T2: Cross-Tenant-Restore generates a warning in the warnings array.
+     *
+     * Backup was created for tenant_scope = [1].
+     * Restore is called with targetTenantScope = Tenant B (id=2).
+     *
+     * The scope sets do not overlap → a cross-tenant warning must appear.
+     */
+    public function testCrossTenantRestoreGeneratesWarning(): void
+    {
+        $backup = [
+            'metadata' => [
+                'version'      => '1.0',
+                'tenant_scope' => [1],  // backup was for Tenant A
+                'scope_type'   => 'single',
+            ],
+            'data' => [],  // empty — we only check the warning
+        ];
+
+        $tenantB = $this->createMock(Tenant::class);
+        $tenantB->method('getId')->willReturn(2);
+        $tenantB->method('getAllSubsidiaries')->willReturn([]);
+
+        $connection = $this->createMock(Connection::class);
+        $connection->method('executeStatement')->willReturn(1);
+        $connection->method('isTransactionActive')->willReturn(true);
+
+        $eventManager = $this->createMock(EventManager::class);
+        $eventManager->method('getListeners')->willReturn([]);
+
+        $this->entityManager->method('getConnection')->willReturn($connection);
+        $this->entityManager->method('getEventManager')->willReturn($eventManager);
+        $this->entityManager->method('isOpen')->willReturn(true);
+
+        $result = $this->service->restoreFromBackup($backup, ['dry_run' => false], $tenantB);
+
+        $this->assertTrue($result['success'], 'Cross-tenant restore must not fail (only warn)');
+        $this->assertNotEmpty($result['warnings'], 'Cross-tenant restore must produce warnings');
+
+        $crossTenantWarningFound = false;
+        foreach ($result['warnings'] as $warning) {
+            if (str_contains($warning, 'Cross-Tenant-Restore')) {
+                $crossTenantWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($crossTenantWarningFound,
+            'Cross-Tenant-Restore warning must appear in warnings array');
     }
 
     private function createMockMetadata(string $entityClass): MockObject

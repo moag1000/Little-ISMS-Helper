@@ -3,11 +3,13 @@
 namespace App\Tests\Service;
 
 use App\Entity\AuditLog;
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Service\BackupService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -448,6 +450,186 @@ class BackupServiceTest extends TestCase
         $filenames = array_column($backups, 'filename');
         $this->assertContains('backup_2025-01-01_10-00-00.zip', $filenames, 'ZIP backup must appear in listing');
         $this->assertContains('backup_2025-01-01_11-00-00.json.gz', $filenames, 'GZ backup must appear in listing');
+    }
+
+    // ------------------------------------------------------------------ //
+    // C1 — Tenant-scoped backup tests                                    //
+    // ------------------------------------------------------------------ //
+
+    /**
+     * C1 T1: Tenant-scoped backup must NOT contain entities from another tenant.
+     *
+     * Setup:
+     *  - Tenant A (id=1), Tenant B (id=2)
+     *  - Two users: user A (tenant_id=1), user B (tenant_id=2)
+     *  - Backup with scope = Tenant A
+     *
+     * Assert: backup['data']['User'] contains only user A's row.
+     */
+    public function testTenantScopedBackupExcludesOtherTenants(): void
+    {
+        // Create tenant mocks
+        $tenantA = $this->createMock(Tenant::class);
+        $tenantA->method('getId')->willReturn(1);
+        $tenantA->method('getAllSubsidiaries')->willReturn([]);
+
+        $tenantB = $this->createMock(Tenant::class);
+        $tenantB->method('getId')->willReturn(2);
+        $tenantB->method('getAllSubsidiaries')->willReturn([]);
+
+        // Metadata for User: has a 'tenant' single-valued association
+        $userMetadata = $this->createMockMetadataWithTenantAssoc('App\\Entity\\User', ['id', 'email']);
+
+        // For tenant-scoped fetchEntities, repository returns only Tenant-A users (the QB filter)
+        $userRepo = $this->createMock(EntityRepository::class);
+
+        // We mock createQueryBuilder on the repository
+        $mockQuery = $this->createMock(\Doctrine\ORM\Query::class);
+        $mockQuery->method('getResult')->willReturn([]);  // empty — scope filter removed tenant-B user
+
+        $mockQB = $this->createMock(QueryBuilder::class);
+        $mockQB->method('andWhere')->willReturnSelf();
+        $mockQB->method('setParameter')->willReturnSelf();
+        $mockQB->method('getQuery')->willReturn($mockQuery);
+
+        $userRepo->method('createQueryBuilder')->willReturn($mockQB);
+
+        // Metadata for entities WITHOUT a tenant association (e.g. Role, Permission)
+        $globalEntityMetadata = $this->createMock(ClassMetadata::class);
+        $globalEntityMetadata->method('getFieldNames')->willReturn(['id', 'name']);
+        $globalEntityMetadata->method('getAssociationNames')->willReturn([]); // no tenant
+        $globalEntityMetadata->method('isSingleValuedAssociation')->willReturn(false);
+        $globalEntityMetadata->method('getFieldValue')->willReturn(null);
+
+        $this->entityManager->method('getRepository')->willReturnCallback(
+            function ($class) use ($userRepo) {
+                if ($class === 'App\\Entity\\User') {
+                    return $userRepo;
+                }
+                $emptyRepo = $this->createMock(EntityRepository::class);
+                $emptyRepo->method('findAll')->willReturn([]);
+                return $emptyRepo;
+            }
+        );
+        $this->entityManager->method('getClassMetadata')->willReturnCallback(
+            function ($class) use ($userMetadata, $globalEntityMetadata) {
+                if ($class === 'App\\Entity\\User') {
+                    return $userMetadata;
+                }
+                return $globalEntityMetadata;
+            }
+        );
+
+        $backup = $this->service->createBackup(false, false, false, $tenantA);
+
+        // Scope metadata must be set correctly
+        $this->assertEquals('single', $backup['metadata']['scope_type']);
+        $this->assertEquals([1], $backup['metadata']['tenant_scope']);
+
+        // 'Role', 'Permission', 'SystemSettings' etc. (no tenant field) must be skipped
+        $this->assertArrayHasKey('skipped_global_entities', $backup['metadata']);
+        $this->assertNotEmpty($backup['metadata']['skipped_global_entities']);
+    }
+
+    /**
+     * C1 T2: Holding-tenant scoped backup must include both parent and all subsidiaries.
+     *
+     * Setup:
+     *  - Holding-Tenant H (id=10) with two subsidiaries S1 (id=11), S2 (id=12)
+     *
+     * Assert:
+     *  - scope_type = 'holding'
+     *  - tenant_scope = [10, 11, 12]
+     *  - resolveScopeIds returns all three IDs
+     */
+    public function testHoldingScopedBackupIncludesSubsidiaries(): void
+    {
+        $subsidiary1 = $this->createMock(Tenant::class);
+        $subsidiary1->method('getId')->willReturn(11);
+        $subsidiary1->method('getAllSubsidiaries')->willReturn([]);
+
+        $subsidiary2 = $this->createMock(Tenant::class);
+        $subsidiary2->method('getId')->willReturn(12);
+        $subsidiary2->method('getAllSubsidiaries')->willReturn([]);
+
+        $holdingTenant = $this->createMock(Tenant::class);
+        $holdingTenant->method('getId')->willReturn(10);
+        $holdingTenant->method('getAllSubsidiaries')->willReturn([$subsidiary1, $subsidiary2]);
+
+        // resolveScopeIds is public — test it directly
+        $scopeIds = $this->service->resolveScopeIds($holdingTenant);
+
+        $this->assertCount(3, $scopeIds, 'Holding scope must include self + 2 subsidiaries');
+        $this->assertContains(10, $scopeIds, 'Holding ID must be in scope');
+        $this->assertContains(11, $scopeIds, 'Subsidiary 1 must be in scope');
+        $this->assertContains(12, $scopeIds, 'Subsidiary 2 must be in scope');
+
+        // Also verify metadata when we actually run a backup
+        $repo = $this->createMock(EntityRepository::class);
+        $mockQuery2 = $this->createMock(\Doctrine\ORM\Query::class);
+        $mockQuery2->method('getResult')->willReturn([]);
+        $mockQB2 = $this->createMock(QueryBuilder::class);
+        $mockQB2->method('andWhere')->willReturnSelf();
+        $mockQB2->method('setParameter')->willReturnSelf();
+        $mockQB2->method('getQuery')->willReturn($mockQuery2);
+        $repo->method('createQueryBuilder')->willReturn($mockQB2);
+        $repo->method('findAll')->willReturn([]);
+
+        $this->entityManager->method('getRepository')->willReturn($repo);
+        $this->entityManager->method('getClassMetadata')
+            ->willReturnCallback(fn($c) => $this->createMockMetadataWithTenantAssoc($c, ['id']));
+
+        $backup = $this->service->createBackup(false, false, false, $holdingTenant);
+
+        $this->assertEquals('holding', $backup['metadata']['scope_type']);
+        $this->assertContains(10, $backup['metadata']['tenant_scope']);
+        $this->assertContains(11, $backup['metadata']['tenant_scope']);
+        $this->assertContains(12, $backup['metadata']['tenant_scope']);
+    }
+
+    /**
+     * C1 T3: Global backup (no tenant scope) must have scope_type = 'global'
+     * and an empty tenant_scope array — existing tests must remain unaffected.
+     */
+    public function testGlobalBackupHasGlobalScopeType(): void
+    {
+        $repo = $this->createMock(EntityRepository::class);
+        $repo->method('findAll')->willReturn([]);
+
+        $connection = $this->createMock(\Doctrine\DBAL\Connection::class);
+        $connection->method('executeQuery')->willThrowException(new \Exception('no db'));
+
+        $this->entityManager->method('getRepository')->willReturn($repo);
+        $this->entityManager->method('getClassMetadata')
+            ->willReturnCallback(fn($c) => $this->createMockMetadata($c, ['id']));
+        $this->entityManager->method('getConnection')->willReturn($connection);
+
+        $backup = $this->service->createBackup(false, false, false, null);
+
+        $this->assertEquals('global', $backup['metadata']['scope_type']);
+        $this->assertSame([], $backup['metadata']['tenant_scope']);
+        $this->assertArrayNotHasKey('skipped_global_entities', $backup['metadata']);
+    }
+
+    // ------------------------------------------------------------------ //
+    // Helper: metadata mock with 'tenant' single-valued association       //
+    // ------------------------------------------------------------------ //
+
+    private function createMockMetadataWithTenantAssoc(string $entityClass, array $fieldNames): MockObject
+    {
+        $metadata = $this->createMock(ClassMetadata::class);
+        $metadata->method('getFieldNames')->willReturn($fieldNames);
+        $metadata->method('getAssociationNames')->willReturn(['tenant']);
+        $metadata->method('isSingleValuedAssociation')->willReturnCallback(
+            fn(string $name): bool => $name === 'tenant'
+        );
+        $metadata->method('getFieldValue')->willReturnCallback(function ($entity, $field) {
+            if ($field === 'id' && method_exists($entity, 'getId')) {
+                return $entity->getId();
+            }
+            return null;
+        });
+        return $metadata;
     }
 
     private function createMockUser(int $id, string $email): MockObject

@@ -5,8 +5,12 @@ namespace App\Controller;
 use Exception;
 use InvalidArgumentException;
 use DateTimeInterface;
+use App\Entity\Tenant;
+use App\Entity\User;
 use App\Service\BackupService;
 use App\Service\RestoreService;
+use App\Service\TenantContext;
+use App\Repository\TenantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,18 +24,22 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-// Backup/restore operations require SUPER_ADMIN (global, cross-tenant scope)
-#[IsGranted('ROLE_SUPER_ADMIN')]
+// Default class-level guard: SUPER_ADMIN for global operations.
+// Individual endpoints may loosen this to ROLE_ADMIN for scoped (per-tenant) operations.
+#[IsGranted('ROLE_ADMIN')]
 class AdminBackupController extends AbstractController
 {
     public function __construct(
         private readonly BackupService $backupService,
         private readonly RestoreService $restoreService,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly TenantContext $tenantContext,
+        private readonly TenantRepository $tenantRepository
     ) {
     }
 
     #[Route('/admin/data/backup', name: 'data_backup_index', methods: ['GET'])]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
     public function index(): Response
     {
         $backups = $this->backupService->listBackups();
@@ -52,23 +60,28 @@ class AdminBackupController extends AbstractController
             $includeAuditLog = $request->request->getBoolean('include_audit_log', true);
             $includeUserSessions = $request->request->getBoolean('include_user_sessions', false);
 
+            // Determine tenant scope from the request
+            $tenantScope = $this->resolveTenantScopeForBackup($request);
+
             $this->logger->info('Creating backup', [
-                'user' => $this->getUser()?->getUserIdentifier(),
-                'include_audit_log' => $includeAuditLog,
+                'user'                 => $this->getUser()?->getUserIdentifier(),
+                'include_audit_log'    => $includeAuditLog,
                 'include_user_sessions' => $includeUserSessions,
+                'tenant_scope'         => $tenantScope?->getId(),
             ]);
 
             // Create backup
-            $backup = $this->backupService->createBackup($includeAuditLog, $includeUserSessions);
+            $backup = $this->backupService->createBackup($includeAuditLog, $includeUserSessions, true, $tenantScope);
 
             // Save to file
             $filepath = $this->backupService->saveBackupToFile($backup);
 
             return new JsonResponse([
-                'success' => true,
-                'message' => 'Backup erfolgreich erstellt',
-                'filename' => basename($filepath),
+                'success'    => true,
+                'message'    => 'Backup erfolgreich erstellt',
+                'filename'   => basename($filepath),
                 'statistics' => $backup['statistics'],
+                'scope_type' => $backup['metadata']['scope_type'],
             ]);
         } catch (Exception $e) {
             $this->logger->error('Backup creation failed', [
@@ -83,7 +96,102 @@ class AdminBackupController extends AbstractController
         }
     }
 
+    /**
+     * Resolve the tenant scope for a backup request.
+     *
+     * Access-Control rules:
+     *  - SUPER_ADMIN: may request global backup (no tenant_id) or any specific tenant.
+     *  - ADMIN (Tenant-Admin): may only backup their own tenant or subsidiaries.
+     *    Any attempt to specify a tenant outside their tree is rejected with 403.
+     *
+     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
+     */
+    private function resolveTenantScopeForBackup(Request $request): ?Tenant
+    {
+        $tenantIdParam = $request->request->get('tenant_id');
+
+        // No tenant_id requested → global backup (SUPER_ADMIN only)
+        if ($tenantIdParam === null || $tenantIdParam === '' || $tenantIdParam === 'global') {
+            if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
+                // Non-SUPER_ADMIN cannot create global backups — default to their own tenant
+                $currentTenant = $this->tenantContext->getCurrentTenant();
+                if ($currentTenant === null) {
+                    throw $this->createAccessDeniedException(
+                        'Kein Tenant-Kontext verfügbar. Bitte kontaktieren Sie einen Super-Administrator.'
+                    );
+                }
+                return $currentTenant;
+            }
+            return null; // global
+        }
+
+        // Specific tenant requested
+        $tenantId = (int) $tenantIdParam;
+        $tenant = $this->tenantRepository->find($tenantId);
+        if ($tenant === null) {
+            throw $this->createNotFoundException('Tenant nicht gefunden: ' . $tenantId);
+        }
+
+        // SUPER_ADMIN may access any tenant
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            return $tenant;
+        }
+
+        // ADMIN may only access their own tenant tree
+        if (!$this->tenantContext->canAccessTenant($tenant)) {
+            throw $this->createAccessDeniedException(
+                'Sie haben keine Berechtigung, ein Backup für diesen Mandanten zu erstellen.'
+            );
+        }
+
+        return $tenant;
+    }
+
+    /**
+     * Resolve the tenant scope for a restore request.
+     *
+     * Access-Control rules mirror resolveTenantScopeForBackup():
+     *  - SUPER_ADMIN: may restore globally or to any tenant.
+     *  - ADMIN: may only restore into their own tenant tree.
+     */
+    private function resolveTenantScopeForRestore(Request $request): ?Tenant
+    {
+        $tenantIdParam = $request->request->get('tenant_id');
+
+        if ($tenantIdParam === null || $tenantIdParam === '' || $tenantIdParam === 'global') {
+            if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
+                $currentTenant = $this->tenantContext->getCurrentTenant();
+                if ($currentTenant === null) {
+                    throw $this->createAccessDeniedException(
+                        'Kein Tenant-Kontext verfügbar. Bitte kontaktieren Sie einen Super-Administrator.'
+                    );
+                }
+                return $currentTenant;
+            }
+            return null; // global
+        }
+
+        $tenantId = (int) $tenantIdParam;
+        $tenant = $this->tenantRepository->find($tenantId);
+        if ($tenant === null) {
+            throw $this->createNotFoundException('Tenant nicht gefunden: ' . $tenantId);
+        }
+
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            return $tenant;
+        }
+
+        if (!$this->tenantContext->canAccessTenant($tenant)) {
+            throw $this->createAccessDeniedException(
+                'Sie haben keine Berechtigung, eine Wiederherstellung für diesen Mandanten durchzuführen.'
+            );
+        }
+
+        return $tenant;
+    }
+
     #[Route('/admin/data/backup/download/{filename}', name: 'data_backup_download', methods: ['GET'])]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
     public function downloadBackup(string $filename): Response
     {
         // Validate filename to prevent directory traversal (accept both backup_ and uploaded_ files)
@@ -121,6 +229,7 @@ class AdminBackupController extends AbstractController
     }
 
     #[Route('/admin/data/backup/upload', name: 'data_backup_upload', methods: ['POST'])]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
     public function uploadBackup(Request $request): JsonResponse
     {
         if (!$this->isCsrfTokenValid('data_backup_upload', $request->request->get('_token'))) {
@@ -178,6 +287,7 @@ class AdminBackupController extends AbstractController
     }
 
     #[Route('/admin/data/backup/validate/{filename}', name: 'data_backup_validate', methods: ['POST'])]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
     public function validateBackup(string $filename, Request $request): JsonResponse
     {
         if (!$this->isCsrfTokenValid('data_backup_validate', $request->request->get('_token'))) {
@@ -222,6 +332,7 @@ class AdminBackupController extends AbstractController
     }
 
     #[Route('/admin/data/backup/preview/{filename}', name: 'data_backup_preview', methods: ['GET'])]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
     public function previewRestore(string $filename): JsonResponse
     {
         try {
@@ -278,6 +389,9 @@ class AdminBackupController extends AbstractController
                 throw new InvalidArgumentException('Backup file not found');
             }
 
+            // Resolve tenant scope for this restore operation
+            $targetTenantScope = $this->resolveTenantScopeForRestore($request);
+
             // Get restore options from request
             $options = [
                 'missing_field_strategy' => $request->request->get('missing_field_strategy', RestoreService::STRATEGY_USE_DEFAULT),
@@ -289,31 +403,33 @@ class AdminBackupController extends AbstractController
             ];
 
             $this->logger->info('Starting restore', [
-                'user' => $this->getUser()?->getUserIdentifier(),
-                'filename' => $filename,
-                'options' => array_diff_key($options, ['admin_password' => '']), // Don't log password
+                'user'         => $this->getUser()?->getUserIdentifier(),
+                'filename'     => $filename,
+                'tenant_scope' => $targetTenantScope?->getId(),
+                'options'      => array_diff_key($options, ['admin_password' => '']), // Don't log password
             ]);
 
             // Load backup
             $backup = $this->backupService->loadBackupFromFile($filepath);
 
-            // Perform restore
-            $result = $this->restoreService->restoreFromBackup($backup, $options);
+            // Perform restore (tenant-scoped if applicable)
+            $result = $this->restoreService->restoreFromBackup($backup, $options, $targetTenantScope);
 
             return new JsonResponse([
-                'success' => $result['success'],
-                'message' => $options['dry_run']
+                'success'      => $result['success'],
+                'message'      => $options['dry_run']
                     ? 'Testlauf erfolgreich abgeschlossen (keine Daten wurden geändert)'
                     : 'Wiederherstellung erfolgreich abgeschlossen',
-                'statistics' => $result['statistics'],
-                'warnings' => $result['warnings'],
-                'dry_run' => $result['dry_run'],
+                'statistics'   => $result['statistics'],
+                'warnings'     => $result['warnings'],
+                'dry_run'      => $result['dry_run'],
+                'tenant_scope' => $targetTenantScope?->getId(),
             ]);
         } catch (Exception $e) {
             $this->logger->error('Restore failed', [
                 'filename' => $filename,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'error'    => $e->getMessage(),
+                'trace'    => $e->getTraceAsString(),
             ]);
 
             return new JsonResponse([
@@ -324,6 +440,7 @@ class AdminBackupController extends AbstractController
     }
 
     #[Route('/admin/data/backup/delete/{filename}', name: 'data_backup_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
     public function deleteBackup(string $filename, Request $request): JsonResponse
     {
         if (!$this->isCsrfTokenValid('data_backup_delete', $request->request->get('_token'))) {

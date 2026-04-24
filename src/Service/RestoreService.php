@@ -13,6 +13,7 @@ use RuntimeException;
 use DateTimeImmutable;
 use DateTime;
 use Doctrine\ORM\Id\AbstractIdGenerator;
+use App\Entity\Tenant;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -198,17 +199,49 @@ class RestoreService
     }
 
     /**
-     * Restore data from backup
+     * Restore data from backup.
      *
-     * @param array $backup Backup data
-     * @param array $options Restore options
+     * When $targetTenantScope is provided, only entities belonging to that tenant
+     * (and its subsidiaries for holding tenants) are restored.  Entities from
+     * other tenants present in the backup are silently skipped.
+     *
+     * The clear_before_restore option is also tenant-aware: when a scope is active,
+     * only rows belonging to the scope tree are deleted before the restore, leaving
+     * all other tenants' data untouched.
+     *
+     * A cross-tenant warning is emitted when the backup's recorded tenant_scope does
+     * not overlap with $targetTenantScope.
+     *
+     * @param array       $backup            Backup data
+     * @param array       $options           Restore options
+     * @param Tenant|null $targetTenantScope When set, restricts restore to this tenant's data
      * @return array Restore result with statistics
      * @throws \Doctrine\DBAL\Exception
      */
-    public function restoreFromBackup(array $backup, array $options = []): array
+    public function restoreFromBackup(array $backup, array $options = [], ?Tenant $targetTenantScope = null): array
     {
         $this->statistics = [];
         $this->warnings = [];
+
+        // Resolve scope IDs for the target tenant (empty = global)
+        $targetScopeIds = $this->resolveTenantScopeIds($targetTenantScope);
+
+        // Collect cross-tenant warning BEFORE validateBackup() resets $this->warnings.
+        // validateBackup() calls $this->warnings = [] so we save the warning in a local variable
+        // and merge it back into $this->warnings after validation.
+        $prependWarnings = [];
+        if ($targetTenantScope !== null) {
+            $backupScopeIds = $backup['metadata']['tenant_scope'] ?? [];
+            if ($backupScopeIds !== [] && array_intersect($targetScopeIds, $backupScopeIds) === []) {
+                $prependWarnings[] = sprintf(
+                    'Cross-Tenant-Restore: Das Backup wurde für Tenant-IDs [%s] erstellt, '
+                    . 'aber die Wiederherstellung erfolgt für Tenant-IDs [%s]. '
+                    . 'Stellen Sie sicher, dass dies beabsichtigt ist.',
+                    implode(', ', $backupScopeIds),
+                    implode(', ', $targetScopeIds)
+                );
+            }
+        }
 
         // Default options
         $options = array_merge([
@@ -219,10 +252,15 @@ class RestoreService
             'clear_before_restore' => false, // New option: clear all data before restore
         ], $options);
 
-        // Validate first
+        // Validate first (this resets $this->warnings internally)
         $validation = $this->validateBackup($backup);
         if (!$validation['valid']) {
             throw new InvalidArgumentException('Invalid backup: ' . implode(', ', $validation['errors']));
+        }
+
+        // Re-apply cross-tenant warning that was collected before validateBackup() reset warnings
+        foreach ($prependWarnings as $warning) {
+            $this->warnings[] = $warning;
         }
 
         $this->logger->info('Starting restore', [
@@ -284,7 +322,7 @@ class RestoreService
             // - Starting transaction first would just get committed anyway
             // - We start the transaction AFTER clearExistingData instead
             if ($options['clear_before_restore']) {
-                $this->clearExistingData(array_reverse($orderedEntities), $options['skip_entities']);
+                $this->clearExistingData(array_reverse($orderedEntities), $options['skip_entities'], $targetScopeIds);
                 // Clear the identity map after deleting to avoid stale references
                 $this->entityManager->clear();
 
@@ -305,11 +343,23 @@ class RestoreService
                     continue;
                 }
 
-                $entities = $backup['data'][$orderedEntity] ?? [];
+                $allEntities = $backup['data'][$orderedEntity] ?? [];
                 $entityClass = 'App\\Entity\\' . $orderedEntity;
 
                 if (!class_exists($entityClass)) {
                     continue;
+                }
+
+                // Tenant-scope filtering: only restore entities belonging to the target scope
+                $entities = $this->filterEntitiesByScope($allEntities, $targetScopeIds);
+
+                if ($targetScopeIds !== [] && count($entities) < count($allEntities)) {
+                    $this->logger->info('Tenant-scoped restore: filtered entities', [
+                        'entity'  => $orderedEntity,
+                        'total'   => count($allEntities),
+                        'in_scope' => count($entities),
+                        'skipped'  => count($allEntities) - count($entities),
+                    ]);
                 }
 
                 $this->restoreEntity($entityClass, $orderedEntity, $entities, $options);
@@ -325,9 +375,14 @@ class RestoreService
                     if (in_array($orderedEntity, $options['skip_entities'])) {
                         continue;
                     }
-                    $entities     = $backup['data'][$orderedEntity] ?? [];
+                    $allEntities  = $backup['data'][$orderedEntity] ?? [];
                     $entityClass  = 'App\\Entity\\' . $orderedEntity;
-                    if (!class_exists($entityClass) || $entities === []) {
+                    if (!class_exists($entityClass) || $allEntities === []) {
+                        continue;
+                    }
+                    // Apply the same scope filter for the M2M second-pass
+                    $entities = $this->filterEntitiesByScope($allEntities, $targetScopeIds);
+                    if ($entities === []) {
                         continue;
                     }
                     $this->restoreManyToManyAssociations($entityClass, $orderedEntity, $entities);
@@ -499,21 +554,29 @@ class RestoreService
     }
 
     /**
-     * Clear all existing data for the given entities
+     * Clear all existing data for the given entities.
      *
-     * @param array $entityNames Entities to clear (should be in reverse dependency order)
-     * @param array $skipEntities Entities to skip
+     * When $tenantScopeIds is non-empty (tenant-scoped restore), only rows belonging
+     * to those tenant IDs are deleted, leaving all other tenants' data untouched.
+     * The AUTO_INCREMENT reset is then skipped (global delete would have done that).
+     *
+     * @param array $entityNames     Entities to clear (should be in reverse dependency order)
+     * @param array $skipEntities    Entities to skip
+     * @param int[] $tenantScopeIds  When non-empty, only delete rows for these tenant IDs
      */
-    private function clearExistingData(array $entityNames, array $skipEntities = []): void
+    private function clearExistingData(array $entityNames, array $skipEntities = [], array $tenantScopeIds = []): void
     {
-        $this->logger->info('Clearing existing data before restore');
+        $this->logger->info('Clearing existing data before restore', [
+            'scope_ids' => $tenantScopeIds,
+        ]);
 
         $connection = $this->entityManager->getConnection();
 
         // Step 1: Collect and DELETE all ManyToMany pivot tables first (before DQL entity deletes).
         // DQL DELETE FROM Entity does not touch pivot tables — without this step orphan FK rows
         // remain in the pivot tables after a clear_before_restore restore, corrupting the dataset.
-        $this->clearPivotTables($entityNames, $skipEntities, $connection);
+        // For tenant-scoped clears we pass scope information for filtering.
+        $this->clearPivotTables($entityNames, $skipEntities, $connection, $tenantScopeIds);
 
         foreach ($entityNames as $entityName) {
             if (in_array($entityName, $skipEntities)) {
@@ -529,6 +592,24 @@ class RestoreService
                 // Get table name for this entity
                 $classMetadata = $this->entityManager->getClassMetadata($entityClass);
                 $tableName = $classMetadata->getTableName();
+
+                // Tenant-scoped clear: use WHERE tenant_id IN (:scope) when possible
+                if ($tenantScopeIds !== [] && $this->entityHasTenantAssociation($entityClass)) {
+                    $qb = $this->entityManager->createQueryBuilder()
+                        ->delete($entityClass, 'e')
+                        ->where('e.tenant IN (:scope)')
+                        ->setParameter('scope', $tenantScopeIds);
+                    $deleted = $qb->getQuery()->execute();
+
+                    $this->logger->info('Cleared tenant-scoped entity data', [
+                        'entity'    => $entityName,
+                        'deleted'   => $deleted,
+                        'scope_ids' => $tenantScopeIds,
+                    ]);
+                    $this->statistics[$entityName . '_cleared'] = $deleted;
+                    // Do NOT reset AUTO_INCREMENT for scoped deletes (other tenants still have rows)
+                    continue;
+                }
 
                 // Use DQL DELETE for efficiency
                 $query = $this->entityManager->createQuery(
@@ -600,12 +681,29 @@ class RestoreService
      * Only owning-side associations are processed — each physical pivot table is owned by exactly
      * one side of the relationship, so we emit one DELETE per pivot table.
      *
-     * @param array                         $entityNames  List of entity short names (e.g. "Asset")
-     * @param array                         $skipEntities Entity names to skip
-     * @param \Doctrine\DBAL\Connection     $connection   DBAL connection (FK_CHECKS already disabled)
+     * When $tenantScopeIds is non-empty (tenant-scoped clear), we skip full-table DELETEs for pivot
+     * tables and instead let the per-entity scoped DQL DELETE cascade naturally via FK — the pivot
+     * rows that reference the deleted owner IDs will have already been dealt with by FK_CHECKS=0.
+     * A full-table pivot delete would incorrectly remove cross-tenant pivot rows.
+     *
+     * @param array                         $entityNames    List of entity short names (e.g. "Asset")
+     * @param array                         $skipEntities   Entity names to skip
+     * @param \Doctrine\DBAL\Connection     $connection     DBAL connection (FK_CHECKS already disabled)
+     * @param int[]                         $tenantScopeIds When non-empty, skip global pivot deletes
      */
-    private function clearPivotTables(array $entityNames, array $skipEntities, \Doctrine\DBAL\Connection $connection): void
-    {
+    private function clearPivotTables(
+        array $entityNames,
+        array $skipEntities,
+        \Doctrine\DBAL\Connection $connection,
+        array $tenantScopeIds = []
+    ): void {
+        // For tenant-scoped clears, we do NOT wipe entire pivot tables (would remove other tenants' rows).
+        // The per-entity DQL DELETE already removes owner-side rows; pivot cleanup via FK constraints.
+        if ($tenantScopeIds !== []) {
+            $this->logger->info('Skipping global pivot-table clear for tenant-scoped restore');
+            return;
+        }
+
         $clearedPivots = [];
 
         foreach ($entityNames as $entityName) {
@@ -1483,6 +1581,85 @@ class RestoreService
         });
 
         return $entityNames;
+    }
+
+    // ------------------------------------------------------------------
+    // Tenant-scope helpers (C2)
+    // ------------------------------------------------------------------
+
+    /**
+     * Resolve the list of tenant IDs that belong to the given scope.
+     * Returns an empty array when $tenantScope is null (= global restore).
+     *
+     * @return int[]
+     */
+    private function resolveTenantScopeIds(?Tenant $tenantScope): array
+    {
+        if ($tenantScope === null) {
+            return [];
+        }
+
+        $ids = [$tenantScope->getId()];
+        foreach ($tenantScope->getAllSubsidiaries() as $subsidiary) {
+            $ids[] = $subsidiary->getId();
+        }
+
+        return array_values(array_filter($ids, fn($id): bool => $id !== null));
+    }
+
+    /**
+     * Filter an array of serialized entity data to only include entries
+     * whose tenant_id (stored as tenant_id key or inside tenant_id array) is
+     * present in $scopeIds.
+     *
+     * When $scopeIds is empty (global restore) the original array is returned unchanged.
+     *
+     * The backup format stores associations as `<assocName>_id` keys.
+     * For the `tenant` association that becomes `tenant_id`.
+     *
+     * @param array $entities  Array of serialized entity arrays from the backup
+     * @param int[] $scopeIds  Tenant IDs that are allowed; empty = all
+     * @return array Filtered entities
+     */
+    private function filterEntitiesByScope(array $entities, array $scopeIds): array
+    {
+        if ($scopeIds === []) {
+            return $entities;
+        }
+
+        return array_values(array_filter($entities, function (array $data) use ($scopeIds): bool {
+            $tenantIdData = $data['tenant_id'] ?? null;
+
+            if ($tenantIdData === null) {
+                // Entity has no tenant field in the backup — include it (global entity like Role)
+                return true;
+            }
+
+            // tenant_id is stored as ['id' => X] (association format from serializeEntities)
+            $tenantId = is_array($tenantIdData) ? ($tenantIdData['id'] ?? null) : (int) $tenantIdData;
+
+            return $tenantId !== null && in_array($tenantId, $scopeIds, true);
+        }));
+    }
+
+    /**
+     * Check whether a Doctrine entity class has a single-valued `tenant` association.
+     * Used by clearExistingData() to decide between scoped and global DELETE.
+     */
+    private function entityHasTenantAssociation(string $entityClass): bool
+    {
+        try {
+            $metadata = $this->entityManager->getClassMetadata($entityClass);
+            foreach ($metadata->getAssociationNames() as $name) {
+                if ($name === 'tenant' && $metadata->isSingleValuedAssociation($name)) {
+                    return true;
+                }
+            }
+        } catch (Exception) {
+            // Entity not registered with Doctrine — treat as no tenant field
+        }
+
+        return false;
     }
 
     /**
