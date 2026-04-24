@@ -2,6 +2,7 @@
 
 namespace App\Tests\Service;
 
+use App\Repository\TenantRepository;
 use App\Service\DataImportService;
 use App\Service\ModuleConfigurationService;
 use Doctrine\DBAL\Connection;
@@ -18,6 +19,7 @@ class DataImportServiceTest extends TestCase
     private MockObject $entityManager;
     private MockObject $kernel;
     private MockObject $moduleConfigService;
+    private MockObject $tenantRepository;
     private DataImportService $service;
     private string $projectDir;
 
@@ -26,6 +28,7 @@ class DataImportServiceTest extends TestCase
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->kernel = $this->createMock(KernelInterface::class);
         $this->moduleConfigService = $this->createMock(ModuleConfigurationService::class);
+        $this->tenantRepository = $this->createMock(TenantRepository::class);
         $this->projectDir = sys_get_temp_dir() . '/test_project';
 
         // Create temporary project directory
@@ -37,6 +40,7 @@ class DataImportServiceTest extends TestCase
             $this->entityManager,
             $this->kernel,
             $this->moduleConfigService,
+            $this->tenantRepository,
             $this->projectDir
         );
     }
