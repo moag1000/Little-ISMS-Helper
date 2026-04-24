@@ -129,6 +129,7 @@
                 <div class="col-md-6"
                      data-controller="data-repair"
                      data-data-repair-base-url-value="{{ path('admin_data_repair_fix_all_orphans', {tenantId: 0}) }}"
+                     data-data-repair-expected-total-value="{{ summary.orphaned_count }}"
                      data-data-repair-confirm-text-value="Assign ALL orphaned entities to this tenant?">
                     <h3>Fix All Orphaned Entities</h3>
                     <p class="text-muted">Assign all {{ summary.orphaned_count }} orphaned entities to a tenant</p>

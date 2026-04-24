@@ -36,12 +36,58 @@ class DataRepairController extends AbstractController
     ) {
     }
 
+    /**
+     * Mappt URL-Type-Slug (z.B. 'asset', 'risk', 'control') auf den
+     * passenden FQCN anhand der Doctrine-Metadatas. Verzicht auf manuelle
+     * Liste — neue Entity-Klassen sind automatisch repair-fähig.
+     */
+    private function resolveEntityClassForType(string $type): ?string
+    {
+        $slug = strtolower(str_replace('_', '', $type));
+        foreach ($this->entityManager->getMetadataFactory()->getAllMetadata() as $metadata) {
+            if ($metadata->isMappedSuperclass || $metadata->isEmbeddedClass) {
+                continue;
+            }
+            $short = strtolower((new \ReflectionClass($metadata->getName()))->getShortName());
+            // Singular- und Plural-Vergleich (asset/assets → Asset)
+            if ($short === $slug || $short . 's' === $slug || $short === rtrim($slug, 's')) {
+                return $metadata->getName();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Schaltet den TenantFilter für die Dauer des Callbacks aus und restauriert ihn
+     * danach in jedem Fall. Ohne das kombiniert Doctrine "WHERE tenant IS NULL" mit
+     * dem impliziten "AND tenant_id = :current" → 0 Resultate → Repair-Flow
+     * findet seine Orphans nicht.
+     */
+    private function withoutTenantFilter(callable $fn): mixed
+    {
+        $filters = $this->entityManager->getFilters();
+        $wasEnabled = $filters->isEnabled('tenant_filter');
+        if ($wasEnabled) {
+            $filters->disable('tenant_filter');
+        }
+        try {
+            return $fn();
+        } finally {
+            if ($wasEnabled) {
+                $filters->enable('tenant_filter');
+            }
+        }
+    }
+
     #[Route('/admin/data-repair/', name: 'admin_data_repair_index')]
     public function index(): Response
     {
-        // Run comprehensive integrity check
-        $integrityCheck = $this->dataIntegrityService->runFullIntegrityCheck();
-        $summary = $this->dataIntegrityService->getSummaryStatistics();
+        // Integrity-Check + Übersicht brauchen TenantFilter-off, sonst
+        // fehlen Cross-Tenant-Mismatches und Orphans in den Counts.
+        [$integrityCheck, $summary] = $this->withoutTenantFilter(fn() => [
+            $this->dataIntegrityService->runFullIntegrityCheck(),
+            $this->dataIntegrityService->getSummaryStatistics(),
+        ]);
 
         // Get all tenants
         $tenants = $this->tenantRepository->findAll();
@@ -116,13 +162,6 @@ class DataRepairController extends AbstractController
         }
 
         $count = 0;
-        // TenantFilter muss für Orphan-Queries aus — sonst AND tenant_id = :current
-        // widerspricht WHERE tenant IS NULL und liefert 0.
-        $filters = $this->entityManager->getFilters();
-        $filterWasEnabled = $filters->isEnabled('tenant_filter');
-        if ($filterWasEnabled) {
-            $filters->disable('tenant_filter');
-        }
 
         // Audit-log each reassignment per entity (ISB MAJOR-1). The per-entity
         // granularity lets an auditor answer "who moved entity X into tenant Y"
@@ -145,30 +184,30 @@ class DataRepairController extends AbstractController
 
         // Generisch: Service liefert bereits alle Orphans keyed by entity-type.
         // 'all' iteriert komplett, sonst nur die gewählte Kategorie.
-        $allOrphans = $this->dataIntegrityService->findAllOrphanedEntities();
-        if ($entityType === 'all') {
-            foreach ($allOrphans as $entities) {
-                foreach ($entities as $entity) {
+        $errorFlashKey = null;
+        $this->withoutTenantFilter(function () use ($entityType, &$assignFn, &$errorFlashKey): void {
+            $allOrphans = $this->dataIntegrityService->findAllOrphanedEntities();
+            if ($entityType === 'all') {
+                foreach ($allOrphans as $entities) {
+                    foreach ($entities as $entity) {
+                        $assignFn($entity, (new \ReflectionClass($entity))->getShortName());
+                    }
+                }
+            } elseif (isset($allOrphans[$entityType])) {
+                foreach ($allOrphans[$entityType] as $entity) {
                     $assignFn($entity, (new \ReflectionClass($entity))->getShortName());
                 }
+            } else {
+                $errorFlashKey = 'admin.data_repair.invalid_entity_type';
             }
-        } elseif (isset($allOrphans[$entityType])) {
-            foreach ($allOrphans[$entityType] as $entity) {
-                $assignFn($entity, (new \ReflectionClass($entity))->getShortName());
-            }
-        } else {
-            if ($filterWasEnabled) {
-                $filters->enable('tenant_filter');
-            }
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.invalid_entity_type'));
+        });
+
+        if ($errorFlashKey !== null) {
+            $this->addFlash('error', $this->translator->trans($errorFlashKey));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
         $this->entityManager->flush();
-
-        if ($filterWasEnabled) {
-            $filters->enable('tenant_filter');
-        }
 
         $this->addFlash('success', $this->translator->trans('admin.data_repair.assigned_count', [
             '%count%' => $count,
@@ -194,27 +233,27 @@ class DataRepairController extends AbstractController
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
-        $entity = null;
-        $entityName = '';
-        $className = '';
-
-        switch ($type) {
-            case 'asset':
-                $entity = $this->assetRepository->find($id);
-                $entityName = $entity ? $entity->getName() : '';
-                $className = 'Asset';
-                break;
-            case 'risk':
-                $entity = $this->riskRepository->find($id);
-                $entityName = $entity ? $entity->getTitle() : '';
-                $className = 'Risk';
-                break;
-            case 'incident':
-                $entity = $this->incidentRepository->find($id);
-                $entityName = $entity ? $entity->getTitle() : '';
-                $className = 'Incident';
-                break;
-        }
+        // Generischer Reassign — findet Entity per Doctrine-Metadata statt
+        // fixer Repository-Auswahl. Damit funktionieren auch Controls,
+        // Workflows, Suppliers usw.
+        [$entity, $entityName, $className] = $this->withoutTenantFilter(function () use ($type, $id): array {
+            $fqcn = $this->resolveEntityClassForType($type);
+            if ($fqcn === null) {
+                return [null, '', ''];
+            }
+            $found = $this->entityManager->find($fqcn, $id);
+            $name = '';
+            if ($found !== null) {
+                if (method_exists($found, 'getName')) {
+                    $name = (string) $found->getName();
+                } elseif (method_exists($found, 'getTitle')) {
+                    $name = (string) $found->getTitle();
+                } else {
+                    $name = '#' . $id;
+                }
+            }
+            return [$found, $name, $found ? (new \ReflectionClass($found))->getShortName() : ''];
+        });
 
         if (!$entity) {
             $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found'));
@@ -468,49 +507,51 @@ class DataRepairController extends AbstractController
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
-        $orphaned = $this->dataIntegrityService->findAllOrphanedEntities();
+        $totalFixed = 0;
+        $hashMismatchTotal = null;
+        $this->withoutTenantFilter(function () use ($tenant, $request, &$totalFixed, &$hashMismatchTotal): void {
+            $orphaned = $this->dataIntegrityService->findAllOrphanedEntities();
 
-        // Guard 2: confirm hash must match the orphan counts shown at preview
-        // time. Client sends `confirm_hash = sha256(expected_total|tenant_id)`.
-        $expectedTotal = 0;
-        $classCounts = [];
-        foreach ($orphaned as $className => $entities) {
-            $expectedTotal += count($entities);
-            $classCounts[$className] = count($entities);
-        }
-        $expectedHash = hash('sha256', $expectedTotal . '|' . $tenant->getId());
-        $submittedHash = (string) $request->request->get('confirm_hash', '');
-        if (!hash_equals($expectedHash, $submittedHash)) {
+            $expectedTotal = 0;
+            foreach ($orphaned as $entities) {
+                $expectedTotal += count($entities);
+            }
+            $expectedHash = hash('sha256', $expectedTotal . '|' . $tenant->getId());
+            $submittedHash = (string) $request->request->get('confirm_hash', '');
+            if (!hash_equals($expectedHash, $submittedHash)) {
+                $hashMismatchTotal = $expectedTotal;
+                return;
+            }
+
+            foreach ($orphaned as $className => $entities) {
+                foreach ($entities as $entity) {
+                    if (!method_exists($entity, 'setTenant') || !method_exists($entity, 'getId')) {
+                        continue;
+                    }
+                    $entity->setTenant($tenant);
+                    $this->auditLogger->logCustom(
+                        'admin.data_repair.orphan_reassigned',
+                        $className,
+                        (int) $entity->getId(),
+                        ['tenant_id' => null],
+                        ['tenant_id' => $tenant->getId(), 'tenant_name' => $tenant->getName()],
+                        sprintf('Orphan %s#%d reassigned to tenant %s', $className, (int) $entity->getId(), $tenant->getName()),
+                    );
+                    $totalFixed++;
+                }
+            }
+
+            $this->entityManager->flush();
+        });
+
+        if ($hashMismatchTotal !== null) {
             $this->addFlash('danger', $this->translator->trans(
                 'admin.data_repair.bulk_confirm_hash_mismatch',
-                ['%expected%' => $expectedTotal],
+                ['%expected%' => $hashMismatchTotal],
                 'admin',
             ));
             return $this->redirectToRoute('admin_data_repair_index');
         }
-
-        // Apply + audit per entity, not per batch, so auditor can answer
-        // "show me each reassignment" without diff guessing.
-        $totalFixed = 0;
-        foreach ($orphaned as $className => $entities) {
-            foreach ($entities as $entity) {
-                if (!method_exists($entity, 'setTenant') || !method_exists($entity, 'getId')) {
-                    continue;
-                }
-                $entity->setTenant($tenant);
-                $this->auditLogger->logCustom(
-                    'admin.data_repair.orphan_reassigned',
-                    $className,
-                    (int) $entity->getId(),
-                    ['tenant_id' => null],
-                    ['tenant_id' => $tenant->getId(), 'tenant_name' => $tenant->getName()],
-                    sprintf('Orphan %s#%d reassigned to tenant %s', $className, (int) $entity->getId(), $tenant->getName()),
-                );
-                $totalFixed++;
-            }
-        }
-
-        $this->entityManager->flush();
 
         $this->addFlash('success', $this->translator->trans('admin.data_repair.fixed_all_orphans', [
             '%count%' => $totalFixed,
@@ -545,10 +586,11 @@ class DataRepairController extends AbstractController
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
-        $brokenReferences = $this->dataIntegrityService->findBrokenReferences();
         $fixedCount = 0;
+        $this->withoutTenantFilter(function () use ($reason, &$fixedCount): void {
+            $brokenReferences = $this->dataIntegrityService->findBrokenReferences();
 
-        foreach ($brokenReferences as $ref) {
+            foreach ($brokenReferences as $ref) {
             // Fix risk-asset tenant mismatches by setting risk tenant to match asset
             if ($ref['type'] === 'risk_asset_tenant_mismatch') {
                 $risk = $this->riskRepository->find($ref['entity_id']);
@@ -615,9 +657,9 @@ class DataRepairController extends AbstractController
                     }
                 }
             }
-        }
-
-        $this->entityManager->flush();
+            }
+            $this->entityManager->flush();
+        });
 
         $this->addFlash('success', $this->translator->trans('admin.data_repair.fixed_mismatches', [
             '%count%' => $fixedCount,
