@@ -896,3 +896,92 @@ Use this checklist when creating new components:
 **Need help?** Review similar existing pages for implementation patterns.
 
 **Found an issue?** Update this guide and create a pull request!
+
+---
+
+## Stylelint Rule — Hex-Color-Ban
+
+### What the rule does
+
+The project uses Aurora CSS custom properties (design tokens) for all color values. Hardcoded hex literals in CSS files undermine theming, dark-mode support, and token-based governance.
+
+The `.stylelintrc.js` rule `declaration-property-value-disallowed-list` fires whenever a raw hex color (e.g. `#0284c7`, `#fff`, `#1a2b3c00`) appears in any of the following CSS properties:
+
+```
+color, background, background-color,
+border, border-color, border-top/right/bottom/left,
+box-shadow, outline, outline-color,
+text-shadow, fill, stroke, caret-color
+```
+
+Only raw hex values are banned — `var(--primary)`, `rgba(...)`, `hsl(...)`, and CSS custom-property _definitions_ (`--my-token: #0284c7`) are all permitted.
+
+### How to run
+
+```bash
+# Install devDependencies (one-time, node/npm required)
+npm install
+
+# Run the linter
+npm run stylelint
+
+# Or directly
+npx stylelint 'assets/styles/**/*.css'
+```
+
+### Allow-listed files and why
+
+| File | Reason |
+|------|--------|
+| `assets/styles/fairy-aurora.css` | Token source-of-truth — hex values here define the design tokens consumed by all other files |
+| `assets/styles/alva.css` | Alva SVG character animations; some fills are legitimately brand-specific and embedded as hex in SVG attributes |
+| `assets/styles/bootstrap*.css` | Vendor file — not authored by this project, cannot and should not be modified |
+| `public/**/*.css` | Compiled output — auto-generated from source files, linting source is sufficient |
+| `var/**/*.css` | Symfony cache/compiled assets — not source |
+
+### Adding a legitimate exception in code
+
+If a specific line genuinely requires a hex value (e.g. a third-party SVG fill that cannot use a variable), suppress only that line:
+
+```css
+/* stylelint-disable-next-line declaration-property-value-disallowed-list */
+fill: #e2e8f0;
+```
+
+For a block of lines (use sparingly):
+
+```css
+/* stylelint-disable declaration-property-value-disallowed-list */
+.vendor-widget { color: #333; background: #fff; }
+/* stylelint-enable declaration-property-value-disallowed-list */
+```
+
+### Correct pattern
+
+```css
+/* CORRECT — always use Aurora tokens */
+.my-component {
+    color: var(--fg);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+}
+
+/* WRONG — will trigger stylelint violation */
+.my-component {
+    color: #1a1a2e;          /* ← ban fires */
+    background: #f8fafc;    /* ← ban fires */
+}
+```
+
+### Token quick-reference
+
+| Token | Purpose |
+|-------|---------|
+| `--primary` / `--primary-strong` / `--primary-tint` | Brand blue family |
+| `--accent` / `--accent-tint` | Alva gold accent family |
+| `--success` / `--warning` / `--danger` | Semantic semantic colors |
+| `--surface` / `--surface-2` | Background surfaces |
+| `--fg` / `--fg-2` / `--fg-3` | Text hierarchy |
+| `--border` / `--border-strong` | Border hierarchy |
+
+Full token definitions: `assets/styles/fairy-aurora.css`

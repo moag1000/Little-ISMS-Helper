@@ -1,0 +1,11 @@
+{
+    "name": "little-isms-helper",
+    "private": true,
+    "devDependencies": {
+        "stylelint": "^16.0.0",
+        "stylelint-config-standard": "^36.0.0"
+    },
+    "scripts": {
+        "stylelint": "stylelint 'assets/styles/**/*.css'"
+    }
+}
