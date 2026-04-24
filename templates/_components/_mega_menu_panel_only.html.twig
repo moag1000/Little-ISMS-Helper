@@ -633,5 +633,42 @@
             </div>
         </div>
         {% endif %}
+
+        {# Help & Resources Panel #}
+        <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="help" role="menu" aria-label="{{ 'nav.mega.category.help'|trans({}, 'nav') }}">
+            <div class="mega-menu-panel-content">
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.help_resources'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_help_iso9001_bridge') }}" class="{% if current_route == 'app_help_iso9001_bridge' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.mega.help.iso9001_bridge'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.iso9001_bridge'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_help_glossary') }}" class="{% if current_route == 'app_help_glossary' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-book" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.mega.help.glossary'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.glossary'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.shortcuts'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="#" data-action="click->keyboard-shortcuts#toggle" data-turbo="false">
+                            <i class="bi bi-keyboard" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.mega.help.keyboard_shortcuts'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.keyboard_shortcuts'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

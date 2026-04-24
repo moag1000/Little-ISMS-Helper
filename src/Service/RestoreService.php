@@ -910,7 +910,12 @@ class RestoreService
         // Check for required fields (not nullable)
         foreach ($classMetadata->getFieldNames() as $fieldName) {
             $mapping = $classMetadata->getFieldMapping($fieldName);
-            if (isset($mapping['nullable']) && !$mapping['nullable'] && $fieldName !== 'id') {
+            // Doctrine 3.x returns FieldMapping object (ArrayAccess) or plain array
+            // depending on version. Check both to stay forward-compatible with ORM 4.0.
+            $nullable = is_array($mapping)
+                ? ($mapping['nullable'] ?? false)
+                : ($mapping->nullable ?? false);
+            if (!$nullable && $fieldName !== 'id') {
                 $requiredFields[] = $fieldName;
             }
         }

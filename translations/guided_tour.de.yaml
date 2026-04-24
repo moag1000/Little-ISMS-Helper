@@ -57,8 +57,8 @@ guided_tour:
                 title: 'Ihr erstes Asset anlegen'
                 body: 'Assets (IT-Systeme, Informationen, Prozesse) sind die Grundlage — auf ihnen ruhen Risiken, Controls und Compliance. Legen Sie eines an und tragen Sie den Schutzbedarf ein (Vertraulichkeit / Integrität / Verfügbarkeit auf einer 1-5-Skala).'
             shortcuts:
-                title: 'Bei Problemen: „?" drückt eine Cheat-Sheet'
-                body: 'Oben rechts gibt es den Shortcut-Helfer (Tastatur-Icon). Wenn Sie nicht weiterkommen: Tastatur-Shortcuts, 9001-Brücke im Hilfemenü, Command-Palette. Viel Erfolg!'
+                title: 'Hilfe jederzeit erreichbar'
+                body: 'Im Menü unter „Hilfe & Ressourcen" finden Sie die ISO 9001 → 27001 Brücke, das Glossar und alle Tastenkürzel. Tipp: „?" auf der Tastatur öffnet die Shortcut-Übersicht, ⌘P/Ctrl+P die Command-Palette. Viel Erfolg!'
 
     # Compliance-Manager (5 Steps)
     cm:
@@ -143,10 +143,10 @@ guided_tour:
             body: 'Unter /bsi-grundschutz-check sehen Sie die Absicherungsstufen-Filter (Basis / Standard / Kern) plus Anforderungstypen (MUSS / SOLLTE / KANN). Wenn Ihr Tenant nur Basis-Absicherung braucht, reduziert das den SoA-Aufwand erheblich.'
         gdpr:
             title: 'Datenschutz (optional, weil DSGVO-Modul aktiv)'
-            body: 'Drei Schlüssel-Routen: /vvt (Art. 30 Verarbeitungstätigkeiten), /dpia (Art. 35 DSFA) und /data-breach (Art. 33 mit 72h-Timer). Der Timer läuft automatisch und benachrichtigt die ISB.'
+            body: 'Drei Bereiche unter „Datenschutz & DSGVO": Verarbeitungstätigkeiten (Art. 30), Datenschutz-Folgenabschätzung (Art. 35 DSFA) und Datenpannen (Art. 33 mit 72h-Timer). Der Timer läuft automatisch und benachrichtigt den ISB.'
         bcm:
             title: 'Business Continuity (optional, weil BCM-Modul aktiv)'
-            body: 'Vier Stopps für den BCM-Flow: /business-process → BIA (Business Impact Analysis) → /bc-plan → /bc-exercise. RTO/RPO werden als Tooltips an den jeweiligen Feldern erklärt.'
+            body: 'Vier Stopps im BCM-Flow: Geschäftsprozesse erfassen → BIA (Business Impact Analysis) durchführen → BC-Plan erstellen → BC-Übung planen. Alles erreichbar über das Menü „Geschäftskontinuität". RTO/RPO werden als Tooltips an den jeweiligen Feldern erklärt.'
 
     # Auditor (3 Steps)
     auditor:

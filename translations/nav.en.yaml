@@ -78,6 +78,7 @@ nav:
             operations: Operations
             compliance: Compliance
             admin: Administration
+            help: 'Help & Resources'
 
         section:
             overview: Overview
@@ -94,6 +95,13 @@ nav:
             frameworks: 'Compliance Frameworks'
             user_management: 'User Management'
             system: 'System Administration'
+            help_resources: 'Help & Resources'
+            shortcuts: Shortcuts
+
+        help:
+            iso9001_bridge: 'ISO 9001 → 27001 Bridge'
+            glossary: 'Glossary'
+            keyboard_shortcuts: 'Keyboard Shortcuts'
 
         desc:
             home: 'Overview and quick access'
@@ -144,6 +152,9 @@ nav:
             tenants: 'Multi-tenant administration'
             data_repair: 'Data integrity tools'
             audit_log: 'System audit trail'
+            iso9001_bridge: 'Conceptual translation: CAPA ↔ risk treatment, process map ↔ SoA'
+            glossary: 'ISMS terms explained — from Asset to Vulnerability'
+            keyboard_shortcuts: 'All keyboard shortcuts at a glance'
 
     section:
         isms_core: 'ISMS Core'

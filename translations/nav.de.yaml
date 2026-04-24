@@ -78,8 +78,16 @@ nav:
             operations: Betrieb
             compliance: Compliance
             admin: Administration
+            help: 'Hilfe & Ressourcen'
+
+        help:
+            iso9001_bridge: 'ISO 9001 → 27001 Brücke'
+            glossary: 'Glossar'
+            keyboard_shortcuts: 'Tastenkürzel'
 
         section:
+            help_resources: 'Hilfe & Ressourcen'
+            shortcuts: Tastenkürzel
             overview: Übersicht
             foundation: Grundlagen
             controls: Maßnahmen
@@ -144,6 +152,9 @@ nav:
             tenants: 'Mandantenverwaltung'
             data_repair: 'Datenintegritätswerkzeuge'
             audit_log: 'System-Audit-Trail'
+            iso9001_bridge: 'Konzeptuelle Übersetzung: CAPA ↔ Risikobehandlung, Prozesslandkarte ↔ SoA'
+            glossary: 'ISMS-Fachbegriffe einfach erklärt — von Asset bis Vulnerability'
+            keyboard_shortcuts: 'Alle Tastenkürzel und Schnellzugriffe auf einen Blick'
 
     section:
         isms_core: 'ISMS Kern'

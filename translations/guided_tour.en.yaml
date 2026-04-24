@@ -57,8 +57,8 @@ guided_tour:
                 title: 'Create your first asset'
                 body: 'Assets (IT systems, information, processes) are the foundation — risks, controls and compliance build on them. Create one and record the protection needs (confidentiality / integrity / availability on a 1–5 scale).'
             shortcuts:
-                title: 'Stuck? "?" pops a cheat sheet'
-                body: 'Top right you''ll find the shortcut helper (keyboard icon). When in doubt: keyboard shortcuts, 9001 bridge in the help menu, command palette. Good luck!'
+                title: 'Help is always one click away'
+                body: 'In the menu under "Help & Resources" you''ll find the ISO 9001 → 27001 bridge, the glossary and all keyboard shortcuts. Tip: press "?" for the shortcut overview, ⌘P/Ctrl+P for the command palette. Good luck!'
 
     # Compliance-Manager (5 Steps)
     cm:
@@ -143,10 +143,10 @@ guided_tour:
             body: 'Under /bsi-grundschutz-check you see the protection-level filter (Basis / Standard / Kern) plus requirement types (MUSS / SOLLTE / KANN). If your tenant only needs Basis protection, this significantly reduces SoA effort.'
         gdpr:
             title: 'Privacy (optional, because GDPR module is active)'
-            body: 'Three key routes: /vvt (Art. 30 processing activities), /dpia (Art. 35 DPIA) and /data-breach (Art. 33 with 72h timer). The timer runs automatically and notifies the ISB.'
+            body: 'Three areas under "Privacy & GDPR": processing activities (Art. 30), data protection impact assessment (Art. 35 DPIA) and data breaches (Art. 33 with 72h timer). The timer runs automatically and notifies the ISB.'
         bcm:
             title: 'Business continuity (optional, because BCM module is active)'
-            body: 'Four stops for the BCM flow: /business-process → BIA (Business Impact Analysis) → /bc-plan → /bc-exercise. RTO/RPO are explained as tooltips on the respective fields.'
+            body: 'Four stops in the BCM flow: capture business processes → perform BIA (Business Impact Analysis) → create BC plan → schedule BC exercise. All accessible via the "Business Continuity" menu. RTO/RPO are explained as tooltips on the respective fields.'
 
     # Auditor (3 Steps)
     auditor:

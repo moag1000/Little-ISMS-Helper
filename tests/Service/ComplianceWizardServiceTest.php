@@ -57,6 +57,10 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->requireDatabase();
         $wizards = $this->wizardService->getAvailableWizards();
 
+        if ($wizards === []) {
+            $this->markTestSkipped('No wizards available — required modules may not be active in this environment');
+        }
+
         foreach ($wizards as $key => $wizard) {
             $this->assertArrayHasKey('code', $wizard, "Wizard '$key' missing 'code'");
             $this->assertArrayHasKey('name', $wizard, "Wizard '$key' missing 'name'");
@@ -89,6 +93,10 @@ class ComplianceWizardServiceTest extends KernelTestCase
     {
         $this->requireDatabase();
         $wizards = $this->wizardService->getAvailableWizards();
+
+        if ($wizards === []) {
+            $this->markTestSkipped('No wizards available — required modules may not be active in this environment');
+        }
 
         foreach (array_keys($wizards) as $wizardKey) {
             $config = $this->wizardService->getWizardConfig($wizardKey);
@@ -247,6 +255,10 @@ class ComplianceWizardServiceTest extends KernelTestCase
     {
         $this->requireDatabase();
         $wizards = $this->wizardService->getAvailableWizards();
+
+        if ($wizards === []) {
+            $this->markTestSkipped('No wizards available — required modules may not be active in this environment');
+        }
 
         foreach (array_keys($wizards) as $wizardKey) {
             $result = $this->wizardService->runAssessment($wizardKey);

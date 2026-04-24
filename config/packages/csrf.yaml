@@ -10,3 +10,12 @@ framework:
             - authenticate
             - logout
             - corporate_structure
+            # Admin Backup/Export/Import — JSON API endpoints use SameOrigin header
+            - data_backup_create
+            - data_backup_upload
+            - data_backup_validate
+            - data_backup_restore
+            - data_backup_delete
+            - data_export
+            - data_import
+            - data_import_execute

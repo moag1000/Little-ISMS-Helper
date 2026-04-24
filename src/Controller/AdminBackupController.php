@@ -439,7 +439,7 @@ class AdminBackupController extends AbstractController
         }
     }
 
-    #[Route('/admin/data/backup/delete/{filename}', name: 'data_backup_delete', methods: ['POST'])]
+    #[Route('/admin/data/backup/delete/{filename}', name: 'data_backup_delete', methods: ['POST', 'DELETE'])]
     #[IsGranted('ROLE_SUPER_ADMIN')]
     public function deleteBackup(string $filename, Request $request): JsonResponse
     {
