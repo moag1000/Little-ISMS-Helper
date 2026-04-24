@@ -1,5 +1,6 @@
 risks:
   - name: 'Ausfall des Datenbankservers'
+    asset: 'ref:asset:Datenbankserver DB-PROD-01'
     description: 'Hardwareausfall oder Softwarefehler führt zu Ausfall des Produktions-Datenbankservers'
     category: 'availability'
     probability: 3
@@ -13,6 +14,7 @@ risks:
     identified_date: '2024-01-15'
 
   - name: 'Ransomware-Angriff'
+    asset: 'ref:asset:Backup-Server BACKUP-01'
     description: 'Verschlüsselung von Unternehmensdaten durch Ransomware-Malware'
     category: 'confidentiality'
     probability: 4
@@ -26,6 +28,7 @@ risks:
     identified_date: '2024-01-10'
 
   - name: 'Datenverlust durch fehlende Backups'
+    asset: 'ref:asset:Backup-Server BACKUP-01'
     description: 'Kritische Daten gehen verloren, da keine funktionierenden Backups vorhanden sind'
     category: 'integrity'
     probability: 2
@@ -39,6 +42,7 @@ risks:
     identified_date: '2023-12-01'
 
   - name: 'Unbefugter Zugriff auf Kundendaten'
+    asset: 'ref:asset:Kundendatenbank'
     description: 'Externe oder interne Angreifer erlangen unbefugten Zugriff auf sensible Kundendaten'
     category: 'confidentiality'
     probability: 3
@@ -52,6 +56,7 @@ risks:
     identified_date: '2024-01-20'
 
   - name: 'DDoS-Angriff auf Webserver'
+    asset: 'ref:asset:Webserver WEB-PROD-01'
     description: 'Distributed Denial of Service Angriff macht Webserver für Kunden nicht erreichbar'
     category: 'availability'
     probability: 3
@@ -78,6 +83,7 @@ risks:
     identified_date: '2023-11-15'
 
   - name: 'Phishing-Angriff auf Mitarbeiter'
+    asset: 'ref:asset:Mitarbeiter-Laptops (50 Stück)'
     description: 'Mitarbeiter fallen auf Phishing-E-Mails herein und geben Zugangsdaten preis'
     category: 'confidentiality'
     probability: 5
@@ -91,6 +97,7 @@ risks:
     identified_date: '2024-01-05'
 
   - name: 'Stromausfall im Rechenzentrum'
+    asset: 'ref:asset:Datenbankserver DB-PROD-01'
     description: 'Langanhaltender Stromausfall führt zu Ausfall der IT-Infrastruktur'
     category: 'availability'
     probability: 2
@@ -104,6 +111,7 @@ risks:
     identified_date: '2023-10-20'
 
   - name: 'Datenpanne bei Cloud-Provider'
+    asset: 'ref:asset:CRM-System'
     description: 'Sicherheitsverletzung beim Cloud-Provider führt zu Offenlegung von Daten'
     category: 'confidentiality'
     probability: 2
@@ -117,6 +125,7 @@ risks:
     identified_date: '2024-02-10'
 
   - name: 'SQL Injection in Webanwendung'
+    asset: 'ref:asset:Webserver WEB-PROD-01'
     description: 'Angreifer nutzen SQL-Injection-Schwachstellen in Webanwendungen aus'
     category: 'integrity'
     probability: 3

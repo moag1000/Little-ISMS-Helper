@@ -1,5 +1,6 @@
 dpias:
   - title: 'DSFA: Videoueberwachung Betriebsgelaende'
+    processingActivity: 'ref:processing_activity:Videoueberwachung Betriebsgelaende'
     referenceNumber: 'DPIA-2024-001'
     version: '1.2'
     processingDescription: 'Videoueberwachung der oeffentlich zugaenglichen Zugangsbereiche, des Mitarbeiterparkplatzes und des Warenlagers mit 18 Kameras. Aufzeichnung erfolgt anlassbezogen bei Bewegungserkennung zwischen 18:00 und 06:00 Uhr sowie 24/7 im Warenlager. Live-Bild ausschliesslich im Alarmfall auf Sicherheitsdienst-Monitor.'
@@ -65,6 +66,7 @@ dpias:
     reviewFrequencyMonths: 12
 
   - title: 'DSFA: KI-gestuetztes Bewerber-Screening (Resume Parser)'
+    processingActivity: 'ref:processing_activity:Bewerbermanagement / Recruiting'
     referenceNumber: 'DPIA-2024-002'
     version: '1.0'
     processingDescription: 'Einfuehrung eines KI-basierten Resume-Parsers zur automatisierten Vorsortierung von Bewerbungsunterlagen. Das System extrahiert strukturierte Daten (Qualifikationen, Erfahrung, Skills), berechnet einen Matching-Score gegen die Stellenausschreibung und sortiert Bewerbungen in 3 Kategorien (A/B/C). Die finale Entscheidung ueber Einladungen trifft ausschliesslich ein Mensch.'
@@ -130,6 +132,7 @@ dpias:
     reviewReason: 'Hochrisiko-KI unter EU AI Act erfordert engmaschigere Review-Zyklen als Standard.'
 
   - title: 'DSFA: Mitarbeiter-Monitoring mit Microsoft Productivity Score'
+    processingActivity: 'ref:processing_activity:Mitarbeiter-Stammdaten und Personalakte'
     referenceNumber: 'DPIA-2024-003'
     version: '1.0'
     processingDescription: 'Geplante Aktivierung des Microsoft Productivity Score / Workplace Analytics im M365-Tenant zur Auswertung von Produktivitaetsmetriken (Meeting-Zeit, Fokuszeit, E-Mail-Verhalten, Kollaboration) auf aggregierter und individueller Ebene.'
@@ -192,6 +195,7 @@ dpias:
     reviewFrequencyMonths: 6
 
   - title: 'DSFA: Customer-Analytics-Plattform mit Cross-Channel-Profiling'
+    processingActivity: 'ref:processing_activity:CRM / Kunden- und Interessentenverwaltung'
     referenceNumber: 'DPIA-2024-004'
     version: '1.1'
     processingDescription: 'Einfuehrung einer Customer Data Platform (CDP) zur Zusammenfuehrung von Kundendaten aus CRM, E-Shop, Newsletter-Tool und App. Erstellung von umfassenden Kundenprofilen zur Personalisierung von Angeboten, Next-Best-Action-Empfehlungen und Churn-Prediction.'
