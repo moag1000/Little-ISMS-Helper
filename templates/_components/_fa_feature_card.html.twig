@@ -1,0 +1,72 @@
+{#
+ # FairyAurora v4.0 — fa-feature-card macro
+ #
+ # Replaces inconsistent KPI / stat tiles. Coexists with legacy .kpi-card rules.
+ # Renders an <article> with a colored left accent bar, icon chip, label,
+ # large value, unit suffix, optional hint text, and optional sparkline SVG.
+ #
+ # Usage:
+ #   {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+ #   {{ _fa_feature_card.render({
+ #       label:     'SLA erfüllt',
+ #       value:     '98.4',
+ #       unit:      '%',
+ #       variant:   'success',
+ #       icon:      'check-circle-fill',
+ #       hint:      '+2.1% seit letzter Woche',
+ #       sparkline: null
+ #   }) }}
+ #
+ # Parameters:
+ #   label     - metric label text, uppercase via CSS (required)
+ #   value     - numeric or text value (required)
+ #   unit      - unit suffix e.g. '%', 'EUR' (optional)
+ #   variant   - success | warning | danger | primary (default: primary)
+ #   icon      - Bootstrap Icons name without 'bi-' prefix (optional)
+ #   hint      - small trend/context text below value (optional)
+ #   sparkline - raw SVG string for mini-chart (optional)
+ #   class     - extra CSS classes on <article> (optional)
+ #   href      - if set, wraps the card in a link for clickable tiles (optional)
+ #}
+
+{% macro render(props = {}) %}
+    {% set variant = props.variant|default('primary') %}
+    {% set tag = props.href is defined and props.href ? 'a' : 'article' %}
+
+    <{{ tag }} class="fa-feature-card fa-feature-card--{{ variant }}{{ props.class is defined ? ' ' ~ props.class : '' }}"
+               {% if props.href is defined and props.href %}href="{{ props.href }}"{% endif %}>
+
+        {# Icon chip #}
+        {% if props.icon is defined and props.icon %}
+            <div class="fa-feature-card__icon-chip" aria-hidden="true">
+                <i class="bi bi-{{ props.icon }}"></i>
+            </div>
+        {% endif %}
+
+        {# Label (uppercase via CSS) #}
+        {% if props.label is defined and props.label %}
+            <p class="fa-feature-card__label">{{ props.label }}</p>
+        {% endif %}
+
+        {# Value + unit #}
+        <div class="fa-feature-card__value-row">
+            <span class="fa-feature-card__value">{{ props.value|default('—') }}</span>
+            {% if props.unit is defined and props.unit %}
+                <span class="fa-feature-card__unit">{{ props.unit }}</span>
+            {% endif %}
+        </div>
+
+        {# Optional hint #}
+        {% if props.hint is defined and props.hint %}
+            <p class="fa-feature-card__hint">{{ props.hint }}</p>
+        {% endif %}
+
+        {# Optional sparkline SVG #}
+        {% if props.sparkline is defined and props.sparkline %}
+            <div class="fa-feature-card__sparkline" aria-hidden="true">
+                {{ props.sparkline|raw }}
+            </div>
+        {% endif %}
+
+    </{{ tag }}>
+{% endmacro %}

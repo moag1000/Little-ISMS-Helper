@@ -1,0 +1,50 @@
+{#
+ # FairyAurora v4.0 — fa-section macro
+ #
+ # Replaces ad-hoc <div class="container mt-5"> + <h3> section wrappers.
+ # Renders a <section> with a title/tools header, body, and optional footer.
+ # The header bottom-divider fades from --primary-tint to transparent.
+ #
+ # Usage:
+ #   {% import '_components/_fa_section.html.twig' as _fa_section %}
+ #   {{ _fa_section.render({
+ #       title:  'Neueste Aktivität',
+ #       tools:  '<button class="fa-filter-chip fa-filter-chip--active">Heute</button>',
+ #       body:   '<p>…content…</p>',
+ #       footer: '<a href="#" class="fa-link">Alle anzeigen →</a>'
+ #   }) }}
+ #
+ # Parameters:
+ #   title  - section heading (required)
+ #   tools  - raw HTML rendered right-aligned in the header (optional)
+ #   body   - raw HTML for the section body (optional; use macro wrapper body for complex content)
+ #   footer - raw HTML below the body (optional)
+ #   id     - HTML id attribute for the <section> (optional)
+ #   class  - additional CSS classes on <section> (optional)
+ #}
+
+{% macro render(props = {}) %}
+    <section class="fa-section{{ props.class is defined ? ' ' ~ props.class : '' }}"
+             {% if props.id is defined and props.id %}id="{{ props.id }}"{% endif %}>
+
+        {# Header with title + optional tools #}
+        {% if props.title is defined and props.title %}
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ props.title }}</h2>
+                {% if props.tools is defined and props.tools %}
+                    <div class="fa-section__tools">{{ props.tools|raw }}</div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {# Body #}
+        {% if props.body is defined and props.body %}
+            <div class="fa-section__body">{{ props.body|raw }}</div>
+        {% endif %}
+
+        {# Optional footer #}
+        {% if props.footer is defined and props.footer %}
+            <div class="fa-section__footer">{{ props.footer|raw }}</div>
+        {% endif %}
+    </section>
+{% endmacro %}

@@ -3463,3 +3463,396 @@ html[data-theme="dark"] .wizard-busy-overlay {
 @media (prefers-reduced-motion: no-preference) {
     .fa-aurora-surface { transition: background 0.4s ease-out; }
 }
+
+/* ==========================================================================
+   Aurora v4 Phase 2 — fa-page-header
+   ==========================================================================
+   Replaces ad-hoc <h1> + <small> + breadcrumb combos.
+   Bottom border uses brand-gradient-line token.
+   ========================================================================== */
+
+.fa-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 20px 16px;
+    border-bottom: 2px solid transparent;
+    border-image: var(--brand-gradient-line) 1;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.fa-page-header__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.fa-page-header__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: var(--r-pill);
+    background: var(--brand-gradient-soft);
+    border: 1px solid var(--primary-tint);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--primary);
+    align-self: flex-start;
+}
+
+html[data-theme="dark"] .fa-page-header__badge {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.fa-page-header__badge i { font-size: 12px; }
+
+.fa-page-header__title {
+    font-family: var(--font-sans);
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-weight: 700;
+    color: var(--fg);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.fa-page-header__subtitle {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--fg-2);
+    margin: 0;
+    line-height: 1.45;
+}
+
+.fa-page-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+    .fa-page-header { flex-direction: column; }
+    .fa-page-header__actions { width: 100%; }
+}
+
+/* ==========================================================================
+   Aurora v4 Phase 2 — fa-section
+   ==========================================================================
+   Replaces ad-hoc <div class="container mt-5"> + <h3> section wrappers.
+   Header divider: 1px gradient from --primary-tint to transparent.
+   ========================================================================== */
+
+.fa-section {
+    margin-bottom: 32px;
+}
+
+.fa-section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid transparent;
+    border-image: linear-gradient(90deg, var(--primary-tint), transparent) 1;
+}
+
+.fa-section__title {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.fa-section__tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.fa-section__body {
+    /* content flows naturally; no forced padding so tables / charts bleed to edge */
+}
+
+.fa-section__footer {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--fg-2);
+}
+
+/* fa-link — inline hyperlink style used in section footers */
+.fa-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--t-fast) var(--ease-out);
+}
+.fa-link:hover { color: var(--primary-hover); text-decoration: underline; }
+.fa-link:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: var(--r-xs);
+}
+
+/* ==========================================================================
+   Aurora v4 Phase 2 — fa-feature-card
+   ==========================================================================
+   Replaces inconsistent KPI / stat tiles.
+   Left accent bar driven by semantic variant; hover glow in matching color.
+   Coexists with legacy .kpi-card — does NOT touch those rules.
+   ========================================================================== */
+
+.fa-feature-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 18px 20px 18px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    transition:
+        border-color var(--t-fast) var(--ease-out),
+        box-shadow   var(--t-fast) var(--ease-out);
+}
+
+/* Left accent bar */
+.fa-feature-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: var(--r-lg) 0 0 var(--r-lg);
+    background: var(--_fc-color, var(--primary));
+}
+
+/* Variant tokens */
+.fa-feature-card--primary { --_fc-color: var(--primary); --_fc-glow: var(--primary-glow); --_fc-tint: var(--primary-tint); }
+.fa-feature-card--success { --_fc-color: var(--success); --_fc-glow: var(--success-glow); --_fc-tint: color-mix(in oklab, var(--success) 10%, transparent); }
+.fa-feature-card--warning { --_fc-color: var(--warning); --_fc-glow: var(--warning-glow); --_fc-tint: color-mix(in oklab, var(--warning) 10%, transparent); }
+.fa-feature-card--danger  { --_fc-color: var(--danger);  --_fc-glow: var(--danger-glow);  --_fc-tint: color-mix(in oklab, var(--danger)  10%, transparent); }
+
+.fa-feature-card:hover {
+    border-color: var(--_fc-color, var(--primary));
+    box-shadow: 0 0 0 3px var(--_fc-glow, var(--primary-glow));
+}
+
+.fa-feature-card__icon-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-md);
+    background: var(--_fc-tint, var(--primary-tint));
+    color: var(--_fc-color, var(--primary));
+    font-size: 18px;
+    align-self: flex-start;
+    flex-shrink: 0;
+}
+
+.fa-feature-card__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    margin: 0;
+}
+
+.fa-feature-card__value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    line-height: 1;
+}
+
+.fa-feature-card__value {
+    font-family: var(--font-sans);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--fg);
+    letter-spacing: -0.02em;
+}
+
+.fa-feature-card__unit {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--fg-3);
+}
+
+.fa-feature-card__hint {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--fg-3);
+    margin: 0;
+}
+
+.fa-feature-card__sparkline {
+    margin-top: 4px;
+    opacity: 0.85;
+}
+
+/* ==========================================================================
+   Aurora v4 Phase 3 — fa-empty-state (active / macro variant)
+   ==========================================================================
+   Coexists with the existing .fa-empty-state passive rules above (line ~509).
+   The macro wrapper adds .fa-empty-state--active to enable the aurora surface.
+   ========================================================================== */
+
+.fa-empty-state--active {
+    position: relative;
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    /* Aurora-pattern background at ~20% opacity via --subtle variant */
+    background:
+        radial-gradient(circle at 12% 18%, color-mix(in oklab, var(--primary-tint) calc(var(--pattern-opacity-subtle) * 1000%), transparent) 0%, transparent 55%),
+        radial-gradient(circle at 88% 82%, color-mix(in oklab, var(--accent-tint) calc(var(--pattern-opacity-subtle) * 1000%), transparent) 0%, transparent 55%),
+        var(--surface);
+    border: 1px solid var(--border);
+}
+
+/* ==========================================================================
+   Aurora v4 Phase 3 — fa-hero
+   ==========================================================================
+   Welcome-after-login banners + module start pages.
+   Uses --hero opacity for background; Alva anchored left at lg size.
+   Glow border mirrors fa-card--premium pattern.
+   ========================================================================== */
+
+.fa-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 40px 40px 40px 32px;
+    border-radius: var(--r-2xl);
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 8% 40%, color-mix(in oklab, var(--primary-tint) calc(var(--pattern-opacity-hero) * 1000%), transparent) 0%, transparent 55%),
+        radial-gradient(circle at 92% 60%, color-mix(in oklab, var(--accent-tint) calc(var(--pattern-opacity-hero) * 1000%), transparent) 0%, transparent 55%),
+        var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 20%, transparent),
+                0 8px 32px color-mix(in oklab, var(--primary) 8%, transparent);
+}
+
+html[data-theme="dark"] .fa-hero {
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 35%, transparent),
+                0 8px 40px color-mix(in oklab, var(--primary) 12%, transparent);
+}
+
+.fa-hero__alva {
+    flex-shrink: 0;
+    opacity: 0.95;
+}
+
+.fa-hero__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.fa-hero__title {
+    font-family: var(--font-sans);
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 700;
+    color: var(--fg);
+    margin: 0;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.fa-hero__subtitle {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--fg-2);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.fa-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+@media (max-width: 640px) {
+    .fa-hero { flex-direction: column; align-items: flex-start; padding: 24px; }
+    .fa-hero__alva { align-self: center; }
+}
+
+/* ==========================================================================
+   Aurora v4 Phase 3 — fa-filter-chip standalone + active state
+   ==========================================================================
+   The passive .fa-filter-chip is already defined in fairy-aurora-edge.css.
+   Here we add the --active modifier and the chip-group wrapper for the macro.
+   ========================================================================== */
+
+/* Active (selected) state */
+.fa-filter-chip--active {
+    background: var(--primary-tint);
+    border-color: var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Chip group — horizontal row of toggle chips */
+.fa-filter-chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+/* Button-reset so <button> renders like a chip */
+button.fa-filter-chip {
+    cursor: pointer;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--fg-2);
+    padding: 4px 12px;
+    line-height: 1.4;
+    transition:
+        background-color var(--t-fast) var(--ease-out),
+        border-color     var(--t-fast) var(--ease-out),
+        color            var(--t-fast) var(--ease-out);
+}
+
+button.fa-filter-chip:hover:not(.fa-filter-chip--active) {
+    background: var(--surface-3);
+    border-color: var(--border-strong);
+    color: var(--fg);
+}
+
+button.fa-filter-chip.fa-filter-chip--active {
+    background: var(--primary-tint);
+    border-color: var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+}
