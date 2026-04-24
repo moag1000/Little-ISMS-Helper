@@ -1,0 +1,70 @@
+{#
+ # FairyAurora v4.0 — fa-empty-state macro (active variant)
+ #
+ # Coexists with the existing _empty_state.html.twig (include-pattern, passive).
+ # This macro renders the "active" variant: Aurora-pattern surface background,
+ # centered Alva SVG via _alva.html.twig, title, text, and CTA buttons.
+ #
+ # Usage:
+ #   {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+ #   {{ _fa_empty_state.render({
+ #       mood:    'curious',
+ #       title:   'Noch keine Dokumente',
+ #       text:    'Laden Sie das erste Dokument hoch…',
+ #       actions: [
+ #           { label: 'Hochladen',      variant: 'primary', icon: 'upload',  href: '#' },
+ #           { label: 'Vorlage wählen', variant: 'ghost',                    href: '#' }
+ #       ]
+ #   }) }}
+ #
+ # Parameters:
+ #   mood    - Alva mood (idle|happy|thinking|focused|working|scanning|warning|celebrating|sleeping)
+ #             default: 'thinking' (plan §21: "noch nichts angelegt")
+ #   title   - heading text (required)
+ #   text    - descriptive paragraph (optional)
+ #   actions - array of { label, variant, icon?, href } (optional)
+ #   alvaSize - Alva SVG size in px (default 96)
+ #   class   - extra CSS classes on wrapper (optional)
+ #}
+
+{% import '_components/_alva.html.twig' as alva %}
+
+{% macro render(props = {}) %}
+    {% set mood = props.mood|default('thinking') %}
+    {% set actions = props.actions|default([]) %}
+
+    <div class="fa-empty-state fa-empty-state--active{{ props.class is defined ? ' ' ~ props.class : '' }}"
+         role="status">
+
+        {# Alva character centered #}
+        <div class="fa-empty-state__alva">
+            {{ alva.render(mood, { size: props.alvaSize|default(96), decorative: true }) }}
+        </div>
+
+        {# Title #}
+        {% if props.title is defined and props.title %}
+            <h3 class="fa-empty-state__title">{{ props.title }}</h3>
+        {% endif %}
+
+        {# Descriptive text #}
+        {% if props.text is defined and props.text %}
+            <p class="fa-empty-state__desc">{{ props.text }}</p>
+        {% endif %}
+
+        {# CTA buttons #}
+        {% if actions|length > 0 %}
+            <div class="fa-empty-state__actions">
+                {% for action in actions %}
+                    {% set variant = action.variant|default('primary') %}
+                    <a href="{{ action.href|default('#') }}"
+                       class="fa-cyber-btn fa-cyber-btn--{{ variant }}">
+                        {% if action.icon is defined and action.icon %}
+                            <i class="bi bi-{{ action.icon }}" aria-hidden="true"></i>
+                        {% endif %}
+                        <span class="fa-cyber-btn__label">{{ action.label }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
