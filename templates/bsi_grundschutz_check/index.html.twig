@@ -28,6 +28,7 @@
 {# Macros + Lookups in den Block gezogen — bei extends werden {% set %} und
  # {% import %} außerhalb von Blocks von Twig verworfen. #}
 {% import _self as helpers %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% set status_variant = {
     'good':    'success',
     'warning': 'warning',
@@ -35,20 +36,13 @@
     'na':      'secondary',
 } %}
 {% set stufe_options = ['basis', 'standard', 'kern'] %}
+{{ _fa_page_header.render({
+    badge: { icon: 'shield-check', label: 'bsi_check.title'|trans({}, 'messages') },
+    title: 'bsi_check.title'|trans({}, 'messages'),
+    subtitle: 'bsi_check.description'|trans({}, 'messages')
+}) }}
+<main class="fa-aurora-surface">
 <div class="container-fluid">
-    <div class="row mb-3">
-        <div class="col-12">
-            <h1 class="h3 mb-2">
-                <i class="bi bi-shield-check" aria-hidden="true"></i>
-                {{ 'bsi_check.title'|trans({}, 'messages') }}
-            </h1>
-            <p class="text-muted mb-0">{{ 'bsi_check.description'|trans({}, 'messages') }}</p>
-            <p class="text-muted small mb-0">
-                {{ 'bsi_check.framework'|trans({}, 'messages') }}: <strong>{{ report.framework.name }}</strong>
-                {% if report.framework.version %}<span class="ms-1">({{ report.framework.version }})</span>{% endif %}
-            </p>
-        </div>
-    </div>
 
     {# Absicherungsstufe filter #}
     <div class="row mb-4">
@@ -238,4 +232,5 @@
         </div>
     {% endif %}
 </div>
+</main>
 {% endblock %}

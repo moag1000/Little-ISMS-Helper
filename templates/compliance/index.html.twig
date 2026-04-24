@@ -3,6 +3,7 @@
 {% block title %}{{ 'compliance.page_title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -10,31 +11,18 @@
         ]
     } %}
 
-    <div class="page-header">
-        <div>
-            <h1><i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'compliance.page_title'|trans({}, 'compliance') }}</h1>
-            <p class="text-muted">{{ 'compliance.page_subtitle'|trans({}, 'compliance') }}</p>
-        </div>
-        <div class="button-group">
-            {% if is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('admin_compliance_index') }}" class="btn btn-primary">
-                <i class="bi bi-gear" aria-hidden="true"></i> {{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}
-            </a>
-            {% endif %}
-            <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-search" aria-hidden="true"></i> {{ 'compliance.mapping_quality.title'|trans({}, 'compliance') }}
-            </a>
-            <a href="{{ path('app_compliance_cross_framework') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-link-45deg" aria-hidden="true"></i> {{ 'compliance.button.cross_framework'|trans({}, 'compliance') }}
-            </a>
-            <a href="{{ path('app_compliance_transitive') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-bar-chart-line" aria-hidden="true"></i> {{ 'compliance.button.transitive'|trans({}, 'compliance') }}
-            </a>
-            <a href="{{ path('app_compliance_compare') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-sliders" aria-hidden="true"></i> {{ 'compliance.button.compare_frameworks'|trans({}, 'compliance') }}
-            </a>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'bullseye', label: 'compliance.page_title'|trans({}, 'compliance') },
+        title: 'compliance.page_title'|trans({}, 'compliance'),
+        subtitle: 'compliance.page_subtitle'|trans({}, 'compliance'),
+        actions: [
+            { label: 'compliance.mapping_quality.title'|trans({}, 'compliance'), href: path('app_mapping_quality_dashboard'), variant: 'ghost', icon: 'search' },
+            { label: 'compliance.button.cross_framework'|trans({}, 'compliance'), href: path('app_compliance_cross_framework'), variant: 'ghost', icon: 'link-45deg' },
+            { label: 'compliance.button.transitive'|trans({}, 'compliance'), href: path('app_compliance_transitive'), variant: 'ghost', icon: 'bar-chart-line' },
+            { label: 'compliance.button.compare_frameworks'|trans({}, 'compliance'), href: path('app_compliance_compare'), variant: 'ghost', icon: 'sliders' }
+        ]|merge(is_granted('ROLE_ADMIN') ? [{ label: 'compliance.manage_frameworks'|trans({}, 'compliance'), href: path('admin_compliance_index'), variant: 'primary', icon: 'gear' }] : [])
+    }) }}
+    <main class="fa-aurora-surface">
 
     {# Maturity Heatmap — CMMI Levels per Framework (C2) #}
     {% if maturity_portfolio is defined and maturity_portfolio|length > 0 %}
@@ -271,6 +259,7 @@
             </div>
         {% endblock %}
     {% endembed %}
+    </main>
 </div>
 
 <style>
