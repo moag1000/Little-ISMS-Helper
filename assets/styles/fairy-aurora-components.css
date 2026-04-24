@@ -462,6 +462,50 @@ html[data-theme="dark"] .fa-card--premium {
 }
 .fa-cyber-input.is-disabled { opacity: 0.6; }
 
+/* ── Symfony form-theme additions (fa_cyber_input.html.twig) ────────────── */
+/* Maps Symfony's fa-cyber-input__input onto the existing __field visual    */
+.fa-cyber-input__input {
+    width: 100%;
+    padding: 10px 14px;
+    background: transparent;
+    color: var(--fg);
+    border: 0;
+    border-radius: inherit;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.4;
+    outline: none;
+}
+.fa-cyber-input__input::placeholder { color: var(--fg-3); }
+.fa-cyber-input__input:disabled {
+    color: var(--fg-3);
+    cursor: not-allowed;
+}
+/* Select appearance */
+select.fa-cyber-input__input {
+    appearance: none;
+    cursor: pointer;
+}
+/* Error list rendered by form_errors block */
+.fa-cyber-input__errors {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12px;
+    color: var(--danger);
+}
+/* Checkboxes / Radios: flatten the frame so tick-marks don't surround them  */
+.fa-cyber-input .form-check,
+.fa-cyber-input .form-check-inline {
+    padding-top: 4px;
+}
+.fa-cyber-input:has(> .fa-cyber-input__frame > .form-check) .fa-cyber-input__frame,
+.fa-cyber-input:has(> .fa-cyber-input__frame > .form-check-group) .fa-cyber-input__frame {
+    border: 0;
+    padding: 0;
+    box-shadow: none;
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    Status-Pill
    ═══════════════════════════════════════════════════════════════════ */
