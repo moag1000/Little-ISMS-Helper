@@ -4,6 +4,7 @@
 {% block title %}{{ 'privacy.data_breach.management'|trans({}, 'privacy') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -12,15 +13,16 @@
         ]
     } %}
 
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
+        badge: { icon: 'exclamation-triangle-fill', label: 'privacy.data_breach.management'|trans({}, 'privacy') },
         title: 'privacy.data_breach.management'|trans({}, 'privacy'),
         subtitle: 'privacy.data_breach.subtitle'|trans({}, 'privacy'),
-        icon: 'bi-exclamation-triangle-fill',
         actions: [
-            { label: 'privacy.data_breach.actions.dashboard'|trans({}, 'privacy'), url: path('app_data_breach_dashboard'), variant: 'primary', icon: 'bi-speedometer2' },
-            { label: 'privacy.data_breach.actions.new'|trans({}, 'privacy'), url: path('app_data_breach_new'), variant: 'danger', icon: 'bi-plus-lg' }
+            { label: 'privacy.data_breach.actions.dashboard'|trans({}, 'privacy'), href: path('app_data_breach_dashboard'), variant: 'ghost', icon: 'speedometer2' },
+            { label: 'privacy.data_breach.actions.new'|trans({}, 'privacy'), href: path('app_data_breach_new'), variant: 'danger', icon: 'plus-lg' }
         ]
-    } %}
+    }) }}
+    <main class="fa-aurora-surface">
 
     {# CRITICAL: Overdue Notifications Alert #}
     {% if compliance_score.overdue_notifications > 0 %}
@@ -292,5 +294,6 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    </main>
 </div>
 {% endblock %}

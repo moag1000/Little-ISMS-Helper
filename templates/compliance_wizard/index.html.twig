@@ -4,24 +4,17 @@
 {% block title %}{{ 'wizard.title'|trans({}, 'wizard') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{{ _fa_page_header.render({
+    badge: { icon: 'compass', label: 'wizard.title'|trans({}, 'wizard') },
+    title: 'wizard.title'|trans({}, 'wizard'),
+    subtitle: 'wizard.subtitle'|trans({}, 'wizard'),
+    actions: available_wizards|length > 1 ? [
+        { label: 'wizard.compare_frameworks'|trans({}, 'wizard'), href: path('app_compliance_wizard_compare'), variant: 'ghost', icon: 'columns-gap' }
+    ] : []
+}) }}
+<main class="fa-aurora-surface">
 <div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h1 class="h2 mb-1">
-                        <i class="bi bi-compass me-2" aria-hidden="true"></i>{{ 'wizard.title'|trans({}, 'wizard') }}
-                    </h1>
-                    <p class="text-muted mb-0">{{ 'wizard.subtitle'|trans({}, 'wizard') }}</p>
-                </div>
-                {% if available_wizards|length > 1 %}
-                <a href="{{ path('app_compliance_wizard_compare') }}" class="btn btn-outline-primary">
-                    <i class="bi bi-columns-gap me-1" aria-hidden="true"></i>{{ 'wizard.compare_frameworks'|trans({}, 'wizard') }}
-                </a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
 
     {# Available Wizards #}
     {% if available_wizards|length > 0 %}
@@ -175,6 +168,7 @@
         </div>
     </div>
 </div>
+</main>
 {% endblock %}
 
 {% block stylesheets %}
