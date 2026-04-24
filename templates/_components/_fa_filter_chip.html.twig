@@ -1,0 +1,95 @@
+{#
+ # FairyAurora v4.0 — fa-filter-chip macros
+ #
+ # Two macros:
+ #   1. render(label, props)  — single standalone chip
+ #   2. group(labels, activeIndex, props) — horizontal chip group (toggle set)
+ #
+ # The .fa-filter-chip CSS is defined in fairy-aurora-edge.css (passive state).
+ # The .fa-filter-chip--active CSS is added in fairy-aurora-components.css (v4).
+ # The button.fa-filter-chip reset rules are also in fairy-aurora-components.css.
+ #
+ # Single chip usage:
+ #   {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+ #   {{ _fa_filter_chip.render('Heute', { active: true, href: '?period=today' }) }}
+ #   {# or as a <button> without href #}
+ #   {{ _fa_filter_chip.render('Heute', { active: true, type: 'button' }) }}
+ #
+ # Group usage:
+ #   {{ _fa_filter_chip.group(['Heute', 'Woche', 'Monat'], 0) }}
+ #   {# With hrefs: #}
+ #   _fa_filter_chip.group(
+ #       [
+ #           { label: 'Heute',  href: '?period=today' },
+ #           { label: 'Woche',  href: '?period=week'  },
+ #           { label: 'Monat',  href: '?period=month' }
+ #       ],
+ #       activeIndex: 0
+ #   )
+ #
+ # Parameters (render):
+ #   label       - chip text (required)
+ #   props.active - boolean, adds fa-filter-chip--active (default false)
+ #   props.href   - if set renders as <a>, else <button type="button">
+ #   props.icon   - Bootstrap Icons name without 'bi-' prefix (optional)
+ #   props.class  - extra CSS classes (optional)
+ #
+ # Parameters (group):
+ #   items       - array of strings OR { label, href } objects (required)
+ #   activeIndex - 0-based index of active item (default 0)
+ #   props.class - extra CSS classes on .fa-filter-chip-group wrapper (optional)
+ #   props.ariaLabel - aria-label for the group role="group" (optional)
+ #}
+
+{% macro render(label, props = {}) %}
+    {% set isActive = props.active|default(false) %}
+    {% set chipClass = 'fa-filter-chip' ~ (isActive ? ' fa-filter-chip--active' : '') ~ (props.class is defined ? ' ' ~ props.class : '') %}
+
+    {% if props.href is defined and props.href %}
+        <a href="{{ props.href }}" class="{{ chipClass }}">
+            {% if props.icon is defined and props.icon %}
+                <i class="bi bi-{{ props.icon }}" aria-hidden="true"></i>
+            {% endif %}
+            {{ label }}
+        </a>
+    {% else %}
+        <button type="{{ props.type|default('button') }}" class="{{ chipClass }}">
+            {% if props.icon is defined and props.icon %}
+                <i class="bi bi-{{ props.icon }}" aria-hidden="true"></i>
+            {% endif %}
+            {{ label }}
+        </button>
+    {% endif %}
+{% endmacro %}
+
+{% macro group(items, activeIndex = 0, props = {}) %}
+    {% set normalised = [] %}
+    {% for item in items %}
+        {% if item is iterable and item.label is defined %}
+            {% set normalised = normalised|merge([item]) %}
+        {% else %}
+            {% set normalised = normalised|merge([{ label: item }]) %}
+        {% endif %}
+    {% endfor %}
+
+    <div class="fa-filter-chip-group{{ props.class is defined ? ' ' ~ props.class : '' }}"
+         role="group"
+         aria-label="{{ props.ariaLabel|default('Filter') }}">
+        {% for idx, item in normalised %}
+            {% set isActive = (idx == activeIndex) %}
+            {% set chipClass = 'fa-filter-chip' ~ (isActive ? ' fa-filter-chip--active' : '') %}
+
+            {% if item.href is defined and item.href %}
+                <a href="{{ item.href }}" class="{{ chipClass }}"
+                   {% if isActive %}aria-current="true"{% endif %}>
+                    {{ item.label }}
+                </a>
+            {% else %}
+                <button type="button" class="{{ chipClass }}"
+                        {% if isActive %}aria-pressed="true"{% else %}aria-pressed="false"{% endif %}>
+                    {{ item.label }}
+                </button>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endmacro %}

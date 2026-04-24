@@ -1,0 +1,73 @@
+{#
+ # FairyAurora v4.0 — fa-hero macro
+ #
+ # Welcome-after-login banners + module start pages.
+ # Alva is anchored on the left at "lg" size (140px), display title + subtitle
+ # on the right, with CTA buttons. Background uses --hero pattern opacity.
+ # Glow border mirrors .fa-card--premium.
+ #
+ # Usage:
+ #   {% import '_components/_fa_hero.html.twig' as _fa_hero %}
+ #   {{ _fa_hero.render({
+ #       mood:     'welcoming',
+ #       title:    'Willkommen zurück, Maxi',
+ #       subtitle: 'Heute warten 3 Aufgaben in der Inbox.',
+ #       actions:  [ { label: "Los geht's", variant: 'primary', href: '#' } ]
+ #   }) }}
+ #
+ # Parameters:
+ #   mood     - Alva mood (see _alva.html.twig — 9 moods). Default: 'happy'
+ #              Note: 'welcoming' maps to 'happy' (closest available mood)
+ #   title    - display title (required)
+ #   subtitle - subtitle paragraph (optional)
+ #   actions  - array of { label, variant, icon?, href } (optional)
+ #   alvaSize - Alva SVG px size (default 140)
+ #   class    - extra CSS classes on .fa-hero wrapper (optional)
+ #}
+
+{% import '_components/_alva.html.twig' as alva %}
+
+{% macro render(props = {}) %}
+    {# Map 'welcoming' → 'happy' since Alva has 9 defined moods #}
+    {% set validMoods = ['idle','happy','thinking','focused','working','scanning','warning','celebrating','sleeping'] %}
+    {% set rawMood = props.mood|default('happy') %}
+    {% set mood = rawMood in validMoods ? rawMood : 'happy' %}
+
+    {% set actions = props.actions|default([]) %}
+
+    <div class="fa-hero{{ props.class is defined ? ' ' ~ props.class : '' }}"
+         role="region"
+         aria-label="{{ props.title|default('') }}">
+
+        {# Alva — left anchor, decorative #}
+        <div class="fa-hero__alva" aria-hidden="true">
+            {{ alva.render(mood, { size: props.alvaSize|default(140), decorative: true }) }}
+        </div>
+
+        {# Content body #}
+        <div class="fa-hero__body">
+            {% if props.title is defined and props.title %}
+                <h2 class="fa-hero__title">{{ props.title }}</h2>
+            {% endif %}
+
+            {% if props.subtitle is defined and props.subtitle %}
+                <p class="fa-hero__subtitle">{{ props.subtitle }}</p>
+            {% endif %}
+
+            {% if actions|length > 0 %}
+                <div class="fa-hero__actions">
+                    {% for action in actions %}
+                        {% set variant = action.variant|default('primary') %}
+                        <a href="{{ action.href|default('#') }}"
+                           class="fa-cyber-btn fa-cyber-btn--{{ variant }}">
+                            {% if action.icon is defined and action.icon %}
+                                <i class="bi bi-{{ action.icon }}" aria-hidden="true"></i>
+                            {% endif %}
+                            <span class="fa-cyber-btn__label">{{ action.label }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
