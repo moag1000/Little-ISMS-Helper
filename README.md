@@ -301,6 +301,14 @@ php bin/console isms:load-annex-a-controls --env=test
 
 ---
 
+## Projekt unterstuetzen
+
+Wenn Ihnen der Little ISMS Helper weiterhilft, freue ich mich ueber Unterstuetzung:
+
+<a href="https://www.buymeacoffee.com/moag1000" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+---
+
 ## Lizenz
 
 **GNU Affero General Public License v3.0 (AGPL-3.0)**
