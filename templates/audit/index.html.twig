@@ -4,6 +4,7 @@
 
 {% block body %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 <div class="container-fluid">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
@@ -13,27 +14,16 @@
         ]
     } %}
 
-    {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
+        badge: { icon: 'clipboard-check', label: 'audit_management.title'|trans({}, 'audit') },
         title: 'audit_management.title'|trans({}, 'audit'),
         subtitle: 'audit_management.subtitle'|trans({}, 'audit'),
-        icon: 'bi-clipboard-check',
         actions: [
-            {
-                label: 'audit.new'|trans({}, 'audit'),
-                url: path('app_audit_new'),
-                variant: 'primary',
-                icon: 'bi-plus-circle'
-            },
-            {
-                label: 'common.export_excel'|trans({}, 'messages'),
-                url: path('app_audit_export_excel'),
-                variant: 'success',
-                icon: 'bi-file-earmark-spreadsheet',
-                turbo: false
-            }
+            { label: 'audit.new'|trans({}, 'audit'), href: path('app_audit_new'), variant: 'primary', icon: 'plus-lg' },
+            { label: 'common.export_excel'|trans({}, 'messages'), href: path('app_audit_export_excel'), variant: 'ghost', icon: 'file-earmark-spreadsheet' }
         ]
-    } %}
+    }) }}
+<main class="fa-aurora-surface">
 
     {# Calculate Stats #}
     {% set total = audits|length %}
@@ -300,6 +290,7 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+</main>
 </div>
 
 <style>
