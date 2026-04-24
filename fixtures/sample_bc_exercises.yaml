@@ -1,0 +1,203 @@
+bc_exercises:
+  - name: 'Tabletop-Übung 2025-Q3: IT-Service-Ausfall Frankfurt'
+    exerciseType: 'tabletop'
+    description: 'Diskussionsbasierte Übung zum BCP-001 IT-Service-Ausfall. Szenario: Totalausfall RZ Frankfurt durch Stromausfall Rechenzentrumsbetreiber.'
+    scope: 'Alle BC-Rollen IT-Operations, Service-Manager, Application-Owner, CISO. Umfasst: Failover-Entscheidung, Kommunikationskaskade, DNS-Umstellung. Explizit ausgeschlossen: tatsächliche technische Aktivierung.'
+    objectives: |
+      1. Validierung Entscheidungsbefugnisse und Eskalationspfade
+      2. Prüfung Aktualität der Kontaktlisten
+      3. Überprüfung der Kommunikationsabläufe (intern/extern)
+      4. Identifikation von Lücken im Runbook RB-001
+      5. Schulung neuer Teammitglieder
+    scenario: |
+      Montag 09:15 Uhr: Stromversorger meldet großflächigen Stromausfall im Stadtteil Frankfurt-Ost, betroffen auch das Primär-Rechenzentrum. USV überbrückt 30 Minuten, Diesel-Generator startet nicht. Alle Produktivsysteme nicht erreichbar. Prognose Stromwiederkehr unklar (2h-8h).
+    exerciseDate: '2025-09-15'
+    durationHours: 4
+    participants: 'Thomas Becker (IT-Ops), Sandra Müller (Service-Mgr), Markus Fischer (Sr-Admin), Anna Weber (App-Owner), Claudia Richter (CISO), Petra Schmidt (Komm), Jürgen Hoffmann (Facility)'
+    facilitator: 'Ing. Ralf Müller (externer BCM-Berater, HiSolutions)'
+    observers: 'Dr. Meier (interne Revision), Herr Schulz (Betriebsrat als Beobachter)'
+    status: 'completed'
+    results: 'Übung erfolgreich durchgeführt, alle Kernziele erreicht. Team agierte strukturiert entlang BCP-001.'
+    whatWentWell: 'Schnelle Aktivierung des Krisenstabs (< 15 min), klare Rollenverteilung, gute Abstimmung CISO/CIO bei Entscheidung Failover. Kommunikationskaskade funktionierte.'
+    areasForImprovement: 'DNS-Failover-Autorisierung nicht eindeutig geregelt (wer darf DNS-Wechsel freigeben?). Status-Page-Update-Prozess zu langsam (erst nach 45 min statt 15 min).'
+    findings: '1. DNS-Wechsel-Autorisierung im Runbook nicht explizit. 2. Status-Page-Editor-Rechte nur bei IT-Ops-Leiter, Vertretung fehlt. 3. Externe Kontaktliste Hoster teilweise veraltet (2 Nummern).'
+    actionItems: |
+      AI-001 (Owner: Becker, bis 2025-10-15): Runbook RB-001 Abschnitt 4.2 erweitern um DNS-Autorisierung.
+      AI-002 (Owner: Müller, bis 2025-10-01): Status-Page-Editor-Rechte zusätzlich an 2 Service-Manager.
+      AI-003 (Owner: Einkauf, bis 2025-10-30): Kontaktliste Hoster-Support aktualisieren, Quartalsweise-Reminder.
+    lessonsLearned: 'Tabletop-Übungen mit externem Facilitator bringen mehr kritisches Feedback als interne Moderation. Regelmäßiger Kontaktlisten-Check ist essenziell.'
+    planUpdatesRequired: 'BCP-001 Version 2.3 → 2.4 nach Umsetzung AI-001 und AI-002.'
+    successCriteria:
+      RTO_met: true
+      RPO_met: true
+      communication_effective: true
+      team_prepared: true
+      decision_making_clear: false
+    successRating: 4
+    reportCompleted: true
+    reportDate: '2025-09-25'
+
+  - name: 'Walkthrough 2025-Q2: Gebäude-Evakuierung HQ'
+    exerciseType: 'walkthrough'
+    description: 'Schritt-für-Schritt-Durchgang des BCP-002 Evakuierungs- und Ausweichprozesses. Keine tatsächliche Evakuierung, aber physischer Walkthrough der Routen.'
+    scope: 'Facility-Team, HR, Brandschutzhelfer, Ersthelfer. Umfasst: Evakuierungsrouten, Sammelpunkte, Ausweichbüro-Aktivierung. Ausgeschlossen: tatsächliches Sperren des Gebäudes.'
+    objectives: |
+      1. Praktische Prüfung Evakuierungsrouten (Beschilderung, Hindernisse)
+      2. Validierung Sammelpunkt-Organisation und Anwesenheitskontrolle
+      3. Überprüfung Ausweichbüro-Rahmenvertrag Starnberg (Vor-Ort-Besichtigung)
+      4. Test Benachrichtigungssystem (evalink SMS)
+    scenario: 'Angenommener Gebäudeschaden nach Wasserrohrbruch im 3. OG mit Beeinträchtigung Elektrik und Behördensperrung bis zur statischen Prüfung (erwartet 48-72h).'
+    exerciseDate: '2025-05-20'
+    durationHours: 6
+    participants: 'Jürgen Hoffmann (Facility), Klaus Wagner (HR), Petra Schmidt (Komm), Brandschutzhelfer-Team (8 Personen), Ersthelfer (12 Personen), IT-Vertreter'
+    facilitator: 'Jürgen Hoffmann (Facility Manager)'
+    observers: 'Versicherungsmakler (Interessierte Partei)'
+    status: 'completed'
+    results: 'Walkthrough erfolgreich, mehrere praktische Erkenntnisse gewonnen, insbesondere zu Sammelpunkt und Beschilderung.'
+    whatWentWell: 'Sammelpunkte klar erkennbar, Anwesenheitskontrolle über HR-App funktionierte, Ausweichbüro Starnberg bezugsbereit binnen 4h.'
+    areasForImprovement: 'Fluchtweg C im Kellergeschoss teilweise zugestellt (Lagerung), Beschilderung in Tiefgarage schlecht sichtbar bei Stromausfall.'
+    findings: 'Fluchtweg C nicht frei (Facility-Verstoß), Notbeleuchtung Tiefgarage 2 defekte Leuchten, SMS-Benachrichtigung erreichte 94% der Mitarbeiter (einige veraltete Nummern).'
+    actionItems: |
+      AI-004 (Owner: Facility, bis 2025-06-15): Fluchtweg C räumen, Lagerverbot-Beschilderung.
+      AI-005 (Owner: Facility, bis 2025-06-30): Notbeleuchtung Tiefgarage instandsetzen.
+      AI-006 (Owner: HR, bis 2025-07-15): Kampagne Mobilnummern-Aktualisierung in HR-System.
+    lessonsLearned: 'Walkthroughs decken physische Schwachstellen auf, die in Tabletops unsichtbar bleiben. Empfehlung: jährlich.'
+    planUpdatesRequired: 'BCP-002 Version 1.4 → 1.5 mit überarbeiteter Sammelpunkt-Karte.'
+    successCriteria:
+      evacuation_time_under_10min: true
+      all_staff_accounted: true
+      alternate_site_ready: true
+      notification_100_percent: false
+    successRating: 4
+    reportCompleted: true
+    reportDate: '2025-06-05'
+
+  - name: 'Simulation 2025-Q4: Ransomware-Angriff (Red-Team)'
+    exerciseType: 'simulation'
+    description: 'Simulierter Ransomware-Angriff als Red-Team-Übung mit externem IR-Partner. Test des BCP-005 Cyber-Crisis-Plans unter realistischen Zeitdruckbedingungen.'
+    scope: 'Gesamtes IR-Team, CISO, CIO, DPO, Legal, Kommunikation, Geschäftsführung. Live-Simulation in isolierter Staging-Umgebung, keine Produktionssysteme.'
+    objectives: |
+      1. End-to-End-Test der Cyber-Incident-Response
+      2. Validierung der 72h-Meldefristen (DSGVO, NIS2)
+      3. Test der Out-of-Band-Kommunikation (Signal)
+      4. Prüfung Zusammenspiel externer IR-Retainer
+      5. Test der Immutable-Backup-Restore-Kette
+    scenario: |
+      Freitag 16:30 Uhr: Endpoint Detection meldet verdächtige Aktivität auf 3 Clients. Um 17:15 Uhr beginnt Verschlüsselung mehrerer File-Shares. Lösegeldforderung (2 Mio EUR BTC) um 19:00 Uhr in Chef-Postfach. Parallele Datenexfiltration von ca. 50.000 Kundendatensätzen wird durch DLP-Logs bestätigt. Domain Controller kompromittiert.
+    exerciseDate: '2025-10-18'
+    durationHours: 48
+    participants: 'Claudia Richter (CISO), Andreas Koch (CIO), Markus Fischer (IR-Lead), Thomas Becker (IT-Ops), Petra Schmidt (Komm), Legal-Counsel, DPO Dr. Schulz, GF Dr. Lehmann, HiSolutions IR-Team (extern)'
+    facilitator: 'HiSolutions IR-Lead (externer Partner)'
+    observers: 'BSI-Liaison (telefonisch), Cyber-Versicherung AIG, interne Revision'
+    status: 'completed'
+    results: 'Simulation insgesamt erfolgreich, kritische Meldefristen eingehalten, Immutable-Restore funktionierte. Einige organisatorische Lücken identifiziert.'
+    whatWentWell: 'Sofortige Isolation innerhalb 45 min, Signal-Kommunikation etabliert binnen 1h, DSGVO-Meldung nach 58h an Aufsichtsbehörde, NIS2-Frühwarnung an BSI nach 22h, Immutable-Backups clean.'
+    areasForImprovement: 'Entscheidung zur Lösegeldzahlung dauerte zu lange (10h für "Nein"-Entscheidung), Presseanfragen-Prozess unklar, AD-Rebuild-Runbook lückenhaft bei Trust-Relationships.'
+    findings: 'Kein dokumentierter Entscheidungsbaum Lösegeld-Politik. Presseanfragen-Prozess unklar. AD-Rebuild-Runbook Version 1.0 lückenhaft bei Trust-Relationships mit Tochterunternehmen.'
+    actionItems: |
+      AI-007 (Owner: GF/CISO, bis 2025-12-01): Policy "Kein Lösegeld" formalisieren + Ausnahmeprozess.
+      AI-008 (Owner: Komm, bis 2025-11-30): Presseanfragen-Runbook bei Cyber-Incidents.
+      AI-009 (Owner: IT-Ops, bis 2026-01-31): AD-Rebuild-Runbook v2.0 inkl. Trusts + zweiter Simulation.
+      AI-010 (Owner: CISO, bis 2025-12-15): Lessons-Learned-Session mit allen MA des IR-Teams.
+    lessonsLearned: 'Externe IR-Übung lohnt sich alle 2 Jahre, Kosten 45k EUR, aber RTO-Validierung und Team-Readiness unbezahlbar. Signal-Baum funktioniert nur, wenn quartalsweise getestet.'
+    planUpdatesRequired: 'BCP-005 Version 2.0 → 2.1 nach Umsetzung AI-007 und AI-009.'
+    successCriteria:
+      containment_under_1h: true
+      dsgvo_72h_met: true
+      nis2_early_warning_24h: true
+      immutable_backup_restore: true
+      ransom_decision_under_4h: false
+      external_communication_effective: false
+    successRating: 4
+    reportCompleted: true
+    reportDate: '2025-11-08'
+
+  - name: 'Disaster-Recovery-Test 2025-Q2: Full-Failover RZ Berlin'
+    exerciseType: 'full_test'
+    description: 'Vollständiger DR-Test mit echtem Failover der Produktivsysteme auf das DR-Rechenzentrum Berlin. Durchführung im Wartungsfenster.'
+    scope: 'Alle produktiven Systeme (ERP, CRM, Mail, Fileshare), IT-Ops, Netzwerk, Application-Owner. Echtes Failover mit echten Daten, kontrolliertes Wartungsfenster.'
+    objectives: |
+      1. Validierung RTO 4h für kritische Systeme
+      2. Validierung RPO 15min durch Streaming-Replication
+      3. Test DNS-Failover und Rück-Failover
+      4. Funktionstests aus Endnutzersicht
+      5. Messung tatsächlicher Wiederanlaufzeit
+    scenario: 'Kontrolliertes Failover im geplanten Wartungsfenster. Annahme: "Primär-RZ Frankfurt nicht verfügbar". Alle Systeme werden aktiv auf Berlin umgeschaltet, 4h Produktivbetrieb auf DR-Site, dann Rück-Failover.'
+    exerciseDate: '2025-06-14'
+    durationHours: 8
+    participants: 'IT-Ops-Team (5 Personen), Netzwerk-Team (3), Application-Owner ERP/CRM/Mail (3), Senior Admin, CISO als Observer'
+    facilitator: 'Markus Fischer (Senior Admin)'
+    observers: 'Claudia Richter (CISO), Thomas Becker (Leiter IT-Ops)'
+    status: 'completed'
+    results: 'Failover erfolgreich, RTO leicht überschritten für CRM (4.5h statt 4h Ziel), alle anderen Systeme im Zielkorridor.'
+    whatWentWell: 'Streaming-Replication Lag lag bei durchschnittlich 2 min (RPO deutlich unter Ziel), DNS-TTL-Anpassungen im Vorfeld effektiv, Runbooks präzise.'
+    areasForImprovement: 'CRM-Failover dauerte länger wegen manueller Config-Anpassungen, Rück-Failover erzeugte kurzen Session-Verlust (< 5 min).'
+    findings: 'CRM-Custom-Konfiguration nicht vollständig automatisiert, Rück-Failover-Prozess benötigt zusätzliche Session-Preservation-Schritte.'
+    actionItems: |
+      AI-011 (Owner: App-Owner CRM, bis 2025-09-30): CRM-Config vollständig in Ansible automatisieren.
+      AI-012 (Owner: IT-Ops, bis 2025-10-15): Session-Persistence im DR-Failover prüfen (Sticky Sessions, Redis-Session-Store).
+    lessonsLearned: 'Full-Tests sind aufwendig, aber einziger Weg um reale RTO zu messen. Empfehlung halbjährlich.'
+    planUpdatesRequired: 'Runbook RB-001 um CRM-Automatisierungsschritt ergänzen (nach AI-011).'
+    successCriteria:
+      RTO_met_all_systems: false
+      RPO_met: true
+      data_integrity: true
+      rollback_successful: true
+      user_acceptance_testing: true
+    successRating: 4
+    reportCompleted: true
+    reportDate: '2025-06-28'
+
+  - name: 'Component-Test 2025-Q3: Backup-Restore kritische DB'
+    exerciseType: 'component_test'
+    description: 'Isolierter Restore-Test der produktiven PostgreSQL-Datenbank aus Immutable-Backup in Sandbox-Umgebung.'
+    scope: 'DBA-Team, Senior Admin. Ausschließlich Backup-Restore-Prozess, keine Produktionsauswirkung.'
+    objectives: |
+      1. Validierung Restore-Prozedur RB-002
+      2. Messung Restore-Zeit für 2TB DB
+      3. Integritätsprüfung des Backups (Checksumme, Sample-Queries)
+      4. Dokumentation Abweichungen vom Runbook
+    scenario: 'Simulierter Datenverlust. Restore des letzten Full-Backups + WAL-Replay auf Sandbox-Server, anschließend Funktionstests und Datenvergleich.'
+    exerciseDate: '2025-08-04'
+    durationHours: 3
+    participants: 'Markus Fischer (Sr Admin), Julia Krause (DBA), Bernd Wolf (Junior DBA)'
+    facilitator: 'Julia Krause (DBA-Lead)'
+    status: 'completed'
+    results: 'Restore erfolgreich, Restore-Zeit 2h 45min für 2TB + 4h WAL, Integrität 100% (Checksumme + Sample-Queries).'
+    whatWentWell: 'pg_basebackup + WAL-Replay funktionierte reibungslos, Immutable-Backup-Kette (S3 Object Lock) intakt, Dokumentation klar.'
+    areasForImprovement: 'Junior-DBA benötigte mehr Anleitung als erwartet, Runbook RB-002 an einer Stelle unklar formuliert.'
+    findings: 'Runbook RB-002 Schritt 7 (WAL-Replay Parameter) unpräzise; Training-Bedarf Junior-DBA beim Topic DR-Restore.'
+    actionItems: |
+      AI-013 (Owner: Krause, bis 2025-09-01): Runbook RB-002 Schritt 7 präzisieren.
+      AI-014 (Owner: HR/IT, bis 2025-12-31): DR-Restore-Training für alle DBAs (2 Termine).
+    lessonsLearned: 'Component-Tests sollten Teil der Junior-Onboarding-Ausbildung sein, nicht erst in Krisensituation.'
+    planUpdatesRequired: 'Runbook RB-002 nach AI-013.'
+    successCriteria:
+      restore_time_under_6h: true
+      data_integrity_verified: true
+      runbook_accurate: false
+    successRating: 5
+    reportCompleted: true
+    reportDate: '2025-08-10'
+
+  - name: 'Tabletop-Übung 2026-Q1: Lieferketten-Unterbrechung Cloud-Provider'
+    exerciseType: 'tabletop'
+    description: 'Geplante Tabletop-Übung zum BCP-003 Lieferkette. Szenario: plötzlicher Ausfall des Haupt-Cloud-Providers AWS (regional).'
+    scope: 'Einkauf, Legal, IT, CISO, DPO, Finance, GF-Vertreter'
+    objectives: |
+      1. Test der Exit-Strategie AWS → Azure-Fallback
+      2. Validierung DORA-konformer Provider-Switch
+      3. DSGVO-AVV-Fast-Track-Prozess testen
+      4. Finanz-Impact-Abschätzung binnen 4h
+    scenario: 'Fiktiv: AWS-Region eu-central-1 (Frankfurt) ausgefallen für geschätzt > 72h. Primäre Workloads CRM-Mirror und S3-Backups betroffen. Azure-Vertragspartner aktivieren.'
+    exerciseDate: '2026-02-12'
+    durationHours: 4
+    participants: 'Maria Hofmann (Einkauf), Stefan Braun (Supplier-Mgr), Legal-Counsel, DPO Dr. Schulz, CFO-Vertreter, Thomas Becker (IT-Ops), Claudia Richter (CISO)'
+    facilitator: 'Stefan Braun (Supplier-Manager)'
+    status: 'planned'
+    successCriteria:
+      exit_strategy_activated: null
+      dsgvo_fast_track: null
+      finance_impact_estimated: null
+      alternative_provider_ready: null
+    reportCompleted: false

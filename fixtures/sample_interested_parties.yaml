@@ -1,0 +1,187 @@
+interested_parties:
+  - name: 'Geschäftskunden (B2B)'
+    partyType: 'customer'
+    description: 'Mittelständische Firmenkunden, die unsere SaaS-Lösungen und Services nutzen. Ca. 180 aktive Kundenverträge, Top-10 decken 55% Umsatz ab.'
+    contactPerson: 'Key-Account-Management'
+    email: 'kundenservice@example.com'
+    phone: '+49 89 123456-200'
+    importance: 'critical'
+    requirements: |
+      - Verfügbarkeit der Plattform gemäß SLA (99,5% im Monat)
+      - Vertraulichkeit und Integrität von Kundendaten (Auftragsverarbeitung nach Art. 28 DSGVO)
+      - Nachweis ISO 27001 Zertifizierung (ab Q3/2025 vertraglich gefordert)
+      - Rechtzeitige Information über Sicherheitsvorfälle mit Auswirkung auf Kundendaten
+    legalRequirements:
+      - 'DSGVO Art. 28 (Auftragsverarbeitung)'
+      - 'DSGVO Art. 33 (Meldung Datenschutzvorfälle)'
+      - 'BGB (Werkvertragsrecht, Gewährleistung)'
+      - 'Kundenvertragliche SLAs'
+    howAddressed: 'SLA-Reporting monatlich, AV-Verträge zentral gepflegt, Incident-Kommunikation über Customer-Success-Team innerhalb 24h, jährliches Security-Statement an Top-30 Kunden.'
+    communicationFrequency: 'monthly'
+    communicationMethod: 'Monatliches SLA-Reporting per E-Mail, Quartals-Jour-Fixe bei Key-Accounts, Ticketsystem für Support, Security-Bulletins bei Bedarf.'
+    lastCommunication: '2025-04-01'
+    nextCommunication: '2025-05-01'
+    satisfactionLevel: 4
+    issues: 'Zwei Key-Accounts fordern formelle ISO 27001 Zertifizierung bis Q3/2025 als Vertragsverlängerungskriterium.'
+
+  - name: 'Mitarbeitende (interne Belegschaft)'
+    partyType: 'employee'
+    description: 'Gesamte Belegschaft (ca. 245 FTE) inklusive Betriebsrat. Bestandteil der Informationssicherheits-Awareness-Zielgruppe.'
+    contactPerson: 'Petra Neumann (Leiterin HR) / Betriebsrat'
+    email: 'betriebsrat@example.com'
+    phone: '+49 89 123456-150'
+    importance: 'high'
+    requirements: |
+      - Schutz personenbezogener Daten (Gehaltsdaten, Beurteilungen, Gesundheit)
+      - Transparenz bei Überwachungsmaßnahmen (IT-Monitoring, Log-Auswertung)
+      - Sichere Arbeitsumgebung (Remote-Work-Policies, klare Regelungen)
+      - Faire und nachvollziehbare Security-Richtlinien
+    legalRequirements:
+      - 'BetrVG (Betriebsverfassungsgesetz)'
+      - 'BDSG § 26 (Beschäftigtendatenschutz)'
+      - 'DSGVO Kap. III (Betroffenenrechte)'
+      - 'Arbeitsschutzgesetz'
+    howAddressed: 'Betriebsvereinbarung IT-Nutzung (2023), jährliche Awareness-Schulung, transparente Monitoring-Policy im Intranet, DSB als Ansprechpartner.'
+    communicationFrequency: 'quarterly'
+    communicationMethod: 'Quartals-Newsletter Informationssicherheit, Intranet-Meldungen, Mitarbeiterversammlung halbjährlich, Austausch mit Betriebsrat monatlich.'
+    lastCommunication: '2025-03-15'
+    nextCommunication: '2025-06-15'
+    satisfactionLevel: 4
+
+  - name: 'Bundesbeauftragte für den Datenschutz und die Informationsfreiheit (BfDI)'
+    partyType: 'regulator'
+    description: 'Bundesdatenschutzbehörde. Zuständig für bundesweit tätige Verantwortliche und TK-/Post-Sektor. Zusätzlich Landesbeauftragter Bayern (BayLDA) für allgemeinen Bereich.'
+    contactPerson: 'Eingabestelle BfDI / Ansprechpartner BayLDA'
+    email: 'poststelle@bfdi.bund.de'
+    phone: '+49 228 997799-0'
+    importance: 'critical'
+    requirements: |
+      - Meldung meldepflichtiger Datenschutzvorfälle binnen 72h (Art. 33 DSGVO)
+      - Verzeichnis von Verarbeitungstätigkeiten (Art. 30 DSGVO) jederzeit vorlegbar
+      - Durchführung von DSFA bei hohem Risiko (Art. 35 DSGVO)
+      - Kooperation bei Untersuchungen / Auskunftsverlangen
+    legalRequirements:
+      - 'DSGVO Art. 33/34 (Breach Notification)'
+      - 'DSGVO Art. 30 (VVT)'
+      - 'DSGVO Art. 35 (DSFA)'
+      - 'BDSG §§ 40-42'
+    howAddressed: 'Meldeprozess Data-Breach etabliert (Workflow "GDPR Data Breach"), VVT-Tool mit jährlichem Review, DSFA-Vorlage, DSB als SPoC gegenüber Aufsicht.'
+    communicationFrequency: 'as_needed'
+    communicationMethod: 'Offizielle Schriftform / BfDI-Meldeportal für Breach-Notifications. Sonst anlassbezogen.'
+    lastCommunication: '2024-11-08'
+    nextCommunication: null
+    satisfactionLevel: null
+    issues: 'Ausstehende Rückmeldung zu freiwilliger Meldung Phishing-Incident vom November 2024.'
+
+  - name: 'Aufsichtsrat / Gesellschafterversammlung'
+    partyType: 'shareholder'
+    description: 'Aufsichtsgremium mit 5 Mitgliedern, darunter IT-/Cyber-Expertin. Tagt quartalsweise, erhält Risk-Report und Compliance-Dashboard.'
+    contactPerson: 'Dr. Helene Vogt (Vorsitzende Aufsichtsrat)'
+    email: 'aufsichtsrat@example.com'
+    importance: 'critical'
+    requirements: |
+      - Quartalsweises Risiko- und Compliance-Reporting
+      - Nachweis angemessener IT-Sicherheit (Sorgfaltspflicht nach § 93 AktG analog)
+      - Eskalation Top-Risiken und Major-Incidents
+      - Genehmigung ISMS-Scope, Risk-Appetite und Security-Budget
+    legalRequirements:
+      - 'GmbHG / AktG (Sorgfaltspflichten Leitungsorgane)'
+      - 'IDW PS 340 (Risikofrüherkennungssystem)'
+      - 'Gesellschaftervertrag'
+    howAddressed: 'Quartalsreport "ISMS & Risiken" als Vorlage, jährliche Management Review gemäß ISO 27001 Clause 9.3, Eskalationspfad für P1-Incidents innerhalb 24h.'
+    communicationFrequency: 'quarterly'
+    communicationMethod: 'Aufsichtsratssitzung (Präsenz/Teams) inkl. Top-Risk-Präsentation durch CISO. Bei Bedarf Ad-hoc-Berichte.'
+    lastCommunication: '2025-03-25'
+    nextCommunication: '2025-06-24'
+    satisfactionLevel: 4
+
+  - name: 'TÜV SÜD Management Service GmbH (Zertifizierungsstelle)'
+    partyType: 'partner'
+    description: 'Akkreditierte Zertifizierungsstelle für ISO 27001:2022. Aktueller Zertifizierungszyklus: Stage-1 Audit geplant Q3/2025, Stage-2 Q4/2025.'
+    contactPerson: 'Ralf Neumeier (Lead Auditor)'
+    email: 'msg@example.com'
+    phone: '+49 89 5791-3390'
+    importance: 'high'
+    requirements: |
+      - Vollständige ISMS-Dokumentation (Policies, Verfahren, Records)
+      - Nachweis wirksamer Kontrollen gemäß ISO 27001 Annex A
+      - Interne Audits und Management Review durchgeführt
+      - Zugang zu relevanten Bereichen und Mitarbeitenden im Audit
+    legalRequirements:
+      - 'Zertifizierungsvertrag TÜV SÜD'
+      - 'ISO/IEC 17021 Anforderungen an die Zertifizierungsstelle'
+    howAddressed: 'Dediziertes Zertifizierungsprojekt mit Gantt-Plan. Pre-Assessment im Juni 2025 geplant. Zentrales Audit-Dossier mit SoA v2.1, Risk-Register, Policies.'
+    communicationFrequency: 'annually'
+    communicationMethod: 'E-Mail und MS Teams für Audit-Vorbereitung, Vor-Ort/Remote-Audits laut Zyklus. Dokumentenaustausch über sicheren Cloud-Ordner.'
+    lastCommunication: '2025-02-12'
+    nextCommunication: '2025-06-10'
+    satisfactionLevel: 5
+
+  - name: 'Kritische Lieferanten (Cloud- und IT-Dienstleister)'
+    partyType: 'supplier'
+    description: 'Strategische Lieferanten: AWS (Hosting Kernsysteme), Salesforce (CRM), Microsoft 365 (Kollaboration), externer RZ-Betreiber Equinix, MSP für Endpoint-Management. Gesamtausgaben ~3,2 Mio EUR p.a.'
+    contactPerson: 'Technischer Account-Manager je Supplier'
+    email: 'procurement@example.com'
+    importance: 'high'
+    requirements: |
+      - Einhaltung vertraglich zugesicherter SLAs und Sicherheitsstandards
+      - Aktuelle Zertifizierungen (ISO 27001, SOC 2 Typ II, C5-Testat)
+      - Meldepflicht bei Sicherheitsvorfällen und Sub-Auftragsverarbeitern
+      - Kooperation bei Lieferantenaudits und Due-Diligence-Fragebögen
+    legalRequirements:
+      - 'DSGVO Art. 28 (Auftragsverarbeitung)'
+      - 'DSGVO Art. 44ff. (Drittlandtransfers, EU-SCC)'
+      - 'ISO 27001 A.5.19 - A.5.22 (Lieferantenbeziehungen)'
+      - 'NIS2-Richtlinie (soweit anwendbar Supply-Chain-Security)'
+    howAddressed: 'Supplier-Register mit Kritikalitätsstufen, jährliche Re-Assessments (Top-A), AV-Verträge + SCC zentral, Monitoring via Supplier-Dashboards, quartalsweise Business Review mit Top-5 Suppliern.'
+    communicationFrequency: 'quarterly'
+    communicationMethod: 'Quarterly Business Reviews, Ticketing, Security-Fragebögen jährlich (VSA/SIG-Lite), gemeinsame Incident-Kommunikation bei Bedarf.'
+    lastCommunication: '2025-04-10'
+    nextCommunication: '2025-07-10'
+    satisfactionLevel: 3
+    issues: 'MSP Endpoint-Management: zwei SLA-Verletzungen in Q1/2025 (Patch-Deployment), Eskalation läuft.'
+
+  - name: 'Investoren / Kapitalgeber'
+    partyType: 'shareholder'
+    description: 'Wachstumsinvestor (30% Beteiligung seit 2022) sowie zwei Hausbanken mit Kreditlinien. Reporting über KPIs, auch zu Cyber-Risiken im Rahmen ESG-Anforderungen.'
+    contactPerson: 'Investor-Relations (CFO-Büro)'
+    email: 'ir@example.com'
+    importance: 'high'
+    requirements: |
+      - Transparentes Risiko-Reporting inklusive Cyber- und Compliance-Risiken
+      - Nachweis wirksamer IT-Sicherheit als Teil der ESG-/Governance-Berichte
+      - Eskalation bei wesentlichen Incidents binnen 72h
+      - Roadmap für ISO 27001 Zertifizierung als Due-Diligence-Kriterium
+    legalRequirements:
+      - 'Gesellschaftervereinbarung / Shareholder-Agreement'
+      - 'Kreditverträge (Covenants)'
+      - 'CSRD (ab 2026, Vorbereitungsphase)'
+    howAddressed: 'Investoren-Update quartalsweise mit GRC-Kapitel, jährlicher ESG-Bericht, Ad-hoc-Eskalationsprotokoll für Major-Incidents, Zertifizierungs-Roadmap im Boardpack.'
+    communicationFrequency: 'quarterly'
+    communicationMethod: 'Quartalsreport (PDF), Investor-Call, Jahresabschluss-Meeting, Board-Pack mit Risk-Sektion.'
+    lastCommunication: '2025-04-15'
+    nextCommunication: '2025-07-15'
+    satisfactionLevel: 4
+
+  - name: 'Öffentlichkeit und Medien'
+    partyType: 'public'
+    description: 'Allgemeine Öffentlichkeit, Fachpresse und Branchenmedien. Reputationsrelevant bei Incidents mit Außenwirkung, z.B. Ransomware oder Datenschutzvorfällen.'
+    contactPerson: 'Unternehmenskommunikation (Head of Communications)'
+    email: 'presse@example.com'
+    phone: '+49 89 123456-900'
+    importance: 'medium'
+    requirements: |
+      - Ehrliche, zeitnahe Kommunikation bei sicherheitsrelevanten Vorfällen
+      - Keine vermeidbaren negativen Schlagzeilen durch vermeidbare Datenpannen
+      - Verantwortungsvoller Umgang mit personenbezogenen Daten (Wahrung Markenimage)
+      - Klare öffentliche Policies (Website: Datenschutz, Sicherheit, Verantwortlichkeit)
+    legalRequirements:
+      - 'DSGVO Art. 34 (Benachrichtigung betroffener Personen)'
+      - 'TMG / DDG (Impressum, Datenschutzhinweise)'
+      - 'UWG (Wettbewerbsrecht bzgl. Werbeaussagen)'
+    howAddressed: 'Krisenkommunikations-Playbook (Teil BCM), vorabgestimmte Holding-Statements, enge Abstimmung Comms + DSB + CISO bei Vorfällen, öffentliche Security- und Privacy-Seite.'
+    communicationFrequency: 'as_needed'
+    communicationMethod: 'Pressemitteilungen, Website-Statements, Social-Media-Kanäle, Kunden-E-Mail bei Breach-Benachrichtigungen nach Art. 34 DSGVO.'
+    lastCommunication: '2024-11-12'
+    nextCommunication: null
+    satisfactionLevel: null

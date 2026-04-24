@@ -199,6 +199,104 @@ sample_data:
     required_modules:
       - incidents
 
+  # ────────────── Phase 2: Modul-weite Beispieldaten ──────────────
+
+  - name: 'Beispiel-Dokumente'
+    description: 'Policies, Prozesse, Anweisungen (ISO 27001 A.5.1)'
+    file: 'fixtures/sample_documents.yaml'
+    required_modules: []
+
+  - name: 'Beispiel-Audits'
+    description: 'Internes Audit-Programm (ISO 27001 Clause 9.2)'
+    file: 'fixtures/sample_audits.yaml'
+    required_modules:
+      - audit
+
+  - name: 'Beispiel-Schulungen'
+    description: 'Security-Awareness, Phishing-Drill, DSGVO, Incident-Response'
+    file: 'fixtures/sample_trainings.yaml'
+    required_modules:
+      - training
+
+  - name: 'Beispiel-Management-Reviews'
+    description: 'Quartalsweise ISMS-Management-Reviews (ISO 27001 Clause 9.3)'
+    file: 'fixtures/sample_management_reviews.yaml'
+    required_modules: []
+
+  - name: 'Beispiel-Verarbeitungstätigkeiten (RoPA)'
+    description: 'DSGVO Art. 30 — Recruiting, HR, CRM, Newsletter, Video, Service'
+    file: 'fixtures/sample_processing_activities.yaml'
+    required_modules: []
+
+  - name: 'Beispiel-Datenschutzverletzungen'
+    description: 'DSGVO Art. 33/34 — typische Breach-Szenarien'
+    file: 'fixtures/sample_data_breaches.yaml'
+    required_modules: []
+
+  - name: 'Beispiel-Einwilligungen'
+    description: 'DSGVO Art. 7 — Newsletter, Marketing, Tracking, Forschung'
+    file: 'fixtures/sample_consents.yaml'
+    required_modules: []
+
+  - name: 'Beispiel-DPIAs'
+    description: 'DSGVO Art. 35 — Video-Überwachung, KI-Recruiting, Monitoring'
+    file: 'fixtures/sample_dpias.yaml'
+    required_modules: []
+
+  - name: 'Beispiel-Betroffenenanfragen'
+    description: 'DSGVO Art. 15-21 — Auskunft, Löschung, Portabilität'
+    file: 'fixtures/sample_data_subject_requests.yaml'
+    required_modules: []
+
+  - name: 'Beispiel-BC-Pläne'
+    description: 'ISO 22301 — IT-Ausfall, Gebäude, Lieferkette, Cyber-Crisis'
+    file: 'fixtures/sample_bc_plans.yaml'
+    required_modules:
+      - bcm
+
+  - name: 'Beispiel-BC-Übungen'
+    description: 'Tabletop, Walk-through, Simulation, DR-Test'
+    file: 'fixtures/sample_bc_exercises.yaml'
+    required_modules:
+      - bcm
+
+  - name: 'Beispiel-Krisenstäbe'
+    description: 'IT-, Kommunikations-, Business-Crisis-Team'
+    file: 'fixtures/sample_crisis_teams.yaml'
+    required_modules:
+      - bcm
+
+  - name: 'Beispiel-Lieferanten'
+    description: 'Cloud, SaaS, Hardware, Consulting — inkl. DSGVO-AVV, DORA'
+    file: 'fixtures/sample_suppliers.yaml'
+    required_modules: []
+
+  - name: 'Beispiel-Standorte'
+    description: 'HQ, Rechenzentren (Primary/DR), Außendienst, Home-Office'
+    file: 'fixtures/sample_locations.yaml'
+    required_modules: []
+
+  - name: 'Beispiel-Personen'
+    description: 'CISO, ISB, DSB, IT-Leiter, Risk-Owner, externer Berater'
+    file: 'fixtures/sample_people.yaml'
+    required_modules: []
+
+  - name: 'Beispiel-Interessierte Parteien'
+    description: 'ISO 27001 Clause 4.2 — Kunden, Behörden, Aufsichtsrat, Zert.-Stelle'
+    file: 'fixtures/sample_interested_parties.yaml'
+    required_modules: []
+
+  - name: 'Beispiel-ISMS-Ziele'
+    description: 'ISO 27001 Clause 6.2 — Incident-Response, Patching, Training, Compliance'
+    file: 'fixtures/sample_objectives.yaml'
+    required_modules: []
+
+  - name: 'Beispiel-Risikoappetit'
+    description: 'Financial/Operational/Reputational/Compliance-Thresholds'
+    file: 'fixtures/sample_risk_appetite.yaml'
+    required_modules:
+      - risks
+
 # System-Anforderungen
 requirements:
   php:

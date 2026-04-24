@@ -1,0 +1,378 @@
+processing_activities:
+  - name: 'Bewerbermanagement / Recruiting'
+    description: 'Verarbeitung personenbezogener Daten von Bewerberinnen und Bewerbern im Rahmen des Auswahlverfahrens fuer offene Stellen.'
+    purposes:
+      - 'Durchfuehrung des Bewerbungsverfahrens'
+      - 'Pruefung der fachlichen und persoenlichen Eignung'
+      - 'Vertragsanbahnung (Art. 6 Abs. 1 lit. b DSGVO)'
+    dataSubjectCategories:
+      - 'applicants'
+    estimatedDataSubjectsCount: 250
+    personalDataCategories:
+      - 'identification'
+      - 'contact'
+      - 'qualification'
+      - 'career_history'
+    processesSpecialCategories: false
+    processesCriminalData: false
+    recipientCategories:
+      - 'HR-Abteilung'
+      - 'Fachbereichsleitung'
+      - 'Geschaeftsfuehrung'
+    recipientDetails: 'Ausschliesslich am Bewerbungsprozess beteiligte interne Stellen. Keine externen Empfaenger.'
+    hasThirdCountryTransfer: false
+    retentionPeriod: '6 Monate nach Abschluss des Bewerbungsverfahrens (Absagen). Bei Einstellung: Uebernahme in Personalakte.'
+    retentionPeriodDays: 180
+    retentionLegalBasis: 'AGG Paragraph 15 Abs. 4 (2-Monatsfrist) + 4 Monate Aufbewahrung zur Verteidigung gegen AGG-Klagen'
+    technicalOrganizationalMeasures: 'Zugriffsbeschraenktes Bewerbermanagementsystem, TLS-Verschluesselung, rollenbasierte Berechtigungen, Loeschroutinen.'
+    legalBasis: 'contract'
+    legalBasisDetails: 'Paragraph 26 Abs. 1 BDSG (Beschaeftigtendatenschutz) sowie Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Massnahmen).'
+    responsibleDepartment: 'Personalabteilung'
+    involvesProcessors: true
+    processors:
+      - name: 'Personio SE'
+        contact: 'dpo@personio.de'
+        description: 'Cloud-basiertes Bewerbermanagementsystem (ATS)'
+        contract_date: '2023-05-15'
+    isJointController: false
+    isHighRisk: false
+    dpiaCompleted: false
+    riskLevel: 'low'
+    dataSources:
+      - 'data_subject'
+      - 'third_parties'
+    hasAutomatedDecisionMaking: false
+    status: 'active'
+    startDate: '2023-06-01'
+    lastReviewDate: '2024-10-15'
+    nextReviewDate: '2025-10-15'
+
+  - name: 'Mitarbeiter-Stammdaten und Personalakte'
+    description: 'Zentrale Verwaltung saemtlicher personalrelevanter Daten aktiver und ehemaliger Mitarbeiter einschliesslich Entgeltabrechnung.'
+    purposes:
+      - 'Durchfuehrung des Arbeitsverhaeltnisses'
+      - 'Entgeltabrechnung und Lohnsteuerabfuehrung'
+      - 'Erfuellung arbeitsrechtlicher und steuerrechtlicher Pflichten'
+    dataSubjectCategories:
+      - 'employees'
+    estimatedDataSubjectsCount: 180
+    personalDataCategories:
+      - 'identification'
+      - 'contact'
+      - 'financial'
+      - 'tax_data'
+      - 'social_security'
+      - 'bank_details'
+    processesSpecialCategories: true
+    specialCategoriesDetails:
+      - 'health'
+      - 'union'
+    processesCriminalData: false
+    recipientCategories:
+      - 'HR'
+      - 'Lohnbuchhaltung'
+      - 'Finanzamt'
+      - 'Sozialversicherungstraeger'
+      - 'Krankenkassen'
+    hasThirdCountryTransfer: false
+    retentionPeriod: 'Aktive Beschaeftigung: Dauer des Arbeitsverhaeltnisses. Nach Beendigung: 10 Jahre (lohnsteuerrelevant) bzw. 6 Jahre (sonstige Unterlagen).'
+    retentionPeriodDays: 3650
+    retentionLegalBasis: 'AO Paragraph 147 (10 Jahre), HGB Paragraph 257 (6-10 Jahre), SGB IV Paragraph 28f (Sozialversicherung)'
+    technicalOrganizationalMeasures: 'Verschluesselte Personalaktenfuehrung in SAP HR, strikte Zugriffskontrolle (Need-to-know), 4-Augen-Prinzip bei Gehaltsaenderungen, regelmaessige Berechtigungsreviews.'
+    legalBasis: 'contract'
+    legalBasisDetails: 'Art. 6 Abs. 1 lit. b und c DSGVO, Paragraph 26 BDSG'
+    legalBasisSpecialCategories: 'employment_law'
+    responsibleDepartment: 'Personalabteilung'
+    involvesProcessors: true
+    processors:
+      - name: 'DATEV eG'
+        contact: 'datenschutz@datev.de'
+        description: 'Lohn- und Gehaltsabrechnung'
+        contract_date: '2019-01-01'
+    isJointController: false
+    isHighRisk: false
+    dpiaCompleted: false
+    riskLevel: 'medium'
+    dataSources:
+      - 'data_subject'
+    hasAutomatedDecisionMaking: false
+    status: 'active'
+    startDate: '2019-01-01'
+    lastReviewDate: '2024-11-01'
+    nextReviewDate: '2025-11-01'
+
+  - name: 'CRM / Kunden- und Interessentenverwaltung'
+    description: 'Verwaltung von Kundenkontakten, Ansprechpartnern und Vertriebsaktivitaeten im Salesforce CRM.'
+    purposes:
+      - 'Kundenbeziehungsmanagement'
+      - 'Vertragsabwicklung'
+      - 'Vertriebs- und Angebotserstellung'
+    dataSubjectCategories:
+      - 'customers'
+      - 'business_contacts'
+      - 'prospects'
+    estimatedDataSubjectsCount: 12500
+    personalDataCategories:
+      - 'identification'
+      - 'contact'
+      - 'professional'
+      - 'communication_history'
+    processesSpecialCategories: false
+    processesCriminalData: false
+    recipientCategories:
+      - 'Vertrieb'
+      - 'Kundenservice'
+      - 'Marketing'
+    hasThirdCountryTransfer: true
+    thirdCountries:
+      - 'US'
+    transferSafeguards: 'standard_contractual_clauses'
+    retentionPeriod: 'Kundendaten waehrend der Geschaeftsbeziehung + 10 Jahre (HGB/AO). Interessentendaten 3 Jahre nach letztem Kontakt.'
+    retentionPeriodDays: 3650
+    retentionLegalBasis: 'HGB Paragraph 257, AO Paragraph 147'
+    technicalOrganizationalMeasures: 'Salesforce Shield (Field-Level Encryption), SSO mit MFA, Role Hierarchies, Login IP Ranges, Event Monitoring.'
+    legalBasis: 'contract'
+    legalBasisDetails: 'Art. 6 Abs. 1 lit. b DSGVO (Kundenvertraege) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse Interessenten).'
+    responsibleDepartment: 'Vertrieb'
+    involvesProcessors: true
+    processors:
+      - name: 'Salesforce.com EMEA Limited'
+        contact: 'privacy@salesforce.com'
+        description: 'CRM-SaaS-Plattform'
+        contract_date: '2022-06-01'
+    isJointController: false
+    isHighRisk: false
+    dpiaCompleted: false
+    riskLevel: 'medium'
+    dataSources:
+      - 'data_subject'
+      - 'third_parties'
+    hasAutomatedDecisionMaking: false
+    status: 'active'
+    startDate: '2022-06-01'
+    lastReviewDate: '2024-09-20'
+    nextReviewDate: '2025-09-20'
+
+  - name: 'Newsletter-Versand'
+    description: 'Versand eines monatlichen E-Mail-Newsletters mit Produktneuigkeiten und Fachartikeln an eingewilligte Abonnenten.'
+    purposes:
+      - 'Direktwerbung'
+      - 'Kundenbindung'
+      - 'Information ueber Produkte und Veranstaltungen'
+    dataSubjectCategories:
+      - 'customers'
+      - 'prospects'
+    estimatedDataSubjectsCount: 8400
+    personalDataCategories:
+      - 'contact'
+      - 'preferences'
+      - 'tracking'
+    processesSpecialCategories: false
+    processesCriminalData: false
+    recipientCategories:
+      - 'Marketing'
+    hasThirdCountryTransfer: false
+    retentionPeriod: 'Bis zum Widerruf der Einwilligung; bei Inaktivitaet (kein Oeffnen ueber 24 Monate) automatische Loeschung.'
+    retentionPeriodDays: 730
+    retentionLegalBasis: 'Art. 7 Abs. 3 DSGVO (Widerrufbarkeit der Einwilligung)'
+    technicalOrganizationalMeasures: 'Double-Opt-In-Verfahren, dokumentierte Einwilligung inkl. IP/Timestamp, einfacher Abmeldelink in jeder E-Mail, Suppression-List-Management.'
+    legalBasis: 'consent'
+    legalBasisDetails: 'Art. 6 Abs. 1 lit. a DSGVO in Verbindung mit Paragraph 7 Abs. 2 Nr. 3 UWG (E-Mail-Werbung).'
+    responsibleDepartment: 'Marketing'
+    involvesProcessors: true
+    processors:
+      - name: 'CleverReach GmbH & Co. KG'
+        contact: 'datenschutz@cleverreach.de'
+        description: 'E-Mail-Marketing-Plattform (deutscher Anbieter)'
+        contract_date: '2023-02-10'
+    isJointController: false
+    isHighRisk: false
+    dpiaCompleted: false
+    riskLevel: 'low'
+    dataSources:
+      - 'data_subject'
+    hasAutomatedDecisionMaking: false
+    status: 'active'
+    startDate: '2020-03-01'
+    lastReviewDate: '2024-08-15'
+    nextReviewDate: '2025-08-15'
+
+  - name: 'Bewerber-Pool / Talent-Pool'
+    description: 'Langfristige Speicherung von Bewerberprofilen fuer spaetere Ansprache bei passenden Vakanzen, ausschliesslich mit Einwilligung.'
+    purposes:
+      - 'Proaktive Ansprache bei kuenftigen Vakanzen'
+      - 'Aufbau eines internen Talent-Pools'
+    dataSubjectCategories:
+      - 'applicants'
+      - 'prospects'
+    estimatedDataSubjectsCount: 120
+    personalDataCategories:
+      - 'identification'
+      - 'contact'
+      - 'qualification'
+      - 'career_history'
+    processesSpecialCategories: false
+    processesCriminalData: false
+    recipientCategories:
+      - 'HR-Abteilung'
+    hasThirdCountryTransfer: false
+    retentionPeriod: '2 Jahre ab Einwilligung, danach Verlaengerungsanfrage. Widerruf jederzeit moeglich.'
+    retentionPeriodDays: 730
+    retentionLegalBasis: 'Art. 7 Abs. 3 DSGVO (Widerrufbarkeit)'
+    technicalOrganizationalMeasures: 'Separate Kennzeichnung im ATS, Reminder fuer Einwilligungserneuerung, dokumentierte Einwilligung.'
+    legalBasis: 'consent'
+    legalBasisDetails: 'Art. 6 Abs. 1 lit. a DSGVO - ausdrueckliche Einwilligung zur Aufnahme in den Talent-Pool.'
+    responsibleDepartment: 'Personalabteilung'
+    involvesProcessors: true
+    processors:
+      - name: 'Personio SE'
+        contact: 'dpo@personio.de'
+        description: 'Talent-Pool-Modul im ATS'
+        contract_date: '2023-05-15'
+    isJointController: false
+    isHighRisk: false
+    dpiaCompleted: false
+    riskLevel: 'low'
+    dataSources:
+      - 'data_subject'
+    hasAutomatedDecisionMaking: false
+    status: 'active'
+    startDate: '2023-06-01'
+    lastReviewDate: '2024-10-15'
+    nextReviewDate: '2025-10-15'
+
+  - name: 'Videoueberwachung Betriebsgelaende'
+    description: 'Videoueberwachung der Zugangsbereiche, des Parkplatzes und des Warenlagers zur Gefahrenabwehr und Aufklaerung von Straftaten.'
+    purposes:
+      - 'Schutz vor Einbruch und Vandalismus'
+      - 'Aufklaerung von Straftaten'
+      - 'Arbeitssicherheit im Warenlager'
+    dataSubjectCategories:
+      - 'employees'
+      - 'visitors'
+      - 'customers'
+      - 'suppliers'
+    estimatedDataSubjectsCount: 500
+    personalDataCategories:
+      - 'image'
+      - 'video'
+      - 'behavior'
+    processesSpecialCategories: false
+    processesCriminalData: false
+    recipientCategories:
+      - 'Geschaeftsfuehrung'
+      - 'Sicherheitsdienst'
+      - 'Strafverfolgungsbehoerden (im Einzelfall)'
+    hasThirdCountryTransfer: false
+    retentionPeriod: 'Automatische Loeschung nach 72 Stunden; im Vorfallsfall laengere Aufbewahrung bis zur Klaerung.'
+    retentionPeriodDays: 3
+    retentionLegalBasis: 'DSK-Orientierungshilfe Videoueberwachung (Regelfall max. 72h)'
+    technicalOrganizationalMeasures: 'Hinweisschilder gemaess Art. 13 DSGVO, verschluesselte Uebertragung, passwortgeschuetzter Aufzeichnungsserver, 4-Augen-Prinzip bei Auswertung, revisionssichere Protokollierung aller Zugriffe.'
+    legalBasis: 'legitimate_interests'
+    legalBasisDetails: 'Art. 6 Abs. 1 lit. f DSGVO - berechtigtes Interesse an Gefahrenabwehr und Eigentumsschutz. Interessenabwaegung dokumentiert.'
+    responsibleDepartment: 'Facility Management / Sicherheit'
+    involvesProcessors: false
+    isJointController: false
+    isHighRisk: true
+    dpiaCompleted: true
+    dpiaDate: '2023-03-20'
+    riskLevel: 'high'
+    dataSources:
+      - 'data_subject'
+    hasAutomatedDecisionMaking: false
+    status: 'active'
+    startDate: '2023-04-01'
+    lastReviewDate: '2024-04-01'
+    nextReviewDate: '2025-04-01'
+
+  - name: 'Kundenservice-Ticketsystem'
+    description: 'Bearbeitung von Kundenanfragen, Reklamationen und Support-Anfragen ueber das Ticketsystem.'
+    purposes:
+      - 'Bearbeitung von Kundenanfragen'
+      - 'Reklamationsmanagement'
+      - 'Qualitaetsverbesserung durch Auswertung'
+    dataSubjectCategories:
+      - 'customers'
+      - 'prospects'
+    estimatedDataSubjectsCount: 4200
+    personalDataCategories:
+      - 'identification'
+      - 'contact'
+      - 'communication_history'
+      - 'transaction_data'
+    processesSpecialCategories: false
+    processesCriminalData: false
+    recipientCategories:
+      - 'Kundenservice'
+      - 'Vertrieb'
+      - 'Produktmanagement'
+    hasThirdCountryTransfer: false
+    retentionPeriod: 'Abgeschlossene Tickets: 3 Jahre (Gewaehrleistung). Reklamationen mit Rechnungsbezug: 10 Jahre.'
+    retentionPeriodDays: 1095
+    retentionLegalBasis: 'BGB Paragraph 195 (Regelverjaehrung), HGB Paragraph 257'
+    technicalOrganizationalMeasures: 'Zugriffsbeschraenkung, rollenbasierte Rechte, Pseudonymisierung fuer Auswertungen, verschluesselte Datenhaltung.'
+    legalBasis: 'contract'
+    legalBasisDetails: 'Art. 6 Abs. 1 lit. b DSGVO (Vertragserfuellung) und lit. f (berechtigtes Interesse an Qualitaetsmanagement).'
+    responsibleDepartment: 'Kundenservice'
+    involvesProcessors: true
+    processors:
+      - name: 'Atlassian B.V.'
+        contact: 'privacy@atlassian.com'
+        description: 'Jira Service Management (EU-Hosting)'
+        contract_date: '2022-09-01'
+    isJointController: false
+    isHighRisk: false
+    dpiaCompleted: false
+    riskLevel: 'medium'
+    dataSources:
+      - 'data_subject'
+    hasAutomatedDecisionMaking: false
+    status: 'active'
+    startDate: '2022-09-15'
+    lastReviewDate: '2024-09-15'
+    nextReviewDate: '2025-09-15'
+
+  - name: 'Cookie-Consent-Management und Einwilligungsprotokoll'
+    description: 'Dokumentation und Verwaltung von Cookie- und Tracking-Einwilligungen auf den Unternehmenswebsites.'
+    purposes:
+      - 'Nachweis der Einwilligung (Art. 7 Abs. 1 DSGVO)'
+      - 'Verwaltung von Praeferenzen'
+      - 'TTDSG-konformer Einwilligungsnachweis'
+    dataSubjectCategories:
+      - 'website_visitors'
+    estimatedDataSubjectsCount: 95000
+    personalDataCategories:
+      - 'online_identifiers'
+      - 'device_data'
+      - 'consent_data'
+    processesSpecialCategories: false
+    processesCriminalData: false
+    recipientCategories:
+      - 'IT-Abteilung'
+      - 'Datenschutzbeauftragter'
+      - 'Marketing'
+    hasThirdCountryTransfer: false
+    retentionPeriod: 'Einwilligungsnachweise: 3 Jahre nach Widerruf/Ablauf der Einwilligung (Beweisbarkeit).'
+    retentionPeriodDays: 1095
+    retentionLegalBasis: 'BGB Paragraph 195 (Beweiszwecke) und Art. 7 Abs. 1 DSGVO (Nachweispflicht)'
+    technicalOrganizationalMeasures: 'IAB TCF 2.2-konformes CMP, revisionssichere Protokollierung, Pseudonymisierung ueber User-ID-Cookie, jederzeitige Aenderung der Einwilligung moeglich.'
+    legalBasis: 'legal_obligation'
+    legalBasisDetails: 'Art. 6 Abs. 1 lit. c DSGVO in Verbindung mit Art. 7 Abs. 1 DSGVO (Nachweispflicht) und Paragraph 25 TTDSG.'
+    responsibleDepartment: 'IT / Datenschutz'
+    involvesProcessors: true
+    processors:
+      - name: 'Usercentrics GmbH'
+        contact: 'dpo@usercentrics.com'
+        description: 'Consent Management Platform (CMP)'
+        contract_date: '2023-01-15'
+    isJointController: false
+    isHighRisk: false
+    dpiaCompleted: false
+    riskLevel: 'low'
+    dataSources:
+      - 'data_subject'
+    hasAutomatedDecisionMaking: false
+    status: 'active'
+    startDate: '2023-02-01'
+    lastReviewDate: '2024-11-20'
+    nextReviewDate: '2025-05-20'

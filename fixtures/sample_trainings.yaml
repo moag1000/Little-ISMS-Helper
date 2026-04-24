@@ -1,0 +1,120 @@
+trainings:
+  - title: 'Security-Awareness-Onboarding (Pflicht für alle Neueinsteiger)'
+    description: 'Grundlagenschulung Informationssicherheit für neue Mitarbeiter. Inhalte: ISMS-Leitlinie, Passwort-Hygiene, Umgang mit E-Mail, Clean-Desk, Meldewege für Vorfälle.'
+    trainingType: 'security_awareness'
+    scheduledDate: '2025-01-07'
+    durationMinutes: 90
+    trainer: 'Thomas Berger (CISO)'
+    targetAudience: 'Alle neuen Mitarbeiter innerhalb der ersten 14 Tage nach Eintritt'
+    participants: 'Neueinsteiger Januar 2025 (12 Personen, quer durch alle Abteilungen)'
+    attendeeCount: 12
+    deliveryMethod: 'hybrid'
+    mandatory: true
+    status: 'completed'
+    materials: 'ISMS-Leitlinie (PDF), Awareness-Folien v4.0, Quiz im LMS'
+    feedback: 'Durchschnittliche Bewertung 4.3/5. Teilnehmer wünschen mehr Praxisbeispiele; Quiz-Durchfallquote 0%.'
+    completionDate: '2025-01-07'
+
+  - title: 'Phishing-Simulationskampagne Q1/2025'
+    description: 'Versteckte Phishing-Test-Kampagne mit gestaffelter Schwierigkeit. Ergebnisauswertung liefert Input für zielgruppenspezifische Nachschulungen.'
+    trainingType: 'phishing_simulation'
+    scheduledDate: '2025-02-24'
+    durationMinutes: 15
+    trainer: 'Cyberwise AG (externer Dienstleister)'
+    targetAudience: 'Alle Mitarbeiter mit E-Mail-Konto'
+    participants: 'Gesamtbelegschaft (248 Konten)'
+    attendeeCount: 248
+    deliveryMethod: 'e_learning'
+    mandatory: true
+    status: 'completed'
+    materials: 'Simulations-Mailings (3 Wellen), Landing-Page mit Sofort-Feedback, Auswertungsreport'
+    feedback: 'Click-Rate 14,5 Prozent (Benchmark 22 Prozent). Credential-Submission 3,6 Prozent. Vertrieb und HR mit auffällig hohen Raten -> gezielte Nachschulung angesetzt.'
+    completionDate: '2025-03-14'
+
+  - title: 'DSGVO-Grundlagenschulung für Fachbereiche mit Personenbezug'
+    description: 'Auffrischungsschulung DSGVO für alle Rollen, die personenbezogene Daten verarbeiten: Rechtsgrundlagen, Betroffenenrechte, DSFA-Einstieg, Meldepflicht bei Datenschutzvorfällen (72h).'
+    trainingType: 'data_protection'
+    scheduledDate: '2025-03-18'
+    durationMinutes: 120
+    trainer: 'Dr. Elena Richter (externer DSB)'
+    targetAudience: 'HR, Marketing, Vertrieb, Kundenservice, IT-Admin'
+    participants: 'Rollenbasierte Teilnehmerliste (86 Mitarbeiter)'
+    attendeeCount: 78
+    deliveryMethod: 'online_live'
+    mandatory: true
+    status: 'completed'
+    materials: 'DSGVO-Handbuch v2.1, Fallstudien, Verzeichnis von Verarbeitungstätigkeiten (Auszug)'
+    feedback: 'Sehr gute Bewertung (4.6/5). 8 Personen konnten nicht teilnehmen, Nachtermin 11.04.2025 geplant.'
+    completionDate: '2025-03-18'
+
+  - title: 'Incident-Response-Tabletop-Übung: Ransomware-Szenario'
+    description: 'Planspiel zur Ransomware-Attacke auf Produktionssysteme. Teilnehmer durchlaufen Meldekette, Entscheidungsprozesse und Krisenkommunikation. Ergebnis fließt in BCM-Plan ein.'
+    trainingType: 'incident_drill'
+    scheduledDate: '2025-04-15'
+    durationMinutes: 240
+    trainer: 'Thomas Berger (CISO) & externe Moderation (SecConsult GmbH)'
+    targetAudience: 'Krisenstab, CISO-Team, IT-Leitung, Geschäftsführung, Kommunikation'
+    participants: 'Krisenstab (9 Personen), IT-Leitung (3), CEO, CFO, Leitung Kommunikation'
+    attendeeCount: 15
+    deliveryMethod: 'workshop'
+    mandatory: true
+    status: 'completed'
+    materials: 'Tabletop-Szenario-Skript, Eskalationsmatrix, Checkliste Krisenkommunikation'
+    feedback: 'Lücken im Krisenstab-Kontaktbaum identifiziert (out-of-band-Kommunikation fehlt). Aktionspunkte dokumentiert, 4 BC-Plan-Updates angestoßen.'
+    completionDate: '2025-04-15'
+
+  - title: 'Sicheres Programmieren / Secure Coding für Entwickler'
+    description: 'OWASP-Top-10-basierte Schulung für Entwickler. Praktische Übungen an eigenem Code, Code-Review-Techniken, Secrets-Management, Dependency-Check.'
+    trainingType: 'technical'
+    scheduledDate: '2025-05-06'
+    durationMinutes: 480
+    trainer: 'Andreas Koch (CSR GmbH, extern)'
+    targetAudience: 'Softwareentwickler, DevOps-Engineers, Tech-Leads'
+    participants: 'Entwicklungsteam (24 Personen, 2 Kohorten)'
+    attendeeCount: 22
+    deliveryMethod: 'workshop'
+    mandatory: true
+    status: 'completed'
+    materials: 'OWASP-Top-10 Handout, eigene Code-Beispiele, SonarQube-Regelwerk'
+    feedback: 'Sehr gute Resonanz (4.7/5), Wunsch nach Folgeveranstaltung zu API-Security.'
+    completionDate: '2025-05-07'
+
+  - title: 'Jährliche ISMS-Auffrischung für alle Mitarbeiter'
+    description: 'Pflicht-Refresher zur ISMS-Leitlinie, aktuellen Bedrohungen (Social Engineering, CEO-Fraud, Deepfakes), Meldewegen und Änderungen im Berichtsjahr.'
+    trainingType: 'security_awareness'
+    scheduledDate: '2025-09-15'
+    durationMinutes: 45
+    trainer: 'Thomas Berger (CISO)'
+    targetAudience: 'Gesamtbelegschaft'
+    participants: 'Alle aktiven Mitarbeiter'
+    attendeeCount: 0
+    deliveryMethod: 'e_learning'
+    mandatory: true
+    status: 'scheduled'
+    materials: 'LMS-Kurs v2025, Abschluss-Quiz (Bestehensgrenze 80 Prozent)'
+
+  - title: 'Vertiefung Datenschutz für HR (sensible Datenkategorien)'
+    description: 'Spezialschulung für HR zu besonderen Kategorien personenbezogener Daten (Art. 9 DSGVO): Gesundheitsdaten, Bewerberdaten, Mitbestimmung Betriebsrat.'
+    trainingType: 'data_protection'
+    scheduledDate: '2025-10-21'
+    durationMinutes: 180
+    trainer: 'Dr. Elena Richter (externer DSB)'
+    targetAudience: 'HR-Business-Partner, Recruiting, Personalverwaltung'
+    participants: 'HR-Team (8 Personen)'
+    attendeeCount: 0
+    deliveryMethod: 'in_person'
+    mandatory: true
+    status: 'planned'
+
+  - title: 'Führungskräfte-Briefing: NIS2 und CISO-Reporting-Pflichten'
+    description: 'Executive-Briefing für Geschäftsführung und Bereichsleitung zu NIS2-Anforderungen, Haftung des Managements, Berichtswesen an BSI.'
+    trainingType: 'management_briefing'
+    scheduledDate: '2025-11-18'
+    durationMinutes: 90
+    trainer: 'RA Dr. Michael Kraus (externe Kanzlei) und CISO'
+    targetAudience: 'Geschäftsführung, Bereichsleitung, Aufsichtsrat'
+    participants: 'GF (3), Bereichsleitung (7), AR-Vorsitz (1)'
+    attendeeCount: 0
+    deliveryMethod: 'in_person'
+    mandatory: true
+    status: 'planned'

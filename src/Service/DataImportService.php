@@ -10,9 +10,25 @@ use App\Entity\Incident;
 use App\Entity\BusinessProcess;
 use App\Entity\InternalAudit;
 use App\Entity\Training;
+use App\Entity\BCExercise;
+use App\Entity\BusinessContinuityPlan;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Entity\Consent;
+use App\Entity\CrisisTeam;
+use App\Entity\DataBreach;
+use App\Entity\DataProtectionImpactAssessment;
+use App\Entity\DataSubjectRequest;
+use App\Entity\Document;
+use App\Entity\InterestedParty;
+use App\Entity\ISMSObjective;
+use App\Entity\Location;
+use App\Entity\ManagementReview;
+use App\Entity\Person;
+use App\Entity\ProcessingActivity;
+use App\Entity\RiskAppetite;
 use App\Entity\SampleDataImport;
+use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\SampleDataImportRepository;
@@ -406,6 +422,24 @@ class DataImportService
             'trainings' => Training::class,
             'compliance_frameworks' => ComplianceFramework::class,
             'compliance_requirements' => ComplianceRequirement::class,
+            // Phase 2 additions
+            'documents' => Document::class,
+            'management_reviews' => ManagementReview::class,
+            'processing_activities' => ProcessingActivity::class,
+            'data_breaches' => DataBreach::class,
+            'consents' => Consent::class,
+            'dpias' => DataProtectionImpactAssessment::class,
+            'data_subject_requests' => DataSubjectRequest::class,
+            'bc_plans' => BusinessContinuityPlan::class,
+            'bc_exercises' => BCExercise::class,
+            'crisis_teams' => CrisisTeam::class,
+            'suppliers' => Supplier::class,
+            'locations' => Location::class,
+            'people' => Person::class,
+            'interested_parties' => InterestedParty::class,
+            'objectives' => ISMSObjective::class,
+            'risk_appetites' => RiskAppetite::class,
+            'risk_appetite' => RiskAppetite::class,
         ];
 
         return $mapping[$entityType] ?? null;
@@ -421,13 +455,34 @@ class DataImportService
         foreach ($data as $property => $value) {
             $setter = 'set' . ucfirst((string) $property);
 
-            if (method_exists($entity, $setter)) {
-                // Handle DateTime
-                if ($value instanceof DateTime || (is_string($value) && strtotime($value))) {
-                    $value = is_string($value) ? new DateTime($value) : $value;
-                }
+            if (!method_exists($entity, $setter)) {
+                continue;
+            }
 
+            // Datum-Strings: je nach Setter-Parametertyp DateTime oder DateTimeImmutable
+            // konstruieren. Ohne das wirft jeder Setter mit DateTimeImmutable-Hint
+            // einen TypeError (z.B. Consent::setGrantedAt, DataSubjectRequest::setReceivedAt).
+            if (is_string($value) && strtotime($value) !== false) {
+                try {
+                    $reflection = new \ReflectionMethod($entity, $setter);
+                    $paramType = $reflection->getParameters()[0]?->getType();
+                    $typeName = $paramType instanceof \ReflectionNamedType ? $paramType->getName() : null;
+                    if ($typeName === \DateTimeImmutable::class) {
+                        $value = new \DateTimeImmutable($value);
+                    } elseif ($typeName === \DateTimeInterface::class || $typeName === \DateTime::class) {
+                        $value = new DateTime($value);
+                    }
+                } catch (\ReflectionException) {
+                    // Reflection konnte Typ nicht lesen — String durchlassen, setter wirft ggf.
+                }
+            } elseif ($value instanceof DateTime) {
+                // already correct type, keep as-is
+            }
+
+            try {
                 $entity->$setter($value);
+            } catch (\TypeError $e) {
+                $this->addLog("Skipped {$entityClass}::{$setter} — type mismatch: " . $e->getMessage());
             }
         }
 

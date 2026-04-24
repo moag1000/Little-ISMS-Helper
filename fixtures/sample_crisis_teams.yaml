@@ -1,0 +1,273 @@
+crisis_teams:
+  - teamName: 'IT-Krisenstab (Technischer Krisenstab)'
+    description: 'Technischer Krisenstab für IT-Incidents, Cyber-Angriffe und Ausfälle kritischer IT-Systeme. Zuständig für operative Wiederherstellung und technische Entscheidungen.'
+    teamType: 'technical'
+    isActive: true
+    members:
+      - name: 'Thomas Becker'
+        role: 'Leiter IT-Operations (Team-Lead)'
+        contact: '+49 89 555-0200'
+        email: 'thomas.becker@example.de'
+        responsibilities: 'Operative Leitung, Eskalationsentscheidung, Kontakt GF'
+      - name: 'Markus Fischer'
+        role: 'Senior Admin / IR-Lead'
+        contact: '+49 89 555-0201'
+        email: 'markus.fischer@example.de'
+        responsibilities: 'Technische Eindämmung, Forensik-Koordination'
+      - name: 'Julia Krause'
+        role: 'DBA-Lead'
+        contact: '+49 89 555-0202'
+        email: 'julia.krause@example.de'
+        responsibilities: 'Datenbank-Recovery, Backup-Restore'
+      - name: 'Andreas Koch'
+        role: 'CIO (Stellv. Lead)'
+        contact: '+49 89 555-0150'
+        email: 'andreas.koch@example.de'
+        responsibilities: 'Infrastruktur-Entscheidungen, Budget-Freigabe'
+      - name: 'Claudia Richter'
+        role: 'CISO'
+        contact: '+49 89 555-0110'
+        email: 'claudia.richter@example.de'
+        responsibilities: 'Security-Koordination, Behördenmeldungen'
+      - name: 'Hanna Vogel'
+        role: 'Netzwerk-Lead'
+        contact: '+49 89 555-0203'
+        email: 'hanna.vogel@example.de'
+        responsibilities: 'Netzwerk-Isolation, DNS-Failover'
+    primaryPhone: '+49 89 555-CRISIS (274747)'
+    primaryEmail: 'krisenstab-it@example.de'
+    emergencyContacts:
+      - name: 'HiSolutions IR-Retainer'
+        type: 'extern'
+        phone: '+49 30 533 289-0'
+        available: '24/7'
+      - name: 'BSI-CERT'
+        type: 'behoerde'
+        phone: '+49 228 99 9582-222'
+      - name: 'LKA Bayern Cybercrime'
+        type: 'behoerde'
+        phone: '+49 89 1212-0'
+    meetingLocation: 'War-Room HQ München, EG Raum 0.42 (verschlüsselungssicher, kein WiFi)'
+    backupMeetingLocation: 'DR-Rechenzentrum Berlin, Konferenzraum 2 / Alternativ: virtuell via Signal'
+    virtualMeetingUrl: 'https://signal.org/group/krisenstab-it (Signal-Gruppe, Out-of-Band)'
+    alertProcedures: |
+      Alarmierung über 3 Kanäle parallel:
+      1. Automatische SMS über evalink an alle Krisenstab-Mitglieder
+      2. Anruf durch Service Desk an Team-Lead, dann Kaskade
+      3. Signal-Nachricht "ALARM" in Krisengruppe
+      Bestätigungspflicht binnen 15 min (Reply "ACK"). Bei Nicht-Bestätigung: Stellvertreter kontaktieren.
+    decisionAuthority: |
+      - Technische Sofortmaßnahmen (Isolation, Shutdown): Team-Lead eigenständig
+      - Budget bis 25.000 EUR: Team-Lead + CIO
+      - Budget > 25.000 EUR: Eskalation GF
+      - Externe Kommunikation: nur via CISO + Kommunikationsleitung
+      - Behördenmeldungen: CISO koordiniert, Legal freigibt
+    communicationProtocols: |
+      - Out-of-Band-Kommunikation bei V.a. AD-Kompromittierung (Signal, private Mobilnr.)
+      - Lagebericht alle 30 min während akuter Phase, danach alle 2h
+      - Tägliches Debrief 09:00 Uhr, Statusbericht an GF 17:00 Uhr
+      - Dokumentation in isolierter Confluence-Instanz
+    availableResources:
+      - name: 'Forensik-Laptops (5 Stück)'
+        location: 'Sicherer Schrank Raum 0.42'
+      - name: 'Schreibblocker-Set'
+        location: 'War-Room'
+      - name: 'Signal-Dienstgeräte (7 Stück)'
+        location: 'Bei Krisenstab-Mitgliedern'
+      - name: 'IR-Retainer HiSolutions'
+        type: 'Vertrag 24/7'
+      - name: 'Cyber-Versicherung AIG'
+        type: 'Vertrag inkl. BAT-Team'
+    trainingSchedule: 'Quartalsweise Tabletop-Übung, halbjährliche technische Simulation, jährliche Red-Team-Übung mit externem Partner. Nächste Übung: 2026-02-12.'
+    lastActivatedAt: '2024-03-11 14:22:00'
+    lastTrainingAt: '2025-10-18 09:00:00'
+    nextTrainingAt: '2026-02-12 09:00:00'
+    documentation:
+      - title: 'Runbook RB-001 IT-Service-Failover'
+        version: '1.8'
+      - title: 'Runbook RB-002 DB-Restore'
+        version: '2.1'
+      - title: 'BCP-001 IT-Service-Ausfall'
+        version: '2.3'
+      - title: 'BCP-005 Cyber-Crisis'
+        version: '2.0'
+      - title: 'Kontaktliste Krisenstab (Offline-Druck)'
+        version: '2025-11'
+    notes: 'Bei AD-Kompromittierung: keine Kommunikation über Unternehmens-E-Mail oder Teams. Ausschließlich Signal + persönliche Telefonate über private Mobilnummern. War-Room im EG nicht mit Firmen-WLAN verbunden.'
+
+  - teamName: 'Krisenkommunikations-Team'
+    description: 'Verantwortlich für interne und externe Kommunikation in Krisensituationen. Pressearbeit, Kundenkommunikation, Mitarbeiter-Information, Stakeholder-Management.'
+    teamType: 'communication'
+    isActive: true
+    members:
+      - name: 'Petra Schmidt'
+        role: 'Leiterin Unternehmenskommunikation (Team-Lead)'
+        contact: '+49 89 555-0300'
+        email: 'petra.schmidt@example.de'
+        responsibilities: 'Gesamtkoordination, Presseanfragen, GF-Briefing'
+      - name: 'Michael Lange'
+        role: 'Pressesprecher'
+        contact: '+49 89 555-0301'
+        email: 'michael.lange@example.de'
+        responsibilities: 'Pressestatements, Interviews'
+      - name: 'Stefanie Berger'
+        role: 'Social Media & Digital Communications'
+        contact: '+49 89 555-0302'
+        email: 'stefanie.berger@example.de'
+        responsibilities: 'Status-Page, Social-Media-Monitoring, Dark Posts'
+      - name: 'Karin Neumann'
+        role: 'Interne Kommunikation'
+        contact: '+49 89 555-0303'
+        email: 'karin.neumann@example.de'
+        responsibilities: 'Mitarbeiter-Info, Betriebsrat-Koordination, Intranet'
+      - name: 'Dr. Lisa Schulz'
+        role: 'Datenschutzbeauftragte (DPO)'
+        contact: '+49 89 555-0120'
+        email: 'dpo@example.de'
+        responsibilities: 'DSGVO-Kommunikation an Betroffene, Aufsichtsbehörde'
+    primaryPhone: '+49 89 555-0300'
+    primaryEmail: 'krisenkommunikation@example.de'
+    emergencyContacts:
+      - name: 'externe PR-Agentur Burson GmbH'
+        type: 'extern'
+        phone: '+49 89 999-0'
+        available: '24/7 über Retainer'
+      - name: 'Rechtsanwalt Medienrecht (Dr. Vogel)'
+        type: 'extern'
+        phone: '+49 89 888-0'
+    meetingLocation: 'Konferenzraum Kommunikation, 3. OG, HQ München'
+    backupMeetingLocation: 'Home-Office-Setup aller Mitglieder mit VPN-Zugang'
+    virtualMeetingUrl: 'https://teams.microsoft.com/l/meetup-join/krisenkomm'
+    alertProcedures: 'Alarmierung nach Aktivierung durch IT-Krisenstab oder GF. SMS + Anruf-Kaskade. Maximal 30 min bis Arbeitsfähigkeit gewährleistet.'
+    decisionAuthority: |
+      - Factual Updates an Mitarbeiter/Kunden: Team-Lead eigenständig
+      - Presseanfragen-Statements: Team-Lead mit Rücksprache GF
+      - Interviews/Medienauftritte: nur nach GF-Freigabe
+      - DSGVO-Kommunikation Betroffene: DPO federführend
+    communicationProtocols: |
+      - Freigabekette: Statement → Legal → GF → Veröffentlichung
+      - Holding Statement binnen 2h bereit
+      - Full Statement binnen 8h
+      - Status-Page stündlich aktualisieren während akuter Phase
+      - Social Media Monitoring 24/7 während Krise
+    availableResources:
+      - name: 'Statement-Vorlagen (10 Szenarien)'
+        location: 'SharePoint /Krisenkommunikation'
+      - name: 'Media-Kontaktliste (100+ Journalisten)'
+        location: 'CRM-System'
+      - name: 'Status-Page statuspage.io'
+        type: 'SaaS'
+      - name: 'Dark Site (vorbereitet)'
+        location: 'crisis.example.de'
+    trainingSchedule: 'Halbjährliches Medientraining, jährliche Simulation mit externer PR-Agentur.'
+    lastActivatedAt: '2024-03-11 15:00:00'
+    lastTrainingAt: '2025-09-15 10:00:00'
+    nextTrainingAt: '2026-03-15 10:00:00'
+    documentation:
+      - title: 'Kommunikationsmatrix Krise'
+        version: '3.0'
+      - title: 'Pressestatement-Vorlagen'
+        version: '2.4'
+      - title: 'DSGVO-Anschreiben Betroffene'
+        version: '1.5'
+    notes: 'Bei Cyber-Incident nie aus den Incident-Details zitieren (forensische Beweissicherung). Holding Statement: "Wir untersuchen einen Sicherheitsvorfall..." ist Default.'
+
+  - teamName: 'Business Crisis Team (Strategischer Krisenstab)'
+    description: 'Strategischer Krisenstab auf C-Level-Ebene. Entscheidungen zu Geschäftskontinuität, Finanz-Impact, Lieferketten, Reputationsmanagement und langfristigen Maßnahmen.'
+    teamType: 'strategic'
+    isActive: true
+    members:
+      - name: 'Dr. Michael Lehmann'
+        role: 'CEO / Geschäftsführer (Team-Lead)'
+        contact: '+49 89 555-0100'
+        email: 'ceo@example.de'
+        responsibilities: 'Gesamtverantwortung, Final Authority'
+      - name: 'Dr. Anja Wolf'
+        role: 'CFO'
+        contact: '+49 89 555-0101'
+        email: 'cfo@example.de'
+        responsibilities: 'Finanz-Impact, Versicherung, Budget-Freigaben'
+      - name: 'Claudia Richter'
+        role: 'CISO'
+        contact: '+49 89 555-0110'
+        email: 'ciso@example.de'
+        responsibilities: 'Security-Lagebild, Risiken'
+      - name: 'Andreas Koch'
+        role: 'CIO'
+        contact: '+49 89 555-0150'
+        email: 'cio@example.de'
+        responsibilities: 'IT-Strategie, Service-Kontinuität'
+      - name: 'Klaus Wagner'
+        role: 'HR-Leitung / CHRO'
+        contact: '+49 89 555-0400'
+        email: 'hr@example.de'
+        responsibilities: 'Mitarbeiter, Arbeitsschutz, Betriebsrat'
+      - name: 'Maria Hofmann'
+        role: 'Leiterin Einkauf'
+        contact: '+49 89 555-0500'
+        email: 'einkauf@example.de'
+        responsibilities: 'Lieferkette, Notfallbeschaffung'
+      - name: 'Petra Schmidt'
+        role: 'Leiterin Kommunikation'
+        contact: '+49 89 555-0300'
+        email: 'komm@example.de'
+        responsibilities: 'Reputation, Stakeholder'
+      - name: 'Dr. Thomas Berg'
+        role: 'General Counsel (Legal)'
+        contact: '+49 89 555-0600'
+        email: 'legal@example.de'
+        responsibilities: 'Rechtliche Bewertung, Haftung, Behörden'
+    primaryPhone: '+49 89 555-0100'
+    primaryEmail: 'bct@example.de'
+    emergencyContacts:
+      - name: 'Aufsichtsrat-Vorsitzende Dr. Weiß'
+        type: 'intern-eskalation'
+        phone: '+49 89 999-1234'
+      - name: 'Wirtschaftsprüfer KPMG'
+        type: 'extern'
+        phone: '+49 89 9282-0'
+      - name: 'Cyber-Versicherung AIG'
+        type: 'extern'
+        phone: '+49 69 97113-0'
+    meetingLocation: 'Vorstandsetage HQ München, Konferenzraum V.01 (abhörsicher)'
+    backupMeetingLocation: 'Ausweichbüro Starnberg (gem. Rahmenvertrag) / Virtuell via Microsoft Teams'
+    virtualMeetingUrl: 'https://teams.microsoft.com/l/meetup-join/bct-crisis'
+    alertProcedures: |
+      Aktivierung durch CEO oder CISO (bei Cyber-Krise) oder Facility-Manager (bei Gebäude-Notfall).
+      Eskalation aus technischem Krisenstab bei Budget > 25k, Reputationsrisiko oder Behörden-Involvement.
+      Reaktionszeit: innerhalb 1h nach Alarmierung arbeitsfähig.
+    decisionAuthority: |
+      - Strategische Entscheidungen, Budget-Freigaben > 25.000 EUR: CEO
+      - Lösegeldzahlung bei Ransomware: CEO + CFO + Legal (Default: NEIN)
+      - Standort-Schließung: CEO + HR + Betriebsrat
+      - Kunden-Kommunikation bei Datenabfluss: CEO + DPO + Legal freigeben
+      - Versicherungsmeldungen: CFO
+      - Strafanzeige: Legal + CEO
+    communicationProtocols: |
+      - Tägliche Lagebesprechung 08:00 während Krise
+      - Aufsichtsrat-Briefing binnen 24h nach Aktivierung
+      - Investor-Kommunikation nur via CEO + CFO (Kapitalmarktrelevanz)
+      - Minutes jeder Sitzung rechtssicher dokumentieren (Legal-Assistenz)
+    availableResources:
+      - name: 'Rahmenvertrag PR-Agentur Burson'
+        type: 'Vertrag'
+      - name: 'Cyber-Insurance AIG (inkl. BAT)'
+        type: 'Policy'
+      - name: 'Retainer Großkanzlei (Crisis)'
+        type: 'Vertrag'
+      - name: 'Notfall-Liquidität (500k EUR vorab genehmigt)'
+        type: 'Budget'
+    trainingSchedule: 'Jährliche Krisen-Simulation mit externem Berater. Halbjährliches Update-Briefing zu Bedrohungslage durch CISO.'
+    lastActivatedAt: '2020-03-15 08:00:00'
+    lastTrainingAt: '2025-10-18 09:00:00'
+    nextTrainingAt: '2026-10-15 09:00:00'
+    documentation:
+      - title: 'BCT-Charta'
+        version: '1.2'
+      - title: 'Entscheidungsmatrix Krise'
+        version: '2.0'
+      - title: 'Aufsichtsrat-Meldepflichten'
+        version: '1.1'
+      - title: 'Cyber-Policy AIG'
+        version: '2025'
+    notes: 'Team wurde zuletzt 2020 real aktiviert (COVID-Pandemie). Seitdem nur Übungen. Wichtig: CFO und CEO persönlich in Entscheidung Lösegeldzahlung involvieren (Board-Freigabe bei größeren Summen).'
