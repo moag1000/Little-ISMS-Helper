@@ -1,4 +1,7 @@
 import './stimulus_bootstrap.js';
+
+// FairyAurora v4.0 — Alva Companion Event Bus (singleton, exposes window.alvaBus)
+import './js/alva-bus.js';
 /*
  * Welcome to your app's main JavaScript file!
  *

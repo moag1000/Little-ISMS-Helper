@@ -1,0 +1,97 @@
+/*
+ * FairyAurora v4.0 — Alva Companion Dock CSS
+ *
+ * Handles fixed-position dock, size variants, and the four corner positions.
+ * Token references: --alva-z, --alva-dock-offset-x, --alva-dock-offset-y
+ * defined in fairy-aurora.css (Phase 1).
+ *
+ * Do NOT modify fairy-aurora-components.css from this file (parallel agent constraint).
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   Dock Root
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-alva-dock {
+    position: fixed;
+    z-index: var(--alva-z, 9500);
+
+    /* Prevent the dock from swallowing pointer events across the viewport;
+       individual child elements restore pointer-events. */
+    pointer-events: none;
+
+    /* Smooth appear/disappear (e.g. toggled by JS) */
+    transition: opacity 0.2s ease-out;
+}
+
+/* Restore pointer events on the fairy so the user can interact */
+.fa-alva-dock > * {
+    pointer-events: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Four Corner Positions
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-alva-dock--pos-bottom-right {
+    right:  var(--alva-dock-offset-x, 24px);
+    bottom: var(--alva-dock-offset-y, 24px);
+}
+
+.fa-alva-dock--pos-bottom-left {
+    left:   var(--alva-dock-offset-x, 24px);
+    bottom: var(--alva-dock-offset-y, 24px);
+}
+
+.fa-alva-dock--pos-top-right {
+    right:  var(--alva-dock-offset-x, 24px);
+    top:    var(--alva-dock-offset-y, 24px);
+}
+
+.fa-alva-dock--pos-top-left {
+    left:   var(--alva-dock-offset-x, 24px);
+    top:    var(--alva-dock-offset-y, 24px);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Size Variants
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* sm — 56 px */
+.fa-alva-dock--size-sm .fa-alva {
+    width:  56px !important;
+    height: 56px !important;
+}
+
+/* md — 80 px (default) */
+.fa-alva-dock--size-md .fa-alva,
+.fa-alva-dock:not([class*="fa-alva-dock--size-"]) .fa-alva {
+    width:  80px !important;
+    height: 80px !important;
+}
+
+/* lg — 112 px */
+.fa-alva-dock--size-lg .fa-alva {
+    width:  112px !important;
+    height: 112px !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Mobile — hide on small screens to preserve real estate
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+    .fa-alva-dock {
+        display: none;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Reduced-Motion — dock itself should not animate entrance/exit
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+    .fa-alva-dock {
+        transition: none;
+    }
+}
