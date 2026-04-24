@@ -66,7 +66,7 @@
     {# Data Health Summary #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-' ~ (summary.health_score >= 90 ? 'success' : (summary.health_score >= 70 ? 'warning' : 'danger')) } %}
         {% block card_header %}
-            <div class="card-header bg-{% if summary.health_score >= 90 %}success{% elseif summary.health_score >= 70 %}warning{% else %}danger{% endif %} text-white">
+            <div class="card-header">
                 <h2 class="mb-0">
                     <i class="bi bi-heart-pulse" aria-hidden="true"></i> Data Health Score: {{ summary.health_score }}%
                 </h2>
@@ -117,7 +117,7 @@
     {% if summary.orphaned_count > 0 or summary.broken_references_count > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header bg-primary text-white">
+            <div class="card-header">
                 <h2 class="mb-0">
                     <i class="bi bi-tools" aria-hidden="true"></i> Quick Fix Tools
                 </h2>
@@ -660,7 +660,7 @@
     {% if controlsWithoutAssets|length > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
         {% block card_header %}
-            <div class="card-header bg-info text-white">
+            <div class="card-header">
                 <h2 class="mb-0">
                     <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'admin.data_repair.controls_without_assets'|trans({}, 'admin') }}
                 </h2>
@@ -806,7 +806,7 @@
     {% if inconsistentData.audits_completed_without_date is defined and inconsistentData.audits_completed_without_date|length > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
         {% block card_header %}
-            <div class="card-header bg-info text-white">
+            <div class="card-header">
                 <h2 class="mb-0">
                     <i class="bi bi-calendar-x" aria-hidden="true"></i> Completed Audits Without Completion Date
                 </h2>
@@ -832,7 +832,7 @@
     {% if inconsistentData.risks_residual_higher_than_inherent is defined and inconsistentData.risks_residual_higher_than_inherent|length > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
         {% block card_header %}
-            <div class="card-header bg-info text-white">
+            <div class="card-header">
                 <h2 class="mb-0">
                     <i class="bi bi-exclamation-circle" aria-hidden="true"></i> Risks with Residual > Inherent
                 </h2>
@@ -860,7 +860,7 @@
     {% if brokenReferences|length > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
         {% block card_header %}
-            <div class="card-header bg-danger text-white">
+            <div class="card-header">
                 <h2 class="mb-0">
                     <i class="bi bi-exclamation-octagon" aria-hidden="true"></i> {{ 'admin.data_repair.broken_references'|trans({}, 'admin') }}
                 </h2>
