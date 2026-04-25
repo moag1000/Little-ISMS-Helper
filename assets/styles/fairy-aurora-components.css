@@ -3308,9 +3308,20 @@ html[data-theme="dark"] .toast {
 
 /* ═══════════════════════════════════════════════════════════════════
    Bootstrap-.table — Aurora-Override (beide Modi)
-   Ergänzt die vorhandene table-Styling-Basis in app.css.
-   Setzt explizit die --bs-table-*-Tokens um Bootstrap-interne
-   Stripe/Hover-Rules zu steuern.
+
+   Token-only approach: Bootstrap's own rules
+   `.table>:not(caption)>*>*`, `.table-striped>...`, `.table-hover>...`
+   read --bs-table-* internally. Setting tokens at .table-level lets
+   Bootstrap's rules render Aurora colors without us re-declaring
+   identical selectors (which lose the source-order war when the table
+   also has .table-sm — that adds a class-specificity bump our
+   `.table > ...` selector can't match).
+
+   Thead override remains as a real rule because Bootstrap has no
+   --bs-table-thead-* token. Its selector specificity (0,1,3) beats
+   Bootstrap's `.table-sm:not(caption)>*>*` (0,2,1)? No — same level
+   class+type — so we use `.table > thead > tr > th:not([class*="bg-"])`
+   to add a class-presence specificity bump and ensure thead wins.
    ═══════════════════════════════════════════════════════════════════ */
 
 .table {
@@ -3326,32 +3337,18 @@ html[data-theme="dark"] .toast {
     color: var(--fg);
     border-color: var(--border);
 }
-.table > :not(caption) > * > * {
-    background-color: var(--bs-table-bg);
-    color: var(--bs-table-color);
-    border-bottom-color: var(--bs-table-border-color);
-}
-.table > thead {
+
+/* Thead — no Bootstrap token exists, so explicit rule with
+   class-bump specificity to beat .table-sm/.table-bordered etc. */
+.table.table > thead {
     background-color: var(--surface-2);
     color: var(--fg);
 }
-.table > thead > tr > th {
+.table.table > thead > tr > th {
     background-color: var(--surface-2);
     color: var(--fg);
     border-bottom: 2px solid var(--border);
     font-weight: 600;
-}
-.table-striped > tbody > tr:nth-of-type(odd) > * {
-    background-color: var(--surface-2);
-    color: var(--fg);
-}
-.table-hover > tbody > tr:hover > * {
-    background-color: var(--surface-3);
-    color: var(--fg);
-}
-.table-bordered > :not(caption) > * { border-color: var(--border); }
-.table-bordered > :not(caption) > * > * {
-    border: 1px solid var(--border);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
