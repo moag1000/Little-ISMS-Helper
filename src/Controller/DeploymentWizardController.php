@@ -157,7 +157,41 @@ class DeploymentWizardController extends AbstractController
             $defaultData = $session->get('setup_step1_form_data');
         }
 
-        // Second priority: Try to load from .env.local if it exists
+        // Second priority: Resolved DATABASE_URL from Symfony's .env-cascade.
+        // Symfony loads .env → .env.local → .env.{env} → .env.{env}.local in
+        // priority order; the result lives in $_ENV/getenv('DATABASE_URL').
+        // Reading this directly handles the case where DATABASE_URL is set
+        // in .env.prod / .env.prod.local — not .env.local — which the
+        // EnvironmentWriter doesn't see.
+        if (empty($defaultData)) {
+            $resolvedUrl = $_ENV['DATABASE_URL'] ?? getenv('DATABASE_URL') ?: null;
+            if ($resolvedUrl && str_contains($resolvedUrl, '://')) {
+                $parsed = @parse_url($resolvedUrl);
+                if (is_array($parsed) && !empty($parsed['scheme']) && !empty($parsed['host'])) {
+                    $scheme = strtolower($parsed['scheme']);
+                    $type = match (true) {
+                        str_starts_with($scheme, 'mysql') => 'mysql',
+                        str_starts_with($scheme, 'postgres') || str_starts_with($scheme, 'pgsql') => 'postgresql',
+                        $scheme === 'sqlite' => 'sqlite',
+                        default => 'mysql',
+                    };
+                    parse_str($parsed['query'] ?? '', $queryParams);
+                    $defaultData = [
+                        'type' => $type,
+                        'host' => $parsed['host'] ?? 'localhost',
+                        'port' => (int) ($parsed['port'] ?? ($type === 'postgresql' ? 5432 : 3306)),
+                        'name' => isset($parsed['path']) ? ltrim((string) $parsed['path'], '/') : 'little_isms_helper',
+                        'user' => isset($parsed['user']) ? urldecode((string) $parsed['user']) : 'root',
+                        'password' => isset($parsed['pass']) ? urldecode((string) $parsed['pass']) : '',
+                        'serverVersion' => $queryParams['serverVersion'] ?? ($type === 'postgresql' ? '15' : 'mariadb-11.4.0'),
+                        'unixSocket' => $queryParams['unix_socket'] ?? null,
+                    ];
+                    $this->addFlash('info', $this->translator->trans('setup.database.config_loaded'));
+                }
+            }
+        }
+
+        // Third priority: Try to load from .env.local if it exists
         $envLocalPath = $this->environmentWriter->getEnvLocalPath();
 
         if (empty($defaultData) && file_exists($envLocalPath)) {
