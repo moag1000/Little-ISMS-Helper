@@ -849,14 +849,19 @@ class RestoreService
             }
 
             foreach ($classMetadata->getAssociationMappings() as $mapping) {
-                if ($mapping['type'] !== ClassMetadata::MANY_TO_MANY) {
+                // Doctrine 3.x → 4.0: AssociationMapping ArrayAccess deprecated.
+                $type        = is_array($mapping) ? ($mapping['type'] ?? null)        : ($mapping->type        ?? null);
+                $isOwning    = is_array($mapping) ? ($mapping['isOwningSide'] ?? false) : ($mapping->isOwningSide ?? false);
+                $joinTable   = is_array($mapping) ? ($mapping['joinTable'] ?? null)   : ($mapping->joinTable   ?? null);
+
+                if ($type !== ClassMetadata::MANY_TO_MANY) {
                     continue;
                 }
-                if (!$mapping['isOwningSide']) {
+                if (!$isOwning) {
                     continue; // inverse side shares the same physical pivot — skip to avoid double-DELETE
                 }
 
-                $pivotTable = $mapping['joinTable']['name'] ?? null;
+                $pivotTable = is_array($joinTable) ? ($joinTable['name'] ?? null) : ($joinTable->name ?? null);
                 if ($pivotTable === null || in_array($pivotTable, $clearedPivots)) {
                     continue; // already processed this pivot table
                 }
@@ -914,16 +919,21 @@ class RestoreService
         $m2mStats = [];
 
         foreach ($classMetadata->getAssociationMappings() as $field => $mapping) {
-            if ($mapping['type'] !== ClassMetadata::MANY_TO_MANY) {
+            // Doctrine 3.x → 4.0: AssociationMapping ArrayAccess deprecated.
+            $type      = is_array($mapping) ? ($mapping['type'] ?? null)         : ($mapping->type         ?? null);
+            $isOwning  = is_array($mapping) ? ($mapping['isOwningSide'] ?? false): ($mapping->isOwningSide ?? false);
+            $joinTable = is_array($mapping) ? ($mapping['joinTable'] ?? null)    : ($mapping->joinTable    ?? null);
+
+            if ($type !== ClassMetadata::MANY_TO_MANY) {
                 continue;
             }
-            if (!$mapping['isOwningSide']) {
+            if (!$isOwning) {
                 continue; // inverse side does not own the pivot — skip
             }
 
-            $pivotTable    = $mapping['joinTable']['name'] ?? null;
-            $joinCols      = $mapping['joinTable']['joinColumns'] ?? [];   // owner FK columns
-            $invJoinCols   = $mapping['joinTable']['inverseJoinColumns'] ?? []; // target FK columns
+            $pivotTable  = is_array($joinTable) ? ($joinTable['name'] ?? null)               : ($joinTable->name ?? null);
+            $joinCols    = is_array($joinTable) ? ($joinTable['joinColumns'] ?? [])          : ($joinTable->joinColumns ?? []);
+            $invJoinCols = is_array($joinTable) ? ($joinTable['inverseJoinColumns'] ?? [])   : ($joinTable->inverseJoinColumns ?? []);
 
             if ($pivotTable === null || $joinCols === [] || $invJoinCols === []) {
                 continue;

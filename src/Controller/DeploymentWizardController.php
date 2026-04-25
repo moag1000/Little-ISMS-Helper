@@ -1828,10 +1828,7 @@ class DeploymentWizardController extends AbstractController
             $connection = $em->getConnection();
 
             // Setup-wizard semantics: "Datenbank-Struktur erstellen" creates
-            // a clean schema from current entity-metadata. If app-tables
-            // already exist (interrupted earlier attempt, partial upgrade),
-            // drop them first so createSchema can build a coherent state.
-            // Doctrine_migration_versions is preserved for tracking.
+            // a clean schema from current entity-metadata.
             $schemaManager = $connection->createSchemaManager();
             $existingTables = $schemaManager->listTableNames();
             $existingAppTables = array_filter(
@@ -1840,9 +1837,34 @@ class DeploymentWizardController extends AbstractController
             );
 
             if ($existingAppTables !== []) {
-                // Drop in reverse-FK-dependency order via SchemaTool (handles
-                // cascade FKs that plain DROP TABLE would refuse).
-                $schemaTool->dropSchema($metadata);
+                // SchemaTool::dropSchema() resolves FK-dependency-order →
+                // ~50s on hosted DBs (one ALTER per FK, ~hundreds of round-trips).
+                // For full reset, brute-force-drop is ~1s: disable FK checks,
+                // DROP TABLE all, re-enable. MySQL/MariaDB only — Postgres
+                // uses CASCADE on DROP TABLE.
+                $platform = $connection->getDatabasePlatform()::class;
+                $isMysql = stripos($platform, 'MySQL') !== false || stripos($platform, 'MariaDB') !== false;
+                $isPostgres = stripos($platform, 'PostgreSQL') !== false;
+
+                try {
+                    if ($isMysql) {
+                        $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 0');
+                        foreach ($existingAppTables as $table) {
+                            $connection->executeStatement('DROP TABLE IF EXISTS `' . str_replace('`', '', $table) . '`');
+                        }
+                        $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1');
+                    } elseif ($isPostgres) {
+                        foreach ($existingAppTables as $table) {
+                            $connection->executeStatement('DROP TABLE IF EXISTS "' . str_replace('"', '', $table) . '" CASCADE');
+                        }
+                    } else {
+                        // SQLite or unknown — fall back to SchemaTool
+                        $schemaTool->dropSchema($metadata);
+                    }
+                } catch (\Throwable $brute) {
+                    // Brute-drop failed (permissions, locks) — fall back to SchemaTool
+                    $schemaTool->dropSchema($metadata);
+                }
             }
 
             $schemaTool->createSchema($metadata);
