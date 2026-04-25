@@ -231,7 +231,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const serverFields = document.getElementById('server-fields');
     const unixSocketField = document.getElementById('unix-socket-field');
     const serverVersionField = document.getElementById('server-version-field');
-    const serverVersionInput = document.getElementById('serverVersionInput');
+    // Use the form's actual rendered id — form themes may strip the attr-override.
+    const serverVersionInput = document.getElementById('{{ form.serverVersion.vars.id }}')
+        || document.getElementById('serverVersionInput');
     const serverVersionSelect = document.getElementById('serverVersionSelect');
 
     // Version options grouped by database type
@@ -264,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateVersionDropdown(dbType) {
-        if (!serverVersionSelect) return;
+        if (!serverVersionSelect || !serverVersionInput) return;
 
         // Hide all optgroups first
         const optgroups = serverVersionSelect.querySelectorAll('optgroup');
