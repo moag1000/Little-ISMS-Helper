@@ -42,6 +42,7 @@ admin:
         import: Import
         data_repair: Daten-Reparatur
         sample_data: Beispieldaten
+        mapping_quality: 'Mapping-Qualität'
         licensing: Lizenzierung
         license_management: Lizenz-Verwaltung
         kpi_thresholds: 'KPI-Schwellwerte'
@@ -246,6 +247,42 @@ admin:
         confirm_reset: 'Alle Tour-Markierungen für %user% wirklich zurücksetzen? Der Nutzer sieht das Einweisungs-Banner beim nächsten Login wieder.'
         empty: 'Keine Benutzer entsprechen den aktuellen Filtern.'
         audit_hint: 'Dieser Report ist als <strong>Audit-Nachweis</strong> für ISO 27001 Annex A.6.3 (Information Security Awareness, Education and Training) nutzbar. Er zeigt wer wann in die Tool-Bedienung eingeführt wurde — pro Rolle eine eigene Tour mit rollen-spezifischem Content.'
+    mapping_quality:
+        title: 'Mapping-Qualität'
+        description: 'MQS (Mapping Quality Score 0-100) je Cross-Framework-Mapping mit Aufschlüsselung in 6 Dimensionen: Provenance, Methodology, Confidence, Coverage, Bidirectional Coherence, Lifecycle. Auditfeste Dokumentation der Cross-Framework-Brücken.'
+        detail_title: 'Mapping-Detail'
+        mqs_score: 'MQS-Score'
+        mqs_max: 'von 100 maximal'
+        recompute: 'Alle MQS neu berechnen'
+        recompute_confirm: 'Wirklich alle MQS-Scores neu berechnen? Kann bei vielen Mappings einige Sekunden dauern.'
+        no_results: 'Keine Mappings vorhanden, die zum Filter passen.'
+        stats:
+            total: 'Mappings gesamt'
+            avg_mqs: 'Ø MQS-Score'
+            published: 'Im Lifecycle "published"'
+            low_score_published: 'Published mit MQS < 60 (kritisch)'
+        filter:
+            state: 'Lifecycle-Status'
+            min_score: 'Min. MQS'
+            all: '— alle —'
+        col:
+            source_target: 'Source → Target'
+            relationship: 'Beziehung'
+            confidence: 'Konfidenz'
+            lifecycle: 'Lifecycle'
+            mqs: 'MQS'
+        field:
+            relationship: 'Beziehungstyp'
+            confidence: 'Konfidenz'
+            lifecycle: 'Lifecycle-Status'
+            provenance: 'Quelle (Provenance)'
+            methodology: 'Methodik'
+            rationale: 'Begründung'
+            gap_warning: 'Lücken-Warnung'
+            audit_evidence: 'Audit-Evidence-Hinweis'
+            version: 'Version'
+            source_id: 'Source-Tag'
+
     sample_data:
         title: 'Beispieldaten'
         description: 'Demo-Datensätze (Assets, Risiken, Geschäftsprozesse …) für den aktuellen Mandanten importieren oder wieder entfernen.'

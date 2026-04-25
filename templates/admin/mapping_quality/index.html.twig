@@ -1,0 +1,136 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+
+{% block title %}{{ 'admin.mapping_quality.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block admin_title %}
+    <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'admin.mapping_quality.title'|trans({}, 'admin') }}
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
+            { label: 'admin.mapping_quality.title'|trans({}, 'admin') }
+        ]
+    } %}
+
+    <p class="text-muted mb-4">{{ 'admin.mapping_quality.description'|trans({}, 'admin') }}</p>
+
+    {# Aggregate-Statistiken #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            {% embed '_components/_card.html.twig' with { class: 'text-center h-100' } %}
+                {% block card_body %}
+                    <h2 class="mb-1">{{ stats.total }}</h2>
+                    <p class="mb-0 text-muted small">{{ 'admin.mapping_quality.stats.total'|trans({}, 'admin') }}</p>
+                {% endblock %}
+            {% endembed %}
+        </div>
+        <div class="col-md-3">
+            {% embed '_components/_card.html.twig' with { class: 'text-center h-100' } %}
+                {% block card_body %}
+                    <h2 class="mb-1 text-{{ stats.avg_mqs >= 80 ? 'success' : (stats.avg_mqs >= 60 ? 'warning' : 'danger') }}">{{ stats.avg_mqs }}</h2>
+                    <p class="mb-0 text-muted small">{{ 'admin.mapping_quality.stats.avg_mqs'|trans({}, 'admin') }}</p>
+                {% endblock %}
+            {% endembed %}
+        </div>
+        <div class="col-md-3">
+            {% embed '_components/_card.html.twig' with { class: 'text-center h-100' } %}
+                {% block card_body %}
+                    <h2 class="mb-1 text-success">{{ stats.by_state.published|default(0) }}</h2>
+                    <p class="mb-0 text-muted small">{{ 'admin.mapping_quality.stats.published'|trans({}, 'admin') }}</p>
+                {% endblock %}
+            {% endembed %}
+        </div>
+        <div class="col-md-3">
+            {% embed '_components/_card.html.twig' with { class: 'text-center h-100' } %}
+                {% block card_body %}
+                    <h2 class="mb-1 text-{{ stats.low_score_published > 0 ? 'danger' : 'success' }}">{{ stats.low_score_published }}</h2>
+                    <p class="mb-0 text-muted small">{{ 'admin.mapping_quality.stats.low_score_published'|trans({}, 'admin') }}</p>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+
+    {# Filter + Recompute #}
+    <div class="d-flex justify-content-between align-items-end mb-3 gap-3 flex-wrap">
+        <form method="get" class="d-flex gap-2 align-items-end flex-wrap">
+            <div>
+                <label class="form-label small mb-1" for="state">{{ 'admin.mapping_quality.filter.state'|trans({}, 'admin') }}</label>
+                <select name="state" id="state" class="form-select form-select-sm">
+                    <option value="">{{ 'admin.mapping_quality.filter.all'|trans({}, 'admin') }}</option>
+                    {% for s in lifecycleStates %}
+                        <option value="{{ s }}" {% if filterState == s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="form-label small mb-1" for="min_score">{{ 'admin.mapping_quality.filter.min_score'|trans({}, 'admin') }}</label>
+                <input type="number" name="min_score" id="min_score" min="0" max="100" value="{{ filterMinScore }}" class="form-control form-control-sm" style="width: 100px;">
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary">{{ 'common.filter'|trans({}, 'messages')|default('Filter') }}</button>
+        </form>
+        <form method="post" action="{{ path('admin_mapping_quality_recompute') }}"
+              data-controller="ui-actions"
+              data-action="submit->ui-actions#confirm"
+              data-ui-actions-message-param="{{ 'admin.mapping_quality.recompute_confirm'|trans({}, 'admin') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('mapping_quality_recompute') }}">
+            <button type="submit" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'admin.mapping_quality.recompute'|trans({}, 'admin') }}
+            </button>
+        </form>
+    </div>
+
+    {# Liste #}
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
+            {% if mappings|length == 0 %}
+                <div class="alert alert-info mb-0">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'admin.mapping_quality.no_results'|trans({}, 'admin') }}
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>{{ 'admin.mapping_quality.col.source_target'|trans({}, 'admin') }}</th>
+                                <th>{{ 'admin.mapping_quality.col.relationship'|trans({}, 'admin') }}</th>
+                                <th>{{ 'admin.mapping_quality.col.confidence'|trans({}, 'admin') }}</th>
+                                <th>{{ 'admin.mapping_quality.col.lifecycle'|trans({}, 'admin') }}</th>
+                                <th class="text-end">{{ 'admin.mapping_quality.col.mqs'|trans({}, 'admin') }}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for m in mappings %}
+                            <tr>
+                                <td>
+                                    <code class="small">{{ m.sourceRequirement.requirementId }}</code>
+                                    <i class="bi bi-arrow-right small text-muted" aria-hidden="true"></i>
+                                    <code class="small">{{ m.targetRequirement.requirementId }}</code>
+                                    <div class="small text-muted">{{ m.sourceRequirement.complianceFramework.name }} → {{ m.targetRequirement.complianceFramework.name }}</div>
+                                </td>
+                                <td>{% if m.relationship %}{% include '_components/_badge.html.twig' with { variant: 'secondary', content: m.relationship|replace({'_': ' '}) } %}{% else %}—{% endif %}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: m.confidence == 'high' ? 'success' : (m.confidence == 'medium' ? 'warning' : 'secondary'), content: m.confidence } %}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: m.lifecycleBadgeClass, content: m.lifecycleState } %}</td>
+                                <td class="text-end">
+                                    {% set scoreClass = m.qualityScore >= 80 ? 'success' : (m.qualityScore >= 60 ? 'warning' : 'danger') %}
+                                    <span class="fw-bold text-{{ scoreClass }}">{{ m.qualityScore ?? '–' }}</span>
+                                </td>
+                                <td class="text-end">
+                                    <a href="{{ path('admin_mapping_quality_show', {id: m.id}) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endblock %}

@@ -570,6 +570,12 @@
                                 <span class="mega-menu-link-title">{{ 'admin.nav.sample_data'|trans({}, 'admin') }}</span>
                             </div>
                         </a></li>
+                        <li><a href="{{ path('admin_mapping_quality_index') }}" class="{% if current_route starts with 'admin_mapping_quality' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-shield-check text-success" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.mapping_quality'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
                         <li><a href="{{ path('monitoring_health') }}" class="{% if current_route starts with 'monitoring_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-heart-pulse" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
