@@ -142,8 +142,8 @@ class MappingQualityScoreService
      */
     private function scoreCoverage(ComplianceMapping $m): int
     {
-        $sourceFw = $m->getSourceRequirement()?->getComplianceFramework();
-        $targetFw = $m->getTargetRequirement()?->getComplianceFramework();
+        $sourceFw = $m->getSourceRequirement()?->getFramework();
+        $targetFw = $m->getTargetRequirement()?->getFramework();
         if ($sourceFw === null || $targetFw === null) {
             return 0;
         }
@@ -167,8 +167,8 @@ class MappingQualityScoreService
             return self::WEIGHT_BIDIRECTIONAL;
         }
 
-        $sourceFw = $m->getSourceRequirement()?->getComplianceFramework();
-        $targetFw = $m->getTargetRequirement()?->getComplianceFramework();
+        $sourceFw = $m->getSourceRequirement()?->getFramework();
+        $targetFw = $m->getTargetRequirement()?->getFramework();
         if ($sourceFw === null || $targetFw === null) {
             return 0;
         }

@@ -109,6 +109,36 @@
                     {% endif %}
                 {% endblock %}
             {% endembed %}
+
+            {# Lifecycle-Transitions #}
+            {% if allowedTransitions|length > 0 %}
+                {% embed '_components/_card.html.twig' with { class: 'mt-3' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h3 class="h6 mb-0">{{ 'admin.mapping_quality.lifecycle_actions'|trans({}, 'admin') }}</h3>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <p class="small text-muted">{{ 'admin.mapping_quality.transition_hint'|trans({}, 'admin') }}</p>
+                        {% for state in allowedTransitions %}
+                            <form method="post" action="{{ path('admin_mapping_quality_transition', {id: mapping.id}) }}" class="mb-2"
+                                  data-controller="ui-actions"
+                                  data-action="submit->ui-actions#confirm"
+                                  data-ui-actions-message-param="{{ 'admin.mapping_quality.transition_confirm'|trans({'%state%': state}, 'admin') }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('mapping_lifecycle_' ~ mapping.id) }}">
+                                <input type="hidden" name="to" value="{{ state }}">
+                                {% if state in ['approved', 'published', 'deprecated'] %}
+                                    <input type="text" name="reason" class="form-control form-control-sm mb-1" placeholder="{{ 'admin.mapping_quality.transition_reason_placeholder'|trans({}, 'admin') }}">
+                                {% endif %}
+                                {% set btnClass = state == 'published' ? 'success' : (state == 'deprecated' ? 'danger' : (state == 'approved' ? 'primary' : 'secondary')) %}
+                                <button type="submit" class="btn btn-sm btn-{{ btnClass }} w-100">
+                                    <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ state }}
+                                </button>
+                            </form>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
         </div>
     </div>
 </div>
