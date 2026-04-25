@@ -47,18 +47,18 @@ jobs:
       - name: Check if license-report script exists
         id: check_script
         run: |
-          if [ -f "license-report.sh" ]; then
+          if [ -f "scripts/tools/license-report.sh" ]; then
             echo "script_exists=true" >> $GITHUB_OUTPUT
-            echo "✅ license-report.sh found"
+            echo "✅ scripts/tools/license-report.sh found"
           else
             echo "script_exists=false" >> $GITHUB_OUTPUT
-            echo "⚠️ license-report.sh not found - skipping license check"
+            echo "⚠️ scripts/tools/license-report.sh not found - skipping license check"
             echo "::warning::License compliance script not found in this branch/commit. This is expected for older branches."
           fi
 
       - name: Make license-report script executable
         if: steps.check_script.outputs.script_exists == 'true'
-        run: chmod +x license-report.sh
+        run: chmod +x scripts/tools/license-report.sh
 
       - name: Create reports directory
         if: steps.check_script.outputs.script_exists == 'true'
@@ -68,7 +68,7 @@ jobs:
         if: steps.check_script.outputs.script_exists == 'true'
         id: license_report
         run: |
-          ./license-report.sh
+          ./scripts/tools/license-report.sh
           echo "report_generated=true" >> $GITHUB_OUTPUT
 
       - name: Check for problematic licenses
