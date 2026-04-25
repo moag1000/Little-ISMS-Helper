@@ -21,7 +21,9 @@
         )|raw }}
     {% endif %}
 
-    <form method="post" action="{{ path('setup_step7_modules_save') }}" class="fa-setup-modules-form">
+    <form method="post" action="{{ path('setup_step7_modules_save') }}" class="fa-setup-modules-form"
+          data-controller="wizard-busy"
+          data-wizard-busy-message-value="{{ 'setup.alva.busy.default'|trans({}, 'setup') }}">
         <input type="hidden" name="_token" value="{{ csrf_token('setup_modules') }}">
 
         {# Required Modules #}

@@ -137,7 +137,9 @@
 
                         {# Skip Option #}
                         <div class="text-center mt-3">
-                            <form method="post" action="{{ path('setup_step5_email_config_skip') }}" class="d-inline">
+                            <form method="post" action="{{ path('setup_step5_email_config_skip') }}" class="d-inline"
+                                  data-controller="wizard-busy"
+                                  data-wizard-busy-message-value="{{ 'setup.alva.busy.default'|trans({}, 'setup') }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('setup_email_skip') }}">
                                 <button type="submit" class="btn btn-sm btn-outline-secondary">
                                     <i class="bi bi-skip-forward me-1" aria-hidden="true"></i>
