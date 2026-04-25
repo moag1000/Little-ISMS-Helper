@@ -58,7 +58,7 @@ jobs:
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -115,7 +115,7 @@ jobs:
           fi
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         if: matrix.php-version == '8.4'
         with:
           files: ./coverage.xml
@@ -141,7 +141,6 @@ jobs:
 
       - name: Run PHP CS Fixer (dry-run)
         run: |
-          composer require --dev friendsofphp/php-cs-fixer || true
           if [ -f vendor/bin/php-cs-fixer ]; then
             vendor/bin/php-cs-fixer fix --dry-run --diff
           else
@@ -151,13 +150,11 @@ jobs:
 
       - name: Run PHPStan
         run: |
-          composer require --dev phpstan/phpstan || true
           if [ -f vendor/bin/phpstan ]; then
             vendor/bin/phpstan analyse src --level=1 || true
           else
             echo "PHPStan not available, skipping"
           fi
-        continue-on-error: true
 
       # FairyAurora v3.0 — A11y-Kontrast-Gate (WCAG 2.2 AA)
       - name: FairyAurora A11y Contrast Audit

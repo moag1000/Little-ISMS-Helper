@@ -264,11 +264,12 @@ class DeploymentWizardControllerTest extends WebTestCase
         // Try to submit without CSRF token
         $this->client->request('POST', '/en/setup/step3-restore-backup/create-schema');
 
-        // Should redirect (CSRF validation fails and redirects)
+        // This is a JSON endpoint: CSRF failure returns a 400 JSON error response
         $statusCode = $this->client->getResponse()->getStatusCode();
-        $this->assertTrue(
-            $statusCode === Response::HTTP_FOUND || $statusCode === Response::HTTP_OK,
-            "Expected redirect or success, got {$statusCode}"
+        $this->assertSame(
+            Response::HTTP_BAD_REQUEST,
+            $statusCode,
+            "Expected 400 JSON error on missing CSRF token, got {$statusCode}"
         );
     }
 
@@ -282,15 +283,15 @@ class DeploymentWizardControllerTest extends WebTestCase
     public function testStep9BaseDataImportRequiresCsrfToken(): void
     {
         $this->client->request('POST', '/en/setup/step9-base-data/import');
-        // Should redirect due to CSRF validation failure
-        $this->assertResponseRedirects();
+        // This is a JSON endpoint: CSRF failure returns 400 JSON error response
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
     public function testStep10SampleDataImportRequiresCsrfToken(): void
     {
         $this->client->request('POST', '/en/setup/step10-sample-data/import');
-        // Should redirect due to CSRF validation failure
-        $this->assertResponseRedirects();
+        // This is a JSON endpoint: CSRF failure returns 400 JSON error response
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
     public function testStep10SampleDataSkipRequiresCsrfToken(): void
