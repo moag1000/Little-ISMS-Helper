@@ -474,6 +474,28 @@ class DeploymentWizardController extends AbstractController
             'schema_created' => (bool) $session->get('setup_schema_created', false),
         ]);
     }
+
+    /**
+     * Generic async-job status endpoint for setup-wizard long-running routes.
+     * Reads session.<job>_status + session.<job>_message; <job> from query string.
+     * Allow-list of valid job keys to prevent arbitrary session-key reads.
+     */
+    #[Route('/setup/job-status', name: 'setup_job_status', methods: ['GET'])]
+    public function setupJobStatus(Request $request, SessionInterface $session): Response
+    {
+        $allowedJobs = ['restore_upload', 'base_data', 'sample_data'];
+        $job = $request->query->get('job');
+        if (!in_array($job, $allowedJobs, true)) {
+            return new \Symfony\Component\HttpFoundation\JsonResponse(
+                ['status' => 'error', 'message' => 'unknown job key'],
+                400
+            );
+        }
+        return new \Symfony\Component\HttpFoundation\JsonResponse([
+            'status' => $session->get($job . '_status') ?? 'idle',
+            'message' => $session->get($job . '_message'),
+        ]);
+    }
     /**
      * Step 3: Process Backup Restore Upload
      */
@@ -517,6 +539,19 @@ class DeploymentWizardController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
         ini_set('max_execution_time', 0);
+
+        // Async-job pattern: respond immediately, continue in background.
+        $session->set('restore_upload_status', 'running');
+        $session->set('restore_upload_message', null);
+        $session->save();
+
+        $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
+        $immediateResponse->send();
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        } elseif (function_exists('litespeed_finish_request')) {
+            litespeed_finish_request();
+        }
 
         try {
             // Save file temporarily
@@ -597,28 +632,30 @@ class DeploymentWizardController extends AbstractController
             }
 
             if ($hasIssues) {
-                $this->addFlash('warning', 'Backup wiederhergestellt! Bitte prüfen und reparieren Sie die gefundenen Datenqualitäts-Probleme.');
+                $session->set('restore_upload_status', 'success');
+                $session->set('restore_upload_message', 'Backup wiederhergestellt mit Datenqualitäts-Hinweisen.');
             } else {
-                $this->addFlash('success', 'Backup erfolgreich wiederhergestellt! Setup ist abgeschlossen.');
+                $session->set('restore_upload_status', 'success');
+                $session->set('restore_upload_message', 'Backup erfolgreich wiederhergestellt.');
             }
 
             $session->set('backup_restore_result', $restoreResult);
-
-            // Redirect back to step 3 to show orphan repair UI (if needed)
-            return $this->redirectToRoute('setup_step3_restore_backup');
+            $session->save();
+            return $immediateResponse;
         } catch (Exception $e) {
             $logger->error('Backup restore failed during setup step 3', [
                 'error' => $e->getMessage(),
             ]);
 
-            $this->addFlash('error', 'Fehler bei der Wiederherstellung: ' . $e->getMessage());
+            $session->set('restore_upload_status', 'failed');
+            $session->set('restore_upload_message', 'Fehler bei der Wiederherstellung: ' . $e->getMessage());
 
             $session->set('backup_restore_result', [
                 'success' => false,
                 'message' => $e->getMessage(),
             ]);
-
-            return $this->redirectToRoute('setup_step3_restore_backup');
+            $session->save();
+            return $immediateResponse;
         }
     }
     /**
@@ -1607,30 +1644,58 @@ class DeploymentWizardController extends AbstractController
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_base_data', $token)) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
-            return $this->redirectToRoute('setup_step9_base_data');
+            return new \Symfony\Component\HttpFoundation\JsonResponse(
+                ['status' => 'error', 'message' => $this->translator->trans('common.csrf_error')],
+                400
+            );
         }
 
-        $selectedModules = $session->get('setup_selected_modules', []);
+        set_time_limit(0);
+        ignore_user_abort(true);
+        ini_set('max_execution_time', 0);
 
-        $result = $this->dataImportService->importBaseData($selectedModules);
+        // Async-job pattern
+        $session->set('base_data_status', 'running');
+        $session->set('base_data_message', null);
+        $session->save();
 
-        $successCount = 0;
-        $errorCount = 0;
+        $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
+        $immediateResponse->send();
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        } elseif (function_exists('litespeed_finish_request')) {
+            litespeed_finish_request();
+        }
 
-        foreach ($result['results'] as $importResult) {
-            if ($importResult['status'] === 'success') {
-                $successCount++;
-                $this->addFlash('success', $importResult['name'] . ': ' . $importResult['message']);
-            } elseif ($importResult['status'] === 'error') {
-                $errorCount++;
-                $this->addFlash('error', $importResult['name'] . ': ' . $importResult['message']);
+        try {
+            $selectedModules = $session->get('setup_selected_modules', []);
+            $result = $this->dataImportService->importBaseData($selectedModules);
+
+            $successCount = 0;
+            $errorCount = 0;
+            $details = [];
+            foreach ($result['results'] as $importResult) {
+                if ($importResult['status'] === 'success') {
+                    $successCount++;
+                } elseif ($importResult['status'] === 'error') {
+                    $errorCount++;
+                    $details[] = $importResult['name'] . ': ' . $importResult['message'];
+                }
             }
+
+            $session->set('setup_base_data_imported', true);
+            $session->set('base_data_status', 'success');
+            $session->set('base_data_message', sprintf(
+                '%d Imports erfolgreich%s',
+                $successCount,
+                $errorCount > 0 ? ' (' . $errorCount . ' Fehler: ' . implode('; ', $details) . ')' : ''
+            ));
+        } catch (\Throwable $e) {
+            $session->set('base_data_status', 'failed');
+            $session->set('base_data_message', $e->getMessage());
         }
-
-        $session->set('setup_base_data_imported', true);
-
-        return $this->redirectToRoute('setup_step10_sample_data');
+        $session->save();
+        return $immediateResponse;
     }
     /**
      * Step 10: Sample Data (Optional)
@@ -1679,24 +1744,58 @@ class DeploymentWizardController extends AbstractController
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_sample_data', $token)) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
-            return $this->redirectToRoute('setup_step10_sample_data');
+            return new \Symfony\Component\HttpFoundation\JsonResponse(
+                ['status' => 'error', 'message' => $this->translator->trans('common.csrf_error')],
+                400
+            );
         }
 
-        $selectedModules = $session->get('setup_selected_modules', []);
-        $selectedSamples = $request->request->all('samples') ?? [];
+        set_time_limit(0);
+        ignore_user_abort(true);
+        ini_set('max_execution_time', 0);
 
-        $result = $this->dataImportService->importSampleData($selectedSamples, $selectedModules);
+        // Async-job pattern
+        $session->set('sample_data_status', 'running');
+        $session->set('sample_data_message', null);
+        $session->save();
 
-        foreach ($result['results'] as $importResult) {
-            if ($importResult['status'] === 'success') {
-                $this->addFlash('success', $importResult['name'] . ': ' . $importResult['message']);
-            } elseif ($importResult['status'] === 'error') {
-                $this->addFlash('error', $importResult['name'] . ': ' . $importResult['message']);
+        $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
+        $immediateResponse->send();
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        } elseif (function_exists('litespeed_finish_request')) {
+            litespeed_finish_request();
+        }
+
+        try {
+            $selectedModules = $session->get('setup_selected_modules', []);
+            $selectedSamples = $request->request->all('samples') ?? [];
+            $result = $this->dataImportService->importSampleData($selectedSamples, $selectedModules);
+
+            $successCount = 0;
+            $errorCount = 0;
+            $details = [];
+            foreach ($result['results'] as $importResult) {
+                if ($importResult['status'] === 'success') {
+                    $successCount++;
+                } elseif ($importResult['status'] === 'error') {
+                    $errorCount++;
+                    $details[] = $importResult['name'] . ': ' . $importResult['message'];
+                }
             }
-        }
 
-        return $this->redirectToRoute('setup_step11_complete');
+            $session->set('sample_data_status', 'success');
+            $session->set('sample_data_message', sprintf(
+                '%d Sample-Imports erfolgreich%s',
+                $successCount,
+                $errorCount > 0 ? ' (' . $errorCount . ' Fehler: ' . implode('; ', $details) . ')' : ''
+            ));
+        } catch (\Throwable $e) {
+            $session->set('sample_data_status', 'failed');
+            $session->set('sample_data_message', $e->getMessage());
+        }
+        $session->save();
+        return $immediateResponse;
     }
     /**
      * Step 10: Skip Sample Data
