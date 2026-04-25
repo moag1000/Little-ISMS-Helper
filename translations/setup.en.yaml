@@ -20,6 +20,7 @@ setup:
             repair: 'Alva is repairing orphan entries and resetting the database — please wait.'
             base_data: 'Alva is importing master data (roles, framework defaults) — one moment please.'
             sample_data: 'Alva is loading sample data (demo risks, assets, controls) — this takes a few seconds.'
+            skip_restore: 'Alva is skipping the backup restore — one moment please.'
 
     # Index/Landing Page
     already_complete:
