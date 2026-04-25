@@ -1991,34 +1991,62 @@ class DeploymentWizardController extends AbstractController
                 }
             }
 
-            $schemaTool->createSchema($metadata);
+            // CreateSchema with FK_CHECKS=0 + transaction-wrap.
+            // SchemaTool emits ~250 SQL statements (CREATE TABLE × ~100 +
+            // ALTER ADD CONSTRAINT × ~150). Each is a separate round-trip
+            // → 25-50s on hosted DBs. Wrap them in a single transaction so
+            // there's only ONE commit/fsync at the end + skip FK validation
+            // during creation.
+            $platform = $connection->getDatabasePlatform()::class;
+            $isMysql = stripos($platform, 'MySQL') !== false || stripos($platform, 'MariaDB') !== false;
 
-            // Mark every migration version as executed so future migrate-calls skip them
-            $connection = $em->getConnection();
+            if ($isMysql) {
+                $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 0');
+            }
+            $connection->beginTransaction();
+            try {
+                $schemaTool->createSchema($metadata);
+                $connection->commit();
+            } catch (\Throwable $e) {
+                $connection->rollBack();
+                throw $e;
+            } finally {
+                if ($isMysql) {
+                    $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1');
+                }
+            }
+
+            // Mark every migration version as executed so future migrate-calls skip them.
+            // Single multi-VALUES INSERT — one round-trip instead of 34.
             $migrationFiles = glob($this->getParameter('kernel.project_dir') . '/migrations/Version*.php') ?: [];
             $registered = 0;
-            foreach ($migrationFiles as $file) {
-                $base = basename($file, '.php');
-                $version = 'DoctrineMigrations\\' . $base;
+            if ($migrationFiles !== []) {
                 try {
                     $connection->executeStatement(
-                        'INSERT IGNORE INTO doctrine_migration_versions (version, executed_at, execution_time) VALUES (?, NOW(), 0)',
-                        [$version]
+                        'CREATE TABLE IF NOT EXISTS doctrine_migration_versions (version VARCHAR(191) PRIMARY KEY, executed_at DATETIME, execution_time INT)'
                     );
-                    $registered++;
+                    $values = [];
+                    $params = [];
+                    foreach ($migrationFiles as $file) {
+                        $values[] = '(?, NOW(), 0)';
+                        $params[] = 'DoctrineMigrations\\' . basename($file, '.php');
+                    }
+                    $sql = 'INSERT IGNORE INTO doctrine_migration_versions (version, executed_at, execution_time) VALUES '
+                        . implode(', ', $values);
+                    $connection->executeStatement($sql, $params);
+                    $registered = count($migrationFiles);
                 } catch (\Throwable) {
-                    // Table may not exist yet (Doctrine creates it lazily on first migrate). Bootstrap it.
-                    try {
-                        $connection->executeStatement(
-                            'CREATE TABLE IF NOT EXISTS doctrine_migration_versions (version VARCHAR(191) PRIMARY KEY, executed_at DATETIME, execution_time INT)'
-                        );
-                        $connection->executeStatement(
-                            'INSERT IGNORE INTO doctrine_migration_versions (version, executed_at, execution_time) VALUES (?, NOW(), 0)',
-                            [$version]
-                        );
-                        $registered++;
-                    } catch (\Throwable) {
-                        // ignore
+                    // Fallback per-row in case bulk INSERT fails (e.g. SQL_MODE STRICT)
+                    foreach ($migrationFiles as $file) {
+                        try {
+                            $connection->executeStatement(
+                                'INSERT IGNORE INTO doctrine_migration_versions (version, executed_at, execution_time) VALUES (?, NOW(), 0)',
+                                ['DoctrineMigrations\\' . basename($file, '.php')]
+                            );
+                            $registered++;
+                        } catch (\Throwable) {
+                            // ignore
+                        }
                     }
                 }
             }
