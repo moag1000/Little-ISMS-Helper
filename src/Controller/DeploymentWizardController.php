@@ -418,6 +418,12 @@ class DeploymentWizardController extends AbstractController
         // session->save() already triggered session_write_close().
         $this->setupJobStatusService->start('schema_create');
 
+        // CRITICAL: release session lock BEFORE the long-running work,
+        // otherwise polling requests block on the same session file lock
+        // for the entire schema-creation duration. CSRF validation above
+        // already opened the session — we close it here.
+        $session->save();
+
         // Send immediate response. fastcgi_finish_request() lets PHP-FPM
         // close the connection so the user sees status=started right away;
         // the rest of the script keeps running in the background.
@@ -563,6 +569,9 @@ class DeploymentWizardController extends AbstractController
         // Async-job pattern: respond immediately, continue in background.
         // File-based status (NOT session): see SetupJobStatusService comments.
         $this->setupJobStatusService->start('restore_upload');
+
+        // Release session lock before long-running work so pollers don't block.
+        $session->save();
 
         $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
         $immediateResponse->send();
@@ -713,6 +722,9 @@ class DeploymentWizardController extends AbstractController
             'password' => $session->get('setup_db_password', ''),
             'unixSocket' => $session->get('setup_db_socket'),
         ];
+
+        // Release session lock so polling requests don't block on it.
+        $session->save();
 
         $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
         $immediateResponse->send();
@@ -1668,6 +1680,9 @@ class DeploymentWizardController extends AbstractController
         // Pre-read session data — session becomes read-only after fastcgi_finish_request
         $selectedModules = $session->get('setup_selected_modules', []);
 
+        // Release session lock so polling doesn't block on it.
+        $session->save();
+
         $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
         $immediateResponse->send();
         if (function_exists('fastcgi_finish_request')) {
@@ -1769,6 +1784,9 @@ class DeploymentWizardController extends AbstractController
         // Pre-read session + request data
         $selectedModules = $session->get('setup_selected_modules', []);
         $selectedSamples = $request->request->all('samples') ?? [];
+
+        // Release session lock so polling doesn't block on it.
+        $session->save();
 
         $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
         $immediateResponse->send();
