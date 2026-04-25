@@ -400,50 +400,79 @@ class DeploymentWizardController extends AbstractController
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_create_schema', $token)) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
-            return $this->redirectToRoute('setup_step3_restore_backup');
+            return new \Symfony\Component\HttpFoundation\JsonResponse(
+                ['status' => 'error', 'message' => $this->translator->trans('common.csrf_error')],
+                400
+            );
         }
 
-        // Prevent timeouts during database operations
+        // Prevent timeouts
         set_time_limit(0);
         ignore_user_abort(true);
         ini_set('max_execution_time', 0);
 
+        // Mark job as running so the polling endpoint returns 'running'.
+        $session->set('schema_create_status', 'running');
+        $session->set('schema_create_message', null);
+        $session->save(); // ensure session is flushed before forking
+
+        // Send immediate response. fastcgi_finish_request() lets PHP-FPM
+        // close the connection so the user sees status=started right away;
+        // the rest of the script keeps running in the background.
+        $response = new \Symfony\Component\HttpFoundation\JsonResponse(
+            ['status' => 'started']
+        );
+        $response->send();
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        } elseif (function_exists('litespeed_finish_request')) {
+            litespeed_finish_request();
+        }
+
+        // Background work
         try {
             $logger->info('Creating database schema (fresh-install via SchemaTool)');
             $migrationResult = $this->runFreshSchemaInstall();
 
-            $logger->info('Migration result', [
-                'success' => $migrationResult['success'],
-                'message' => $migrationResult['message'],
-                'output' => $migrationResult['output'] ?? 'no output',
-            ]);
-
-            if (!$migrationResult['success']) {
-                $errorMsg = 'Fehler beim Erstellen der Datenbank-Struktur: ' . $migrationResult['message'];
-                if (isset($migrationResult['output'])) {
-                    $errorMsg .= '<br><pre>' . htmlspecialchars($migrationResult['output']) . '</pre>';
-                }
-                $this->addFlash('error', $errorMsg);
+            if ($migrationResult['success']) {
+                $session->set('setup_schema_created', true);
+                $session->set('schema_create_status', 'success');
+                $session->set('schema_create_message', $this->translator->trans('setup.database.schema_created', [], 'setup'));
+                $logger->info('Database schema created successfully');
+            } else {
+                $session->set('schema_create_status', 'failed');
+                $session->set('schema_create_message', $migrationResult['message'] ?? 'unknown error');
                 $logger->error('Migration failed', ['result' => $migrationResult]);
-                return $this->redirectToRoute('setup_step3_restore_backup');
             }
-
-            // Mark schema as created
-            $session->set('setup_schema_created', true);
-
-            $logger->info('Database schema created successfully');
-            $this->addFlash('success', 'Datenbank-Struktur wurde erfolgreich erstellt. Sie können jetzt ein Backup wiederherstellen.');
-
-            return $this->redirectToRoute('setup_step3_restore_backup');
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
+            $session->set('schema_create_status', 'failed');
+            $session->set('schema_create_message', $e->getMessage());
             $logger->error('Schema creation failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            $this->addFlash('error', 'Fehler beim Erstellen der Datenbank-Struktur: ' . $e->getMessage());
-            return $this->redirectToRoute('setup_step3_restore_backup');
         }
+        $session->save();
+
+        return $response; // already sent — return for type safety
+    }
+
+    /**
+     * Step 3: Schema-create status polling endpoint.
+     * Frontend calls this every ~1s after starting create-schema or skip.
+     */
+    #[Route('/setup/step3-restore-backup/schema-status', name: 'setup_step3_schema_status', methods: ['GET'])]
+    public function step3SchemaStatus(SessionInterface $session): Response
+    {
+        $status = $session->get('schema_create_status');
+        $message = $session->get('schema_create_message');
+
+        // 'running' | 'success' | 'failed' | null (idle)
+        return new \Symfony\Component\HttpFoundation\JsonResponse([
+            'status' => $status ?? 'idle',
+            'message' => $message,
+            'schema_created' => (bool) $session->get('setup_schema_created', false),
+        ]);
     }
     /**
      * Step 3: Process Backup Restore Upload
@@ -607,13 +636,29 @@ class DeploymentWizardController extends AbstractController
 
         // Validate database is configured
         if (!$session->get('setup_database_configured')) {
-            return $this->redirectToRoute('setup_step2_database_config');
+            return new \Symfony\Component\HttpFoundation\JsonResponse(
+                ['status' => 'error', 'message' => 'Database not configured'],
+                400
+            );
         }
 
         // Prevent timeouts during database operations
         set_time_limit(0);
         ignore_user_abort(true);
         ini_set('max_execution_time', 0);
+
+        // Async-job pattern: immediate JSON response + background work + polling.
+        $session->set('schema_create_status', 'running');
+        $session->set('schema_create_message', null);
+        $session->save();
+
+        $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
+        $immediateResponse->send();
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        } elseif (function_exists('litespeed_finish_request')) {
+            litespeed_finish_request();
+        }
 
         // Start output buffering to capture any stray output
         ob_start();
@@ -647,35 +692,20 @@ class DeploymentWizardController extends AbstractController
 
             if (!$migrationResult['success']) {
                 $logger->error('Step 3 Skip: Migration failed', ['result' => $migrationResult]);
-                $this->addFlash('error', $this->translator->trans('setup.admin.migration_failed') . ': ' . $migrationResult['message']);
-
-                while (ob_get_level() > 0) {
-                    ob_end_clean();
-                }
-
-                $url = $this->generateUrl('setup_step3_restore_backup');
-                return new RedirectResponse($url);
+                $session->set('schema_create_status', 'failed');
+                $session->set('schema_create_message', $migrationResult['message'] ?? 'unknown error');
+            } else {
+                $logger->info('Step 3 Skip: Migration successful');
+                $session->set('setup_schema_created', true);
+                $session->set('schema_create_status', 'success');
+                $session->set('schema_create_message', $this->translator->trans('setup.database.schema_created', [], 'setup'));
             }
 
-            $logger->info('Step 3 Skip: Migration successful, preparing redirect');
-
-            // Mark schema as created
-            $session->set('setup_schema_created', true);
-
-            $logger->info('Step 3 Skip: Fresh database schema created successfully');
-            $this->addFlash('success', $this->translator->trans('setup.database.schema_created', [], 'setup'));
-
-            // Discard any buffered output and redirect
             while (ob_get_level() > 0) {
                 ob_end_clean();
             }
-
-            // Use direct redirect response with explicit 302 status
-            $url = $this->generateUrl('setup_step4_admin_user');
-            $logger->info('Step 3 Skip: Redirecting to ' . $url);
-            $response = new RedirectResponse($url, 302);
-            $response->headers->set('X-Redirected-From', 'step3-skip');
-            return $response;
+            $session->save();
+            return $immediateResponse;
 
         } catch (\Throwable $e) {
             $logger->error('Step 3 Skip: Exception', [
@@ -684,19 +714,14 @@ class DeploymentWizardController extends AbstractController
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
             ]);
-
-            try {
-                $this->addFlash('error', 'Fehler: ' . $e->getMessage());
-            } catch (\Throwable) {
-                // Ignore flash errors
-            }
+            $session->set('schema_create_status', 'failed');
+            $session->set('schema_create_message', $e->getMessage());
 
             while (ob_get_level() > 0) {
                 ob_end_clean();
             }
-
-            $url = $this->generateUrl('setup_step3_restore_backup');
-            return new RedirectResponse($url, 302);
+            $session->save();
+            return $immediateResponse;
         }
     }
     /**

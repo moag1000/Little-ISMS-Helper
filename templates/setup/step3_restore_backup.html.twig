@@ -173,9 +173,15 @@
                                     <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
                                     <strong>{{ 'setup.common.note'|trans({}, 'setup') }}:</strong> {{ 'setup.step3.schema.hint'|trans({}, 'setup') }}
                                 </div>
-                                <form method="post" action="{{ path('setup_step3_create_schema') }}" class="setup-form-loading" data-turbo="false"
-                                      data-controller="wizard-busy"
-                                      data-wizard-busy-message-value="{{ 'setup.alva.busy.schema'|trans({}, 'setup') }}">
+                                <form id="create-schema-form"
+                                      method="post" action="{{ path('setup_step3_create_schema') }}"
+                                      class="setup-form-loading" data-turbo="false"
+                                      data-controller="async-job"
+                                      data-async-job-status-url-value="{{ path('setup_step3_schema_status') }}"
+                                      data-async-job-poll-interval-value="1500"
+                                      data-async-job-message-running-value="{{ 'setup.alva.busy.schema'|trans({}, 'setup') }}"
+                                      data-async-job-message-success-value="{{ 'setup.database.schema_created'|trans({}, 'setup') }}"
+                                      data-action="submit->async-job#start">
                                     <input type="hidden" name="_token" value="{{ csrf_token('setup_create_schema') }}">
                                     <button type="submit" class="btn btn-warning btn-lg">
                                         <span class="btn-text">
@@ -270,8 +276,13 @@
                                     {{ 'setup.restore.new_install_description'|trans({}, 'setup') }}
                                 </p>
                                 <form method="post" action="{{ path('setup_step3_restore_backup_skip') }}" class="setup-form-loading" data-turbo="false"
-                                      data-controller="wizard-busy"
-                                      data-wizard-busy-message-value="{{ 'setup.alva.busy.skip_restore'|trans({}, 'setup') }}">
+                                      data-controller="async-job"
+                                      data-async-job-status-url-value="{{ path('setup_step3_schema_status') }}"
+                                      data-async-job-poll-interval-value="1500"
+                                      data-async-job-message-running-value="{{ 'setup.alva.busy.skip_restore'|trans({}, 'setup') }}"
+                                      data-async-job-message-success-value="{{ 'setup.database.schema_created'|trans({}, 'setup') }}"
+                                      data-async-job-redirect-url-value="{{ path('setup_step4_admin_user') }}"
+                                      data-action="submit->async-job#start">
                                     <input type="hidden" name="_token" value="{{ csrf_token('setup_skip_restore') }}">
                                     <button type="submit" class="btn btn-secondary btn-lg">
                                         <span class="btn-text">
