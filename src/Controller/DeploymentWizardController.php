@@ -1826,7 +1826,26 @@ class DeploymentWizardController extends AbstractController
             }
 
             $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($em);
-            $schemaTool->createSchema($metadata);
+
+            // Detect existing schema. If any app-tables already exist,
+            // createSchema would throw "table already exists". Use updateSchema
+            // to ALTER incrementally, or skip when fully convergent.
+            $connection = $em->getConnection();
+            $schemaManager = $connection->createSchemaManager();
+            $existingTables = $schemaManager->listTableNames();
+            // Filter out Doctrine's own metadata table
+            $existingAppTables = array_filter($existingTables, fn($t) => $t !== 'doctrine_migration_versions');
+
+            if ($existingAppTables === []) {
+                // Empty DB — fast-path, single batch
+                $schemaTool->createSchema($metadata);
+            } else {
+                // Partial schema (interrupted earlier attempt or upgrade) —
+                // updateSchema computes ALTER statements to converge.
+                // saveMode=true keeps existing data + tables that are NOT in
+                // entity metadata (avoids destructive drops).
+                $schemaTool->updateSchema($metadata, true);
+            }
 
             // Mark every migration version as executed so future migrate-calls skip them
             $connection = $em->getConnection();
