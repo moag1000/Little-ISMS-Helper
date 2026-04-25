@@ -1,0 +1,205 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'kritis-dachgesetz_to_nis2-umsucg_v1.0'
+  source_framework: 'KRITIS-DachG'
+  target_framework: 'NIS2-UmsuCG'
+  version: 1
+  effective_from: '2025-02-01'
+  effective_until: null
+
+  provenance:
+    primary_source: 'BMI Begründungstext zu KRITIS-Dachgesetz § 5 + Korrespondenz zur NIS2-Umsetzung in Deutschland'
+    primary_source_url: 'https://www.bmi.bund.de/SharedDocs/gesetzgebungsverfahren/DE/kritis-dachgesetz.html'
+    secondary_sources:
+      - 'Referentenentwurf KRITIS-Dachgesetz (KRITIS-DachG) Stand 2024-11'
+      - 'Referentenentwurf NIS2-Umsetzungs- und Cybersicherheitsstärkungsgesetz (NIS2UmsuCG) Stand 2024-10'
+      - 'BSI-Stellungnahme zur parallelen Umsetzung NIS2 und CER-Richtlinie'
+      - 'EU-Richtlinie (EU) 2022/2557 (CER) als Grundlage für KRITIS-DachG'
+    publisher: 'Little ISMS Helper Maintainers'
+
+  methodology:
+    type: 'text_comparison_with_expert_review'
+    description: |
+      KRITIS-DachG (Umsetzung CER-Richtlinie, physische Resilienz) und
+      NIS2-UmsuCG (Umsetzung NIS2-Richtlinie, Cybersicherheit) sind
+      komplementäre Gesetze für KRITIS-Betreiber. Vorgehen:
+      1. Paragraphen-für-Paragraphen-Lesung beider Referentenentwürfe
+      2. Identifikation funktionaler Überschneidungen (z.B. Risikomanagement,
+         Meldepflichten, Audits)
+      3. Klare Markierung als "related" oder "partial_overlap" — KEIN
+         echtes Subset-Mapping, da KRITIS-DachG explizit physisch+all-hazards,
+         NIS2-UmsuCG explizit cyber-spezifisch
+      4. Gap-Warnings dokumentieren wo eine Norm Anforderungen stellt,
+         die die andere nicht abdeckt (insbesondere physische Resilienz)
+      5. Review durch Compliance-Manager mit KRITIS-Erfahrung
+      WICHTIGE WARNUNG: Dieses Mapping ersetzt KEINE eigenständige
+      Compliance-Bewertung; betroffene Unternehmen müssen beide Gesetze
+      separat erfüllen.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2024-12-20', actor: 'maintainer' }
+      - { state: 'review',    date: '2025-01-18', actor: 'maintainer' }
+      - { state: 'approved',  date: '2025-01-28', actor: 'reviewer-2' }
+      - { state: 'published', date: '2025-02-01', actor: 'ciso-signoff' }
+
+mappings:
+  - source: '§ 5'
+    target: '§ 30'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      KRITIS-DachG § 5 "Resilienzmaßnahmen" verlangt einen All-Hazards-Ansatz
+      inklusive physischer Sicherheit, Naturgefahren, Sabotage und
+      Versorgungssicherheit. NIS2-UmsuCG § 30 "Risikomanagementmaßnahmen"
+      adressiert dagegen ausschließlich Cybersicherheit. Es gibt einen
+      gemeinsamen Risikomanagement-Methodenrahmen, aber unterschiedliche
+      Schutzgüter und Bedrohungsmodelle.
+    gap_warning: |
+      KRITIS § 5 fordert explizit physische Schutzmaßnahmen, Perimeter-
+      sicherung, Schutz vor Naturgefahren und Personalsicherheit jenseits
+      Cyber. Diese Aspekte werden durch NIS2-UmsuCG § 30 NICHT abgedeckt.
+      Wer KRITIS-pflichtig ist, benötigt zusätzlich ein physisches
+      Resilienzkonzept (z.B. nach BSI 200-4 ergänzt um Site-Hardening).
+    cross_refs: ['§ 6', '§ 9']
+    audit_evidence_hint: 'Resilienzkonzept mit All-Hazards-Risikoanalyse, physische Sicherheitsmaßnahmen-Katalog, Cyber-Risikomanagement-Doku, Trennung der Zuständigkeiten zwischen physischer Sicherheit und ISB.'
+
+  - source: '§ 6'
+    target: '§ 30 Abs. 2 Nr. 1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      KRITIS-DachG § 6 "Risikobewertung" verlangt eine ganzheitliche
+      Bewertung aller Risiken (physisch, organisatorisch, cyber, hybrid).
+      NIS2-UmsuCG § 30 Abs. 2 Nr. 1 verlangt Risikoanalysen für
+      Netz- und Informationssysteme. Methodisch parallel, jedoch
+      unterschiedlicher Skopus. Eine integrierte Risikoanalyse kann
+      beide Anforderungen erfüllen, wenn beide Bedrohungsräume abgedeckt sind.
+    gap_warning: |
+      Eine reine Cyber-Risikoanalyse nach NIS2 reicht NICHT für KRITIS § 6.
+      Empfehlung: Integrierte Risikomatrix mit Bedrohungskategorien
+      "Physisch", "Cyber", "Personal", "Lieferkette", "Naturgefahren".
+      Dokumentation der Berücksichtigung sektorspezifischer Bedrohungslagen
+      gemäß BBK-Risikoanalyse.
+    cross_refs: ['§ 5', '§ 9']
+    audit_evidence_hint: 'Integrierte Risikobewertung mit physischen + cyberbezogenen Szenarien, BBK-Sektor-Risikoanalyse-Bezug, dokumentierte 4-jährige Aktualisierung gemäß CER-Vorgabe.'
+
+  - source: '§ 7'
+    target: '§ 32'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      KRITIS-DachG § 7 "Meldepflicht für Vorfälle" und NIS2-UmsuCG § 32
+      "Meldepflichten" haben strukturell ähnliche Mechanismen: Erstmeldung
+      innerhalb 24h, Zwischenbericht 72h, Abschlussbericht 1 Monat.
+      Allerdings werden die Meldungen an unterschiedliche Stellen
+      adressiert (BBK für KRITIS-Vorfälle, BSI für Cybervorfälle).
+      Bei hybriden Vorfällen ist eine Doppelmeldung erforderlich.
+    gap_warning: |
+      Bei einem Cybervorfall mit physischer Auswirkung (z.B. Ransomware mit
+      Produktionsstillstand) MÜSSEN beide Meldungen erfolgen — KRITIS-
+      Meldung an BBK + NIS2-Meldung an BSI. Eine einzige Meldung erfüllt
+      die rechtliche Pflicht NICHT. Empfehlung: einheitlicher Meldeprozess
+      mit automatischem Routing an beide Behörden.
+    cross_refs: ['§ 8']
+    audit_evidence_hint: 'Meldeprozess-Doku mit Eskalationsmatrix BBK/BSI, dokumentierte Meldungen der letzten 12 Monate, Trainingsnachweise für Meldepflichtige, Single-Point-of-Contact-Benennung.'
+
+  - source: '§ 9'
+    target: '§ 30 Abs. 2 Nr. 3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      KRITIS-DachG § 9 "Mindeststandards" definiert sektorspezifische
+      Mindestanforderungen, die organisatorische und technische
+      Maßnahmen umfassen — inklusive Business Continuity. NIS2-UmsuCG
+      § 30 Abs. 2 Nr. 3 verlangt "Aufrechterhaltung des Betriebs,
+      Backup-Management, Wiederherstellung". Beide adressieren BC,
+      KRITIS jedoch breiter (auch physische BC, Pandemie-Pläne).
+    gap_warning: |
+      KRITIS § 9 erlaubt branchenspezifische BC-Pläne (z.B. UP KRITIS
+      branchenspezifische Sicherheitsstandards B3S). NIS2 § 30 ist
+      generischer. Wer beide Gesetze erfüllen will, sollte den
+      strengeren B3S als Basis nehmen und um NIS2-Cyber-BC-Aspekte ergänzen.
+    cross_refs: ['§ 5', '§ 11']
+    audit_evidence_hint: 'B3S-Konformitätsnachweis (sofern für Sektor verfügbar), BC-Plan mit physischen + cyber-bezogenen Szenarien, BIA-Dokumentation, dokumentierte BC-Übung der letzten 24 Monate.'
+
+  - source: '§ 10'
+    target: '§ 33'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      KRITIS-DachG § 10 "Audits/Nachweise" und NIS2-UmsuCG § 33
+      "Nachweispflicht" verlangen beide regelmäßige Auditierung
+      und Nachweisführung gegenüber den zuständigen Behörden.
+      KRITIS verlangt 3-jährige Audit-Pflicht durch akkreditierte
+      Auditoren; NIS2 verlangt risikobasierte Audits durch BSI oder
+      vom BSI anerkannte Stellen. Die Auditmechanismen sind ähnlich.
+    gap_warning: |
+      Die Auditscopes überlappen NICHT vollständig. KRITIS-Audit prüft
+      All-Hazards-Resilienz inkl. physischer Sicherheit; NIS2-Audit
+      prüft Cybersicherheit. Eine kombinierte Audit-Beauftragung an
+      eine Prüfstelle, die beide Akkreditierungen besitzt, ist effizient
+      aber nicht zwingend möglich. Doppelte Nachweisführung muss eingeplant werden.
+    cross_refs: ['§ 9']
+    audit_evidence_hint: 'Audit-Plan mit getrennter Sicht KRITIS/NIS2, Auditberichte der letzten 3 Jahre, Maßnahmen-Tracking aus Audit-Findings, Akkreditierungs-Nachweis der Prüfstelle.'
+
+  - source: '§ 11'
+    target: '§ 28'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      KRITIS-DachG § 11 definiert Anwendbarkeitsschwellwerte für
+      KRITIS-Betreiber (Sektor + Schwellwert nach KRITIS-Verordnung).
+      NIS2-UmsuCG § 28 definiert Schwellwerte für "wesentliche" und
+      "wichtige" Einrichtungen. Beide Definitionen können auf dasselbe
+      Unternehmen zutreffen, sind aber methodisch unterschiedlich
+      (KRITIS: Versorgungsleistung; NIS2: Sektor + Mitarbeiterzahl/Umsatz).
+    gap_warning: |
+      Ein Unternehmen kann gleichzeitig KRITIS-Betreiber UND NIS2-
+      "wesentliche Einrichtung" sein — dann gelten BEIDE Pflichtenkanäle
+      kumulativ. Ein Unternehmen kann auch nur eines von beiden sein.
+      Empfehlung: rechtliche Prüfung der Doppel-Anwendbarkeit durch
+      Justiziariat vor Implementierungsplanung.
+    cross_refs: ['§ 1']
+    audit_evidence_hint: 'Rechtsgutachten zur Anwendbarkeit beider Gesetze, KRITIS-Verordnungs-Schwellwert-Berechnung, NIS2-Größenklassen-Einstufung, dokumentierter Selbst-Identifizierungs-Prozess.'
+
+  - source: '§ 8'
+    target: '§ 31'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      KRITIS-DachG § 8 "Krisen- und Risikomanagement-Kommunikation"
+      verlangt strukturierte Kommunikation mit Behörden und ggf.
+      Öffentlichkeit im Krisenfall. NIS2-UmsuCG § 31 regelt
+      Behördenzusammenarbeit und Informationsaustausch im Cyber-Kontext.
+      Beide adressieren Behördenkommunikation, jedoch in
+      unterschiedlichen Anlassszenarien.
+    gap_warning: |
+      KRITIS § 8 umfasst auch Bevölkerungs- und Medienkommunikation
+      (z.B. Versorgungsausfall) — dies ist NICHT durch NIS2 § 31
+      abgedeckt. Empfehlung: Krisenkommunikations-Plan mit getrennten
+      Strängen "Behörden", "Bevölkerung", "Medien", "Belegschaft".
+    cross_refs: ['§ 7']
+    audit_evidence_hint: 'Krisenkommunikationsplan mit Stakeholder-Matrix, Pressesprecher-Benennung, Vorbereitete Kommunikationstemplates, Übungsnachweis Krisenstab letzte 24 Monate.'
+
+  - source: '§ 5'
+    target: '§ 30 Abs. 2 Nr. 4'
+    relationship: 'partial_overlap'
+    confidence: 'low'
+    rationale: |
+      KRITIS-DachG § 5 verlangt im Rahmen der Resilienzmaßnahmen auch
+      Lieferketten-Resilienz (physische Beschaffung, Versorgungs-
+      sicherheit). NIS2-UmsuCG § 30 Abs. 2 Nr. 4 verlangt
+      "Sicherheit der Lieferkette einschließlich sicherheitsbezogener
+      Aspekte der Beziehungen zu unmittelbaren Anbietern". Schnittmenge
+      liegt im Lieferanten-Risikomanagement.
+    gap_warning: |
+      KRITIS adressiert Versorgungssicherheit (z.B. Ersatzteile,
+      Energie, Treibstoff) jenseits Cyber. NIS2 fokussiert auf
+      cyberbezogene Lieferkettenrisiken. Vollständige Abdeckung erfordert
+      duales Lieferanten-Bewertungsmodell mit Kategorien "kritische
+      Versorgung" und "kritischer IT-Dienstleister".
+    cross_refs: ['§ 9']
+    audit_evidence_hint: 'Lieferantenverzeichnis mit Kritikalitätseinstufung physisch + cyber, Bevorratungskonzepte, AVV/Sicherheits-SLAs, Notfallpläne bei Lieferantenausfall.'

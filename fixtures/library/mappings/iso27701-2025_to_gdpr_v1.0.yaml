@@ -1,0 +1,226 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'iso27701-2025_to_gdpr_v1.0'
+  source_framework: 'ISO27701-2025'
+  target_framework: 'GDPR'
+  version: 1
+  effective_from: '2025-08-01'
+  effective_until: null
+
+  provenance:
+    primary_source: 'ISO/IEC 27701:2025 Annex D — GDPR-Mapping (offiziell, inverse Richtung)'
+    primary_source_url: 'https://www.iso.org/standard/85819.html'
+    secondary_sources:
+      - 'BfDI-Hinweispapier zu PIMS-Zertifizierung 2024-Q4'
+      - 'Inverse-Ableitung aus gdpr_to_iso27701-2025_v1.0'
+    publisher: 'Little ISMS Helper Maintainers'
+
+  methodology:
+    type: 'published_official_mapping'
+    description: |
+      Reverse-Mapping von ISO/IEC 27701:2025 (Privacy Information Management
+      System) zur DSGVO/GDPR. Reziprok zu gdpr_to_iso27701-2025_v1.0 —
+      gleiche 16 Pairs, invertierte Relationships, identische Confidence.
+      Rationale aus ISO-27701-PIMS-Sicht neu verfasst (Privacy-Operations-
+      Perspektive). Quelle: ISO 27701:2025 Annex D (offizielle Mapping-Tabelle).
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2025-08-15', actor: 'maintainer' }
+      - { state: 'review',    date: '2025-08-25', actor: 'maintainer' }
+      - { state: 'approved',  date: '2025-09-05', actor: 'reviewer-2' }
+      - { state: 'published', date: '2025-09-15', actor: 'ciso-signoff' }
+
+mappings:
+  - source: '7.2.1'
+    target: 'Art.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27701 Klausel 7.2.1 "Identify and document purpose" verlangt die
+      explizite Festlegung und Dokumentation jedes Verarbeitungszwecks im
+      PIMS. DSGVO Art. 5 fordert davon konkret die Verarbeitungsgrundsätze
+      Zweckbindung, Datenminimierung, Speicherbegrenzung und Rechenschaft —
+      operationalisiert durch das in 7.2.1 erzeugte Zweckverzeichnis.
+    audit_evidence_hint: 'PIMS-Zweckverzeichnis (7.2.1) plus DSGVO-konformes RoPA mit Zwecken und Rechtsgrundlagen.'
+
+  - source: '7.2.2'
+    target: 'Art.6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27701 Klausel 7.2.2 "Identify lawful basis" verlangt pro
+      Verarbeitung die formale Bestimmung und Dokumentation der
+      Rechtsgrundlage im PIMS. DSGVO Art. 6 fordert davon konkret, dass
+      jede Verarbeitung auf einer der sechs Rechtmäßigkeitsbedingungen
+      beruht — der ISO-Klausel-Output ist der Art.-6-Nachweis.
+    audit_evidence_hint: 'PIMS-Rechtsgrundlagen-Register (7.2.2) und DSGVO-RoPA-Eintrag pro Verarbeitung.'
+
+  - source: '7.2.3'
+    target: 'Art.7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27701 Klausel 7.2.3 "Determine when and how consent is to be
+      obtained" definiert die PIMS-Anforderungen an Consent-Erhebung,
+      Granularität und Widerrufsbarkeit. DSGVO Art. 7 fordert davon konkret
+      Nachweisbarkeit, freiwillige Einwilligung und einfachen Widerruf —
+      direkt durch den 7.2.3-Consent-Prozess abgedeckt.
+    audit_evidence_hint: 'Consent-Management-System (7.2.3) mit Nachweis-Protokollen für Art. 7.'
+
+  - source: '7.3.2'
+    target: 'Art.13'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27701 Klausel 7.3.2 "Determining information for PII principals"
+      legt fest, welche Informationen den Betroffenen bereitzustellen sind.
+      DSGVO Art. 13/14 fordert davon konkret die transparente Information
+      bei Direkterhebung bzw. Drittquellen — die ISO-Klausel produziert
+      direkt den Inhalt der Datenschutzerklärung.
+    audit_evidence_hint: 'PIMS-Informationskatalog (7.3.2) und versionierte Datenschutzerklärung (Art. 13/14).'
+
+  - source: '7.3.3'
+    target: 'Art.15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27701 Klausel 7.3.3 "Providing mechanisms to modify or withdraw
+      consent" bzw. das Auskunfts-/Zugriffsmechanismen-Set verlangt
+      operative Verfahren für Betroffenen-Anfragen. DSGVO Art. 15 fordert
+      davon konkret das Auskunftsrecht inkl. Kopie der personenbezogenen
+      Daten — direkt durch die 7.3.3-Mechanismen umgesetzt.
+
+  - source: '7.3.6'
+    target: 'Art.17'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27701 Klausel 7.3.6 "Access, correction and/or erasure" verlangt
+      vom PIMS dokumentierte Lösch- und Korrekturprozesse inkl. Backup-
+      und Sub-Processor-Behandlung. DSGVO Art. 17 fordert davon konkret
+      das Recht auf Löschung ("Recht auf Vergessenwerden") mit
+      vollständiger Datenentfernung und Drittweitergabe-Information.
+    audit_evidence_hint: 'Lösch-Konzept (7.3.6), Löschprotokolle, Backup-Lösch-Strategie.'
+
+  - source: '7.3.7'
+    target: 'Art.20'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27701 Klausel 7.3.7 "PII principals'' obligation to provide their
+      PII" bzw. das Datenexport-/Übertragbarkeits-Mechanismen-Set verlangt
+      strukturierte, maschinenlesbare Datenherausgabe. DSGVO Art. 20
+      fordert davon konkret die Datenübertragbarkeit in einem gängigen,
+      strukturierten Format an Betroffene oder andere Verantwortliche.
+
+  - source: '7.4.1'
+    target: 'Art.25'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27701 Klauseln 7.4.1 "Limit collection" und 7.4.2 "Limit
+      processing" verlangen die technisch-organisatorische Begrenzung
+      von Erhebung und Verarbeitung auf das Erforderliche. DSGVO Art. 25
+      fordert davon konkret Privacy by Design und by Default —
+      datenschutzfreundliche Voreinstellungen sind genau dieser Output.
+    cross_refs: ['7.4.2', '7.4.3']
+
+  - source: '8.5.1'
+    target: 'Art.28'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27701 Klauseln 8.5.1 "Customer agreement" und 8.5.2
+      "Organization's purposes" verlangen vom PII-Processor vertragliche
+      Bindung an Kunden-Weisungen, Zweckbindung und Audit-Recht. DSGVO
+      Art. 28 fordert davon konkret den Auftragsverarbeitungsvertrag
+      (AVV) mit allen Pflichtinhalten.
+    cross_refs: ['8.5.2', '8.5.3']
+    audit_evidence_hint: 'PIMS-AVV-Vorlagen (8.5.1) und DSGVO-konformes AVV-Register pro Auftragsverarbeiter.'
+
+  - source: '7.2.8'
+    target: 'Art.30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27701 Klausel 7.2.8 "Records related to processing PII" verlangt
+      die vollständige PIMS-interne Dokumentation aller PII-Verarbeitungen
+      mit Zwecken, Kategorien, Empfängern und Speicherfristen. DSGVO
+      Art. 30 fordert davon konkret das Verzeichnis von
+      Verarbeitungstätigkeiten (RoPA) mit allen Pflichtfeldern.
+    audit_evidence_hint: 'PIMS-Records (7.2.8) als Basis für DSGVO-RoPA mit allen Pflichtfeldern.'
+
+  - source: '6.5'
+    target: 'Art.32'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      ISO 27701 Klausel 6.5 ergänzt PIMS-spezifische Sicherheitsaspekte
+      auf Basis von ISO 27001 Clause 6 plus Annex A. DSGVO Art. 32 fordert
+      davon konkret eine Untermenge: angemessene technische und
+      organisatorische Maßnahmen entsprechend dem Risiko — die ISO-Sicht
+      ist breiter und deckt zusätzliche InfoSec-Anforderungen ab.
+    gap_warning: 'ISO 27701 6.5 allein reicht nicht — DSGVO-Art.-32-Compliance erfordert auch ISO 27001 Annex A 5/6/7/8.'
+    cross_refs: ['ISO27001:A.8.7', 'ISO27001:A.8.16']
+
+  - source: '6.13.1'
+    target: 'Art.33'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27701 Klausel 6.13.1 "Identification of applicable legislation"
+      kombiniert mit ISO 27001 A.5.24 Incident-Response verlangt die
+      Identifikation gesetzlicher Meldepflichten und deren operative
+      Umsetzung im PIMS. DSGVO Art. 33 fordert davon konkret die
+      72-Stunden-Meldung an die Aufsichtsbehörde bei Datenschutzverletzung.
+    audit_evidence_hint: 'PIMS-Breach-Notification-Prozess (6.13.1) mit 72-h-SLA-Tracking nach Art. 33.'
+
+  - source: '6.13.2'
+    target: 'Art.34'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27701 Klausel 6.13.2 verlangt das Verfahren zur Information
+      betroffener Personen bei Datenschutzverletzungen mit hohem Risiko.
+      DSGVO Art. 34 fordert davon konkret die unverzügliche
+      Benachrichtigung der Betroffenen in klarer und einfacher Sprache.
+
+  - source: '7.2.5'
+    target: 'Art.35'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27701 Klausel 7.2.5 "Privacy impact assessment" verlangt
+      strukturierte PIA-Durchführung für risikoreiche PII-Verarbeitungen
+      inkl. Risiko- und Maßnahmenbewertung. DSGVO Art. 35 fordert davon
+      konkret die Datenschutz-Folgenabschätzung (DSFA/DPIA) für
+      voraussichtlich hohes Risiko mit definierten Inhalten.
+    audit_evidence_hint: 'PIMS-PIA-Register (7.2.5) als DPIA-Nachweis nach Art. 35 für jede Hochrisiko-Verarbeitung.'
+
+  - source: '6.3.1'
+    target: 'Art.37'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27701 Klauseln 6.3.1 "PII protection officer" und 6.3.2
+      "Internal organization" verlangen die formale Benennung,
+      Ressourcen-Ausstattung und Unabhängigkeit eines PII-
+      Schutzbeauftragten. DSGVO Art. 37-39 fordert davon konkret die
+      Benennung, Stellung und Aufgaben des Datenschutzbeauftragten (DSB).
+    cross_refs: ['6.3.2']
+
+  - source: '7.5.1'
+    target: 'Art.44'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27701 Klauseln 7.5.1 "Identify basis for PII transfer between
+      jurisdictions" plus 7.5.2-7.5.4 verlangen die dokumentierte
+      Rechtsgrundlage und Schutzmaßnahmen für grenzüberschreitende PII-
+      Transfers. DSGVO Art. 44-49 fordert davon konkret zulässige
+      Drittlandübermittlungen via SCC, BCR, Angemessenheitsbeschluss etc.
+    cross_refs: ['7.5.2', '7.5.3', '7.5.4']
+    audit_evidence_hint: 'PIMS-Transfer-Register (7.5.1), SCC-Verträge, TIA-Dokumente, Drittland-Risikoanalyse.'

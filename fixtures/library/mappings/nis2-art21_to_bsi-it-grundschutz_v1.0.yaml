@@ -1,0 +1,198 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'nis2-art21_to_bsi-it-grundschutz_v1.0'
+  source_framework: 'NIS2'
+  target_framework: 'BSI-Grundschutz'
+  version: 1
+  effective_from: '2025-01-15'
+  effective_until: null
+
+  provenance:
+    primary_source: 'BSI Implementierungsleitfaden NIS2 mittels IT-Grundschutz (2024-12)'
+    primary_source_url: 'https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/IT-Grundschutz/IT-Grundschutz-Kompendium/it-grundschutz-kompendium_node.html'
+    secondary_sources:
+      - 'BSI IT-Grundschutz-Kompendium Edition 2023'
+      - 'NIS2-Richtlinie (EU) 2022/2555 Art. 21'
+      - 'BSI Mindestanforderungen NIS2-UmsuCG (Konsultationsentwurf 2024-12)'
+    publisher: 'Bundesamt für Sicherheit in der Informationstechnik (BSI)'
+
+  methodology:
+    type: 'published_official_mapping'
+    description: |
+      Das BSI hat im Implementierungsleitfaden NIS2 mittels IT-Grundschutz
+      (2024-12) eine offizielle Zuordnung der NIS2 Art. 21(2)(a)-(j)
+      Risikomanagementmaßnahmen zu IT-Grundschutz-Bausteinen veröffentlicht.
+      Vorgehen:
+      1. Übernahme der offiziellen BSI-Zuordnungstabelle als Primärquelle
+      2. Volltext-Verifikation jedes Bausteins gegen NIS2-Anforderungspunkt
+      3. Confidence-Bewertung anhand inhaltlicher Überdeckung
+      4. Ergänzung um Audit-Hinweise aus BSI-Umsetzungshinweisen
+      5. Review durch BSI-zertifizierten IT-Grundschutz-Praktiker
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2024-12-15', actor: 'maintainer' }
+      - { state: 'review',    date: '2025-01-08', actor: 'maintainer' }
+      - { state: 'approved',  date: '2025-01-12', actor: 'reviewer-2' }
+      - { state: 'published', date: '2025-01-15', actor: 'ciso-signoff' }
+
+mappings:
+  - source: '21.2.a'
+    target: 'ISMS.1.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(a) verlangt "Konzepte für Risikoanalyse und Sicherheit der
+      Informationssysteme". IT-Grundschutz-Baustein ISMS.1.4 "Risikoanalyse"
+      definiert die methodische Vorgehensweise zur Risikoidentifikation,
+      -bewertung und -behandlung gemäß BSI-Standard 200-3. Ergänzend deckt
+      CON.7 "Sicherheit auf Auslandsreisen" Risikoaspekte mobiler
+      Informationsverarbeitung ab. Die Schnittmenge ist nahezu vollständig.
+    cross_refs: ['CON.7', 'ISMS.1']
+    audit_evidence_hint: 'Risikoanalyse-Dokument nach BSI 200-3, Risikobehandlungsplan, freigegebene Sicherheitsleitlinie, Risiko-Akzeptanz-Entscheidungen der Leitung.'
+
+  - source: '21.2.b'
+    target: 'DER.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(b) "Bewältigung von Sicherheitsvorfällen" entspricht
+      direkt dem Baustein DER.2.1 "Behandlung von Sicherheitsvorfällen".
+      DER.2.1 definiert Vorgehen zur Vorfall-Erkennung, -Klassifizierung,
+      -Eindämmung, -Bereinigung und -Nachbereitung. Die NIS2-Meldepflicht
+      nach Art. 23 wird ergänzend abgedeckt.
+    cross_refs: ['DER.2.2', 'DER.2.3']
+    audit_evidence_hint: 'Incident-Response-Richtlinie, dokumentierte Vorfälle der letzten 12 Monate inkl. Klassifikation, Meldewege CSIRT/BSI, Lessons-Learned-Reports.'
+
+  - source: '21.2.c'
+    target: 'DER.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(c) "Aufrechterhaltung des Betriebs, Backup-Management
+      und Wiederherstellung im Notfall, Krisenmanagement" wird durch DER.4
+      "Notfallmanagement" vollständig adressiert. DER.4 referenziert
+      BSI-Standard 200-4 (BCM) und deckt BIA, Notfallkonzept,
+      Wiederanlaufpläne und Krisenstabsstrukturen ab.
+    cross_refs: ['CON.3', 'OPS.1.2.2']
+    audit_evidence_hint: 'BCM-Leitlinie, BIA-Ergebnisse, Notfallhandbuch, dokumentierte Notfallübung der letzten 12 Monate, Wiederanlaufpläne mit RTO/RPO.'
+
+  - source: '21.2.d'
+    target: 'OPS.2.3'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(d) "Sicherheit der Lieferkette" wird durch OPS.2.3
+      "Outsourcing für Kunden" für IT-Outsourcing-Beziehungen abgedeckt.
+      Allerdings adressiert OPS.2.3 primär die Kundenseite; die volle
+      Lieferketten-Sicherheit inklusive Software-Bezug verlangt zusätzlich
+      OPS.2.2 "Cloud-Nutzung" und CON.8 "Software-Entwicklung".
+    gap_warning: |
+      OPS.2.3 allein deckt nicht den gesamten Lieferkettenbegriff der NIS2 ab.
+      Empfehlung: Bündel mit OPS.2.2 (Cloud) und Lieferanten-Risikobewertung
+      nach ISMS.1.4 für vollständigen Nachweis.
+    cross_refs: ['OPS.2.2', 'OPS.3']
+    audit_evidence_hint: 'Lieferantenverzeichnis mit Risikoeinstufung, Outsourcing-Verträge mit Sicherheitsanforderungen, Audit-Reports kritischer Dienstleister, AVV nach DSGVO.'
+
+  - source: '21.2.e'
+    target: 'CON.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(e) "Sicherheit beim Erwerb, der Entwicklung und Wartung
+      von Netz- und Informationssystemen" wird durch CON.5 "Allgemeine
+      Anforderungen an IT-Anwendungen" und CON.8 "Software-Entwicklung"
+      gemeinsam vollständig abgedeckt. CON.8 enthält Secure-Development-
+      Lifecycle, CON.5 die betrieblichen Sicherheitsanforderungen.
+    cross_refs: ['CON.8', 'OPS.1.1.6']
+    audit_evidence_hint: 'Secure-Coding-Guidelines, Code-Review-Protokolle, Penetrationstests vor Produktivsetzung, Patch-Management-Konzept, Vulnerability-Scans.'
+
+  - source: '21.2.f'
+    target: 'ISMS.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(f) "Konzepte und Verfahren zur Bewertung der Wirksamkeit
+      von Maßnahmen zum Risikomanagement" wird durch ISMS.1 "Sicherheits-
+      management" (PDCA-Zyklus) sowie DER.1 "Detektion von sicherheits-
+      relevanten Ereignissen" abgedeckt. ISMS.1 alleine reicht nicht;
+      DER.1 ergänzt die operative Wirksamkeitsmessung.
+    gap_warning: |
+      ISMS.1 deckt strategische Wirksamkeitsbewertung (Audits, Reviews) ab,
+      nicht jedoch kontinuierliches Monitoring. Bündele mit DER.1 und
+      OPS.1.1.5 "Protokollierung" für vollständigen Nachweis.
+    cross_refs: ['DER.1', 'OPS.1.1.5']
+    audit_evidence_hint: 'Internes Audit-Programm, Management-Review-Protokolle, KPI-Dashboard zur ISMS-Wirksamkeit, SIEM-Reports, Trendanalysen Sicherheitsvorfälle.'
+
+  - source: '21.2.g'
+    target: 'ORP.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(g) "grundlegende Verfahren im Bereich der Cyberhygiene
+      und Schulungen im Bereich der Cybersicherheit" entspricht direkt
+      ORP.3 "Sensibilisierung und Schulung". ORP.3 verlangt rollenbasierte
+      Schulungspläne, regelmäßige Awareness-Maßnahmen und Erfolgsmessung.
+    cross_refs: ['ORP.2', 'CON.2']
+    audit_evidence_hint: 'Schulungsplan mit Zielgruppen, Teilnahmequoten der letzten 12 Monate, Phishing-Simulations-Ergebnisse, Onboarding-Curriculum für neue Beschäftigte.'
+
+  - source: '21.2.h'
+    target: 'CON.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(h) "Konzepte und Verfahren für den Einsatz von
+      Kryptographie und gegebenenfalls Verschlüsselung" entspricht direkt
+      CON.1 "Kryptokonzept". CON.1 verlangt dokumentiertes Kryptokonzept
+      mit Algorithmen-Auswahl nach BSI TR-02102, Schlüsselmanagement und
+      Krypto-Inventar.
+    cross_refs: ['SYS.1.1', 'NET.3.3']
+    audit_evidence_hint: 'Kryptokonzept-Dokument, Krypto-Inventar (Algorithmen, Schlüssellängen, Einsatzgebiete), Schlüsselmanagement-Verfahren, BSI-TR-02102-Konformitätsnachweis.'
+
+  - source: '21.2.i'
+    target: 'ORP.4'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(i) "Sicherheit des Personals, Konzepte für die
+      Zugriffskontrolle und Verwaltung von Anlagen" wird durch ORP.4
+      "Identitäts- und Berechtigungsmanagement" für den Zugriffsteil und
+      ISMS.2 "Asset-Management" für den Anlagen-Teil gemeinsam abgedeckt.
+      Personalsicherheit ergänzt ORP.2 "Personal".
+    gap_warning: |
+      ORP.4 alleine deckt nur Identitäten/Berechtigungen ab. Für volle
+      NIS2-Konformität: Bündel mit ORP.2 (Personal-Onboarding/Offboarding)
+      und ISMS.2 oder OPS.1.1.7 (Asset-Management).
+    cross_refs: ['ORP.2', 'ISMS.2']
+    audit_evidence_hint: 'Berechtigungskonzept, Zugriffsrechte-Reviews der letzten 12 Monate, Onboarding/Offboarding-Checklisten Personal, Asset-Inventar mit Verantwortlichen.'
+
+  - source: '21.2.j'
+    target: 'ORP.4.6'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(j) "Multi-Faktor-Authentifizierung oder kontinuierliche
+      Authentifizierung, gesicherte Sprach-, Video- und Textkommunikation
+      sowie gesicherte Notfallkommunikation" wird durch ORP.4 (Schwerpunkt
+      MFA) und NET.4 "Telekommunikation" für die gesicherte Kommunikation
+      gemeinsam abgedeckt. ORP.4 alleine deckt nur den Authentifizierungs-Teil.
+    gap_warning: |
+      Sprach/Video-Kommunikationssicherheit und Notfallkommunikation sind
+      durch ORP.4 nicht abgedeckt. Empfehlung: Bündele mit NET.4.1
+      "TK-Anlagen", NET.4.2 "VoIP" und CON.10 "Entwicklung von Webanwendungen".
+    cross_refs: ['NET.4.1', 'NET.4.2', 'NET.3.3']
+    audit_evidence_hint: 'MFA-Rollout-Status (Abdeckungsgrad pro Anwendung), Konfiguration gesicherter Kommunikation (TLS-Versionen, S/MIME, sichere VoIP), Notfallkommunikations-Plan mit getesteten Alternativkanälen.'
+
+  - source: '21.2.a'
+    target: 'CON.7'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      CON.7 "Sicherheit auf Auslandsreisen" deckt einen Teilaspekt von
+      NIS2 21.2.a ab — speziell Risiken durch mobile Informationsverarbeitung.
+      Die Kernanforderung "Konzept für Risikoanalyse" wird primär durch
+      ISMS.1.4 erfüllt; CON.7 ist nur ergänzend relevant.
+    cross_refs: ['ISMS.1.4']
+    audit_evidence_hint: 'Reiserichtlinie für sensible Geschäftsreisen, mobile Geräte-Härtung, Verhaltensregeln im Ausland.'

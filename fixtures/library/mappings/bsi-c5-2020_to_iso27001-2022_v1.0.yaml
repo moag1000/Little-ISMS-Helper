@@ -1,0 +1,266 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'bsi-c5-2020_to_iso27001-2022_v1.0'
+  source_framework: 'BSI-C5'
+  target_framework: 'ISO27001'
+  version: 1
+  effective_from: '2020-02-01'
+  effective_until: null
+
+  provenance:
+    primary_source: 'BSI C5:2020 Anlage A „Vergleichstabelle ISO 27001 ↔ BSI C5 (offiziell)" — inverse Richtung'
+    primary_source_url: 'https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/CloudComputing/Kriterienkatalog/C5_2020.html'
+    secondary_sources:
+      - 'BSI C5:2020 Kriterienkatalog Volltext (Kapitel 4 OPS, RB, KRY, IDM)'
+      - 'Inverse-Ableitung aus iso27001-2022_to_bsi-c5-2020_v1.0 (gleiche Pair-Liste, getauschte Source/Target)'
+    publisher: 'Little ISMS Helper Maintainers'
+
+  methodology:
+    type: 'published_official_mapping'
+    description: |
+      Reverse-Mapping ausgehend vom C5-Kriterium zur ISO-Annex-A-Kontrolle.
+      Reziprok zu iso27001-2022_to_bsi-c5-2020_v1.0 — gleiche 15 Pairs,
+      invertierte Relationships (equivalent↔equivalent, subset↔superset,
+      partial_overlap↔partial_overlap). Provenance/Confidence aus Forward
+      übernommen; Rationale aus C5-Cloud-Sicht neu verfasst.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-02-10', actor: 'maintainer' }
+      - { state: 'review',    date: '2026-03-05', actor: 'maintainer' }
+      - { state: 'approved',  date: '2026-04-01', actor: 'reviewer-2' }
+      - { state: 'published', date: '2026-04-22', actor: 'ciso-signoff' }
+
+mappings:
+  - source: 'OPS-01'
+    target: 'A.5.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      BSI C5 OPS-01 „Leitlinie zur Informationssicherheit" verlangt eine
+      vom Top-Management des Cloud-Anbieters freigegebene und veröffentlichte
+      Sicherheitsleitlinie für den Cloud-Dienst. ISO 27001:2022 A.5.1
+      „Policies for information security" fordert inhaltsgleich dokumentierte
+      InfoSec-Policies. C5 Anlage A bestätigt die direkte Entsprechung;
+      Pflichteninhalt und Freigabe-Logik sind identisch.
+    audit_evidence_hint: 'Verabschiedete InfoSec-Leitlinie mit Management-Freigabe-Datum, jährliche Review-Protokolle, Veröffentlichung im Mitarbeiter-Intranet.'
+
+  - source: 'RB-04'
+    target: 'A.5.7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5 RB-04 „Identifikation von Schwachstellen, Bedrohungen und
+      funktionalen Mängeln" verlangt im Cloud-Kontext den Bezug, die
+      Auswertung und die Verteilung von Bedrohungsinformationen sowie
+      Schwachstellen-Tracking. ISO 27001 A.5.7 „Threat Intelligence" deckt
+      denselben Pflichtenkreis ab. C5 Anlage A führt RB-04 als Entsprechung;
+      typische Quellen wie BSI-CERT und CERT-Bund decken beide Kontrollen.
+    audit_evidence_hint: 'Threat-Intel-Quellen-Liste, ausgewertete Bedrohungsmeldungen der letzten 12 Monate, dokumentierte Eskalation an Cloud-Operations.'
+
+  - source: 'AM-01'
+    target: 'A.5.9'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      C5 AM-01 „Asset-Inventar" verlangt ein vollständiges Inventar aller
+      Assets, die zur Erbringung des Cloud-Dienstes genutzt werden, inkl.
+      Eigentümerschaft und Klassifikation. ISO 27001 A.5.9 „Inventory of
+      information and other associated assets" deckt den Inventar-Aspekt
+      organisationsweit ab. Aus C5-Sicht ist AM-01 Obermenge bezogen auf
+      den Cloud-Scope, da C5-Vorgaben zu Cloud-Provisioning-Abgleich und
+      Stichtagskontrolle über A.5.9 hinausgehen.
+    gap_warning: |
+      Wer C5 AM-01 NUR über ISO A.5.9 nachweist, fehlen die C5-spezifischen
+      Pflichten zum Cloud-Provisioning-Stichtagsabgleich (CMDB ↔ Plattform)
+      und zur lückenlosen Erfassung mandanten-relevanter Assets. Empfehlung:
+      A.5.9 mit dediziertem Cloud-CMDB-Prozess kombinieren.
+    cross_refs: ['A.5.10']
+    audit_evidence_hint: 'Asset-Inventar mit Owner-Feld, Klassifikation und Stichtagsabgleich CMDB ↔ Cloud-Provisioning.'
+
+  - source: 'BEI-01'
+    target: 'A.5.20'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5 BEI-01 „Richtlinien und Anweisungen für Beziehungen zu Dritten"
+      regelt vertragliche InfoSec-Pflichten gegenüber Sub-Dienstleistern
+      und Sub-Auftragsverarbeitern des Cloud-Anbieters. ISO 27001 A.5.20
+      „Addressing information security in supplier agreements" verlangt
+      inhaltsgleich vertragliche InfoSec-Anforderungen. C5 Anlage A
+      bestätigt das 1:1-Mapping; AVV-Pflichten und Sub-Provider-Klauseln
+      decken sich vollständig.
+    cross_refs: ['A.5.21', 'A.5.22']
+    audit_evidence_hint: 'Lieferantenverträge mit InfoSec-Klauseln, AVV nach Art. 28 DSGVO, Sub-Provider-Liste mit Risikobewertung.'
+
+  - source: 'SIM-01'
+    target: 'A.5.24'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5 SIM-01 „Richtlinien und Anweisungen zur Behandlung von
+      Sicherheitsvorfällen" verlangt einen dokumentierten Incident-Response-
+      Prozess für den Cloud-Dienst inkl. Rollen und Eskalationswegen. ISO
+      27001 A.5.24 „Information security incident management planning and
+      preparation" fordert dasselbe in der Organisation. C5 Anlage A
+      bestätigt die direkte Entsprechung; Runbook-Pflichten sind deckungsgleich.
+    cross_refs: ['A.5.25', 'A.5.26']
+    audit_evidence_hint: 'IR-Plan mit Rollen/Eskalation, IR-Runbooks, Übungs-Reports der letzten 12 Monate, Incident-Tickets-Stichprobe.'
+
+  - source: 'BCM-01'
+    target: 'A.5.30'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      C5 BCM-01 „Top-Management-Verantwortung und Business Continuity
+      Strategie" verlangt Top-Management-Commitment, Business Impact Analyse
+      und eine dokumentierte BC-Strategie für den Cloud-Anbieter. ISO 27001
+      A.5.30 „ICT readiness for business continuity" deckt nur den ICT-Anteil
+      der Geschäftsfortführung ab. Aus C5-Sicht ist BCM-01 Obermenge —
+      strategische und führungsbezogene Anteile sind nicht durch A.5.30
+      gedeckt.
+    gap_warning: |
+      Wer C5 BCM-01 NUR über ISO A.5.30 nachweist, fehlen die organisatorische
+      BC-Strategie, BIA-Ergebnisse und das Top-Management-Commitment.
+      Empfehlung: A.5.30 mit ISO 22301 Clause 5 (Leadership) und Clause 8.2
+      (BIA) bündeln.
+    audit_evidence_hint: 'ICT-DR-Pläne, RTO/RPO-Definitionen, dokumentierte DR-Tests der letzten 12 Monate.'
+
+  - source: 'HR-03'
+    target: 'A.6.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5 HR-03 „Schulung und Sensibilisierung" verlangt regelmäßige
+      Awareness-Schulungen für alle Beschäftigten des Cloud-Anbieters
+      inkl. rollenspezifischer Vertiefung für privilegierte Nutzer
+      (z. B. Plattform-Admins). ISO 27001 A.6.3 „Information security
+      awareness, education and training" fordert inhaltsgleich. C5 Anlage A
+      bestätigt direkte Entsprechung; Schulungs-Quoten und Phishing-Drills
+      sind in beiden Frameworks Standardnachweis.
+    audit_evidence_hint: 'Schulungs-Quote (≥95 %), Phishing-Drill-Ergebnisse, rollenspezifische Curricula für Privileged Users, Onboarding-Nachweise.'
+
+  - source: 'IDM-01'
+    target: 'A.8.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5 IDM-01 „Richtlinie zur Identitäts- und Berechtigungsverwaltung"
+      adressiert Identitäten und Zugriffsrechte auf Cloud-Management-Ebenen.
+      ISO 27001 A.8.1 „User Endpoint Devices" adressiert Endgeräte-
+      Hardening, MDM und Disk-Encryption. Schnittmenge nur bei
+      Authentisierung am Endgerät — Hardware-Schutz ist NICHT durch IDM-01
+      abgedeckt, Identity-Lifecycle nicht durch A.8.1.
+    gap_warning: |
+      Wer C5 IDM-01 NUR über ISO A.8.1 nachweist, fehlen die Identity-
+      Lifecycle-Pflichten (Provisioning, Rezertifizierung, Deprovisioning).
+      Wer umgekehrt A.8.1 über IDM-01 nachweist, fehlen Endpoint-Hardening
+      und MDM-Policy. Empfehlung: IDM-01 zusätzlich mit C5 KRY-04 und
+      separater Endpoint-Hardening-Maßnahme bündeln.
+    cross_refs: ['A.5.16', 'A.8.5']
+    audit_evidence_hint: 'MDM-Compliance-Report, Disk-Encryption-Stichproben, Endpoint-Hardening-Baseline (CIS L1 oder strenger).'
+
+  - source: 'IDM-09'
+    target: 'A.8.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5 IDM-09 „Authentifizierungsmechanismen" verlangt MFA für
+      administrative Zugriffe auf Cloud-Management-Ebenen sowie
+      kryptographisch starke Verfahren entsprechend BSI-Vorgaben. ISO 27001
+      A.8.5 „Secure authentication" fordert sichere Authentisierungs-
+      verfahren inkl. MFA für privilegierte Zugriffe. C5 Anlage A bestätigt
+      Entsprechung; MFA-Coverage und Auth-Härtung sind deckungsgleich.
+    cross_refs: ['A.5.17']
+    audit_evidence_hint: 'MFA-Coverage-Report für Admin-Accounts (Soll: 100 %), Auth-Methoden-Inventar, Logs fehlgeschlagener Logins.'
+
+  - source: 'OPS-15'
+    target: 'A.8.7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5 OPS-15 „Schutz vor Schadprogrammen — Konzept" verlangt ein
+      dokumentiertes Schutz-Konzept gegen Malware auf Cloud-Plattform-Ebene;
+      OPS-16 ergänzt die operative Umsetzung. ISO 27001 A.8.7 „Protection
+      against malware" fordert inhaltsgleich technische und organisatorische
+      Maßnahmen. C5 Anlage A bestätigt Entsprechung; AV/EDR-Pflichten
+      decken beide Kontrollen vollständig.
+    cross_refs: ['OPS-16']
+    audit_evidence_hint: 'AV/EDR-Coverage-Report, Update-Frequenz-Nachweise, Quarantäne-Statistiken, dokumentiertes Schutz-Konzept.'
+
+  - source: 'OPS-18'
+    target: 'A.8.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5 OPS-18 „Umgang mit Schwachstellen, Störungen und Fehlern —
+      Identifikation, Behandlung" verlangt im Cloud-Kontext Schwachstellen-
+      Identifikation, Bewertung und Patch-Management mit definierten SLAs
+      für Critical-Patches. ISO 27001 A.8.8 „Management of technical
+      vulnerabilities" fordert dasselbe Vorgehen. C5 Anlage A bestätigt die
+      direkte Entsprechung inkl. Patch-SLA-Anforderungen.
+    cross_refs: ['A.5.7']
+    audit_evidence_hint: 'Vulnerability-Scan-Reports, Patch-Compliance-Dashboard mit SLA-Erfüllung, CVE-Tracking der letzten 90 Tage.'
+
+  - source: 'OPS-10'
+    target: 'A.8.16'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5 OPS-10 „Protokollierung und Monitoring — Verantwortlichkeiten"
+      regelt Logging und Monitoring auf Cloud-Plattform-Ebene; OPS-11
+      ergänzt die Log-Speicherung. ISO 27001 A.8.16 „Monitoring activities"
+      fordert kontinuierliche Überwachung von Systemen und Netzwerken. C5
+      Anlage A bestätigt Entsprechung; SIEM-Use-Cases und 24/7-SOC-Coverage
+      sind in beiden Frameworks Standardnachweis.
+    cross_refs: ['OPS-11', 'OPS-12']
+    audit_evidence_hint: 'SIEM-Use-Case-Katalog, Alert-MTTR-Statistik, 24/7-Coverage-Nachweis (SOC), Log-Retention-Konfiguration.'
+
+  - source: 'KRY-01'
+    target: 'A.8.24'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5 KRY-01 „Richtlinie zur Verwendung von Verschlüsselungsverfahren
+      und Schlüsselverwaltung" verlangt eine dokumentierte Krypto-Richtlinie
+      inkl. Algorithmen-Allowlist und Key-Management. ISO 27001 A.8.24
+      „Use of cryptography" fordert inhaltsgleiche Vorgaben. C5 Anlage A
+      bestätigt die direkte Entsprechung; beide Frameworks referenzieren
+      BSI TR-02102 als Algorithmen-Baseline.
+    cross_refs: ['KRY-02', 'KRY-03', 'KRY-04']
+    audit_evidence_hint: 'Krypto-Richtlinie, Algorithmen-Allowlist (BSI TR-02102 konform), Key-Management-Verfahren (HSM oder gleichwertig).'
+
+  - source: 'IDM-02'
+    target: 'A.5.15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5 IDM-02 „Benutzerregistrierung" regelt zusammen mit IDM-03
+      „Vergabe und Änderung (Provisioning)" den formellen Identity-
+      Lifecycle für Cloud-Plattform-Zugänge. ISO 27001 A.5.15 „Access
+      control" fordert formale Zugangs- und Zugriffskontroll-Regelungen.
+      C5 Anlage A bestätigt Entsprechung; Joiner/Mover/Leaver-Workflows
+      und Berechtigungskonzepte sind inhaltsgleich.
+    cross_refs: ['IDM-03', 'IDM-04']
+    audit_evidence_hint: 'Berechtigungskonzept, Provisioning-Workflow-Auszüge, Stichprobe Joiner/Mover/Leaver der letzten 90 Tage.'
+
+  - source: 'BEI-04'
+    target: 'A.5.23'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      C5 BEI-04 „Anforderungen an Lieferanten" verlangt aus Anbieter-Sicht
+      umfassende Sub-Dienstleister-Steuerung inkl. Sicherheitsanforderungen,
+      Audit-Rechten und Sub-Provider-Risikobewertung. ISO 27001 A.5.23
+      „Information security for use of cloud services" adressiert
+      Cloud-Nutzung aus Kundensicht. Aus C5-Sicht ist BEI-04 Obermenge
+      bezüglich Sub-Provider-Pflichten, deckt aber Cloud-Strategie und
+      Exit-Strategie der Kundenseite nicht ab.
+    gap_warning: |
+      Wer C5 BEI-04 NUR über ISO A.5.23 nachweist, fehlen die anbieter-
+      seitigen Sub-Provider-Audit-Rechte und die formelle Risikobewertung
+      eingebundener Drittparteien. A.5.23 ist Kundenkontrolle und kein
+      Ersatz für die anbieter-zentrierten BEI-04-Pflichten.
+    audit_evidence_hint: 'Cloud-Governance-Richtlinie, Exit-Strategie-Dokument, Datenresidenz-Mapping pro Cloud-Service.'

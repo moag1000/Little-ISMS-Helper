@@ -1,0 +1,254 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'tisax-vda-isa-6_to_iso27001-2022_v1.0'
+  source_framework: 'TISAX'
+  target_framework: 'ISO27001'
+  version: 1
+  effective_from: '2024-04-01'
+  effective_until: null
+
+  provenance:
+    primary_source: 'VDA ISA Version 6.0 — Excel-Mapping-Anhang zu ISO 27001:2022 (offiziell, inverse Richtung)'
+    primary_source_url: 'https://www.vda.de/de/themen/sicherheit-und-standards/informationssicherheit/information-security-assessment'
+    secondary_sources:
+      - 'ENX TISAX Participant Handbook 2024 (Version 2.7)'
+      - 'Inverse-Ableitung aus iso27001-2022_to_tisax-vda-isa-6_v1.0'
+    publisher: 'Little ISMS Helper Maintainers'
+
+  methodology:
+    type: 'published_official_mapping'
+    description: |
+      Reverse-Mapping vom VDA-ISA-6.0-Kriterium zur ISO 27001:2022 Annex-A.
+      Reziprok zu iso27001-2022_to_tisax-vda-isa-6_v1.0 — gleiche 15 Pairs,
+      invertierte Relationships, identische Confidence/Provenance.
+      Rationale aus TISAX-Automotive-Sicht neu verfasst.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2025-01-15', actor: 'maintainer' }
+      - { state: 'review',    date: '2025-02-20', actor: 'maintainer' }
+      - { state: 'approved',  date: '2025-03-10', actor: 'reviewer-2' }
+      - { state: 'published', date: '2025-03-25', actor: 'ciso-signoff' }
+
+mappings:
+  - source: 'ISA 1.1.1'
+    target: 'A.5.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISA 1.1.1 verlangt im Reifegrad "etabliert" eine durch das Top-Management
+      genehmigte, kommunizierte und turnusmäßig überprüfte Informations-
+      sicherheits-Leitlinie. Dieser Anforderungskatalog deckt sich vollständig
+      mit ISO 27001:2022 A.5.1 "Policies for information security". Das
+      offizielle VDA-Mapping bestätigt die direkte 1:1-Entsprechung; ein
+      TISAX-Auditnachweis kann ohne Anpassung als ISO-Evidenz wiederverwendet
+      werden.
+    audit_evidence_hint: 'InfoSec-Policy mit Management-Freigabe-Stempel, Kommunikations-Nachweis (Intranet/Schulung), letzter Review-Vermerk innerhalb 12 Monaten.'
+
+  - source: 'ISA 1.2.1'
+    target: 'A.5.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISA 1.2.1 fordert eine dokumentierte Organisation der Informations-
+      sicherheit mit zugewiesenen Rollen, Funktionstrennung und Berichtslinie
+      zur Geschäftsführung. Diese Anforderungen entsprechen wortgleich
+      ISO 27001:2022 A.5.2 "Information security roles and responsibilities".
+      VDA-Mapping bestätigt die direkte Korrespondenz; der ISA-Berichtsweg
+      an Top-Management wird durch ISO 27001 Clause 5.3 ergänzend abgesichert.
+    cross_refs: ['A.5.3']
+    audit_evidence_hint: 'Rollen-Matrix mit ISB/CISO-Bestellung, Stellenbeschreibungen, Org-Chart mit Berichtslinie an Geschäftsleitung.'
+
+  - source: 'ISA 1.5.1'
+    target: 'A.5.7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISA 1.5.1 wurde in VDA ISA 6.0 explizit eingeführt, um den neuen
+      ISO-27001:2022-Control A.5.7 "Threat Intelligence" zu spiegeln.
+      Beide Anforderungen verlangen eine dokumentierte Quellenliste,
+      strukturierte Auswertung und zielgruppengerechte Verteilung der
+      Bedrohungsinformationen. Das VDA-Mapping weist die Korrespondenz
+      als vollständig 1:1 aus.
+    audit_evidence_hint: 'Liste der Threat-Intel-Quellen (CERT-Bund, Auto-ISAC, kommerzielle Feeds), Auswertungs-Protokolle, Eskalations-Beispiele letzte 12 Monate.'
+
+  - source: 'ISA 6.1.1'
+    target: 'A.5.20'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      ISA 6.1.1 verlangt aus Automotive-Lieferketten-Sicht eine Schutzbedarfs-
+      basierte TISAX-Einstufung der Lieferanten, dokumentierte Vor-Ort-Audit-
+      Pflicht ab Schutzbedarf "hoch" sowie verpflichtende Vertragsklauseln zu
+      Prototypen-Behandlung beim Sub-Lieferanten. ISO 27001:2022 A.5.20
+      "Addressing information security in supplier agreements" bildet hiervon
+      nur die vertragliche Grundanforderung ab und stellt damit eine Teilmenge
+      der ISA-6.1.1-Pflichten dar.
+    gap_warning: |
+      ISA 6.1.1 geht über A.5.20 hinaus: TISAX-Label-Pflicht je Schutzbedarf,
+      Vor-Ort-Audit-Frequenz und Prototypen-Klauseln sind im reinen ISO-27001-
+      Annex nicht abgedeckt. Empfehlung: A.5.20 mit A.5.21 (ICT supply chain)
+      und A.5.22 (Monitoring supplier services) bündeln plus organisatorische
+      TISAX-Lieferanten-Matrix führen.
+    cross_refs: ['A.5.21', 'A.5.22']
+    audit_evidence_hint: 'Lieferantenregister mit TISAX-Label-Status, AVV/InfoSec-Anhang in Standardvertrag, Vor-Ort-Audit-Reports der Tier-1-Supplier.'
+
+  - source: 'ISA 1.6.4'
+    target: 'A.5.23'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISA 1.6.4 fordert einen definierten Auswahl-, Bewertungs- und Exit-
+      Prozess für Cloud-Dienste inklusive Incident-Schnittstelle zum Provider.
+      ISO 27001:2022 A.5.23 "Information security for use of cloud services"
+      wurde in beiden Standards parallel mit gleicher inhaltlicher Stoßrichtung
+      eingeführt. Das VDA-Mapping bestätigt die 1:1-Entsprechung; ein
+      TISAX-Cloud-Register dient unverändert als ISO-Nachweis.
+    audit_evidence_hint: 'Cloud-Service-Register mit Provider-Bewertung (z.B. C5-Testat), Exit-Strategie pro Service, Incident-Kontakte beim Provider.'
+
+  - source: 'ISA 1.6.1'
+    target: 'A.5.24'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISA 1.6.1 verlangt einen dokumentierten Incident-Response-Plan mit
+      definierten Rollen, Kategorisierung, Eskalationspfaden und
+      Lessons-Learned-Schleife. Dieses Anforderungsprofil ist nach
+      VDA-Mapping deckungsgleich mit ISO 27001:2022 A.5.24 "Information
+      security incident management planning and preparation". Eine TISAX-
+      konforme IR-Dokumentation kann ohne Lücken in den ISO-Nachweis
+      übernommen werden.
+    cross_refs: ['A.5.25', 'A.5.26', 'A.5.27']
+    audit_evidence_hint: 'IR-Plan mit Eskalationsmatrix, IR-Tabletop-Protokoll letzte 12 Monate, Ticket-Auswertung mit Kategorisierung.'
+
+  - source: 'ISA 1.6.3'
+    target: 'A.5.30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISA 1.6.3 fordert die Sicherstellung der Geschäftskontinuität in der
+      Informationsverarbeitung mit BIA-basierten RTO/RPO-Vorgaben, redundanten
+      ICT-Komponenten und getesteten Wiederanlauf-Verfahren. Dieser Scope
+      entspricht 1:1 ISO 27001:2022 A.5.30 "ICT readiness for business
+      continuity"; das VDA-Mapping weist die direkte Korrespondenz aus.
+    audit_evidence_hint: 'BIA mit RTO/RPO pro kritischem Prozess, ICT-DR-Plan, letzter DR-Test mit Protokoll und Lessons Learned.'
+
+  - source: 'ISA 2.1.3'
+    target: 'A.6.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISA 2.1.3 verlangt eine Awareness- und Schulungsstruktur mit
+      Onboarding-Modul, regelmäßiger Auffrischung, zielgruppenspezifischer
+      Vertiefung (Entwickler, Admins) und Wirksamkeitsmessung über Phishing-
+      Simulationen oder Tests. Diese Anforderungen decken sich nach
+      VDA-Mapping vollständig mit ISO 27001:2022 A.6.3 "Information security
+      awareness, education and training".
+    audit_evidence_hint: 'Schulungsmatrix mit Quote ≥ 95 %, Phishing-Simulations-Reports, rollenspezifische Curricula.'
+
+  - source: 'ISA 4.1.1'
+    target: 'A.7.10'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      ISA 4.1.1 fordert für automotive-typische Außendienst- und Werks-
+      szenarien einen umfassenden Umgang mit mobilen IT-Geräten und mobilen
+      Datenträgern: Krypto-Pflicht auf Endgeräten, Diebstahl-Reporting,
+      MDM-Steuerung. ISO 27001:2022 A.7.10 "Storage media" deckt davon nur
+      den Datenträger-Lebenszyklus ab. ISA 4.1.1 ist damit gegenüber A.7.10
+      breiter und erfordert ergänzende ISO-Controls.
+    gap_warning: |
+      A.7.10 deckt ausschließlich Datenträger, keine mobilen Endgeräte.
+      Für vollständige ISA-4.1.1-Abdeckung müssen zusätzlich A.7.9 (Security
+      of assets off-premises) und A.8.1 (User endpoint devices) aus
+      ISO 27001:2022 herangezogen werden. Außendienst- und Werksgelände-
+      Spezifika der Automotive-Welt sind ohne diese Bündelung nicht erfasst.
+    cross_refs: ['A.7.9', 'A.8.1']
+    audit_evidence_hint: 'MDM-Konfiguration, Verschlüsselungs-Policy für mobile Geräte, Datenträger-Entsorgungsnachweise.'
+
+  - source: 'ISA 5.1.1'
+    target: 'A.8.7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISA 5.1.1 fordert flächendeckenden Schutz von IT- und OT-Systemen vor
+      Schadsoftware mit AV/EDR-Pflicht, regelmäßigen Pattern-Updates und
+      definiertem Detection-Response-Verfahren. Diese Anforderung entspricht
+      nach VDA-Mapping 1:1 ISO 27001:2022 A.8.7 "Protection against malware".
+      Der OT-spezifische Anteil aus der Fertigung ist in A.8.7 implizit
+      enthalten und wird durch das gleiche Kontrollziel abgedeckt.
+    audit_evidence_hint: 'AV/EDR-Coverage-Report ≥ 99 %, Pattern-Aktualität, Incident-Reports zu Malware-Detections.'
+
+  - source: 'ISA 5.2.6'
+    target: 'A.8.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISA 5.2.6 verlangt einen geschlossenen Schwachstellen-Management-
+      Prozess mit dokumentierten Quellen (CVE-Feeds, Hersteller-Advisories),
+      Risikobewertung, Patch-SLA nach Kritikalität und formalem Ausnahme-
+      verfahren. Diese Anforderungen sind nach VDA-Mapping deckungsgleich
+      mit ISO 27001:2022 A.8.8 "Management of technical vulnerabilities".
+    audit_evidence_hint: 'Schwachstellen-Scan-Reports, Patch-SLA-Dashboard mit Compliance-Quote, Ausnahmenliste mit Risk-Acceptance.'
+
+  - source: 'ISA 1.6.2'
+    target: 'A.8.16'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISA 1.6.2 fordert ein Logging- und Monitoring-Konzept mit zentraler
+      Auswertung (SIEM), definierten Alarmierungsschwellen und turnusmäßigen
+      Use-Case-Reviews. Diese Anforderungen decken sich nach VDA-Mapping
+      vollständig mit ISO 27001:2022 A.8.16 "Monitoring activities". Eine
+      TISAX-konforme SIEM-Dokumentation ist ohne Anpassung als ISO-Nachweis
+      verwendbar.
+    cross_refs: ['A.8.15']
+    audit_evidence_hint: 'SIEM-Use-Case-Katalog, Log-Coverage-Report kritische Systeme, Alert-Trends letzte 6 Monate.'
+
+  - source: 'ISA 1.4.1'
+    target: 'A.8.24'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISA 1.4.1 verlangt ein dokumentiertes Krypto-Konzept mit zugelassenen
+      Verfahren nach BSI TR-02102 oder NIST, vollständigem Schlüssel-Lebens-
+      zyklus (Erzeugung, Verteilung, Rotation, Vernichtung) und Audit-Trail.
+      Diese Anforderungen entsprechen nach VDA-Mapping 1:1 ISO 27001:2022
+      A.8.24 "Use of cryptography".
+    audit_evidence_hint: 'Krypto-Konzept mit zugelassenen Algorithmen, KMS-Konfiguration, Schlüssel-Rotation-Protokolle.'
+
+  - source: 'ISA 4.1.2'
+    target: 'A.5.15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISA 4.1.2 fordert ein dokumentiertes Berechtigungskonzept nach
+      Need-to-know und Least-Privilege mit periodischer Rezertifizierung
+      und SoD-Konflikt-Prüfung. Diese Anforderungen sind nach VDA-Mapping
+      direkt korrespondierend zu ISO 27001:2022 A.5.15 "Access control"
+      als Policy-Anker; die Rezertifizierungs-Pflicht wird über A.5.18
+      ergänzend abgesichert.
+    cross_refs: ['A.5.18', 'A.8.2', 'A.8.3']
+    audit_evidence_hint: 'Berechtigungskonzept, letzter Rezertifizierungs-Lauf, Rollenmatrix mit SoD-Konflikt-Check.'
+
+  - source: 'ISA 3.1.4'
+    target: 'A.7.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      ISA 3.1.4 verlangt automotive-spezifisch abgestufte Sicherheitszonen
+      mit Prototypenschutz-relevanten Anforderungen wie Foto-Verbot,
+      Käfigen und Zonen-Kontrollen. ISO 27001:2022 A.7.4 "Physical security
+      monitoring" deckt davon nur die Überwachungskomponente (Kameras,
+      Wachdienst) ab. Beide Controls überschneiden sich teilweise, ISA 3.1.4
+      enthält jedoch substanzielle Automotive-Spezifika ohne ISO-Pendant.
+    gap_warning: |
+      A.7.4 alleine deckt nicht die ISA-Spezifika zum Prototypenschutz
+      (Foto-Verbot, Käfige, abgestufte Sicherheitszonen). VDA-ISA Kapitel 8
+      "Prototypenschutz" hat keinen Annex-A-Pendant — separate
+      organisatorische Maßnahmen sowie Bündel mit A.7.1, A.7.2 und A.7.3
+      sind erforderlich.
+    cross_refs: ['A.7.1', 'A.7.2', 'A.7.3']
+    audit_evidence_hint: 'Zonenkonzept mit Schutzklassen, Zugangsprotokolle Hochsicherheitsbereich, Foto-Verbot-Policy für Prototypen-Areale.'

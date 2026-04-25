@@ -1,0 +1,256 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'iso27001-2022_to_bsi-c5-2020_v1.0'
+  source_framework: 'ISO27001'
+  target_framework: 'BSI-C5'
+  version: 1
+  effective_from: '2020-02-01'
+  effective_until: null
+
+  provenance:
+    primary_source: 'BSI C5:2020 Anlage A „Vergleichstabelle ISO 27001 ↔ BSI C5 (offiziell)"'
+    primary_source_url: 'https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/CloudComputing/Kriterienkatalog/C5_2020.html'
+    secondary_sources:
+      - 'BSI C5:2020 Kriterienkatalog Volltext (Kapitel 4 OPS, RB, KRY, IDM)'
+      - 'Eigene Volltext-Vergleichsanalyse durch Compliance-Team Q1/2026'
+    publisher: 'Little ISMS Helper Maintainers'
+
+  methodology:
+    type: 'published_official_mapping'
+    description: |
+      BSI C5:2020 enthält in Anlage A eine offizielle Vergleichstabelle
+      ISO 27001 ↔ C5. Diese wurde 1:1 übernommen und auf die ISO 27001:2022
+      Annex-A-Struktur (93 Controls in 4 Themengruppen) übertragen, da das
+      BSI-Original noch auf ISO 27001:2013 referenziert. Vorgehen:
+      1. Übernahme der C5↔ISO-Beziehungen aus Anlage A
+      2. Re-Mapping der ISO-2013-Controls auf 2022 via ISO-Transition-Guide
+      3. Confidence-Bewertung pro Eintrag (high = 1:1-Übernahme aus Anlage A,
+         medium = Transition-bedingte Unschärfe, low = Schnittmenge nur teilweise)
+      4. Ergänzung Audit-Evidence-Hints aus C5-Kriterien-Volltext
+      5. 4-Augen-Review durch zweiten Compliance-Manager
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-02-10', actor: 'maintainer' }
+      - { state: 'review',    date: '2026-03-05', actor: 'maintainer' }
+      - { state: 'approved',  date: '2026-04-01', actor: 'reviewer-2' }
+      - { state: 'published', date: '2026-04-22', actor: 'ciso-signoff' }
+
+mappings:
+  - source: 'A.5.1'
+    target: 'OPS-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27001:2022 A.5.1 „Policies for information security" verlangt
+      dokumentierte und verabschiedete Sicherheitsleitlinien. BSI C5
+      OPS-01 „Leitlinie zur Informationssicherheit" verlangt eine
+      veröffentlichte, vom Top-Management freigegebene Leitlinie für den
+      Cloud-Dienst. C5 Anlage A bestätigt das Mapping als direkte
+      Entsprechung; beide adressieren den selben Pflichteninhalt.
+    audit_evidence_hint: 'Verabschiedete InfoSec-Leitlinie mit Management-Freigabe-Datum, jährliche Review-Protokolle, Veröffentlichung im Mitarbeiter-Intranet.'
+
+  - source: 'A.5.7'
+    target: 'RB-04'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.5.7 „Threat Intelligence" verlangt Sammeln, Auswerten und Verteilen
+      von Bedrohungsinformationen. BSI C5 RB-04 „Identifikation von
+      Schwachstellen, Bedrohungen und funktionalen Mängeln" deckt im
+      Cloud-Kontext Threat-Intel-Sharing und Schwachstellen-Tracking ab.
+      C5 Anlage A führt RB-04 als Entsprechung; Schnittmenge bei
+      Threat-Intel-Quellen (CERT-Bund, BSI-CERT) ist vollständig.
+    audit_evidence_hint: 'Threat-Intel-Quellen-Liste, ausgewertete Bedrohungsmeldungen der letzten 12 Monate, dokumentierte Eskalation an Cloud-Operations.'
+
+  - source: 'A.5.9'
+    target: 'AM-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.9 „Inventory of information and other associated assets" verlangt
+      ein vollständiges Asset-Inventar inkl. Eigentümerschaft. C5 AM-01
+      „Asset-Inventar" deckt das Inventar für Assets im Cloud-Dienst ab,
+      ist aber auf den Cloud-Scope begrenzt. ISO 27001 fordert das
+      Inventar organisationsweit; C5 nur für die Plattform.
+    gap_warning: |
+      Wer ISO A.5.9 NUR über C5 AM-01 nachweist, fehlt das Inventar für
+      Off-Cloud-Assets (Mitarbeiter-Endpoints, On-Prem-Systeme,
+      Papier-Dokumente). Empfehlung: AM-01 + organisationsweites
+      Asset-Register kombinieren.
+    cross_refs: ['A.5.10']
+    audit_evidence_hint: 'Asset-Inventar mit Owner-Feld, Klassifikation und Stichtagsabgleich CMDB ↔ Cloud-Provisioning.'
+
+  - source: 'A.5.20'
+    target: 'BEI-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.5.20 „Addressing information security in supplier agreements"
+      verlangt vertragliche InfoSec-Anforderungen an Lieferanten. C5
+      BEI-01 „Richtlinien und Anweisungen für Beziehungen zu Dritten"
+      regelt vertragliche InfoSec-Pflichten gegenüber Sub-Dienstleistern
+      und Sub-Auftragsverarbeitern. Anlage A bestätigt 1:1-Mapping.
+    cross_refs: ['A.5.21', 'A.5.22']
+    audit_evidence_hint: 'Lieferantenverträge mit InfoSec-Klauseln, AVV nach Art. 28 DSGVO, Sub-Provider-Liste mit Risikobewertung.'
+
+  - source: 'A.5.24'
+    target: 'SIM-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.5.24 „Information security incident management planning and
+      preparation" verlangt einen dokumentierten Incident-Response-Plan.
+      C5 SIM-01 „Richtlinien und Anweisungen zur Behandlung von
+      Sicherheitsvorfällen" verlangt das Gleiche im Cloud-Kontext. C5
+      Anlage A bestätigt direkte Entsprechung; auch Rollendefinitionen
+      und Eskalationswege überlappen vollständig.
+    cross_refs: ['A.5.25', 'A.5.26']
+    audit_evidence_hint: 'IR-Plan mit Rollen/Eskalation, IR-Runbooks, Übungs-Reports der letzten 12 Monate, Incident-Tickets-Stichprobe.'
+
+  - source: 'A.5.30'
+    target: 'BCM-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.30 „ICT readiness for business continuity" deckt den ICT-Anteil
+      der Geschäftsfortführung ab. C5 BCM-01 „Top-Management-Verantwortung
+      und Business Continuity Strategie" ist breiter — verlangt
+      Top-Management-Commitment, BIA und Strategie. ICT-Readiness ist
+      Teilmenge des C5-Anforderungsumfangs.
+    gap_warning: |
+      Wer C5 BCM-01 NUR über A.5.30 nachweist, fehlt die organisatorische
+      BC-Strategie und das Top-Management-Commitment. Empfehlung:
+      A.5.30 + ISO 22301 Clause 5 (Leadership) bündeln.
+    audit_evidence_hint: 'ICT-DR-Pläne, RTO/RPO-Definitionen, dokumentierte DR-Tests der letzten 12 Monate.'
+
+  - source: 'A.6.3'
+    target: 'HR-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.6.3 „Information security awareness, education and training"
+      verlangt regelmäßige Schulungen für alle Beschäftigten. C5 HR-03
+      „Schulung und Sensibilisierung" verlangt das Gleiche im
+      Cloud-Provider-Kontext, inkl. rollenspezifischer Vertiefung
+      (z. B. Admins). Anlage A bestätigt direkte Entsprechung.
+    audit_evidence_hint: 'Schulungs-Quote (≥95 %), Phishing-Drill-Ergebnisse, rollenspezifische Curricula für Privileged Users, Onboarding-Nachweise.'
+
+  - source: 'A.8.1'
+    target: 'IDM-01'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.8.1 „User Endpoint Devices" adressiert Schutz von
+      Endgeräten (Hardening, MDM, Verschlüsselung). C5 IDM-01
+      „Richtlinie zur Identitäts- und Berechtigungsverwaltung" adressiert
+      Identitäten und Zugriffsrechte — Schnittmenge nur bei
+      Authentisierung am Endgerät. Hardware-Schutz (MDM, Disk-Encryption)
+      ist NICHT durch IDM-01 abgedeckt.
+    gap_warning: |
+      Wer A.8.1 NUR über C5 IDM-01 nachweist, fehlen Endpoint-Hardening,
+      MDM-Policy und Disk-Encryption. Empfehlung: IDM-01 zusätzlich mit
+      C5 KRY-04 (Verschlüsselung at-rest) und einer separaten
+      Endpoint-Hardening-Maßnahme bündeln.
+    cross_refs: ['A.5.16', 'A.8.5']
+    audit_evidence_hint: 'MDM-Compliance-Report, Disk-Encryption-Stichproben, Endpoint-Hardening-Baseline (CIS L1 oder strenger).'
+
+  - source: 'A.8.5'
+    target: 'IDM-09'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.8.5 „Secure authentication" verlangt sichere Authentisierungs-
+      verfahren inkl. MFA für privilegierte Zugriffe. C5 IDM-09
+      „Authentifizierungsmechanismen" verlangt MFA für administrative
+      Zugriffe auf Cloud-Management-Ebenen und kryptographisch starke
+      Verfahren. C5 Anlage A bestätigt Entsprechung.
+    cross_refs: ['A.5.17']
+    audit_evidence_hint: 'MFA-Coverage-Report für Admin-Accounts (Soll: 100 %), Auth-Methoden-Inventar, Logs fehlgeschlagener Logins.'
+
+  - source: 'A.8.7'
+    target: 'OPS-15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.8.7 „Protection against malware" verlangt technische und
+      organisatorische Maßnahmen gegen Malware. C5 OPS-15 „Schutz vor
+      Schadprogrammen — Konzept" verlangt dokumentiertes Schutz-Konzept
+      und OPS-16 die operative Umsetzung. C5 Anlage A bestätigt
+      Entsprechung; beide decken AV/EDR vollständig ab.
+    cross_refs: ['OPS-16']
+    audit_evidence_hint: 'AV/EDR-Coverage-Report, Update-Frequenz-Nachweise, Quarantäne-Statistiken, dokumentiertes Schutz-Konzept.'
+
+  - source: 'A.8.8'
+    target: 'OPS-18'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.8.8 „Management of technical vulnerabilities" verlangt
+      Schwachstellen-Identifikation, Bewertung und Patch-Management.
+      C5 OPS-18 „Umgang mit Schwachstellen, Störungen und Fehlern —
+      Identifikation, Behandlung" verlangt das Gleiche im Cloud-Kontext.
+      Anlage A bestätigt direkte Entsprechung inkl. SLA für
+      Critical-Patches.
+    cross_refs: ['A.5.7']
+    audit_evidence_hint: 'Vulnerability-Scan-Reports, Patch-Compliance-Dashboard mit SLA-Erfüllung, CVE-Tracking der letzten 90 Tage.'
+
+  - source: 'A.8.16'
+    target: 'OPS-10'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.8.16 „Monitoring activities" verlangt kontinuierliche
+      Überwachung von Systemen und Netzwerken auf
+      Sicherheitsanomalien. C5 OPS-10 „Protokollierung und Monitoring —
+      Verantwortlichkeiten" und OPS-11 „Speicherung der Logs" decken
+      Logging und SIEM-Monitoring vollständig ab. Anlage A bestätigt
+      Entsprechung.
+    cross_refs: ['OPS-11', 'OPS-12']
+    audit_evidence_hint: 'SIEM-Use-Case-Katalog, Alert-MTTR-Statistik, 24/7-Coverage-Nachweis (SOC), Log-Retention-Konfiguration.'
+
+  - source: 'A.8.24'
+    target: 'KRY-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.8.24 „Use of cryptography" verlangt eine Krypto-Richtlinie
+      inkl. Key-Management. C5 KRY-01 „Richtlinie zur Verwendung von
+      Verschlüsselungsverfahren und Schlüsselverwaltung" verlangt
+      identische Inhalte. Anlage A bestätigt direkte Entsprechung;
+      beide referenzieren BSI TR-02102 als Algorithmen-Baseline.
+    cross_refs: ['KRY-02', 'KRY-03', 'KRY-04']
+    audit_evidence_hint: 'Krypto-Richtlinie, Algorithmen-Allowlist (BSI TR-02102 konform), Key-Management-Verfahren (HSM oder gleichwertig).'
+
+  - source: 'A.5.15'
+    target: 'IDM-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.5.15 „Access control" verlangt formale Zugangs- und
+      Zugriffskontroll-Regelungen. C5 IDM-02 „Benutzerregistrierung"
+      und IDM-03 „Vergabe und Änderung (Provisioning)" decken den
+      formellen Lifecycle ab. Anlage A bestätigt Entsprechung;
+      Schnittmenge in Authorisierungs-Verfahren ist vollständig.
+    cross_refs: ['IDM-03', 'IDM-04']
+    audit_evidence_hint: 'Berechtigungskonzept, Provisioning-Workflow-Auszüge, Stichprobe Joiner/Mover/Leaver der letzten 90 Tage.'
+
+  - source: 'A.5.23'
+    target: 'BEI-04'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.23 „Information security for use of cloud services" verlangt
+      Cloud-Nutzungs-Regelungen aus Kunden-Sicht. C5 BEI-04
+      „Anforderungen an Lieferanten" deckt Sub-Dienstleister-
+      Anforderungen aus Anbieter-Sicht ab. Schnittmenge nur bei
+      Sub-Provider-Pflichten; A.5.23 ist breiter (Cloud-Strategie,
+      Exit-Strategie, Datenresidenz).
+    gap_warning: |
+      Wer A.5.23 NUR über C5 BEI-04 nachweist, fehlen Cloud-Nutzungs-
+      Strategie, Exit-Klauseln und Datenresidenz-Bewertung. Empfehlung:
+      separater Cloud-Governance-Prozess auf Kundenseite (NICHT durch
+      C5 abgedeckt — C5 ist Anbieter-Kriterienkatalog).
+    audit_evidence_hint: 'Cloud-Governance-Richtlinie, Exit-Strategie-Dokument, Datenresidenz-Mapping pro Cloud-Service.'

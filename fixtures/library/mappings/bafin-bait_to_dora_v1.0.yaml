@@ -1,0 +1,307 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'bafin-bait_to_dora_v1.0'
+  source_framework: 'BAIT'
+  target_framework: 'DORA'
+  version: 1
+  effective_from: '2025-01-17'
+  effective_until: null
+
+  provenance:
+    primary_source: 'BaFin Auslegungshinweise zu BAIT (Bankaufsichtliche Anforderungen an die IT) Q4/2024 + EBA RTS Crosswalk-Analyse (inverse Richtung)'
+    primary_source_url: 'https://www.bafin.de/SharedDocs/Veroeffentlichungen/DE/Rundschreiben/2017/rs_1710_ba_BAIT.html'
+    secondary_sources:
+      - 'EBA RTS on ICT Risk Management Tools, Methods, Processes and Policies (DORA Art. 15) — JC 2024 53'
+      - 'EBA RTS on Sub-Outsourcing of ICT Services (DORA Art. 30(5)) — JC 2024 54'
+      - 'BaFin-Mitteilung "Anwendung von DORA und Wechselwirkung mit BAIT/MaRisk" 2024-11'
+      - 'Eigene Volltext-Analyse durch Compliance-Team mit 4-Augen-Prinzip'
+      - 'Inverse-Ableitung aus dora_to_bafin-bait_v1.0'
+    publisher: 'Little ISMS Helper Maintainers'
+
+  methodology:
+    type: 'text_comparison_with_expert_review'
+    description: |
+      Reverse-Mapping vom BAIT-Punkt zum DORA-Artikel.
+      Reziprok zu dora_to_bafin-bait_v1.0 — gleiche 15 Pairs, invertierte
+      Relationships, identische Confidence/Provenance. Rationale aus
+      BAIT-Sicht neu verfasst (BaFin-Aufsichtsperspektive deutscher Banken
+      vs. EU-DORA-Verordnung).
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2024-10-01', actor: 'maintainer' }
+      - { state: 'review',    date: '2024-11-15', actor: 'maintainer' }
+      - { state: 'approved',  date: '2024-12-10', actor: 'reviewer-2' }
+      - { state: 'published', date: '2025-01-15', actor: 'ciso-signoff' }
+
+mappings:
+  - source: 'BAIT 1'
+    target: 'Art. 5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      BAIT 1 "IT-Strategie" verlangt eine vom Vorstand verabschiedete
+      IT-Strategie mit Zielen, Maßnahmen und Verantwortlichkeiten sowie
+      die ungeteilte Letztverantwortung des Leitungsorgans für die IT.
+      Diese Anforderung an die strategische IT-Steuerung wird in DORA
+      Art. 5 vollständig adressiert: Governance- und Kontrollrahmen mit
+      klaren Rollen des Leitungsorgans. Beide adressieren denselben
+      Governance-Kern; DORA ergänzt mit Art. 6 ein dezidiertes
+      IKT-Risikorahmenwerk, BAIT-Kerngehalt bleibt deckungsgleich.
+    cross_refs: ['BAIT 2']
+    audit_evidence_hint: 'Vom Vorstand unterzeichnete IT-Strategie (≤ 24 Monate alt), Geschäftsverteilungsplan, Vorstandsbeschluss zum IKT-Risikorahmenwerk, Sitzungsprotokolle Lenkungsausschuss IT.'
+
+  - source: 'BAIT 4'
+    target: 'Art. 6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      BAIT 4 "Operative Informationssicherheit" sowie das BAIT-Kapitel
+      zum IT-Risikomanagement (verknüpft mit MaRisk AT 4.3.2) verlangen
+      einen dokumentierten Risikomanagement-Prozess mit Identifikation,
+      Bewertung, Steuerung und Überwachung sowie jährliche Überprüfung.
+      DORA Art. 6 fordert exakt dies in Form eines IKT-Risikomanagement-
+      Rahmenwerks mit Strategien, Politiken, Verfahren und Werkzeugen.
+      Detailtiefe ist gleichwertig; DORA ergänzt explizite Resilienz-Tests.
+    audit_evidence_hint: 'IKT-Risikorahmenwerk-Dokument mit Versionsstand, Jahres-Review-Protokoll, Risk-Register-Auszug, MaRisk-AT-4.3.2-Konformitätsnachweis.'
+
+  - source: 'BAIT 5'
+    target: 'Art. 8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      BAIT 5 "Informationsrisikomanagement" verlangt einen vollständigen
+      Informationsverbund mit Schutzbedarfsanalyse und jährlicher
+      Aktualisierung als Grundlage der Risikoanalyse. Diese Anforderung
+      wird in DORA Art. 8 vollständig gespiegelt: Identifikation und
+      Klassifizierung aller IKT-gestützten Geschäftsfunktionen,
+      Informationsassets und IKT-Assets samt jährlichem Review. Zielsetzung
+      und Periodizität sind deckungsgleich; DORA fordert zusätzlich
+      explizite Erfassung von Drittpartei-Abhängigkeiten (BAIT 9 abdeckt).
+    cross_refs: ['BAIT 9']
+    audit_evidence_hint: 'Asset-Register mit Klassifizierung und Abhängigkeitsbeziehungen, Schutzbedarfsfeststellung Q4 letztes Geschäftsjahr, Datenfluss-Diagramme kritischer Geschäftsprozesse.'
+
+  - source: 'BAIT 6'
+    target: 'Art. 9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      BAIT 6 "Operative Informationssicherheit" verlangt Härtung,
+      Schwachstellenmanagement, Verschlüsselung und Netzsegmentierung
+      als operative Umsetzung der Sicherheitsleitlinie. Diese
+      Maßnahmenanforderungen werden in DORA Art. 9 vollständig
+      adressiert: IKT-Sicherheitsmaßnahmen für Schutz und Prävention
+      über den gesamten Lebenszyklus mit Fokus auf Resilienz,
+      Verfügbarkeit, Integrität, Vertraulichkeit. Detailtiefe vergleichbar;
+      DORA explizit bei Network-Segmentation und Encryption-at-Rest/Transit.
+    cross_refs: ['BAIT 4']
+    audit_evidence_hint: 'Härtungsrichtlinien, Patch-Compliance-Reports, Krypto-Konzept mit Schlüsselmanagement, Netzsegmentierungsplan, Penetrationstest-Berichte ≤ 12 Monate.'
+
+  - source: 'BAIT 7'
+    target: 'Art. 10'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      BAIT 7 "Identitäts- und Rechtemanagement" deckt nur den IAM-
+      Teilbereich der Detection ab (Privileged Access Monitoring,
+      Re-Zertifizierung). DORA Art. 10 verlangt jedoch ein breiteres
+      Detection-Engineering (SIEM, UEBA, Korrelation, automatisierte
+      Alarmierung), das BAIT 7 nicht vollständig erbringt — der
+      Detection-Bereich wird in BAIT 6.5/6.6 und MaRisk AT 7.2 ergänzt.
+      BAIT 7 ist somit übergeordnet zu Art. 10 nur ein Teilstück.
+    gap_warning: |
+      Wer von BAIT 7 ausgeht, deckt DORA Art. 10 NICHT vollständig ab.
+      Ergänzend BAIT 6 (operative Sicherheit, SIEM/Logging) heranziehen.
+      Detection-Use-Cases und SOC-Capabilities sind in BAIT nur indirekt
+      adressiert — explizite Use-Case-Library + 24/7-SOC-Nachweis empfohlen.
+    cross_refs: ['BAIT 6']
+    audit_evidence_hint: 'IAM-Re-Zertifizierungsreport, SIEM-Use-Case-Katalog, Alarm-Statistik letzte 12 Monate, MTTD-/MTTR-KPIs, SOC-Schichtplan.'
+
+  - source: 'BAIT 10'
+    target: 'Art. 11'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      BAIT 10 "IT-Notfallmanagement" verlangt explizit BC/DR-Pläne,
+      RTO/RPO je Geschäftsprozess, jährliche Notfalltests samt Auswertung.
+      DORA Art. 11 deckt dasselbe Anforderungsprofil mit IKT-Geschäfts-
+      fortführungsleitlinie, Notfallplänen, jährlichen Tests sowie
+      RTO/RPO und Backup-Strategie ab. Periodizität und Detailtiefe sind
+      deckungsgleich; DORA ergänzt szenariobasierte Tests, die BAIT 10
+      implizit über MaRisk AT 7.3 abbildet.
+    cross_refs: ['BAIT 4.6']
+    audit_evidence_hint: 'BC/DR-Plan-Versionen, Testkalender + Testberichte letzte 12 Monate, RTO/RPO-Matrix kritischer Prozesse, Lessons-Learned-Dokumentation.'
+
+  - source: 'BAIT 4.6'
+    target: 'Art. 13'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      BAIT 4.6 "Wirksamkeitsbewertung" fordert jährliche Überprüfung
+      der Schutzmaßnahmen mit Reporting an die Geschäftsleitung. DORA
+      Art. 13 spiegelt dies durch kontinuierliches Lernen aus Vorfällen,
+      Tests und externen Quellen mit dokumentierten Verbesserungs-
+      maßnahmen. Schnittmenge bei Wirksamkeitsbewertung hoch; DORA
+      breiter bei Threat-Intel und Branchen-Lessons-Learned. Confidence
+      medium, weil BAIT 4.6 primär intern, DORA explizit extern fordert.
+    gap_warning: |
+      BAIT 4.6 deckt Threat-Intelligence-Sharing über ISACs/CERT-Bund
+      und systematische Auswertung externer Vorfälle nicht explizit ab.
+      Empfehlung: ergänzendes Threat-Intel-Konzept mit ISO 27001 A.5.7
+      als Brücke zu DORA Art. 13.
+    audit_evidence_hint: 'Wirksamkeitsbericht an Vorstand, Threat-Intel-Quellen-Liste, Lessons-Learned-Register mit Umsetzungsstatus, Beteiligungsnachweis ISACs/FI-ISAC.'
+
+  - source: 'BAIT 8'
+    target: 'Art. 17'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      BAIT 8 "IT-Betrieb (Schwerpunkt: Störungsmanagement)" verlangt
+      Incident-Management mit Priorisierung, Eskalation und Root-Cause-
+      Analyse. DORA Art. 17 fordert genau diesen IKT-Vorfallsmanagement-
+      Prozess mit Erkennung, Klassifizierung, Reaktion, Eskalation
+      und harmonisierter Klassifizierung gemäß EBA-RTS. Operative
+      Anforderungen deckungsgleich; DORA fügt harmonisierte
+      "major incident"-Klassifikation und einheitliche Meldefristen hinzu.
+    gap_warning: |
+      BAIT 8 enthält keine harmonisierte "major ICT-related incident"-
+      Klassifikation mit DORA-Schwellwerten (Kunden, Datenverlust,
+      Reputation, Geografie, Impact) — separates Klassifizierungs-Schema
+      gemäß EBA-RTS JC 2024 33 erforderlich.
+    cross_refs: ['BAIT 4']
+    audit_evidence_hint: 'Incident-Response-Plan mit DORA-Klassifizierung, Sample-Reporting "major incident" an BaFin, RCA-Berichte ≤ 12 Monate, MTTR-KPI-Reports.'
+
+  - source: 'BAIT 9.1'
+    target: 'Art. 28'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      BAIT 9.1 "Auslagerungen-Risikoanalyse" verlangt Wesentlichkeits-
+      und Risikoanalyse vor Auslagerung gemäß MaRisk AT 9. DORA Art. 28
+      adressiert dasselbe Initial-Assessment, geht jedoch deutlich
+      weiter mit Concentration-Risk-Monitoring auf Markt-Ebene und
+      Sub-Outsourcing-Steuerung. BAIT 9.1 ist daher nur ein Teilbaustein
+      des breiteren DORA-Drittpartei-Frameworks; ein BAIT-konformer
+      Nachweis allein erfüllt DORA Art. 28 nicht vollständig.
+    gap_warning: |
+      Wer DORA Art. 28 nur über BAIT 9.1 nachweist, übersieht
+      Concentration-Risk auf Sektor-Ebene (Multi-Cloud, Provider-
+      Konzentration über Institute hinweg) sowie ESA-Reporting und
+      CTPP-Oversight (Art. 31-44). Sub-Outsourcing-Genehmigungen
+      gemäß EBA-RTS JC 2024 54 zusätzlich dokumentieren.
+    cross_refs: ['BAIT 9.5']
+    audit_evidence_hint: 'Auslagerungsregister mit DORA-Tagging "kritisch/wichtig", Concentration-Risk-Report Q4, Sub-Outsourcing-Genehmigungen, Exit-Strategie-Templates.'
+
+  - source: 'BAIT 9.5'
+    target: 'Art. 30'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      BAIT 9.5 "Mindestvertragsinhalte" verweist auf MaRisk AT 9 mit
+      ähnlichen, aber engeren Pflichtinhalten (Audit-Recht, SLA,
+      Datenschutz). DORA Art. 30 listet 11 (bzw. 15 für kritisch/wichtig)
+      präziser formulierte Mindestvertragsinhalte inkl. TLPT-Mitwirkung,
+      ESA-Direktzugang und Sub-Outsourcing-Klauseln. BAIT 9.5 ist daher
+      Teilmenge — DORA Art. 30 reicht weiter; Bestandsverträge sind
+      bis 2026 nachzuverhandeln.
+    gap_warning: |
+      DORA-Pflichtklauseln zu TLPT-Mitwirkung (Art. 26-27), ESA-
+      Direktzugang, Cooperation in Concentration-Risk-Reporting und
+      Sub-Outsourcing-Genehmigungspflicht fehlen in BAIT 9.5.
+      Bestandsverträge bis 2026 nachverhandeln, EBA-Vertrags-Templates
+      JC 2024 54 verwenden.
+    cross_refs: ['BAIT 9.1']
+    audit_evidence_hint: 'Vertrags-Compliance-Matrix DORA Art. 30 vs. Bestandsverträge, Nachverhandlungs-Roadmap, Muster-Vertragsklauseln-Bibliothek.'
+
+  - source: 'BAIT 6.6'
+    target: 'Art. 26'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      BAIT 6.6 fordert regelmäßige Penetrationstests ohne Threat-Led-
+      Charakter und ohne TIBER-Zertifizierung der Tester. DORA Art. 26-27
+      (Threat-Led Penetration Testing, TLPT) verlangt jedoch einen
+      dreijährigen Red-Team-Test nach TIBER-EU-Methodik für kritische
+      Finanzentitäten. Lediglich loser thematischer Bezug; methodische
+      Entsprechung besteht nicht.
+    gap_warning: |
+      Substanzielle Lücke. BAIT 6.6 deckt DORA TLPT NICHT ab. Kritische
+      Finanzentitäten müssen TLPT-Programm separat aufbauen — TIBER-DE-
+      Framework der Bundesbank als Referenz, akkreditierte TI/RT-Provider
+      beauftragen, mindestens 3-jähriger Testzyklus. Bei Audit nicht
+      über BAIT 6.6 nachweisen versuchen.
+    audit_evidence_hint: 'BAIT-Penetrationstest-Berichte, TLPT-Scoping-Dokument, TIBER-DE-Anmeldebestätigung, Provider-Akkreditierungsnachweis, RT-Abschlussbericht + Remediation-Plan.'
+
+  - source: 'BAIT 6.6'
+    target: 'Art. 24'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      BAIT 6.6 verlangt regelmäßige Schwachstellen- und Penetrationstests
+      auf Basis Risikoanalyse. DORA Art. 24 erweitert dies zu einem
+      umfassenden DORT-Programm (Vulnerability Assessments, Open-Source-
+      Analysen, Network-Security-Tests, Performance-Tests) mit expliziter
+      Trennung Basis-Tests vs. erweiterte Tests (TLPT). Schnittmenge im
+      klassischen Vulnerability-Scanning und Pentest; DORA fordert
+      breiteres Test-Portfolio über BAIT 6.6 hinaus.
+    gap_warning: |
+      DORA-spezifische Test-Arten (Source-Code-Reviews, Scenario-Based-
+      Tests, End-to-End-Tests) sind in BAIT 6.6 nicht explizit gefordert.
+      Empfehlung: Test-Strategie um DORA-RTS-Test-Typen erweitern und
+      jährlichen Test-Plan dokumentieren.
+    cross_refs: ['BAIT 6']
+    audit_evidence_hint: 'BAIT-Pentest-Bibliothek, Jahres-Test-Plan mit DORA-Test-Typ-Tagging, Vulnerability-Scan-Reports, Remediation-Tracking-Tool.'
+
+  - source: 'BAIT 10'
+    target: 'Art. 12'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      BAIT 10 IT-Notfallmanagement enthält zentrale Anforderungen an
+      Notfallkonzept, Wiederanlaufpläne sowie regelmäßige Tests, inklusive
+      Eskalationsstufen, Krisenstab und Notfall-Kommunikation. DORA
+      Art. 12 fokussiert speziell auf Backup-Policies, Restoration-
+      Procedures und Recovery-Methoden mit RTO/RPO. BAIT 10 ist
+      breiter formuliert und enthält Art. 12 als Teilbereich
+      (Backup/Restore) ohne dass etwas fehlt.
+    cross_refs: ['BAIT 10.1', 'BAIT 10.4']
+    audit_evidence_hint: 'Backup-/Restore-Tests-Logs der letzten 12 Monate, RTO/RPO-Übersicht pro System, Notfall-Übungs-Protokolle.'
+
+  - source: 'BAIT 8.5'
+    target: 'Art. 18'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      BAIT 8.5 enthält eine eigene Klassifizierungs-Pflicht ohne
+      harmonisierte Schwellen — Banken definieren ihre Schweregrad-
+      Matrix selbst. DORA Art. 18 spezifiziert verbindliche
+      Klassifizierungs-Schwellen für ICT-Vorfälle (kritisch,
+      schwerwiegend, wesentlich) mit harmonisierter EU-Methodik nach
+      RTS JC 2024 33. BAIT 8.5 ist breiter, aber unschärfer; DORA
+      fordert konkrete Mapping-Anpassung.
+    gap_warning: |
+      Bei Übergang zu DORA müssen BAIT-konforme Klassifizierungs-
+      Matrizen auf RTS JC 2024 33 umgestellt werden — manche
+      BAIT-Klassifikationen fallen sonst nicht in die DORA-Major-
+      Reporting-Pflicht.
+    cross_refs: ['BAIT 8']
+    audit_evidence_hint: 'BAIT-Severity-Matrix, aktualisierte Vorfall-Klassifizierungs-Matrix, Mapping BAIT-Severity → DORA RTS-Schwellen, Reporting-Schwellwerte-Dokument.'
+
+  - source: 'BAIT 8.6'
+    target: 'Art. 19'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      BAIT 8.6 verlangt Vorfall-Meldung an die BaFin gemäß §44 KWG
+      ohne harmonisierte Fristen. DORA Art. 19 ergänzt dies um eine
+      standardisierte ESA-Meldepflicht für Major ICT-Vorfälle mit
+      Initial-Notification 4 h, Intermediate 72 h, Final 1 Monat.
+      BAIT 8.6 erfasst nationale Meldewege; DORA fügt EU-weite
+      Reporting-Strecke hinzu, die parallel zu betreiben ist.
+    gap_warning: |
+      DORA-Meldepflicht ergänzt EU-weite ESA-Reporting-Strecke, die
+      durch BAIT 8.6 nicht abgedeckt ist. Doppel-Reporting-Pflicht
+      einplanen, Meldewege parallelisieren.
+    audit_evidence_hint: 'BaFin-§44-KWG-Meldungen, DORA-Meldewege-Dokument, ESA-Anbindungs-Nachweis, Major-Incident-Reports der letzten 24 Monate mit beiden Meldungs-Strecken.'
