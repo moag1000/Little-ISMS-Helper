@@ -170,6 +170,70 @@ class ComplianceMapping
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeInterface $validUntil = null;
 
+    // ── Mapping-Quality-Vision: Lifecycle + Provenance + Methodology + Per-Pair-Detail ──
+
+    /**
+     * Lifecycle state machine: draft → review → approved → published → deprecated.
+     * Ergänzt das einfache reviewStatus-Feld um einen vollständigen Audit-Pfad.
+     */
+    #[ORM\Column(length: 20)]
+    private string $lifecycleState = 'draft';
+
+    /**
+     * Primärquelle des Mappings (z.B. "ENISA Guidance v2024-09",
+     * "BSI-Crosswalk-Tabelle 2024", "Eigene Recherche"). Pflichtfeld
+     * für Lifecycle ≥ approved.
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $provenanceSource = null;
+
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $provenanceUrl = null;
+
+    /**
+     * Methodologie-Typ: text_comparison_with_expert_review |
+     * tag_based | published_official_mapping | community_consensus |
+     * machine_assisted_with_review.
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $methodologyType = null;
+
+    /**
+     * Beschreibung wie das Mapping erstellt wurde (Schritte, Kriterien).
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $methodologyDescription = null;
+
+    /**
+     * Semantische Beziehung: equivalent | subset | superset | related |
+     * partial_overlap. Genauer als mappingType (weak/partial/full/exceeds).
+     */
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $relationship = null;
+
+    /**
+     * Warnung bei nicht-vollständigen Mappings ("Wer NIS2 21(2)(c) nur
+     * über A.5.30 nachweist, fehlt der Krisenmanagement-Teil").
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $gapWarning = null;
+
+    /**
+     * Hint für Auditoren welche Evidence das Mapping belegt
+     * (z.B. "Threat-Intel-Quellen-Liste + Sharing-Protokolle der
+     * letzten 12 Monate").
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $auditEvidenceHint = null;
+
+    /**
+     * MQS-Score-Aufschlüsselung pro Dimension (JSON):
+     * {provenance, methodology, confidence, coverage, bidirectional, lifecycle}
+     * Erlaubt Drill-Down im Quality-Dashboard.
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $mqsBreakdown = null;
+
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
@@ -650,6 +714,50 @@ class ComplianceMapping
             return false;
         }
         return $this->validUntil === null || $this->validUntil > $point;
+    }
+
+    // ── Mapping-Quality-Vision accessors ────────────────────────────────────
+
+    public function getLifecycleState(): string { return $this->lifecycleState; }
+    public function setLifecycleState(string $state): static { $this->lifecycleState = $state; return $this; }
+
+    public function getProvenanceSource(): ?string { return $this->provenanceSource; }
+    public function setProvenanceSource(?string $v): static { $this->provenanceSource = $v; return $this; }
+
+    public function getProvenanceUrl(): ?string { return $this->provenanceUrl; }
+    public function setProvenanceUrl(?string $v): static { $this->provenanceUrl = $v; return $this; }
+
+    public function getMethodologyType(): ?string { return $this->methodologyType; }
+    public function setMethodologyType(?string $v): static { $this->methodologyType = $v; return $this; }
+
+    public function getMethodologyDescription(): ?string { return $this->methodologyDescription; }
+    public function setMethodologyDescription(?string $v): static { $this->methodologyDescription = $v; return $this; }
+
+    public function getRelationship(): ?string { return $this->relationship; }
+    public function setRelationship(?string $v): static { $this->relationship = $v; return $this; }
+
+    public function getGapWarning(): ?string { return $this->gapWarning; }
+    public function setGapWarning(?string $v): static { $this->gapWarning = $v; return $this; }
+
+    public function getAuditEvidenceHint(): ?string { return $this->auditEvidenceHint; }
+    public function setAuditEvidenceHint(?string $v): static { $this->auditEvidenceHint = $v; return $this; }
+
+    public function getMqsBreakdown(): ?array { return $this->mqsBreakdown; }
+    public function setMqsBreakdown(?array $breakdown): static { $this->mqsBreakdown = $breakdown; return $this; }
+
+    /**
+     * Lifecycle-State-Badge für UI.
+     */
+    public function getLifecycleBadgeClass(): string
+    {
+        return match ($this->lifecycleState) {
+            'published' => 'success',
+            'approved' => 'primary',
+            'review' => 'warning',
+            'draft' => 'secondary',
+            'deprecated' => 'danger',
+            default => 'secondary',
+        };
     }
 }
 

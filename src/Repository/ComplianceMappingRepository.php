@@ -1166,6 +1166,102 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     /**
      * Get similarity distribution statistics
      */
+    /**
+     * Coverage zwischen zwei Frameworks: wieviele Source-Items haben ≥1 Mapping
+     * zum Target-Framework?
+     *
+     * @return array{source_total: int, source_with_mapping: int, target_total: int, target_with_mapping: int}
+     */
+    public function coverageBetweenFrameworks(ComplianceFramework $source, ComplianceFramework $target): array
+    {
+        $em = $this->getEntityManager();
+
+        $sourceTotal = (int) $em->createQueryBuilder()
+            ->select('COUNT(r.id)')
+            ->from(ComplianceRequirement::class, 'r')
+            ->where('r.complianceFramework = :fw')
+            ->setParameter('fw', $source)
+            ->getQuery()->getSingleScalarResult();
+
+        $targetTotal = (int) $em->createQueryBuilder()
+            ->select('COUNT(r.id)')
+            ->from(ComplianceRequirement::class, 'r')
+            ->where('r.complianceFramework = :fw')
+            ->setParameter('fw', $target)
+            ->getQuery()->getSingleScalarResult();
+
+        $sourceWithMapping = (int) $this->createQueryBuilder('cm')
+            ->select('COUNT(DISTINCT s.id)')
+            ->join('cm.sourceRequirement', 's')
+            ->join('cm.targetRequirement', 't')
+            ->where('s.complianceFramework = :sFw AND t.complianceFramework = :tFw')
+            ->andWhere("cm.lifecycleState != 'deprecated'")
+            ->setParameter('sFw', $source)
+            ->setParameter('tFw', $target)
+            ->getQuery()->getSingleScalarResult();
+
+        $targetWithMapping = (int) $this->createQueryBuilder('cm')
+            ->select('COUNT(DISTINCT t.id)')
+            ->join('cm.sourceRequirement', 's')
+            ->join('cm.targetRequirement', 't')
+            ->where('s.complianceFramework = :sFw AND t.complianceFramework = :tFw')
+            ->andWhere("cm.lifecycleState != 'deprecated'")
+            ->setParameter('sFw', $source)
+            ->setParameter('tFw', $target)
+            ->getQuery()->getSingleScalarResult();
+
+        return [
+            'source_total' => $sourceTotal,
+            'source_with_mapping' => $sourceWithMapping,
+            'target_total' => $targetTotal,
+            'target_with_mapping' => $targetWithMapping,
+        ];
+    }
+
+    /**
+     * Reciprocity-Coherence — Anteil der Mappings A→B die ein passendes
+     * Pendant B→A haben (target→source). Wert 0..1, 1 = perfekt reziprok.
+     */
+    public function reciprocityCoherence(ComplianceFramework $source, ComplianceFramework $target): float
+    {
+        $forward = $this->createQueryBuilder('cm')
+            ->select('IDENTITY(cm.sourceRequirement) AS s_id, IDENTITY(cm.targetRequirement) AS t_id')
+            ->join('cm.sourceRequirement', 's')
+            ->join('cm.targetRequirement', 't')
+            ->where('s.complianceFramework = :sFw AND t.complianceFramework = :tFw')
+            ->andWhere("cm.lifecycleState != 'deprecated'")
+            ->setParameter('sFw', $source)
+            ->setParameter('tFw', $target)
+            ->getQuery()->getArrayResult();
+
+        if (empty($forward)) {
+            return 0.0;
+        }
+
+        $reverse = $this->createQueryBuilder('cm')
+            ->select('IDENTITY(cm.sourceRequirement) AS s_id, IDENTITY(cm.targetRequirement) AS t_id')
+            ->join('cm.sourceRequirement', 's')
+            ->join('cm.targetRequirement', 't')
+            ->where('s.complianceFramework = :tFw AND t.complianceFramework = :sFw')
+            ->andWhere("cm.lifecycleState != 'deprecated'")
+            ->setParameter('sFw', $source)
+            ->setParameter('tFw', $target)
+            ->getQuery()->getArrayResult();
+
+        $reverseSet = [];
+        foreach ($reverse as $row) {
+            $reverseSet[$row['t_id'] . '_' . $row['s_id']] = true;  // (orig source, orig target) reversed
+        }
+
+        $matched = 0;
+        foreach ($forward as $row) {
+            if (isset($reverseSet[$row['s_id'] . '_' . $row['t_id']])) {
+                $matched++;
+            }
+        }
+        return $matched / count($forward);
+    }
+
     public function getSimilarityDistribution(): array
     {
         return $this->createQueryBuilder('cm')

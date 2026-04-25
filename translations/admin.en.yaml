@@ -42,6 +42,7 @@ admin:
         import: Import
         data_repair: 'Data Repair'
         sample_data: 'Sample Data'
+        mapping_quality: 'Mapping Quality'
         licensing: Licensing
         license_management: 'License Management'
         kpi_thresholds: 'KPI Thresholds'
@@ -246,6 +247,42 @@ admin:
         confirm_reset: 'Reset all tour markers for %user%? The user will see the onboarding banner again on next login.'
         empty: 'No users match the current filters.'
         audit_hint: 'This report is usable as <strong>audit evidence</strong> for ISO 27001 Annex A.6.3 (Information Security Awareness, Education and Training). It shows who was onboarded when — each role has its own tour with role-specific content.'
+    mapping_quality:
+        title: 'Mapping Quality'
+        description: 'MQS (Mapping Quality Score 0-100) per cross-framework mapping with breakdown across 6 dimensions: Provenance, Methodology, Confidence, Coverage, Bidirectional Coherence, Lifecycle. Auditable documentation of cross-framework bridges.'
+        detail_title: 'Mapping Detail'
+        mqs_score: 'MQS Score'
+        mqs_max: 'of 100 max'
+        recompute: 'Recompute all MQS'
+        recompute_confirm: 'Recompute all MQS scores? May take a few seconds with many mappings.'
+        no_results: 'No mappings match the filter.'
+        stats:
+            total: 'Total mappings'
+            avg_mqs: 'Avg. MQS'
+            published: 'In "published" state'
+            low_score_published: 'Published with MQS < 60 (critical)'
+        filter:
+            state: 'Lifecycle state'
+            min_score: 'Min. MQS'
+            all: '— all —'
+        col:
+            source_target: 'Source → Target'
+            relationship: 'Relationship'
+            confidence: 'Confidence'
+            lifecycle: 'Lifecycle'
+            mqs: 'MQS'
+        field:
+            relationship: 'Relationship type'
+            confidence: 'Confidence'
+            lifecycle: 'Lifecycle state'
+            provenance: 'Provenance source'
+            methodology: 'Methodology'
+            rationale: 'Rationale'
+            gap_warning: 'Gap warning'
+            audit_evidence: 'Audit evidence hint'
+            version: 'Version'
+            source_id: 'Source tag'
+
     sample_data:
         title: 'Sample Data'
         description: 'Import or remove demo datasets (assets, risks, business processes, …) for the current tenant.'
