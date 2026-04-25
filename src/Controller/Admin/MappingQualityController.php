@@ -2,7 +2,9 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\User;
+use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Service\MappingLifecycleService;
 use App\Service\MappingQualityScoreService;
@@ -24,6 +26,7 @@ class MappingQualityController extends AbstractController
 {
     public function __construct(
         private readonly ComplianceMappingRepository $mappingRepository,
+        private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly MappingQualityScoreService $mqsService,
         private readonly MappingLifecycleService $lifecycleService,
         private readonly EntityManagerInterface $entityManager,
@@ -156,5 +159,75 @@ class MappingQualityController extends AbstractController
             'by_state' => $byState,
             'low_score_published' => $lowScore,
         ];
+    }
+
+    /**
+     * CISO-Coverage-Übersicht: Aggregat-Tabelle pro Framework-Paar mit
+     * Coverage % und Confidence-Verteilung. Beantwortet die Board-Frage:
+     * "Wie viel von Framework Y ist durch Framework X abgedeckt — und wie
+     * sicher sind wir uns dabei?"
+     */
+    #[Route('/admin/mapping-quality/coverage/all', name: 'admin_mapping_quality_coverage')]
+    public function coverage(): Response
+    {
+        $frameworks = $this->frameworkRepository->findAll();
+        $rows = [];
+
+        foreach ($frameworks as $source) {
+            foreach ($frameworks as $target) {
+                if ($source === $target) {
+                    continue;
+                }
+                $stats = $this->mappingRepository->coverageBetweenFrameworks($source, $target);
+                if ($stats['source_with_mapping'] === 0) {
+                    continue;  // Keine Mappings → nicht in Liste
+                }
+                $confidenceCounts = $this->confidenceDistribution($source, $target);
+                $sourceTotal = (int) $stats['source_total'];
+                $covered = (int) $stats['source_with_mapping'];
+                $coveragePct = $sourceTotal > 0 ? ($covered / $sourceTotal) * 100 : 0;
+
+                $rows[] = [
+                    'source' => $source,
+                    'target' => $target,
+                    'source_total' => $sourceTotal,
+                    'covered' => $covered,
+                    'unmapped' => $sourceTotal - $covered,
+                    'coverage_pct' => round($coveragePct, 1),
+                    'high' => $confidenceCounts['high'],
+                    'medium' => $confidenceCounts['medium'],
+                    'low' => $confidenceCounts['low'],
+                ];
+            }
+        }
+        usort($rows, static fn(array $a, array $b) => $b['coverage_pct'] <=> $a['coverage_pct']);
+
+        return $this->render('admin/mapping_quality/coverage.html.twig', ['rows' => $rows]);
+    }
+
+    /**
+     * @return array{high: int, medium: int, low: int}
+     */
+    private function confidenceDistribution(ComplianceFramework $source, ComplianceFramework $target): array
+    {
+        $rows = $this->mappingRepository->createQueryBuilder('m')
+            ->select('m.confidence AS c, COUNT(m.id) AS n')
+            ->join('m.sourceRequirement', 'sr')
+            ->join('m.targetRequirement', 'tr')
+            ->where('sr.complianceFramework = :s AND tr.complianceFramework = :t')
+            ->andWhere("m.lifecycleState != 'deprecated'")
+            ->groupBy('m.confidence')
+            ->setParameter('s', $source)
+            ->setParameter('t', $target)
+            ->getQuery()->getArrayResult();
+
+        $out = ['high' => 0, 'medium' => 0, 'low' => 0];
+        foreach ($rows as $r) {
+            $key = (string) $r['c'];
+            if (isset($out[$key])) {
+                $out[$key] = (int) $r['n'];
+            }
+        }
+        return $out;
     }
 }

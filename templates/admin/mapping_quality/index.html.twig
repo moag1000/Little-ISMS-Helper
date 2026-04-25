@@ -72,15 +72,20 @@
             </div>
             <button type="submit" class="btn btn-sm btn-primary">{{ 'common.filter'|trans({}, 'messages')|default('Filter') }}</button>
         </form>
-        <form method="post" action="{{ path('admin_mapping_quality_recompute') }}"
-              data-controller="ui-actions"
-              data-action="submit->ui-actions#confirm"
-              data-ui-actions-message-param="{{ 'admin.mapping_quality.recompute_confirm'|trans({}, 'admin') }}">
-            <input type="hidden" name="_token" value="{{ csrf_token('mapping_quality_recompute') }}">
-            <button type="submit" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'admin.mapping_quality.recompute'|trans({}, 'admin') }}
-            </button>
-        </form>
+        <div class="d-flex gap-2">
+            <a href="{{ path('admin_mapping_quality_coverage') }}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'admin.mapping_quality.coverage_button'|trans({}, 'admin') }}
+            </a>
+            <form method="post" action="{{ path('admin_mapping_quality_recompute') }}"
+                  data-controller="ui-actions"
+                  data-action="submit->ui-actions#confirm"
+                  data-ui-actions-message-param="{{ 'admin.mapping_quality.recompute_confirm'|trans({}, 'admin') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('mapping_quality_recompute') }}">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'admin.mapping_quality.recompute'|trans({}, 'admin') }}
+                </button>
+            </form>
+        </div>
     </div>
 
     {# Liste #}
