@@ -9,8 +9,10 @@ use App\Repository\ScheduledTaskRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class ExecuteScheduledTaskHandlerTest extends TestCase
 {
     private ExecuteScheduledTaskHandler $handler;

@@ -12,7 +12,9 @@ use App\Service\AssetService;
 use App\Service\CorporateStructureService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class AssetServiceTest extends TestCase
 {
     private MockObject $assetRepository;

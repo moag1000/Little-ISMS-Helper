@@ -8,7 +8,9 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\MappingValidatorService;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class MappingValidatorServiceTest extends TestCase
 {
     private function makeService(?ComplianceFramework $foundFw = null, ?ComplianceRequirement $foundReq = null): MappingValidatorService

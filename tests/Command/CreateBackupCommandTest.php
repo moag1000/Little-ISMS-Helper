@@ -11,10 +11,12 @@ use App\Service\BackupNotifier;
 use App\Service\BackupService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\NullLogger;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
+#[AllowMockObjectsWithoutExpectations]
 class CreateBackupCommandTest extends TestCase
 {
     private MockObject $backupService;

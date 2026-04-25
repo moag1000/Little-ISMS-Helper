@@ -9,11 +9,13 @@ use App\Repository\TenantRepository;
 use App\Service\BackupService;
 use App\Service\RestoreService;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
+#[AllowMockObjectsWithoutExpectations]
 class RestoreBackupCommandTest extends TestCase
 {
     private MockObject $backupService;

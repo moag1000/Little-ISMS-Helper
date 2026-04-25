@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Unit tests for DocumentRepository
@@ -25,6 +26,7 @@ use PHPUnit\Framework\TestCase;
  * - Parameter handling and validation
  * - Edge cases and null handling
  */
+#[AllowMockObjectsWithoutExpectations]
 class DocumentRepositoryTest extends TestCase
 {
     private MockObject $registry;

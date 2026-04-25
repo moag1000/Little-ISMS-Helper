@@ -17,8 +17,10 @@ use App\Service\ModuleConfigurationService;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Bundle\SecurityBundle\Security;
 
+#[AllowMockObjectsWithoutExpectations]
 class DashboardStatisticsServiceTest extends TestCase
 {
     private MockObject $assetRepository;

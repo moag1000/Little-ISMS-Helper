@@ -16,7 +16,9 @@ use App\Repository\ThreatIntelligenceRepository;
 use App\Service\SiemExportService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class SiemExportServiceTest extends TestCase
 {
     private MockObject $auditLogRepository;

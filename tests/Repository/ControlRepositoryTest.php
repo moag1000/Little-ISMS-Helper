@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Unit tests for ControlRepository
@@ -25,6 +26,7 @@ use PHPUnit\Framework\TestCase;
  *
  * For comprehensive query execution testing, see integration tests.
  */
+#[AllowMockObjectsWithoutExpectations]
 class ControlRepositoryTest extends TestCase
 {
     private MockObject $entityManager;

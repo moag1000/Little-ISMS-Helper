@@ -5,9 +5,11 @@ namespace App\Tests\Security\Voter;
 use App\Entity\User;
 use App\Security\Voter\EntityVoter;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class EntityVoterTest extends TestCase
 {
     private EntityVoter $voter;

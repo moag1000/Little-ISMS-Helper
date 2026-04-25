@@ -7,11 +7,13 @@ namespace App\Tests\Service;
 use App\Entity\User;
 use App\Service\GuidedTourService;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Unit-Tests für GuidedTourService (Sprint 13).
  */
+#[AllowMockObjectsWithoutExpectations]
 class GuidedTourServiceTest extends TestCase
 {
     private function buildService(array $grantedRoles = []): GuidedTourService
