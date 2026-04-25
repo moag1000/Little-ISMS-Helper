@@ -13,12 +13,14 @@ use App\Service\TenantContext;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Tests for ControlEffectivenessService
  *
  * Phase 7B: Tests for control performance analytics
  */
+#[AllowMockObjectsWithoutExpectations]
 class ControlEffectivenessServiceTest extends TestCase
 {
     private MockObject $controlRepository;

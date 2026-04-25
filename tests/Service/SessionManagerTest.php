@@ -12,10 +12,12 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
+#[AllowMockObjectsWithoutExpectations]
 class SessionManagerTest extends TestCase
 {
     private MockObject $entityManager;

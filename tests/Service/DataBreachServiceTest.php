@@ -16,9 +16,11 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
+#[AllowMockObjectsWithoutExpectations]
 class DataBreachServiceTest extends TestCase
 {
     private MockObject $entityManager;

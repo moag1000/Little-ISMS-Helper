@@ -5,9 +5,11 @@ namespace App\Tests\Service;
 use App\Service\EnvironmentWriter;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class EnvironmentWriterTest extends TestCase
 {
     private EnvironmentWriter $service;

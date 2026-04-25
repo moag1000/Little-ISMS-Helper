@@ -11,9 +11,11 @@ use App\Entity\Workflow;
 use App\Entity\User;
 use App\Service\EmailNotificationService;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
+#[AllowMockObjectsWithoutExpectations]
 class EmailNotificationServiceTest extends TestCase
 {
     private EmailNotificationService $service;

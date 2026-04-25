@@ -12,6 +12,7 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Service\Import\BsiProfileXmlImporter;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Unit tests for the BSI-Profile-XML importer.

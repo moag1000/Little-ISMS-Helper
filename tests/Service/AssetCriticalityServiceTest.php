@@ -13,12 +13,14 @@ use App\Service\TenantContext;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Tests for AssetCriticalityService
  *
  * Phase 7B: Tests for asset criticality analytics
  */
+#[AllowMockObjectsWithoutExpectations]
 class AssetCriticalityServiceTest extends TestCase
 {
     private MockObject $assetRepository;

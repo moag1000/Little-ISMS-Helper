@@ -21,6 +21,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -44,6 +45,7 @@ use Twig\Environment;
  * Tests all public action methods for Control (ISO 27001) management
  * including access control, tenant filtering, and report generation.
  */
+#[AllowMockObjectsWithoutExpectations]
 class StatementOfApplicabilityControllerTest extends TestCase
 {
     private MockObject $controlRepository;

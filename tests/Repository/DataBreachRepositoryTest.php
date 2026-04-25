@@ -14,6 +14,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Unit tests for DataBreachRepository
@@ -28,6 +29,7 @@ use PHPUnit\Framework\TestCase;
  * - Testing reference number generation logic
  * - Testing dashboard statistics aggregation logic
  */
+#[AllowMockObjectsWithoutExpectations]
 class DataBreachRepositoryTest extends TestCase
 {
     private MockObject $entityManager;

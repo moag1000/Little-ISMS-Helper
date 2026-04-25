@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Unit tests for RiskRepository
@@ -75,6 +76,7 @@ use PHPUnit\Framework\TestCase;
  * @see https://symfony.com/doc/current/testing.html#integration-tests
  * @see https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/testing.html
  */
+#[AllowMockObjectsWithoutExpectations]
 class RiskRepositoryTest extends TestCase
 {
     private MockObject $entityManager;

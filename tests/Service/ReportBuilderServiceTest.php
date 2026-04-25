@@ -20,6 +20,7 @@ use App\Service\ReportBuilderService;
 use App\Service\TenantContext;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -27,6 +28,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * Phase 7C: Tests for the custom report builder service
  */
+#[AllowMockObjectsWithoutExpectations]
 class ReportBuilderServiceTest extends TestCase
 {
     private ReportBuilderService $service;

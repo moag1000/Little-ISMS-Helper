@@ -9,11 +9,13 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class InitialAdminServiceTest extends TestCase
 {
     private MockObject $userRepository;

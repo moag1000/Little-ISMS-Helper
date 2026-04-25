@@ -19,7 +19,9 @@ use App\Service\MappingQualityAnalysisService;
 use App\Service\TenantContext;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class ComplianceMappingServiceTest extends TestCase
 {
     private ComplianceMappingService $service;

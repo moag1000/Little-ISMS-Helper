@@ -12,6 +12,7 @@ use App\Service\IncidentSlaView;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Phase 8M.2 — Unit-Tests für IncidentSlaConfigResolver Ceiling-Merge pro Severity.
@@ -20,6 +21,7 @@ use PHPUnit\Framework\TestCase;
  * Child-Tenant darf nur NIEDRIGERE (schnellere/strengere) Stunden haben.
  * min(child, parent) für alle Hours-Felder. Nullable-Felder: null = kein Limit.
  */
+#[AllowMockObjectsWithoutExpectations]
 class IncidentSlaConfigResolverTest extends TestCase
 {
     // -------------------------------------------------------------------------

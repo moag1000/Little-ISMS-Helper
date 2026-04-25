@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormInterface;
@@ -49,6 +50,7 @@ use Twig\Environment;
  * Tests all public action methods with proper access control,
  * service mocking, security features, and edge case handling.
  */
+#[AllowMockObjectsWithoutExpectations]
 class DocumentControllerTest extends TestCase
 {
     private MockObject $documentRepository;

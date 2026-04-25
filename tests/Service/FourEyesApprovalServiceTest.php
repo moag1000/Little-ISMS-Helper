@@ -11,6 +11,7 @@ use App\Service\FourEyesApprovalService;
 use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use ReflectionProperty;
 
 final class FourEyesApprovalServiceTest extends TestCase

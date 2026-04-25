@@ -7,8 +7,10 @@ use App\Entity\Asset;
 use App\Service\RiskImpactCalculatorService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class RiskImpactCalculatorServiceTest extends TestCase
 {
     private RiskImpactCalculatorService $service;

@@ -9,8 +9,10 @@ use App\Service\EmailNotificationService;
 use DateTimeImmutable;
 use Exception;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class GenerateComplianceReportHandlerTest extends TestCase
 {
     private GenerateComplianceReportHandler $handler;

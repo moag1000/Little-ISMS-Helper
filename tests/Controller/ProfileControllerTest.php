@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -28,6 +29,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
  * - CSRF protection
  * - Audit logging
  */
+#[AllowMockObjectsWithoutExpectations]
 class ProfileControllerTest extends WebTestCase
 {
     private KernelBrowser $client;

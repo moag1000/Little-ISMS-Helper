@@ -11,6 +11,7 @@ use App\Service\KpiThresholdConfigResolver;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Phase 8M.3 — Unit-Tests für KpiThresholdConfigResolver Fallback-Kaskade.
@@ -18,6 +19,7 @@ use PHPUnit\Framework\TestCase;
  * Merge-Semantik: Fallback (Pick-First), kein numerischer Merge.
  * Child-Tenant → nächster Ancestor → … → Root → Service-Default.
  */
+#[AllowMockObjectsWithoutExpectations]
 class KpiThresholdConfigResolverTest extends TestCase
 {
     // -------------------------------------------------------------------------

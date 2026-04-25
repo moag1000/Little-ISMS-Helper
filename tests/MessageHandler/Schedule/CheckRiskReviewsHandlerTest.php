@@ -9,6 +9,7 @@ use App\Service\EmailNotificationService;
 use DateTimeImmutable;
 use Exception;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -18,6 +19,7 @@ use Psr\Log\LoggerInterface;
  * be implemented yet in the target classes. These tests verify the handler's error handling
  * and repository interaction patterns.
  */
+#[AllowMockObjectsWithoutExpectations]
 class CheckRiskReviewsHandlerTest extends TestCase
 {
     private CheckRiskReviewsHandler $handler;

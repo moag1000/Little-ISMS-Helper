@@ -12,7 +12,9 @@ use App\Service\CorporateStructureService;
 use App\Service\RiskService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class RiskServiceTest extends TestCase
 {
     private MockObject $riskRepository;
