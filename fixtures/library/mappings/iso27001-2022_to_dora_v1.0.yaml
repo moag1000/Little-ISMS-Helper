@@ -1,0 +1,296 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'iso27001-2022_to_dora_v1.0'
+  source_framework: 'ISO27001'
+  target_framework: 'DORA'
+  version: 1
+  effective_from: '2025-01-17'
+  effective_until: null
+
+  provenance:
+    primary_source: 'EBA RTS-Entwurf zu DORA Art. 15 + 18 (2024-Q1) + EBA Final Report zu RTS on ICT Risk Management Framework'
+    primary_source_url: 'https://www.eba.europa.eu/regulation-and-policy/single-rulebook/digital-operational-resilience-act-dora'
+    secondary_sources:
+      - 'ESA Joint Final Report JC 2024-03 — RTS on ICT-related incident classification'
+      - 'BaFin DORA-Leitlinien Konsultationsentwurf 2024-Q3'
+      - 'ISACA DORA-ISO 27001 Crosswalk Whitepaper 2024'
+      - 'Eigene Volltext-Analyse Finanzsektor durch Compliance-Team Q4/2024'
+    publisher: 'Little ISMS Helper Maintainers'
+
+  methodology:
+    type: 'text_comparison_with_expert_review'
+    description: |
+      DORA ist mit Wirkung zum 17.01.2025 unmittelbar anwendbar und in
+      Inhalt deutlich expliziter als ISO 27001:2022 (z.B. konkrete
+      Meldefristen, ICT-Concentration-Risk, dedizierte TPP-Anforderungen).
+      Methodik:
+      1. Volltext-Lesung des DORA-Verordnungstexts (Art. 1-64) sowie
+         der zugehörigen RTS/ITS-Entwürfe der ESAs
+      2. Pro DORA-Artikel: Identifikation des/der ankerführenden ISO-Annex-A-
+         Controls bzw. ISO-27001-Klauseln
+      3. Bewertung der Tiefe: ISO 27001 ist meist `subset` von DORA, da DORA
+         Schwellwerte/Fristen/Quantifizierungen explizit vorschreibt, die ISO
+         als Soll-Ergebnis-Norm offen lässt
+      4. Confidence: high nur bei wörtlicher Deckung; medium bei sinngemäßer
+         Abdeckung mit Detail-Lücken; low nur bei lockerer Verbindung
+      5. Gap-Warnings priorisiert für DORA-Spezifika ohne ISO-Pendant:
+         Concentration-Risk (Art. 29), TLPT (Art. 26-27), Major-Incident-
+         Reporting an zuständige Behörde (Art. 19)
+      6. 4-Augen-Review durch zweiten Compliance-Manager mit BaFin/MaRisk-
+         und KRITIS-Erfahrung
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2024-11-10', actor: 'maintainer' }
+      - { state: 'review',    date: '2024-12-15', actor: 'maintainer' }
+      - { state: 'approved',  date: '2025-01-08', actor: 'reviewer-2' }
+      - { state: 'published', date: '2025-01-20', actor: 'ciso-signoff' }
+
+mappings:
+  - source: 'A.5.1'
+    target: 'DORA Art. 5'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.1 "Policies for information security" liefert die Policy-Basis,
+      die DORA Art. 5 "Governance and organisation" voraussetzt. DORA
+      geht jedoch deutlich weiter: explizite Verantwortung des Leitungs-
+      organs für ICT-Risk, mindestens jährliche Genehmigung der ICT-Risk-
+      Strategie durch das Board, dokumentierte ICT-Risk-Toleranzschwellen
+      sowie persönliche Haftung der Geschäftsleitung.
+    gap_warning: |
+      Reine A.5.1-Policy reicht NICHT für DORA Art. 5 aus. Zusätzlich
+      erforderlich: Board-Beschluss zur ICT-Risk-Strategie, Toleranz-
+      schwellen-Dokument, Schulungspflicht-Nachweis für Board-Mitglieder
+      (Art. 5(4)). Empfehlung: Bündel mit ISO 27001 Clause 5.1 + 5.3.
+    cross_refs: ['A.5.2', 'A.5.4']
+    audit_evidence_hint: 'Board-Protokoll mit ICT-Risk-Strategie-Genehmigung, ICT-Risk-Toleranz-Statement, Schulungsnachweis Geschäftsleitung.'
+
+  - source: 'A.5.7'
+    target: 'DORA Art. 13'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.5.7 "Threat Intelligence" deckt DORA Art. 13 "Information sharing
+      arrangements on cyber threat information and intelligence" weitgehend
+      ab: Sammlung, Analyse und Verteilung von Bedrohungsinformationen.
+      DORA referenziert explizit "trusted communities" (z.B. FS-ISAC), was
+      durch A.5.7 Implementierungsanleitung methodisch entsprochen wird.
+      Beide Normen erlauben Sharing-Vereinbarungen unter Wahrung von DSGVO.
+    audit_evidence_hint: 'Mitgliedschaft in Threat-Intel-Community (FS-ISAC, BaFin-Cybermeldungen), Sharing-Vereinbarung, ausgewertete Threat-Reports.'
+
+  - source: 'A.5.20'
+    target: 'DORA Art. 28'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.20 "Addressing information security in supplier agreements" deckt
+      vertragliche InfoSec-Klauseln ab. DORA Art. 28 "General principles"
+      und Art. 30 "Key contractual provisions" für ICT-Drittparteienrisiko
+      sind dramatisch expliziter: 14 verpflichtende Mindest-Vertragsklauseln,
+      darunter Sub-Outsourcing-Genehmigung, Audit-/Inspektionsrechte für
+      Aufsichtsbehörde, Exit-Plan, Daten-Zugriff bei Insolvenz und SLA-
+      Schwellen. Concentration-Risk-Bewertung (Art. 29) hat kein direktes
+      ISO-Pendant.
+    gap_warning: |
+      A.5.20 ist NICHT ausreichend für DORA-Art.-30-Compliance. Zusätzlich
+      benötigt: Register Information mit allen 41 Pflichtfeldern (Art. 28(3)),
+      Concentration-Risk-Analyse pro CTPP, Exit-Strategie-Dokument je
+      kritischer ICT-Drittpartei. Bündel mit A.5.21 + A.5.22 + dediziertem
+      DORA-TPP-Register.
+    cross_refs: ['A.5.21', 'A.5.22']
+    audit_evidence_hint: 'DORA-Register Information (Art. 28(3)), Vertragsmuster mit 14 Pflichtklauseln, Exit-Plan kritischer CTPP, Concentration-Risk-Report.'
+
+  - source: 'A.5.22'
+    target: 'DORA Art. 29'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.22 "Monitoring, review and change management of supplier services"
+      deckt laufende Überwachung von Lieferanten ab. DORA Art. 29 verlangt
+      darüber hinaus eine quantitative ICT-Concentration-Risk-Bewertung:
+      Identifikation kritischer ICT-Drittparteien, Substituierbarkeits-
+      analyse, Konzentration auf einzelne CTPPs/Regionen sowie Berücksich-
+      tigung dieser Risiken in der Geschäftsstrategie.
+    gap_warning: |
+      ISO 27001 kennt keinen Concentration-Risk-Begriff. Wer DORA Art. 29
+      nur über A.5.22 abdeckt, scheitert an der quantitativen Substituier-
+      barkeitsanalyse und Multi-Tenant-Konzentrations-Heatmap.
+      Empfehlung: Eigene Concentration-Risk-Methodik mit jährlichem Review.
+    cross_refs: ['A.5.20', 'A.5.21']
+    audit_evidence_hint: 'Concentration-Risk-Heatmap pro CTPP/Region, Substituierbarkeits-Bewertung kritischer Services, jährlicher Review-Vermerk.'
+
+  - source: 'A.5.24'
+    target: 'DORA Art. 17'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.5.24 "Information security incident management planning and
+      preparation" entspricht im Aufbau-Aspekt direkt DORA Art. 17 "ICT-
+      related incident management process". Beide fordern dokumentiertes
+      Verfahren, Rollen, Klassifizierung und Eskalation. DORA spezifiziert
+      jedoch Pflicht-Klassifizierungskriterien (RTS unter Art. 18) und
+      konkrete Schwellwerte für "major incidents" (Anzahl betroffene
+      Kunden, Datenverluste, Reputationsschaden).
+    gap_warning: |
+      A.5.24 muss ergänzt werden um die DORA-RTS-Klassifizierungskriterien
+      (7 Primärkriterien: Clients, Reputation, Data, Geographic Spread,
+      Economic Impact, Service Downtime, Critical Services).
+    cross_refs: ['A.5.25', 'A.5.26', 'A.5.27']
+    audit_evidence_hint: 'IR-Plan mit DORA-Major-Incident-Schwellwerten, Klassifizierungs-Tool, IR-Tabletop-Protokoll mit Schwellwert-Tests.'
+
+  - source: 'A.5.25'
+    target: 'DORA Art. 19'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.25 "Assessment and decision on information security events"
+      bietet die Bewertungs-/Entscheidungs-Basis. DORA Art. 19 "Reporting
+      of major ICT-related incidents" geht weit darüber hinaus mit
+      gestaffelten Meldefristen an die zuständige Behörde: initiale
+      Meldung binnen 4h nach Klassifizierung als major (max 24h nach
+      Detection), Zwischenmeldung binnen 72h, Final Report binnen 1 Monat.
+      ISO 27001 kennt diese expliziten Fristen nicht.
+    gap_warning: |
+      Ohne dedizierten Meldeprozess mit Fristen-Tracker (4h/72h/1M) ist
+      DORA-Art.-19-Compliance unmöglich. Empfehlung: separates DORA-
+      Reporting-Workflow mit BaFin/Bundesbank-Meldekanal-Integration.
+    cross_refs: ['A.5.24']
+    audit_evidence_hint: 'BaFin-Meldekanal-Konfiguration, Fristen-Tracker mit SLA 4h/72h/1M, Beispiel-Meldungen letzte 12 Monate.'
+
+  - source: 'A.5.30'
+    target: 'DORA Art. 11'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.30 "ICT readiness for business continuity" deckt ICT-BC-Vor-
+      bereitung ab. DORA Art. 11 "Response and recovery" und Art. 12
+      "Backup policies and procedures, restoration and recovery procedures
+      and methods" sind detaillierter: explizite RTO/RPO-Vorgaben pro
+      kritische Funktion, mindestens jährlicher Test mit Sekundärstandort,
+      "physically and logically segregated backups" als ausdrückliche
+      Pflicht.
+    gap_warning: |
+      Reines A.5.30 reicht nicht für DORA-Compliance. Zusätzlich
+      erforderlich: dokumentierte logisch+physisch getrennte Backups
+      (z.B. Air-Gap), Failover-Test mit Sekundärsite ≥ 1× jährlich,
+      RTO/RPO-Konformitätsnachweis pro kritische Funktion.
+    cross_refs: ['A.5.29', 'A.5.31', 'A.8.13']
+    audit_evidence_hint: 'BIA mit RTO/RPO pro kritische Funktion, Backup-Architektur-Dokument (Air-Gap), letzter Failover-Test-Report mit Sekundärsite.'
+
+  - source: 'A.6.3'
+    target: 'DORA Art. 13(6)'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.6.3 "Information security awareness, education and training" deckt
+      Schulung allgemein ab. DORA Art. 13(6) verlangt jedoch ausdrücklich
+      Schulungs-Programme, die Geschäftsleitung und Aufsichtsorgan
+      einschließen, sowie regelmäßige Tabletop-Übungen für die ICT-Krisen-
+      Reaktionsfähigkeit. ISO 27001 fordert Tabletops nicht explizit auf
+      Board-Ebene.
+    gap_warning: |
+      Awareness-Programm muss um Board-Tabletops erweitert werden;
+      Schulungsmatrix mit C-Level-Pflichtcurriculum nachweisbar.
+    cross_refs: ['A.6.4']
+    audit_evidence_hint: 'Schulungsmatrix mit C-Level-Pflichtmodulen, Tabletop-Protokoll mit Board-Beteiligung, Phishing-Simulationsergebnisse.'
+
+  - source: 'A.8.7'
+    target: 'DORA Art. 9'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.8.7 "Protection against malware" deckt den Malware-Schutz-Anteil von
+      DORA Art. 9 "Protection and prevention" ab. DORA Art. 9 ist breiter:
+      neben Malware auch Network-Segmentierung, Hardening, kontinuierliche
+      Sicherheitsüberwachung — hier benötigt es Bündelung mit weiteren
+      Annex-A-Controls.
+    cross_refs: ['A.8.16', 'A.8.20', 'A.8.22', 'A.8.24']
+    audit_evidence_hint: 'AV/EDR-Coverage ≥ 99 %, Netzsegmentierungs-Diagramm, Hardening-Baselines, kontinuierliches Monitoring (SIEM).'
+
+  - source: 'A.8.16'
+    target: 'DORA Art. 10'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.8.16 "Monitoring activities" und DORA Art. 10 "Detection" sind in
+      ihrer Stoßrichtung deckungsgleich: kontinuierliche Erkennung
+      anomalen Verhaltens, automatisierte Alerts, Schwellwerte mit
+      mehrstufiger Eskalation. DORA fordert zusätzlich explizit, dass
+      Detection für ICT-Drittpartei-Services mit abgedeckt sein muss —
+      durch ISO 27001 implizit über A.5.22 abgedeckt.
+    cross_refs: ['A.5.22', 'A.8.15']
+    audit_evidence_hint: 'SIEM-Use-Case-Katalog mit ICT-Drittparteien-Coverage, Alerting-Schwellwerte dokumentiert, Detection-Latenzkennzahlen.'
+
+  - source: 'A.8.24'
+    target: 'DORA Art. 9(3)'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.8.24 "Use of cryptography" liefert die Krypto-Policy-Basis. DORA
+      Art. 9(3) verlangt zusätzlich quanten-resistenz-Vorausschau,
+      regelmäßige Bewertung kryptografischer Verfahren auf Aktualität
+      sowie Krypto-Agility als Designprinzip. Diese Aspekte sind in
+      ISO 27001:2022 nicht explizit enthalten.
+    gap_warning: |
+      Krypto-Konzept muss um Crypto-Agility-Roadmap und Quantum-Readiness-
+      Bewertung erweitert werden (BSI TR-02102-1 referenziert PQC-Verfahren
+      seit 2024).
+    audit_evidence_hint: 'Krypto-Konzept mit Algorithmen-Lebenszyklus, Crypto-Agility-Roadmap, jährliche Algorithmen-Review.'
+
+  - source: 'A.8.8'
+    target: 'DORA Art. 8'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.8.8 "Management of technical vulnerabilities" deckt Schwachstellen-
+      Management ab. DORA Art. 8 "Identification" verlangt jedoch eine
+      ICT-Asset-Inventory mit kontinuierlicher Schwachstellen-Korrelation,
+      Bewertung der Kritikalität pro ICT-Asset gegen die "kritische oder
+      wichtige Funktion" und mindestens jährliches Review der ICT-Risk-
+      Identifikations-Methodik.
+    gap_warning: |
+      Schwachstellen-Management muss mit ICT-Asset-Inventory verknüpft
+      sein; isolierte Vulnerability-Scans ohne Kritikalitäts-Mapping zur
+      kritischen/wichtigen Funktion erfüllen DORA Art. 8 nicht.
+    cross_refs: ['A.5.9', 'A.5.12']
+    audit_evidence_hint: 'ICT-Asset-Inventory mit Kritikalitätsmapping, Schwachstellen-Auswertung verknüpft mit kritischen Funktionen, jährliches Methodik-Review.'
+
+  - source: 'A.5.35'
+    target: 'DORA Art. 24-26'
+    relationship: 'subset'
+    confidence: 'low'
+    rationale: |
+      A.5.35 "Independent review of information security" deckt unabhängige
+      Reviews allgemein ab. DORA Art. 24-26 zum "Digital Operational
+      Resilience Testing Programme" inkl. Threat-Led-Penetration-Testing
+      (TLPT) ist substanziell anspruchsvoller: TLPT ≥ alle 3 Jahre für
+      bedeutende Finanzunternehmen, durch externe TLPT-Provider mit
+      TIBER-EU-konformer Methodik, Testumfang über produktive kritische
+      Funktionen.
+    gap_warning: |
+      A.5.35 deckt TLPT NICHT ab. Für DORA-Pflichtigkeit (siehe Art. 26(8))
+      muss eigenes TLPT-Programm aufgebaut werden mit BaFin-Abstimmung
+      des Test-Scopes, akkreditierte externe Tester und jährliche Test-
+      Plan-Review.
+    cross_refs: ['A.5.36', 'A.8.29']
+    audit_evidence_hint: 'TLPT-Plan mit BaFin-Abstimmung, externe Tester-Akkreditierung, Test-Reports der letzten 3 Jahre, Remediation-Tracking.'
+
+  - source: 'A.5.4'
+    target: 'DORA Art. 5(2)'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.4 "Management responsibilities" verlangt Management-Commitment
+      zur InfoSec. DORA Art. 5(2) ist konkreter: das Leitungsorgan trägt
+      die "ultimate responsibility" für ICT-Risk-Management, definiert
+      ICT-Risk-Toleranz, genehmigt jährlich Audit-Plan und ICT-Strategie,
+      und ist persönlich haftbar bei Pflichtverletzung.
+    gap_warning: |
+      Management-Verantwortung muss formal ausgestaltet werden: Board-
+      Charter mit ICT-Risk-Verantwortung, jährlicher Genehmigungszyklus
+      ICT-Strategie, dokumentierte ICT-Toleranzschwellen.
+    cross_refs: ['A.5.1', 'A.5.2']
+    audit_evidence_hint: 'Board-Charter mit ICT-Risk-Verantwortung, Protokoll der jährlichen ICT-Strategie-Genehmigung, dokumentierte Toleranzschwellen.'
