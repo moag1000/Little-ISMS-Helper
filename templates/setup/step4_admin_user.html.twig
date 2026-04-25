@@ -19,7 +19,7 @@
 
     {{ step_header.render(5, 12, step.kind, 'setup.admin.header'|trans({}, 'setup'), 'setup.admin.description'|trans({}, 'setup'))|raw }}
 
-    {{ form_start(form, {'attr': {'class': 'fa-setup-form', 'novalidate': 'novalidate', 'data-turbo': 'false'}}) }}
+    {{ form_start(form, {'attr': {'class': 'fa-setup-form', 'novalidate': 'novalidate', 'data-turbo': 'false', 'data-controller': 'wizard-busy', 'data-wizard-busy-message-value': 'setup.alva.busy.admin'|trans({}, 'setup')}}) }}
 
     <div class="fa-setup-form__grid">
         <div class="fa-setup-form__col">

@@ -41,7 +41,7 @@
                         </p>
 
                         {# Organisation Info Form #}
-                        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate', 'data-controller': 'wizard-busy', 'data-wizard-busy-message-value': 'setup.alva.busy.default'|trans({}, 'setup')}}) }}
 
                         <div class="row">
                             <div class="col-md-12">
