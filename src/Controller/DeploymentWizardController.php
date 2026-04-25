@@ -28,6 +28,7 @@ use App\Service\DataImportService;
 use App\Service\EnvironmentWriter;
 use App\Service\ModuleConfigurationService;
 use App\Service\RestoreService;
+use App\Service\Setup\SetupJobStatusService;
 use App\Service\SystemRequirementsChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -61,6 +62,7 @@ class DeploymentWizardController extends AbstractController
         private readonly RiskRepository $riskRepository,
         private readonly IncidentRepository $incidentRepository,
         private readonly FrameworkApplicabilityService $applicabilityService,
+        private readonly SetupJobStatusService $setupJobStatusService,
     ) {
     }
     /**
@@ -411,10 +413,10 @@ class DeploymentWizardController extends AbstractController
         ignore_user_abort(true);
         ini_set('max_execution_time', 0);
 
-        // Mark job as running so the polling endpoint returns 'running'.
-        $session->set('schema_create_status', 'running');
-        $session->set('schema_create_message', null);
-        $session->save(); // ensure session is flushed before forking
+        // File-based status (NOT session): session writes after
+        // fastcgi_finish_request() are silently dropped because the first
+        // session->save() already triggered session_write_close().
+        $this->setupJobStatusService->start('schema_create');
 
         // Send immediate response. fastcgi_finish_request() lets PHP-FPM
         // close the connection so the user sees status=started right away;
@@ -435,24 +437,26 @@ class DeploymentWizardController extends AbstractController
             $migrationResult = $this->runFreshSchemaInstall();
 
             if ($migrationResult['success']) {
-                $session->set('setup_schema_created', true);
-                $session->set('schema_create_status', 'success');
-                $session->set('schema_create_message', $this->translator->trans('setup.database.schema_created', [], 'setup'));
+                $this->setupJobStatusService->succeed(
+                    'schema_create',
+                    $this->translator->trans('setup.database.schema_created', [], 'setup'),
+                    ['setup_schema_created' => true]
+                );
                 $logger->info('Database schema created successfully');
             } else {
-                $session->set('schema_create_status', 'failed');
-                $session->set('schema_create_message', $migrationResult['message'] ?? 'unknown error');
+                $this->setupJobStatusService->fail(
+                    'schema_create',
+                    $migrationResult['message'] ?? 'unknown error'
+                );
                 $logger->error('Migration failed', ['result' => $migrationResult]);
             }
         } catch (\Throwable $e) {
-            $session->set('schema_create_status', 'failed');
-            $session->set('schema_create_message', $e->getMessage());
+            $this->setupJobStatusService->fail('schema_create', $e->getMessage());
             $logger->error('Schema creation failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
         }
-        $session->save();
 
         return $response; // already sent — return for type safety
     }
@@ -464,13 +468,17 @@ class DeploymentWizardController extends AbstractController
     #[Route('/setup/step3-restore-backup/schema-status', name: 'setup_step3_schema_status', methods: ['GET'])]
     public function step3SchemaStatus(SessionInterface $session): Response
     {
-        $status = $session->get('schema_create_status');
-        $message = $session->get('schema_create_message');
+        $data = $this->setupJobStatusService->read('schema_create');
+        // On terminal success, hand the side-effect flag back to the session
+        // so the redirect-target step sees it. Worker can't do this itself —
+        // session writes after fastcgi_finish_request are dropped.
+        if ($data['status'] === 'success' && !empty($data['payload']['setup_schema_created'])) {
+            $session->set('setup_schema_created', true);
+        }
 
-        // 'running' | 'success' | 'failed' | null (idle)
         return new \Symfony\Component\HttpFoundation\JsonResponse([
-            'status' => $status ?? 'idle',
-            'message' => $message,
+            'status' => $data['status'],
+            'message' => $data['message'] ?? null,
             'schema_created' => (bool) $session->get('setup_schema_created', false),
         ]);
     }
@@ -483,7 +491,7 @@ class DeploymentWizardController extends AbstractController
     #[Route('/setup/job-status', name: 'setup_job_status', methods: ['GET'])]
     public function setupJobStatus(Request $request, SessionInterface $session): Response
     {
-        $allowedJobs = ['restore_upload', 'base_data', 'sample_data'];
+        $allowedJobs = ['restore_upload', 'base_data', 'sample_data', 'schema_create'];
         $job = $request->query->get('job');
         if (!in_array($job, $allowedJobs, true)) {
             return new \Symfony\Component\HttpFoundation\JsonResponse(
@@ -491,9 +499,21 @@ class DeploymentWizardController extends AbstractController
                 400
             );
         }
+        $data = $this->setupJobStatusService->read($job);
+
+        // On terminal state (success or failed), lift declared payload keys
+        // into the session so the redirect-target step sees them (worker
+        // can't write to session after fastcgi_finish_request).
+        $isTerminal = in_array($data['status'], ['success', 'failed'], true);
+        if ($isTerminal && !empty($data['payload']) && is_array($data['payload'])) {
+            foreach ($data['payload'] as $sessionKey => $sessionValue) {
+                $session->set($sessionKey, $sessionValue);
+            }
+        }
+
         return new \Symfony\Component\HttpFoundation\JsonResponse([
-            'status' => $session->get($job . '_status') ?? 'idle',
-            'message' => $session->get($job . '_message'),
+            'status' => $data['status'],
+            'message' => $data['message'] ?? null,
         ]);
     }
     /**
@@ -541,9 +561,8 @@ class DeploymentWizardController extends AbstractController
         ini_set('max_execution_time', 0);
 
         // Async-job pattern: respond immediately, continue in background.
-        $session->set('restore_upload_status', 'running');
-        $session->set('restore_upload_message', null);
-        $session->save();
+        // File-based status (NOT session): see SetupJobStatusService comments.
+        $this->setupJobStatusService->start('restore_upload');
 
         $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
         $immediateResponse->send();
@@ -579,9 +598,6 @@ class DeploymentWizardController extends AbstractController
 
             $result = $restoreService->restoreFromBackup($backup, $options);
 
-            // Mark backup as restored - this allows skipping steps 4-10
-            $session->set('setup_backup_restored', true);
-
             // Detect orphaned entities (entities without tenant assignment)
             $orphanedAssets = $this->assetRepository->createQueryBuilder('a')
                 ->where('a.tenant IS NULL')
@@ -610,10 +626,7 @@ class DeploymentWizardController extends AbstractController
                 'warnings' => $result['warnings'],
             ];
 
-            // Add data quality issues
             $hasIssues = false;
-
-            // Add orphan information if found
             if ($orphanedCount > 0) {
                 $restoreResult['orphaned_entities'] = [
                     'total' => $orphanedCount,
@@ -624,37 +637,37 @@ class DeploymentWizardController extends AbstractController
                 $restoreResult['tenants'] = $this->tenantRepository->findAll();
                 $hasIssues = true;
             }
-
-            // Add risks without assets
             if (count($risksWithoutAssets) > 0) {
                 $restoreResult['risks_without_assets'] = count($risksWithoutAssets);
                 $hasIssues = true;
             }
 
-            if ($hasIssues) {
-                $session->set('restore_upload_status', 'success');
-                $session->set('restore_upload_message', 'Backup wiederhergestellt mit Datenqualitäts-Hinweisen.');
-            } else {
-                $session->set('restore_upload_status', 'success');
-                $session->set('restore_upload_message', 'Backup erfolgreich wiederhergestellt.');
-            }
+            $message = $hasIssues
+                ? 'Backup wiederhergestellt mit Datenqualitäts-Hinweisen.'
+                : 'Backup erfolgreich wiederhergestellt.';
 
-            $session->set('backup_restore_result', $restoreResult);
-            $session->save();
+            // Hand session-side-effects through file payload — poller copies
+            // them into the session before redirect.
+            $this->setupJobStatusService->succeed('restore_upload', $message, [
+                'setup_backup_restored' => true,
+                'backup_restore_result' => $restoreResult,
+            ]);
             return $immediateResponse;
         } catch (Exception $e) {
             $logger->error('Backup restore failed during setup step 3', [
                 'error' => $e->getMessage(),
             ]);
 
-            $session->set('restore_upload_status', 'failed');
-            $session->set('restore_upload_message', 'Fehler bei der Wiederherstellung: ' . $e->getMessage());
-
-            $session->set('backup_restore_result', [
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
-            $session->save();
+            $this->setupJobStatusService->fail(
+                'restore_upload',
+                'Fehler bei der Wiederherstellung: ' . $e->getMessage(),
+                [
+                    'backup_restore_result' => [
+                        'success' => false,
+                        'message' => $e->getMessage(),
+                    ],
+                ]
+            );
             return $immediateResponse;
         }
     }
@@ -685,9 +698,21 @@ class DeploymentWizardController extends AbstractController
         ini_set('max_execution_time', 0);
 
         // Async-job pattern: immediate JSON response + background work + polling.
-        $session->set('schema_create_status', 'running');
-        $session->set('schema_create_message', null);
-        $session->save();
+        // File-based status (NOT session): see SetupJobStatusService.
+        $this->setupJobStatusService->start('schema_create');
+
+        // Pre-read all session keys we need in the background — session
+        // becomes read-only after fastcgi_finish_request().
+        $isDockerStandalone = @file_exists('/run/mysqld/mysqld.sock') || @file_exists('/.dockerenv');
+        $dbConfig = [
+            'type' => $session->get('setup_db_type', 'mysql'),
+            'host' => $session->get('setup_db_host', 'localhost'),
+            'port' => $session->get('setup_db_port', 3306),
+            'name' => $session->get('setup_db_name', $isDockerStandalone ? 'isms' : 'little_isms_helper'),
+            'user' => $session->get('setup_db_user', $isDockerStandalone ? 'isms' : 'root'),
+            'password' => $session->get('setup_db_password', ''),
+            'unixSocket' => $session->get('setup_db_socket'),
+        ];
 
         $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
         $immediateResponse->send();
@@ -702,46 +727,31 @@ class DeploymentWizardController extends AbstractController
 
         try {
             $logger->info('Step 3 Skip: Starting fresh database setup');
-
-            // Build database config from session
-            $isDockerStandalone = @file_exists('/run/mysqld/mysqld.sock') || @file_exists('/.dockerenv');
-
-            $dbConfig = [
-                'type' => $session->get('setup_db_type', 'mysql'),
-                'host' => $session->get('setup_db_host', 'localhost'),
-                'port' => $session->get('setup_db_port', 3306),
-                'name' => $session->get('setup_db_name', $isDockerStandalone ? 'isms' : 'little_isms_helper'),
-                'user' => $session->get('setup_db_user', $isDockerStandalone ? 'isms' : 'root'),
-                'password' => $session->get('setup_db_password', ''),
-                'unixSocket' => $session->get('setup_db_socket'),
-            ];
-
-            // Drop all existing tables
             $logger->info('Step 3 Skip: Dropping existing tables');
             $this->dropAndRecreateDatabase($dbConfig);
 
-            // Fresh-install: SchemaTool::createSchema is ~30x faster than running 34
-            // migrations sequentially (proxy timeouts on hosted instances killed the
-            // user request). Equivalent end-state for fresh installs.
             $logger->info('Step 3 Skip: Running fresh-install schema-create');
             $migrationResult = $this->runFreshSchemaInstall();
             $logger->info('Step 3 Skip: Schema-install result', ['success' => $migrationResult['success'], 'message' => $migrationResult['message'] ?? 'no message']);
 
             if (!$migrationResult['success']) {
                 $logger->error('Step 3 Skip: Migration failed', ['result' => $migrationResult]);
-                $session->set('schema_create_status', 'failed');
-                $session->set('schema_create_message', $migrationResult['message'] ?? 'unknown error');
+                $this->setupJobStatusService->fail(
+                    'schema_create',
+                    $migrationResult['message'] ?? 'unknown error'
+                );
             } else {
                 $logger->info('Step 3 Skip: Migration successful');
-                $session->set('setup_schema_created', true);
-                $session->set('schema_create_status', 'success');
-                $session->set('schema_create_message', $this->translator->trans('setup.database.schema_created', [], 'setup'));
+                $this->setupJobStatusService->succeed(
+                    'schema_create',
+                    $this->translator->trans('setup.database.schema_created', [], 'setup'),
+                    ['setup_schema_created' => true]
+                );
             }
 
             while (ob_get_level() > 0) {
                 ob_end_clean();
             }
-            $session->save();
             return $immediateResponse;
 
         } catch (\Throwable $e) {
@@ -751,13 +761,11 @@ class DeploymentWizardController extends AbstractController
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
             ]);
-            $session->set('schema_create_status', 'failed');
-            $session->set('schema_create_message', $e->getMessage());
+            $this->setupJobStatusService->fail('schema_create', $e->getMessage());
 
             while (ob_get_level() > 0) {
                 ob_end_clean();
             }
-            $session->save();
             return $immediateResponse;
         }
     }
@@ -1654,10 +1662,11 @@ class DeploymentWizardController extends AbstractController
         ignore_user_abort(true);
         ini_set('max_execution_time', 0);
 
-        // Async-job pattern
-        $session->set('base_data_status', 'running');
-        $session->set('base_data_message', null);
-        $session->save();
+        // Async-job pattern (file-based status — see SetupJobStatusService)
+        $this->setupJobStatusService->start('base_data');
+
+        // Pre-read session data — session becomes read-only after fastcgi_finish_request
+        $selectedModules = $session->get('setup_selected_modules', []);
 
         $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
         $immediateResponse->send();
@@ -1668,7 +1677,6 @@ class DeploymentWizardController extends AbstractController
         }
 
         try {
-            $selectedModules = $session->get('setup_selected_modules', []);
             $result = $this->dataImportService->importBaseData($selectedModules);
 
             $successCount = 0;
@@ -1683,18 +1691,19 @@ class DeploymentWizardController extends AbstractController
                 }
             }
 
-            $session->set('setup_base_data_imported', true);
-            $session->set('base_data_status', 'success');
-            $session->set('base_data_message', sprintf(
+            $message = sprintf(
                 '%d Imports erfolgreich%s',
                 $successCount,
                 $errorCount > 0 ? ' (' . $errorCount . ' Fehler: ' . implode('; ', $details) . ')' : ''
-            ));
+            );
+            $this->setupJobStatusService->succeed(
+                'base_data',
+                $message,
+                ['setup_base_data_imported' => true]
+            );
         } catch (\Throwable $e) {
-            $session->set('base_data_status', 'failed');
-            $session->set('base_data_message', $e->getMessage());
+            $this->setupJobStatusService->fail('base_data', $e->getMessage());
         }
-        $session->save();
         return $immediateResponse;
     }
     /**
@@ -1754,10 +1763,12 @@ class DeploymentWizardController extends AbstractController
         ignore_user_abort(true);
         ini_set('max_execution_time', 0);
 
-        // Async-job pattern
-        $session->set('sample_data_status', 'running');
-        $session->set('sample_data_message', null);
-        $session->save();
+        // Async-job pattern (file-based status — see SetupJobStatusService)
+        $this->setupJobStatusService->start('sample_data');
+
+        // Pre-read session + request data
+        $selectedModules = $session->get('setup_selected_modules', []);
+        $selectedSamples = $request->request->all('samples') ?? [];
 
         $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
         $immediateResponse->send();
@@ -1768,8 +1779,6 @@ class DeploymentWizardController extends AbstractController
         }
 
         try {
-            $selectedModules = $session->get('setup_selected_modules', []);
-            $selectedSamples = $request->request->all('samples') ?? [];
             $result = $this->dataImportService->importSampleData($selectedSamples, $selectedModules);
 
             $successCount = 0;
@@ -1784,17 +1793,15 @@ class DeploymentWizardController extends AbstractController
                 }
             }
 
-            $session->set('sample_data_status', 'success');
-            $session->set('sample_data_message', sprintf(
+            $message = sprintf(
                 '%d Sample-Imports erfolgreich%s',
                 $successCount,
                 $errorCount > 0 ? ' (' . $errorCount . ' Fehler: ' . implode('; ', $details) . ')' : ''
-            ));
+            );
+            $this->setupJobStatusService->succeed('sample_data', $message);
         } catch (\Throwable $e) {
-            $session->set('sample_data_status', 'failed');
-            $session->set('sample_data_message', $e->getMessage());
+            $this->setupJobStatusService->fail('sample_data', $e->getMessage());
         }
-        $session->save();
         return $immediateResponse;
     }
     /**
