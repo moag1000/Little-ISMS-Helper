@@ -7,8 +7,10 @@ use App\Entity\User;
 use App\Repository\TenantRepository;
 use App\Service\TenantContext;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Bundle\SecurityBundle\Security;
 
+#[AllowMockObjectsWithoutExpectations]
 class TenantContextTest extends TestCase
 {
     private TenantContext $tenantContext;

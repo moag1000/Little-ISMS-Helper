@@ -8,6 +8,7 @@ use App\Service\ComplianceFrameworkLoaderService;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Tests for ComplianceFrameworkLoaderService
@@ -16,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  * actual Command instances. These should be tested via integration tests with the
  * real container.
  */
+#[AllowMockObjectsWithoutExpectations]
 class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
 {
     private ComplianceFrameworkLoaderService $service;

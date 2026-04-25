@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
@@ -89,6 +90,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
  * @see https://symfony.com/doc/current/testing.html#integration-tests
  * @see https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/testing.html
  */
+#[AllowMockObjectsWithoutExpectations]
 class UserRepositoryTest extends TestCase
 {
     private MockObject $entityManager;

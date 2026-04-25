@@ -5,8 +5,10 @@ namespace App\Tests\Service;
 use App\Service\DatabaseTestService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class DatabaseTestServiceTest extends TestCase
 {
     private MockObject $parameterBag;

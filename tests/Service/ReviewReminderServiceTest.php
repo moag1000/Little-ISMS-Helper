@@ -19,8 +19,10 @@ use App\Service\ReviewReminderService;
 use DateTime;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class ReviewReminderServiceTest extends TestCase
 {
     private MockObject $riskRepository;

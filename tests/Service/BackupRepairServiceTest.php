@@ -7,6 +7,7 @@ namespace App\Tests\Service;
 use App\Service\BackupRepairService;
 use App\Service\RepairReport;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Unit tests for BackupRepairService.
@@ -15,6 +16,7 @@ use PHPUnit\Framework\TestCase;
  * Temporary directories are created in sys_get_temp_dir() and cleaned up
  * in tearDown().
  */
+#[AllowMockObjectsWithoutExpectations]
 class BackupRepairServiceTest extends TestCase
 {
     private string $tmpDir;

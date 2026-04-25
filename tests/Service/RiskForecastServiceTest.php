@@ -13,12 +13,14 @@ use App\Service\TenantContext;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Tests for RiskForecastService
  *
  * Phase 7B: Tests for risk forecasting and predictive analytics
  */
+#[AllowMockObjectsWithoutExpectations]
 class RiskForecastServiceTest extends TestCase
 {
     private MockObject $riskRepository;

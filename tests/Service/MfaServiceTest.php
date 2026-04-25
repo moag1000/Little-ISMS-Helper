@@ -10,9 +10,11 @@ use App\Service\MfaService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
+#[AllowMockObjectsWithoutExpectations]
 class MfaServiceTest extends TestCase
 {
     private MockObject $entityManager;

@@ -13,6 +13,7 @@ use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\UnitOfWork;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -20,6 +21,7 @@ use Psr\Log\LoggerInterface;
  *
  * Tests Doctrine lifecycle event handling for automatic workflow triggering
  */
+#[AllowMockObjectsWithoutExpectations]
 class WorkflowAutoTriggerListenerTest extends TestCase
 {
     private MockObject $workflowAutoTriggerService;

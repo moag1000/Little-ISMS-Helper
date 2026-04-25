@@ -7,9 +7,11 @@ namespace App\Tests\Service;
 use App\Service\BackupNotifier;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
+#[AllowMockObjectsWithoutExpectations]
 class BackupNotifierTest extends TestCase
 {
     private MockObject $mailer;

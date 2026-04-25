@@ -11,6 +11,7 @@ use App\Service\WorkflowService;
 use App\Service\EmailNotificationService;
 use App\Service\AuditLogger;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 
@@ -19,6 +20,7 @@ use Psr\Log\LoggerInterface;
  *
  * Tests the approval workflow triggering logic for documents.
  */
+#[AllowMockObjectsWithoutExpectations]
 class DocumentApprovalServiceTest extends TestCase
 {
     private DocumentApprovalService $service;

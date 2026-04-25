@@ -16,12 +16,14 @@ use App\Service\TenantContext;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Tests for ComplianceAnalyticsService
  *
  * Phase 7B: Tests for multi-framework compliance analytics
  */
+#[AllowMockObjectsWithoutExpectations]
 class ComplianceAnalyticsServiceTest extends TestCase
 {
     private MockObject $frameworkRepository;

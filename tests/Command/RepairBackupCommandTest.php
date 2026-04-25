@@ -9,6 +9,7 @@ use App\Service\BackupRepairService;
 use App\Service\RepairReport;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -18,6 +19,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * Uses a real BackupRepairService instance for the file-not-found case
  * and a mock for the happy-path scenarios to keep tests fast and isolated.
  */
+#[AllowMockObjectsWithoutExpectations]
 class RepairBackupCommandTest extends TestCase
 {
     private string $tmpDir;

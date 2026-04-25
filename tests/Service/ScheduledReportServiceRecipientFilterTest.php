@@ -11,6 +11,7 @@ use App\Repository\UserRepository;
 use App\Service\Mail\RecipientFilter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * ISB MINOR-4: tenant + role gate at recipient-filter level.
@@ -18,6 +19,7 @@ use PHPUnit\Framework\TestCase;
  * These tests exercise RecipientFilter directly, which is the collaborator
  * ScheduledReportService delegates to before ever talking to the mailer.
  */
+#[AllowMockObjectsWithoutExpectations]
 class ScheduledReportServiceRecipientFilterTest extends TestCase
 {
     private UserRepository&MockObject $userRepository;

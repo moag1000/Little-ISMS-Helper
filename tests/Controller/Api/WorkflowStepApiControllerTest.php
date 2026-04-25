@@ -8,6 +8,7 @@ use App\Entity\WorkflowStep;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use App\Controller\Api\WorkflowStepApiController;
 use App\Repository\WorkflowRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class WorkflowStepApiControllerTest extends TestCase
 {
     private MockObject $entityManager;

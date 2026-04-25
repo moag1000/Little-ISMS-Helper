@@ -17,9 +17,11 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\Common\EventManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class RestoreServiceTest extends TestCase
 {
     private MockObject $entityManager;

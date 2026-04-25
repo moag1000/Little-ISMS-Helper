@@ -28,6 +28,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -53,6 +54,7 @@ use Twig\Environment;
  * Tests all public action methods with proper access control,
  * service mocking, and edge case handling.
  */
+#[AllowMockObjectsWithoutExpectations]
 class IncidentControllerTest extends TestCase
 {
     private MockObject $incidentRepository;

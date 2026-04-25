@@ -7,9 +7,11 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Security\Voter\ControlVoter;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class ControlVoterTest extends TestCase
 {
     private ControlVoter $voter;

@@ -8,8 +8,10 @@ use App\Repository\UserSessionRepository;
 use DateTimeImmutable;
 use Exception;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class CleanupExpiredSessionsHandlerTest extends TestCase
 {
     private CleanupExpiredSessionsHandler $handler;

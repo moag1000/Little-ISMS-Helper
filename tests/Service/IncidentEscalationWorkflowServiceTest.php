@@ -13,6 +13,7 @@ use App\Service\IncidentEscalationWorkflowService;
 use App\Service\WorkflowService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -22,6 +23,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * Tests automated incident escalation based on severity and data breach status
  * according to ISO 27001:2022 Clause 8.3.2 and GDPR Art. 33
  */
+#[AllowMockObjectsWithoutExpectations]
 class IncidentEscalationWorkflowServiceTest extends TestCase
 {
     private MockObject $workflowService;

@@ -10,8 +10,10 @@ use App\Repository\RiskRepository;
 use App\Service\RiskAppetitePrioritizationService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class RiskAppetitePrioritizationServiceTest extends TestCase
 {
     private MockObject $riskRepository;

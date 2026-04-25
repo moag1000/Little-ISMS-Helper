@@ -18,6 +18,7 @@ use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Bundle\SecurityBundle\Security;
 
 /**
@@ -25,6 +26,7 @@ use Symfony\Bundle\SecurityBundle\Security;
  *
  * Phase 7D: Tests for role-specific dashboard data
  */
+#[AllowMockObjectsWithoutExpectations]
 class RoleDashboardServiceTest extends TestCase
 {
     private MockObject $dashboardStatisticsService;

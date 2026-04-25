@@ -14,9 +14,11 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use RuntimeException;
 use Symfony\Bundle\SecurityBundle\Security;
 
+#[AllowMockObjectsWithoutExpectations]
 class ProcessingActivityServiceTest extends TestCase
 {
     private MockObject $processingActivityRepository;

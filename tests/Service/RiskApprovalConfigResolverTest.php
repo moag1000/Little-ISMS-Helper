@@ -12,6 +12,7 @@ use App\Service\RiskApprovalConfigView;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Phase 8M.1 — Unit-Tests für RiskApprovalConfigResolver Ceiling-Merge.
@@ -20,6 +21,7 @@ use PHPUnit\Framework\TestCase;
  * Child-Tenant darf nur NIEDRIGERE (strengere) Schwellwerte haben.
  * min(child, parent) für alle drei Threshold-Felder.
  */
+#[AllowMockObjectsWithoutExpectations]
 class RiskApprovalConfigResolverTest extends TestCase
 {
     private RiskApprovalConfigResolver $resolver;

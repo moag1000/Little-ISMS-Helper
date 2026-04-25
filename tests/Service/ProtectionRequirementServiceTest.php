@@ -13,7 +13,9 @@ use App\Service\ProtectionRequirementService;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class ProtectionRequirementServiceTest extends TestCase
 {
     private ProtectionRequirementService $service;

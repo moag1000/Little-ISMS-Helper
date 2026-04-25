@@ -8,9 +8,11 @@ use App\Entity\User;
 use App\Security\Voter\PermissionVoter;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class PermissionVoterTest extends TestCase
 {
     private PermissionVoter $voter;

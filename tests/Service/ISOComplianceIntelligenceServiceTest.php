@@ -17,7 +17,9 @@ use App\Repository\SupplierRepository;
 use App\Service\ISOComplianceIntelligenceService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class ISOComplianceIntelligenceServiceTest extends TestCase
 {
     private MockObject $supplierRepository;

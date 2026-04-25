@@ -17,8 +17,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use DomainException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class RiskAcceptanceWorkflowServiceTest extends TestCase
 {
     private MockObject $entityManager;

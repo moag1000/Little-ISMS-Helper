@@ -7,6 +7,7 @@ namespace App\Tests\Service;
 use App\Service\AuditLogger;
 use App\Service\HealthAutoFixService;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\NullLogger;
 
 /**

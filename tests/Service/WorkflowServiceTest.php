@@ -15,8 +15,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Bundle\SecurityBundle\Security;
 
+#[AllowMockObjectsWithoutExpectations]
 class WorkflowServiceTest extends TestCase
 {
     private MockObject $entityManager;

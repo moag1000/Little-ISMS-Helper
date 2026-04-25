@@ -9,7 +9,9 @@ use App\Service\MappingLifecycleService;
 use App\Service\MappingQualityScoreService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class MappingLifecycleServiceTest extends TestCase
 {
     private function makeService(): MappingLifecycleService

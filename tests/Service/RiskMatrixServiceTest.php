@@ -6,8 +6,10 @@ use App\Entity\Risk;
 use App\Repository\RiskRepository;
 use App\Service\RiskMatrixService;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class RiskMatrixServiceTest extends TestCase
 {
     private RiskMatrixService $service;

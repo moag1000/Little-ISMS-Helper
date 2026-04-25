@@ -10,8 +10,10 @@ use App\Service\SoAReportService;
 use App\Service\TenantContext;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\HttpFoundation\Response;
 
+#[AllowMockObjectsWithoutExpectations]
 class SoAReportServiceTest extends TestCase
 {
     private MockObject $controlRepository;

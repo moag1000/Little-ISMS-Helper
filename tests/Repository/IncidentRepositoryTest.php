@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Unit tests for IncidentRepository
@@ -39,6 +40,7 @@ use PHPUnit\Framework\TestCase;
  * - Proper filtering, sorting, and aggregation
  * - Accurate result sets
  */
+#[AllowMockObjectsWithoutExpectations]
 class IncidentRepositoryTest extends TestCase
 {
     private MockObject $registry;
