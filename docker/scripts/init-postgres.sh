@@ -41,12 +41,16 @@ if ! su-exec postgres psql -lqt | cut -d \| -f 1 | grep -qw isms; then
     NEEDS_MIGRATION=1
 fi
 
-# Run migrations if database was just created
+# Bootstrap schema if database was just created
 if [ "$NEEDS_MIGRATION" = "1" ]; then
-    echo "Running database migrations..."
+    echo "Bootstrapping fresh database schema..."
     cd /var/www/html
-    php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration 2>&1 || echo "Migration failed, will retry on next request"
-    echo "Migrations completed"
+    # SchemaTool::createSchema is ~30x faster than running 34 migrations sequentially
+    # on hosted DBs. Equivalent end-state for fresh installs.
+    php bin/console doctrine:schema:create --no-interaction 2>&1 || echo "Schema-create failed, will retry on next request"
+    # Mark all migration versions as executed so future migrate calls skip them
+    php bin/console doctrine:migrations:version --add --all --no-interaction 2>&1 || echo "Migration-version mark failed (non-fatal)"
+    echo "Fresh schema bootstrapped"
 fi
 
 # Keep PostgreSQL running in foreground

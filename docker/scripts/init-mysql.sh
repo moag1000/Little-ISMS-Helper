@@ -99,14 +99,18 @@ chown www-data:www-data /var/www/html/.env.local
 chmod 600 /var/www/html/.env.local
 echo "DATABASE_URL configured in .env.local"
 
-# Run migrations if database was just created
+# Bootstrap schema if database was just created
 if [ "$NEEDS_MIGRATION" = "1" ]; then
-    echo "Running database migrations..."
+    echo "Bootstrapping fresh database schema..."
     cd /var/www/html
-    # Export the correct DATABASE_URL for migrations (override the ENV default)
+    # Export the correct DATABASE_URL for schema-create (override the ENV default)
     export DATABASE_URL="mysql://$DB_USER:$DB_PASS@localhost/$DB_NAME?unix_socket=/run/mysqld/mysqld.sock&serverVersion=mariadb-11.4.0&charset=utf8mb4"
-    php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration 2>&1 || echo "Migration failed, will retry on next request"
-    echo "Migrations completed"
+    # SchemaTool::createSchema is ~30x faster than running 34 migrations sequentially
+    # on hosted DBs. Equivalent end-state for fresh installs.
+    php bin/console doctrine:schema:create --no-interaction 2>&1 || echo "Schema-create failed, will retry on next request"
+    # Mark all migration versions as executed so future migrate calls skip them
+    php bin/console doctrine:migrations:version --add --all --no-interaction 2>&1 || echo "Migration-version mark failed (non-fatal)"
+    echo "Fresh schema bootstrapped"
 
     # Clear and rebuild cache with the correct DATABASE_URL
     echo "Rebuilding application cache with correct database configuration..."
