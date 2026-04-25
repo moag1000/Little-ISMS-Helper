@@ -1,0 +1,233 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'iso42001_to_eu-ai-act_v1.0'
+  source_framework: 'ISO42001'
+  target_framework: 'EU-AI-Act'
+  version: 1
+  effective_from: '2026-02-01'
+  effective_until: null
+
+  provenance:
+    primary_source: 'ISO/IEC 42001:2023 Annex C — Mapping zu EU AI Act (Initialer Stand 2024-Q3, in Überarbeitung) (inverse Richtung)'
+    primary_source_url: 'https://www.iso.org/standard/81230.html'
+    secondary_sources:
+      - 'EU Verordnung (EU) 2024/1689 (AI Act, ABl. L vom 12.07.2024)'
+      - 'CEN-CENELEC JTC 21 Harmonised Standards Roadmap 2025-Q1'
+      - 'AI Office Guidelines on General-Purpose AI Models (Draft 2025-Q3)'
+      - 'Eigene Volltext-Analyse durch GRC-Team mit AI-Governance-Fokus'
+      - 'Inverse-Ableitung aus eu-ai-act_to_iso42001_v1.0'
+    publisher: 'Little ISMS Helper Maintainers'
+
+  methodology:
+    type: 'text_comparison_with_expert_review'
+    description: |
+      Reverse-Mapping von ISO 42001 (AIMS) zur EU AI Act (Verordnung
+      2024/1689). Reziprok zu eu-ai-act_to_iso42001_v1.0 — gleiche Pairs,
+      invertierte Relationships. Rationale aus ISO-42001-Sicht
+      (AI-Management-System-Perspektive) neu verfasst. Lifecycle bleibt
+      "review", da EU-AI-Act-Implementierung und ISO-42001-Adoption noch
+      reifen.
+
+  lifecycle:
+    state: 'review'
+    state_history:
+      - { state: 'draft',  date: '2025-09-15', actor: 'maintainer' }
+      - { state: 'review', date: '2025-12-01', actor: 'maintainer' }
+
+mappings:
+  - source: 'Clause 6'
+    target: 'Art. 9'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 Clause 6 (Planung) zusammen mit Annex A.6.1 (AI Risk
+      Assessment) verlangt ein managementsystem-orientiertes Risikomanagement
+      für KI-Systeme über den gesamten Lebenszyklus mit methodischem Rahmen
+      für Risikoidentifikation, -bewertung und -behandlung. EU AI Act Art. 9
+      konkretisiert davon den produktbezogenen Pflichtanteil für Hochrisiko-
+      Systeme: vorab definierte Akzeptanzkriterien, Restrisiko-Kommunikation
+      und Berücksichtigung vulnerabler Gruppen. ISO-Methodik ist breiter,
+      AI-Act-Pflichten sind eine präskriptive Teilmenge.
+    gap_warning: |
+      ISO 42001 Clause 6 schreibt keine konkreten Akzeptanzkriterien oder
+      Restrisiko-Kommunikation an Endnutzer vor. Wer ISO-konform arbeitet,
+      muss für Hochrisiko-Systeme zusätzlich Art. 9(5)/(9)-spezifische
+      Risk-Communication-Templates und Vulnerable-User-Impact-Assessments
+      einführen, um EU-AI-Act-Konformität zu erreichen.
+    cross_refs: ['Annex A.6.1', 'Annex A.6.2']
+    audit_evidence_hint: 'ISO-42001-AIMS-Risk-Register und Lifecycle-Risk-Reviews; ergänzend AI-Act-Art.-9-Akzeptanzkriterien-Tests, Restrisiko-Kommunikation in Nutzeranleitung.'
+
+  - source: 'Annex A.7.2'
+    target: 'Art. 10'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 Annex A.7.2 (Data for AI Systems) verlangt als Management-
+      Praktik ein durchgängiges Data-Quality-Management mit Lineage,
+      Bias-Behandlung und Datenqualitätskriterien. EU AI Act Art. 10 fordert
+      davon den konkreten produktbezogenen Anteil für Trainings-,
+      Validierungs- und Testdaten von Hochrisiko-Systemen: Repräsentativität,
+      Fehlerfreiheit, dokumentierte Datenherkunft und prüfbare Akzeptanzkriterien
+      gemäß Stand der Technik. ISO ist methodischer Rahmen, AI Act präskriptive
+      Teilmenge.
+    gap_warning: |
+      ISO 42001 adressiert nicht die DSGVO-Art.-9-Rechtsgrundlagenpflicht
+      für Bias-Erkennung mit besonderen Datenkategorien (Art. 10(5)). AIMS-
+      Implementierer müssen für AI-Act-Konformität separate DPIA und
+      Rechtsgrundlagen-Analyse durch DPO einbinden.
+    cross_refs: ['Annex A.7.3', 'Annex A.7.4']
+    audit_evidence_hint: 'ISO-42001-Data-Governance-Policy mit Lineage; ergänzend AI-Act-Bias-Test-Reports je Trainingslauf, DPIA für Bias-Daten gemäß Art. 10(5).'
+
+  - source: 'Annex A.6.2'
+    target: 'Art. 11'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 Annex A.6.2 (System-Documentation) und Clause 7.5 (Documented
+      Information) verlangen ein managementsystem-konformes Dokumentations-
+      Framework mit Versionskontrolle, Aufbewahrung und Strukturanforderungen.
+      EU AI Act Art. 11 in Verbindung mit Annex IV fordert davon den konkreten
+      Pflichtinhalts-Anteil mit 9 Pflichtbereichen: Systembeschreibung,
+      Designentscheidungen, Trainingsmethoden, Performance-Metriken und
+      Post-Market-Plan. ISO liefert das Strukturgerüst, AI Act den konkreten
+      Inhaltskatalog.
+    gap_warning: |
+      ISO-42001-konforme Dokumentation deckt die Annex-IV-Pflichtinhalte
+      nicht automatisch ab. AIMS-Betreiber müssen pro Hochrisiko-System
+      eine Annex-IV-Konformitäts-Checkliste pflegen und Aufbewahrungspflicht
+      von 10 Jahren nach Inverkehrbringen umsetzen.
+    cross_refs: ['Clause 7.5']
+    audit_evidence_hint: 'ISO-42001-Dokumentenlenkung gemäß Clause 7.5; ergänzend AI-Act-Annex-IV-konforme Tech-Doku, Konformitätsbewertungs-Akte, 10-Jahres-Aufbewahrung.'
+
+  - source: 'Annex A.8.4'
+    target: 'Art. 12'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 Annex A.8.4 (Logging of AI System Operation) verlangt
+      Logging-Kontrollen für AI-Systeme mit Aufbewahrungsdauer und
+      Integritätsschutz als Teil der operativen AIMS-Kontrolllandschaft.
+      EU AI Act Art. 12 fordert davon den konkreten Pflichtfeld-Katalog
+      gemäß Art. 12(2): Zeitraum, Referenzdatenbank, Eingabedaten,
+      Identifikation des prüfenden Personals. Inhaltlich und methodisch
+      hohe Schnittmenge — ISO präziser bei Aufbewahrung und Schutz, AI Act
+      präziser bei Pflichtfeldern.
+    audit_evidence_hint: 'ISO-42001-Logging-Konzept mit Integritätsschutz; ergänzend AI-Act-Pflichtfeld-Mapping zu Art. 12(2), Mindestaufbewahrung 6 Monate, WORM-Storage-Nachweis.'
+
+  - source: 'Annex A.8.3'
+    target: 'Art. 13'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 Annex A.8.3 (Communication and Transparency) und A.8.5
+      (User Information) verlangen umfassende Transparenz- und Kommunikations-
+      kontrollen für AI-Systeme als generischen AIMS-Baustein. EU AI Act
+      Art. 13 fordert davon den konkreten Pflichtinhalt-Anteil der
+      Betreiber-Anweisung gemäß Art. 13(3) sowie zusätzlich die Output-
+      Interpretierbarkeit auf System-Ebene. ISO bildet den Kommunikations-
+      rahmen, AI Act ergänzt produktspezifische Pflichtinhalte und
+      Explainability-Anforderungen.
+    gap_warning: |
+      Output-Interpretierbarkeit (Explainability via SHAP, LIME,
+      Counterfactuals) ist in ISO 42001 nicht als eigenständige Control
+      verankert. AIMS-Betreiber müssen für Hochrisiko-Systeme eine
+      XAI-Methode dokumentieren und in die Betreiber-Anweisung integrieren.
+    cross_refs: ['Annex A.8.5']
+    audit_evidence_hint: 'ISO-42001-Transparenz- und Kommunikations-Kontrollen; ergänzend AI-Act-Betreiber-Anweisung gemäß Art. 13(3), XAI-Methodendokumentation, Sprachfassungen je Markt.'
+
+  - source: 'Annex A.6.3'
+    target: 'Art. 14'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 Annex A.6.3 (Human Oversight) verlangt Kontrollen für
+      menschliche Steuerung und Eingriffsfähigkeit über AI-Systeme
+      einschließlich Override-Mechanismen und Awareness für Automation-Bias.
+      EU AI Act Art. 14 fordert davon den konkreten Pflicht-Anteil für
+      Hochrisiko-Systeme: Stop-Button, Verständnis der Systemfähigkeiten,
+      Override-Funktionalität und ergänzend das Vier-Augen-Prinzip
+      Art. 14(5) für biometrische Identifikationssysteme. Inhaltlich und
+      methodisch hohe Schnittmenge.
+    audit_evidence_hint: 'ISO-42001-Human-Oversight-Konzept und Bediener-Schulungsnachweise; ergänzend AI-Act-Override-Funktionalitäts-Tests, Vier-Augen-Genehmigung bei biometrischer Identifikation.'
+
+  - source: 'Annex A.7.4'
+    target: 'Art. 15'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 Annex A.7.4 (AI System Performance) und A.6.5 (AI System
+      Security) verlangen Performance-Management und AI-spezifische
+      Sicherheitskontrollen als Teil des AIMS, jedoch ohne präskriptive
+      Mindestmetriken. EU AI Act Art. 15 fordert davon den konkreten
+      produktbezogenen Anteil: deklarierte Genauigkeitsmetriken in der
+      Begleitdokumentation und Adversarial-Robustness gegen Daten-Vergiftung,
+      Modell-Manipulation und Adversarial Examples. ISO ist Rahmen, AI Act
+      präskriptive Teilmenge.
+    gap_warning: |
+      ISO 42001 adressiert Adversarial-Robustness nur als generischen
+      Security-Control. AIMS-Implementierer müssen für AI-Act-Konformität
+      ein spezialisiertes Robustness-Test-Framework (z.B. ART, CleverHans)
+      etablieren und Mindest-Robustheits-Score je Hochrisiko-System festlegen.
+    cross_refs: ['Annex A.6.5']
+    audit_evidence_hint: 'ISO-42001-Performance- und Security-Kontrollen; ergänzend AI-Act-Adversarial-Robustness-Test-Reports, Cybersecurity-Threat-Modeling, deklarierte Genauigkeitswerte in Begleitdoku.'
+
+  - source: 'Clause 6'
+    target: 'Art. 17'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 Clause 6 (Planung) zusammen mit Clause 8 (Betrieb) und
+      Clause 10 (Verbesserung) bildet das vollständige AIMS-Management-
+      System-Grundgerüst nach High-Level-Structure. EU AI Act Art. 17
+      verlangt davon den konkreten Anbieter-QMS-Pflichtanteil mit
+      13 Pflichtelementen einschließlich Konformitätsbewertungs-spezifischer
+      Prozesse, die im AIMS nicht vollständig abgedeckt sind. ISO-AIMS deckt
+      den Management-System-Kern ab, AI Act ergänzt produktbezogene
+      Konformitätsprozesse.
+    gap_warning: |
+      Eine ISO-42001-Zertifizierung ersetzt keine Konformitätsbewertung
+      (Art. 43 Modul A/B+C) und keine CE-Kennzeichnung. AIMS-Betreiber
+      müssen separat Konformitätsbewertungs-Verfahren umsetzen und EU-
+      Datenbank-Registrierung gemäß Art. 49 vornehmen. Vermutungswirkung
+      via harmonisierte Normen erst nach CEN-CENELEC-JTC-21-Finalisierung.
+    cross_refs: ['Clause 8', 'Clause 10']
+    audit_evidence_hint: 'ISO-42001-AIMS-Dokumentation Clause 6/8/10; ergänzend AI-Act-13-Element-Mapping zu Art. 17, Konformitätsbewertungs-Modul-Auswahl, CE-Kennzeichnungs-Akte, EU-Datenbank-Registrierung.'
+
+  - source: 'Clause 9.1'
+    target: 'Art. 61'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 Clause 9.1 (Monitoring, Measurement, Analysis, Evaluation)
+      zusammen mit Annex A.9 (Performance Evaluation) verlangt fortlaufendes
+      Monitoring der AI-System-Performance mit dokumentierten Ergebnissen
+      als generischen AIMS-Baustein. EU AI Act Art. 61 fordert davon den
+      konkreten produktbezogenen Anteil: Post-Market-Monitoring-Plan gemäß
+      Durchführungsrechtsakt mit Berichtspflichten an Marktüberwachungs-
+      behörden bei festgestelltem Risiko. Methodisch hohe Schnittmenge —
+      AI Act präziser bei Behördenkommunikation.
+    audit_evidence_hint: 'ISO-42001-Monitoring-KPI-Dashboard und Quartals-Reviews; ergänzend AI-Act-Post-Market-Monitoring-Plan, Eskalations-Logs an Marktüberwachungsbehörden bei festgestelltem Risiko.'
+
+  - source: 'Clause 10.2'
+    target: 'Art. 72'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 Clause 10.2 (Nonconformity and Corrective Action) zusammen
+      mit Annex A.10.4 (AI Incident Management) verlangt einen internen
+      Incident-Management-Prozess mit Ursachenanalyse und Korrekturmaßnahmen
+      als Teil der kontinuierlichen Verbesserung. EU AI Act Art. 72 fordert
+      davon den externen Meldepflicht-Anteil: Behördenmeldung schwerwiegender
+      Vorfälle innerhalb 2/10/15 Tagen je nach Schweregrad. ISO deckt den
+      internen Prozess ab, AI Act ergänzt explizite externe Meldepflichten
+      und Fristen.
+    gap_warning: |
+      Externe Meldefristen (2/10/15 Tage) und die Definition "serious
+      incident" gemäß Art. 3(49) sind in ISO 42001 nicht abgebildet.
+      AIMS-Betreiber müssen separate Incident-Klassifizierungs-Matrix mit
+      AI-Act-Schwellwerten und Meldewege zu Marktüberwachungsbehörden + AI
+      Office einrichten und Cross-Reporting mit DSGVO Art. 33/34 sowie
+      NIS2 Art. 23 abgleichen.
+    cross_refs: ['Annex A.10.4']
+    audit_evidence_hint: 'ISO-42001-interner-Incident-Prozess gemäß Clause 10.2 und A.10.4; ergänzend AI-Act-Incident-Klassifizierungs-Matrix, Meldewege Marktüberwachungsbehörde + AI Office, Cross-Reporting-Matrix DSGVO/NIS2/AI Act.'
