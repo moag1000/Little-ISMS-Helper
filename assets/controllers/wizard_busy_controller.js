@@ -69,8 +69,13 @@ export default class extends Controller {
     }
 
     disableForm() {
+        // CRITICAL: text/select/textarea/checkbox/radio must use READONLY (not
+        // DISABLED) — disabled inputs don't get submitted in POST body, which
+        // bites form validation with "field should not be empty" even though
+        // the user filled it in. Disabled is only for buttons + links.
         const selector = 'input:not([type="hidden"]), select, textarea, button, a.btn';
         this._previouslyDisabled = new Set();
+        this._previouslyReadonly = new Set();
         this.element.querySelectorAll(selector).forEach((el) => {
             if (el.disabled || el.classList.contains('disabled')) {
                 this._previouslyDisabled.add(el);
@@ -80,8 +85,18 @@ export default class extends Controller {
                 el.classList.add('disabled');
                 el.setAttribute('aria-disabled', 'true');
                 el.setAttribute('tabindex', '-1');
-            } else {
+            } else if (el.tagName === 'BUTTON') {
                 el.disabled = true;
+            } else {
+                // <input>, <select>, <textarea> — preserve POST value
+                if (el.readOnly) {
+                    this._previouslyReadonly.add(el);
+                }
+                el.readOnly = true;
+                el.setAttribute('aria-readonly', 'true');
+                // Visually hint the lock for select/checkbox/radio (which
+                // don't natively grey out under readonly): add a class
+                el.classList.add('wizard-busy-locked');
             }
         });
     }
@@ -94,8 +109,14 @@ export default class extends Controller {
                 el.classList.remove('disabled');
                 el.removeAttribute('aria-disabled');
                 el.removeAttribute('tabindex');
-            } else {
+            } else if (el.tagName === 'BUTTON') {
                 el.disabled = false;
+            } else {
+                if (!this._previouslyReadonly || !this._previouslyReadonly.has(el)) {
+                    el.readOnly = false;
+                }
+                el.removeAttribute('aria-readonly');
+                el.classList.remove('wizard-busy-locked');
             }
         });
     }

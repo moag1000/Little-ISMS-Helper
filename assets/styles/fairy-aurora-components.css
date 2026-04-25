@@ -4609,3 +4609,16 @@ button.fa-filter-chip.fa-filter-chip--active {
     letter-spacing: 0.08em;
     padding: 8px 10px 4px;
 }
+
+
+/* Wizard-busy lock visual hint for native inputs that don't grey out under readonly */
+.wizard-busy-locked {
+    cursor: wait !important;
+    opacity: 0.7;
+}
+.wizard-busy-locked,
+input[readonly].wizard-busy-locked,
+select.wizard-busy-locked,
+textarea[readonly].wizard-busy-locked {
+    background-color: var(--surface-2) !important;
+}
