@@ -2016,25 +2016,40 @@ class DeploymentWizardController extends AbstractController
                 }
             }
 
-            // CreateSchema with FK_CHECKS=0 + transaction-wrap.
-            // SchemaTool emits ~250 SQL statements (CREATE TABLE × ~100 +
-            // ALTER ADD CONSTRAINT × ~150). Each is a separate round-trip
-            // → 25-50s on hosted DBs. Wrap them in a single transaction so
-            // there's only ONE commit/fsync at the end + skip FK validation
-            // during creation.
+            // CreateSchema fast-path.
+            //
+            // SchemaTool::createSchema() iterates its ~250 DDL statements
+            // (CREATE TABLE × ~100 + ALTER ADD CONSTRAINT × ~150) and runs
+            // each via Doctrine's `executeStatement` — one network round-trip
+            // each. On hosted DBs with ~50-100ms RTT that's 15-30s pure
+            // network wait, regardless of how fast the server is.
+            //
+            // Fast path: get the SQL list via getCreateSchemaSql(), join
+            // with `;`, and submit ONCE to the underlying PDO via exec().
+            // PDO_MySQL + PDO_PGSQL both execute multi-statement queries
+            // server-side in one round-trip — collapses 250 RTTs into 1.
             $platform = $connection->getDatabasePlatform()::class;
             $isMysql = stripos($platform, 'MySQL') !== false || stripos($platform, 'MariaDB') !== false;
 
             if ($isMysql) {
                 $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 0');
             }
-            $connection->beginTransaction();
             try {
-                $schemaTool->createSchema($metadata);
-                $connection->commit();
-            } catch (\Throwable $e) {
-                $connection->rollBack();
-                throw $e;
+                $createSqls = $schemaTool->getCreateSchemaSql($metadata);
+                $nativeConn = $connection->getNativeConnection();
+                if ($nativeConn instanceof \PDO && $createSqls !== []) {
+                    // Single multi-statement query — drops 250 round-trips to 1.
+                    $nativeConn->exec(implode(";\n", $createSqls));
+                } else {
+                    // Non-PDO driver: fall back to Doctrine's per-statement loop.
+                    $schemaTool->createSchema($metadata);
+                }
+            } catch (\Throwable $multiStmtErr) {
+                // Multi-statement may fail on drivers/configs that disallow it.
+                // Fall back to per-statement execution (slower but always works).
+                foreach ($createSqls ?? [] as $sql) {
+                    $connection->executeStatement($sql);
+                }
             } finally {
                 if ($isMysql) {
                     $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1');
