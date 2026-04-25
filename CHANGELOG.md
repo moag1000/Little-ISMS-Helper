@@ -3,6 +3,49 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [Unreleased] - feat/mapping-quality
+
+### Mapping-Quality-Vision (neue Library + MQS + Lifecycle)
+
+Cross-Framework-Mapping-Qualität messbar machen + 10 Standard-Mappings für DE/EU-Markt.
+
+**Schema (Migration 20260425145800):**
+- `compliance_mapping` erweitert um `lifecycle_state`, `provenance_source/url`, `methodology_type/description`, `relationship` (equivalent/subset/superset/related/partial_overlap), `gap_warning`, `audit_evidence_hint`, `mqs_breakdown` (JSON)
+
+**Services:**
+- `MappingQualityScoreService` — MQS (0-100) aus 6 gewichteten Dimensionen: Provenance 25 % / Methodology 20 % / Confidence 15 % / Coverage 15 % / Bidirectional 15 % / Lifecycle 10 %
+- `MappingValidatorService` — YAML-Library-Validation (Schema, Provenance-Pflicht, Methodology-Pflicht, Coverage-Warnung, Source/Target-Existenz)
+- `MappingLifecycleService` — State-Machine draft → review → approved → published; 4-Augen-Review für approved, ROLE_CISO-Sign-Off für published; Audit-Log pro Transition
+- `MappingLibraryLoader` — lädt fixtures/library/mappings/*.yaml mit Validation + MQS-Compute
+- `ComplianceMappingRepository::coverageBetweenFrameworks()` und `reciprocityCoherence()`
+
+**Console-Commands:**
+- `app:mapping:check-reciprocity` — Bidirectional-Coherence-Audit (CI-fähig)
+- `app:mapping:library:import` — YAML-Library-Import
+- `app:mapping:library:smoke-test` — End-to-End-Test mit Stub-Frameworks und MQS-Übersicht
+
+**Admin-UI `/admin/mapping-quality`:**
+- Liste mit Filter (state, min_score), Stats-Cards, Recompute-Button
+- Detail mit 6-Dimensionen-Aufschlüsselung
+- Lifecycle-Transition-Buttons mit Reason-Feld + 4-Augen/CISO-Berechtigungs-Checks
+- Mega-Menu-Eintrag
+
+**10 Standard-Library-Mappings (DE/EU-Fokus):**
+- ISO 27001 → NIS2 Art. 21 (12 Pairs, ENISA-basiert, MQS 73.9)
+- ISO 27001 → BSI C5 (15 Pairs, BSI Anlage A, MQS 77.7)
+- ISO 27001 → BSI IT-Grundschutz (15 Pairs, BSI-Kreuztabelle, MQS 77.0)
+- ISO 27001 → TISAX (15 Pairs, VDA ISA 6.0, MQS 78.0)
+- ISO 27001 → DORA (15 Pairs, EBA RTS-basiert, MQS 73.1)
+- GDPR → ISO 27701:2025 (16 Pairs, ISO Annex D offiziell, MQS 84.7)
+- DORA → BAIT (14 Pairs, BaFin-Crosswalk, MQS 72.1, Coverage 54 %)
+- NIS2 → BSI IT-Grundschutz (11 Pairs, BSI Implementierungsleitfaden 2024-12, MQS 82.3)
+- KRITIS-DachG → NIS2-UmsuCG (8 Pairs, BMI Begründungstext, MQS 71.6, complementary)
+- EU AI Act → ISO 42001 (10 Pairs, ISO 42001 Annex C, MQS 73.0, lifecycle review)
+
+**Tests:** 20 neue Test-Cases (MQS-Service 6 + Validator 7 + Lifecycle 7).
+
+**Dokumentation:** `LIBRARY_FORMAT_VISION.md` + `MAPPING_QUALITY_VISION.md`.
+
 ## [3.0.0] - 2026-04-25
 
 ### Highlights

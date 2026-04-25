@@ -270,3 +270,50 @@ mappings:
       jährlichen Test-Plan dokumentieren.
     cross_refs: ['BAIT 6']
     audit_evidence_hint: 'Jahres-Test-Plan mit DORA-Test-Typ-Tagging, Vulnerability-Scan-Reports, Penetrationstest-Bibliothek, Remediation-Tracking-Tool.'
+
+  - source: 'Art. 12'
+    target: 'BAIT 10'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      DORA Art. 12 verlangt Backup-Policies, Restoration-Procedures und
+      Recovery-Methoden mit RTO/RPO. BAIT 10 IT-Notfallmanagement
+      enthält zentrale Anforderungen an Notfallkonzept, Wiederanlauf-
+      pläne sowie regelmäßige Tests. DORA Art. 12 ist Teilmenge von
+      BAIT 10 — letzteres ist breiter formuliert (Eskalationsstufen,
+      Krisenstab, Notfall-Kommunikation), erfasst Backup/Restore
+      jedoch ebenfalls.
+    cross_refs: ['BAIT 10.1', 'BAIT 10.4']
+    audit_evidence_hint: 'Backup-/Restore-Tests-Logs der letzten 12 Monate, RTO/RPO-Übersicht pro System, Notfall-Übungs-Protokolle.'
+
+  - source: 'Art. 18'
+    target: 'BAIT 8.5'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      DORA Art. 18 spezifiziert Klassifizierungs-Schwellen für ICT-bezogene
+      Vorfälle (kritisch, schwerwiegend, wesentlich) mit harmonisierter
+      EU-Methodik nach RTS JC 2024 33. BAIT 8.5 enthält eigene
+      Klassifizierungs-Pflicht ohne harmonisierte Schwellen — Banken
+      definieren Schweregrad-Matrix selbst.
+    gap_warning: |
+      Bei Übergang zu DORA müssen Bestands-Klassifizierungs-Matrizen auf
+      RTS JC 2024 33 umgestellt werden — manche BAIT-konforme
+      Klassifikationen fallen sonst nicht in DORA-Major-Reporting-Pflicht.
+    cross_refs: ['BAIT 8']
+    audit_evidence_hint: 'Aktualisierte Vorfall-Klassifizierungs-Matrix, Mapping BAIT-Severity → DORA RTS-Schwellen, Reporting-Schwellwerte-Dokument.'
+
+  - source: 'Art. 19'
+    target: 'BAIT 8.6'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      DORA Art. 19 fordert standardisierte Meldepflicht für Major ICT-
+      Vorfälle an die ESA mit Initial-Notification 4 h, Intermediate 72 h,
+      Final 1 Monat. BAIT 8.6 verlangt Vorfall-Meldung an die BaFin
+      gemäß §44 KWG ohne harmonisierte Fristen.
+    gap_warning: |
+      DORA-Meldepflicht fügt EU-weite ESA-Reporting-Strecke hinzu, die
+      durch BAIT 8.6 nicht abgedeckt ist. Doppel-Reporting-Pflicht
+      einplanen, Meldewege parallelisieren.
+    audit_evidence_hint: 'DORA-Meldewege-Dokument, ESA-Anbindungs-Nachweis, Major-Incident-Reports der letzten 24 Monate mit beiden Meldungs-Strecken.'

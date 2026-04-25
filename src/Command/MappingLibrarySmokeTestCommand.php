@@ -49,11 +49,17 @@ class MappingLibrarySmokeTestCommand extends Command
     protected function configure(): void
     {
         $this->addOption('skip-stubs', null, InputOption::VALUE_NONE, 'Stub-Erstellung überspringen.');
+        $this->addOption('cleanup', null, InputOption::VALUE_NONE, 'Stub-Frameworks und Mappings entfernen (NUR development!).');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+
+        if ($input->getOption('cleanup')) {
+            return $this->cleanup($io);
+        }
+
         $libraryDir = $this->projectDir . '/fixtures/library/mappings';
         $files = glob($libraryDir . '/*.yaml') ?: [];
 
@@ -192,5 +198,34 @@ class MappingLibrarySmokeTestCommand extends Command
             $totalImported, $totalUpdated, $totalSkipped, $errors));
 
         return $errors > 0 ? Command::FAILURE : Command::SUCCESS;
+    }
+
+    /**
+     * Entfernt Stub-Frameworks (Description LIKE 'Stub for...') + zugehörige
+     * Requirements + Mappings. Nur für Development gedacht — Echte Frameworks
+     * mit anderem Description-Wert bleiben unberührt.
+     */
+    private function cleanup(SymfonyStyle $io): int
+    {
+        $io->title('Stub-Cleanup (Development-Only)');
+
+        $stubFrameworks = $this->frameworkRepository->createQueryBuilder('f')
+            ->where("f.description LIKE 'Stub for mapping-library smoke-test%'")
+            ->getQuery()->getResult();
+
+        if (empty($stubFrameworks)) {
+            $io->success('Keine Stub-Frameworks gefunden — nichts zu tun.');
+            return Command::SUCCESS;
+        }
+
+        $io->writeln(sprintf('  Lösche <fg=red>%d</> Stub-Frameworks (cascade auf Requirements + Mappings):', count($stubFrameworks)));
+        foreach ($stubFrameworks as $fw) {
+            $io->writeln(sprintf('    - %s', $fw->getCode()));
+            $this->entityManager->remove($fw);
+        }
+        $this->entityManager->flush();
+
+        $io->success('Cleanup abgeschlossen.');
+        return Command::SUCCESS;
     }
 }
