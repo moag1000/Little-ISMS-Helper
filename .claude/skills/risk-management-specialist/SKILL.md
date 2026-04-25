@@ -20,12 +20,31 @@ I am your IT Risk Management expert with comprehensive knowledge of:
 3. **Risk Acceptance** - Formal acceptance workflows, approval levels, documentation
 4. **Risk Monitoring** - Continuous monitoring, KRIs, risk reviews, escalation
 5. **Data Reuse Optimization** - Leveraging Assets, Incidents, Controls, and Business Processes to save time
+6. **Method Selection** - Choose between qualitative (5×5 matrix), structured-qualitative (EBIOS RM), or quantitative (CRQ/FAIR-light) per use case
 
-### ISO Standards Integration
+### Methodology Integration
 - **ISO 27005** - IT risk management methodology (identify, analyze, evaluate, treat, monitor)
 - **ISO 31000** - Enterprise risk management framework (principles, framework, process)
 - **ISO 27001** - ISMS integration through 93 controls, Annex A mapping, compliance requirements
 - **ISO 22301** - BCM integration through BusinessProcess risk dependencies
+- **EBIOS RM (ANSSI)** - Stakeholder + threat-source mapping with strategic vs. operational scenarios. **Deutscher Public Sector** orientiert sich zunehmend daran, weil DSGVO-konformer Strukturansatz mit Geschäftswerten + Risiko-Akteuren anstatt reiner Asset-Listen. Ergänzt ISO 27005 um:
+  - **Geschäftswerte (Business Values)** — Schutzgut-Definition vor Asset-Identifikation
+  - **Bedrohungsquellen-Mapping** — wer hat Motiv, Mittel, Gelegenheit (statt nur Threat-Library)
+  - **Strategische vs. operative Risiken** — getrennte Behandlungsebenen
+  - **Strategic Scenarios → Operational Scenarios** — Top-Down statt Asset-Bottom-Up
+- **CRQ / FAIR-light** - Quantitative Risk Quantification optional aktivierbar pro Tenant. Liefert ALE (Annual Loss Expectancy) in €/Jahr — Board-fähige Sprache statt H/M/L. Pro Risiko zusätzlich:
+  - `frequency_per_year` (geschätzt: 0.1 = einmal in 10 Jahren, 12 = monatlich)
+  - `loss_min`, `loss_expected`, `loss_max` (Pert-Verteilung in €)
+  - `ale = frequency × loss_expected` (für Board-Reports)
+  - `var_95` (Value-at-Risk auf 95%-Konfidenzniveau via Monte-Carlo, optional)
+  - **Gegen-Argument für KMU:** quantitative Schätzung selbst hochgradig unsicher → nur dort nutzen wo Datenbasis existiert (Incident-Historie, Branchen-Benchmarks). Default bleibt 5×5-Matrix.
+
+### Methode-Auswahl pro Tenant
+| Methode | Wann | Aufwand | Ergebnis-Sprache |
+|---|---|---|---|
+| 5×5-Matrix (ISO 27005 default) | Mittelstand ohne Risiko-Reife | gering | H/M/L Heatmap |
+| EBIOS RM | Public Sector, Konzern-IT, KRITIS | mittel | Strategische Treatment-Roadmap |
+| CRQ/FAIR-light | Finanzdienstleister, Versicherer, große Konzerne | hoch (braucht Daten) | €/Jahr ALE für Board |
 
 ---
 
