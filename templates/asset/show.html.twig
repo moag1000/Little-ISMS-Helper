@@ -445,10 +445,8 @@
     border-radius: 4px;
     white-space: pre-wrap;
 }
-.badge-classification-public { background: var(--success); color: var(--on-success); padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-classification-internal { background: var(--primary); color: var(--on-primary); padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-classification-confidential { background: var(--warning); color: var(--on-warning); padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-classification-restricted { background: var(--danger); color: var(--on-danger); padding: 0.25rem 0.5rem; border-radius: 4px; }
+/* .badge-classification-* removed: dead code (BadgeExtension renders
+   "badge bg-<color>" via Aurora). */
 /* Data Reuse Sections */
 .controls-list, .risks-list, .incidents-list { display: flex; flex-direction: column; gap: 0.5rem; }
 .control-item, .risk-item, .incident-item {
@@ -498,9 +496,7 @@
     color: var(--success);
     font-weight: 500;
 }
-.badge-action-insert { background: var(--success); color: var(--on-success); padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-action-update { background: var(--primary); color: var(--on-primary); padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-action-delete { background: var(--danger); color: var(--on-danger); padding: 0.25rem 0.5rem; border-radius: 4px; }
+/* .badge-action-* removed: dead code. */
 
 /* Protection Analysis Styles */
 .protection-analysis .protection-card {

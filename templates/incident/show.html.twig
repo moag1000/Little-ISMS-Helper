@@ -632,19 +632,9 @@
     gap: 0.5rem;
     flex-wrap: wrap;
 }
-.badge-status-reported { background: var(--primary); }
-.badge-status-in_investigation { background: var(--warning); }
-.badge-status-in_resolution { background: var(--accent); }
-.badge-status-resolved { background: var(--success); }
-.badge-status-closed { background: var(--fg-3); }
-
-/* NIS2 Compliance Status Badges */
-.badge-nis2-not_applicable { background: var(--fg-3); }
-.badge-nis2-compliant { background: var(--success); }
-.badge-nis2-overdue { background: var(--danger); animation: pulse 2s infinite; }
-.badge-nis2-awaiting_early_warning { background: var(--warning); }
-.badge-nis2-awaiting_detailed { background: var(--primary); }
-.badge-nis2-awaiting_final { background: var(--accent); }
+/* badge-status-* and badge-nis2-* removed: dead code.
+   BadgeExtension::getStatusBadgeClass() returns "badge bg-<color>" —
+   styled centrally by Aurora's .badge.bg-* rules. */
 
 @keyframes pulse {
     0%, 100% { opacity: 1; }
@@ -804,34 +794,8 @@
     gap: 0.5rem;
     flex-wrap: wrap;
 }
-.alert {
-    padding: 1rem;
-    border-radius: 4px;
-    margin: 1rem 0;
-}
-.alert-warning {
-    background: var(--warning-glow);
-    border-left: 4px solid var(--warning);
-    color: var(--warning-text);
-}
-.badge-risk-high {
-    background: var(--danger);
-    color: white;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-}
-.badge-risk-medium {
-    background: var(--warning);
-    color: white;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-}
-.badge-risk-low {
-    background: var(--success);
-    color: white;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-}
+/* .alert and .alert-* — handled centrally in fairy-aurora-components.css */
+/* .badge-risk-* removed: dead code, never referenced in markup */
 
 /* Audit Log Styles */
 .audit-log-list {
