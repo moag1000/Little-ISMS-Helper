@@ -2,7 +2,9 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\User;
 use App\Repository\ComplianceMappingRepository;
+use App\Service\MappingLifecycleService;
 use App\Service\MappingQualityScoreService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Mapping-Quality-Dashboard.
@@ -22,7 +25,9 @@ class MappingQualityController extends AbstractController
     public function __construct(
         private readonly ComplianceMappingRepository $mappingRepository,
         private readonly MappingQualityScoreService $mqsService,
+        private readonly MappingLifecycleService $lifecycleService,
         private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -67,7 +72,39 @@ class MappingQualityController extends AbstractController
 
         return $this->render('admin/mapping_quality/show.html.twig', [
             'mapping' => $mapping,
+            'allowedTransitions' => $this->lifecycleService->allowedNextStates($mapping->getLifecycleState()),
         ]);
+    }
+
+    #[Route('/admin/mapping-quality/{id}/transition', name: 'admin_mapping_quality_transition', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function transition(Request $request, int $id): Response
+    {
+        if (!$this->isCsrfTokenValid('mapping_lifecycle_' . $id, $request->request->get('_token'))) {
+            $this->addFlash('error', 'Invalid CSRF token.');
+            return $this->redirectToRoute('admin_mapping_quality_show', ['id' => $id]);
+        }
+        $mapping = $this->mappingRepository->find($id);
+        if (!$mapping) {
+            throw $this->createNotFoundException();
+        }
+
+        /** @var User $actor */
+        $actor = $this->getUser();
+        $newState = (string) $request->request->get('to');
+        $reason = trim((string) $request->request->get('reason', ''));
+
+        try {
+            $this->lifecycleService->transition($mapping, $newState, $actor, $reason !== '' ? $reason : null);
+            $this->addFlash('success', $this->translator->trans(
+                'admin.mapping_quality.transition_success',
+                ['%state%' => $newState],
+                'admin',
+            ));
+        } catch (\DomainException $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('admin_mapping_quality_show', ['id' => $id]);
     }
 
     #[Route('/admin/mapping-quality/recompute', name: 'admin_mapping_quality_recompute', methods: ['POST'])]

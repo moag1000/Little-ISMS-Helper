@@ -282,6 +282,11 @@ admin:
             audit_evidence: 'Audit evidence hint'
             version: 'Version'
             source_id: 'Source tag'
+        lifecycle_actions: 'Lifecycle actions'
+        transition_hint: 'Allowed next states. Transitioning to approved/published runs the required-fields check.'
+        transition_confirm: 'Really set lifecycle to "%state%"?'
+        transition_reason_placeholder: 'Reason for the transition (optional, recorded in audit log)'
+        transition_success: 'Lifecycle set to "%state%".'
 
     sample_data:
         title: 'Sample Data'

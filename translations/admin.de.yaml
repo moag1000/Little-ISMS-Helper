@@ -282,6 +282,11 @@ admin:
             audit_evidence: 'Audit-Evidence-Hinweis'
             version: 'Version'
             source_id: 'Source-Tag'
+        lifecycle_actions: 'Lifecycle-Aktionen'
+        transition_hint: 'Erlaubte Folgezustände. Bei Übergang zu approved/published wird die Pflichtfeld-Prüfung ausgeführt.'
+        transition_confirm: 'Lifecycle wirklich auf "%state%" setzen?'
+        transition_reason_placeholder: 'Grund für die Transition (optional, gehört in Audit-Log)'
+        transition_success: 'Lifecycle auf "%state%" gesetzt.'
 
     sample_data:
         title: 'Beispieldaten'
