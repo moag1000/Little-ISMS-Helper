@@ -129,25 +129,24 @@ export default class extends Controller {
     }
 
     setAlvaMood(mood) {
-        const alva = document.querySelector('.fa-alva');
-        if (!alva) return;
-        Array.from(alva.classList).forEach((c) => {
-            if (c.startsWith('fa-alva--')) alva.classList.remove(c);
+        // Setup-Wizard wraps Alva in two layers: outer .fa-onboarding-fairy
+        // and inner .fa-alva SVG. Both need the mood class for full effect.
+        document.querySelectorAll('.fa-alva, .fa-onboarding-fairy').forEach((el) => {
+            const base = el.classList.contains('fa-onboarding-fairy')
+                ? 'fa-onboarding-fairy--'
+                : 'fa-alva--';
+            Array.from(el.classList).forEach((c) => {
+                if (c.startsWith(base)) el.classList.remove(c);
+            });
+            el.classList.add(base + mood);
         });
-        alva.classList.add('fa-alva--' + mood);
     }
 
     restoreAlvaMood() {
-        const alva = document.querySelector('.fa-alva');
-        if (!alva) return;
-        Array.from(alva.classList).forEach((c) => {
-            if (c.startsWith('fa-alva--')) alva.classList.remove(c);
-        });
-        if (this._originalMood) {
-            alva.classList.add(this._originalMood);
-        } else {
-            alva.classList.add('fa-alva--idle');
-        }
+        const fallback = this._originalMood
+            ? this._originalMood.replace('fa-alva--', '')
+            : 'idle';
+        this.setAlvaMood(fallback);
     }
 
     showOverlay(message) {

@@ -189,11 +189,18 @@ export default class extends Controller {
     }
 
     _switchAlvaMood(mood) {
-        const alva = document.querySelector('.fa-alva');
-        if (!alva) return;
-        Array.from(alva.classList).forEach((c) => {
-            if (c.startsWith('fa-alva--')) alva.classList.remove(c);
+        // Setup-Wizard wraps Alva in two layers: outer .fa-onboarding-fairy
+        // (orbit + aura wrapper, animated via .fa-onboarding-fairy--{mood})
+        // and inner .fa-alva SVG (bob/wings/face animations via .fa-alva--{mood}).
+        // Both need the mood swap for the full visible effect.
+        document.querySelectorAll('.fa-alva, .fa-onboarding-fairy').forEach((el) => {
+            const baseClass = el.classList.contains('fa-onboarding-fairy')
+                ? 'fa-onboarding-fairy--'
+                : 'fa-alva--';
+            Array.from(el.classList).forEach((c) => {
+                if (c.startsWith(baseClass)) el.classList.remove(c);
+            });
+            el.classList.add(baseClass + mood);
         });
-        alva.classList.add('fa-alva--' + mood);
     }
 }
