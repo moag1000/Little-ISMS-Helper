@@ -62,7 +62,7 @@
         { title: 'setup.applicability.intro.title'|trans({}, 'setup'), icon: 'bi-info-circle' }
     )|raw }}
 
-    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'fa-setup-form'}}) }}
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'fa-setup-form', 'data-controller': 'wizard-busy', 'data-wizard-busy-message-value': 'setup.alva.busy.frameworks'|trans({}, 'setup')}}) }}
 
     {# 🔴 MANDATORY #}
     {% if mandatory_codes|length > 0 %}

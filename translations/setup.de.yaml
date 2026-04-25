@@ -21,6 +21,9 @@ setup:
             base_data: 'Alva importiert die Stammdaten (Rollen, Framework-Defaults) – einen Moment bitte.'
             sample_data: 'Alva lädt Beispieldaten (Demo-Risiken, -Assets, -Controls) – das dauert ein paar Sekunden.'
             skip_restore: 'Alva überspringt den Backup-Restore – einen Moment bitte.'
+            db_test: 'Alva testet die Datenbank-Verbindung – einen Moment bitte.'
+            admin: 'Alva legt den Admin-Benutzer an – einen Moment bitte.'
+            frameworks: 'Alva richtet die Compliance-Frameworks ein – kann einige Sekunden dauern.'
 
     # Index/Landing Page
     already_complete:

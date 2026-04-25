@@ -72,7 +72,9 @@
                                 'class': 'needs-validation',
                                 'novalidate': 'novalidate',
                                 'id': 'existing-frameworks-form',
-                                'data-preview-url': path('setup_wizard_existing_frameworks_preview')
+                                'data-preview-url': path('setup_wizard_existing_frameworks_preview'),
+                                'data-controller': 'wizard-busy',
+                                'data-wizard-busy-message-value': 'setup.alva.busy.frameworks'|trans({}, 'setup')
                             }
                         }) }}
 
