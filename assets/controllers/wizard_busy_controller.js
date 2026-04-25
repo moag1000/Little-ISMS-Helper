@@ -58,11 +58,13 @@ export default class extends Controller {
     handleTurboEnd(event) {
         const form = event.detail?.formSubmission?.formElement;
         if (form === this.element) {
-            // Only re-enable if request failed (success = redirect = page reload).
-            const success = event.detail?.success === true;
-            if (!success) {
-                this.reset();
-            }
+            // Always re-enable on submit-end. If the response was a redirect
+            // and Turbo navigated, the DOM is replaced and reset() is a no-op
+            // on the gone form. If the response was a 200 stream-replace (e.g.
+            // DB-test result that re-renders the same page), the form stayed
+            // → user must be able to click again. The previous "only on
+            // failure" guard left forms locked after successful Turbo-render.
+            this.reset();
         }
     }
 
