@@ -1817,8 +1817,7 @@ class DeploymentWizardController extends AbstractController
     private function runFreshSchemaInstall(): array
     {
         try {
-            /** @var \Doctrine\ORM\EntityManagerInterface $em */
-            $em = $this->container->get('doctrine')->getManager();
+            $em = $this->entityManager;
             $metadata = $em->getMetadataFactory()->getAllMetadata();
 
             if ($metadata === []) {
@@ -1826,26 +1825,27 @@ class DeploymentWizardController extends AbstractController
             }
 
             $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($em);
-
-            // Detect existing schema. If any app-tables already exist,
-            // createSchema would throw "table already exists". Use updateSchema
-            // to ALTER incrementally, or skip when fully convergent.
             $connection = $em->getConnection();
+
+            // Setup-wizard semantics: "Datenbank-Struktur erstellen" creates
+            // a clean schema from current entity-metadata. If app-tables
+            // already exist (interrupted earlier attempt, partial upgrade),
+            // drop them first so createSchema can build a coherent state.
+            // Doctrine_migration_versions is preserved for tracking.
             $schemaManager = $connection->createSchemaManager();
             $existingTables = $schemaManager->listTableNames();
-            // Filter out Doctrine's own metadata table
-            $existingAppTables = array_filter($existingTables, fn($t) => $t !== 'doctrine_migration_versions');
+            $existingAppTables = array_filter(
+                $existingTables,
+                fn(string $t): bool => $t !== 'doctrine_migration_versions'
+            );
 
-            if ($existingAppTables === []) {
-                // Empty DB — fast-path, single batch
-                $schemaTool->createSchema($metadata);
-            } else {
-                // Partial schema (interrupted earlier attempt or upgrade) —
-                // updateSchema computes ALTER statements to converge.
-                // saveMode=true keeps existing data + tables that are NOT in
-                // entity metadata (avoids destructive drops).
-                $schemaTool->updateSchema($metadata, true);
+            if ($existingAppTables !== []) {
+                // Drop in reverse-FK-dependency order via SchemaTool (handles
+                // cascade FKs that plain DROP TABLE would refuse).
+                $schemaTool->dropSchema($metadata);
             }
+
+            $schemaTool->createSchema($metadata);
 
             // Mark every migration version as executed so future migrate-calls skip them
             $connection = $em->getConnection();
