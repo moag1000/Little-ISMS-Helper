@@ -2076,141 +2076,10 @@ code:not([class]) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   Bootstrap-Button → Aurora-CyberButton-Look (global unification)
-   Bestehende 1000+ .btn.btn-primary-Calls bekommen damit Aurora-Stil
-   ohne Template-Änderung. Die "echten" fa-cyber-btn (mit Notch) bleiben
-   das Premium-Pattern für Primary-Actions in neuen Components.
+   Bootstrap-Button section moved to Aurora v4 .btn → token bridge below
+   (around line ~4150) — this older legacy block was dominated by the
+   newer rules via source-order and is removed to avoid dead duplicates.
    ═══════════════════════════════════════════════════════════════════ */
-
-.btn {
-    font-family: var(--font-sans);
-    font-weight: 500;
-    border-radius: var(--r-md);
-    transition: background-color var(--t-fast) var(--ease-out),
-                border-color var(--t-fast) var(--ease-out),
-                box-shadow var(--t-fast) var(--ease-out),
-                transform var(--t-fast) var(--ease-out),
-                color var(--t-fast) var(--ease-out);
-}
-.btn:focus-visible {
-    outline: 3px solid var(--primary);
-    outline-offset: 2px;
-    box-shadow: 0 0 0 3px var(--primary-glow);
-}
-
-.btn.btn-primary,
-.btn-primary {
-    background-color: var(--primary-strong);
-    border-color: var(--primary-strong);
-    color: var(--on-primary);
-    box-shadow: 0 0 10px var(--primary-glow);
-}
-.btn.btn-primary:hover:not(:disabled):not(.disabled),
-.btn-primary:hover:not(:disabled):not(.disabled) {
-    background-color: var(--primary-hover);
-    border-color: var(--primary-hover);
-    color: var(--on-primary);
-    transform: translateY(-1px);
-    box-shadow: 0 0 16px var(--primary-glow);
-}
-
-.btn.btn-outline-primary,
-.btn-outline-primary {
-    color: var(--primary);
-    border-color: var(--primary);
-    background-color: transparent;
-}
-.btn.btn-outline-primary:hover:not(:disabled):not(.disabled),
-.btn-outline-primary:hover:not(:disabled):not(.disabled) {
-    background-color: var(--primary-strong);
-    border-color: var(--primary-strong);
-    color: var(--on-primary);
-}
-
-.btn.btn-secondary,
-.btn-secondary {
-    background-color: transparent;
-    border-color: var(--border-strong);
-    color: var(--fg);
-}
-.btn.btn-secondary:hover:not(:disabled):not(.disabled),
-.btn-secondary:hover:not(:disabled):not(.disabled) {
-    background-color: var(--surface-2);
-    border-color: var(--primary);
-    color: var(--fg);
-    transform: translateY(-1px);
-}
-
-.btn.btn-outline-secondary,
-.btn-outline-secondary {
-    color: var(--fg-2);
-    border-color: var(--border-strong);
-    background-color: transparent;
-}
-.btn.btn-outline-secondary:hover:not(:disabled):not(.disabled),
-.btn-outline-secondary:hover:not(:disabled):not(.disabled) {
-    background-color: var(--surface-2);
-    border-color: var(--primary);
-    color: var(--fg);
-}
-
-.btn.btn-success,
-.btn-success {
-    background-color: var(--success-strong);
-    border-color: var(--success-strong);
-    color: var(--on-success);
-}
-.btn.btn-warning,
-.btn-warning {
-    background-color: var(--warning);
-    border-color: var(--warning);
-    color: var(--on-warning);
-}
-.btn.btn-danger,
-.btn-danger {
-    background-color: var(--danger);
-    border-color: var(--danger);
-    color: var(--on-danger);
-}
-.btn.btn-outline-danger,
-.btn-outline-danger {
-    color: var(--danger);
-    border-color: var(--danger);
-    background-color: transparent;
-}
-.btn.btn-outline-danger:hover:not(:disabled):not(.disabled),
-.btn-outline-danger:hover:not(:disabled):not(.disabled) {
-    background-color: var(--danger);
-    color: var(--on-danger);
-}
-
-.btn.btn-info,
-.btn-info {
-    background-color: var(--primary);
-    border-color: var(--primary);
-    color: var(--on-primary);
-}
-.btn.btn-link,
-.btn-link {
-    color: var(--primary);
-    text-decoration: none;
-}
-.btn.btn-link:hover,
-.btn-link:hover {
-    color: var(--primary-hover);
-    text-decoration: underline;
-    text-decoration-color: var(--primary);
-    text-underline-offset: 3px;
-}
-
-/* Disabled-States konsistent */
-.btn:disabled,
-.btn.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
-}
 
 /* ═══════════════════════════════════════════════════════════════════
    <kbd> — Tastenkürzel-Badges (hohe Lesbarkeit in Light + Dark)
@@ -2261,12 +2130,20 @@ html[data-theme="dark"] .keyboard-key {
    per Load-Order, da Aurora nach Bootstrap lädt).
    ═══════════════════════════════════════════════════════════════════ */
 
+/* Token-only root: Bootstrap reads --bs-card-* internally for
+   background/color/border/cap-bg/cap-color; Aurora sets all five.
+   Layout properties (border-radius, box-shadow, transition) stay
+   as real declarations because no tokens cover them. */
 .card {
-    background-color: var(--surface);
-    border: 1px solid var(--border);
+    --bs-card-bg:           var(--surface);
+    --bs-card-color:        var(--fg);
+    --bs-card-border-color: var(--border);
+    --bs-card-cap-bg:       var(--surface-2);
+    --bs-card-cap-color:    var(--fg);
+    --bs-card-title-color:  var(--fg);
+    --bs-card-subtitle-color: var(--fg-2);
     border-radius: var(--r-lg);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-    color: var(--fg);
     transition: border-color var(--t-fast) var(--ease-out),
                 box-shadow var(--t-fast) var(--ease-out);
 }
@@ -2284,12 +2161,9 @@ html[data-theme="dark"] .keyboard-key {
 .card.border-info:hover    { border-left-color: var(--primary); }
 .card.border-accent:hover  { border-left-color: var(--accent); }
 
-/* (0,2,0) — beats Bootstrap's .card-header (0,1,0) and equals
-   Bootstrap's .card-header:first-child (0,2,0); Aurora wins by load order */
+/* Header/Footer: bg + color come from --bs-card-cap-* via Bootstrap's own
+   rules. We only declare layout (radius, padding, typography) here. */
 .card > .card-header {
-    background-color: var(--surface-2);
-    border-bottom: 1px solid var(--border);
-    color: var(--fg);
     padding: 14px 18px;
     font-weight: 600;
     letter-spacing: -0.1px;
@@ -2299,25 +2173,17 @@ html[data-theme="dark"] .keyboard-key {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
-/* Keep flat selectors as aliases so .card-header outside .card also works */
+/* Flat alias for .card-header used outside a .card wrapper (typography only;
+   colors come from --bs-card-cap-* via Bootstrap when nested in a .card). */
 .card-header {
-    background-color: var(--surface-2);
-    border-bottom: 1px solid var(--border);
-    color: var(--fg);
     padding: 14px 18px;
     font-weight: 600;
     letter-spacing: -0.1px;
 }
 
-.card-body { color: var(--fg); padding: 18px; }
+.card-body { padding: 18px; }
 
-/* (0,2,0) — beats Bootstrap's .card-footer (0,1,0) and equals
-   Bootstrap's .card-footer:last-child (0,2,0); Aurora wins by load order.
-   Also overrides Bootstrap's .card>.card-header+.list-group,.card>.list-group+.card-footer
-   { border-top:0 } (0,3,0) needs a separate rule below. */
 .card > .card-footer {
-    background-color: var(--surface-2);
-    border-top: 1px solid var(--border);
     color: var(--fg-2);
     /* Inner bottom-radius matches the card's outer radius minus border width */
     border-bottom-left-radius: calc(var(--r-lg) - 1px);
@@ -2327,8 +2193,6 @@ html[data-theme="dark"] .keyboard-key {
 }
 /* Flat alias for .card-footer used outside .card context */
 .card-footer {
-    background-color: var(--surface-2);
-    border-top: 1px solid var(--border);
     color: var(--fg-2);
 }
 
@@ -2339,24 +2203,19 @@ html[data-theme="dark"] .keyboard-key {
     border-top: 1px solid var(--border);
 }
 
-/* Bootstrap's .card-header:first-child + .card-footer:last-child + .card-body
-   pseudo rules (0,2,0) affect border-radius when the header/footer is the
-   first/last child. Aurora's .card > .card-header (0,2,0) tied on specificity
-   and relied on load-order. Bump Aurora's specificity to (0,3,0) via :first-child
-   / :last-child so Aurora wins regardless of import order. */
+/* Bootstrap's .card-header:first-child / .card-footer:last-child rules
+   (0,2,0) affect border-radius. Aurora's .card > .card-header (0,2,0) tied
+   on specificity and relied on load-order. Bump Aurora's specificity to
+   (0,3,0) via :first-child / :last-child so Aurora wins regardless of
+   import order. (0,3,0) selectors also match Bootstrap's
+   `.card>.list-group+.card-footer { border-top:0 }` rule. */
 .card > .card-header:first-child {
-    background-color: var(--surface-2);
-    border-bottom: 1px solid var(--border);
-    color: var(--fg);
     border-top-left-radius: calc(var(--r-lg) - 1px);
     border-top-right-radius: calc(var(--r-lg) - 1px);
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
 .card > .card-footer:last-child {
-    background-color: var(--surface-2);
-    border-top: 1px solid var(--border);
-    color: var(--fg-2);
     border-bottom-left-radius: calc(var(--r-lg) - 1px);
     border-bottom-right-radius: calc(var(--r-lg) - 1px);
     border-top-left-radius: 0;
@@ -2369,8 +2228,7 @@ html[data-theme="dark"] .keyboard-key {
     border-radius: calc(var(--r-lg) - 1px);
 }
 
-.card-title { color: var(--fg); font-weight: 600; }
-.card-subtitle { color: var(--fg-2); }
+.card-title { font-weight: 600; }
 .card-text { color: var(--fg-2); line-height: 1.55; }
 
 /* Bootstrap .card-header-tabs .nav-link.active (0,3,0) sets
@@ -2580,10 +2438,13 @@ html[data-theme="dark"] .nav-pills .show > .nav-link {
 
 /* ═══════════════════════════════════════════════════════════════════
    Bootstrap-Form-Control → Aurora-Look
+   No --bs-form-control-* tokens exist; we use a class-doubled
+   selector (.form-control.form-control = 0,2,0) to beat Bootstrap's
+   class+pseudo rules without resorting to !important.
    ═══════════════════════════════════════════════════════════════════ */
 
-.form-control,
-.form-select {
+.form-control.form-control,
+.form-select.form-select {
     background-color: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-md);
@@ -2592,19 +2453,19 @@ html[data-theme="dark"] .nav-pills .show > .nav-link {
     transition: border-color var(--t-fast) var(--ease-out),
                 box-shadow var(--t-fast) var(--ease-out);
 }
-.form-control::placeholder { color: var(--fg-3); }
-.form-control:hover,
-.form-select:hover { border-color: var(--border-strong); }
-.form-control:focus,
-.form-select:focus {
+.form-control.form-control::placeholder { color: var(--fg-3); }
+.form-control.form-control:hover,
+.form-select.form-select:hover { border-color: var(--border-strong); }
+.form-control.form-control:focus,
+.form-select.form-select:focus {
     background-color: var(--surface);
     border-color: var(--primary);
     box-shadow: 0 0 0 3px var(--primary-glow);
     color: var(--fg);
     outline: none;
 }
-.form-control:disabled,
-.form-select:disabled {
+.form-control.form-control:disabled,
+.form-select.form-select:disabled {
     background-color: var(--surface-2);
     opacity: 0.7;
     cursor: not-allowed;
@@ -2668,71 +2529,14 @@ label .required,
 .form-floating > .form-control:not(:placeholder-shown) { background-color: var(--surface); }
 
 /* ═══════════════════════════════════════════════════════════════════
-   Bootstrap-Badge → Aurora-Status-Pill-Look
+   Bootstrap-Badge override moved to Aurora v4 bridge below (~line 4470).
+   This older block was dominated by the newer rules via source-order.
    ═══════════════════════════════════════════════════════════════════ */
-
-.badge {
-    font-family: var(--font-mono);
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    border-radius: var(--r-pill);
-    padding: 3px 9px;
-}
-.badge.text-bg-primary,
-.badge.bg-primary    { background-color: var(--primary-strong) !important; color: var(--on-primary) !important; }
-.badge.text-bg-success,
-.badge.bg-success    { background-color: var(--success-strong) !important; color: var(--on-success) !important; }
-.badge.text-bg-warning,
-.badge.bg-warning    { background-color: var(--warning) !important; color: var(--on-warning) !important; }
-.badge.text-bg-danger,
-.badge.bg-danger     { background-color: var(--danger) !important; color: var(--on-danger) !important; }
-.badge.text-bg-info,
-.badge.bg-info       { background-color: var(--primary) !important; color: var(--on-primary) !important; }
-.badge.text-bg-secondary,
-.badge.bg-secondary  { background-color: var(--surface-2) !important; color: var(--fg-2) !important; border: 1px solid var(--border); }
 
 /* ═══════════════════════════════════════════════════════════════════
-   Bootstrap-Alert → Aurora-Alert (Legacy-Usages ohne _alert-Macro)
+   Bootstrap-Alert override moved to Aurora v4 bridge below (~line 4400).
+   This older block was dominated by the newer rules via source-order.
    ═══════════════════════════════════════════════════════════════════ */
-
-.alert {
-    border-radius: var(--r-md);
-    border-left-width: 4px;
-    color: var(--fg);
-    background: var(--surface);
-    border-color: var(--border);
-}
-.alert-primary,
-.alert-info {
-    background: var(--primary-tint);
-    border-color: var(--primary);
-    border-left-color: var(--primary);
-    color: var(--fg);
-}
-.alert-success {
-    background: var(--success-glow);
-    border-color: var(--success);
-    border-left-color: var(--success);
-    color: var(--fg);
-}
-.alert-warning {
-    background: var(--warning-glow);
-    border-color: var(--warning);
-    border-left-color: var(--warning);
-    color: var(--warning-text);
-}
-.alert-danger {
-    background: var(--danger-glow);
-    border-color: var(--danger);
-    border-left-color: var(--danger);
-    color: var(--fg);
-}
-.alert-light {
-    background: var(--surface-2);
-    border-color: var(--border);
-    border-left-color: var(--border-strong);
-    color: var(--fg);
-}
 
 /* ═══════════════════════════════════════════════════════════════════
    Bootstrap-Text-Utilities → Aurora-Farben (Dark-Mode-Fix für .text-dark)
@@ -2941,67 +2745,27 @@ small.text-muted,
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   Dropdown — Aurora-Override (beide Modi)
-   Bootstrap-Defaults ignorieren [data-theme]; wir überschreiben explizit.
+   Dropdown override moved to Aurora v4 bridge below (~line 4520).
+   The newer block declares the full token map and beats this older
+   block via source-order; removed to avoid dead duplicates.
    ═══════════════════════════════════════════════════════════════════ */
-
-.dropdown-menu {
-    background-color: var(--surface);
-    color: var(--fg);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-}
-html[data-theme="dark"] .dropdown-menu {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-}
-.dropdown-item {
-    color: var(--fg);
-    transition: background-color var(--t-fast) var(--ease-out),
-                color var(--t-fast) var(--ease-out);
-}
-.dropdown-item:hover,
-.dropdown-item:focus {
-    background-color: var(--surface-2);
-    color: var(--fg);
-}
-.dropdown-item.active,
-.dropdown-item:active {
-    background-color: var(--primary-strong);
-    color: var(--on-primary);
-}
-html[data-theme="dark"] .dropdown-item.active,
-html[data-theme="dark"] .dropdown-item:active {
-    background-color: var(--primary);
-    color: var(--on-primary);
-}
-.dropdown-item.disabled,
-.dropdown-item:disabled {
-    color: var(--fg-3);
-}
-.dropdown-divider { border-top-color: var(--border); }
-.dropdown-header  { color: var(--fg-2); }
 
 /* ═══════════════════════════════════════════════════════════════════
    Modal — Aurora-Override (beide Modi)
+   Token-only: Bootstrap reads --bs-modal-* internally for bg/color/
+   borders. We only declare layout (radius) explicitly.
    ═══════════════════════════════════════════════════════════════════ */
 
+.modal {
+    --bs-modal-bg:                  var(--surface);
+    --bs-modal-color:               var(--fg);
+    --bs-modal-border-color:        var(--border);
+    --bs-modal-header-border-color: var(--border);
+    --bs-modal-footer-border-color: var(--border);
+}
 .modal-content {
-    background-color: var(--surface);
-    color: var(--fg);
-    border: 1px solid var(--border);
     border-radius: var(--r-lg);
 }
-.modal-header {
-    background-color: var(--surface);
-    border-bottom: 1px solid var(--border);
-    color: var(--fg);
-}
-.modal-footer {
-    background-color: var(--surface);
-    border-top: 1px solid var(--border);
-}
-.modal-body { color: var(--fg); }
 /* Backdrop: theme-invariant dunkel */
 .modal-backdrop { background-color: rgba(10, 14, 26, 0.6); }
 
@@ -3015,6 +2779,17 @@ html[data-theme="dark"] .dropdown-item:active {
     --bs-accordion-btn-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%234c4a73'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
     --bs-accordion-btn-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230369a1'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
     --bs-accordion-btn-icon-transform: rotate(-180deg);
+    /* Aurora colour map — Bootstrap reads these for bg/color/border on
+       .accordion-item, .accordion-button, .accordion-body. */
+    --bs-accordion-bg:           var(--surface);
+    --bs-accordion-color:        var(--fg);
+    --bs-accordion-border-color: var(--border);
+    --bs-accordion-button-bg:    var(--surface);
+    --bs-accordion-button-color: var(--fg);
+    --bs-accordion-active-bg:    var(--primary-tint);
+    --bs-accordion-active-color: var(--primary-strong);
+    --bs-accordion-button-focus-border-color: var(--primary);
+    --bs-accordion-button-focus-box-shadow:   0 0 0 3px var(--primary-glow);
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -3023,11 +2798,9 @@ html[data-theme="dark"] .accordion,
 html[data-theme="system"] .accordion {
     --bs-accordion-btn-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23b9bad4'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
     --bs-accordion-btn-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2338bdf8'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    --bs-accordion-active-color: var(--primary);
 }
 .accordion-item {
-    background-color: var(--surface);
-    color: var(--fg);
-    border: 1px solid var(--border);
     border-radius: var(--r-md);
     overflow: hidden;
     transition: border-color var(--t-fast) var(--ease-out),
@@ -3046,8 +2819,6 @@ html[data-theme="system"] .accordion {
     margin: 0;
 }
 .accordion-button {
-    background-color: var(--surface);
-    color: var(--fg);
     font-family: var(--font-sans);
     font-weight: 500;
     border-radius: var(--r-md);
@@ -3057,27 +2828,13 @@ html[data-theme="system"] .accordion {
 }
 .accordion-button:hover {
     background-color: var(--surface-2);
-    color: var(--fg);
 }
 .accordion-button:not(.collapsed) {
-    background-color: var(--primary-tint);
-    color: var(--primary-strong);
     border-radius: var(--r-md) var(--r-md) 0 0;
     box-shadow: inset 0 -1px 0 var(--border);
 }
-html[data-theme="dark"] .accordion-button:not(.collapsed) {
-    color: var(--primary);
-}
 .accordion-body {
-    background-color: var(--surface);
-    color: var(--fg);
     padding: 16px;
-}
-.accordion-button:focus,
-.accordion-button:focus-visible {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px var(--primary-glow);
-    outline: none;
 }
 /* Flush-Variante: keine Gaps, keine Rounded-Corners, keine Glow-Border */
 .accordion-flush {
@@ -3098,38 +2855,28 @@ html[data-theme="dark"] .accordion-button:not(.collapsed) {
 
 /* ═══════════════════════════════════════════════════════════════════
    List-Group — Aurora-Override (beide Modi)
+   Token-only: Bootstrap reads --bs-list-group-* internally for bg/color/
+   border/hover/active/disabled states.
    ═══════════════════════════════════════════════════════════════════ */
 
-.list-group-item {
-    background-color: var(--surface);
-    color: var(--fg);
-    border-color: var(--border);
+.list-group {
+    --bs-list-group-bg:                  var(--surface);
+    --bs-list-group-color:               var(--fg);
+    --bs-list-group-border-color:        var(--border);
+    --bs-list-group-action-color:        var(--fg);
+    --bs-list-group-action-hover-bg:     var(--surface-2);
+    --bs-list-group-action-hover-color:  var(--fg);
+    --bs-list-group-action-active-bg:    var(--surface-3);
+    --bs-list-group-action-active-color: var(--fg);
+    --bs-list-group-active-bg:           var(--primary-strong);
+    --bs-list-group-active-color:        var(--on-primary);
+    --bs-list-group-active-border-color: var(--primary-strong);
+    --bs-list-group-disabled-bg:         var(--surface);
+    --bs-list-group-disabled-color:      var(--fg-3);
 }
-.list-group-item-action {
-    color: var(--fg);
-}
-.list-group-item-action:hover,
-.list-group-item-action:focus {
-    background-color: var(--surface-2);
-    color: var(--fg);
-}
-.list-group-item-action:active {
-    background-color: var(--surface-3);
-    color: var(--fg);
-}
-.list-group-item.active {
-    background-color: var(--primary-strong);
-    color: var(--on-primary);
-    border-color: var(--primary-strong);
-}
-html[data-theme="dark"] .list-group-item.active {
-    background-color: var(--primary);
-    border-color: var(--primary);
-}
-.list-group-item.disabled,
-.list-group-item:disabled {
-    color: var(--fg-3);
-    background-color: var(--surface);
+html[data-theme="dark"] .list-group {
+    --bs-list-group-active-bg:           var(--primary);
+    --bs-list-group-active-border-color: var(--primary);
 }
 
 /* Semantic list-group-item-* variants */
@@ -3155,43 +2902,19 @@ html[data-theme="dark"] .list-group-item.active {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   Pagination — Aurora-Override (beide Modi)
+   Pagination — see Aurora v4 bridge below (~line 4470). Older block
+   removed; tokens are set there at the .pagination root.
    ═══════════════════════════════════════════════════════════════════ */
 
 .page-link {
-    background-color: var(--surface);
-    color: var(--primary-strong);
-    border-color: var(--border);
     transition: background-color var(--t-fast) var(--ease-out),
                 color var(--t-fast) var(--ease-out),
                 border-color var(--t-fast) var(--ease-out);
 }
-html[data-theme="dark"] .page-link {
-    color: var(--primary);
-}
-.page-link:hover {
-    background-color: var(--surface-2);
-    color: var(--primary-hover);
-    border-color: var(--border);
-}
-.page-item.active .page-link {
-    background-color: var(--primary-strong);
-    color: var(--on-primary);
-    border-color: var(--primary-strong);
-}
-html[data-theme="dark"] .page-item.active .page-link {
-    background-color: var(--primary);
-    border-color: var(--primary);
-    color: var(--on-primary);
-}
-.page-item.disabled .page-link {
-    background-color: var(--surface);
-    color: var(--fg-3);
-    border-color: var(--border);
-}
 
 /* ═══════════════════════════════════════════════════════════════════
    Offcanvas — Aurora-Override (beide Modi)
+   Token-only: Bootstrap reads --bs-offcanvas-* internally.
    ═══════════════════════════════════════════════════════════════════ */
 
 .offcanvas,
@@ -3199,24 +2922,21 @@ html[data-theme="dark"] .page-item.active .page-link {
 .offcanvas-end,
 .offcanvas-top,
 .offcanvas-bottom {
-    background-color: var(--surface);
-    color: var(--fg);
-    border-color: var(--border);
+    --bs-offcanvas-bg:           var(--surface);
+    --bs-offcanvas-color:        var(--fg);
+    --bs-offcanvas-border-color: var(--border);
 }
-.offcanvas-header {
-    border-bottom: 1px solid var(--border);
-    color: var(--fg);
-}
-.offcanvas-body { color: var(--fg); }
 
 /* ═══════════════════════════════════════════════════════════════════
    Popover — Aurora-Override (beide Modi)
    ═══════════════════════════════════════════════════════════════════ */
 
 .popover {
-    background-color: var(--surface);
-    color: var(--fg);
-    border: 1px solid var(--border);
+    --bs-popover-bg:           var(--surface);
+    --bs-popover-border-color: var(--border);
+    --bs-popover-header-bg:    var(--surface-2);
+    --bs-popover-header-color: var(--fg);
+    --bs-popover-body-color:   var(--fg);
     border-radius: var(--r-lg);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
@@ -3224,12 +2944,8 @@ html[data-theme="dark"] .popover {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 .popover-header {
-    background-color: var(--surface-2);
-    color: var(--fg);
-    border-bottom: 1px solid var(--border);
     border-radius: var(--r-lg) var(--r-lg) 0 0;
 }
-.popover-body { color: var(--fg); }
 /* Arrow: light-mode zeigt --surface; dark zeigt surface */
 .popover .popover-arrow::after { border-color: transparent; }
 .bs-popover-auto[data-popper-placement^="top"] .popover-arrow::after,
@@ -3255,14 +2971,20 @@ html[data-theme="dark"] .popover {
    Dark-Mode: surface-2 auf fg — ebenfalls maximaler Kontrast.
    ═══════════════════════════════════════════════════════════════════ */
 
+/* Token-only root: Bootstrap reads --bs-tooltip-bg/-color for .tooltip-inner.
+   Border-radius and dark-mode border are not tokenized — remain as rules. */
+.tooltip {
+    --bs-tooltip-bg:    var(--fg);
+    --bs-tooltip-color: var(--surface);
+}
 .tooltip-inner {
-    background-color: var(--fg);
-    color: var(--surface);
     border-radius: var(--r-sm);
 }
+html[data-theme="dark"] .tooltip {
+    --bs-tooltip-bg:    var(--surface-2);
+    --bs-tooltip-color: var(--fg);
+}
 html[data-theme="dark"] .tooltip-inner {
-    background-color: var(--surface-2);
-    color: var(--fg);
     border: 1px solid var(--border);
 }
 /* Tooltip-Arrow anpassen */
@@ -3290,21 +3012,18 @@ html[data-theme="dark"] .bs-tooltip-end .tooltip-arrow::before { border-right-co
    ═══════════════════════════════════════════════════════════════════ */
 
 .toast {
-    background-color: var(--surface);
-    color: var(--fg);
-    border: 1px solid var(--border);
+    --bs-toast-bg:                  var(--surface);
+    --bs-toast-color:               var(--fg);
+    --bs-toast-border-color:        var(--border);
+    --bs-toast-header-bg:           var(--surface-2);
+    --bs-toast-header-color:        var(--fg);
+    --bs-toast-header-border-color: var(--border);
     border-radius: var(--r-md);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 html[data-theme="dark"] .toast {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
-.toast-header {
-    background-color: var(--surface-2);
-    color: var(--fg);
-    border-bottom: 1px solid var(--border);
-}
-.toast-body { color: var(--fg); }
 
 /* ═══════════════════════════════════════════════════════════════════
    Bootstrap-.table — Aurora-Override (beide Modi)
@@ -3408,17 +3127,15 @@ html[data-theme="dark"] .toast {
    ═══════════════════════════════════════════════════════════════════ */
 
 .progress {
-    background-color: var(--surface-2);
+    --bs-progress-bg:        var(--surface-2);
+    --bs-progress-bar-bg:    var(--primary-strong);
+    --bs-progress-bar-color: var(--on-primary);
     border: 1px solid var(--border);
     border-radius: var(--r-sm);
     overflow: hidden;
 }
-.progress-bar {
-    background-color: var(--primary-strong);
-    color: var(--on-primary);
-}
-html[data-theme="dark"] .progress-bar {
-    background-color: var(--primary);
+html[data-theme="dark"] .progress {
+    --bs-progress-bar-bg: var(--primary);
 }
 .progress-bar.bg-success { background-color: var(--success-strong) !important; }
 .progress-bar.bg-warning { background-color: var(--warning) !important; color: var(--on-warning) !important; }
@@ -3475,35 +3192,29 @@ html[data-theme="dark"] .btn-close:hover { opacity: 1; }
    zusätzliche Selektoren für Templates die nicht Bootstrap-Vars nutzen)
    ═══════════════════════════════════════════════════════════════════ */
 
+/* Token-only nav-tabs root: Bootstrap reads --bs-nav-* internally for
+   .nav-link colour, hover-border, and the active-tab triplet. We only
+   declare the bottom-border + radius (no Bootstrap tokens). */
 .nav-tabs {
+    --bs-nav-link-color:                  var(--fg-2);
+    --bs-nav-link-hover-color:            var(--primary-strong);
+    --bs-nav-tabs-link-active-color:      var(--primary-strong);
+    --bs-nav-tabs-link-active-bg:         var(--surface);
+    --bs-nav-tabs-link-active-border-color: var(--border) var(--border) var(--surface);
+    --bs-nav-tabs-link-hover-border-color:  var(--border) var(--border) transparent;
     border-bottom: 1px solid var(--border);
 }
 .nav-tabs .nav-link {
-    color: var(--fg-2);
     border: 1px solid transparent;
     border-radius: var(--r-md) var(--r-md) 0 0;
 }
 .nav-tabs .nav-link:hover,
 .nav-tabs .nav-link:focus {
-    color: var(--primary-strong);
-    border-color: var(--border) var(--border) transparent;
     background-color: var(--surface-2);
 }
-html[data-theme="dark"] .nav-tabs .nav-link:hover,
-html[data-theme="dark"] .nav-tabs .nav-link:focus {
-    color: var(--primary);
-}
-.nav-tabs .nav-link.active,
-.nav-tabs .nav-item.show .nav-link {
-    color: var(--primary-strong);
-    background-color: var(--surface);
-    border-color: var(--border) var(--border) var(--surface);
-}
-html[data-theme="dark"] .nav-tabs .nav-link.active,
-html[data-theme="dark"] .nav-tabs .nav-item.show .nav-link {
-    color: var(--primary);
-    background-color: var(--surface);
-    border-color: var(--border) var(--border) var(--surface);
+html[data-theme="dark"] .nav-tabs {
+    --bs-nav-link-hover-color:       var(--primary);
+    --bs-nav-tabs-link-active-color: var(--primary);
 }
 
 /* Tab-Content */
@@ -4185,209 +3896,222 @@ button.fa-filter-chip.fa-filter-chip--active {
 .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: var(--r-sm); }
 .btn-lg { padding: 12px 22px; font-size: 15px; border-radius: var(--r-md); }
 
-/* Solid variants — mono-uppercase + primary-strong bg */
+/* Solid variants — token-only colour map; Bootstrap reads --bs-btn-*
+   for bg/color/border/hover/active/disabled. Hover-lift (transform) and
+   variant-glow (box-shadow) have no token coverage and stay as rules. */
 .btn.btn-primary {
-    background-color: var(--primary-strong);
-    border-color: var(--primary-strong);
-    color: var(--on-primary);
+    --bs-btn-bg:                  var(--primary-strong);
+    --bs-btn-color:               var(--on-primary);
+    --bs-btn-border-color:        var(--primary-strong);
+    --bs-btn-hover-bg:            var(--primary-hover);
+    --bs-btn-hover-color:         var(--on-primary);
+    --bs-btn-hover-border-color:  var(--primary-hover);
+    --bs-btn-active-bg:           var(--primary-hover);
+    --bs-btn-active-color:        var(--on-primary);
+    --bs-btn-active-border-color: var(--primary-hover);
     text-transform: uppercase;
     box-shadow: 0 0 12px var(--primary-glow);
 }
 .btn.btn-primary:hover:not(:disabled):not(.disabled) {
-    background-color: var(--primary-hover);
-    border-color: var(--primary-hover);
-    color: var(--on-primary);
     transform: translateY(-1px);
     box-shadow: 0 0 20px var(--primary-glow);
 }
 .btn.btn-primary:active:not(:disabled) {
-    background-color: var(--primary-hover);
     transform: translateY(0);
     box-shadow: 0 0 8px var(--primary-glow);
 }
 
 .btn.btn-success {
-    background-color: var(--success-strong);
-    border-color: var(--success-strong);
-    color: var(--on-success);
+    --bs-btn-bg:                  var(--success-strong);
+    --bs-btn-color:               var(--on-success);
+    --bs-btn-border-color:        var(--success-strong);
+    --bs-btn-hover-bg:            var(--success);
+    --bs-btn-hover-color:         var(--on-success);
+    --bs-btn-hover-border-color:  var(--success);
     text-transform: uppercase;
     box-shadow: 0 0 12px var(--success-glow);
 }
 .btn.btn-success:hover:not(:disabled):not(.disabled) {
-    background-color: var(--success);
-    border-color: var(--success);
     transform: translateY(-1px);
     box-shadow: 0 0 20px var(--success-glow);
 }
 
 .btn.btn-warning {
-    background-color: var(--warning-strong);
-    border-color: var(--warning-strong);
-    color: var(--on-warning);
+    --bs-btn-bg:                  var(--warning-strong);
+    --bs-btn-color:               var(--on-warning);
+    --bs-btn-border-color:        var(--warning-strong);
+    --bs-btn-hover-bg:            var(--warning);
+    --bs-btn-hover-color:         var(--on-warning);
+    --bs-btn-hover-border-color:  var(--warning);
     text-transform: uppercase;
     box-shadow: 0 0 12px var(--warning-glow);
 }
 .btn.btn-warning:hover:not(:disabled):not(.disabled) {
-    background-color: var(--warning);
-    border-color: var(--warning);
     transform: translateY(-1px);
     box-shadow: 0 0 20px var(--warning-glow);
 }
 
 .btn.btn-danger {
-    background-color: var(--danger-strong);
-    border-color: var(--danger-strong);
-    color: var(--on-danger);
+    --bs-btn-bg:                  var(--danger-strong);
+    --bs-btn-color:               var(--on-danger);
+    --bs-btn-border-color:        var(--danger-strong);
+    --bs-btn-hover-bg:            var(--danger);
+    --bs-btn-hover-color:         var(--on-danger);
+    --bs-btn-hover-border-color:  var(--danger);
     text-transform: uppercase;
     box-shadow: 0 0 12px var(--danger-glow);
 }
 .btn.btn-danger:hover:not(:disabled):not(.disabled) {
-    background-color: var(--danger);
-    border-color: var(--danger);
     transform: translateY(-1px);
     box-shadow: 0 0 20px var(--danger-glow);
 }
 
 .btn.btn-info {
-    background-color: var(--primary-strong);
-    border-color: var(--primary-strong);
-    color: var(--on-primary);
+    --bs-btn-bg:                  var(--primary-strong);
+    --bs-btn-color:               var(--on-primary);
+    --bs-btn-border-color:        var(--primary-strong);
+    --bs-btn-hover-bg:            var(--primary-hover);
+    --bs-btn-hover-color:         var(--on-primary);
+    --bs-btn-hover-border-color:  var(--primary-hover);
     text-transform: uppercase;
     box-shadow: 0 0 12px var(--primary-glow);
 }
 .btn.btn-info:hover:not(:disabled):not(.disabled) {
-    background-color: var(--primary-hover);
-    border-color: var(--primary-hover);
     transform: translateY(-1px);
 }
 
 .btn.btn-secondary {
-    background-color: transparent;
-    border-color: var(--border-strong);
-    color: var(--fg);
+    --bs-btn-bg:                  transparent;
+    --bs-btn-color:               var(--fg);
+    --bs-btn-border-color:        var(--border-strong);
+    --bs-btn-hover-bg:            var(--surface-2);
+    --bs-btn-hover-color:         var(--fg);
+    --bs-btn-hover-border-color:  var(--primary);
     text-transform: none;
 }
 .btn.btn-secondary:hover:not(:disabled):not(.disabled) {
-    background-color: var(--surface-2);
-    border-color: var(--primary);
-    color: var(--fg);
     transform: translateY(-1px);
 }
 
 .btn.btn-dark {
-    background-color: var(--fg);
-    border-color: var(--fg);
-    color: var(--surface);
+    --bs-btn-bg:                  var(--fg);
+    --bs-btn-color:               var(--surface);
+    --bs-btn-border-color:        var(--fg);
+    --bs-btn-hover-bg:            var(--fg-2);
+    --bs-btn-hover-color:         var(--surface);
+    --bs-btn-hover-border-color:  var(--fg-2);
 }
 .btn.btn-dark:hover:not(:disabled):not(.disabled) {
-    background-color: var(--fg-2);
-    border-color: var(--fg-2);
     transform: translateY(-1px);
 }
 
 .btn.btn-light {
-    background-color: var(--surface-2);
-    border-color: var(--border);
-    color: var(--fg);
+    --bs-btn-bg:                  var(--surface-2);
+    --bs-btn-color:               var(--fg);
+    --bs-btn-border-color:        var(--border);
+    --bs-btn-hover-bg:            var(--surface-3);
+    --bs-btn-hover-color:         var(--fg);
+    --bs-btn-hover-border-color:  var(--border);
 }
 .btn.btn-light:hover:not(:disabled):not(.disabled) {
-    background-color: var(--surface-3);
     transform: translateY(-1px);
 }
 
 /* Outline variants — transparent bg + colored border + text matching variant */
 .btn.btn-outline-primary {
-    background-color: transparent;
-    border-color: var(--primary);
-    color: var(--primary-strong);
+    --bs-btn-bg:                  transparent;
+    --bs-btn-color:               var(--primary-strong);
+    --bs-btn-border-color:        var(--primary);
+    --bs-btn-hover-bg:            var(--primary);
+    --bs-btn-hover-color:         var(--on-primary);
+    --bs-btn-hover-border-color:  var(--primary);
 }
 .btn.btn-outline-primary:hover:not(:disabled):not(.disabled) {
-    background-color: var(--primary);
-    border-color: var(--primary);
-    color: var(--on-primary);
     transform: translateY(-1px);
 }
 
 .btn.btn-outline-secondary {
-    background-color: transparent;
-    border-color: var(--border-strong);
-    color: var(--fg-2);
+    --bs-btn-bg:                  transparent;
+    --bs-btn-color:               var(--fg-2);
+    --bs-btn-border-color:        var(--border-strong);
+    --bs-btn-hover-bg:            var(--surface-2);
+    --bs-btn-hover-color:         var(--fg);
+    --bs-btn-hover-border-color:  var(--primary);
 }
 .btn.btn-outline-secondary:hover:not(:disabled):not(.disabled) {
-    background-color: var(--surface-2);
-    border-color: var(--primary);
-    color: var(--fg);
     transform: translateY(-1px);
 }
 
 .btn.btn-outline-success {
-    background-color: transparent;
-    border-color: var(--success);
-    color: var(--success-strong);
+    --bs-btn-bg:                  transparent;
+    --bs-btn-color:               var(--success-strong);
+    --bs-btn-border-color:        var(--success);
+    --bs-btn-hover-bg:            var(--success);
+    --bs-btn-hover-color:         var(--on-success);
+    --bs-btn-hover-border-color:  var(--success);
 }
 .btn.btn-outline-success:hover:not(:disabled):not(.disabled) {
-    background-color: var(--success);
-    border-color: var(--success);
-    color: var(--on-success);
     transform: translateY(-1px);
 }
 
 .btn.btn-outline-warning {
-    background-color: transparent;
-    border-color: var(--warning);
-    color: var(--warning-strong);
+    --bs-btn-bg:                  transparent;
+    --bs-btn-color:               var(--warning-strong);
+    --bs-btn-border-color:        var(--warning);
+    --bs-btn-hover-bg:            var(--warning);
+    --bs-btn-hover-color:         var(--on-warning);
+    --bs-btn-hover-border-color:  var(--warning);
 }
 .btn.btn-outline-warning:hover:not(:disabled):not(.disabled) {
-    background-color: var(--warning);
-    border-color: var(--warning);
-    color: var(--on-warning);
     transform: translateY(-1px);
 }
 
 .btn.btn-outline-danger {
-    background-color: transparent;
-    border-color: var(--danger);
-    color: var(--danger);
+    --bs-btn-bg:                  transparent;
+    --bs-btn-color:               var(--danger);
+    --bs-btn-border-color:        var(--danger);
+    --bs-btn-hover-bg:            var(--danger-strong);
+    --bs-btn-hover-color:         var(--on-danger);
+    --bs-btn-hover-border-color:  var(--danger-strong);
 }
 .btn.btn-outline-danger:hover:not(:disabled):not(.disabled) {
-    background-color: var(--danger-strong);
-    border-color: var(--danger-strong);
-    color: var(--on-danger);
     transform: translateY(-1px);
 }
 
 .btn.btn-outline-info {
-    background-color: transparent;
-    border-color: var(--primary);
-    color: var(--primary-strong);
+    --bs-btn-bg:                  transparent;
+    --bs-btn-color:               var(--primary-strong);
+    --bs-btn-border-color:        var(--primary);
+    --bs-btn-hover-bg:            var(--primary);
+    --bs-btn-hover-color:         var(--on-primary);
+    --bs-btn-hover-border-color:  var(--primary);
 }
 .btn.btn-outline-info:hover:not(:disabled):not(.disabled) {
-    background-color: var(--primary);
-    color: var(--on-primary);
     transform: translateY(-1px);
 }
 
 .btn.btn-outline-dark {
-    background-color: transparent;
-    border-color: var(--fg);
-    color: var(--fg);
+    --bs-btn-bg:                  transparent;
+    --bs-btn-color:               var(--fg);
+    --bs-btn-border-color:        var(--fg);
+    --bs-btn-hover-bg:            var(--fg);
+    --bs-btn-hover-color:         var(--surface);
+    --bs-btn-hover-border-color:  var(--fg);
 }
 .btn.btn-outline-dark:hover:not(:disabled):not(.disabled) {
-    background-color: var(--fg);
-    color: var(--surface);
     transform: translateY(-1px);
 }
 
 /* Link-style — no border, underline on hover */
 .btn.btn-link {
-    background-color: transparent;
-    border-color: transparent;
-    color: var(--primary-strong);
+    --bs-btn-bg:                  transparent;
+    --bs-btn-color:               var(--primary-strong);
+    --bs-btn-border-color:        transparent;
+    --bs-btn-hover-color:         var(--primary-hover);
     text-decoration: none;
     text-transform: none;
 }
 .btn.btn-link:hover:not(:disabled):not(.disabled) {
-    color: var(--primary-hover);
     text-decoration: underline;
 }
 
@@ -4409,47 +4133,46 @@ button.fa-filter-chip.fa-filter-chip--active {
    - fg in tone-strong shade for high contrast
    ========================================================================== */
 
+/* Token-only base: Bootstrap reads --bs-alert-bg/-color/-border-color
+   internally; we still need to drive the 3px left-border-color (no
+   token for it) via border-left-color: var(--bs-alert-border-color). */
 .alert {
-    border: 1px solid var(--border);
+    --bs-alert-bg:           var(--surface);
+    --bs-alert-color:        var(--fg);
+    --bs-alert-border-color: var(--border);
     border-left-width: 3px;
+    border-left-color: var(--bs-alert-border-color);
     border-radius: var(--r-md);
-    color: var(--fg);
-    background-color: var(--surface);
     padding: 12px 16px;
 }
 
 .alert.alert-info,
 .alert.alert-primary {
-    background-color: var(--primary-tint);
-    border-color: var(--primary);
-    border-left-color: var(--primary);
-    color: var(--primary-strong);
+    --bs-alert-bg:           var(--primary-tint);
+    --bs-alert-color:        var(--primary-strong);
+    --bs-alert-border-color: var(--primary);
 }
 .alert.alert-success {
-    background-color: color-mix(in oklab, var(--success) 8%, var(--surface));
-    border-color: var(--success);
-    border-left-color: var(--success);
-    color: var(--success-strong);
+    --bs-alert-bg:           color-mix(in oklab, var(--success) 8%, var(--surface));
+    --bs-alert-color:        var(--success-strong);
+    --bs-alert-border-color: var(--success);
 }
 .alert.alert-warning {
-    background-color: color-mix(in oklab, var(--warning) 8%, var(--surface));
-    border-color: var(--warning);
-    border-left-color: var(--warning);
-    color: var(--warning-strong);
+    --bs-alert-bg:           color-mix(in oklab, var(--warning) 8%, var(--surface));
+    --bs-alert-color:        var(--warning-strong);
+    --bs-alert-border-color: var(--warning);
 }
 .alert.alert-danger {
-    background-color: color-mix(in oklab, var(--danger) 8%, var(--surface));
-    border-color: var(--danger);
-    border-left-color: var(--danger);
-    color: var(--danger-strong);
+    --bs-alert-bg:           color-mix(in oklab, var(--danger) 8%, var(--surface));
+    --bs-alert-color:        var(--danger-strong);
+    --bs-alert-border-color: var(--danger);
 }
 .alert.alert-secondary,
 .alert.alert-light,
 .alert.alert-dark {
-    background-color: var(--surface-2);
-    border-color: var(--border);
-    border-left-color: var(--border-strong);
-    color: var(--fg);
+    --bs-alert-bg:           var(--surface-2);
+    --bs-alert-color:        var(--fg);
+    --bs-alert-border-color: var(--border-strong);
 }
 .alert a,
 .alert .alert-link {
@@ -4533,73 +4256,66 @@ button.fa-filter-chip.fa-filter-chip--active {
    Aurora v4 — Navigation button-likes (.page-link, .dropdown-item, .nav-link)
    ========================================================================== */
 
-/* Bootstrap .pagination > .page-link — pagination items */
+/* Bootstrap .pagination — token-only colour map.
+   Bootstrap reads --bs-pagination-* on .page-link internally for bg/
+   color/border/hover/active/disabled. Typography (font-mono, size,
+   weight) has no token coverage so remains explicit. */
+.pagination {
+    --bs-pagination-bg:                  var(--surface);
+    --bs-pagination-color:               var(--fg-2);
+    --bs-pagination-border-color:        var(--border);
+    --bs-pagination-hover-bg:            var(--primary-tint);
+    --bs-pagination-hover-color:         var(--primary-strong);
+    --bs-pagination-hover-border-color:  var(--primary);
+    --bs-pagination-active-bg:           var(--primary-strong);
+    --bs-pagination-active-color:        var(--on-primary);
+    --bs-pagination-active-border-color: var(--primary-strong);
+    --bs-pagination-disabled-bg:         var(--surface-2);
+    --bs-pagination-disabled-color:      var(--fg-3);
+    --bs-pagination-disabled-border-color: var(--border);
+    --bs-pagination-focus-box-shadow:    0 0 0 3px var(--primary-glow);
+}
 .pagination .page-link {
-    color: var(--fg-2);
-    background-color: var(--surface);
-    border: 1px solid var(--border);
     font-family: var(--font-mono);
     font-weight: 500;
     font-size: 13px;
 }
-.pagination .page-link:hover {
-    color: var(--primary-strong);
-    background-color: var(--primary-tint);
-    border-color: var(--primary);
-    z-index: 2;
-}
 .pagination .page-link:focus-visible {
-    box-shadow: 0 0 0 3px var(--primary-glow);
     outline: none;
 }
-.pagination .page-item.active .page-link {
-    background-color: var(--primary-strong);
-    border-color: var(--primary-strong);
-    color: var(--on-primary);
-}
-.pagination .page-item.disabled .page-link {
-    color: var(--fg-3);
-    background-color: var(--surface-2);
-    border-color: var(--border);
-}
 
-/* .dropdown-menu + .dropdown-item — dropdown menu items */
+/* .dropdown-menu — token-only colour map; Bootstrap reads --bs-dropdown-*
+   internally. Layout (padding, radius, shadow) and dropdown-item typography
+   (font-size, item padding/radius, dropdown-header mono) stay as rules. */
 .dropdown-menu {
-    background-color: var(--surface);
-    border: 1px solid var(--border);
+    --bs-dropdown-bg:                  var(--surface);
+    --bs-dropdown-color:               var(--fg);
+    --bs-dropdown-border-color:        var(--border);
+    --bs-dropdown-link-color:          var(--fg);
+    --bs-dropdown-link-hover-bg:       var(--primary-tint);
+    --bs-dropdown-link-hover-color:    var(--primary-strong);
+    --bs-dropdown-link-active-bg:      var(--primary-strong);
+    --bs-dropdown-link-active-color:   var(--on-primary);
+    --bs-dropdown-link-disabled-color: var(--fg-3);
+    --bs-dropdown-divider-bg:          var(--border);
+    --bs-dropdown-header-color:        var(--fg-3);
     border-radius: var(--r-md);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     padding: 4px;
-    color: var(--fg);
 }
 .dropdown-item {
-    color: var(--fg);
     padding: 6px 10px;
     border-radius: var(--r-sm);
     font-size: 13px;
 }
-.dropdown-item:hover,
-.dropdown-item:focus {
-    background-color: var(--primary-tint);
-    color: var(--primary-strong);
-}
-.dropdown-item.active,
-.dropdown-item:active {
-    background-color: var(--primary-strong);
-    color: var(--on-primary);
-}
 .dropdown-item.disabled,
 .dropdown-item:disabled {
-    color: var(--fg-3);
-    background-color: transparent;
     cursor: not-allowed;
 }
 .dropdown-divider {
-    border-top: 1px solid var(--border);
     margin: 4px 0;
 }
 .dropdown-header {
-    color: var(--fg-3);
     font-family: var(--font-mono);
     font-size: 10px;
     text-transform: uppercase;
