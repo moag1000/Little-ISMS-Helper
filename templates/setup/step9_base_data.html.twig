@@ -73,8 +73,13 @@
 
                         {# Import Action #}
                         <form method="post" action="{{ path('setup_step9_base_data_import') }}"
-                              data-controller="wizard-busy"
-                              data-wizard-busy-message-value="{{ 'setup.alva.busy.base_data'|trans({}, 'setup') }}">
+                              data-controller="async-job"
+                              data-async-job-status-url-value="{{ path('setup_job_status') }}?job=base_data"
+                              data-async-job-poll-interval-value="2000"
+                              data-async-job-message-running-value="{{ 'setup.alva.busy.base_data'|trans({}, 'setup') }}"
+                              data-async-job-message-success-value="Stammdaten erfolgreich importiert."
+                              data-async-job-redirect-url-value="{{ path('setup_step10_sample_data') }}"
+                              data-action="submit->async-job#start">
                             <input type="hidden" name="_token" value="{{ csrf_token('setup_base_data') }}">
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{{ path('setup_step8_compliance_frameworks') }}" class="btn btn-outline-secondary">
