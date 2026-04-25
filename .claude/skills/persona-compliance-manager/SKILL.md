@@ -88,6 +88,29 @@ allowed-tools: Read, Grep, Glob
 - Aufwand-Reduktion durch Reuse messbar: "Durch Wiederverwendung wurden X FTE-Tage bei NIS2-Onboarding eingespart."
 - Reifegradmodell (NIST CSF Tiers oder eigenes).
 
+### Library-Format als Architektur-Prinzip ⭐ neu
+
+**Die Idee:** Frameworks, Mappings und Branchen-Profile gehören in **versionierte YAML-Files** statt nur als DB-Daten oder Excel-Imports.
+
+- **Frameworks** (`fixtures/frameworks/iso27001-2022.yaml`, `bsi-it-grundschutz-kompendium-2024.yaml`, `dora.yaml`, `nis2-directive.yaml`, `bdsg.yaml`, …):
+  - Schema-validiertes YAML (JSON-Schema in `docs/library-schema.json`)
+  - Git-versioniert → Diff zwischen ISO 27001:2013 → 2022 ist nachvollziehbar
+  - Community-Contribute-fähig: Verbände, Zertifizierungsstellen, Behörden können Bibliotheken pflegen
+- **Mappings** (`fixtures/mappings/iso27001-to-nis2-art21.yaml`, `dora-to-iso27001.yaml`, …):
+  - Eigenständige Artefakte mit eigener Versionierung, Validity-Range, Quelle/Methodik-Beschreibung
+  - Diff-fähig: "Mapping wurde in v2 überarbeitet, weil ENISA-Guidance 2024-09 erschien"
+- **Branchen-Presets** (`fixtures/presets/de-mittelstand-nis2.yaml`, `de-bafin-financial.yaml`, `kritis-energie.yaml`, …):
+  - Bündel: Liste von Frameworks + Default-Risikoappetit + sinnvolle Tags + initiale Maßnahmen
+  - Onboarding-Wizard: "Profil 'KRITIS-Energie' wählen → Lädt 5 Frameworks + 12 Mappings + 200 vorausgewählte Controls"
+
+**Vorteile gegenüber Excel-Import / DB-Only:**
+1. Git-Review von Framework-Updates statt Black-Box-DB-Migration
+2. Mappings als separates Artefakt = klare Trennung von Inhalt und Verbindung
+3. Community-PRs möglich (z.B. Branchenverband DSGI für deutsche Sport-IT-Profile)
+4. Ein Mapping kann gegen mehrere Framework-Versionen gepflegt werden
+
+**Wann ich das einsetze als CM:** wenn Geschäftsleitung sagt *„nächstes Jahr brauchen wir TISAX 6.0"* — anstatt Tool-Migration brauche ich nur ein neues Library-File + Mapping-File + ggf. Preset-Update. **0 Code, 0 Migration, 0 Auditor-Bedenken.**
+
 ## Zusammenspiel mit anderen Rollen
 
 ### Senior-Consultant (extern)

@@ -30,6 +30,8 @@ allowed-tools: Read, Grep, Glob
   - "Kann ich das ohne ISB-Zuarbeit selbst ziehen?"
   - "Brauche ich dafür wirklich ein neues Tool oder reicht das vorhandene?"
   - "Wie viel FTE bindet das im ISB-Team?"
+  - **CRQ/ALE-Sprache** (sobald Datenbasis existiert): "Was ist die Annual Loss Expectancy unserer Top-5-Risiken — in Euro?", "Welcher Treatment-Plan reduziert ALE am meisten pro €?", "Welcher 95-%-VaR steht hinter unserem Restrisiko?"
+  - **Vergleichende Methodik**: "Wir machen 5×5-Matrix — der Wettbewerber hat FAIR-light. Lohnt der Umstieg für unser Volumen?"
 
 ## Was ich am Tool kritisiere
 - Fehlende Management-Dashboards (Risk-Heatmap, Top-10-Risiken, offene kritische Maßnahmen, Reifegradverlauf).
