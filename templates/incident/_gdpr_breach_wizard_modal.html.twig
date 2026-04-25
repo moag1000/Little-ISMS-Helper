@@ -381,42 +381,43 @@
     margin: 1.75rem auto;
 }
 
-/* Content box - theme-aware background */
+/* Content box — Aurora-tokenized */
 .gdpr-wizard-content {
     position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
-    background-color: var(--bg-elevated, var(--surface));
-    color: var(--text-primary, var(--fg));
-    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.2));
+    background-color: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
     border-radius: 0.5rem;
-    box-shadow: var(--shadow-lg, 0 0.5rem 1rem rgba(0, 0, 0, 0.5));
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.25);
 }
 
-/* Dark mode support for inner elements */
 .gdpr-wizard-content .modal-header {
-    border-bottom-color: var(--border-color, var(--border));
+    border-bottom-color: var(--border);
 }
 
 .gdpr-wizard-content .modal-footer {
-    border-top-color: var(--border-color, var(--border));
+    border-top-color: var(--border);
 }
 
 .gdpr-wizard-content .modal-body {
-    background-color: var(--bg-elevated, var(--surface));
-    color: var(--text-primary, var(--fg));
+    background-color: var(--surface);
+    color: var(--fg);
 }
 
-.gdpr-wizard-content .card {
-    background-color: var(--bg-secondary, var(--bg));
-    border-color: var(--border-color, var(--border));
+/* Bump specificity with .gdpr-wizard-content.gdpr-wizard-content (0,3,1)
+   so we beat Bootstrap's .card-rules even when Bootstrap reads tokens. */
+.gdpr-wizard-content.gdpr-wizard-content .card {
+    --bs-card-bg: var(--surface-2);
+    --bs-card-border-color: var(--border);
 }
 
-.gdpr-wizard-content .alert-info {
-    background-color: var(--bg-tertiary, var(--primary-tint));
-    border-color: var(--border-color, var(--primary-glow));
-    color: var(--text-primary, var(--primary-strong));
+.gdpr-wizard-content.gdpr-wizard-content .alert-info {
+    --bs-alert-bg: var(--primary-tint);
+    --bs-alert-border-color: var(--primary-glow);
+    --bs-alert-color: var(--primary-strong);
 }
 
 /* Wizard step animations */

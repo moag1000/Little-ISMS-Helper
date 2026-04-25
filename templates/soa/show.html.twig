@@ -406,67 +406,9 @@
     gap: 0.5rem;
     flex-wrap: wrap;
 }
-.alert {
-    padding: 1rem;
-    border-radius: 4px;
-    margin: 1rem 0;
-}
-.alert-info {
-    background: var(--primary-tint);
-    border-left: 4px solid var(--primary);
-    color: var(--primary-strong);
-}
-.alert-warning {
-    background: var(--warning-glow);
-    border-left: 4px solid var(--warning);
-    color: var(--warning-text);
-}
-.alert-success {
-    background: var(--success-glow);
-    border-left: 4px solid var(--success);
-    color: var(--success-strong);
-}
-.badge-risk-high {
-    background: var(--danger);
-    color: var(--on-danger);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-}
-.badge-risk-medium {
-    background: var(--warning);
-    color: var(--on-warning);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-}
-.badge-risk-low {
-    background: var(--success);
-    color: var(--on-success);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-}
-.badge-severity-critical {
-    background: var(--danger-strong);
-    color: var(--on-danger);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-}
-.badge-severity-high {
-    background: var(--danger);
-    color: var(--on-danger);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-}
-.badge-severity-medium {
-    background: var(--warning);
-    color: var(--on-warning);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-}
-.badge-severity-low {
-    background: var(--success);
-    color: var(--on-success);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-}
+/* .alert / .alert-* — styled centrally in fairy-aurora-components.css */
+/* .badge-risk-* / .badge-severity-* removed: dead code. BadgeExtension
+   functions render "badge bg-<color>" classes — Aurora's .badge.bg-*
+   rules style them. */
 </style>
 {% endblock %}
