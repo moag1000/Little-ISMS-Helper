@@ -47,13 +47,12 @@ jobs:
       - name: Check if license-report script exists
         id: check_script
         run: |
-          if [ -f "scripts/tools/license-report.sh" ] && [ -f "scripts/tools/bin/license-report.js" ]; then
+          if [ -f "scripts/tools/license-report.sh" ]; then
             echo "script_exists=true" >> $GITHUB_OUTPUT
-            echo "✅ license-report.sh + bin/license-report.js found"
+            echo "✅ scripts/tools/license-report.sh found"
           else
             echo "script_exists=false" >> $GITHUB_OUTPUT
-            echo "⚠️ License report scripts incomplete — skipping"
-            echo "::warning::License report requires both scripts/tools/license-report.sh and scripts/tools/bin/license-report.js"
+            echo "⚠️ license-report.sh not found — skipping"
           fi
 
       - name: Make license-report script executable
