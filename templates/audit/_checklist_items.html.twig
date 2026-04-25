@@ -96,7 +96,9 @@
 
 <style>
 .checklist-items {
-    background: white;
+    background: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
     border-radius: var(--r-md);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
@@ -110,15 +112,15 @@
 }
 
 .checklist-item.compliant {
-    background: rgba(40, 167, 69, 0.05);
+    background: var(--success-glow);
 }
 
 .checklist-item.non_compliant {
-    background: rgba(220, 53, 69, 0.05);
+    background: var(--danger-glow);
 }
 
 .checklist-item.partial {
-    background: rgba(255, 193, 7, 0.05);
+    background: var(--warning-glow);
 }
 
 .checklist-header {
@@ -127,11 +129,11 @@
     align-items: center;
     padding: var(--spacing-md);
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background var(--t-fast);
 }
 
 .checklist-header:hover {
-    background: rgba(0, 0, 0, 0.02);
+    background: var(--surface-2);
 }
 
 .requirement-info {
@@ -162,7 +164,8 @@
     padding: var(--spacing-xs) var(--spacing-sm);
     border: 1px solid var(--border);
     border-radius: var(--r-md);
-    background: white;
+    background: var(--surface);
+    color: var(--fg);
     cursor: pointer;
     min-width: 150px;
 }
