@@ -60,8 +60,11 @@ class TenantFilter extends SQLFilter
             return '';
         }
 
-        // Add tenant filter constraint
-        $fieldName = $targetEntity->getAssociationMapping('tenant')['fieldName'];
+        // Add tenant filter constraint.
+        // Doctrine 3.x → 4.0: ArrayAccess on AssociationMapping is deprecated.
+        // Use property access if object, else array fallback (Doctrine 2.x compat).
+        $mapping = $targetEntity->getAssociationMapping('tenant');
+        $fieldName = is_array($mapping) ? $mapping['fieldName'] : $mapping->fieldName;
 
         return sprintf('%s.%s = %s', $targetTableAlias, $fieldName . '_id', $tenantId);
     }
