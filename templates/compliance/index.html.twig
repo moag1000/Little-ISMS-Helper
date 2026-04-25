@@ -387,60 +387,7 @@ html[data-theme="dark"] .quick-access-code { color: var(--primary); }
     box-shadow: 0 2px 4px var(--danger-glow);
 }
 
-/* Framework-Grid + Card */
-.framework-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-lg);
-}
-
-.framework-card {
-    background: var(--surface);
-    color: var(--fg);
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-    transition: transform var(--t-fast) var(--ease-out),
-                box-shadow var(--t-fast) var(--ease-out);
-}
-html[data-theme="dark"] .framework-card {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.framework-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px var(--primary-glow);
-}
-
-.framework-header {
-    padding: var(--spacing-lg);
-    color: var(--on-primary);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.framework-header h3 {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: inherit;
-}
-
-.framework-subtitle {
-    margin: var(--spacing-xs) 0 0 0;
-    opacity: 0.9;
-    font-size: 0.9rem;
-}
-
-.framework-body {
-    padding: var(--spacing-xl);
-    background: var(--surface);
-    color: var(--fg);
-    text-align: center;
-}
+/* Framework-Grid + Card → assets/styles/fairy-aurora-components.css */
 
 /* Circular Progress Chart */
 .compliance-circle {

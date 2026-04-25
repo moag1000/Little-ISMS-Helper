@@ -4335,3 +4335,178 @@ select.wizard-busy-locked,
 textarea[readonly].wizard-busy-locked {
     background-color: var(--surface-2) !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Framework-Card — Compliance + Admin/Compliance
+   Consolidates the two near-identical inline <style> blocks that lived
+   in templates/compliance/index.html.twig and
+   templates/admin/compliance/index.html.twig. The admin variant had
+   `background: white` hardcoded → broke dark mode. Now Aurora-tokenized
+   and shared.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.framework-cards-grid,
+.framework-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.framework-card {
+    background: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: transform var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out);
+}
+
+html[data-theme="dark"] .framework-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.framework-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px var(--primary-glow);
+}
+
+.framework-card.loaded {
+    border: 2px solid var(--success);
+}
+
+/* Header – background comes from .bg-gradient-* utility on the element;
+   text is white because gradients are designed against a dark backdrop. */
+.framework-card-header,
+.framework-header {
+    padding: var(--spacing-lg);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.framework-icon { font-size: 3rem; }
+.framework-title { flex: 1; }
+.framework-title h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: inherit;
+}
+.framework-title p,
+.framework-subtitle {
+    margin: var(--spacing-xs) 0 0 0;
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+.framework-card-body,
+.framework-body {
+    padding: var(--spacing-lg);
+}
+
+.framework-info { margin-bottom: var(--spacing-md); }
+.framework-info .info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px solid var(--border);
+}
+.framework-info .info-item .label {
+    font-weight: 600;
+    color: var(--fg-2);
+}
+.framework-info .info-item .value { text-align: right; }
+
+.framework-description {
+    margin: var(--spacing-md) 0;
+    color: var(--fg-2);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.framework-actions { margin-top: var(--spacing-md); }
+
+/* Module badges (active/inactive framework modules) */
+.framework-modules {
+    margin: var(--spacing-md) 0;
+    padding: var(--spacing-md);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+}
+.modules-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--fg-2);
+}
+.modules-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+}
+.module-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--r-md);
+    font-size: 0.85rem;
+    transition: all var(--t-fast);
+}
+.module-badge.active {
+    background: var(--success-glow);
+    border: 1px solid var(--success);
+    color: var(--success);
+}
+.module-badge.inactive {
+    background: var(--warning-glow);
+    border: 1px solid var(--warning);
+    color: var(--warning-text);
+}
+.module-icon { font-size: 1rem; }
+.module-name { font-weight: 500; }
+.module-activate-link {
+    margin-left: var(--spacing-xs);
+    color: var(--primary-strong);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.8rem;
+    transition: color var(--t-fast);
+}
+.module-activate-link:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+/* Stats panel reused by admin/compliance */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+}
+.stat-box {
+    text-align: center;
+    padding: var(--spacing-lg);
+    background: var(--surface);
+    border-radius: var(--r-md);
+    border: 1px solid var(--border);
+}
+.stat-icon { font-size: 3rem; margin-bottom: var(--spacing-sm); }
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary-strong);
+}
+.stat-text {
+    color: var(--fg-2);
+    margin-top: var(--spacing-xs);
+}
+
+.load-framework-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
