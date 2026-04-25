@@ -47,13 +47,13 @@ jobs:
       - name: Check if license-report script exists
         id: check_script
         run: |
-          if [ -f "scripts/tools/license-report.sh" ]; then
+          if [ -f "scripts/tools/license-report.sh" ] && [ -f "scripts/tools/bin/license-report.js" ]; then
             echo "script_exists=true" >> $GITHUB_OUTPUT
-            echo "✅ scripts/tools/license-report.sh found"
+            echo "✅ license-report.sh + bin/license-report.js found"
           else
             echo "script_exists=false" >> $GITHUB_OUTPUT
-            echo "⚠️ scripts/tools/license-report.sh not found - skipping license check"
-            echo "::warning::License compliance script not found in this branch/commit. This is expected for older branches."
+            echo "⚠️ License report scripts incomplete — skipping"
+            echo "::warning::License report requires both scripts/tools/license-report.sh and scripts/tools/bin/license-report.js"
           fi
 
       - name: Make license-report script executable
