@@ -20,6 +20,7 @@ setup:
             repair: 'Alva repariert verwaiste Einträge und setzt die Datenbank zurück – bitte warten.'
             base_data: 'Alva importiert die Stammdaten (Rollen, Framework-Defaults) – einen Moment bitte.'
             sample_data: 'Alva lädt Beispieldaten (Demo-Risiken, -Assets, -Controls) – das dauert ein paar Sekunden.'
+            skip_restore: 'Alva überspringt den Backup-Restore – einen Moment bitte.'
 
     # Index/Landing Page
     already_complete:

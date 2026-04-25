@@ -269,7 +269,9 @@
                                 <p class="text-muted">
                                     {{ 'setup.restore.new_install_description'|trans({}, 'setup') }}
                                 </p>
-                                <form method="post" action="{{ path('setup_step3_restore_backup_skip') }}" class="setup-form-loading" data-turbo="false">
+                                <form method="post" action="{{ path('setup_step3_restore_backup_skip') }}" class="setup-form-loading" data-turbo="false"
+                                      data-controller="wizard-busy"
+                                      data-wizard-busy-message-value="{{ 'setup.alva.busy.skip_restore'|trans({}, 'setup') }}">
                                     <input type="hidden" name="_token" value="{{ csrf_token('setup_skip_restore') }}">
                                     <button type="submit" class="btn btn-secondary btn-lg">
                                         <span class="btn-text">
