@@ -545,7 +545,7 @@
 
 .framework-switcher select {
     min-width: 150px;
-    background: white;
+    background: var(--surface);
     border: 2px solid var(--primary-strong);
     border-radius: var(--r-md);
     padding: 0.4rem 2rem 0.4rem 0.8rem;
@@ -576,7 +576,9 @@
     display: flex;
     gap: var(--spacing-md);
     padding: var(--spacing-lg);
-    background: white;
+    background: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
     border-radius: var(--r-md);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     margin-bottom: var(--spacing-lg);
@@ -798,7 +800,9 @@
 .gap-item {
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-md);
-    background: white;
+    background: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
     border-radius: var(--r-md);
     border-left: 4px solid var(--warning);
 }
@@ -846,7 +850,9 @@
 
 /* Workflow Steps Card */
 .workflow-steps-card {
-    background: white;
+    background: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
     border-radius: var(--r-md);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     padding: var(--spacing-xl);
@@ -1012,13 +1018,13 @@
 }
 
 .module-card.active {
-    background: rgba(40, 167, 69, 0.05);
-    border-color: rgba(40, 167, 69, 0.3);
+    background: var(--success-glow);
+    border-color: var(--success);
 }
 
 .module-card.inactive {
-    background: rgba(255, 193, 7, 0.05);
-    border-color: rgba(255, 193, 7, 0.3);
+    background: var(--warning-glow);
+    border-color: var(--warning);
 }
 
 .module-card:hover {
