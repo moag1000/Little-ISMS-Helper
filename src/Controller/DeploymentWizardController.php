@@ -1975,121 +1975,115 @@ class DeploymentWizardController extends AbstractController
 
             $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($em);
             $connection = $em->getConnection();
-
-            // Setup-wizard semantics: "Datenbank-Struktur erstellen" creates
-            // a clean schema from current entity-metadata.
-            $schemaManager = $connection->createSchemaManager();
-            $existingTables = $schemaManager->listTableNames();
-            $existingAppTables = array_filter(
-                $existingTables,
-                fn(string $t): bool => $t !== 'doctrine_migration_versions'
-            );
-
-            if ($existingAppTables !== []) {
-                // SchemaTool::dropSchema() resolves FK-dependency-order →
-                // ~50s on hosted DBs (one ALTER per FK, ~hundreds of round-trips).
-                // For full reset, brute-force-drop is ~1s: disable FK checks,
-                // DROP TABLE all, re-enable. MySQL/MariaDB only — Postgres
-                // uses CASCADE on DROP TABLE.
-                $platform = $connection->getDatabasePlatform()::class;
-                $isMysql = stripos($platform, 'MySQL') !== false || stripos($platform, 'MariaDB') !== false;
-                $isPostgres = stripos($platform, 'PostgreSQL') !== false;
-
-                try {
-                    if ($isMysql) {
-                        $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 0');
-                        foreach ($existingAppTables as $table) {
-                            $connection->executeStatement('DROP TABLE IF EXISTS `' . str_replace('`', '', $table) . '`');
-                        }
-                        $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1');
-                    } elseif ($isPostgres) {
-                        foreach ($existingAppTables as $table) {
-                            $connection->executeStatement('DROP TABLE IF EXISTS "' . str_replace('"', '', $table) . '" CASCADE');
-                        }
-                    } else {
-                        // SQLite or unknown — fall back to SchemaTool
-                        $schemaTool->dropSchema($metadata);
-                    }
-                } catch (\Throwable $brute) {
-                    // Brute-drop failed (permissions, locks) — fall back to SchemaTool
-                    $schemaTool->dropSchema($metadata);
-                }
-            }
-
-            // CreateSchema fast-path.
-            //
-            // SchemaTool::createSchema() iterates its ~250 DDL statements
-            // (CREATE TABLE × ~100 + ALTER ADD CONSTRAINT × ~150) and runs
-            // each via Doctrine's `executeStatement` — one network round-trip
-            // each. On hosted DBs with ~50-100ms RTT that's 15-30s pure
-            // network wait, regardless of how fast the server is.
-            //
-            // Fast path: get the SQL list via getCreateSchemaSql(), join
-            // with `;`, and submit ONCE to the underlying PDO via exec().
-            // PDO_MySQL + PDO_PGSQL both execute multi-statement queries
-            // server-side in one round-trip — collapses 250 RTTs into 1.
             $platform = $connection->getDatabasePlatform()::class;
             $isMysql = stripos($platform, 'MySQL') !== false || stripos($platform, 'MariaDB') !== false;
+            $isPostgres = stripos($platform, 'PostgreSQL') !== false;
 
-            if ($isMysql) {
-                $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 0');
+            // ALL DDL goes through raw PDO (getNativeConnection) — Doctrine's
+            // wrapped Connection tracks transaction nesting in its own state.
+            // MySQL DDL implicitly commits any active transaction, breaking
+            // Doctrine's tx-tracker → "There is no active transaction" on
+            // subsequent calls. Bypassing the wrapper for the DDL phase
+            // sidesteps that whole issue.
+            $nativeConn = $connection->getNativeConnection();
+            if (!$nativeConn instanceof \PDO) {
+                // Unsupported driver — fall back to Doctrine SchemaTool.
+                $schemaTool->dropSchema($metadata);
+                $schemaTool->createSchema($metadata);
+                return [
+                    'success' => true,
+                    'message' => 'Schema created via SchemaTool (non-PDO driver)',
+                ];
             }
-            try {
-                $createSqls = $schemaTool->getCreateSchemaSql($metadata);
-                $nativeConn = $connection->getNativeConnection();
-                if ($nativeConn instanceof \PDO && $createSqls !== []) {
-                    // Single multi-statement query — drops 250 round-trips to 1.
-                    $nativeConn->exec(implode(";\n", $createSqls));
-                } else {
-                    // Non-PDO driver: fall back to Doctrine's per-statement loop.
-                    $schemaTool->createSchema($metadata);
+
+            // Drop existing app-tables (skip doctrine_migration_versions to
+            // preserve migration history).
+            if ($isMysql) {
+                $stmt = $nativeConn->query('SHOW TABLES');
+                $existingTables = $stmt instanceof \PDOStatement
+                    ? $stmt->fetchAll(\PDO::FETCH_COLUMN)
+                    : [];
+                $existingAppTables = array_filter(
+                    $existingTables,
+                    fn(string $t): bool => $t !== 'doctrine_migration_versions'
+                );
+
+                if ($existingAppTables !== []) {
+                    // Brute-drop in one multi-statement: SET checks=0 + DROPs +
+                    // re-enable. ~250 RTTs collapsed to 1.
+                    $dropSql = "SET FOREIGN_KEY_CHECKS = 0;\n";
+                    foreach ($existingAppTables as $table) {
+                        $clean = str_replace('`', '', (string) $table);
+                        $dropSql .= "DROP TABLE IF EXISTS `{$clean}`;\n";
+                    }
+                    $dropSql .= "SET FOREIGN_KEY_CHECKS = 1;\n";
+                    $nativeConn->exec($dropSql);
                 }
-            } catch (\Throwable $multiStmtErr) {
-                // Multi-statement may fail on drivers/configs that disallow it.
-                // Fall back to per-statement execution (slower but always works).
-                foreach ($createSqls ?? [] as $sql) {
-                    $connection->executeStatement($sql);
+            } elseif ($isPostgres) {
+                $stmt = $nativeConn->query("SELECT tablename FROM pg_tables WHERE schemaname = 'public'");
+                $existingTables = $stmt instanceof \PDOStatement
+                    ? $stmt->fetchAll(\PDO::FETCH_COLUMN)
+                    : [];
+                $existingAppTables = array_filter(
+                    $existingTables,
+                    fn(string $t): bool => $t !== 'doctrine_migration_versions'
+                );
+                if ($existingAppTables !== []) {
+                    $dropSql = '';
+                    foreach ($existingAppTables as $table) {
+                        $clean = str_replace('"', '', (string) $table);
+                        $dropSql .= 'DROP TABLE IF EXISTS "' . $clean . '" CASCADE;' . "\n";
+                    }
+                    $nativeConn->exec($dropSql);
                 }
-            } finally {
+            } else {
+                // SQLite or other — Doctrine's dropSchema is fast enough
+                $schemaTool->dropSchema($metadata);
+            }
+
+            // Generate all CREATE TABLE / ALTER ADD CONSTRAINT SQL from
+            // entity metadata, join with semicolons, submit to PDO::exec
+            // in ONE call. Server executes the whole batch in one RTT
+            // instead of 250.
+            $createSqls = $schemaTool->getCreateSchemaSql($metadata);
+            if ($createSqls !== []) {
+                $sqlBatch = '';
                 if ($isMysql) {
-                    $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1');
+                    $sqlBatch .= "SET FOREIGN_KEY_CHECKS = 0;\n";
                 }
+                $sqlBatch .= implode(";\n", $createSqls);
+                if (!str_ends_with(rtrim($sqlBatch), ';')) {
+                    $sqlBatch .= ';';
+                }
+                if ($isMysql) {
+                    $sqlBatch .= "\nSET FOREIGN_KEY_CHECKS = 1;";
+                }
+                $nativeConn->exec($sqlBatch);
             }
 
             // Mark every migration version as executed so future migrate-calls skip them.
-            // Single multi-VALUES INSERT — one round-trip instead of 34.
             $migrationFiles = glob($this->getParameter('kernel.project_dir') . '/migrations/Version*.php') ?: [];
             $registered = 0;
             if ($migrationFiles !== []) {
-                try {
-                    $connection->executeStatement(
-                        'CREATE TABLE IF NOT EXISTS doctrine_migration_versions (version VARCHAR(191) PRIMARY KEY, executed_at DATETIME, execution_time INT)'
-                    );
-                    $values = [];
-                    $params = [];
-                    foreach ($migrationFiles as $file) {
-                        $values[] = '(?, NOW(), 0)';
-                        $params[] = 'DoctrineMigrations\\' . basename($file, '.php');
-                    }
-                    $sql = 'INSERT IGNORE INTO doctrine_migration_versions (version, executed_at, execution_time) VALUES '
-                        . implode(', ', $values);
-                    $connection->executeStatement($sql, $params);
-                    $registered = count($migrationFiles);
-                } catch (\Throwable) {
-                    // Fallback per-row in case bulk INSERT fails (e.g. SQL_MODE STRICT)
-                    foreach ($migrationFiles as $file) {
-                        try {
-                            $connection->executeStatement(
-                                'INSERT IGNORE INTO doctrine_migration_versions (version, executed_at, execution_time) VALUES (?, NOW(), 0)',
-                                ['DoctrineMigrations\\' . basename($file, '.php')]
-                            );
-                            $registered++;
-                        } catch (\Throwable) {
-                            // ignore
-                        }
-                    }
+                $nativeConn->exec(
+                    'CREATE TABLE IF NOT EXISTS doctrine_migration_versions (version VARCHAR(191) PRIMARY KEY, executed_at DATETIME, execution_time INT)'
+                );
+                $rows = [];
+                foreach ($migrationFiles as $file) {
+                    $version = $nativeConn->quote('DoctrineMigrations\\' . basename($file, '.php'));
+                    $rows[] = "({$version}, NOW(), 0)";
                 }
+                $nativeConn->exec(
+                    'INSERT IGNORE INTO doctrine_migration_versions (version, executed_at, execution_time) VALUES '
+                        . implode(', ', $rows)
+                );
+                $registered = count($migrationFiles);
             }
+
+            // Force Doctrine to re-establish its connection state — the raw
+            // PDO calls above bypassed Doctrine's transaction tracker, so
+            // subsequent Doctrine queries could see stale state.
+            $connection->close();
 
             return [
                 'success' => true,
