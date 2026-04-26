@@ -25,13 +25,13 @@
     {# Overdue Warning #}
     {% if dsr.overdue %}
         <div class="alert alert-danger" role="alert">
-            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
             <strong>{{ 'dsr.alert.overdue_title'|trans({}, 'data_subject_request') }}</strong>
             {{ 'dsr.alert.overdue_single'|trans({'%days%': dsr.daysUntilDeadline|abs}, 'data_subject_request') }}
         </div>
     {% elseif dsr.status not in ['completed', 'rejected'] and dsr.daysUntilDeadline <= 7 %}
         <div class="alert alert-warning" role="alert">
-            <i class="bi bi-clock" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
             <strong>{{ 'dsr.alert.deadline_approaching'|trans({}, 'data_subject_request') }}</strong>
             {{ 'dsr.deadline.remaining_days'|trans({'%days%': dsr.daysUntilDeadline}, 'data_subject_request') }}
         </div>
@@ -95,7 +95,7 @@
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="mb-0"><i class="bi bi-person" aria-hidden="true"></i> {{ 'dsr.section.data_subject_info'|trans({}, 'data_subject_request') }}</h2>
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--user" aria-hidden="true"></i> {{ 'dsr.section.data_subject_info'|trans({}, 'data_subject_request') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -129,7 +129,7 @@
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'dsr.section.identity_verification'|trans({}, 'data_subject_request') }}</h2>
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'dsr.section.identity_verification'|trans({}, 'data_subject_request') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -217,7 +217,7 @@
                                     required></textarea>
                             </div>
                             <button type="submit" class="btn btn-success w-100 mb-2">
-                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'dsr.action.complete'|trans({}, 'data_subject_request') }}
+                                <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'dsr.action.complete'|trans({}, 'data_subject_request') }}
                             </button>
                         </form>
 
@@ -232,7 +232,7 @@
                                     required></textarea>
                             </div>
                             <button type="submit" class="btn btn-danger w-100 mb-2">
-                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'dsr.action.reject'|trans({}, 'data_subject_request') }}
+                                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'dsr.action.reject'|trans({}, 'data_subject_request') }}
                             </button>
                         </form>
 
@@ -249,13 +249,13 @@
                                         required></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-warning w-100 mb-2">
-                                    <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'dsr.action.extend'|trans({}, 'data_subject_request') }}
+                                    <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i> {{ 'dsr.action.extend'|trans({}, 'data_subject_request') }}
                                 </button>
                             </form>
                         {% endif %}
                     {% else %}
                         <div class="text-center text-muted py-3">
-                            <i class="bi bi-check-circle fs-1" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-ok fs-1" aria-hidden="true"></i>
                             <p class="mt-2">{{ 'dsr.info.request_closed'|trans({}, 'data_subject_request') }}</p>
                         </div>
                     {% endif %}

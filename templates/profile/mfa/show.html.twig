@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>
-            <i class="bi bi-key" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
             {{ 'mfa.token_details'|trans({}, 'mfa') }}
         </h1>
         <a href="{{ path('app_profile_mfa_index') }}" class="btn btn-outline-secondary">
@@ -36,6 +36,7 @@
 
                         <dt class="col-sm-4">{{ 'mfa.field.device_name'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
+                            {# TODO(aurora-migration): dynamic MFA token type icon — keep bi-* #}
                             <i class="bi bi-{{ mfa_token.tokenType == 'totp' ? 'phone' : 'key' }}" aria-hidden="true"></i>
                             {{ mfa_token.deviceName ?? 'N/A' }}
                         </dd>
@@ -115,7 +116,7 @@
                     {% block card_header %}
                         <div class="card-header bg-warning-subtle text-warning">
                             <h2 class="mb-0">
-                                <i class="bi bi-key-fill" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
                                 {{ 'mfa.backup_codes.title'|trans({}, 'mfa') }}
                             </h2>
                         </div>
@@ -140,7 +141,7 @@
 
                         {% if remaining_backup_codes <= 2 %}
                             <div class="alert alert-{{ remaining_backup_codes == 0 ? 'danger' : 'warning' }}">
-                                <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                 {% if remaining_backup_codes == 0 %}
                                     {{ 'mfa.backup_codes.no_codes_left'|trans({}, 'mfa') }}
                                 {% else %}
@@ -200,7 +201,7 @@
             {# Security Notice #}
             <div class="alert alert-info">
                 <p class="fw-bold">
-                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
                     {{ 'mfa.security_notice.title'|trans({}, 'mfa') }}
                 </p>
                 <p class="small mb-0">

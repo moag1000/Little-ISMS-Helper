@@ -21,7 +21,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="h5 mb-0">
-                    <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--approve" aria-hidden="true"></i>
                     {{ 'compliance_import.result.summary_title'|trans({}, 'compliance_import') }}
                 </h2>
             </div>
@@ -51,7 +51,7 @@
                 <div class="col-md-4" role="listitem">
                     <div class="border rounded p-3 text-center">
                         <div class="h2 mb-1 {% if skipped|default(0) > 0 %}text-danger{% else %}text-muted{% endif %}">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ skipped|default(0) }}
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ skipped|default(0) }}
                         </div>
                         <div class="text-muted small">
                             {{ 'compliance_import.result.skipped'|trans({}, 'compliance_import') }}
@@ -63,7 +63,7 @@
             {% if errors is defined and errors|length > 0 %}
                 <div class="alert alert-warning mt-3" role="alert">
                     <h3 class="h6">
-                        <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {{ 'compliance_import.result.errors_title'|trans({ '%count%': errors|length }, 'compliance_import') }}
                     </h3>
                     <ul class="mb-0 small">

@@ -24,6 +24,7 @@
     </div>
     <div class="widget-body p-3">
         {# Define KPI sections with their metadata #}
+        {# TODO(aurora-migration): kpi_sections icons are Twig-embedded strings used in `bi {{ section.icon }}` loop — migrate after extracting to Aurora mask-icons #}
         {% set kpi_sections = [
             { key: 'core', icon: 'bi-shield-check', title_key: 'dashboard.management_kpis.core.title', route: 'app_soa_index', col_class: 'col-6' },
             { key: 'risk_management', icon: 'bi-exclamation-triangle', title_key: 'dashboard.management_kpis.risk_management.title', route: 'app_risk_index', col_class: 'col-6 col-md-4' },

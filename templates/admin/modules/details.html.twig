@@ -3,6 +3,7 @@
 {% block title %}{{ module.name }} - {{ 'admin.modules.details'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_title %}
+    {# TODO(aurora-migration): module.icon is PHP-driven dynamic icon string — migrate in module config #}
     <i class="bi bi-{{ module.icon }} me-2" aria-hidden="true"></i>
     {{ module.name }}
 {% endblock %}

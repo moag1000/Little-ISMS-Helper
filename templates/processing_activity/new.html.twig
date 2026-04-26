@@ -31,7 +31,7 @@
                         'fields': ['name', 'status', 'description', 'purposes', 'legalBasis', 'legalBasisDetails']
                     },
                     'data_subjects': {
-                        'label': '<i class="bi bi-people" aria-hidden="true"></i> ' ~ 'processing_activity.section.data_subjects'|trans({}, 'privacy'),
+                        'label': '<i class="fa-icon fa-icon--data-personal" aria-hidden="true"></i> ' ~ 'processing_activity.section.data_subjects'|trans({}, 'privacy'),
                         'fields': ['dataSubjectCategories', 'estimatedDataSubjectsCount']
                     },
                     'personal_data': {
@@ -47,7 +47,7 @@
                         'fields': ['retentionPeriod', 'retentionPeriodDays', 'retentionLegalBasis']
                     },
                     'security': {
-                        'label': '<i class="bi bi-shield-lock" aria-hidden="true"></i> ' ~ 'processing_activity.section.security'|trans({}, 'privacy'),
+                        'label': '<i class="fa-icon fa-icon--mfa" aria-hidden="true"></i> ' ~ 'processing_activity.section.security'|trans({}, 'privacy'),
                         'fields': ['technicalOrganizationalMeasures', 'implementedControls']
                     },
                     'organization': {
@@ -59,7 +59,7 @@
                         'fields': ['involvesProcessors', 'isJointController']
                     },
                     'risk_assessment': {
-                        'label': '<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> ' ~ 'processing_activity.section.risk_assessment'|trans({}, 'privacy'),
+                        'label': '<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> ' ~ 'processing_activity.section.risk_assessment'|trans({}, 'privacy'),
                         'fields': ['isHighRisk', 'dpiaCompleted', 'dpiaDate', 'riskLevel']
                     },
                     'automated_decision': {

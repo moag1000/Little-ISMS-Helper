@@ -50,7 +50,7 @@
                 {% block card_body %}
                     <div class="d-flex align-items-start mb-3">
                         <div class="bg-danger bg-opacity-10 p-3 rounded me-3">
-                            <i class="bi bi-shield-lock-fill text-danger fs-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--mfa text-danger fs-2" aria-hidden="true"></i>
                         </div>
                         <div class="flex-grow-1">
                             <h2 class="card-title h5">{{ 'admin.settings.security.title'|trans({}, 'admin') }}</h2>
@@ -96,25 +96,25 @@
                         <ul class="list-unstyled small">
                             <li>
                                 {% if settings.features.enable_dark_mode %}
-                                    <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                 {% else %}
-                                    <i class="bi bi-x-circle text-muted" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                                 {% endif %}
                                 {{ 'admin.settings.features.dark_mode'|trans({}, 'admin') }}
                             </li>
                             <li>
                                 {% if settings.features.enable_global_search %}
-                                    <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                 {% else %}
-                                    <i class="bi bi-x-circle text-muted" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                                 {% endif %}
                                 {{ 'admin.settings.features.global_search'|trans({}, 'admin') }}
                             </li>
                             <li>
                                 {% if settings.features.enable_audit_log %}
-                                    <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                 {% else %}
-                                    <i class="bi bi-x-circle text-muted" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                                 {% endif %}
                                 {{ 'admin.settings.features.audit_log'|trans({}, 'admin') }}
                             </li>

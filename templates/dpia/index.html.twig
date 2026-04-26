@@ -53,7 +53,7 @@
                     <div class="text-muted fw-semibold">{{ 'dpia.index.total_dpias'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold">{{ statistics.total }}</div>
                     <div class="mt-2">
-                        <small class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ statistics.approved }} {{ 'dpia.index.approved'|trans({}, 'privacy') }}</small>
+                        <small class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ statistics.approved }} {{ 'dpia.index.approved'|trans({}, 'privacy') }}</small>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -64,7 +64,7 @@
                     <div class="text-muted fw-semibold">{{ 'dpia.index.in_review'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold text-info">{{ statistics.in_review }}</div>
                     <div class="mt-2">
-                        <small class="text-muted"><i class="bi bi-clock" aria-hidden="true"></i> {{ 'dpia.index.awaiting_approval'|trans({}, 'privacy') }}</small>
+                        <small class="text-muted"><i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i> {{ 'dpia.index.awaiting_approval'|trans({}, 'privacy') }}</small>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -75,7 +75,7 @@
                     <div class="text-muted fw-semibold">{{ 'dpia.index.high_risk'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold text-danger">{{ statistics.high_risk }}</div>
                     <div class="mt-2">
-                        <small class="text-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dpia.index.requires_attention'|trans({}, 'privacy') }}</small>
+                        <small class="text-warning"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'dpia.index.requires_attention'|trans({}, 'privacy') }}</small>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -139,7 +139,7 @@
     {# DPIA Table #}
     {% embed '_components/_card.html.twig' with {noPadding: true} %}
         {% block card_header %}
-            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'dpia.index.dpias_list'|trans({}, 'privacy') }} ({{ dpias|length }})</h2></div>
+            <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--evidence" aria-hidden="true"></i> {{ 'dpia.index.dpias_list'|trans({}, 'privacy') }} ({{ dpias|length }})</h2></div>
         {% endblock %}
         {% block card_body %}
             {% if dpias|length > 0 %}
@@ -215,9 +215,9 @@
                                 </td>
                                 <td>
                                     {% if dpia.dpoConsultationDate %}
-                                        <i class="bi bi-check-circle text-success" aria-hidden="true" title="{{ 'dpia.index.dpo_consulted'|trans({}, 'privacy') }} {{ dpia.dpoConsultationDate|date('Y-m-d') }}"></i>
+                                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true" title="{{ 'dpia.index.dpo_consulted'|trans({}, 'privacy') }} {{ dpia.dpoConsultationDate|date('Y-m-d') }}"></i>
                                     {% else %}
-                                        <i class="bi bi-x-circle text-muted" aria-hidden="true" title="{{ 'dpia.index.dpo_not_yet_consulted'|trans({}, 'privacy') }}"></i>
+                                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true" title="{{ 'dpia.index.dpo_not_yet_consulted'|trans({}, 'privacy') }}"></i>
                                     {% endif %}
                                 </td>
                                 <td>

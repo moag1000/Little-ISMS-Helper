@@ -81,7 +81,7 @@
                 </div>
                 <div class="col-md-1">
                     <button type="submit" class="btn btn-primary btn-sm w-100">
-                        <i class="bi bi-funnel" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--filter" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
@@ -125,7 +125,7 @@
                                 {% for t in tours %}
                                     <td class="text-center">
                                         {% if t in row.completed_tours %}
-                                            <i class="bi bi-check-circle-fill text-success" aria-label="{{ 'admin.tour_completion.completed'|trans({}, 'admin') }}"></i>
+                                            <i class="fa-icon fa-icon--status-ok" aria-label="{{ 'admin.tour_completion.completed'|trans({}, 'admin') }}"></i>
                                         {% else %}
                                             <i class="bi bi-dash-circle text-muted" aria-label="{{ 'admin.tour_completion.not_completed'|trans({}, 'admin') }}"></i>
                                         {% endif %}
