@@ -123,7 +123,7 @@
                                     {% if tenant.legalName %}
                                         {{ tenant.legalName }}
                                         {% if tenant.legalForm %}
-                                            <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">{{ tenant.legalForm }}</span>
+                                            <span class="fa-status-pill fa-status-pill--neutral">{{ tenant.legalForm }}</span>
                                         {% endif %}
                                     {% else %}
                                         <span class="text-muted">—</span>
@@ -141,12 +141,12 @@
                                 <td>{{ tenant.nis2ContactPoint|default('—') }}</td>
                                 <td>
                                     {% if tenant.nis2RegisteredAt %}
-                                        <span class="badge bg-success fa-status-pill fa-status-pill--success">
+                                        <span class="fa-status-pill fa-status-pill--success">
                                             <i class="bi bi-check-circle" aria-hidden="true"></i>
                                             {{ tenant.nis2RegisteredAt|date('Y-m-d') }}
                                         </span>
                                     {% elseif tenant.isNis2Regulated %}
-                                        <span class="badge bg-danger fa-status-pill fa-status-pill--danger">
+                                        <span class="fa-status-pill fa-status-pill--danger">
                                             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                                             {{ 'group_report.nis2.registration.missing'|trans({}, 'group_report') }}
                                         </span>

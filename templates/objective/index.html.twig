@@ -46,7 +46,7 @@
         {% endblock %}
         {% block card_body %}
             {% if objectives|length == 0 %}
-            <div class="alert alert-info">{{ 'objective.message.no_objectives'|trans({}, 'objective') }}</div>
+            <div class="fa-alert fa-alert--info" role="alert"><i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body">{{ 'objective.message.no_objectives'|trans({}, 'objective') }}</div></div>
             {% else %}
             {% embed '_components/_table.html.twig' with {
                 'noMargin': true

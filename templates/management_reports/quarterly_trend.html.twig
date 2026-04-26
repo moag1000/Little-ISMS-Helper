@@ -20,7 +20,7 @@
         <h1 class="h2 mb-0">
             <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'management_reports.quarterly_trend.title'|trans({}, 'management_reports') }}
         </h1>
-        <a href="{{ path('app_management_reports_quarterly_trend_pdf') }}" class="btn btn-outline-primary">
+        <a href="{{ path('app_management_reports_quarterly_trend_pdf') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
         </a>
     </div>
@@ -89,11 +89,11 @@
                             </td>
                             <td class="text-center">
                                 {% if metric.trend == 'better' %}
-                                    <span class="badge bg-success fa-status-pill fa-status-pill--success">{{ 'management_reports.quarterly_trend.better'|trans({}, 'management_reports') }}</span>
+                                    <span class="fa-status-pill fa-status-pill--success">{{ 'management_reports.quarterly_trend.better'|trans({}, 'management_reports') }}</span>
                                 {% elseif metric.trend == 'worse' %}
-                                    <span class="badge bg-danger fa-status-pill fa-status-pill--danger">{{ 'management_reports.quarterly_trend.worse'|trans({}, 'management_reports') }}</span>
+                                    <span class="fa-status-pill fa-status-pill--danger">{{ 'management_reports.quarterly_trend.worse'|trans({}, 'management_reports') }}</span>
                                 {% else %}
-                                    <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">{{ 'management_reports.quarterly_trend.stable'|trans({}, 'management_reports') }}</span>
+                                    <span class="fa-status-pill fa-status-pill--neutral">{{ 'management_reports.quarterly_trend.stable'|trans({}, 'management_reports') }}</span>
                                 {% endif %}
                             </td>
                             <td>

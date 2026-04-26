@@ -67,7 +67,7 @@
                                         {% set derived = matrix[program.id][sub.code] %}
                                         <td class="text-center">
                                             {% if derived is null %}
-                                                <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral" title="{{ 'group_report.audit_program.cell.missing_help'|trans({}, 'group_report') }}">
+                                                <span class="fa-status-pill fa-status-pill--neutral" title="{{ 'group_report.audit_program.cell.missing_help'|trans({}, 'group_report') }}">
                                                     <i class="bi bi-dash" aria-hidden="true"></i>
                                                 </span>
                                             {% else %}
@@ -91,7 +91,7 @@
                                         <form method="post" action="{{ path('app_group_report_audit_program_derive', {id: program.id}) }}" class="d-inline"
                                               onsubmit="return confirm('{{ 'group_report.audit_program.confirm_derive'|trans({'%count%': subsidiaries|length}, 'group_report')|e('js') }}');">
                                             <input type="hidden" name="_token" value="{{ csrf_token('audit_program_derive_' ~ program.id) }}">
-                                            <button type="submit" class="btn btn-sm btn-outline-primary">
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                                 <i class="bi bi-diagram-3" aria-hidden="true"></i>
                                                 {{ 'group_report.audit_program.action.derive'|trans({}, 'group_report') }}
                                             </button>
@@ -106,10 +106,10 @@
             {% block card_footer %}
                 <div class="card-footer small text-muted">
                     <strong>{{ 'group_report.soa.legend.title'|trans({}, 'group_report') }}:</strong>
-                    <span class="badge bg-success fa-status-pill fa-status-pill--success">✓</span> {{ 'group_report.audit_program.legend.completed'|trans({}, 'group_report') }}
-                    · <span class="badge bg-warning-subtle text-warning fa-status-pill fa-status-pill--warning">◐</span> {{ 'group_report.audit_program.legend.in_progress'|trans({}, 'group_report') }}
-                    · <span class="badge bg-info fa-status-pill fa-status-pill--primary">◯</span> {{ 'group_report.audit_program.legend.planned'|trans({}, 'group_report') }}
-                    · <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">–</span> {{ 'group_report.audit_program.legend.missing'|trans({}, 'group_report') }}
+                    <span class="fa-status-pill fa-status-pill--success">✓</span> {{ 'group_report.audit_program.legend.completed'|trans({}, 'group_report') }}
+                    · <span class="fa-status-pill fa-status-pill--warning">◐</span> {{ 'group_report.audit_program.legend.in_progress'|trans({}, 'group_report') }}
+                    · <span class="fa-status-pill fa-status-pill--primary">◯</span> {{ 'group_report.audit_program.legend.planned'|trans({}, 'group_report') }}
+                    · <span class="fa-status-pill fa-status-pill--neutral">–</span> {{ 'group_report.audit_program.legend.missing'|trans({}, 'group_report') }}
                 </div>
             {% endblock %}
         {% endembed %}

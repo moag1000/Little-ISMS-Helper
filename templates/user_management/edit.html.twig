@@ -19,11 +19,11 @@
             {{ 'user.edit'|trans({}, 'user') }}
         </h1>
         <div>
-            <a href="{{ path('user_management_show', {'id': user.id}) }}" class="btn btn-outline-info">
+            <a href="{{ path('user_management_show', {'id': user.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-eye" aria-hidden="true"></i>
                 {{ 'common.view'|trans({}, 'messages') }}
             </a>
-            <a href="{{ path('user_management_index') }}" class="btn btn-outline-secondary">
+            <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-arrow-left" aria-hidden="true"></i>
                 {{ 'common.back'|trans({}, 'messages') }}
             </a>
@@ -86,9 +86,9 @@
                         } %}
 
                         {# Auth Provider Info (Edit Mode Only) #}
-                        <div class="alert alert-info" role="status">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i>
-                            <strong>{{ 'user.field.auth_provider'|trans({}, 'user') }}:</strong>
+                        <div class="fa-alert fa-alert--info" role="status">
+                            <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body"><strong>{{ 'user.field.auth_provider'|trans({}, 'user') }}:</strong>
                             {% if user.authProvider == 'azure_oauth' %}
                                 Azure OAuth
                             {% elseif user.authProvider == 'azure_saml' %}
@@ -96,11 +96,13 @@
                             {% else %}
                                 {{ 'user.auth_provider.local'|trans({}, 'user') }}
                             {% endif %}
+                            </div>
                         </div>
 
                         {# Metadata (Edit Mode Only) #}
-                        <div class="alert alert-secondary" role="status">
-                            <small>
+                        <div class="fa-alert fa-alert--neutral" role="status">
+                            <i class="fa-icon fa-icon--status-neutral fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body"><small>
                                 <strong>{{ 'user.field.created_at'|trans({}, 'user') }}:</strong> {{ user.createdAt|date('d.m.Y H:i') }}<br>
                                 {% if user.updatedAt %}
                                     <strong>{{ 'user.field.updated_at'|trans({}, 'user') }}:</strong> {{ user.updatedAt|date('d.m.Y H:i') }}<br>
@@ -108,16 +110,16 @@
                                 {% if user.lastLoginAt %}
                                     <strong>{{ 'user.field.last_login'|trans({}, 'user') }}:</strong> {{ user.lastLoginAt|date('d.m.Y H:i') }}
                                 {% endif %}
-                            </small>
+                            </small></div>
                         </div>
 
                         {# Form Actions #}
                         <div class="form-actions d-flex gap-2 justify-content-between mt-4">
-                            <a href="{{ path('user_management_show', {'id': user.id}) }}" class="btn btn-secondary">
+                            <a href="{{ path('user_management_show', {'id': user.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                                 <i class="bi bi-x-circle" aria-hidden="true"></i>
                                 {{ 'common.cancel'|trans({}, 'messages') }}
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                                 <i class="bi bi-check-circle" aria-hidden="true"></i>
                                 {{ 'user.save_changes'|trans({}, 'user') }}
                             </button>

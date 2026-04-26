@@ -17,7 +17,7 @@
             <i class="bi bi-person-plus" aria-hidden="true"></i>
             {{ 'user.new'|trans({}, 'user') }}
         </h1>
-        <a href="{{ path('user_management_index') }}" class="btn btn-outline-secondary">
+        <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i>
             {{ 'common.back'|trans({}, 'messages') }}
         </a>
@@ -80,11 +80,11 @@
 
                         {# Form Actions #}
                         <div class="form-actions d-flex gap-2 justify-content-between mt-4">
-                            <a href="{{ path('user_management_index') }}" class="btn btn-secondary">
+                            <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                                 <i class="bi bi-x-circle" aria-hidden="true"></i>
                                 {{ 'common.cancel'|trans({}, 'messages') }}
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                                 <i class="bi bi-save" aria-hidden="true"></i>
                                 {{ 'user.create'|trans({}, 'user') }}
                             </button>

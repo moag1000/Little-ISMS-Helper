@@ -10,7 +10,7 @@
 {% import '_macros/cards.html.twig' as cards %}
 
     <div class="mb-3">
-        <a href="{{ path('monitoring_health') }}" class="btn btn-outline-secondary">
+        <a href="{{ path('monitoring_health') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'monitoring.back_to_health'|trans({}, 'monitoring') }}
         </a>
     </div>
@@ -61,8 +61,9 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        <div class="alert alert-info mb-0">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'monitoring.performance.no_data'|trans({}, 'monitoring') }}
+                        <div class="fa-alert fa-alert--info mb-0" role="alert">
+                            <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body">{{ 'monitoring.performance.no_data'|trans({}, 'monitoring') }}</div>
                         </div>
                     {% endif %}
                 {% endblock %}
@@ -98,8 +99,9 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        <div class="alert alert-info mb-0">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'monitoring.performance.no_data'|trans({}, 'monitoring') }}
+                        <div class="fa-alert fa-alert--info mb-0" role="alert">
+                            <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body">{{ 'monitoring.performance.no_data'|trans({}, 'monitoring') }}</div>
                         </div>
                     {% endif %}
                 {% endblock %}
@@ -131,12 +133,9 @@
                     </dl>
                 </div>
                 <div class="col-md-8">
-                    <div class="alert alert-info mb-0">
-                        <h3><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'monitoring.performance.note_title'|trans({}, 'monitoring') }}</h3>
-                        <p class="mb-0">
-                            {{ 'monitoring.performance.note_text'|trans({}, 'monitoring')|raw }}
-                        </p>
-                    </div>
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'mb-0' } } %}
+                        {% block alert_body %}<h3><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'monitoring.performance.note_title'|trans({}, 'monitoring') }}</h3><p class="mb-0">{{ 'monitoring.performance.note_text'|trans({}, 'monitoring')|raw }}</p>{% endblock %}
+                    {% endembed %}
                 </div>
             </div>
         {% endblock %}
