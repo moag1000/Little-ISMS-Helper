@@ -214,6 +214,7 @@ asset:
     service: Service
     personnel: Personal
     physical: Physisch
+    ai_agent: AI-Agent
     data: Daten
     network: Netzwerk
     facility: Gebäude
@@ -277,6 +278,67 @@ asset:
     own: Eigener Wert
     inherited: Geerbter Wert
     driven_by: Getrieben durch
+  ai_agent:
+    section:
+      title: AI-Agent-Inventar
+      subtitle: EU AI Act / ISO 42001 / MRIS MHC-13
+      help: 'Pflichtfelder für AI-Agenten: Risikoklasse, Zweckbestimmung, Datenquellen,
+        menschliche Aufsicht, Anbieter, Modell-Version, Capability-Scope, Bedrohungsmodell,
+        Extension-Allowlist. Klassifizierung hängt vom Use-Case ab — bei Abweichung
+        von der Tool-Empfehlung dokumentieren.'
+    field:
+      classification: 'Risikoklasse (EU AI Act Art. 6)'
+      purpose: Zweckbestimmung
+      data_sources: Datenquellen / Datengovernance
+      oversight_mechanism: Menschliche Aufsicht (Mechanismus)
+      provider: Anbieter / Hersteller
+      model_version: Modell-Version
+      capability_scope: Capability-Scope (eine pro Zeile)
+      threat_model_doc_id: Bedrohungsmodell-Dokument (ID)
+      extension_allowlist: Extension-Allowlist (eine pro Zeile)
+    classification:
+      prohibited: Verboten (Art. 5)
+      high_risk: Hochrisiko (Anhang III)
+      limited_risk: Begrenztes Risiko (Art. 52)
+      minimal_risk: Minimales Risiko
+    placeholder:
+      classification: '-- Risikoklasse wählen --'
+      purpose: 'z.B. Code-Vorschläge in der Entwicklung; keine Personalentscheidungen.'
+      data_sources: 'Welche Daten verarbeitet der Agent? Trainings-Quelle, Eingaben,
+        Ausgaben.'
+      oversight_mechanism: 'z.B. 4-Augen-Prinzip vor Merge; manuelles Approval ab Score
+        > 0.8'
+      provider: 'z.B. Anthropic, OpenAI, Self-hosted'
+      model_version: 'z.B. claude-opus-4-7, gpt-4o-2025'
+      capability_scope: |
+        Eine Capability pro Zeile, z.B.:
+        Liest Dateien <100 KB
+        Kein Internet-Zugriff
+        Keine Shell-Befehle
+      threat_model_doc_id: ID des verlinkten Dokuments
+      extension_allowlist: |
+        Eine Extension/MCP pro Zeile, z.B.:
+        mcp-filesystem
+        mcp-github (read-only)
+    help:
+      classification: 'EU AI Act unterscheidet 4 Klassen. Bei Tippen des Anbieters
+        wird ein Vorschlag aus der AI-Risiko-Matrix angeboten — Use-Case-Prüfung
+        bleibt Pflicht.'
+      purpose: 'Klare Zweckbestimmung gemäß AI Act Art. 11 / Anhang IV. Was soll der
+        Agent tun? Was NICHT?'
+      data_sources: 'Datengovernance gemäß AI Act Art. 10. Quellen, PII-Anteil, Aufbewahrung,
+        Löschung.'
+      oversight_mechanism: 'Human Oversight gemäß AI Act Art. 14. Konkrete Eingriffspunkte
+        beschreiben.'
+      provider: 'Anbieter / Hersteller. Datalist mit Vorschlägen — freie Eingabe möglich.
+        Bei Übereinstimmung wird die Risikoklasse vorgeschlagen.'
+      model_version: 'Konkrete Modellversion — unverzichtbar für Audit-Reproduzierbarkeit.'
+      capability_scope: 'Was darf der Agent? Eine Capability pro Zeile. Konkrete Aktionsliste
+        — nicht „hilft beim Coden", sondern „darf Dateien <100 KB lesen, kein Internet".'
+      threat_model_doc_id: 'Verweis auf Dokument-ID mit Bedrohungsmodell (Prompt-Injection,
+        Datenleck, Halluzination, Privilege-Escalation).'
+      extension_allowlist: 'Liste freigegebener Plugins / Extensions / MCP-Server. Verhindert
+        Supply-Chain-Angriffe über kompromittierte Marketplaces.'
 qr:
   label:
     title: Asset-Etikett

@@ -123,6 +123,31 @@
                                 'label': 'tenant.field.settings'|trans({}, 'tenant'),
                                 'help': 'tenant.help.settings'|trans({}, 'tenant')
                             } %}
+
+                            {# MRIS: KPI-Modul-Toggle. Default = aktiv. Inline-Checkbox, nicht
+                               via Form-Type, weil TenantType in vielen Stellen referenziert wird.
+                               Permission: ROLE_ADMIN (Mandanten-Settings sind Admin-Domain). #}
+                            {% if isEdit and is_granted('ROLE_ADMIN') %}
+                                {% set mrisKpisEnabled = (tenant.settings['mris']['kpis_enabled'] ?? true) is same as(false) ? false : true %}
+                                <div class="form-group mb-3">
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox"
+                                               class="form-check-input"
+                                               role="switch"
+                                               id="mris_kpis_enabled"
+                                               name="mris_kpis_enabled"
+                                               value="1"
+                                               {% if mrisKpisEnabled %}checked{% endif %}>
+                                        <label for="mris_kpis_enabled" class="form-check-label">
+                                            MRIS-Mythos-KPIs anzeigen
+                                        </label>
+                                    </div>
+                                    <div class="form-text small">
+                                        Deaktivieren wenn der Mandant nicht von MRIS profitiert
+                                        (z. B. nicht-DORA, nicht-NIS2-Adressat).
+                                    </div>
+                                </div>
+                            {% endif %}
                             <div class="form-text mt-2">
                                 <strong>{{ 'tenant.settings.example_title'|trans({}, 'tenant') }}</strong><br>
                                 <pre class="bg-body-secondary p-2 rounded small mb-0"><code>{

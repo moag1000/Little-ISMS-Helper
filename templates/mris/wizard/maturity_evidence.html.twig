@@ -1,0 +1,132 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MRIS-Wizard — Reifegrad-Evidence pro MHC{% endblock %}
+
+{% block body %}
+<div class="container">
+
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_mris_kpis') }}">MRIS-KPIs</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Wizard: Reifegrad-Evidence</li>
+        </ol>
+    </nav>
+
+    <div class="page-header mb-4">
+        <div>
+            <h1>
+                <i class="bi bi-bar-chart-steps" aria-hidden="true"></i>
+                {{ matrix.title|default('Reifegrad-Evidence pro MHC') }}
+            </h1>
+            <p class="text-muted small mb-0">
+                {{ matrix.intro|default('13 Mythos-Hardening-Cluster, je 3 Reifegrade mit Audit-Belegen.') }}
+            </p>
+        </div>
+    </div>
+
+    {% if fallback_used %}
+        <div class="alert alert-info small">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            <strong>Hinweis:</strong>
+            Wizard-Daten in <code>fixtures/mris/help-texts.yaml</code> unter
+            <code>blocker_solutions:</code> pflegen, damit dieser Inhalt
+            zentral aus YAML geladen wird. Aktuell wird der eingebettete
+            Default angezeigt.
+        </div>
+    {% endif %}
+
+    {# Legende der drei Reifegrade — Bootstrap badges, gleicher Token wie SoA. #}
+    <div class="mb-3 small">
+        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Initial' } %}
+        <span class="text-muted">erste Schritte dokumentiert</span>
+        &nbsp;·&nbsp;
+        {% include '_components/_badge.html.twig' with { variant: 'info', content: 'Defined' } %}
+        <span class="text-muted">org-weit verbindlich</span>
+        &nbsp;·&nbsp;
+        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Managed' } %}
+        <span class="text-muted">gemessen, gesteuert, KPI</span>
+    </div>
+
+    {# Akkordeon je MHC. Bootstrap 5.3 collapse — kein Custom-JS noetig. #}
+    <div class="accordion" id="mrisMaturityAccordion">
+        {% for mhc in matrix.mhcs %}
+            {% set itemId = 'mhc-' ~ loop.index %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading-{{ itemId }}">
+                    <button class="accordion-button{% if not loop.first %} collapsed{% endif %}"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#collapse-{{ itemId }}"
+                            aria-expanded="{{ loop.first ? 'true' : 'false' }}"
+                            aria-controls="collapse-{{ itemId }}">
+                        <code class="me-2">{{ mhc.code }}</code>
+                        <strong>{{ mhc.name }}</strong>
+                    </button>
+                </h2>
+                <div id="collapse-{{ itemId }}"
+                     class="accordion-collapse collapse{% if loop.first %} show{% endif %}"
+                     aria-labelledby="heading-{{ itemId }}"
+                     data-bs-parent="#mrisMaturityAccordion">
+                    <div class="accordion-body">
+                        <div class="row g-3">
+                            {% for levelKey, levelLabel in {
+                                'initial': 'Initial',
+                                'defined': 'Defined',
+                                'managed': 'Managed'
+                            } %}
+                                {% set variant = levelKey == 'managed' ? 'success' : (levelKey == 'defined' ? 'info' : 'secondary') %}
+                                <div class="col-md-4">
+                                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                                        {% block card_body %}
+                                            <div class="mb-2">
+                                                {% include '_components/_badge.html.twig' with { variant: variant, content: levelLabel } %}
+                                            </div>
+                                            {% set evidences = mhc.levels[levelKey]|default([]) %}
+                                            {% if evidences|length > 0 %}
+                                                <ul class="small mb-0 ps-3">
+                                                    {% for evidence in evidences %}
+                                                        <li>{{ evidence }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                <p class="small text-muted fst-italic mb-0">— keine Belege gepflegt —</p>
+                                            {% endif %}
+                                        {% endblock %}
+                                    {% endembed %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if matrix.norm_refs is defined and matrix.norm_refs|length > 0 %}
+        {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+            {% block card_header %}
+                <div class="card-header">
+                    <h2 class="h6 mb-0">
+                        <i class="bi bi-bookmark-star" aria-hidden="true"></i>
+                        Norm-Verweise
+                    </h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
+                <ul class="small mb-0">
+                    {% for ref in matrix.norm_refs %}
+                        <li>{{ ref }}</li>
+                    {% endfor %}
+                </ul>
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
+
+    <footer class="text-center text-muted small mt-4 pt-3 border-top">
+        Quelle: Peddi (2026) MRIS v1.5.
+        <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">CC BY 4.0</a>.
+    </footer>
+
+</div>
+{% endblock %}

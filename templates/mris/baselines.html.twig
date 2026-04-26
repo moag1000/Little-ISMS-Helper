@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MRIS-Branchen-Baselines{% endblock %}
+
+{% block body %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">MRIS-Branchen-Baselines</li>
+        </ol>
+    </nav>
+
+    <div class="page-header mb-4">
+        <div>
+            <h1>
+                <i class="bi bi-collection" aria-hidden="true"></i>
+                MRIS-Branchen-Baselines
+            </h1>
+            <p class="text-muted small mb-0">
+                Vorkonfigurierte Soll-Stufen pro MHC, abgestimmt auf Branchen wie KRITIS / NIS2-Essential,
+                Finance / DORA, Automotive / TISAX und SaaS / CRA. Anwenden setzt nur das Soll
+                (<code>maturity_target</code>) — bestehende Self-Assessments (Ist) bleiben unangetastet.
+            </p>
+        </div>
+    </div>
+
+    {% if tenant is null %}
+        <div class="alert alert-warning small">
+            <strong><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></strong>
+            Kein Mandant zugewiesen — Baselines benötigen einen Mandantenkontext zum Anwenden.
+        </div>
+    {% endif %}
+
+    {% if baselines|length == 0 %}
+        <div class="alert alert-info small">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            Keine Baselines verfügbar. Erwartet werden YAML-Dateien unter <code>fixtures/mris/baselines/</code>.
+        </div>
+    {% else %}
+        <div class="row g-3">
+            {% for baseline in baselines %}
+                <div class="col-md-6 col-lg-6">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_body %}
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <code class="small text-muted">{{ baseline.id }}</code>
+                                {% include '_components/_badge.html.twig' with { variant: 'info', content: baseline.industry } %}
+                            </div>
+                            <h2 class="h5 mb-2">{{ baseline.name }}</h2>
+                            <p class="small text-muted mb-3" style="white-space: pre-line;">{{ baseline.description }}</p>
+                            <p class="small text-muted mb-3">
+                                <i class="bi bi-file-earmark-code" aria-hidden="true"></i>
+                                Datei: <code>{{ baseline.file }}</code>
+                            </p>
+
+                            {% if is_granted('ROLE_MANAGER') and tenant is not null %}
+                                <form method="post" action="{{ path('app_mris_baselines_apply') }}" class="d-flex gap-2 flex-wrap">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('mris_baseline_apply') }}">
+                                    <input type="hidden" name="baseline_id" value="{{ baseline.id }}">
+                                    <button type="submit" name="dry_run" value="1" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                        Vorschau (Dry-Run)
+                                    </button>
+                                    <button type="submit"
+                                            class="btn btn-sm btn-primary"
+                                            data-confirm="Baseline '{{ baseline.name }}' wirklich auf Mandant '{{ tenant.name }}' anwenden? Bestehende Soll-Stufen werden überschrieben.">
+                                        <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                        Anwenden
+                                    </button>
+                                </form>
+                            {% else %}
+                                <p class="small text-muted fst-italic mb-0">
+                                    {% if tenant is null %}
+                                        Mandantenkontext erforderlich.
+                                    {% else %}
+                                        Anwenden erfordert Rolle Manager (ROLE_MANAGER).
+                                    {% endif %}
+                                </p>
+                            {% endif %}
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="alert alert-light mt-4 small">
+        <strong><i class="bi bi-info-circle" aria-hidden="true"></i></strong>
+        Konsolen-Pendant für Automatisierung:
+        <code>php bin/console app:mris:apply-baseline --tenant=&lt;ID&gt; --baseline=&lt;ID&gt; [--dry-run]</code>.
+        Die Baseline-Quelldateien liegen unter <code>fixtures/mris/baselines/*.yaml</code>.
+    </div>
+
+    <footer class="text-muted small mt-4 pt-3 border-top">
+        Quelle: Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. Lizenz: CC BY 4.0.
+    </footer>
+</div>
+{% endblock %}

@@ -211,6 +211,7 @@ asset:
     service: Service
     personnel: Personnel
     physical: Physical
+    ai_agent: AI Agent
     data: Data
     network: Network
     facility: Facility
@@ -274,6 +275,66 @@ asset:
     own: Own value
     inherited: Inherited value
     driven_by: Driven by
+  ai_agent:
+    section:
+      title: AI Agent Inventory
+      subtitle: EU AI Act / ISO 42001 / MRIS MHC-13
+      help: 'Mandatory fields for AI agents: risk class, intended purpose, data sources,
+        human oversight, provider, model version, capability scope, threat model,
+        extension allowlist. Classification depends on the use case — document any
+        deviation from the tool recommendation.'
+    field:
+      classification: 'Risk class (EU AI Act Art. 6)'
+      purpose: Intended purpose
+      data_sources: Data sources / data governance
+      oversight_mechanism: Human oversight (mechanism)
+      provider: Provider / vendor
+      model_version: Model version
+      capability_scope: Capability scope (one per line)
+      threat_model_doc_id: Threat model document (ID)
+      extension_allowlist: Extension allowlist (one per line)
+    classification:
+      prohibited: Prohibited (Art. 5)
+      high_risk: High risk (Annex III)
+      limited_risk: Limited risk (Art. 52)
+      minimal_risk: Minimal risk
+    placeholder:
+      classification: '-- Select risk class --'
+      purpose: 'e.g. code suggestions during development; no HR decisions.'
+      data_sources: 'Which data does the agent process? Training source, inputs, outputs.'
+      oversight_mechanism: 'e.g. four-eyes principle before merge; manual approval if
+        score > 0.8'
+      provider: 'e.g. Anthropic, OpenAI, Self-hosted'
+      model_version: 'e.g. claude-opus-4-7, gpt-4o-2025'
+      capability_scope: |
+        One capability per line, e.g.:
+        Reads files <100 KB
+        No internet access
+        No shell commands
+      threat_model_doc_id: ID of the linked document
+      extension_allowlist: |
+        One extension/MCP per line, e.g.:
+        mcp-filesystem
+        mcp-github (read-only)
+    help:
+      classification: 'EU AI Act distinguishes 4 classes. Typing the provider triggers
+        a suggestion from the AI risk matrix — use-case review remains mandatory.'
+      purpose: 'Clear intended purpose per AI Act Art. 11 / Annex IV. What should the
+        agent do? What NOT?'
+      data_sources: 'Data governance per AI Act Art. 10. Sources, PII share, retention,
+        deletion.'
+      oversight_mechanism: 'Human oversight per AI Act Art. 14. Describe concrete
+        intervention points.'
+      provider: 'Provider / vendor. Datalist with suggestions — free input allowed. On
+        match, the risk class is suggested.'
+      model_version: 'Concrete model version — essential for audit reproducibility.'
+      capability_scope: 'What is the agent allowed to do? One capability per line.
+        Concrete action list — not "helps with coding" but "may read files <100 KB,
+        no internet".'
+      threat_model_doc_id: 'Reference to the document ID with the threat model (prompt
+        injection, data leak, hallucination, privilege escalation).'
+      extension_allowlist: 'List of approved plugins / extensions / MCP servers.
+        Prevents supply-chain attacks via compromised marketplaces.'
 qr:
   label:
     title: Asset Label

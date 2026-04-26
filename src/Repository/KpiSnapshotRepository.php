@@ -74,6 +74,25 @@ class KpiSnapshotRepository extends ServiceEntityRepository
      * @param int $months Number of months to look back (default: 12)
      * @return KpiSnapshot[] Array of monthly snapshots, ordered oldest first
      */
+    /**
+     * Liefert alle Snapshots der letzten N Tage in chronologischer Reihenfolge.
+     * Geeignet fuer Sparkline-Trends.
+     *
+     * @return KpiSnapshot[]
+     */
+    public function findRecentByTenant(Tenant $tenant, int $days = 90): array
+    {
+        $since = new DateTimeImmutable("-{$days} days");
+        return $this->createQueryBuilder('s')
+            ->where('s.tenant = :tenant')
+            ->andWhere('s.snapshotDate >= :since')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('since', $since)
+            ->orderBy('s.snapshotDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findMonthlySnapshots(Tenant $tenant, int $months = 12): array
     {
         $since = new DateTimeImmutable("-{$months} months");

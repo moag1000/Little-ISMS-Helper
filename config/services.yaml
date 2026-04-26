@@ -125,6 +125,10 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
+    App\Command\MrisVersionMigrationCommand:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
     App\Service\MrisBaselineService:
         arguments:
             $projectDir: '%kernel.project_dir%'
