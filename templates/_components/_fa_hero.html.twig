@@ -25,8 +25,6 @@
  #   class    - extra CSS classes on .fa-hero wrapper (optional)
  #}
 
-{% import '_components/_alva.html.twig' as alva %}
-
 {% macro render(props = {}) %}
     {# Map 'welcoming' → 'happy' since Alva has 9 defined moods #}
     {% set validMoods = ['idle','happy','thinking','focused','working','scanning','warning','celebrating','sleeping'] %}
@@ -39,9 +37,14 @@
          role="region"
          aria-label="{{ props.title|default('') }}">
 
-        {# Alva — left anchor, decorative #}
+        {# Alva — Twig-3-Macro-Scope: import propagiert nicht in Macros,
+           daher via include statt alva.render. Siehe _fa_empty_state. #}
         <div class="fa-hero__alva" aria-hidden="true">
-            {{ alva.render(mood, { size: props.alvaSize|default(140), decorative: true }) }}
+            {% include '_components/_alva.html.twig' with {
+                mood: mood,
+                size: props.alvaSize|default(140),
+                decorative: true
+            } only %}
         </div>
 
         {# Content body #}

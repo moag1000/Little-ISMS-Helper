@@ -27,8 +27,6 @@
  #   class   - extra CSS classes on wrapper (optional)
  #}
 
-{% import '_components/_alva.html.twig' as alva %}
-
 {% macro render(props = {}) %}
     {% set mood = props.mood|default('thinking') %}
     {% set actions = props.actions|default([]) %}
@@ -36,9 +34,15 @@
     <div class="fa-empty-state fa-empty-state--active{{ props.class is defined ? ' ' ~ props.class : '' }}"
          role="status">
 
-        {# Alva character centered #}
+        {# Alva character centered — Twig 3.x doesn't propagate file-top
+           {% import %} into macros reliably, so we use {% include %}
+           against _alva.html.twig's file-level body instead. #}
         <div class="fa-empty-state__alva">
-            {{ alva.render(mood, { size: props.alvaSize|default(96), decorative: true }) }}
+            {% include '_components/_alva.html.twig' with {
+                mood: mood,
+                size: props.alvaSize|default(96),
+                decorative: true
+            } only %}
         </div>
 
         {# Title #}

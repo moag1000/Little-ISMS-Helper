@@ -217,3 +217,16 @@
         </svg>
     </div>
 {% endmacro %}
+
+{# File-level body: render Alva when this template is used via {% include %}.
+   Twig 3.x doesn't propagate file-top imports into nested macro calls
+   reliably, so consumers like _fa_empty_state inline this via include
+   instead of {% import as alva %} + alva.render. #}
+{% if mood is defined %}
+    {{ _self.render(mood, {
+        size:       size|default(120),
+        decorative: decorative|default(false),
+        ariaLabel:  ariaLabel|default(null),
+        class:      class|default('')
+    }) }}
+{% endif %}
