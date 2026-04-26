@@ -7,15 +7,29 @@
    =================================== */
 
 /* ===============================
-   Dark-mode Shadows (Cyberpunk Neon Glow)
-   These add cyan/neon glow ON TOP of standard shadows —
-   not replaceable by Aurora-Tokens which only define colors.
+   Dark-mode RGB Tokens — covers [data-bs-theme="dark"] which
+   fairy-aurora.css doesn't currently target. fairy-aurora.css already
+   sets --primary-rgb / --accent-rgb under html[data-theme="dark"];
+   here we mirror them for the Bootstrap theme-switch selector.
    =============================== */
-[data-theme="dark"],
 [data-bs-theme="dark"] {
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 8px rgba(56, 189, 248, 0.1);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 12px rgba(56, 189, 248, 0.15);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.2);
+    --primary-rgb: 56, 189, 248;
+    --accent-rgb:  167, 139, 250;
+    --success-rgb: 52, 211, 153;
+    --warning-rgb: 251, 191, 36;
+    --danger-rgb:  248, 113, 113;
+}
+
+/* ===============================
+   Dark-mode Shadows — re-declared here so [data-bs-theme="dark"]
+   (Bootstrap theme-switch) gets the same glow treatment that
+   html[data-theme="dark"] already gets from fairy-aurora.css.
+   Tokens compose via --primary-rgb (defined above).
+   =============================== */
+[data-bs-theme="dark"] {
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4),  0 0 8px  rgba(var(--primary-rgb), 0.10);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 12px rgba(var(--primary-rgb), 0.15);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(var(--primary-rgb), 0.20);
 }
 
 /* ===============================
@@ -23,12 +37,12 @@
    =============================== */
 [data-theme="dark"] .kpi-card:hover,
 [data-bs-theme="dark"] .kpi-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 20px rgba(56, 189, 248, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 20px rgba(var(--primary-rgb), 0.15);
 }
 
 [data-theme="dark"] .kpi-card::after,
 [data-bs-theme="dark"] .kpi-card::after {
-    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.08));
+    background: linear-gradient(90deg, transparent, rgba(var(--primary-rgb), 0.08));
 }
 
 /* ===============================
@@ -92,28 +106,28 @@ html[data-bs-theme="dark"] .alert h6 {
 [data-theme="dark"] .info-box,
 [data-bs-theme="dark"] .info-box {
     background-color: var(--primary-tint) !important;
-    border-color: rgba(56, 189, 248, 0.5) !important;
+    border-color: rgba(var(--primary-rgb), 0.5) !important;
     color: var(--primary) !important;
 }
 
 [data-theme="dark"] .warning-box,
 [data-bs-theme="dark"] .warning-box {
     background-color: var(--warning-glow) !important;
-    border-color: rgba(251, 191, 36, 0.5) !important;
+    border-color: rgba(var(--warning-rgb), 0.5) !important;
     color: var(--warning-text) !important;
 }
 
 [data-theme="dark"] .success-box,
 [data-bs-theme="dark"] .success-box {
     background-color: var(--success-glow) !important;
-    border-color: rgba(52, 211, 153, 0.5) !important;
+    border-color: rgba(var(--success-rgb), 0.5) !important;
     color: var(--success) !important;
 }
 
 [data-theme="dark"] .danger-box,
 [data-bs-theme="dark"] .danger-box {
     background-color: var(--danger-glow) !important;
-    border-color: rgba(248, 113, 113, 0.5) !important;
+    border-color: rgba(var(--danger-rgb), 0.5) !important;
     color: var(--danger) !important;
 }
 
@@ -231,7 +245,7 @@ html[data-bs-theme="dark"] .alert h6 {
 [data-bs-theme="dark"] .card-header .bi,
 [data-bs-theme="dark"] .card-header i.bi {
     color: var(--primary) !important;
-    text-shadow: 0 0 8px var(--primary), 0 0 16px rgba(56, 189, 248, 0.5);
+    text-shadow: 0 0 8px var(--primary), 0 0 16px rgba(var(--primary-rgb), 0.5);
     filter: drop-shadow(0 0 2px var(--primary));
 }
 
@@ -239,31 +253,31 @@ html[data-bs-theme="dark"] .alert h6 {
 [data-theme="dark"] .text-primary .bi,
 [data-bs-theme="dark"] .text-primary .bi {
     color: var(--primary) !important;
-    text-shadow: 0 0 8px var(--primary), 0 0 16px rgba(56, 189, 248, 0.4);
+    text-shadow: 0 0 8px var(--primary), 0 0 16px rgba(var(--primary-rgb), 0.4);
 }
 
 [data-theme="dark"] .text-success .bi,
 [data-bs-theme="dark"] .text-success .bi {
     color: var(--success) !important;
-    text-shadow: 0 0 8px var(--success), 0 0 16px rgba(52, 211, 153, 0.4);
+    text-shadow: 0 0 8px var(--success), 0 0 16px rgba(var(--success-rgb), 0.4);
 }
 
 [data-theme="dark"] .text-danger .bi,
 [data-bs-theme="dark"] .text-danger .bi {
     color: var(--danger) !important;
-    text-shadow: 0 0 8px var(--danger), 0 0 16px rgba(248, 113, 113, 0.4);
+    text-shadow: 0 0 8px var(--danger), 0 0 16px rgba(var(--danger-rgb), 0.4);
 }
 
 [data-theme="dark"] .text-warning .bi,
 [data-bs-theme="dark"] .text-warning .bi {
     color: var(--warning) !important;
-    text-shadow: 0 0 8px var(--warning), 0 0 16px rgba(251, 191, 36, 0.4);
+    text-shadow: 0 0 8px var(--warning), 0 0 16px rgba(var(--warning-rgb), 0.4);
 }
 
 [data-theme="dark"] .text-info .bi,
 [data-bs-theme="dark"] .text-info .bi {
     color: var(--primary) !important;
-    text-shadow: 0 0 8px var(--primary), 0 0 16px rgba(56, 189, 248, 0.4);
+    text-shadow: 0 0 8px var(--primary), 0 0 16px rgba(var(--primary-rgb), 0.4);
 }
 
 [data-theme="dark"] .text-muted .bi,
@@ -276,14 +290,14 @@ html[data-bs-theme="dark"] .alert h6 {
 [data-theme="dark"] .bi-glow-cyan,
 [data-bs-theme="dark"] .bi-glow-cyan {
     color: var(--primary) !important;
-    text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 30px rgba(56, 189, 248, 0.5);
+    text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 30px rgba(var(--primary-rgb), 0.5);
     filter: drop-shadow(0 0 3px var(--primary));
 }
 
 [data-theme="dark"] .bi-glow-pink,
 [data-bs-theme="dark"] .bi-glow-pink {
     color: var(--accent) !important;
-    text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px rgba(167, 139, 250, 0.5);
+    text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px rgba(var(--accent-rgb), 0.5);
     filter: drop-shadow(0 0 3px var(--accent));
 }
 
