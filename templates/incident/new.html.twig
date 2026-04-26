@@ -42,6 +42,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                 <div data-controller="incident-escalation-preview"
                      data-incident-escalation-preview-preview-url-value="{{ path('app_incident_escalation_preview') }}"
                      data-incident-escalation-preview-translations-value="{{ {

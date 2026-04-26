@@ -41,6 +41,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             <div class="row">
                 {% if analysis.confidentiality is defined %}
                 <div class="col-md-4 mb-3">
@@ -158,6 +159,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             <div class="row">
                 <div class="col-md-6">
                     <dl class="row">

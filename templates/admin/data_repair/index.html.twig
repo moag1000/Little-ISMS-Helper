@@ -67,6 +67,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             <div class="row g-3">
                 <div class="col-md-4">
                     {% embed '_components/_card.html.twig' with { 'class': 'text-center ' ~ (summary.orphaned_count > 0 ? 'bg-warning' : 'bg-success') ~ ' bg-opacity-10' } %}
@@ -186,6 +187,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {% set totalOrphans = 0 %}
             {% for entities in orphanedEntities %}{% set totalOrphans = totalOrphans + entities|length %}{% endfor %}
             {% if totalOrphans == 0 %}
@@ -443,6 +445,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.risk_asset_assignment_desc'|trans({}, 'admin') }) }}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-sm table-striped',
@@ -512,6 +515,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.incident_asset_assignment_desc'|trans({}, 'admin') }) }}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-sm table-striped',
@@ -582,6 +586,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.controls_without_risks_desc'|trans({}, 'admin') }) }}
             <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutRisks|length}, 'admin') }}</p>
             {% embed '_components/_table.html.twig' with {
@@ -644,6 +649,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ _fa_alert.render({ variant: 'info', body: '<strong>' ~ 'common.info'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.controls_without_assets_desc'|trans({}, 'admin') }) }}
             <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutAssets|length}, 'admin') }}</p>
             {% embed '_components/_table.html.twig' with {
@@ -706,6 +712,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> Found ' ~ duplicates.audits|length ~ ' audit number(s) used multiple times within the same tenant.' }) }}
             {% for dup in duplicates.audits %}
                 {% embed '_components/_card.html.twig' with { class: 'mb-3 border-warning' } %}
@@ -745,6 +752,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> Found ' ~ duplicates.assets|length ~ ' asset name(s) used multiple times within the same tenant.' }) }}
             {% for dup in duplicates.assets %}
                 {% embed '_components/_card.html.twig' with { class: 'mb-3 border-warning' } %}
@@ -782,6 +790,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ _fa_alert.render({ variant: 'info', body: 'Found ' ~ inconsistentData.audits_completed_without_date|length ~ ' audit(s) marked as completed but missing actual completion date.' }) }}
             <ul>
             {% for audit in inconsistentData.audits_completed_without_date %}
@@ -806,6 +815,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ _fa_alert.render({ variant: 'info', body: 'Found ' ~ inconsistentData.risks_residual_higher_than_inherent|length ~ ' risk(s) where residual risk is higher than inherent risk (should never happen).' }) }}
             <ul>
             {% for risk in inconsistentData.risks_residual_higher_than_inherent %}
@@ -832,6 +842,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ _fa_alert.render({ variant: 'danger', body: '<strong>' ~ 'common.error'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.broken_references_desc'|trans({}, 'admin') }) }}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-sm table-striped',

@@ -76,6 +76,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {% if roles|length > 0 %}
                 {% embed '_components/_table.html.twig' with {
                     'class': 'table-hover',

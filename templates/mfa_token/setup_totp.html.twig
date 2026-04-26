@@ -129,6 +129,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     {{ _fa_alert.render({ variant: 'danger', title: 'mfa_token.backup_codes.warning'|trans({}, 'mfa'), body: 'mfa_token.backup_codes.warning_text'|trans({}, 'mfa') }) }}
 
                     <p class="small">{{ 'mfa_token.backup_codes.description'|trans({}, 'mfa') }}</p>

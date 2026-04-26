@@ -30,6 +30,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     <p class="lead">{{ 'mfa.setup_totp.scan_instructions'|trans({}, 'mfa') }}</p>
 
                     <div class="text-center mb-4">

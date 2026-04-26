@@ -231,6 +231,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     {% if user.hasMfaEnabled %}
                         <p class="mb-2">
                             {% include '_components/_badge.html.twig' with { variant: 'success', content: 'user.profile.mfa.enabled'|trans({}, 'user') } %}

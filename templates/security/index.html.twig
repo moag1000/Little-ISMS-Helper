@@ -91,6 +91,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     {% if stats.owasp_2025.exists %}
                         <div class="row">
                             <div class="col-md-3">
@@ -159,6 +160,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     {% if stats.owasp_2021.exists %}
                         <div class="row">
                             <div class="col-md-3">

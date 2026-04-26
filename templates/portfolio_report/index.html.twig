@@ -187,6 +187,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {% if matrix.frameworks|length == 0 %}
                 {{ _fa_alert.render({ variant: 'info', class: 'mb-0 m-3', body: 'portfolio_report.matrix.no_frameworks'|trans({}, 'portfolio_report') }) }}
             {% else %}

@@ -1,0 +1,29 @@
+{#
+ # FairyAurora v4.1 — fa-entity-badge macro
+ #
+ # ISMS-Entity-Marker (Finding, Risk, Control, Evidence, Policy, Asset,
+ # Incident, Audit, Training, Nonconformity). Größer als status-pill,
+ # für Listen-Header und Detail-Marker.
+ #
+ # Usage:
+ #   {% import '_components/_fa_entity_badge.html.twig' as _fa_entity_badge %}
+ #   {{ _fa_entity_badge.render({ type: 'risk', icon: 'risk-register', label: 'Risk' }) }}
+ #
+ # Parameters:
+ #   type  - finding|nonconformity|risk|control|evidence|policy|asset|incident|audit|training
+ #   icon  - fa-icon-- name (optional)
+ #   label - text content (required)
+ #   class - extra CSS classes (optional)
+ #}
+
+{% macro render(props = {}) %}
+    {% set type = props.type|default('policy') %}
+    {% set classes = ['fa-entity-badge', 'fa-entity-badge--' ~ type] %}
+    {% if props.class is defined and props.class %}{% set classes = classes|merge([props.class]) %}{% endif %}
+    <span class="{{ classes|join(' ') }}">
+        {% if props.icon is defined and props.icon %}
+            <i class="fa-icon fa-icon--{{ props.icon }}" aria-hidden="true"></i>
+        {% endif %}
+        {{ props.label|default('') }}
+    </span>
+{% endmacro %}

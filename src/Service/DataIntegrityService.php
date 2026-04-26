@@ -234,11 +234,12 @@ class DataIntegrityService
             }
         }
 
-        // Document duplicates by title
+        // Document duplicates by original filename (Document has no getTitle())
         $docsByTenant = [];
         foreach ($this->documentRepository->findAll() as $doc) {
-            if ($doc->getTenant() && $doc->getTitle()) {
-                $key = $doc->getTenant()->getId() . '_' . strtolower(trim($doc->getTitle()));
+            $name = $doc->getOriginalFilename() ?? $doc->getFilename();
+            if ($doc->getTenant() && $name !== null && $name !== '') {
+                $key = $doc->getTenant()->getId() . '_' . strtolower(trim($name));
                 $docsByTenant[$key][] = $doc;
             }
         }

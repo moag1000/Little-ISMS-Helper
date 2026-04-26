@@ -1,0 +1,64 @@
+{#
+ # FairyAurora v4.1 — fa-entity-card macro
+ #
+ # Listen-Item-Card mit Entity-Icon links, Title + Meta in der Mitte,
+ # Status-Pill rechts. Optionale linke Akzent-Leiste pro Entity-Type.
+ #
+ # Usage:
+ #   {% import '_components/_fa_entity_card.html.twig' as _fa_entity_card %}
+ #   {{ _fa_entity_card.render({
+ #       type:    'finding',
+ #       icon:    'finding',
+ #       title:   'F-2026-014 Lückenhafte Logging-Konfig',
+ #       meta:    ['ISO 27001 A.8.15', 'fällig 12.05.'],
+ #       href:    path('finding_show', {id: 14}),
+ #       status:  { variant: 'warning', label: 'Offen' },
+ #       compact: false
+ #   }) }}
+ #
+ # Parameters:
+ #   type    - finding|nonconformity|risk|control|evidence|incident|audit (optional, sets accent)
+ #   icon    - fa-icon-- name (optional)
+ #   title   - card title (required)
+ #   meta    - array of strings (optional, joined with ·)
+ #   href    - if set, whole card becomes a link (optional)
+ #   status  - { variant: success|warning|danger|info|neutral, label: '...' } (optional)
+ #   compact - true → tighter padding, smaller icon (optional, default false)
+ #   class   - extra CSS classes (optional)
+ #}
+
+{% macro render(props = {}) %}
+    {% set classes = ['fa-entity-card'] %}
+    {% if props.type is defined and props.type %}{% set classes = classes|merge(['fa-entity-card--' ~ props.type]) %}{% endif %}
+    {% if props.compact is defined and props.compact %}{% set classes = classes|merge(['fa-entity-card--compact']) %}{% endif %}
+    {% if props.class is defined and props.class %}{% set classes = classes|merge([props.class]) %}{% endif %}
+
+    {% set tag = props.href is defined and props.href ? 'a' : 'article' %}
+    <{{ tag }} class="{{ classes|join(' ') }}"
+        {%- if props.href is defined and props.href %} href="{{ props.href }}"{% endif -%}
+    >
+        {% if props.icon is defined and props.icon %}
+            <div class="fa-entity-card__icon">
+                <i class="fa-icon fa-icon--{{ props.icon }}" aria-hidden="true"></i>
+            </div>
+        {% endif %}
+
+        <div class="fa-entity-card__body">
+            <h4 class="fa-entity-card__title">{{ props.title|default('') }}</h4>
+            {% if props.meta is defined and props.meta %}
+                <div class="fa-entity-card__meta">
+                    {% for item in props.meta %}
+                        <span>{{ item }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        {% if props.status is defined and props.status %}
+            {% set variant = props.status.variant|default('neutral') %}
+            <div class="fa-entity-card__status">
+                <span class="fa-status-pill fa-status-pill--{{ variant }}">{{ props.status.label|default('') }}</span>
+            </div>
+        {% endif %}
+    </{{ tag }}>
+{% endmacro %}
