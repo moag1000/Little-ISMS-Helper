@@ -35,7 +35,7 @@
                 {% block card_body %}
                 <div class="list-group list-group-flush">
                     <a href="{{ path('app_security_report') }}" class="list-group-item list-group-item-action active">
-                        <i class="bi bi-shield-check me-2" aria-hidden="true"></i>{{ 'security_reports.nav.overview'|trans({}, 'security_reports') }}
+                        <i class="fa-icon fa-icon--compliance-shield me-2" aria-hidden="true"></i>{{ 'security_reports.nav.overview'|trans({}, 'security_reports') }}
                     </a>
                     <a href="{{ path('app_security_report_2025') }}" class="list-group-item list-group-item-action {% if not stats.owasp_2025.exists %}disabled{% endif %}">
                         <i class="bi bi-file-earmark-bar-graph me-2" aria-hidden="true"></i>{{ 'security_reports.nav.owasp_2025'|trans({}, 'security_reports') }}
@@ -86,7 +86,7 @@
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
                         <h2 class="card-title mb-0">
-                            <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>{{ 'security_reports.card.owasp_2025_title'|trans({}, 'security_reports') }}
+                            <i class="fa-icon fa-icon--control me-2" aria-hidden="true"></i>{{ 'security_reports.card.owasp_2025_title'|trans({}, 'security_reports') }}
                         </h2>
                     </div>
                 {% endblock %}
@@ -140,7 +140,7 @@
                                 <i class="bi bi-calendar me-1" aria-hidden="true"></i>{{ 'security_reports.label.generated_at'|trans({}, 'security_reports') }}: {{ stats.owasp_2025.generated_at }}
                             </small>
                             <a href="{{ path('app_security_report_2025') }}" class="btn btn-primary btn-sm">
-                                <i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>{{ 'security_reports.label.view_report'|trans({}, 'security_reports') }}
+                                <i class="fa-icon fa-icon--policy me-1" aria-hidden="true"></i>{{ 'security_reports.label.view_report'|trans({}, 'security_reports') }}
                             </a>
                             </div>
                     {% else %}
@@ -154,7 +154,7 @@
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
                         <h2 class="card-title mb-0">
-                            <i class="bi bi-shield-check me-2" aria-hidden="true"></i>{{ 'security_reports.nav.owasp_2021'|trans({}, 'security_reports') }} (Legacy)
+                            <i class="fa-icon fa-icon--compliance-shield me-2" aria-hidden="true"></i>{{ 'security_reports.nav.owasp_2021'|trans({}, 'security_reports') }} (Legacy)
                         </h2>
                     </div>
                 {% endblock %}
@@ -208,7 +208,7 @@
                                 <i class="bi bi-calendar me-1" aria-hidden="true"></i>{{ 'security_reports.label.generated_at'|trans({}, 'security_reports') }}: {{ stats.owasp_2021.generated_at }}
                             </small>
                             <a href="{{ path('app_security_report_2021') }}" class="btn btn-primary btn-sm">
-                                <i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>{{ 'security_reports.label.view_report'|trans({}, 'security_reports') }}
+                                <i class="fa-icon fa-icon--policy me-1" aria-hidden="true"></i>{{ 'security_reports.label.view_report'|trans({}, 'security_reports') }}
                             </a>
                         </div>
                     {% else %}

@@ -16,7 +16,7 @@
         <div class="col-lg-8 offset-lg-2">
             <div class="alert alert-danger">
                 <h2 class="alert-heading h4">
-                    <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.warning'|trans({}, 'mfa') }}
+                    <i class="fa-icon fa-icon--breach" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.warning'|trans({}, 'mfa') }}
                 </h2>
                 <p>{{ 'mfa_token.backup_codes.warning_text'|trans({}, 'mfa') }}</p>
                 <hr>
@@ -104,7 +104,7 @@
                     </ul>
 
                     <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {{ 'mfa_token.backup_codes.regenerate_warning'|trans({}, 'mfa') }}
                     </div>
                 {% endblock %}

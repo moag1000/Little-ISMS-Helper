@@ -66,7 +66,7 @@
                     {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="bi bi-check-circle text-success icon-2rem" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--status-ok icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
                                 <div class="text-muted small mb-1">{{ 'management_review.statistics.completed'|trans({}, 'management_review') }}</div>
@@ -146,7 +146,7 @@
                         </td>
                         <td>
                             {% if review.participants|length > 0 %}
-                            <i class="bi bi-people" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--group" aria-hidden="true"></i>
                             {% include '_components/_badge.html.twig' with { variant: 'primary', content: review.participants|length } %}
                             {% else %}
                             <span class="text-muted">-</span>
@@ -194,7 +194,7 @@
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
                 <h3 class="modal-title h5" id="deleteModalLabel{{ review.id }}">
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'management_review.confirm_delete'|trans({}, 'management_review') }}
+                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'management_review.confirm_delete'|trans({}, 'management_review') }}
                 </h3>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
             </div>

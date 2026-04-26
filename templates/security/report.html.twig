@@ -35,7 +35,7 @@
                 {% block card_body %}
                     <div class="list-group list-group-flush">
                         <a href="{{ path('app_security_report') }}" class="list-group-item list-group-item-action">
-                            <i class="bi bi-shield-check me-2" aria-hidden="true"></i>{{ 'security_reports.nav.overview'|trans({}, 'security_reports') }}
+                            <i class="fa-icon fa-icon--compliance-shield me-2" aria-hidden="true"></i>{{ 'security_reports.nav.overview'|trans({}, 'security_reports') }}
                         </a>
                         <a href="{{ path('app_security_report_2025') }}" class="list-group-item list-group-item-action {% if report_version == '2025 RC1' %}active{% endif %}">
                             <i class="bi bi-file-earmark-bar-graph me-2" aria-hidden="true"></i>{{ 'security_reports.nav.owasp_2025'|trans({}, 'security_reports') }}

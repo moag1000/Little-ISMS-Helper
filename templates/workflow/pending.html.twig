@@ -120,7 +120,7 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ instance.id) }}">
                         <div class="modal-header">
                             <h2 class="modal-title h5">
-                                <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                 {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
                             </h2>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
@@ -158,7 +158,7 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ instance.id) }}">
                         <div class="modal-header bg-danger text-white">
                             <h2 class="modal-title h5">
-                                <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                                 {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
                             </h2>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>

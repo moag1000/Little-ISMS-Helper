@@ -40,7 +40,7 @@
                             </div>
                         {% else %}
                             <div class="text-center mb-5">
-                                <i class="bi bi-shield text-primary fa-glyph-size-xl" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--control fa-icon--primary fa-glyph-size-xl" aria-hidden="true"></i>
                                 <h2 class="mt-3">{{ 'setup.welcome_title'|trans({}, 'setup') }}</h2>
                                 <p class="lead text-muted">
                                     {{ 'setup.welcome_subtitle'|trans({}, 'setup') }}
@@ -51,7 +51,7 @@
                                 <div class="col-md-6">
                                     {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-primary' } %}
                                         {% block card_body %}
-                                            <i class="bi bi-check-circle text-primary  mb-3" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--status-ok mb-3" aria-hidden="true"></i>
                                             <p class="h5 mb-3">{{ 'setup.what_will_be_setup'|trans({}, 'setup') }}</p>
                                             <ul class="list-unstyled">
                                                 <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.checklist.check_requirements'|trans({}, 'setup') }}</li>
@@ -90,13 +90,13 @@
                                     </p>
                                     <div class="row g-2">
                                         <div class="col-md-4">
-                                            <small><i class="bi bi-shield-check-check text-primary me-1" aria-hidden="true"></i> {{ 'setup.module_core_isms'|trans({}, 'setup') }}</small>
+                                            <small><i class="fa-icon fa-icon--compliance-shield-check fa-icon--primary me-1" aria-hidden="true"></i> {{ 'setup.module_core_isms'|trans({}, 'setup') }}</small>
                                         </div>
                                         <div class="col-md-4">
                                             <small><i class="bi bi-database text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_asset_management'|trans({}, 'setup') }}</small>
                                         </div>
                                         <div class="col-md-4">
-                                            <small><i class="bi bi-exclamation-triangle text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_risk_management'|trans({}, 'setup') }}</small>
+                                            <small><i class="fa-icon fa-icon--status-warning me-1" aria-hidden="true"></i> {{ 'setup.module_risk_management'|trans({}, 'setup') }}</small>
                                         </div>
                                         <div class="col-md-4">
                                             <small><i class="bi bi-list-check text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_controls'|trans({}, 'setup') }}</small>
@@ -105,7 +105,7 @@
                                             <small><i class="bi bi-bell text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_incident'|trans({}, 'setup') }}</small>
                                         </div>
                                         <div class="col-md-4">
-                                            <small><i class="bi bi-clipboard-check text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_audit'|trans({}, 'setup') }}</small>
+                                            <small><i class="fa-icon fa-icon--sop fa-icon--muted me-1" aria-hidden="true"></i> {{ 'setup.module_audit'|trans({}, 'setup') }}</small>
                                         </div>
                                         <div class="col-md-4">
                                             <small><i class="bi bi-arrow-clockwise text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_bcm'|trans({}, 'setup') }}</small>

@@ -40,7 +40,7 @@
         <div class="heat-map-filters d-none" data-heat-map-target="filters">
             <div class="filter-group">
                 <label class="filter-label" for="heat-map-status-filter">
-                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'analytics.filter.status'|trans({}, 'analytics') }}
+                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'analytics.filter.status'|trans({}, 'analytics') }}
                 </label>
                 <select class="form-select form-select-sm"
                         id="heat-map-status-filter"
@@ -84,7 +84,7 @@
             </div>
             <button class="btn btn-sm btn-outline-danger"
                     data-action="click->heat-map#clearFilters">
-                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'analytics.action.reset_filters'|trans({}, 'analytics') }}
+                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'analytics.action.reset_filters'|trans({}, 'analytics') }}
             </button>
         </div>
     {% endblock %}

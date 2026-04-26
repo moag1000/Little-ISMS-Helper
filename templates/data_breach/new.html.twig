@@ -24,7 +24,7 @@
 
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
-            <div class="card-header"><h2 class="mb-0"><i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'privacy.data_breach.form.title'|trans({}, 'privacy') }}</h2></div>
+            <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--sop" aria-hidden="true"></i> {{ 'privacy.data_breach.form.title'|trans({}, 'privacy') }}</h2></div>
         {% endblock %}
         {% block card_body %}
             {{ form_start(form) }}
@@ -36,11 +36,11 @@
                             'fields': ['title', 'detectedAt', 'incident', 'processingActivity']
                         },
                         'notification_content': {
-                            'label': '<i class="bi bi-file-text" aria-hidden="true"></i> Art. 33(3) - Content of Notification'|raw,
+                            'label': '<i class="fa-icon fa-icon--policy" aria-hidden="true"></i> Art. 33(3) - Content of Notification'|raw,
                             'fields': ['affectedDataSubjects', 'dataCategories', 'dataSubjectCategories', 'breachNature', 'likelyConsequences', 'measuresTaken', 'mitigationMeasures']
                         },
                         'risk_assessment': {
-                            'label': '<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> '~ 'data_breach.section.risk_assessment'|trans({}, 'privacy'),
+                            'label': '<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> '~ 'data_breach.section.risk_assessment'|trans({}, 'privacy'),
                             'fields': ['severity', 'riskLevel', 'riskAssessment', 'specialCategoriesAffected', 'criminalDataAffected']
                         },
                         'notification_requirements': {

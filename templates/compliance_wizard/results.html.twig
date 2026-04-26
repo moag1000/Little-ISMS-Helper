@@ -107,7 +107,7 @@
                         {% elseif category.score >= 60 %}bg-warning bg-opacity-10
                         {% else %}bg-danger bg-opacity-10{% endif %}">
                         <div class="d-flex align-items-center">
-                            <i class="{{ category.icon|default('bi-check-circle') }} me-2"></i>
+                            <i class="{{ category.icon|default('fa-icon--status-ok') }} me-2"></i>
                             <span class="fw-semibold">{{ category.name|trans({}, 'wizard') }}</span>
                         </div>
                         <span class="badge
@@ -150,7 +150,7 @@
 
                         {% if completed > 0 %}
                             <span class="text-success me-2">
-                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ completed }}
+                                <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ completed }}
                             </span>
                         {% endif %}
                         {% if partial > 0 %}
@@ -160,7 +160,7 @@
                         {% endif %}
                         {% if failed > 0 %}
                             <span class="text-danger">
-                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ failed }}
+                                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ failed }}
                             </span>
                         {% endif %}
                     </div>

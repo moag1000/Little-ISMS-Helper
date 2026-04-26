@@ -119,13 +119,13 @@
 
                 {% if is_granted('ROLE_AUDITOR') and breach.requiresSubjectNotification and not breach.dataSubjectsNotifiedAt and breach.supervisoryAuthorityNotifiedAt %}
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" data-bs-toggle="modal" data-bs-target="#subjectsModal">
-                        <i class="bi bi-people" aria-hidden="true"></i> {{ 'privacy.data_breach.action.notify_subjects'|trans({}, 'privacy') }}
+                        <i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ 'privacy.data_breach.action.notify_subjects'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
 
                 {% if is_granted('ROLE_AUDITOR') and not breach.requiresSubjectNotification and not breach.noSubjectNotificationReason %}
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-toggle="modal" data-bs-target="#exemptionModal">
-                        <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'privacy.data_breach.action.record_exemption'|trans({}, 'privacy') }}
+                        <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'privacy.data_breach.action.record_exemption'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
 
@@ -133,7 +133,7 @@
                     <form action="{{ path('app_data_breach_close', {id: breach.id}) }}" method="post" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('close' ~ breach.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'privacy.data_breach.action.close_investigation'|trans({}, 'privacy') }}
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'privacy.data_breach.action.close_investigation'|trans({}, 'privacy') }}
                         </button>
                     </form>
                 {% endif %}
@@ -204,7 +204,7 @@
                     {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     <p><strong>{{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }}:</strong>
                         {% if breach.requiresAuthorityNotification %}
-                            <span class="text-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'privacy.data_breach.field.yes'|trans({}, 'privacy') }}</span>
+                            <span class="text-warning"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'privacy.data_breach.field.yes'|trans({}, 'privacy') }}</span>
                         {% else %}
                             <span class="text-muted">{{ 'privacy.data_breach.field.no'|trans({}, 'privacy') }}</span>
                             {% if breach.noNotificationReason %}
@@ -214,7 +214,7 @@
                     </p>
                     {% if breach.supervisoryAuthorityNotifiedAt %}
                         <p><strong>{{ 'privacy.data_breach.field.notified'|trans({}, 'privacy') }}:</strong>
-                            <span class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i') }}</span>
+                            <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i') }}</span>
                         </p>
                         <p><strong>{{ 'privacy.data_breach.field.authority'|trans({}, 'privacy') }}:</strong> {{ breach.supervisoryAuthorityName }}</p>
                         {% if breach.supervisoryAuthorityReference %}
@@ -225,7 +225,7 @@
                             {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'privacy.data_breach.field.delay_reason'|trans({}, 'privacy') ~ ':</strong> ' ~ breach.notificationDelayReason }) }}
                         {% endif %}
                     {% elseif breach.requiresAuthorityNotification %}
-                        <p class="text-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'privacy.data_breach.field.not_yet_notified'|trans({}, 'privacy') }}</p>
+                        <p class="text-danger"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'privacy.data_breach.field.not_yet_notified'|trans({}, 'privacy') }}</p>
                         <p><strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}</p>
                         <p><strong>{{ 'privacy.data_breach.field.time_remaining'|trans({}, 'privacy') }}:</strong>
                             {% set hours = breach.hoursUntilAuthorityDeadline %}
@@ -245,12 +245,12 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'privacy.data_breach.section.subjects'|trans({}, 'privacy') }}</h2></div>
+                    <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ 'privacy.data_breach.section.subjects'|trans({}, 'privacy') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     <p><strong>{{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }}:</strong>
                         {% if breach.requiresSubjectNotification %}
-                            <span class="text-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'privacy.data_breach.field.high_risk'|trans({}, 'privacy') }}</span>
+                            <span class="text-warning"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'privacy.data_breach.field.high_risk'|trans({}, 'privacy') }}</span>
                         {% else %}
                             <span class="text-muted">{{ 'privacy.data_breach.field.no'|trans({}, 'privacy') }}</span>
                             {% if breach.noSubjectNotificationReason %}
@@ -260,12 +260,12 @@
                     </p>
                     {% if breach.dataSubjectsNotifiedAt %}
                         <p><strong>{{ 'privacy.data_breach.field.notified'|trans({}, 'privacy') }}:</strong>
-                            <span class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ breach.dataSubjectsNotifiedAt|date('Y-m-d H:i') }}</span>
+                            <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ breach.dataSubjectsNotifiedAt|date('Y-m-d H:i') }}</span>
                         </p>
                         <p><strong>{{ 'privacy.data_breach.field.subjects_notified'|trans({}, 'privacy') }}:</strong> {{ breach.subjectsNotified|number_format }}</p>
                         <p><strong>{{ 'privacy.data_breach.field.method'|trans({}, 'privacy') }}:</strong> {{ breach.subjectNotificationMethod }}</p>
                     {% elseif breach.requiresSubjectNotification %}
-                        <p class="text-warning"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'privacy.data_breach.field.not_yet_notified'|trans({}, 'privacy') }}</p>
+                        <p class="text-warning"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'privacy.data_breach.field.not_yet_notified'|trans({}, 'privacy') }}</p>
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -303,7 +303,7 @@
     {# Consequences & Measures #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
         {% block card_header %}
-            <div class="card-header"><h2 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'privacy.data_breach.section.consequences'|trans({}, 'privacy') }}</h2></div>
+            <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'privacy.data_breach.section.consequences'|trans({}, 'privacy') }}</h2></div>
         {% endblock %}
         {% block card_body %}
             {% if breach.likelyConsequences %}

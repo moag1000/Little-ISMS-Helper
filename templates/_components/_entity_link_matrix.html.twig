@@ -32,7 +32,7 @@
     {% if source_type != 'risk' %}
         <div class="link-matrix-block" data-testid="link-matrix-risks">
             <h4 class="h6">
-                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                 {{ 'common.link_matrix.related_risks'|trans({}, 'messages') }}
                 {% include '_components/_badge.html.twig' with { variant: 'secondary', content: linked_risks|length } only %}
             </h4>
@@ -84,7 +84,7 @@
     {% if source_type != 'vulnerability' %}
         <div class="link-matrix-block mt-3" data-testid="link-matrix-vulnerabilities">
             <h4 class="h6">
-                <i class="bi bi-bug" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--vulnerability" aria-hidden="true"></i>
                 {{ 'common.link_matrix.related_vulnerabilities'|trans({}, 'messages') }}
                 {% include '_components/_badge.html.twig' with { variant: 'secondary', content: linked_vulnerabilities|length } only %}
             </h4>

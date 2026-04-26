@@ -125,7 +125,7 @@
                                 {% if clause.gaps|length > 0 %}
                                     <span class="text-danger">{{ clause.gaps|length }} {{ 'cert_readiness.gaps_found'|trans({}, 'management_reports') }}</span>
                                 {% else %}
-                                    <span class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i></span>
+                                    <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></span>
                                 {% endif %}
                             </td>
                         </tr>
@@ -148,7 +148,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h3 class="h5 mb-0">
-                            <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'cert_readiness.section.controls_not_started'|trans({}, 'management_reports') }}
+                            <i class="fa-icon fa-icon--breach" aria-hidden="true"></i> {{ 'cert_readiness.section.controls_not_started'|trans({}, 'management_reports') }}
                             <span class="fa-status-pill fa-status-pill--neutral ms-2">{{ controls_not_started|length }}</span>
                         </h3>
                     </div>
@@ -163,7 +163,7 @@
                         {% endfor %}
                     </div>
                     {% else %}
-                    <p class="text-success mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'cert_readiness.all_controls_started'|trans({}, 'management_reports') }}</p>
+                    <p class="text-success mb-0"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'cert_readiness.all_controls_started'|trans({}, 'management_reports') }}</p>
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -188,7 +188,7 @@
                         {% endfor %}
                     </div>
                     {% else %}
-                    <p class="text-success mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'cert_readiness.no_controls_in_progress'|trans({}, 'management_reports') }}</p>
+                    <p class="text-success mb-0"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'cert_readiness.no_controls_in_progress'|trans({}, 'management_reports') }}</p>
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -209,7 +209,7 @@
             <ul class="list-group list-group-flush">
                 {% for gap in critical_gaps %}
                 <li class="list-group-item">
-                    <i class="bi bi-x-circle text-danger" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                     <strong>{{ gap.name|default(gap.check|default('')) }}</strong>
                     {% if gap.description|default('') %}
                         <br><small class="text-muted">{{ gap.description }}</small>

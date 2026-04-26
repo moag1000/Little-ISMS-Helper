@@ -62,7 +62,7 @@
                                         <i class="bi bi-check-circle-fill fs-3 me-3" aria-hidden="true"></i>
                                     </div>
                                     <div>
-                                        <div class="fa-alert__title"><i class="bi bi-check-circle" aria-hidden="true"></i> Hervorragend Lizenzkonform</div>
+                                        <div class="fa-alert__title"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> Hervorragend Lizenzkonform</div>
                                         <p class="mb-0">
                                             {{ compliance_percentage }}% der Pakete haben permissive Lizenzen.
                                             Das Projekt ist für kommerzielle Nutzung freigegeben.
@@ -93,10 +93,10 @@
                                 {% block alert_body %}
                                 <div class="d-flex align-items-center">
                                     <div class="flex-shrink-0">
-                                        <i class="bi bi-exclamation-triangle-fill fs-3 me-3" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-warning fs-3 me-3" aria-hidden="true"></i>
                                     </div>
                                     <div>
-                                        <div class="fa-alert__title"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Prüfung erforderlich</div>
+                                        <div class="fa-alert__title"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Prüfung erforderlich</div>
                                         <p class="mb-0">
                                             {{ compliance_percentage }}% der Pakete haben permissive Lizenzen.
                                             Bitte prüfen Sie problematische Lizenzen im Detail.
@@ -262,7 +262,7 @@
                         {% block card_header %}
                             <div class="card-header bg-warning-subtle text-warning">
                                 <h2 class="h5 mb-0">
-                                    <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>Handlungsbedarf
+                                    <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>Handlungsbedarf
                                 </h2>
                             </div>
                         {% endblock %}
@@ -313,7 +313,7 @@
                     {% block alert_body %}
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <i class="bi bi-exclamation-triangle-fill fs-3 me-3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning fs-3 me-3" aria-hidden="true"></i>
                         </div>
                         <div>
                             <div class="fa-alert__title">Kein Bericht gefunden</div>

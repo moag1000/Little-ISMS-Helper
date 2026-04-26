@@ -38,7 +38,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-file-text" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--policy" aria-hidden="true"></i>
             {{ 'incident.field.description'|trans({}, 'incident') }}
         </h6>
         <p class="mb-0">{{ incident.description }}</p>
@@ -47,14 +47,14 @@
     {% if incident.affectedAssets|length > 0 %}
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-server" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--asset-server" aria-hidden="true"></i>
             {{ 'incident.preview.affected_assets'|trans({'%count%': incident.affectedAssets|length}, 'incident') }}
         </h6>
         <ul class="list-unstyled mb-0">
             {% for asset in incident.affectedAssets|slice(0, 3) %}
             <li class="mb-1">
                 <a href="{{ path('app_asset_show', {id: asset.id}) }}">
-                    <i class="bi bi-server text-primary" aria-hidden="true"></i> {{ asset.name }}
+                    <i class="fa-icon fa-icon--asset-server fa-icon--primary" aria-hidden="true"></i> {{ asset.name }}
                 </a>
             </li>
             {% endfor %}

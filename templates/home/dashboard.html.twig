@@ -44,7 +44,7 @@
                     {% if is_granted('ROLE_MANAGER') %}
                     <li>
                         <a class="dropdown-item" href="{{ path('app_dashboard_ciso') }}">
-                            <i class="bi bi-shield-lock text-primary me-2" aria-hidden="true"></i>{{ 'dashboard.role.ciso'|trans({}, 'dashboard') }}
+                            <i class="fa-icon fa-icon--control fa-icon--primary me-2" aria-hidden="true"></i>{{ 'dashboard.role.ciso'|trans({}, 'dashboard') }}
                         </a>
                     </li>
                     <li>
@@ -61,7 +61,7 @@
                     {% if is_granted('ROLE_AUDITOR') %}
                     <li>
                         <a class="dropdown-item" href="{{ path('app_dashboard_auditor') }}">
-                            <i class="bi bi-clipboard-check text-info me-2" aria-hidden="true"></i>{{ 'dashboard.role.auditor'|trans({}, 'dashboard') }}
+                            <i class="fa-icon fa-icon--sop fa-icon--info me-2" aria-hidden="true"></i>{{ 'dashboard.role.auditor'|trans({}, 'dashboard') }}
                         </a>
                     </li>
                     {% endif %}
@@ -103,7 +103,7 @@
             {% block alert_body %}
                 <div class="d-flex align-items-center">
                     <div class="flex-shrink-0 me-3">
-                        <i class="bi {% if total_overdue > 0 %}bi-exclamation-triangle-fill{% else %}bi-clock-fill{% endif %} fa-glyph-size-md" aria-hidden="true"></i>
+                        <i class="fa-icon {% if total_overdue > 0 %}fa-icon--status-warning{% else %}bi-clock-fill{% endif %} fa-glyph-size-md" aria-hidden="true"></i>
                     </div>
                     <div class="flex-grow-1">
                         <div class="fa-alert__title">
@@ -138,7 +138,7 @@
         <div class="col-lg-3 col-md-6">
             <a href="{{ path('app_asset_index') }}" class="text-decoration-none">
             {{ cards.stat_card(
-                'bi bi-server',
+                'fa-icon fa-icon--asset-server',
                 'bg-primary',
                 'dashboard.stats.registered_assets'|trans({}, 'dashboard'),
                 stats.assets_total|default(0),
@@ -160,7 +160,7 @@
         <div class="col-lg-3 col-md-6">
             <a href="{{ path('app_risk_index') }}" class="text-decoration-none">
             {{ cards.stat_card(
-                'bi bi-exclamation-triangle',
+                'fa-icon fa-icon--status-warning',
                 'bg-warning',
                 'dashboard.stats.identified_risks'|trans({}, 'dashboard'),
                 stats.risks_total|default(0),
@@ -182,11 +182,11 @@
         <div class="col-lg-3 col-md-6">
             <a href="{{ path('app_compliance_index') }}" class="text-decoration-none">
             {{ cards.stat_card(
-                'bi bi-shield-check',
+                'fa-icon fa-icon--compliance-shield',
                 'bg-success',
                 'dashboard.stats.security_controls'|trans({}, 'dashboard'),
                 stats.controls_implemented|default(0) ~ '/' ~ stats.controls_total|default(0),
-                'bi bi-check-circle',
+                'fa-icon fa-icon--status-ok',
                 stats.compliance_percentage|default(0) ~ '% ' ~ 'dashboard.stats.implemented'|trans({}, 'dashboard'),
                 'positive'
             ) }}
@@ -194,7 +194,7 @@
             {% if stats.controls_total|default(0) == 0 %}
                 <div class="text-center mt-1">
                     <a href="{{ path('app_compliance_index') }}" class="text-decoration-none small text-success">
-                        <i class="bi bi-shield-check me-1" aria-hidden="true"></i>{{ 'dashboard.review_controls'|trans({}, 'dashboard') }}
+                        <i class="fa-icon fa-icon--compliance-shield me-1" aria-hidden="true"></i>{{ 'dashboard.review_controls'|trans({}, 'dashboard') }}
                     </a>
                 </div>
             {% endif %}
@@ -280,17 +280,17 @@
         <div class="col-12">
             <div class="d-flex align-items-center gap-2 flex-wrap">
                 <span class="text-muted small me-2">
-                    <i class="bi bi-lightning" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--threat" aria-hidden="true"></i>
                     {{ 'dashboard.quick_actions.title'|trans({}, 'dashboard') }}:
                 </span>
                 <a href="{{ path('app_asset_new') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'dashboard.quick_actions.new_asset'|trans({}, 'dashboard') }}
                 </a>
                 <a href="{{ path('app_risk_new') }}" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm">
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dashboard.quick_actions.new_risk'|trans({}, 'dashboard') }}
+                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'dashboard.quick_actions.new_risk'|trans({}, 'dashboard') }}
                 </a>
                 <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm">
-                    <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'dashboard.quick_actions.controls'|trans({}, 'dashboard') }}
+                    <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'dashboard.quick_actions.controls'|trans({}, 'dashboard') }}
                 </a>
                 <a href="{{ path('app_incident_new') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                     <i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ 'dashboard.quick_actions.report_incident'|trans({}, 'dashboard') }}
@@ -456,7 +456,7 @@
                                             <i class="bi bi-calendar-event" aria-hidden="true"></i>
                                             {{ 'dashboard.overdue_reviews.last_review'|trans({}, 'dashboard') }}: {{ risk.reviewDate|date('d.m.Y') }}
                                         {% else %}
-                                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                             {{ 'dashboard.overdue_reviews.never_reviewed'|trans({}, 'dashboard') }}
                                         {% endif %}
                                     </div>
@@ -526,7 +526,7 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header bg-danger-subtle">
                     <h3 class="widget-title text-danger">
-                        <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {{ 'dashboard.overdue_treatment_plans.title'|trans({}, 'dashboard') }}
                     </h3>
                     {% include '_components/_badge.html.twig' with { variant: 'danger', content: overdue_treatment_plans|length } %}

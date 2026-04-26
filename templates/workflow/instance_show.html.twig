@@ -95,7 +95,7 @@
 {% if instance.status == 'in_progress' and not has_eligible_approvers %}
 <div class="alert {% if is_granted('ROLE_ADMIN') %}alert-warning{% else %}alert-danger{% endif %} mb-4">
     <div class="d-flex align-items-start">
-        <i class="bi bi-exclamation-triangle-fill fs-4 me-3" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--status-warning fs-4 me-3" aria-hidden="true"></i>
         <div class="flex-grow-1">
             <h2 class="alert-heading mb-2">
                 <i class="bi bi-person-exclamation" aria-hidden="true"></i>
@@ -243,7 +243,7 @@
           data-ui-actions-message-param="{{ 'workflow.confirm.cancel'|trans({}, 'workflows') }}">
         <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ instance.id) }}">
         <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
+            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
         </button>
     </form>
     {% endif %}

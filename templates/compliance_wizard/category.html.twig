@@ -27,7 +27,7 @@
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <h1 class="h3 mb-2">
-                                <i class="{{ category.icon|default('bi-check-circle') }} me-2 text-{{ config.color }}"></i>
+                                <i class="{{ category.icon|default('fa-icon--status-ok') }} me-2 text-{{ config.color }}"></i>
                                 {{ category.name|trans({}, 'wizard') }}
                             </h1>
                             {% if category.description is defined %}
