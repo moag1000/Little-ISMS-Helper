@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'tags.admin.page.title'|trans({}, 'tags') }}{% endblock %}
 
@@ -23,9 +24,7 @@
     </div>
 
     {% if tags|length == 0 %}
-        <div class="alert alert-info" role="note">
-            {{ 'tags.admin.empty'|trans({}, 'tags') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'info', body: '{{ \'tags.admin.empty\'|trans({}, \'tags\') }}' }) }}
     {% else %}
         {% embed '_components/_card.html.twig' with {'noPadding': true, 'tags': tags} %}
             {% block card_body %}
@@ -45,7 +44,8 @@
                             {% for tag in tags %}
                                 <tr>
                                     <td>
-                                        <span class="badge bg-{{ tag.color }}">{{ tag.name }}</span>
+                                        {% set _tpill = tag.color in ['info'] ? 'primary' : (tag.color in ['secondary','light','dark'] ? 'neutral' : tag.color) %}
+                                        <span class="badge bg-{{ tag.color }} fa-status-pill fa-status-pill--{{ _tpill }}">{{ tag.name }}</span>
                                         {% if tag.description %}
                                             <br><small class="text-muted">{{ tag.description }}</small>
                                         {% endif %}
@@ -56,7 +56,7 @@
                                         {% if tag.tenant %}
                                             <small class="text-muted">{{ tag.tenant.name }}</small>
                                         {% else %}
-                                            <span class="badge bg-secondary">{{ 'tags.admin.scope_global'|trans({}, 'tags') }}</span>
+                                            <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">{{ 'tags.admin.scope_global'|trans({}, 'tags') }}</span>
                                         {% endif %}
                                     </td>
                                     <td class="text-end">

@@ -1,3 +1,4 @@
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {#
   First Steps Checklist Component
   Shows an onboarding checklist for new ISMS installations.
@@ -60,7 +61,7 @@
             {{ 'first_steps.title'|trans({}, 'dashboard') }}
         </h5>
         <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-body-secondary text-primary">
+            <span class="badge bg-body-secondary text-primary fa-status-pill fa-status-pill--neutral">
                 {{ done_count }}/{{ total_count }} {{ 'first_steps.completed'|trans({}, 'dashboard') }}
             </span>
             <form method="post" action="{{ path('app_dashboard_dismiss_first_steps') }}" class="d-inline">
@@ -109,7 +110,7 @@
                             <div class="small text-muted mt-1">{{ step.description }}</div>
                         </div>
                         <div class="text-end ms-2">
-                            <span class="badge bg-body-secondary text-secondary border" style="font-size: 0.7rem;">{{ step.norm }}</span>
+                            <span class="badge bg-body-secondary text-secondary border fa-status-pill fa-status-pill--neutral" style="font-size: 0.7rem;">{{ step.norm }}</span>
                         </div>
                     </div>
                 </div>
@@ -118,10 +119,7 @@
         </ul>
 
         {# Hint for ISO 9001 users #}
-        <div class="alert alert-info mt-3 mb-0 py-2 small">
-            <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
-            {{ 'first_steps.iso9001_hint'|trans({}, 'dashboard') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'mt-3 mb-0 py-2 small', body: '{{ \'first_steps.iso9001_hint\'|trans({}, \'dashboard\') }}' }) }}
     </div>
 </div>
 {% endif %}

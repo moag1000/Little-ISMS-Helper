@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'incident_sla.title'|trans({}, 'incident_sla') }}{% endblock %}
 
@@ -43,7 +44,8 @@
                                     {% set variant = (config.severity == 'breach' or config.severity == 'critical') ? 'danger' : (config.severity == 'high' ? 'warning' : (config.severity == 'medium' ? 'info' : 'secondary')) %}
                                     <tr>
                                         <td>
-                                            <span class="badge bg-{{ variant }}">
+                                            {% set _svpill = variant in ['info'] ? 'primary' : (variant in ['secondary','light','dark'] ? 'neutral' : variant) %}
+                                        <span class="badge bg-{{ variant }} fa-status-pill fa-status-pill--{{ _svpill }}">
                                                 {{ ('incident_sla.severity.' ~ config.severity)|trans({}, 'incident_sla') }}
                                             </span>
                                         </td>
@@ -65,10 +67,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="alert alert-info small mb-0 mt-3">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i>
-                        {{ 'incident_sla.hint.regulatory'|trans({}, 'incident_sla') }}
-                    </div>
+                    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'small mb-0 mt-3', body: '{{ \'incident_sla.hint.regulatory\'|trans({}, \'incident_sla\') }}' }) }}
                 {% endblock %}
             {% endembed %}
         </div>

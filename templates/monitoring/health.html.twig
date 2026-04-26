@@ -89,18 +89,18 @@
                     <dt class="col-sm-6">{{ 'monitoring.schema.mapping'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-6">
                         {% if health_checks.schema.mapping_in_sync %}
-                            <span class="badge bg-success">{{ 'monitoring.schema.in_sync'|trans({}, 'monitoring') }}</span>
+                            <span class="badge bg-success fa-status-pill fa-status-pill--success">{{ 'monitoring.schema.in_sync'|trans({}, 'monitoring') }}</span>
                         {% else %}
-                            <span class="badge bg-danger">{{ health_checks.schema.mapping_error_count }} {{ 'monitoring.schema.errors'|trans({}, 'monitoring') }}</span>
+                            <span class="badge bg-danger fa-status-pill fa-status-pill--danger">{{ health_checks.schema.mapping_error_count }} {{ 'monitoring.schema.errors'|trans({}, 'monitoring') }}</span>
                         {% endif %}
                     </dd>
 
                     <dt class="col-sm-6">{{ 'monitoring.schema.database'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-6">
                         {% if health_checks.schema.database_in_sync %}
-                            <span class="badge bg-success">{{ 'monitoring.schema.in_sync'|trans({}, 'monitoring') }}</span>
+                            <span class="badge bg-success fa-status-pill fa-status-pill--success">{{ 'monitoring.schema.in_sync'|trans({}, 'monitoring') }}</span>
                         {% else %}
-                            <span class="badge bg-warning-subtle text-warning">{{ health_checks.schema.pending_sql_count }} {{ 'monitoring.schema.pending'|trans({}, 'monitoring') }}</span>
+                            <span class="badge bg-warning-subtle text-warning fa-status-pill fa-status-pill--warning">{{ health_checks.schema.pending_sql_count }} {{ 'monitoring.schema.pending'|trans({}, 'monitoring') }}</span>
                         {% endif %}
                     </dd>
                 </dl>

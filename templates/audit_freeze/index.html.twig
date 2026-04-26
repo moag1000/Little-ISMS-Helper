@@ -86,13 +86,13 @@
                                     </th>
                                     <td>{{ freeze.stichtag|date('Y-m-d') }}</td>
                                     <td>
-                                        <span class="badge bg-secondary">
+                                        <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">
                                             {{ ('audit_freeze.purpose.' ~ freeze.purpose)|trans({}, 'audit_freeze') }}
                                         </span>
                                     </td>
                                     <td>
                                         {% for code in freeze.frameworkCodes %}
-                                            <span class="badge bg-info me-1">{{ code }}</span>
+                                            <span class="badge bg-info fa-status-pill fa-status-pill--primary me-1">{{ code }}</span>
                                         {% endfor %}
                                     </td>
                                     <td>{{ freeze.createdAt|date('Y-m-d H:i') }}</td>

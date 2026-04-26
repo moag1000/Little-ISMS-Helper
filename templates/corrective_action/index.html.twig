@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'corrective_action.page.title'|trans({}, 'audits') }}{% endblock %}
 
@@ -13,10 +14,7 @@
 <div class="container-fluid py-4">
 
     {% if overdue_count > 0 %}
-        <div class="alert alert-warning" role="alert">
-            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-            {{ 'corrective_action.alert.overdue'|trans({'%count%': overdue_count}, 'audits') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'warning', icon: 'bi-exclamation-triangle', body: '{{ \'corrective_action.alert.overdue\'|trans({\'%count%\': overdue_count}, \'audits\') }}' }) }}
     {% endif %}
 
     {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
@@ -44,7 +42,9 @@
                             <tr>
                                 <td>{{ a.title }}</td>
                                 <td>{% if a.finding %}<a href="{{ path('app_audit_finding_show', {id: a.finding.id}) }}">{{ a.finding.(findingNumber ?? ('#' ~ a.finding.id)) }}</a>{% else %}—{% endif %}</td>
-                                <td><span class="badge bg-{{ a.status in ['verified_effective'] ? 'success' : (a.status == 'verified_ineffective' ? 'danger' : 'info') }}">{{ ('corrective_action.status.' ~ a.status)|trans({}, 'audits') }}</span></td>
+                                {% set _csv = a.status in ['verified_effective'] ? 'success' : (a.status == 'verified_ineffective' ? 'danger' : 'info') %}
+                                {% set _csp = a.status in ['verified_effective'] ? 'success' : (a.status == 'verified_ineffective' ? 'danger' : 'primary') %}
+                                <td><span class="badge bg-{{ _csv }} fa-status-pill fa-status-pill--{{ _csp }}">{{ ('corrective_action.status.' ~ a.status)|trans({}, 'audits') }}</span></td>
                                 <td>{{ a.responsiblePerson ? a.responsiblePerson.fullName : '—' }}</td>
                                 <td>
                                     {% if a.plannedCompletionDate %}

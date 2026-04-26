@@ -85,7 +85,8 @@
                                     <td class="text-end">{{ session.rowCountSuperseded }}</td>
                                     <td class="text-end">{{ session.rowCountSkipped }}</td>
                                     <td>
-                                        <span class="badge bg-{{ status_variant }}">
+                                        {% set _spill = status_variant in ['info'] ? 'primary' : (status_variant in ['secondary','light','dark'] ? 'neutral' : status_variant) %}
+                                        <span class="badge bg-{{ status_variant }} fa-status-pill fa-status-pill--{{ _spill }}">
                                             {{ ('compliance_import.history.status.' ~ session.status)|trans({}, 'compliance_import') }}
                                         </span>
                                     </td>

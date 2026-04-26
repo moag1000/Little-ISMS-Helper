@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'loader_fixer.page.title'|trans({}, 'loader_fixer') }}{% endblock %}
 
@@ -26,13 +27,7 @@
         </form>
     </div>
 
-    <div class="alert alert-info d-flex gap-2" role="note">
-        <i class="bi bi-info-circle mt-1" aria-hidden="true"></i>
-        <div>
-            <strong>{{ 'loader_fixer.hint.heading'|trans({}, 'loader_fixer') }}</strong>
-            <div class="small">{{ 'loader_fixer.hint.body'|trans({}, 'loader_fixer') }}</div>
-        </div>
-    </div>
+    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2', body: '<div> <strong>{{ \'loader_fixer.hint.heading\'|trans({}, \'loader_fixer\') }}</strong> <div class="small">{{ \'loader_fixer.hint.body\'|trans({}, \'loader_fixer\') }}</div> </div>' }) }}
 
     <div class="table-responsive">
         <table class="table table-hover align-middle" aria-label="{{ 'loader_fixer.page.title'|trans({}, 'loader_fixer') }}">
@@ -53,17 +48,17 @@
                         <td class="text-end"><strong>{{ row.loaded_count }}</strong></td>
                         <td class="text-center">
                             {% if not row.exists %}
-                                <span class="badge bg-secondary">
+                                <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">
                                     <i class="bi bi-dash-circle" aria-hidden="true"></i>
                                     {{ 'loader_fixer.status.not_loaded'|trans({}, 'loader_fixer') }}
                                 </span>
                             {% elseif row.loaded_count == 0 %}
-                                <span class="badge bg-warning-subtle text-warning">
+                                <span class="badge bg-warning-subtle text-warning fa-status-pill fa-status-pill--warning">
                                     <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                     {{ 'loader_fixer.status.empty'|trans({}, 'loader_fixer') }}
                                 </span>
                             {% else %}
-                                <span class="badge bg-success">
+                                <span class="badge bg-success fa-status-pill fa-status-pill--success">
                                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                     {{ 'loader_fixer.status.loaded'|trans({}, 'loader_fixer') }}
                                 </span>

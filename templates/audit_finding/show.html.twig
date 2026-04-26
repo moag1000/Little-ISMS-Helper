@@ -67,7 +67,7 @@
                             {% for ca in finding.correctiveActions %}
                                 <tr>
                                     <td>{{ ca.title }}</td>
-                                    <td><span class="badge bg-info">{{ ('corrective_action.status.' ~ ca.status)|trans({}, 'audits') }}</span></td>
+                                    <td><span class="badge bg-info fa-status-pill fa-status-pill--primary">{{ ('corrective_action.status.' ~ ca.status)|trans({}, 'audits') }}</span></td>
                                     <td>{{ ca.responsiblePerson ? ca.responsiblePerson.fullName : '—' }}</td>
                                     <td>
                                         {% if ca.plannedCompletionDate %}

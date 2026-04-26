@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'industry_baseline.title'|trans({}, 'industry_baseline') }}{% endblock %}
@@ -19,16 +20,10 @@
 
     <main class="fa-aurora-surface">
 
-    <div class="alert alert-info d-flex gap-2" role="note">
-        <i class="bi bi-info-circle mt-1" aria-hidden="true"></i>
-        <div class="small">{{ 'industry_baseline.intro'|trans({}, 'industry_baseline')|raw }}</div>
-    </div>
+    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2', body: '<div class="small">{{ \'industry_baseline.intro\'|trans({}, \'industry_baseline\')|raw }}</div>' }) }}
 
     {% if baselines is empty %}
-        <div class="alert alert-warning">
-            {{ 'industry_baseline.empty'|trans({}, 'industry_baseline') }}
-            <code>php bin/console app:load-industry-baselines</code>
-        </div>
+        {{ _fa_alert.render({ variant: 'warning', body: '{{ \'industry_baseline.empty\'|trans({}, \'industry_baseline\') }} <code>php bin/console app:load-industry-baselines</code>' }) }}
     {% else %}
         <div class="row row-cols-1 row-cols-md-2 g-3">
             {% for baseline in baselines %}
@@ -44,12 +39,12 @@
                                     {{ baseline.name }}
                                 </h2>
                                 {% if applied %}
-                                    <span class="badge bg-success">
+                                    <span class="badge bg-success fa-status-pill fa-status-pill--success">
                                         <i class="bi bi-check-circle" aria-hidden="true"></i>
                                         {{ 'industry_baseline.status.applied'|trans({}, 'industry_baseline') }}
                                     </span>
                                 {% elseif inheritedRecord %}
-                                    <span class="badge bg-info" title="{{ 'industry_baseline.status.inherited_from'|trans({'%tenant%': inheritedRecord.tenant.name}, 'industry_baseline') }}">
+                                    <span class="badge bg-info fa-status-pill fa-status-pill--primary" title="{{ 'industry_baseline.status.inherited_from'|trans({'%tenant%': inheritedRecord.tenant.name}, 'industry_baseline') }}">
                                         <i class="bi bi-diagram-3" aria-hidden="true"></i>
                                         {{ 'industry_baseline.status.inherited_short'|trans({}, 'industry_baseline') }}
                                     </span>
@@ -58,18 +53,18 @@
                         {% endblock %}
                         {% block card_body %}
                             <div class="mb-2 small">
-                                <span class="badge bg-secondary me-1">
+                                <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral me-1">
                                     {{ ('industry_baseline.industry.' ~ baseline.industry)|trans({}, 'industry_baseline') }}
                                 </span>
-                                <span class="badge bg-body-secondary border">v{{ baseline.version }}</span>
-                                <span class="badge bg-body-secondary border">{{ baseline.source }}</span>
+                                <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">v{{ baseline.version }}</span>
+                                <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">{{ baseline.source }}</span>
                             </div>
                             <p class="small text-muted mb-3">{{ baseline.description|u.truncate(200, '…') }}</p>
                             <dl class="row small mb-3">
                                 <dt class="col-sm-5">{{ 'industry_baseline.field.required_frameworks'|trans({}, 'industry_baseline') }}:</dt>
                                 <dd class="col-sm-7">
                                     {% for code in baseline.requiredFrameworks %}
-                                        <span class="badge bg-info me-1">{{ code }}</span>
+                                        <span class="badge bg-info fa-status-pill fa-status-pill--primary me-1">{{ code }}</span>
                                     {% endfor %}
                                 </dd>
                                 <dt class="col-sm-5">{{ 'industry_baseline.field.preset_risks'|trans({}, 'industry_baseline') }}:</dt>

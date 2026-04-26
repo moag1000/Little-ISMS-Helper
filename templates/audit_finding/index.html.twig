@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'audit_finding.page.title'|trans({}, 'audits') }}{% endblock %}
 
@@ -17,10 +18,7 @@
 <div class="container-fluid py-4">
 
     {% if overdue_count > 0 %}
-        <div class="alert alert-warning" role="alert">
-            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-            {{ 'audit_finding.alert.overdue'|trans({'%count%': overdue_count}, 'audits') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'warning', icon: 'bi-exclamation-triangle', body: '{{ \'audit_finding.alert.overdue\'|trans({\'%count%\': overdue_count}, \'audits\') }}' }) }}
     {% endif %}
 
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
@@ -84,12 +82,15 @@
                             <tr>
                                 <td>{{ f.(findingNumber ?? ('#' ~ f.id)) }}</td>
                                 <td>{{ f.title }}</td>
-                                <td><span class="badge bg-secondary">{{ ('audit_finding.type.' ~ f.type)|trans({}, 'audits') }}</span></td>
+                                <td><span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">{{ ('audit_finding.type.' ~ f.type)|trans({}, 'audits') }}</span></td>
                                 <td>
                                     {% set sevClass = {critical: 'danger', high: 'warning', medium: 'info', low: 'secondary'}[f.severity] ?? 'secondary' %}
-                                    <span class="badge bg-{{ sevClass }}">{{ ('audit_finding.severity.' ~ f.severity)|trans({}, 'audits') }}</span>
+                                    {% set sevPill = {critical: 'danger', high: 'warning', medium: 'primary', low: 'neutral'}[f.severity] ?? 'neutral' %}
+                                    <span class="badge bg-{{ sevClass }} fa-status-pill fa-status-pill--{{ sevPill }}">{{ ('audit_finding.severity.' ~ f.severity)|trans({}, 'audits') }}</span>
                                 </td>
-                                <td><span class="badge bg-{{ f.status == 'open' ? 'warning' : (f.status in ['verified', 'closed'] ? 'success' : 'info') }}">{{ ('audit_finding.status.' ~ f.status)|trans({}, 'audits') }}</span></td>
+                                {% set _statusV = f.status == 'open' ? 'warning' : (f.status in ['verified', 'closed'] ? 'success' : 'info') %}
+                                {% set _statusPill = f.status == 'open' ? 'warning' : (f.status in ['verified', 'closed'] ? 'success' : 'primary') %}
+                                <td><span class="badge bg-{{ _statusV }} fa-status-pill fa-status-pill--{{ _statusPill }}">{{ ('audit_finding.status.' ~ f.status)|trans({}, 'audits') }}</span></td>
                                 <td>
                                     {% if f.dueDate %}
                                         <span {% if f.isOverdue %}class="text-danger fw-bold"{% endif %}>

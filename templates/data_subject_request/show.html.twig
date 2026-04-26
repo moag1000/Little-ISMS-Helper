@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'data_subject_request' %}
 
 {% block title %}{{ 'dsr.page.show_title'|trans({'%id%': dsr.id}, 'data_subject_request') }}{% endblock %}
@@ -24,17 +25,9 @@
 
     {# Overdue Warning #}
     {% if dsr.overdue %}
-        <div class="alert alert-danger" role="alert">
-            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-            <strong>{{ 'dsr.alert.overdue_title'|trans({}, 'data_subject_request') }}</strong>
-            {{ 'dsr.alert.overdue_single'|trans({'%days%': dsr.daysUntilDeadline|abs}, 'data_subject_request') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'danger', icon: 'status-warning', body: '<strong>{{ \'dsr.alert.overdue_title\'|trans({}, \'data_subject_request\') }}</strong> {{ \'dsr.alert.overdue_single\'|trans({\'%days%\': dsr.daysUntilDeadline|abs}, \'data_subject_request\') }}' }) }}
     {% elseif dsr.status not in ['completed', 'rejected'] and dsr.daysUntilDeadline <= 7 %}
-        <div class="alert alert-warning" role="alert">
-            <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
-            <strong>{{ 'dsr.alert.deadline_approaching'|trans({}, 'data_subject_request') }}</strong>
-            {{ 'dsr.deadline.remaining_days'|trans({'%days%': dsr.daysUntilDeadline}, 'data_subject_request') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'warning', icon: 'status-pending', body: '<strong>{{ \'dsr.alert.deadline_approaching\'|trans({}, \'data_subject_request\') }}</strong> {{ \'dsr.deadline.remaining_days\'|trans({\'%days%\': dsr.daysUntilDeadline}, \'data_subject_request\') }}' }) }}
     {% endif %}
 
     <div class="row">
@@ -51,7 +44,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <p><strong>{{ 'dsr.field.request_type'|trans({}, 'data_subject_request') }}:</strong><br>
-                                <span class="badge bg-info">{{ ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') }}</span>
+                                <span class="badge bg-info fa-status-pill fa-status-pill--primary">{{ ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') }}</span>
                                 <small class="text-muted ms-1">({{ dsr.gdprArticle }})</small>
                             </p>
                             <p><strong>{{ 'dsr.field.status'|trans({}, 'data_subject_request') }}:</strong><br>

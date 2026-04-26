@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance.mapping.seed_review.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -29,24 +30,21 @@
         <a href="{{ path('app_compliance_mapping_seed_review', {origin: 'all'}) }}"
            class="btn btn-sm {% if filter == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}">
             {{ 'compliance.mapping.seed_review.filter.all'|trans({}, 'compliance') }}
-            <span class="badge bg-body-secondary ms-1">{{ counts.all|default(0) }}</span>
+            <span class="badge bg-body-secondary fa-status-pill fa-status-pill--neutral ms-1">{{ counts.all|default(0) }}</span>
         </a>
         {% for origin, n in counts %}
             {% if origin != 'all' %}
                 <a href="{{ path('app_compliance_mapping_seed_review', {origin: origin}) }}"
                    class="btn btn-sm {% if filter == origin %}btn-primary{% else %}btn-outline-secondary{% endif %}">
                     <code>{{ origin }}</code>
-                    <span class="badge bg-body-secondary ms-1">{{ n }}</span>
+                    <span class="badge bg-body-secondary fa-status-pill fa-status-pill--neutral ms-1">{{ n }}</span>
                 </a>
             {% endif %}
         {% endfor %}
     </div>
 
     {% if mappings|length == 0 %}
-        <div class="alert alert-success">
-            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-            {{ 'compliance.mapping.seed_review.empty'|trans({}, 'compliance') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'success', icon: 'status-ok', body: '{{ \'compliance.mapping.seed_review.empty\'|trans({}, \'compliance\') }}' }) }}
     {% else %}
         <div class="card fa-section shadow-sm">
             <div class="card-header">

@@ -25,7 +25,7 @@
     {% for code, row in coverage.frameworks %}
         <details class="mb-2">
             <summary class="d-inline-flex align-items-center gap-2" style="cursor: pointer;">
-                <span class="badge bg-body-secondary border">{{ code }}</span>
+                <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">{{ code }}</span>
                 <span class="small">{{ row.framework.name }}</span>
                 <span class="badge text-bg-info">{{ row.requirements|length }}</span>
             </summary>

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance.mapping.seeds.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -50,7 +51,7 @@
                                         {{ 'compliance.mapping.seeds.status.loaded'|trans({'%count%': seed.currently_loaded}, 'compliance') }}
                                     </span>
                                 {% else %}
-                                    <span class="badge bg-body-secondary border">
+                                    <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">
                                         {{ 'compliance.mapping.seeds.status.not_loaded'|trans({}, 'compliance') }}
                                     </span>
                                 {% endif %}
@@ -68,13 +69,7 @@
                         </p>
 
                         {% if not seed.source_loaded or not seed.target_loaded %}
-                            <div class="alert alert-warning small mb-2">
-                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                                {{ 'compliance.mapping.seeds.flash.framework_missing'|trans({
-                                    '%source%': seed.source_code,
-                                    '%target%': seed.target_code
-                                }, 'compliance') }}
-                            </div>
+                            {{ _fa_alert.render({ variant: 'warning', icon: 'status-warning', class: 'small mb-2', body: '{{ \'compliance.mapping.seeds.flash.framework_missing\'|trans({ \'%source%\': seed.source_code, \'%target%\': seed.target_code }, \'compliance\') }}' }) }}
                             <button type="button" class="btn btn-primary w-100" disabled>
                                 {{ 'compliance.mapping.seeds.action.apply'|trans({}, 'compliance') }}
                             </button>
@@ -98,9 +93,6 @@
         {% endfor %}
     </div>
 
-    <div class="alert alert-info mt-4 small">
-        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-        {{ 'compliance.mapping.seeds.footer_hint'|trans({}, 'compliance') }}
-    </div>
+    {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'mt-4 small', body: '{{ \'compliance.mapping.seeds.footer_hint\'|trans({}, \'compliance\') }}' }) }}
 </div>
 {% endblock %}

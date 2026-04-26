@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'help' %}
 
 {% block title %}{{ 'help.iso9001_bridge.title'|trans({}, 'help') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -67,7 +68,7 @@
                                     {{ 'help.iso9001_bridge.map.context.module'|trans({}, 'help') }}
                                 </a>
                             </td>
-                            <td><span class="badge bg-secondary">ISO 27001 4.1-4.4</span></td>
+                            <td><span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">ISO 27001 4.1-4.4</span></td>
                         </tr>
                         <tr>
                             <td class="ps-3">
@@ -81,7 +82,7 @@
                                     {{ 'help.iso9001_bridge.map.process_map.module'|trans({}, 'help') }}
                                 </a>
                             </td>
-                            <td><span class="badge bg-secondary">ISO 27001 6.1.3 d</span></td>
+                            <td><span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">ISO 27001 6.1.3 d</span></td>
                         </tr>
                         <tr>
                             <td class="ps-3">
@@ -95,7 +96,7 @@
                                     {{ 'help.iso9001_bridge.map.risks.module'|trans({}, 'help') }}
                                 </a>
                             </td>
-                            <td><span class="badge bg-secondary">ISO 27001 6.1.2</span></td>
+                            <td><span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">ISO 27001 6.1.2</span></td>
                         </tr>
                         <tr>
                             <td class="ps-3">
@@ -109,7 +110,7 @@
                                     {{ 'help.iso9001_bridge.map.capa.module'|trans({}, 'help') }}
                                 </a>
                             </td>
-                            <td><span class="badge bg-secondary">ISO 27001 6.1.3</span></td>
+                            <td><span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">ISO 27001 6.1.3</span></td>
                         </tr>
                         <tr>
                             <td class="ps-3">
@@ -123,7 +124,7 @@
                                     {{ 'help.iso9001_bridge.map.audit.module'|trans({}, 'help') }}
                                 </a>
                             </td>
-                            <td><span class="badge bg-secondary">ISO 27001 9.2</span></td>
+                            <td><span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">ISO 27001 9.2</span></td>
                         </tr>
                         <tr>
                             <td class="ps-3">
@@ -137,7 +138,7 @@
                                     {{ 'help.iso9001_bridge.map.review.module'|trans({}, 'help') }}
                                 </a>
                             </td>
-                            <td><span class="badge bg-secondary">ISO 27001 9.3</span></td>
+                            <td><span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">ISO 27001 9.3</span></td>
                         </tr>
                         <tr>
                             <td class="ps-3">
@@ -151,7 +152,7 @@
                                     {{ 'help.iso9001_bridge.map.infrastructure.module'|trans({}, 'help') }}
                                 </a>
                             </td>
-                            <td><span class="badge bg-secondary">ISO 27001 A.5.9</span></td>
+                            <td><span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">ISO 27001 A.5.9</span></td>
                         </tr>
                         <tr>
                             <td class="ps-3">
@@ -165,7 +166,7 @@
                                     {{ 'help.iso9001_bridge.map.competence.module'|trans({}, 'help') }}
                                 </a>
                             </td>
-                            <td><span class="badge bg-secondary">ISO 27001 A.6.3</span></td>
+                            <td><span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">ISO 27001 A.6.3</span></td>
                         </tr>
                         <tr>
                             <td class="ps-3">
@@ -179,7 +180,7 @@
                                     {{ 'help.iso9001_bridge.map.documents.module'|trans({}, 'help') }}
                                 </a>
                             </td>
-                            <td><span class="badge bg-secondary">ISO 27001 7.5</span></td>
+                            <td><span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">ISO 27001 7.5</span></td>
                         </tr>
                         <tr>
                             <td class="ps-3">
@@ -193,7 +194,7 @@
                                     {{ 'help.iso9001_bridge.map.suppliers.module'|trans({}, 'help') }}
                                 </a>
                             </td>
-                            <td><span class="badge bg-secondary">ISO 27001 A.5.19-5.22</span></td>
+                            <td><span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">ISO 27001 A.5.19-5.22</span></td>
                         </tr>
                         <tr>
                             <td class="ps-3">
@@ -207,7 +208,7 @@
                                     {{ 'help.iso9001_bridge.map.nonconformity.module'|trans({}, 'help') }}
                                 </a>
                             </td>
-                            <td><span class="badge bg-secondary">ISO 27001 A.5.24-5.28</span></td>
+                            <td><span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">ISO 27001 A.5.24-5.28</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -298,14 +299,6 @@
     {% endembed %}
 
     {# Tip Box #}
-    <div class="alert alert-success mb-4">
-        <div class="d-flex align-items-start">
-            <i class="bi bi-check-circle-fill me-3 fs-4" aria-hidden="true"></i>
-            <div>
-                <strong>{{ 'help.iso9001_bridge.tip_title'|trans({}, 'help') }}</strong>
-                <p class="mb-0 mt-1">{{ 'help.iso9001_bridge.tip_text'|trans({}, 'help') }}</p>
-            </div>
-        </div>
-    </div>
+    {{ _fa_alert.render({ variant: 'success', icon: 'bi-check-circle-fill', class: 'mb-4', body: '<div class="d-flex align-items-start"> <i class="bi bi-check-circle-fill me-3 fs-4" aria-hidden="true"></i> <div> <strong>{{ \'help.iso9001_bridge.tip_title\'|trans({}, \'help\') }}</strong> <p class="mb-0 mt-1">{{ \'help.iso9001_bridge.tip_text\'|trans({}, \'help\') }}</p> </div> </div>' }) }}
 </div>
 {% endblock %}
