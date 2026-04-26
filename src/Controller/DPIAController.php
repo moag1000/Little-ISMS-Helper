@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use RuntimeException;
 use DateTime;
+use App\Entity\Asset;
 use App\Entity\DataProtectionImpactAssessment;
 use App\Form\DataProtectionImpactAssessmentType;
 use App\Service\DataProtectionImpactAssessmentService;
@@ -70,6 +71,17 @@ class DPIAController extends AbstractController
     {
         $dataProtectionImpactAssessment = new DataProtectionImpactAssessment();
         $dataProtectionImpactAssessment->setTenant($this->tenantContext->getCurrentTenant());
+
+        // Pre-fill related asset from query parameter (e.g. AI agent show -> "DPIA anlegen")
+        $relatedAssetId = $request->query->get('related_asset');
+        if ($relatedAssetId !== null && ctype_digit((string) $relatedAssetId)) {
+            $relatedAsset = $this->entityManager->getRepository(Asset::class)->find((int) $relatedAssetId);
+            $tenant = $this->tenantContext->getCurrentTenant();
+            // Tenant-Isolation: nur Assets des aktuellen Mandanten verlinken
+            if ($relatedAsset !== null && $tenant !== null && $relatedAsset->getTenant() === $tenant) {
+                $dataProtectionImpactAssessment->setRelatedAsset($relatedAsset);
+            }
+        }
 
         $form = $this->createForm(DataProtectionImpactAssessmentType::class, $dataProtectionImpactAssessment);
         $form->handleRequest($request);

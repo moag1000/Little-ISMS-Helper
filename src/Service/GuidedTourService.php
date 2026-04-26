@@ -49,6 +49,11 @@ final class GuidedTourService
     public const TOUR_ISB = 'isb';
     public const TOUR_RISK_OWNER = 'risk_owner';
     public const TOUR_AUDITOR = 'auditor';
+    /**
+     * Topic-Tour MRIS — themenbezogen, nicht rollenbezogen. Wird zusätzlich
+     * zur Auto-Detect-Rollentour angeboten (ROLE_USER, nicht ROLE_AUDITOR).
+     */
+    public const TOUR_MRIS = 'mris';
 
     /** @var list<string> */
     public const ALL_TOURS = [
@@ -58,6 +63,7 @@ final class GuidedTourService
         self::TOUR_ISB,
         self::TOUR_RISK_OWNER,
         self::TOUR_AUDITOR,
+        self::TOUR_MRIS,
     ];
 
     public function __construct(
@@ -161,6 +167,7 @@ final class GuidedTourService
             self::TOUR_ISB => $this->isbSteps(),
             self::TOUR_RISK_OWNER => $this->riskOwnerSteps(),
             self::TOUR_AUDITOR => $this->auditorSteps(),
+            self::TOUR_MRIS => $this->mrisSteps(),
             default => [],
         };
 
@@ -299,6 +306,98 @@ final class GuidedTourService
     }
 
     /**
+     * MRIS-Topic-Tour — themenbezogen, nicht rollenbezogen.
+     * 8 Stopps durch Mythos-Resilience-Indikator-System (MRIS v1.5 nach
+     * Peddi 2026, CC BY 4.0). Führt durch SoA-Spalte → Reibung-Warnung →
+     * MHC-Reifegrad → KPI-Dashboard → MRI-Disclaimer → AI-Inventar →
+     * Wizards → Glossar.
+     *
+     * Routen sind locale-aware via urlFor(). Selektoren auf bestehende
+     * UI-Elemente (Filter, Tabellen-Header, Alert, Disclaimer-Box).
+     *
+     * @return list<array{id: string, icon: string|null, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}>
+     */
+    private function mrisSteps(): array
+    {
+        $soaIndex = $this->urlFor('app_soa_index');
+        $kpis = $this->urlFor('app_mris_kpis');
+        $aiAgents = $this->urlFor('app_ai_agents_index');
+        $glossar = $this->urlFor('app_mris_glossar');
+
+        return [
+            [
+                'id' => 'soa-mris-column', 'icon' => 'bi-table',
+                'target' => '#mris-filter, [data-tour="mris-soa-column"]',
+                'title_key' => 'guided_tour.mris.step.soa_column.title',
+                'body_key' => 'guided_tour.mris.step.soa_column.body',
+                'url' => $soaIndex, 'placement' => 'bottom',
+            ],
+            [
+                'id' => 'reibung-warning', 'icon' => 'bi-shield-exclamation',
+                'target' => '[data-tour="mris-reibung-warning"]',
+                'title_key' => 'guided_tour.mris.step.reibung_warning.title',
+                'body_key' => 'guided_tour.mris.step.reibung_warning.body',
+                'url' => $soaIndex, 'placement' => 'center',
+            ],
+            [
+                'id' => 'mhc-maturity', 'icon' => 'bi-graph-up-arrow',
+                'target' => '[data-tour="mris-maturity-table"]',
+                'title_key' => 'guided_tour.mris.step.mhc_maturity.title',
+                'body_key' => 'guided_tour.mris.step.mhc_maturity.body',
+                'url' => $soaIndex, 'placement' => 'center',
+            ],
+            [
+                'id' => 'kpi-score-card', 'icon' => 'bi-speedometer2',
+                'target' => '[data-tour="mris-score-card"]',
+                'title_key' => 'guided_tour.mris.step.kpi_score.title',
+                'body_key' => 'guided_tour.mris.step.kpi_score.body',
+                'url' => $kpis, 'placement' => 'center',
+            ],
+            [
+                'id' => 'mri-disclaimer', 'icon' => 'bi-exclamation-triangle',
+                'target' => '[data-tour="mris-disclaimer"]',
+                'title_key' => 'guided_tour.mris.step.mri_disclaimer.title',
+                'body_key' => 'guided_tour.mris.step.mri_disclaimer.body',
+                'url' => $kpis, 'placement' => 'top',
+            ],
+            [
+                'id' => 'ai-agents', 'icon' => 'bi-robot',
+                'target' => '[data-tour="mris-ai-inventory"]',
+                'title_key' => 'guided_tour.mris.step.ai_agents.title',
+                'body_key' => 'guided_tour.mris.step.ai_agents.body',
+                'url' => $aiAgents, 'placement' => 'center',
+            ],
+            [
+                'id' => 'wizards', 'icon' => 'bi-magic',
+                'target' => '[data-tour="mris-wizards"]',
+                'title_key' => 'guided_tour.mris.step.wizards.title',
+                'body_key' => 'guided_tour.mris.step.wizards.body',
+                'url' => $kpis, 'placement' => 'bottom',
+            ],
+            [
+                'id' => 'glossar', 'icon' => 'bi-book',
+                'target' => '[data-tour="mris-glossar"]',
+                'title_key' => 'guided_tour.mris.step.glossar.title',
+                'body_key' => 'guided_tour.mris.step.glossar.body',
+                'url' => $glossar, 'placement' => 'center',
+            ],
+        ];
+    }
+
+    /**
+     * Prüft ob ein User für die MRIS-Topic-Tour-Auto-Suggestion berechtigt
+     * ist. Nur ROLE_USER (Standard-User), explizit nicht ROLE_AUDITOR
+     * (zu viele Re-Suggestions im Read-only-Workflow).
+     */
+    public function isEligibleForMrisSuggestion(): bool
+    {
+        if ($this->authChecker->isGranted('ROLE_AUDITOR')) {
+            return false;
+        }
+        return $this->authChecker->isGranted('ROLE_USER');
+    }
+
+    /**
      * Metadaten für eine Tour (Anzahl Steps, ungefähre Dauer).
      * Für Banner, Launcher, Completion-Report.
      *
@@ -319,6 +418,7 @@ final class GuidedTourService
                 self::TOUR_ISB => 4,
                 self::TOUR_RISK_OWNER => 1,
                 self::TOUR_AUDITOR => 2,
+                self::TOUR_MRIS => 6,
                 default => 3,
             },
         ];

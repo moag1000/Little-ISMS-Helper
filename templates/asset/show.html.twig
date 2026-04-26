@@ -146,6 +146,52 @@
                         </tbody>
                     </table>
                 </div>
+
+                {# DPIA-Status für Hochrisiko-AI-Agents (DSGVO Art. 35 + AI Act Art. 9). #}
+                {# Soft-Failure: linkedDpias === null bedeutet, das DPIA-Modul ist nicht verfügbar. #}
+                {% if asset.aiAgentClassification == 'high_risk' and linkedDpias is not null %}
+                    <div class="detail-section">
+                        <h3>
+                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                            {{ 'mris.ai_agent.dpia.section_title'|trans({}, 'mris') }}
+                        </h3>
+                        {% if linkedDpias|length > 0 %}
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">{{ 'mris.ai_agent.dpia.col_title'|trans({}, 'mris') }}</th>
+                                        <th scope="col">{{ 'mris.ai_agent.dpia.col_status'|trans({}, 'mris') }}</th>
+                                        <th scope="col">{{ 'mris.ai_agent.dpia.col_link'|trans({}, 'mris') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for dpia in linkedDpias %}
+                                        <tr>
+                                            <td>{{ dpia.referenceNumber }} — {{ dpia.title }}</td>
+                                            <td><code>{{ dpia.status }}</code></td>
+                                            <td>
+                                                <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">
+                                                    {{ 'mris.ai_agent.dpia.open'|trans({}, 'mris') }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <div class="alert alert-warning" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-1" aria-hidden="true"></i>
+                                {{ 'mris.ai_agent.dpia.warning_missing'|trans({}, 'mris') }}
+                                <div class="mt-2">
+                                    <a href="{{ path('app_dpia_new', {related_asset: asset.id}) }}" class="btn btn-sm btn-warning">
+                                        <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>
+                                        {{ 'mris.ai_agent.dpia.create_button'|trans({}, 'mris') }}
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
             {% endif %}
 
             <div class="detail-section">

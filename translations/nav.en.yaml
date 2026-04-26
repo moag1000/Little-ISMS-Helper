@@ -52,6 +52,7 @@ nav:
     mris_kpis: 'MRIS KPIs'
     mris_baselines: 'MRIS Baselines'
     mris_glossar: 'MRIS Glossary'
+    mris_audit_report: 'MRIS Audit Report (PDF)'
     ai_agents: 'AI Agent Inventory'
     data_reuse: 'Data-Reuse Hub'
     locations: Locations
@@ -146,6 +147,7 @@ nav:
             mris_kpis: 'Mythos-relevant KPIs (MRIS v1.5 Ch. 10.6)'
             mris_baselines: 'Industry baselines (KRITIS, Finance, Automotive, SaaS) — target maturity per MHC'
             mris_glossar: 'Glossary with terms, 9001 analogies and standards references'
+            mris_audit_report: 'PDF audit report: score, classification, MHC maturity, AI inventory, KPIs'
             ai_agents: 'AI Agent Inventory (EU AI Act + ISO 42001 + MHC-13)'
             data_reuse: 'Top-reused documents and suppliers across all frameworks'
             nis2: 'NIS2 Directive assessment'

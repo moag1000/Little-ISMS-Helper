@@ -9,6 +9,7 @@ use App\Repository\AssetRepository;
 use App\Repository\AuditLogRepository;
 use App\Repository\BusinessProcessRepository;
 use App\Repository\RiskRepository;
+use App\Service\AiAgentInventoryService;
 use App\Service\AssetDependencyService;
 use App\Service\AssetService;
 use App\Service\AssetQrCodeService;
@@ -43,6 +44,7 @@ class AssetController extends AbstractController
         private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
         private readonly TagFilterService $tagFilterService,
         private readonly ?AssetDependencyService $assetDependencyService = null,
+        private readonly ?AiAgentInventoryService $aiAgentInventoryService = null,
     ) {}
     #[Route('/asset/', name: 'app_asset_index')]
     #[IsGranted('ROLE_USER')]
@@ -285,6 +287,11 @@ class AssetController extends AbstractController
 
         $inheritedProtection = $this->assetDependencyService?->calculateInheritedProtectionNeed($asset);
 
+        // Hochrisiko-AI-Agents: verknüpfte DPIAs für Audit-Sicht (Soft-Failure: null = Modul/Schema fehlt)
+        $linkedDpias = ($asset->isAiAgent() && $this->aiAgentInventoryService !== null)
+            ? $this->aiAgentInventoryService->findLinkedDpias($asset)
+            : null;
+
         return $this->render('asset/show.html.twig', [
             'asset' => $asset,
             'analysis' => $analysis,
@@ -295,6 +302,7 @@ class AssetController extends AbstractController
             'canEdit' => $canEdit,
             'currentTenant' => $tenant,
             'inheritedProtection' => $inheritedProtection,
+            'linkedDpias' => $linkedDpias,
         ]);
     }
     #[Route('/asset/{id}/edit', name: 'app_asset_edit', requirements: ['id' => '\d+'])]

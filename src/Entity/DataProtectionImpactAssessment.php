@@ -54,6 +54,16 @@ class DataProtectionImpactAssessment
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?ProcessingActivity $processingActivity = null;
 
+    /**
+     * Related Asset (e.g. AI agent under EU AI Act Art. 9, or any high-risk
+     * processing asset). Optional ManyToOne — multiple DPIAs may reference the
+     * same asset (e.g. yearly review versions). Nullable; on asset delete the
+     * link is set to NULL so the DPIA history is preserved (GDPR accountability).
+     */
+    #[ORM\ManyToOne(targetEntity: Asset::class)]
+    #[ORM\JoinColumn(name: 'related_asset_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Asset $relatedAsset = null;
+
     // ============================================================================
     // Basic Information
     // ============================================================================
@@ -508,6 +518,17 @@ class DataProtectionImpactAssessment
     public function setProcessingActivity(?ProcessingActivity $processingActivity): static
     {
         $this->processingActivity = $processingActivity;
+        return $this;
+    }
+
+    public function getRelatedAsset(): ?Asset
+    {
+        return $this->relatedAsset;
+    }
+
+    public function setRelatedAsset(?Asset $relatedAsset): static
+    {
+        $this->relatedAsset = $relatedAsset;
         return $this;
     }
 

@@ -224,10 +224,20 @@ class HomeController extends AbstractController
         // noch nicht abgeschlossene, rollen-passende Tour. Null = kein Banner.
         $suggestedTour = null;
         $autoRole = null;
+        $suggestedMrisTour = null;
         if ($this->guidedTourService !== null && $user instanceof User) {
             $autoRole = $this->guidedTourService->autoDetectTour($user);
             if (!$user->hasCompletedTour($autoRole)) {
                 $suggestedTour = $this->guidedTourService->metaFor($autoRole);
+            }
+
+            // MRIS-Topic-Tour: themenbezogen, zusätzlich zur Rollen-Tour.
+            // Nur für ROLE_USER (nicht ROLE_AUDITOR), nur wenn nicht bereits
+            // abgeschlossen. Wird unterhalb der Rollen-Tour angeboten.
+            if ($this->guidedTourService->isEligibleForMrisSuggestion()
+                && !$user->hasCompletedTour(GuidedTourService::TOUR_MRIS)
+            ) {
+                $suggestedMrisTour = $this->guidedTourService->metaFor(GuidedTourService::TOUR_MRIS);
             }
         }
 
@@ -236,6 +246,7 @@ class HomeController extends AbstractController
             'management_kpis' => $managementKpis,
             'reuse_fte_saved' => $reuseFteSaved,
             'suggested_tour' => $suggestedTour,
+            'suggested_mris_tour' => $suggestedMrisTour,
             'tour_role' => $autoRole,
             'activities' => $activities,
             'iso_compliance' => $isoCompliance,
