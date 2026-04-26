@@ -1,0 +1,54 @@
+schema_version: '1.0'
+baseline:
+  id: 'automotive-tisax-al3'
+  name: 'Automotive / TISAX AL3'
+  industry: 'automotive'
+  description: |
+    Pre-Konfiguration für Automotive-OEMs und Tier-1-Lieferanten mit
+    TISAX-Assessment-Level AL3 (hoher Schutzbedarf, inkl. Prototypenschutz).
+    Anker: VDA ISA 6.0, ISO 21434 (Cybersecurity Engineering), CRA für
+    vernetzte Fahrzeuge ab 2027.
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung TISAX AL3'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: initial
+      reason: 'PQC-Inventar für embedded Krypto in Fahrzeug-ECUs (Langzeit-Schutz).'
+    MHC-02:
+      target: defined
+      reason: 'SBOM Pflicht für CRA-konforme Fahrzeug-Software ab 2027 + ISA 6.1.1.'
+    MHC-03:
+      target: defined
+      reason: 'Phishing-resistente MFA für Engineering-Domains und PLM-Systeme.'
+    MHC-04:
+      target: defined
+      reason: 'Workload-Identity für Cloud-Connected-Vehicle-Backends.'
+    MHC-05:
+      target: defined
+      reason: 'Behavioural Detection für VSOC (Vehicle Security Operations Center).'
+    MHC-06:
+      target: defined
+      reason: 'Container-Sicherheit für Vehicle-Cloud-Backends (over-the-air Update).'
+    MHC-07:
+      target: defined
+      reason: 'Multi-Tenancy-Isolation kritisch für Tier-1-Plattformen mit mehreren OEMs.'
+    MHC-08:
+      target: defined
+      reason: 'Immutable Backups für Engineering-Daten (Pre-Production-IP-Schutz).'
+    MHC-09:
+      target: defined
+      reason: 'AI-Security-Testing für ADAS- und ML-basierte Fahrfunktionen.'
+    MHC-10:
+      target: defined
+      reason: 'Continuous Control Monitoring für TISAX-Re-Audits + ISO 21434-Conformance.'
+    MHC-11:
+      target: defined
+      reason: 'SOAR für Vehicle-Cyber-Incident-Response (UN-R155-konform).'
+    MHC-12:
+      target: defined
+      reason: 'Threat-Led Pen-Testing für Connected-Vehicle-Backends + ISA-Audits.'
+    MHC-13:
+      target: initial
+      reason: 'AI-Agent-Governance einstiegsweise — Engineering-Coding-Tools (Copilot/Cursor).'
