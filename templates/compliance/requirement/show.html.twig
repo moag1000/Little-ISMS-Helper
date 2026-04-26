@@ -18,10 +18,10 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1><i class="bi bi-list-check" aria-hidden="true"></i> {{ requirement.requirementId }}</h1>
         <div>
-            <a href="{{ path('app_compliance_requirement_edit', {id: requirement.id}) }}" class="btn btn-secondary">
+            <a href="{{ path('app_compliance_requirement_edit', {id: requirement.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-pencil" aria-hidden="true"></i> Edit
             </a>
-            <a href="{{ path('app_compliance_requirement_index') }}?framework={{ requirement.framework.id }}" class="btn btn-outline-secondary">
+            <a href="{{ path('app_compliance_requirement_index') }}?framework={{ requirement.framework.id }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to List
             </a>
         </div>
@@ -160,7 +160,7 @@
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <button type="submit" class="btn btn-sm btn-primary w-100">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">
                                     {{ 'compliance.requirement.mris.save'|trans({}, 'compliance') }}
                                 </button>
                             </div>
@@ -327,23 +327,23 @@
 
                             {# Quick Preset Buttons #}
                             <div class="d-flex gap-1 mt-2">
-                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill"
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm flex-fill"
                                         data-action="click->fulfillment#set" data-fulfillment-value-param="0"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom"
                                         title="{{ 'compliance.tooltip.not_started'|trans({}, 'compliance') }}">0%</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill"
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm flex-fill"
                                         data-action="click->fulfillment#set" data-fulfillment-value-param="25"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom"
                                         title="{{ 'compliance.tooltip.planning_phase'|trans({}, 'compliance') }}">25%</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill"
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm flex-fill"
                                         data-action="click->fulfillment#set" data-fulfillment-value-param="50"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom"
                                         title="{{ 'common.tooltip.status_in_progress'|trans({}, 'messages') }}">50%</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill"
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm flex-fill"
                                         data-action="click->fulfillment#set" data-fulfillment-value-param="75"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom"
                                         title="{{ 'compliance.tooltip.nearly_complete'|trans({}, 'compliance') }}">75%</button>
-                                <button type="button" class="btn btn-sm btn-outline-success flex-fill"
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm flex-fill"
                                         data-action="click->fulfillment#set" data-fulfillment-value-param="100"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom"
                                         title="{{ 'common.tooltip.status_fully_implemented'|trans({}, 'messages') }}">100%</button>
@@ -361,7 +361,7 @@
                                 </label>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100"
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary w-100"
                                     data-bs-toggle="tooltip" data-bs-placement="top"
                                     title="{{ 'compliance.requirement.tooltip.save'|trans({}, 'compliance') }}">
                                 <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'compliance.requirement.save_quick_update'|trans({}, 'compliance') }}
@@ -473,7 +473,7 @@
                           data-action="submit->ui-actions#confirm"
                           data-ui-actions-message-param="{{ 'compliance.requirement.confirm.delete'|trans({}, 'compliance') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ requirement.id) }}">
-                        <button type="submit" class="btn btn-danger btn-sm w-100">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">
                             <i class="bi bi-trash" aria-hidden="true"></i> {{ 'compliance.action.delete_requirement'|trans({}, 'compliance') }}
                         </button>
                     </form>
