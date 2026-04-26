@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance.mapping_quality.review_queue.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -251,18 +252,20 @@
 
     {# Empty State #}
     {% if mappings_requiring_review is empty and low_confidence_mappings is empty and discrepancies is empty %}
-    <div class="alert alert-success">
-        <h2><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'compliance.mapping_quality.review_queue.no_review_needed.title'|trans({}, 'compliance') }}</h2>
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success' } } %}
+        {% block alert_body %}
+        <div class="fa-alert__title">{{ 'compliance.mapping_quality.review_queue.no_review_needed.title'|trans({}, 'compliance') }}</div>
         <p>{{ 'compliance.mapping_quality.review_queue.no_review_needed.desc'|trans({}, 'compliance') }}</p>
         <hr>
-        <h3>{{ 'compliance.mapping_quality.review_queue.no_review_needed.status'|trans({}, 'compliance') }}</h3>
+        <strong>{{ 'compliance.mapping_quality.review_queue.no_review_needed.status'|trans({}, 'compliance') }}</strong>
         <ul>
             <li><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'compliance.mapping_quality.review_queue.no_review_needed.low_confidence_checked'|trans({}, 'compliance') }}</li>
             <li><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'compliance.mapping_quality.review_queue.no_review_needed.no_discrepancies'|trans({}, 'compliance') }}</li>
             <li><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'compliance.mapping_quality.review_queue.no_review_needed.queue_empty'|trans({}, 'compliance') }}</li>
         </ul>
         <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-primary mt-2">← {{ 'common.back'|trans({}, 'messages') }}</a>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 </div>
 

@@ -32,9 +32,9 @@
 {# Show success notification #}
 <turbo-stream action="append" target="notifications">
     <template>
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-            <i class="bi bi-info-circle" aria-hidden="true"></i> <strong>Gelöscht!</strong> Der Geschäftsprozess wurde erfolgreich gelöscht.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
+        <div class="fa-alert fa-alert--info" role="alert">
+            <strong>Gelöscht!</strong> Der Geschäftsprozess wurde erfolgreich gelöscht.
+            <button type="button" class="fa-alert__dismiss" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}">×</button>
         </div>
     </template>
 </turbo-stream>

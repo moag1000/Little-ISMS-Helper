@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'help.tour.index.title'|trans({}, 'help') }}{% endblock %}
 
@@ -18,16 +19,13 @@
             </h1>
             <p class="text-muted mb-0">{{ 'help.tour.index.subtitle'|trans({}, 'help') }}</p>
         </div>
-        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm d-print-none" onclick="window.print()">
+        <button type="button" class="btn btn-outline-secondary btn-sm d-print-none" onclick="window.print()">
             <i class="bi bi-printer" aria-hidden="true"></i>
             {{ 'help.tour.print'|trans({}, 'help') }}
         </button>
     </div>
 
-    <div class="fa-alert fa-alert--info small d-print-none" role="alert">
-        <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
-        <div class="fa-alert__body">{{ 'help.tour.index.hint'|trans({}, 'help')|raw }}</div>
-    </div>
+    {{ _fa_alert.render({ variant: 'info', class: 'small d-print-none', body: 'help.tour.index.hint'|trans({}, 'help')|raw }) }}
 
     <div class="row g-3">
         {% for tour in tours %}

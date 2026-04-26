@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'risk_appetite' %}
 
 {% block title %}{{ 'risk_appetite.new'|trans({}, 'risk_appetite')}}{% endblock %}
@@ -49,9 +50,7 @@
                         'approvedAt': 'risk_appetite.help.approved_at'|trans({}, 'risk_appetite')}
                 } %}
 
-                <div class="alert alert-info mt-4">
-                    {{ 'risk_appetite.info.iso27005'|trans({}, 'risk_appetite')}}
-                </div>
+                {{ _fa_alert.render({ variant: 'info', class: 'mt-4', body: 'risk_appetite.info.iso27005'|trans({}, 'risk_appetite') }) }}
 
                 <div class="d-flex justify-content-between mt-4">
                     <a href="{{ path('app_risk_appetite_index') }}" class="btn btn-secondary">

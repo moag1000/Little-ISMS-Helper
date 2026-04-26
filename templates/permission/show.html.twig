@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}{{ permission.name }}{% endblock %}
 {% block admin_subtitle %}
@@ -12,7 +13,7 @@
 
 {% block admin_content %}
     <div class="mb-3">
-        <a href="{{ path('permission_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+        <a href="{{ path('permission_index') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
@@ -104,7 +105,7 @@
                                 </td>
                                 <td class="text-end">
                                     <a href="{{ path('role_management_show', {id: role.id}) }}"
-                                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                       class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-eye" aria-hidden="true"></i> Details
                                     </a>
                                 </td>
@@ -113,11 +114,9 @@
                     {% endblock %}
                 {% endembed %}
 
-                {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-                {{ _fa_alert.render({ variant: 'info', body: '<i class="bi bi-info-circle" aria-hidden="true"></i> <strong>' ~ ('permission.affected_users'|trans({}, 'messages')) ~ ':</strong> Diese Berechtigung betrifft insgesamt ' ~ affected_users_count ~ ' Benutzer über ' ~ roles|length ~ ' Rolle(n).' }) }}
+                {{ _fa_alert.render({ variant: 'info', class: 'mt-3', body: '<strong>' ~ 'permission.affected_users'|trans({}, 'messages') ~ ':</strong> Diese Berechtigung betrifft insgesamt ' ~ affected_users_count ~ ' Benutzer über ' ~ roles|length ~ ' Rolle(n).' }) }}
             {% else %}
-                {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-                {{ _fa_alert.render({ variant: 'warning', body: '<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Diese Berechtigung wird derzeit von keiner Rolle verwendet.' }) }}
+                {{ _fa_alert.render({ variant: 'warning', body: 'Diese Berechtigung wird derzeit von keiner Rolle verwendet.' }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}

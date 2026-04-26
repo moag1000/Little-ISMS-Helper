@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 
@@ -174,11 +175,12 @@
     {# Additional Information #}
     <div class="row mt-4">
         <div class="col-12">
-            <div class="alert alert-info">
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                {% block alert_body %}
                 <div class="d-flex align-items-start">
                     <i class="bi bi-lightbulb fs-4 me-3" aria-hidden="true"></i>
                     <div>
-                        <h2 class="alert-heading mb-2">{{ 'reports.generation.best_practices.title'|trans({}, 'reports') }}</h2>
+                        <div class="fa-alert__title">{{ 'reports.generation.best_practices.title'|trans({}, 'reports') }}</div>
                         <ul class="mb-0">
                             <li>{{ 'reports.generation.best_practices.license_report'|trans({}, 'reports')|raw }}</li>
                             <li>{{ 'reports.generation.best_practices.security_report'|trans({}, 'reports')|raw }}</li>
@@ -187,7 +189,8 @@
                         </ul>
                     </div>
                 </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </main>

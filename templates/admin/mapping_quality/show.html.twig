@@ -1,6 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'admin' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'admin.mapping_quality.detail_title'|trans({}, 'admin') }}{% endblock %}
 
@@ -34,7 +34,6 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     <dl class="row mb-0">
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.relationship'|trans({}, 'admin') }}</dt>
                         <dd class="col-sm-8">{% if mapping.relationship %}{% include '_components/_badge.html.twig' with { variant: 'secondary', content: mapping.relationship|replace({'_': ' '}) } %}{% else %}—{% endif %}</dd>
@@ -69,7 +68,7 @@
 
                         {% if mapping.auditEvidenceHint %}
                             <dt class="col-sm-4">{{ 'admin.mapping_quality.field.audit_evidence'|trans({}, 'admin') }}</dt>
-                            <dd class="col-sm-8">{{ _fa_alert.render({ variant: 'info', class: 'mb-0 small', icon: 'bi-journal-check', body: mapping.auditEvidenceHint|nl2br }) }}</dd>
+                            <dd class="col-sm-8">{{ _fa_alert.render({ variant: 'info', class: 'mb-0 small', body: mapping.auditEvidenceHint|nl2br }) }}</dd>
                         {% endif %}
 
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.version'|trans({}, 'admin') }}</dt>
@@ -131,7 +130,7 @@
                                     <input type="text" name="reason" class="form-control form-control-sm mb-1" placeholder="{{ 'admin.mapping_quality.transition_reason_placeholder'|trans({}, 'admin') }}">
                                 {% endif %}
                                 {% set btnClass = state == 'published' ? 'success' : (state == 'deprecated' ? 'danger' : (state == 'approved' ? 'primary' : 'secondary')) %}
-                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ btnClass }} fa-cyber-btn--sm w-100">
+                                <button type="submit" class="btn btn-sm btn-{{ btnClass }} w-100">
                                     <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ state }}
                                 </button>
                             </form>

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance.mapping_quality.gaps.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -18,7 +19,8 @@
 
     {# Remediation Effort Summary #}
     {% if remediation_effort %}
-    <div class="alert alert-info">
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+        {% block alert_body %}
         <div class="row">
             <div class="col-md-4">
                 <p class="fw-bold fs-5">{{ 'compliance.mapping_quality.gaps.total_gaps'|trans({}, 'compliance') }}</p>
@@ -41,7 +43,8 @@
                 {% endfor %}
             </div>
         </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Statistics Cards #}
@@ -262,23 +265,22 @@
     {# Empty State #}
     {% if high_priority_gaps is empty and low_confidence_gaps is empty %}
         {% if remediation_effort.total_gaps == 0 %}
-        <div class="alert alert-info">
-            <h4><i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.no_gaps_found.title'|trans({}, 'compliance') }}</h4>
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+            {% block alert_body %}
+            <div class="fa-alert__title">{{ 'compliance.mapping_quality.gaps.no_gaps_found.title'|trans({}, 'compliance') }}</div>
             <p>{{ 'compliance.mapping_quality.gaps.no_gaps_found.desc'|trans({}, 'compliance') }}</p>
             <hr>
-            <h4>{{ 'compliance.mapping_quality.gaps.no_gaps_found.next_steps'|trans({}, 'compliance') }}</h4>
+            <strong>{{ 'compliance.mapping_quality.gaps.no_gaps_found.next_steps'|trans({}, 'compliance') }}</strong>
             <ol>
                 <li>{{ 'compliance.mapping_quality.gaps.no_gaps_found.run_analysis'|trans({}, 'compliance')|raw }}</li>
                 <li>{{ 'compliance.mapping_quality.gaps.no_gaps_found.auto_identify'|trans({}, 'compliance') }}</li>
                 <li>{{ 'compliance.mapping_quality.gaps.no_gaps_found.return_here'|trans({}, 'compliance') }}</li>
             </ol>
             <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-primary mt-2">← {{ 'common.back'|trans({}, 'messages') }}</a>
-        </div>
+            {% endblock %}
+        {% endembed %}
         {% else %}
-        <div class="alert alert-success">
-            <h5><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.no_critical_gaps.title'|trans({}, 'compliance') }}</h5>
-            <p class="mb-0">{{ 'compliance.mapping_quality.gaps.no_critical_gaps.desc'|trans({}, 'compliance') }}</p>
-        </div>
+        {{ _fa_alert.render({ variant: 'success', title: 'compliance.mapping_quality.gaps.no_critical_gaps.title'|trans({}, 'compliance'), body: 'compliance.mapping_quality.gaps.no_critical_gaps.desc'|trans({}, 'compliance') }) }}
         {% endif %}
     {% endif %}
 

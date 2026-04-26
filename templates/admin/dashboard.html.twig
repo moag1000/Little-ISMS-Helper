@@ -15,8 +15,7 @@
                     {{ 'admin.dashboard.alerts.title'|trans({}, 'admin') }}
                 </h2>
                 {% for alert in alerts %}
-                    <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert">
-                        {# TODO(aurora-migration): dynamic icon — keep bi-* #}
+                    <div class="fa-alert fa-alert--{{ alert.type }}" role="alert">
                         <i class="bi {{ alert.icon }}"></i>
                         <strong>{{ alert.message|trans({}, 'admin') }}</strong>
                         {% if alert.count is defined %}
@@ -24,7 +23,7 @@
                             {{ (alert.count == 1 ? 'admin.dashboard.alerts.item' : 'admin.dashboard.alerts.items')|trans({}, 'admin') }}
                         {% endif %}
                         {% if alert.action %}
-                            <a href="{{ alert.action }}" class="alert-link ms-2">{{ 'admin.dashboard.alerts.view'|trans({}, 'admin') }} →</a>
+                            <a href="{{ alert.action }}" class="fa-alert__link ms-2">{{ 'admin.dashboard.alerts.view'|trans({}, 'admin') }} →</a>
                         {% endif %}
                         {% if alert.fix_route is defined and alert.fix_route %}
                             <form method="post" action="{{ path(alert.fix_route) }}" class="d-inline ms-2">
@@ -35,7 +34,7 @@
                                 </button>
                             </form>
                         {% endif %}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
+                        <button type="button" class="fa-alert__dismiss" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}">×</button>
                     </div>
                 {% endfor %}
             </div>

@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}
     <i class="bi bi-stars fairy-icon-sparkle" aria-hidden="true"></i>
@@ -16,14 +17,15 @@
     </p>
 
     {% if scope_tenant %}
-        <div class="alert alert-info small">
-            <i class="bi bi-building" aria-hidden="true"></i>
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'small' } } %}
+            {% block alert_body %}
             {{ 'admin.tour_content.scope_tenant_hint'|trans({'%tenant%': scope_tenant.name}, 'admin') }}
             {% if can_set_global %}
                 <br>
                 <span class="small">{{ 'admin.tour_content.global_hint'|trans({}, 'admin') }}</span>
             {% endif %}
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 
     <div class="row g-3">

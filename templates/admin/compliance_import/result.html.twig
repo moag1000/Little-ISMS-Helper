@@ -64,17 +64,17 @@
             {% if errors is defined and errors|length > 0 %}
                 {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', class: 'mt-3' } } %}
                     {% block alert_body %}
-                        <h3 class="h6">{{ 'compliance_import.result.errors_title'|trans({ '%count%': errors|length }, 'compliance_import') }}</h3>
-                        <ul class="mb-0 small">
-                            {% for err in errors|slice(0, 20) %}
-                                <li><code>{{ err }}</code></li>
-                            {% endfor %}
-                        </ul>
-                        {% if errors|length > 20 %}
-                            <p class="small text-muted mt-2 mb-0">
-                                {{ 'compliance_import.result.errors_truncated'|trans({ '%remaining%': errors|length - 20 }, 'compliance_import') }}
-                            </p>
-                        {% endif %}
+                    <div class="fa-alert__title">{{ 'compliance_import.result.errors_title'|trans({ '%count%': errors|length }, 'compliance_import') }}</div>
+                    <ul class="mb-0 small">
+                        {% for err in errors|slice(0, 20) %}
+                            <li><code>{{ err }}</code></li>
+                        {% endfor %}
+                    </ul>
+                    {% if errors|length > 20 %}
+                        <p class="small text-muted mt-2 mb-0">
+                            {{ 'compliance_import.result.errors_truncated'|trans({ '%remaining%': errors|length - 20 }, 'compliance_import') }}
+                        </p>
+                    {% endif %}
                     {% endblock %}
                 {% endembed %}
             {% endif %}
@@ -82,11 +82,11 @@
     {% endembed %}
 
     <div class="d-flex gap-2 justify-content-end">
-        <a href="{{ path('admin_compliance_import_upload') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+        <a href="{{ path('admin_compliance_import_upload') }}" class="btn btn-secondary">
             <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
             {{ 'compliance_import.result.start_again'|trans({}, 'compliance_import') }}
         </a>
-        <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--primary">
+        <a href="{{ path('admin_compliance_index') }}" class="btn btn-primary">
             <i class="bi bi-arrow-right" aria-hidden="true"></i>
             {{ 'compliance_import.result.back_to_admin'|trans({}, 'compliance_import') }}
         </a>

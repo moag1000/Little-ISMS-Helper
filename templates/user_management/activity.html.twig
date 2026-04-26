@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ user.fullName }} - {{ 'user.activity.title'|trans({}, 'user') }}{% endblock %}
 
@@ -9,7 +10,7 @@
             <i class="bi bi-activity" aria-hidden="true"></i>
             {{ 'user.activity.title'|trans({}, 'user') }}: {{ user.fullName }}
         </h1>
-        <a href="{{ path('user_management_show', {id: user.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+        <a href="{{ path('user_management_show', {id: user.id}) }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
@@ -108,10 +109,7 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <div class="fa-alert fa-alert--info" role="alert">
-                    <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
-                    <div class="fa-alert__body">{{ 'user.activity.no_activities'|trans({}, 'user') }}</div>
-                </div>
+                {{ _fa_alert.render({ variant: 'info', body: 'user.activity.no_activities'|trans({}, 'user') }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'analytics' %}
 
 {% block title %}{{ 'analytics.controls.title'|trans({}, 'analytics') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -270,10 +271,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                        {{ 'analytics.controls.performance.matrix_info'|trans({'%controls%': risk_matrix.summary.controls_with_risks, '%reduction%': risk_matrix.summary.average_reduction}, 'analytics') }}
-                    </div>
+                    {{ _fa_alert.render({ variant: 'info', body: 'analytics.controls.performance.matrix_info'|trans({'%controls%': risk_matrix.summary.controls_with_risks, '%reduction%': risk_matrix.summary.average_reduction}, 'analytics') }) }}
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -457,10 +455,7 @@
                 {% endblock %}
                 {% block card_body %}
                     {% if dashboard.orphaned_controls.controls|length > 0 %}
-                    <div class="alert alert-warning">
-                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                        {{ 'analytics.controls.orphans.info'|trans({}, 'analytics') }}
-                    </div>
+                    {{ _fa_alert.render({ variant: 'warning', body: 'analytics.controls.orphans.info'|trans({}, 'analytics') }) }}
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>

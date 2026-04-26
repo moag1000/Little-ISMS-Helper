@@ -1,24 +1,27 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block title %}{{ 'ai_agent.page.title'|trans({}, 'mris') }}{% endblock %}
+{% block title %}AI-Agent-Inventar{% endblock %}
 
 {% block body %}
 <div class="container">
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'ai_agent.page.title'|trans({}, 'mris') }}</li>
+            <li class="breadcrumb-item active" aria-current="page">AI-Agent-Inventar</li>
         </ol>
     </nav>
 
-    <div class="page-header mb-4" data-tour="mris-ai-inventory">
+    <div class="page-header mb-4">
         <h1>
             <i class="bi bi-robot" aria-hidden="true"></i>
-            {{ 'ai_agent.page.title'|trans({}, 'mris') }}
+            AI-Agent-Inventar
         </h1>
         <p class="text-muted small mb-0">
-            {{ 'ai_agent.page.intro'|trans({}, 'mris')|raw }}<br>
-            <em>{{ 'ai_agent.page.source'|trans({}, 'mris') }}</em>
+            Asset-Subtyp <code>ai_agent</code>. Erfüllt gleichzeitig
+            <strong>EU AI Act Art. 6/9-16</strong>, <strong>ISO 42001 Annex A</strong>,
+            <strong>MRIS MHC-13</strong> und <strong>ISO 27001 A.5.16/A.8.27</strong>.<br>
+            <em>MRIS-Quelle: Peddi, R. (2026). MRIS v1.5. CC BY 4.0.</em>
         </p>
     </div>
 
@@ -28,7 +31,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100' } %}
                 {% block card_body %}
                     <div class="display-4 fw-bold">{{ stats.total }}</div>
-                    <div class="small text-muted">{{ 'ai_agent.stats.total'|trans({}, 'mris') }}</div>
+                    <div class="small text-muted">AI-Agents gesamt</div>
                 {% endblock %}
             {% endembed %}
         </div>
@@ -36,7 +39,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100' } %}
                 {% block card_body %}
                     <div class="display-4 fw-bold text-danger">{{ stats.by_classification.high_risk }}</div>
-                    <div class="small text-muted">{{ 'ai_agent.stats.high_risk'|trans({}, 'mris') }}</div>
+                    <div class="small text-muted">Hochrisiko (AI Act Art. 6)</div>
                 {% endblock %}
             {% endembed %}
         </div>
@@ -44,7 +47,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100' } %}
                 {% block card_body %}
                     <div class="display-4 fw-bold text-warning">{{ stats.unclassified }}</div>
-                    <div class="small text-muted">{{ 'ai_agent.stats.unclassified'|trans({}, 'mris') }}</div>
+                    <div class="small text-muted">Nicht klassifiziert</div>
                 {% endblock %}
             {% endembed %}
         </div>
@@ -52,7 +55,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100' } %}
                 {% block card_body %}
                     <div class="display-4 fw-bold text-{{ stats.avg_completeness >= 80 ? 'success' : (stats.avg_completeness >= 50 ? 'warning' : 'danger') }}">{{ stats.avg_completeness }}%</div>
-                    <div class="small text-muted">{{ 'ai_agent.stats.avg_completeness'|trans({}, 'mris') }}</div>
+                    <div class="small text-muted">Ø Doku-Vollständigkeit</div>
                 {% endblock %}
             {% endembed %}
         </div>
@@ -60,18 +63,12 @@
 
     {# High-Risk Warning #}
     {% if high_risk_incomplete|length > 0 %}
-        <div class="alert alert-danger mb-4">
-            <i class="bi bi-exclamation-octagon-fill" aria-hidden="true"></i>
-            <strong>{{ high_risk_incomplete|length }}</strong> — {{ 'ai_agent.alert.high_risk_incomplete'|trans({}, 'mris') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'danger', class: 'mb-4', body: '<strong>' ~ high_risk_incomplete|length ~ ' Hochrisiko-Agent(en) mit unvollständiger Dokumentation.</strong><br>EU AI Act Art. 11 verlangt für High-Risk-Systeme vollständige technische Dokumentation. Vor erster Nutzung ergänzen.' }) }}
     {% endif %}
 
     {# Inventory Table #}
     {% if agents|length == 0 %}
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle" aria-hidden="true"></i>
-            {{ 'ai_agent.alert.empty'|trans({}, 'mris')|raw }}
-        </div>
+        {{ _fa_alert.render({ variant: 'info', body: 'Noch keine AI-Agents im Inventar. Lege ein Asset mit <code>assetType=ai_agent</code> an (z. B. GitHub Copilot, Cursor, Claude Code, eigener MCP-Server).' }) }}
     {% else %}
         {% embed '_components/_card.html.twig' %}
             {% block card_body %}
@@ -79,11 +76,11 @@
                     <table class="table table-hover align-middle">
                         <thead>
                             <tr>
-                                <th scope="col">{{ 'ai_agent.table.name'|trans({}, 'mris') }}</th>
-                                <th scope="col">{{ 'ai_agent.table.provider'|trans({}, 'mris') }}</th>
-                                <th scope="col">{{ 'ai_agent.table.model'|trans({}, 'mris') }}</th>
-                                <th scope="col">{{ 'ai_agent.table.risk_class'|trans({}, 'mris') }}</th>
-                                <th scope="col" class="text-center">{{ 'ai_agent.table.completeness'|trans({}, 'mris') }}</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Anbieter</th>
+                                <th scope="col">Modell</th>
+                                <th scope="col">Risikoklasse</th>
+                                <th scope="col" class="text-center">Doku-Vollständigkeit</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
@@ -101,19 +98,19 @@
                                     <td><code>{{ agent.aiAgentModelVersion|default('—') }}</code></td>
                                     <td>
                                         {% if agent.aiAgentClassification == 'prohibited' %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'dark', content: 'ai_agent.risk.prohibited'|trans({}, 'mris') } %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'dark', content: 'Verboten' } %}
                                         {% elseif agent.aiAgentClassification == 'high_risk' %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'ai_agent.risk.high_risk'|trans({}, 'mris') } %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'Hochrisiko' } %}
                                         {% elseif agent.aiAgentClassification == 'limited_risk' %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'ai_agent.risk.limited_risk'|trans({}, 'mris') } %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'Begrenzt' } %}
                                         {% elseif agent.aiAgentClassification == 'minimal_risk' %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'ai_agent.risk.minimal_risk'|trans({}, 'mris') } %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Minimal' } %}
                                         {% else %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'ai_agent.risk.unclassified'|trans({}, 'mris') } %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Nicht klassifiziert' } %}
                                         {% endif %}
                                     </td>
                                     <td class="text-center">
-                                        <div class="progress" style="height: 18px; min-width: 120px;" title="{{ comp.missing|join(', ') }}">
+                                        <div class="progress" style="height: 18px; min-width: 120px;">
                                             <div class="progress-bar bg-{{ comp.percentage >= 80 ? 'success' : (comp.percentage >= 50 ? 'warning' : 'danger') }}" style="width: {{ comp.percentage }}%">
                                                 {{ comp.filled }}/{{ comp.total }}
                                             </div>
@@ -133,9 +130,6 @@
         {% endembed %}
     {% endif %}
 
-    <div class="alert alert-light mt-4 small">
-        <strong><i class="bi bi-info-circle" aria-hidden="true"></i></strong>
-        {{ 'ai_agent.alert.mandatory_fields'|trans({}, 'mris')|nl2br }}
-    </div>
+    {{ _fa_alert.render({ variant: 'info', class: 'mt-4 small', body: '<strong>Pflichtfelder pro AI-Agent (9):</strong> Risikoklassifikation (AI Act Art. 6), Zweckbestimmung (Art. 11), Datengovernance (Art. 10), Human Oversight (Art. 14), Anbieter (Art. 16), Modell-Version (ISO 42001), Capability-Scope (MHC-13), Bedrohungsmodell (Art. 9 + MHC-13), Extension-Allowlist (MHC-13).' }) }}
 </div>
 {% endblock %}

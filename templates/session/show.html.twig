@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}{{ user_name }}{% endblock %}
 {% block admin_subtitle %}
@@ -12,7 +13,7 @@
 
 {% block admin_content %}
     <div class="mb-3">
-        <a href="{{ path('session_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+        <a href="{{ path('session_index') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
@@ -114,9 +115,7 @@
                     </div>
                 {% endfor %}
             {% else %}
-                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle' } } %}
-                    {% block alert_body %}{{ 'session.no_activities_7_days'|trans({}, 'session') }}{% endblock %}
-                {% endembed %}
+                {{ _fa_alert.render({ variant: 'info', body: 'session.no_activities_7_days'|trans({}, 'session') }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}

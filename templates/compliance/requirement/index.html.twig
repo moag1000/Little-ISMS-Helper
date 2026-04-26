@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}Compliance Requirements{% endblock %}
 
@@ -74,14 +75,16 @@
         {% endblock %}
         {% block card_body %}
             {% if requirements is empty %}
-                <div class="alert alert-info m-3">
-                    <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> No requirements found.
-                    {% if selected_framework %}
-                        Try selecting a different framework.
-                    {% else %}
-                        <a href="{{ path('admin_compliance_index') }}">Load frameworks</a> to get started.
-                    {% endif %}
-                </div>
+                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'm-3' } } %}
+                    {% block alert_body %}
+                        No requirements found.
+                        {% if selected_framework %}
+                            Try selecting a different framework.
+                        {% else %}
+                            <a href="{{ path('admin_compliance_index') }}" class="fa-alert__link">Load frameworks</a> to get started.
+                        {% endif %}
+                    {% endblock %}
+                {% endembed %}
             {% else %}
                 {% embed '_components/_table.html.twig' with {
                     'noMargin': true,

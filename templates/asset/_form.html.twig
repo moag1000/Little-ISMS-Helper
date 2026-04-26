@@ -10,6 +10,7 @@
 #}
 
 {% trans_default_domain 'assets' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {# Basic Information Section #}
 <fieldset class="mb-4">
@@ -127,10 +128,7 @@
         {{ 'asset.section.cia_values'|trans({}, 'asset') }}
     </legend>
 
-    <div class="alert alert-info" role="status">
-        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-        {{ 'asset.cia_help'|trans({}, 'asset') }}
-    </div>
+    {{ _fa_alert.render({ variant: 'info', body: 'asset.cia_help'|trans({}, 'asset') }) }}
 
     <div class="row">
         <div class="col-md-4">

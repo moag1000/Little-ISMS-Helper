@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'privacy'%}
 {% block title %}{{ processing_activity.name }} - Processing Activity{% endblock %}
 
@@ -27,15 +28,17 @@
 
     {# Compliance Status Banner #}
     {% if not compliance_report.is_compliant %}
-        <div class="alert alert-warning">
-            <h5><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Compliance Issues</h5>
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+            {% block alert_body %}
+            <div class="fa-alert__title">Compliance Issues</div>
             <p>This processing activity has {{ compliance_report.validation_errors|length }} validation error(s):</p>
             <ul>
                 {% for error in compliance_report.validation_errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
             </ul>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 
     {# Quick Stats #}

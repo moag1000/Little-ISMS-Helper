@@ -1,138 +1,53 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block title %}{{ 'mris.page.kpi_title'|trans({}, 'mris') }}{% endblock %}
+{% block title %}MRIS-KPIs{% endblock %}
 
 {% block body %}
 <div class="container">
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'mris.page.kpi_title'|trans({}, 'mris') }}</li>
+            <li class="breadcrumb-item active" aria-current="page">MRIS-KPIs</li>
         </ol>
     </nav>
 
-    <div class="page-header mb-4 d-flex justify-content-between align-items-start gap-3 flex-wrap">
+    <div class="page-header mb-4">
         <div>
             <h1>
                 <i class="bi bi-speedometer2" aria-hidden="true"></i>
-                {{ 'mris.page.kpi_title'|trans({}, 'mris') }}
+                Mythos-relevante Kennzahlen
             </h1>
             <p class="text-muted small mb-0">
-                {{ 'mris.page.kpi_intro'|trans({}, 'mris')|nl2br }}<br>
-                <em>{{ 'mris.page.source'|trans({}, 'mris') }}</em>
+                Acht KPIs aus MRIS v1.5 Kap. 10.6. Drei werden automatisch aus Bestandsdaten
+                berechnet, fünf erfordern manuelle Pflege je Mandant.<br>
+                <em>Quelle: Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. Lizenz: CC BY 4.0.</em>
             </p>
         </div>
-        <div class="d-flex gap-2 flex-wrap">
-            <a href="{{ path('app_mris_glossar') }}" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-book" aria-hidden="true"></i> Glossar
-            </a>
-            <a href="{{ path('app_mris_baselines_index') }}" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-collection" aria-hidden="true"></i> Branchen-Baselines
-            </a>
-            <div class="btn-group btn-group-sm" data-tour="mris-wizards">
-                <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="bi bi-magic" aria-hidden="true"></i> Wizards
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ path('app_mris_wizard_pure_friction') }}"><i class="bi bi-shield-exclamation" aria-hidden="true"></i> Reine-Reibung-Routine</a></li>
-                    <li><a class="dropdown-item" href="{{ path('app_mris_wizard_maturity_evidence') }}"><i class="bi bi-clipboard-check" aria-hidden="true"></i> Reifegrad-Evidence</a></li>
-                    <li><a class="dropdown-item" href="{{ path('app_mris_wizard_ai_risk_class') }}"><i class="bi bi-cpu" aria-hidden="true"></i> AI-Risiko-Klasse</a></li>
-                </ul>
-            </div>
-        </div>
     </div>
-
-    {# Aggregierter Mythos-Resilience-Indikator (LIH-spezifisch). Audit-Disclaimer prominent. #}
-    {% if score is defined and score %}
-        <div data-tour="mris-score-card">
-        {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-            {% block card_body %}
-                <div class="row align-items-center">
-                    <div class="col-md-3 text-center border-end">
-                        <h2 class="display-3 fw-bold text-{{ score.score >= 70 ? 'success' : (score.score >= 40 ? 'warning' : 'danger') }} mb-0">{{ score.score }}</h2>
-                        <p class="text-muted small mb-0">Mythos-Resilience-Indikator (MRI)</p>
-                        <p class="text-muted small mb-0">0–100, intern</p>
-                    </div>
-                    <div class="col-md-9">
-                        <table class="table table-sm mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Dimension</th>
-                                    <th class="text-end" style="width: 12%;">Wert</th>
-                                    <th class="text-end" style="width: 10%;">Gewicht</th>
-                                    <th class="text-end" style="width: 12%;">Beitrag</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for key, dim in score.breakdown %}
-                                    <tr>
-                                        <td><code>{{ key }}</code> <small class="text-muted">— {{ dim.source }}</small></td>
-                                        <td class="text-end">{{ dim.value }}</td>
-                                        <td class="text-end">{{ dim.weight }} %</td>
-                                        <td class="text-end fw-bold">{{ dim.contribution }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="alert alert-warning small mt-3 mb-0" data-tour="mris-disclaimer">
-                    <strong><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Disclaimer:</strong>
-                    {{ score.disclaimer }}
-                </div>
-            {% endblock %}
-        {% endembed %}
-        </div>
-    {% endif %}
 
     <div class="row g-3">
         {% for kpi in kpis %}
             <div class="col-md-6 col-lg-3">
                 {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                     {% block card_body %}
-                        {% set mrisLocale = app.request.locale|default('de') %}
-                        {% set kpiHelpKey = 'mris.help.kpi_' ~ kpi.id %}
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <code class="small text-muted">{{ kpi.mhc }}</code>
                             {% if kpi.computable %}
-                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'mris.badge.auto'|trans({}, 'mris') } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'auto' } %}
                             {% else %}
-                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'mris.badge.manual'|trans({}, 'mris') } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'manuell' } %}
                             {% endif %}
                         </div>
-                        <h2 class="h6 mb-2"
-                            {% set tt = mris_help(kpiHelpKey, 'tooltip', mrisLocale) %}
-                            {% if tt %}data-bs-toggle="tooltip" title="{{ tt }}"{% endif %}>
-                            {{ kpi.name }}
-                            {% if tt %}<i class="bi bi-question-circle small text-muted ms-1" aria-hidden="true"></i>{% endif %}
-                        </h2>
+                        <h2 class="h6 mb-2">{{ kpi.name }}</h2>
                         {% if kpi.value is not null %}
                             <p class="display-6 mb-1">
                                 {{ kpi.value }}
                                 <small class="fs-6 text-muted">{{ kpi.unit }}</small>
                             </p>
                         {% else %}
-                            <p class="text-muted fst-italic mb-1">{{ 'mris.state.no_data'|trans({}, 'mris') }}</p>
+                            <p class="text-muted fst-italic mb-1">— keine Daten —</p>
                         {% endif %}
-
-                        {# Sparkline aus KpiSnapshot — nur fuer auto-KPIs mit Trend-Daten. #}
-                        {% set trendKey = 'mris_' ~ kpi.id %}
-                        {% if trends is defined and trends[trendKey] is defined and trends[trendKey]|length > 1 %}
-                            {% set vals = trends[trendKey] %}
-                            {% set maxVal = max(vals) %}
-                            {% set minVal = min(vals) %}
-                            {% set range = (maxVal - minVal) > 0 ? (maxVal - minVal) : 1 %}
-                            <svg viewBox="0 0 100 24" class="d-block mt-1" style="width: 100%; height: 24px;" aria-label="Trend {{ vals|length }} Tage">
-                                {% set step = 100 / (vals|length - 1) %}
-                                {% set points = [] %}
-                                {% for i, v in vals %}
-                                    {% set y = 22 - ((v - minVal) / range * 20) %}
-                                    {% set points = points|merge([(i * step)|round(1) ~ ',' ~ y|round(1)]) %}
-                                {% endfor %}
-                                <polyline fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" points="{{ points|join(' ') }}" class="text-{{ kpi.value >= minVal ? 'success' : 'warning' }}"/>
-                            </svg>
-                        {% endif %}
-
                         <p class="small text-muted mb-0">{{ kpi.source }}</p>
                     {% endblock %}
                 {% endembed %}
@@ -140,49 +55,13 @@
         {% endfor %}
     </div>
 
-    {# Manual KPI entry — die 5 nicht automatisch berechenbaren KPIs #}
-    {% if manual_kpis is defined and manual_kpis|length > 0 %}
-        {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
-            {% block card_header %}
-                <div class="card-header">
-                    <h2 class="mb-0">
-                        <i class="bi bi-pencil-square" aria-hidden="true"></i>
-                        {{ 'mris.manual_form.title'|trans({}, 'mris') }}
-                    </h2>
-                </div>
-            {% endblock %}
-            {% block card_body %}
-                <p class="small text-muted">{{ 'mris.manual_form.intro'|trans({}, 'mris')|nl2br }}</p>
-                <form method="post" action="{{ path('app_mris_kpis_manual_save') }}" class="row g-3">
-                    <input type="hidden" name="_token" value="{{ csrf_token('mris_manual_kpis') }}">
-                    {% for kpi in manual_kpis %}
-                        <div class="col-md-6">
-                            <label for="kpi_{{ kpi.id }}" class="form-label small">
-                                <code>{{ kpi.mhc }}</code> · {{ kpi.name }} ({{ kpi.unit }})
-                            </label>
-                            <input type="number" step="0.1" min="0"
-                                   id="kpi_{{ kpi.id }}"
-                                   name="manual[{{ kpi.id }}]"
-                                   value="{{ kpi.value }}"
-                                   class="form-control form-control-sm"
-                                   placeholder="—">
-                            <div class="form-text small">{{ kpi.source }}</div>
-                        </div>
-                    {% endfor %}
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-sm btn-primary">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i>
-                            {{ 'mris.manual_form.save'|trans({}, 'mris') }}
-                        </button>
-                    </div>
-                </form>
-            {% endblock %}
-        {% endembed %}
-    {% endif %}
-
-    <div class="alert alert-light mt-4 small">
-        <strong><i class="bi bi-info-circle" aria-hidden="true"></i></strong>
-        {{ 'mris.kpi_help.manual_note'|trans({}, 'mris')|nl2br }}
-    </div>
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mt-4 small' } } %}
+        {% block alert_body %}
+        <strong>Hinweis:</strong>
+        Die fünf manuell zu pflegenden KPIs (SBOM-Coverage, KEV-Patch-Latency, CCM-Coverage,
+        Krypto-Inventar-Abdeckung, TLPT-Findings-Closure) erfordern derzeit externe Datenquellen.
+        Manuelle Eingabefelder folgen in einer späteren Version.
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

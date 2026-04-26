@@ -1,3 +1,4 @@
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {# Inline review panel for a single FulfillmentInheritanceLog.
  # Parameters:
  #   log: FulfillmentInheritanceLog
@@ -12,10 +13,7 @@
 
     {{ include('_components/_inheritance_source_card.html.twig', { log: log }) }}
 
-    <div class="alert alert-info" role="note">
-        <strong>{{ 'compliance_inheritance.panel.suggested'|trans({}, 'compliance_inheritance') }}:</strong>
-        {{ log.suggestedPercentage }}%
-    </div>
+    {{ _fa_alert.render({ variant: 'info', body: '<strong>' ~ 'compliance_inheritance.panel.suggested'|trans({}, 'compliance_inheritance') ~ ':</strong> ' ~ log.suggestedPercentage ~ '%' }) }}
 
     {% if log.isPendingReview() %}
     <form method="post"
@@ -91,13 +89,15 @@
         </div>
     </form>
     {% else %}
-        <div class="alert alert-secondary mb-0">
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-0' } } %}
+            {% block alert_body %}
             {{ 'compliance_inheritance.panel.final_state'|trans({
                 '%status%': ('compliance_inheritance.status.' ~ log.reviewStatus)|trans({}, 'compliance_inheritance')
             }, 'compliance_inheritance') }}
             {% if log.reviewedAt %} · {{ log.reviewedAt|date('Y-m-d H:i') }}{% endif %}
             {% if log.reviewedBy %} · {{ log.reviewedBy.fullName|default(log.reviewedBy.email) }}{% endif %}
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 </section>
 

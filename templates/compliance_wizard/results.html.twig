@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'wizard' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'wizard.results'|trans({}, 'wizard') }} - {{ result.framework_name }}{% endblock %}
 
@@ -69,24 +70,24 @@
 
     {# Critical Gaps Alert #}
     {% if result.critical_gap_count > 0 %}
-    <div class="alert alert-danger mb-4">
-        <h4 class="alert-heading h6">
-            <i class="bi bi-exclamation-octagon me-2" aria-hidden="true"></i>{{ 'wizard.critical_gaps_found'|trans({'%count%': result.critical_gap_count}, 'wizard') }}
-        </h4>
-        <ul class="mb-0">
-            {% for gap in result.critical_gaps|slice(0, 5) %}
-            <li>
-                <strong>{{ gap.title|trans({}, 'wizard') }}</strong>
-                {% if gap.route is defined and gap.route is not null and gap.route is not empty %}
-                    - <a href="{{ path(gap.route) }}" class="alert-link">{{ 'wizard.go_to_module'|trans({}, 'wizard') }}</a>
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', icon: 'bi-exclamation-octagon', class: 'mb-4' } } %}
+        {% block alert_body %}
+            <div class="fa-alert__title">{{ 'wizard.critical_gaps_found'|trans({'%count%': result.critical_gap_count}, 'wizard') }}</div>
+            <ul class="mb-0">
+                {% for gap in result.critical_gaps|slice(0, 5) %}
+                <li>
+                    <strong>{{ gap.title|trans({}, 'wizard') }}</strong>
+                    {% if gap.route is defined and gap.route is not null and gap.route is not empty %}
+                        - <a href="{{ path(gap.route) }}" class="fa-alert__link">{{ 'wizard.go_to_module'|trans({}, 'wizard') }}</a>
+                    {% endif %}
+                </li>
+                {% endfor %}
+                {% if result.critical_gap_count > 5 %}
+                <li class="text-muted">{{ 'wizard.and_more'|trans({'%count%': result.critical_gap_count - 5}, 'wizard') }}</li>
                 {% endif %}
-            </li>
-            {% endfor %}
-            {% if result.critical_gap_count > 5 %}
-            <li class="text-muted">{{ 'wizard.and_more'|trans({'%count%': result.critical_gap_count - 5}, 'wizard') }}</li>
-            {% endif %}
-        </ul>
-    </div>
+            </ul>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Categories #}
@@ -193,17 +194,17 @@
 
     {# Missing Modules Info #}
     {% if result.missing_modules|length > 0 %}
-    <div class="alert alert-info mt-4">
-        <h4 class="alert-heading h6">
-            <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>{{ 'wizard.improve_coverage'|trans({}, 'wizard') }}
-        </h4>
-        <p class="mb-2">{{ 'wizard.activate_for_better'|trans({}, 'wizard') }}</p>
-        <ul class="mb-0">
-            {% for mod in result.missing_modules %}
-            <li><strong>{{ mod }}</strong></li>
-            {% endfor %}
-        </ul>
-    </div>
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-lightbulb', class: 'mt-4' } } %}
+        {% block alert_body %}
+            <div class="fa-alert__title">{{ 'wizard.improve_coverage'|trans({}, 'wizard') }}</div>
+            <p class="mb-2">{{ 'wizard.activate_for_better'|trans({}, 'wizard') }}</p>
+            <ul class="mb-0">
+                {% for mod in result.missing_modules %}
+                <li><strong>{{ mod }}</strong></li>
+                {% endfor %}
+            </ul>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Navigation #}
