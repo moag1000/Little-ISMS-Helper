@@ -64,7 +64,7 @@
                     <form action="{{ path('app_dpia_submit_for_review', {id: dpia.id}) }}" method="post" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('submit' ~ dpia.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                            <i class="bi bi-send" aria-hidden="true"></i> {{ 'dpia.action.submit_for_review'|trans({}, 'privacy') }}
+                            <i class="fa-icon fa-icon--ui-send" aria-hidden="true"></i> {{ 'dpia.action.submit_for_review'|trans({}, 'privacy') }}
                         </button>
                     </form>
                 {% endif %}

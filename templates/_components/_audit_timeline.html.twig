@@ -21,7 +21,7 @@
         {% for dateKey, logs in groupedLogs %}
         <div class="timeline-date-group">
             <div class="timeline-date-header">
-                <i class="bi bi-calendar3" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
                 {{ logs[0].createdAt|date('d. M Y') }}
             </div>
 
@@ -50,7 +50,7 @@
                             {{ log.action|capitalize }}
                         </span>
                         <span class="timeline-time">
-                            <i class="bi bi-clock" aria-hidden="true"></i> {{ log.createdAt|date('H:i:s') }}
+                            <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i> {{ log.createdAt|date('H:i:s') }}
                         </span>
                     </div>
                     <div class="timeline-title">

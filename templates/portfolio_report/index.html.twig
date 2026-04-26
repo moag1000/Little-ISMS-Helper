@@ -24,7 +24,7 @@
                 <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i>
                 <strong>{{ tenant.name }}</strong>
                 <span class="mx-2">&middot;</span>
-                <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i>
                 {{ 'portfolio_report.header.stichtag'|trans({}, 'portfolio_report') }}:
                 <strong>{{ stichtag|date('Y-m-d') }}</strong>
                 {% if vorperiode %}
@@ -41,7 +41,7 @@
                 stichtag: stichtag|date('Y-m-d'),
                 vorperiode: vorperiode ? vorperiode|date('Y-m-d') : null
             }) }}" class="fa-cyber-btn fa-cyber-btn--danger">
-                <i class="bi bi-file-pdf" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                 {{ 'portfolio_report.action.download_pdf'|trans({}, 'portfolio_report') }}
             </a>
             <a href="{{ path('app_management_reports_portfolio_excel', {
@@ -61,7 +61,7 @@
             {% block card_body %}
                 <div class="text-center">
                     <div class="small text-uppercase text-muted mb-1">
-                        <i class="bi bi-lightning-charge-fill text-success" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--threat text-success" aria-hidden="true"></i>
                         {{ 'portfolio_report.fte_saved.title'|trans({}, 'portfolio_report') }}
                     </div>
                     <div class="display-4 fw-bold text-success mb-1">
@@ -153,7 +153,7 @@
                 </div>
                 <div class="col-md-4">
                     <label for="portfolio_vorperiode" class="form-label">
-                        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-hourglass" aria-hidden="true"></i>
                         {{ 'portfolio_report.form.vorperiode'|trans({}, 'portfolio_report') }}
                     </label>
                     <input type="date"
@@ -287,7 +287,7 @@
                                                 </a>
                                                 <div class="small text-muted mt-1">
                                                     <span title="{{ 'portfolio_report.cell.count_tooltip'|trans({}, 'portfolio_report') }}">
-                                                        <i class="bi bi-list-ol" aria-hidden="true"></i> {{ cell.count }}
+                                                        <i class="fa-icon fa-icon--nav-list-ordered" aria-hidden="true"></i> {{ cell.count }}
                                                     </span>
                                                     {% if cell.gaps > 0 %}
                                                         <span class="ms-2 text-danger" title="{{ 'portfolio_report.cell.gaps_tooltip'|trans({}, 'portfolio_report') }}">

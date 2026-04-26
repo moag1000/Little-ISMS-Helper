@@ -27,14 +27,14 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="card-title mb-0">
-                            <i class="bi bi-list-ul me-2" aria-hidden="true"></i>Navigation
+                            <i class="fa-icon fa-icon--ui-list me-2" aria-hidden="true"></i>Navigation
                         </h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
                     <div class="list-group list-group-flush mx-n3 mt-n3">
                         <a href="{{ path('admin_licensing_index') }}" class="list-group-item list-group-item-action active">
-                            <i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>NOTICE
+                            <i class="fa-icon fa-icon--policy me-2" aria-hidden="true"></i>NOTICE
                         </a>
                         <a href="{{ path('admin_licensing_report') }}" class="list-group-item list-group-item-action">
                             <i class="fa-icon fa-icon--nav-reports me-2" aria-hidden="true"></i>Detaillierter Bericht
@@ -63,7 +63,7 @@
                 {% block card_body %}
                     <div class="d-grid gap-2">
                         <button data-controller="ui-actions" data-action="ui-actions#print" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                            <i class="bi bi-printer" aria-hidden="true"></i>Drucken
+                            <i class="fa-icon fa-icon--ui-printer" aria-hidden="true"></i>Drucken
                         </button>
                         <a href="{{ asset('NOTICE.md') }}" download class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                             <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>NOTICE.md
@@ -83,7 +83,7 @@
                     <div class="card-header bg-body-secondary">
                         <div class="d-flex justify-content-between align-items-center">
                             <h2 class="card-title mb-0">
-                                <i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>NOTICE - Third-Party Software Attributions
+                                <i class="fa-icon fa-icon--policy me-2" aria-hidden="true"></i>NOTICE - Third-Party Software Attributions
                             </h2>
                             <div class="btn-group btn-group-sm" role="group" data-controller="ui-actions">
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-action="ui-actions#setFontSize" data-ui-actions-size-param="14px" data-ui-actions-target-param="#license-content">

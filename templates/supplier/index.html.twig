@@ -104,7 +104,7 @@
     {% if nonCompliant|length > 0 %}
     <div class="fa-alert fa-alert--danger" role="alert">
         <div class="fa-alert__body">
-        <div class="fw-bold mb-2"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ 'supplier.alert.non_compliant'|trans({}, 'suppliers') }}</div>
+        <div class="fw-bold mb-2"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'supplier.alert.non_compliant'|trans({}, 'suppliers') }}</div>
         <ul>
             {% for supplier in nonCompliant %}
             <li>
@@ -229,7 +229,7 @@
                             {% if supplier.hasISO27001 %}
                                 <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
                             {% else %}
-                                <i class="bi bi-x-circle text-secondary" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--status-critical text-secondary" aria-hidden="true"></i>
                             {% endif %}
                         </td>
                         <td>

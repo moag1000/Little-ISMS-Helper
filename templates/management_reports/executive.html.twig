@@ -20,7 +20,7 @@
         </h1>
         <div class="btn-group">
             <a href="{{ path('app_management_reports_executive_pdf') }}" class="fa-cyber-btn fa-cyber-btn--danger">
-                <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
+                <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
             </a>
         </div>
     </div>
@@ -242,7 +242,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h3 class="h5 mb-0">
-                            <i class="bi bi-mortarboard" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-mortarboard" aria-hidden="true"></i>
                             {{ 'management_reports.executive.trainings'|trans({}, 'management_reports') }}
                         </h3>
                     </div>
@@ -344,7 +344,7 @@
     <div class="row mt-3">
         <div class="col-12">
             <div class="text-muted small text-end">
-                <i class="bi bi-clock" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
                 {{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ summary.generated_at|date('Y-m-d H:i') }}
             </div>
         </div>

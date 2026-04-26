@@ -4,7 +4,7 @@
     {% block card_body %}
         <div class="d-flex justify-content-between align-items-start mb-2">
             <h3 class="h6 mb-0">
-                {% if report.isFavorite %}<i class="bi bi-star-fill text-warning" aria-hidden="true"></i>{% endif %}
+                {% if report.isFavorite %}<i class="fa-icon fa-icon--ui-star text-warning" aria-hidden="true"></i>{% endif %}
                 {{ report.name }}
             </h3>
             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: report.category } %}
@@ -14,7 +14,7 @@
         {% endif %}
         <div class="d-flex justify-content-between align-items-center">
             <small class="text-muted">
-                <i class="bi bi-clock" aria-hidden="true"></i> {{ report.updatedAt ? report.updatedAt|date('d.m.Y') : report.createdAt|date('d.m.Y') }}
+                <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i> {{ report.updatedAt ? report.updatedAt|date('d.m.Y') : report.createdAt|date('d.m.Y') }}
             </small>
             <div class="btn-group btn-group-sm">
                 <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'action.edit'|trans }}">

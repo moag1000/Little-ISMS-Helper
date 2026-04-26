@@ -123,7 +123,7 @@
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header">
-                <h3 class="mb-0"><i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i> {{ 'compliance.mapping_quality.low_confidence'|trans({}, 'compliance') }} ({{ low_confidence_mappings|length }})</h3>
+                <h3 class="mb-0"><i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i> {{ 'compliance.mapping_quality.low_confidence'|trans({}, 'compliance') }} ({{ low_confidence_mappings|length }})</h3>
             </div>
         {% endblock %}
         {% block card_body %}

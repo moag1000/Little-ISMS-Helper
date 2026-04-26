@@ -87,7 +87,7 @@
                         {% include '_components/_badge.html.twig' with { variant: status_variant, content: ('wizard.status.' ~ result.status)|trans({}, 'wizard') } %}
                         <div class="mt-3">
                             <small class="text-muted">
-                                <i class="bi bi-flag text-danger me-1" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-flag text-danger me-1" aria-hidden="true"></i>
                                 {{ result.critical_gap_count }} {{ 'wizard.critical_gaps'|trans({}, 'wizard') }}
                             </small>
                         </div>
@@ -193,7 +193,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="card-title h5 mb-0">
-                    <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>{{ 'wizard.insights'|trans({}, 'wizard') }}
+                    <i class="fa-icon fa-icon--ui-lightbulb me-2" aria-hidden="true"></i>{{ 'wizard.insights'|trans({}, 'wizard') }}
                 </h2>
             </div>
         {% endblock %}

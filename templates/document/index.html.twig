@@ -104,7 +104,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-pie-chart" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-pie-chart" aria-hidden="true"></i>
                     {{ 'document.section.type_overview'|trans({}, 'document') }}
                 </h2>
             </div>
@@ -115,7 +115,7 @@
                 <div class="col-md-3">
                     <div class="type-card text-center p-4 bg-pdf-light">
                         <div class="type-icon mb-3 fs-25 color-pdf">
-                            <i class="bi bi-file-pdf" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.pdf'|trans({}, 'document') }}</div>
                         <div class="type-count fs-2 fw-700 color-pdf">
@@ -172,7 +172,7 @@
         {% block card_header %}
             <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0">
-                <i class="bi bi-list-ul" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i>
                 {{ 'document.section.all_documents'|trans({}, 'document') }}
                 <span class="bulk-selected-badge" data-bulk-actions-target="countBadge" class="d-none">
                     <span data-bulk-actions-target="count">0</span> {{ 'common.selected'|trans({}, 'messages') }}
@@ -243,7 +243,7 @@
                         <td>
                             {# File Type Icon #}
                             {% if document.mimeType == 'application/pdf' %}
-                                <i class="bi bi-file-pdf-fill text-danger fs-15" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-file-pdf-fill text-danger fs-15" aria-hidden="true"></i>
                             {% elseif document.mimeType starts with 'image/' %}
                                 <i class="bi bi-file-image-fill text-primary fs-15" aria-hidden="true"></i>
                             {% elseif document.mimeType matches '/spreadsheet/' %}
@@ -277,7 +277,7 @@
                             </div>
                         </td>
                         <td>
-                            <i class="bi bi-calendar3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
                             {{ document.uploadedAt|date('d.m.Y') }}
                             <br>
                             <small class="text-muted">{{ document.uploadedAt|date('H:i') }}</small>

@@ -50,7 +50,7 @@
                     {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="bi bi-hourglass-split text-warning icon-2rem" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-hourglass text-warning icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
                                 <div class="text-muted small mb-1">{{ 'management_review.statistics.planned'|trans({}, 'management_review') }}</div>
@@ -82,7 +82,7 @@
                     {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="bi bi-calendar-event text-info icon-2rem" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-calendar-event text-info icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
                                 <div class="text-muted small mb-1">{{ 'management_review.statistics.this_year'|trans({}, 'management_review') }}</div>
@@ -99,7 +99,7 @@
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             <div class="card-header">
-                <h2 class="h5 mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'management_review.all_reviews'|trans({}, 'management_review') }}</h2>
+                <h2 class="h5 mb-0"><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'management_review.all_reviews'|trans({}, 'management_review') }}</h2>
             </div>
         {% endblock %}
         {% block card_body %}

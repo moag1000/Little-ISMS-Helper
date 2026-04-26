@@ -100,7 +100,7 @@
                     <form action="{{ path('app_data_breach_submit_for_assessment', {id: breach.id}) }}" method="post" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('submit' ~ breach.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                            <i class="bi bi-send" aria-hidden="true"></i> {{ 'privacy.data_breach.action.submit_for_assessment'|trans({}, 'privacy') }}
+                            <i class="fa-icon fa-icon--ui-send" aria-hidden="true"></i> {{ 'privacy.data_breach.action.submit_for_assessment'|trans({}, 'privacy') }}
                         </button>
                     </form>
                 {% endif %}

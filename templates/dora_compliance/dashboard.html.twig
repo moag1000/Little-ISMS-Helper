@@ -67,9 +67,9 @@
                     <div class="text-center">
                         <div class="h6 text-muted mb-2">
                             {% if pillar == 'ict_risk' %}
-                                <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'dora.pillar.ict_risk'|trans }}
+                                <i class="fa-icon fa-icon--nav-shield-alert" aria-hidden="true"></i> {{ 'dora.pillar.ict_risk'|trans }}
                             {% elseif pillar == 'incidents' %}
-                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dora.pillar.incidents'|trans }}
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'dora.pillar.incidents'|trans }}
                             {% elseif pillar == 'testing' %}
                                 <i class="fa-icon fa-icon--ui-copy-check" aria-hidden="true"></i> {{ 'dora.pillar.testing'|trans }}
                             {% elseif pillar == 'third_party' %}
@@ -94,7 +94,7 @@
                 {% block card_header %}
                     <div class="card-header bg-primary bg-opacity-10">
                         <h3 class="card-title h5 mb-0">
-                            <i class="bi bi-shield-exclamation me-2" aria-hidden="true"></i>{{ 'dora.pillar.ict_risk'|trans }}
+                            <i class="fa-icon fa-icon--nav-shield-alert me-2" aria-hidden="true"></i>{{ 'dora.pillar.ict_risk'|trans }}
                         </h3>
                         <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '5-16'}) }}</small>
                     </div>
@@ -157,7 +157,7 @@
                 {% block card_header %}
                     <div class="card-header bg-warning bg-opacity-10">
                         <h3 class="card-title h5 mb-0">
-                            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ 'dora.pillar.incidents'|trans }}
+                            <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>{{ 'dora.pillar.incidents'|trans }}
                         </h3>
                         <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '17-23'}) }}</small>
                     </div>
@@ -370,12 +370,12 @@
                     <div class="row g-3">
                         <div class="col-md-3">
                             <a href="{{ path('app_risk_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost w-100">
-                                <i class="bi bi-shield-exclamation me-1" aria-hidden="true"></i>{{ 'dora.action.manage_risks'|trans }}
+                                <i class="fa-icon fa-icon--nav-shield-alert me-1" aria-hidden="true"></i>{{ 'dora.action.manage_risks'|trans }}
                             </a>
                         </div>
                         <div class="col-md-3">
                             <a href="{{ path('app_incident_index') }}" class="fa-cyber-btn fa-cyber-btn--warning w-100">
-                                <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>{{ 'dora.action.manage_incidents'|trans }}
+                                <i class="fa-icon fa-icon--status-warning me-1" aria-hidden="true"></i>{{ 'dora.action.manage_incidents'|trans }}
                             </a>
                         </div>
                         <div class="col-md-3">

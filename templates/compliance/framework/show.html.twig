@@ -155,7 +155,7 @@
             {% embed '_components/_card.html.twig' with {
                 'title': 'compliance.framework.requirements_by_category',
                 'headerIcon': 'bi-list-check',
-                'actions': '<a href="' ~ path('app_compliance_requirement_index', {framework: framework.id}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"><i class="bi bi-list" aria-hidden="true"></i> ' ~ 'common.view_all'|trans({}, 'messages') ~ '</a>',
+                'actions': '<a href="' ~ path('app_compliance_requirement_index', {framework: framework.id}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> ' ~ 'common.view_all'|trans({}, 'messages') ~ '</a>',
                 'class': 'mb-4'
             } %}
                 {% block card_body %}

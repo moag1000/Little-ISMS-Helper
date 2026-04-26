@@ -134,7 +134,7 @@
                                     {% elseif token.tokenType == 'sms' %}
                                         <i class="bi bi-chat" aria-hidden="true"></i> {{ 'mfa.token_type.sms'|trans({}, 'mfa') }}
                                     {% elseif token.tokenType == 'hardware' %}
-                                        <i class="bi bi-cpu" aria-hidden="true"></i> {{ 'mfa.token_type.hardware'|trans({}, 'mfa') }}
+                                        <i class="fa-icon fa-icon--nav-cpu" aria-hidden="true"></i> {{ 'mfa.token_type.hardware'|trans({}, 'mfa') }}
                                     {% elseif token.tokenType == 'backup' %}
                                         <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i> {{ 'mfa.token_type.backup'|trans({}, 'mfa') }}
                                     {% else %}

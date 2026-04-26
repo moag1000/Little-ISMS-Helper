@@ -20,7 +20,7 @@
                 {{ 'compliance.mapping.hub.title'|trans({}, 'compliance') }}
             </a>
             <a href="{{ path('app_compliance_mapping_seeds_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-lightning-charge" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--threat" aria-hidden="true"></i>
                 {{ 'compliance.mapping.seeds.title'|trans({}, 'compliance')|split('—')|first|trim }}
             </a>
             <a href="{{ path('app_compliance_mapping_wizard') }}" class="fa-cyber-btn fa-cyber-btn--primary">
@@ -56,7 +56,7 @@
                     } %}
                     <div class="text-center mt-3">
                         <a href="{{ path('app_compliance_mapping_seeds_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                            <i class="bi bi-lightning-charge" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--threat" aria-hidden="true"></i>
                             {{ 'compliance.mapping.empty.action_seeds'|trans({}, 'compliance') }}
                         </a>
                     </div>

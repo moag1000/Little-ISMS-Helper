@@ -216,7 +216,7 @@
             {% if stats.incidents_open|default(0) == 0 and stats.incidents_total|default(0) == 0 %}
                 <div class="text-center mt-1">
                     <a href="{{ path('app_incident_new') }}" class="text-decoration-none small text-danger">
-                        <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>{{ 'dashboard.report_first_incident'|trans({}, 'dashboard') }}
+                        <i class="fa-icon fa-icon--status-warning me-1" aria-hidden="true"></i>{{ 'dashboard.report_first_incident'|trans({}, 'dashboard') }}
                     </a>
                 </div>
             {% endif %}
@@ -233,7 +233,7 @@
                         <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
                             <div>
                                 <div class="small text-uppercase text-muted mb-1">
-                                    <i class="bi bi-lightning-charge-fill text-success" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--threat text-success" aria-hidden="true"></i>
                                     {{ 'dashboard.reuse_fte.title'|trans({}, 'dashboard') }}
                                 </div>
                                 <div class="display-5 fw-bold text-success">
@@ -293,7 +293,7 @@
                     <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'dashboard.quick_actions.controls'|trans({}, 'dashboard') }}
                 </a>
                 <a href="{{ path('app_incident_new') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
-                    <i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ 'dashboard.quick_actions.report_incident'|trans({}, 'dashboard') }}
+                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'dashboard.quick_actions.report_incident'|trans({}, 'dashboard') }}
                 </a>
             </div>
         </div>
@@ -309,7 +309,7 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header">
                     <h3 class="widget-title">
-                        <i class="bi bi-pie-chart" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-pie-chart" aria-hidden="true"></i>
                         {{ 'dashboard.chart.risk_distribution'|trans({}, 'dashboard') }}
                     </h3>
                     <div class="widget-actions">
@@ -434,7 +434,7 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header bg-warning-subtle">
                     <h3 class="widget-title text-warning">
-                        <i class="bi bi-calendar-x" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-calendar-x" aria-hidden="true"></i>
                         {{ 'dashboard.overdue_reviews.title'|trans({}, 'dashboard') }}
                     </h3>
                     {% include '_components/_badge.html.twig' with { variant: 'warning', content: overdue_reviews|length } %}
@@ -453,7 +453,7 @@
                                     </a>
                                     <div class="small text-muted">
                                         {% if risk.reviewDate %}
-                                            <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i>
                                             {{ 'dashboard.overdue_reviews.last_review'|trans({}, 'dashboard') }}: {{ risk.reviewDate|date('d.m.Y') }}
                                         {% else %}
                                             <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
@@ -507,7 +507,7 @@
                                         {{ risk.title|length > 40 ? risk.title|slice(0, 40) ~ '...' : risk.title }}
                                     </a>
                                     <div class="small text-muted">
-                                        <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i>
                                         {{ risk.reviewDate|date('d.m.Y') }}
                                     </div>
                                 </div>
@@ -544,7 +544,7 @@
                                         {{ plan.title|length > 35 ? plan.title|slice(0, 35) ~ '...' : plan.title }}
                                     </a>
                                     <div class="small text-muted">
-                                        <i class="bi bi-calendar-x" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-calendar-x" aria-hidden="true"></i>
                                         {{ 'dashboard.overdue_treatment_plans.due_date'|trans({}, 'dashboard') }}: {{ plan.targetCompletionDate|date('d.m.Y') }}
                                         {% set daysOverdue = date().diff(plan.targetCompletionDate).days %}
                                         <span class="text-danger">({{ daysOverdue }} {{ 'dashboard.overdue_treatment_plans.days_overdue'|trans({}, 'dashboard') }})</span>
@@ -603,7 +603,7 @@
                                         {{ plan.title|length > 40 ? plan.title|slice(0, 40) ~ '...' : plan.title }}
                                     </a>
                                     <div class="small text-muted">
-                                        <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i>
                                         {{ plan.targetCompletionDate|date('d.m.Y') }}
                                         {% set daysRemaining = date().diff(plan.targetCompletionDate).days %}
                                         <span>({{ daysRemaining }} {{ 'dashboard.approaching_treatment_plans.days_remaining'|trans({}, 'dashboard') }})</span>
@@ -630,7 +630,7 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header">
                     <h3 class="widget-title">
-                        <i class="bi bi-activity" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-activity" aria-hidden="true"></i>
                         {{ 'dashboard.activity_feed.title'|trans({}, 'dashboard') }}
                     </h3>
                     <div class="widget-actions">
@@ -656,7 +656,7 @@
     {% if not show_first_steps|default(true) %}
     <div class="text-center mt-3">
         <a href="{{ path('app_dashboard_restore_first_steps') }}" class="text-muted small">
-            <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--ui-refresh me-1" aria-hidden="true"></i>
             {{ 'dashboard.restore_first_steps'|trans({}, 'dashboard') }}
         </a>
     </div>

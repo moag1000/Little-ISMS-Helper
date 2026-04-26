@@ -25,7 +25,7 @@
                 <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i>
                 <strong>{{ tenant.name }}</strong>
                 <span class="mx-2">&middot;</span>
-                <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i>
                 {{ 'portfolio_report.header.stichtag'|trans({}, 'portfolio_report') }}:
                 <strong>{{ stichtag|date('Y-m-d') }}</strong>
             </p>
@@ -78,7 +78,7 @@
                                     </td>
                                     <td class="text-end">
                                         <a href="{{ path('app_compliance_requirement_show', { id: row.requirement.id, _locale: app.request.locale }) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                            <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--util-external-link" aria-hidden="true"></i>
                                             {{ 'portfolio_report.drill.table.link'|trans({}, 'portfolio_report') }}
                                         </a>
                                     </td>

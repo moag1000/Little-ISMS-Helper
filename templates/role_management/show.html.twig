@@ -142,7 +142,7 @@
         <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
     </a>
     <a href="{{ path('role_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-        <i class="bi bi-list" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
+        <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
     </a>
     {% if not role.systemRole %}
     <form method="post" action="{{ path('role_management_delete', {id: role.id}) }}" class="d-inline"

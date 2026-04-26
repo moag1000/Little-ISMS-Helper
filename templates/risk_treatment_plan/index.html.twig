@@ -96,7 +96,7 @@
                     <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                 </button>
                 <a href="{{ path('app_risk_treatment_plan_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
+                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
                 </a>
             </div>
         </form>
@@ -107,7 +107,7 @@
 {% embed '_components/_card.html.twig' %}
     {% block card_header %}
         <div class="card-header">
-            <h2><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk_treatment_plan.list.title'|trans({}, 'risk_treatment_plan') }} ({{ plans|length }})</h2>
+            <h2><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'risk_treatment_plan.list.title'|trans({}, 'risk_treatment_plan') }} ({{ plans|length }})</h2>
         </div>
     {% endblock %}
     {% block card_body %}

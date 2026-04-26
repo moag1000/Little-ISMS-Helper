@@ -80,7 +80,7 @@
 {% block form_errors %}
     {% if errors|length > 0 %}
         <div id="{{ id }}_error" class="invalid-feedback d-block" role="alert" aria-live="assertive">
-            <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
             {% for error in errors %}
                 {{ error.message }}{% if not loop.last %}<br>{% endif %}
             {% endfor %}

@@ -80,7 +80,7 @@
             {% block card_header %}
                 <div class="card-header bg-danger text-white">
                     <h2 class="mb-0">
-                        <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'monitoring.errors.recent'|trans({}, 'monitoring') }}
+                        <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'monitoring.errors.recent'|trans({}, 'monitoring') }}
                     </h2>
                 </div>
             {% endblock %}
@@ -94,7 +94,7 @@
                                         <div class="d-flex align-items-center mb-2">
                                             {% include '_components/_badge.html.twig' with { variant: error.level == 'ERROR' ? 'danger' : (error.level == 'WARNING' ? 'warning' : (error.level == 'CRITICAL' ? 'dark' : 'info')), class: 'me-2', content: error.level } %}
                                             <small class="text-muted">
-                                                <i class="bi bi-clock" aria-hidden="true"></i> {{ error.timestamp }}
+                                                <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i> {{ error.timestamp }}
                                             </small>
                                             {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'ms-2', content: error.channel } %}
                                         </div>

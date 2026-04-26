@@ -56,7 +56,7 @@
                 <div class="col-md-4 d-flex align-items-end">
                     {% if selected_status or selected_severity %}
                         <a href="{{ path('app_audit_finding_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.clear'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'common.clear'|trans({}, 'messages') }}
                         </a>
                     {% endif %}
                 </div>

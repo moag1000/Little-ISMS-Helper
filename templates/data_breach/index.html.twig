@@ -94,7 +94,7 @@
                     <div class="text-muted small">{{ 'privacy.data_breach.kpi.pending_authority'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold text-warning">{{ statistics.requires_authority_notification - statistics.authority_notified }}</div>
                     <div class="mt-2">
-                        <small class="text-muted"><i class="bi bi-clock" aria-hidden="true"></i> {{ 'privacy.data_breach.kpi.deadline_72h'|trans({}, 'privacy') }}</small>
+                        <small class="text-muted"><i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i> {{ 'privacy.data_breach.kpi.deadline_72h'|trans({}, 'privacy') }}</small>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -280,7 +280,7 @@
                                         <a href="{{ path('app_data_breach_export_pdf', {id: breach.id}) }}"
                                            class="fa-cyber-btn fa-cyber-btn--success"
                                            title="{{ 'common.export_pdf'|trans({}, 'messages') }}" aria-label="{{ 'common.export_pdf'|trans({}, 'messages') }}">
-                                            <i class="bi bi-file-pdf" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                                         </a>
                                     </div>
                                 </td>

@@ -70,7 +70,7 @@
                 <div class="btn-group btn-group-sm" role="group">
                     <a href="{{ path('tenant_management_index', {filter: 'all'}) }}"
                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm {% if filter == 'all' %}active{% endif %}">
-                        <i class="bi bi-list" aria-hidden="true"></i> {{ 'tenant.filter.all'|trans({}, 'tenant') }}
+                        <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'tenant.filter.all'|trans({}, 'tenant') }}
                     </a>
                     <a href="{{ path('tenant_management_index', {filter: 'active'}) }}"
                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm {% if filter == 'active' %}active{% endif %}">

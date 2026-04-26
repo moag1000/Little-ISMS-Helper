@@ -84,7 +84,7 @@
                         <dt class="col-sm-4">{{ 'mfa.last_used'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             {% if mfa_token.lastUsedAt %}
-                                <i class="bi bi-clock" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
                                 {{ mfa_token.lastUsedAt|date('d.m.Y H:i:s') }}
                             {% else %}
                                 <span class="text-muted">{{ 'mfa.never_used'|trans({}, 'mfa') }}</span>
@@ -100,7 +100,7 @@
                         {% if mfa_token.expiresAt %}
                             <dt class="col-sm-4">{{ 'mfa.field.expires_at'|trans({}, 'mfa') }}</dt>
                             <dd class="col-sm-8">
-                                <i class="bi bi-calendar-x" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-calendar-x" aria-hidden="true"></i>
                                 {{ mfa_token.expiresAt|date('d.m.Y H:i:s') }}
                                 {% if mfa_token.isExpired %}
                                     {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'mfa.status.expired'|trans({}, 'mfa'), class: 'ms-2' } %}

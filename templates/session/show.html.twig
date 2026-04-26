@@ -82,7 +82,7 @@
                 {% for date, daily_activities in activity_timeline|reverse %}
                     <div class="mb-4">
                         <div class="text-muted fw-semibold">
-                            <i class="bi bi-calendar" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
                             {{ date|date('d.m.Y') }}
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: daily_activities|length } %}
                         </div>

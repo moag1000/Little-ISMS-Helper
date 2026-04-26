@@ -212,7 +212,7 @@
             'description': 'You have ' ~ dashboard.gaps.critical ~ ' critical requirement(s) with low fulfillment',
             'action_url': path('app_compliance_requirement_index') ~ '?framework=' ~ framework.id ~ '&priority=critical&sort=fulfillment',
             'action_text': 'View Critical Requirements',
-            'icon': '<i class="bi bi-exclamation-circle-fill text-danger" aria-hidden="true"></i>',
+            'icon': '<i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i>',
             'priority': 'high'
         } %}
     {% elseif dashboard.statistics.applicable < dashboard.statistics.total %}

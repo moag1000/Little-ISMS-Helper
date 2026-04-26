@@ -167,7 +167,7 @@
                         <div class="d-flex justify-content-between">
                             <a href="{% if isEdit %}{{ path('tenant_management_show', {id: tenant.id}) }}{% else %}{{ path('tenant_management_index') }}{% endif %}"
                                class="fa-cyber-btn fa-cyber-btn--ghost">
-                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
+                                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                             </a>
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                                 <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>

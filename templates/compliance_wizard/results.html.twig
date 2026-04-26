@@ -56,7 +56,7 @@
                     <div class="d-flex flex-column justify-content-center h-100">
                         <div class="d-grid gap-2">
                             <a href="{{ path('app_compliance_wizard_export_pdf', {wizard: wizard}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                                <i class="bi bi-file-pdf me-2" aria-hidden="true"></i>{{ 'wizard.export_pdf'|trans({}, 'wizard') }}
+                                <i class="fa-icon fa-icon--nav-file-pdf me-2" aria-hidden="true"></i>{{ 'wizard.export_pdf'|trans({}, 'wizard') }}
                             </a>
                             <a href="{{ path('app_compliance_wizard_start', {wizard: wizard}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                                 <i class="fa-icon fa-icon--ui-refresh me-2" aria-hidden="true"></i>{{ 'wizard.run_again'|trans({}, 'wizard') }}
@@ -155,7 +155,7 @@
                         {% endif %}
                         {% if partial > 0 %}
                             <span class="text-warning me-2">
-                                <i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ partial }}
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ partial }}
                             </span>
                         {% endif %}
                         {% if failed > 0 %}
@@ -172,7 +172,7 @@
                         <ul class="list-unstyled mt-1 mb-0">
                             {% for gap in category.gaps|slice(0, 2) %}
                             <li class="text-truncate" title="{{ gap.title|trans({}, 'wizard') }}">
-                                <i class="bi bi-flag text-danger me-1" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-flag text-danger me-1" aria-hidden="true"></i>
                                 {{ gap.title|trans({}, 'wizard') }}
                             </li>
                             {% endfor %}

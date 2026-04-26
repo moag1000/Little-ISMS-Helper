@@ -27,7 +27,7 @@
                 <p class="fw-bold fs-4">{{ remediation_effort.total_gaps }}</p>
             </div>
             <div class="col-md-4">
-                <p class="fw-bold"><i class="bi bi-clock" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.estimated_effort'|trans({}, 'compliance') }}</p>
+                <p class="fw-bold"><i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.estimated_effort'|trans({}, 'compliance') }}</p>
                 <p class="fw-bold fs-4">{{ remediation_effort.total_effort }} {{ 'compliance.mapping_quality.gaps.hours'|trans({}, 'compliance') }}</p>
                 <small class="text-muted">≈ {{ (remediation_effort.total_effort / 8)|round(1) }} {{ 'compliance.mapping_quality.gaps.workdays'|trans({}, 'compliance') }}</small>
             </div>
@@ -64,7 +64,7 @@
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
                                 <span>
-                                    {% if stat.gapType == 'missing_control' %}<i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i>
+                                    {% if stat.gapType == 'missing_control' %}<i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i>
                                     {% elseif stat.gapType == 'partial_coverage' %}🟡
                                     {% elseif stat.gapType == 'scope_difference' %}🔵
                                     {% elseif stat.gapType == 'additional_requirement' %}🟠
@@ -104,7 +104,7 @@
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
                                 <span>
-                                    {% if stat.priority == 'critical' %}<i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i>
+                                    {% if stat.priority == 'critical' %}<i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i>
                                     {% elseif stat.priority == 'high' %}🟠
                                     {% elseif stat.priority == 'medium' %}🟡
                                     {% else %}⚪
@@ -302,7 +302,7 @@
                     </ol>
                 </div>
                 <div class="col-md-4">
-                    <h4><i class="bi bi-clock" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.actions.time_planning'|trans({}, 'compliance') }}</h4>
+                    <h4><i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.actions.time_planning'|trans({}, 'compliance') }}</h4>
                     <p>
                         <strong>{{ 'compliance.mapping_quality.gaps.actions.total'|trans({}, 'compliance') }}</strong> {{ remediation_effort.total_effort }} {{ 'compliance.mapping_quality.gaps.hours'|trans({}, 'compliance') }}<br>
                         <strong>≈ {{ (remediation_effort.total_effort / 8)|round(1) }}</strong> {{ 'compliance.mapping_quality.gaps.actions.days_at_8h'|trans({}, 'compliance') }}

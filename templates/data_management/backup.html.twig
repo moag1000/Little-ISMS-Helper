@@ -166,7 +166,7 @@
             <div class="backup-modal-content">
                 <div class="backup-modal-header bg-warning-subtle text-warning">
                     <h4 class="backup-modal-title h5" id="restoreModalLabel">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'data_management.backup.restore.title'|trans({}, 'admin') }}
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'data_management.backup.restore.title'|trans({}, 'admin') }}
                     </h4>
                     <button type="button" class="btn-close backup-modal-close" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                 </div>
@@ -426,7 +426,7 @@
                 return '<div class="fa-alert fa-alert--danger" role="alert"><i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body"><p class="fa-alert__message">' + _t.errorLabel + ': ' + msg + '</p></div></div>';
             },
             restoreErrorAlert: function(msg) {
-                return '<div class="fa-alert fa-alert--danger" role="alert"><i class="bi bi-x-circle fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body"><p class="fa-alert__message">' + _t.errorLabel + ': ' + msg + '</p></div></div>';
+                return '<div class="fa-alert fa-alert--danger" role="alert"><i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body"><p class="fa-alert__message">' + _t.errorLabel + ': ' + msg + '</p></div></div>';
             }
         };
 
@@ -505,8 +505,8 @@
                     } else {
                         createBackupStatus.innerHTML = `
                             <div class="fa-alert fa-alert--danger" role="alert">
-                                <i class="bi bi-x-circle" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}
+                                <i class="fa-icon fa-icon--status-critical" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> ${result.message}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                 </div>
                                 <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
@@ -518,8 +518,8 @@
                 } catch (error) {
                     createBackupStatus.innerHTML = `
                         <div class="fa-alert fa-alert--danger" role="alert">
-                            <i class="bi bi-x-circle" fa-alert__icon" aria-hidden="true"></i>
-                            <div class="fa-alert__body"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
+                            <i class="fa-icon fa-icon--status-critical" fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                             </div>
                             <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
@@ -589,8 +589,8 @@
                     } else {
                         uploadBackupStatus.innerHTML = `
                             <div class="fa-alert fa-alert--danger" role="alert">
-                                <i class="bi bi-x-circle" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}
+                                <i class="fa-icon fa-icon--status-critical" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> ${result.message}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                 </div>
                                 <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
@@ -602,8 +602,8 @@
                 } catch (error) {
                     uploadBackupStatus.innerHTML = `
                         <div class="fa-alert fa-alert--danger" role="alert">
-                            <i class="bi bi-x-circle" fa-alert__icon" aria-hidden="true"></i>
-                            <div class="fa-alert__body"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
+                            <i class="fa-icon fa-icon--status-critical" fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                             </div>
                             <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
@@ -807,7 +807,7 @@
 
                     const filename = this.getAttribute('data-filename');
                     document.getElementById('restoreFilename').value = filename;
-                    document.getElementById('restoreModalLabel').innerHTML = `<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> ${filename} {{ 'data_management.backup.action.restore'|trans({}, 'admin') }}`;
+                    document.getElementById('restoreModalLabel').innerHTML = `<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> ${filename} {{ 'data_management.backup.action.restore'|trans({}, 'admin') }}`;
                     document.getElementById('restoreStatus').innerHTML = '';
 
                     showModal('restoreModal');

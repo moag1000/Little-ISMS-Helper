@@ -105,7 +105,7 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="text-muted mb-2 fw-semibold">
-                                <i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'audit.planned_date'|trans({}, 'audit') }}
+                                <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i> {{ 'audit.planned_date'|trans({}, 'audit') }}
                             </div>
                             <p class="fs-5">{{ audit.plannedDate|date('d.m.Y') }}</p>
                         </div>
@@ -184,7 +184,7 @@
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
                         <h2 class="mb-0">
-                            <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'audit.section.recommendations'|trans({}, 'audit') }}
+                            <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> {{ 'audit.section.recommendations'|trans({}, 'audit') }}
                         </h2>
                     </div>
                 {% endblock %}
@@ -228,7 +228,7 @@
                         <a href="{{ path('app_audit_export_pdf', {id: audit.id}) }}"
                            class="fa-cyber-btn fa-cyber-btn--danger"
                            data-turbo="false">
-                            <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'audit.export_pdf'|trans({}, 'audit') }}
+                            <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ 'audit.export_pdf'|trans({}, 'audit') }}
                         </a>
 
                         {% if is_granted('ROLE_MANAGER') %}

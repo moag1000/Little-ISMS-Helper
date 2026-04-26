@@ -89,7 +89,7 @@
                         </div>
                     </div>
                     <div class="small text-muted">
-                        <i class="bi bi-calendar-week" aria-hidden="true"></i> {{ 'admin.dashboard.stats.last_24h'|trans({}, 'admin') }}
+                        <i class="fa-icon fa-icon--ui-calendar-week" aria-hidden="true"></i> {{ 'admin.dashboard.stats.last_24h'|trans({}, 'admin') }}
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -195,7 +195,7 @@
                         {% endblock %}
                         {% block table_body %}
                             <tr>
-                                <td><i class="bi bi-cpu text-primary" aria-hidden="true"></i> {{ 'admin.dashboard.modules.assets'|trans({}, 'admin') }}</td>
+                                <td><i class="fa-icon fa-icon--nav-cpu text-primary" aria-hidden="true"></i> {{ 'admin.dashboard.modules.assets'|trans({}, 'admin') }}</td>
                                 {% if currentTenant %}
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'primary', content: stats.modules.assets.own } %}</td>
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'primary', content: stats.modules.assets.own + stats.modules.assets.inherited } %}</td>
@@ -362,7 +362,7 @@
                 {% block card_body %}
                     {% if recentActivity is empty %}
                         <div class="p-3 text-center text-muted">
-                            <i class="bi bi-inbox fs-3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-inbox fs-3" aria-hidden="true"></i>
                             <p class="mb-0 mt-2">{{ 'admin.dashboard.activity.empty'|trans({}, 'admin') }}</p>
                         </div>
                     {% else %}

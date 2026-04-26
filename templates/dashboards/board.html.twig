@@ -134,7 +134,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="bi bi-flag me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-flag me-2" aria-hidden="true"></i>
                             {{ 'board.section.milestones'|trans({}, 'dashboards') }}
                         </h5>
                     </div>
@@ -176,7 +176,7 @@
                 {% block card_header %}
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
-                            <i class="bi bi-exclamation-circle text-danger me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning text-danger me-2" aria-hidden="true"></i>
                             {{ 'board.section.attention_required'|trans({}, 'dashboards') }}
                         </h5>
                         {% include '_components/_badge.html.twig' with { variant: 'danger', content: dashboard.attention_items|length } %}

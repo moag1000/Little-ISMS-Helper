@@ -113,7 +113,7 @@
     {# Error messages with ARIA live region #}
     {% if has_errors %}
         <div id="{{ field_id }}_error" class="invalid-feedback d-block" role="alert" aria-live="assertive">
-            <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
             {% for error in field.vars.errors %}
                 {{ error.message }}{% if not loop.last %}<br>{% endif %}
             {% endfor %}

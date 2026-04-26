@@ -64,7 +64,7 @@
                     {# Form Actions #}
                     <div class="form-actions d-flex gap-2 justify-content-between">
                         <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                         </a>
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
@@ -85,14 +85,14 @@
                     <ul class="list-unstyled small">
                         <li><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i> {{ requirement.mappedControls|length }} {{ 'compliance.requirement.info.mapped_controls'|trans({}, 'compliance') }}</li>
                         <li><i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ requirement.detailedRequirements|length }} {{ 'compliance.requirement.info.sub_requirements'|trans({}, 'compliance') }}</li>
-                        <li><i class="bi bi-calendar" aria-hidden="true"></i> {{ 'common.created'|trans({}, 'messages') }} {{ requirement.createdAt|date('Y-m-d') }}</li>
+                        <li><i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i> {{ 'common.created'|trans({}, 'messages') }} {{ requirement.createdAt|date('Y-m-d') }}</li>
                     </ul>
                 {% endblock %}
             {% endembed %}
 
             {% embed '_components/_card.html.twig' with { 'class': 'mt-3 bg-body-secondary' } %}
                 {% block card_header %}
-                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'common.note'|trans({}, 'messages') }}</h2></div>
+                    <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> {{ 'common.note'|trans({}, 'messages') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     <p class="small mb-0">
