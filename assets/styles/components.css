@@ -115,7 +115,7 @@
     width: 90%;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 30px var(--primary-glow);
+    box-shadow: var(--shadow-lg), 0 0 30px var(--primary-glow);
     position: relative;
     z-index: 1001;
     transform: scale(0.9);
@@ -197,7 +197,7 @@
     background: var(--surface);
     border-radius: var(--r-md);
     padding: var(--spacing-md) var(--spacing-lg);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 20px var(--primary-glow);
+    box-shadow: var(--shadow-lg), 0 0 20px var(--primary-glow);
     min-width: 300px;
     max-width: 400px;
     pointer-events: all;
@@ -221,25 +221,25 @@
 .notification-success {
     border-color: var(--success);
     background: var(--success-glow);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 10px var(--success-glow), 0 0 20px var(--success-glow);
+    box-shadow: var(--shadow-lg), 0 0 10px var(--success-glow), 0 0 20px var(--success-glow);
 }
 
 .notification-error {
     border-color: var(--danger);
     background: var(--danger-glow);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 20px var(--danger-glow);
+    box-shadow: var(--shadow-lg), 0 0 20px var(--danger-glow);
 }
 
 .notification-warning {
     border-color: var(--warning);
     background: var(--warning-glow);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 20px var(--warning-glow);
+    box-shadow: var(--shadow-lg), 0 0 20px var(--warning-glow);
 }
 
 .notification-info {
     border-color: var(--primary);
     background: var(--primary-tint);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
+    box-shadow: var(--shadow-lg), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
 .notification-header {
@@ -494,7 +494,7 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-sm);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-md);
     margin-top: var(--spacing-xs);
     z-index: 100;
 }
@@ -853,8 +853,8 @@
 @media print {
     .sla-timeline,
     .sla-timeline-compact {
-        border-color: #000;
-        background: white !important;
+        border-color: var(--print-fg);
+        background: var(--print-bg) !important;
     }
 
     .sla-progress-bar,
