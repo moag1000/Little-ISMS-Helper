@@ -58,7 +58,7 @@
                                 {% endfor %}
                             </div>
                             <small class="text-muted d-block mt-2">
-                                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
                                 {{ 'audit.message.corporate_subsidiaries_info'|trans({'%count%': audit.auditedSubsidiaries|length}, 'audit') }}
                             </small>
                         </div>
@@ -84,7 +84,7 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="text-muted mb-2 fw-semibold">
-                                <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'audit.field.scoped_framework'|trans({}, 'audit') }}
+                                <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'audit.field.scoped_framework'|trans({}, 'audit') }}
                             </div>
                             <p>
                                 {% if audit.scopedFramework %}
@@ -150,7 +150,7 @@
                 {% block card_header %}
                     <div class="card-header bg-warning-subtle text-warning">
                         <h2 class="mb-0">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'audit.section.findings'|trans({}, 'audit') }}
+                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'audit.section.findings'|trans({}, 'audit') }}
                         </h2>
                     </div>
                 {% endblock %}
@@ -296,7 +296,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
-                        <h2 class="h6 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
+                        <h2 class="h6 mb-0"><i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -325,7 +325,7 @@
         {% block card_header %}
             <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
-                    <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'audit.section.history'|trans({}, 'audit') }}
+                    <i class="fa-icon fa-icon--audit-trail" aria-hidden="true"></i> {{ 'audit.section.history'|trans({}, 'audit') }}
                     ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})
                 </h2>
             </div>
@@ -411,7 +411,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="h5 modal-title" id="deleteModalLabel">
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'audit.confirm_delete'|trans({}, 'audit') }}
+                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'audit.confirm_delete'|trans({}, 'audit') }}
                 </h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
             </div>

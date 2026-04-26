@@ -27,13 +27,13 @@
     </div>
 
     <div class="alert alert-info small">
-        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
         {{ 'compliance.framework.migrate.intro'|trans({}, 'compliance') }}
     </div>
 
     {% if error is not null %}
         <div class="alert alert-danger">
-            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
             {{ error|trans({}, 'compliance') }}
         </div>
     {% endif %}
@@ -105,7 +105,7 @@
                     {{ 'compliance.framework.migrate.action.preview'|trans({}, 'compliance') }}
                 </button>
                 <button type="submit" name="commit" value="1" class="btn btn-primary">
-                    <i class="bi bi-check-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                     {{ 'compliance.framework.migrate.action.commit'|trans({}, 'compliance') }}
                 </button>
             </div>
@@ -213,7 +213,7 @@
 
                 {% if not was_commit and result.bridges_created > 0 %}
                     <div class="alert alert-info small mt-3 mb-0">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
                         {{ 'compliance.framework.migrate.result.preview_ok_hint'|trans({}, 'compliance') }}
                     </div>
                 {% endif %}

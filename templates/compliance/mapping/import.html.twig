@@ -49,7 +49,7 @@ A.5.15,NIS2-21.2.h,full,100,high,true,"Access Control"</code></pre>
 
     {% if error is not null %}
         <div class="alert alert-danger">
-            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
             {{ error|trans({}, 'compliance') }}
         </div>
     {% endif %}
@@ -117,7 +117,7 @@ A.5.15,NIS2-21.2.h,full,100,high,true,"Access Control"</code></pre>
                     {{ 'compliance.mapping.import.action.preview'|trans({}, 'compliance') }}
                 </button>
                 <button type="submit" name="commit" value="1" class="btn btn-primary">
-                    <i class="bi bi-check-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                     {{ 'compliance.mapping.import.action.commit'|trans({}, 'compliance') }}
                 </button>
             </div>
@@ -212,7 +212,7 @@ A.5.15,NIS2-21.2.h,full,100,high,true,"Access Control"</code></pre>
 
                 {% if not was_commit and result.created > 0 and result.errors|length == 0 %}
                     <div class="alert alert-info small mt-3 mb-0">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
                         {{ 'compliance.mapping.import.result.preview_ok_hint'|trans({}, 'compliance') }}
                     </div>
                 {% endif %}

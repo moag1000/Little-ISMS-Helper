@@ -69,7 +69,7 @@
 
                         {% if not seed.source_loaded or not seed.target_loaded %}
                             <div class="alert alert-warning small mb-2">
-                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                 {{ 'compliance.mapping.seeds.flash.framework_missing'|trans({
                                     '%source%': seed.source_code,
                                     '%target%': seed.target_code
@@ -99,7 +99,7 @@
     </div>
 
     <div class="alert alert-info mt-4 small">
-        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
         {{ 'compliance.mapping.seeds.footer_hint'|trans({}, 'compliance') }}
     </div>
 </div>

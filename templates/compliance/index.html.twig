@@ -205,12 +205,12 @@
                         <div class="stat-text">{{ 'compliance.stats.total_mappings'|trans({}, 'compliance') }}</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-icon"><i class="bi bi-check-circle" aria-hidden="true"></i></div>
+                        <div class="stat-icon"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></div>
                         <div class="stat-number">{{ mapping_stats.full_mappings + mapping_stats.exceeds_mappings }}</div>
                         <div class="stat-text">{{ 'compliance.stats.full_exceeds'|trans({}, 'compliance') }}</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-icon"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></div>
+                        <div class="stat-icon"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i></div>
                         <div class="stat-number">{{ mapping_stats.partial_mappings }}</div>
                         <div class="stat-text">{{ 'compliance.stats.partial_mappings'|trans({}, 'compliance') }}</div>
                     </div>

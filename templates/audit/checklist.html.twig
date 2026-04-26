@@ -31,7 +31,7 @@
         </div>
         <div class="progress-stats">
             <span class="stat-success">✓ {{ stats.compliant }} {{ 'checklist.status.compliant'|trans({}, 'audit') }}</span>
-            <span class="stat-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ stats.partial }} {{ 'checklist.status.partial'|trans({}, 'audit') }}</span>
+            <span class="stat-warning"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ stats.partial }} {{ 'checklist.status.partial'|trans({}, 'audit') }}</span>
             <span class="stat-danger">✗ {{ stats.non_compliant }} {{ 'checklist.status.non_compliant'|trans({}, 'audit') }}</span>
         </div>
     </div>

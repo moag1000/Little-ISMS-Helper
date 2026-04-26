@@ -43,7 +43,7 @@
     {% if isInherited is defined and isInherited %}
         <div class="alert alert-info mb-3">
             <div class="d-flex align-items-start">
-                <i class="bi bi-info-circle-fill me-2 mt-1" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-info me-2 mt-1" aria-hidden="true"></i>
                 <div>
                     <strong>{{ 'corporate.inheritance.view_only_title'|trans({}, 'tenant') }}</strong>
                     <p class="mb-0">{{ 'corporate.inheritance.risk_inherited_message'|trans({}, 'tenant') }}</p>
@@ -163,7 +163,7 @@
                 <div class="detail-section">
                     <h3>{{ 'risk.section.realization_history'|trans({}, 'risk') }} ({{ risk.incidents|length }} {{ 'risk.incidents'|trans({}, 'risk') }})</h3>
                     <div class="alert alert-warning">
-                        <strong><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'risk.realization.warning'|trans({'%count%': risk.incidents|length}, 'risk') }}</strong>
+                        <strong><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'risk.realization.warning'|trans({'%count%': risk.incidents|length}, 'risk') }}</strong>
                         {{ 'risk.realization.review_suggestion'|trans({}, 'risk') }}
                     </div>
                     <div class="incidents-list">
@@ -322,7 +322,7 @@
                     {% if totalAuditLogs > 10 %}
                         <div class="text-center mt-3">
                             <a href="{{ path('app_audit_log_index', {entity: 'Risk', entityId: risk.id}) }}" class="btn btn-sm btn-outline-secondary">
-                                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'action.view_all'|trans({}, 'messages') }} ({{ totalAuditLogs }})
+                                <i class="fa-icon fa-icon--audit-trail" aria-hidden="true"></i> {{ 'action.view_all'|trans({}, 'messages') }} ({{ totalAuditLogs }})
                             </a>
                         </div>
                     {% endif %}

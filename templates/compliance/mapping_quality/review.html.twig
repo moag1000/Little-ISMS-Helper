@@ -6,7 +6,7 @@
 <div class="container">
     <div class="page-header">
         <div>
-            <h1><i class="bi bi-search" aria-hidden="true"></i> {{ 'mapping_review.title'|trans({}, 'compliance') }} #{{ mapping.id }}</h1>
+            <h1><i class="fa-icon fa-icon--audit-trail" aria-hidden="true"></i> {{ 'mapping_review.title'|trans({}, 'compliance') }} #{{ mapping.id }}</h1>
             <p class="text-muted">{{ 'mapping_review.subtitle'|trans({}, 'compliance') }}</p>
         </div>
         <div class="button-group">
@@ -29,7 +29,7 @@
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header">
-                <h2 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'mapping_review.section.overview'|trans({}, 'compliance') }}</h2>
+                <h2 class="mb-0"><i class="fa-icon fa-icon--risk-score" aria-hidden="true"></i> {{ 'mapping_review.section.overview'|trans({}, 'compliance') }}</h2>
             </div>
         {% endblock %}
         {% block card_body %}
@@ -70,7 +70,7 @@
         <div class="col-md-4">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'mapping_review.section.percentages'|trans({}, 'compliance') }}</h2></div>
+                    <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--risk-score" aria-hidden="true"></i> {{ 'mapping_review.section.percentages'|trans({}, 'compliance') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     <div class="mb-3">
@@ -190,7 +190,7 @@
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header">
-                <h3 class="mb-0"><i class="bi bi-search" aria-hidden="true"></i> {{ 'mapping_review.gap.count'|trans({'%count%': gap_items|length}, 'compliance') }}</h3>
+                <h3 class="mb-0"><i class="fa-icon fa-icon--audit-trail" aria-hidden="true"></i> {{ 'mapping_review.gap.count'|trans({'%count%': gap_items|length}, 'compliance') }}</h3>
             </div>
         {% endblock %}
         {% block card_body %}
@@ -256,7 +256,7 @@
     {% endembed %}
     {% else %}
         <div class="alert alert-success">
-            <div class="fw-bold"><i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'mapping_review.gap.no_gaps'|trans({}, 'compliance') }}</div>
+            <div class="fw-bold"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'mapping_review.gap.no_gaps'|trans({}, 'compliance') }}</div>
             <p class="mb-0">{{ 'mapping_review.gap.no_gaps_desc'|trans({}, 'compliance') }}</p>
         </div>
     {% endif %}
@@ -313,7 +313,7 @@
     {% if mapping.reviewedBy or mapping.verifiedBy %}
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
-            <div class="card-header"><h3 class="mb-0 h5"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> {{ 'mapping_review.section.metadata'|trans({}, 'compliance') }}</h3></div>
+            <div class="card-header"><h3 class="mb-0 h5"><i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'mapping_review.section.metadata'|trans({}, 'compliance') }}</h3></div>
         {% endblock %}
         {% block card_body %}
             {% if mapping.reviewedBy %}
@@ -355,7 +355,7 @@ document.getElementById('reviewForm').addEventListener('submit', async (e) => {
         if (result.success) {
             document.getElementById('reviewResult').innerHTML = `
                 <div class="alert alert-success">
-                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mapping_review.message.review_saved'|trans({}, 'compliance') }}
+                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'mapping_review.message.review_saved'|trans({}, 'compliance') }}
                     ${data.manual_percentage ? `<br>{{ 'mapping_review.message.new_percentage'|trans({}, 'compliance') }}: ${data.manual_percentage}%` : ''}
                 </div>
             `;
@@ -363,14 +363,14 @@ document.getElementById('reviewForm').addEventListener('submit', async (e) => {
         } else {
             document.getElementById('reviewResult').innerHTML = `
                 <div class="alert alert-danger">
-                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'mapping_review.message.error'|trans({}, 'compliance') }}: ${result.error || '{{ 'mapping_review.message.unknown_error'|trans({}, 'compliance') }}'}
+                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'mapping_review.message.error'|trans({}, 'compliance') }}: ${result.error || '{{ 'mapping_review.message.unknown_error'|trans({}, 'compliance') }}'}
                 </div>
             `;
         }
     } catch (error) {
         document.getElementById('reviewResult').innerHTML = `
             <div class="alert alert-danger">
-                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'mapping_review.message.network_error'|trans({}, 'compliance') }}: ${error.message}
+                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'mapping_review.message.network_error'|trans({}, 'compliance') }}: ${error.message}
             </div>
         `;
     }
