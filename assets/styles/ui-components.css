@@ -2105,8 +2105,32 @@
     width: 200px;
 }
 
+.progress-h-4 {
+    height: 4px;
+}
+
+.progress-h-5 {
+    height: 5px;
+}
+
+.progress-h-10 {
+    height: 10px;
+}
+
+.progress-h-18 {
+    height: 18px;
+}
+
 .progress-h-20 {
     height: 20px;
+}
+
+.progress-h-24 {
+    height: 24px;
+}
+
+.progress-h-25 {
+    height: 25px;
 }
 
 .progress-h-30 {

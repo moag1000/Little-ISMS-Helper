@@ -129,7 +129,7 @@
                                     </td>
                                     <td>
                                         {% if framework.applicable > 0 %}
-                                        <div class="progress" style="height: 20px;">
+                                        <div class="progress progress-h-20">
                                             <div class="progress-bar bg-success" style="width: {{ (framework.fulfilled / framework.applicable * 100)|round }}%"></div>
                                             <div class="progress-bar bg-warning" style="width: {{ (framework.in_progress / framework.applicable * 100)|round }}%"></div>
                                             <div class="progress-bar bg-danger" style="width: {{ (framework.not_started / framework.applicable * 100)|round }}%"></div>
@@ -326,7 +326,7 @@
                                         {% include '_components/_badge.html.twig' with { variant: status_variant, content: item.status|replace({'_': ' '})|title } %}
                                     </td>
                                     <td>
-                                        <div class="progress" style="height: 20px;">
+                                        <div class="progress progress-h-20">
                                             <div class="progress-bar
                                                 {% if item.current_compliance >= 80 %}bg-success
                                                 {% elseif item.current_compliance >= 50 %}bg-warning

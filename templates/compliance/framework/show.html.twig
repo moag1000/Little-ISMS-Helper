@@ -226,7 +226,7 @@
                             {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'compliance.requirement.priority.critical'|trans({}, 'compliance') } %}
                             <span>{{ priority_distribution.critical }}</span>
                         </div>
-                        <div class="progress" style="height: 10px;">
+                        <div class="progress progress-h-10">
                             <div class="progress-bar bg-danger" style="width: {{ total_requirements > 0 ? (priority_distribution.critical / total_requirements * 100) : 0 }}%"></div>
                         </div>
                     </div>
@@ -235,7 +235,7 @@
                             {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'compliance.requirement.priority.high'|trans({}, 'compliance') } %}
                             <span>{{ priority_distribution.high }}</span>
                         </div>
-                        <div class="progress" style="height: 10px;">
+                        <div class="progress progress-h-10">
                             <div class="progress-bar bg-warning" style="width: {{ total_requirements > 0 ? (priority_distribution.high / total_requirements * 100) : 0 }}%"></div>
                         </div>
                     </div>
@@ -244,7 +244,7 @@
                             {% include '_components/_badge.html.twig' with { variant: 'info', content: 'compliance.requirement.priority.medium'|trans({}, 'compliance') } %}
                             <span>{{ priority_distribution.medium }}</span>
                         </div>
-                        <div class="progress" style="height: 10px;">
+                        <div class="progress progress-h-10">
                             <div class="progress-bar bg-info" style="width: {{ total_requirements > 0 ? (priority_distribution.medium / total_requirements * 100) : 0 }}%"></div>
                         </div>
                     </div>
@@ -253,7 +253,7 @@
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'compliance.requirement.priority.low'|trans({}, 'compliance') } %}
                             <span>{{ priority_distribution.low }}</span>
                         </div>
-                        <div class="progress" style="height: 10px;">
+                        <div class="progress progress-h-10">
                             <div class="progress-bar bg-secondary" style="width: {{ total_requirements > 0 ? (priority_distribution.low / total_requirements * 100) : 0 }}%"></div>
                         </div>
                     </div>

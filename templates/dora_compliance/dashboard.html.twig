@@ -133,14 +133,14 @@
                     <div class="row">
                         <div class="col-6">
                             <small class="text-muted d-block">{{ 'dora.metric.asset_classification'|trans }}</small>
-                            <div class="progress" style="height: 8px;">
+                            <div class="progress progress-h-8">
                                 <div class="progress-bar bg-{{ ict_risk.asset_classification_rate >= 80 ? 'success' : 'warning' }}" style="width: {{ ict_risk.asset_classification_rate }}%"></div>
                             </div>
                             <small>{{ ict_risk.asset_classification_rate }}%</small>
                         </div>
                         <div class="col-6">
                             <small class="text-muted d-block">{{ 'dora.metric.control_implementation'|trans }}</small>
-                            <div class="progress" style="height: 8px;">
+                            <div class="progress progress-h-8">
                                 <div class="progress-bar bg-{{ ict_risk.control_implementation_rate >= 80 ? 'success' : 'warning' }}" style="width: {{ ict_risk.control_implementation_rate }}%"></div>
                             </div>
                             <small>{{ ict_risk.control_implementation_rate }}%</small>
@@ -306,7 +306,7 @@
                         </div>
                         <div class="col-6">
                             <small class="text-muted">{{ 'dora.metric.exit_strategies'|trans }}</small>
-                            <div class="progress" style="height: 8px;">
+                            <div class="progress progress-h-8">
                                 <div class="progress-bar bg-{{ third_party.exit_strategy_rate >= 80 ? 'success' : 'warning' }}" style="width: {{ third_party.exit_strategy_rate }}%"></div>
                             </div>
                             <small>{{ third_party.exit_strategy_rate }}%</small>
@@ -340,7 +340,7 @@
                         </div>
                         <div class="col-md-8">
                             <p class="mb-2">{{ 'dora.information_sharing_desc'|trans }}</p>
-                            <div class="progress" style="height: 10px;">
+                            <div class="progress progress-h-10">
                                 <div class="progress-bar bg-{{ information_sharing.implementation_rate >= 80 ? 'success' : 'warning' }}"
                                      style="width: {{ information_sharing.implementation_rate }}%">
                                 </div>

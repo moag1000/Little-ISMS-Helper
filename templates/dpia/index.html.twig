@@ -84,7 +84,7 @@
                 {% block card_body %}
                     <div class="text-muted fw-semibold">{{ 'dpia.index.completeness'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold">{{ statistics.completeness_rate }}%</div>
-                    <div class="progress mt-2" style="height: 10px;">
+                    <div class="progress progress-h-10 mt-2">
                         <div class="progress-bar bg-success" style="width: {{ statistics.completeness_rate }}%"></div>
                     </div>
                 {% endblock %}
@@ -203,7 +203,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <div class="progress" style="height: 20px;">
+                                    <div class="progress progress-h-20">
                                         {% set percentage = dpia.completenessPercentage %}
                                         {% set bar_class = percentage == 100 ? 'bg-success' : 'bg-warning' %}
                                         <div class="progress-bar {{ bar_class }}"

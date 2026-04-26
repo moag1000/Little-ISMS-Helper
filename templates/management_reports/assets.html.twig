@@ -57,7 +57,7 @@
                                 <span>{{ type }}</span>
                                 {% include '_components/_badge.html.twig' with { variant: 'primary', content: count } %}
                             </div>
-                            <div class="progress" style="height: 8px;">
+                            <div class="progress progress-h-8">
                                 <div class="progress-bar" style="width: {{ report.total_assets > 0 ? (count / report.total_assets * 100) : 0 }}%"></div>
                             </div>
                         </div>

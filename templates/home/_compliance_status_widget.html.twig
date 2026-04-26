@@ -26,7 +26,7 @@
                 <span class="small text-muted">{{ 'wizard.overall_compliance'|trans({}, 'wizard') }}</span>
                 <span class="fw-bold">{{ compliance_summary.average_score }}%</span>
             </div>
-            <div class="progress" style="height: 8px;">
+            <div class="progress progress-h-8">
                 <div class="progress-bar bg-{{ compliance_summary.status == 'compliant' ? 'success' : (compliance_summary.status == 'partial' ? 'warning' : (compliance_summary.status == 'in_progress' ? 'info' : 'danger')) }}"
                      role="progressbar"
                      style="width: {{ compliance_summary.average_score }}%"

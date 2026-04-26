@@ -89,7 +89,7 @@
                 <small class="{{ progress_color ? 'text-' ~ progress_color : 'text-muted' }}">{{ subtitle }}</small>
             {% endif %}
             {% if progress_value is not null %}
-                <div class="progress mt-2" style="height: 6px;">
+                <div class="progress progress-h-6 mt-2">
                     <div class="progress-bar {{ progress_color ? 'bg-' ~ progress_color : '' }}"
                          role="progressbar"
                          style="width: {{ progress_value }}%"

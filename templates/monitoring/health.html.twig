@@ -193,7 +193,7 @@
                     <dd class="col-sm-8">{{ health_checks.disk.total }}</dd>
                 </dl>
 
-                <div class="progress" style="height: 25px;">
+                <div class="progress progress-h-25">
                     <div class="progress-bar bg-{{ health_checks.disk.percentage > 90 ? 'danger' : (health_checks.disk.percentage > 75 ? 'warning' : 'success') }}"
                          role="progressbar"
                          style="width: {{ health_checks.disk.percentage }}%"

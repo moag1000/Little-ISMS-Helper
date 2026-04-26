@@ -170,7 +170,7 @@
                     {% endif %}
 
                     <div class="text-center mb-3">
-                        <div class="progress" style="height: 30px;">
+                        <div class="progress progress-h-30">
                             <div class="progress-bar {{ badge_completion(fulfillment.fulfillmentPercentage)|replace({'badge ': ''}) }}"
                                  role="progressbar"
                                  style="width: {{ fulfillment.fulfillmentPercentage }}%"
@@ -229,7 +229,7 @@
                                 <input type="hidden" id="fulfillmentPercentage" name="fulfillmentPercentage" value="{{ fulfillment.fulfillmentPercentage }}">
 
                                 {# Visual Progress Bar #}
-                                <div class="progress mt-2" style="height: 8px;">
+                                <div class="progress progress-h-8 mt-2">
                                     <div data-fulfillment-target="progressBar" class="progress-bar" role="progressbar"
                                          style="width: {{ fulfillment.fulfillmentPercentage }}%; background-color: {{ fulfillment.fulfillmentPercentage >= 75 ? 'var(--success)' : (fulfillment.fulfillmentPercentage >= 50 ? 'var(--warning)' : 'var(--danger)') }};"
                                          aria-valuenow="{{ fulfillment.fulfillmentPercentage }}" aria-valuemin="0" aria-valuemax="100"></div>

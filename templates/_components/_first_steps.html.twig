@@ -78,7 +78,7 @@
                 <small class="text-muted">{{ 'first_steps.progress_label'|trans({}, 'dashboard') }}</small>
                 <small class="fw-bold">{{ progress_pct }}%</small>
             </div>
-            <div class="progress" style="height: 8px;">
+            <div class="progress progress-h-8">
                 <div class="progress-bar {% if progress_pct >= 80 %}bg-success{% elseif progress_pct >= 40 %}bg-primary{% else %}bg-info{% endif %}"
                      role="progressbar"
                      style="width: {{ progress_pct }}%"

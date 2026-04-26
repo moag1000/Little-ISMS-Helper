@@ -71,7 +71,7 @@
                                 </span>
                                 <strong>{{ stat.count }}</strong>
                             </div>
-                            <div class="progress" style="height: 20px;">
+                            <div class="progress progress-h-20">
                                 <div class="progress-bar bg-info"
                                      style="width: {% set total = gap_stats_by_type|map(s => s.count)|reduce((carry, v) => carry + v, 0) %}{% if total > 0 %}{{ (stat.count / total * 100)|round }}{% else %}0{% endif %}%">
                                 </div>
@@ -110,7 +110,7 @@
                                 </span>
                                 <strong>{{ stat.count }}</strong>
                             </div>
-                            <div class="progress" style="height: 20px;">
+                            <div class="progress progress-h-20">
                                 <div class="progress-bar {{ badge_priority(stat.priority)|replace({'badge ': ''}) }}"
                                      style="width: {% set total = gap_stats_by_priority|map(s => s.count)|reduce((carry, v) => carry + v, 0) %}{% if total > 0 %}{{ (stat.count / total * 100)|round }}{% else %}0{% endif %}%">
                                 </div>

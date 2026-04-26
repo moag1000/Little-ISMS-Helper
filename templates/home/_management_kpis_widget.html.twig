@@ -105,7 +105,7 @@
                                                 </span>
                                             </div>
                                             {% if kpi.details is defined and kpi.details.total is defined %}
-                                            <div class="progress mt-1" style="height: 4px;">
+                                            <div class="progress progress-h-4 mt-1">
                                                 <div class="progress-bar bg-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : 'danger') }}"
                                                      role="progressbar"
                                                      style="width: {{ kpi.value }}%"

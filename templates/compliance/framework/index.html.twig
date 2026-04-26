@@ -135,7 +135,7 @@
                                 </td>
                                 <td>
                                     {% set percentage = framework.compliancePercentage %}
-                                    <div class="progress" style="height: 20px;">
+                                    <div class="progress progress-h-20">
                                         <div class="progress-bar {% if percentage >= 80 %}bg-success{% elseif percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
                                              role="progressbar"
                                              style="width: {{ percentage }}%"

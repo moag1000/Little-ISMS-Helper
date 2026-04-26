@@ -98,7 +98,7 @@
                             </td>
                             <td>
                                 {% if metric.max_value is defined and metric.max_value > 0 %}
-                                <div class="progress" style="height: 18px;">
+                                <div class="progress progress-h-18">
                                     {% set pct = (metric.current / metric.max_value * 100)|round %}
                                     {% if pct > 100 %}{% set pct = 100 %}{% endif %}
                                     <div class="progress-bar {% if metric.higher_is_better %}{% if pct >= 80 %}bg-success{% elseif pct >= 60 %}bg-warning{% else %}bg-danger{% endif %}{% else %}{% if pct <= 20 %}bg-success{% elseif pct <= 50 %}bg-warning{% else %}bg-danger{% endif %}{% endif %}"

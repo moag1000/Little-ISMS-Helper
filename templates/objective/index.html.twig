@@ -68,7 +68,7 @@
                         <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: objective.category } %}</td>
                         <td>{{ objective.targetDate|date('d.m.Y') }}</td>
                         <td>
-                            <div class="progress" style="height: 20px;">
+                            <div class="progress progress-h-20">
                                 <div class="progress-bar {% if objective.progressPercentage >= 75 %}bg-success{% elseif objective.progressPercentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
                                      style="width: {{ objective.progressPercentage }}%">{{ objective.progressPercentage }}%</div>
                             </div>
