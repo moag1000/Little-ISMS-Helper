@@ -7,6 +7,7 @@ use App\Entity\Location;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -46,9 +47,14 @@ class AssetType extends AbstractType
                     'asset.type.service' => 'Service',
                     'asset.type.personnel' => 'Personnel',
                     'asset.type.physical' => 'Physical',
+                    'asset.type.ai_agent' => 'ai_agent',
                 ],
                 'required' => true,
                 'choice_translation_domain' => 'asset',
+                'attr' => [
+                    'id' => 'asset_form_assetType',
+                    'data-asset-form-target' => 'assetTypeSelect',
+                ],
             ])
             ->add('ownerUser', EntityType::class, [
                 'label' => 'asset.field.owner',
@@ -196,7 +202,148 @@ class AssetType extends AbstractType
                 'help' => 'asset.help.status',
                 'choice_translation_domain' => 'asset',
             ])
+            // ── AI-Agent fields (only relevant when assetType = 'ai_agent') ──
+            // Erfüllt EU AI Act Art. 6/9-16, ISO 42001 Annex A, MRIS MHC-13.
+            // All fields nullable — only meaningful for ai_agent subtype.
+            ->add('aiAgentClassification', ChoiceType::class, [
+                'label' => 'asset.ai_agent.field.classification',
+                'choices' => [
+                    'asset.ai_agent.classification.prohibited' => 'prohibited',
+                    'asset.ai_agent.classification.high_risk' => 'high_risk',
+                    'asset.ai_agent.classification.limited_risk' => 'limited_risk',
+                    'asset.ai_agent.classification.minimal_risk' => 'minimal_risk',
+                ],
+                'required' => false,
+                'placeholder' => 'asset.ai_agent.placeholder.classification',
+                'help' => 'asset.ai_agent.help.classification',
+                'choice_translation_domain' => 'asset',
+                'attr' => [
+                    'id' => 'asset_form_aiAgentClassification',
+                    'data-asset-form-target' => 'classification',
+                    'data-depends-on' => 'asset_form_assetType',
+                    'data-depends-on-value' => 'ai_agent',
+                ],
+            ])
+            ->add('aiAgentPurpose', TextareaType::class, [
+                'label' => 'asset.ai_agent.field.purpose',
+                'required' => false,
+                'attr' => [
+                    'rows' => 3,
+                    'placeholder' => 'asset.ai_agent.placeholder.purpose',
+                    'data-depends-on' => 'asset_form_assetType',
+                    'data-depends-on-value' => 'ai_agent',
+                ],
+                'help' => 'asset.ai_agent.help.purpose',
+            ])
+            ->add('aiAgentDataSources', TextareaType::class, [
+                'label' => 'asset.ai_agent.field.data_sources',
+                'required' => false,
+                'attr' => [
+                    'rows' => 3,
+                    'placeholder' => 'asset.ai_agent.placeholder.data_sources',
+                    'data-depends-on' => 'asset_form_assetType',
+                    'data-depends-on-value' => 'ai_agent',
+                ],
+                'help' => 'asset.ai_agent.help.data_sources',
+            ])
+            ->add('aiAgentOversightMechanism', TextType::class, [
+                'label' => 'asset.ai_agent.field.oversight_mechanism',
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 255,
+                    'placeholder' => 'asset.ai_agent.placeholder.oversight_mechanism',
+                    'data-depends-on' => 'asset_form_assetType',
+                    'data-depends-on-value' => 'ai_agent',
+                ],
+                'help' => 'asset.ai_agent.help.oversight_mechanism',
+            ])
+            ->add('aiAgentProvider', TextType::class, [
+                'label' => 'asset.ai_agent.field.provider',
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 255,
+                    'placeholder' => 'asset.ai_agent.placeholder.provider',
+                    'list' => 'asset_ai_agent_provider_suggestions',
+                    'id' => 'asset_form_aiAgentProvider',
+                    'data-asset-form-target' => 'provider',
+                    'data-action' => 'change->asset-form#suggestClassification input->asset-form#suggestClassification',
+                    'data-depends-on' => 'asset_form_assetType',
+                    'data-depends-on-value' => 'ai_agent',
+                ],
+                'help' => 'asset.ai_agent.help.provider',
+            ])
+            ->add('aiAgentModelVersion', TextType::class, [
+                'label' => 'asset.ai_agent.field.model_version',
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 100,
+                    'placeholder' => 'asset.ai_agent.placeholder.model_version',
+                    'data-depends-on' => 'asset_form_assetType',
+                    'data-depends-on-value' => 'ai_agent',
+                ],
+                'help' => 'asset.ai_agent.help.model_version',
+            ])
+            ->add('aiAgentCapabilityScope', TextareaType::class, [
+                'label' => 'asset.ai_agent.field.capability_scope',
+                'required' => false,
+                'attr' => [
+                    'rows' => 4,
+                    'placeholder' => 'asset.ai_agent.placeholder.capability_scope',
+                    'data-depends-on' => 'asset_form_assetType',
+                    'data-depends-on-value' => 'ai_agent',
+                ],
+                'help' => 'asset.ai_agent.help.capability_scope',
+            ])
+            ->add('aiAgentThreatModelDocId', IntegerType::class, [
+                'label' => 'asset.ai_agent.field.threat_model_doc_id',
+                'required' => false,
+                'attr' => [
+                    'min' => 1,
+                    'placeholder' => 'asset.ai_agent.placeholder.threat_model_doc_id',
+                    'data-depends-on' => 'asset_form_assetType',
+                    'data-depends-on-value' => 'ai_agent',
+                ],
+                'help' => 'asset.ai_agent.help.threat_model_doc_id',
+            ])
+            ->add('aiAgentExtensionAllowlist', TextareaType::class, [
+                'label' => 'asset.ai_agent.field.extension_allowlist',
+                'required' => false,
+                'attr' => [
+                    'rows' => 4,
+                    'placeholder' => 'asset.ai_agent.placeholder.extension_allowlist',
+                    'data-depends-on' => 'asset_form_assetType',
+                    'data-depends-on-value' => 'ai_agent',
+                ],
+                'help' => 'asset.ai_agent.help.extension_allowlist',
+            ])
         ;
+
+        // Array <-> textarea (one entry per line) transformers for the two
+        // JSON columns. Empty input persists as null; otherwise lines are
+        // trimmed and empty lines dropped.
+        $arrayTransformer = new CallbackTransformer(
+            // model (?array) -> view (string)
+            static function (?array $value): string {
+                if ($value === null || $value === []) {
+                    return '';
+                }
+
+                return implode("\n", $value);
+            },
+            // view (?string) -> model (?array)
+            static function (?string $value): ?array {
+                if ($value === null) {
+                    return null;
+                }
+                $lines = preg_split('/\r\n|\r|\n/', $value) ?: [];
+                $cleaned = array_values(array_filter(array_map('trim', $lines), static fn(string $l): bool => $l !== ''));
+
+                return $cleaned === [] ? null : $cleaned;
+            }
+        );
+
+        $builder->get('aiAgentCapabilityScope')->addModelTransformer($arrayTransformer);
+        $builder->get('aiAgentExtensionAllowlist')->addModelTransformer($arrayTransformer);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

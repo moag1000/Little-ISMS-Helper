@@ -1,0 +1,134 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MRIS-Wizard — AI-Risiko-Klasse{% endblock %}
+
+{% block body %}
+<div class="container">
+
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_mris_kpis') }}">MRIS-KPIs</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Wizard: AI-Risiko-Klasse</li>
+        </ol>
+    </nav>
+
+    <div class="page-header mb-4">
+        <div>
+            <h1>
+                <i class="bi bi-cpu" aria-hidden="true"></i>
+                {{ matrix.title|default('12-Tools-Entscheidungsmatrix — AI-Risiko-Klasse') }}
+            </h1>
+            <p class="text-muted small mb-0">
+                {{ matrix.intro|default('Klassifikation von KI-Tools nach EU AI Act Art. 6 + Anhang III.') }}
+            </p>
+        </div>
+    </div>
+
+    {% if fallback_used %}
+        <div class="alert alert-info small">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            <strong>Hinweis:</strong>
+            Wizard-Daten in <code>fixtures/mris/help-texts.yaml</code> unter
+            <code>blocker_solutions:</code> pflegen, damit dieser Inhalt
+            zentral aus YAML geladen wird. Aktuell wird der eingebettete
+            Default angezeigt.
+        </div>
+    {% endif %}
+
+    {# 4-Step-Decision-Flow als nummerierte Karten. #}
+    {% if matrix.decision_flow is defined and matrix.decision_flow|length > 0 %}
+        <h2 class="h5 mt-2 mb-3">
+            <i class="bi bi-diagram-3" aria-hidden="true"></i>
+            4-Schritt-Decision-Flow
+        </h2>
+        <div class="row g-3 mb-4">
+            {% for step in matrix.decision_flow %}
+                <div class="col-md-6 col-lg-3">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_body %}
+                            <div class="d-flex align-items-start mb-2">
+                                <span class="badge bg-primary rounded-pill me-2" style="min-width: 2rem;">
+                                    {{ step.no }}
+                                </span>
+                                <h3 class="h6 mb-0">{{ step.title }}</h3>
+                            </div>
+                            <p class="small mb-0">{{ step.detail }}</p>
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {# 12-Tools-Tabelle. #}
+    <h2 class="h5 mt-2 mb-3">
+        <i class="bi bi-table" aria-hidden="true"></i>
+        12 typische Tools
+    </h2>
+
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
+            <div class="table-responsive">
+                <table class="table table-hover align-top mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 22%;">Tool</th>
+                            <th scope="col" style="width: 16%;">Empfohlene Klasse</th>
+                            <th scope="col" style="width: 24%;">AI-Act-Verweis</th>
+                            <th scope="col" style="width: 38%;">Begruendung</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tool in matrix.tools %}
+                            {% set classKey = tool.class|default('minimal')|lower %}
+                            {% set badgeVariant =
+                                classKey == 'prohibited' ? 'dark'
+                                : (classKey == 'high' ? 'danger'
+                                : (classKey == 'limited' ? 'warning'
+                                : 'success')) %}
+                            <tr>
+                                <td><strong>{{ tool.tool }}</strong></td>
+                                <td>
+                                    {% include '_components/_badge.html.twig' with {
+                                        variant: badgeVariant,
+                                        content: tool.class_label|default(tool.class|default('Minimal'))
+                                    } %}
+                                </td>
+                                <td class="small">{{ tool.ai_act_ref|default('—') }}</td>
+                                <td class="small">{{ tool.rationale|default('—') }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endblock %}
+    {% endembed %}
+
+    {% if matrix.norm_refs is defined and matrix.norm_refs|length > 0 %}
+        {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+            {% block card_header %}
+                <div class="card-header">
+                    <h2 class="h6 mb-0">
+                        <i class="bi bi-bookmark-star" aria-hidden="true"></i>
+                        Norm-Verweise
+                    </h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
+                <ul class="small mb-0">
+                    {% for ref in matrix.norm_refs %}
+                        <li>{{ ref }}</li>
+                    {% endfor %}
+                </ul>
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
+
+    <footer class="text-center text-muted small mt-4 pt-3 border-top">
+        Quelle: Peddi (2026) MRIS v1.5.
+        <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">CC BY 4.0</a>.
+    </footer>
+
+</div>
+{% endblock %}

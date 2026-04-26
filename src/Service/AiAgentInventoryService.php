@@ -20,7 +20,7 @@ use App\Repository\AssetRepository;
  * - MRIS v1.5 MHC-13 (Peddi 2026, CC BY 4.0)
  * - ISO/IEC 27001:2022 A.5.16, A.8.27
  */
-final class AiAgentInventoryService
+class AiAgentInventoryService
 {
     public const RISK_CLASSIFICATIONS = [
         'prohibited',     // EU AI Act Art. 5

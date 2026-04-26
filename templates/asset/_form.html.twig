@@ -162,6 +162,128 @@
     </div>
 </fieldset>
 
+{# AI-Agent Section — only visible when assetType = 'ai_agent' (EU AI Act / ISO 42001) #}
+{# Wrapper uses the existing `conditional-fields` controller which toggles each
+   field row whose `data-depends-on` references the asset_form_assetType select. #}
+<div data-controller="conditional-fields asset-form">
+    <fieldset class="mb-4"
+              data-asset-form-target="aiAgentSection"
+              data-depends-on="asset_form_assetType"
+              data-depends-on-value="ai_agent">
+        <legend class="h5 mb-3">
+            <i class="bi bi-robot" aria-hidden="true"></i>
+            {{ 'asset.ai_agent.section.title'|trans({}, 'asset') }}
+            <small class="text-muted ms-2">{{ 'asset.ai_agent.section.subtitle'|trans({}, 'asset') }}</small>
+        </legend>
+
+        <div class="alert alert-info" role="status">
+            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+            {{ 'asset.ai_agent.section.help'|trans({}, 'asset') }}
+        </div>
+
+        {# Provider suggestion list (datalist) — populated from the AI risk
+           decision matrix. Keeping vendor names here is intentional: they are
+           pre-classification suggestions, not endorsements. #}
+        <datalist id="asset_ai_agent_provider_suggestions">
+            <option value="Anthropic"></option>
+            <option value="OpenAI"></option>
+            <option value="Google"></option>
+            <option value="Microsoft"></option>
+            <option value="Self-hosted"></option>
+        </datalist>
+
+        <div class="row">
+            <div class="col-md-6">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.aiAgentClassification,
+                    'label_key': 'asset.ai_agent.field.classification',
+                    'help_key': 'asset.ai_agent.help.classification',
+                    'translation_domain': 'asset'
+                } %}
+            </div>
+            <div class="col-md-6">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.aiAgentProvider,
+                    'label_key': 'asset.ai_agent.field.provider',
+                    'help_key': 'asset.ai_agent.help.provider',
+                    'translation_domain': 'asset'
+                } %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.aiAgentModelVersion,
+                    'label_key': 'asset.ai_agent.field.model_version',
+                    'help_key': 'asset.ai_agent.help.model_version',
+                    'translation_domain': 'asset'
+                } %}
+            </div>
+            <div class="col-md-6">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.aiAgentOversightMechanism,
+                    'label_key': 'asset.ai_agent.field.oversight_mechanism',
+                    'help_key': 'asset.ai_agent.help.oversight_mechanism',
+                    'translation_domain': 'asset'
+                } %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.aiAgentPurpose,
+                    'label_key': 'asset.ai_agent.field.purpose',
+                    'help_key': 'asset.ai_agent.help.purpose',
+                    'translation_domain': 'asset'
+                } %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.aiAgentDataSources,
+                    'label_key': 'asset.ai_agent.field.data_sources',
+                    'help_key': 'asset.ai_agent.help.data_sources',
+                    'translation_domain': 'asset'
+                } %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.aiAgentCapabilityScope,
+                    'label_key': 'asset.ai_agent.field.capability_scope',
+                    'help_key': 'asset.ai_agent.help.capability_scope',
+                    'translation_domain': 'asset'
+                } %}
+            </div>
+            <div class="col-md-6">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.aiAgentExtensionAllowlist,
+                    'label_key': 'asset.ai_agent.field.extension_allowlist',
+                    'help_key': 'asset.ai_agent.help.extension_allowlist',
+                    'translation_domain': 'asset'
+                } %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.aiAgentThreatModelDocId,
+                    'label_key': 'asset.ai_agent.field.threat_model_doc_id',
+                    'help_key': 'asset.ai_agent.help.threat_model_doc_id',
+                    'translation_domain': 'asset'
+                } %}
+            </div>
+        </div>
+    </fieldset>
+</div>
+
 {# Form Actions #}
 <div class="form-actions d-flex gap-2 justify-content-end">
     <a href="{{ path('app_asset_index') }}"

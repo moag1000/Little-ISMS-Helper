@@ -256,6 +256,18 @@ class TenantManagementController extends AbstractController
                     $tenant->setSettings(json_decode((string) $settingsJson, true));
                 }
 
+                // MRIS-KPI-Toggle (inline checkbox, gated to ROLE_ADMIN). Merge
+                // statt überschreiben, damit andere Settings-Keys erhalten bleiben.
+                if ($this->isGranted('ROLE_ADMIN')) {
+                    $settings = $tenant->getSettings() ?? [];
+                    $mrisEnabled = $request->request->getBoolean('mris_kpis_enabled');
+                    $settings['mris'] = array_merge(
+                        $settings['mris'] ?? [],
+                        ['kpis_enabled' => $mrisEnabled]
+                    );
+                    $tenant->setSettings($settings);
+                }
+
                 $this->entityManager->flush();
 
                 $this->logger->info('Tenant updated', [

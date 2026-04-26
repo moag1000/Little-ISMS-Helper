@@ -365,11 +365,18 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.mapping_quality'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
-                        <li><a href="{{ path('app_mris_kpis') }}" class="{% if current_route starts with 'app_mris_' %}active{% endif %}" data-turbo-action="advance">
+                        <li><a href="{{ path('app_mris_kpis') }}" class="{% if current_route == 'app_mris_kpis' or current_route == 'app_mris_kpis_manual_save' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-speedometer2" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.mris_kpis'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.mris_kpis'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_mris_baselines_index') }}" class="{% if current_route starts with 'app_mris_baselines' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-collection" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.mris_baselines'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.mris_baselines'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
                         <li><a href="{{ path('app_ai_agents_index') }}" class="{% if current_route starts with 'app_ai_agents_' %}active{% endif %}" data-turbo-action="advance">

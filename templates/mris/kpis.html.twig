@@ -24,6 +24,47 @@
         </div>
     </div>
 
+    {# Aggregierter Mythos-Resilience-Indikator (LIH-spezifisch). Audit-Disclaimer prominent. #}
+    {% if score is defined and score %}
+        {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+            {% block card_body %}
+                <div class="row align-items-center">
+                    <div class="col-md-3 text-center border-end">
+                        <h2 class="display-3 fw-bold text-{{ score.score >= 70 ? 'success' : (score.score >= 40 ? 'warning' : 'danger') }} mb-0">{{ score.score }}</h2>
+                        <p class="text-muted small mb-0">Mythos-Resilience-Indikator (MRI)</p>
+                        <p class="text-muted small mb-0">0–100, intern</p>
+                    </div>
+                    <div class="col-md-9">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Dimension</th>
+                                    <th class="text-end" style="width: 12%;">Wert</th>
+                                    <th class="text-end" style="width: 10%;">Gewicht</th>
+                                    <th class="text-end" style="width: 12%;">Beitrag</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key, dim in score.breakdown %}
+                                    <tr>
+                                        <td><code>{{ key }}</code> <small class="text-muted">— {{ dim.source }}</small></td>
+                                        <td class="text-end">{{ dim.value }}</td>
+                                        <td class="text-end">{{ dim.weight }} %</td>
+                                        <td class="text-end fw-bold">{{ dim.contribution }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="alert alert-warning small mt-3 mb-0">
+                    <strong><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Disclaimer:</strong>
+                    {{ score.disclaimer }}
+                </div>
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
+
     <div class="row g-3">
         {% for kpi in kpis %}
             <div class="col-md-6 col-lg-3">
@@ -46,6 +87,25 @@
                         {% else %}
                             <p class="text-muted fst-italic mb-1">{{ 'mris.state.no_data'|trans({}, 'mris') }}</p>
                         {% endif %}
+
+                        {# Sparkline aus KpiSnapshot — nur fuer auto-KPIs mit Trend-Daten. #}
+                        {% set trendKey = 'mris_' ~ kpi.id %}
+                        {% if trends is defined and trends[trendKey] is defined and trends[trendKey]|length > 1 %}
+                            {% set vals = trends[trendKey] %}
+                            {% set maxVal = max(vals) %}
+                            {% set minVal = min(vals) %}
+                            {% set range = (maxVal - minVal) > 0 ? (maxVal - minVal) : 1 %}
+                            <svg viewBox="0 0 100 24" class="d-block mt-1" style="width: 100%; height: 24px;" aria-label="Trend {{ vals|length }} Tage">
+                                {% set step = 100 / (vals|length - 1) %}
+                                {% set points = [] %}
+                                {% for i, v in vals %}
+                                    {% set y = 22 - ((v - minVal) / range * 20) %}
+                                    {% set points = points|merge([(i * step)|round(1) ~ ',' ~ y|round(1)]) %}
+                                {% endfor %}
+                                <polyline fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" points="{{ points|join(' ') }}" class="text-{{ kpi.value >= minVal ? 'success' : 'warning' }}"/>
+                            </svg>
+                        {% endif %}
+
                         <p class="small text-muted mb-0">{{ kpi.source }}</p>
                     {% endblock %}
                 {% endembed %}

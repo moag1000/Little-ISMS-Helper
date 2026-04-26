@@ -1,0 +1,141 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MRIS-Glossar{% endblock %}
+
+{% block body %}
+<div class="container">
+
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Dashboard', url: path('app_dashboard') },
+            { label: 'MRIS-Glossar' }
+        ]
+    } only %}
+
+    <div class="page-header mb-4">
+        <div>
+            <h1>
+                <i class="bi bi-journal-text" aria-hidden="true"></i>
+                MRIS-Glossar
+            </h1>
+            <p class="text-muted small mb-0">
+                Begriffe der Mythos-resistenten Informationssicherheit mit
+                Definition, Brücke zur ISO 9001 und Norm-Verweis. Geeignet als
+                Nachschlagewerk für Junior-ISB und ehemalige QMB.<br>
+                <em>Quelle: Peddi, R. (2026). MRIS — Mythos-resistente
+                Informationssicherheit, v1.5. Lizenz: CC BY 4.0.</em>
+            </p>
+        </div>
+    </div>
+
+    {% if entries|length == 0 %}
+        {# Empty State — kein Eintrag im Glossar gefunden. #}
+        {% embed '_components/_card.html.twig' with { 'class': 'text-center' } %}
+            {% block card_body %}
+                <i class="bi bi-journal-x display-4 text-muted" aria-hidden="true"></i>
+                <h2 class="h5 mt-3">Keine Glossar-Einträge gefunden</h2>
+                <p class="text-muted small mb-0">
+                    Die Datei <code>fixtures/mris/help-texts.yaml</code> enthält
+                    derzeit keine Glossar-Einträge.
+                </p>
+            {% endblock %}
+        {% endembed %}
+    {% else %}
+        <div data-controller="filter">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    <div class="row g-2 align-items-center mb-3">
+                        <div class="col-md-8">
+                            <label for="mris-glossar-search" class="form-label small mb-1">
+                                <i class="bi bi-search" aria-hidden="true"></i>
+                                Suche (Begriff, Definition, Quelle)
+                            </label>
+                            <input type="search"
+                                   id="mris-glossar-search"
+                                   class="form-control"
+                                   placeholder="z. B. Standfest, FIDO2, ISO …"
+                                   data-filter-target="searchInput"
+                                   data-action="input->filter#filterRows">
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <span class="text-muted small">
+                                {{ entries|length }} Einträge
+                            </span>
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-secondary ms-2"
+                                    data-action="filter#reset">
+                                <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                                Zurücksetzen
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-top mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width: 18%;">
+                                        Begriff <small class="text-muted fw-normal">/ Term</small>
+                                    </th>
+                                    <th scope="col" style="width: 38%;">
+                                        Definition
+                                    </th>
+                                    <th scope="col" style="width: 26%;">
+                                        9001-Analogie
+                                    </th>
+                                    <th scope="col" style="width: 18%;">
+                                        Quelle <small class="text-muted fw-normal">/ Source</small>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entry in entries %}
+                                    <tr data-filter-target="filterableRow">
+                                        <td>
+                                            <strong>{{ entry.term }}</strong>
+                                            {% if entry.key %}
+                                                <div>
+                                                    <code class="small text-muted">{{ entry.key }}</code>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="small">
+                                            {{ entry.definition }}
+                                        </td>
+                                        <td class="small text-muted">
+                                            {% if entry.analogy_9001 %}
+                                                {{ entry.analogy_9001 }}
+                                            {% else %}
+                                                <span class="fst-italic">—</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="small">
+                                            {% if entry.source %}
+                                                {{ entry.source }}
+                                            {% else %}
+                                                <span class="text-muted fst-italic">—</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <tr data-filter-target="noResults" style="display: none;">
+                                    <td colspan="4" class="text-center text-muted small py-4">
+                                        <i class="bi bi-search" aria-hidden="true"></i>
+                                        Keine Treffer für die aktuelle Suche.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    {% endif %}
+
+    <footer class="text-center text-muted small mt-4 pt-3 border-top">
+        Quelle / Source: Peddi, R. (2026). MRIS v1.5. Lizenz
+        <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">CC BY 4.0</a>.
+    </footer>
+
+</div>
+{% endblock %}
