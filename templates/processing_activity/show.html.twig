@@ -28,7 +28,7 @@
     {# Compliance Status Banner #}
     {% if not compliance_report.is_compliant %}
         <div class="alert alert-warning">
-            <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Compliance Issues</h5>
+            <h5><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Compliance Issues</h5>
             <p>This processing activity has {{ compliance_report.validation_errors|length }} validation error(s):</p>
             <ul>
                 {% for error in compliance_report.validation_errors %}
@@ -82,10 +82,10 @@
                         <div class="text-muted mb-2 fw-semibold">DPIA Status</div>
                         {% if processing_activity.requiresDPIA %}
                             {% if processing_activity.dpiaCompleted %}
-                                <div class="fs-4 fw-bold mb-0 text-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i></div>
+                                <div class="fs-4 fw-bold mb-0 text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></div>
                                 <small class="text-muted">{{ processing_activity.dpiaDate|date('Y-m-d') }}</small>
                             {% else %}
-                                <div class="fs-4 fw-bold mb-0 text-danger"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i></div>
+                                <div class="fs-4 fw-bold mb-0 text-danger"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i></div>
                                 <small class="text-danger">Required</small>
                             {% endif %}
                         {% else %}
@@ -111,7 +111,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="compliance-tab" data-bs-toggle="tab" data-bs-target="#compliance" type="button" role="tab">
-                <i class="bi bi-shield-check" aria-hidden="true"></i> Compliance
+                <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> Compliance
             </button>
         </li>
     </ul>

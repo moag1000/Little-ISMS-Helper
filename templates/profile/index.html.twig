@@ -7,7 +7,7 @@
     <div class="row mb-4">
         <div class="col">
             <h1 class="mb-0">
-                <i class="bi bi-person-circle" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--user" aria-hidden="true"></i>
                 {{ 'user.profile.title'|trans({}, 'user') }}
             </h1>
         </div>
@@ -211,7 +211,7 @@
 
                         <div class="mt-3 d-flex justify-content-end">
                             <button type="submit" class="btn btn-primary btn-sm">
-                                <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                 {{ 'common.save'|trans({}, 'messages') }}
                             </button>
                         </div>
@@ -224,7 +224,7 @@
                 {% block card_header %}
                     <div class="card-header {% if user.hasMfaEnabled %}bg-success{% else %}bg-warning{% endif %} text-white">
                         <h2 class="h5 mb-0">
-                            <i class="bi bi-shield{% if user.hasMfaEnabled %}-check{% else %}-exclamation{% endif %}" aria-hidden="true"></i>
+                            <i class="fa-icon {% if user.hasMfaEnabled %}fa-icon--mfa{% else %}fa-icon--status-warning{% endif %}" aria-hidden="true"></i>
                             {{ 'user.profile.section.mfa'|trans({}, 'user') }}
                         </h2>
                     </div>
@@ -245,12 +245,12 @@
                         </div>
                     {% else %}
                         <div class="alert alert-warning mb-0">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                             {{ 'user.profile.mfa.not_enabled'|trans({}, 'user') }}
                         </div>
                         <div class="mt-3">
                             <a href="{{ path('app_profile_mfa_setup_totp') }}" class="btn btn-sm btn-success">
-                                <i class="bi bi-shield-plus" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
                                 {{ 'user.profile.mfa.setup'|trans({}, 'user') }}
                             </a>
                         </div>

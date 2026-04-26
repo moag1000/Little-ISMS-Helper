@@ -28,7 +28,7 @@
     {% if statistics.overdue_count > 0 %}
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <div class="alert-heading fw-bold">
-                <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                 {{ 'dsr.alert.overdue_title'|trans({}, 'data_subject_request') }}
             </div>
             <p>{{ 'dsr.alert.overdue_text'|trans({'%count%': statistics.overdue_count}, 'data_subject_request') }}</p>

@@ -49,7 +49,7 @@
                     <div class="text-muted fw-semibold">Total Activities</div>
                     <div class="fs-2 fw-bold">{{ statistics.total }}</div>
                     <div class="mt-2">
-                        <small class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ statistics.active }} active</small>
+                        <small class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ statistics.active }} active</small>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -60,7 +60,7 @@
                     <div class="text-muted fw-semibold">High Risk</div>
                     <div class="fs-2 fw-bold text-warning">{{ statistics.high_risk }}</div>
                     <div class="mt-2">
-                        <small class="text-danger"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ statistics.missing_dpia }} missing DPIA</small>
+                        <small class="text-danger"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ statistics.missing_dpia }} missing DPIA</small>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -83,7 +83,7 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
-                    <div class="card-header bg-warning-subtle text-warning"><h2 class="mb-0 h5"><i class="bi bi-exclamation-circle" aria-hidden="true"></i> Action Items</h2></div>
+                    <div class="card-header bg-warning-subtle text-warning"><h2 class="mb-0 h5"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Action Items</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     {% if incomplete|length > 0 %}
@@ -123,7 +123,7 @@
                     {% endif %}
 
                     {% if incomplete|length == 0 and requiring_dpia|length == 0 and due_for_review|length == 0 %}
-                        <p class="text-success mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> No action items - all compliant!</p>
+                        <p class="text-success mb-0"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> No action items - all compliant!</p>
                     {% endif %}
                 {% endblock %}
             {% endembed %}

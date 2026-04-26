@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>
-            <i class="bi bi-key-fill" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
             {{ 'mfa.backup_codes.title'|trans({}, 'mfa') }}
         </h1>
         <a href="{{ path('app_profile_mfa_show', {id: mfa_token.id}) }}" class="btn btn-outline-secondary">
@@ -19,7 +19,7 @@
         <div class="col-lg-8 offset-lg-2">
             <div class="alert alert-danger">
                 <p class="alert-heading fw-bold">
-                    <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
                     {{ 'mfa.backup_codes.warning'|trans({}, 'mfa') }}
                 </p>
                 <p>{{ 'mfa.backup_codes.warning_text'|trans({}, 'mfa') }}</p>
@@ -105,7 +105,7 @@
                     </ul>
 
                     <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {{ 'mfa.backup_codes.regenerate_warning'|trans({}, 'mfa') }}
                     </div>
                 {% endblock %}

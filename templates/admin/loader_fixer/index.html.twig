@@ -59,12 +59,12 @@
                                 </span>
                             {% elseif row.loaded_count == 0 %}
                                 <span class="badge bg-warning-subtle text-warning">
-                                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                     {{ 'loader_fixer.status.empty'|trans({}, 'loader_fixer') }}
                                 </span>
                             {% else %}
                                 <span class="badge bg-success">
-                                    <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                     {{ 'loader_fixer.status.loaded'|trans({}, 'loader_fixer') }}
                                 </span>
                             {% endif %}

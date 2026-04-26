@@ -98,7 +98,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="bi bi-file-earmark-check me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--evidence me-2" aria-hidden="true"></i>
                             {{ 'auditor.section.evidence_status'|trans({}, 'dashboards') }}
                         </h5>
                     </div>
@@ -137,7 +137,7 @@
                 {% block card_header %}
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
-                            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>
                             {{ 'auditor.section.compliance_gaps'|trans({}, 'dashboards') }}
                         </h5>
                         <a href="{{ path('app_analytics_compliance_frameworks') }}" class="btn btn-sm btn-outline-warning">

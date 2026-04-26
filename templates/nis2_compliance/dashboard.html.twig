@@ -7,7 +7,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="mb-3">
-                <i class="bi bi-shield-check" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
                 {{ 'nis2.dashboard.title'|trans({}, 'messages') }}
             </h1>
             <p class="text-muted">{{ 'nis2.dashboard.description'|trans({}, 'messages') }}</p>
@@ -156,7 +156,7 @@
                             </div>
                             {% if article23.overdue_count is defined and article23.overdue_count > 0 %}
                                 <div class="alert alert-danger mt-3 mb-0">
-                                    <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                     {{ 'nis2.dashboard.article23.overdue'|trans({'%count%': article23.overdue_count}, 'messages') }}
                                 </div>
                             {% endif %}
@@ -174,7 +174,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
                     <div class="small fw-semibold text-muted mb-1">
-                        <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.mfa.title'|trans({}, 'messages') }}
                     </div>
                     <div class="display-6 {% if mfa_adoption_rate >= 95 %}text-success{% elseif mfa_adoption_rate >= 75 %}text-warning{% else %}text-danger{% endif %}">
@@ -193,7 +193,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
                     <div class="small fw-semibold text-muted mb-1">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.incident_reporting.title'|trans({}, 'messages') }}
                     </div>
                     <div class="display-6 {% if reporting_compliance_rate >= 95 %}text-success{% elseif reporting_compliance_rate >= 75 %}text-warning{% else %}text-danger{% endif %}">
@@ -253,7 +253,7 @@
             <div class="col-12">
                 <div class="alert alert-danger">
                     <div class="h4 alert-heading">
-                        <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.overdue.title'|trans({}, 'messages') }}
                     </div>
                     <p>{{ 'nis2.dashboard.overdue.description'|trans({'%count%': overdue_incidents|length}, 'messages') }}</p>
@@ -363,7 +363,7 @@
                             {{ 'nis2.dashboard.actions.view_patches'|trans({}, 'messages') }}
                         </a>
                         <a href="{{ path('admin_mfa_index') }}" class="btn btn-outline-primary">
-                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
                             {{ 'nis2.dashboard.actions.manage_mfa'|trans({}, 'messages') }}
                         </a>
                     </div>

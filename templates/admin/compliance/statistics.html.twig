@@ -36,7 +36,7 @@
                     <div class="text-center">
                         <div class="small fw-semibold text-muted mb-1">{{ 'admin.compliance.loaded'|trans({}, 'admin') }}</div>
                         <p class="mb-0 text-success h2">{{ statistics.total_loaded }}</p>
-                        <i class="bi bi-check-circle fs-3 text-success opacity-25" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-ok fs-3 text-success opacity-25" aria-hidden="true"></i>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -47,7 +47,7 @@
                     <div class="text-center">
                         <div class="small fw-semibold text-muted mb-1">{{ 'admin.compliance.not_loaded'|trans({}, 'admin') }}</div>
                         <p class="mb-0 text-secondary h2">{{ statistics.total_not_loaded }}</p>
-                        <i class="bi bi-x-circle fs-3 text-secondary opacity-25" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-critical fs-3 text-secondary opacity-25" aria-hidden="true"></i>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -58,7 +58,7 @@
                     <div class="text-center">
                         <div class="small fw-semibold text-muted mb-1">{{ 'admin.compliance.mandatory_missing'|trans({}, 'admin') }}</div>
                         <p class="mb-0 text-danger h2">{{ statistics.mandatory_not_loaded }}</p>
-                        <i class="bi bi-exclamation-triangle fs-3 text-danger opacity-25" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-warning fs-3 text-danger opacity-25" aria-hidden="true"></i>
                     </div>
                 {% endblock %}
             {% endembed %}

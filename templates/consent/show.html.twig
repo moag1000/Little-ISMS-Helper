@@ -25,12 +25,12 @@
             {% endif %}
             {% if is_granted('ROLE_DPO') and not consent.verifiedBy %}
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#verifyModal">
-                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'consent.action.verify'|trans({}, 'consent') }}
+                <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'consent.action.verify'|trans({}, 'consent') }}
             </button>
             {% endif %}
             {% if consent.status == 'active' %}
             <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#revokeModal">
-                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'consent.action.document_revocation'|trans({}, 'consent') }}
+                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'consent.action.document_revocation'|trans({}, 'consent') }}
             </button>
             {% endif %}
             {% if is_granted('ROLE_ADMIN') %}
@@ -74,7 +74,7 @@
         {% block card_header %}
             <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
-                    <i class="bi bi-person" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--user" aria-hidden="true"></i>
                     {{ 'consent.section.data_subject'|trans({}, 'consent') }}
                 </h2>
             </div>
@@ -136,7 +136,7 @@
         {% block card_header %}
             <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
-                    <i class="bi bi-check-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                     {{ 'consent.section.consent_grant'|trans({}, 'consent') }}
                 </h2>
             </div>
@@ -231,7 +231,7 @@
         {% block card_header %}
             <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
-                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
                     {{ 'consent.section.dpo_verification'|trans({}, 'consent') }}
                 </h2>
             </div>
@@ -240,7 +240,7 @@
             {% if consent.verifiedBy %}
             <div class="alert alert-success mb-0">
                 <div class="d-flex align-items-center">
-                    <i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--status-ok me-2" aria-hidden="true"></i>
                     <div>
                         <strong>{{ 'consent.verified'|trans({}, 'consent') }}</strong>
                         <br>
@@ -254,7 +254,7 @@
             </div>
             {% else %}
             <div class="alert alert-warning mb-0">
-                <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>
                 {{ 'consent.not_verified'|trans({}, 'consent') }}
             </div>
             {% endif %}
@@ -267,7 +267,7 @@
         {% block card_header %}
             <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
-                    <i class="bi bi-x-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                     {{ 'consent.section.revocation'|trans({}, 'consent') }}
                 </h2>
             </div>
@@ -359,7 +359,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'consent.action.verify'|trans({}, 'consent') }}
+                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'consent.action.verify'|trans({}, 'consent') }}
                     </button>
                 </div>
             </form>
@@ -387,7 +387,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'consent.action.document_revocation'|trans({}, 'consent') }}
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'consent.action.document_revocation'|trans({}, 'consent') }}
                     </button>
                 </div>
             </form>

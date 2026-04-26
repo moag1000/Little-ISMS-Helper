@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>
-            <i class="bi bi-shield-check" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
             {{ 'mfa.setup_totp.title'|trans({}, 'mfa') }}
         </h1>
         <a href="{{ path('app_profile_mfa_index') }}" class="btn btn-outline-secondary">
@@ -91,7 +91,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="mb-0">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                             {{ 'mfa.setup_totp.step2'|trans({}, 'mfa') }}
                         </h2>
                     </div>
@@ -122,7 +122,7 @@
                         <div data-mfa-setup-target="feedback"></div>
 
                         <button type="submit" class="btn btn-success btn-lg w-100" data-mfa-setup-target="submitButton">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                             {{ 'mfa.setup_totp.verify_button'|trans({}, 'mfa') }}
                         </button>
                     </form>
@@ -149,7 +149,7 @@
                 {% block card_header %}
                     <div class="card-header bg-warning-subtle text-warning">
                         <h2 class="mb-0">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                             {{ 'mfa.backup_codes.title'|trans({}, 'mfa') }}
                         </h2>
                     </div>
@@ -157,7 +157,7 @@
                 {% block card_body %}
                     <div class="alert alert-danger">
                         <strong>
-                            <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
                             {{ 'mfa.backup_codes.warning'|trans({}, 'mfa') }}
                         </strong>
                         <p class="mb-0 small">{{ 'mfa.backup_codes.warning_text'|trans({}, 'mfa') }}</p>
@@ -168,7 +168,7 @@
                     <div class="bg-body-secondary p-3 rounded border font-monospace small" style="max-height: 300px; overflow-y: auto;" data-backup-codes-target="codesContainer">
                         {% for code in backup_codes %}
                             <div class="py-1">
-                                <i class="bi bi-key-fill text-warning" aria-hidden="true"></i> <span class="font-monospace">{{ code }}</span>
+                                <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i> <span class="font-monospace">{{ code }}</span>
                             </div>
                         {% endfor %}
                     </div>

@@ -79,7 +79,7 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
-                    <div class="card-header bg-warning-subtle text-warning"><h2 class="h5 mb-0"><i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ 'dpia.dashboard.action_items'|trans({}, 'privacy') }}</h2></div>
+                    <div class="card-header bg-warning-subtle text-warning"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'dpia.dashboard.action_items'|trans({}, 'privacy') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     {% if incomplete|length > 0 %}
@@ -131,7 +131,7 @@
                     {% endif %}
 
                     {% if incomplete|length == 0 and awaiting_dpo|length == 0 and requires_supervisory|length == 0 and due_for_review|length == 0 %}
-                        <p class="text-success mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'dpia.dashboard.no_action_items'|trans({}, 'privacy') }}</p>
+                        <p class="text-success mb-0"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'dpia.dashboard.no_action_items'|trans({}, 'privacy') }}</p>
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -218,7 +218,7 @@
             {% if high_risk|length > 0 %}
                 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                     {% block card_header %}
-                        <div class="card-header bg-danger text-white"><h2 class="h5 mb-0"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ 'dpia.dashboard.high_risk_dpias'|trans({}, 'privacy') }}</h2></div>
+                        <div class="card-header bg-danger text-white"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'dpia.dashboard.high_risk_dpias'|trans({}, 'privacy') }}</h2></div>
                     {% endblock %}
                     {% block card_body %}
                         <ul class="list-unstyled">

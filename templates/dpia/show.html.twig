@@ -26,7 +26,7 @@
     {# Status & Workflow Actions #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
         {% block card_header %}
-            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'dpia.show.section.status_workflow'|trans({}, 'privacy') }}</h2>
+            <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--policy" aria-hidden="true"></i> {{ 'dpia.show.section.status_workflow'|trans({}, 'privacy') }}</h2>
             </div>
         {% endblock %}
         {% block card_body %}
@@ -77,10 +77,10 @@
 
                 {% if is_granted('ROLE_AUDITOR') and dpia.status == 'in_review' %}
                     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
-                        <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'dpia.action.approve'|trans({}, 'privacy') }}
+                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'dpia.action.approve'|trans({}, 'privacy') }}
                     </button>
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
-                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'dpia.action.reject'|trans({}, 'privacy') }}
+                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'dpia.action.reject'|trans({}, 'privacy') }}
                     </button>
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#revisionModal">
                         <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'dpia.action.request_revision'|trans({}, 'privacy') }}
@@ -123,7 +123,7 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dpia.show.section.risk_assessment'|trans({}, 'privacy') }}</h2>
+                    <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'dpia.show.section.risk_assessment'|trans({}, 'privacy') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -139,9 +139,9 @@
                             {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('dpia.risk_level.' ~ dpia.residualRiskLevel)|trans({}, 'privacy') } %}
                         </p>
                         {% if dpia.isResidualRiskAcceptable %}
-                            <p class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'dpia.show.risk.acceptable'|trans({}, 'privacy') }}</p>
+                            <p class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'dpia.show.risk.acceptable'|trans({}, 'privacy') }}</p>
                         {% else %}
-                            <p class="text-danger"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dpia.show.risk.requires_consultation'|trans({}, 'privacy') }}</p>
+                            <p class="text-danger"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'dpia.show.risk.requires_consultation'|trans({}, 'privacy') }}</p>
                         {% endif %}
                     {% endif %}
                 {% endblock %}
@@ -151,13 +151,13 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'dpia.show.section.consultations'|trans({}, 'privacy') }}</h2>
+                    <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ 'dpia.show.section.consultations'|trans({}, 'privacy') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
                     <p><strong>{{ 'dpia.show.field.dpo_consultation'|trans({}, 'privacy') }}:</strong>
                         {% if dpia.dpoConsultationDate %}
-                            <span class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ dpia.dpoConsultationDate|date('d.m.Y') }}</span>
+                            <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ dpia.dpoConsultationDate|date('d.m.Y') }}</span>
                         {% else %}
                             <span class="text-muted">{{ 'dpia.show.not_yet_consulted'|trans({}, 'privacy') }}</span>
                         {% endif %}
@@ -165,9 +165,9 @@
                     <p><strong>{{ 'dpia.show.field.supervisory_consultation'|trans({}, 'privacy') }}:</strong>
                         {% if dpia.requiresSupervisoryConsultation %}
                             {% if dpia.supervisoryConsultationDate %}
-                                <span class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ dpia.supervisoryConsultationDate|date('d.m.Y') }}</span>
+                                <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ dpia.supervisoryConsultationDate|date('d.m.Y') }}</span>
                             {% else %}
-                                <span class="text-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dpia.show.required_not_completed'|trans({}, 'privacy') }}</span>
+                                <span class="text-warning"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'dpia.show.required_not_completed'|trans({}, 'privacy') }}</span>
                             {% endif %}
                         {% else %}
                             <span class="text-muted">{{ 'dpia.show.not_required'|trans({}, 'privacy') }}</span>
@@ -203,7 +203,7 @@
     {# Measures #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
         {% block card_header %}
-            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'dpia.new.section_measures'|trans({}, 'privacy') }}</h2>
+            <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'dpia.new.section_measures'|trans({}, 'privacy') }}</h2>
             </div>
         {% endblock %}
         {% block card_body %}

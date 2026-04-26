@@ -11,11 +11,12 @@
         <div class="row mb-4">
             <div class="col-12">
                 <h2 class="h5 mb-3">
-                    <i class="bi bi-exclamation-triangle-fill text-warning" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                     {{ 'admin.dashboard.alerts.title'|trans({}, 'admin') }}
                 </h2>
                 {% for alert in alerts %}
                     <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert">
+                        {# TODO(aurora-migration): dynamic icon — keep bi-* #}
                         <i class="bi {{ alert.icon }}"></i>
                         <strong>{{ alert.message|trans({}, 'admin') }}</strong>
                         {% if alert.count is defined %}
@@ -53,14 +54,14 @@
                             <div class="fs-2 fw-bold">{{ stats.users.total }}</div>
                         </div>
                         <div class="bg-primary bg-opacity-10 p-3 rounded">
-                            <i class="bi bi-people-fill text-primary fs-3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--group text-primary fs-3" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="small text-muted">
-                        <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ stats.users.active }} {{ 'admin.dashboard.stats.active'|trans({}, 'admin') }}
+                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ stats.users.active }} {{ 'admin.dashboard.stats.active'|trans({}, 'admin') }}
                         {% if stats.users.inactive > 0 %}
                             <span class="ms-2">
-                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ stats.users.inactive }} {{ 'admin.dashboard.stats.inactive'|trans({}, 'admin') }}
+                                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ stats.users.inactive }} {{ 'admin.dashboard.stats.inactive'|trans({}, 'admin') }}
                             </span>
                         {% endif %}
                     </div>
@@ -109,7 +110,7 @@
                             </div>
                         </div>
                         <div class="bg-{{ _fw_variant }} bg-opacity-10 p-3 rounded">
-                            <i class="bi bi-clipboard-check text-{{ _fw_variant }} fs-3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--audit-internal text-{{ _fw_variant }} fs-3" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="small text-muted">
@@ -140,7 +141,7 @@
                             </div>
                         </div>
                         <div class="bg-{{ _review_variant }} bg-opacity-10 p-3 rounded">
-                            <i class="bi bi-person-check text-{{ _review_variant }} fs-3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--user text-{{ _review_variant }} fs-3" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="small text-muted">
@@ -208,7 +209,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><i class="bi bi-exclamation-triangle text-danger" aria-hidden="true"></i> {{ 'admin.dashboard.modules.risks'|trans({}, 'admin') }}</td>
+                                <td><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'admin.dashboard.modules.risks'|trans({}, 'admin') }}</td>
                                 {% if currentTenant %}
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'danger', content: stats.modules.risks.own } %}</td>
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'danger', content: stats.modules.risks.own + stats.modules.risks.inherited } %}</td>
@@ -221,7 +222,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><i class="bi bi-shield-check text-success" aria-hidden="true"></i> {{ 'admin.dashboard.modules.controls'|trans({}, 'admin') }}</td>
+                                <td><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'admin.dashboard.modules.controls'|trans({}, 'admin') }}</td>
                                 {% if currentTenant %}
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'success', content: stats.modules.controls.own } %}</td>
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'success', content: stats.modules.controls.own + stats.modules.controls.inherited } %}</td>
@@ -247,7 +248,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><i class="bi bi-clipboard-check text-info" aria-hidden="true"></i> {{ 'admin.dashboard.modules.audits'|trans({}, 'admin') }}</td>
+                                <td><i class="fa-icon fa-icon--audit-internal" aria-hidden="true"></i> {{ 'admin.dashboard.modules.audits'|trans({}, 'admin') }}</td>
                                 {% if currentTenant %}
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'info', content: stats.modules.audits.own } %}</td>
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'info', content: stats.modules.audits.own + stats.modules.audits.inherited } %}</td>
@@ -260,7 +261,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><i class="bi bi-check-circle text-secondary" aria-hidden="true"></i> {{ 'admin.dashboard.modules.compliance'|trans({}, 'admin') }}</td>
+                                <td><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'admin.dashboard.modules.compliance'|trans({}, 'admin') }}</td>
                                 {% if currentTenant %}
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'secondary', content: stats.modules.compliance_requirements.own } %}</td>
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'secondary', content: stats.modules.compliance_requirements.own + stats.modules.compliance_requirements.inherited } %}</td>
@@ -273,7 +274,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><i class="bi bi-book" aria-hidden="true"></i> {{ 'admin.dashboard.modules.trainings'|trans({}, 'admin') }}</td>
+                                <td><i class="fa-icon fa-icon--training" aria-hidden="true"></i> {{ 'admin.dashboard.modules.trainings'|trans({}, 'admin') }}</td>
                                 {% if currentTenant %}
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'dark', content: stats.modules.trainings.own } %}</td>
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'dark', content: stats.modules.trainings.own + stats.modules.trainings.inherited } %}</td>
@@ -306,7 +307,7 @@
                         {# Kontext-Actions — nur bei Bedarf sichtbar #}
                         {% if stats.compliance.unreviewed_seed_mappings > 0 %}
                             <a href="{{ path('app_compliance_mapping_seed_review') }}" class="btn btn-warning">
-                                <i class="bi bi-person-check" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--user" aria-hidden="true"></i>
                                 {{ 'admin.dashboard.quick_actions.review_seeds'|trans({'%count%': stats.compliance.unreviewed_seed_mappings}, 'admin') }}
                             </a>
                         {% endif %}
@@ -331,13 +332,13 @@
                             <i class="bi bi-building-add" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_tenants'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('admin_compliance_index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_compliance'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_compliance'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('app_audit_log_index') }}" class="btn btn-outline-info">
                             <i class="bi bi-journal-text" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.view_logs'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('app_admin_audit_retention') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-archive" aria-hidden="true"></i> {{ 'audit_log.retention.title'|trans({}, 'audit_log') }}
+                            <i class="fa-icon fa-icon--status-archived" aria-hidden="true"></i> {{ 'audit_log.retention.title'|trans({}, 'audit_log') }}
                         </a>
                         <a href="{{ path('app_admin_risk_approval_config') }}" class="btn btn-outline-secondary">
                             <i class="bi bi-sliders" aria-hidden="true"></i> {{ 'risk_approval_config.title'|trans({}, 'risk_approval_config') }}

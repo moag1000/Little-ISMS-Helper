@@ -68,6 +68,7 @@
     {% endblock %}
     {% block card_body %}
         <div class="row">
+            {# TODO(aurora-migration): dynamic icon — keep bi-* (icon rendered via `<i class="bi {{ data.icon }}">`) #}
             {% set statuses = {
                 'pending_verification': { label: 'consent.status.pending_verification'|trans({}, 'consent'), icon: 'bi-hourglass', color: 'warning' },
                 'active': { label: 'consent.status.active'|trans({}, 'consent'), icon: 'bi-check-circle', color: 'success' },

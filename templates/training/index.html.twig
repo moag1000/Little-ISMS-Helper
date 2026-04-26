@@ -106,7 +106,7 @@
                     {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="bi bi-check-circle text-success icon-2rem" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--status-ok icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
                                 <div class="text-muted mb-1 fw-semibold">{{ 'training.stats.completed'|trans({}, 'training') }}</div>
@@ -124,7 +124,7 @@
                     {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="bi bi-exclamation-triangle text-warning icon-2rem" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--status-warning icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
                                 <div class="text-muted mb-1 fw-semibold">{{ 'training.stats.mandatory'|trans({}, 'training') }}</div>
@@ -182,7 +182,7 @@
                         <td>{{ ('training.delivery.' ~ training.deliveryMethod)|trans({}, 'training') }}</td>
                         <td>
                             {% if training.mandatory %}
-                            <span class="text-warning"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> {{ 'common.yes'|trans({}, 'messages') }}</span>
+                            <span class="text-warning"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'common.yes'|trans({}, 'messages') }}</span>
                             {% else %}
                             <span class="text-muted">{{ 'common.no'|trans({}, 'messages') }}</span>
                             {% endif %}
@@ -271,7 +271,7 @@
                             </span>
                         </td>
                         <td>
-                            <i class="bi bi-people" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--group" aria-hidden="true"></i>
                             {{ training.attendeeCount ?? 0 }}
                         </td>
                         <td>
@@ -325,7 +325,7 @@
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
                 <h3 class="modal-title h5" id="deleteModalLabel{{ training.id }}">
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'training.confirm_delete'|trans({}, 'training') }}
+                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'training.confirm_delete'|trans({}, 'training') }}
                 </h3>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
             </div>

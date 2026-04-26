@@ -21,7 +21,7 @@
         {% set parts = header_error|split(':', 2) %}
         <div class="alert alert-danger" role="alert">
             <strong>
-                <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                 {{ ('compliance_import.' ~ parts[0])|trans({}, 'compliance_import') }}
             </strong>
             {% if parts[1] is defined %}
@@ -161,7 +161,7 @@
 
         {% if requires_four_eyes|default(false) %}
             <div class="alert alert-warning d-flex gap-2" role="note">
-                <i class="bi bi-exclamation-triangle mt-1" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-warning mt-1" aria-hidden="true"></i>
                 <div>
                     <strong>{{ 'compliance_import.preview.four_eyes_warning_title'|trans({}, 'compliance_import') }}</strong>
                     <div class="small">
@@ -187,7 +187,7 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('compliance_import_commit') }}">
                 <button type="submit" class="btn btn-primary"
                         {% if rows is empty %}disabled aria-disabled="true"{% endif %}>
-                    <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--approve" aria-hidden="true"></i>
                     {{ 'compliance_import.preview.commit'|trans({}, 'compliance_import') }}
                 </button>
             </form>

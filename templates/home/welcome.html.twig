@@ -97,7 +97,7 @@
                     </a>
                     {% if total_urgent_count > 0 %}
                         <a href="#urgent-tasks" class="btn btn-outline-warning btn-lg">
-                            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>
                             {{ 'welcome.action.urgent_tasks'|trans({'%count%': total_urgent_count}, 'welcome') }}
                         </a>
                     {% endif %}
@@ -113,7 +113,7 @@
                 {% embed '_components/_card.html.twig' with {borderColor: 'info', class: 'shadow-sm', compliance_wizards: compliance_wizards} only %}
                     {% block card_header %}
                         <div class="card-header bg-info-subtle d-flex align-items-center">
-                            <i class="bi bi-magic text-info me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--audit-internal text-info me-2" aria-hidden="true"></i>
                             <h2 class="h5 mb-0">{{ 'welcome.wizards.title'|trans({}, 'welcome') }}</h2>
                             <a href="{{ path('app_compliance_wizard_index') }}" class="btn btn-sm btn-outline-info ms-auto">
                                 {{ 'welcome.wizards.view_all'|trans({}, 'welcome') }}

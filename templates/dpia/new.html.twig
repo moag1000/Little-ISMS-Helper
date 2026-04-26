@@ -23,7 +23,7 @@
 
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
-            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'dpia.new.form_title'|trans({}, 'privacy')}}</h2>
+            <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--audit-internal" aria-hidden="true"></i> {{ 'dpia.new.form_title'|trans({}, 'privacy')}}</h2>
             </div>
         {% endblock %}
         {% block card_body %}
@@ -44,15 +44,15 @@
                             'fields': ['necessityAssessment', 'proportionalityAssessment', 'legalBasis', 'legislativeCompliance']
                         },
                         'risk_assessment': {
-                            'label': ('<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> ' ~ 'dpia.new.section_risk_assessment'|trans({}, 'privacy'))|raw,
+                            'label': ('<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> ' ~ 'dpia.new.section_risk_assessment'|trans({}, 'privacy'))|raw,
                             'fields': ['riskLevel', 'likelihood', 'impact', 'dataSubjectRisks']
                         },
                         'measures': {
-                            'label': ('<i class="bi bi-shield-check" aria-hidden="true"></i> ' ~ 'dpia.new.section_measures'|trans({}, 'privacy'))|raw,
+                            'label': ('<i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> ' ~ 'dpia.new.section_measures'|trans({}, 'privacy'))|raw,
                             'fields': ['technicalMeasures', 'organizationalMeasures', 'implementedControls', 'complianceMeasures', 'residualRiskAssessment', 'residualRiskLevel']
                         },
                         'consultation': {
-                            'label': ('<i class="bi bi-people" aria-hidden="true"></i> ' ~ 'dpia.new.section_consultation'|trans({}, 'privacy'))|raw,
+                            'label': ('<i class="fa-icon fa-icon--group" aria-hidden="true"></i> ' ~ 'dpia.new.section_consultation'|trans({}, 'privacy'))|raw,
                             'fields': ['dataProtectionOfficer', 'dpoConsultationDate', 'dpoAdvice', 'dataSubjectsConsulted', 'dataSubjectConsultationDetails']
                         },
                         'supervisory': {
@@ -60,7 +60,7 @@
                             'fields': ['requiresSupervisoryConsultation', 'supervisoryConsultationDate', 'supervisoryAuthorityFeedback']
                         },
                         'workflow': {
-                            'label': ('<i class="bi bi-arrow-repeat" aria-hidden="true"></i> ' ~ 'dpia.new.section_workflow'|trans({}, 'privacy'))|raw,
+                            'label': ('<i class="fa-icon fa-icon--recovery" aria-hidden="true"></i> ' ~ 'dpia.new.section_workflow'|trans({}, 'privacy'))|raw,
                             'fields': ['conductor', 'reviewFrequencyMonths', 'nextReviewDate']
                         }
                     },
