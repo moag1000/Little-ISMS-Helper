@@ -78,7 +78,7 @@
                     {{ 'audit_log.filter.quick.this_week'|trans({}, 'audit_log') }}
                 </a>
                 <a href="{{ path('monitoring_audit_log', {filter: 'critical'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--sm {{ current_filter == 'critical' ? 'fa-cyber-btn--danger' : }}">
+                   class="fa-cyber-btn fa-cyber-btn--sm {{ current_filter == 'critical' ? 'fa-cyber-btn--danger' : 'fa-cyber-btn--ghost' }}">
                     {{ 'audit_log.filter.quick.critical_actions'|trans({}, 'audit_log') }}
                 </a>
             </div>
