@@ -26,17 +26,18 @@
                 </a>
             </div>
 
-            {# NIS2 Reporting Alert Banner #}
-            <div id="nis2-alert" class="alert alert-warning d-none mb-4" role="alert">
-                <div class="alert-heading fw-bold">
-                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'incident.nis2_alert.title'|trans({}, 'incident') }}
+            {# NIS2 Reporting Alert Banner — JS-toggled via incident-controller (id erhalten) #}
+            <div id="nis2-alert" class="fa-alert fa-alert--warning d-none mb-4" role="alert">
+                <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
+                <div class="fa-alert__body">
+                    <div class="fa-alert__title">{{ 'incident.nis2_alert.title'|trans({}, 'incident') }}</div>
+                    <p class="mb-2 small">{{ 'incident.nis2_alert.description'|trans({}, 'incident') }}</p>
+                    <ul class="mb-0 small">
+                        <li>{{ 'incident.nis2_alert.early_warning'|trans({}, 'incident') }}</li>
+                        <li>{{ 'incident.nis2_alert.detailed_notification'|trans({}, 'incident') }}</li>
+                        <li>{{ 'incident.nis2_alert.final_report'|trans({}, 'incident') }}</li>
+                    </ul>
                 </div>
-                <p class="mb-2 small">{{ 'incident.nis2_alert.description'|trans({}, 'incident') }}</p>
-                <ul class="mb-0 small">
-                    <li>{{ 'incident.nis2_alert.early_warning'|trans({}, 'incident') }}</li>
-                    <li>{{ 'incident.nis2_alert.detailed_notification'|trans({}, 'incident') }}</li>
-                    <li>{{ 'incident.nis2_alert.final_report'|trans({}, 'incident') }}</li>
-                </ul>
             </div>
 
             {% embed '_components/_card.html.twig' %}
