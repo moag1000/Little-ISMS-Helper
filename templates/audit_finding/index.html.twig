@@ -81,7 +81,7 @@
                         <tbody>
                         {% for f in findings %}
                             <tr>
-                                <td>{{ f.findingNumber ?? '#' ~ f.id }}</td>
+                                <td>{{ f.(findingNumber ?? ('#' ~ f.id)) }}</td>
                                 <td>{{ f.title }}</td>
                                 <td><span class="badge bg-secondary">{{ ('audit_finding.type.' ~ f.type)|trans({}, 'audits') }}</span></td>
                                 <td>

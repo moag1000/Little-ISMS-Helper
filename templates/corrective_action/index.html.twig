@@ -42,7 +42,7 @@
                         {% for a in actions %}
                             <tr>
                                 <td>{{ a.title }}</td>
-                                <td>{% if a.finding %}<a href="{{ path('app_audit_finding_show', {id: a.finding.id}) }}">{{ a.finding.findingNumber ?? '#' ~ a.finding.id }}</a>{% else %}—{% endif %}</td>
+                                <td>{% if a.finding %}<a href="{{ path('app_audit_finding_show', {id: a.finding.id}) }}">{{ a.finding.(findingNumber ?? ('#' ~ a.finding.id)) }}</a>{% else %}—{% endif %}</td>
                                 <td><span class="badge bg-{{ a.status in ['verified_effective'] ? 'success' : (a.status == 'verified_ineffective' ? 'danger' : 'info') }}">{{ ('corrective_action.status.' ~ a.status)|trans({}, 'audits') }}</span></td>
                                 <td>{{ a.responsiblePerson ? a.responsiblePerson.fullName : '—' }}</td>
                                 <td>
