@@ -219,6 +219,11 @@ html[data-theme="dark"] .fa-card--premium {
     line-height: 1;
     white-space: nowrap;
     user-select: none;
+    /* Default size = --md (matches Aurora-Spec): padding + radius + font-size.
+       Buttons without explicit size modifier still render correctly. */
+    padding: 9px 16px;
+    font-size: 13px;
+    border-radius: var(--r-md);
     transition: transform var(--t-fast) var(--ease-out),
                 background-color var(--t-fast) var(--ease-out),
                 border-color var(--t-fast) var(--ease-out),
