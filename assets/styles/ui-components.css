@@ -2105,6 +2105,14 @@
     width: 200px;
 }
 
+/* Icon-size utilities — for Bootstrap-Icon glyphs in cards/empty-states.
+   Avoids inline style="font-size: Nrem" patterns that defeat the design
+   system layer. */
+.fa-icon-sm { font-size: 1.5rem; }
+.fa-icon-md { font-size: 2rem; }
+.fa-icon-lg { font-size: 3rem; }
+.fa-icon-xl { font-size: 4rem; }
+
 .progress-h-4 {
     height: 4px;
 }
