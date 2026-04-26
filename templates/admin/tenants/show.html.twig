@@ -66,7 +66,7 @@
                 {% block card_body %}
                     <div class="d-flex align-items-center">
                         <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
-                            <i class="bi bi-people text-primary fs-3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--group fa-icon--primary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
                             <div class="text-muted mb-1 small fw-semibold">{{ 'tenant.stats.total_users'|trans({}, 'tenant') }}</div>
@@ -138,7 +138,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
-                <i class="bi bi-people" aria-hidden="true"></i> {{ 'tenant.tabs.users'|trans({}, 'tenant') }}
+                <i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ 'tenant.tabs.users'|trans({}, 'tenant') }}
                 {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'ms-1', content: userCount } %}
             </button>
         </li>
@@ -422,7 +422,7 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <h2 class="card-title mb-0 h5">
-                                <i class="bi bi-people text-primary" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--group fa-icon--primary" aria-hidden="true"></i>
                                 {{ 'tenant.section.users'|trans({}, 'tenant') }}
                                 {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'ms-2', content: userCount } %}
                             </h2>
@@ -483,7 +483,7 @@
             {% block card_header %}
                 <div class="card-header bg-danger text-white">
                     <h2 class="card-title mb-0 h5">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {{ 'tenant.section.danger_zone'|trans({}, 'tenant') }}
                     </h2>
                 </div>
@@ -601,7 +601,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.close'|trans({}, 'messages') }}
+                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'common.close'|trans({}, 'messages') }}
                     </button>
                 </div>
             </div>
@@ -802,7 +802,7 @@
 
                     container.innerHTML = `
                         <div class="fa-alert fa-alert--danger" role="alert">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                             ${errorMessage}
                             <br><br>
                             <button class="btn btn-sm btn-outline-danger" id="retryIsmsContextBtn">

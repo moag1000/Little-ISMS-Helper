@@ -103,7 +103,7 @@
                                         {% if has_permission %}
                                             <i class="bi bi-check-circle-fill text-success fs-4" aria-hidden="true"></i>
                                         {% else %}
-                                            <i class="bi bi-x-circle text-muted fs-4" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--status-critical fs-4" aria-hidden="true"></i>
                                         {% endif %}
                                     </td>
                                 {% endfor %}
@@ -124,7 +124,7 @@
                         {{ 'role.compare.has_permission'|trans }}
                     </div>
                     <div>
-                        <i class="bi bi-x-circle text-muted" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                         {{ 'role.compare.no_permission'|trans }}
                     </div>
                 </div>

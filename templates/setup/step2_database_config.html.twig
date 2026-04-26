@@ -148,7 +148,7 @@
                                     </div>
                                     {% if test_result.detected_version is defined and test_result.detected_version %}
                                         <div class="form-text text-success" id="detected-version-info">
-                                            <i class="bi bi-check-circle me-1" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--status-ok me-1" aria-hidden="true"></i>
                                             {{ 'setup.database.version_detected'|trans({'%version%': test_result.detected_version.raw}, 'setup') }}
                                         </div>
                                     {% else %}

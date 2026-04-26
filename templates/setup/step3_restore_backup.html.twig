@@ -42,8 +42,8 @@
                             <div class="mt-3 mb-4">
                                 {% if backup_restore_result.success %}
                                     <div class="fa-alert fa-alert--success" role="alert">
-                                        <i class="bi bi-check-circle fa-alert__icon" aria-hidden="true"></i>
-                                        <div class="fa-alert__body"><i class="bi bi-check-circle me-2" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-ok fa-alert__icon" aria-hidden="true"></i>
+                                        <div class="fa-alert__body"><i class="fa-icon fa-icon--status-ok me-2" aria-hidden="true"></i>
                                         <strong>{{ 'setup.step3.restore_result.success'|trans({}, 'setup') }}</strong>
                                         <ul class="mb-0 mt-2">
                                             {% for entity, stats in backup_restore_result.statistics %}

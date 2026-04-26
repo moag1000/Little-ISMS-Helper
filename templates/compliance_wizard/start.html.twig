@@ -44,7 +44,7 @@
                         {% for key, category in config.categories %}
                         <div class="col-md-6 col-lg-4 mb-3">
                             <div class="d-flex align-items-start">
-                                <i class="{{ category.icon|default('bi-check-circle') }} text-{{ config.color }} me-2 mt-1"></i>
+                                <i class="{{ category.icon|default('fa-icon--status-ok') }} text-{{ config.color }} me-2 mt-1"></i>
                                 <div>
                                     <strong>{{ category.name|trans }}</strong>
                                     {% if category.clause is defined %}

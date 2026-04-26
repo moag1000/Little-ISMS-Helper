@@ -38,7 +38,7 @@
                     <div class="text-center">
                         <div class="small fw-semibold text-muted mb-1">{{ 'admin.modules.stats.active'|trans({}, 'admin') }}</div>
                         <div class="fs-2 fw-bold mb-0 text-success">{{ statistics.active_modules }}</div>
-                        <i class="bi bi-check-circle fs-3 text-success opacity-25" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-ok fs-3 opacity-25" aria-hidden="true"></i>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -49,7 +49,7 @@
                     <div class="text-center">
                         <div class="small fw-semibold text-muted mb-1">{{ 'admin.modules.stats.inactive'|trans({}, 'admin') }}</div>
                         <div class="fs-2 fw-bold mb-0 text-secondary">{{ statistics.inactive_modules }}</div>
-                        <i class="bi bi-x-circle fs-3 text-secondary opacity-25" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-critical fs-3 opacity-25" aria-hidden="true"></i>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -72,7 +72,7 @@
         {% block card_header %}
             <div class="card-header bg-success text-white">
                 <h2 class="mb-0">
-                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.modules.active_modules'|trans({}, 'admin') }} ({{ active_modules|length }})
+                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'admin.modules.active_modules'|trans({}, 'admin') }} ({{ active_modules|length }})
                 </h2>
             </div>
         {% endblock %}
@@ -128,7 +128,7 @@
                                                   data-action="submit->ui-actions#confirm"
                                                   data-ui-actions-message-param="{{ 'admin.modules.confirm_deactivate'|trans({'%name%': module.name}, 'admin') }}">
                                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">
-                                                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'admin.modules.deactivate'|trans({}, 'admin') }}
+                                                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'admin.modules.deactivate'|trans({}, 'admin') }}
                                                 </button>
                                             </form>
                                         {% else %}
@@ -162,7 +162,7 @@
             {% block card_header %}
                 <div class="card-header">
                     <h2 class="mb-0">
-                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'admin.modules.inactive_modules'|trans({}, 'admin') }} ({{ inactive_modules|length }})
+                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'admin.modules.inactive_modules'|trans({}, 'admin') }} ({{ inactive_modules|length }})
                     </h2>
                 </div>
             {% endblock %}
@@ -201,7 +201,7 @@
                                         </a>
                                         <form method="post" action="{{ path('admin_modules_activate', {moduleKey: key}) }}">
                                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm w-100">
-                                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.modules.activate'|trans({}, 'admin') }}
+                                                <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'admin.modules.activate'|trans({}, 'admin') }}
                                             </button>
                                         </form>
                                     </div>

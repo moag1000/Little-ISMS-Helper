@@ -231,7 +231,7 @@
             'description': dashboard.gaps.total ~ ' requirements need controls or improved implementation',
             'action_url': path('app_compliance_gaps', {id: framework.id}),
             'action_text': 'View Gap Analysis',
-            'icon': '<i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>',
+            'icon': '<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>',
             'priority': 'medium'
         } %}
     {% elseif dashboard.compliance_percentage < 100 %}

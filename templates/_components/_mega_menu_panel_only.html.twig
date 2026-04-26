@@ -61,7 +61,7 @@
                             </div>
                         </a></li>
                         <li><a href="{{ path('app_interested_party_index') }}" class="{% if current_route starts with 'app_interested_party_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-people" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--group" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.interested_parties'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.interested_parties'|trans({}, 'nav') }}</span>
@@ -133,7 +133,7 @@
                     <h3 class="mega-menu-section-title">{{ 'nav.mega.section.risk'|trans({}, 'nav') }}</h3>
                     <ul class="mega-menu-links">
                         <li><a href="{{ path('app_risk_index') }}" class="{% if current_route starts with 'app_risk_index' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.risks'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.risks'|trans({}, 'nav') }}</span>
@@ -154,7 +154,7 @@
                             </div>
                         </a></li>
                         <li><a href="{{ path('app_risk_treatment_plan_index') }}" class="{% if current_route starts with 'app_risk_treatment_plan_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--sop" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.treatment_plans'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.treatment_plans'|trans({}, 'nav') }}</span>
@@ -181,7 +181,7 @@
                             </div>
                         </a></li>
                         <li><a href="{{ path('app_bc_plan_index') }}" class="{% if current_route starts with 'app_bc_plan_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--policy" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.bc_plans'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.bc_plans'|trans({}, 'nav') }}</span>
@@ -226,7 +226,7 @@
                             </div>
                         </a></li>
                         <li><a href="{{ path('app_dpia_index') }}" class="{% if current_route starts with 'app_dpia_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.dpia'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.dpia'|trans({}, 'nav') }}</span>
@@ -285,7 +285,7 @@
                             </div>
                         </a></li>
                         <li><a href="{{ path('app_vulnerability_index') }}" class="{% if current_route starts with 'app_vulnerability_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-bug" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--vulnerability" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.vulnerabilities'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.vulnerabilities'|trans({}, 'nav') }}</span>
@@ -326,7 +326,7 @@
                             </div>
                         </a></li>
                         <li><a href="{{ path('app_management_review_index') }}" class="{% if current_route starts with 'app_management_review_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--sop" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.management_reviews'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.management_reviews'|trans({}, 'nav') }}</span>
@@ -338,7 +338,7 @@
                     <h3 class="mega-menu-section-title">{{ 'nav.mega.section.frameworks'|trans({}, 'nav') }}</h3>
                     <ul class="mega-menu-links">
                         <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route starts with 'app_compliance_index' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.compliance_frameworks'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.compliance_frameworks'|trans({}, 'nav') }}</span>
@@ -417,14 +417,14 @@
                             </div>
                         </a></li>
                         <li><a href="{{ path('app_bsi_grundschutz_check') }}" class="{% if current_route starts with 'app_bsi_grundschutz_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.bsi_check'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.bsi_check'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
                         <li><a href="{{ path('app_prototype_protection_index') }}" class="{% if current_route starts with 'app_prototype_protection_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--control" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.prototype_protection'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.prototype_protection'|trans({}, 'nav') }}</span>
@@ -498,13 +498,13 @@
                         </a></li>
                         {% endif %}
                         <li><a href="{{ path('user_management_index') }}" class="{% if current_route starts with 'user_management_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-people" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--group" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'admin.nav.users'|trans({}, 'admin') }}</span>
                             </div>
                         </a></li>
                         <li><a href="{{ path('role_management_index') }}" class="{% if current_route starts with 'role_management_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--control" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'admin.nav.roles'|trans({}, 'admin') }}</span>
                             </div>
@@ -522,7 +522,7 @@
                             </div>
                         </a></li>
                         <li><a href="{{ path('admin_mfa_index') }}" class="{% if current_route starts with 'admin_mfa_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'admin.nav.mfa'|trans({}, 'admin') }}</span>
                             </div>
@@ -608,7 +608,7 @@
                             </div>
                         </a></li>
                         <li><a href="{{ path('admin_mapping_quality_index') }}" class="{% if current_route starts with 'admin_mapping_quality' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-shield-check text-success" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--compliance-shield fa-icon--success" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'admin.nav.mapping_quality'|trans({}, 'admin') }}</span>
                             </div>
@@ -641,7 +641,7 @@
                     <h3 class="mega-menu-section-title">{{ 'admin.section.compliance.frameworks'|trans({}, 'admin') }}</h3>
                     <ul class="mega-menu-links">
                         <li><a href="{{ path('admin_compliance_index') }}" class="{% if current_route == 'admin_compliance_index' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'admin.nav.compliance_management'|trans({}, 'admin') }}</span>
                             </div>

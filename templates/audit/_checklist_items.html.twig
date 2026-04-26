@@ -19,7 +19,7 @@
                                 ✓ {{ 'checklist.status.compliant'|trans({}, 'audit') }}
                             </option>
                             <option value="partial" {{ item.verificationStatus == 'partial' ? 'selected' : '' }}>
-                                <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'checklist.status.partial'|trans({}, 'audit') }}
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'checklist.status.partial'|trans({}, 'audit') }}
                             </option>
                             <option value="non_compliant" {{ item.verificationStatus == 'non_compliant' ? 'selected' : '' }}>
                                 ✗ {{ 'checklist.status.non_compliant'|trans({}, 'audit') }}

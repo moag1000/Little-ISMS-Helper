@@ -44,7 +44,7 @@
     {# ── Cross-framework badge bar (WS-3 UX improvement) ─────────────────── #}
     <div class="framework-badge-bar mb-3" aria-label="{{ 'supplier.frameworks.aria_label'|trans({}, 'suppliers') }}">
         <span class="text-muted me-2">
-            <i class="bi bi-shield-check" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
             {{ 'supplier.frameworks.label'|trans({}, 'suppliers') }}:
         </span>
 
@@ -133,7 +133,7 @@
                             role="tab"
                             aria-controls="pane-contracts"
                             aria-selected="false">
-                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--policy" aria-hidden="true"></i>
                         {{ 'supplier.tab.contracts'|trans({}, 'suppliers') }}
                     </button>
                 </li>
@@ -468,7 +468,7 @@
                             <dd class="col-sm-8">
                                 {% if supplier.exitStrategyDocument %}
                                     <a href="{{ path('app_document_show', {id: supplier.exitStrategyDocument.id}) }}">
-                                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--policy" aria-hidden="true"></i>
                                         {{ supplier.exitStrategyDocument.title }}
                                     </a>
                                 {% else %}

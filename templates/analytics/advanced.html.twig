@@ -32,7 +32,7 @@
                             <h2 class="card-title mb-0">{{ compliance_summary.overall_compliance }}%</h2>
                         </div>
                         <div class="display-6 text-primary">
-                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
                         </div>
                     </div>
                     <small class="text-muted">{{ 'analytics.advanced.kpi.frameworks_count'|trans({'%count%': compliance_summary.frameworks.total}, 'analytics') }}</small>
@@ -181,7 +181,7 @@
                 {% block card_body %}
                     <div class="d-flex align-items-center mb-3">
                         <div class="bg-info bg-opacity-10 rounded-3 p-3 me-3">
-                            <i class="bi bi-server fs-3 text-info" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--asset-server fs-3 fa-icon--info" aria-hidden="true"></i>
                         </div>
                         <div>
                             <h5 class="card-title mb-1">{{ 'analytics.advanced.card.asset_criticality.title'|trans({}, 'analytics') }}</h5>

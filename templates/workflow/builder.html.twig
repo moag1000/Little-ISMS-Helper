@@ -185,7 +185,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="mb-0">
-                            <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'workflow.builder.templates'|trans({}, 'workflows') }}
+                            <i class="fa-icon fa-icon--threat" aria-hidden="true"></i> {{ 'workflow.builder.templates'|trans({}, 'workflows') }}
                         </h2>
                     </div>
                 {% endblock %}
@@ -195,7 +195,7 @@
                         <button class="fa-cyber-btn fa-cyber-btn--ghost text-start"
                                 data-action="click->workflow-builder#applyTemplate"
                                 data-template-key="risk_assessment">
-                            <i class="bi bi-shield-exclamation me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--breach me-2" aria-hidden="true"></i>
                             <strong>{{ 'workflow.template.risk_assessment'|trans({}, 'workflows') }}</strong>
                             <br>
                             <small class="text-muted">{{ 'workflow.template.risk_assessment_desc'|trans({}, 'workflows') }}</small>
@@ -211,7 +211,7 @@
                         <button class="fa-cyber-btn fa-cyber-btn--danger text-start"
                                 data-action="click->workflow-builder#applyTemplate"
                                 data-template-key="incident_response">
-                            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>
                             <strong>{{ 'workflow.template.incident_response'|trans({}, 'workflows') }}</strong>
                             <br>
                             <small class="text-muted">{{ 'workflow.template.incident_response_desc'|trans({}, 'workflows') }}</small>
@@ -219,7 +219,7 @@
                         <button class="fa-cyber-btn fa-cyber-btn--warning text-start"
                                 data-action="click->workflow-builder#applyTemplate"
                                 data-template-key="document_review">
-                            <i class="bi bi-file-text me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--policy me-2" aria-hidden="true"></i>
                             <strong>{{ 'workflow.template.document_review'|trans({}, 'workflows') }}</strong>
                             <br>
                             <small class="text-muted">{{ 'workflow.template.document_review_desc'|trans({}, 'workflows') }}</small>
@@ -296,7 +296,7 @@
                             {{ 'workflow.builder.help_delete'|trans({}, 'workflows') }}
                         </li>
                         <li>
-                            <i class="bi bi-lightning text-info me-1" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--threat fa-icon--info me-1" aria-hidden="true"></i>
                             {{ 'workflow.builder.help_template'|trans({}, 'workflows') }}
                         </li>
                     </ul>

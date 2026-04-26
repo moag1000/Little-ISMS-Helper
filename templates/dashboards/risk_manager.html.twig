@@ -54,9 +54,9 @@
             <article class="fa-rag-card fa-rag-card--{{ isCompliant ? 'green' : 'red' }}">
                 <h3 class="mb-0">
                     {% if isCompliant %}
-                        <span class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'status.compliant'|trans({}, 'dashboards') }}</span>
+                        <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'status.compliant'|trans({}, 'dashboards') }}</span>
                     {% else %}
-                        <span class="text-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'status.breach'|trans({}, 'dashboards') }}</span>
+                        <span class="text-danger"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'status.breach'|trans({}, 'dashboards') }}</span>
                     {% endif %}
                 </h3>
                 <small class="fa-rag-card__detail">{{ 'risk_manager.kpi.appetite_status'|trans({}, 'dashboards') }}</small>

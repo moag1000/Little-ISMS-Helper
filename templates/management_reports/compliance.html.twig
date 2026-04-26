@@ -16,7 +16,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h2 mb-0">
-            <i class="bi bi-clipboard-check text-info" aria-hidden="true"></i> {{ 'management_reports.compliance.title'|trans({}, 'management_reports') }}
+            <i class="fa-icon fa-icon--sop fa-icon--info" aria-hidden="true"></i> {{ 'management_reports.compliance.title'|trans({}, 'management_reports') }}
         </h1>
         <div class="btn-group">
             <a href="{{ path('app_management_reports_compliance_pdf') }}" class="fa-cyber-btn fa-cyber-btn--danger">
@@ -43,7 +43,7 @@
         </button>
         {% if app.request.query.get('from') or app.request.query.get('to') %}
         <a href="{{ path('app_management_reports_compliance') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'management_reports.filter.reset'|trans({}, 'management_reports') }}
+            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'management_reports.filter.reset'|trans({}, 'management_reports') }}
         </a>
         {% endif %}
     </form>
@@ -150,7 +150,7 @@
         <div class="col-md-6 mb-4">
             {% if report.overall_compliance < 80 %}
             <div class="fa-alert fa-alert--warning h-100" role="alert">
-                <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'management_reports.compliance.improvement_needed'|trans({}, 'management_reports') }}</h5>
+                <h5><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'management_reports.compliance.improvement_needed'|trans({}, 'management_reports') }}</h5>
                 <p>{{ 'management_reports.compliance.improvement_text'|trans({}, 'management_reports') }}</p>
                 <ul class="mb-0">
                     <li>{{ 'management_reports.compliance.tip_1'|trans({}, 'management_reports') }}</li>
@@ -160,7 +160,7 @@
             </div>
             {% else %}
             <div class="fa-alert fa-alert--success h-100" role="alert">
-                <h5><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'management_reports.compliance.good_standing'|trans({}, 'management_reports') }}</h5>
+                <h5><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'management_reports.compliance.good_standing'|trans({}, 'management_reports') }}</h5>
                 <p class="mb-0">{{ 'management_reports.compliance.good_standing_text'|trans({}, 'management_reports') }}</p>
             </div>
             {% endif %}
@@ -175,7 +175,7 @@
                 {% block card_body %}
                     <div class="d-grid gap-2">
                         <a href="{{ path('app_soa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'management_reports.compliance.view_soa'|trans({}, 'management_reports') }}
+                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'management_reports.compliance.view_soa'|trans({}, 'management_reports') }}
                         </a>
                         <a href="{{ path('app_soa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'management_reports.compliance.view_controls'|trans({}, 'management_reports') }}

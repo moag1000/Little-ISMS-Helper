@@ -210,9 +210,9 @@
 {% if control.protectedAssets is defined and control.protectedAssets|length > 0 %}
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_body %}
-        <h2><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'soa.section.data_reuse_protected_assets'|trans({'%count%': control.protectedAssets|length}, 'soa') }}</h2>
+        <h2><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'soa.section.data_reuse_protected_assets'|trans({'%count%': control.protectedAssets|length}, 'soa') }}</h2>
         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-exclamation-triangle', class: 'mt-2' } } %}
-            {% block alert_body %}<strong>{{ 'soa.label.control_coverage'|trans({}, 'soa') }}</strong> {{ 'soa.message.control_coverage'|trans({'%count%': control.protectedAssets|length, '%value%': control.protectedAssetValue}, 'soa') }} {% if control.highRiskAssetCount > 0 %} <br><strong><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ control.highRiskAssetCount }}</strong> {{ 'soa.message.high_risk_assets'|trans({}, 'soa') }} {% endif %}{% endblock %}
+            {% block alert_body %}<strong>{{ 'soa.label.control_coverage'|trans({}, 'soa') }}</strong> {{ 'soa.message.control_coverage'|trans({'%count%': control.protectedAssets|length, '%value%': control.protectedAssetValue}, 'soa') }} {% if control.highRiskAssetCount > 0 %} <br><strong><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ control.highRiskAssetCount }}</strong> {{ 'soa.message.high_risk_assets'|trans({}, 'soa') }} {% endif %}{% endblock %}
         {% endembed %}
         <div class="data-reuse-list">
             {% for asset in control.protectedAssets %}
@@ -231,7 +231,7 @@
 {% if control.risks is defined and control.risks|length > 0 %}
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_body %}
-        <h2><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'soa.section.data_reuse_related_risks'|trans({'%count%': control.risks|length}, 'soa') }}</h2>
+        <h2><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'soa.section.data_reuse_related_risks'|trans({'%count%': control.risks|length}, 'soa') }}</h2>
         <p class="text-light">{{ 'soa.message.related_risks_info'|trans({}, 'soa') }}</p>
         <div class="data-reuse-list">
             {% for risk in control.risks %}
@@ -254,7 +254,7 @@
     {% block card_body %}
         <h2><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'soa.section.data_reuse_related_incidents'|trans({'%count%': control.incidents|length}, 'soa') }}</h2>
         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-exclamation-triangle' } } %}
-            {% block alert_body %}<strong><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ control.incidents|length }} {{ 'soa.label.incidents'|trans({}, 'soa') }}</strong> {{ 'soa.message.related_incidents_count'|trans({}, 'soa') }} {% if control.isReviewNeeded %} <br><strong>{{ 'soa.label.review_required'|trans({}, 'soa') }}</strong> {{ 'soa.message.review_required'|trans({}, 'soa') }} {% endif %}{% endblock %}
+            {% block alert_body %}<strong><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ control.incidents|length }} {{ 'soa.label.incidents'|trans({}, 'soa') }}</strong> {{ 'soa.message.related_incidents_count'|trans({}, 'soa') }} {% if control.isReviewNeeded %} <br><strong>{{ 'soa.label.review_required'|trans({}, 'soa') }}</strong> {{ 'soa.message.review_required'|trans({}, 'soa') }} {% endif %}{% endblock %}
         {% endembed %}
         <div class="data-reuse-list">
             {% for incident in control.incidents %}

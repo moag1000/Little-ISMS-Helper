@@ -50,11 +50,11 @@
 
             <div class="form-actions d-flex gap-2 justify-content-end">
                 <a href="{{ path('app_document_show', {id: document.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                    <i class="bi bi-x-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                     {{ 'common.cancel'|trans({}, 'messages') }}
                 </a>
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                    <i class="bi bi-check-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                     {{ 'document.action.update'|trans({}, 'document') }}
                 </button>
             </div>

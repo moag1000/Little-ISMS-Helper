@@ -40,7 +40,7 @@
         </button>
         {% if app.request.query.get('from') or app.request.query.get('to') %}
         <a href="{{ path('app_management_reports_executive') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'management_reports.filter.reset'|trans({}, 'management_reports') }}
+            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'management_reports.filter.reset'|trans({}, 'management_reports') }}
         </a>
         {% endif %}
     </form>
@@ -89,7 +89,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h3 class="h5 mb-0">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                             {{ 'management_reports.executive.risk_distribution'|trans({}, 'management_reports') }}
                         </h3>
                     </div>
@@ -141,7 +141,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h3 class="h5 mb-0">
-                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
                             {{ 'management_reports.executive.control_status'|trans({}, 'management_reports') }}
                         </h3>
                     </div>

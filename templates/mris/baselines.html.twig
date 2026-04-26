@@ -27,7 +27,7 @@
 
     {% if tenant is null %}
         <div class="alert alert-warning small">
-            <strong><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></strong>
+            <strong><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i></strong>
             Kein Mandant zugewiesen — Baselines benötigen einen Mandantenkontext zum Anwenden.
         </div>
     {% endif %}
@@ -65,7 +65,7 @@
                                     <button type="submit"
                                             class="btn btn-sm btn-primary"
                                             data-confirm="Baseline '{{ baseline.name }}' wirklich auf Mandant '{{ tenant.name }}' anwenden? Bestehende Soll-Stufen werden überschrieben.">
-                                        <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                         Anwenden
                                     </button>
                                 </form>

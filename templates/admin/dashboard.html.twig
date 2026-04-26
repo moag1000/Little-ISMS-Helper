@@ -234,7 +234,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><i class="bi bi-bug text-warning" aria-hidden="true"></i> {{ 'admin.dashboard.modules.incidents'|trans({}, 'admin') }}</td>
+                                <td><i class="fa-icon fa-icon--vulnerability fa-icon--warning" aria-hidden="true"></i> {{ 'admin.dashboard.modules.incidents'|trans({}, 'admin') }}</td>
                                 {% if currentTenant %}
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'warning', content: stats.modules.incidents.own } %}</td>
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'warning', content: stats.modules.incidents.own + stats.modules.incidents.inherited } %}</td>

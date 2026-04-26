@@ -28,7 +28,7 @@
             {# Header #}
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="{{ modal_id }}Label">
-                    <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                     {{ 'bulk_delete.confirm.title'|trans({}, 'bulk_delete') }}
                 </h5>
                 <button type="button" class="btn-close btn-close-white" aria-label="{{ 'action.close'|trans({}, 'messages') }}" data-bs-dismiss="modal"
@@ -86,7 +86,7 @@
             {# Footer #}
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                     {{ 'action.cancel'|trans({}, 'messages') }}
                 </button>
                 <button type="button"

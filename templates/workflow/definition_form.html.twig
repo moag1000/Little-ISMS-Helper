@@ -81,7 +81,7 @@
                             <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                         </a>
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                             {{ is_edit ? 'workflow.action.update'|trans({}, 'workflows') : 'workflow.action.create'|trans({}, 'workflows') }}
                         </button>
                     </div>
@@ -95,7 +95,7 @@
                     {% block card_header %}
                         <div class="card-header bg-warning-subtle text-warning">
                             <h2 class="mb-0">
-                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'workflow.section.danger_zone'|trans({}, 'workflows') }}
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'workflow.section.danger_zone'|trans({}, 'workflows') }}
                             </h2>
                         </div>
                     {% endblock %}

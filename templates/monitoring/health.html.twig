@@ -132,7 +132,7 @@
                         </summary>
 
                         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', icon: 'bi-exclamation-triangle-fill', class: 'mt-2 mb-2' } } %}
-                            {% block alert_body %}<h3 class="h6 mb-1"> <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ 'monitoring.schema.preview_warning_title'|trans({}, 'monitoring') }} </h3> <p class="mb-0 small"> {{ 'monitoring.schema.preview_warning_body'|trans({}, 'monitoring') }} </p>{% endblock %}
+                            {% block alert_body %}<h3 class="h6 mb-1"> <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'monitoring.schema.preview_warning_title'|trans({}, 'monitoring') }} </h3> <p class="mb-0 small"> {{ 'monitoring.schema.preview_warning_body'|trans({}, 'monitoring') }} </p>{% endblock %}
                         {% endembed %}
 
                         <pre class="small mt-2 mb-2" style="max-height:220px;overflow:auto" aria-label="{{ 'monitoring.schema.preview_sql_label'|trans({}, 'monitoring') }}"><code>{% for sql in schema_detail.pending_sql %}{{ sql }};
@@ -290,9 +290,9 @@
                     <dt class="col-sm-4">{{ 'monitoring.cache.writable'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-8">
                         {% if health_checks.cache.writable %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
                 </dl>
@@ -341,9 +341,9 @@
                     <dt class="col-sm-4">{{ 'monitoring.logs.writable'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-8">
                         {% if health_checks.logs.writable %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
                 </dl>
@@ -391,9 +391,9 @@
                     <dt class="col-sm-5">var/ {{ 'monitoring.cache.writable'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.permissions.var_writable %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
 
@@ -402,9 +402,9 @@
                         {% if health_checks.permissions.uploads_writable is null %}
                             <span class="text-muted">N/A</span>
                         {% elseif health_checks.permissions.uploads_writable %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
 
@@ -463,18 +463,18 @@
                     <dt class="col-sm-5">composer.lock:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.composer.lock_exists %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.exists'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'monitoring.health.exists'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.php.missing'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'monitoring.php.missing'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
 
                     <dt class="col-sm-5">vendor/:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.composer.vendor_exists %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.exists'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'monitoring.health.exists'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.php.missing'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'monitoring.php.missing'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
 
@@ -508,16 +508,16 @@
                     <dt class="col-sm-5">.env File:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.environment.env_file_exists %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.exists'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'monitoring.health.exists'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.php.missing'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'monitoring.php.missing'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
 
                     <dt class="col-sm-5">.env.local File:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.environment.env_local_exists %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.exists'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'monitoring.health.exists'|trans({}, 'monitoring') }}
                         {% else %}
                             <span class="text-muted">{{ 'monitoring.health.not_used'|trans({}, 'monitoring') }}</span>
                         {% endif %}
@@ -533,7 +533,7 @@
                     {% else %}
                         <dt class="col-sm-5">All Required Vars:</dt>
                         <dd class="col-sm-7">
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.present'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'monitoring.health.present'|trans({}, 'monitoring') }}
                         </dd>
                     {% endif %}
                 </dl>
@@ -552,9 +552,9 @@
                     <dt class="col-sm-5">OPcache:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.php_config.opcache_enabled %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.on'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'monitoring.health.on'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-warning" aria-hidden="true"></i> {{ 'monitoring.health.off'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'monitoring.health.off'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
 
@@ -562,9 +562,9 @@
                     <dd class="col-sm-7">
                         <code>{{ health_checks.php_config.memory_limit }}</code>
                         {% if health_checks.php_config.memory_sufficient %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                         {% else %}
-                            <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {% endif %}
                     </dd>
 
@@ -598,9 +598,9 @@
                     <dt class="col-sm-5">{{ 'monitoring.cache.writable'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.sessions.writable %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
                 </dl>
@@ -640,9 +640,9 @@
                     <dt class="col-sm-5">{{ 'monitoring.cache.writable'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">
                         {% if health_checks.uploads.writable %}
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'monitoring.health.yes'|trans({}, 'monitoring') }}
                         {% else %}
-                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'monitoring.health.no'|trans({}, 'monitoring') }}
                         {% endif %}
                     </dd>
                 </dl>
@@ -682,7 +682,7 @@
                 </div>
                 <div class="col-md-3 mb-2">
                     <a href="{{ path('monitoring_errors') }}" class="fa-cyber-btn fa-cyber-btn--danger w-100">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'monitoring.errors.title'|trans({}, 'monitoring') }}
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'monitoring.errors.title'|trans({}, 'monitoring') }}
                     </a>
                 </div>
                 <div class="col-md-3 mb-2">

@@ -83,7 +83,7 @@
                     <div class="text-muted small">{{ 'privacy.data_breach.kpi.total_breaches'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold">{{ statistics.total }}</div>
                     <div class="mt-2">
-                        <small class="text-danger"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ statistics.high_risk + statistics.critical_risk }} {{ 'privacy.data_breach.kpi.high_critical_risk'|trans({}, 'privacy') }}</small>
+                        <small class="text-danger"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ statistics.high_risk + statistics.critical_risk }} {{ 'privacy.data_breach.kpi.high_critical_risk'|trans({}, 'privacy') }}</small>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -105,7 +105,7 @@
                     <div class="text-muted small">{{ 'privacy.data_breach.kpi.special_categories'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold text-info">{{ statistics.special_categories_affected }}</div>
                     <div class="mt-2">
-                        <small class="text-muted"><i class="bi bi-shield-lock" aria-hidden="true"></i> {{ 'privacy.data_breach.kpi.art9_data'|trans({}, 'privacy') }}</small>
+                        <small class="text-muted"><i class="fa-icon fa-icon--control" aria-hidden="true"></i> {{ 'privacy.data_breach.kpi.art9_data'|trans({}, 'privacy') }}</small>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -116,7 +116,7 @@
                     <div class="text-muted small">Affected Subjects</div>
                     <div class="fs-2 fw-bold">{{ compliance_score.total_affected_subjects }}</div>
                     <div class="mt-2">
-                        <small class="text-muted"><i class="bi bi-people" aria-hidden="true"></i> Total count</small>
+                        <small class="text-muted"><i class="fa-icon fa-icon--group" aria-hidden="true"></i> Total count</small>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -240,25 +240,25 @@
                                             {% include '_components/_badge.html.twig' with { variant: 'info', content: hours|number_format ~ 'h left' } %}
                                         {% endif %}
                                     {% elseif breach.supervisoryAuthorityNotifiedAt %}
-                                        <i class="bi bi-check-circle text-success" aria-hidden="true" title="{{ 'data_breach.notified_at'|trans({'%date%': breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i')}, 'privacy') }}"></i>
+                                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true" title="{{ 'data_breach.notified_at'|trans({'%date%': breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i')}, 'privacy') }}"></i>
                                     {% else %}
                                         <span class="text-muted">{{ 'data_breach.not_required'|trans({}, 'privacy') }}</span>
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if breach.supervisoryAuthorityNotifiedAt %}
-                                        <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                     {% elseif breach.requiresAuthorityNotification %}
-                                        <i class="bi bi-x-circle text-warning" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                                     {% else %}
                                         <span class="text-muted">-</span>
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if breach.dataSubjectsNotifiedAt %}
-                                        <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                     {% elseif breach.requiresSubjectNotification %}
-                                        <i class="bi bi-x-circle text-warning" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                                     {% else %}
                                         <span class="text-muted">-</span>
                                     {% endif %}

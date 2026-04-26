@@ -82,7 +82,7 @@
                     <ul class="list-unstyled small mb-0">
                         {% for report in category.reports %}
                         <li class="mb-2">
-                            <i class="bi bi-file-earmark-text text-{{ category.color }}" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--policy text-{{ category.color }}" aria-hidden="true"></i>
                             {{ ('management_reports.report.' ~ report.key)|trans({}, 'management_reports') }}
                         </li>
                         {% endfor %}

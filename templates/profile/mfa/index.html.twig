@@ -20,7 +20,7 @@
     <div class="fa-alert fa-alert--{{ mfa_enabled ? 'success' : 'warning' }} mb-4" role="alert">
         <div class="d-flex align-items-center">
             {# TODO(aurora-migration): dynamic MFA status icon — keep bi-* #}
-            <i class="bi {{ mfa_enabled ? 'bi-shield-check' : 'bi-shield-exclamation' }} fs-1 me-3" aria-hidden="true"></i>
+            <i class="fa-icon {{ mfa_enabled ? 'fa-icon--compliance-shield' : 'fa-icon--breach' }} fs-1 me-3" aria-hidden="true"></i>
             <div>
                 <p class="fw-bold mb-1">
                     {% if mfa_enabled %}

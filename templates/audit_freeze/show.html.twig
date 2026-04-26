@@ -39,7 +39,7 @@
                 </form>
             {% endif %}
             <a href="{{ path('app_audit_freeze_verify', {id: freeze.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-shield-check" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
                 {{ 'audit_freeze.action.verify'|trans({}, 'audit_freeze') }}
             </a>
         </div>
@@ -48,11 +48,11 @@
     {# Integrity badge #}
     <div class="alert {{ verified ? 'alert-success' : 'alert-danger' }}" role="alert">
         {% if verified %}
-            <i class="bi bi-shield-check-fill" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--compliance-shield-fill" aria-hidden="true"></i>
             <strong>{{ 'audit_freeze.integrity.verified'|trans({}, 'audit_freeze') }}</strong>
             — {{ 'audit_freeze.integrity.verified_body'|trans({'%hash%': freeze.payloadSha256|slice(0, 16)}, 'audit_freeze') }}
         {% else %}
-            <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--breach" aria-hidden="true"></i>
             <strong>{{ 'audit_freeze.integrity.tampered'|trans({}, 'audit_freeze') }}</strong>
             — {{ 'audit_freeze.integrity.tampered_body'|trans({}, 'audit_freeze') }}
         {% endif %}

@@ -66,7 +66,7 @@
                 {% block card_header %}
                     <div class="card-header bg-{{ available_wizards[key].color|default('secondary') }} bg-opacity-10 text-center">
                         <h3 class="h5 mb-0">
-                            <i class="{{ available_wizards[key].icon|default('bi-check-circle') }} me-2"></i>
+                            <i class="{{ available_wizards[key].icon|default('fa-icon--status-ok') }} me-2"></i>
                             {{ result.framework_name }}
                         </h3>
                     </div>

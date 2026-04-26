@@ -86,7 +86,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="bi bi-file-text me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--policy me-2" aria-hidden="true"></i>
                             {{ 'board.section.executive_summary'|trans({}, 'dashboards') }}
                         </h5>
                     </div>
@@ -121,7 +121,7 @@
                                 {% endfor %}
                             </ul>
                         {% else %}
-                            <p class="text-success mb-0"><i class="bi bi-check-circle me-1" aria-hidden="true"></i>{{ 'board.no_concerns'|trans({}, 'dashboards') }}</p>
+                            <p class="text-success mb-0"><i class="fa-icon fa-icon--status-ok me-1" aria-hidden="true"></i>{{ 'board.no_concerns'|trans({}, 'dashboards') }}</p>
                         {% endif %}
                     </div>
                 {% endblock %}

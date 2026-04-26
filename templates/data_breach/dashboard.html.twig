@@ -64,7 +64,7 @@
     {% if action_items|length > 0 %}
         {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
             {% block card_header %}
-                <div class="card-header"><h2 class="mb-0"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> Action Items</h2></div>
+                <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Action Items</h2></div>
             {% endblock %}
             {% block card_body %}
                 <div class="list-group">
@@ -78,9 +78,9 @@
                             <div class="d-flex w-100 justify-content-between">
                                 <div class="fw-bold mb-1">
                                     {% if item.priority == 'critical' %}
-                                        <i class="bi bi-exclamation-triangle-fill text-danger" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                     {% elseif item.priority == 'high' %}
-                                        <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                     {% elseif item.priority == 'medium' %}
                                         <i class="bi bi-info-circle text-info" aria-hidden="true"></i>
                                     {% else %}
@@ -154,7 +154,7 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-shield-exclamation" aria-hidden="true"></i> By Risk Level</h2></div>
+                    <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--breach" aria-hidden="true"></i> By Risk Level</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     <div class="row text-center">
@@ -182,7 +182,7 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-shield-lock" aria-hidden="true"></i> Special Categories</h2></div>
+                    <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--control" aria-hidden="true"></i> Special Categories</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     <p><strong>Art. 9 Data (Special Categories):</strong></p>

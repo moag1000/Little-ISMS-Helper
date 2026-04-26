@@ -51,7 +51,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="text-muted small mb-2">
-                                <i class="bi bi-people" aria-hidden="true"></i> {{ 'management_review.field.participants'|trans({}, 'management_review') }}
+                                <i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ 'management_review.field.participants'|trans({}, 'management_review') }}
                                 {% include '_components/_badge.html.twig' with { variant: 'primary', content: review.participants|length } %}
                             </div>
                             {% if review.participants|length > 0 %}
@@ -236,7 +236,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-info' } %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="h5 mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> ISO 27001:2022</h2>
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> ISO 27001:2022</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -293,7 +293,7 @@
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
                 <h3 class="modal-title h5" id="deleteModalLabel">
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'management_review.confirm_delete'|trans({}, 'management_review') }}
+                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'management_review.confirm_delete'|trans({}, 'management_review') }}
                 </h3>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
             </div>
