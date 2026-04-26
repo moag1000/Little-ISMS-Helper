@@ -69,6 +69,12 @@ soa:
         degradiert: 'Teilweise degradiert'
         reibung: 'Reine Reibung'
         nicht_betroffen: 'Nicht betroffen'
+        flanking_mhcs: 'Flankierende Mythos-Härtungs-Controls'
+        source: 'Quelle: Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. Lizenz: CC BY 4.0.'
+        reibung_warning_title: 'Reine Reibung — dieses Control ist gegen Mythos-Bedrohungslage strukturell geschwächt.'
+        reibung_warning_body: 'MRIS empfiehlt das Control umzugestalten oder durch flankierende Mythos-Härtungs-Controls (MHC) zu ergänzen. Allein-Nutzung als Mitigation ist Audit-Risiko unter Gen-AI-beschleunigter Offensive.'
+        degradiert_hint_title: 'Teilweise degradiert — Wirksamkeit unter Mythos eingeschränkt.'
+        degradiert_hint_body: 'Das Control bleibt nutzbar, sollte aber durch flankierende MHCs ergänzt werden:'
     status:
         implemented: Implementiert
         in_progress: 'In Arbeit'

@@ -71,6 +71,12 @@ soa:
         degradiert: 'Partially degraded'
         reibung: 'Pure friction'
         nicht_betroffen: 'Not affected'
+        flanking_mhcs: 'Flanking Mythos hardening controls'
+        source: 'Source: Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. License: CC BY 4.0.'
+        reibung_warning_title: 'Pure friction — this control is structurally weakened against the Mythos threat landscape.'
+        reibung_warning_body: 'MRIS recommends redesigning the control or supplementing it with flanking Mythos hardening controls (MHC). Standalone use as mitigation is an audit risk under Gen-AI-accelerated offence.'
+        degradiert_hint_title: 'Partially degraded — effectiveness reduced under Mythos.'
+        degradiert_hint_body: 'The control remains usable but should be supplemented with flanking MHCs:'
     status:
         implemented: Implemented
         in_progress: 'In progress'
