@@ -389,7 +389,7 @@
 
     {# Progress bar #}
     {% if show_progress %}
-    <div class="progress mt-2" style="height: 6px;" role="progressbar"
+    <div class="progress progress-h-6 mt-2" role="progressbar"
          aria-valuenow="{{ progress_percent }}" aria-valuemin="0" aria-valuemax="100">
         <div class="progress-bar bg-{{ computed_variant }}"
              style="width: {{ progress_percent }}%"

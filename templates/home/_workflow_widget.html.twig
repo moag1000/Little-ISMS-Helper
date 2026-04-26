@@ -107,7 +107,7 @@
                         </div>
 
                         {# Progress Bar #}
-                        <div class="progress mb-2" style="height: 4px;">
+                        <div class="progress progress-h-4 mb-2">
                             {% if dueDate %}
                                 {% set now = date() %}
                                 {% set isOverdue = dueDate < now %}

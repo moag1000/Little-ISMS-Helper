@@ -64,7 +64,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
                     <h4>{{ 'management_reports.compliance.control_status'|trans({}, 'management_reports') }}</h4>
-                    <div class="progress mb-3" style="height: 30px;">
+                    <div class="progress progress-h-30 mb-3">
                         <div class="progress-bar bg-success" style="width: {{ report.controls.total > 0 ? (report.controls.implemented / report.controls.total * 100) : 0 }}%">
                             {{ report.controls.implemented }} {{ 'management_reports.compliance.implemented'|trans({}, 'management_reports') }}
                         </div>

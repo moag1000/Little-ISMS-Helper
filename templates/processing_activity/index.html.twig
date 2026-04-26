@@ -186,7 +186,7 @@
                                     {% include '_components/_badge.html.twig' with { variant: status_class, content: ('processing_activity.status.' ~ pa.status)|trans({}, 'privacy') } %}
                                 </td>
                                 <td>
-                                    <div class="progress" style="height: 20px;">
+                                    <div class="progress progress-h-20">
                                         {% set completeness = pa.completenessPercentage %}
                                         {% set progress_class = completeness == 100 ? 'bg-success' : (completeness >= 70 ? 'bg-warning' : 'bg-danger') %}
                                         <div class="progress-bar {{ progress_class }}"

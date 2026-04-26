@@ -180,7 +180,7 @@
                                 <span>{{ 'management_reports.bcm.processes_with_rpo'|trans({}, 'management_reports') }}</span>
                                 {% include '_components/_badge.html.twig' with { variant: 'primary', content: bia.rpo_defined ~ ' / ' ~ bia.total_processes } %}
                             </div>
-                            <div class="progress mt-3" style="height: 25px;">
+                            <div class="progress progress-h-25 mt-3">
                                 <div class="progress-bar bg-success" style="width: {{ bia.coverage }}%">
                                     {{ bia.coverage }}% {{ 'management_reports.bcm.coverage'|trans({}, 'management_reports') }}
                                 </div>

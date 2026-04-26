@@ -45,7 +45,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
                     <h5>{{ 'cert_readiness.clause_compliance_score'|trans({}, 'management_reports') }}</h5>
-                    <div class="progress mb-2" style="height: 24px;">
+                    <div class="progress progress-h-24 mb-2">
                         <div class="progress-bar {% if clause_score >= 80 %}bg-success{% elseif clause_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}"
                              role="progressbar" style="width: {{ clause_score }}%"
                              aria-valuenow="{{ clause_score }}" aria-valuemin="0" aria-valuemax="100">
@@ -60,7 +60,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
                     <h5>{{ 'cert_readiness.annex_a_coverage'|trans({}, 'management_reports') }}</h5>
-                    <div class="progress mb-2" style="height: 24px;">
+                    <div class="progress progress-h-24 mb-2">
                         <div class="progress-bar {% if control_percentage >= 80 %}bg-success{% elseif control_percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}"
                              role="progressbar" style="width: {{ control_percentage }}%"
                              aria-valuenow="{{ control_percentage }}" aria-valuemin="0" aria-valuemax="100">

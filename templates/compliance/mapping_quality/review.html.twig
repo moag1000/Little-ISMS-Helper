@@ -107,7 +107,7 @@
                     {% if mapping.qualityScore is not null %}
                     <div class="mb-3">
                         <small class="text-muted">{{ 'mapping_review.field.quality_score'|trans({}, 'compliance') }}</small>
-                        <div class="progress" style="height: 25px;">
+                        <div class="progress progress-h-25">
                             <div class="progress-bar {% if mapping.qualityScore >= 75 %}bg-success{% elseif mapping.qualityScore >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
                                  style="width: {{ mapping.qualityScore }}%">
                                 <strong>{{ mapping.qualityScore }}</strong>
@@ -118,7 +118,7 @@
                     {% if mapping.analysisConfidence is not null %}
                     <div class="mb-3">
                         <small class="text-muted">{{ 'mapping_review.field.analysis_confidence'|trans({}, 'compliance') }}</small>
-                        <div class="progress" style="height: 25px;">
+                        <div class="progress progress-h-25">
                             <div class="progress-bar {% if mapping.analysisConfidence >= 80 %}bg-success{% elseif mapping.analysisConfidence >= 60 %}bg-warning{% else %}bg-danger{% endif %}"
                                  style="width: {{ mapping.analysisConfidence }}%">
                                 <strong>{{ mapping.analysisConfidence }}</strong>
@@ -149,7 +149,7 @@
                     {% if mapping.textualSimilarity is not null %}
                     <div class="mb-2">
                         <small>{{ 'mapping_review.field.textual_similarity'|trans({}, 'compliance') }}</small>
-                        <div class="progress" style="height: 20px;">
+                        <div class="progress progress-h-20">
                             <div class="progress-bar bg-info" style="width: {{ (mapping.textualSimilarity * 100)|round }}%">
                                 {{ (mapping.textualSimilarity * 100)|round }}%
                             </div>
@@ -159,7 +159,7 @@
                     {% if mapping.keywordOverlap is not null %}
                     <div class="mb-2">
                         <small>{{ 'mapping_review.field.keyword_overlap'|trans({}, 'compliance') }}</small>
-                        <div class="progress" style="height: 20px;">
+                        <div class="progress progress-h-20">
                             <div class="progress-bar bg-info" style="width: {{ (mapping.keywordOverlap * 100)|round }}%">
                                 {{ (mapping.keywordOverlap * 100)|round }}%
                             </div>
@@ -169,7 +169,7 @@
                     {% if mapping.structuralSimilarity is not null %}
                     <div class="mb-2">
                         <small>{{ 'mapping_review.field.structural_similarity'|trans({}, 'compliance') }}</small>
-                        <div class="progress" style="height: 20px;">
+                        <div class="progress progress-h-20">
                             <div class="progress-bar bg-info" style="width: {{ (mapping.structuralSimilarity * 100)|round }}%">
                                 {{ (mapping.structuralSimilarity * 100)|round }}%
                             </div>

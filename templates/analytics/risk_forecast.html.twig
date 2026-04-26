@@ -315,7 +315,7 @@
                                     {% include '_components/_badge.html.twig' with { variant: level == 'critical' ? 'danger' : (level == 'high' ? 'warning' : (level == 'medium' ? 'info' : 'success')), content: level|title } %}
                                     <span>{{ actual_val }} / {{ threshold_val }} {{ 'analytics.forecast.appetite.threshold'|trans({}, 'analytics') }}</span>
                                 </div>
-                                <div class="progress" style="height: 25px;">
+                                <div class="progress progress-h-25">
                                     {% set progress_pct = threshold_val > 0 ? (actual_val / threshold_val) * 100 : 0 %}
                                     <div class="progress-bar bg-{% if is_compliant %}success{% else %}danger{% endif %}"
                                          style="width: {{ progress_pct > 100 ? 100 : progress_pct }}%">

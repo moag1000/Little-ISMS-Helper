@@ -39,7 +39,7 @@
                     {% endif %}
 
                     <div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.table.progress'|trans({}, 'objective') }}</div>
-                    <div class="progress mb-2" style="height: 30px;">
+                    <div class="progress progress-h-30 mb-2">
                         <div class="progress-bar {% if objective.progressPercentage >= 75 %}bg-success{% elseif objective.progressPercentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
                              style="width: {{ objective.progressPercentage }}%">
                             {{ objective.progressPercentage }}%

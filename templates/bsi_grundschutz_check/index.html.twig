@@ -5,7 +5,7 @@
 {% macro aggregate_bar(aggregate, status_variant) %}
     {% set pct = aggregate.weighted_pct is not null ? aggregate.weighted_pct : 0 %}
     {% set variant = status_variant[aggregate.status] ?? 'secondary' %}
-    <div class="progress" style="height: 18px;" role="progressbar"
+    <div class="progress progress-h-18" role="progressbar"
          aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100"
          aria-label="{{ 'bsi_check.weighted_pct'|trans({}, 'messages') }}">
         <div class="progress-bar bg-{{ variant }}" style="width: {{ pct }}%;">

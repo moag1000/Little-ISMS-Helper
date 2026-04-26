@@ -24,7 +24,7 @@
                         <div class="display-1 {% if overall_compliance_score >= 95 %}text-success{% elseif overall_compliance_score >= 75 %}text-warning{% else %}text-danger{% endif %}">
                             {{ overall_compliance_score }}%
                         </div>
-                        <div class="progress mt-3" style="height: 30px;">
+                        <div class="progress progress-h-30 mt-3">
                             <div class="progress-bar {% if overall_compliance_score >= 95 %}bg-success{% elseif overall_compliance_score >= 75 %}bg-warning{% else %}bg-danger{% endif %}"
                                  role="progressbar"
                                  style="width: {{ overall_compliance_score }}%"

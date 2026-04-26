@@ -81,7 +81,7 @@
         <div class="mt-3">
             <strong class="d-block mb-2">{{ 'workflow.field.progress'|trans({}, 'workflows') }}</strong>
             {% set progress = instance.progressPercentage %}
-            <div class="progress" style="height: 25px;">
+            <div class="progress progress-h-25">
                 <div class="progress-bar bg-{{ progress == 100 ? 'success' : 'primary' }}" role="progressbar" style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
                     {{ progress }}% ({{ instance.completedSteps|length }} / {{ instance.workflow.steps|length }})
                 </div>

@@ -83,7 +83,7 @@
                             {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'management_reports.severity.critical'|trans({}, 'management_reports') } %}
                             <span>{{ report.by_severity.critical }}</span>
                         </div>
-                        <div class="progress" style="height: 20px;">
+                        <div class="progress progress-h-20">
                             <div class="progress-bar bg-danger" style="width: {{ report.total_breaches > 0 ? (report.by_severity.critical / report.total_breaches * 100) : 0 }}%"></div>
                         </div>
                     </div>
@@ -92,7 +92,7 @@
                             {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'management_reports.severity.high'|trans({}, 'management_reports') } %}
                             <span>{{ report.by_severity.high }}</span>
                         </div>
-                        <div class="progress" style="height: 20px;">
+                        <div class="progress progress-h-20">
                             <div class="progress-bar bg-warning" style="width: {{ report.total_breaches > 0 ? (report.by_severity.high / report.total_breaches * 100) : 0 }}%"></div>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
                             {% include '_components/_badge.html.twig' with { variant: 'info', content: 'management_reports.severity.medium'|trans({}, 'management_reports') } %}
                             <span>{{ report.by_severity.medium }}</span>
                         </div>
-                        <div class="progress" style="height: 20px;">
+                        <div class="progress progress-h-20">
                             <div class="progress-bar bg-info" style="width: {{ report.total_breaches > 0 ? (report.by_severity.medium / report.total_breaches * 100) : 0 }}%"></div>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
                             {% include '_components/_badge.html.twig' with { variant: 'success', content: 'management_reports.severity.low'|trans({}, 'management_reports') } %}
                             <span>{{ report.by_severity.low }}</span>
                         </div>
-                        <div class="progress" style="height: 20px;">
+                        <div class="progress progress-h-20">
                             <div class="progress-bar bg-success" style="width: {{ report.total_breaches > 0 ? (report.by_severity.low / report.total_breaches * 100) : 0 }}%"></div>
                         </div>
                     </div>

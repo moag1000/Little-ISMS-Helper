@@ -54,7 +54,7 @@
                                         {# Stacked bar: high (success) | medium (warning) | low (secondary) #}
                                         {% set total = r.high + r.medium + r.low %}
                                         {% if total > 0 %}
-                                            <div class="progress" style="height: 20px;">
+                                            <div class="progress progress-h-20">
                                                 <div class="progress-bar bg-success" style="width: {{ (r.high / total * 100)|round }}%" title="{{ r.high }} high">{{ r.high }}</div>
                                                 <div class="progress-bar bg-warning" style="width: {{ (r.medium / total * 100)|round }}%" title="{{ r.medium }} medium">{{ r.medium }}</div>
                                                 <div class="progress-bar bg-secondary" style="width: {{ (r.low / total * 100)|round }}%" title="{{ r.low }} low">{{ r.low }}</div>

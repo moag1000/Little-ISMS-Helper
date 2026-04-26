@@ -538,7 +538,7 @@
                                         {% set daysOverdue = date().diff(plan.targetCompletionDate).days %}
                                         <span class="text-danger">({{ daysOverdue }} {{ 'dashboard.overdue_treatment_plans.days_overdue'|trans({}, 'dashboard') }})</span>
                                     </div>
-                                    <div class="progress mt-1" style="height: 4px;">
+                                    <div class="progress progress-h-4 mt-1">
                                         <div class="progress-bar bg-danger" role="progressbar"
                                              style="width: {{ plan.completionPercentage }}%"
                                              aria-valuenow="{{ plan.completionPercentage }}"
@@ -597,7 +597,7 @@
                                         {% set daysRemaining = date().diff(plan.targetCompletionDate).days %}
                                         <span>({{ daysRemaining }} {{ 'dashboard.approaching_treatment_plans.days_remaining'|trans({}, 'dashboard') }})</span>
                                     </div>
-                                    <div class="progress mt-1" style="height: 4px;">
+                                    <div class="progress progress-h-4 mt-1">
                                         <div class="progress-bar" role="progressbar"
                                              style="width: {{ plan.completionPercentage }}%"
                                              aria-valuenow="{{ plan.completionPercentage }}"

@@ -156,7 +156,7 @@
                     {% endif %}
                 </td>
                 <td class="text-center">
-                    <div class="progress" style="height: 20px;">
+                    <div class="progress progress-h-20">
                         <div class="progress-bar bg-{{ plan.completionPercentage >= 75 ? 'success' : (plan.completionPercentage >= 50 ? 'info' : (plan.completionPercentage >= 25 ? 'warning' : 'danger')) }}"
                              role="progressbar"
                              style="width: {{ plan.completionPercentage }}%"

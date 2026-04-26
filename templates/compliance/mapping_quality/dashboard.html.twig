@@ -91,7 +91,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <div class="progress mb-2" style="height: 30px;">
+                    <div class="progress progress-h-30 mb-2">
                         <div class="progress-bar {% if quality_stats.avg_quality_score >= 75 %}bg-success{% elseif quality_stats.avg_quality_score >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
                              role="progressbar"
                              style="width: {{ quality_stats.avg_quality_score }}%"
@@ -112,7 +112,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <div class="progress mb-2" style="height: 30px;">
+                    <div class="progress progress-h-30 mb-2">
                         <div class="progress-bar {% if quality_stats.avg_confidence >= 80 %}bg-success{% elseif quality_stats.avg_confidence >= 60 %}bg-warning{% else %}bg-danger{% endif %}"
                              role="progressbar"
                              style="width: {{ quality_stats.avg_confidence }}%"
@@ -198,7 +198,7 @@
                 <hr>
                 <p class="fw-bold fs-5 mb-3">{{ 'compliance.mapping_quality.analysis_running'|trans({}, 'compliance') }}</p>
 
-                <div class="progress mb-3" style="height: 30px;">
+                <div class="progress progress-h-30 mb-3">
                     <div data-batch-analysis-target="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-info"
                          role="progressbar" style="width: 0%">
                         <strong data-batch-analysis-target="progressText">0%</strong>
