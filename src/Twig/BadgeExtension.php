@@ -11,6 +11,13 @@ use Twig\Attribute\AsTwigFunction;
  * - Provides semantic status-to-color mapping
  * - Eliminates inline ternary logic
  *
+ * Aurora v4 Migration (Sprint B):
+ * - All methods return BC-aliased dual class-set:
+ *   "badge bg-{bs-color} fa-status-pill fa-status-pill--{aurora-variant}"
+ * - Bootstrap classes kept for backward-compat (templates using the class
+ *   string directly without going through _badge.html.twig macro).
+ * - Variant mapping: BS "secondary" → Aurora "neutral", BS "info" → Aurora "primary".
+ *
  * @author Claude Code
  */
 class BadgeExtension
@@ -131,87 +138,115 @@ class BadgeExtension
     ];
 
     /**
+     * Maps Bootstrap color names to Aurora v4 status-pill variant names.
+     *
+     * Aurora has: primary, accent, success, warning, danger, neutral.
+     * Bootstrap "secondary" → Aurora "neutral" (no-emphasis neutral tone).
+     * Bootstrap "info"      → Aurora "primary" (Aurora maps info-blue to primary).
+     * Bootstrap "primary"   → Aurora "primary" (direct match).
+     */
+    private const array BS_TO_AURORA = [
+        'danger'    => 'danger',
+        'warning'   => 'warning',
+        'success'   => 'success',
+        'primary'   => 'primary',
+        'info'      => 'primary',
+        'secondary' => 'neutral',
+    ];
+
+    /**
+     * Returns the BC-aliased dual class string for a given Bootstrap color.
+     *
+     * Example: buildBadgeClasses('danger') → "badge bg-danger fa-status-pill fa-status-pill--danger"
+     */
+    private function buildBadgeClasses(string $bsColor): string
+    {
+        $auroraVariant = self::BS_TO_AURORA[$bsColor] ?? 'neutral';
+        return "badge bg-{$bsColor} fa-status-pill fa-status-pill--{$auroraVariant}";
+    }
+
+    /**
      * Get Bootstrap badge class for severity level
      *
      * @param string|int $severity Severity level (critical/high/medium/low or 1-5)
-     * @return string Bootstrap badge class (e.g., "badge bg-danger")
+     * @return string BC-aliased badge classes: "badge bg-{color} fa-status-pill fa-status-pill--{variant}"
      */
     #[AsTwigFunction('badge_severity')]
     public function getSeverityBadgeClass(string|int $severity): string
     {
         $severity = is_string($severity) ? strtolower($severity) : $severity;
         $color = self::SEVERITY_MAP[$severity] ?? 'secondary';
-        return "badge bg-{$color}";
+        return $this->buildBadgeClasses($color);
     }
 
     /**
      * Get Bootstrap badge class for status
      *
      * @param string $status Status value
-     * @return string Bootstrap badge class
+     * @return string BC-aliased badge classes
      */
     #[AsTwigFunction('badge_status')]
     public function getStatusBadgeClass(string $status): string
     {
         $status = strtolower($status);
         $color = self::STATUS_MAP[$status] ?? 'secondary';
-        return "badge bg-{$color}";
+        return $this->buildBadgeClasses($color);
     }
 
     /**
      * Get Bootstrap badge class for risk level
      *
      * @param string $riskLevel Risk level (critical/high/medium/low)
-     * @return string Bootstrap badge class
+     * @return string BC-aliased badge classes
      */
     #[AsTwigFunction('badge_risk')]
     public function getRiskBadgeClass(string $riskLevel): string
     {
         $riskLevel = strtolower($riskLevel);
         $color = self::RISK_MAP[$riskLevel] ?? 'secondary';
-        return "badge bg-{$color}";
+        return $this->buildBadgeClasses($color);
     }
 
     /**
      * Get Bootstrap badge class for NIS2 compliance status
      *
      * @param string $nis2Status NIS2 compliance status
-     * @return string Bootstrap badge class
+     * @return string BC-aliased badge classes
      */
     #[AsTwigFunction('badge_nis2')]
     public function getNis2BadgeClass(string $nis2Status): string
     {
         $nis2Status = strtolower($nis2Status);
         $color = self::NIS2_MAP[$nis2Status] ?? 'secondary';
-        return "badge bg-{$color}";
+        return $this->buildBadgeClasses($color);
     }
 
     /**
      * Get Bootstrap badge class for action type (audit logs)
      *
      * @param string $action Action type (create/update/delete/etc.)
-     * @return string Bootstrap badge class
+     * @return string BC-aliased badge classes
      */
     #[AsTwigFunction('badge_action')]
     public function getActionBadgeClass(string $action): string
     {
         $action = strtolower($action);
         $color = self::ACTION_MAP[$action] ?? 'secondary';
-        return "badge bg-{$color}";
+        return $this->buildBadgeClasses($color);
     }
 
     /**
      * Get Bootstrap badge class for data classification
      *
      * @param string $classification Data classification level
-     * @return string Bootstrap badge class
+     * @return string BC-aliased badge classes
      */
     #[AsTwigFunction('badge_classification')]
     public function getClassificationBadgeClass(string $classification): string
     {
         $classification = strtolower($classification);
         $color = self::CLASSIFICATION_MAP[$classification] ?? 'secondary';
-        return "badge bg-{$color}";
+        return $this->buildBadgeClasses($color);
     }
 
     /**
@@ -220,13 +255,13 @@ class BadgeExtension
      * Automatically maps scores to semantic colors:
      * - 4-5: danger (red)
      * - 3: warning (yellow)
-     * - 2: info (blue)
+     * - 2: info (blue) → Aurora primary
      * - 0-1: success (green)
      *
      * @param int|float $score Numeric score (typically 0-5)
      * @param int $dangerThreshold Threshold for danger (default: 4)
      * @param int $warningThreshold Threshold for warning (default: 3)
-     * @return string Bootstrap badge class
+     * @return string BC-aliased badge classes
      */
     #[AsTwigFunction('badge_score')]
     public function getScoreBadgeClass(int|float $score, int $dangerThreshold = 4, int $warningThreshold = 3): string
@@ -241,7 +276,7 @@ class BadgeExtension
             $color = 'success';
         }
 
-        return "badge bg-{$color}";
+        return $this->buildBadgeClasses($color);
     }
 
     /**
@@ -249,12 +284,12 @@ class BadgeExtension
      *
      * Maps completion percentages to semantic colors (inverted from score):
      * - 100%: success (green) - fully complete
-     * - 75-99%: info (blue) - mostly complete
+     * - 75-99%: info (blue) → Aurora primary - mostly complete
      * - 50-74%: warning (yellow) - partially complete
      * - 0-49%: danger (red) - incomplete
      *
      * @param int|float $percentage Completion percentage (0-100)
-     * @return string Bootstrap badge class
+     * @return string BC-aliased badge classes
      */
     #[AsTwigFunction('badge_completion')]
     public function getCompletionBadgeClass(int|float $percentage): string
@@ -269,14 +304,14 @@ class BadgeExtension
             $color = 'danger';
         }
 
-        return "badge bg-{$color}";
+        return $this->buildBadgeClasses($color);
     }
 
     /**
      * Get Bootstrap badge class for priority level
      *
      * @param string $priority Priority level (critical/high/medium/low)
-     * @return string Bootstrap badge class
+     * @return string BC-aliased badge classes
      */
     #[AsTwigFunction('badge_priority')]
     public function getPriorityBadgeClass(string $priority): string
@@ -291,6 +326,6 @@ class BadgeExtension
         ];
 
         $color = $priorityMap[$priority] ?? 'secondary';
-        return "badge bg-{$color}";
+        return $this->buildBadgeClasses($color);
     }
 }
