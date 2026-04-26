@@ -89,6 +89,12 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    # Doctrine-Migrations DependencyFactory — Bundle exposes it under a string ID
+    # only. Aliased so SchemaMaintenanceService (and any future consumer) can
+    # type-hint the class directly via autowiring.
+    Doctrine\Migrations\DependencyFactory:
+        alias: 'doctrine.migrations.dependency_factory'
+
     # FairyAurora v3.0 — App-Version aus composer.json für Brand-Component
     App\Twig\AppVersionExtension:
         arguments:

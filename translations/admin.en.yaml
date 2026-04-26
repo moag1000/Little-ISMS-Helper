@@ -394,6 +394,26 @@ admin:
         broken_references: 'Broken References'
         broken_references_desc: 'These entities reference non-existent or invalid data. This can cause system errors and must be fixed.'
         invalid_entity_type: 'Invalid entity type selected'
+        schema:
+            migrations: Migrations
+            drift: 'Schema drift'
+            actions: Actions
+            pending: pending
+            statements: statements
+            destructive: destructive
+            up_to_date: 'Up to date'
+            in_sync: 'In sync'
+            more: more
+            refresh: 'Refresh status'
+            actions_desc: 'Reload status or verify manually.'
+            run_migrations: 'Run migrations'
+            run_reconcile: 'Run reconcile'
+            show_sql: 'Show SQL'
+            migrations_applied: '%count% migration(s) executed successfully.'
+            migrations_failed: 'Migrations failed: %error%'
+            reconcile_applied: 'Schema reconcile applied (%count% statements executed).'
+            reconcile_failed: 'Schema reconcile failed: %error%'
+            reconcile_blocked: 'Schema reconcile blocked (%reason%). Please execute pending migrations first.'
     modules:
         title: Title
         dependency_graph: 'Dependency Graph'

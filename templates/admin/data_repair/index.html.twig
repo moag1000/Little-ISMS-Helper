@@ -57,6 +57,129 @@
         {{ _fa_alert.render({ variant: 'danger', dismissible: true, body: message }) }}
     {% endfor %}
 
+    {# Schema-Maintenance — 3-Card-Grid (Migrations | Drift | Aktionen).
+     # Buttons werden IMMER gerendert; bei nichts-zu-tun disabled + Status-Pill
+     # zeigt grün/gelb/rot den aktuellen Zustand. So sieht der Admin auch im
+     # Sync-Fall, dass die Funktion existiert und erreichbar ist. #}
+    <div class="row g-3 mb-4">
+        {# Migrations Card #}
+        <div class="col-md-4">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fa-icon fa-icon--nav-database-add" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.schema.migrations'|trans({}, 'admin') }}
+                        </h4>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <p class="mb-2">
+                        {% if migration_status.pending > 0 %}
+                            <span class="fa-status-pill fa-status-pill--warning">
+                                {{ migration_status.pending }} {{ 'admin.data_repair.schema.pending'|trans({}, 'admin') }}
+                            </span>
+                        {% else %}
+                            <span class="fa-status-pill fa-status-pill--success">
+                                {{ 'admin.data_repair.schema.up_to_date'|trans({}, 'admin') }}
+                            </span>
+                        {% endif %}
+                    </p>
+                    {% if migration_status.pending > 0 %}
+                        <ul class="small mb-3">
+                            {% for name in migration_status.names|slice(0, 5) %}
+                                <li><code>{{ name }}</code></li>
+                            {% endfor %}
+                            {% if migration_status.names|length > 5 %}
+                                <li>… {{ migration_status.names|length - 5 }} {{ 'admin.data_repair.schema.more'|trans({}, 'admin') }}</li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
+                    <form method="post" action="{{ path('admin_data_repair_migrations_execute') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('migrations_execute') }}">
+                        <button type="submit"
+                                class="fa-cyber-btn fa-cyber-btn--{{ migration_status.pending > 0 ? 'warning' : 'ghost' }} fa-cyber-btn--full"
+                                {% if migration_status.pending == 0 %}disabled{% endif %}>
+                            <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.schema.run_migrations'|trans({}, 'admin') }}
+                        </button>
+                    </form>
+                {% endblock %}
+            {% endembed %}
+        </div>
+
+        {# Schema Drift Card #}
+        <div class="col-md-4">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.schema.drift'|trans({}, 'admin') }}
+                        </h4>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <p class="mb-2">
+                        {% if schema_drift.count > 0 %}
+                            <span class="fa-status-pill fa-status-pill--danger">
+                                {{ schema_drift.count }} {{ 'admin.data_repair.schema.statements'|trans({}, 'admin') }}
+                            </span>
+                            {% if schema_drift.destructive|length > 0 %}
+                                <span class="fa-status-pill fa-status-pill--warning">
+                                    {{ schema_drift.destructive|length }} {{ 'admin.data_repair.schema.destructive'|trans({}, 'admin') }}
+                                </span>
+                            {% endif %}
+                        {% else %}
+                            <span class="fa-status-pill fa-status-pill--success">
+                                {{ 'admin.data_repair.schema.in_sync'|trans({}, 'admin') }}
+                            </span>
+                        {% endif %}
+                    </p>
+                    {% if schema_drift.count > 0 %}
+                        <details class="mb-2 small">
+                            <summary>{{ 'admin.data_repair.schema.show_sql'|trans({}, 'admin') }}</summary>
+                            <pre class="mt-2 p-2 bg-body-secondary rounded" style="max-height: 200px; overflow: auto;"><code>{{ schema_drift.statements|join(";\n") }}</code></pre>
+                        </details>
+                    {% endif %}
+                    <form method="post" action="{{ path('admin_data_repair_schema_reconcile') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('schema_reconcile') }}">
+                        <button type="submit"
+                                class="fa-cyber-btn fa-cyber-btn--{{ schema_drift.count > 0 ? 'danger' : 'ghost' }} fa-cyber-btn--full"
+                                {% if schema_drift.count == 0 %}disabled{% endif %}>
+                            <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.schema.run_reconcile'|trans({}, 'admin') }}
+                        </button>
+                    </form>
+                {% endblock %}
+            {% endembed %}
+        </div>
+
+        {# Refresh Status Card #}
+        <div class="col-md-4">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fa-icon fa-icon--util-spinner" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.schema.actions'|trans({}, 'admin') }}
+                        </h4>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <p class="small text-muted mb-2">
+                        {{ 'admin.data_repair.schema.actions_desc'|trans({}, 'admin') }}
+                    </p>
+                    <a href="{{ path('admin_data_repair_index') }}"
+                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--full mb-2">
+                        <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.schema.refresh'|trans({}, 'admin') }}
+                    </a>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+
     {# Data Health Summary #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-' ~ (summary.health_score >= 90 ? 'success' : (summary.health_score >= 70 ? 'warning' : 'danger')) } %}
         {% block card_header %}
