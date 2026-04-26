@@ -1,0 +1,531 @@
+{#
+  MRIS-Audit-Report (PDF)
+
+  Print-optimiert, A4, schwarz auf weiß. Selbstständiges Template (kein
+  Extends), damit DomPDF stabil rendert. Keine _fa_alert/_fa_empty_state
+  Macros (Embed-Issues mit DomPDF).
+
+  Quelle Fachkonzept (CC BY 4.0):
+    Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5.
+#}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>MRIS-Audit-Report — {{ tenant_name }}</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 2.2cm 1.8cm 2.6cm 1.8cm;
+            @bottom-left {
+                content: "MRIS-Audit-Report · {{ tenant_name }}";
+                font-family: DejaVu Sans, sans-serif;
+                font-size: 7pt;
+                color: #333333;
+            }
+            @bottom-center {
+                content: "Quelle: {{ source_label }}";
+                font-family: DejaVu Sans, sans-serif;
+                font-size: 7pt;
+                color: #333333;
+            }
+            @bottom-right {
+                content: "Seite " counter(page) " / " counter(pages);
+                font-family: DejaVu Sans, sans-serif;
+                font-size: 7pt;
+                color: #333333;
+            }
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 9.5pt;
+            line-height: 1.4;
+            color: #000000;
+            background: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: 18pt;
+            margin: 0 0 6pt 0;
+            border-bottom: 2pt solid #000000;
+            padding-bottom: 4pt;
+        }
+
+        h2 {
+            font-size: 12pt;
+            margin: 14pt 0 6pt 0;
+            padding: 2pt 0 2pt 6pt;
+            border-left: 3pt solid #000000;
+            background: #f0f0f0;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            font-size: 10pt;
+            margin: 10pt 0 4pt 0;
+            page-break-after: avoid;
+        }
+
+        p { margin: 0 0 6pt 0; }
+
+        .meta {
+            border: 1pt solid #000000;
+            padding: 8pt;
+            margin-bottom: 14pt;
+            font-size: 9pt;
+        }
+
+        .meta-row { display: table; width: 100%; }
+        .meta-cell { display: table-cell; padding: 2pt 8pt 2pt 0; vertical-align: top; }
+        .meta-label { font-weight: bold; width: 28%; }
+
+        .disclaimer {
+            border: 1pt solid #000000;
+            background: #f5f5f5;
+            padding: 6pt 8pt;
+            font-size: 8.5pt;
+            margin: 8pt 0 12pt 0;
+        }
+
+        .disclaimer strong { text-transform: uppercase; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 4pt 0 10pt 0;
+            font-size: 9pt;
+            page-break-inside: auto;
+        }
+
+        thead { display: table-header-group; }
+        tr { page-break-inside: avoid; }
+
+        th, td {
+            border: 0.5pt solid #000000;
+            padding: 4pt 6pt;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #000000;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 8.5pt;
+            text-transform: uppercase;
+            letter-spacing: 0.3pt;
+        }
+
+        tbody tr:nth-child(even) td { background: #f7f7f7; }
+
+        .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+        .score-row { display: table; width: 100%; margin-bottom: 8pt; }
+        .score-cell-left {
+            display: table-cell;
+            width: 26%;
+            vertical-align: middle;
+            text-align: center;
+            border: 1pt solid #000000;
+            padding: 12pt 8pt;
+        }
+        .score-cell-right {
+            display: table-cell;
+            vertical-align: top;
+            padding-left: 12pt;
+        }
+        .score-value {
+            font-size: 36pt;
+            font-weight: bold;
+            line-height: 1;
+        }
+        .score-label {
+            font-size: 8pt;
+            text-transform: uppercase;
+            letter-spacing: 0.3pt;
+            margin-top: 4pt;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 1pt 5pt;
+            border: 0.5pt solid #000000;
+            font-size: 8pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-inv { background: #000000; color: #ffffff; }
+
+        .small { font-size: 8pt; }
+        .muted { color: #555555; }
+        .nowrap { white-space: nowrap; }
+
+        .signature {
+            margin-top: 18pt;
+            border: 1pt solid #000000;
+            padding: 10pt 12pt;
+            page-break-inside: avoid;
+        }
+        .signature-line {
+            margin-top: 16pt;
+            border-top: 0.5pt solid #000000;
+            padding-top: 4pt;
+            font-size: 8pt;
+        }
+
+        .footer-source {
+            margin-top: 14pt;
+            font-size: 8pt;
+            text-align: center;
+            border-top: 0.5pt solid #000000;
+            padding-top: 4pt;
+        }
+
+        .sparkline { display: inline-block; vertical-align: middle; }
+
+        .pagebreak { page-break-before: always; }
+    </style>
+</head>
+<body>
+
+{# === Cover / Meta ============================================== #}
+<h1>MRIS-Audit-Report</h1>
+<p class="small muted">
+    Mythos-resistente Informationssicherheit · v1.5 — Auditor-Ansicht
+</p>
+
+<div class="meta">
+    <div class="meta-row">
+        <div class="meta-cell meta-label">Mandant:</div>
+        <div class="meta-cell">{{ tenant_name }}</div>
+    </div>
+    <div class="meta-row">
+        <div class="meta-cell meta-label">Erstellt am:</div>
+        <div class="meta-cell">{{ generated_at|date('d.m.Y H:i') }} (lokal)</div>
+    </div>
+    <div class="meta-row">
+        <div class="meta-cell meta-label">Erstellt von:</div>
+        <div class="meta-cell">{{ generated_by }}</div>
+    </div>
+    <div class="meta-row">
+        <div class="meta-cell meta-label">Berichtstyp:</div>
+        <div class="meta-cell">Audit-Bericht (intern)</div>
+    </div>
+    <div class="meta-row">
+        <div class="meta-cell meta-label">Quelle (CC BY 4.0):</div>
+        <div class="meta-cell">{{ source_label }}</div>
+    </div>
+</div>
+
+{# === Section 1: MRI Score + Decomposition ===================== #}
+<h2>1. Mythos-Resilience-Indikator (MRI)</h2>
+
+<div class="disclaimer">
+    <strong>Audit-Disclaimer:</strong>
+    {{ score.disclaimer }}
+</div>
+
+<div class="score-row">
+    <div class="score-cell-left">
+        <div class="score-value">{{ score.score }}</div>
+        <div class="score-label">MRI · 0–100 (intern)</div>
+    </div>
+    <div class="score-cell-right">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 26%;">Dimension</th>
+                    <th style="width: 32%;">Quelle</th>
+                    <th class="num" style="width: 14%;">Wert</th>
+                    <th class="num" style="width: 14%;">Gewicht</th>
+                    <th class="num" style="width: 14%;">Beitrag</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, dim in score.breakdown %}
+                    <tr>
+                        <td><strong>{{ key }}</strong></td>
+                        <td class="small">{{ dim.source }}</td>
+                        <td class="num">{{ dim.value }}</td>
+                        <td class="num">{{ dim.weight }} %</td>
+                        <td class="num"><strong>{{ dim.contribution }}</strong></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{# === Section 2: 4-Kategorien-Verteilung ======================= #}
+<h2>2. Klassifikation der Controls (4 Kategorien)</h2>
+<p class="small muted">
+    Verteilung der Annex-A-Controls nach MRIS v1.5 Anhang A
+    (Standfest / Teilweise degradiert / Reine Reibung / Nicht betroffen).
+    Audit-relevant: Reine-Reibung-Controls erfordern flankierende MHCs.
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 50%;">Kategorie</th>
+            <th class="num" style="width: 25%;">Anzahl</th>
+            <th class="num" style="width: 25%;">Anteil</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in category_distribution.rows %}
+            <tr>
+                <td>{{ row.label }}</td>
+                <td class="num">{{ row.count }}</td>
+                <td class="num">{{ row.share }} %</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td><strong>Gesamt</strong></td>
+            <td class="num"><strong>{{ category_distribution.total }}</strong></td>
+            <td class="num"><strong>100,0 %</strong></td>
+        </tr>
+    </tbody>
+</table>
+
+{# === Section 3: Reine-Reibung-Controls ======================== #}
+<h2>3. „Reine Reibung"-Controls mit flankierenden MHCs</h2>
+<p class="small muted">
+    Die folgenden Controls sind nach MRIS v1.5 als Reibung klassifiziert,
+    leisten also keinen direkten Schutzbeitrag im Mythos-Modell. Sie müssen
+    durch flankierende Mythos-Härtungs-Controls (MHCs) substituiert werden.
+    Standard-Begleitung gem. MRIS v1.5: A.5.25, A.5.36, A.8.8, A.8.23.
+</p>
+
+{% if friction_controls is empty %}
+    <p class="small"><em>Keine Controls als „Reine Reibung" klassifiziert (oder MRIS-Klassifikation noch nicht geseedet).</em></p>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 14%;">Control-ID</th>
+                <th style="width: 38%;">Name</th>
+                <th style="width: 12%;">Kategorie</th>
+                <th style="width: 36%;">Flankierende MHCs</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fc in friction_controls %}
+                <tr>
+                    <td class="nowrap"><strong>{{ fc.control_id }}</strong></td>
+                    <td>{{ fc.name }}</td>
+                    <td class="small">{{ fc.category }}</td>
+                    <td class="small">
+                        {% if fc.flanking is empty %}
+                            <em class="muted">— keine eingetragen —</em>
+                        {% else %}
+                            {% for mhc in fc.flanking %}
+                                <span class="badge">{{ mhc }}</span>{% if not loop.last %} {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{# === Section 4: Reifegrad-Statusübersicht aller MHCs ========== #}
+<h2>4. Reifegrad-Statusübersicht der MHCs (Soll / Ist / Delta)</h2>
+<p class="small muted">
+    Reifegrad-Tracking gem. MRIS v1.5 Kap. 9.5. Stufen: initial (1), defined (2), managed (3).
+    Delta &gt; 0 = Lücke zum Soll. Delta = 0 = on target. Delta &lt; 0 = Soll übererfüllt.
+</p>
+
+{% if maturity_rows is empty %}
+    <p class="small"><em>Keine MRIS-Requirements gefunden. Framework MRIS-v1.5 ggf. noch nicht geladen.</em></p>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 10%;">MHC</th>
+                <th style="width: 46%;">Titel</th>
+                <th style="width: 14%;">Soll</th>
+                <th style="width: 14%;">Ist</th>
+                <th class="num" style="width: 8%;">Δ</th>
+                <th style="width: 8%;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in maturity_rows %}
+                <tr>
+                    <td class="nowrap"><strong>{{ row.mhc }}</strong></td>
+                    <td class="small">{{ row.title }}</td>
+                    <td class="small">{{ row.target ?? '—' }}</td>
+                    <td class="small">{{ row.current ?? '—' }}</td>
+                    <td class="num">
+                        {% if row.delta is null %}
+                            —
+                        {% else %}
+                            {{ row.delta > 0 ? '+' : '' }}{{ row.delta }}
+                        {% endif %}
+                    </td>
+                    <td class="small">
+                        {% if row.gap_status == 'gap' %}
+                            <span class="badge badge-inv">Lücke</span>
+                        {% elseif row.gap_status == 'on_target' %}
+                            <span class="badge">on target</span>
+                        {% elseif row.gap_status == 'exceeded' %}
+                            <span class="badge">übererfüllt</span>
+                        {% else %}
+                            <span class="badge muted">unset</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{# === Section 5: AI-Agent-Inventar ============================ #}
+<h2>5. AI-Agent-Inventar (MHC-13 / EU AI Act / ISO 42001)</h2>
+<p class="small muted">
+    Aggregat-Sicht über das AI-Agent-Inventar. Doku-Vollständigkeit referenziert
+    die 9 EU-AI-Act / ISO-42001 / MHC-13-Pflichtfelder pro Agent.
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 60%;">Kennzahl</th>
+            <th class="num" style="width: 40%;">Wert</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>AI-Agents gesamt</td>
+            <td class="num">{{ ai_inventory.total }}</td>
+        </tr>
+        <tr>
+            <td>Davon prohibited (EU AI Act Art. 5)</td>
+            <td class="num">{{ ai_inventory.by_classification.prohibited|default(0) }}</td>
+        </tr>
+        <tr>
+            <td>Davon high_risk (EU AI Act Art. 6)</td>
+            <td class="num">{{ ai_inventory.by_classification.high_risk|default(0) }}</td>
+        </tr>
+        <tr>
+            <td>Davon limited_risk (EU AI Act Art. 50)</td>
+            <td class="num">{{ ai_inventory.by_classification.limited_risk|default(0) }}</td>
+        </tr>
+        <tr>
+            <td>Davon minimal_risk</td>
+            <td class="num">{{ ai_inventory.by_classification.minimal_risk|default(0) }}</td>
+        </tr>
+        <tr>
+            <td>Unklassifiziert (Audit-Befund: Klassifikation fehlt)</td>
+            <td class="num">{{ ai_inventory.unclassified }}</td>
+        </tr>
+        <tr>
+            <td><strong>Doku-Vollständigkeit (Mittel über alle Agenten)</strong></td>
+            <td class="num"><strong>{{ ai_inventory.avg_completeness }} %</strong></td>
+        </tr>
+    </tbody>
+</table>
+
+{# === Section 6: 8 MRIS-KPIs ================================== #}
+<h2 class="pagebreak">6. Mythos-relevante Kennzahlen (MRIS Kap. 10.6)</h2>
+<p class="small muted">
+    Acht Kennzahlen gem. MRIS v1.5 Kap. 10.6. Drei sind aus Bestandsdaten
+    automatisch berechenbar (MTTC, Phishing-resistente MFA, Restore-Test-Erfolgsquote)
+    und enthalten — sofern vorhanden — eine Sparkline der letzten 90 Tage.
+    Fünf werden manuell gepflegt (CRA-, KEV-, CCM-, Krypto-Inventar-, TLPT-Bezug).
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 8%;">MHC</th>
+            <th style="width: 30%;">Kennzahl</th>
+            <th class="num" style="width: 12%;">Wert</th>
+            <th style="width: 6%;">Einheit</th>
+            <th style="width: 8%;">Typ</th>
+            <th style="width: 16%;">Trend (90 d)</th>
+            <th style="width: 20%;">Quelle</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for kpi in kpis %}
+            {% set sparkKey = spark_kpi_ids[kpi.id]|default(null) %}
+            {% set sparkVals = (sparkKey and trends[sparkKey] is defined) ? trends[sparkKey] : [] %}
+            <tr>
+                <td class="nowrap"><strong>{{ kpi.mhc }}</strong></td>
+                <td>{{ kpi.name }}</td>
+                <td class="num">
+                    {% if kpi.value is null %}
+                        <em class="muted">—</em>
+                    {% else %}
+                        <strong>{{ kpi.value }}</strong>
+                    {% endif %}
+                </td>
+                <td class="small">{{ kpi.unit }}</td>
+                <td class="small">
+                    {% if kpi.computable %}
+                        <span class="badge badge-inv">auto</span>
+                    {% else %}
+                        <span class="badge">manuell</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {# Sparkline nur wenn ≥ 2 Trendpunkte vorhanden #}
+                    {% if sparkVals|length >= 2 %}
+                        {% set maxVal = max(sparkVals) %}
+                        {% set minVal = min(sparkVals) %}
+                        {% set range = (maxVal - minVal) > 0 ? (maxVal - minVal) : 1 %}
+                        {% set step = 100 / (sparkVals|length - 1) %}
+                        {% set points = [] %}
+                        {% for i, v in sparkVals %}
+                            {% set y = 22 - ((v - minVal) / range * 20) %}
+                            {% set points = points|merge([(i * step)|round(1) ~ ',' ~ y|round(1)]) %}
+                        {% endfor %}
+                        <svg viewBox="0 0 100 24" width="80" height="20" class="sparkline" preserveAspectRatio="none">
+                            <polyline fill="none" stroke="#000000" stroke-width="1.2" points="{{ points|join(' ') }}"/>
+                        </svg>
+                        <div class="small muted">n={{ sparkVals|length }} · {{ minVal }}–{{ maxVal }}</div>
+                    {% else %}
+                        <span class="small muted">—</span>
+                    {% endif %}
+                </td>
+                <td class="small">{{ kpi.source }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{# === Section 7: Signature ==================================== #}
+<div class="signature">
+    <h3 style="margin-top: 0;">Erstellungs-Vermerk</h3>
+    <p class="small">
+        Dieser MRIS-Audit-Report wurde am
+        <strong>{{ generated_at|date('d.m.Y') }}</strong> um
+        <strong>{{ generated_at|date('H:i') }}</strong> Uhr durch
+        <strong>{{ generated_by }}</strong> für den Mandanten
+        <strong>{{ tenant_name }}</strong> erstellt.
+    </p>
+    <p class="small muted">
+        Die Inhalte entsprechen dem zum Erstellungszeitpunkt im System hinterlegten
+        Datenstand. Audit-relevant sind die Einzeldimensionen
+        (4-Kategorien-Klassifikation, MHC-Reifegrad, manuelle KPIs, AI-Agent-Doku),
+        nicht der aggregierte MRI-Score.
+    </p>
+    <div class="signature-line">
+        Unterschrift Erstellender / Auditor: ____________________________________________
+    </div>
+</div>
+
+<div class="footer-source">
+    Quelle: {{ source_label }}
+</div>
+
+</body>
+</html>

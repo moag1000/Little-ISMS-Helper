@@ -393,6 +393,15 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.mris_glossar'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        {% if is_granted('ROLE_AUDITOR') %}
+                        <li><a href="{{ path('app_mris_audit_report') }}" class="{% if current_route == 'app_mris_audit_report' %}active{% endif %}">
+                            <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.mris_audit_report'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.mris_audit_report'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                         <li><a href="{{ path('app_data_reuse_hub') }}" class="{% if current_route starts with 'app_data_reuse_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-arrows-collapse" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">

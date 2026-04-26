@@ -21,6 +21,10 @@
      # Der eigentliche Controller-Mount sitzt global in base.html.twig. #}
     {% include '_components/_guided_tour_banner.html.twig' with { suggested_tour: suggested_tour|default(null) } %}
 
+    {# MRIS-Topic-Tour-Banner (themenbezogen, nicht rollenbezogen). Nur
+     # ROLE_USER (nicht ROLE_AUDITOR) — siehe HomeController. #}
+    {% include '_components/_guided_tour_banner.html.twig' with { suggested_tour: suggested_mris_tour|default(null) } %}
+
     {# Page Header with Customize Button and Role Dashboard Switcher #}
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>

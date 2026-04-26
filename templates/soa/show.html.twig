@@ -52,6 +52,7 @@
 
 {# MRIS-Warning für "Reine Reibung"-Controls (gem. Peddi 2026, MRIS v1.5 Anhang A) #}
 {% if control.mythosResilience == 'reibung' %}
+<div data-tour="mris-reibung-warning">
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', class: 'mb-4' } } %}
         {% block alert_body %}
             <strong>{{ 'soa.mris.reibung_warning_title'|trans({}, 'soa') }}</strong><br>
@@ -67,6 +68,7 @@
             <small class="text-muted">{{ 'soa.mris.source'|trans({}, 'soa') }}</small>
         {% endblock %}
     {% endembed %}
+</div>
 {% elseif control.mythosResilience == 'degradiert' and control.mythosFlankingMhcs is not empty %}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-info-circle-fill', class: 'mb-4' } } %}
         {% block alert_body %}

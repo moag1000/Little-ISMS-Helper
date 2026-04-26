@@ -29,7 +29,7 @@
             <a href="{{ path('app_mris_baselines_index') }}" class="btn btn-sm btn-outline-secondary">
                 <i class="bi bi-collection" aria-hidden="true"></i> Branchen-Baselines
             </a>
-            <div class="btn-group btn-group-sm">
+            <div class="btn-group btn-group-sm" data-tour="mris-wizards">
                 <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
                     <i class="bi bi-magic" aria-hidden="true"></i> Wizards
                 </button>
@@ -44,6 +44,7 @@
 
     {# Aggregierter Mythos-Resilience-Indikator (LIH-spezifisch). Audit-Disclaimer prominent. #}
     {% if score is defined and score %}
+        <div data-tour="mris-score-card">
         {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
             {% block card_body %}
                 <div class="row align-items-center">
@@ -75,12 +76,13 @@
                         </table>
                     </div>
                 </div>
-                <div class="alert alert-warning small mt-3 mb-0">
+                <div class="alert alert-warning small mt-3 mb-0" data-tour="mris-disclaimer">
                     <strong><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Disclaimer:</strong>
                     {{ score.disclaimer }}
                 </div>
             {% endblock %}
         {% endembed %}
+        </div>
     {% endif %}
 
     <div class="row g-3">

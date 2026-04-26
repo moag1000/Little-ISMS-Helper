@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Asset;
+use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\Tenant;
 use App\Repository\AssetRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Throwable;
 
 /**
  * AI-Agent-Inventar-Service.
@@ -44,7 +47,32 @@ class AiAgentInventoryService
 
     public function __construct(
         private readonly AssetRepository $assetRepository,
+        private readonly ?EntityManagerInterface $entityManager = null,
     ) {
+    }
+
+    /**
+     * Liefert verknüpfte DPIA(s) für ein Asset oder null, falls das DPIA-Modul
+     * nicht im Schema verfügbar ist (Soft-Failure).
+     *
+     * Quelle: Peddi, R. (2026). MRIS v1.5 MHC-13 — AI-Agent-Governance.
+     * Lizenz: CC BY 4.0.
+     *
+     * @return array<int, DataProtectionImpactAssessment>|null  null = Modul fehlt
+     */
+    public function findLinkedDpias(Asset $asset): ?array
+    {
+        if ($this->entityManager === null) {
+            return null;
+        }
+
+        try {
+            $repo = $this->entityManager->getRepository(DataProtectionImpactAssessment::class);
+            return $repo->findBy(['relatedAsset' => $asset], ['createdAt' => 'DESC']);
+        } catch (Throwable) {
+            // Soft-Failure: Schema/Modul nicht verfügbar
+            return null;
+        }
     }
 
     /**
@@ -103,7 +131,13 @@ class AiAgentInventoryService
 
     /**
      * Identifiziert Hochrisiko-Agenten mit unvollständiger Dokumentation —
-     * EU AI Act Art. 11 verlangt vollständige technische Doku.
+     * EU AI Act Art. 11 verlangt vollständige technische Doku, EU AI Act Art. 9
+     * + DSGVO Art. 35 verlangen für personenbezogene Verarbeitung eine DPIA.
+     * Ein Hochrisiko-Agent ohne verknüpfte DPIA gilt daher ebenfalls als
+     * "incomplete" (Audit-Sicht).
+     *
+     * Soft-Failure: Wenn das DPIA-Modul nicht im Schema ist, wird die
+     * DPIA-Prüfung übersprungen und nur die Feld-Vollständigkeit bewertet.
      *
      * @return array<int, Asset>
      */
@@ -117,8 +151,23 @@ class AiAgentInventoryService
 
         return array_values(array_filter(
             $highRisk,
-            fn(Asset $a): bool => $this->complianceCompleteness($a)['percentage'] < 100.0,
+            fn(Asset $a): bool => $this->complianceCompleteness($a)['percentage'] < 100.0
+                || $this->isMissingDpia($a),
         ));
+    }
+
+    /**
+     * True, wenn der Agent KEINE verknüpfte DPIA hat. Soft-Failure: bei
+     * fehlendem DPIA-Modul (null) wird die Prüfung übersprungen → false
+     * (kein Mangel meldbar, weil nicht prüfbar).
+     */
+    private function isMissingDpia(Asset $agent): bool
+    {
+        $dpias = $this->findLinkedDpias($agent);
+        if ($dpias === null) {
+            return false;
+        }
+        return $dpias === [];
     }
 
     /**
