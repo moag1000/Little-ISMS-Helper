@@ -1,0 +1,629 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'iso27001-2022_to_mris-v1.5_v1.0'
+  source_framework: 'ISO27001'
+  target_framework: 'MRIS-v1.5'
+  version: 1
+  effective_from: '2026-04-26'
+  effective_until: null
+
+  provenance:
+    primary_source: 'Peddi, Richard (2026). MRIS — Mythos-resistente Informationssicherheit, Version 1.5 — Kap. 9.4 Kompakt-Übersicht'
+    primary_source_url: 'https://creativecommons.org/licenses/by/4.0/'
+    secondary_sources:
+      - 'ISO/IEC 27002:2022 — Information security controls'
+      - 'BSI C5:2026 Prüfkatalog'
+    publisher: 'Little ISMS Helper Maintainers (CC BY 4.0 derivative)'
+
+  methodology:
+    type: 'published_official_mapping'
+    description: |
+      Reverse-Mapping zu mris-v1.5_to_iso27001-2022_v1.0. ISO-27002-Anchor↔MHC-
+      Anbindungen aus MRIS v1.5 Kap. 9.4 invertiert. Relationship 'partial_overlap'
+      ist self-inverse: MHC flankiert ISO-Control durch zusätzliche Mythos-
+      Schutzziele, ohne ISO-Anforderung zu ersetzen. Confidence aus Übereinstim-
+      mungsgrad der ISO-Anchor-Anforderung mit dem MHC-Schutzziel. CC-BY-4.0-
+      Ableitung mit Namensnennung Richard Peddi.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-04-26', actor: 'maintainer' }
+      - { state: 'review',    date: '2026-04-26', actor: 'maintainer' }
+      - { state: 'approved',  date: '2026-04-26', actor: 'reviewer-2' }
+      - { state: 'published', date: '2026-04-26', actor: 'ciso-signoff' }
+
+mappings:
+  - source: 'A.8.24'
+    target: 'MHC-01'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.8.24 verlangt Einsatz und Management von Kryptografie inklusive
+      Algorithmen, Schlüssellängen und Lifecycle. MHC-01 flankiert mit
+      Mythos-Schutzziel Post-Quantum-Strategie und kryptografisches Inventar.
+      Schnittmenge bei Algorithmus-Governance. partial_overlap weil ISO
+      grundlegende Krypto-Schutzziele setzt und MHC zusätzliche PQC-Migrations-
+      und Quantum-Readiness-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.8.24: Krypto-Policy mit Algorithmus-Whitelist und Schlüsselmanagement. MHC-01: PQC-Migrationsplan, Quantum-Risk-Assessment, Crypto-Agility-Inventar.'
+
+  - source: 'A.5.19'
+    target: 'MHC-02'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.19 verlangt Informationssicherheit in Lieferantenbeziehungen. MHC-02
+      flankiert mit Mythos-Schutzziel SBOM und Build-Provenance. Schnittmenge
+      bei Software-Supply-Chain-Transparenz. partial_overlap weil ISO grundlegende
+      Lieferanten-Governance setzt und MHC zusätzliche Build-Provenance- und
+      SLSA-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.5.19: Lieferanten-Sicherheits-Policy, Onboarding-Dokumentation. MHC-02: SBOM-Repository (CycloneDX/SPDX), SLSA-Attestations, Build-Provenance-Logs.'
+
+  - source: 'A.5.20'
+    target: 'MHC-02'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.20 verlangt Sicherheitsanforderungen in Lieferantenverträgen. MHC-02
+      flankiert mit Mythos-Schutzziel SBOM- und Provenance-Pflicht in
+      Beschaffungsverträgen. Schnittmenge bei vertraglicher Verankerung.
+      partial_overlap weil ISO grundlegende Vertragsklauseln setzt und MHC
+      zusätzliche maschinenlesbare Provenance-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.5.20: Standard-Vertragsmuster mit Sicherheitsanhang. MHC-02: Vertragsklauseln zur SBOM-Pflicht, CRA-konforme Liefervereinbarungen.'
+
+  - source: 'A.5.21'
+    target: 'MHC-02'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.21 verlangt Management der Informationssicherheit in der ICT-Supply-
+      Chain. MHC-02 flankiert mit Mythos-Schutzziel End-to-End-Komponenten-
+      Transparenz via SBOM. Schnittmenge bei Tier-N-Sichtbarkeit. partial_overlap
+      weil ISO grundlegende Supply-Chain-Risiko-Governance setzt und MHC
+      zusätzliche Tamper-Evidence- und Reproducible-Build-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.5.21: ICT-Supply-Chain-Risk-Register, Tier-N-Bewertungen. MHC-02: Reproducible-Build-Reports, Tamper-Evidence-Logs, CRA-Annex-I-Nachweise.'
+
+  - source: 'A.8.4'
+    target: 'MHC-02'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.8.4 verlangt Zugriffsschutz auf Quellcode. MHC-02 flankiert mit Mythos-
+      Schutzziel signierte Build-Artefakte und Build-Pipeline-Schutz.
+      Schnittmenge bei Repository-Integrität. partial_overlap weil ISO
+      grundlegende Source-Code-Zugriffskontrolle setzt und MHC zusätzliche
+      Provenance-Attestation-Schutzziele aufsattelt.
+    gap_warning: |
+      MHC-02 ergänzt über A.8.4 hinaus signierte Build-Artefakte und
+      maschinenlesbare Provenance-Nachweise (SLSA Level 2+). Reine A.8.4-
+      Erfüllung deckt keine Build-Tamper-Detection ab.
+    audit_evidence_hint: 'A.8.4: Repository-ACLs, Branch-Protection-Settings. MHC-02: SLSA-Provenance-Files, signierte Container-Images.'
+
+  - source: 'A.8.30'
+    target: 'MHC-02'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.8.30 verlangt Steuerung ausgelagerter Entwicklung. MHC-02 flankiert
+      mit Mythos-Schutzziel Nachweisbarkeit der Komponenten-Herkunft via
+      SBOM/SLSA. Schnittmenge bei Outsourcing-Transparenz. partial_overlap
+      weil ISO grundlegende Outsourcing-Governance setzt und MHC zusätzliche
+      kryptografische Provenance-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.8.30: Outsourcing-Verträge mit Sicherheitsklauseln. MHC-02: SLSA-Attestations für externe Builds, signierte SBOMs vom Auftragnehmer.'
+
+  - source: 'A.5.17'
+    target: 'MHC-03'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.17 verlangt sichere Authentifizierungsinformationen. MHC-03 flankiert
+      mit Mythos-Schutzziel phishing-resistente MFA via FIDO2/WebAuthn.
+      Schnittmenge bei sicherer Authentifizierung. partial_overlap weil ISO
+      grundlegende Authentifizierungs-Schutzziele setzt und MHC zusätzliche
+      AAL2/AAL3-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.5.17: Authentifizierungs-Policy, Passwort-Standards. MHC-03: FIDO2-Token-Inventar, AAL3-Zertifizierung kritischer Apps.'
+
+  - source: 'A.6.7'
+    target: 'MHC-03'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.6.7 verlangt Sicherheit der Telearbeit. MHC-03 flankiert mit Mythos-
+      Schutzziel phishing-resistente MFA auch im Remote-Kontext. Schnittmenge
+      bei sicherem Remote-Login. partial_overlap weil ISO grundlegende
+      Telearbeits-Schutzziele setzt und MHC zusätzliche Phishing-Resistenz-
+      Schutzziele aufsattelt.
+    gap_warning: |
+      MHC-03 fordert FIDO2/WebAuthn auch für VPN-Login und SSO; A.6.7 lässt
+      schwächere MFA (TOTP/SMS) zu. Reine A.6.7-Erfüllung schließt Phishing-
+      Lücken bei Remote-Workern nicht.
+    audit_evidence_hint: 'A.6.7: Telearbeits-Richtlinie, VPN-Konfigurations-Standard. MHC-03: FIDO2-Coverage für VPN/SSO.'
+
+  - source: 'A.8.1'
+    target: 'MHC-03'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.8.1 verlangt Schutz von User-Endpoints. MHC-03 flankiert mit Mythos-
+      Schutzziel hardwaregebundener Authentifizierung auf Endpoints.
+      Schnittmenge bei gerätegebundener MFA. partial_overlap weil ISO
+      grundlegende Endpoint-Schutzziele setzt und MHC zusätzliche Hardware-
+      Token-Bindungs-Schutzziele aufsattelt.
+    gap_warning: |
+      MHC-03 verlangt Hardware-Bound-Credentials (Platform Authenticator);
+      A.8.1 lässt Software-Token zu. Reine A.8.1-Erfüllung deckt keine
+      AiTM-Phishing-Resistenz auf Endpoints ab.
+    audit_evidence_hint: 'A.8.1: Endpoint-Härtungs-Standard, MDM-Konfiguration. MHC-03: TPM/Secure-Enclave-gebundene Credentials.'
+
+  - source: 'A.8.5'
+    target: 'MHC-03'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.8.5 verlangt sichere Authentifizierung. MHC-03 flankiert mit Mythos-
+      Schutzziel phishing-resistente MFA nach NIST SP 800-63B. Schnittmenge
+      bei starker Authentifizierungs-Implementierung. partial_overlap weil
+      ISO grundlegende sichere Authentifizierungs-Schutzziele setzt und MHC
+      zusätzliche AAL2/AAL3-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.8.5: Authentifizierungs-Architektur-Dokument. MHC-03: NIST-SP-800-63B-AAL-Zuordnung pro Anwendung.'
+
+  - source: 'A.5.15'
+    target: 'MHC-04'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.15 verlangt Zugriffskontrolle. MHC-04 flankiert mit Mythos-Schutzziel
+      Workload-Identität und Zero Trust. Schnittmenge bei dynamischer,
+      identitätsbasierter Autorisierung. partial_overlap weil ISO grundlegende
+      Zugriffskontroll-Schutzziele setzt und MHC zusätzliche Workload-zu-Workload-
+      Identitäts-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.5.15: Access-Control-Policy. MHC-04: SPIFFE/SPIRE-Inventar, Workload-Identity-Dashboard.'
+
+  - source: 'A.5.16'
+    target: 'MHC-04'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.16 verlangt Identitätsmanagement. MHC-04 flankiert mit Mythos-
+      Schutzziel kurzlebiger Workload-Identitäten für Service-Accounts.
+      Schnittmenge bei Lifecycle nicht-menschlicher Identitäten. partial_overlap
+      weil ISO grundlegende Identitäts-Lifecycle-Schutzziele setzt und MHC
+      zusätzliche kurzlebige Workload-Identitäts-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.5.16: Identity-Lifecycle-Policy für Service-Accounts. MHC-04: Workload-Identity-Provisioning-Logs, Token-TTL-Standards.'
+
+  - source: 'A.8.2'
+    target: 'MHC-04'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.8.2 verlangt privilegierte Zugriffsrechte. MHC-04 flankiert mit Mythos-
+      Schutzziel Just-in-Time- und Per-Request-Authorization. Schnittmenge bei
+      Least-Privilege-Konzepten. partial_overlap weil ISO grundlegende
+      Privileged-Access-Schutzziele setzt und MHC zusätzliche Per-Request-PEP/PDP-
+      Schutzziele aufsattelt.
+    gap_warning: |
+      MHC-04 fordert Per-Request-Policy-Enforcement (PEP/PDP); A.8.2 lässt
+      Standing-Privileges mit periodischem Review zu. Reine A.8.2-Erfüllung
+      schließt Lateral-Movement-Lücken nicht.
+    audit_evidence_hint: 'A.8.2: Privileged-Access-Reviews. MHC-04: PEP/PDP-Architektur, JIT-Access-Logs.'
+
+  - source: 'A.8.20'
+    target: 'MHC-04'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.8.20 verlangt Netzwerksicherheit. MHC-04 flankiert mit Mythos-Schutzziel
+      identitätsbasierter Konnektivität (Default-Deny, Service-Mesh).
+      Schnittmenge bei Mikrosegmentierung. partial_overlap weil ISO grundlegende
+      Netzwerk-Schutzziele setzt und MHC zusätzliche identitätsbasierte
+      Konnektivitäts-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.8.20: Netzwerk-Architektur-Diagramm, Firewall-Regelwerk. MHC-04: Service-Mesh-Konfiguration mit mTLS.'
+
+  - source: 'A.8.22'
+    target: 'MHC-04'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.8.22 verlangt Netzwerksegregation. MHC-04 flankiert mit Mythos-Schutzziel
+      identitätsbasierter Mikrosegmentierung. Schnittmenge bei logischer
+      Isolation. partial_overlap weil ISO grundlegende Segregations-Schutzziele
+      setzt und MHC zusätzliche identitätsbasierte Mikrosegmentierungs-Schutzziele
+      aufsattelt.
+    gap_warning: |
+      MHC-04 fordert Identity-Aware-Microsegmentation (Service-Mesh); A.8.22
+      lässt VLAN/Subnet-basierte Trennung zu. Reine A.8.22-Erfüllung deckt
+      keine Workload-zu-Workload-Authorization ab.
+    audit_evidence_hint: 'A.8.22: VLAN-Plan, Segmentierungs-Konzept. MHC-04: Service-Mesh-Authorization-Policies.'
+
+  - source: 'A.5.7'
+    target: 'MHC-05'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.7 verlangt Threat Intelligence. MHC-05 flankiert mit Mythos-Schutzziel
+      verhaltensbasierter Detection auf TTP-Ebene (MITRE ATT&CK). Schnittmenge
+      bei Bedrohungsanalyse. partial_overlap weil ISO grundlegende Threat-Intel-
+      Schutzziele setzt und MHC zusätzliche Verhaltens-Baseline-Schutzziele
+      aufsattelt.
+    audit_evidence_hint: 'A.5.7: Threat-Intel-Quellen-Inventar. MHC-05: ATT&CK-Mapping der Detection-Rules, UEBA-Dashboards.'
+
+  - source: 'A.8.7'
+    target: 'MHC-05'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.8.7 verlangt Schutz gegen Schadsoftware. MHC-05 flankiert mit Mythos-
+      Schutzziel verhaltensbasierter Detection gegen polymorphe und Fileless-
+      Malware. Schnittmenge bei EDR/XDR-Telemetrie. partial_overlap weil ISO
+      grundlegende Anti-Malware-Schutzziele setzt und MHC zusätzliche TTP-
+      orientierte Detection-Engineering-Schutzziele aufsattelt.
+    gap_warning: |
+      MHC-05 fordert ATT&CK-getriebene Behavioral-Analytics; A.8.7 lässt
+      signaturbasierte AV zu. Reine A.8.7-Erfüllung detektiert keine LotL-
+      oder Fileless-Angriffe.
+    audit_evidence_hint: 'A.8.7: AV-Inventar, Update-Status. MHC-05: EDR-Telemetrie-Coverage, Detection-Engineering-Backlog.'
+
+  - source: 'A.8.16'
+    target: 'MHC-05'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.8.16 verlangt Monitoring-Aktivitäten. MHC-05 flankiert mit Mythos-
+      Schutzziel verhaltensbasierter Anomalie-Erkennung mit ML-Baselines.
+      Schnittmenge bei kontinuierlicher Verhaltensbeobachtung. partial_overlap
+      weil ISO grundlegende Monitoring-Schutzziele setzt und MHC zusätzliche
+      Anomalie-Erkennungs-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.8.16: Monitoring-Konzept, Log-Quellen-Inventar. MHC-05: SIEM-Use-Cases mit ATT&CK-IDs, Anomaly-Detection-Reports.'
+
+  - source: 'A.8.27'
+    target: 'MHC-06'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.8.27 verlangt sichere Systemarchitektur. MHC-06 flankiert mit Mythos-
+      Schutzziel Container-Härtung und Confidential Computing (TEE).
+      Schnittmenge bei gehärteter Plattform-Architektur. partial_overlap weil
+      ISO grundlegende Architektur-Schutzziele setzt und MHC zusätzliche
+      Hardware-Attestation- und Confidential-Computing-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.8.27: Architektur-Hardening-Standard. MHC-06: Confidential-Computing-Inventar (SGX/SEV/TDX), Pod-Security-Standards.'
+
+  - source: 'A.8.31'
+    target: 'MHC-06'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.8.31 verlangt Trennung von Entwicklungs-, Test- und Produktivumgebungen.
+      MHC-06 flankiert mit Mythos-Schutzziel hardwarebasierter Trennung via
+      Confidential Computing. Schnittmenge bei Umgebungs-Isolation.
+      partial_overlap weil ISO grundlegende Umgebungs-Trennungs-Schutzziele
+      setzt und MHC zusätzliche TEE-basierte Isolations-Schutzziele aufsattelt.
+    gap_warning: |
+      MHC-06 fordert Confidential-Computing-basierte Isolation für sensible
+      Workloads; A.8.31 lässt Software-only-Trennung zu. Reine A.8.31-Erfüllung
+      schließt Cloud-Provider-Insider-Risiken nicht aus.
+    audit_evidence_hint: 'A.8.31: Umgebungs-Architektur, RBAC-Trennung. MHC-06: TEE-Nutzungs-Nachweis pro kritischem Workload.'
+
+  - source: 'A.5.23'
+    target: 'MHC-06'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.5.23 verlangt Informationssicherheit für Nutzung von Cloud-Services.
+      MHC-06 flankiert mit Mythos-Schutzziel Confidential-Cloud-Workloads via
+      attestierten TEE. Schnittmenge bei Cloud-Workload-Schutz. partial_overlap
+      weil ISO grundlegende Cloud-Governance-Schutzziele setzt und MHC zusätzliche
+      Confidential-Cloud-Schutzziele aufsattelt.
+    gap_warning: |
+      MHC-06 fordert Attested-TEE-Nutzung im Cloud-Kontext; A.5.23 lässt
+      Standard-Cloud-IaaS ohne Memory-Encryption zu. Reine A.5.23-Erfüllung
+      schließt Cloud-Operator-Zugriff nicht aus.
+    audit_evidence_hint: 'A.5.23: Cloud-Service-Inventar, Provider-SLAs. MHC-06: Confidential-VM-Konfiguration, Remote-Attestation-Logs.'
+
+  - source: 'A.8.22'
+    target: 'MHC-07'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.8.22 verlangt Netzwerksegregation. MHC-07 flankiert mit Mythos-Schutzziel
+      Multi-Tenancy-Isolation gegen Tenant-übergreifende Side-Channels.
+      Schnittmenge bei strikter Trennung. partial_overlap weil ISO grundlegende
+      Segregations-Schutzziele setzt und MHC zusätzliche Noisy-Neighbor- und
+      Side-Channel-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.8.22: Segmentierungs-Konzept. MHC-07: Tenant-Isolation-Tests, Side-Channel-Assessments.'
+
+  - source: 'A.5.23'
+    target: 'MHC-07'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.23 verlangt Informationssicherheit für Cloud-Services. MHC-07
+      flankiert mit Mythos-Schutzziel Multi-Tenancy-Isolation im Shared-
+      Responsibility-Modell. Schnittmenge bei Tenant-Daten-Trennung.
+      partial_overlap weil ISO grundlegende Cloud-Governance-Schutzziele setzt
+      und MHC zusätzliche Isolations-Verifikations-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.5.23: Cloud-Provider-Sicherheits-Bewertung. MHC-07: Tenant-Boundary-Penetration-Tests, BSI-C5-OPS-30/31-Nachweise.'
+
+  - source: 'A.8.13'
+    target: 'MHC-08'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.8.13 verlangt Backups. MHC-08 flankiert mit Mythos-Schutzziel
+      unveränderlicher Backups gegen Ransomware. Schnittmenge bei Datensicherung.
+      partial_overlap weil ISO grundlegende Backup-Schutzziele setzt und MHC
+      zusätzliche Immutability- und Air-Gap-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.8.13: Backup-Policy, Recovery-Test-Reports. MHC-08: WORM-/Object-Lock-Konfiguration, Air-Gap-Restore-Tests.'
+
+  - source: 'A.5.29'
+    target: 'MHC-08'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.29 verlangt Informationssicherheit bei Disruption. MHC-08 flankiert
+      mit Mythos-Schutzziel tamper-proof Recovery durch unveränderliche Backups.
+      Schnittmenge bei Recovery-Fähigkeit. partial_overlap weil ISO grundlegende
+      Disruption-Schutzziele setzt und MHC zusätzliche Tamper-Proof-Recovery-
+      Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.5.29: BC-Plan mit Recovery-Verfahren. MHC-08: Immutable-Backup-Restore-Test bei Krisenübung.'
+
+  - source: 'A.5.30'
+    target: 'MHC-08'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.30 verlangt ICT-Bereitschaft für Business Continuity. MHC-08
+      flankiert mit Mythos-Schutzziel ransomware-resilienter Wiederherstellung.
+      Schnittmenge bei nachweisbar wiederherstellbaren ICT-Systemen.
+      partial_overlap weil ISO grundlegende ICT-Continuity-Schutzziele setzt
+      und MHC zusätzliche Ransomware-resiliente Recovery-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.5.30: ICT-BC-Plan, Severe-Scenario-Tests. MHC-08: RTO/RPO-Nachweis aus Immutable-Backup.'
+
+  - source: 'A.5.33'
+    target: 'MHC-08'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.5.33 verlangt Schutz von Aufzeichnungen. MHC-08 flankiert mit Mythos-
+      Schutzziel kryptografisch gesicherter Append-Only-Speicherung.
+      Schnittmenge bei Manipulationsschutz von Records. partial_overlap weil
+      ISO grundlegende Records-Protection-Schutzziele setzt und MHC zusätzliche
+      WORM-/Object-Lock-Schutzziele aufsattelt.
+    gap_warning: |
+      MHC-08 fordert WORM/Object-Lock mit Compliance-Mode; A.5.33 lässt
+      logische Zugriffskontrollen genügen. Reine A.5.33-Erfüllung schützt
+      nicht gegen Insider-/Admin-Manipulation.
+    audit_evidence_hint: 'A.5.33: Records-Retention-Schedule. MHC-08: Object-Lock-Compliance-Mode-Konfiguration.'
+
+  - source: 'A.8.14'
+    target: 'MHC-08'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.8.14 verlangt Redundanz. MHC-08 flankiert mit Mythos-Schutzziel
+      unveränderlicher Offline-Kopien (3-2-1-1-0-Regel mit Air-Gap).
+      Schnittmenge bei mehrfacher Datenkopie. partial_overlap weil ISO
+      grundlegende Redundanz-Schutzziele setzt und MHC zusätzliche
+      Immutability-Schutzziele aufsattelt.
+    gap_warning: |
+      MHC-08 fordert 3-2-1-1-0-Regel mit Air-Gap; A.8.14 lässt synchrone
+      Replikate genügen. Reine A.8.14-Erfüllung schützt nicht vor synchron
+      replizierter Ransomware-Verschlüsselung.
+    audit_evidence_hint: 'A.8.14: Redundanz-Architektur, Replikations-SLAs. MHC-08: Air-Gapped-Copy-Inventar, 3-2-1-1-0-Compliance-Report.'
+
+  - source: 'A.8.8'
+    target: 'MHC-09'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.8.8 verlangt Schwachstellen-Management. MHC-09 flankiert mit Mythos-
+      Schutzziel AI-gestützter kontinuierlicher Schwachstellen-Erkennung.
+      Schnittmenge bei systematischer Vuln-Erkennung. partial_overlap weil
+      ISO grundlegende Vuln-Mgmt-Schutzziele setzt und MHC zusätzliche
+      AI-augmented Test-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.8.8: Vuln-Mgmt-Prozess, Patch-Compliance-Dashboard. MHC-09: AI-Fuzzing-Reports, kontinuierliche Vuln-Scans.'
+
+  - source: 'A.8.25'
+    target: 'MHC-09'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.8.25 verlangt sicheren Entwicklungs-Lifecycle. MHC-09 flankiert mit
+      Mythos-Schutzziel AI-Security-Testing in CI/CD. Schnittmenge bei
+      Security-Testing-Integration. partial_overlap weil ISO grundlegende
+      SDLC-Schutzziele setzt und MHC zusätzliche SSDF-/CRA-konforme
+      AI-Testing-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.8.25: SDLC-Policy. MHC-09: CI/CD-Integration von AI-Security-Tools, SSDF-Compliance-Matrix.'
+
+  - source: 'A.8.29'
+    target: 'MHC-09'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.8.29 verlangt Sicherheitstests in Entwicklung und Abnahme. MHC-09
+      flankiert mit Mythos-Schutzziel AI-augmented Test-Generierung
+      (Fuzzing, Symbolic Execution). Schnittmenge bei automatisierten
+      Security-Tests. partial_overlap weil ISO grundlegende Test-Schutzziele
+      setzt und MHC zusätzliche AI-augmented Coverage-Schutzziele aufsattelt.
+    gap_warning: |
+      MHC-09 fordert AI-augmented Coverage-Erhöhung (Fuzzing, Symbolic
+      Execution); A.8.29 lässt manuelle Tests genügen. Reine A.8.29-Erfüllung
+      hat oft <50% Code-Coverage in Security-relevanten Pfaden.
+    audit_evidence_hint: 'A.8.29: Test-Konzept, Abnahme-Kriterien. MHC-09: AI-Fuzzing-Coverage-Reports, Symbolic-Execution-Findings.'
+
+  - source: 'A.8.32'
+    target: 'MHC-09'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.8.32 verlangt Change-Management. MHC-09 flankiert mit Mythos-Schutzziel
+      automatisierter Pre-Deployment-Sicherheitsprüfung bei jedem Change.
+      Schnittmenge bei Pre-Release-Validierung. partial_overlap weil ISO
+      grundlegende Change-Schutzziele setzt und MHC zusätzliche kontinuierliche
+      Re-Testing-Schutzziele aufsattelt.
+    gap_warning: |
+      MHC-09 fordert Re-Test bei jedem Change inkl. Dependency-Updates;
+      A.8.32 lässt risikobasierte Test-Auswahl zu. Reine A.8.32-Erfüllung
+      verpasst transitiv eingeführte Vulns.
+    audit_evidence_hint: 'A.8.32: Change-Approval-Records. MHC-09: Pre-Deployment-Test-Gates, Dependency-Re-Test-Logs.'
+
+  - source: 'A.5.18'
+    target: 'MHC-10'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.5.18 verlangt Zugriffsrechte-Management. MHC-10 flankiert mit Mythos-
+      Schutzziel Continuous Control Monitoring der Berechtigungs-Aktualität.
+      Schnittmenge bei Berechtigungs-Überwachung. partial_overlap weil ISO
+      grundlegende Zugriffsrechte-Lifecycle-Schutzziele setzt und MHC
+      zusätzliche Echtzeit-Drift-Detection-Schutzziele aufsattelt.
+    gap_warning: |
+      MHC-10 fordert kontinuierliches Recertification-Monitoring; A.5.18
+      lässt periodische Reviews (jährlich) genügen. Reine A.5.18-Erfüllung
+      übersieht zwischenzeitliche Privilege-Creeps.
+    audit_evidence_hint: 'A.5.18: Access-Review-Reports. MHC-10: CCM-Dashboard mit Access-Drift-Alerts.'
+
+  - source: 'A.5.35'
+    target: 'MHC-10'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.35 verlangt unabhängige Reviews. MHC-10 flankiert mit Mythos-
+      Schutzziel kontinuierlicher Wirksamkeitsbeurteilung statt jährlichem
+      Audit. Schnittmenge bei nachprüfbarer Effectiveness. partial_overlap
+      weil ISO grundlegende Review-Schutzziele setzt und MHC zusätzliche
+      kontinuierliche Evidenz-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.5.35: Audit-Plan, Review-Berichte. MHC-10: CCM-Plattform-Inventar, Control-Effectiveness-Trend.'
+
+  - source: 'A.5.36'
+    target: 'MHC-10'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.36 verlangt Compliance mit Policies und Standards. MHC-10 flankiert
+      mit Mythos-Schutzziel automatisierter Compliance-Messung (Compliance-as-
+      Code). Schnittmenge bei Compliance-Nachweis. partial_overlap weil ISO
+      grundlegende Compliance-Schutzziele setzt und MHC zusätzliche Real-Time-
+      Compliance-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.5.36: Compliance-Reporting-Verfahren. MHC-10: Compliance-as-Code-Pipelines, NIS2-DVO-2.2-Mapping.'
+
+  - source: 'A.8.9'
+    target: 'MHC-10'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.8.9 verlangt Konfigurationsmanagement. MHC-10 flankiert mit Mythos-
+      Schutzziel kontinuierlicher Drift-Detection mit automatischem Alert.
+      Schnittmenge bei Soll-Ist-Vergleich. partial_overlap weil ISO grundlegende
+      Configuration-Mgmt-Schutzziele setzt und MHC zusätzliche kontinuierliche
+      Drift-Detection-Schutzziele aufsattelt.
+    gap_warning: |
+      MHC-10 fordert Drift-Detection mit automatischem Alert; A.8.9 lässt
+      manuelle Reviews genügen. Reine A.8.9-Erfüllung erkennt Konfig-Drift
+      oft erst Wochen später.
+    audit_evidence_hint: 'A.8.9: Baseline-Konfigurationen, CMDB. MHC-10: Drift-Alerts pro Tag, Auto-Remediation-Logs.'
+
+  - source: 'A.5.5'
+    target: 'MHC-11'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.5.5 verlangt Kontakt zu Behörden. MHC-11 flankiert mit Mythos-
+      Schutzziel SOAR-getriebener automatisierter Eskalation an CSIRT/Behörden.
+      Schnittmenge bei Behörden-Eskalationspfad. partial_overlap weil ISO
+      grundlegende Behörden-Kontakt-Schutzziele setzt und MHC zusätzliche
+      automatisierte Meldewege-Schutzziele aufsattelt.
+    gap_warning: |
+      MHC-11 fordert automatisierte Vorbereitung von NIS2-/DORA-Meldungen aus
+      SOAR; A.5.5 lässt manuelle Behördenkontakt-Pflege zu. Reine A.5.5-
+      Erfüllung verpasst NIS2-24h-Frühwarnung bei Nacht-/Wochenend-Incidents.
+    audit_evidence_hint: 'A.5.5: Behörden-Kontaktliste. MHC-11: SOAR-Playbooks für Behörden-Meldungen, Test-Logs Out-of-Hours.'
+
+  - source: 'A.5.24'
+    target: 'MHC-11'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.24 verlangt Incident-Management-Planung. MHC-11 flankiert mit
+      Mythos-Schutzziel maschinell ausführbarer Playbooks (SOAR). Schnittmenge
+      bei standardisierten Response-Verfahren. partial_overlap weil ISO
+      grundlegende Incident-Planungs-Schutzziele setzt und MHC zusätzliche
+      Automations-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.5.24: Incident-Response-Plan. MHC-11: SOAR-Playbook-Bibliothek, Versionskontrolle.'
+
+  - source: 'A.5.25'
+    target: 'MHC-11'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.25 verlangt Bewertung und Entscheidung über Sicherheitsereignisse.
+      MHC-11 flankiert mit Mythos-Schutzziel Tier-1-Auto-Triage. Schnittmenge
+      bei Ereignis-Triage. partial_overlap weil ISO grundlegende Bewertungs-
+      Schutzziele setzt und MHC zusätzliche automatisierte Triage-Schutzziele
+      aufsattelt.
+    audit_evidence_hint: 'A.5.25: Klassifizierungs-Schema. MHC-11: Auto-Triage-Statistiken, False-Positive-Rate.'
+
+  - source: 'A.5.26'
+    target: 'MHC-11'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.26 verlangt Reaktion auf Sicherheitsvorfälle. MHC-11 flankiert mit
+      Mythos-Schutzziel automatisierter Containment-Aktionen (Host-Isolation,
+      Account-Disable). Schnittmenge bei standardisierter Reaktion.
+      partial_overlap weil ISO grundlegende Response-Schutzziele setzt und
+      MHC zusätzliche automatisierte Containment-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.5.26: Response-Verfahren. MHC-11: Auto-Containment-Logs (Host-Isolation, Account-Disable), MTTR-Metrik.'
+
+  - source: 'A.5.35'
+    target: 'MHC-12'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.5.35 verlangt unabhängige Reviews. MHC-12 flankiert mit Mythos-
+      Schutzziel Threat-Led Penetration Testing nach TIBER-EU/DORA Art. 26.
+      Schnittmenge bei externer, unabhängiger Wirksamkeitsprüfung.
+      partial_overlap weil ISO grundlegende Review-Schutzziele setzt und
+      MHC zusätzliche TLPT-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.5.35: Audit-Programm. MHC-12: TLPT-Bericht nach TIBER-EU, DORA-Art-26-Nachweise.'
+
+  - source: 'A.8.29'
+    target: 'MHC-12'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.8.29 verlangt Sicherheitstests in Entwicklung und Abnahme. MHC-12
+      flankiert mit Mythos-Schutzziel adversarialem TTP-realistischem
+      Red-Teaming. Schnittmenge bei Penetration-Testing. partial_overlap weil
+      ISO grundlegende Test-Schutzziele setzt und MHC zusätzliche
+      Threat-Led-Testing-Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.8.29: Test-Plan, Abnahme-Kriterien. MHC-12: TLPT-Szenarien mit Threat-Intel-Bezug, Red-Team-Reports.'
+
+  - source: 'A.5.16'
+    target: 'MHC-13'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      A.5.16 verlangt Identitätsmanagement. MHC-13 flankiert mit Mythos-
+      Schutzziel AI-Agent-Governance mit eindeutiger Identität pro Agent.
+      Schnittmenge bei Agent-Identitäts-Lifecycle. partial_overlap weil ISO
+      grundlegende Identitäts-Schutzziele setzt und MHC zusätzliche
+      AI-Agent-Lifecycle- und Capability-Boundary-Schutzziele aufsattelt.
+    gap_warning: |
+      MHC-13 fordert capability-bound Agent-Identitäten mit auditierbaren
+      Tool-Calls; A.5.16 lässt geteilte Service-Accounts zu. Reine A.5.16-
+      Erfüllung verhindert keine Prompt-Injection-getriebene Privilege-
+      Eskalation.
+    audit_evidence_hint: 'A.5.16: Identity-Lifecycle-Policy. MHC-13: AI-Agent-Identity-Inventar, Tool-Call-Logs.'
+
+  - source: 'A.8.27'
+    target: 'MHC-13'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      A.8.27 verlangt sichere Systemarchitektur. MHC-13 flankiert mit Mythos-
+      Schutzziel gehärteter AI-Harness-Architektur (Sandboxing, OWASP LLM
+      Top 10). Schnittmenge bei Architektur-Härtung. partial_overlap weil ISO
+      grundlegende Architektur-Schutzziele setzt und MHC zusätzliche
+      MITRE-ATLAS-konforme Schutzziele aufsattelt.
+    audit_evidence_hint: 'A.8.27: Architektur-Hardening-Standard. MHC-13: Harness-Architektur-Dokument mit ATLAS-Mapping, Sandbox-Konfiguration.'
