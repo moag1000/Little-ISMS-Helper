@@ -71,8 +71,8 @@
         padding: 0 !important;
         max-width: 100% !important;
         width: 100% !important;
-        background: #ffffff !important;
-        color: #1a1a1a !important;
+        background: var(--bg) !important;
+        color: var(--fg) !important;
         box-shadow: none !important;
         overflow: visible !important;
         display: block !important;
@@ -89,7 +89,7 @@
     a[href^="/"]:not(.no-print-url)::after {
         content: " (" attr(href) ")";
         font-size: 10px;
-        color: #666;
+        color: var(--fg-3);
         font-weight: normal;
     }
 
@@ -112,14 +112,14 @@
 
     /* Form-Elemente lesbar aber ohne Interaktion-Hints */
     input, select, textarea {
-        border: 1px solid #999 !important;
-        background: #ffffff !important;
-        color: #1a1a1a !important;
+        border: 1px solid var(--border) !important;
+        background: var(--surface) !important;
+        color: var(--fg) !important;
     }
     button, .btn {
-        border: 1px solid #999 !important;
-        background: #f5f5f5 !important;
-        color: #1a1a1a !important;
+        border: 1px solid var(--border) !important;
+        background: var(--surface-2) !important;
+        color: var(--fg) !important;
     }
 
     /* Sparklines sichtbar aber monochrom */

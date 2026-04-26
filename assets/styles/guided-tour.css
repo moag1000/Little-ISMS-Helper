@@ -331,21 +331,21 @@
 
 @media print {
     /* Print-Mode optimiert für A4-Handout */
-    body { background: #fff !important; color: #000 !important; }
+    body { background: var(--print-bg) !important; color: var(--print-fg) !important; }
     .header, .footer, .mega-menu, .breadcrumb, .toast-container,
     .alert-dismissible, .d-print-none, .guided-tour-banner,
     .modal, .command-palette-modal { display: none !important; }
     .help-tour-handout { max-width: 100% !important; }
     .help-tour-step { page-break-inside: avoid; }
     .help-tour-step-number {
-        background: #000 !important;
+        background: var(--print-fg) !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
     }
-    a { color: #000; text-decoration: none; }
+    a { color: var(--print-fg); text-decoration: none; }
     a[href^="http"]::after {
         content: " (" attr(href) ")";
         font-size: 0.75em;
-        color: #666;
+        color: var(--fg-3);
     }
 }

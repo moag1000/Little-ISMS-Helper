@@ -51,7 +51,7 @@ html[data-theme="dark"] .fa-brand-mark {
 }
 
 .fa-brand-sparkle {
-    color: #ffffff;
+    color: var(--on-primary);
     font-size: 0.55em;
     line-height: 1;
     font-weight: 700;
@@ -2102,7 +2102,7 @@ code:not([class]) {
 
 .fa-brand-gradient {
     background: var(--brand-gradient);
-    color: #ffffff;
+    color: var(--on-primary);
 }
 
 .fa-focus-ring:focus-visible {
@@ -2598,7 +2598,7 @@ small.text-muted,
 .text-warning   { color: var(--warning-text) !important; }
 .text-danger    { color: var(--danger)  !important; }
 .text-info      { color: var(--primary) !important; }
-.text-white     { color: #ffffff !important; }
+.text-white     { color: white !important; }
 
 /* Bootstrap-text-bg-* kombiniert BG + Text */
 .text-bg-primary   { background-color: var(--primary-strong) !important; color: var(--on-primary) !important; }
@@ -4458,7 +4458,7 @@ html[data-theme="dark"] .framework-card {
 .framework-card-header,
 .framework-header {
     padding: var(--spacing-lg);
-    color: #fff;
+    color: var(--on-primary);
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
