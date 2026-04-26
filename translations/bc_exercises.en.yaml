@@ -108,6 +108,11 @@ bc_exercises:
         participants: 'e.g. IT team, management, crisis team'
         facilitator: 'Name of exercise leader'
         observers: 'e.g. External auditor, ISO officer'
+    tooltip:
+        scenario: 'Describe the concrete exercise scenario (e.g. "Ransomware attack on production systems"). A realistic scenario increases the learning effect and uncovers gaps in BC plans.'
+        exercise_type: 'Select the exercise type per ISO 22301:2019 Cl. 8.5. Tabletop exercises are theoretical; full tests fully simulate a real emergency and require more planning effort.'
+        success_criteria: 'Define measurable criteria by which the success of the exercise is evaluated (e.g. RTO met, all communication channels working, no data loss).'
+        success_rating: 'Overall rating of the exercise on a scale of 1 (failed) to 5 (excellent). Serves as a KPI for BC exercise history and audit evidence per ISO 22301.'
 bc_plans:
     message:
         readiness_score: 'Readiness Score'

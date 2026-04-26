@@ -151,5 +151,10 @@ context:
     hint:
         structured_parties: 'Use the Interested Parties module for structured capture per ISO 27001 Clause 4.2'
         migrate_freetext: 'Legacy free-text: please move the content into structured entries in the module and then clear this field via the context form.'
+    tooltip:
+        external_issues: 'ISO 27001 Cl. 4.1: External factors that affect the ISMS. Includes legal, technological, competitive, cultural and economic conditions as well as societal and political developments.'
+        internal_issues: 'ISO 27001 Cl. 4.1: Internal factors that affect the ISMS. Includes organisational culture, values, knowledge, strategy, processes, resources and internal governance structures.'
+        scope_exclusions: 'ISO 27001 Cl. 4.3: Areas explicitly excluded from the ISMS scope. Every exclusion must be justified and must not impair the fulfilment of security objectives.'
+        interested_parties_requirements: 'ISO 27001 Cl. 4.2: Stakeholder requirements regarding information security. Includes legal, regulatory and contractual obligations as well as expectations from customers, suppliers and supervisory authorities.'
     edit:
         title: Title

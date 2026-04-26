@@ -170,6 +170,23 @@ tenant:
     title.edit: Edit
     title.create: Create
     name: Name
+    email:
+        title: 'Email Branding'
+        subtitle: 'Sender, logo, and footer for outgoing emails. Empty fields are inherited from the parent tenant or SystemSettings.'
+        section:
+            branding: 'Branding Settings'
+            effective: 'Effective Values (after fallback cascade)'
+        effective_hint: 'These values are used when sending emails — empty fields are inherited from the parent tenant or SystemSettings.'
+        hint:
+            fallback: 'Empty field → parent tenant → SystemSettings (category=email) → hardcoded default.'
+        field:
+            from_name: 'Sender Name'
+            from_address: 'Sender Email Address'
+            logo_url: 'Logo URL (HTTPS)'
+            support_address: 'Support Email Address'
+        logo_url:
+            https_only: 'HTTPS URLs only (otherwise mixed content in HTML emails).'
+        saved: 'Email branding saved.'
 corporate:
     view:
         own_only: 'Own Only'

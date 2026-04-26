@@ -203,3 +203,19 @@ dsr:
     # Help texts
     help:
         extend_deadline: "Art. 12(3) allows extending the deadline to 90 days from receipt for complex requests or high volume of requests."
+
+    # Sidebar contextual help
+    sidebar:
+        title: "GDPR Data Subject Rights"
+        rights_title: "The 7 GDPR Rights (Art. 15–22)"
+        right_access: "Art. 15 – Right of access: data subjects may request confirmation and a copy of their data"
+        right_rectification: "Art. 16 – Right to rectification: correction of inaccurate or incomplete data"
+        right_erasure: 'Art. 17 – Right to erasure (right to be forgotten)'
+        right_restriction: "Art. 18 – Right to restriction of processing"
+        right_portability: "Art. 20 – Right to data portability in machine-readable format"
+        right_objection: "Art. 21 – Right to object to processing based on legitimate interests"
+        right_automated: "Art. 22 – Right not to be subject to solely automated decision-making"
+        deadline_title: "30-Day Response Deadline (Art. 12(3))"
+        deadline_text: "You must respond without undue delay and at the latest within one month of receipt. For complex or numerous requests, this may be extended by up to two additional months — but the data subject must be informed within the first month."
+        verification_title: "Identity Verification"
+        verification_text: "Before fulfilling a request you must verify the identity of the requesting person to prevent unauthorised disclosure. The method must be proportionate — do not request more information than necessary."

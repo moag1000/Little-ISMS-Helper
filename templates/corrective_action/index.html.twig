@@ -6,9 +6,18 @@
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'audit_finding.page.title'|trans({}, 'audits'), url: path('app_audit_finding_index') },
+        { label: 'corrective_action.page.title'|trans({}, 'audits') }
+    ]
+} %}
 {{ _fa_page_header.render({
     badge: { icon: 'tools', label: 'corrective_action.page.title'|trans({}, 'audits') },
-    title: 'corrective_action.page.title'|trans({}, 'audits')
+    title: 'corrective_action.page.title'|trans({}, 'audits'),
+    actions: [
+        { label: 'corrective_action.action.new'|trans({}, 'audits'), href: path('app_corrective_action_new'), variant: 'primary', icon: 'plus-lg' }
+    ]
 }) }}
 <main class="fa-aurora-surface">
 <div class="container-fluid py-4">

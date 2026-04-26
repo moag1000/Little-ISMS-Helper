@@ -278,6 +278,35 @@ risk:
       Personal, Know-how<br><em>z.B. Wissensverlust, Fehlbedienung</em><br><br><strong>Physisch</strong><br>Gebäude,
       Infrastruktur<br><em>z.B. Einbruch, Wasserschaden</em><br><br><strong>Compliance</strong><br>Gesetze,
       Verträge, Regulatorik<br><em>z.B. DSGVO-Verstoß, Audit-Mängel</em>
+    involves_personal_data: '<strong>🔒 Personenbezogene Daten betroffen?</strong><br><em>Aktivieren
+      Sie diese Option, wenn das Risiko personenbezogene Daten betrifft (z.B. Kundendaten,
+      Mitarbeiterdaten).</em><br><br>Relevant für: DSGVO Art. 5, 24, 32<br><em>Beispiele:
+      Datenpanne, unbefugter Zugriff auf CRM, Verlust eines USB-Sticks mit Kundendaten</em>'
+    requires_dpia: '<strong>📋 Datenschutz-Folgenabschätzung (DSFA) erforderlich?</strong><br><em>Eine
+      DSFA ist nach DSGVO Art. 35 erforderlich bei hohem Risiko für Betroffene.</em><br><br>Typische
+      Fälle:<br>• Systematische Überwachung von Personen<br>• Verarbeitung besonderer
+      Kategorien (Gesundheit, Biometrie)<br>• Großmaßstäbliche Verarbeitung<br><em>Tipp:
+      Konsultieren Sie Ihren Datenschutzbeauftragten (DSB)</em>'
+    legal_basis: '<strong>⚖️ Rechtsgrundlage der Verarbeitung</strong><br><em>Jede
+      Verarbeitung personenbezogener Daten benötigt eine Rechtsgrundlage (DSGVO Art. 6).</em><br><br><strong>Einwilligung</strong>
+      – freiwillig, spezifisch, informiert<br><strong>Vertrag</strong> – zur Vertragserfüllung<br><strong>Rechtliche
+      Verpflichtung</strong> – gesetzliche Pflicht<br><strong>Vitale Interessen</strong>
+      – Lebensschutz<br><strong>Öffentliche Aufgabe</strong> – behördliche Tätigkeit<br><strong>Berechtigte
+      Interessen</strong> – abgewogenes Interesse (Art. 6 Abs. 1 f)'
+    processing_scale: '<strong>📊 Verarbeitungsumfang</strong><br><em>Beschreibt die
+      Größenordnung der betroffenen Personen und Datenmenge.</em><br><br><strong>Gering</strong>
+      – einige Dutzend Betroffene, interner Einsatz<br><strong>Mittel</strong> – Hunderte
+      Betroffene, abteilungsübergreifend<br><strong>Groß</strong> – Tausende Betroffene
+      oder kontinuierliche Verarbeitung<br><strong>Sehr groß</strong> – Massenverarbeitung,
+      nationale/europäische Reichweite<br><em>Relevant für DSGVO Art. 35 (DSFA-Pflicht
+      bei großmaßstäblicher Verarbeitung)</em>'
+    data_subject_impact: '<strong>👤 Auswirkung auf Betroffene</strong><br><em>Beschreibt
+      den möglichen Schaden für die betroffenen Personen bei Eintreten des Risikos.</em><br><br><strong>Niedrig</strong>
+      – geringe Unannehmlichkeiten, leicht behebbar<br><strong>Mittel</strong> – finanzieller
+      Schaden, Diskriminierung, Reputationsverlust<br><strong>Hoch</strong> – erhebliche
+      Einschränkungen, Identitätsdiebstahl, physische Schäden<br><strong>Sehr hoch</strong>
+      – irreversible Schäden, Bedrohung von Leib und Leben<br><em>Grundlage: DSGVO
+      Art. 83, EDSA-Leitlinien zur DSFA</em>'
   delete:
     confirm_message: Möchten Sie dieses Risiko wirklich unwiderruflich löschen?
   not_reviewed: Noch nicht überprüft

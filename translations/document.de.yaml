@@ -98,6 +98,9 @@ document:
         inheritable: 'Markiert das Dokument als sichtbar in allen Töchtern dieser Holding (Standard: aus).'
         override_allowed: 'Wenn aus: Töchter müssen diese Policy 1:1 übernehmen (z. B. ISMS-Leitlinie). Wenn an: Tochter darf eigene lokale Version anlegen.'
         data_classification: 'Informationsklassifizierung nach TISAX/ISO 27001 A.8.2. Vorauswahl konfigurierbar unter Admin → System → Dokumente.'
+    tooltip:
+        category: 'Wählen Sie den Dokumenttyp, der den inhaltlichen Zweck des Dokuments beschreibt (z. B. Richtlinie, Verfahren, Nachweis). Der Typ steuert die Filterung und Zuordnung zu ISMS-Bereichen.'
+        classification: 'Informationsklassifizierung nach TISAX/ISO 27001 A.8.2. Bestimmt, wer das Dokument einsehen darf. "Streng vertraulich" gilt für Dokumente mit besonderem Schutzbedarf (z. B. Schlüsselmaterial, Sicherheitskonzepte).'
     placeholder:
         name: 'z.B. ISMS-Richtlinie 2025'
         description: 'Beschreiben Sie den Inhalt und Zweck dieses Dokuments...'

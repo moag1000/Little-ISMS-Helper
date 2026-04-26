@@ -13,6 +13,9 @@ asset:
     print_all_labels: Alle QR-Etiketten
   details:
     title: Asset‑Details
+  risk_item:
+    risk_level: 'Risikostufe: %value%'
+    status: 'Status: %value%'
   section:
     basic_info: Grundinformationen
     assignment: Zuordnung

@@ -271,6 +271,34 @@ risk:
       personnel, know-how<br><em>e.g. knowledge loss, human error</em><br><br><strong>Physical</strong><br>Buildings,
       infrastructure<br><em>e.g. break-in, water damage</em><br><br><strong>Compliance</strong><br>Laws,
       contracts, regulations<br><em>e.g. GDPR violation, audit findings</em>
+    involves_personal_data: '<strong>🔒 Personal Data Involved?</strong><br><em>Enable
+      this option if the risk affects personal data (e.g. customer data, employee data).</em><br><br>Relevant
+      for: GDPR Art. 5, 24, 32<br><em>Examples: data breach, unauthorized access to
+      CRM, loss of USB stick with customer data</em>'
+    requires_dpia: '<strong>📋 Data Protection Impact Assessment (DPIA) Required?</strong><br><em>A
+      DPIA is required under GDPR Art. 35 for high-risk processing activities.</em><br><br>Typical
+      cases:<br>• Systematic monitoring of individuals<br>• Processing of special categories
+      (health, biometrics)<br>• Large-scale processing<br><em>Tip: Consult your Data
+      Protection Officer (DPO)</em>'
+    legal_basis: '<strong>⚖️ Legal Basis for Processing</strong><br><em>Every processing
+      of personal data requires a legal basis (GDPR Art. 6).</em><br><br><strong>Consent</strong>
+      – freely given, specific, informed<br><strong>Contract</strong> – necessary for
+      contract performance<br><strong>Legal obligation</strong> – required by law<br><strong>Vital
+      interests</strong> – protection of life<br><strong>Public task</strong> – official
+      authority<br><strong>Legitimate interests</strong> – balanced interest (Art. 6(1)(f))'
+    processing_scale: '<strong>📊 Processing Scale</strong><br><em>Describes the magnitude
+      of data subjects and volume of data processed.</em><br><br><strong>Small</strong>
+      – a few dozen individuals, internal use<br><strong>Medium</strong> – hundreds
+      of individuals, cross-departmental<br><strong>Large</strong> – thousands of individuals
+      or continuous processing<br><strong>Very large</strong> – mass processing, national/European
+      reach<br><em>Relevant for GDPR Art. 35 (DPIA required for large-scale processing)</em>'
+    data_subject_impact: '<strong>👤 Impact on Data Subjects</strong><br><em>Describes
+      the potential harm to the individuals affected if the risk materialises.</em><br><br><strong>Low</strong>
+      – minor inconvenience, easily remedied<br><strong>Medium</strong> – financial
+      loss, discrimination, reputational damage<br><strong>High</strong> – significant
+      restrictions, identity theft, physical harm<br><strong>Very high</strong> – irreversible
+      damage, threat to life and safety<br><em>Basis: GDPR Art. 83, EDPB Guidelines
+      on DPIA</em>'
   delete:
     confirm_message: Confirm Message
   not_reviewed: Not Reviewed

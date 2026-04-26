@@ -53,6 +53,7 @@ audit_log:
         no_user_activities: 'Keine Aktivitäten für diesen Benutzer gefunden.'
     action:
         back_to_health: 'Zurück zur Systemgesundheit'
+        view_details: 'Details anzeigen'
     modal:
         title: Audit‑Log‑Details
     info:

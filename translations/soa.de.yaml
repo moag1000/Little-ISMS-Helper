@@ -45,6 +45,8 @@ soa:
         data_reuse_related_risks: 'Mitigierte Risiken (%count%)'
         data_reuse_related_incidents: 'Zugeordnete Incidents (%count%)'
         metadata: Metadaten
+        training_coverage: 'Trainingsabdeckung'
+        control_effectiveness: 'Control-Wirksamkeit'
     category:
         Organizational: Organisatorische
         People: Menschen
@@ -97,6 +99,7 @@ soa:
         linked_risks: 'Zugeordnete Risiken:'
         classification_confidential: Vertraulich
         classification_confidential_upper: VERTRAULICH
+        effectiveness_score: 'Wirksamkeitswert'
     message:
         no_controls_filtered: 'Keine Controls gefunden, die den Filterkriterien entsprechen.'
         auto_seeded: '%count% ISO 27001 Annex A Controls wurden automatisch für diesen Tenant geladen.'
@@ -125,6 +128,8 @@ soa:
         related_risks_info: 'Dieses Control trägt zur Behandlung der folgenden Risiken bei:'
         related_incidents_count: 'stehen in Beziehung zu diesem Control.'
         review_required: 'Bitte Control‑Effektivität überprüfen.'
+        no_completed_trainings: 'Keine abgeschlossenen Trainings für dieses Control.'
+        effectiveness_note: 'Basierend auf Incident-Analyse nach Control-Implementierung.'
     report:
         document_type: 'ISO 27001:2022 Konformitätsdokument'
         header_center: 'Statement of Applicability - ISO 27001:2022'

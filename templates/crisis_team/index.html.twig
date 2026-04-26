@@ -34,7 +34,14 @@
         </div>
     </div>
     {% if crisis_teams|length == 0 %}
-        {{ _fa_alert.render({ variant: 'info', body: 'crisis_team.empty'|trans({}, 'crisis_team') }) }}
+        {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+        {{ _fa_empty_state.render({
+            mood: 'sleeping',
+            title: 'crisis_team.empty'|trans({}, 'crisis_team'),
+            actions: [
+                { label: 'crisis_team.new'|trans({}, 'crisis_team'), variant: 'primary', icon: 'plus-circle', href: path('app_crisis_team_new') }
+            ]
+        }) }}
     {% else %}
         {% embed '_components/_card.html.twig' %}
             {% block card_body %}
@@ -54,7 +61,7 @@
                             <tr class="{{ team.isActive ? '' : 'table-secondary' }}">
                                 <td><strong>{{ team.teamName }}</strong></td>
                                 <td>{% include '_components/_badge.html.twig' with { variant: 'primary', content: ('crisis_team.type.' ~ team.teamType)|trans({}, 'crisis_team') } %}</td>
-                                <td>{{ team.teamLeader ? team.teamLeader.email : 'not_assigned'|trans({}, 'messages') }}</td>
+                                <td>{{ team.teamLeader ? team.teamLeader.fullName|default(team.teamLeader.email) : 'not_assigned'|trans({}, 'messages') }}</td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                         <a href="{{ path('app_crisis_team_show', {id: team.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}"><i class="bi bi-eye" aria-hidden="true"></i></a>

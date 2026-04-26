@@ -295,6 +295,7 @@ risk_appetite:
         max_acceptable_risk_required: 'Maximales akzeptables Risiko ist erforderlich'
         max_acceptable_risk_range: 'Maximales akzeptables Risiko muss zwischen {{ min }} und {{ max }} liegen'
         description_required: 'Beschreibung ist erforderlich'
+        review_buffer_multiplier_range: 'Der Überprüfungspuffer-Multiplikator muss im gültigen Bereich liegen'
 risk_treatment_plan:
     validation:
         risk_required: 'Risiko ist erforderlich'
@@ -334,6 +335,9 @@ tenant:
         code_format: 'Der Mandanten-Code muss dem Format entsprechen'
         azure_tenant_id_format: 'Die Azure-Tenant-ID muss eine gültige GUID sein'
         logo_format: 'Das Logo muss im Format JPG, PNG, GIF oder WebP vorliegen'
+    email:
+        logo_url:
+            https_only: 'Nur HTTPS-URLs erlaubt (Mixed Content wird durch HTML-E-Mail-Clients blockiert)'
 user:
     validation:
         avatar_format: 'Das Profilbild muss im Format JPG, PNG, GIF oder WebP vorliegen'
@@ -546,3 +550,14 @@ prototype_protection.validation.level_invalid: 'Ungültiges Schutzniveau'
 'Availability value must be between { min } and { max }': 'Verfügbarkeitswert muss zwischen { min } und { max } liegen'
 'Data classification must be one of: { choices }': 'Datenklassifizierung muss eine der folgenden sein: { choices }'
 'TISAX information classification must be one of: { choices }': 'TISAX-Informationsklassifizierung muss eine der folgenden sein: { choices }'
+
+# App-specific validators (structured keys)
+supplier_criticality:
+    validation:
+        code_pattern: 'Der Code darf nur Kleinbuchstaben, Zahlen und Unterstriche enthalten'
+'Mythos resilience must be one of: standfest, degradiert, reibung, nicht_betroffen': 'Mythos-Resilienz muss einer der folgenden Werte sein: standfest, degradiert, reibung, nicht_betroffen'
+risk_approval_config:
+    error:
+        range: 'Der Wert muss im gültigen Bereich liegen'
+'Code must be lowercase alphanumeric/underscore only': 'Der Code darf nur Kleinbuchstaben, Zahlen und Unterstriche enthalten'
+'AI risk classification must be one of: prohibited, high_risk, limited_risk, minimal_risk': 'KI-Risikoklassifikation muss einer der folgenden Werte sein: verboten, hohes_risiko, begrenztes_risiko, minimales_risiko'

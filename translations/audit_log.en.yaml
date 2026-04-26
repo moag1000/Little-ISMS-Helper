@@ -53,6 +53,7 @@ audit_log:
         no_user_activities: 'No activities found for this user.'
     action:
         back_to_health: 'Back to Health'
+        view_details: 'View Details'
     modal:
         title: 'Audit Log Details'
     info:

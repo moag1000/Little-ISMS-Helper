@@ -151,3 +151,18 @@ consent:
     warning:
         already_verified: 'This consent is already verified.'
         already_revoked: 'This consent is already revoked.'
+
+    # Sidebar contextual help
+    sidebar:
+        title: 'GDPR Consent Guide (Art. 7)'
+        valid_title: 'Valid Consent (Art. 7)'
+        valid_text: 'Consent must be freely given, specific, informed and unambiguous. It requires a clear affirmative action — silence, pre-ticked boxes or inactivity does not constitute consent.'
+        conditions_title: 'Conditions for Consent'
+        condition_1: 'Freely given: no detriment if consent is withheld or withdrawn'
+        condition_2: 'Specific: separate consent for each distinct processing purpose'
+        condition_3: 'Informed: data subject must know who is collecting data and why'
+        condition_4: 'Unambiguous: a clear opt-in action, not opt-out'
+        methods_title: 'Consent Methods and Channels'
+        methods_text: 'Consent can be collected via written forms, electronic checkboxes, double opt-in email, verbal agreement or in person. The method must be documented to demonstrate compliance.'
+        proof_title: 'Proof Documentation (Art. 5(2))'
+        proof_text: 'Under the accountability principle you must be able to demonstrate that consent was obtained. Record the method, channel, date, and the exact text shown to the data subject at the time of consent.'

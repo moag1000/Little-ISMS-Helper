@@ -4,6 +4,13 @@
 
 {% block body %}
 <div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'audits.page.title'|trans({}, 'audits'), url: path('app_audit_index') },
+            { label: 'audit_finding.page.title'|trans({}, 'audits'), url: path('app_audit_finding_index') },
+            { label: 'audit_finding.page.new'|trans({}, 'audits') }
+        ]
+    } %}
     <h1 class="h3 mb-4">{{ 'audit_finding.page.new'|trans({}, 'audits') }}</h1>
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}

@@ -8,8 +8,8 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'GDPR', icon: 'bi-shield-check' },
-            { label: 'DPIA / DSFA' }
+            { label: 'nav.privacy'|trans({}, 'nav') },
+            { label: 'nav.dpia'|trans({}, 'nav') }
         ]
     } %}
 

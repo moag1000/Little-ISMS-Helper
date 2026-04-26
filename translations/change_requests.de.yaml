@@ -120,3 +120,9 @@ change_request:
         closed: 'Abgeschlossen'
         cancelled: 'Abgebrochen'
         not_scheduled: 'Nicht eingeplant'
+    tooltip:
+        risk_assessment: 'Bewerten Sie potenzielle Risiken, die durch diese Änderung entstehen könnten (z. B. Datenverlust, Serviceausfall, Sicherheitslücken). Nutzen Sie die ISMS-Risikobewertungsmethodik.'
+        rollback_plan: 'Beschreiben Sie die konkreten Schritte, um die Änderung rückgängig zu machen, falls sie fehlschlägt. Ein Rollback-Plan ist Pflicht für alle Änderungen mit mittlerem bis hohem Risiko.'
+        isms_impact: 'Analysieren Sie, welche ISMS-Komponenten von dieser Änderung betroffen sind: Vertraulichkeit, Integrität, Verfügbarkeit, bestehende Controls, Richtlinien oder den ISMS-Geltungsbereich.'
+        priority: 'Legen Sie die Dringlichkeit der Änderung fest. Kritisch: sofortiger Handlungsbedarf. Hoch: innerhalb einer Woche. Mittel: innerhalb eines Monats. Niedrig: nach Plan.'
+        change_type: 'Klassifizieren Sie die Art der Änderung, um den richtigen Freigabe- und Testprozess auszuwählen. ISMS-Richtlinie und ISMS-Geltungsbereich erfordern besondere Prüfung durch den ISB.'

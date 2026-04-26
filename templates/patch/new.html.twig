@@ -5,12 +5,12 @@
 
 {% block body %}
 <div class="container">
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_patch_index') }}">{{ 'patch.title'|trans({}, 'patches') }}</a></li>
-            <li class="breadcrumb-item active">{{ 'patch.new'|trans({}, 'patches') }}</li>
-        </ol>
-    </nav>
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.patches'|trans({}, 'nav'), url: path('app_patch_index') },
+            { label: 'patch.new'|trans({}, 'patches') }
+        ]
+    } %}
 
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}

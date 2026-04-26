@@ -468,9 +468,9 @@
                             <div class="risk-item">
                                 <strong>{{ risk.title }}</strong>
                                 <span class="{{ badge_score(risk.inherentRiskLevel, 16, 9) }}">
-                                    Risk Level: {{ risk.inherentRiskLevel }}
+                                    {{ 'asset.risk_item.risk_level'|trans({'%value%': risk.inherentRiskLevel}, 'asset') }}
                                 </span>
-                                <small>Status: {{ risk.status|upper }}</small>
+                                <small>{{ 'asset.risk_item.status'|trans({'%value%': risk.status|upper}, 'asset') }}</small>
                             </div>
                         {% endfor %}
                     </div>

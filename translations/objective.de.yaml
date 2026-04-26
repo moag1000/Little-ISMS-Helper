@@ -38,6 +38,12 @@ objective:
         progress_notes: 'Notizen zum aktuellen Fortschritt, Hindernisse, etc.'
     help:
         target_date: 'Zieldatum für die Erreichung des Ziels'
+    tooltip:
+        measurable_indicators: 'Definieren Sie quantifizierbare Kriterien, um den Fortschritt zu messen (z. B. "Anzahl durchgeführter Schulungen", "Anteil patchbarer Systeme"). Ohne messbare Indikatoren kann das Ziel nicht auditiert werden (ISO 27001 Kl. 6.2).'
+        current_value: 'Aktueller Istwert des Indikators zum Zeitpunkt der Erfassung. Wird für die Fortschrittsberechnung verwendet und sollte regelmäßig aktualisiert werden.'
+        target_value: 'Angestrebter Zielwert, der bis zum Zieldatum erreicht werden soll. Dient als Referenz für die Erfolgsbewertung und das Monitoring.'
+        category: 'Ordnen Sie das Ziel einem ISMS-Bereich zu (z. B. Verfügbarkeit, Compliance). Ermöglicht gefilterte Auswertungen und erleichtert die Zuordnung zu ISO 27001-Klauseln.'
+        status: 'Aktueller Bearbeitungsstatus des Ziels. "Gefährdet" oder "Verzögert" signalisiert dem ISB Handlungsbedarf. Status wird für Management-Reviews und KPI-Dashboards ausgewertet.'
     label:
         current: Ist
         target: Ziel

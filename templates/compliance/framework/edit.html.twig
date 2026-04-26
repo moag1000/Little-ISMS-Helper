@@ -72,6 +72,24 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } %}
                 {% block card_header %}
                     <div class="card-header">
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'common.help'|trans({}, 'messages') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <h3>{{ 'compliance.framework.help.code.title'|trans({}, 'compliance') }}</h3>
+                    <p class="small text-muted">{{ 'compliance.framework.help.code.text'|trans({}, 'compliance') }}</p>
+
+                    <h3>{{ 'compliance.framework.help.mandatory.title'|trans({}, 'compliance') }}</h3>
+                    <p class="small text-muted">{{ 'compliance.framework.help.mandatory.text'|trans({}, 'compliance') }}</p>
+
+                    <h3>{{ 'compliance.framework.help.active.title'|trans({}, 'compliance') }}</h3>
+                    <p class="small text-muted">{{ 'compliance.framework.help.active.text'|trans({}, 'compliance') }}</p>
+                {% endblock %}
+            {% endembed %}
+
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } %}
+                {% block card_header %}
+                    <div class="card-header">
                         <h2 class="mb-0"><i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'compliance.framework.info'|trans({}, 'compliance') }}</h2>
                     </div>
                 {% endblock %}

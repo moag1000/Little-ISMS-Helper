@@ -21,6 +21,15 @@ mris:
         intro: |
             Enter values as percent (0-100) or days. Leave empty = not maintained.
             Audit trail is recorded on save.
+    ai_agent:
+        dpia:
+            section_title: 'DPIA Status (GDPR Art. 35 + AI Act Art. 9)'
+            col_title: 'Title'
+            col_status: 'Status'
+            col_link: 'Action'
+            open: 'Open'
+            warning_missing: 'High-risk AI without DPIA — required under GDPR Art. 35 + AI Act Art. 9.'
+            create_button: 'Create DPIA'
 ai_agent:
     page:
         title: 'AI Agent Inventory'

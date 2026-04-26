@@ -68,6 +68,29 @@ privacy:
             deadline_72h: 72h‑Frist
             special_categories: 'Besondere Kategorien'
             art9_data: 'Art. 9 Daten'
+            affected_subjects: 'Betroffene Personen'
+            total_count: 'Gesamtanzahl'
+        filter:
+            title: 'Datenschutzverletzungen filtern'
+            all: 'Alle (%count%)'
+            overdue: 'ÜBERFÄLLIG (%count%)'
+            pending_authority: 'Ausstehend Behörde'
+            pending_subjects: 'Ausstehend Betroffene'
+            draft: 'Entwurf (%count%)'
+            under_assessment: 'In Prüfung (%count%)'
+            authority_notified: 'Behörde gemeldet (%count%)'
+            closed: 'Geschlossen (%count%)'
+        table:
+            heading: 'Datenschutzverletzungen (%count%)'
+            reference: Referenz
+            title: Bezeichnung
+            status: Status
+            risk: Risiko
+            affected_subjects: 'Betroffene Personen'
+            deadline_72h: '72h-Frist'
+            authority: Behörde
+            subjects: Betroffene
+            unknown: Unbekannt
         section:
             status_workflow: 'Status & Workflow'
             linked_incident: 'Verknüpfter Sicherheitsvorfall'
@@ -262,7 +285,9 @@ processing_activity:
         edit_subtitle: 'VVT-Eintrag bearbeiten (Art. 30 DSGVO)'
     breadcrumb:
         privacy: 'Datenschutz'
+        gdpr: 'DSGVO'
         vvt: 'VVT - Verarbeitungstätigkeiten'
+        vvt_short: 'VVT'
         new: 'Neue Verarbeitungstätigkeit'
         edit: 'Bearbeiten'
     button:
@@ -281,6 +306,10 @@ processing_activity:
         missing_dpia: 'fehlende DSFA'
         special_categories: 'Besondere Kategorien'
         art9_data: 'Art. 9 Daten'
+        completeness: 'Vollständigkeit'
+        status: 'Status'
+        risk_level: 'Risikostufe'
+        dpia_status: 'DSFA-Status'
     filter:
         title: 'Filter'
         all: 'Alle'
@@ -326,6 +355,15 @@ processing_activity:
         save: 'Verarbeitungstätigkeit speichern'
         cancel: 'Abbrechen'
         delete: 'Verarbeitungstätigkeit löschen'
+        clone: 'Duplizieren'
+    alert:
+        compliance_issues: 'Compliance-Probleme'
+    dpia:
+        required: 'Erforderlich'
+        not_required: 'Nicht erforderlich'
+    compliance:
+        pass: 'Bestanden'
+        fail: 'Nicht bestanden'
     form:
         name: 'Bezeichnung der Verarbeitungstätigkeit'
         status: Status
@@ -915,6 +953,19 @@ dpia:
         conductor: 'Für die Durchführung der DSFA verantwortliche Person'
         review_frequency_months: 'Überprüfungshäufigkeit in Monaten (z.B. 12 = jährlich)'
         next_review_date: 'Nächstes geplantes Überprüfungsdatum (Art. 35(11))'
+    sidebar:
+        title: 'DSGVO Art. 35 – DSFA-Leitfaden'
+        what_title: 'Was ist eine DSFA?'
+        what_text: 'Eine Datenschutz-Folgenabschätzung (DSFA) ist ein Verfahren zur Identifizierung und Minimierung von Datenschutzrisiken. Sie ist nach Art. 35 DSGVO verpflichtend, wenn die Verarbeitung voraussichtlich ein hohes Risiko für betroffene Personen bedeutet.'
+        when_title: 'Wann ist eine DSFA erforderlich?'
+        when_text: 'Eine DSFA ist erforderlich bei: systematischer und umfassender Profilerstellung, umfangreicher Verarbeitung besonderer Datenkategorien (Art. 9/10) oder systematischer Überwachung öffentlich zugänglicher Bereiche.'
+        elements_title: 'Art. 35(7) – 4 Pflichtelemente'
+        elements_a: '(a) Systematische Beschreibung der geplanten Verarbeitungsvorgänge und der Zwecke'
+        elements_b: '(b) Bewertung der Notwendigkeit und Verhältnismäßigkeit der Verarbeitung'
+        elements_c: '(c) Bewertung der Risiken für die Rechte und Freiheiten der betroffenen Personen'
+        elements_d: '(d) Maßnahmen zur Bewältigung der Risiken einschließlich Garantien und Schutzmechanismen'
+        consultation_title: 'Art. 36 – Vorherige Konsultation'
+        consultation_text: 'Bleibt das Restrisiko nach Anwendung von Maßnahmen hoch, müssen Sie vor Beginn der Verarbeitung die Aufsichtsbehörde konsultieren. Die Behörde hat bis zu 8 Wochen Zeit für eine Antwort.'
     placeholder:
         processing_activity: 'Verarbeitungstätigkeit auswählen'
         legal_basis: 'Rechtsgrundlage auswählen'

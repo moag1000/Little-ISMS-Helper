@@ -151,5 +151,10 @@ context:
     hint:
         structured_parties: 'Nutzen Sie das Modul "Interessierte Parteien" fuer strukturierte Erfassung nach ISO 27001 Klausel 4.2'
         migrate_freetext: 'Legacy-Freitext: Bitte Inhalte in strukturierte Einträge im Modul übertragen und danach oben im Kontext-Formular den Freitext leeren.'
+    tooltip:
+        external_issues: 'ISO 27001 Kl. 4.1: Externe Faktoren, die das ISMS beeinflussen. Umfasst rechtliche, technologische, wettbewerbliche, kulturelle und wirtschaftliche Rahmenbedingungen sowie gesellschaftliche und politische Entwicklungen.'
+        internal_issues: 'ISO 27001 Kl. 4.1: Interne Faktoren, die das ISMS beeinflussen. Umfasst Organisationskultur, Werte, Wissen, Strategie, Prozesse, Ressourcen und interne Governance-Strukturen.'
+        scope_exclusions: 'ISO 27001 Kl. 4.3: Bereiche, die explizit vom ISMS-Geltungsbereich ausgeschlossen sind. Jeder Ausschluss muss sachlich begründet sein und darf die Erfüllung der Sicherheitsziele nicht beeinträchtigen.'
+        interested_parties_requirements: 'ISO 27001 Kl. 4.2: Anforderungen der Stakeholder bezüglich Informationssicherheit. Umfasst gesetzliche, regulatorische und vertragliche Verpflichtungen sowie Erwartungen von Kunden, Lieferanten und Aufsichtsbehörden.'
     edit:
         title: Titel

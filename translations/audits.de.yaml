@@ -1,3 +1,7 @@
+audits:
+    page:
+        title: Audits
+
 audit:
     new: 'Neues Audit'
     edit: 'Audit bearbeiten'

@@ -108,6 +108,11 @@ bc_exercises:
         participants: 'z.B. IT-Team, Geschäftsleitung, Krisenteam'
         facilitator: 'Name des Übungsleiters'
         observers: 'z.B. Externer Auditor, ISO-Beauftragter'
+    tooltip:
+        scenario: 'Beschreiben Sie das konkrete Übungsszenario (z. B. "Ransomware-Angriff auf Produktivsysteme"). Ein realistisches Szenario erhöht den Lerneffekt und deckt Lücken in den BC-Plänen auf.'
+        exercise_type: 'Wählen Sie den Übungstyp gemäß ISO 22301:2019 Kl. 8.5. Tabletop-Übungen sind theoretisch; Volltests simulieren einen realen Notfall vollständig und erfordern höheren Planungsaufwand.'
+        success_criteria: 'Definieren Sie messbare Kriterien, anhand derer der Erfolg der Übung bewertet wird (z. B. RTO eingehalten, alle Kommunikationswege funktionieren, kein Datenverlust).'
+        success_rating: 'Gesamtbewertung der Übungsdurchführung auf einer Skala von 1 (nicht bestanden) bis 5 (hervorragend). Dient als KPI für die BC-Übungshistorie und Audit-Nachweise gemäß ISO 22301.'
 bc_plans:
     message:
         readiness_score: 'Readiness Score'

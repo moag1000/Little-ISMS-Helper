@@ -21,6 +21,15 @@ mris:
         intro: |
             Werte als Prozent (0-100) bzw. Tage eingeben. Leer lassen = nicht gepflegt.
             Audit-Trail wird beim Speichern angelegt.
+    ai_agent:
+        dpia:
+            section_title: 'DPIA-Status (DSGVO Art. 35 + AI Act Art. 9)'
+            col_title: 'Titel'
+            col_status: 'Status'
+            col_link: 'Aktion'
+            open: 'Öffnen'
+            warning_missing: 'Hochrisiko-AI ohne DPIA — gem. DSGVO Art. 35 + AI Act Art. 9 erforderlich.'
+            create_button: 'DPIA anlegen'
 ai_agent:
     page:
         title: 'AI-Agent-Inventar'

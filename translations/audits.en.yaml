@@ -1,3 +1,7 @@
+audits:
+    page:
+        title: Audits
+
 title: Audits
 description: 'Planning, execution and follow-up of internal and external audits'
 planned_audits: 'Planned Audits'

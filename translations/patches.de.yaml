@@ -54,6 +54,7 @@ patch:
         failed: Fehlgeschlagen
         rolled_back: Zurückgerollt
         not_applicable: 'Nicht anwendbar'
+        overdue: Überfällig
     placeholder:
         patch_id: 'z.B. KB5001234 oder CVE-2024-1234-fix'
         title: 'z.B. Sicherheitsupdate für Windows Server'
@@ -81,3 +82,9 @@ patch:
         deployed: Eingespielt
         total: Gesamt
     empty: 'Keine Patches vorhanden'
+    show:
+        metadata: Metadaten
+        created_at: 'Erstellt am'
+        updated_at: 'Zuletzt aktualisiert'
+        estimated_minutes: 'ca. %minutes% Min.'
+        linked_vulnerability: 'Verknüpfte Schwachstelle'

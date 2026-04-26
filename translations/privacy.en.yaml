@@ -68,6 +68,29 @@ privacy:
             deadline_72h: '72h deadline'
             special_categories: 'Special Categories'
             art9_data: 'Art. 9 data'
+            affected_subjects: 'Affected Subjects'
+            total_count: 'Total count'
+        filter:
+            title: 'Filter Data Breaches'
+            all: 'All (%count%)'
+            overdue: 'OVERDUE (%count%)'
+            pending_authority: 'Pending Authority'
+            pending_subjects: 'Pending Subjects'
+            draft: 'Draft (%count%)'
+            under_assessment: 'Under Assessment (%count%)'
+            authority_notified: 'Authority Notified (%count%)'
+            closed: 'Closed (%count%)'
+        table:
+            heading: 'Data Breaches (%count%)'
+            reference: Reference
+            title: Title
+            status: Status
+            risk: Risk
+            affected_subjects: 'Affected Subjects'
+            deadline_72h: '72h Deadline'
+            authority: Authority
+            subjects: Subjects
+            unknown: Unknown
         section:
             status_workflow: 'Status & Workflow'
             linked_incident: 'Linked Security Incident'
@@ -265,7 +288,9 @@ processing_activity:
         edit_subtitle: 'Edit VVT entry (Art. 30 GDPR)'
     breadcrumb:
         privacy: 'Privacy'
+        gdpr: 'GDPR'
         vvt: 'VVT - Processing Activities'
+        vvt_short: 'VVT'
         new: 'New Processing Activity'
         edit: 'Edit'
     button:
@@ -284,6 +309,10 @@ processing_activity:
         missing_dpia: 'missing DPIA'
         special_categories: 'Special Categories'
         art9_data: 'Art. 9 data'
+        completeness: 'Completeness'
+        status: 'Status'
+        risk_level: 'Risk Level'
+        dpia_status: 'DPIA Status'
     filter:
         title: 'Filters'
         all: 'All'
@@ -329,6 +358,15 @@ processing_activity:
         save: 'Save Processing Activity'
         cancel: 'Cancel'
         delete: 'Delete Processing Activity'
+        clone: 'Clone'
+    alert:
+        compliance_issues: 'Compliance Issues'
+    dpia:
+        required: 'Required'
+        not_required: 'Not Required'
+    compliance:
+        pass: 'Pass'
+        fail: 'Fail'
     field:
         name: Name
         status: Status
@@ -752,6 +790,19 @@ dpia:
         conductor: 'Person responsible for conducting the DPIA'
         review_frequency_months: 'Review frequency in months (e.g., 12 = annually)'
         next_review_date: 'Next scheduled review date (Art. 35(11))'
+    sidebar:
+        title: 'GDPR Art. 35 – DPIA Guide'
+        what_title: 'What is a DPIA?'
+        what_text: 'A Data Protection Impact Assessment (DPIA) is a process to identify and minimise the data protection risks of a project. It is mandatory under Art. 35 GDPR when processing is likely to result in a high risk to individuals.'
+        when_title: 'When is a DPIA required?'
+        when_text: 'A DPIA is required for: systematic and extensive profiling, large-scale processing of special categories of data (Art. 9/10), or systematic monitoring of publicly accessible areas.'
+        elements_title: 'Art. 35(7) – 4 Mandatory Elements'
+        elements_a: '(a) Systematic description of the envisaged processing operations and the purposes'
+        elements_b: '(b) Assessment of the necessity and proportionality of the processing'
+        elements_c: '(c) Assessment of the risks to the rights and freedoms of data subjects'
+        elements_d: '(d) Measures to address the risks, including safeguards and mechanisms'
+        consultation_title: 'Art. 36 – Prior Consultation'
+        consultation_text: 'If the residual risk remains high after applying measures, you must consult the supervisory authority before starting the processing. The authority has up to 8 weeks to respond.'
     placeholder:
         processing_activity: 'Select processing activity'
         legal_basis: 'Select legal basis'

@@ -151,3 +151,18 @@ consent:
     warning:
         already_verified: 'Diese Einwilligung ist bereits verifiziert.'
         already_revoked: 'Diese Einwilligung ist bereits widerrufen.'
+
+    # Seitenleiste kontextbezogene Hilfe
+    sidebar:
+        title: 'DSGVO-Einwilligungsleitfaden (Art. 7)'
+        valid_title: 'Wirksame Einwilligung (Art. 7)'
+        valid_text: 'Die Einwilligung muss freiwillig, fuer einen bestimmten Zweck, informiert und eindeutig sein. Sie erfordert eine aktive Handlung – Schweigen, vorausgefuellte Felder oder Untaetigkeit stellen keine Einwilligung dar.'
+        conditions_title: 'Voraussetzungen fuer die Einwilligung'
+        condition_1: 'Freiwillig: keine Nachteile bei Verweigerung oder Widerruf der Einwilligung'
+        condition_2: 'Spezifisch: separate Einwilligung fuer jeden einzelnen Verarbeitungszweck'
+        condition_3: 'Informiert: Betroffene muessen wissen, wer Daten erhebt und wofuer'
+        condition_4: 'Eindeutig: klare Opt-in-Handlung, kein Opt-out'
+        methods_title: 'Einwilligungsmethoden und -kanaele'
+        methods_text: 'Einwilligungen koennen per Schriftformular, elektronischer Checkbox, Double-Opt-in-E-Mail, muendliche Zustimmung oder persoenlich eingeholt werden. Die Methode muss dokumentiert werden.'
+        proof_title: 'Nachweisdokumentation (Art. 5(2))'
+        proof_text: 'Gemaess Rechenschaftspflicht muessen Sie nachweisen koennen, dass die Einwilligung eingeholt wurde. Erfassen Sie Methode, Kanal, Datum und den genauen Text, der der betroffenen Person zum Zeitpunkt der Einwilligung angezeigt wurde.'
