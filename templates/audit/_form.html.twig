@@ -429,13 +429,13 @@
     {% if is_edit_mode|default(false) %}
     <div>
         <a href="{{ path('app_audit_show', {id: audit.id}) }}"
-           class="btn btn-outline-secondary"
+           class="fa-cyber-btn fa-cyber-btn--ghost"
            data-turbo-action="advance">
             <i class="bi bi-arrow-left" aria-hidden="true"></i>
             {{ 'common.back'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_audit_index') }}"
-           class="btn btn-outline-secondary"
+           class="fa-cyber-btn fa-cyber-btn--ghost"
            data-turbo-action="advance">
             <i class="bi bi-list" aria-hidden="true"></i>
             {{ 'common.to_list'|trans({}, 'messages') }}
@@ -443,14 +443,14 @@
     </div>
     {% else %}
     <a href="{{ path('app_audit_index') }}"
-       class="btn btn-outline-secondary"
+       class="fa-cyber-btn fa-cyber-btn--ghost"
        data-turbo-action="advance">
         <i class="bi bi-arrow-left" aria-hidden="true"></i>
         {{ 'common.back'|trans({}, 'messages') }}
     </a>
     {% endif %}
 
-    <button type="submit" class="btn btn-primary btn-lg">
+    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
         <i class="{{ button_icon|default('bi-save') }}" aria-hidden="true"></i>
         {{ button_label|default('common.save'|trans({}, 'messages')) }}
     </button>

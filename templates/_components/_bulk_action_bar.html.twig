@@ -112,7 +112,7 @@
             </div>
 
             <button type="button"
-                    class="btn btn-outline-secondary ms-auto"
+                    class="fa-cyber-btn fa-cyber-btn--ghost ms-auto"
                     data-action="click->bulk-actions#deselectAll"
                     aria-label="{{ 'tags.bulk.clear_selection'|trans({}, 'tags') }}">
                 <i class="bi bi-x-lg" aria-hidden="true"></i>
@@ -156,13 +156,13 @@
 
                     <div class="d-flex gap-2">
                         <button type="button"
-                                class="btn btn-sm btn-success"
+                                class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
                                 data-action="click->bulk-actions#submitTagApply">
                             <i class="bi bi-check2" aria-hidden="true"></i>
                             {{ 'tags.bulk.apply'|trans({}, 'tags') }}
                         </button>
                         <button type="button"
-                                class="btn btn-sm btn-outline-secondary"
+                                class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                                 data-action="click->bulk-actions#closeTagPicker">
                             {{ 'tags.bulk.cancel'|trans({}, 'tags') }}
                         </button>
@@ -188,7 +188,7 @@
         <div class="bulk-actions">
             {% if 'export' in actions %}
                 <button type="button"
-                        class="bulk-action-btn bulk-action-btn-success"
+                        class="bulk-action-fa-cyber-btn bulk-action-fa-cyber-btn--success"
                         data-action="click->bulk-actions#bulkExport">
                     <i class="bi bi-download" aria-hidden="true"></i>
                     {{ 'bulk_actions.export'|trans({}, 'messages') }}
@@ -215,7 +215,7 @@
 
             {% if 'delete' in actions %}
                 <button type="button"
-                        class="bulk-action-btn bulk-action-btn-danger"
+                        class="bulk-action-fa-cyber-btn bulk-action-fa-cyber-btn--danger"
                         data-action="click->bulk-actions#bulkDelete">
                     <i class="bi bi-trash" aria-hidden="true"></i>
                     {{ 'bulk_actions.delete'|trans({}, 'messages') }}

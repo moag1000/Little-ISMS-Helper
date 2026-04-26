@@ -302,14 +302,14 @@
                 <td class="text-center">
                     <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                         <a href="{{ path('app_incident_show', {id: incident.id}) }}"
-                           class="btn btn-outline-primary"
+                           class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance"
                            title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                             <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
                         {% if is_granted('ROLE_USER') and incident.status != 'closed' %}
                         <a href="{{ path('app_incident_edit', {id: incident.id}) }}"
-                           class="btn btn-outline-secondary"
+                           class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance"
                            title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                             <i class="bi bi-pencil" aria-hidden="true"></i>

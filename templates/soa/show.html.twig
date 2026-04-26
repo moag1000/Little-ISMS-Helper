@@ -40,11 +40,11 @@
         </div>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-primary">
+        <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
             <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'soa.action.edit'|trans({}, 'soa') }}
         </a>
         {%- set categoryLabel = ('soa.category.' ~ control.category)|trans({}, 'soa') -%}
-        <a href="{{ path('app_soa_by_category', {category: control.category}) }}" class="btn btn-secondary">
+        <a href="{{ path('app_soa_by_category', {category: control.category}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             ← {{ 'soa.action.back_to_category'|trans({'%category%': categoryLabel}, 'soa') }}
         </a>
     </div>
@@ -401,7 +401,7 @@
                                         <input type="hidden" name="_token"
                                                value="{{ csrf_token('accept_suggestion_' ~ control.id ~ '_' ~ row.requirement.id) }}">
                                         <input type="hidden" name="confidence" value="{{ row.confidence }}">
-                                        <button type="submit" class="btn btn-sm btn-outline-success">
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success">
                                             <i class="bi bi-plus-circle" aria-hidden="true"></i>
                                             {{ 'control.mapping_suggestions.accept'|trans({}, 'control') }}
                                         </button>
@@ -423,10 +423,10 @@
 
 {# Action Buttons #}
 <div class="d-flex gap-2 mt-4">
-    <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-success">
+    <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--success">
         <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'soa.action.edit'|trans({}, 'soa') }}
     </a>
-    <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">
+    <a href="{{ path('app_soa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
         <i class="bi bi-list" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
     </a>
 </div>

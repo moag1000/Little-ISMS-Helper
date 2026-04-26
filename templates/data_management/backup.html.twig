@@ -44,7 +44,7 @@
                                 </label>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" id="createBackupBtn">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary" id="createBackupBtn">
                             <i class="bi bi-cloud-download me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.create_now'|trans({}, 'admin') }}
                         </button>
                     </form>
@@ -78,7 +78,7 @@
                             <input type="file" class="form-control" id="backupFile" name="backup_file" accept=".json,.gz">
                             <div class="form-text">{{ 'data_management.backup.upload.allowed_formats'|trans({}, 'admin') }}</div>
                         </div>
-                        <button type="submit" class="btn btn-info" id="uploadBackupBtn">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost" id="uploadBackupBtn">
                             <i class="bi bi-cloud-upload me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.upload'|trans({}, 'admin') }}
                         </button>
                     </form>
@@ -95,7 +95,7 @@
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
                         <h3 class="mb-0">
-                            <i class="fa-icon fa-icon--status-archived" aria-hidden="true"></i> {{ 'data_management.backup.section.available'|trans({}, 'admin') }}
+                            <i class="bi bi-archive" aria-hidden="true"></i> {{ 'data_management.backup.section.available'|trans({}, 'admin') }}
                         </h3>
                     </div>
                 {% endblock %}
@@ -131,19 +131,19 @@
                                         <td>{{ (backup.size / 1024 / 1024)|number_format(2) }} MB</td>
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
-                                                <button type="button" class="btn btn-outline-primary validate-backup" data-filename="{{ backup.filename }}" data-token="{{ csrf_token('data_backup_validate') }}">
+                                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost validate-backup" data-filename="{{ backup.filename }}" data-token="{{ csrf_token('data_backup_validate') }}">
                                                     <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'data_management.backup.action.validate'|trans({}, 'admin') }}
                                                 </button>
-                                                <button type="button" class="btn btn-outline-info preview-backup" data-filename="{{ backup.filename }}">
+                                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost preview-backup" data-filename="{{ backup.filename }}">
                                                     <i class="bi bi-eye" aria-hidden="true"></i> {{ 'data_management.backup.action.preview'|trans({}, 'admin') }}
                                                 </button>
-                                                <a href="{{ path('data_backup_download', {filename: backup.filename}) }}" class="btn btn-outline-success">
+                                                <a href="{{ path('data_backup_download', {filename: backup.filename}) }}" class="fa-cyber-btn fa-cyber-btn--success">
                                                     <i class="bi bi-download" aria-hidden="true"></i> {{ 'data_management.backup.action.download'|trans({}, 'admin') }}
                                                 </a>
-                                                <button type="button" class="btn btn-outline-warning restore-backup" data-filename="{{ backup.filename }}">
+                                                <button type="button" class="fa-cyber-btn fa-cyber-btn--warning restore-backup" data-filename="{{ backup.filename }}">
                                                     <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'data_management.backup.action.restore_action'|trans({}, 'admin') }}
                                                 </button>
-                                                <button type="button" class="btn btn-outline-danger delete-backup" data-filename="{{ backup.filename }}" data-token="{{ csrf_token('data_backup_delete') }}">
+                                                <button type="button" class="fa-cyber-btn fa-cyber-btn--danger delete-backup" data-filename="{{ backup.filename }}" data-token="{{ csrf_token('data_backup_delete') }}">
                                                     <i class="bi bi-trash" aria-hidden="true"></i> {{ 'data_management.backup.action.delete'|trans({}, 'admin') }}
                                                 </button>
                                             </div>
@@ -166,7 +166,7 @@
             <div class="backup-modal-content">
                 <div class="backup-modal-header bg-warning-subtle text-warning">
                     <h4 class="backup-modal-title h5" id="restoreModalLabel">
-                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'data_management.backup.restore.title'|trans({}, 'admin') }}
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'data_management.backup.restore.title'|trans({}, 'admin') }}
                     </h4>
                     <button type="button" class="btn-close backup-modal-close" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                 </div>
@@ -274,11 +274,11 @@
                     </form>
                 </div>
                 <div class="backup-modal-footer">
-                    <button type="button" class="btn btn-secondary backup-modal-close">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                    <button type="button" class="btn btn-outline-secondary" id="dryRunRestoreBtn">
-                        <i class="fa-icon fa-icon--compliance-shield me-2" aria-hidden="true"></i>{{ 'data.backup.restore_dry_run'|trans({}, 'data_management') }}
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost backup-modal-close">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" id="dryRunRestoreBtn">
+                        <i class="bi bi-shield-check me-2" aria-hidden="true"></i>{{ 'data.backup.restore_dry_run'|trans({}, 'data_management') }}
                     </button>
-                    <button type="button" class="btn btn-warning" id="confirmRestoreBtn">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" id="confirmRestoreBtn">
                         <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.start_restore'|trans({}, 'admin') }}
                     </button>
                 </div>
@@ -308,7 +308,7 @@
                     </div>
                 </div>
                 <div class="backup-modal-footer">
-                    <button type="button" class="btn btn-secondary backup-modal-close">{{ 'common.close'|trans({}, 'messages') }}</button>
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost backup-modal-close">{{ 'common.close'|trans({}, 'messages') }}</button>
                 </div>
             </div>
         </div>
@@ -426,7 +426,7 @@
                 return '<div class="fa-alert fa-alert--danger" role="alert"><i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body"><p class="fa-alert__message">' + _t.errorLabel + ': ' + msg + '</p></div></div>';
             },
             restoreErrorAlert: function(msg) {
-                return '<div class="fa-alert fa-alert--danger" role="alert"><i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body"><p class="fa-alert__message">' + _t.errorLabel + ': ' + msg + '</p></div></div>';
+                return '<div class="fa-alert fa-alert--danger" role="alert"><i class="bi bi-x-circle fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body"><p class="fa-alert__message">' + _t.errorLabel + ': ' + msg + '</p></div></div>';
             }
         };
 
@@ -482,8 +482,8 @@
                     if (result.success) {
                         createBackupStatus.innerHTML = `
                             <div class="fa-alert fa-alert--success" role="alert">
-                                <i class="fa-icon fa-icon--status-ok" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+                                <i class="bi bi-check-circle" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="bi bi-check-circle" aria-hidden="true"></i>
                                 <strong>${result.message}</strong><br>
                                 {{ 'data_management.backup.message.file'|trans({}, 'admin') }}: ${result.filename}<br>
                                 <small>{{ 'data_management.backup.message.saved_entries'|trans({}, 'admin') }}: ${Object.values(result.statistics).reduce((a, b) => a + b, 0)}</small>
@@ -505,8 +505,8 @@
                     } else {
                         createBackupStatus.innerHTML = `
                             <div class="fa-alert fa-alert--danger" role="alert">
-                                <i class="fa-icon fa-icon--status-critical" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> ${result.message}
+                                <i class="bi bi-x-circle" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                 </div>
                                 <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
@@ -518,8 +518,8 @@
                 } catch (error) {
                     createBackupStatus.innerHTML = `
                         <div class="fa-alert fa-alert--danger" role="alert">
-                            <i class="fa-icon fa-icon--status-critical" fa-alert__icon" aria-hidden="true"></i>
-                            <div class="fa-alert__body"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
+                            <i class="bi bi-x-circle" fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                             </div>
                             <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
@@ -568,8 +568,8 @@
                     if (result.success) {
                         uploadBackupStatus.innerHTML = `
                             <div class="fa-alert fa-alert--success" role="alert">
-                                <i class="fa-icon fa-icon--status-ok" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> ${result.message}
+                                <i class="bi bi-check-circle" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="bi bi-check-circle" aria-hidden="true"></i> ${result.message}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                 </div>
                                 <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
@@ -589,8 +589,8 @@
                     } else {
                         uploadBackupStatus.innerHTML = `
                             <div class="fa-alert fa-alert--danger" role="alert">
-                                <i class="fa-icon fa-icon--status-critical" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> ${result.message}
+                                <i class="bi bi-x-circle" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                 </div>
                                 <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
@@ -602,8 +602,8 @@
                 } catch (error) {
                     uploadBackupStatus.innerHTML = `
                         <div class="fa-alert fa-alert--danger" role="alert">
-                            <i class="fa-icon fa-icon--status-critical" fa-alert__icon" aria-hidden="true"></i>
-                            <div class="fa-alert__body"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
+                            <i class="bi bi-x-circle" fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                             </div>
                             <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
@@ -843,10 +843,10 @@
                     if (result.success) {
                         const isDryRun = result.dry_run === true;
                         let html = isDryRun
-                            ? `<div class="fa-alert fa-alert--info" role="alert"><i class="fa-icon fa-icon--compliance-shield fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body"><strong>${result.message}</strong>`
+                            ? `<div class="fa-alert fa-alert--info" role="alert"><i class="bi bi-shield-check fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body"><strong>${result.message}</strong>`
                             : `<div class="fa-alert fa-alert--success" role="alert">
-                                <i class="fa-icon fa-icon--status-ok" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> <strong>${result.message}</strong>`;
+                                <i class="bi bi-check-circle" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="bi bi-check-circle" aria-hidden="true"></i> <strong>${result.message}</strong>`;
 
                         if (isDryRun) {
                             // Count total simulated entities

@@ -28,14 +28,14 @@
     {# Filter-Buttons nach Herkunft #}
     <div class="mb-3 d-flex flex-wrap gap-2">
         <a href="{{ path('app_compliance_mapping_seed_review', {origin: 'all'}) }}"
-           class="btn btn-sm {% if filter == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+           class="fa-cyber-btn fa-cyber-btn--sm {% if filter == 'all' %}fa-cyber-btn--primary{% else %}fa-cyber-btn--ghost{% endif %}">
             {{ 'compliance.mapping.seed_review.filter.all'|trans({}, 'compliance') }}
             <span class="badge bg-body-secondary fa-status-pill fa-status-pill--neutral ms-1">{{ counts.all|default(0) }}</span>
         </a>
         {% for origin, n in counts %}
             {% if origin != 'all' %}
                 <a href="{{ path('app_compliance_mapping_seed_review', {origin: origin}) }}"
-                   class="btn btn-sm {% if filter == origin %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                   class="fa-cyber-btn fa-cyber-btn--sm {% if filter == origin %}fa-cyber-btn--primary{% else %}fa-cyber-btn--ghost{% endif %}">
                     <code>{{ origin }}</code>
                     <span class="badge bg-body-secondary fa-status-pill fa-status-pill--neutral ms-1">{{ n }}</span>
                 </a>
@@ -93,7 +93,7 @@
                                           class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token('seed_review_' ~ m.id) }}">
                                         <input type="hidden" name="origin" value="{{ filter }}">
-                                        <button type="submit" class="btn btn-sm btn-success" title="{{ 'compliance.mapping.seed_review.action.approve'|trans({}, 'compliance') }}">
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success" title="{{ 'compliance.mapping.seed_review.action.approve'|trans({}, 'compliance') }}">
                                             <i class="bi bi-check-lg" aria-hidden="true"></i>
                                         </button>
                                     </form>
@@ -102,7 +102,7 @@
                                           class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token('seed_review_' ~ m.id) }}">
                                         <input type="hidden" name="origin" value="{{ filter }}">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="{{ 'compliance.mapping.seed_review.action.reject'|trans({}, 'compliance') }}">
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger" title="{{ 'compliance.mapping.seed_review.action.reject'|trans({}, 'compliance') }}">
                                             <i class="bi bi-x-lg" aria-hidden="true"></i>
                                         </button>
                                     </form>

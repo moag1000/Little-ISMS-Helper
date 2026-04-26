@@ -85,7 +85,7 @@
                             </h3>
                             <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                 <a href="{{ path('admin_mfa_setup_totp', {id: user_data.user.id}) }}"
-                                   class="btn btn-sm btn-outline-primary">
+                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_new'|trans({}, 'mfa') }}
                                 </a>
                             </div>
@@ -148,7 +148,7 @@
                                     <td>
                                         <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                             <a href="{{ path('admin_mfa_show', {id: token.id}) }}"
-                                               class="btn btn-outline-primary"
+                                               class="fa-cyber-btn fa-cyber-btn--ghost"
                                                title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                                 <i class="bi bi-eye" aria-hidden="true"></i>
                                             </a>
@@ -161,7 +161,7 @@
                                                       data-ui-actions-message-param="{{ 'mfa_token.confirm_disable'|trans({}, 'mfa') }}">
                                                     <input type="hidden" name="_token" value="{{ csrf_token('disable_' ~ token.id) }}">
                                                     <button type="submit"
-                                                            class="btn btn-outline-warning"
+                                                            class="fa-cyber-btn fa-cyber-btn--warning"
                                                             title="{{ 'mfa_token.action.disable'|trans({}, 'mfa') }}" aria-label="{{ 'mfa_token.action.disable'|trans({}, 'mfa') }}">
                                                         <i class="bi bi-pause-circle" aria-hidden="true"></i>
                                                     </button>
@@ -175,7 +175,7 @@
                                                   data-ui-actions-message-param="{{ 'mfa_token.confirm_delete'|trans({}, 'mfa') }}">
                                                 <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ token.id) }}">
                                                 <button type="submit"
-                                                        class="btn btn-outline-danger"
+                                                        class="fa-cyber-btn fa-cyber-btn--danger"
                                                         title="{{ 'common.delete'|trans({}, 'messages') }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
                                                     <i class="bi bi-trash" aria-hidden="true"></i>
                                                 </button>

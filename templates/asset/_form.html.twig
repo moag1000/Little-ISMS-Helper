@@ -124,7 +124,7 @@
 {# CIA Values Section (Information Security) #}
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
-        <i class="fa-icon fa-icon--control" aria-hidden="true"></i>
+        <i class="bi bi-shield-lock" aria-hidden="true"></i>
         {{ 'asset.section.cia_values'|trans({}, 'asset') }}
     </legend>
 
@@ -285,12 +285,12 @@
 {# Form Actions #}
 <div class="form-actions d-flex gap-2 justify-content-end">
     <a href="{{ path('app_asset_index') }}"
-       class="btn btn-secondary">
-        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+       class="fa-cyber-btn fa-cyber-btn--ghost">
+        <i class="bi bi-x-circle" aria-hidden="true"></i>
         {{ 'common.cancel'|trans({}, 'messages') }}
     </a>
 
-    <button type="submit" class="btn btn-primary">
+    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
         <i class="{{ button_icon|default('bi-save') }}" aria-hidden="true"></i>
         {{ button_label|default('common.save'|trans({}, 'messages')) }}
     </button>

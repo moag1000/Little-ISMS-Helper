@@ -7,7 +7,7 @@
 
 {% block admin_content %}
     <div class="mb-4">
-        <a href="{{ path('admin_mfa_show', {id: mfa_token.id}) }}" class="btn btn-outline-secondary">
+        <a href="{{ path('admin_mfa_show', {id: mfa_token.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
@@ -75,17 +75,17 @@
 
                     <div class="d-grid gap-2 mt-4">
                         <button type="button"
-                                class="btn btn-primary"
+                                class="fa-cyber-btn fa-cyber-btn--primary"
                                 data-action="backup-codes#copy">
                             <i class="bi bi-clipboard" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.copy_all'|trans({}, 'mfa') }}
                         </button>
                         <button type="button"
-                                class="btn btn-outline-secondary"
+                                class="fa-cyber-btn fa-cyber-btn--ghost"
                                 data-action="backup-codes#print">
                             <i class="bi bi-printer" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.print'|trans({}, 'mfa') }}
                         </button>
                         <button type="button"
-                                class="btn btn-outline-secondary"
+                                class="fa-cyber-btn fa-cyber-btn--ghost"
                                 data-action="backup-codes#download">
                             <i class="bi bi-download" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.download'|trans({}, 'mfa') }}
                         </button>

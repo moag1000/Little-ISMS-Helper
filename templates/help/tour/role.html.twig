@@ -27,13 +27,13 @@
         </div>
         <div class="d-flex gap-2">
             <a href="{{ path('app_home') }}"
-               class="btn btn-primary btn-sm"
+               class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                data-action="click->guided-tour#start"
                data-guided-tour-role-param="{{ tour_id }}">
                 <i class="bi bi-play-circle" aria-hidden="true"></i>
                 {{ 'help.tour.start_interactive'|trans({}, 'help') }}
             </a>
-            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" onclick="window.print()">
                 <i class="bi bi-printer" aria-hidden="true"></i>
                 {{ 'help.tour.print'|trans({}, 'help') }}
             </button>

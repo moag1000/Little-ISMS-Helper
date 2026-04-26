@@ -80,12 +80,12 @@
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center">
-                        <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-secondary">
-                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                        <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <i class="bi bi-x-circle" aria-hidden="true"></i>
                             {{ 'common.cancel'|trans({}, 'messages') }}
                         </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="bi bi-check-circle" aria-hidden="true"></i>
                             {{ 'risk.acceptance.submit_request'|trans({}, 'risk') }}
                         </button>
                     </div>

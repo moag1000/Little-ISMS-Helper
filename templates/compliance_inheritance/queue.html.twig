@@ -13,17 +13,17 @@
         </div>
         <div class="btn-group" role="group" aria-label="{{ 'compliance_inheritance.queue.filter'|trans({}, 'compliance_inheritance') }}">
             <a href="{{ path('app_compliance_inheritance_queue', { frameworkCode: framework.code, status: 'pending' }) }}"
-               class="btn btn-outline-primary {% if status_filter == 'pending' %}active{% endif %}"
+               class="fa-cyber-btn fa-cyber-btn--ghost {% if status_filter == 'pending' %}active{% endif %}"
                aria-pressed="{{ status_filter == 'pending' ? 'true' : 'false' }}">
                 {{ 'compliance_inheritance.queue.filter_pending'|trans({}, 'compliance_inheritance') }}
             </a>
             <a href="{{ path('app_compliance_inheritance_queue', { frameworkCode: framework.code, status: 'source_updated' }) }}"
-               class="btn btn-outline-warning {% if status_filter == 'source_updated' %}active{% endif %}"
+               class="fa-cyber-btn fa-cyber-btn--warning {% if status_filter == 'source_updated' %}active{% endif %}"
                aria-pressed="{{ status_filter == 'source_updated' ? 'true' : 'false' }}">
                 {{ 'compliance_inheritance.queue.filter_source_updated'|trans({}, 'compliance_inheritance') }}
             </a>
             <a href="{{ path('app_compliance_inheritance_queue', { frameworkCode: framework.code, status: 'all' }) }}"
-               class="btn btn-outline-secondary {% if status_filter == 'all' %}active{% endif %}"
+               class="fa-cyber-btn fa-cyber-btn--ghost {% if status_filter == 'all' %}active{% endif %}"
                aria-pressed="{{ status_filter == 'all' ? 'true' : 'false' }}">
                 {{ 'compliance_inheritance.queue.filter_all'|trans({}, 'compliance_inheritance') }}
             </a>

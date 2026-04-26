@@ -68,12 +68,12 @@
         {% block card_body %}
             <div class="btn-group btn-group-sm" role="group">
                 <a href="{{ path('permission_index') }}"
-                   class="btn btn-sm {{ currentCategory is null ? 'btn-primary' : 'btn-outline-primary' }}">
+                   class="fa-cyber-btn fa-cyber-btn--sm {{ currentCategory is null ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}">
                     Alle
                 </a>
                 {% for category in categories %}
                     <a href="{{ path('permission_index', {category: category}) }}"
-                       class="btn btn-sm {{ currentCategory == category ? 'btn-primary' : 'btn-outline-primary' }}">
+                       class="fa-cyber-btn fa-cyber-btn--sm {{ currentCategory == category ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}">
                         {{ category|title }}
                     </a>
                 {% endfor %}
@@ -118,7 +118,7 @@
                                 </td>
                                 <td class="text-end">
                                     <a href="{{ path('permission_show', {id: permission.id}) }}"
-                                       class="btn btn-sm btn-outline-primary">
+                                       class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                         <i class="bi bi-eye" aria-hidden="true"></i> Details
                                     </a>
                                 </td>

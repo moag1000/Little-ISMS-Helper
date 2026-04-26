@@ -59,7 +59,7 @@
                 {% endif %}
             </select>
             <noscript>
-                <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">{{ 'common.apply'|trans({}, 'messages') }}</button>
             </noscript>
         </form>
     {% endblock %}
@@ -185,7 +185,7 @@
                            placeholder="{{ 'control.bulk.reason_placeholder'|trans({}, 'control') }}">
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary btn-sm w-100"
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100"
                             onclick="this.form.querySelectorAll('[name=control_ids_raw]')[0].value.split(/[,\s]+/).filter(Boolean).forEach(id => { var h = document.createElement('input'); h.type='hidden'; h.name='control_ids[]'; h.value=id; this.form.appendChild(h); });">
                         <i class="bi bi-check-lg" aria-hidden="true"></i>
                         {{ 'control.bulk.submit'|trans({}, 'control') }}
@@ -336,8 +336,8 @@
             </td>
             <td class="text-center">
                 <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                    <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">👁 {{ 'common.view'|trans({}, 'messages') }}</a>
-                    <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-outline-secondary" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
+                    <a href="{{ path('app_soa_show', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">👁 {{ 'common.view'|trans({}, 'messages') }}</a>
+                    <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
                 </div>
             </td>
         </tr>

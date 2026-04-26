@@ -74,7 +74,7 @@
 
         {# View All Wizards Link #}
         <div class="text-center mt-3">
-            <a href="{{ path('app_compliance_wizard_index') }}" class="btn btn-sm btn-outline-primary">
+            <a href="{{ path('app_compliance_wizard_index') }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                 <i class="fa-icon fa-icon--audit-internal" aria-hidden="true"></i>
                 {{ 'wizard.view_all_wizards'|trans({}, 'wizard') }}
             </a>
@@ -95,7 +95,7 @@
     <div class="widget-body p-3 text-center">
         <i class="fa-icon fa-icon--compliance-shield display-4 text-muted mb-3" aria-hidden="true"></i>
         <p class="text-muted mb-3">{{ 'wizard.no_frameworks_available'|trans({}, 'wizard') }}</p>
-        <a href="{{ path('app_compliance_wizard_index') }}" class="btn btn-sm btn-primary">
+        <a href="{{ path('app_compliance_wizard_index') }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
             <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
             {{ 'wizard.get_started'|trans({}, 'wizard') }}
         </a>

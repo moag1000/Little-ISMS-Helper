@@ -28,12 +28,12 @@
         </div>
         <div class="btn-group" role="group" aria-label="{{ 'gap_report.sort_label'|trans({}, 'gap_report') }}">
             <a href="{{ path('app_compliance_wizard_gap_report', {wizard: wizard, sort: 'effort'}) }}"
-               class="btn btn-sm {{ sort == 'effort' ? 'btn-primary' : 'btn-outline-primary' }}"
+               class="fa-cyber-btn fa-cyber-btn--sm {{ sort == 'effort' ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}"
                aria-pressed="{{ sort == 'effort' ? 'true' : 'false' }}">
                 <i class="bi bi-sort-numeric-down me-1" aria-hidden="true"></i>{{ 'gap_report.sort.effort'|trans({}, 'gap_report') }}
             </a>
             <a href="{{ path('app_compliance_wizard_gap_report', {wizard: wizard, sort: 'quick-wins'}) }}"
-               class="btn btn-sm {{ sort == 'quick-wins' ? 'btn-primary' : 'btn-outline-primary' }}"
+               class="fa-cyber-btn fa-cyber-btn--sm {{ sort == 'quick-wins' ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}"
                aria-pressed="{{ sort == 'quick-wins' ? 'true' : 'false' }}">
                 <i class="bi bi-lightning-charge me-1" aria-hidden="true"></i>{{ 'gap_report.sort.quick_wins'|trans({}, 'gap_report') }}
             </a>
@@ -50,7 +50,7 @@
     } only %}
 
     <div class="d-flex justify-content-between mt-4">
-        <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}" class="btn btn-outline-secondary">
+        <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>{{ 'gap_report.back_to_assessment'|trans({}, 'gap_report') }}
         </a>
     </div>

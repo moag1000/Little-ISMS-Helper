@@ -14,7 +14,7 @@
 
     <div class="page-header">
         <h1>{{ 'crisis_team.new'|trans({}, 'crisis_team')}}</h1>
-        <a href="{{ path('app_crisis_team_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
+        <a href="{{ path('app_crisis_team_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
     </div>
 
     {% embed '_components/_card.html.twig' %}
@@ -90,10 +90,10 @@
                 } %}
 
                 <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_crisis_team_index') }}" class="btn btn-secondary">
+                    <a href="{{ path('app_crisis_team_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         {{ 'common.create'|trans({}, 'messages') }}
                     </button>
                 </div>

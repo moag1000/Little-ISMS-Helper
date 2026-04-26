@@ -58,7 +58,7 @@
 
             {% if source_type == 'vulnerability' %}
                 <a href="{{ path('app_risk_new', {fromVulnerability: entity.id}) }}"
-                   class="btn btn-primary btn-sm"
+                   class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                    aria-describedby="link-matrix-help-derive-risk-from-vuln">
                     <i class="bi bi-plus-circle" aria-hidden="true"></i>
                     {{ 'common.link_matrix.derive_risk_from_vulnerability'|trans({}, 'messages') }}
@@ -68,7 +68,7 @@
                 </small>
             {% elseif source_type == 'incident' %}
                 <a href="{{ path('app_risk_new', {fromIncident: entity.id}) }}"
-                   class="btn btn-primary btn-sm"
+                   class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                    aria-describedby="link-matrix-help-derive-risk-from-incident">
                     <i class="bi bi-plus-circle" aria-hidden="true"></i>
                     {{ 'common.link_matrix.derive_risk_from_incident'|trans({}, 'messages') }}
@@ -113,7 +113,7 @@
 
             {% if source_type == 'incident' %}
                 <a href="{{ path('app_vulnerability_new', {fromIncident: entity.id}) }}"
-                   class="btn btn-primary btn-sm"
+                   class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                    aria-describedby="link-matrix-help-derive-vuln-from-incident">
                     <i class="bi bi-plus-circle" aria-hidden="true"></i>
                     {{ 'common.link_matrix.derive_vulnerability_from_incident'|trans({}, 'messages') }}
@@ -159,7 +159,7 @@
 
             {% if source_type == 'risk' %}
                 <a href="{{ path('app_incident_new', {fromRisk: entity.id}) }}"
-                   class="btn btn-primary btn-sm"
+                   class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                    aria-describedby="link-matrix-help-derive-incident-from-risk">
                     <i class="bi bi-plus-circle" aria-hidden="true"></i>
                     {{ 'common.link_matrix.derive_incident_from_risk'|trans({}, 'messages') }}

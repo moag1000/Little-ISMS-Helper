@@ -39,7 +39,7 @@
                 <form method="post" action="{{ path('app_industry_baseline_apply', {code: baseline.code}) }}"
                       onsubmit="return confirm('{{ 'industry_baseline.confirm_apply_over_inherited'|trans({}, 'industry_baseline')|e('js') }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('apply_baseline_' ~ baseline.code) }}">
-                    <button type="submit" class="btn btn-outline-primary btn-sm">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                         <i class="bi bi-rocket-takeoff" aria-hidden="true"></i>
                         {{ 'industry_baseline.action.apply_locally'|trans({}, 'industry_baseline') }}
                     </button>
@@ -48,7 +48,7 @@
                 <form method="post" action="{{ path('app_industry_baseline_apply', {code: baseline.code}) }}"
                       onsubmit="return confirm('{{ 'industry_baseline.confirm_apply'|trans({}, 'industry_baseline')|e('js') }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('apply_baseline_' ~ baseline.code) }}">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         <i class="bi bi-rocket-takeoff" aria-hidden="true"></i>
                         {{ 'industry_baseline.action.apply'|trans({}, 'industry_baseline') }}
                     </button>
@@ -59,7 +59,7 @@
                 <form method="post" action="{{ path('app_industry_baseline_apply_recursive', {code: baseline.code}) }}"
                       onsubmit="return confirm('{{ 'industry_baseline.confirm_apply_recursive'|trans({'%count%': app.user.tenant.allSubsidiaries|length + 1}, 'industry_baseline')|e('js') }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('apply_baseline_recursive_' ~ baseline.code) }}">
-                    <button type="submit" class="btn btn-outline-primary btn-sm">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                         <i class="bi bi-diagram-3" aria-hidden="true"></i>
                         {{ 'industry_baseline.action.apply_recursive'|trans({'%count%': app.user.tenant.allSubsidiaries|length + 1}, 'industry_baseline') }}
                     </button>

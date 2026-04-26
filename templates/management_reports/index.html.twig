@@ -91,7 +91,7 @@
                 {% block card_footer %}
                     <div class="card-footer bg-body-secondary">
                         {% set route_name = 'app_management_reports_' ~ category.key %}
-                        <a href="{{ path(route_name) }}" class="fa-cyber-btn fa-cyber-btn--sm {{ category.color in ['danger','warning'] ? 'fa-cyber-btn--' ~ category.color : 'fa-cyber-btn--ghost' }}">
+                        <a href="{{ path(route_name) }}" class="fa-cyber-btn fa-cyber-btn--sm {{ category.color in ['danger','warning'] ? 'fa-cyber-btn--' ~ : 'fa-cyber-btn--ghost' }}">
                             <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'management_reports.action.view_reports'|trans({}, 'management_reports') }}
                         </a>
                     </div>

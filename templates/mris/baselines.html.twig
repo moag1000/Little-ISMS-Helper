@@ -58,12 +58,12 @@
                                 <form method="post" action="{{ path('app_mris_baselines_apply') }}" class="d-flex gap-2 flex-wrap">
                                     <input type="hidden" name="_token" value="{{ csrf_token('mris_baseline_apply') }}">
                                     <input type="hidden" name="baseline_id" value="{{ baseline.id }}">
-                                    <button type="submit" name="dry_run" value="1" class="btn btn-sm btn-outline-secondary">
+                                    <button type="submit" name="dry_run" value="1" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                         Vorschau (Dry-Run)
                                     </button>
                                     <button type="submit"
-                                            class="btn btn-sm btn-primary"
+                                            class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary"
                                             data-confirm="Baseline '{{ baseline.name }}' wirklich auf Mandant '{{ tenant.name }}' anwenden? Bestehende Soll-Stufen werden überschrieben.">
                                         <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                         Anwenden

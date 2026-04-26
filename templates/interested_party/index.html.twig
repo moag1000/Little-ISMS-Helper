@@ -88,8 +88,8 @@
                         <td>{{ party.getEngagementScore() }}</td>
                         <td>{{ party.lastCommunication ? party.lastCommunication|date('Y-m-d') : ('interested_party.never'|trans({}, 'interested_parties')) }}</td>
                         <td>
-                            <a href="{{ path('app_interested_party_show', {id: party.id}) }}" class="btn btn-sm btn-secondary">{{ 'interested_party.action.view'|trans({}, 'interested_parties') }}</a>
-                            <a href="{{ path('app_interested_party_edit', {id: party.id}) }}" class="btn btn-sm btn-primary">{{ 'interested_party.action.edit'|trans({}, 'interested_parties') }}</a>
+                            <a href="{{ path('app_interested_party_show', {id: party.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">{{ 'interested_party.action.view'|trans({}, 'interested_parties') }}</a>
+                            <a href="{{ path('app_interested_party_edit', {id: party.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">{{ 'interested_party.action.edit'|trans({}, 'interested_parties') }}</a>
                         </td>
                     </tr>
                     {% endfor %}

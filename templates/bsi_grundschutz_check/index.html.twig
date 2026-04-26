@@ -63,12 +63,12 @@
                     </select>
                 </div>
                 <noscript>
-                    <button type="submit" class="btn btn-primary btn-sm">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
                         {{ 'bsi_check.filter.apply'|trans({}, 'messages') }}
                     </button>
                 </noscript>
                 {% if absicherungsStufe is not null %}
-                    <a href="{{ path('app_bsi_grundschutz_check') }}" class="btn btn-outline-secondary btn-sm">
+                    <a href="{{ path('app_bsi_grundschutz_check') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                         {{ 'bsi_check.filter.reset'|trans({}, 'messages') }}
                     </a>
                 {% endif %}

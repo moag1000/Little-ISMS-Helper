@@ -20,11 +20,11 @@
             {{ 'user.edit'|trans({}, 'user') }}
         </h1>
         <div>
-            <a href="{{ path('user_management_show', {'id': user.id}) }}" class="btn btn-outline-info">
+            <a href="{{ path('user_management_show', {'id': user.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-eye" aria-hidden="true"></i>
                 {{ 'common.view'|trans({}, 'messages') }}
             </a>
-            <a href="{{ path('user_management_index') }}" class="btn btn-outline-secondary">
+            <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-arrow-left" aria-hidden="true"></i>
                 {{ 'common.back'|trans({}, 'messages') }}
             </a>
@@ -117,12 +117,12 @@
 
                         {# Form Actions #}
                         <div class="form-actions d-flex gap-2 justify-content-between mt-4">
-                            <a href="{{ path('user_management_show', {'id': user.id}) }}" class="btn btn-secondary">
-                                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                            <a href="{{ path('user_management_show', {'id': user.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                                <i class="bi bi-x-circle" aria-hidden="true"></i>
                                 {{ 'common.cancel'|trans({}, 'messages') }}
                             </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                                <i class="bi bi-check-circle" aria-hidden="true"></i>
                                 {{ 'user.save_changes'|trans({}, 'user') }}
                             </button>
                         </div>

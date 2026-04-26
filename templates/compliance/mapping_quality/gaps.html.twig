@@ -11,7 +11,7 @@
             <p class="text-muted">{{ 'compliance.gaps.title_description'|trans({}, 'compliance') }}</p>
         </div>
         <div class="button-group">
-            <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-secondary">
+            <a href="{{ path('app_mapping_quality_dashboard') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <span class="icon">←</span> {{ 'compliance.mapping_quality.title'|trans({}, 'compliance') }}
             </a>
         </div>
@@ -183,7 +183,7 @@
                             {% include '_components/_badge.html.twig' with { variant: gap.statusBadgeClass, content: gap.status } %}
                         </td>
                         <td>
-                            <a href="{{ path('app_mapping_quality_review', {id: gap.mapping.id}) }}" class="btn btn-sm btn-outline-primary">
+                            <a href="{{ path('app_mapping_quality_review', {id: gap.mapping.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                 <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'compliance.mapping_quality.column.action'|trans({}, 'compliance') }}
                             </a>
                         </td>
@@ -247,7 +247,7 @@
                             {% include '_components/_badge.html.twig' with { variant: 'danger', content: '-' ~ gap.percentageImpact ~ '%' } %}
                         </td>
                         <td>
-                            <a href="{{ path('app_mapping_quality_review', {id: gap.mapping.id}) }}" class="btn btn-sm btn-primary">
+                            <a href="{{ path('app_mapping_quality_review', {id: gap.mapping.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
                                 Review
                             </a>
                         </td>
@@ -276,7 +276,7 @@
                 <li>{{ 'compliance.mapping_quality.gaps.no_gaps_found.auto_identify'|trans({}, 'compliance') }}</li>
                 <li>{{ 'compliance.mapping_quality.gaps.no_gaps_found.return_here'|trans({}, 'compliance') }}</li>
             </ol>
-            <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-primary mt-2">← {{ 'common.back'|trans({}, 'messages') }}</a>
+            <a href="{{ path('app_mapping_quality_dashboard') }}" class="fa-cyber-btn fa-cyber-btn--primary mt-2">← {{ 'common.back'|trans({}, 'messages') }}</a>
             {% endblock %}
         {% endembed %}
         {% else %}

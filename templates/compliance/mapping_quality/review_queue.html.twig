@@ -31,7 +31,7 @@
             <p class="text-muted">{{ 'compliance.mapping_quality.review_queue.subtitle'|trans({}, 'compliance') }}</p>
         </div>
         <div class="button-group">
-            <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-secondary">
+            <a href="{{ path('app_mapping_quality_dashboard') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <span class="icon">←</span> {{ 'compliance.mapping_quality.title'|trans({}, 'compliance') }}
             </a>
         </div>
@@ -106,7 +106,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{{ path('app_mapping_quality_review', {id: mapping.id}) }}" class="btn btn-sm btn-primary">
+                            <a href="{{ path('app_mapping_quality_review', {id: mapping.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
                                 Review
                             </a>
                         </td>
@@ -169,7 +169,7 @@
                             {% include '_components/_badge.html.twig' with { variant: mapping.reviewStatusBadgeClass, content: mapping.reviewStatus } %}
                         </td>
                         <td>
-                            <a href="{{ path('app_mapping_quality_review', {id: mapping.id}) }}" class="btn btn-sm btn-primary">
+                            <a href="{{ path('app_mapping_quality_review', {id: mapping.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
                                 Review
                             </a>
                         </td>
@@ -235,7 +235,7 @@
                             {% include '_components/_badge.html.twig' with { variant: mapping.qualityScore >= 75 ? 'success' : (mapping.analysisConfidence >= 60 ? 'warning' : 'danger'), content: mapping.analysisConfidence } %}
                         </td>
                         <td>
-                            <a href="{{ path('app_mapping_quality_review', {id: mapping.id}) }}" class="btn btn-sm btn-primary">
+                            <a href="{{ path('app_mapping_quality_review', {id: mapping.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
                                 Review
                             </a>
                         </td>
@@ -263,7 +263,7 @@
             <li><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'compliance.mapping_quality.review_queue.no_review_needed.no_discrepancies'|trans({}, 'compliance') }}</li>
             <li><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'compliance.mapping_quality.review_queue.no_review_needed.queue_empty'|trans({}, 'compliance') }}</li>
         </ul>
-        <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-primary mt-2">← {{ 'common.back'|trans({}, 'messages') }}</a>
+        <a href="{{ path('app_mapping_quality_dashboard') }}" class="fa-cyber-btn fa-cyber-btn--primary mt-2">← {{ 'common.back'|trans({}, 'messages') }}</a>
         {% endblock %}
     {% endembed %}
     {% endif %}

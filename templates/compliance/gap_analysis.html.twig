@@ -11,14 +11,14 @@
         <p class="text-muted">{{ 'compliance.description.gap_analysis'|trans({}, 'compliance') }}</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_compliance_export_gaps_pdf', {id: framework.id}) }}" class="btn btn-danger" data-turbo="false">
+        <a href="{{ path('app_compliance_export_gaps_pdf', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--danger" data-turbo="false">
             <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
         </a>
-        <a href="{{ path('app_compliance_export_gaps_excel', {id: framework.id}) }}" class="btn btn-success" data-turbo="false">
+        <a href="{{ path('app_compliance_export_gaps_excel', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false">
             <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'compliance.action.export_excel'|trans({}, 'compliance') }}
         </a>
-        <a href="{{ path('app_compliance_export_gaps', {id: framework.id}) }}" class="btn btn-secondary" data-turbo="false">
-            <i class="fa-icon fa-icon--policy" aria-hidden="true"></i> {{ 'compliance.action.export_csv'|trans({}, 'compliance') }}
+        <a href="{{ path('app_compliance_export_gaps', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo="false">
+            <i class="bi bi-file-text" aria-hidden="true"></i> {{ 'compliance.action.export_csv'|trans({}, 'compliance') }}
         </a>
     </div>
 </div>
@@ -174,7 +174,7 @@
                 {% endif %}
             </td>
             <td class="text-center">
-                <a href="{{ path('app_compliance_requirement_show', {id: gap.requirement.id}) }}" class="btn btn-sm btn-outline-primary">
+                <a href="{{ path('app_compliance_requirement_show', {id: gap.requirement.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                     <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
                 </a>
             </td>

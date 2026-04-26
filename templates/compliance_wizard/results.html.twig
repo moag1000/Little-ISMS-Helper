@@ -55,10 +55,10 @@
                 {% block card_body %}
                     <div class="d-flex flex-column justify-content-center h-100">
                         <div class="d-grid gap-2">
-                            <a href="{{ path('app_compliance_wizard_export_pdf', {wizard: wizard}) }}" class="btn btn-primary">
+                            <a href="{{ path('app_compliance_wizard_export_pdf', {wizard: wizard}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
                                 <i class="bi bi-file-pdf me-2" aria-hidden="true"></i>{{ 'wizard.export_pdf'|trans({}, 'wizard') }}
                             </a>
-                            <a href="{{ path('app_compliance_wizard_start', {wizard: wizard}) }}" class="btn btn-outline-secondary">
+                            <a href="{{ path('app_compliance_wizard_start', {wizard: wizard}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                                 <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>{{ 'wizard.run_again'|trans({}, 'wizard') }}
                             </a>
                         </div>
@@ -182,7 +182,7 @@
                 {% endblock %}
                 {% block card_footer %}
                     <div class="card-footer bg-transparent">
-                        <a href="{{ path('app_compliance_wizard_category', {wizard: wizard, category: key}) }}" class="btn btn-sm btn-outline-secondary w-100">
+                        <a href="{{ path('app_compliance_wizard_category', {wizard: wizard, category: key}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost w-100">
                             <i class="bi bi-eye me-1" aria-hidden="true"></i>{{ 'wizard.view_details'|trans({}, 'wizard') }}
                         </a>
                     </div>
@@ -209,10 +209,10 @@
 
     {# Navigation #}
     <div class="d-flex justify-content-between mt-4">
-        <a href="{{ path('app_compliance_wizard_index') }}" class="btn btn-outline-secondary">
+        <a href="{{ path('app_compliance_wizard_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>{{ 'wizard.back_to_wizards'|trans({}, 'wizard') }}
         </a>
-        <a href="{{ path('app_compliance_wizard_compare', {wizards: [wizard]}) }}" class="btn btn-outline-primary">
+        <a href="{{ path('app_compliance_wizard_compare', {wizards: [wizard]}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-columns-gap me-1" aria-hidden="true"></i>{{ 'wizard.compare_with_others'|trans({}, 'wizard') }}
         </a>
     </div>

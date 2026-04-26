@@ -15,7 +15,7 @@
 
     <div class="page-header">
         <h1>{{ 'risk_appetite.new'|trans({}, 'risk_appetite')}}</h1>
-        <a href="{{ path('app_risk_appetite_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
+        <a href="{{ path('app_risk_appetite_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
     </div>
 
     {% embed '_components/_card.html.twig' %}
@@ -53,10 +53,10 @@
                 {{ _fa_alert.render({ variant: 'info', class: 'mt-4', body: 'risk_appetite.info.iso27005'|trans({}, 'risk_appetite') }) }}
 
                 <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_risk_appetite_index') }}" class="btn btn-secondary">
+                    <a href="{{ path('app_risk_appetite_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         {{ 'common.create'|trans({}, 'messages') }}
                     </button>
                 </div>

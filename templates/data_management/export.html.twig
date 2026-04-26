@@ -41,12 +41,12 @@
                     <div class="form-label"><strong>{{ 'admin.data_export.format'|trans({}, 'admin') }}:</strong></div>
                     <div class="btn-group" role="group" aria-label="{{ 'admin.data_export.format_selection'|trans({}, 'admin') }}">
                         <input type="radio" class="btn-check" name="format" id="format_json" value="json" checked>
-                        <label class="btn btn-outline-primary" for="format_json">
+                        <label class="fa-cyber-btn fa-cyber-btn--ghost" for="format_json">
                             <i class="bi bi-filetype-json" aria-hidden="true"></i> JSON
                         </label>
 
                         <input type="radio" class="btn-check" name="format" id="format_csv" value="csv">
-                        <label class="btn btn-outline-primary" for="format_csv">
+                        <label class="fa-cyber-btn fa-cyber-btn--ghost" for="format_csv">
                             <i class="bi bi-filetype-csv" aria-hidden="true"></i> CSV
                         </label>
                     </div>
@@ -60,10 +60,10 @@
                     <label class="form-label" id="entity-selection-label"><strong>{{ 'admin.data_export.select_entities'|trans({}, 'admin') }}</strong></label>
 
                     <div class="mb-2" role="group" aria-labelledby="entity-selection-label" data-controller="ui-actions">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" data-action="ui-actions#selectAll" data-ui-actions-container-param=".row">
+                        <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" data-action="ui-actions#selectAll" data-ui-actions-container-param=".row">
                             <i class="bi bi-check-all" aria-hidden="true"></i> {{ 'admin.data_export.select_all'|trans({}, 'admin') }}
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" data-action="ui-actions#deselectAll" data-ui-actions-container-param=".row">
+                        <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" data-action="ui-actions#deselectAll" data-ui-actions-container-param=".row">
                             <i class="bi bi-x" aria-hidden="true"></i> {{ 'admin.data_export.deselect_all'|trans({}, 'admin') }}
                         </button>
                     </div>
@@ -89,7 +89,7 @@
 
                 {# Submit Button #}
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                         <i class="bi bi-download" aria-hidden="true"></i> {{ 'admin.data_export.submit'|trans({}, 'admin') }}
                     </button>
                 </div>

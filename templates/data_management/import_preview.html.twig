@@ -7,7 +7,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1><i class="bi bi-eye" aria-hidden="true"></i> Import Preview</h1>
-        <a href="{{ path('data_import_index') }}" class="btn btn-outline-secondary">
+        <a href="{{ path('data_import_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-x-circle" aria-hidden="true"></i> Cancel
         </a>
     </div>
@@ -146,10 +146,10 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('data_import_execute') }}">
 
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-warning btn-lg" disabled>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--lg" disabled>
                         <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Execute Import (Not Yet Available)
                     </button>
-                    <a href="{{ path('data_import_index') }}" class="btn btn-secondary">
+                    <a href="{{ path('data_import_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to Import
                     </a>
                 </div>

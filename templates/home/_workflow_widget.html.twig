@@ -137,14 +137,14 @@
                         {# Quick Action Buttons #}
                         <div class="d-flex gap-2">
                             <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}"
-                               class="btn btn-sm btn-outline-primary flex-fill"
+                               class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost flex-fill"
                                title="{{ 'workflow.widget.action.quick_view'|trans({}, 'workflows') }}">
                                 <i class="bi bi-eye" aria-hidden="true"></i>
                                 {{ 'workflow.widget.action.quick_view'|trans({}, 'workflows') }}
                             </a>
 
                             <button type="button"
-                                    class="btn btn-sm btn-outline-success"
+                                    class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
                                     data-bs-toggle="modal"
                                     data-bs-target="#approveModal{{ instance.id }}"
                                     title="{{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}">
@@ -152,7 +152,7 @@
                             </button>
 
                             <button type="button"
-                                    class="btn btn-sm btn-outline-danger"
+                                    class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
                                     data-bs-toggle="modal"
                                     data-bs-target="#rejectModal{{ instance.id }}"
                                     title="{{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}">
@@ -183,10 +183,10 @@
                                         <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ instance.id) }}">
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
                                             {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
                                         </button>
-                                        <button type="submit" class="btn btn-success">
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
                                             <i class="bi bi-check-lg" aria-hidden="true"></i>
                                             {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
                                         </button>
@@ -218,10 +218,10 @@
                                         <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ instance.id) }}">
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
                                             {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
                                         </button>
-                                        <button type="submit" class="btn btn-danger">
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                                             <i class="bi bi-x-lg" aria-hidden="true"></i>
                                             {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
                                         </button>
@@ -236,7 +236,7 @@
             {# View All Link #}
             {% if total_pending > 5 %}
                 <div class="text-center mt-3 pt-3 border-top">
-                    <a href="{{ path('app_workflow_pending') }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{{ path('app_workflow_pending') }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                         <i class="bi bi-arrow-right" aria-hidden="true"></i>
                         {{ 'workflow.widget.view_all'|trans({count: total_pending - 5}, 'workflows') }}
                     </a>

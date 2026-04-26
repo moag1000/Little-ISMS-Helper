@@ -18,17 +18,17 @@
                 {{ 'analytics.card.risk_heat_map'|trans({}, 'analytics') }}
             </h2>
             <div class="card-actions">
-                <button class="btn btn-sm btn-outline-secondary"
+                <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                         data-action="click->heat-map#toggleFilters"
                         title="{{ 'analytics.action.filter'|trans({}, 'analytics') }}">
                     <i class="bi bi-funnel" aria-hidden="true"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-secondary"
+                <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                         data-action="click->heat-map#refresh"
                         title="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}">
                     <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-secondary"
+                <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                         data-action="click->heat-map#exportImage"
                         title="{{ 'analytics.action.export_png'|trans({}, 'analytics') }}">
                     <i class="bi bi-image" aria-hidden="true"></i>
@@ -82,7 +82,7 @@
                     <option value="365">{{ 'common.last_year'|trans({}, 'messages') }}</option>
                 </select>
             </div>
-            <button class="btn btn-sm btn-outline-danger"
+            <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
                     data-action="click->heat-map#clearFilters">
                 <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'analytics.action.reset_filters'|trans({}, 'analytics') }}
             </button>

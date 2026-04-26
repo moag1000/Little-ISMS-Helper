@@ -35,10 +35,10 @@
                 </select>
             </div>
             {% endif %}
-            <a href="{{ path('app_compliance_index') }}" class="btn btn-secondary">
+            <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 ← {{ 'compliance.button.back'|trans({}, 'compliance') }}
             </a>
-            <a href="{{ path('app_compliance_assess', {id: framework.id}) }}" class="btn btn-success">
+            <a href="{{ path('app_compliance_assess', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--success">
                 {{ 'compliance.button.reassess'|trans({}, 'compliance') }}
             </a>
             {# CM-2: Delta-Assessment Export — requires a baseline framework (i.e. another active framework) #}
@@ -47,14 +47,14 @@
                 {% if baseline_candidates|length > 0 %}
                     {% set baseline_code = baseline_candidates|first.code %}
                     <a href="{{ path('app_delta_assessment_excel', {targetFrameworkCode: framework.code}) }}?baseline={{ baseline_code }}"
-                       class="btn btn-primary"
+                       class="fa-cyber-btn fa-cyber-btn--primary"
                        data-bs-toggle="tooltip" data-bs-placement="top"
                        title="{{ 'compliance_wizard.delta.action.download_excel'|trans({}, 'compliance_wizard') }}">
                         <i class="bi bi-file-earmark-excel" aria-hidden="true"></i>
                         {{ 'compliance_wizard.delta.action.download_excel'|trans({}, 'compliance_wizard') }}
                     </a>
                 {% else %}
-                    <button type="button" class="btn btn-primary" disabled
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" disabled
                             data-bs-toggle="tooltip" data-bs-placement="top"
                             title="{{ 'compliance_wizard.delta.action.baseline_required'|trans({}, 'compliance_wizard') }}">
                         <i class="bi bi-file-earmark-excel" aria-hidden="true"></i>
@@ -190,7 +190,7 @@
                             <p class="fw-bold">{{ module.name }}</p>
                             <p class="module-description">{{ module.description }}</p>
                             {% if not isActive %}
-                                <a href="{{ path('admin_modules_index') }}" class="btn btn-primary btn-sm"
+                                <a href="{{ path('admin_modules_index') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                                    data-bs-toggle="tooltip" data-bs-placement="top"
                                    title="{{ 'common.tooltip.activate_module'|trans({}, 'messages') }}">
                                     {{ 'common.activate'|trans({}, 'messages') }} Module →
@@ -251,7 +251,7 @@
         <div class="next-action-content">
             <p class="fw-bold fs-4">{{ next_action.title }}</p>
             <p>{{ next_action.description }}</p>
-            <a href="{{ next_action.action_url }}" class="btn btn-primary">
+            <a href="{{ next_action.action_url }}" class="fa-cyber-btn fa-cyber-btn--primary">
                 {{ next_action.action_text }} →
             </a>
         </div>
@@ -262,7 +262,7 @@
         <div class="next-action-content">
             <p class="fw-bold fs-4">Congratulations!</p>
             <p>You have achieved 100% compliance with {{ framework.name }}!</p>
-            <a href="{{ path('app_compliance_index') }}" class="btn btn-success">
+            <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--success">
                 Back to All Frameworks →
             </a>
         </div>
@@ -359,7 +359,7 @@
                     <div class="card-header">
                         <h3>{{ 'compliance.tab.requirements'|trans({}, 'compliance') }}</h3>
                         <div class="filter-toggle">
-                            <button class="btn btn-sm btn-secondary" data-action="click->toggle#toggleFilter">
+                            <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" data-action="click->toggle#toggleFilter">
                                 {{ 'compliance.filter'|trans({}, 'compliance') }}
                             </button>
                         </div>
@@ -496,7 +496,7 @@
                             <p>{{ 'compliance.data_reuse.work_days'|trans({'%days%': dashboard.data_reuse.total_days_saved}, 'compliance') }}</p>
                         </div>
                     </div>
-                    <a href="{{ path('app_compliance_data_reuse', {id: framework.id}) }}" class="btn btn-primary">
+                    <a href="{{ path('app_compliance_data_reuse', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
                         {{ 'compliance.data_reuse.show_details'|trans({}, 'compliance') }} →
                     </a>
                 {% endblock %}

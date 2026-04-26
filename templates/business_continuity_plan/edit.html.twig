@@ -90,8 +90,8 @@
 
                     {# Form Actions #}
                     <div class="form-actions d-flex gap-2 justify-content-between pt-3 border-top">
-                        <a href="{{ path('app_bc_plan_show', {id: bc_plan.id}) }}" class="btn btn-secondary"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}</a>
-                        <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}</button>
+                        <a href="{{ path('app_bc_plan_show', {id: bc_plan.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}</a>
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg"><i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}</button>
                     </div>
 
                     {{ form_end(form) }}

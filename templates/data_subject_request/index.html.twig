@@ -91,12 +91,12 @@
     <div class="mb-3">
         <div class="btn-group flex-wrap" role="group" aria-label="{{ 'dsr.filter.label'|trans({}, 'data_subject_request') }}">
             <a href="{{ path('app_data_subject_request_index') }}"
-               class="btn btn-sm {% if current_status is null and current_type is null %}btn-primary{% else %}btn-outline-primary{% endif %}">
+               class="fa-cyber-btn fa-cyber-btn--sm {% if current_status is null and current_type %}fa-cyber-btn--primary{% else %}fa-cyber-btn--ghost{% endif %}">
                 {{ 'dsr.filter.all'|trans({}, 'data_subject_request') }}
             </a>
             {% for status in ['received', 'identity_verification', 'in_progress', 'extended', 'completed', 'rejected', 'overdue'] %}
                 <a href="{{ path('app_data_subject_request_index', {status: status}) }}"
-                   class="btn btn-sm {% if current_status == status %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                   class="fa-cyber-btn fa-cyber-btn--sm {% if current_status == status %}fa-cyber-btn--primary{% else %}fa-cyber-btn--ghost{% endif %}">
                     {{ ('dsr.status.' ~ status)|trans({}, 'data_subject_request') }}
                 </a>
             {% endfor %}
@@ -181,13 +181,13 @@
                                     <td>
                                         <div class="btn-group btn-group-sm">
                                             <a href="{{ path('app_data_subject_request_show', {id: dsr.id}) }}"
-                                               class="btn btn-outline-primary"
+                                               class="fa-cyber-btn fa-cyber-btn--ghost"
                                                title="{{ 'dsr.action.view'|trans({}, 'data_subject_request') }}">
                                                 <i class="bi bi-eye" aria-hidden="true"></i>
                                             </a>
                                             {% if dsr.status not in ['completed', 'rejected'] %}
                                                 <a href="{{ path('app_data_subject_request_edit', {id: dsr.id}) }}"
-                                                   class="btn btn-outline-secondary"
+                                                   class="fa-cyber-btn fa-cyber-btn--ghost"
                                                    title="{{ 'dsr.action.edit'|trans({}, 'data_subject_request') }}">
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>

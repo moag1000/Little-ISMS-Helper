@@ -213,14 +213,14 @@
                 <td class="text-center">
                     <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                         <a href="{{ path('app_consent_show', {id: consent.id}) }}"
-                           class="btn btn-outline-primary"
+                           class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance"
                            title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                             <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
                         {% if is_granted('ROLE_USER') and (consent.status == 'pending_verification' or consent.status == 'active') %}
                         <a href="{{ path('app_consent_edit', {id: consent.id}) }}"
-                           class="btn btn-outline-secondary"
+                           class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance"
                            title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                             <i class="bi bi-pencil" aria-hidden="true"></i>
@@ -232,7 +232,7 @@
                               data-action="submit->ui-actions#confirm"
                               data-ui-actions-message-param="{{ 'consent.delete.confirm'|trans({}, 'consent') }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ consent.id) }}">
-                            <button type="submit" class="btn btn-outline-danger btn-sm" title="{{ 'common.delete'|trans({}, 'messages') }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm" title="{{ 'common.delete'|trans({}, 'messages') }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
                                 <i class="bi bi-trash" aria-hidden="true"></i>
                             </button>
                         </form>

@@ -119,10 +119,10 @@
             } %}
 
             <div class="d-flex gap-2 justify-content-between mt-4 pt-3 border-top">
-                <a href="{{ path('app_processing_activity_show', {id: processing_activity.id}) }}" class="btn btn-secondary">
+                <a href="{{ path('app_processing_activity_show', {id: processing_activity.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                     <i class="bi bi-x-lg" aria-hidden="true"></i> {{ 'processing_activity.action.cancel'|trans({}, 'privacy')}}
                 </a>
-                <button type="submit" class="btn btn-primary btn-lg">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                     <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'processing_activity.action.save'|trans({}, 'privacy')}}
                 </button>
             </div>
@@ -145,7 +145,7 @@
                       data-action="submit->ui-actions#confirm"
                       data-ui-actions-message-param="{{ 'processing_activity.confirm_delete'|trans({}, 'privacy') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ processing_activity.id) }}">
-                    <button type="submit" class="btn btn-danger">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                         <i class="bi bi-trash" aria-hidden="true"></i> {{ 'processing_activity.action.delete'|trans({}, 'privacy') }}
                     </button>
                 </form>

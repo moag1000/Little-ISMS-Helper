@@ -14,7 +14,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1><i class="bi bi-list-check" aria-hidden="true"></i> Compliance Requirements</h1>
-        <a href="{{ path('app_compliance_requirement_new', {framework: selected_framework}) }}" class="btn btn-primary">
+        <a href="{{ path('app_compliance_requirement_new', {framework: selected_framework}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
             <i class="bi bi-plus-circle" aria-hidden="true"></i> New Requirement
         </a>
     </div>
@@ -53,12 +53,12 @@
                     </select>
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-secondary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
                         <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                     </button>
                     {% if selected_framework or selected_absicherungs_stufe or selected_anforderungs_typ %}
-                        <a href="{{ path('app_compliance_requirement_index') }}" class="btn btn-outline-secondary ms-2" title="{{ 'common.clear'|trans({}, 'messages') }}">
-                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                        <a href="{{ path('app_compliance_requirement_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost ms-2" title="{{ 'common.clear'|trans({}, 'messages') }}">
+                            <i class="bi bi-x-circle" aria-hidden="true"></i>
                         </a>
                     {% endif %}
                 </div>
@@ -144,11 +144,11 @@
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
                                         <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}"
-                                           class="btn btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                           class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                             <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
                                         <a href="{{ path('app_compliance_requirement_edit', {id: requirement.id}) }}"
-                                           class="btn btn-outline-secondary" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                                           class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                             <i class="bi bi-pencil" aria-hidden="true"></i>
                                         </a>
                                     </div>

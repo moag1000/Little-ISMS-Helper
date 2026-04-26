@@ -76,9 +76,9 @@
                         </td>
                         <td>{% include '_components/_badge.html.twig' with { variant: objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning'), content: ('objective.status.' ~ objective.status)|trans({}, 'objective') } %}</td>
                         <td>
-                            <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}" title="{{ 'common.view'|trans({}, 'messages') }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
+                            <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}" title="{{ 'common.view'|trans({}, 'messages') }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
                             {% if is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-sm btn-outline-secondary" aria-label="{{ 'common.edit'|trans({}, 'messages') }}" title="{{ 'common.edit'|trans({}, 'messages') }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                            <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.edit'|trans({}, 'messages') }}" title="{{ 'common.edit'|trans({}, 'messages') }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
                             {% endif %}
                         </td>
                     </tr>
