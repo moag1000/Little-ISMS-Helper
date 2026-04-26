@@ -1,0 +1,76 @@
+{#
+ # FairyAurora v4.0 — Aurora-Alert Macro
+ #
+ # Spec §6 + components.css: .fa-alert mit icon-slot + body-slot.
+ # Bestehende <div class="alert"> Markup bleibt funktional via Aurora-CSS-Bridge.
+ # Dieses Macro ist für neuen Code, der direkt Aurora-native ist.
+ #
+ # CSS: assets/styles/fairy-aurora-components.css (line ~840)
+ #   .fa-alert                — flex layout, icon links, body rechts
+ #   .fa-alert--info/success/warning/danger — bg + border via Aurora-Tokens
+ #   .fa-alert__icon          — sizing (18px), color via variant
+ #   .fa-alert__title         — bold headline (font 14px, weight 600)
+ #   .fa-alert__message       — body text (font 13px)
+ #   .fa-alert__close         — dismissible button
+ #
+ # Usage (Macro-Form):
+ #   {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+ #   {{ _fa_alert.render({ variant: 'warning', title: 'Achtung', body: '3 Kontrollen sind fällig.' }) }}
+ #   {{ _fa_alert.render({ variant: 'info', icon: 'status-info', body: 'Hinweis-Text' }) }}
+ #   {{ _fa_alert.render({ variant: 'danger', icon: 'bi-exclamation-triangle', dismissible: true, body: 'Fehler aufgetreten.' }) }}
+ #
+ # Block-Form (für komplexes HTML im Body):
+ #   {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success' } } %}
+ #     {% block alert_body %}<strong>OK!</strong> Custom HTML.{% endblock %}
+ #   {% endembed %}
+ #
+ # Parameters (props):
+ #   variant     - 'info' | 'success' | 'warning' | 'danger' (default: 'info')
+ #   title       - Bold-Headline (optional, rendered in .fa-alert__title)
+ #   body        - HTML-String (optional, rendered in .fa-alert__message, alternativ via Block)
+ #   icon        - fa-icon name ohne Prefix (default: status-{variant}) ODER bi-* für Bootstrap-Icon
+ #                 Beispiele: 'status-info', 'status-warning', 'bi-shield-exclamation'
+ #   dismissible - boolean (default: false)
+ #   class       - zusätzliche CSS-Klassen für das Root-Element
+ #
+ # Default-Icon-Mapping:
+ #   info    → status-info
+ #   success → status-ok
+ #   warning → status-warning
+ #   danger  → status-critical
+ #}
+
+{% macro render(props = {}) %}
+    {%- set variant = props.variant|default('info') -%}
+    {%- set _defaultIcons = {
+        'info':    'status-info',
+        'success': 'status-ok',
+        'warning': 'status-warning',
+        'danger':  'status-critical'
+    } -%}
+    {%- set icon = props.icon|default(_defaultIcons[variant]|default('status-info')) -%}
+
+    <div class="fa-alert fa-alert--{{ variant }}{% if props.class %} {{ props.class }}{% endif %}" role="alert">
+        {%- if icon -%}
+            {%- if icon starts with 'bi-' -%}
+                <i class="bi {{ icon }} fa-alert__icon" aria-hidden="true"></i>
+            {%- else -%}
+                <i class="fa-icon fa-icon--{{ icon }} fa-alert__icon" aria-hidden="true"></i>
+            {%- endif -%}
+        {%- endif -%}
+        <div class="fa-alert__body">
+            {%- if props.title -%}
+                <div class="fa-alert__title">{{ props.title }}</div>
+            {%- endif -%}
+            {%- if props.body -%}
+                <p class="fa-alert__message">{{ props.body|raw }}</p>
+            {%- endif -%}
+            {% block alert_body %}{% endblock %}
+        </div>
+        {%- if props.dismissible -%}
+            <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+            </button>
+        {%- endif -%}
+    </div>
+{% endmacro %}

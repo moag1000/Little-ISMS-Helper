@@ -30,6 +30,43 @@
       - hidden_widget (no visible output)
       - form_start, form_end
       - form_rest
+
+    Aurora v4 Sprint B — Form-Theme Audit Results:
+    ───────────────────────────────────────────────
+    COVERED (via form_widget_simple → .fa-cyber-input__field):
+      text, email, password, number, tel, url, search, hidden → OK
+      textarea → OK (explicit textarea_widget block)
+      select (collapsed) → OK (choice_widget routes to __field)
+      radio/checkbox (expanded) → OK (choice_widget → Bootstrap look, frame border stripped via :has())
+
+    GAPS (inherited from Bootstrap — get CSS bridge in fairy-aurora-components.css ~3751 but NOT cyber-input frame):
+      file_widget     → renders <input type="file" class="form-control"> outside cyber-input frame by
+                        Bootstrap default; no .fa-cyber-input__field class injected.
+                        Impact: 5 templates use raw <input type="file"> directly (data_management, setup, compliance/mapping).
+                        Workaround: CSS bridge at :3751 styles bare .form-control with Aurora tokens.
+                        TODO (future sprint): add explicit file_widget block with fa-cyber-input__field.
+
+      range_widget    → renders <input type="range" class="form-range">; Bootstrap's form-range is
+                        styled with its own tick-line appearance, not .form-control.
+                        CSS bridge does NOT cover .form-range (only .form-control / .form-select).
+                        Impact: 5 range sliders in templates use custom inline markup, not Symfony form.
+                        TODO (future sprint): add range_widget block + .fa-cyber-input__range CSS rule.
+
+      date_widget     → Symfony renders a date widget as 3 selects (day/month/year) — these land
+                        inside .fa-cyber-input__frame and each gets .form-select, caught by bridge CSS.
+                        Visually functional but tick-marks mis-align on triple-select layout.
+                        TODO (future sprint): add date_widget block with .fa-cyber-input--date modifier.
+
+      color_widget    → not a standard field in this app; no coverage needed currently.
+
+    ATTR.CLASS FORWARDING: All blocks that override widget rendering use
+      attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__field')|trim})
+    which correctly appends without dropping any caller-supplied classes. ✓
+
+    AD-HOC <input class="form-control"> BYPASS: 74 occurrences in templates use
+    raw form-control outside Symfony's form system (search bars, filter chips, admin
+    quick-edits). These are handled by the Aurora CSS bridge (:3751) — no markup
+    change needed for Aurora visual parity.
 #}
 
 {# ─── Main row wrapper ───────────────────────────────────────────────────── #}
