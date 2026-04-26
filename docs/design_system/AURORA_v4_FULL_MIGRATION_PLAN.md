@@ -404,3 +404,64 @@ Ziel-Endzustand: alle Aurora-Counts ≥ Bootstrap-Counts; Bootstrap-Restbestand 
 ## Nächster Schritt
 
 Sprint A starten — Icon-System-Transfer ist Voraussetzung für alles andere und schnell erledigt. Sag wenn ich loslegen soll.
+
+---
+
+## Stand-Update: 2026-04-26 (Welle 3 — Sprint H)
+
+Phasen abgeschlossen: 1, 2 (audit/risk/compliance/asset/incident/document
++ home/dashboards/admin/etc), 3.1, 4, 5, 6, 7, 8, 9, 10, 11.
+
+### Erfolgs-Metriken (gegen Spec)
+
+Ausgabe von `scripts/quality/check_aurora_v4.sh` (2026-04-26):
+
+```
+=== Aurora v4 — Quick Audit ===
+
+## fa-* Component Usage (positive metrics)
+  fa-cyber-btn:               5
+  fa-status-pill:             2
+  fa-alert:                   2
+  fa-section:                42
+  fa-kpi-card:                3
+  fa-icon--*:               170
+  fa-aurora-surface:         55
+  fa-empty-state:             3
+  fa-rag-card:                9
+  fa-data-table:              2
+  fa-issue-list:              1
+
+## Bootstrap-Restbestand (sollte sinken über Zeit)
+  btn btn-*:                363
+  badge bg-*:                67
+  alert alert-*:            214
+  bi bi-*:                  402
+
+## Anti-Patterns
+  inline style=:            213
+  hardcoded hex in CSS:      21
+  TODO(aurora-v4):            4
+
+## Files
+  Twig templates:            547
+  Aurora-Macros:              11
+  Aurora-Icons (SVG):         77
+```
+
+### Verbleibende Lücken
+
+- **Bootstrap-Icon-Restbestand hoch** (402 Dateien mit `bi bi-*`) — Modul-für-Modul-Migration noch laufend (Phase 2 / Sprint E).
+- **`btn btn-*`-Restbestand** (363 Dateien) — Aurora-Adapter für `.btn` ist Phase 3 / Sprint F; noch nicht abgeschlossen.
+- **`alert alert-*`-Restbestand** (214 Dateien) — `fa-alert`-Migration Phase 5 / Sprint B; in Bearbeitung.
+- **`badge bg-*`-Restbestand** (67 Dateien) — `fa-status-pill`-Migration Phase 4; in Bearbeitung.
+- **Hardcoded Hex in CSS** (21 Treffer außerhalb erlaubter Dateien) — Stylelint-Regel aktiv; TODO: Einzeln fixen in `fairy-aurora-components.css`, `app.css`, `components.css` etc.
+- **Inline `style=`** (213 Dateien) — Separate Cleanup-Initiative; manche sind temporär notwendig (z.B. dynamische Werte via Twig).
+- **`fa-cyber-btn`** (5 Dateien) — Ziel laut Spec ≥ 50; Sprint F noch offen.
+- **`fa-status-pill`** (2 Dateien) — Ziel laut Spec ≥ 138; Sprint B noch offen.
+- **`fa-alert`** (2 Dateien) — Ziel laut Spec ≥ 200; Sprint B noch offen.
+
+### Governance-Tooling (neu in Sprint H)
+
+- `.stylelintrc.js` — Hex-Verbot via `declaration-property-value-disallowed-list` für 14 Color-Properties aktiv. `fairy-aurora.css` und `alva.css` explizit ignoriert.
+- `scripts/quality/check_aurora_v4.sh` — Living-Audit-Skript; vor jedem Sprint-Abschluss ausführen.

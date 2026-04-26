@@ -4,6 +4,11 @@ module.exports = {
         'assets/styles/fairy-aurora.css',        // Token SoT — defines hex
         'assets/styles/alva.css',                // SVG brand fills legitimate
         'assets/styles/bootstrap*.css',          // Vendor
+        'assets/Little ISMS Helper Design System/**', // Spec/design assets
+        'docs/design_system/**',                 // Design docs
+        'vendor/**',                             // PHP/JS vendor
+        'node_modules/**',                       // Node modules
+        'public/build/**',                       // Webpack/Encore output
         'public/**/*.css',                       // Compiled output
         'var/**/*.css'
     ],
