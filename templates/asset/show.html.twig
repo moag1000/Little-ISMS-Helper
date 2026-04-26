@@ -22,24 +22,24 @@
         </h1>
         <div class="actions">
             {% if canEdit is defined and canEdit %}
-                <a href="{{ path('app_asset_edit', {id: asset.id}) }}" class="btn btn-primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
+                <a href="{{ path('app_asset_edit', {id: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
             {% else %}
-                <button class="btn btn-primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}">
+                <button class="fa-cyber-btn fa-cyber-btn--primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}">
                     <i class="bi bi-lock" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                 </button>
             {% endif %}
-            <a href="{{ path('app_asset_bcm_insights', {id: asset.id}) }}" class="btn btn-secondary">{{ 'asset.action.bcm_insights'|trans({}, 'asset') }}</a>
-            <a href="{{ path('app_asset_qr_label', {id: asset.id}) }}" class="btn btn-outline-secondary" title="{{ 'asset.action.print_qr_label'|trans({}, 'asset') }}" data-turbo="false">
+            <a href="{{ path('app_asset_bcm_insights', {id: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'asset.action.bcm_insights'|trans({}, 'asset') }}</a>
+            <a href="{{ path('app_asset_qr_label', {id: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'asset.action.print_qr_label'|trans({}, 'asset') }}" data-turbo="false">
                 <i class="bi bi-qr-code" aria-hidden="true"></i> {{ 'asset.action.qr_label'|trans({}, 'asset') }}
             </a>
-            <a href="{{ path('app_asset_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
+            <a href="{{ path('app_asset_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
                 <form method="post" action="{{ path('app_asset_delete', {id: asset.id}) }}" class="d-inline"
                       data-controller="ui-actions"
                       data-action="submit->ui-actions#confirm"
                       data-ui-actions-message-param="{{ 'asset.confirm.delete'|trans({}, 'asset') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ asset.id) }}">
-                    <button type="submit" class="btn btn-danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
                 </form>
             {% endif %}
         </div>
@@ -410,7 +410,7 @@
                     </div>
                     {% if totalAuditLogs > 10 %}
                         <div class="text-center mt-3">
-                            <a href="{{ path('app_audit_log_index', {entity: 'Asset', entityId: asset.id}) }}" class="btn btn-sm btn-outline-secondary">
+                            <a href="{{ path('app_audit_log_index', {entity: 'Asset', entityId: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                 <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'audit_log.view_all'|trans({}, 'audit_log') }} ({{ totalAuditLogs }})
                             </a>
                         </div>

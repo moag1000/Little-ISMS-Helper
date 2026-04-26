@@ -63,26 +63,26 @@
                 {% if dpia.status == 'draft' and dpia.isComplete %}
                     <form action="{{ path('app_dpia_submit_for_review', {id: dpia.id}) }}" method="post" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('submit' ~ dpia.id) }}">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="bi bi-send" aria-hidden="true"></i> {{ 'dpia.action.submit_for_review'|trans({}, 'privacy') }}
                         </button>
                     </form>
                 {% endif %}
 
                 {% if dpia.status in ['draft', 'requires_revision'] %}
-                    <a href="{{ path('app_dpia_edit', {id: dpia.id}) }}" class="btn btn-secondary">
+                    <a href="{{ path('app_dpia_edit', {id: dpia.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'dpia.action.edit'|trans({}, 'privacy') }}
                     </a>
                 {% endif %}
 
                 {% if is_granted('ROLE_AUDITOR') and dpia.status == 'in_review' %}
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--success" data-bs-toggle="modal" data-bs-target="#approveModal">
                         <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'dpia.action.approve'|trans({}, 'privacy') }}
                     </button>
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
                         <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'dpia.action.reject'|trans({}, 'privacy') }}
                     </button>
-                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#revisionModal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-bs-toggle="modal" data-bs-target="#revisionModal">
                         <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'dpia.action.request_revision'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
@@ -90,7 +90,7 @@
                 {% if dpia.status == 'requires_revision' %}
                     <form action="{{ path('app_dpia_reopen', {id: dpia.id}) }}" method="post" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('reopen' ~ dpia.id) }}">
-                        <button type="submit" class="btn btn-info">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="bi bi-folder2-open" aria-hidden="true"></i> {{ 'dpia.action.reopen'|trans({}, 'privacy') }}
                         </button>
                     </form>
@@ -98,7 +98,7 @@
 
                 <form action="{{ path('app_dpia_clone', {id: dpia.id}) }}" method="post" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('clone' ~ dpia.id) }}">
-                    <button type="submit" class="btn btn-outline-secondary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
                         <i class="bi bi-files" aria-hidden="true"></i> {{ 'dpia.action.clone'|trans({}, 'privacy') }}
                     </button>
                 </form>
@@ -109,7 +109,7 @@
                           data-action="submit->ui-actions#confirm"
                           data-ui-actions-message-param="{{ 'dpia.confirm.delete'|trans({}, 'privacy') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ dpia.id) }}">
-                        <button type="submit" class="btn btn-outline-danger">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                             <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                         </button>
                     </form>

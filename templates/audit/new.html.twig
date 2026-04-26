@@ -23,7 +23,7 @@
                 <h1 class="h3 mb-0">
                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'audit.new'|trans({}, 'audit') }}
                 </h1>
-                <a href="{{ path('app_audit_index') }}" class="btn btn-outline-secondary" data-turbo-action="advance">
+                <a href="{{ path('app_audit_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo-action="advance">
                     <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                 </a>
             </div>
@@ -118,11 +118,11 @@
                     {# Form Actions #}
                     <div class="d-flex justify-content-between align-items-center pt-3 border-top">
                         <a href="{{ path('app_audit_index') }}"
-                           class="btn btn-outline-secondary"
+                           class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance">
                             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                         </a>
-                        <button type="submit" class="btn btn-primary btn-lg">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                             <i class="bi bi-save" aria-hidden="true"></i> {{ 'audit.create'|trans({}, 'audit') }}
                         </button>
                     </div>

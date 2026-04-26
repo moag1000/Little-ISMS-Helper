@@ -15,7 +15,7 @@
 
     <div class="page-header">
         <h1>{{ 'business_process.edit'|trans({}, 'business_process')}}: {{ business_process.name }}</h1>
-        <a href="{{ path('app_business_process_show', {id: business_process.id}) }}" class="btn btn-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
+        <a href="{{ path('app_business_process_show', {id: business_process.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back'|trans({}, 'messages') }}</a>
     </div>
 
     {% embed '_components/_card.html.twig' %}
@@ -85,10 +85,10 @@
                 } %}
 
                 <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_business_process_show', {id: business_process.id}) }}" class="btn btn-secondary">
+                    <a href="{{ path('app_business_process_show', {id: business_process.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         {{ 'common.save_changes'|trans({}, 'messages') }}
                     </button>
                 </div>

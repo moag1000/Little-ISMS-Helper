@@ -167,14 +167,14 @@
                     <div class="d-grid gap-2">
                         {% if is_granted('ROLE_USER') %}
                         <a href="{{ path('app_training_edit', {id: training.id}) }}"
-                           class="btn btn-primary"
+                           class="fa-cyber-btn fa-cyber-btn--primary"
                            data-turbo-action="advance">
                             <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                         </a>
                         {% endif %}
 
                         <a href="{{ path('app_training_index') }}"
-                           class="btn btn-outline-secondary"
+                           class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance">
                             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
                         </a>
@@ -182,7 +182,7 @@
                         {% if is_granted('ROLE_ADMIN') %}
                         <hr>
                         <button type="button"
-                                class="btn btn-outline-danger"
+                                class="fa-cyber-btn fa-cyber-btn--danger"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal">
                             <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}

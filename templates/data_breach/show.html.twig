@@ -100,32 +100,32 @@
                 {% if breach.status == 'draft' and breach.isComplete %}
                     <form action="{{ path('app_data_breach_submit_for_assessment', {id: breach.id}) }}" method="post" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('submit' ~ breach.id) }}">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="bi bi-send" aria-hidden="true"></i> {{ 'privacy.data_breach.action.submit_for_assessment'|trans({}, 'privacy') }}
                         </button>
                     </form>
                 {% endif %}
 
                 {% if breach.status in ['draft', 'under_assessment'] %}
-                    <a href="{{ path('app_data_breach_edit', {id: breach.id}) }}" class="btn btn-secondary">
+                    <a href="{{ path('app_data_breach_edit', {id: breach.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'privacy.data_breach.action.edit'|trans({}, 'privacy') }}
                     </a>
                 {% endif %}
 
                 {% if is_granted('ROLE_AUDITOR') and breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}
-                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#authorityModal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-bs-toggle="modal" data-bs-target="#authorityModal">
                         <i class="bi bi-building" aria-hidden="true"></i> {{ 'privacy.data_breach.action.notify_authority'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
 
                 {% if is_granted('ROLE_AUDITOR') and breach.requiresSubjectNotification and not breach.dataSubjectsNotifiedAt and breach.supervisoryAuthorityNotifiedAt %}
-                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#subjectsModal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" data-bs-toggle="modal" data-bs-target="#subjectsModal">
                         <i class="bi bi-people" aria-hidden="true"></i> {{ 'privacy.data_breach.action.notify_subjects'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
 
                 {% if is_granted('ROLE_AUDITOR') and not breach.requiresSubjectNotification and not breach.noSubjectNotificationReason %}
-                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#exemptionModal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-toggle="modal" data-bs-target="#exemptionModal">
                         <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'privacy.data_breach.action.record_exemption'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
@@ -133,14 +133,14 @@
                 {% if is_granted('ROLE_AUDITOR') and breach.status in ['authority_notified', 'subjects_notified'] %}
                     <form action="{{ path('app_data_breach_close', {id: breach.id}) }}" method="post" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('close' ~ breach.id) }}">
-                        <button type="submit" class="btn btn-success">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
                             <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'privacy.data_breach.action.close_investigation'|trans({}, 'privacy') }}
                         </button>
                     </form>
                 {% endif %}
 
                 {% if is_granted('ROLE_MANAGER') and breach.status == 'closed' %}
-                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reopenModal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-bs-toggle="modal" data-bs-target="#reopenModal">
                         <i class="bi bi-folder2-open" aria-hidden="true"></i> {{ 'privacy.data_breach.action.reopen'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
@@ -151,7 +151,7 @@
                           data-action="submit->ui-actions#confirm"
                           data-ui-actions-message-param="{{ 'data_breach.confirm.delete'|trans({}, 'privacy') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ breach.id) }}">
-                        <button type="submit" class="btn btn-outline-danger">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                             <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                         </button>
                     </form>

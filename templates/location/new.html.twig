@@ -18,7 +18,7 @@
         <h1>{{ 'location.title.create'|trans({}, 'locations')}}</h1>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_location_index') }}" class="btn btn-secondary">
+        <a href="{{ path('app_location_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             ← {{ 'common.back_to_list'|trans({}, 'messages') }}
         </a>
     </div>
@@ -75,10 +75,10 @@
             } %}
 
             <div class="d-flex justify-content-between mt-4">
-                <a href="{{ path('app_location_index') }}" class="btn btn-secondary">
+                <a href="{{ path('app_location_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                     {{ 'common.cancel'|trans({}, 'messages') }}
                 </a>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                     {{ 'common.create'|trans({}, 'messages') }}
                 </button>
             </div>

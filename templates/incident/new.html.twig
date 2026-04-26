@@ -21,7 +21,7 @@
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 mb-0"><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'incident.new'|trans({}, 'incident') }}</h1>
-                <a href="{{ path('app_incident_index') }}" class="btn btn-outline-secondary" data-turbo-action="advance">
+                <a href="{{ path('app_incident_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo-action="advance">
                     <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                 </a>
             </div>
@@ -118,7 +118,7 @@
 
                         {# GDPR Breach Wizard Button #}
                         <div class="mt-3">
-                            <button type="button" class="btn btn-outline-warning" id="gdpr-wizard-trigger-btn">
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" id="gdpr-wizard-trigger-btn">
                                 <i class="fa-icon fa-icon--breach" aria-hidden="true"></i>
                                 {{ 'data_breach.wizard.trigger_button'|trans({}, 'privacy') }}
                             </button>
@@ -187,7 +187,7 @@
                                     <i class="fa-icon fa-icon--incident" aria-hidden="true"></i>
                                     {{ 'incident.section.nis2_reporting'|trans({}, 'incident') }}
                                 </span>
-                                <button type="button" class="btn btn-sm btn-outline-dark" id="hide-nis2-btn">
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" id="hide-nis2-btn">
                                     <i class="bi bi-eye-slash" aria-hidden="true"></i> {{ 'incident.nis2_toggle.hide'|trans({}, 'incident') }}
                                 </button>
                             </div>
@@ -241,7 +241,7 @@
 
                     {# Manual NIS2 Toggle Button #}
                     <div id="show-nis2-container" class="text-center mb-4 d-none">
-                        <button type="button" class="btn btn-outline-warning" id="show-nis2-btn">
+                        <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" id="show-nis2-btn">
                             <i class="fa-icon fa-icon--incident" aria-hidden="true"></i> {{ 'incident.nis2_toggle.show'|trans({}, 'incident') }}
                         </button>
                     </div>
@@ -249,11 +249,11 @@
                     {# Form Actions #}
                     <div class="d-flex justify-content-between align-items-center pt-3 border-top">
                         <a href="{{ path('app_incident_index') }}"
-                           class="btn btn-outline-secondary"
+                           class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance">
                             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                         </a>
-                        <button type="submit" class="btn btn-primary btn-lg">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                             <i class="bi bi-save" aria-hidden="true"></i> {{ 'incident.create'|trans({}, 'incident') }}
                         </button>
                     </div>
