@@ -20,17 +20,17 @@
         </h1>
         <div class="actions">
             {% if is_granted('ROLE_USER') and (consent.status == 'pending_verification' or consent.status == 'active') %}
-            <a href="{{ path('app_consent_edit', {id: consent.id}) }}" class="btn btn-primary">
+            <a href="{{ path('app_consent_edit', {id: consent.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
             </a>
             {% endif %}
             {% if is_granted('ROLE_DPO') and not consent.verifiedBy %}
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#verifyModal">
+            <button class="fa-cyber-btn fa-cyber-btn--success" data-bs-toggle="modal" data-bs-target="#verifyModal">
                 <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'consent.action.verify'|trans({}, 'consent') }}
             </button>
             {% endif %}
             {% if consent.status == 'active' %}
-            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#revokeModal">
+            <button class="fa-cyber-btn fa-cyber-btn--warning" data-bs-toggle="modal" data-bs-target="#revokeModal">
                 <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'consent.action.document_revocation'|trans({}, 'consent') }}
             </button>
             {% endif %}
@@ -40,12 +40,12 @@
                   data-action="submit->ui-actions#confirm"
                   data-ui-actions-message-param="{{ 'consent.delete.confirm'|trans({}, 'consent') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ consent.id) }}">
-                <button type="submit" class="btn btn-danger">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                     <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                 </button>
             </form>
             {% endif %}
-            <a href="{{ path('app_consent_index') }}" class="btn btn-secondary">
+            <a href="{{ path('app_consent_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
             </a>
         </div>
@@ -193,7 +193,7 @@
             <div class="detail-item">
                 <span class="label">{{ 'consent.field.proof_document'|trans({}, 'consent') }}:</span>
                 <span class="value">
-                    <a href="{{ consent.proofDocument }}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener noreferrer">
+                    <a href="{{ consent.proofDocument }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" target="_blank" rel="noopener noreferrer">
                         <i class="bi bi-download" aria-hidden="true"></i> {{ 'common.download'|trans({}, 'messages') }}
                     </a>
                 </span>
@@ -339,8 +339,8 @@
                     <p class="text-muted small">{{ 'consent.verify.hint'|trans({}, 'consent') }}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                    <button type="submit" class="btn btn-success">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
                         <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'consent.action.verify'|trans({}, 'consent') }}
                     </button>
                 </div>
@@ -367,8 +367,8 @@
                     <p class="text-muted small">{{ 'consent.revoke.hint'|trans({}, 'consent') }}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                    <button type="submit" class="btn btn-danger">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                         <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'consent.action.document_revocation'|trans({}, 'consent') }}
                     </button>
                 </div>

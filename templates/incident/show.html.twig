@@ -50,7 +50,7 @@
             'data_breach': 'danger'
         }[escalationLevel] ?? 'info' %}
 
-        <div class="alert alert-{{ alertClass }} workflow-status-alert" role="alert">
+        <div class="fa-alert fa-alert--{{ alertClass }} workflow-status-alert" role="alert">
             <div class="workflow-status-header">
                 <div class="workflow-status-title">
                     {# TODO(aurora-v4-icons): dynamic icon switch — isDataBreach ? exclamation-triangle-fill : gear-fill #}
