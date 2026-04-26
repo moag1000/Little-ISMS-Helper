@@ -15,24 +15,26 @@
     <h1 class="h3 mb-4">{{ 'tags.admin.edit.title'|trans({'%name%': tag.name}, 'tags') }}</h1>
 
     {{ form_start(form) }}
-        <div class="card">
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' %}
+            {% block card_body %}
                 {{ form_row(form.name) }}
                 {{ form_row(form.type) }}
                 {{ form_row(form.frameworkCode) }}
                 {{ form_row(form.color) }}
                 {{ form_row(form.description) }}
-            </div>
-            <div class="card-footer d-flex gap-2">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check2" aria-hidden="true"></i>
-                    {{ 'tags.admin.action.save'|trans({}, 'tags') }}
-                </button>
-                <a href="{{ path('admin_tag_index') }}" class="btn btn-outline-secondary">
-                    {{ 'tags.admin.action.cancel'|trans({}, 'tags') }}
-                </a>
-            </div>
-        </div>
+            {% endblock %}
+            {% block card_footer %}
+                <div class="card-footer d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check2" aria-hidden="true"></i>
+                        {{ 'tags.admin.action.save'|trans({}, 'tags') }}
+                    </button>
+                    <a href="{{ path('admin_tag_index') }}" class="btn btn-outline-secondary">
+                        {{ 'tags.admin.action.cancel'|trans({}, 'tags') }}
+                    </a>
+                </div>
+            {% endblock %}
+        {% endembed %}
     {{ form_end(form) }}
 </div>
 {% endblock %}

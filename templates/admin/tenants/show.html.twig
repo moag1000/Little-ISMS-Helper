@@ -712,7 +712,7 @@
                     // Completeness Card - completeness is already a number, safe to use directly
                     const safeCompleteness = parseInt(completeness) || 0;
                     html += `
-                        <div class="card mb-4">
+                        <div class="card fa-section mb-4">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
@@ -761,7 +761,7 @@
 
                             html += `
                                 <div class="col-md-6 mb-3">
-                                    <div class="card h-100">
+                                    <div class="card fa-section h-100">
                                         <div class="card-body">
                                             <div class="text-muted mb-2 small fw-semibold">
                                                 <i class="bi bi-${escapeHtml(field.icon)}" aria-hidden="true"></i> ${escapeHtml(field.label)}

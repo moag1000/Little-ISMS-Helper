@@ -26,7 +26,7 @@
 
     <div class="row row-cols-2 row-cols-md-4 g-2 mb-4">
         <div class="col">
-            <div class="card h-100 text-center">
+            <div class="card fa-section h-100 text-center">
                 <div class="card-body py-2">
                     <div class="display-6 fw-bold">{{ totals.unique }}</div>
                     <div class="small text-muted">{{ 'group_report.suppliers.stat.unique'|trans({}, 'group_report') }}</div>
@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card h-100 text-center border-primary">
+            <div class="card fa-section h-100 text-center border-primary">
                 <div class="card-body py-2">
                     <div class="display-6 fw-bold text-primary">{{ totals.shared }}</div>
                     <div class="small text-muted">{{ 'group_report.suppliers.stat.shared'|trans({}, 'group_report') }}</div>
@@ -42,7 +42,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card h-100 text-center border-success">
+            <div class="card fa-section h-100 text-center border-success fa-rag-card fa-rag-card--green">
                 <div class="card-body py-2">
                     <div class="display-6 fw-bold text-success">{{ totals.with_lei }}</div>
                     <div class="small text-muted">{{ 'group_report.suppliers.stat.with_lei'|trans({}, 'group_report') }}</div>
@@ -50,7 +50,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card h-100 text-center border-danger">
+            <div class="card fa-section h-100 text-center border-danger fa-rag-card fa-rag-card--red">
                 <div class="card-body py-2">
                     <div class="display-6 fw-bold text-danger">{{ totals.critical }}</div>
                     <div class="small text-muted">{{ 'group_report.suppliers.stat.critical'|trans({}, 'group_report') }}</div>

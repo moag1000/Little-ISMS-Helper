@@ -126,7 +126,7 @@
                             {% for wizard in compliance_wizards %}
                                 <div class="col-md-6 col-lg-4">
                                     <a href="{{ path(wizard.route, wizard.route_params) }}" class="text-decoration-none">
-                                        <div class="card h-100 hover-lift border-{{ wizard.color }}">
+                                        <div class="card fa-section h-100 hover-lift border-{{ wizard.color }}">
                                             <div class="card-body">
                                                 <div class="d-flex align-items-center mb-2">
                                                     <i class="bi {{ wizard.icon }} text-{{ wizard.color }} me-2 fa-glyph-size-sm" aria-hidden="true"></i>
@@ -173,7 +173,7 @@
             <div class="row g-3">
                 {% for module in active_modules %}
                     <div class="col-6 col-md-4 col-lg-3">
-                        <div class="card h-100 text-center module-card hover-lift border-0 shadow-sm position-relative">
+                        <div class="card fa-section h-100 text-center module-card hover-lift border-0 shadow-sm position-relative">
                             {% if module.create_route is defined %}
                                 <a href="{{ path(module.create_route) }}"
                                    class="btn btn-sm btn-outline-{{ module.color }} position-absolute top-0 end-0 m-2 module-create-btn"

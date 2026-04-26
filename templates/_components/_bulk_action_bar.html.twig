@@ -47,7 +47,7 @@
 {% set tag_mode = entity_class is not empty or action_urls|length > 0 %}
 
 {% if tag_mode %}
-    <div class="bulk-actions-bar card border-primary mb-3"
+    <div class="bulk-actions-bar card fa-section border-primary mb-3"
          data-controller="bulk-actions"
          data-bulk-actions-entity-class-value="{{ entity_class }}"
          data-bulk-actions-tag-add-url-value="{{ action_urls['tag_add']|default('') }}"

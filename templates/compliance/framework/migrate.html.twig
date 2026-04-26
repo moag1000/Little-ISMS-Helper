@@ -40,7 +40,7 @@
 
     <form method="post"
           action="{{ path('app_compliance_framework_migrate', {id: old_framework.id}) }}"
-          class="card shadow-sm mb-3">
+          class="card fa-section shadow-sm mb-3">
         <input type="hidden" name="_token" value="{{ csrf_token('framework_migrate_' ~ old_framework.id) }}">
         <div class="card-body">
             <div class="row g-3">
@@ -113,7 +113,7 @@
     </form>
 
     {% if result is not null %}
-        <div class="card shadow-sm mb-3">
+        <div class="card fa-section shadow-sm mb-3">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <strong>
                     {% if was_commit %}
