@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% block title %}{{ 'dpia.index.title'|trans({}, 'privacy')}}{% endblock %}
 
 {% block body %}
@@ -245,10 +246,13 @@
                     {% endblock %}
                 {% endembed %}
             {% else %}
-                <div class="alert alert-info mb-0">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'dpia.index.no_dpias_found'|trans({}, 'privacy') }}
-                    <a href="{{ path('app_dpia_new') }}" class="alert-link">{{ 'dpia.index.create_first_dpia'|trans({}, 'privacy') }}</a>.
-                </div>
+                {{ _fa_empty_state.render({
+                    mood: 'sleeping',
+                    title: 'dpia.index.no_dpias_found'|trans({}, 'privacy'),
+                    actions: [
+                        { label: 'dpia.index.create_first_dpia'|trans({}, 'privacy'), variant: 'primary', icon: 'plus-circle', href: path('app_dpia_new') }
+                    ]
+                }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}

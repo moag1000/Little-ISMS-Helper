@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'supplier_criticality.title'|trans({}, 'supplier_criticality') }}{% endblock %}
 
@@ -32,10 +33,10 @@
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}
             {% if levels is empty %}
-                <div class="text-center py-4 text-muted">
-                    <i class="bi bi-inbox fs-2" aria-hidden="true"></i>
-                    <p class="mt-2">{{ 'supplier_criticality.empty'|trans({}, 'supplier_criticality') }}</p>
-                </div>
+                {{ _fa_empty_state.render({
+                    mood: 'sleeping',
+                    title: 'supplier_criticality.empty'|trans({}, 'supplier_criticality')
+                }) }}
             {% else %}
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">

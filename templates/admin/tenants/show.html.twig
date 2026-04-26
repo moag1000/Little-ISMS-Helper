@@ -7,6 +7,8 @@
     <li class="breadcrumb-item active">{{ tenant.code }}</li>
 {% endblock %}
 
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
 {% block admin_content %}
     {# Tenant Header #}
     <div class="d-flex justify-content-between align-items-start mb-4">
@@ -429,10 +431,10 @@
                 {% endblock %}
                 {% block card_body %}
                     {% if userCount == 0 %}
-                        <div class="text-center text-muted py-4">
-                            <i class="bi bi-people fa-glyph-size-lg" aria-hidden="true"></i>
-                            <p class="mt-2">{{ 'tenant.users.empty'|trans({}, 'tenant') }}</p>
-                        </div>
+                        {{ _fa_empty_state.render({
+                            mood: 'sleeping',
+                            title: 'tenant.users.empty'|trans({}, 'tenant')
+                        }) }}
                     {% else %}
                         <div class="list-group list-group-flush">
                             {% for user in tenant.users|slice(0, 10) %}
@@ -543,10 +545,10 @@
                             <i class="bi bi-people-fill" aria-hidden="true"></i> {{ 'tenant.users.current_users'|trans({}, 'tenant') }} ({{ userCount }})
                         </h3>
                         {% if userCount == 0 %}
-                            <div class="text-center text-muted py-3">
-                                <i class="bi bi-people fa-glyph-size-md" aria-hidden="true"></i>
-                                <p class="mt-2 mb-0">{{ 'tenant.users.empty'|trans({}, 'tenant') }}</p>
-                            </div>
+                            {{ _fa_empty_state.render({
+                                mood: 'sleeping',
+                                title: 'tenant.users.empty'|trans({}, 'tenant')
+                            }) }}
                         {% else %}
                             <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
                                 {% for user in tenant.users %}

@@ -434,6 +434,7 @@ processing_activity:
 data_breach:
     index:
         view_all_breaches: 'View All Breaches'
+        no_breaches_found: 'No data breaches found'
     notified_at: 'Notified %date%'
     not_required: 'Not required'
     stats:

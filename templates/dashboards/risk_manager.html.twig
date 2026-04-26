@@ -5,6 +5,7 @@
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block body %}
 <main class="fa-aurora-surface role-dashboard risk-manager-dashboard">
@@ -251,9 +252,10 @@
                         {% endfor %}
                     </div>
                     {% else %}
-                    <p class="text-success text-center py-4 mb-0">
-                        <i class="bi bi-check-circle me-2" aria-hidden="true"></i>{{ 'risk_manager.all_treated'|trans({}, 'dashboards') }}
-                    </p>
+                    {{ _fa_empty_state.render({
+                        mood: 'celebrating',
+                        title: 'risk_manager.all_treated'|trans({}, 'dashboards')
+                    }) }}
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -287,9 +289,10 @@
                         {% endfor %}
                     </div>
                     {% else %}
-                    <p class="text-success text-center py-4 mb-0">
-                        <i class="bi bi-check-circle me-2" aria-hidden="true"></i>{{ 'risk_manager.no_overdue'|trans({}, 'dashboards') }}
-                    </p>
+                    {{ _fa_empty_state.render({
+                        mood: 'celebrating',
+                        title: 'risk_manager.no_overdue'|trans({}, 'dashboards')
+                    }) }}
                     {% endif %}
                 {% endblock %}
             {% endembed %}

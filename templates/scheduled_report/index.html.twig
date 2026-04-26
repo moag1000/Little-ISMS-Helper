@@ -5,6 +5,7 @@
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -157,14 +158,14 @@
     {% else %}
     {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm' } %}
         {% block card_body %}
-            <div class="text-center py-5">
-                <i class="bi bi-calendar-x display-1 text-muted" aria-hidden="true"></i>
-                <h3 class="mt-3">{{ 'scheduled_report.empty.title'|trans({}, 'scheduled_reports') }}</h3>
-                <p class="text-muted">{{ 'scheduled_report.empty.text'|trans({}, 'scheduled_reports') }}</p>
-                <a href="{{ path('app_scheduled_report_new') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'scheduled_report.action.new'|trans({}, 'scheduled_reports') }}
-                </a>
-            </div>
+            {{ _fa_empty_state.render({
+                mood: 'sleeping',
+                title: 'scheduled_report.empty.title'|trans({}, 'scheduled_reports'),
+                text: 'scheduled_report.empty.text'|trans({}, 'scheduled_reports'),
+                actions: [
+                    { label: 'scheduled_report.action.new'|trans({}, 'scheduled_reports'), variant: 'primary', icon: 'plus-circle', href: path('app_scheduled_report_new') }
+                ]
+            }) }}
         {% endblock %}
     {% endembed %}
     {% endif %}

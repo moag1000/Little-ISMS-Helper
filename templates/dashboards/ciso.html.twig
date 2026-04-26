@@ -5,6 +5,7 @@
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block body %}
 <main class="fa-aurora-surface role-dashboard ciso-dashboard">
@@ -102,7 +103,10 @@
                         </div>
                         {% endfor %}
                     {% else %}
-                        <p class="text-muted text-center py-3">{{ 'ciso.no_frameworks'|trans({}, 'dashboards') }}</p>
+                        {{ _fa_empty_state.render({
+                            mood: 'sleeping',
+                            title: 'ciso.no_frameworks'|trans({}, 'dashboards')
+                        }) }}
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -179,7 +183,10 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        <p class="text-muted text-center py-4 mb-0">{{ 'ciso.no_critical_risks'|trans({}, 'dashboards') }}</p>
+                        {{ _fa_empty_state.render({
+                            mood: 'celebrating',
+                            title: 'ciso.no_critical_risks'|trans({}, 'dashboards')
+                        }) }}
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -213,7 +220,10 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        <p class="text-muted text-center py-4 mb-0">{{ 'ciso.no_pending_approvals'|trans({}, 'dashboards') }}</p>
+                        {{ _fa_empty_state.render({
+                            mood: 'celebrating',
+                            title: 'ciso.no_pending_approvals'|trans({}, 'dashboards')
+                        }) }}
                     {% endif %}
                 {% endblock %}
             {% endembed %}

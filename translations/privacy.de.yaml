@@ -580,6 +580,7 @@ common:
 data_breach:
     index:
         view_all_breaches: 'Alle Datenschutzverletzungen anzeigen'
+        no_breaches_found: 'Keine Datenschutzverletzungen gefunden'
     notified_at: 'Gemeldet am %date%'
     not_required: 'Nicht erforderlich'
     stats:

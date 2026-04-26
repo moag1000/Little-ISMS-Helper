@@ -4,6 +4,7 @@
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -57,10 +58,10 @@
     {% embed '_components/_card.html.twig' with {'class': 'shadow-sm', 'noPadding': true, 'freezes': freezes} %}
         {% block card_body %}
             {% if freezes is empty %}
-                <div class="text-center py-5">
-                    <i class="bi bi-snow text-muted fa-glyph-size-lg" aria-hidden="true"></i>
-                    <p class="text-muted mt-3">{{ 'audit_freeze.empty'|trans({}, 'audit_freeze') }}</p>
-                </div>
+                {{ _fa_empty_state.render({
+                    mood: 'sleeping',
+                    title: 'audit_freeze.empty'|trans({}, 'audit_freeze')
+                }) }}
             {% else %}
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
