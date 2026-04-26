@@ -3,7 +3,11 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
-## [Unreleased] — feat/mris-integration → v3.2.0 (Tag wartet auf Aurora-Finalisierung)
+## [Unreleased]
+
+_Noch keine Aenderungen._
+
+## [3.2.0] — 2026-04-26
 
 ### Headline-Feature: MRIS-Integration v1.5 — Gen-AI-Bedrohungslage im ISMS
 
@@ -250,6 +254,122 @@ EU regulatorisch:
 **Tests:** 27 neue Test-Cases (MQS-Service 6 + Validator 7 + Lifecycle 7 + Loader 7).
 
 **Dokumentation:** `LIBRARY_FORMAT_VISION.md` + `MAPPING_QUALITY_VISION.md` + `MAPPING_QUALITY_ANALYSIS.md` + `QUICKSTART_MAPPING_QUALITY.md`.
+
+### Aurora v4.1 Final-Wellen — Sprints D, E1-E6, F, G, H, J1-J3, K1-K3, M1-M2, N1-N2, P1-P2, Q + Icon-System
+
+**v4.1-Compliance app-weit erreicht — null Bootstrap-Color-Utilities, null bi-* Icons, null hardgecodete Hex-Farben außerhalb der Token-SoT.**
+
+Mehrwöchige Mass-Migration aller noch verbliebenen Bootstrap-/Bootstrap-Icons-/Inline-Style-Reste auf Aurora-Native-Komponenten. Über 600 Templates angefasst, 18 Sprints (D bis Q) abgeschlossen. Aurora ist damit nicht mehr „Bridge auf Bootstrap", sondern eigenständige UI-DNA.
+
+**Icon-System (Sprint A + Sprint Q + Folge-Wellen):**
+
+- **89 neue Icons** aus design_system v4.1 in App-Tree gezogen (Sprint Q): `nav/`, `ui/`, `util/` Domains
+- **20 weitere Icons** in Folge-Welle: `clock`, `calendar`, `lightbulb`, `flag`, `shield-check`, `arrow-*`, etc. — **186 SVGs total** im Aurora-Icon-Set
+- **Mass-Migration `bi-*` → `fa-icon--{nav,ui,util}-*`** über ~380 Sites (Sprint Q + Folge)
+- **39 broken Icon-Refs** repariert, mass-mapped auf existierende Klassen
+- **21 ungenutzte Compliance-Icons adoptiert** (Δ `bi-*` 431→394) — kein toter Code mehr
+- Icon-Size-Utilities (.fa-icon--xs/sm/md/lg/xl) ersetzen alle inline `font-size`-Styles auf `bi-*` Glyphen
+
+**Komponenten-Robustheit (Sprint E + N + P):**
+
+- **`_fa_alert` embed-block-scope-Fix** — 29 Templates: `render(body: '{{ … }}')` funktionierte in Twig 3 nicht zuverlässig, jetzt durchgängig auf `embed` mit `block body` umgestellt
+- **`_fa_empty_state` + `_fa_hero` Twig-3 macro-scope-Fix** für Alva-Render — Macro-internes `{% set %}` mit `props is defined`-Guard
+- **`fa-cyber-btn` safety-net via `:where()`** — variantless Buttons (ohne `--md`/`--ghost`-Modifier) bekommen jetzt brauchbares Default-Padding/Size, statt unsichtbar zu rendern
+- **TomSelect-Override mit `!important`** — Aurora-Tokens schlagen jetzt zuverlässig die Lib-CSS der TomSelect-Library
+- **2 unfertige Twig-Conditionals beim P1-Migrate** repariert
+
+**Mass-Migrationen (Sprint K2 + J + M + N + P):**
+
+- **`alert alert-*` → `_fa_alert` / `fa-alert`** über **100 Templates** (Sprint K2)
+- **`btn-*` / `btn-outline-*` / `btn-link` → `fa-cyber-btn`** in mehreren Wellen (Sprint J2, K1, M1, M2, P1 final, plus `btn-link` → `fa-cyber-btn--ghost`)
+- **`bi-*` → `fa-icon--*`** in Domain-Audits (Sprint E1-E5, P2 final): home/dashboards/admin, asset/incident/document, ISMS-Domain
+- **Badge-Mass-Migration** → `_badge` / `fa-status-pill` (Sprint J1)
+- **`.kpi-card` / `variant: 'kpi'`** auf CISO-Dashboard durch `_fa_feature_card` mit Icon-Chip ersetzt
+- **Inline-Style-Cleanup + Hex-Cleanup Round 2** (Sprint J3, E6) — Hex-Farben außerhalb Token-SoT eliminiert
+- **`fa-aurora-surface` flächendeckend** als Opt-in-Page-Atmosphäre (Sprint C)
+- **Card-Konsolidierung Round 2 + 3** (Sprint G, K3) — duplizierte Card-Header-Regeln entfernt, Aurora-Spec gewinnt durchgehend per Source-Order
+
+**Governance / CI:**
+
+- **Stylelint-Hex-Verbot in 14 Color-Properties** app-weit (Sprint H, Phase 11) + Audit-Tooling
+- **Allow-List**: `fairy-aurora.css` (Token-SoT), `alva.css` (SVG-Brand-Fills), Vendor-Bootstrap.css
+
+### fa-entity-card + fa-entity-badge Komponente — NEU
+
+**Wiederverwendbare Listen-Item-Card für 7 Entity-Types als Aurora-Native-Alternative zu Ad-hoc-Card-Markup.**
+
+Listen-Item-Card-Component mit Entity-Icon (links), Title, Meta-Zeile, Status-Pill (rechts) für die häufigsten Listenseiten. Spezifische Varianten für **finding** / **nonconformity** / **risk** / **control** / **evidence** / **incident** / **audit** mit semantisch passenden Icons + Border-Akzenten. Plus **10 Entity-Badge-Variants** (zusätzlich `asset`, `policy`, `training`).
+
+- **171 CSS-Zeilen** aus Aurora-v4.1-Spec in `fairy-aurora-components.css` portiert
+- **2 neue Twig-Macros**: `templates/_components/_fa_entity_card.html.twig` + `_fa_entity_badge.html.twig`
+- **Adoption**: `audit_finding/index` + `corrective_action/index` migriert (2 Listen-Pages)
+- **Showcase** unter `/dev/design-system` (Live-Preview + Copy-Paste-Snippets)
+
+### Schema- / Migration-Maintenance-UI im Data-Repair — NEU
+
+**Always-on-buttons für Schema-Drift-Recovery aus dem Browser, ohne SSH/CLI.**
+
+Im Data-Repair-Bereich des Admin-Moduls neuer **3-Card-Grid**: Migrations | Schema-Drift | Aktionen. Status-Pills (success / warning / danger) zeigen Drift-Stand auf einen Blick, Buttons sind „always-clickable" auch wenn alles grün ist. Wrappt Doctrine `MigrationStatusCalculator` und reused den existierenden `SchemaHealthService`.
+
+- Neuer **`SchemaMaintenanceService`** wrappt Doctrine + reused `SchemaHealthService`
+- **2 neue POST-Routes** (CSRF-guarded, `ROLE_ADMIN`): `app:schema:run-migrations`, `app:schema:reconcile`
+- **Destructive-statement-detection** — `DROP TABLE` / `ALTER … DROP COLUMN` werden vor Ausführung markiert und brauchen explizite Bestätigung
+- **20 neue Translation-Keys** (DE + EN) im `data_repair`-Domain
+
+### Mapping-Quality-System — NEU
+
+**MQS-Score 0-100, Lifecycle-Tracking, Reciprocity-Check und Provenance-Felder für alle 24 Cross-Framework-Mappings.**
+
+Mapping-Qualität wird ab v3.2.0 nicht mehr „nach Bauchgefühl" bewertet, sondern numerisch über den **Mapping-Quality-Score (MQS)** aus 5 gewichteten Sub-Scores (Coverage, Granularity, Reciprocity, Provenance, Validation). Jedes Mapping hat einen **Lifecycle-State** (draft / review / published / deprecated) und einen Reverse-Mapping-Check, der sicherstellt, dass A→B und B→A sich nicht widersprechen.
+
+- **39 Engineering-Tests grün** (MQS-Service 6 + Validator 7 + Lifecycle 7 + Loader 7 + sonstige)
+- **13 Library-Files** mit MQS-Range **71.6–95.9** — NIS2 ↔ ISO **100 % reziprok**
+- **Loader-Tests + 3 Reverse-Mappings + CISO-Coverage-View** als ergänzende Wellen
+- **Standard-Mappings + 2 weitere Default-Sets** ausgeliefert
+- Reciprocity 24/24 = 100 % Coherence (siehe Mapping-Library-Sektion oben)
+
+### 38-Finding UX-Improvement-Sprint
+
+**Sammel-Sprint, der 38 individuelle UX-Findings aus dem Persona-Audit über 27 Module adressiert.**
+
+Findings reichten von „Filter-Chip nicht sichtbar bei aktivem Filter" über „Modal verliert Fokus bei Turbo-Navigation" bis zu „Empty-State zeigt CTA, aber User hat kein Schreibrecht". Commit `b2422287` listet alle 38 Items mit Modul-Bezug.
+
+### Workflow Phase 10 Roadmap
+
+- **14 neue regulatorische Workflows** aus Persona-Audit identifiziert und in `docs/WORKFLOW_REQUIREMENTS.md` Phase 10 dokumentiert
+- **Supplier-Workflow auf 5 Steps erweitert** + Reject-Loops zwischen Step 2/3 und Step 4/5
+
+### Compliance-Manager-Audit v2.3 — Score 99/100
+
+**Alle 10 Frameworks erreichen Tool-Status 🟢 (vorher v2.2: 98/100).**
+
+Compliance-Manager-Persona-Audit nach v3.2.0-Featureset re-evaluiert. Fortschritt v2.2 → v2.3:
+
+- **32 FTE-Tage realisiert in 5 Tagen** (durch konsistente Data-Reuse-Architektur über alle neuen Features hinweg)
+- **3 genuine Markt-Differenzierung** unter den 10 Frameworks: **EU AI Act**, **ISO 42001**, **MRIS** (kein Wettbewerber hat alle drei out-of-the-box)
+- **Top-3 Reuse-Hebel** identifiziert: **MQS** (Mapping-Quality-Score), **MRIS-Reifegrad-Tracking**, **AI-Agent-Inventar** (eine Datenbasis → vier Frameworks)
+
+### Setup-Wizard Performance
+
+**Async-Job-Pattern auf alle Long-Running-Routes ausgeweitet — Wizard fühlt sich auch bei 30s-Schema-Create flüssig an.**
+
+Der Setup-Wizard ist out-of-the-box Erstkontakt mit dem Tool. Lange Spinner ohne Feedback waren ein Ausstiegsfaktor. Mehrere Performance- + UX-Fixes ausgerollt:
+
+- **Async-Job-Pattern** auf allen Long-Running-Routes (`schema-create`, `skip-restore`, `module-save`, etc.) mit Stimulus-Polling-Controller
+- **Schema-Create**: transaction-wrap + multi-VALUES-Insert für Migrations-Metadata (~10× schneller bei 80+ Migrations)
+- **Bypass Doctrine-Wrapper für DDL** — fixt „no active transaction"-Fehler bei `CREATE TABLE` in MariaDB
+- **File-based async-job-status** (Session-Writes nach `fastcgi_finish_request` gehen sonst verloren)
+- **`wizard-busy` nutzt `readonly` (nicht `disabled`)** auf Inputs, damit POST-Werte erhalten bleiben
+- **Alva-Wait-Animation** auf allen Wizard-Forms (kein blanker Spinner mehr)
+- **Stimulus explicit registration** für `async-job` + `wizard-busy` + `alva-dock` (statt nur Auto-Discovery)
+
+### Bug-Fixes
+
+- **`DataIntegrityService`**: `Document.getTitle()` → `getOriginalFilename()` (Title-Property existiert nicht mehr nach Document-Refactor)
+- **Sample-Data-YAML-Audit** + snake_case-Resolver für 22 Samples — fixt Inkonsistenz zwischen Fixture-YAML und Entity-Setter-Naming
+- **Smart-Setter-Resolver** im Sample-Data-Loader + DateTimeImmutable-Preference (statt mutable `\DateTime`)
+- **Compliance-Import**: `form`-Variable an Card-Embed durchgereicht (Twig-Scope-Bug)
+- **Docker**: `var/sessions` + `public/uploads` werden jetzt beim Build und Runtime erzeugt — fixt 500er bei frischem Container-Start
 
 ## [3.0.0] - 2026-04-25
 
