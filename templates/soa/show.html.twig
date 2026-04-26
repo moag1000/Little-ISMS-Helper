@@ -19,14 +19,23 @@
         <h1>{{ control.controlId }}: {{ control.name }}</h1>
         <div class="mt-2">
             {% include '_components/_badge.html.twig' with { variant: 'info', content: ('soa.category.' ~ control.category)|trans({}, 'soa') } %}
+            {% set mrisLocale = app.request.locale|default('de') %}
             {% if control.mythosResilience == 'standfest' %}
-                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'soa.mris.standfest'|trans({}, 'soa') } %}
+                <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.standfest', 'tooltip', mrisLocale) }}">
+                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'soa.mris.standfest'|trans({}, 'soa') } %}
+                </span>
             {% elseif control.mythosResilience == 'degradiert' %}
-                {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'soa.mris.degradiert'|trans({}, 'soa') } %}
+                <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.partially_degraded', 'tooltip', mrisLocale) }}">
+                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'soa.mris.degradiert'|trans({}, 'soa') } %}
+                </span>
             {% elseif control.mythosResilience == 'reibung' %}
-                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'soa.mris.reibung'|trans({}, 'soa') } %}
+                <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.pure_friction', 'tooltip', mrisLocale) }}">
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'soa.mris.reibung'|trans({}, 'soa') } %}
+                </span>
             {% elseif control.mythosResilience == 'nicht_betroffen' %}
-                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'soa.mris.nicht_betroffen'|trans({}, 'soa') } %}
+                <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.not_affected', 'tooltip', mrisLocale) }}">
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'soa.mris.nicht_betroffen'|trans({}, 'soa') } %}
+                </span>
             {% endif %}
         </div>
     </div>

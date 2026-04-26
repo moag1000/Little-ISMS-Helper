@@ -88,6 +88,8 @@
             <div class="col-md-6 col-lg-3">
                 {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                     {% block card_body %}
+                        {% set mrisLocale = app.request.locale|default('de') %}
+                        {% set kpiHelpKey = 'mris.help.kpi_' ~ kpi.id %}
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <code class="small text-muted">{{ kpi.mhc }}</code>
                             {% if kpi.computable %}
@@ -96,7 +98,12 @@
                                 {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'mris.badge.manual'|trans({}, 'mris') } %}
                             {% endif %}
                         </div>
-                        <h2 class="h6 mb-2">{{ kpi.name }}</h2>
+                        <h2 class="h6 mb-2"
+                            {% set tt = mris_help(kpiHelpKey, 'tooltip', mrisLocale) %}
+                            {% if tt %}data-bs-toggle="tooltip" title="{{ tt }}"{% endif %}>
+                            {{ kpi.name }}
+                            {% if tt %}<i class="bi bi-question-circle small text-muted ms-1" aria-hidden="true"></i>{% endif %}
+                        </h2>
                         {% if kpi.value is not null %}
                             <p class="display-6 mb-1">
                                 {{ kpi.value }}

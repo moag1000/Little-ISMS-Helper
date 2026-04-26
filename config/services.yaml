@@ -95,6 +95,12 @@ services:
             $projectDir: '%kernel.project_dir%'
         tags: ['twig.extension']
 
+    # MRIS-Hilfetexte aus fixtures/mris/help-texts.yaml fuer Tooltip-Integration
+    App\Twig\MrisHelpTextExtension:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+        tags: ['twig.extension']
+
     # FairyAurora v3.0 — Alva-Mood-Resolver (Server-seitig, Plan § 6)
     App\Twig\AlvaMoodExtension:
         tags: ['twig.extension']
