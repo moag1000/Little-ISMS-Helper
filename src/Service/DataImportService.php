@@ -529,9 +529,32 @@ class DataImportService
     private function createEntity(string $entityClass, array $data): object
     {
         $entity = new $entityClass();
+        $shortName = (new \ReflectionClass($entity))->getShortName();
 
         foreach ($data as $property => $value) {
-            $setter = 'set' . ucfirst((string) $property);
+            $propertyUcFirst = ucfirst((string) $property);
+            // Setter-Kandidaten: direkter Name, Entity-Prefix-Variante (z. B.
+            // `type` → `setAssetType` auf Asset), bekannter Alias.
+            $setterCandidates = [
+                'set' . $propertyUcFirst,
+                'set' . $shortName . $propertyUcFirst,
+            ];
+            // Aliases: YAML-Convention vs. Entity-Konvention
+            $aliases = [
+                'name' => 'setTitle',  // Risk/Incident verwenden title statt name
+                'date' => 'setOccurredAt',
+            ];
+            if (isset($aliases[(string) $property])) {
+                $setterCandidates[] = $aliases[(string) $property];
+            }
+
+            $setter = null;
+            foreach ($setterCandidates as $cand) {
+                if (method_exists($entity, $cand)) {
+                    $setter = $cand;
+                    break;
+                }
+            }
             $adder = 'add' . ucfirst(rtrim((string) $property, 's'));
 
             // ref:-Syntax auflösen (single oder list of refs)
@@ -554,21 +577,24 @@ class DataImportService
                 }
             }
 
-            if (!method_exists($entity, $setter)) {
+            if ($setter === null) {
+                $this->addLog("No setter found on {$entityClass} for property '{$property}' (tried: " . implode(', ', $setterCandidates) . ')');
                 continue;
             }
 
-            // Datum-Strings: je nach Setter-Parametertyp DateTime oder DateTimeImmutable
-            // konstruieren. Ohne das wirft jeder Setter mit DateTimeImmutable-Hint
-            // einen TypeError (z.B. Consent::setGrantedAt, DataSubjectRequest::setReceivedAt).
+            // Datum-Strings: je nach Setter-Parametertyp DateTimeImmutable oder
+            // DateTime konstruieren. Bei DateTimeInterface bevorzugen wir
+            // DateTimeImmutable, weil Doctrine-Columns mit Type DATETIME_IMMUTABLE
+            // explicit DateTimeImmutable verlangen (Doctrine wirft sonst Conversion-
+            // Error, siehe RiskAppetite::approvedAt etc.).
             if (is_string($value) && strtotime($value) !== false) {
                 try {
                     $reflection = new \ReflectionMethod($entity, $setter);
                     $paramType = $reflection->getParameters()[0]?->getType();
                     $typeName = $paramType instanceof \ReflectionNamedType ? $paramType->getName() : null;
-                    if ($typeName === \DateTimeImmutable::class) {
+                    if ($typeName === \DateTimeImmutable::class || $typeName === \DateTimeInterface::class) {
                         $value = new \DateTimeImmutable($value);
-                    } elseif ($typeName === \DateTimeInterface::class || $typeName === \DateTime::class) {
+                    } elseif ($typeName === \DateTime::class) {
                         $value = new DateTime($value);
                     }
                 } catch (\ReflectionException) {
