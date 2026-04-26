@@ -4,6 +4,7 @@
 {% block title %}{{ 'risk_manager.title'|trans({}, 'dashboards') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
 
 {% block body %}
 <main class="fa-aurora-surface role-dashboard risk-manager-dashboard">
@@ -26,63 +27,39 @@
 
         <div data-skeleton-target="content" class="hidden">
 
-    {# Summary Cards #}
+    {# Summary KPIs — Aurora _fa_kpi_card macro #}
     <div class="row g-3 mb-4">
-        <div class="col-md-2">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-primary' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0">{{ dashboard.summary.total_risks }}</h3>
-                        <small class="text-muted">{{ 'risk_manager.kpi.total_risks'|trans({}, 'dashboards') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-2">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-danger' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0 text-danger">{{ dashboard.summary.high_critical }}</h3>
-                        <small class="text-muted">{{ 'risk_manager.kpi.high_critical'|trans({}, 'dashboards') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-2">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-success' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0 text-success">{{ dashboard.summary.treated_percentage }}%</h3>
-                        <small class="text-muted">{{ 'risk_manager.kpi.treated'|trans({}, 'dashboards') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-2">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-warning' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0 {% if dashboard.summary.overdue_treatments > 0 %}text-warning{% endif %}">{{ dashboard.summary.overdue_treatments }}</h3>
-                        <small class="text-muted">{{ 'risk_manager.kpi.overdue'|trans({}, 'dashboards') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
+        <div class="col-md-2">{{ _fa_kpi_card.render({
+            value: dashboard.summary.total_risks,
+            label: 'risk_manager.kpi.total_risks'|trans({}, 'dashboards')
+        }) }}</div>
+        <div class="col-md-2">{{ _fa_kpi_card.render({
+            value: dashboard.summary.high_critical,
+            label: 'risk_manager.kpi.high_critical'|trans({}, 'dashboards'),
+            valueDanger: true
+        }) }}</div>
+        <div class="col-md-2">{{ _fa_kpi_card.render({
+            value: dashboard.summary.treated_percentage,
+            unit: '%',
+            label: 'risk_manager.kpi.treated'|trans({}, 'dashboards')
+        }) }}</div>
+        <div class="col-md-2">{{ _fa_kpi_card.render({
+            value: dashboard.summary.overdue_treatments,
+            label: 'risk_manager.kpi.overdue'|trans({}, 'dashboards'),
+            valueDanger: dashboard.summary.overdue_treatments > 0
+        }) }}</div>
         <div class="col-md-4">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 ' ~ (dashboard.summary.appetite_status == 'compliant' ? 'border-success' : 'border-danger') } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0">
-                            {% if dashboard.summary.appetite_status == 'compliant' %}
-                                <span class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'status.compliant'|trans({}, 'dashboards') }}</span>
-                            {% else %}
-                                <span class="text-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'status.breach'|trans({}, 'dashboards') }}</span>
-                            {% endif %}
-                        </h3>
-                        <small class="text-muted">{{ 'risk_manager.kpi.appetite_status'|trans({}, 'dashboards') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {% set isCompliant = dashboard.summary.appetite_status == 'compliant' %}
+            <article class="fa-rag-card fa-rag-card--{{ isCompliant ? 'green' : 'red' }}">
+                <h3 class="mb-0">
+                    {% if isCompliant %}
+                        <span class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'status.compliant'|trans({}, 'dashboards') }}</span>
+                    {% else %}
+                        <span class="text-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'status.breach'|trans({}, 'dashboards') }}</span>
+                    {% endif %}
+                </h3>
+                <small class="fa-rag-card__detail">{{ 'risk_manager.kpi.appetite_status'|trans({}, 'dashboards') }}</small>
+            </article>
         </div>
     </div>
 
@@ -179,22 +156,22 @@
                 {% endblock %}
                 {% block card_body %}
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
+                        <table class="fa-data-table">
+                            <thead>
                                 <tr>
                                     <th scope="col">{{ 'risk_manager.table.category'|trans({}, 'dashboards') }}</th>
-                                    <th scope="col" class="text-center">{{ 'risk_manager.table.total'|trans({}, 'dashboards') }}</th>
-                                    <th scope="col" class="text-center">{{ 'risk_manager.table.high'|trans({}, 'dashboards') }}</th>
-                                    <th scope="col" class="text-center">{{ 'risk_manager.table.critical'|trans({}, 'dashboards') }}</th>
+                                    <th scope="col" class="th--center">{{ 'risk_manager.table.total'|trans({}, 'dashboards') }}</th>
+                                    <th scope="col" class="th--center">{{ 'risk_manager.table.high'|trans({}, 'dashboards') }}</th>
+                                    <th scope="col" class="th--center">{{ 'risk_manager.table.critical'|trans({}, 'dashboards') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for category, data in dashboard.risks_by_category %}
                                 <tr>
                                     <td>{{ category }}</td>
-                                    <td class="text-center">{{ data.total }}</td>
-                                    <td class="text-center">{% include '_components/_badge.html.twig' with { variant: 'warning', content: data.high } %}</td>
-                                    <td class="text-center">{% include '_components/_badge.html.twig' with { variant: 'danger', content: data.critical } %}</td>
+                                    <td class="td--center">{{ data.total }}</td>
+                                    <td class="td--center">{% include '_components/_badge.html.twig' with { variant: 'warning', content: data.high } %}</td>
+                                    <td class="td--center">{% include '_components/_badge.html.twig' with { variant: 'danger', content: data.critical } %}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

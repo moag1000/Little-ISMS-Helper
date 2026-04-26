@@ -4510,3 +4510,140 @@ html[data-theme="dark"] .framework-card {
     opacity: 0.6;
     cursor: not-allowed;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Dashboard primitives — Aurora v4 spec components for executive +
+   operational dashboards. Replace ad-hoc Bootstrap mixins
+   (border-success/.table-bordered/<li class="text-warning">) with
+   semantic Aurora-tokenized building blocks.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* RAG-Card — Red/Amber/Green status tiles (BCM, board, CISO views) */
+.fa-rag-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--border-strong);
+    border-radius: var(--r-md);
+    padding: var(--spacing-lg);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--t-fast) var(--ease-out),
+                transform var(--t-fast) var(--ease-out);
+    height: 100%;
+}
+.fa-rag-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+.fa-rag-card--green { border-left-color: var(--success); }
+.fa-rag-card--amber { border-left-color: var(--warning); }
+.fa-rag-card--red   { border-left-color: var(--danger); }
+
+.fa-rag-card__pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-sm);
+}
+.fa-rag-card__title {
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--fg);
+}
+.fa-rag-card__detail {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--fg-2);
+}
+
+/* Data-Table — Aurora-themed table for dashboards (replaces
+   .table.table-bordered + .table-light) */
+.fa-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--fg);
+    background: var(--surface);
+    margin: 0;
+}
+.fa-data-table thead {
+    background: var(--surface-2);
+}
+.fa-data-table th {
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--border-strong);
+    border-top: 1px solid var(--border);
+    text-align: left;
+    color: var(--fg);
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
+}
+.fa-data-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+    vertical-align: middle;
+}
+.fa-data-table tbody tr:last-child td { border-bottom: 0; }
+.fa-data-table tbody tr:hover { background: var(--surface-2); }
+.fa-data-table th--center,
+.fa-data-table td--center { text-align: center; }
+.fa-data-table th--right,
+.fa-data-table td--right  { text-align: right; }
+
+/* Issue-list — semantic alternative to ad-hoc <ul><li class="text-warning"> */
+.fa-issue-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.fa-issue-list__item {
+    padding: 8px 12px;
+    border-left: 3px solid var(--border);
+    border-radius: 0 var(--r-sm) var(--r-sm) 0;
+    background: var(--surface-2);
+    color: var(--fg);
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+.fa-issue-list__item--success {
+    border-left-color: var(--success);
+    background: var(--success-tint);
+    color: var(--success-strong);
+}
+.fa-issue-list__item--warning {
+    border-left-color: var(--warning);
+    background: var(--warning-tint);
+    color: var(--warning-text);
+}
+.fa-issue-list__item--danger {
+    border-left-color: var(--danger);
+    background: var(--danger-tint);
+    color: var(--danger-strong);
+}
+.fa-issue-list__item--info {
+    border-left-color: var(--primary);
+    background: var(--primary-tint);
+    color: var(--primary-strong);
+}
+
+/* Trend-pill — small up/down/flat indicator for KPI tiles */
+.fa-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.fa-trend--up      { color: var(--success); }
+.fa-trend--up-bad  { color: var(--danger); }   /* up where higher = worse (e.g. risk count) */
+.fa-trend--down    { color: var(--success); }
+.fa-trend--down-bad{ color: var(--danger); }
+.fa-trend--flat    { color: var(--fg-3); }

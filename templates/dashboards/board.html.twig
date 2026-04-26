@@ -4,6 +4,8 @@
 {% block title %}{{ 'board.title'|trans({}, 'dashboards') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
+{% import '_components/_fa_rag_card.html.twig' as _fa_rag_card %}
 
 {% block body %}
 <main class="fa-aurora-surface role-dashboard board-dashboard">
@@ -26,180 +28,54 @@
 
         <div data-skeleton-target="content" class="hidden">
 
-    {# Executive RAG Status Overview #}
+    {# Executive RAG Status Overview — Aurora .fa-rag-card via macro #}
     <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 ' ~ (dashboard.rag_status.security == 'green' ? 'border-success' : (dashboard.rag_status.security == 'amber' ? 'border-warning' : 'border-danger')) } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="mb-2">
-                            {% include '_components/_badge.html.twig' with {
-                                variant: dashboard.rag_status.security == 'green' ? 'success' : (dashboard.rag_status.security == 'amber' ? 'warning' : 'danger'),
-                                icon: dashboard.rag_status.security == 'green' ? 'bi-check-circle' : (dashboard.rag_status.security == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
-                                pill: true,
-                                class: 'fs-5 px-3 py-2'
-                            } %}
-                        </div>
-                        <h5 class="mb-1">{{ 'board.rag.security'|trans({}, 'dashboards') }}</h5>
-                        <small class="text-muted">{{ dashboard.rag_details.security }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 ' ~ (dashboard.rag_status.compliance == 'green' ? 'border-success' : (dashboard.rag_status.compliance == 'amber' ? 'border-warning' : 'border-danger')) } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="mb-2">
-                            {% include '_components/_badge.html.twig' with {
-                                variant: dashboard.rag_status.compliance == 'green' ? 'success' : (dashboard.rag_status.compliance == 'amber' ? 'warning' : 'danger'),
-                                icon: dashboard.rag_status.compliance == 'green' ? 'bi-check-circle' : (dashboard.rag_status.compliance == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
-                                pill: true,
-                                class: 'fs-5 px-3 py-2'
-                            } %}
-                        </div>
-                        <h5 class="mb-1">{{ 'board.rag.compliance'|trans({}, 'dashboards') }}</h5>
-                        <small class="text-muted">{{ dashboard.rag_details.compliance }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 ' ~ (dashboard.rag_status.risk == 'green' ? 'border-success' : (dashboard.rag_status.risk == 'amber' ? 'border-warning' : 'border-danger')) } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="mb-2">
-                            {% include '_components/_badge.html.twig' with {
-                                variant: dashboard.rag_status.risk == 'green' ? 'success' : (dashboard.rag_status.risk == 'amber' ? 'warning' : 'danger'),
-                                icon: dashboard.rag_status.risk == 'green' ? 'bi-check-circle' : (dashboard.rag_status.risk == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
-                                pill: true,
-                                class: 'fs-5 px-3 py-2'
-                            } %}
-                        </div>
-                        <h5 class="mb-1">{{ 'board.rag.risk'|trans({}, 'dashboards') }}</h5>
-                        <small class="text-muted">{{ dashboard.rag_details.risk }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 ' ~ (dashboard.rag_status.operations == 'green' ? 'border-success' : (dashboard.rag_status.operations == 'amber' ? 'border-warning' : 'border-danger')) } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="mb-2">
-                            {% include '_components/_badge.html.twig' with {
-                                variant: dashboard.rag_status.operations == 'green' ? 'success' : (dashboard.rag_status.operations == 'amber' ? 'warning' : 'danger'),
-                                icon: dashboard.rag_status.operations == 'green' ? 'bi-check-circle' : (dashboard.rag_status.operations == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
-                                pill: true,
-                                class: 'fs-5 px-3 py-2'
-                            } %}
-                        </div>
-                        <h5 class="mb-1">{{ 'board.rag.operations'|trans({}, 'dashboards') }}</h5>
-                        <small class="text-muted">{{ dashboard.rag_details.operations }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
+        <div class="col-md-3">{{ _fa_rag_card.render({ status: dashboard.rag_status.security,    title: 'board.rag.security'|trans({}, 'dashboards'),    detail: dashboard.rag_details.security }) }}</div>
+        <div class="col-md-3">{{ _fa_rag_card.render({ status: dashboard.rag_status.compliance,  title: 'board.rag.compliance'|trans({}, 'dashboards'),  detail: dashboard.rag_details.compliance }) }}</div>
+        <div class="col-md-3">{{ _fa_rag_card.render({ status: dashboard.rag_status.risk,        title: 'board.rag.risk'|trans({}, 'dashboards'),        detail: dashboard.rag_details.risk }) }}</div>
+        <div class="col-md-3">{{ _fa_rag_card.render({ status: dashboard.rag_status.operations,  title: 'board.rag.operations'|trans({}, 'dashboards'),  detail: dashboard.rag_details.operations }) }}</div>
     </div>
 
-    {# Key Metrics with Trends #}
+    {# Key Metrics with Trends — Aurora _fa_kpi_card macro #}
     <div class="row g-3 mb-4">
-        <div class="col-md-2">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0">{{ dashboard.metrics.overall_compliance }}%</h3>
-                        <small class="text-muted d-block">{{ 'board.metric.compliance'|trans({}, 'dashboards') }}</small>
-                        {% if dashboard.trends.compliance > 0 %}
-                            <small class="text-success"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.compliance }}%</small>
-                        {% elseif dashboard.trends.compliance < 0 %}
-                            <small class="text-danger"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.compliance }}%</small>
-                        {% else %}
-                            <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0%</small>
-                        {% endif %}
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-2">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0">{{ dashboard.metrics.total_risks }}</h3>
-                        <small class="text-muted d-block">{{ 'board.metric.risks'|trans({}, 'dashboards') }}</small>
-                        {% if dashboard.trends.risks > 0 %}
-                            <small class="text-danger"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.risks }}</small>
-                        {% elseif dashboard.trends.risks < 0 %}
-                            <small class="text-success"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.risks }}</small>
-                        {% else %}
-                            <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0</small>
-                        {% endif %}
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-2">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0 {% if dashboard.metrics.critical_risks > 0 %}text-danger{% endif %}">{{ dashboard.metrics.critical_risks }}</h3>
-                        <small class="text-muted d-block">{{ 'board.metric.critical'|trans({}, 'dashboards') }}</small>
-                        {% if dashboard.trends.critical > 0 %}
-                            <small class="text-danger"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.critical }}</small>
-                        {% elseif dashboard.trends.critical < 0 %}
-                            <small class="text-success"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.critical }}</small>
-                        {% else %}
-                            <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0</small>
-                        {% endif %}
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-2">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0">{{ dashboard.metrics.incidents_ytd }}</h3>
-                        <small class="text-muted d-block">{{ 'board.metric.incidents'|trans({}, 'dashboards') }}</small>
-                        {% if dashboard.trends.incidents > 0 %}
-                            <small class="text-danger"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.incidents }}</small>
-                        {% elseif dashboard.trends.incidents < 0 %}
-                            <small class="text-success"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.incidents }}</small>
-                        {% else %}
-                            <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0</small>
-                        {% endif %}
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-2">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0">{{ dashboard.metrics.controls_implemented }}%</h3>
-                        <small class="text-muted d-block">{{ 'board.metric.controls'|trans({}, 'dashboards') }}</small>
-                        {% if dashboard.trends.controls > 0 %}
-                            <small class="text-success"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.controls }}%</small>
-                        {% elseif dashboard.trends.controls < 0 %}
-                            <small class="text-danger"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.controls }}%</small>
-                        {% else %}
-                            <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0%</small>
-                        {% endif %}
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-2">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0">{{ dashboard.metrics.audits_completed }}</h3>
-                        <small class="text-muted d-block">{{ 'board.metric.audits'|trans({}, 'dashboards') }}</small>
-                        <small class="text-muted">{{ 'board.of_planned'|trans({'%count%': dashboard.metrics.audits_planned}, 'dashboards') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
+        <div class="col-md-2">{{ _fa_kpi_card.render({
+            value: dashboard.metrics.overall_compliance,
+            unit: '%',
+            label: 'board.metric.compliance'|trans({}, 'dashboards'),
+            trend: dashboard.trends.compliance,
+            trendUnit: '%'
+        }) }}</div>
+        <div class="col-md-2">{{ _fa_kpi_card.render({
+            value: dashboard.metrics.total_risks,
+            label: 'board.metric.risks'|trans({}, 'dashboards'),
+            trend: dashboard.trends.risks,
+            trendInverse: true
+        }) }}</div>
+        <div class="col-md-2">{{ _fa_kpi_card.render({
+            value: dashboard.metrics.critical_risks,
+            label: 'board.metric.critical'|trans({}, 'dashboards'),
+            trend: dashboard.trends.critical,
+            trendInverse: true,
+            valueDanger: dashboard.metrics.critical_risks > 0
+        }) }}</div>
+        <div class="col-md-2">{{ _fa_kpi_card.render({
+            value: dashboard.metrics.incidents_ytd,
+            label: 'board.metric.incidents'|trans({}, 'dashboards'),
+            trend: dashboard.trends.incidents,
+            trendInverse: true
+        }) }}</div>
+        <div class="col-md-2">{{ _fa_kpi_card.render({
+            value: dashboard.metrics.controls_implemented,
+            unit: '%',
+            label: 'board.metric.controls'|trans({}, 'dashboards'),
+            trend: dashboard.trends.controls,
+            trendUnit: '%'
+        }) }}</div>
+        <div class="col-md-2">{{ _fa_kpi_card.render({
+            value: dashboard.metrics.audits_completed,
+            label: 'board.metric.audits'|trans({}, 'dashboards'),
+            sublabel: 'board.of_planned'|trans({'%count%': dashboard.metrics.audits_planned}, 'dashboards')
+        }) }}</div>
     </div>
 
     <div class="row g-4">
@@ -234,9 +110,9 @@
                     <div>
                         <h6 class="mb-2">{{ 'board.summary.key_concerns'|trans({}, 'dashboards') }}</h6>
                         {% if dashboard.executive_summary.concerns|length > 0 %}
-                            <ul class="mb-0">
+                            <ul class="fa-issue-list">
                                 {% for concern in dashboard.executive_summary.concerns %}
-                                    <li class="text-warning">{{ concern }}</li>
+                                    <li class="fa-issue-list__item fa-issue-list__item--warning">{{ concern }}</li>
                                 {% endfor %}
                             </ul>
                         {% else %}
@@ -384,36 +260,36 @@
                 {% endblock %}
                 {% block card_body %}
                     <div class="table-responsive">
-                        <table class="table table-bordered mb-0">
-                            <thead class="table-light">
+                        <table class="fa-data-table">
+                            <thead>
                                 <tr>
                                     <th scope="col">{{ 'board.table.metric'|trans({}, 'dashboards') }}</th>
-                                    <th scope="col" class="text-center">Q{{ dashboard.quarterly.previous_quarter }}</th>
-                                    <th scope="col" class="text-center">Q{{ dashboard.quarterly.current_quarter }}</th>
-                                    <th scope="col" class="text-center">{{ 'board.table.change'|trans({}, 'dashboards') }}</th>
-                                    <th scope="col" class="text-center">{{ 'board.table.target'|trans({}, 'dashboards') }}</th>
+                                    <th scope="col" class="th--center">Q{{ dashboard.quarterly.previous_quarter }}</th>
+                                    <th scope="col" class="th--center">Q{{ dashboard.quarterly.current_quarter }}</th>
+                                    <th scope="col" class="th--center">{{ 'board.table.change'|trans({}, 'dashboards') }}</th>
+                                    <th scope="col" class="th--center">{{ 'board.table.target'|trans({}, 'dashboards') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for metric in dashboard.quarterly.metrics %}
                                 <tr>
                                     <td>{{ metric.name }}</td>
-                                    <td class="text-center">{{ metric.previous }}{{ metric.unit }}</td>
-                                    <td class="text-center">{{ metric.current }}{{ metric.unit }}</td>
-                                    <td class="text-center">
+                                    <td class="td--center">{{ metric.previous }}{{ metric.unit }}</td>
+                                    <td class="td--center">{{ metric.current }}{{ metric.unit }}</td>
+                                    <td class="td--center">
                                         {% if metric.change > 0 %}
-                                            <span class="{% if metric.positive_is_good %}text-success{% else %}text-danger{% endif %}">
+                                            <span class="fa-trend fa-trend--{% if metric.positive_is_good %}up{% else %}up-bad{% endif %}">
                                                 <i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ metric.change }}{{ metric.unit }}
                                             </span>
                                         {% elseif metric.change < 0 %}
-                                            <span class="{% if metric.positive_is_good %}text-danger{% else %}text-success{% endif %}">
+                                            <span class="fa-trend fa-trend--{% if metric.positive_is_good %}down-bad{% else %}down{% endif %}">
                                                 <i class="bi bi-arrow-down" aria-hidden="true"></i> {{ metric.change }}{{ metric.unit }}
                                             </span>
                                         {% else %}
-                                            <span class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0{{ metric.unit }}</span>
+                                            <span class="fa-trend fa-trend--flat"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0{{ metric.unit }}</span>
                                         {% endif %}
                                     </td>
-                                    <td class="text-center">
+                                    <td class="td--center">
                                         {% include '_components/_badge.html.twig' with {
                                             variant: metric.on_target ? 'success' : 'warning',
                                             content: metric.target ~ metric.unit

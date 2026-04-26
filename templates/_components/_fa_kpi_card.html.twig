@@ -1,0 +1,67 @@
+{#
+ # FairyAurora v4.0 — fa-kpi-card macro (executive dashboard KPI tile)
+ #
+ # Renders a centered metric tile with optional trend indicator and unit.
+ # Distinct from _fa_feature_card (which is left-aligned with icon-chip);
+ # this one targets dashboards where the value is the focus.
+ #
+ # Usage:
+ #   {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
+ #   {{ _fa_kpi_card.render({
+ #       value:     dashboard.metrics.overall_compliance,
+ #       unit:      '%',
+ #       label:     'board.metric.compliance'|trans({}, 'dashboards'),
+ #       trend:     dashboard.trends.compliance,
+ #       trendInverse: false,   {# true if higher=bad (e.g. risk count) #}
+ #       trendUnit: '%',
+ #       valueDanger: dashboard.metrics.critical_risks > 0,
+ #   }) }}
+ #
+ # Parameters:
+ #   value         - main numeric/text value (required)
+ #   unit          - unit suffix appended to value, e.g. '%' (optional)
+ #   label         - small caption below value (required)
+ #   trend         - +n/0/-n indicator (optional)
+ #   trendInverse  - true if higher trend = worse (default: false)
+ #   trendUnit     - unit appended to trend value (default: same as unit)
+ #   valueDanger   - if true, paint value red (e.g. critical-risks > 0)
+ #   sublabel      - extra small text below label (optional)
+ #}
+
+{% macro render(props = {}) %}
+    {% set value = props.value|default('—') %}
+    {% set unit = props.unit|default('') %}
+    {% set label = props.label|default('') %}
+    {% set trend = props.trend is defined ? props.trend : null %}
+    {% set trendInverse = props.trendInverse|default(false) %}
+    {% set trendUnit = props.trendUnit|default(unit) %}
+    {% set valueDanger = props.valueDanger|default(false) %}
+    {% set sublabel = props.sublabel|default(null) %}
+
+    <article class="card fa-section fa-kpi-card-tile h-100">
+        <div class="card-body text-center">
+            <h3 class="fa-kpi-card-tile__value mb-0 {% if valueDanger %}text-danger{% endif %}">
+                {{ value }}{{ unit }}
+            </h3>
+            <small class="fa-kpi-card-tile__label text-muted d-block">{{ label }}</small>
+            {% if trend is not null %}
+                {% if trend > 0 %}
+                    <small class="fa-trend fa-trend--{% if trendInverse %}up-bad{% else %}up{% endif %}">
+                        <i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ trend }}{{ trendUnit }}
+                    </small>
+                {% elseif trend < 0 %}
+                    <small class="fa-trend fa-trend--{% if trendInverse %}down-bad{% else %}down{% endif %}">
+                        <i class="bi bi-arrow-down" aria-hidden="true"></i> {{ trend }}{{ trendUnit }}
+                    </small>
+                {% else %}
+                    <small class="fa-trend fa-trend--flat">
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i> 0{{ trendUnit }}
+                    </small>
+                {% endif %}
+            {% endif %}
+            {% if sublabel %}
+                <small class="text-muted d-block">{{ sublabel }}</small>
+            {% endif %}
+        </div>
+    </article>
+{% endmacro %}
