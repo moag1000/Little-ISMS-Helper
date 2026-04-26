@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'training' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
@@ -34,7 +35,7 @@
                 <label for="view-filter" class="mb-0 fw-bold">
                     <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
                 </label>
-                <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                <select class="form-select form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
                         {{ 'corporate.view.own_only'|trans({}, 'messages') }}
                     </option>
@@ -212,14 +213,7 @@
         {% endblock %}
         {% block card_body %}
             {% if trainings|length == 0 %}
-            <div class="alert alert-info" role="alert">
-                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'training.no_trainings'|trans({}, 'training') }}
-                {% if is_granted('ROLE_USER') %}
-                <a href="{{ path('app_training_new') }}" class="alert-link" data-turbo-action="advance">
-                    {{ 'training.create_first'|trans({}, 'training') }}
-                </a>
-                {% endif %}
-            </div>
+            {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', body: '{{ \'training.no_trainings\'|trans({}, \'training\') }} {% if is_granted(\'ROLE_USER\') %} <a href="{{ path(\'app_training_new\') }}" class="alert-link" data-turbo-action="advance"> {{ \'training.create_first\'|trans({}, \'training\') }} </a> {% endif %}' }) }}
             {% else %}
             {% embed '_components/_table.html.twig' with {
                 'variant': 'striped'

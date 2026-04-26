@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'management_review' %}
 
 {% block title %}{{ review.title }} - {{ parent() }}{% endblock %}
@@ -167,20 +168,14 @@
                     {% if review.decisions %}
                     <div class="mb-3">
                         <div class="text-muted small fw-semibold">{{ 'management_review.decisions'|trans({}, 'management_review') }}</div>
-                        <div class="alert alert-warning">
-                            <strong><i class="bi bi-gavel" aria-hidden="true"></i> {{ 'management_review.management_decisions'|trans({}, 'management_review') }}</strong>
-                            <p class="mb-0 mt-2">{{ review.decisions|nl2br }}</p>
-                        </div>
+                        {{ _fa_alert.render({ variant: 'warning', icon: 'bi-gavel', body: '<strong><i class="bi bi-gavel" aria-hidden="true"></i> {{ \'management_review.management_decisions\'|trans({}, \'management_review\') }}</strong> <p class="mb-0 mt-2">{{ review.decisions|nl2br }}</p>' }) }}
                     </div>
                     {% endif %}
 
                     {% if review.actionItems %}
                     <div class="mb-0">
                         <div class="text-muted small fw-semibold">{{ 'management_review.action_items'|trans({}, 'management_review') }}</div>
-                        <div class="alert alert-info">
-                            <strong><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'management_review.action_items_label'|trans({}, 'management_review') }}</strong>
-                            <p class="mb-0 mt-2">{{ review.actionItems|nl2br }}</p>
-                        </div>
+                        {{ _fa_alert.render({ variant: 'info', icon: 'bi-list-check', body: '<strong><i class="bi bi-list-check" aria-hidden="true"></i> {{ \'management_review.action_items_label\'|trans({}, \'management_review\') }}</strong> <p class="mb-0 mt-2">{{ review.actionItems|nl2br }}</p>' }) }}
                     </div>
                     {% endif %}
                 {% endblock %}
@@ -306,7 +301,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     {{ 'common.cancel'|trans({}, 'messages') }}
                 </button>
-                <form method="post" action="{{ path('app_management_review_delete', {id: review.id}) }}" style="display: inline;">
+                <form method="post" action="{{ path('app_management_review_delete', {id: review.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">
                     <button type="submit" class="btn btn-danger">
                         <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}

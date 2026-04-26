@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'suppliers' %}
 
 {% block title %}{{ supplier.name }}{% endblock %}
@@ -29,7 +30,7 @@
             {% endif %}
             <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
-                <form method="post" action="{{ path('app_supplier_delete', {id: supplier.id}) }}" style="display:inline;"
+                <form method="post" action="{{ path('app_supplier_delete', {id: supplier.id}) }}" class="d-inline"
                       data-controller="ui-actions"
                       data-action="submit->ui-actions#confirm"
                       data-ui-actions-message-param="{{ 'supplier.confirm.delete'|trans({}, 'suppliers') }}">
@@ -85,15 +86,7 @@
     </div>
 
     {% if isInherited is defined and isInherited %}
-        <div class="alert alert-info mb-3">
-            <div class="d-flex align-items-start">
-                <i class="bi bi-info-circle-fill me-2 mt-1" aria-hidden="true"></i>
-                <div>
-                    <strong>{{ 'corporate.inheritance.view_only_title'|trans({}, 'messages') }}</strong>
-                    <p class="mb-0">{{ 'corporate.inheritance.supplier_inherited_message'|trans({}, 'messages') }}</p>
-                </div>
-            </div>
-        </div>
+        {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle-fill', class: 'mb-3', body: '<div class="d-flex align-items-start"> <i class="bi bi-info-circle-fill me-2 mt-1" aria-hidden="true"></i> <div> <strong>{{ \'corporate.inheritance.view_only_title\'|trans({}, \'messages\') }}</strong> <p class="mb-0">{{ \'corporate.inheritance.supplier_inherited_message\'|trans({}, \'messages\') }}</p> </div> </div>' }) }}
     {% endif %}
 
     {# ── Header summary card (always visible above tabs) ──────────────────── #}
@@ -258,10 +251,7 @@
                         {% endif %}
 
                         {% if supplier.nonConformities %}
-                            <div class="alert alert-warning">
-                                <strong>{{ 'supplier.field.non_conformities'|trans({}, 'suppliers') }}:</strong>
-                                <p>{{ supplier.nonConformities }}</p>
-                            </div>
+                            {{ _fa_alert.render({ variant: 'warning', body: '<strong>{{ \'supplier.field.non_conformities\'|trans({}, \'suppliers\') }}:</strong> <p>{{ supplier.nonConformities }}</p>' }) }}
                         {% endif %}
                     </div>
 
@@ -493,11 +483,7 @@
                      aria-labelledby="tab-privacy"
                      tabindex="0">
 
-                    <div class="alert alert-info">
-                        <i class="bi bi-person-lock me-1" aria-hidden="true"></i>
-                        <strong>{{ 'supplier.gdpr.section_heading'|trans({}, 'suppliers') }}</strong>
-                        <p class="mb-0">{{ 'supplier.gdpr.section_description'|trans({}, 'suppliers') }}</p>
-                    </div>
+                    {{ _fa_alert.render({ variant: 'info', icon: 'bi-person-lock', body: '<strong>{{ \'supplier.gdpr.section_heading\'|trans({}, \'suppliers\') }}</strong> <p class="mb-0">{{ \'supplier.gdpr.section_description\'|trans({}, \'suppliers\') }}</p>' }) }}
 
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'supplier.gdpr.field.gdpr_processor_status'|trans({}, 'suppliers') }}</dt>

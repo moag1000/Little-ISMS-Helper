@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'audit' %}
 
 {% block title %}{{ audit.title }} - {{ parent() }}{% endblock %}
@@ -163,17 +164,11 @@
                     {% endif %}
 
                     {% if audit.nonConformities %}
-                    <div class="mb-3 alert alert-danger">
-                        <h3 class="h6 alert-heading">{{ 'audit.nonconformities'|trans({}, 'audit') }}</h3>
-                        <p class="mb-0">{{ audit.nonConformities|nl2br }}</p>
-                    </div>
+                    {{ _fa_alert.render({ variant: 'danger', class: 'mb-3', body: '<h3 class="h6 alert-heading">{{ \'audit.nonconformities\'|trans({}, \'audit\') }}</h3> <p class="mb-0">{{ audit.nonConformities|nl2br }}</p>' }) }}
                     {% endif %}
 
                     {% if audit.observations %}
-                    <div class="mb-0 alert alert-info">
-                        <h3 class="h6 alert-heading">{{ 'audit.observations'|trans({}, 'audit') }}</h3>
-                        <p class="mb-0">{{ audit.observations|nl2br }}</p>
-                    </div>
+                    {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: '<h3 class="h6 alert-heading">{{ \'audit.observations\'|trans({}, \'audit\') }}</h3> <p class="mb-0">{{ audit.observations|nl2br }}</p>' }) }}
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -423,7 +418,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     {{ 'common.cancel'|trans({}, 'messages') }}
                 </button>
-                <form method="post" action="{{ path('app_audit_delete', {id: audit.id}) }}" style="display: inline;">
+                <form method="post" action="{{ path('app_audit_delete', {id: audit.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ audit.id) }}">
                     <button type="submit" class="btn btn-danger">
                         <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}

@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}{{ 'session.list'|trans({}, 'session') }}{% endblock %}
 {% block admin_subtitle %}
@@ -172,7 +173,7 @@
                                     </a>
                                     <form method="post"
                                           action="{{ path('session_terminate_single', {sessionId: session.sessionId}) }}"
-                                          style="display: inline;"
+                                          class="d-inline"
                                           data-controller="ui-actions"
                                           data-action="submit->ui-actions#confirm"
                                           data-ui-actions-message-param="{{ 'session.confirm.terminate'|trans({}, 'session') }}">
@@ -192,17 +193,11 @@
                 {% endblock %}
             {% endembed %}
             {% else %}
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i>
-                    {{ 'session.no_sessions_found'|trans({}, 'session') }}
-                </div>
+                {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', body: '{{ \'session.no_sessions_found\'|trans({}, \'session\') }}' }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}
 
     {# Info Box #}
-    <div class="alert alert-success mt-4">
-        <i class="bi bi-check-circle" aria-hidden="true"></i>
-        {{ 'session.info_box'|trans({'%max_concurrent%': statistics.max_concurrent}, 'session')|raw }}
-    </div>
+    {{ _fa_alert.render({ variant: 'success', icon: 'bi-check-circle', class: 'mt-4', body: '{{ \'session.info_box\'|trans({\'%max_concurrent%\': statistics.max_concurrent}, \'session\')|raw }}' }) }}
 {% endblock %}

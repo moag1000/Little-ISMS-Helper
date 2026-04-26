@@ -1,3 +1,4 @@
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {#
     Audit Form Partial (Accessible)
     Used by both new.html.twig and edit.html.twig
@@ -5,15 +6,7 @@
 #}
 
 {# ISO 27001 Information Banner #}
-<div class="alert alert-info mb-4" role="status">
-    <h6 class="alert-heading">
-        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-        {{ 'audit.iso_27001_requirement' }}
-    </h6>
-    <p class="mb-0 small">
-        {{ 'audit.iso_27001_clause_info' }}
-    </p>
-</div>
+{{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'mb-4', body: '<h6 class="alert-heading"> <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ \'audit.iso_27001_requirement\' }} </h6> <p class="mb-0 small"> {{ \'audit.iso_27001_clause_info\' }} </p>' }) }}
 
 {# Basic Information #}
 <fieldset class="card fa-section mb-4">
@@ -73,12 +66,8 @@
 
         {# Corporate Subsidiaries (conditional) #}
         {% if form.auditedSubsidiaries is defined %}
-        <div id="subsidiaries-container" style="display: none;">
-            <div class="alert alert-info" role="status">
-                <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-                <strong>{{ 'audit.corporate_audit_note_title' }}:</strong>
-                {{ 'audit.corporate_audit_note' }}
-            </div>
+        <div id="subsidiaries-container" class="d-none">
+            {{ _fa_alert.render({ variant: 'info', icon: 'status-info', body: '<strong>{{ \'audit.corporate_audit_note_title\' }}:</strong> {{ \'audit.corporate_audit_note\' }}' }) }}
             {% include '_components/_form_field.html.twig' with {
                 'field': form.auditedSubsidiaries,
                 'label_key': 'audit.field.audited_subsidiaries',

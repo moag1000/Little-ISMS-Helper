@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'incident' %}
 
 {% block title %}{{ 'incident.new'|trans({}, 'incident') }} - {{ parent() }}{% endblock %}
@@ -126,7 +127,7 @@
                     </fieldset>
 
                     {# Escalation Preview Panel - Shows workflow implications #}
-                    <div data-incident-escalation-preview-target="previewPanel" style="display: none;" class="mb-4">
+                    <div data-incident-escalation-preview-target="previewPanel" class="d-none mb-4">
                         {% include 'incident/_escalation_preview_panel.html.twig' %}
                     </div>
 
@@ -203,10 +204,7 @@
                         </div>
 
                         {# NIS2 Timeline - Article 23 #}
-                        <div class="alert alert-info mt-3">
-                            <div class="alert-heading fw-bold">{{ 'incident.nis2_timeline.title'|trans({}, 'incident') }}</div>
-                            <p class="mb-0 small">{{ 'incident.nis2_timeline.description'|trans({}, 'incident') }}</p>
-                        </div>
+                        {{ _fa_alert.render({ variant: 'info', class: 'mt-3', body: '<div class="alert-heading fw-bold">{{ \'incident.nis2_timeline.title\'|trans({}, \'incident\') }}</div> <p class="mb-0 small">{{ \'incident.nis2_timeline.description\'|trans({}, \'incident\') }}</p>' }) }}
 
                         <div class="row">
                             <div class="col-md-4">

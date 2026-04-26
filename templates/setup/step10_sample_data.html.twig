@@ -1,4 +1,5 @@
 {% extends 'setup/_layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% set active_step = 'demo' %}
 
 {% block title %}{{ 'setup.step10.title'|trans({}, 'setup') }}{% endblock %}
@@ -22,8 +23,9 @@
                             {{ 'setup.step10.description'|trans({}, 'setup') }}
                         </p>
 
-                        <div class="alert alert-warning" role="alert">
-                            <p class="h5 mb-2">
+                        <div class="fa-alert fa-alert--warning" role="alert">
+                            <i class="bi bi-exclamation-triangle fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body"><p class="h5 mb-2">
                                 <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
                                 {{ 'setup.step10.warning.title'|trans({}, 'setup') }}
                             </p>
@@ -32,6 +34,7 @@
                                 <li>{{ 'setup.can_delete_later'|trans({}, 'setup')}}</li>
                                 <li>{{ 'setup.step10.warning.selection'|trans({}, 'setup') }}</li>
                             </ul>
+                            </div>
                         </div>
 
                         <h2 class="h5 mb-3">
@@ -115,14 +118,11 @@
                                 </div>
                             </form>
 
-                            <form id="skip-form" method="post" action="{{ path('setup_step10_sample_data_skip') }}" style="display: none;">
+                            <form id="skip-form" method="post" action="{{ path('setup_step10_sample_data_skip') }}" class="d-none">
                                 <input type="hidden" name="_token" value="{{ csrf_token('setup_sample_skip') }}">
                             </form>
                         {% else %}
-                            <div class="alert alert-info" role="alert">
-                                <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                                {{ 'setup.sample_data.no_data_available'|trans({}, 'setup') }}
-                            </div>
+                            {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', body: '{{ \'setup.sample_data.no_data_available\'|trans({}, \'setup\') }}' }) }}
 
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{{ path('setup_step9_base_data') }}" class="btn btn-outline-secondary">

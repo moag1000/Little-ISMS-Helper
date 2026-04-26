@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'consent' %}
 
 {% block title %}{{ consent.dataSubjectIdentifier }} - {{ 'consent.header.title'|trans({}, 'consent') }}{% endblock %}
@@ -34,7 +35,7 @@
             </button>
             {% endif %}
             {% if is_granted('ROLE_ADMIN') %}
-            <form method="post" action="{{ path('app_consent_delete', {id: consent.id}) }}" style="display:inline;"
+            <form method="post" action="{{ path('app_consent_delete', {id: consent.id}) }}" class="d-inline"
                   data-controller="ui-actions"
                   data-action="submit->ui-actions#confirm"
                   data-ui-actions-message-param="{{ 'consent.delete.confirm'|trans({}, 'consent') }}">
@@ -198,10 +199,7 @@
                 </span>
             </div>
             {% else %}
-            <div class="alert alert-info mb-0">
-                <i class="bi bi-info-circle" aria-hidden="true"></i>
-                {{ 'consent.no_proof_document'|trans({}, 'consent') }}
-            </div>
+            {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'mb-0', body: '{{ \'consent.no_proof_document\'|trans({}, \'consent\') }}' }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}
@@ -238,25 +236,9 @@
         {% endblock %}
         {% block card_body %}
             {% if consent.verifiedBy %}
-            <div class="alert alert-success mb-0">
-                <div class="d-flex align-items-center">
-                    <i class="fa-icon fa-icon--status-ok me-2" aria-hidden="true"></i>
-                    <div>
-                        <strong>{{ 'consent.verified'|trans({}, 'consent') }}</strong>
-                        <br>
-                        <small>{{ 'consent.verified_by_user'|trans({'%user%': consent.verifiedBy}, 'consent') }}</small>
-                        {% if consent.verifiedAt %}
-                        <br>
-                        <small>{{ consent.verifiedAt|date('d.m.Y H:i') }}</small>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
+            {{ _fa_alert.render({ variant: 'success', icon: 'status-ok', class: 'mb-0', body: '<div class="d-flex align-items-center"> <i class="fa-icon fa-icon--status-ok me-2" aria-hidden="true"></i> <div> <strong>{{ \'consent.verified\'|trans({}, \'consent\') }}</strong> <br> <small>{{ \'consent.verified_by_user\'|trans({\'%user%\': consent.verifiedBy}, \'consent\') }}</small> {% if consent.verifiedAt %} <br> <small>{{ consent.verifiedAt|date(\'d.m.Y H:i\') }}</small> {% endif %} </div> </div>' }) }}
             {% else %}
-            <div class="alert alert-warning mb-0">
-                <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>
-                {{ 'consent.not_verified'|trans({}, 'consent') }}
-            </div>
+            {{ _fa_alert.render({ variant: 'warning', icon: 'status-warning', class: 'mb-0', body: '{{ \'consent.not_verified\'|trans({}, \'consent\') }}' }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}
@@ -273,15 +255,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="alert alert-danger mb-0">
-                <strong>{{ 'consent.revoked'|trans({}, 'consent') }}</strong>
-                <br>
-                <small>{{ 'consent.revoked_at'|trans({'%date%': consent.revokedAt|date('d.m.Y H:i')}, 'consent') }}</small>
-                {% if consent.revocationReason %}
-                <br>
-                <small>{{ 'consent.revocation_reason'|trans({}, 'consent') }}: {{ consent.revocationReason }}</small>
-                {% endif %}
-            </div>
+            {{ _fa_alert.render({ variant: 'danger', class: 'mb-0', body: '<strong>{{ \'consent.revoked\'|trans({}, \'consent\') }}</strong> <br> <small>{{ \'consent.revoked_at\'|trans({\'%date%\': consent.revokedAt|date(\'d.m.Y H:i\')}, \'consent\') }}</small> {% if consent.revocationReason %} <br> <small>{{ \'consent.revocation_reason\'|trans({}, \'consent\') }}: {{ consent.revocationReason }}</small> {% endif %}' }) }}
         {% endblock %}
     {% endembed %}
     {% endif %}

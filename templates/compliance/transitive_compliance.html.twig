@@ -147,7 +147,7 @@
     </div>
 
     {# Tab 2: Matrix #}
-    <div id="tab-matrix" class="tab-content" data-tabs-target="panel" data-tab="matrix" style="display: none;">
+    <div id="tab-matrix" class="tab-content d-none" data-tabs-target="panel" data-tab="matrix">
         <h2 class="section-title">{{ 'compliance.section.compliance_matrix'|trans({}, 'compliance') }}</h2>
         <p class="text-secondary-mb-15">
             {{ 'compliance.description.matrix'|trans({}, 'compliance') }}
@@ -216,7 +216,7 @@
     </div>
 
     {# Tab 3: Detailed Mappings #}
-    <div id="tab-details" class="tab-content" data-tabs-target="panel" data-tab="details" style="display: none;">
+    <div id="tab-details" class="tab-content d-none" data-tabs-target="panel" data-tab="details">
         <h2 class="section-title">{{ 'compliance.section.cross_framework_mappings'|trans({}, 'compliance') }}</h2>
 
         {% if cross_mappings is empty %}
@@ -328,7 +328,7 @@
     </div>
 
     {# Tab 4: Explanation #}
-    <div id="tab-info" class="tab-content" data-tabs-target="panel" data-tab="info" style="display: none;">
+    <div id="tab-info" class="tab-content d-none" data-tabs-target="panel" data-tab="info">
         <h2 class="section-title"><i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'compliance.section.mapping_explanation'|trans({}, 'compliance') }}</h2>
 
         <div class="grid-gap-15">
