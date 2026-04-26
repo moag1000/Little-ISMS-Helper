@@ -8,6 +8,7 @@ use App\Repository\KpiSnapshotRepository;
 use App\Repository\SystemSettingsRepository;
 use App\Repository\TenantRepository;
 use App\Service\DashboardStatisticsService;
+use App\Service\MrisKpiService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -57,6 +58,7 @@ class KpiSnapshotCommand
         private readonly KpiSnapshotRepository $kpiSnapshotRepository,
         private readonly DashboardStatisticsService $dashboardStatisticsService,
         private readonly EntityManagerInterface $entityManager,
+        private readonly MrisKpiService $mrisKpiService,
         private readonly ?SystemSettingsRepository $systemSettingsRepository = null,
     ) {
     }
@@ -247,6 +249,23 @@ class KpiSnapshotCommand
         // Health score
         if (isset($kpis['health']['isms_health_score']['value'])) {
             $data['isms_health_score'] = $kpis['health']['isms_health_score']['value'];
+        }
+
+        // MRIS-Mythos-KPIs (3 automatisch berechenbar). Manuelle KPIs werden
+        // nicht gesnapshotted — sie ändern sich nur per Hand-Eingabe.
+        // Nur berücksichtigen wenn Mandant MRIS aktiviert hat.
+        $settings = $tenant->getSettings() ?? [];
+        $mrisEnabled = $settings['mris']['kpis_enabled'] ?? true;
+        if ($mrisEnabled) {
+            try {
+                foreach ($this->mrisKpiService->computeAll($tenant) as $kpi) {
+                    if ($kpi['computable'] === true && $kpi['value'] !== null) {
+                        $data['mris_' . $kpi['id']] = $kpi['value'];
+                    }
+                }
+            } catch (\Throwable) {
+                // MRIS-Tabellen evtl. nicht migriert — Snapshot bleibt ohne MRIS-Daten.
+            }
         }
 
         return $data;

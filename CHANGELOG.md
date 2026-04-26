@@ -3,6 +3,88 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [Unreleased] — feat/mris-integration → v3.2.0
+
+### 🆕 Headline-Feature: MRIS-Integration v1.5 — Gen-AI-Bedrohungslage im ISMS
+
+**Marktdifferenzierung:** Stand April 2026 hat kein Mainstream-GRC-Tool (Vanta, Drata,
+Verinice, HiScout, Archer, LogicGate) MRIS produktiv integriert. Little ISMS Helper
+ist damit **erstes GRC-Tool mit out-of-the-box-MRIS-Klassifikation aller 93 ISO-Annex-A-
+Controls + 13 Mythos-Härtungs-Controls (MHC) als zweite Control-Schicht im SoA**.
+
+**Wirtschaftlicher Hebel** (laut CM- + Senior-Consultant-Persona-Review):
+- **Compliance-Manager intern:** ~11 FTE-Tage Quartal-Ersparnis bei 27001+NIS2-Bestand
+- **Senior-Berater extern:** 22–34 Tage Ersparnis pro Kundenprojekt
+- **Zusätzliche EU-AI-Act-Compliance:** AI-Agent-Inventar erfüllt gleichzeitig
+  AI Act Art. 6/9-16 + ISO 42001 + MRIS MHC-13 + ISO 27001 A.5.16/A.8.27
+  (eine Datenbasis, vier Frameworks)
+
+### MRIS-Integration v1.5 (CC-BY-4.0-Ableitung Peddi 2026)
+
+Komplette Integration des MRIS-Frameworks (Mythos-resistente Informationssicherheit
+v1.5 von Richard Peddi, CC BY 4.0) in 5 Phasen + Plan-Vollerfüllung-Batch.
+
+**Neue Module:**
+
+- **MRIS-Library** (Phase 1): ComplianceFramework `MRIS-v1.5` mit 13 MHCs +
+  Forward/Reverse-Mappings auf ISO 27001:2022 (44 Pairs je Richtung, 100 % Reciprocity).
+- **Annex-A-Klassifikation** (Phase 1): 4 Kategorien (Standfest/Degradiert/Reibung/
+  Nicht-betroffen) auf allen 93 ISO-Annex-A-Controls (S=29/T=37/R=4/N=23).
+  Schema-Migration + Seed-CSV + Console-Command `app:mris:seed-classification`.
+- **Reifegrad-Tracking** (Phase 2): MaturityService mit Soll/Ist-Delta-Berechnung,
+  Audit-Log bei jeder Stufen-Änderung. UI: SoA-Filter + MRIS-Spalte + Reibung-
+  Warning + MHC-Detail-Page mit Reifegrad-Tabelle + interaktivem Setzen.
+- **Mythos-KPI-Block** (Phase 3): 8 KPIs aus MRIS Kap. 10.6 unter `/mris/kpis`.
+  3 automatisch berechnet (MTTC, Phishing-MFA, Restore-Test), 5 manuell mit
+  Eingabeformular. Tenant-Featureflag `mris_kpis_enabled`.
+- **AI-Agent-Inventar** (Phase 4): Asset-Subtyp `ai_agent` mit 9 Pflichtfeldern
+  für EU AI Act Art. 6/9-16 + ISO 42001 Annex A + MRIS MHC-13 + ISO 27001
+  A.5.16/A.8.27. Inventar-Seite `/ai-agents` mit Compliance-Vollständigkeit
+  pro Agent + Hochrisiko-Audit-Helfer.
+- **Branchen-Baselines** (Phase 5): 4 vorkonfigurierte Soll-Stufen-Profile
+  (KRITIS, Finance/DORA, Automotive/TISAX AL3, SaaS/CRA).
+  Console-Command `app:mris:apply-baseline --tenant=X --baseline=NAME`.
+
+**Persona-Reviews & Hilfetexte:**
+
+- Junior-ISB-Persona-Befragung: 20 Verwirrungspunkte + 3 Top-Blocker
+  (`docs/MRIS_HELP_TEXTS_JUNIOR_REQUEST.md`)
+- Senior-Consultant-Persona lieferte `fixtures/mris/help-texts.yaml`:
+  20 Items mit Tooltip + Inline-Help + Glossar (DE+EN, 9001-Analogien)
+  + Pure-Friction-Decision-Routine + Reifegrad-Evidence-Checklist pro MHC
+  + AI-Risiko-Entscheidungsmatrix für 12 typische Tools
+- CM- + Senior-Consultant-Doppelreview als Plan-Validation
+  (`docs/MRIS_INTEGRATION_PLAN.md`)
+
+**Schema-Änderungen:**
+
+- `control.mythos_resilience` VARCHAR(20) NULL + `mythos_flanking_mhcs` JSON NULL
+  (Migration Version20260426132821)
+- `compliance_requirement.maturity_current/target/reviewed_at`
+  (Migration Version20260426145831)
+- `asset` + 9 nullable AI-Agent-Felder
+  (Migration Version20260426153940)
+- Tenant-Settings: `settings.mris.kpis_enabled` + `settings.mris.manual_kpis[id]`
+
+**KPI-Trendlinien:** `KpiSnapshotCommand` snapshot't 3 MRIS-auto-KPIs daily —
+Trendlinien-Daten für künftige Sparklines.
+
+**SoA-PDF-Export:** Neue Spalte „MRIS" mit Mythos-Kategorie + flankierenden
+MHCs + CC-BY-4.0-Quellenangabe.
+
+**Permissions:** ROLE_MANAGER auf Reifegrad-Set-Endpoint + Manual-KPI-Save.
+
+**Navigation:** Mega-Menu-Compliance-Panel zeigt MRIS-KPIs + AI-Agent-Inventar.
+
+**Tests:** 43+ neue PHPUnit-Test-Cases (Maturity 8 + KPI 8 + Classification 9 +
+AI-Agent-Inventory 7 + Baseline 13). Alle grün.
+
+**Quellenangabe (CC-BY-4.0) durchgängig:**
+
+  Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5.
+  Lizenz: Creative Commons Attribution 4.0 International (CC BY 4.0).
+  Original-Whitepaper: `docs/MRIS- mythos-resistente infosec.pdf`
+
 ## [3.1.0] - 2026-04-26
 
 ### Mapping-Quality-Library: 24 Files / 314 Pairs / 100% Reciprocity

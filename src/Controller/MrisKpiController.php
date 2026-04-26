@@ -36,6 +36,15 @@ final class MrisKpiController extends AbstractController
             return $this->redirectToRoute('app_dashboard');
         }
 
+        // Featureflag: standardmäßig aktiv. Mandanten-Admins können MRIS-KPIs
+        // deaktivieren wenn nicht relevant (z. B. nicht-DORA, nicht-NIS2).
+        $settings = $tenant->getSettings() ?? [];
+        $enabled = $settings['mris']['kpis_enabled'] ?? true;
+        if ($enabled === false) {
+            $this->addFlash('info', 'MRIS-KPIs sind für diesen Mandanten deaktiviert. Aktivierung über Mandanten-Einstellungen.');
+            return $this->redirectToRoute('app_dashboard');
+        }
+
         $kpis = $this->kpiService->computeAll($tenant);
         $manualKpis = array_values(array_filter($kpis, static fn(array $k): bool => $k['computable'] === false));
 

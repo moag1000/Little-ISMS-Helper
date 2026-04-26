@@ -273,10 +273,11 @@
 <table class="control-table">
     <thead>
         <tr>
-            <th scope="col" style="width: 10%;">Control ID</th>
-            <th scope="col" style="width: 25%;">Name</th>
-            <th scope="col" style="width: 35%;">Beschreibung</th>
-            <th scope="col" style="width: 10%;" class="text-center">Anwendbar</th>
+            <th scope="col" style="width: 8%;">Control ID</th>
+            <th scope="col" style="width: 22%;">Name</th>
+            <th scope="col" style="width: 30%;">Beschreibung</th>
+            <th scope="col" style="width: 12%;" class="text-center">MRIS<br><span style="font-weight:normal;font-size:10px;">(Peddi 2026)</span></th>
+            <th scope="col" style="width: 8%;" class="text-center">Anwendbar</th>
             <th scope="col" style="width: 10%;" class="text-center">Status</th>
             <th scope="col" style="width: 10%;" class="text-center">Progress</th>
         </tr>
@@ -287,6 +288,17 @@
             <td class="control-id">{{ control.controlId }}</td>
             <td><strong>{{ control.name }}</strong></td>
             <td class="text-muted">{{ control.description|slice(0, 200) }}{% if control.description|length > 200 %}...{% endif %}</td>
+            <td class="text-center">
+                {% if control.mythosResilience == 'standfest' %}<span class="badge" style="background:#d1e7dd;color:#0f5132;">Standfest</span>
+                {% elseif control.mythosResilience == 'degradiert' %}<span class="badge" style="background:#fff3cd;color:#664d03;">Tlw. degradiert</span>
+                {% elseif control.mythosResilience == 'reibung' %}<span class="badge" style="background:#f8d7da;color:#842029;">Reine Reibung</span>
+                {% elseif control.mythosResilience == 'nicht_betroffen' %}<span class="badge" style="background:#e2e3e5;color:#41464b;">Nicht betroffen</span>
+                {% else %}<span class="text-muted" style="font-size:10px;">—</span>
+                {% endif %}
+                {% if control.mythosFlankingMhcs is not empty %}
+                    <div style="font-size:9px;color:#666;margin-top:2px;">{{ control.mythosFlankingMhcs|join(', ') }}</div>
+                {% endif %}
+            </td>
             <td class="text-center">
                 {% if control.applicable %}
                     <span class="badge badge-applicable">✓ Ja</span>
