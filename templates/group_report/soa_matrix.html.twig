@@ -70,7 +70,7 @@
                                         {% if control is null %}
                                             <span class="text-muted">·</span>
                                         {% elseif not control.applicable %}
-                                            <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral" title="{{ 'group_report.soa.cell.not_applicable'|trans({}, 'group_report') }}">N/A</span>
+                                            <span class="fa-status-pill fa-status-pill--neutral" title="{{ 'group_report.soa.cell.not_applicable'|trans({}, 'group_report') }}">N/A</span>
                                         {% else %}
                                             {% set status = control.implementationStatus %}
                                             {% set cls = {
@@ -97,11 +97,11 @@
         {% block card_footer %}
             <div class="card-footer small text-muted">
                 <strong>{{ 'group_report.soa.legend.title'|trans({}, 'group_report') }}:</strong>
-                <span class="badge bg-success fa-status-pill fa-status-pill--success">✓</span> {{ 'group_report.soa.legend.implemented'|trans({}, 'group_report') }}
-                · <span class="badge bg-warning-subtle text-warning fa-status-pill fa-status-pill--warning">◐</span> {{ 'group_report.soa.legend.in_progress'|trans({}, 'group_report') }}
-                · <span class="badge bg-info fa-status-pill fa-status-pill--primary">◯</span> {{ 'group_report.soa.legend.planned'|trans({}, 'group_report') }}
-                · <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">–</span> {{ 'group_report.soa.legend.not_started'|trans({}, 'group_report') }}
-                · <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">N/A</span> {{ 'group_report.soa.legend.not_applicable'|trans({}, 'group_report') }}
+                <span class="fa-status-pill fa-status-pill--success">✓</span> {{ 'group_report.soa.legend.implemented'|trans({}, 'group_report') }}
+                · <span class="fa-status-pill fa-status-pill--warning">◐</span> {{ 'group_report.soa.legend.in_progress'|trans({}, 'group_report') }}
+                · <span class="fa-status-pill fa-status-pill--primary">◯</span> {{ 'group_report.soa.legend.planned'|trans({}, 'group_report') }}
+                · <span class="fa-status-pill fa-status-pill--neutral">–</span> {{ 'group_report.soa.legend.not_started'|trans({}, 'group_report') }}
+                · <span class="fa-status-pill fa-status-pill--neutral">N/A</span> {{ 'group_report.soa.legend.not_applicable'|trans({}, 'group_report') }}
             </div>
         {% endblock %}
     {% endembed %}

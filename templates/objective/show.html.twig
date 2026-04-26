@@ -49,7 +49,7 @@
 
                     {% if objective.progressNotes %}
                     <div class="fw-semibold text-muted small text-uppercase mb-2 mt-3">{{ 'objective.field.progress_notes'|trans({}, 'objective') }}</div>
-                    <div class="alert alert-info">{{ objective.progressNotes|nl2br }}</div>
+                    <div class="fa-alert fa-alert--info" role="alert"><i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body">{{ objective.progressNotes|nl2br }}</div></div>
                     {% endif %}
                 {% endblock %}
             {% endembed %}

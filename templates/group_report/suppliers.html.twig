@@ -93,9 +93,9 @@
                                 <td>
                                     {% if group.has_lei %}
                                         <code class="small">{{ rep.leiCode }}</code>
-                                        <span class="badge bg-success fa-status-pill fa-status-pill--success ms-1">LEI</span>
+                                        <span class="fa-status-pill fa-status-pill--success ms-1">LEI</span>
                                     {% else %}
-                                        <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral" title="{{ 'group_report.suppliers.no_lei_help'|trans({}, 'group_report') }}">
+                                        <span class="fa-status-pill fa-status-pill--neutral" title="{{ 'group_report.suppliers.no_lei_help'|trans({}, 'group_report') }}">
                                             {{ 'group_report.suppliers.matched_by_name'|trans({}, 'group_report') }}
                                         </span>
                                     {% endif %}
@@ -109,10 +109,10 @@
                                 </td>
                                 <td>
                                     {% if refCount >= 2 %}
-                                        <span class="badge bg-primary fa-status-pill fa-status-pill--primary me-1">{{ refCount }}×</span>
+                                        <span class="fa-status-pill fa-status-pill--primary me-1">{{ refCount }}×</span>
                                     {% endif %}
                                     {% for code in group.tenant_codes %}
-                                        <code class="badge bg-body-secondary border me-1">{{ code }}</code>
+                                        <code class="fa-status-pill fa-status-pill--neutral me-1">{{ code }}</code>
                                     {% endfor %}
                                 </td>
                                 <td class="small text-muted">{{ rep.serviceProvided|default('—')|u.truncate(80, '…') }}</td>

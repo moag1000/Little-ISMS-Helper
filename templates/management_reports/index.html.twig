@@ -91,7 +91,7 @@
                 {% block card_footer %}
                     <div class="card-footer bg-body-secondary">
                         {% set route_name = 'app_management_reports_' ~ category.key %}
-                        <a href="{{ path(route_name) }}" class="btn btn-sm btn-outline-{{ category.color }}">
+                        <a href="{{ path(route_name) }}" class="fa-cyber-btn fa-cyber-btn--sm {{ category.color in ['danger','warning'] ? 'fa-cyber-btn--' ~ category.color : 'fa-cyber-btn--ghost' }}">
                             <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'management_reports.action.view_reports'|trans({}, 'management_reports') }}
                         </a>
                     </div>
@@ -117,25 +117,25 @@
                         <div class="col-md-6">
                             <h4 class="h6">{{ 'management_reports.quick_access.pdf_exports'|trans({}, 'management_reports') }}</h4>
                             <div class="d-flex flex-wrap gap-2 mb-3">
-                                <a href="{{ path('app_reports_board_one_pager_pdf') }}" class="btn btn-sm btn-primary">
+                                <a href="{{ path('app_reports_board_one_pager_pdf') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
                                     <i class="bi bi-file-pdf" aria-hidden="true"></i> Board One-Pager
                                 </a>
-                                <a href="{{ path('app_management_reports_executive_pdf') }}" class="btn btn-sm btn-outline-primary">
+                                <a href="{{ path('app_management_reports_executive_pdf') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="bi bi-file-pdf" aria-hidden="true"></i> Executive Summary
                                 </a>
-                                <a href="{{ path('app_management_reports_risk_pdf') }}" class="btn btn-sm btn-outline-danger">
+                                <a href="{{ path('app_management_reports_risk_pdf') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                                     <i class="bi bi-file-pdf" aria-hidden="true"></i> Risk Report
                                 </a>
-                                <a href="{{ path('app_management_reports_bcm_pdf') }}" class="btn btn-sm btn-outline-success">
+                                <a href="{{ path('app_management_reports_bcm_pdf') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="bi bi-file-pdf" aria-hidden="true"></i> BCM Report
                                 </a>
-                                <a href="{{ path('app_management_reports_compliance_pdf') }}" class="btn btn-sm btn-outline-info">
+                                <a href="{{ path('app_management_reports_compliance_pdf') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="bi bi-file-pdf" aria-hidden="true"></i> Compliance Status
                                 </a>
-                                <a href="{{ path('app_management_reports_review_output_pdf') }}" class="btn btn-sm btn-outline-secondary">
+                                <a href="{{ path('app_management_reports_review_output_pdf') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.review_output.title'|trans({}, 'management_reports') }}
                                 </a>
-                                <a href="{{ path('app_management_reports_quarterly_trend') }}" class="btn btn-sm btn-outline-dark">
+                                <a href="{{ path('app_management_reports_quarterly_trend') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'management_reports.quarterly_trend.view_report'|trans({}, 'management_reports') }}
                                 </a>
                             </div>
@@ -143,37 +143,37 @@
                         <div class="col-md-6">
                             <h4 class="h6">{{ 'management_reports.quick_access.excel_exports'|trans({}, 'management_reports') }}</h4>
                             <div class="d-flex flex-wrap gap-2 mb-3">
-                                <a href="{{ path('app_management_reports_risk_excel') }}" class="btn btn-sm btn-outline-danger">
+                                <a href="{{ path('app_management_reports_risk_excel') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                                     <i class="bi bi-file-excel" aria-hidden="true"></i> Risk Register
                                 </a>
-                                <a href="{{ path('app_management_reports_assets_excel') }}" class="btn btn-sm btn-outline-secondary">
+                                <a href="{{ path('app_management_reports_assets_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="bi bi-file-excel" aria-hidden="true"></i> Asset Inventory
                                 </a>
-                                <a href="{{ path('app_management_reports_bcm_excel') }}" class="btn btn-sm btn-outline-success">
+                                <a href="{{ path('app_management_reports_bcm_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="bi bi-file-excel" aria-hidden="true"></i> BCM Report
                                 </a>
-                                <a href="{{ path('app_management_reports_compliance_excel') }}" class="btn btn-sm btn-outline-info">
+                                <a href="{{ path('app_management_reports_compliance_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="bi bi-file-excel" aria-hidden="true"></i> Compliance Status
                                 </a>
-                                <a href="{{ path('app_management_reports_audit_excel') }}" class="btn btn-sm btn-outline-warning">
+                                <a href="{{ path('app_management_reports_audit_excel') }}" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm">
                                     <i class="bi bi-file-excel" aria-hidden="true"></i> Audit Report
                                 </a>
-                                <a href="{{ path('app_management_reports_gdpr_excel') }}" class="btn btn-sm btn-outline-dark">
+                                <a href="{{ path('app_management_reports_gdpr_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="bi bi-file-excel" aria-hidden="true"></i> GDPR / Data Breach
                                 </a>
                             </div>
                             <h4 class="h6">{{ 'cert_readiness.title'|trans({}, 'management_reports') }}</h4>
                             <div class="d-flex flex-wrap gap-2 mb-3">
-                                <a href="{{ path('app_management_reports_cert_readiness') }}" class="btn btn-sm btn-outline-success">
+                                <a href="{{ path('app_management_reports_cert_readiness') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="bi bi-patch-check" aria-hidden="true"></i> {{ 'cert_readiness.view_assessment'|trans({}, 'management_reports') }}
                                 </a>
-                                <a href="{{ path('app_management_reports_cert_readiness_pdf') }}" class="btn btn-sm btn-outline-success">
+                                <a href="{{ path('app_management_reports_cert_readiness_pdf') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'cert_readiness.download_pdf'|trans({}, 'management_reports') }}
                                 </a>
                             </div>
                             <h4 class="h6">{{ 'management_reports.quick_access.evidence_package'|trans({}, 'management_reports') }}</h4>
                             <div class="d-flex flex-wrap gap-2">
-                                <a href="{{ path('app_management_reports_evidence_package') }}" class="btn btn-sm btn-outline-primary">
+                                <a href="{{ path('app_management_reports_evidence_package') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="bi bi-file-zip" aria-hidden="true"></i> {{ 'management_reports.action.download_evidence_package'|trans({}, 'management_reports') }}
                                 </a>
                             </div>

@@ -9,7 +9,7 @@
             <i class="bi bi-activity" aria-hidden="true"></i>
             {{ 'user.activity.title'|trans({}, 'user') }}: {{ user.fullName }}
         </h1>
-        <a href="{{ path('user_management_show', {id: user.id}) }}" class="btn btn-outline-secondary">
+        <a href="{{ path('user_management_show', {id: user.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
@@ -108,9 +108,9 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i>
-                    {{ 'user.activity.no_activities'|trans({}, 'user') }}
+                <div class="fa-alert fa-alert--info" role="alert">
+                    <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+                    <div class="fa-alert__body">{{ 'user.activity.no_activities'|trans({}, 'user') }}</div>
                 </div>
             {% endif %}
         {% endblock %}

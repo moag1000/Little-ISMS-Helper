@@ -19,10 +19,10 @@
             <i class="bi bi-search text-warning" aria-hidden="true"></i> {{ 'management_reports.audit.title'|trans({}, 'management_reports') }}
         </h1>
         <div class="btn-group">
-            <a href="{{ path('app_management_reports_audit_pdf') }}" class="btn btn-outline-danger">
+            <a href="{{ path('app_management_reports_audit_pdf') }}" class="fa-cyber-btn fa-cyber-btn--danger">
                 <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
             </a>
-            <a href="{{ path('app_management_reports_audit_excel') }}" class="btn btn-outline-success">
+            <a href="{{ path('app_management_reports_audit_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'management_reports.action.download_excel'|trans({}, 'management_reports') }}
             </a>
         </div>
@@ -129,7 +129,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <div class="alert alert-info mb-3">
+                    <div class="fa-alert fa-alert--info mb-3" role="alert">
                         <strong>{{ 'management_reports.audit.iso_clause_9'|trans({}, 'management_reports') }}</strong>
                     </div>
                     <ul class="list-group">
@@ -160,12 +160,12 @@
         {% block card_body %}
             <div class="row">
                 <div class="col-md-6">
-                    <a href="{{ path('app_audit_index') }}" class="btn btn-outline-primary btn-lg w-100 mb-2">
+                    <a href="{{ path('app_audit_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost w-100 mb-2">
                         <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'management_reports.audit.view_audits'|trans({}, 'management_reports') }}
                     </a>
                 </div>
                 <div class="col-md-6">
-                    <a href="{{ path('app_management_review_index') }}" class="btn btn-outline-info btn-lg w-100 mb-2">
+                    <a href="{{ path('app_management_review_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost w-100 mb-2">
                         <i class="bi bi-people" aria-hidden="true"></i> {{ 'management_reports.audit.view_reviews'|trans({}, 'management_reports') }}
                     </a>
                 </div>

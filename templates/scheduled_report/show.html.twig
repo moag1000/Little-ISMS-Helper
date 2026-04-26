@@ -181,7 +181,7 @@
 
                         <form action="{{ path('app_scheduled_report_toggle', {id: report.id}) }}" method="post" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ report.id) }}">
-                            <button type="submit" class="btn {% if report.active %}btn-outline-danger{% else %}btn-success{% endif %}">
+                            <button type="submit" class="fa-cyber-btn {% if report.active %}fa-cyber-btn--danger{% else %}fa-cyber-btn--success{% endif %}">
                                 {% if report.active %}
                                 <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'scheduled_report.action.deactivate'|trans({}, 'scheduled_reports') }}
                                 {% else %}

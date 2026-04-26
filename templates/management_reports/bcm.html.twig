@@ -19,10 +19,10 @@
             <i class="bi bi-shield-check text-success" aria-hidden="true"></i> {{ 'management_reports.bcm.title'|trans({}, 'management_reports') }}
         </h1>
         <div class="btn-group">
-            <a href="{{ path('app_management_reports_bcm_pdf') }}" class="btn btn-outline-danger">
+            <a href="{{ path('app_management_reports_bcm_pdf') }}" class="fa-cyber-btn fa-cyber-btn--danger">
                 <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
             </a>
-            <a href="{{ path('app_management_reports_bcm_excel') }}" class="btn btn-outline-success">
+            <a href="{{ path('app_management_reports_bcm_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'management_reports.action.download_excel'|trans({}, 'management_reports') }}
             </a>
         </div>
@@ -88,12 +88,12 @@
                         </div>
                     </div>
                     {% if report.exercises.last_12_months >= 2 %}
-                    <div class="alert alert-success mb-0">
+                    <div class="fa-alert fa-alert--success mb-0" role="alert">
                         <i class="bi bi-check-circle" aria-hidden="true"></i>
                         {{ 'management_reports.bcm.exercises_compliant'|trans({}, 'management_reports') }}
                     </div>
                     {% else %}
-                    <div class="alert alert-warning mb-0">
+                    <div class="fa-alert fa-alert--warning mb-0" role="alert">
                         <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                         {{ 'management_reports.bcm.exercises_warning'|trans({}, 'management_reports') }}
                     </div>
@@ -190,14 +190,14 @@
                 </div>
                 <div class="col-md-6">
                     {% if bia.coverage < 80 %}
-                    <div class="alert alert-warning h-100 d-flex align-items-center">
+                    <div class="fa-alert fa-alert--warning h-100 d-flex align-items-center" role="alert">
                         <div>
                             <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'management_reports.bcm.bia_warning_title'|trans({}, 'management_reports') }}</h5>
                             <p class="mb-0">{{ 'management_reports.bcm.bia_warning_text'|trans({}, 'management_reports') }}</p>
                         </div>
                     </div>
                     {% else %}
-                    <div class="alert alert-success h-100 d-flex align-items-center">
+                    <div class="fa-alert fa-alert--success h-100 d-flex align-items-center" role="alert">
                         <div>
                             <h5><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'management_reports.bcm.bia_success_title'|trans({}, 'management_reports') }}</h5>
                             <p class="mb-0">{{ 'management_reports.bcm.bia_success_text'|trans({}, 'management_reports') }}</p>

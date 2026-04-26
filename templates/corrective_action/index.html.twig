@@ -45,9 +45,8 @@
                             <tr>
                                 <td>{{ a.title }}</td>
                                 <td>{% if a.finding %}<a href="{{ path('app_audit_finding_show', {id: a.finding.id}) }}">{{ a.finding.(findingNumber ?? ('#' ~ a.finding.id)) }}</a>{% else %}—{% endif %}</td>
-                                {% set _csv = a.status in ['verified_effective'] ? 'success' : (a.status == 'verified_ineffective' ? 'danger' : 'info') %}
                                 {% set _csp = a.status in ['verified_effective'] ? 'success' : (a.status == 'verified_ineffective' ? 'danger' : 'primary') %}
-                                <td><span class="badge bg-{{ _csv }} fa-status-pill fa-status-pill--{{ _csp }}">{{ ('corrective_action.status.' ~ a.status)|trans({}, 'audits') }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--{{ _csp }}">{{ ('corrective_action.status.' ~ a.status)|trans({}, 'audits') }}</span></td>
                                 <td>{{ a.responsiblePerson ? a.responsiblePerson.fullName : '—' }}</td>
                                 <td>
                                     {% if a.plannedCompletionDate %}

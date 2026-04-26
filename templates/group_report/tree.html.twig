@@ -22,7 +22,7 @@
                 <strong>{{ tenant.name }}</strong>
                 <code class="small text-muted ms-1">{{ tenant.code }}</code>
                 {% if isCurrent %}
-                    <span class="badge bg-primary fa-status-pill fa-status-pill--primary ms-1">{{ 'group_report.tree.you_are_here'|trans({}, 'group_report') }}</span>
+                    <span class="fa-status-pill fa-status-pill--primary ms-1">{{ 'group_report.tree.you_are_here'|trans({}, 'group_report') }}</span>
                 {% endif %}
             </div>
             <div>
@@ -62,31 +62,31 @@
             <p class="text-muted mb-0">{{ 'group_report.tree.subtitle'|trans({}, 'group_report') }}</p>
         </div>
         <div class="btn-group flex-wrap" role="group" aria-label="Group reports">
-            <a href="{{ path('app_group_report_nis2_registration') }}" class="btn btn-outline-primary">
+            <a href="{{ path('app_group_report_nis2_registration') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-shield-check" aria-hidden="true"></i>
                 {{ 'group_report.nis2.title'|trans({}, 'group_report') }}
             </a>
-            <a href="{{ path('app_group_report_risks') }}" class="btn btn-outline-primary">
+            <a href="{{ path('app_group_report_risks') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                 {{ 'group_report.risks.title'|trans({}, 'group_report') }}
             </a>
-            <a href="{{ path('app_group_report_kpi_matrix') }}" class="btn btn-outline-primary">
+            <a href="{{ path('app_group_report_kpi_matrix') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-grid-3x3-gap" aria-hidden="true"></i>
                 {{ 'group_report.kpi.title'|trans({}, 'group_report') }}
             </a>
-            <a href="{{ path('app_group_report_soa_matrix') }}" class="btn btn-outline-primary">
+            <a href="{{ path('app_group_report_soa_matrix') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-table" aria-hidden="true"></i>
                 {{ 'group_report.soa.title'|trans({}, 'group_report') }}
             </a>
-            <a href="{{ path('app_group_report_suppliers') }}" class="btn btn-outline-primary">
+            <a href="{{ path('app_group_report_suppliers') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-truck" aria-hidden="true"></i>
                 {{ 'group_report.suppliers.title'|trans({}, 'group_report') }}
             </a>
-            <a href="{{ path('app_group_report_incidents') }}" class="btn btn-outline-primary">
+            <a href="{{ path('app_group_report_incidents') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-bell" aria-hidden="true"></i>
                 {{ 'group_report.incidents.title'|trans({}, 'group_report') }}
             </a>
-            <a href="{{ path('app_group_report_audit_program') }}" class="btn btn-outline-primary">
+            <a href="{{ path('app_group_report_audit_program') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-clipboard2-check" aria-hidden="true"></i>
                 {{ 'group_report.audit_program.title'|trans({}, 'group_report') }}
             </a>

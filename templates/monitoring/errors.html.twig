@@ -7,7 +7,7 @@
 
 {% block admin_content %}
     <div class="mb-3">
-        <a href="{{ path('monitoring_health') }}" class="btn btn-outline-secondary">
+        <a href="{{ path('monitoring_health') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'monitoring.back_to_health'|trans({}, 'monitoring') }}
         </a>
     </div>
@@ -53,10 +53,9 @@
         </div>
 
         {# Log File Info #}
-        <div class="alert alert-secondary mb-4">
-            <strong>{{ 'monitoring.errors.log_file'|trans({}, 'monitoring') }}:</strong> <code>{{ log_file }}</code><br>
-            <strong>{{ 'monitoring.errors.last_modified'|trans({}, 'monitoring') }}:</strong> {{ error_stats.last_modified }}
-        </div>
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'neutral', class: 'mb-4' } } %}
+            {% block alert_body %}<strong>{{ 'monitoring.errors.log_file'|trans({}, 'monitoring') }}:</strong> <code>{{ log_file }}</code><br><strong>{{ 'monitoring.errors.last_modified'|trans({}, 'monitoring') }}:</strong> {{ error_stats.last_modified }}{% endblock %}
+        {% endembed %}
 
         {# Filter Options #}
         {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
@@ -122,22 +121,13 @@
         {% endembed %}
 
         {# Warning Box #}
-        <div class="alert alert-warning mt-4">
-            <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'monitoring.errors.important_notes'|trans({}, 'monitoring') }}</h3>
-            <ul class="mb-0">
-                <li>{{ 'monitoring.reverse_order'|trans({}, 'monitoring')}}</li>
-                <li>{{ 'monitoring.recent_entries_only'|trans({}, 'monitoring')}}</li>
-                <li>{{ 'monitoring.full_log_analysis'|trans({}, 'monitoring')}}</li>
-                <li>{{ 'monitoring.large_files_warning'|trans({}, 'monitoring')}}</li>
-            </ul>
-        </div>
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-exclamation-triangle', class: 'mt-4' } } %}
+            {% block alert_body %}<h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'monitoring.errors.important_notes'|trans({}, 'monitoring') }}</h3><ul class="mb-0"><li>{{ 'monitoring.reverse_order'|trans({}, 'monitoring')}}</li><li>{{ 'monitoring.recent_entries_only'|trans({}, 'monitoring')}}</li><li>{{ 'monitoring.full_log_analysis'|trans({}, 'monitoring')}}</li><li>{{ 'monitoring.large_files_warning'|trans({}, 'monitoring')}}</li></ul>{% endblock %}
+        {% endembed %}
     {% else %}
-        <div class="alert alert-info">
-            <h2><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'monitoring.errors.no_log_file'|trans({}, 'monitoring') }}</h2>
-            <p class="mb-0">
-                {{ 'monitoring.errors.no_log_file_text'|trans({'%file%': log_file}, 'monitoring')|raw }}
-            </p>
-        </div>
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle' } } %}
+            {% block alert_body %}<h2><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'monitoring.errors.no_log_file'|trans({}, 'monitoring') }}</h2><p class="mb-0">{{ 'monitoring.errors.no_log_file_text'|trans({'%file%': log_file}, 'monitoring')|raw }}</p>{% endblock %}
+        {% endembed %}
     {% endif %}
 </div>
 {% endblock %}

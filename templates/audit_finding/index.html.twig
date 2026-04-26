@@ -85,15 +85,14 @@
                             <tr>
                                 <td>{{ f.(findingNumber ?? ('#' ~ f.id)) }}</td>
                                 <td>{{ f.title }}</td>
-                                <td><span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">{{ ('audit_finding.type.' ~ f.type)|trans({}, 'audits') }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ ('audit_finding.type.' ~ f.type)|trans({}, 'audits') }}</span></td>
                                 <td>
                                     {% set sevClass = {critical: 'danger', high: 'warning', medium: 'info', low: 'secondary'}[f.severity] ?? 'secondary' %}
                                     {% set sevPill = {critical: 'danger', high: 'warning', medium: 'primary', low: 'neutral'}[f.severity] ?? 'neutral' %}
-                                    <span class="badge bg-{{ sevClass }} fa-status-pill fa-status-pill--{{ sevPill }}">{{ ('audit_finding.severity.' ~ f.severity)|trans({}, 'audits') }}</span>
+                                    <span class="fa-status-pill fa-status-pill--{{ sevPill }}">{{ ('audit_finding.severity.' ~ f.severity)|trans({}, 'audits') }}</span>
                                 </td>
-                                {% set _statusV = f.status == 'open' ? 'warning' : (f.status in ['verified', 'closed'] ? 'success' : 'info') %}
                                 {% set _statusPill = f.status == 'open' ? 'warning' : (f.status in ['verified', 'closed'] ? 'success' : 'primary') %}
-                                <td><span class="badge bg-{{ _statusV }} fa-status-pill fa-status-pill--{{ _statusPill }}">{{ ('audit_finding.status.' ~ f.status)|trans({}, 'audits') }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--{{ _statusPill }}">{{ ('audit_finding.status.' ~ f.status)|trans({}, 'audits') }}</span></td>
                                 <td>
                                     {% if f.dueDate %}
                                         <span {% if f.isOverdue %}class="text-danger fw-bold"{% endif %}>

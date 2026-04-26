@@ -30,10 +30,10 @@
             </div>
         </div>
         <div>
-            <a href="{{ path('user_management_edit', {'id': user.id}) }}" class="btn btn-secondary">
+            <a href="{{ path('user_management_edit', {'id': user.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
             </a>
-            <a href="{{ path('user_management_index') }}" class="btn btn-outline-secondary">
+            <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
             </a>
         </div>
@@ -291,26 +291,26 @@
         {% endblock %}
         {% block card_body %}
             <div class="btn-group" role="group">
-                <a href="{{ path('user_management_edit', {'id': user.id}) }}" class="btn btn-primary">
+                <a href="{{ path('user_management_edit', {'id': user.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
                     <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                 </a>
                 {% if user.id != app.user.id %}
                     {% if user.isActive %}
                         <form method="post" action="{{ path('user_management_toggle_active', {'id': user.id}) }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle_active' ~ user.id) }}">
-                            <button type="submit" class="btn btn-warning">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning">
                                 <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'user.action.deactivate'|trans({}, 'user') }}
                             </button>
                         </form>
                     {% else %}
                         <form method="post" action="{{ path('user_management_toggle_active', {'id': user.id}) }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle_active' ~ user.id) }}">
-                            <button type="submit" class="btn btn-success">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
                                 <i class="bi bi-play-circle" aria-hidden="true"></i> {{ 'common.activate'|trans({}, 'messages') }}
                             </button>
                         </form>
                     {% endif %}
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
                         <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                     </button>
                 {% endif %}
@@ -334,10 +334,10 @@
                 <strong>{{ 'user.modal.delete_warning'|trans({}, 'user') }}</strong>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                 <form method="post" action="{{ path('user_management_delete', {'id': user.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                    <button type="submit" class="btn btn-danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
                 </form>
             </div>
         </div>

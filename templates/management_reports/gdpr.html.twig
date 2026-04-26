@@ -19,10 +19,10 @@
             <i class="bi bi-shield-lock" aria-hidden="true"></i> {{ 'management_reports.gdpr.title'|trans({}, 'management_reports') }}
         </h1>
         <div class="btn-group">
-            <a href="{{ path('app_management_reports_gdpr_pdf') }}" class="btn btn-outline-danger">
+            <a href="{{ path('app_management_reports_gdpr_pdf') }}" class="fa-cyber-btn fa-cyber-btn--danger">
                 <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
             </a>
-            <a href="{{ path('app_management_reports_gdpr_excel') }}" class="btn btn-outline-success">
+            <a href="{{ path('app_management_reports_gdpr_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'management_reports.action.download_excel'|trans({}, 'management_reports') }}
             </a>
         </div>
@@ -130,7 +130,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <div class="alert alert-info mb-3">
+                    <div class="fa-alert fa-alert--info mb-3" role="alert">
                         <strong>{{ 'management_reports.gdpr.article_33_34'|trans({}, 'management_reports') }}</strong>
                     </div>
                     <ul class="list-group">
@@ -154,10 +154,10 @@
 
     {# Pending Notifications Alert #}
     {% if report.notification_status.pending > 0 %}
-    <div class="alert alert-danger mb-4">
+    <div class="fa-alert fa-alert--danger mb-4" role="alert">
         <h5><i class="bi bi-exclamation-octagon" aria-hidden="true"></i> {{ 'management_reports.gdpr.urgent_attention'|trans({}, 'management_reports') }}</h5>
         <p>{{ 'management_reports.gdpr.pending_notification_warning'|trans({'%count%': report.notification_status.pending}, 'management_reports') }}</p>
-        <a href="{{ path('app_data_breach_index') }}" class="btn btn-danger">
+        <a href="{{ path('app_data_breach_index') }}" class="fa-cyber-btn fa-cyber-btn--danger">
             <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'management_reports.gdpr.view_breaches'|trans({}, 'management_reports') }}
         </a>
     </div>
@@ -221,7 +221,7 @@
         {% endblock %}
     {% endembed %}
     {% else %}
-    <div class="alert alert-success mb-4">
+    <div class="fa-alert fa-alert--success mb-4" role="alert">
         <h5><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'management_reports.gdpr.no_breaches_title'|trans({}, 'management_reports') }}</h5>
         <p class="mb-0">{{ 'management_reports.gdpr.no_breaches_text'|trans({}, 'management_reports') }}</p>
     </div>
@@ -232,17 +232,17 @@
         {% block card_body %}
             <div class="row">
                 <div class="col-md-4">
-                    <a href="{{ path('app_data_breach_index') }}" class="btn btn-outline-dark btn-lg w-100">
+                    <a href="{{ path('app_data_breach_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost w-100">
                         <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'management_reports.gdpr.view_breaches'|trans({}, 'management_reports') }}
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ path('app_processing_activity_index') }}" class="btn btn-outline-primary btn-lg w-100">
+                    <a href="{{ path('app_processing_activity_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost w-100">
                         <i class="bi bi-database" aria-hidden="true"></i> {{ 'management_reports.gdpr.view_ropa'|trans({}, 'management_reports') }}
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ path('app_dpia_index') }}" class="btn btn-outline-info btn-lg w-100">
+                    <a href="{{ path('app_dpia_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost w-100">
                         <i class="bi bi-clipboard-data" aria-hidden="true"></i> {{ 'management_reports.gdpr.view_dpia'|trans({}, 'management_reports') }}
                     </a>
                 </div>

@@ -101,7 +101,7 @@
                                 <td>
                                     <code class="small">{{ incident.tenant.code }}</code>
                                     {% if incident.tenant is same as(root) %}
-                                        <span class="badge bg-primary fa-status-pill fa-status-pill--primary ms-1">{{ 'group_report.incidents.own'|trans({}, 'group_report') }}</span>
+                                        <span class="fa-status-pill fa-status-pill--primary ms-1">{{ 'group_report.incidents.own'|trans({}, 'group_report') }}</span>
                                     {% endif %}
                                 </td>
                                 <td><span class="badge {{ sevBadge }}">{{ sev }}</span></td>

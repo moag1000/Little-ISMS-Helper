@@ -7,14 +7,16 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1><i class="bi bi-upload" aria-hidden="true"></i> {{ 'user.import.title'|trans({}, 'user') }}</h1>
-        <a href="{{ path('user_management_index') }}" class="btn btn-outline-secondary">
+        <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 
     {# Instructions #}
-    <div class="alert alert-info mb-4">
-        <h2><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'user.import.description'|trans({}, 'user') }}</h2>
+    <div class="fa-alert fa-alert--info mb-4" role="alert">
+        <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+        <div class="fa-alert__body">
+        <h2>{{ 'user.import.description'|trans({}, 'user') }}</h2>
         <p class="mb-2">{{ 'user.import.format'|trans({}, 'user') }}</p>
         <code>email, first_name, last_name, password, is_active, roles</code>
 
@@ -24,6 +26,7 @@
         <pre class="mb-0">email,first_name,last_name,password,is_active,roles
 john.doe@example.com,John,Doe,SecurePass123,yes,"Admin,User"
 jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
+        </div>
     </div>
 
     {# Import Form #}
@@ -51,10 +54,10 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
                 </div>
 
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a href="{{ path('user_management_index') }}" class="btn btn-secondary">
+                    <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         <i class="bi bi-upload" aria-hidden="true"></i> {{ 'user.import.submit'|trans({}, 'user') }}
                     </button>
                 </div>
@@ -75,15 +78,17 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
             <p>{{ 'user.import.template_description'|trans({}, 'user') }}</p>
             <a href="data:text/csv;charset=utf-8,email%2Cfirst_name%2Clast_name%2Cpassword%2Cis_active%2Croles%0A"
                download="user_import_template.csv"
-               class="btn btn-outline-primary">
+               class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-file-earmark-spreadsheet" aria-hidden="true"></i> {{ 'user.import.template_download'|trans({}, 'user') }}
             </a>
         {% endblock %}
     {% endembed %}
 
     {# Important Notes #}
-    <div class="alert alert-warning mt-4">
-        <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'user.import.notes_title'|trans({}, 'user') }}</h3>
+    <div class="fa-alert fa-alert--warning mt-4" role="alert">
+        <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
+        <div class="fa-alert__body">
+        <h3>{{ 'user.import.notes_title'|trans({}, 'user') }}</h3>
         <ul class="mb-0">
             <li>{{ 'user.import.note_existing_email'|trans({}, 'user') }}</li>
             <li>{{ 'user.import.note_random_password'|trans({}, 'user') }}</li>
@@ -91,6 +96,7 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
             <li>{{ 'user_management.import_irreversible'|trans({}, 'user') }}</li>
             <li>{{ 'user.import.note_default_role'|trans({}, 'user') }}</li>
         </ul>
+        </div>
     </div>
 </div>
 {% endblock admin_content %}

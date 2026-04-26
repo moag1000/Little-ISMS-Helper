@@ -19,7 +19,7 @@
                     <div class="d-flex justify-content-between align-items-start gap-3">
                         <div class="flex-grow-1">
                             <div class="d-flex align-items-center gap-2 mb-1">
-                                <span class="badge bg-info-subtle text-info fa-status-pill fa-status-pill--primary">
+                                <span class="fa-status-pill fa-status-pill--primary">
                                     {{ ('four_eyes.action.' ~ r.actionType)|trans({}, 'four_eyes') }}
                                 </span>
                                 <strong>#{{ r.id }}</strong>
@@ -36,12 +36,12 @@
                         </div>
                         <div class="d-flex flex-column gap-2">
                             <form method="post" action="{{ path('app_four_eyes_approve', { id: r.id }) }}">
-                                <button type="submit" class="btn btn-success btn-sm">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm">
                                     <i class="bi bi-check-lg" aria-hidden="true"></i>
                                     {{ 'four_eyes.approve'|trans({}, 'four_eyes') }}
                                 </button>
                             </form>
-                            <button type="button" class="btn btn-outline-danger btn-sm"
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                     data-bs-toggle="modal" data-bs-target="#reject-{{ r.id }}">
                                 <i class="bi bi-x-lg" aria-hidden="true"></i>
                                 {{ 'four_eyes.reject'|trans({}, 'four_eyes') }}
@@ -66,10 +66,10 @@
                                 <textarea name="reason" class="form-control" rows="3" minlength="20" required></textarea>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
                                     {{ 'common.cancel'|trans({}, 'messages') }}
                                 </button>
-                                <button type="submit" class="btn btn-danger">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                                     {{ 'four_eyes.reject'|trans({}, 'four_eyes') }}
                                 </button>
                             </div>

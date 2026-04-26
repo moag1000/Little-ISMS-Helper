@@ -75,11 +75,11 @@
                            value="{{ search_email ?? '' }}">
                 </div>
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                     </button>
                     {% if search_email %}
-                        <a href="{{ path('session_index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ path('session_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="bi bi-x" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
                         </a>
                     {% endif %}
@@ -167,7 +167,7 @@
                             <td class="text-end">
                                 <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                     <a href="{{ path('session_show', {userName: session.user.email}) }}"
-                                       class="btn btn-outline-primary"
+                                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                        title="{{ 'common.view_details'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
@@ -180,7 +180,7 @@
                                         <input type="hidden" name="_token"
                                                value="{{ csrf_token('terminate_single_' ~ session.sessionId) }}">
                                         <button type="submit"
-                                                class="btn btn-outline-danger"
+                                                class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
                                                 title="{{ 'session.action.terminate'|trans({}, 'session') }}"
                                                 aria-label="{{ 'common.close'|trans({}, 'messages') }}">
                                             <i class="bi bi-x-circle" aria-hidden="true"></i>
