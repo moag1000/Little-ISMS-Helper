@@ -9,7 +9,7 @@
 {# Basic Information #}
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
-        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
         {{ 'document.section.basic_info'|trans({}, 'document') }}
     </legend>
 
@@ -58,7 +58,7 @@
 
     {% if is_edit_mode|default(false) %}
         <div class="alert alert-info" role="status">
-            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
             {{ 'document.help.edit_file'|trans({}, 'document') }}
         </div>
     {% endif %}
