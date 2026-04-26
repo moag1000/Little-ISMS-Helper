@@ -20,14 +20,16 @@
         <form method="post" action="{{ path('admin_loader_fixer_run_all') }}"
               onsubmit="return confirm('{{ 'loader_fixer.confirm.all'|trans({}, 'loader_fixer')|e('js') }}');">
             <input type="hidden" name="_token" value="{{ csrf_token('loader_fixer_run_all') }}">
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
                 {{ 'loader_fixer.action.run_all'|trans({}, 'loader_fixer') }}
             </button>
         </form>
     </div>
 
-    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2', body: '<div> <strong>{{ \'loader_fixer.hint.heading\'|trans({}, \'loader_fixer\') }}</strong> <div class="small">{{ \'loader_fixer.hint.body\'|trans({}, \'loader_fixer\') }}</div> </div>' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2' } } %}
+        {% block alert_body %}<div> <strong>{{ 'loader_fixer.hint.heading'|trans({}, 'loader_fixer') }}</strong> <div class="small">{{ 'loader_fixer.hint.body'|trans({}, 'loader_fixer') }}</div> </div>{% endblock %}
+    {% endembed %}
 
     <div class="table-responsive">
         <table class="table table-hover align-middle" aria-label="{{ 'loader_fixer.page.title'|trans({}, 'loader_fixer') }}">
@@ -68,7 +70,7 @@
                             <form method="post" class="d-inline"
                                   action="{{ path('admin_loader_fixer_run_one', { code: row.code }) }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('loader_fixer_run_' ~ row.code) }}">
-                                <button type="submit" class="btn btn-sm btn-outline-primary">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                     <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
                                     {{ 'loader_fixer.action.run_one'|trans({}, 'loader_fixer') }}
                                 </button>

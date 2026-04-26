@@ -36,7 +36,9 @@
                 </div>
             </div>
 
-            {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'mb-4', body: '<div class="fw-bold mb-2"> <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ \'audit.iso_27001_requirement\'|trans({}, \'audit\') }} </div> <p class="mb-0 small"> {{ \'audit.iso_27001_clause_info\'|trans({}, \'audit\') }} </p>' }) }}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'mb-4' } } %}
+                {% block alert_body %}<div class="fw-bold mb-2"> <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'audit.iso_27001_requirement'|trans({}, 'audit') }} </div> <p class="mb-0 small"> {{ 'audit.iso_27001_clause_info'|trans({}, 'audit') }} </p>{% endblock %}
+            {% endembed %}
 
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}

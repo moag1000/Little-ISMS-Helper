@@ -28,7 +28,9 @@
     <p class="text-muted mb-4">{{ 'management_reports.quarterly_trend.subtitle'|trans({}, 'management_reports') }}</p>
 
     {% if not has_historical_data %}
-    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', body: '{{ \'management_reports.quarterly_trend.no_data_hint\'|trans({}, \'management_reports\') }}' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle' } } %}
+        {% block alert_body %}{{ 'management_reports.quarterly_trend.no_data_hint'|trans({}, 'management_reports') }}{% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Trend Comparison Table #}

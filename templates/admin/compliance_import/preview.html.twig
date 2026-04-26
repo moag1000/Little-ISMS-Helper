@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance_import.preview.title'|trans({}, 'compliance_import') }}{% endblock %}
 
@@ -19,21 +20,20 @@
 
     {% if header_error %}
         {% set parts = header_error|split(':', 2) %}
-        <div class="alert alert-danger" role="alert">
-            <strong>
-                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                {{ ('compliance_import.' ~ parts[0])|trans({}, 'compliance_import') }}
-            </strong>
-            {% if parts[1] is defined %}
-                <code>{{ parts[1] }}</code>
-            {% endif %}
-            <div class="mt-2">
-                <a href="{{ path('admin_compliance_import_upload') }}" class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-arrow-left" aria-hidden="true"></i>
-                    {{ 'compliance_import.common.back_to_upload'|trans({}, 'compliance_import') }}
-                </a>
-            </div>
-        </div>
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger' } } %}
+            {% block alert_body %}
+                <strong>{{ ('compliance_import.' ~ parts[0])|trans({}, 'compliance_import') }}</strong>
+                {% if parts[1] is defined %}
+                    <code>{{ parts[1] }}</code>
+                {% endif %}
+                <div class="mt-2">
+                    <a href="{{ path('admin_compliance_import_upload') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                        <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                        {{ 'compliance_import.common.back_to_upload'|trans({}, 'compliance_import') }}
+                    </a>
+                </div>
+            {% endblock %}
+        {% endembed %}
     {% else %}
         {# Summary chips #}
         {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } only %}
@@ -160,9 +160,8 @@
         {% endembed %}
 
         {% if requires_four_eyes|default(false) %}
-            <div class="alert alert-warning d-flex gap-2" role="note">
-                <i class="fa-icon fa-icon--status-warning mt-1" aria-hidden="true"></i>
-                <div>
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+                {% block alert_body %}
                     <strong>{{ 'compliance_import.preview.four_eyes_warning_title'|trans({}, 'compliance_import') }}</strong>
                     <div class="small">
                         {{ 'compliance_import.preview.four_eyes_warning_body'|trans({
@@ -170,22 +169,22 @@
                             '%threshold%': four_eyes_threshold,
                         }, 'compliance_import') }}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         {% endif %}
 
         {# Action bar #}
         <div class="d-flex gap-2 justify-content-end">
             <form method="post" action="{{ path('admin_compliance_import_cancel') }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('compliance_import_cancel') }}">
-                <button type="submit" class="btn btn-secondary">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
                     <i class="bi bi-x-circle" aria-hidden="true"></i>
                     {{ 'compliance_import.common.cancel'|trans({}, 'compliance_import') }}
                 </button>
             </form>
             <form method="post" action="{{ path('admin_compliance_import_commit') }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('compliance_import_commit') }}">
-                <button type="submit" class="btn btn-primary"
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary"
                         {% if rows is empty %}disabled aria-disabled="true"{% endif %}>
                     <i class="fa-icon fa-icon--approve" aria-hidden="true"></i>
                     {{ 'compliance_import.preview.commit'|trans({}, 'compliance_import') }}

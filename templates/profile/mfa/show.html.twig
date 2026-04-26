@@ -195,7 +195,9 @@
             {% endembed %}
 
             {# Security Notice #}
-            {{ _fa_alert.render({ variant: 'info', icon: 'mfa', body: '<p class="fw-bold"> <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i> {{ \'mfa.security_notice.title\'|trans({}, \'mfa\') }} </p> <p class="small mb-0"> {{ \'mfa.security_notice.description\'|trans({}, \'mfa\') }} </p>' }) }}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'mfa' } } %}
+                {% block alert_body %}<p class="fw-bold"> <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i> {{ 'mfa.security_notice.title'|trans({}, 'mfa') }} </p> <p class="small mb-0"> {{ 'mfa.security_notice.description'|trans({}, 'mfa') }} </p>{% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

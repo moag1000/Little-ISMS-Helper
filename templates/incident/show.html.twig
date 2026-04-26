@@ -496,7 +496,9 @@
                         </form>
                     </div>
                 {% else %}
-                    {{ _fa_alert.render({ variant: 'info', icon: 'status-info', body: '<strong>{{ \'incident.bcm.empty_title\'|trans({}, \'incident\') }}</strong> {{ \'incident.bcm.empty_description\'|trans({}, \'incident\') }}' }) }}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info' } } %}
+                        {% block alert_body %}<strong>{{ 'incident.bcm.empty_title'|trans({}, 'incident') }}</strong> {{ 'incident.bcm.empty_description'|trans({}, 'incident') }}{% endblock %}
+                    {% endembed %}
                     <form method="post" action="{{ path('app_incident_auto_detect_processes', {id: incident.id}) }}" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('auto-detect' ~ incident.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
@@ -510,7 +512,9 @@
             {% if incident.realizedRisks is defined and incident.realizedRisks|length > 0 %}
                 <div class="detail-section">
                     <h3 class="h5"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'incident.section.realized_risks'|trans({'%count%': incident.realizedRisks|length}, 'incident') }}</h3>
-                    {{ _fa_alert.render({ variant: 'warning', body: '<strong>{{ \'incident.reuse.risk_realization\'|trans({}, \'incident\') }}:</strong> {{ \'incident.reuse.risk_realization_detail\'|trans({\'%count%\': incident.realizedRisks|length}, \'incident\') }}' }) }}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+                        {% block alert_body %}<strong>{{ 'incident.reuse.risk_realization'|trans({}, 'incident') }}:</strong> {{ 'incident.reuse.risk_realization_detail'|trans({'%count%': incident.realizedRisks|length}, 'incident') }}{% endblock %}
+                    {% endembed %}
                     <div class="data-reuse-list">
                         {% for risk in incident.realizedRisks %}
                             <div class="data-reuse-item">

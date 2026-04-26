@@ -43,9 +43,8 @@
 
 {# MRIS-Warning für "Reine Reibung"-Controls (gem. Peddi 2026, MRIS v1.5 Anhang A) #}
 {% if control.mythosResilience == 'reibung' %}
-    <div class="alert alert-danger d-flex align-items-start gap-2 mb-4" role="alert">
-        <i class="bi bi-exclamation-octagon-fill mt-1" aria-hidden="true"></i>
-        <div>
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', class: 'mb-4' } } %}
+        {% block alert_body %}
             <strong>{{ 'soa.mris.reibung_warning_title'|trans({}, 'soa') }}</strong><br>
             {{ 'soa.mris.reibung_warning_body'|trans({}, 'soa') }}
             {% if control.mythosFlankingMhcs is not empty %}
@@ -57,12 +56,11 @@
             {% endif %}
             <br>
             <small class="text-muted">{{ 'soa.mris.source'|trans({}, 'soa') }}</small>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 {% elseif control.mythosResilience == 'degradiert' and control.mythosFlankingMhcs is not empty %}
-    <div class="alert alert-warning d-flex align-items-start gap-2 mb-4" role="alert">
-        <i class="bi bi-info-circle-fill mt-1" aria-hidden="true"></i>
-        <div>
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-info-circle-fill', class: 'mb-4' } } %}
+        {% block alert_body %}
             <strong>{{ 'soa.mris.degradiert_hint_title'|trans({}, 'soa') }}</strong><br>
             {{ 'soa.mris.degradiert_hint_body'|trans({}, 'soa') }}
             <strong>{{ 'soa.mris.flanking_mhcs'|trans({}, 'soa') }}:</strong>
@@ -71,8 +69,8 @@
             {% endfor %}
             <br>
             <small class="text-muted">{{ 'soa.mris.source'|trans({}, 'soa') }}</small>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 {% endif %}
 
 {# Control Description #}
@@ -202,7 +200,9 @@
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_body %}
         <h2><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'soa.section.data_reuse_protected_assets'|trans({'%count%': control.protectedAssets|length}, 'soa') }}</h2>
-        {{ _fa_alert.render({ variant: 'info', icon: 'bi-exclamation-triangle', class: 'mt-2', body: '<strong>{{ \'soa.label.control_coverage\'|trans({}, \'soa\') }}</strong> {{ \'soa.message.control_coverage\'|trans({\'%count%\': control.protectedAssets|length, \'%value%\': control.protectedAssetValue}, \'soa\') }} {% if control.highRiskAssetCount > 0 %} <br><strong><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ control.highRiskAssetCount }}</strong> {{ \'soa.message.high_risk_assets\'|trans({}, \'soa\') }} {% endif %}' }) }}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-exclamation-triangle', class: 'mt-2' } } %}
+            {% block alert_body %}<strong>{{ 'soa.label.control_coverage'|trans({}, 'soa') }}</strong> {{ 'soa.message.control_coverage'|trans({'%count%': control.protectedAssets|length, '%value%': control.protectedAssetValue}, 'soa') }} {% if control.highRiskAssetCount > 0 %} <br><strong><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ control.highRiskAssetCount }}</strong> {{ 'soa.message.high_risk_assets'|trans({}, 'soa') }} {% endif %}{% endblock %}
+        {% endembed %}
         <div class="data-reuse-list">
             {% for asset in control.protectedAssets %}
                 <div class="data-reuse-item">
@@ -242,7 +242,9 @@
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_body %}
         <h2><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'soa.section.data_reuse_related_incidents'|trans({'%count%': control.incidents|length}, 'soa') }}</h2>
-        {{ _fa_alert.render({ variant: 'warning', icon: 'bi-exclamation-triangle', body: '<strong><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ control.incidents|length }} {{ \'soa.label.incidents\'|trans({}, \'soa\') }}</strong> {{ \'soa.message.related_incidents_count\'|trans({}, \'soa\') }} {% if control.isReviewNeeded %} <br><strong>{{ \'soa.label.review_required\'|trans({}, \'soa\') }}</strong> {{ \'soa.message.review_required\'|trans({}, \'soa\') }} {% endif %}' }) }}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-exclamation-triangle' } } %}
+            {% block alert_body %}<strong><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ control.incidents|length }} {{ 'soa.label.incidents'|trans({}, 'soa') }}</strong> {{ 'soa.message.related_incidents_count'|trans({}, 'soa') }} {% if control.isReviewNeeded %} <br><strong>{{ 'soa.label.review_required'|trans({}, 'soa') }}</strong> {{ 'soa.message.review_required'|trans({}, 'soa') }} {% endif %}{% endblock %}
+        {% endembed %}
         <div class="data-reuse-list">
             {% for incident in control.incidents %}
                 <div class="data-reuse-item">
@@ -263,12 +265,7 @@
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_body %}
         <h2>Training Coverage ({{ control.trainings|length }})</h2>
-        <div class="alert {{ control.hasTrainingCoverage ? 'alert-success' : 'alert-warning' }}">
-            <strong>Status: {{ control.trainingStatus|upper }}</strong>
-            {% if not control.hasTrainingCoverage %}
-                <br><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Keine abgeschlossenen Trainings für dieses Control.
-            {% endif %}
-        </div>
+        {{ _fa_alert.render({ variant: control.hasTrainingCoverage ? 'success' : 'warning', body: '<strong>Status: ' ~ control.trainingStatus|upper ~ '</strong>' ~ (not control.hasTrainingCoverage ? '<br>Keine abgeschlossenen Trainings für dieses Control.' : '') }) }}
         <div class="data-reuse-list">
             {% for training in control.trainings %}
                 <div class="data-reuse-item">

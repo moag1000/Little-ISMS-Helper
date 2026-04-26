@@ -64,7 +64,9 @@
     {% endembed %}
 
     {# 9001-Brücke für Junior-Einstieg #}
-    {{ _fa_alert.render({ variant: 'info', icon: 'bi-lightbulb', class: 'small mb-4', body: '<strong>{{ \'reuse.iso9001_bridge.title\'|trans({}, \'messages\') }}</strong> {{ \'reuse.iso9001_bridge.text\'|trans({}, \'messages\') }}' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-lightbulb', class: 'small mb-4' } } %}
+        {% block alert_body %}<strong>{{ 'reuse.iso9001_bridge.title'|trans({}, 'messages') }}</strong> {{ 'reuse.iso9001_bridge.text'|trans({}, 'messages') }}{% endblock %}
+    {% endembed %}
 
     <div class="row g-3">
         {# TOP DOKUMENTE — 8H.4 migrated #}
@@ -160,7 +162,9 @@
         </div>
     </div>
 
-    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'small mt-4 mb-0', body: '{{ \'reuse.page.footer_hint\'|trans({}, \'messages\') }}' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'small mt-4 mb-0' } } %}
+        {% block alert_body %}{{ 'reuse.page.footer_hint'|trans({}, 'messages') }}{% endblock %}
+    {% endembed %}
     </main>
 </div>
 {% endblock %}

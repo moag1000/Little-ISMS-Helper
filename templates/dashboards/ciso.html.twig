@@ -6,6 +6,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block body %}
 <main class="fa-aurora-surface role-dashboard ciso-dashboard">
@@ -135,14 +136,16 @@
                         <small class="text-muted">{{ 'ciso.appetite_compliance_score'|trans({}, 'dashboards') }}</small>
                     </div>
                     {% if dashboard.risk_posture.breaches|length > 0 %}
-                        <div class="alert alert-danger mb-0">
-                            <strong>{{ 'ciso.breaches'|trans({}, 'dashboards') }}:</strong>
-                            <ul class="mb-0 mt-2">
-                                {% for breach in dashboard.risk_posture.breaches %}
-                                    <li>{{ breach.level|title }}: {{ breach.actual }}/{{ breach.threshold }} ({{ breach.excess }} {{ 'over_limit'|trans({}, 'dashboards') }})</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', class: 'mb-0' } } %}
+                            {% block alert_body %}
+                                <strong>{{ 'ciso.breaches'|trans({}, 'dashboards') }}:</strong>
+                                <ul class="mb-0 mt-2">
+                                    {% for breach in dashboard.risk_posture.breaches %}
+                                        <li>{{ breach.level|title }}: {{ breach.actual }}/{{ breach.threshold }} ({{ breach.excess }} {{ 'over_limit'|trans({}, 'dashboards') }})</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endblock %}
+                        {% endembed %}
                     {% endif %}
                 {% endblock %}
             {% endembed %}

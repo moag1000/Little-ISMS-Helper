@@ -164,11 +164,15 @@
                     {% endif %}
 
                     {% if audit.nonConformities %}
-                    {{ _fa_alert.render({ variant: 'danger', class: 'mb-3', body: '<h3 class="h6 alert-heading">{{ \'audit.nonconformities\'|trans({}, \'audit\') }}</h3> <p class="mb-0">{{ audit.nonConformities|nl2br }}</p>' }) }}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', class: 'mb-3' } } %}
+                        {% block alert_body %}<h3 class="h6 alert-heading">{{ 'audit.nonconformities'|trans({}, 'audit') }}</h3> <p class="mb-0">{{ audit.nonConformities|nl2br }}</p>{% endblock %}
+                    {% endembed %}
                     {% endif %}
 
                     {% if audit.observations %}
-                    {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: '<h3 class="h6 alert-heading">{{ \'audit.observations\'|trans({}, \'audit\') }}</h3> <p class="mb-0">{{ audit.observations|nl2br }}</p>' }) }}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-0' } } %}
+                        {% block alert_body %}<h3 class="h6 alert-heading">{{ 'audit.observations'|trans({}, 'audit') }}</h3> <p class="mb-0">{{ audit.observations|nl2br }}</p>{% endblock %}
+                    {% endembed %}
                     {% endif %}
                 {% endblock %}
             {% endembed %}

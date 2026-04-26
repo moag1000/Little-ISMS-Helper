@@ -20,12 +20,18 @@
         <p class="text-muted mb-0">{{ 'group_report.audit_program.subtitle'|trans({'%root%': root.name}, 'group_report') }}</p>
     </div>
 
-    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2', body: '<div class="small">{{ \'group_report.audit_program.intro\'|trans({}, \'group_report\')|raw }}</div>' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2' } } %}
+        {% block alert_body %}<div class="small">{{ 'group_report.audit_program.intro'|trans({}, 'group_report')|raw }}</div>{% endblock %}
+    {% endembed %}
 
     {% if programs is empty %}
-        {{ _fa_alert.render({ variant: 'warning', body: '{{ \'group_report.audit_program.empty\'|trans({}, \'group_report\') }}' }) }}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+            {% block alert_body %}{{ 'group_report.audit_program.empty'|trans({}, 'group_report') }}{% endblock %}
+        {% endembed %}
     {% elseif subsidiaries is empty %}
-        {{ _fa_alert.render({ variant: 'warning', body: '{{ \'group_report.audit_program.no_subsidiaries\'|trans({}, \'group_report\') }}' }) }}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+            {% block alert_body %}{{ 'group_report.audit_program.no_subsidiaries'|trans({}, 'group_report') }}{% endblock %}
+        {% endembed %}
     {% else %}
         {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
             {% block card_body %}

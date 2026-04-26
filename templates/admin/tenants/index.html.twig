@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}{{ 'tenant.title'|trans({}, 'tenant') }}{% endblock %}
 {% block admin_subtitle %}
@@ -68,21 +69,21 @@
                 {# Filters #}
                 <div class="btn-group btn-group-sm" role="group">
                     <a href="{{ path('tenant_management_index', {filter: 'all'}) }}"
-                       class="btn btn-sm btn-outline-primary {% if filter == 'all' %}active{% endif %}">
+                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm {% if filter == 'all' %}active{% endif %}">
                         <i class="bi bi-list" aria-hidden="true"></i> {{ 'tenant.filter.all'|trans({}, 'tenant') }}
                     </a>
                     <a href="{{ path('tenant_management_index', {filter: 'active'}) }}"
-                       class="btn btn-sm btn-outline-success {% if filter == 'active' %}active{% endif %}">
+                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm {% if filter == 'active' %}active{% endif %}">
                         <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'tenant.filter.active'|trans({}, 'tenant') }}
                     </a>
                     <a href="{{ path('tenant_management_index', {filter: 'inactive'}) }}"
-                       class="btn btn-sm btn-outline-secondary {% if filter == 'inactive' %}active{% endif %}">
+                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm {% if filter == 'inactive' %}active{% endif %}">
                         <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'tenant.filter.inactive'|trans({}, 'tenant') }}
                     </a>
                 </div>
 
                 {# Create Button #}
-                <a href="{{ path('tenant_management_new') }}" class="btn btn-primary">
+                <a href="{{ path('tenant_management_new') }}" class="fa-cyber-btn fa-cyber-btn--primary">
                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.action.create'|trans({}, 'tenant') }}
                 </a>
             </div>
@@ -164,14 +165,14 @@
                                     <small class="text-muted">{{ tenant.createdAt|date('d.m.Y') }}</small>
                                 </td>
                                 <td>
-                                    <div class="btn-group btn-group-sm" role="group">
+                                    <div class="d-flex gap-1">
                                         <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
-                                           class="btn btn-outline-primary"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                            title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                             <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
                                         <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}"
-                                           class="btn btn-outline-secondary"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                            title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                             <i class="bi bi-pencil" aria-hidden="true"></i>
                                         </a>
@@ -180,7 +181,7 @@
                                               data-action="submit->ui-actions#confirm"
                                               data-ui-actions-message-param="{{ 'tenant.confirm.toggle'|trans({}, 'tenant') }}">
                                             <button type="submit"
-                                                    class="btn btn-outline-{% if tenant.isActive %}warning{% else %}success{% endif %}"
+                                                    class="fa-cyber-btn fa-cyber-btn--{{ tenant.isActive ? 'warning' : 'ghost' }} fa-cyber-btn--sm"
                                                     title="{{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans({}, 'tenant') }}"
                                                     aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                                 <i class="fa-icon {% if tenant.isActive %}fa-icon--status-pending{% else %}fa-icon--status-ok{% endif %}" aria-hidden="true"></i>
@@ -197,9 +198,5 @@
     {% endembed %}
 
     {# Info Box #}
-    <div class="alert alert-info mt-4">
-        <i class="bi bi-info-circle" aria-hidden="true"></i>
-        <strong>{{ 'tenant.info.title'|trans({}, 'tenant') }}</strong><br>
-        {{ 'tenant.info.text'|trans({}, 'tenant') }}
-    </div>
+    {{ _fa_alert.render({ variant: 'info', class: 'mt-4', title: 'tenant.info.title'|trans({}, 'tenant'), body: 'tenant.info.text'|trans({}, 'tenant') }) }}
 {% endblock %}

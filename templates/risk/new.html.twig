@@ -204,7 +204,9 @@
                             {% endblock %}
                         {% endembed %}
 
-                        {{ _fa_alert.render({ variant: 'warning', icon: 'bi-lightbulb', class: 'mt-3 mb-0', body: '<small> <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ \'risk.guidance.tip\'|trans({}, \'risk\')}} </small>' }) }}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-lightbulb', class: 'mt-3 mb-0' } } %}
+                            {% block alert_body %}<small> <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'risk.guidance.tip'|trans({}, 'risk')}} </small>{% endblock %}
+                        {% endembed %}
                     </div>
                 </div>
             </div>

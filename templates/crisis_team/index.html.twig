@@ -5,6 +5,7 @@
 {% block title %}{{ 'crisis_team.title'|trans({}, 'crisis_team') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -33,7 +34,7 @@
         </div>
     </div>
     {% if crisis_teams|length == 0 %}
-        <div class="alert alert-info">{{ 'crisis_team.empty'|trans({}, 'crisis_team') }}</div>
+        {{ _fa_alert.render({ variant: 'info', body: 'crisis_team.empty'|trans({}, 'crisis_team') }) }}
     {% else %}
         {% embed '_components/_card.html.twig' %}
             {% block card_body %}

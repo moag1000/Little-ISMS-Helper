@@ -34,7 +34,9 @@
                 {% block card_body %}
                     {# Mandatory Warning Banner #}
                     {% if training.mandatory %}
-                    {{ _fa_alert.render({ variant: 'warning', icon: 'status-warning', class: 'mb-4', body: '<div class="alert-heading fw-bold"> <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ \'training.mandatory_training\'|trans({}, \'training\')}} </div> <p class="mb-0">{{ \'training.mandatory_info\'|trans({}, \'training\')}}</p>' }) }}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-warning', class: 'mb-4' } } %}
+                        {% block alert_body %}<div class="alert-heading fw-bold"> <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'training.mandatory_training'|trans({}, 'training')}} </div> <p class="mb-0">{{ 'training.mandatory_info'|trans({}, 'training')}}</p>{% endblock %}
+                    {% endembed %}
                     {% endif %}
 
                     {# Description #}

@@ -254,7 +254,9 @@
                             {% endfor %}
                         </ul>
                     {% else %}
-                        {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'small py-2 mb-2', body: '{{ \'context.message.no_interested_parties\'|trans({}, \'context\') }}' }) }}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'small py-2 mb-2' } } %}
+                            {% block alert_body %}{{ 'context.message.no_interested_parties'|trans({}, 'context') }}{% endblock %}
+                        {% endembed %}
                     {% endif %}
                     <a href="{{ path('app_interested_party_index') }}" class="btn btn-outline-primary btn-sm">
                         <i class="bi bi-people me-1" aria-hidden="true"></i>
@@ -483,7 +485,9 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'mb-0', body: '{{ \'context.message.no_objectives\'|trans({}, \'context\') }} <a href="{{ path(\'app_objective_index\') }}" class="alert-link"> {{ \'context.action.manage_objectives\'|trans({}, \'context\') }} </a>' }) }}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'mb-0' } } %}
+                {% block alert_body %}{{ 'context.message.no_objectives'|trans({}, 'context') }} <a href="{{ path('app_objective_index') }}" class="alert-link"> {{ 'context.action.manage_objectives'|trans({}, 'context') }} </a>{% endblock %}
+            {% endembed %}
         {% endblock %}
     {% endembed %}
     {% endif %}

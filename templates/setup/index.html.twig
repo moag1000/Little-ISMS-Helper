@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}Deployment Wizard - Little ISMS Helper{% endblock %}
 
@@ -18,13 +19,7 @@
                 {% block card_body %}
                     <div class="p-5">
                         {% if setup_complete %}
-                            <div class="alert alert-success" role="alert">
-                                <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
-                                <strong>{{ 'setup.already_complete.title'|trans({}, 'setup') }}</strong>
-                                <p class="mb-0 mt-2">
-                                    {{ 'setup.already_complete.description'|trans({}, 'setup') }}
-                                </p>
-                            </div>
+                            {{ _fa_alert.render({ variant: 'success', title: 'setup.already_complete.title'|trans({}, 'setup'), body: 'setup.already_complete.description'|trans({}, 'setup') }) }}
 
                             <div class="d-grid gap-3 mt-4">
                                 <a href="{{ path('app_dashboard', {'_locale': app.request.locale}) }}" class="btn btn-lg btn-primary">

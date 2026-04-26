@@ -6,6 +6,7 @@
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -27,17 +28,18 @@
 
     {# CRITICAL: Overdue Notifications Alert #}
     {% if compliance_score.overdue_notifications > 0 %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <div class="alert-heading fw-bold"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ 'privacy.data_breach.alert.overdue_title'|trans({}, 'privacy') }}</div>
-            <p>{{ 'privacy.data_breach.alert.overdue_text'|trans({'%count%': compliance_score.overdue_notifications}, 'privacy')|raw }}</p>
-            <hr>
-            <p class="mb-0">
-                <a href="{{ path('app_data_breach_index', {filter: 'overdue'}) }}" class="alert-link">
-                    {{ 'privacy.data_breach.alert.view_overdue'|trans({}, 'privacy') }}
-                </a>
-            </p>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-        </div>
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', dismissible: true } } %}
+            {% block alert_body %}
+                <div class="fa-alert__title">{{ 'privacy.data_breach.alert.overdue_title'|trans({}, 'privacy') }}</div>
+                <p class="fa-alert__message">{{ 'privacy.data_breach.alert.overdue_text'|trans({'%count%': compliance_score.overdue_notifications}, 'privacy')|raw }}</p>
+                <hr>
+                <p class="mb-0">
+                    <a href="{{ path('app_data_breach_index', {filter: 'overdue'}) }}" class="fa-alert__link">
+                        {{ 'privacy.data_breach.alert.view_overdue'|trans({}, 'privacy') }}
+                    </a>
+                </p>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 
     {# Overall Compliance Score #}

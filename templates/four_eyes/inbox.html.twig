@@ -9,7 +9,9 @@
     <p class="text-muted">{{ 'four_eyes.inbox.lead'|trans({}, 'four_eyes') }}</p>
 
     {% if requests is empty %}
-        {{ _fa_alert.render({ variant: 'success', icon: 'bi-check-circle', body: '{{ \'four_eyes.inbox.empty\'|trans({}, \'four_eyes\') }}' }) }}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'bi-check-circle' } } %}
+            {% block alert_body %}{{ 'four_eyes.inbox.empty'|trans({}, 'four_eyes') }}{% endblock %}
+        {% endembed %}
     {% else %}
         <div class="list-group">
             {% for r in requests %}

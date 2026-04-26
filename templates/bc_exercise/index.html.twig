@@ -6,6 +6,7 @@
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -52,16 +53,18 @@
     {% endif %}
 
     {% if incomplete_reports|length > 0 %}
-    <div class="alert alert-warning">
-        <h2 class="h4"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'bc_exercises.section.incomplete_reports'|trans({}, 'bc_exercises') }}</h2>
-        <ul>
-            {% for exercise in incomplete_reports %}
-            <li>
-                <a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}">{{ exercise.name }}</a>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+        {% block alert_body %}
+            <div class="fa-alert__title">{{ 'bc_exercises.section.incomplete_reports'|trans({}, 'bc_exercises') }}</div>
+            <ul class="mb-0">
+                {% for exercise in incomplete_reports %}
+                <li>
+                    <a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}">{{ exercise.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {% embed '_components/_card.html.twig' %}

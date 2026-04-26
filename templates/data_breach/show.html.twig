@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'privacy.data_breach.show.page_title'|trans({'%ref%': breach.referenceNumber}, 'privacy') }}{% endblock %}
 
@@ -27,34 +28,32 @@
     {% if breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}
         {% set hours = breach.hoursUntilAuthorityDeadline %}
         {% if hours < 0 %}
-            <div class="alert alert-danger" role="alert">
-                <div class="alert-heading fw-bold"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ 'privacy.data_breach.alert.overdue_title'|trans({}, 'privacy') }}</div>
-                <p>
-                    {{ 'privacy.data_breach.alert.overdue_text'|trans({'%count%': 1}, 'privacy')|raw }}
-                </p>
-                <hr>
-                <p class="mb-0">
-                    <strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }} ·
-                    <strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
-                </p>
-            </div>
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger' } } %}
+                {% block alert_body %}
+                    <div class="fa-alert__title">{{ 'privacy.data_breach.alert.overdue_title'|trans({}, 'privacy') }}</div>
+                    <p class="fa-alert__message">{{ 'privacy.data_breach.alert.overdue_text'|trans({'%count%': 1}, 'privacy')|raw }}</p>
+                    <hr>
+                    <p class="mb-0">
+                        <strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }} ·
+                        <strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
+                    </p>
+                {% endblock %}
+            {% endembed %}
         {% elseif hours < 24 %}
-            <div class="alert alert-warning" role="alert">
-                <div class="alert-heading fw-bold"><i class="bi bi-clock" aria-hidden="true"></i> {{ 'privacy.data_breach.score.timeliness'|trans({}, 'privacy') }}</div>
-                <p>
-                    {{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }} {{ 'privacy.data_breach.field.within'|default('within') }} <strong>{{ hours|number_format }} {{ 'privacy.data_breach.field.hours'|trans({}, 'privacy') }}</strong>.
-                </p>
-                <p class="mb-0">
-                    <strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }} ·
-                    <strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
-                </p>
-            </div>
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-clock' } } %}
+                {% block alert_body %}
+                    <div class="fa-alert__title">{{ 'privacy.data_breach.score.timeliness'|trans({}, 'privacy') }}</div>
+                    <p class="fa-alert__message">
+                        {{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }} {{ 'privacy.data_breach.field.within'|default('within') }} <strong>{{ hours|number_format }} {{ 'privacy.data_breach.field.hours'|trans({}, 'privacy') }}</strong>.
+                    </p>
+                    <p class="mb-0">
+                        <strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }} ·
+                        <strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
+                    </p>
+                {% endblock %}
+            {% endembed %}
         {% else %}
-            <div class="alert alert-info" role="alert">
-                <i class="bi bi-info-circle" aria-hidden="true"></i>
-                {{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }} <strong>{{ hours|number_format }} {{ 'privacy.data_breach.field.hours'|trans({}, 'privacy') }}</strong>
-                ({{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}: {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}).
-            </div>
+            {{ _fa_alert.render({ variant: 'info', body: 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') ~ ' <strong>' ~ hours|number_format ~ ' ' ~ 'privacy.data_breach.field.hours'|trans({}, 'privacy') ~ '</strong> (' ~ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') ~ ': ' ~ breach.authorityNotificationDeadline|date('Y-m-d H:i') ~ ').' }) }}
         {% endif %}
     {% endif %}
 
@@ -222,9 +221,7 @@
                         {% endif %}
                         <p><strong>{{ 'privacy.data_breach.field.method'|trans({}, 'privacy') }}:</strong> {{ breach.notificationMethod }}</p>
                         {% if breach.notificationDelayReason %}
-                            <div class="alert alert-warning">
-                                <strong>{{ 'privacy.data_breach.field.delay_reason'|trans({}, 'privacy') }}:</strong> {{ breach.notificationDelayReason }}
-                            </div>
+                            {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'privacy.data_breach.field.delay_reason'|trans({}, 'privacy') ~ ':</strong> ' ~ breach.notificationDelayReason }) }}
                         {% endif %}
                     {% elseif breach.requiresAuthorityNotification %}
                         <p class="text-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'privacy.data_breach.field.not_yet_notified'|trans({}, 'privacy') }}</p>
@@ -293,14 +290,10 @@
                 <p>{% for category in breach.dataSubjectCategories %}{{ ('data_breach.data_subject_categories.' ~ category)|trans({}, 'privacy') }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
             {% endif %}
             {% if breach.specialCategoriesAffected %}
-                <div class="alert alert-warning">
-                    <i class="bi bi-shield-lock" aria-hidden="true"></i> <strong>{{ 'privacy.data_breach.field.special_categories_affected'|trans({}, 'privacy') }}</strong>
-                </div>
+                {{ _fa_alert.render({ variant: 'warning', icon: 'bi-shield-lock', body: '<strong>' ~ 'privacy.data_breach.field.special_categories_affected'|trans({}, 'privacy') ~ '</strong>' }) }}
             {% endif %}
             {% if breach.criminalDataAffected %}
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> <strong>{{ 'privacy.data_breach.field.criminal_data_affected'|trans({}, 'privacy') }}</strong>
-                </div>
+                {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'privacy.data_breach.field.criminal_data_affected'|trans({}, 'privacy') ~ '</strong>' }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}

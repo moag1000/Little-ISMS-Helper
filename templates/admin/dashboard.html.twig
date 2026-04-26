@@ -29,8 +29,8 @@
                         {% if alert.fix_route is defined and alert.fix_route %}
                             <form method="post" action="{{ path(alert.fix_route) }}" class="d-inline ms-2">
                                 <input type="hidden" name="_token" value="{{ csrf_token(alert.fix_csrf_name) }}">
-                                <button type="submit" class="btn btn-sm btn-primary">
-                                    <i class="bi bi-wrench-adjustable me-1" aria-hidden="true"></i>
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                                    <i class="bi bi-wrench-adjustable" aria-hidden="true"></i>
                                     {{ alert.fix_label|trans({}, 'admin') }}
                                 </button>
                             </form>
@@ -68,8 +68,8 @@
                 {% endblock %}
                 {% block card_footer %}
                     <div class="card-footer bg-transparent border-top-0">
-                        <a href="{{ path('user_management_index') }}" class="btn btn-sm btn-outline-primary w-100">
-                            {{ 'admin.dashboard.stats.manage'|trans({}, 'admin') }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                        <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
+                            {{ 'admin.dashboard.stats.manage'|trans({}, 'admin') }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
                         </a>
                     </div>
                 {% endblock %}
@@ -120,8 +120,8 @@
                 {% endblock %}
                 {% block card_footer %}
                     <div class="card-footer bg-transparent border-top-0">
-                        <a href="{{ path('admin_compliance_index') }}" class="btn btn-sm btn-outline-{{ _fw_variant }} w-100">
-                            {{ 'admin.dashboard.stats.manage'|trans({}, 'admin') }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                        <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
+                            {{ 'admin.dashboard.stats.manage'|trans({}, 'admin') }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
                         </a>
                     </div>
                 {% endblock %}
@@ -157,8 +157,8 @@
                 {% block card_footer %}
                     {% if stats.compliance.unreviewed_seed_mappings > 0 %}
                         <div class="card-footer bg-transparent border-top-0">
-                            <a href="{{ path('app_compliance_mapping_seed_review') }}" class="btn btn-sm btn-outline-{{ _review_variant }} w-100">
-                                {{ 'admin.dashboard.stats.review_now'|trans({}, 'admin') }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                            <a href="{{ path('app_compliance_mapping_seed_review') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
+                                {{ 'admin.dashboard.stats.review_now'|trans({}, 'admin') }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
                             </a>
                         </div>
                     {% endif %}
@@ -205,7 +205,7 @@
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'primary', content: stats.modules.assets.total } %}</td>
                                 {% endif %}
                                 <td class="text-end">
-                                    <a href="{{ path('app_asset_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
+                                    <a href="{{ path('app_asset_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
                                 </td>
                             </tr>
                             <tr>
@@ -218,7 +218,7 @@
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'danger', content: stats.modules.risks.total } %}</td>
                                 {% endif %}
                                 <td class="text-end">
-                                    <a href="{{ path('app_risk_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
+                                    <a href="{{ path('app_risk_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
                                 </td>
                             </tr>
                             <tr>
@@ -231,7 +231,7 @@
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'success', content: stats.modules.controls.total } %}</td>
                                 {% endif %}
                                 <td class="text-end">
-                                    <a href="{{ path('app_soa_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
+                                    <a href="{{ path('app_soa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
                                 </td>
                             </tr>
                             <tr>
@@ -244,7 +244,7 @@
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'warning', content: stats.modules.incidents.total } %}</td>
                                 {% endif %}
                                 <td class="text-end">
-                                    <a href="{{ path('app_incident_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
+                                    <a href="{{ path('app_incident_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
                                 </td>
                             </tr>
                             <tr>
@@ -257,7 +257,7 @@
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'info', content: stats.modules.audits.total } %}</td>
                                 {% endif %}
                                 <td class="text-end">
-                                    <a href="{{ path('app_audit_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
+                                    <a href="{{ path('app_audit_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
                                 </td>
                             </tr>
                             <tr>
@@ -270,7 +270,7 @@
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'secondary', content: stats.modules.compliance_requirements.total } %}</td>
                                 {% endif %}
                                 <td class="text-end">
-                                    <a href="{{ path('app_compliance_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
+                                    <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
                                 </td>
                             </tr>
                             <tr>
@@ -283,7 +283,7 @@
                                     <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'dark', content: stats.modules.trainings.total } %}</td>
                                 {% endif %}
                                 <td class="text-end">
-                                    <a href="{{ path('app_training_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
+                                    <a href="{{ path('app_training_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
                                 </td>
                             </tr>
                         {% endblock %}
@@ -306,47 +306,47 @@
                     <div class="d-grid gap-2">
                         {# Kontext-Actions — nur bei Bedarf sichtbar #}
                         {% if stats.compliance.unreviewed_seed_mappings > 0 %}
-                            <a href="{{ path('app_compliance_mapping_seed_review') }}" class="btn btn-warning">
+                            <a href="{{ path('app_compliance_mapping_seed_review') }}" class="fa-cyber-btn fa-cyber-btn--warning">
                                 <i class="fa-icon fa-icon--user" aria-hidden="true"></i>
                                 {{ 'admin.dashboard.quick_actions.review_seeds'|trans({'%count%': stats.compliance.unreviewed_seed_mappings}, 'admin') }}
                             </a>
                         {% endif %}
                         {% if stats.compliance.frameworks_missing > 0 %}
-                            <a href="{{ path('admin_compliance_index') }}" class="btn btn-outline-warning">
+                            <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--warning">
                                 <i class="bi bi-cloud-arrow-down" aria-hidden="true"></i>
                                 {{ 'admin.dashboard.quick_actions.load_frameworks'|trans({'%count%': stats.compliance.frameworks_missing}, 'admin') }}
                             </a>
                         {% endif %}
                         {% if stats.users.inactive > 0 %}
-                            <a href="{{ path('user_management_index') }}" class="btn btn-outline-warning">
+                            <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--warning">
                                 <i class="bi bi-person-x" aria-hidden="true"></i>
                                 {{ 'admin.dashboard.quick_actions.review_inactive_users'|trans({'%count%': stats.users.inactive}, 'admin') }}
                             </a>
                         {% endif %}
 
                         {# Standard-Shortcuts — immer sichtbar #}
-                        <a href="{{ path('user_management_new') }}" class="btn btn-outline-primary">
+                        <a href="{{ path('user_management_new') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.add_user'|trans({}, 'admin') }}
                         </a>
-                        <a href="{{ path('tenant_management_index') }}" class="btn btn-outline-primary">
+                        <a href="{{ path('tenant_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="bi bi-building-add" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_tenants'|trans({}, 'admin') }}
                         </a>
-                        <a href="{{ path('admin_compliance_index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_compliance'|trans({}, 'admin') }}
                         </a>
-                        <a href="{{ path('app_audit_log_index') }}" class="btn btn-outline-info">
+                        <a href="{{ path('app_audit_log_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="bi bi-journal-text" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.view_logs'|trans({}, 'admin') }}
                         </a>
-                        <a href="{{ path('app_admin_audit_retention') }}" class="btn btn-outline-secondary">
+                        <a href="{{ path('app_admin_audit_retention') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="fa-icon fa-icon--status-archived" aria-hidden="true"></i> {{ 'audit_log.retention.title'|trans({}, 'audit_log') }}
                         </a>
-                        <a href="{{ path('app_admin_risk_approval_config') }}" class="btn btn-outline-secondary">
+                        <a href="{{ path('app_admin_risk_approval_config') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="bi bi-sliders" aria-hidden="true"></i> {{ 'risk_approval_config.title'|trans({}, 'risk_approval_config') }}
                         </a>
-                        <a href="{{ path('app_admin_tenant_email_branding') }}" class="btn btn-outline-secondary">
+                        <a href="{{ path('app_admin_tenant_email_branding') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="bi bi-envelope-paper" aria-hidden="true"></i> {{ 'tenant.email.title'|trans({}, 'tenant') }}
                         </a>
-                        <a href="{{ path('app_admin_incident_sla_config') }}" class="btn btn-outline-secondary">
+                        <a href="{{ path('app_admin_incident_sla_config') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="bi bi-stopwatch" aria-hidden="true"></i> {{ 'incident_sla.title'|trans({}, 'incident_sla') }}
                         </a>
                     </div>
@@ -389,8 +389,8 @@
                         </div>
                     {% endif %}
                     <div class="p-3 bg-transparent border-top">
-                        <a href="{{ path('app_audit_log_index') }}" class="btn btn-sm btn-outline-secondary w-100">
-                            {{ 'admin.dashboard.activity.view_all'|trans({}, 'admin') }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                        <a href="{{ path('app_audit_log_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
+                            {{ 'admin.dashboard.activity.view_all'|trans({}, 'admin') }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
                         </a>
                     </div>
                 {% endblock %}

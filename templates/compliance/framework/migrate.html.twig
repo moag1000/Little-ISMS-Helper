@@ -27,10 +27,14 @@
         </div>
     </div>
 
-    {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'small', body: '{{ \'compliance.framework.migrate.intro\'|trans({}, \'compliance\') }}' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'small' } } %}
+        {% block alert_body %}{{ 'compliance.framework.migrate.intro'|trans({}, 'compliance') }}{% endblock %}
+    {% endembed %}
 
     {% if error is not null %}
-        {{ _fa_alert.render({ variant: 'danger', icon: 'status-critical', body: '{{ error|trans({}, \'compliance\') }}' }) }}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', icon: 'status-critical' } } %}
+            {% block alert_body %}{{ error|trans({}, 'compliance') }}{% endblock %}
+        {% endembed %}
     {% endif %}
 
     <form method="post"
@@ -207,7 +211,9 @@
                 {% endif %}
 
                 {% if not was_commit and result.bridges_created > 0 %}
-                    {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'small mt-3 mb-0', body: '{{ \'compliance.framework.migrate.result.preview_ok_hint\'|trans({}, \'compliance\') }}' }) }}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'small mt-3 mb-0' } } %}
+                        {% block alert_body %}{{ 'compliance.framework.migrate.result.preview_ok_hint'|trans({}, 'compliance') }}{% endblock %}
+                    {% endembed %}
                 {% endif %}
             </div>
         </div>

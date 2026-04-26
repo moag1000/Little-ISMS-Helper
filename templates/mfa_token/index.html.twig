@@ -69,7 +69,9 @@
 
     {# Users with MFA Tokens #}
     {% if tokens_by_user|length == 0 %}
-        {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', body: '{{ \'mfa_token.empty\'|trans({}, \'mfa\') }}' }) }}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle' } } %}
+            {% block alert_body %}{{ 'mfa_token.empty'|trans({}, 'mfa') }}{% endblock %}
+        {% endembed %}
     {% else %}
         {% for user_id, user_data in tokens_by_user %}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } %}

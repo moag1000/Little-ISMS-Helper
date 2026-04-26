@@ -55,7 +55,9 @@
                             {{ 'existing_frameworks.description'|trans({}, 'setup_wizard') }}
                         </p>
 
-                        {{ _fa_alert.render({ variant: 'info', icon: 'bi-lightbulb', body: '<strong>{{ \'existing_frameworks.info.title\'|trans({}, \'setup_wizard\') }}</strong> <p class="mb-0"> {{ \'existing_frameworks.info.message\'|trans({}, \'setup_wizard\') }} </p>' }) }}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-lightbulb' } } %}
+                            {% block alert_body %}<strong>{{ 'existing_frameworks.info.title'|trans({}, 'setup_wizard') }}</strong> <p class="mb-0"> {{ 'existing_frameworks.info.message'|trans({}, 'setup_wizard') }} </p>{% endblock %}
+                        {% endembed %}
 
                         {{ form_start(form, {
                             'attr': {
@@ -178,7 +180,9 @@
                                  aria-live="polite"
                                  aria-busy="false"
                                  aria-label="{{ 'existing_frameworks.preview.aria_label'|trans({}, 'setup_wizard') }}">
-                                {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'border', body: '{{ \'existing_frameworks.preview.idle\'|trans({}, \'setup_wizard\') }}' }) }}
+                                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'border' } } %}
+                                    {% block alert_body %}{{ 'existing_frameworks.preview.idle'|trans({}, 'setup_wizard') }}{% endblock %}
+                                {% endembed %}
                             </div>
                         </div>
 

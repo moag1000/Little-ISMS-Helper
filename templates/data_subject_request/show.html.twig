@@ -25,9 +25,13 @@
 
     {# Overdue Warning #}
     {% if dsr.overdue %}
-        {{ _fa_alert.render({ variant: 'danger', icon: 'status-warning', body: '<strong>{{ \'dsr.alert.overdue_title\'|trans({}, \'data_subject_request\') }}</strong> {{ \'dsr.alert.overdue_single\'|trans({\'%days%\': dsr.daysUntilDeadline|abs}, \'data_subject_request\') }}' }) }}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', icon: 'status-warning' } } %}
+            {% block alert_body %}<strong>{{ 'dsr.alert.overdue_title'|trans({}, 'data_subject_request') }}</strong> {{ 'dsr.alert.overdue_single'|trans({'%days%': dsr.daysUntilDeadline|abs}, 'data_subject_request') }}{% endblock %}
+        {% endembed %}
     {% elseif dsr.status not in ['completed', 'rejected'] and dsr.daysUntilDeadline <= 7 %}
-        {{ _fa_alert.render({ variant: 'warning', icon: 'status-pending', body: '<strong>{{ \'dsr.alert.deadline_approaching\'|trans({}, \'data_subject_request\') }}</strong> {{ \'dsr.deadline.remaining_days\'|trans({\'%days%\': dsr.daysUntilDeadline}, \'data_subject_request\') }}' }) }}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-pending' } } %}
+            {% block alert_body %}<strong>{{ 'dsr.alert.deadline_approaching'|trans({}, 'data_subject_request') }}</strong> {{ 'dsr.deadline.remaining_days'|trans({'%days%': dsr.daysUntilDeadline}, 'data_subject_request') }}{% endblock %}
+        {% endembed %}
     {% endif %}
 
     <div class="row">

@@ -5,6 +5,7 @@
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -24,31 +25,35 @@
     <main class="fa-aurora-surface">
 
     {% if overdue_tests|length > 0 %}
-    <div class="alert alert-warning">
-        <h2 class="h4">{{ 'bc_plans.alert.overdue_tests'|trans({}, 'bc_plans') }}</h2>
-        <ul>
-            {% for plan in overdue_tests %}
-            <li>
-                <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a>
-                - {{ 'bc_plans.field.next_test'|trans({}, 'bc_plans') }}: {{ plan.nextTestDate ? plan.nextTestDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans({}, 'bc_plans')) }}
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+        {% block alert_body %}
+            <div class="fa-alert__title">{{ 'bc_plans.alert.overdue_tests'|trans({}, 'bc_plans') }}</div>
+            <ul class="mb-0">
+                {% for plan in overdue_tests %}
+                <li>
+                    <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a>
+                    - {{ 'bc_plans.field.next_test'|trans({}, 'bc_plans') }}: {{ plan.nextTestDate ? plan.nextTestDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans({}, 'bc_plans')) }}
+                </li>
+                {% endfor %}
+            </ul>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {% if overdue_reviews|length > 0 %}
-    <div class="alert alert-warning">
-        <h2 class="h4">{{ 'bc_plans.alert.overdue_reviews'|trans({}, 'bc_plans') }}</h2>
-        <ul>
-            {% for plan in overdue_reviews %}
-            <li>
-                <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a>
-                - {{ 'bc_plans.field.next_review'|trans({}, 'bc_plans') }}: {{ plan.nextReviewDate ? plan.nextReviewDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans({}, 'bc_plans')) }}
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+        {% block alert_body %}
+            <div class="fa-alert__title">{{ 'bc_plans.alert.overdue_reviews'|trans({}, 'bc_plans') }}</div>
+            <ul class="mb-0">
+                {% for plan in overdue_reviews %}
+                <li>
+                    <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a>
+                    - {{ 'bc_plans.field.next_review'|trans({}, 'bc_plans') }}: {{ plan.nextReviewDate ? plan.nextReviewDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans({}, 'bc_plans')) }}
+                </li>
+                {% endfor %}
+            </ul>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {% embed '_components/_card.html.twig' %}

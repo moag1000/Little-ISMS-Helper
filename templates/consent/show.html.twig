@@ -199,7 +199,9 @@
                 </span>
             </div>
             {% else %}
-            {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'mb-0', body: '{{ \'consent.no_proof_document\'|trans({}, \'consent\') }}' }) }}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'mb-0' } } %}
+                {% block alert_body %}{{ 'consent.no_proof_document'|trans({}, 'consent') }}{% endblock %}
+            {% endembed %}
             {% endif %}
         {% endblock %}
     {% endembed %}
@@ -236,9 +238,13 @@
         {% endblock %}
         {% block card_body %}
             {% if consent.verifiedBy %}
-            {{ _fa_alert.render({ variant: 'success', icon: 'status-ok', class: 'mb-0', body: '<div class="d-flex align-items-center"> <i class="fa-icon fa-icon--status-ok me-2" aria-hidden="true"></i> <div> <strong>{{ \'consent.verified\'|trans({}, \'consent\') }}</strong> <br> <small>{{ \'consent.verified_by_user\'|trans({\'%user%\': consent.verifiedBy}, \'consent\') }}</small> {% if consent.verifiedAt %} <br> <small>{{ consent.verifiedAt|date(\'d.m.Y H:i\') }}</small> {% endif %} </div> </div>' }) }}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'status-ok', class: 'mb-0' } } %}
+                {% block alert_body %}<div class="d-flex align-items-center"> <i class="fa-icon fa-icon--status-ok me-2" aria-hidden="true"></i> <div> <strong>{{ 'consent.verified'|trans({}, 'consent') }}</strong> <br> <small>{{ 'consent.verified_by_user'|trans({'%user%': consent.verifiedBy}, 'consent') }}</small> {% if consent.verifiedAt %} <br> <small>{{ consent.verifiedAt|date('d.m.Y H:i') }}</small> {% endif %} </div> </div>{% endblock %}
+            {% endembed %}
             {% else %}
-            {{ _fa_alert.render({ variant: 'warning', icon: 'status-warning', class: 'mb-0', body: '{{ \'consent.not_verified\'|trans({}, \'consent\') }}' }) }}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-warning', class: 'mb-0' } } %}
+                {% block alert_body %}{{ 'consent.not_verified'|trans({}, 'consent') }}{% endblock %}
+            {% endembed %}
             {% endif %}
         {% endblock %}
     {% endembed %}
@@ -255,7 +261,9 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            {{ _fa_alert.render({ variant: 'danger', class: 'mb-0', body: '<strong>{{ \'consent.revoked\'|trans({}, \'consent\') }}</strong> <br> <small>{{ \'consent.revoked_at\'|trans({\'%date%\': consent.revokedAt|date(\'d.m.Y H:i\')}, \'consent\') }}</small> {% if consent.revocationReason %} <br> <small>{{ \'consent.revocation_reason\'|trans({}, \'consent\') }}: {{ consent.revocationReason }}</small> {% endif %}' }) }}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', class: 'mb-0' } } %}
+                {% block alert_body %}<strong>{{ 'consent.revoked'|trans({}, 'consent') }}</strong> <br> <small>{{ 'consent.revoked_at'|trans({'%date%': consent.revokedAt|date('d.m.Y H:i')}, 'consent') }}</small> {% if consent.revocationReason %} <br> <small>{{ 'consent.revocation_reason'|trans({}, 'consent') }}: {{ consent.revocationReason }}</small> {% endif %}{% endblock %}
+            {% endembed %}
         {% endblock %}
     {% endembed %}
     {% endif %}

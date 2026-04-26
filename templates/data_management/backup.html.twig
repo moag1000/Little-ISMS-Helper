@@ -171,7 +171,9 @@
                     <button type="button" class="btn-close backup-modal-close" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="backup-modal-body">
-                    {{ _fa_alert.render({ variant: 'warning', icon: 'bi-exclamation-triangle-fill', body: '<strong>{{ \'data_management.backup.restore.warning\'|trans({}, \'admin\') }}:</strong> {{ \'data_management.backup.restore.warning_text\'|trans({}, \'admin\') }}' }) }}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-exclamation-triangle-fill' } } %}
+                        {% block alert_body %}<strong>{{ 'data_management.backup.restore.warning'|trans({}, 'admin') }}:</strong> {{ 'data_management.backup.restore.warning_text'|trans({}, 'admin') }}{% endblock %}
+                    {% endembed %}
 
                     <form id="restoreForm">
                         <input type="hidden" id="restoreFilename" name="filename">
@@ -413,6 +415,21 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+        // Pre-rendered translations for JS dynamic HTML (avoids Twig-in-string render bug)
+        var _t = {
+            totalRecordsLabel: {{ 'data_management.backup.preview.total_records'|trans({}, 'admin')|json_encode|raw }},
+            errorLabel: {{ 'data_management.backup.message.error'|trans({}, 'admin')|json_encode|raw }},
+            previewTotalRecordsAlert: function(count) {
+                return '<div class="fa-alert fa-alert--info" role="alert"><div class="fa-alert__body"><p class="fa-alert__message"><strong>' + _t.totalRecordsLabel + ':</strong> ' + count + '</p></div></div>';
+            },
+            errorAlert: function(msg) {
+                return '<div class="fa-alert fa-alert--danger" role="alert"><i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body"><p class="fa-alert__message">' + _t.errorLabel + ': ' + msg + '</p></div></div>';
+            },
+            restoreErrorAlert: function(msg) {
+                return '<div class="fa-alert fa-alert--danger" role="alert"><i class="bi bi-x-circle fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body"><p class="fa-alert__message">' + _t.errorLabel + ': ' + msg + '</p></div></div>';
+            }
+        };
+
         // Use turbo:load for Turbo navigation compatibility, with DOMContentLoaded fallback
         function initBackupPage() {
             // Prevent re-initialization
@@ -528,7 +545,9 @@
                 const fileInput = document.getElementById('backupFile');
                 if (!fileInput.files.length) {
                     uploadBackupStatus.innerHTML = `
-                        {{ _fa_alert.render({ variant: 'warning', icon: 'bi-exclamation-triangle', body: '{{ \'data_management.backup.message.select_file\'|trans({}, \'admin\') }}' }) }}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-exclamation-triangle' } } %}
+                            {% block alert_body %}{{ 'data_management.backup.message.select_file'|trans({}, 'admin') }}{% endblock %}
+                        {% endembed %}
                     `;
                     return;
                 }
@@ -764,7 +783,7 @@
                             }
 
                             html += '</tbody></table></div>';
-                            html += `{{ _fa_alert.render({ variant: 'info', body: '<strong>{{ \'data_management.backup.preview.total_records\'|trans({}, \'admin\') }}:</strong> ${result.preview.total_records}' }) }}`;
+                            html += _t.previewTotalRecordsAlert(result.preview.total_records);
 
                             if (result.preview.metadata) {
                                 html += `<div class="card fa-section"><div class="card-body"><h4>{{ 'data_management.backup.preview.metadata'|trans({}, 'admin') }}:</h4><pre>${JSON.stringify(result.preview.metadata, null, 2)}</pre></div></div>`;
@@ -775,7 +794,7 @@
                             previewContent.innerHTML = `{{ _fa_alert.render({ variant: 'danger', body: '${result.message}' }) }}`;
                         }
                     } catch (error) {
-                        previewContent.innerHTML = `{{ _fa_alert.render({ variant: 'danger', body: '{{ \'data_management.backup.message.error\'|trans({}, \'admin\') }}: ${error.message}' }) }}`;
+                        previewContent.innerHTML = _t.errorAlert(error.message);
                     }
                 });
             });
@@ -885,7 +904,7 @@
                         restoreStatus.innerHTML = `{{ _fa_alert.render({ variant: 'danger', icon: 'bi-x-circle', body: '${result.message}' }) }}`;
                     }
                 } catch (error) {
-                    restoreStatus.innerHTML = `{{ _fa_alert.render({ variant: 'danger', icon: 'bi-x-circle', body: '{{ \'data_management.backup.message.error\'|trans({}, \'admin\') }}: ${error.message}' }) }}`;
+                    restoreStatus.innerHTML = _t.restoreErrorAlert(error.message);
                 } finally {
                     confirmBtn.disabled = false;
                     dryRunBtn.disabled = false;

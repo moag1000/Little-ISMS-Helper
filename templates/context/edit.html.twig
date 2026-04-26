@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'context' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'context.edit.title'|trans({}, 'context') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -23,11 +24,7 @@
     } %}
 
     {% if tenant is defined and tenant %}
-        <div class="alert alert-secondary mb-4">
-            <i class="bi bi-info-circle" aria-hidden="true"></i>
-            <strong>{{ 'tenant.isms_context.linked_to'|trans({}, 'tenant', 'tenant') }}:</strong>
-            {{ tenant.name }} ({{ tenant.code }})
-        </div>
+        {{ _fa_alert.render({ variant: 'info', class: 'mb-4', body: '<strong>' ~ 'tenant.isms_context.linked_to'|trans({}, 'tenant') ~ ':</strong> ' ~ tenant.name ~ ' (' ~ tenant.code ~ ')' }) }}
     {% endif %}
 
     <div class="row">

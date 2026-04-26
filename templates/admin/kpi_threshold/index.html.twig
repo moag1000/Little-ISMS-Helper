@@ -17,7 +17,7 @@
             <h1 class="h3 mb-1">{{ 'kpi_threshold.page.title'|trans({}, 'admin') }}</h1>
             <p class="text-muted mb-0">{{ 'kpi_threshold.page.subtitle'|trans({}, 'admin') }}</p>
         </div>
-        <a href="{{ path('admin_kpi_threshold_new') }}" class="btn btn-primary">
+        <a href="{{ path('admin_kpi_threshold_new') }}" class="fa-cyber-btn fa-cyber-btn--primary">
             <i class="bi bi-plus-lg" aria-hidden="true"></i>
             {{ 'kpi_threshold.action.new'|trans({}, 'admin') }}
         </a>
@@ -26,7 +26,9 @@
     {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
         {% block card_body %}
             {% if configs is empty %}
-                {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'm-3', body: '{{ \'kpi_threshold.message.no_configs\'|trans({}, \'admin\') }}' }) }}
+                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'm-3' } } %}
+                    {% block alert_body %}{{ 'kpi_threshold.message.no_configs'|trans({}, 'admin') }}{% endblock %}
+                {% endembed %}
             {% else %}
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
@@ -50,12 +52,12 @@
                                 <td><span class="badge bg-warning-subtle text-warning fa-status-pill fa-status-pill--warning">≥ {{ c.warningThreshold }}</span></td>
                                 <td>{{ c.updatedAt ? c.updatedAt|date('Y-m-d H:i') : c.createdAt|date('Y-m-d H:i') }}</td>
                                 <td class="text-end">
-                                    <a href="{{ path('admin_kpi_threshold_edit', {id: c.id}) }}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ path('admin_kpi_threshold_edit', {id: c.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="bi bi-pencil" aria-hidden="true"></i>
                                     </a>
                                     <form method="post" action="{{ path('admin_kpi_threshold_delete', {id: c.id}) }}" class="d-inline" onsubmit="return confirm('{{ 'kpi_threshold.confirm.delete'|trans({}, 'admin') }}');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete_kth_' ~ c.id) }}">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                                             <i class="bi bi-trash" aria-hidden="true"></i>
                                         </button>
                                     </form>

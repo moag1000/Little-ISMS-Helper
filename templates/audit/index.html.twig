@@ -5,6 +5,7 @@
 {% block body %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 <div class="container-fluid">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
@@ -133,15 +134,7 @@
 
     {# Upcoming Audits Highlight #}
     {% if upcoming|length > 0 %}
-    <div class="alert alert-info mb-4 card-border-left-info">
-        <div class="d-flex align-items-center">
-            <i class="bi bi-calendar-event fs-2-mr-md" aria-hidden="true"></i>
-            <div>
-                <div class="fw-bold mb-1">{{ 'audit.upcoming_audits'|trans({}, 'audit')}}</div>
-                <p class="mb-0">{{ 'audit.upcoming_audits_count'|trans({'%count%': upcoming|length}, 'audit') }}</p>
-            </div>
-        </div>
-    </div>
+    {{ _fa_alert.render({ variant: 'info', class: 'mb-4', title: 'audit.upcoming_audits'|trans({}, 'audit'), body: 'audit.upcoming_audits_count'|trans({'%count%': upcoming|length}, 'audit') }) }}
     {% endif %}
 
     {# Audit List #}

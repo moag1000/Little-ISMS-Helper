@@ -25,11 +25,11 @@
             {% endblock %}
             {% block card_footer %}
                 <div class="card-footer d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         <i class="bi bi-check2" aria-hidden="true"></i>
                         {{ 'tags.admin.action.save'|trans({}, 'tags') }}
                     </button>
-                    <a href="{{ path('admin_tag_index') }}" class="btn btn-outline-secondary">
+                    <a href="{{ path('admin_tag_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         {{ 'tags.admin.action.cancel'|trans({}, 'tags') }}
                     </a>
                 </div>

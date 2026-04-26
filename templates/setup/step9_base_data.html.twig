@@ -1,4 +1,5 @@
 {% extends 'setup/_layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% set active_step = 'masterdata' %}
 
 {% block title %}{{ 'setup.step9.title'|trans({}, 'setup') }}{% endblock %}
@@ -61,15 +62,7 @@
                             {% endembed %}
                         {% endfor %}
 
-                        <div class="alert alert-info mt-4" role="alert">
-                            <p class="h5 mb-2">
-                                <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                                {{ 'setup.step9.note.title'|trans({}, 'setup') }}
-                            </p>
-                            <p class="mb-0">
-                                {{ 'setup.step9.note.message'|trans({}, 'setup') }}
-                            </p>
-                        </div>
+                        {{ _fa_alert.render({ variant: 'info', class: 'mt-4', title: 'setup.step9.note.title'|trans({}, 'setup'), body: 'setup.step9.note.message'|trans({}, 'setup') }) }}
 
                         {# Import Action #}
                         <form method="post" action="{{ path('setup_step9_base_data_import') }}"

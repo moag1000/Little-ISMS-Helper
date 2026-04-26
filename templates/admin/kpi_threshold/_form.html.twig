@@ -1,18 +1,16 @@
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {{ form_start(form) }}
     <div class="row g-3">
         <div class="col-12">{{ form_row(form.kpiKey) }}</div>
         <div class="col-md-6">{{ form_row(form.goodThreshold) }}</div>
         <div class="col-md-6">{{ form_row(form.warningThreshold) }}</div>
     </div>
-    <div class="alert alert-info mt-3 small">
-        <i class="bi bi-info-circle" aria-hidden="true"></i>
-        {{ 'kpi_threshold.hint.thresholds'|trans({}, 'admin') }}
-    </div>
+    {{ _fa_alert.render({ variant: 'info', class: 'mt-3 small', body: 'kpi_threshold.hint.thresholds'|trans({}, 'admin') }) }}
     <div class="mt-4">
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
             <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
         </button>
-        <a href="{{ path('admin_kpi_threshold_index') }}" class="btn btn-outline-secondary">
+        <a href="{{ path('admin_kpi_threshold_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             {{ 'common.cancel'|trans({}, 'messages') }}
         </a>
     </div>
