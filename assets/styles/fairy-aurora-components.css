@@ -632,6 +632,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 }
 .fa-status-pill--sm { padding: 2px 8px;  font-size: 9px; }
 .fa-status-pill--md { padding: 4px 10px; font-size: 10px; }
+.fa-status-pill--lg { padding: 6px 14px; font-size: 12px; }
 
 .fa-status-pill__dot {
     width: 6px; height: 6px;
@@ -913,6 +914,13 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 .fa-alert--warning .fa-alert__message { color: var(--warning-text); }
 .fa-alert--danger  { border-left-color: var(--danger); background: var(--danger-glow); }
 .fa-alert--danger  .fa-alert__icon { color: var(--danger); }
+
+/* Modifier variants used by _components/_alert.html.twig macro:
+   --dismissible reserves space for close-button (right-side padding);
+   --with-alva pulls the alva-illustration column to the left. */
+.fa-alert--dismissible { padding-right: 36px; position: relative; }
+.fa-alert--with-alva   { gap: 16px; align-items: flex-start; }
+.fa-alert--with-alva .fa-alert__alva { width: 56px; height: 56px; }
 
 /* Toast-Variant (stacked top-right, Progress-Bar) */
 .fa-alert--toast {
