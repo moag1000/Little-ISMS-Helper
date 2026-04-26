@@ -457,6 +457,52 @@ class ComplianceRequirement
         return $this;
     }
 
+    // ── MRIS Reifegrad-Tracking pro MHC ───────────────────────────────────
+    // Quelle: Peddi, R. (2026). MRIS v1.5 Kap. 9.5 — Reifegrad-Stufen pro MHC.
+    // Werte: 'initial' | 'defined' | 'managed'. NULL für nicht-MRIS-Requirements.
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $maturityCurrent = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $maturityTarget = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeInterface $maturityReviewedAt = null;
+
+    public function getMaturityCurrent(): ?string
+    {
+        return $this->maturityCurrent;
+    }
+
+    public function setMaturityCurrent(?string $maturityCurrent): static
+    {
+        $this->maturityCurrent = $maturityCurrent;
+        return $this;
+    }
+
+    public function getMaturityTarget(): ?string
+    {
+        return $this->maturityTarget;
+    }
+
+    public function setMaturityTarget(?string $maturityTarget): static
+    {
+        $this->maturityTarget = $maturityTarget;
+        return $this;
+    }
+
+    public function getMaturityReviewedAt(): ?DateTimeInterface
+    {
+        return $this->maturityReviewedAt;
+    }
+
+    public function setMaturityReviewedAt(?DateTimeInterface $maturityReviewedAt): static
+    {
+        $this->maturityReviewedAt = $maturityReviewedAt;
+        return $this;
+    }
+
     // BSI IT-Grundschutz fields
 
     public function getAnforderungsTyp(): ?string
