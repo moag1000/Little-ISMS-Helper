@@ -58,8 +58,8 @@ items:
       de: 'Control wirkt grundsaetzlich, aber Teilbereiche sind veraltet (z.B. SMS-MFA statt FIDO2). Nicht abschalten — nachschaerfen.'
       en: 'Control still works in principle but parts are outdated (e.g. SMS-MFA instead of FIDO2). Do not disable — upgrade.'
     inline_help:
-      de: 'Beispiel A.8.5 Secure Authentication: TOTP fuer User OK, aber Admins nutzen noch SMS. Massnahme: Gap-Ticket auf FIDO2 fuer privilegierte Konten. Bei Verinice/HiScout waere das ein "teilweise umgesetzt" mit Massnahmenplan.'
-      en: 'Example A.8.5 Secure Authentication: TOTP fine for users, but admins still on SMS. Action: gap ticket to roll out FIDO2 for privileged accounts. In Verinice/HiScout this would be "partially implemented" with an action plan.'
+      de: 'Beispiel A.8.5 Secure Authentication: TOTP fuer User OK, aber Admins nutzen noch SMS. Massnahme: Gap-Ticket auf FIDO2 fuer privilegierte Konten. Im SoA als "teilweise umgesetzt" mit Massnahmenplan fuehren.'
+      en: 'Example A.8.5 Secure Authentication: TOTP fine for users, but admins still on SMS. Action: gap ticket to roll out FIDO2 for privileged accounts. Track in the SoA as "partially implemented" with an action plan.'
     glossar:
       term_de: 'Teilweise degradiert'
       term_en: 'Partially degraded'
@@ -269,8 +269,8 @@ items:
       de: '"auto" = KPI wird aus Daten/Schnittstelle berechnet. "manuell" = ISB pflegt den Wert. Manuell ist nicht schlecht — bei kleinen Orgs oft pragmatisch.'
       en: '"auto" = KPI computed from data/integration. "manual" = ISO maintains the value. Manual is not bad — often pragmatic in small orgs.'
     inline_help:
-      de: 'Manuelle KPIs sind erlaubt, brauchen aber: dokumentierten Erhebungs-Rhythmus (z.B. quartalsweise), Quelle (Excel-Sheet, Vendor-Dashboard), Vier-Augen-Pruefung. Bei Vanta/Drata laeuft alles auto — bei euch eben hybrid. Audit-Pruefer akzeptiert manuell, wenn Verfahren beschrieben ist.'
-      en: 'Manual KPIs are allowed but require: documented collection cadence (e.g. quarterly), source (Excel sheet, vendor dashboard), four-eyes review. Vanta/Drata do everything auto — you do hybrid. Auditors accept manual if the procedure is documented.'
+      de: 'Manuelle KPIs sind erlaubt, brauchen aber: dokumentierten Erhebungs-Rhythmus (z.B. quartalsweise), Quelle (Excel-Sheet, Vendor-Dashboard), Vier-Augen-Pruefung. Hybrid (auto + manuell) ist normal. Audit-Pruefer akzeptiert manuell, wenn Verfahren beschrieben ist.'
+      en: 'Manual KPIs are allowed but require: documented collection cadence (e.g. quarterly), source (Excel sheet, vendor dashboard), four-eyes review. Hybrid (auto + manual) is normal. Auditors accept manual if the procedure is documented.'
     glossar:
       term_de: 'KPI-Erhebungsmodus'
       term_en: 'KPI collection mode'
@@ -364,15 +364,15 @@ items:
       de: 'Vordefinierte MHC-Sollwerte pro Branche (Produktion, Healthcare, Finance, KRITIS). Heute Console-Befehl, geplant als UI-Knopf mit Dry-Run.'
       en: 'Predefined MHC targets per industry (manufacturing, healthcare, finance, critical infrastructure). Today a console command, planned as UI button with dry-run.'
     inline_help:
-      de: 'Aktuell: php bin/console app:mris:baseline:apply --industry=finance --tenant=42 --dry-run. Geplant Q3/2026: UI-Button im MRIS-Modul, Vorschau der Aenderungen, Mehrfachauswahl. Bei Verinice gibt es BSI-Profile-Import — bei uns kommt das gerade. Tipp: zuerst --dry-run, Diff pruefen, dann anwenden.'
-      en: 'Today: php bin/console app:mris:baseline:apply --industry=finance --tenant=42 --dry-run. Planned Q3/2026: UI button in MRIS module, change preview, multi-select. Verinice has BSI profile import — we are catching up. Tip: --dry-run first, review diff, then apply.'
+      de: 'Aktuell: php bin/console app:mris:baseline:apply --industry=finance --tenant=42 --dry-run. Geplant Q3/2026: UI-Button im MRIS-Modul, Vorschau der Aenderungen, Mehrfachauswahl. Tipp: zuerst --dry-run, Diff pruefen, dann anwenden.'
+      en: 'Today: php bin/console app:mris:baseline:apply --industry=finance --tenant=42 --dry-run. Planned Q3/2026: UI button in MRIS module, change preview, multi-select. Tip: --dry-run first, review diff, then apply.'
     glossar:
       term_de: 'Branchen-Baseline'
       term_en: 'Industry Baseline'
       definition_de: 'Vorlage mit branchentypischen MHC-Sollwerten und Standard-Controls. Beschleunigt Onboarding und sichert Mindestreife. Anpassbar nach Anwendung.'
       definition_en: 'Template with industry-typical MHC targets and standard controls. Speeds onboarding and ensures minimum maturity. Customizable after applying.'
       analogy_9001: 'Wie ein Branchen-spezifischer QM-Handbuch-Template (Automotive IATF 16949, Medizin ISO 13485) — Startpunkt, kein Endprodukt.'
-      source: 'Peddi (2026) MRIS v1.5 Kap. 11; Verinice BSI-Profile (Vergleich)'
+      source: 'Peddi (2026) MRIS v1.5 Kap. 11'
 
   # -------------------------------------------------------------------------
   # 19. Doku-Vollstaendigkeit %
