@@ -52,6 +52,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {% if activities_by_date|length > 0 %}
                 {% for date, daily_activities in activities_by_date|reverse %}
                     <div class="mb-4">

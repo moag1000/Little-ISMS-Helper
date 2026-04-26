@@ -25,6 +25,7 @@
 
 {% embed '_components/_card.html.twig' %}
     {% block card_body %}
+        {% import '_components/_fa_alert.html.twig' as _fa_alert %}
         {{ _fa_alert.render({ variant: 'info', body: 'document.help.edit_file'|trans({}, 'document') }) }}
 
         {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}

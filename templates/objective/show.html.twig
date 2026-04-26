@@ -22,6 +22,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     <p class="lead">{{ objective.description }}</p>
 
                     <div class="row mb-3">

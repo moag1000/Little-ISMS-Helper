@@ -588,7 +588,7 @@ class ProfileControllerTest extends WebTestCase
         $this->client->followRedirect();
 
         // Check for success flash message
-        $this->assertSelectorExists('.alert-success, .flash-success');
+        $this->assertSelectorExists('.alert-success, .flash-success, .fa-alert--success');
     }
 
     public function testSuccessFlashMessageOnPasswordChange(): void
@@ -604,7 +604,7 @@ class ProfileControllerTest extends WebTestCase
         $this->client->followRedirect();
 
         // Should have flash message about password change
-        $this->assertSelectorExists('.alert-success, .flash-success');
+        $this->assertSelectorExists('.alert-success, .flash-success, .fa-alert--success');
     }
 
     /**

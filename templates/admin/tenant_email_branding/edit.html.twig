@@ -27,6 +27,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     {{ form_start(form) }}
                         <div class="mb-3">{{ form_row(form.emailFromName, { attr: { class: 'form-control' } }) }}</div>
                         <div class="mb-3">{{ form_row(form.emailFromAddress, { attr: { class: 'form-control' } }) }}</div>

@@ -25,6 +25,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     {# Shared Content Preview #}
                     <div class="mb-4">
                         <h2 class="h6 mb-3">{{ 'share.content_preview'|trans({}, 'messages') }}</h2>

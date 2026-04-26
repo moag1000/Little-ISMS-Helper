@@ -188,6 +188,7 @@
                             </div>
                         {% endblock %}
                         {% block card_body %}
+                            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                             {% if overlap.overlaps|length > 0 %}
                             {{ _fa_alert.render({ variant: 'success', body: 'analytics.compliance.overlap.efficiency_info'|trans({}, 'analytics') }) }}
                             <p>{{ 'analytics.compliance.overlap.efficiency_description'|trans({'%percentage%': (total_overlap / overlap.overlaps|length)|round}, 'analytics') }}</p>

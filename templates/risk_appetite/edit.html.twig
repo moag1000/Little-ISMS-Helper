@@ -21,6 +21,7 @@
 
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ form_start(form) }}
                 {% include '_components/_auto_form.html.twig' with {
                     'form': form,

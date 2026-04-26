@@ -44,6 +44,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     {% if top_actions|length > 0 %}
                         <div class="list-group list-group-flush">
                             {% for action, count in top_actions %}
@@ -79,6 +80,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     {% if top_entities|length > 0 %}
                         <div class="list-group list-group-flush">
                             {% for entity, count in top_entities %}
