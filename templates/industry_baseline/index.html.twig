@@ -29,7 +29,7 @@
             {% for baseline in baselines %}
                 {% set applied = baseline.code in applied_codes %}
                 {% set inheritedRecord = inherited[baseline.code]|default(null) %}
-                {% set cardExtra = 'shadow-sm h-100' ~ (applied ? ' border-success' : (inheritedRecord ? ' border-info' : '')) %}
+                {% set cardExtra = 'shadow-sm h-100' ~ (applied ? ' border-success fa-rag-card fa-rag-card--green' : (inheritedRecord ? ' border-info' : '')) %}
                 <div class="col">
                     {% embed '_components/_card.html.twig' with { class: cardExtra } %}
                         {% block card_header %}
