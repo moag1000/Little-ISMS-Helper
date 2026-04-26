@@ -38,6 +38,15 @@ mkdir -p "$DATADIR"
 chown mysql:mysql "$DATADIR"
 chmod 755 "$DATADIR"
 
+# Ensure app writable directories exist (gem. config/modules.yaml).
+# Wichtig wenn /var/www/html/var über Volume gemountet ist — Build-time-Dirs
+# verschwinden dann und müssen runtime neu angelegt werden.
+for dir in var/cache var/log var/sessions public/uploads var/backups; do
+    mkdir -p "/var/www/html/$dir"
+    chown www-data:www-data "/var/www/html/$dir"
+    chmod 775 "/var/www/html/$dir"
+done
+
 # Initialize database if needed
 if [ ! -d "$DATADIR/mysql" ]; then
     echo "Initializing MariaDB database..."
