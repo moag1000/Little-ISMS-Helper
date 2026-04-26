@@ -1,4 +1,5 @@
 {% extends 'setup/_layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% set active_step = 'database' %}
 
 {% block title %}{{ 'setup.database.title'|trans({}, 'setup') }} - Deployment Wizard{% endblock %}
@@ -17,10 +18,8 @@
             {# Flash Messages #}
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                        {{ message|raw }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'setup.common.close'|trans({}, 'setup') }}"></button>
-                    </div>
+                    {% set faVariant = label in ['danger','error'] ? 'danger' : (label == 'success' ? 'success' : (label == 'warning' ? 'warning' : 'info')) %}
+                    {{ _fa_alert.render({ variant: faVariant, dismissible: true, body: message }) }}
                 {% endfor %}
             {% endfor %}
 
@@ -41,8 +40,9 @@
 
                         {# Docker Auto-Generated Password Display #}
                         {% if is_docker_standalone and docker_password %}
-                            <div class="alert alert-success border-success">
-                                <p class="h5 mb-2">
+                            <div class="fa-alert fa-alert--success border-success" role="alert">
+                                <i class="bi bi-key fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><p class="h5 mb-2">
                                     <i class="bi bi-key me-2" aria-hidden="true"></i>
                                     {{ 'setup.database.docker_password_title'|trans({}, 'setup') }}
                                 </p>
@@ -61,6 +61,7 @@
                                     <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
                                     {{ 'setup.database.docker_password_location'|trans({}, 'setup') }}
                                 </small>
+                                </div>
                             </div>
                         {% endif %}
 
@@ -166,8 +167,9 @@
                         </div>
 
                         {# Info Box #}
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                        <div class="fa-alert fa-alert--info" role="alert">
+                            <i class="bi bi-info-circle fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body"><i class="bi bi-info-circle me-2" aria-hidden="true"></i>
                             <strong>{{ 'setup.database.info.title'|trans({}, 'setup') }}</strong>
                             <ul class="mb-0 mt-2">
                                 <li>{{ 'setup.database.info.mysql'|trans({}, 'setup') }}</li>
@@ -175,25 +177,15 @@
                                 <li>{{ 'setup.database.info.sqlite'|trans({}, 'setup') }}</li>
                                 <li>{{ 'setup.database.info.special_chars'|trans({}, 'setup') }}</li>
                             </ul>
+                            </div>
                         </div>
 
                         {# Test Result #}
                         {% if test_result is defined and test_result is not null %}
                             {% if test_result.success %}
-                                <div class="alert alert-success">
-                                    <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
-                                    <strong>{{ 'setup.database.test.success'|trans({}, 'setup') }}</strong>
-                                    <p class="mb-0">{{ test_result.message }}</p>
-                                    {% if test_result.create_needed is defined and test_result.create_needed %}
-                                        <p class="mb-0 mt-2"><small>{{ 'setup.database.test.create_needed'|trans({}, 'setup') }}</small></p>
-                                    {% endif %}
-                                </div>
+                                {{ _fa_alert.render({ variant: 'success', icon: 'bi-check-circle', body: '<strong>{{ \'setup.database.test.success\'|trans({}, \'setup\') }}</strong> <p class="mb-0">{{ test_result.message }}</p> {% if test_result.create_needed is defined and test_result.create_needed %} <p class="mb-0 mt-2"><small>{{ \'setup.database.test.create_needed\'|trans({}, \'setup\') }}</small></p> {% endif %}' }) }}
                             {% else %}
-                                <div class="alert alert-danger">
-                                    <i class="bi bi-x-circle me-2" aria-hidden="true"></i>
-                                    <strong>{{ 'setup.database.test.failed'|trans({}, 'setup') }}</strong>
-                                    <p class="mb-0">{{ test_result.message }}</p>
-                                </div>
+                                {{ _fa_alert.render({ variant: 'danger', icon: 'bi-x-circle', body: '<strong>{{ \'setup.database.test.failed\'|trans({}, \'setup\') }}</strong> <p class="mb-0">{{ test_result.message }}</p>' }) }}
                             {% endif %}
                         {% endif %}
 

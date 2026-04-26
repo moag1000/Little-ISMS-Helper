@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'supplier_criticality.title'|trans({}, 'supplier_criticality') }}{% endblock %}
 
@@ -23,10 +24,8 @@
 
     {% for flash_type, messages in app.flashes %}
         {% for message in messages %}
-            <div class="alert alert-{{ flash_type === 'error' ? 'danger' : flash_type }} alert-dismissible fade show" role="alert">
-                {{ message|trans({}, 'supplier_criticality') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
-            </div>
+            {% set faVariant = flash_type in ['danger','error'] ? 'danger' : (flash_type == 'success' ? 'success' : (flash_type == 'warning' ? 'warning' : 'info')) %}
+            {{ _fa_alert.render({ variant: faVariant, dismissible: true, body: message|trans({}, 'supplier_criticality') }) }}
         {% endfor %}
     {% endfor %}
 

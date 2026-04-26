@@ -1,3 +1,4 @@
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {#
   Bulk Delete Confirmation Modal
   Accessible confirmation dialog for bulk delete operations
@@ -40,19 +41,7 @@
             {# Body #}
             <div class="modal-body">
                 {# Main message #}
-                <div class="alert alert-warning d-flex align-items-start gap-3" role="alert">
-                    <i class="bi bi-exclamation-circle-fill fs-4 flex-shrink-0 mt-1" aria-hidden="true"></i>
-                    <div class="flex-grow-1">
-                        <p id="bulkDeleteModalDescription"
-                           class="mb-2 fw-semibold"
-                           data-bulk-delete-confirmation-target="message">
-                            {# Dynamic message will be inserted here #}
-                        </p>
-                        <p class="mb-0 small text-muted">
-                            {{ 'bulk_delete.confirm.warning'|trans({}, 'bulk_delete') }}
-                        </p>
-                    </div>
-                </div>
+                {{ _fa_alert.render({ variant: 'warning', icon: 'bi-exclamation-circle-fill', class: 'd-flex align-items-start gap-3', body: '<div class="flex-grow-1"> <p id="bulkDeleteModalDescription" class="mb-2 fw-semibold" data-bulk-delete-confirmation-target="message"> {# Dynamic message will be inserted here #} </p> <p class="mb-0 small text-muted"> {{ \'bulk_delete.confirm.warning\'|trans({}, \'bulk_delete\') }} </p> </div>' }) }}
 
                 {# Selection summary #}
                 <div class="mb-3">
@@ -73,12 +62,15 @@
                     <h6 class="fw-semibold mb-2">
                         {{ 'bulk_delete.dependencies.title'|trans({}, 'bulk_delete') }}
                     </h6>
-                    <div class="alert alert-info" role="status">
+                    <div class="fa-alert fa-alert--info" role="alert">
+                        <div class="fa-alert__body">
                         <ul class="mb-0 ps-3"
                             data-bulk-delete-confirmation-target="dependencyList"
                             aria-label="{{ 'bulk_delete.dependencies.list'|trans({}, 'bulk_delete') }}">
                             {# Dependencies will be injected here #}
                         </ul>
+                    
+                        </div>
                     </div>
                 </div>
 
@@ -93,9 +85,11 @@
                 </div>
 
                 {# Error state #}
-                <div data-bulk-delete-confirmation-target="error" class="alert alert-danger d-none" role="alert">
-                    <i class="bi bi-x-circle-fill me-2" aria-hidden="true"></i>
-                    <span data-bulk-delete-confirmation-target="errorMessage"></span>
+                <div data-bulk-delete-confirmation-target="error" class="fa-alert fa-alert--danger d-none" role="alert">
+                    <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+                    <div class="fa-alert__body">
+                        <span data-bulk-delete-confirmation-target="errorMessage"></span>
+                    </div>
                 </div>
             </div>
 

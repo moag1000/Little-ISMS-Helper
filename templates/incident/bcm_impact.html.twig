@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}BCM Impact Analysis - {{ incident.incidentNumber }}{% endblock %}
 
@@ -179,10 +180,7 @@
                     {% endblock %}
                 {% endembed %}
             {% else %}
-                <div class="alert alert-info">
-                    <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> No business processes have been linked to this incident yet.
-                    Use the "Auto-Detect Processes" feature on the incident details page.
-                </div>
+                {{ _fa_alert.render({ variant: 'info', icon: 'status-info', body: 'No business processes have been linked to this incident yet. Use the "Auto-Detect Processes" feature on the incident details page.' }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}
@@ -212,15 +210,14 @@
             {% endblock %}
             {% block card_body %}
                 {% for recommendation in analysis.recommendations %}
-                    <div class="alert alert-{{ {
-                        'high': 'danger',
-                        'medium': 'warning',
-                        'low': 'info'
-                    }[recommendation.priority] }} mb-3">
-                        <div class="fw-bold mb-2">{{ recommendation.title }}</div>
-                        <p>{{ recommendation.description }}</p>
-                        <p class="mb-0"><strong>Action:</strong> {{ recommendation.action }}</p>
-                    </div>
+                    {% set recVariant = {'high': 'danger', 'medium': 'warning', 'low': 'info'}[recommendation.priority]|default('info') %}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: recVariant, class: 'mb-3' } } %}
+                        {% block alert_body %}
+                            <div class="fw-bold mb-2">{{ recommendation.title }}</div>
+                            <p>{{ recommendation.description }}</p>
+                            <p class="mb-0"><strong>Action:</strong> {{ recommendation.action }}</p>
+                        {% endblock %}
+                    {% endembed %}
                 {% endfor %}
             {% endblock %}
         {% endembed %}

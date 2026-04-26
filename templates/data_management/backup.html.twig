@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}{{ 'data_management.backup.title'|trans({}, 'admin') }}{% endblock %}
 {% block admin_subtitle %}
@@ -170,10 +171,7 @@
                     <button type="button" class="btn-close backup-modal-close" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="backup-modal-body">
-                    <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                        <strong>{{ 'data_management.backup.restore.warning'|trans({}, 'admin') }}:</strong> {{ 'data_management.backup.restore.warning_text'|trans({}, 'admin') }}
-                    </div>
+                    {{ _fa_alert.render({ variant: 'warning', icon: 'bi-exclamation-triangle-fill', body: '<strong>{{ \'data_management.backup.restore.warning\'|trans({}, \'admin\') }}:</strong> {{ \'data_management.backup.restore.warning_text\'|trans({}, \'admin\') }}' }) }}
 
                     <form id="restoreForm">
                         <input type="hidden" id="restoreFilename" name="filename">
@@ -466,12 +464,17 @@
 
                     if (result.success) {
                         createBackupStatus.innerHTML = `
-                            <div class="alert alert-success alert-dismissible fade show">
-                                <i class="bi bi-check-circle" aria-hidden="true"></i>
+                            <div class="fa-alert fa-alert--success" role="alert">
+                                <i class="bi bi-check-circle" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="bi bi-check-circle" aria-hidden="true"></i>
                                 <strong>${result.message}</strong><br>
                                 {{ 'data_management.backup.message.file'|trans({}, 'admin') }}: ${result.filename}<br>
                                 <small>{{ 'data_management.backup.message.saved_entries'|trans({}, 'admin') }}: ${Object.values(result.statistics).reduce((a, b) => a + b, 0)}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
+                                </div>
+                                <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+                                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                </button>
                             </div>
                         `;
                         // Reload page after 2 seconds to show new backup (Turbo-compatible)
@@ -484,17 +487,27 @@
                         }, 2000);
                     } else {
                         createBackupStatus.innerHTML = `
-                            <div class="alert alert-danger alert-dismissible fade show">
-                                <i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}
+                            <div class="fa-alert fa-alert--danger" role="alert">
+                                <i class="bi bi-x-circle" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
+                                </div>
+                                <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+                                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                </button>
                             </div>
                         `;
                     }
                 } catch (error) {
                     createBackupStatus.innerHTML = `
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
+                        <div class="fa-alert fa-alert--danger" role="alert">
+                            <i class="bi bi-x-circle" fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
+                            </div>
+                            <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+                                <i class="bi bi-x-lg" aria-hidden="true"></i>
+                            </button>
                         </div>
                     `;
                 } finally {
@@ -515,9 +528,7 @@
                 const fileInput = document.getElementById('backupFile');
                 if (!fileInput.files.length) {
                     uploadBackupStatus.innerHTML = `
-                        <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'data_management.backup.message.select_file'|trans({}, 'admin') }}
-                        </div>
+                        {{ _fa_alert.render({ variant: 'warning', icon: 'bi-exclamation-triangle', body: '{{ \'data_management.backup.message.select_file\'|trans({}, \'admin\') }}' }) }}
                     `;
                     return;
                 }
@@ -537,9 +548,14 @@
 
                     if (result.success) {
                         uploadBackupStatus.innerHTML = `
-                            <div class="alert alert-success alert-dismissible fade show">
-                                <i class="bi bi-check-circle" aria-hidden="true"></i> ${result.message}
+                            <div class="fa-alert fa-alert--success" role="alert">
+                                <i class="bi bi-check-circle" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="bi bi-check-circle" aria-hidden="true"></i> ${result.message}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
+                                </div>
+                                <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+                                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                </button>
                             </div>
                         `;
                         fileInput.value = '';
@@ -553,17 +569,27 @@
                         }, 2000);
                     } else {
                         uploadBackupStatus.innerHTML = `
-                            <div class="alert alert-danger alert-dismissible fade show">
-                                <i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}
+                            <div class="fa-alert fa-alert--danger" role="alert">
+                                <i class="bi bi-x-circle" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
+                                </div>
+                                <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+                                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                </button>
                             </div>
                         `;
                     }
                 } catch (error) {
                     uploadBackupStatus.innerHTML = `
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
+                        <div class="fa-alert fa-alert--danger" role="alert">
+                            <i class="bi bi-x-circle" fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
+                            </div>
+                            <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+                                <i class="bi bi-x-lg" aria-hidden="true"></i>
+                            </button>
                         </div>
                     `;
                 } finally {
@@ -738,7 +764,7 @@
                             }
 
                             html += '</tbody></table></div>';
-                            html += `<div class="alert alert-info"><strong>{{ 'data_management.backup.preview.total_records'|trans({}, 'admin') }}:</strong> ${result.preview.total_records}</div>`;
+                            html += `{{ _fa_alert.render({ variant: 'info', body: '<strong>{{ \'data_management.backup.preview.total_records\'|trans({}, \'admin\') }}:</strong> ${result.preview.total_records}' }) }}`;
 
                             if (result.preview.metadata) {
                                 html += `<div class="card"><div class="card-body"><h4>{{ 'data_management.backup.preview.metadata'|trans({}, 'admin') }}:</h4><pre>${JSON.stringify(result.preview.metadata, null, 2)}</pre></div></div>`;
@@ -746,10 +772,10 @@
 
                             previewContent.innerHTML = html;
                         } else {
-                            previewContent.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
+                            previewContent.innerHTML = `{{ _fa_alert.render({ variant: 'danger', body: '${result.message}' }) }}`;
                         }
                     } catch (error) {
-                        previewContent.innerHTML = `<div class="alert alert-danger">{{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}</div>`;
+                        previewContent.innerHTML = `{{ _fa_alert.render({ variant: 'danger', body: '{{ \'data_management.backup.message.error\'|trans({}, \'admin\') }}: ${error.message}' }) }}`;
                     }
                 });
             });
@@ -798,8 +824,10 @@
                     if (result.success) {
                         const isDryRun = result.dry_run === true;
                         let html = isDryRun
-                            ? `<div class="alert alert-info"><i class="bi bi-shield-check" aria-hidden="true"></i> <strong>${result.message}</strong>`
-                            : `<div class="alert alert-success"><i class="bi bi-check-circle" aria-hidden="true"></i> <strong>${result.message}</strong>`;
+                            ? `<div class="fa-alert fa-alert--info" role="alert"><i class="bi bi-shield-check fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body"><strong>${result.message}</strong>`
+                            : `<div class="fa-alert fa-alert--success" role="alert">
+                                <i class="bi bi-check-circle" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="bi bi-check-circle" aria-hidden="true"></i> <strong>${result.message}</strong>`;
 
                         if (isDryRun) {
                             // Count total simulated entities
@@ -845,17 +873,19 @@
                             html += '<br><small class="text-muted">{{ 'data_management.backup.restore.page_reload'|trans({}, 'admin') }}</small>';
                         }
 
-                        html += '</div>';
+                        html += '
+                                </div>
+                            </div>';
                         restoreStatus.innerHTML = html;
 
                         if (!isDryRun) {
                             setTimeout(() => location.reload(), 3000);
                         }
                     } else {
-                        restoreStatus.innerHTML = `<div class="alert alert-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}</div>`;
+                        restoreStatus.innerHTML = `{{ _fa_alert.render({ variant: 'danger', icon: 'bi-x-circle', body: '${result.message}' }) }}`;
                     }
                 } catch (error) {
-                    restoreStatus.innerHTML = `<div class="alert alert-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}</div>`;
+                    restoreStatus.innerHTML = `{{ _fa_alert.render({ variant: 'danger', icon: 'bi-x-circle', body: '{{ \'data_management.backup.message.error\'|trans({}, \'admin\') }}: ${error.message}' }) }}`;
                 } finally {
                     confirmBtn.disabled = false;
                     dryRunBtn.disabled = false;

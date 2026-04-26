@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'risk.acceptance.title'|trans({}, 'risk') }} - {{ risk.title }} - {{ parent() }}{% endblock %}
 
@@ -35,8 +36,9 @@
             {% endblock %}
             {% block card_body %}
                 {# Risk Summary #}
-                <div class="alert alert-info mb-4">
-                    <div class="alert-heading fw-bold">
+                <div class="fa-alert fa-alert--info mb-4" role="alert">
+                    <i class="fa-icon fa-icon--status-info" fa-alert__icon" aria-hidden="true"></i>
+                    <div class="fa-alert__body"><div class="alert-heading fw-bold">
                         <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
                         {{ risk.title }}
                     </div>
@@ -52,6 +54,7 @@
                             {{ risk.residualRiskLevel }}
                             ({{ risk.residualProbability }} × {{ risk.residualImpact }})
                         </div>
+                    </div>
                     </div>
                 </div>
 
@@ -104,15 +107,12 @@
                 </div>
             {% endblock %}
             {% block card_body %}
-                <div class="alert alert-{{ approval_variant }} mb-3">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-{{ required_level == 'automatic' ? 'check-circle-fill' : (required_level == 'manager' ? 'person-fill' : 'person-badge-fill') }} fs-3 me-3" aria-hidden="true"></i>
-                        <div>
-                            <strong class="d-block">{{ ('risk.acceptance.approval_levels.' ~ required_level)|trans({}, 'risk') }}</strong>
-                            <small>{{ 'risk.acceptance.approval_threshold_info'|trans({'%score%': risk.residualRiskLevel}, 'risk') }}</small>
-                        </div>
-                    </div>
-                </div>
+                {% embed '_components/_fa_alert.html.twig' with { props: { variant: approval_variant, class: 'mb-3' } } %}
+                    {% block alert_body %}
+                        <strong class="d-block">{{ ('risk.acceptance.approval_levels.' ~ required_level)|trans({}, 'risk') }}</strong>
+                        <small>{{ 'risk.acceptance.approval_threshold_info'|trans({'%score%': risk.residualRiskLevel}, 'risk') }}</small>
+                    {% endblock %}
+                {% endembed %}
 
                 <h3>{{ 'risk.guidance.title'|trans({}, 'risk') }}</h3>
                 <div class="list-group list-group-flush">

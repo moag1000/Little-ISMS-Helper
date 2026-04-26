@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}{{ mfa_token.tokenTypeName }}{% endblock %}
 {% block admin_subtitle %}
@@ -143,14 +144,9 @@
                         </div>
 
                         {% if remaining_backup_codes <= 2 %}
-                            <div class="alert alert-{{ remaining_backup_codes == 0 ? 'danger' : 'warning' }}">
-                                <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                                {% if remaining_backup_codes == 0 %}
-                                    {{ 'mfa_token.backup_codes.no_codes_left'|trans({}, 'mfa') }}
-                                {% else %}
-                                    {{ 'mfa_token.backup_codes.low_codes'|trans({}, 'mfa') }}
-                                {% endif %}
-                            </div>
+                            {% set backupVariant = remaining_backup_codes == 0 ? 'danger' : 'warning' %}
+                            {% set backupMsg = remaining_backup_codes == 0 ? 'mfa_token.backup_codes.no_codes_left'|trans({}, 'mfa') : 'mfa_token.backup_codes.low_codes'|trans({}, 'mfa') %}
+                            {{ _fa_alert.render({ variant: backupVariant, body: backupMsg }) }}
                         {% endif %}
 
                         <p class="small text-muted mb-0">

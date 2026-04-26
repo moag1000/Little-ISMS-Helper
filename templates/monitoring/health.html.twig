@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}{{ 'monitoring.health.title'|trans({}, 'monitoring') }}{% endblock %}
 {% block admin_subtitle %}
@@ -28,26 +29,24 @@
     </div>
 
     {# Overall Status Banner #}
-    <div class="alert alert-{{ overall_status == 'healthy' ? 'success' : (overall_status == 'warning' ? 'warning' : 'danger') }} mb-4">
-        <div class="d-flex align-items-center">
-            <i class="bi bi-{{ overall_status == 'healthy' ? 'check-circle-fill' : (overall_status == 'warning' ? 'exclamation-triangle-fill' : 'x-circle-fill') }} fs-1 me-3" aria-hidden="true"></i>
-            <div>
-                <h2 class="mb-1">
-                    {{ 'monitoring.health.system_status'|trans({}, 'monitoring') }}:
-                    {% if overall_status == 'healthy' %}
-                        <strong>{{ 'monitoring.health.healthy'|trans({}, 'monitoring') }}</strong>
-                    {% elseif overall_status == 'warning' %}
-                        <strong>{{ 'monitoring.health.warning'|trans({}, 'monitoring') }}</strong>
-                    {% else %}
-                        <strong>{{ 'monitoring.health.error'|trans({}, 'monitoring') }}</strong>
-                    {% endif %}
-                </h2>
-                <p class="mb-0">
-                    {{ 'monitoring.health.last_checked'|trans({}, 'monitoring') }}: {{ 'now'|date('Y-m-d H:i:s') }}
-                </p>
-            </div>
-        </div>
-    </div>
+    {% set healthVariant = overall_status == 'healthy' ? 'success' : (overall_status == 'warning' ? 'warning' : 'danger') %}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: healthVariant, class: 'mb-4' } } %}
+        {% block alert_body %}
+            <h2 class="mb-1">
+                {{ 'monitoring.health.system_status'|trans({}, 'monitoring') }}:
+                {% if overall_status == 'healthy' %}
+                    <strong>{{ 'monitoring.health.healthy'|trans({}, 'monitoring') }}</strong>
+                {% elseif overall_status == 'warning' %}
+                    <strong>{{ 'monitoring.health.warning'|trans({}, 'monitoring') }}</strong>
+                {% else %}
+                    <strong>{{ 'monitoring.health.error'|trans({}, 'monitoring') }}</strong>
+                {% endif %}
+            </h2>
+            <p class="mb-0">
+                {{ 'monitoring.health.last_checked'|trans({}, 'monitoring') }}: {{ 'now'|date('Y-m-d H:i:s') }}
+            </p>
+        {% endblock %}
+    {% endembed %}
 
     {% import '_macros/cards.html.twig' as cards %}
     <div class="row">
@@ -132,15 +131,7 @@
                             {{ 'monitoring.schema.preview_open'|trans({}, 'monitoring') }}
                         </summary>
 
-                        <div class="alert alert-danger mt-2 mb-2" role="alert">
-                            <h3 class="h6 mb-1">
-                                <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                                {{ 'monitoring.schema.preview_warning_title'|trans({}, 'monitoring') }}
-                            </h3>
-                            <p class="mb-0 small">
-                                {{ 'monitoring.schema.preview_warning_body'|trans({}, 'monitoring') }}
-                            </p>
-                        </div>
+                        {{ _fa_alert.render({ variant: 'danger', icon: 'bi-exclamation-triangle-fill', class: 'mt-2 mb-2', body: '<h3 class="h6 mb-1"> <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ \'monitoring.schema.preview_warning_title\'|trans({}, \'monitoring\') }} </h3> <p class="mb-0 small"> {{ \'monitoring.schema.preview_warning_body\'|trans({}, \'monitoring\') }} </p>' }) }}
 
                         <pre class="small mt-2 mb-2" style="max-height:220px;overflow:auto" aria-label="{{ 'monitoring.schema.preview_sql_label'|trans({}, 'monitoring') }}"><code>{% for sql in schema_detail.pending_sql %}{{ sql }};
 {% endfor %}</code></pre>

@@ -1,4 +1,5 @@
 {% extends 'setup/_layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% set active_step = 'email' %}
 
 {% block title %}{{ 'setup.email.title'|trans({}, 'setup') }} - Deployment Wizard{% endblock %}
@@ -17,10 +18,8 @@
             {# Flash Messages #}
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                        {{ message|raw }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'setup.common.close'|trans({}, 'setup') }}"></button>
-                    </div>
+                    {% set faVariant = label in ['danger','error'] ? 'danger' : (label == 'success' ? 'success' : (label == 'warning' ? 'warning' : 'info')) %}
+                    {{ _fa_alert.render({ variant: faVariant, dismissible: true, body: message }) }}
                 {% endfor %}
             {% endfor %}
 
@@ -36,11 +35,7 @@
                 {% endblock %}
                 {% block card_body %}
                     <div class="p-4">
-                        <div class="alert alert-info mb-4">
-                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                            <strong>{{ 'setup.email.optional.title'|trans({}, 'setup') }}</strong>
-                            <p class="mb-0">{{ 'setup.email.optional.message'|trans({}, 'setup') }}</p>
-                        </div>
+                        {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'mb-4', body: '<strong>{{ \'setup.email.optional.title\'|trans({}, \'setup\') }}</strong> <p class="mb-0">{{ \'setup.email.optional.message\'|trans({}, \'setup\') }}</p>' }) }}
 
                         {# Email Configuration Form #}
                         {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
