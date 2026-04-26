@@ -41,9 +41,9 @@
                         {# Docker Auto-Generated Password Display #}
                         {% if is_docker_standalone and docker_password %}
                             <div class="fa-alert fa-alert--success border-success" role="alert">
-                                <i class="bi bi-key fa-alert__icon" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--permission fa-alert__icon" aria-hidden="true"></i>
                                 <div class="fa-alert__body"><p class="h5 mb-2">
-                                    <i class="bi bi-key me-2" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--permission me-2" aria-hidden="true"></i>
                                     {{ 'setup.database.docker_password_title'|trans({}, 'setup') }}
                                 </p>
                                 <p class="mb-2">{{ 'setup.database.docker_password_info'|trans({}, 'setup') }}</p>

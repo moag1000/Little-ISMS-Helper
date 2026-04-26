@@ -221,7 +221,7 @@
             'description': (dashboard.statistics.total - dashboard.statistics.applicable) ~ ' requirements need applicability review',
             'action_url': path('app_compliance_requirement_index') ~ '?framework=' ~ framework.id,
             'action_text': 'Review Requirements',
-            'icon': '<i class="fa-icon fa-icon--ui-edit-square text-primary" aria-hidden="true"></i>',
+            'icon': '<i class="fa-icon fa-icon--ui-edit text-primary" aria-hidden="true"></i>',
             'priority': 'medium'
         } %}
     {% elseif dashboard.gaps.total > 0 %}

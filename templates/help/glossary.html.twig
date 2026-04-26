@@ -2643,7 +2643,7 @@
 
     {# Tip Box #}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'bi-check-circle-fill', class: 'mb-4' } } %}
-        {% block alert_body %}<div class="d-flex align-items-start"> <i class="fa-icon fa-icon--ui-check-circle-fill me-3 fs-4" aria-hidden="true"></i> <div> <strong>{{ 'help.glossary.tip_title'|trans({}, 'help') }}</strong> <p class="mb-0 mt-1">{{ 'help.glossary.tip_text'|trans({}, 'help') }}</p> </div> </div>{% endblock %}
+        {% block alert_body %}<div class="d-flex align-items-start"> <i class="fa-icon fa-icon--ui-check me-3 fs-4" aria-hidden="true"></i> <div> <strong>{{ 'help.glossary.tip_title'|trans({}, 'help') }}</strong> <p class="mb-0 mt-1">{{ 'help.glossary.tip_text'|trans({}, 'help') }}</p> </div> </div>{% endblock %}
     {% endembed %}
 </div>
 {% endblock %}

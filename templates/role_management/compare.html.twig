@@ -101,7 +101,7 @@
                                     {% set has_permission = data.roles[role.id] ?? false %}
                                     <td class="text-center {{ has_permission ? 'table-success' : 'table-light' }}">
                                         {% if has_permission %}
-                                            <i class="fa-icon fa-icon--ui-check-circle-fill text-success fs-4" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--ui-check text-success fs-4" aria-hidden="true"></i>
                                         {% else %}
                                             <i class="fa-icon fa-icon--status-critical fs-4" aria-hidden="true"></i>
                                         {% endif %}
@@ -120,7 +120,7 @@
                 <h4>{{ 'role.compare.legend_title'|trans }}</h4>
                 <div class="d-flex gap-4">
                     <div>
-                        <i class="fa-icon fa-icon--ui-check-circle-fill text-success" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-check text-success" aria-hidden="true"></i>
                         {{ 'role.compare.has_permission'|trans }}
                     </div>
                     <div>

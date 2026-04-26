@@ -109,7 +109,7 @@
                 {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
                     {% block card_body %}
                         <div class="h5">
-                            <i class="fa-icon fa-icon--ui-check-circle text-info" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-check text-info" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.quality.title'|trans({}, 'compliance') }}
                             {% if unreviewed_count > 0 %}
                                 <span class="badge text-bg-warning ms-1">{{ unreviewed_count }}</span>
@@ -128,7 +128,7 @@
                 {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
                     {% block card_body %}
                         <div class="h5">
-                            <i class="fa-icon fa-icon--util-arrow-left-right text-secondary" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--util-arrow-right text-secondary" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.transitive.title'|trans({}, 'compliance') }}
                         </div>
                         <p class="small text-body mb-0">
@@ -193,7 +193,7 @@
                 {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
                     {% block card_body %}
                         <div class="h5">
-                            <i class="fa-icon fa-icon--ui-person-check text-warning" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-person text-warning" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.seed_review.title'|trans({}, 'compliance') }}
                         </div>
                         <p class="small text-body mb-0">

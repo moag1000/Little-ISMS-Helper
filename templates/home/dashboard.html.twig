@@ -359,7 +359,7 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header">
                     <h3 class="widget-title">
-                        <i class="fa-icon fa-icon--ui-person-check" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i>
                         {{ 'dashboard.my_tasks.title'|trans({}, 'dashboard') }}
                     </h3>
                     {% if my_tasks|default([])|length > 0 %}
@@ -434,7 +434,7 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header bg-warning-subtle">
                     <h3 class="widget-title text-warning">
-                        <i class="fa-icon fa-icon--ui-calendar-x" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
                         {{ 'dashboard.overdue_reviews.title'|trans({}, 'dashboard') }}
                     </h3>
                     {% include '_components/_badge.html.twig' with { variant: 'warning', content: overdue_reviews|length } %}
@@ -544,7 +544,7 @@
                                         {{ plan.title|length > 35 ? plan.title|slice(0, 35) ~ '...' : plan.title }}
                                     </a>
                                     <div class="small text-muted">
-                                        <i class="fa-icon fa-icon--ui-calendar-x" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
                                         {{ 'dashboard.overdue_treatment_plans.due_date'|trans({}, 'dashboard') }}: {{ plan.targetCompletionDate|date('d.m.Y') }}
                                         {% set daysOverdue = date().diff(plan.targetCompletionDate).days %}
                                         <span class="text-danger">({{ daysOverdue }} {{ 'dashboard.overdue_treatment_plans.days_overdue'|trans({}, 'dashboard') }})</span>

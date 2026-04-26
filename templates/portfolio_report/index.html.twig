@@ -17,7 +17,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
         <div>
             <h1 class="h2 mb-1">
-                <i class="fa-icon fa-icon--nav-grid-fill text-primary" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-grid text-primary" aria-hidden="true"></i>
                 {{ 'portfolio_report.title'|trans({}, 'portfolio_report') }}
             </h1>
             <p class="text-muted mb-0">
@@ -29,7 +29,7 @@
                 <strong>{{ stichtag|date('Y-m-d') }}</strong>
                 {% if vorperiode %}
                     <span class="mx-2">&middot;</span>
-                    <i class="fa-icon fa-icon--util-arrow-left-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
                     {{ 'portfolio_report.header.vorperiode'|trans({}, 'portfolio_report') }}:
                     <strong>{{ vorperiode|date('Y-m-d') }}</strong>
                 {% endif %}
