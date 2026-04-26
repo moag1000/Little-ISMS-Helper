@@ -357,7 +357,7 @@
                                 content: initiative.progress ~ '%'
                             } %}
                         </div>
-                        <div class="progress mb-3" style="height: 6px;">
+                        <div class="progress progress-h-6 mb-3">
                             <div class="progress-bar bg-{% if initiative.status == 'on_track' %}success{% elseif initiative.status == 'at_risk' %}warning{% else %}danger{% endif %}"
                                  style="width: {{ initiative.progress }}%"></div>
                         </div>
