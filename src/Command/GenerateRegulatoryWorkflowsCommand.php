@@ -39,7 +39,7 @@ class GenerateRegulatoryWorkflowsCommand extends Command
     {
         $this
             ->addOption('overwrite', null, InputOption::VALUE_NONE, 'Overwrite existing workflow definitions')
-            ->addOption('workflow', null, InputOption::VALUE_REQUIRED, 'Generate only specific workflow (data-breach, incident-high, incident-low, risk-treatment, dpia)')
+            ->addOption('workflow', null, InputOption::VALUE_REQUIRED, 'Generate only specific workflow (data-breach, incident-high, incident-low, risk-treatment, dpia, dsr, capa, change-request, management-review, control-verification, supplier-assessment, training-verification, bc-plan-activation, document-review, incident-post-mortem)')
             ->setHelp(<<<'HELP'
 This command generates regulatory-compliant workflow definitions based on:
 
@@ -144,6 +144,19 @@ HELP
             'incident-low' => $this->getIncidentLowSeverityWorkflow(),
             'risk-treatment' => $this->getRiskTreatmentWorkflow(),
             'dpia' => $this->getDpiaWorkflow(),
+            // Phase 10.1 — CRITICAL
+            'dsr' => $this->getDsrWorkflow(),
+            'capa' => $this->getCapaWorkflow(),
+            'change-request' => $this->getChangeRequestWorkflow(),
+            'management-review' => $this->getManagementReviewWorkflow(),
+            // Phase 10.2 — HIGH
+            'control-verification' => $this->getControlVerificationWorkflow(),
+            'supplier-assessment' => $this->getSupplierAssessmentWorkflow(),
+            // Phase 10.3 — MEDIUM
+            'training-verification' => $this->getTrainingVerificationWorkflow(),
+            'bc-plan-activation' => $this->getBcPlanActivationWorkflow(),
+            'document-review' => $this->getDocumentReviewWorkflow(),
+            'incident-post-mortem' => $this->getIncidentPostMortemWorkflow(),
         ];
     }
 
@@ -531,6 +544,635 @@ HELP
     /**
      * Create workflow entity from definition
      */
+    /**
+     * GDPR Art. 12(3) — Data Subject Request (30-day SLA)
+     */
+    private function getDsrWorkflow(): array
+    {
+        return [
+            'name' => 'Data Subject Request Processing (GDPR Art. 12-22)',
+            'description' => 'Workflow for processing data subject rights requests with 30-day response deadline',
+            'entityType' => 'DataSubjectRequest',
+            'isActive' => true,
+            'metadata' => [
+                'slaEnforcement' => true,
+                'slaDeadlineHours' => 720, // 30 days
+                'escalationThresholdHours' => 600, // Escalate 5 days before deadline
+                'escalationRole' => 'ROLE_DPO',
+            ],
+            'steps' => [
+                [
+                    'name' => 'Identity Verification',
+                    'description' => 'Verify the identity of the requesting data subject (GDPR Art. 12(6))',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_DPO',
+                    'daysToComplete' => 3,
+                    'sortOrder' => 1,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'DataSubjectRequest',
+                        'fields' => ['identityVerified', 'identityVerificationMethod'],
+                    ],
+                ],
+                [
+                    'name' => 'Request Processing',
+                    'description' => 'Process the data subject request: gather data, prepare response',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_USER',
+                    'daysToComplete' => 14,
+                    'sortOrder' => 2,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'DataSubjectRequest',
+                        'fields' => ['responseDescription'],
+                    ],
+                ],
+                [
+                    'name' => 'DPO Review & Approval',
+                    'description' => 'DPO reviews the prepared response for completeness and legal compliance',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_DPO',
+                    'daysToComplete' => 5,
+                    'sortOrder' => 3,
+                    'isRequired' => true,
+                ],
+                [
+                    'name' => 'Response Delivery',
+                    'description' => 'Send the response to the data subject and document delivery',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_DPO',
+                    'daysToComplete' => 3,
+                    'sortOrder' => 4,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'DataSubjectRequest',
+                        'fields' => ['completedAt'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * ISO 27001 Clause 10.1 — Corrective Action (CAPA) Lifecycle
+     */
+    private function getCapaWorkflow(): array
+    {
+        return [
+            'name' => 'Corrective Action Lifecycle (ISO 27001 Cl. 10.1)',
+            'description' => 'CAPA workflow: from finding through root cause analysis to verified effectiveness',
+            'entityType' => 'CorrectiveAction',
+            'isActive' => true,
+            'metadata' => [
+                'slaEnforcement' => false,
+            ],
+            'steps' => [
+                [
+                    'name' => 'Root Cause Analysis',
+                    'description' => 'Analyze the root cause of the nonconformity',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_USER',
+                    'daysToComplete' => 14,
+                    'sortOrder' => 1,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'CorrectiveAction',
+                        'fields' => ['rootCauseAnalysis'],
+                    ],
+                ],
+                [
+                    'name' => 'Action Plan Approval',
+                    'description' => 'CISO approves the corrective action plan and timeline',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_CISO',
+                    'daysToComplete' => 7,
+                    'sortOrder' => 2,
+                    'isRequired' => true,
+                ],
+                [
+                    'name' => 'Implementation',
+                    'description' => 'Execute the corrective actions as planned',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_USER',
+                    'daysToComplete' => 30,
+                    'sortOrder' => 3,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'CorrectiveAction',
+                        'fields' => ['actualCompletionDate'],
+                    ],
+                ],
+                [
+                    'name' => 'Effectiveness Verification',
+                    'description' => 'Internal auditor verifies the corrective action is effective (ISO 27001 Cl. 10.1(f)). If ineffective, loops back to Implementation.',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_AUDITOR',
+                    'daysToComplete' => 14,
+                    'sortOrder' => 4,
+                    'isRequired' => true,
+                    'metadata' => [
+                        'rejectAction' => 'loop_back',
+                        'rejectTargetStep' => 3, // Back to Implementation
+                    ],
+                ],
+                [
+                    'name' => 'Closure',
+                    'description' => 'CISO closes the corrective action after verified effectiveness',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_CISO',
+                    'daysToComplete' => 3,
+                    'sortOrder' => 5,
+                    'isRequired' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * ISO 27001 A.8.32 / Cl. 6.3 — Change Request (CAB) Approval
+     */
+    private function getChangeRequestWorkflow(): array
+    {
+        return [
+            'name' => 'Change Request Approval (ISO 27001 A.8.32 / Cl. 6.3)',
+            'description' => 'Change Advisory Board workflow with security risk assessment',
+            'entityType' => 'ChangeRequest',
+            'isActive' => true,
+            'metadata' => [
+                'slaEnforcement' => false,
+            ],
+            'steps' => [
+                [
+                    'name' => 'Security Risk Assessment',
+                    'description' => 'CISO assesses the security impact of the proposed change',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_CISO',
+                    'daysToComplete' => 5,
+                    'sortOrder' => 1,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'ChangeRequest',
+                        'fields' => ['riskAssessment'],
+                    ],
+                ],
+                [
+                    'name' => 'CAB Review & Approval',
+                    'description' => 'Change Advisory Board reviews and decides on the change request. Reject loops back to Security Risk Assessment.',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_MANAGER',
+                    'daysToComplete' => 7,
+                    'sortOrder' => 2,
+                    'isRequired' => true,
+                    'metadata' => [
+                        'rejectAction' => 'loop_back',
+                        'rejectTargetStep' => 1, // Back to Risk Assessment
+                    ],
+                ],
+                [
+                    'name' => 'Implementation',
+                    'description' => 'Approved change is implemented according to plan',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_USER',
+                    'daysToComplete' => 14,
+                    'sortOrder' => 3,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'ChangeRequest',
+                        'fields' => ['actualImplementationDate'],
+                    ],
+                ],
+                [
+                    'name' => 'Post-Implementation Verification',
+                    'description' => 'Verify change was implemented correctly and no side effects occurred',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_CISO',
+                    'daysToComplete' => 5,
+                    'sortOrder' => 4,
+                    'isRequired' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * ISO 27001 Clause 9.3 — Management Review
+     */
+    private function getManagementReviewWorkflow(): array
+    {
+        return [
+            'name' => 'Management Review (ISO 27001 Cl. 9.3)',
+            'description' => 'Structured management review workflow with input preparation and action tracking',
+            'entityType' => 'ManagementReview',
+            'isActive' => true,
+            'metadata' => [
+                'slaEnforcement' => false,
+            ],
+            'steps' => [
+                [
+                    'name' => 'Input Preparation',
+                    'description' => 'ISB/CISO collects review inputs: audit results, KPIs, incident trends, risk status, stakeholder feedback (Cl. 9.3.2)',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_CISO',
+                    'daysToComplete' => 14,
+                    'sortOrder' => 1,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'ManagementReview',
+                        'fields' => ['auditResults', 'changesRelevantToISMS'],
+                    ],
+                ],
+                [
+                    'name' => 'Review Execution',
+                    'description' => 'Management conducts the review meeting and documents decisions (Cl. 9.3.3)',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_ADMIN',
+                    'daysToComplete' => 7,
+                    'sortOrder' => 2,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'ManagementReview',
+                        'fields' => ['decisions', 'reviewDate'],
+                    ],
+                ],
+                [
+                    'name' => 'Action Planning',
+                    'description' => 'Document improvement actions, assign owners and deadlines',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_CISO',
+                    'daysToComplete' => 7,
+                    'sortOrder' => 3,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'ManagementReview',
+                        'fields' => ['actionItems'],
+                    ],
+                ],
+                [
+                    'name' => 'Follow-up Verification',
+                    'description' => 'Verify action items are implemented as planned',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_CISO',
+                    'daysToComplete' => 30,
+                    'sortOrder' => 4,
+                    'isRequired' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * ISO 27001 Clause 8 — Control Implementation Verification
+     */
+    private function getControlVerificationWorkflow(): array
+    {
+        return [
+            'name' => 'Control Implementation Verification (ISO 27001 Cl. 8)',
+            'description' => 'Multi-tier verification when a control status changes to implemented',
+            'entityType' => 'Control',
+            'isActive' => true,
+            'metadata' => [
+                'slaEnforcement' => false,
+            ],
+            'steps' => [
+                [
+                    'name' => 'Risk Owner Certification',
+                    'description' => 'Risk owner confirms the control is implemented as designed',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_USER',
+                    'daysToComplete' => 7,
+                    'sortOrder' => 1,
+                    'isRequired' => true,
+                ],
+                [
+                    'name' => 'CISO Technical Validation',
+                    'description' => 'CISO validates the technical implementation and evidence',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_CISO',
+                    'daysToComplete' => 7,
+                    'sortOrder' => 2,
+                    'isRequired' => true,
+                ],
+                [
+                    'name' => 'Auditor Acceptance',
+                    'description' => 'Internal auditor accepts the control as verified (updates SoA). Reject loops back to Risk Owner for re-certification.',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_AUDITOR',
+                    'daysToComplete' => 5,
+                    'sortOrder' => 3,
+                    'isRequired' => true,
+                    'metadata' => [
+                        'rejectAction' => 'loop_back',
+                        'rejectTargetStep' => 1, // Back to Risk Owner
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * ISO 27001 A.5.19-22 — Supplier Security Assessment
+     */
+    private function getSupplierAssessmentWorkflow(): array
+    {
+        return [
+            'name' => 'Supplier Security Assessment (ISO 27001 A.5.19-22 / GDPR Art. 28 / DORA Art. 28-30)',
+            'description' => 'Comprehensive supplier security assessment with DPO review for data processors, DORA assessment for ICT providers, and contract verification',
+            'entityType' => 'Supplier',
+            'isActive' => true,
+            'metadata' => [
+                'slaEnforcement' => false,
+                'rejectLoopBack' => true, // Rejection at any step loops back to Step 1
+            ],
+            'steps' => [
+                [
+                    'name' => 'Initial Security Assessment',
+                    'description' => 'Complete security questionnaire, classify criticality (critical/high/medium/low), and perform initial risk assessment',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_USER',
+                    'daysToComplete' => 14,
+                    'sortOrder' => 1,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'Supplier',
+                        'fields' => ['criticality', 'lastSecurityAssessment'],
+                    ],
+                ],
+                [
+                    'name' => 'DPO Privacy Review (GDPR Art. 28)',
+                    'description' => 'DPO reviews if supplier processes personal data: verify DPA/AVV exists, check data transfer safeguards, assess sub-processor chain',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_DPO',
+                    'daysToComplete' => 7,
+                    'sortOrder' => 2,
+                    'isRequired' => false, // Only required if supplier is a data processor
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'Supplier',
+                        'fields' => ['gdprAvContractSigned'],
+                        'condition' => 'gdprProcessorStatus != none',
+                    ],
+                ],
+                [
+                    'name' => 'Contract & SLA Verification',
+                    'description' => 'Verify security requirements in contract: SLAs, audit rights, incident notification, exit strategy, liability clauses',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_CISO',
+                    'daysToComplete' => 7,
+                    'sortOrder' => 3,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'Supplier',
+                        'fields' => ['contractStartDate'],
+                    ],
+                ],
+                [
+                    'name' => 'DORA ICT Assessment (Financial Sector)',
+                    'description' => 'For ICT third-party providers: assess substitutability, concentration risk, exit strategy (DORA Art. 28-30)',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_CISO',
+                    'daysToComplete' => 7,
+                    'sortOrder' => 4,
+                    'isRequired' => false, // Only for ICT providers in financial sector
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'Supplier',
+                        'fields' => ['ictCriticality', 'substitutability', 'hasExitStrategy'],
+                        'condition' => 'ictCriticality != null',
+                    ],
+                ],
+                [
+                    'name' => 'Management Onboarding Approval',
+                    'description' => 'Final management decision based on all assessments. Reject loops back to Initial Assessment for rework.',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_MANAGER',
+                    'daysToComplete' => 5,
+                    'sortOrder' => 5,
+                    'isRequired' => true,
+                    'metadata' => [
+                        'rejectAction' => 'loop_back',
+                        'rejectTargetStep' => 1, // Loop back to Initial Assessment
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * ISO 27001 A.6.3 — Training Completion Verification
+     */
+    private function getTrainingVerificationWorkflow(): array
+    {
+        return [
+            'name' => 'Training Completion Verification (ISO 27001 A.6.3)',
+            'description' => 'Verify training completion with manager sign-off',
+            'entityType' => 'Training',
+            'isActive' => true,
+            'metadata' => ['slaEnforcement' => false],
+            'steps' => [
+                [
+                    'name' => 'Training Completion',
+                    'description' => 'Participant completes the assigned training',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_USER',
+                    'daysToComplete' => 30,
+                    'sortOrder' => 1,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'Training',
+                        'fields' => ['completionDate'],
+                    ],
+                ],
+                [
+                    'name' => 'Manager Verification',
+                    'description' => 'Manager confirms training was completed satisfactorily',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_MANAGER',
+                    'daysToComplete' => 7,
+                    'sortOrder' => 2,
+                    'isRequired' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * ISO 22301 — BC Plan Activation & Deactivation
+     */
+    private function getBcPlanActivationWorkflow(): array
+    {
+        return [
+            'name' => 'BC Plan Activation (ISO 22301)',
+            'description' => 'Crisis declaration triggers plan activation, execution tracking, and post-incident review',
+            'entityType' => 'BusinessContinuityPlan',
+            'isActive' => true,
+            'metadata' => [
+                'slaEnforcement' => true,
+                'slaDeadlineHours' => 1, // Activation must happen within 1h of crisis
+                'escalationRole' => 'ROLE_ADMIN',
+            ],
+            'steps' => [
+                [
+                    'name' => 'Crisis Declaration',
+                    'description' => 'Crisis manager declares crisis and activates BC plan',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_MANAGER',
+                    'daysToComplete' => 0, // Immediate
+                    'sortOrder' => 1,
+                    'isRequired' => true,
+                ],
+                [
+                    'name' => 'Crisis Team Notification',
+                    'description' => 'All crisis team members are notified and confirm availability',
+                    'stepType' => 'notification',
+                    'approverRole' => 'ROLE_USER',
+                    'daysToComplete' => 0,
+                    'sortOrder' => 2,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'auto',
+                        'condition' => 'status = active',
+                    ],
+                ],
+                [
+                    'name' => 'Recovery Execution',
+                    'description' => 'Execute recovery procedures as documented in the BC plan',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_MANAGER',
+                    'daysToComplete' => 7,
+                    'sortOrder' => 3,
+                    'isRequired' => true,
+                ],
+                [
+                    'name' => 'Plan Deactivation',
+                    'description' => 'Crisis resolved — deactivate plan and return to normal operations',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_MANAGER',
+                    'daysToComplete' => 1,
+                    'sortOrder' => 4,
+                    'isRequired' => true,
+                ],
+                [
+                    'name' => 'Post-Incident Review',
+                    'description' => 'Conduct post-incident review: lessons learned, plan updates needed',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_CISO',
+                    'daysToComplete' => 14,
+                    'sortOrder' => 5,
+                    'isRequired' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * ISO 27001 Clause 7.5.3 — Document Review Cycle
+     */
+    private function getDocumentReviewWorkflow(): array
+    {
+        return [
+            'name' => 'Document Review Cycle (ISO 27001 Cl. 7.5.3)',
+            'description' => 'Periodic document review with revision and re-approval workflow',
+            'entityType' => 'Document',
+            'isActive' => true,
+            'metadata' => ['slaEnforcement' => false],
+            'steps' => [
+                [
+                    'name' => 'Review Required',
+                    'description' => 'Document owner reviews content for accuracy and currency',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_USER',
+                    'daysToComplete' => 14,
+                    'sortOrder' => 1,
+                    'isRequired' => true,
+                ],
+                [
+                    'name' => 'Revision Draft',
+                    'description' => 'If changes needed: document owner creates revision draft',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_USER',
+                    'daysToComplete' => 14,
+                    'sortOrder' => 2,
+                    'isRequired' => false,
+                ],
+                [
+                    'name' => 'Approval',
+                    'description' => 'CISO or document approver signs off on revised document',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_CISO',
+                    'daysToComplete' => 7,
+                    'sortOrder' => 3,
+                    'isRequired' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * ISO 27001 — Incident Post-Mortem & Lessons Learned
+     */
+    private function getIncidentPostMortemWorkflow(): array
+    {
+        return [
+            'name' => 'Incident Post-Mortem (ISO 27001)',
+            'description' => 'Structured post-incident review with lessons learned and improvement actions',
+            'entityType' => 'Incident',
+            'isActive' => false, // Opt-in — not auto-triggered
+            'metadata' => ['slaEnforcement' => false],
+            'steps' => [
+                [
+                    'name' => 'Schedule Post-Mortem',
+                    'description' => 'Schedule post-mortem review within 5 days after incident closure',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_CISO',
+                    'daysToComplete' => 5,
+                    'sortOrder' => 1,
+                    'isRequired' => true,
+                ],
+                [
+                    'name' => 'Conduct Review',
+                    'description' => 'Execute post-mortem: timeline, root cause, what went well, improvement areas',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_CISO',
+                    'daysToComplete' => 7,
+                    'sortOrder' => 2,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'Incident',
+                        'fields' => ['rootCause', 'lessonsLearned'],
+                    ],
+                ],
+                [
+                    'name' => 'Create Improvement Actions',
+                    'description' => 'Document corrective/preventive actions with owners and deadlines',
+                    'stepType' => 'approval',
+                    'approverRole' => 'ROLE_CISO',
+                    'daysToComplete' => 7,
+                    'sortOrder' => 3,
+                    'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'Incident',
+                        'fields' => ['correctiveActions', 'preventiveActions'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     private function createWorkflow(array $definition): Workflow
     {
         $workflow = new Workflow();
