@@ -24,9 +24,12 @@
     } %}
 
     {% if dpia.status == 'requires_revision' and dpia.rejectionReason %}
-        <div class="alert alert-warning">
-            <div class="fw-bold"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Revision Required</div>
-            <p class="mb-0">{{ dpia.rejectionReason }}</p>
+        <div class="fa-alert fa-alert--warning">
+            <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
+            <div class="fa-alert__body">
+                <div class="fw-bold">Revision Required</div>
+                <p class="mb-0">{{ dpia.rejectionReason }}</p>
+            </div>
         </div>
     {% endif %}
 

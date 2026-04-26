@@ -31,34 +31,34 @@
             </p>
         </div>
         <div>
-            <a href="{{ path('app_compliance_framework', {id: framework.id}) }}" class="btn btn-info">
+            <a href="{{ path('app_compliance_framework', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'compliance.framework.action.dashboard'|trans({}, 'compliance') }}
             </a>
             {% if is_granted('ROLE_MANAGER') %}
-                <a href="{{ path('app_compliance_framework_migrate', {id: framework.id}) }}" class="btn btn-outline-primary">
+                <a href="{{ path('app_compliance_framework_migrate', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                     <i class="bi bi-signpost-split" aria-hidden="true"></i>
                     {{ 'compliance.framework.migrate.title'|trans({}, 'compliance') }}
                 </a>
             {% endif %}
             {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('app_compliance_framework_edit', {id: framework.id}) }}" class="btn btn-warning">
+                <a href="{{ path('app_compliance_framework_edit', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--warning">
                     <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                 </a>
                 <form method="post" action="{{ path('app_compliance_framework_toggle', {id: framework.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ framework.id) }}">
-                    <button type="submit" class="btn btn-{{ framework.active ? 'secondary' : 'success' }}">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ framework.active ? 'ghost' : 'success' }}">
                         <i class="bi bi-{{ framework.active ? 'pause-circle' : 'play-circle' }}" aria-hidden="true"></i>
                         {{ framework.active ? 'common.deactivate'|trans({}, 'messages') : 'common.activate'|trans({}, 'messages') }}
                     </button>
                 </form>
                 <form method="post" action="{{ path('app_compliance_framework_duplicate', {id: framework.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('duplicate' ~ framework.id) }}">
-                    <button type="submit" class="btn btn-outline-secondary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
                         <i class="bi bi-copy" aria-hidden="true"></i> {{ 'common.duplicate'|trans({}, 'messages') }}
                     </button>
                 </form>
             {% endif %}
-            <a href="{{ path('app_compliance_framework_index') }}" class="btn btn-outline-secondary">
+            <a href="{{ path('app_compliance_framework_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
             </a>
         </div>
@@ -155,7 +155,7 @@
             {% embed '_components/_card.html.twig' with {
                 'title': 'compliance.framework.requirements_by_category',
                 'headerIcon': 'bi-list-check',
-                'actions': '<a href="' ~ path('app_compliance_requirement_index', {framework: framework.id}) ~ '" class="btn btn-sm btn-outline-primary"><i class="bi bi-list" aria-hidden="true"></i> ' ~ 'common.view_all'|trans({}, 'messages') ~ '</a>',
+                'actions': '<a href="' ~ path('app_compliance_requirement_index', {framework: framework.id}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"><i class="bi bi-list" aria-hidden="true"></i> ' ~ 'common.view_all'|trans({}, 'messages') ~ '</a>',
                 'class': 'mb-4'
             } %}
                 {% block card_body %}
@@ -203,7 +203,7 @@
                             <i class="bi bi-list-check fs-1 text-muted" aria-hidden="true"></i>
                             <p class="mt-2 text-muted">{{ 'compliance.framework.no_requirements'|trans({}, 'compliance') }}</p>
                             {% if is_granted('ROLE_ADMIN') %}
-                                <a href="{{ path('app_compliance_requirement_new', {framework: framework.id}) }}" class="btn btn-success">
+                                <a href="{{ path('app_compliance_requirement_new', {framework: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--success">
                                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.requirement.action.new'|trans({}, 'compliance') }}
                                 </a>
                             {% endif %}
@@ -267,13 +267,13 @@
             } %}
                 {% block card_body %}
                 <div class="d-grid gap-2">
-                    <a href="{{ path('app_compliance_requirement_new', {framework: framework.id}) }}" class="btn btn-outline-success">
+                    <a href="{{ path('app_compliance_requirement_new', {framework: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--success">
                         <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.requirement.action.new'|trans({}, 'compliance') }}
                     </a>
-                    <a href="{{ path('app_compliance_gaps', {id: framework.id}) }}" class="btn btn-outline-warning">
+                    <a href="{{ path('app_compliance_gaps', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--warning">
                         <i class="bi bi-search" aria-hidden="true"></i> {{ 'compliance.framework.action.gap_analysis'|trans({}, 'compliance') }}
                     </a>
-                    <a href="{{ path('app_compliance_assess', {id: framework.id}) }}" class="btn btn-outline-info">
+                    <a href="{{ path('app_compliance_assess', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'compliance.framework.action.assess'|trans({}, 'compliance') }}
                     </a>
                 </div>
