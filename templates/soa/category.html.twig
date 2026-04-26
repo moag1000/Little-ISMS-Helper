@@ -12,7 +12,7 @@
         <p class="text-muted">ISO/IEC 27001:2022 Annex A - {{ category }} Kontrollen</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">
+        <a href="{{ path('app_soa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'soa.action.back_to_overview'|trans({}, 'soa') }}
         </a>
     </div>
@@ -62,7 +62,7 @@
             {% if is_granted('ROLE_ADMIN') %}
                 <form method="post" action="{{ path('app_soa_bootstrap_annex_a') }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('bootstrap_annex_a') }}">
-                    <button type="submit" class="btn btn-primary btn-sm">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
                         <i class="bi bi-download me-1" aria-hidden="true"></i>
                         {{ 'soa.empty.load_button'|trans({}, 'soa') }}
                     </button>
@@ -142,10 +142,10 @@
                 {% endif %}
             </td>
             <td class="text-center">
-                <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-sm btn-outline-primary me-1" title="{{ 'soa.action.view_details'|trans({}, 'soa') }}">
+                <a href="{{ path('app_soa_show', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost me-1" title="{{ 'soa.action.view_details'|trans({}, 'soa') }}">
                     <i class="bi bi-eye" aria-hidden="true"></i> {{ 'soa.action.view_details'|trans({}, 'soa') }}
                 </a>
-                <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-sm btn-secondary" title="{{ 'soa.action.edit'|trans({}, 'soa') }}">
+                <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" title="{{ 'soa.action.edit'|trans({}, 'soa') }}">
                     <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'soa.action.edit'|trans({}, 'soa') }}
                 </a>
             </td>

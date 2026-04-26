@@ -87,10 +87,10 @@
             </td>
             <td class="text-center">
                 <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'role_management.aria.actions_for_role'|trans({'%name%': role.name}, 'role_management') }}">
-                    <a href="{{ path('role_management_show', {id: role.id}) }}" class="btn btn-outline-primary">
+                    <a href="{{ path('role_management_show', {id: role.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         👁 {{ 'common.view'|trans({}, 'messages') }}
                     </a>
-                    <a href="{{ path('role_management_edit', {id: role.id}) }}" class="btn btn-outline-secondary">
+                    <a href="{{ path('role_management_edit', {id: role.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                     </a>
                 </div>

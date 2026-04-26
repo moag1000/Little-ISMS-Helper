@@ -168,7 +168,7 @@
                     </div>
 
                     {# Single Action Button #}
-                    <a href="{{ path('app_compliance_framework', {id: item.id}) }}" class="btn btn-block btn-primary">
+                    <a href="{{ path('app_compliance_framework', {id: item.id}) }}" class="fa-cyber-btn-block fa-cyber-btn--primary">
                         {{ 'compliance.button.open_dashboard'|trans({}, 'compliance') }} →
                     </a>
                 </div>
@@ -177,7 +177,7 @@
             <div class="col-span-all text-center p-xl">
                 <p class="text-muted">{{ 'compliance.no_frameworks_loaded'|trans({}, 'compliance') }}</p>
                 {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('admin_compliance_index') }}" class="btn btn-primary btn-lg">
+                <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                     <span class="icon"><i class="bi bi-gear" aria-hidden="true"></i></span> {{ 'compliance.add_frameworks'|trans({}, 'compliance') }}
                 </a>
                 {% else %}
@@ -219,7 +219,7 @@
                     </div>
                 </div>
                 <p class="text-center mt-md">
-                    <a href="{{ path('app_compliance_cross_framework') }}" class="btn btn-primary">
+                    <a href="{{ path('app_compliance_cross_framework') }}" class="fa-cyber-btn fa-cyber-btn--primary">
                         {{ 'compliance.button.explore_mappings'|trans({}, 'compliance') }} →
                     </a>
                 </p>

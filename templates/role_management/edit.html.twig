@@ -21,7 +21,7 @@
         <h1>{{ 'role_management.title.edit'|trans({}, 'role_management')}}: {{ role.name }}</h1>
     </div>
     <div class="button-group">
-        <a href="{{ path('role_management_show', {id: role.id}) }}" class="btn btn-secondary">
+        <a href="{{ path('role_management_show', {id: role.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
@@ -51,10 +51,10 @@
             } %}
 
             <div class="d-flex gap-2 mt-4">
-                <button type="submit" class="btn btn-success">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
                     <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
                 </button>
-                <a href="{{ path('role_management_show', {id: role.id}) }}" class="btn btn-secondary">
+                <a href="{{ path('role_management_show', {id: role.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                     <i class="bi bi-x-lg" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                 </a>
             </div>

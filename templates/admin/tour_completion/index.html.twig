@@ -44,7 +44,7 @@
             {% endembed %}
         </div>
         <div class="col-md-4 d-flex align-items-end">
-            <a href="{{ path('admin_tour_completion_export') }}" class="btn btn-outline-primary btn-sm w-100">
+            <a href="{{ path('admin_tour_completion_export') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
                 <i class="bi bi-download" aria-hidden="true"></i>
                 {{ 'admin.tour_completion.export_csv'|trans({}, 'admin') }}
             </a>
@@ -81,7 +81,7 @@
                     </div>
                 </div>
                 <div class="col-md-1">
-                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">
                         <i class="fa-icon fa-icon--filter" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -139,7 +139,7 @@
                                               class="d-inline"
                                               onsubmit="return confirm('{{ 'admin.tour_completion.confirm_reset'|trans({'%user%': row.user.email}, 'admin')|e('js') }}');">
                                             <input type="hidden" name="_token" value="{{ csrf_token('admin_tour_reset_' ~ row.user.id) }}">
-                                            <button type="submit" class="btn btn-sm btn-outline-secondary"
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                                                     title="{{ 'admin.tour_completion.reset_all'|trans({}, 'admin') }}">
                                                 <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
                                             </button>

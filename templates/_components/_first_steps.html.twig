@@ -66,7 +66,7 @@
             </span>
             <form method="post" action="{{ path('app_dashboard_dismiss_first_steps') }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('dismiss_first_steps') }}">
-                <button type="submit" class="btn btn-sm btn-outline-light border-0" title="{{ 'first_steps.dismiss'|trans({}, 'dashboard') }}" aria-label="{{ 'first_steps.dismiss'|trans({}, 'dashboard') }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost border-0" title="{{ 'first_steps.dismiss'|trans({}, 'dashboard') }}" aria-label="{{ 'first_steps.dismiss'|trans({}, 'dashboard') }}">
                     <i class="bi bi-x-lg" aria-hidden="true"></i>
                 </button>
             </form>

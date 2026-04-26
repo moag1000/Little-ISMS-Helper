@@ -11,7 +11,7 @@
         <p class="text-muted">{{ 'bcm.description.critical'|trans({}, 'bcm') }}</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_bcm_index') }}" class="btn btn-secondary">
+        <a href="{{ path('app_bcm_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
@@ -93,7 +93,7 @@
                         {% include '_components/_badge.html.twig' with { variant: 'info', content: process.supportingAssets|length } %}
                     </td>
                     <td class="text-center">
-                        <a href="{{ path('app_business_process_show', {id: process.id}) }}" class="btn btn-sm btn-outline-primary">
+                        <a href="{{ path('app_business_process_show', {id: process.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                             <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
                         </a>
                     </td>

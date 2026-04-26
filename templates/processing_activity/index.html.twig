@@ -88,27 +88,27 @@
             <h2 class="h5 mb-3"><i class="fa-icon fa-icon--filter" aria-hidden="true"></i> {{ 'processing_activity.filter.title'|trans({}, 'privacy')}}</h2>
             <div class="btn-group" role="group">
                 <a href="{{ path('app_processing_activity_index') }}"
-                   class="btn btn-outline-primary {{ current_filter == 'all' ? 'active' : '' }}">
+                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'all' ? 'active' : '' }}">
                     {{ 'processing_activity.filter.all'|trans({}, 'privacy')}} ({{ statistics.total }})
                 </a>
                 <a href="{{ path('app_processing_activity_index', {filter: 'active'}) }}"
-                   class="btn btn-outline-success {{ current_filter == 'active' ? 'active' : '' }}">
+                   class="fa-cyber-btn fa-cyber-btn--success {{ current_filter == 'active' ? : '' }}">
                     {{ 'processing_activity.filter.active'|trans({}, 'privacy')}} ({{ statistics.active }})
                 </a>
                 <a href="{{ path('app_processing_activity_index', {filter: 'incomplete'}) }}"
-                   class="btn btn-outline-warning {{ current_filter == 'incomplete' ? 'active' : '' }}">
+                   class="fa-cyber-btn fa-cyber-btn--warning {{ current_filter == 'incomplete' ? 'active' : '' }}">
                     {{ 'processing_activity.filter.incomplete'|trans({}, 'privacy')}}
                 </a>
                 <a href="{{ path('app_processing_activity_index', {filter: 'requiring_dpia'}) }}"
-                   class="btn btn-outline-danger {{ current_filter == 'requiring_dpia' ? 'active' : '' }}">
+                   class="fa-cyber-btn fa-cyber-btn--danger {{ current_filter == 'requiring_dpia' ? 'active' : '' }}">
                     {{ 'processing_activity.filter.requiring_dpia'|trans({}, 'privacy')}} ({{ statistics.missing_dpia }})
                 </a>
                 <a href="{{ path('app_processing_activity_index', {filter: 'special_categories'}) }}"
-                   class="btn btn-outline-info {{ current_filter == 'special_categories' ? 'active' : '' }}">
+                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'special_categories' ? 'active' : '' }}">
                     {{ 'processing_activity.filter.special_categories'|trans({}, 'privacy')}} ({{ statistics.special_categories }})
                 </a>
                 <a href="{{ path('app_processing_activity_index', {filter: 'third_country_transfers'}) }}"
-                   class="btn btn-outline-secondary {{ current_filter == 'third_country_transfers' ? 'active' : '' }}">
+                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'third_country_transfers' ? 'active' : '' }}">
                     {{ 'processing_activity.filter.third_country'|trans({}, 'privacy')}} ({{ statistics.third_country_transfers }})
                 </a>
             </div>
@@ -203,12 +203,12 @@
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
                                         <a href="{{ path('app_processing_activity_show', {id: pa.id}) }}"
-                                           class="btn btn-outline-primary"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost"
                                            title="{{ 'common.view'|trans({}, 'messages') }}">
                                             <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
                                         <a href="{{ path('app_processing_activity_edit', {id: pa.id}) }}"
-                                           class="btn btn-outline-secondary"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost"
                                            title="{{ 'common.edit'|trans({}, 'messages') }}">
                                             <i class="bi bi-pencil" aria-hidden="true"></i>
                                         </a>

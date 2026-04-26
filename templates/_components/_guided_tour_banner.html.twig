@@ -22,7 +22,7 @@
         </div>
         <div class="guided-tour-banner-actions">
             <button type="button"
-                    class="btn btn-sm btn-primary"
+                    class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary"
                     data-action="click->guided-tour#start"
                     data-guided-tour-role-param="{{ suggested_tour.id }}">
                 <i class="bi bi-play-circle" aria-hidden="true"></i>
@@ -32,7 +32,7 @@
                   action="{{ path('app_guided_tour_complete', {role: suggested_tour.id}) }}"
                   class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('guided_tour_complete') }}">
-                <button type="submit" class="btn btn-sm btn-outline-secondary"
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                         title="{{ 'guided_tour.banner.skip_forever_title'|trans({}, 'guided_tour') }}">
                     {{ 'guided_tour.banner.skip_forever'|trans({}, 'guided_tour') }}
                 </button>

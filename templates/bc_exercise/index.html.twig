@@ -104,8 +104,8 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}" class="btn btn-sm btn-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
-                            <a href="{{ path('app_bc_exercise_edit', {id: exercise.id}) }}" class="btn btn-sm btn-primary">{{ 'common.edit'|trans({}, 'messages') }}</a>
+                            <a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">{{ 'common.view'|trans({}, 'messages') }}</a>
+                            <a href="{{ path('app_bc_exercise_edit', {id: exercise.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">{{ 'common.edit'|trans({}, 'messages') }}</a>
                         </td>
                     </tr>
                     {% endfor %}

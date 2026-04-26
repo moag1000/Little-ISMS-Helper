@@ -177,7 +177,7 @@
                             {% if module.create_route is defined %}
                                 {# TODO Aurora Sprint E5+: module.color is fully dynamic (any Bootstrap color); map to fa-cyber-btn variant when Aurora has a dynamic-variant API #}
                                 <a href="{{ path(module.create_route) }}"
-                                   class="btn btn-sm btn-outline-{{ module.color }} position-absolute top-0 end-0 m-2 module-create-btn"
+                                   class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm position-absolute top-0 end-0 m-2 module-create-btn"
                                    title="{{ 'welcome.create_new'|trans({}, 'welcome') }}">
                                     <i class="bi bi-plus" aria-hidden="true"></i>
                                 </a>

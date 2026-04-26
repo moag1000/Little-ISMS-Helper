@@ -21,11 +21,11 @@
             <p class="text-muted mb-0">{{ 'compliance.mapping.wizard.description'|trans({}, 'compliance') }}</p>
         </div>
         <div class="d-flex gap-2">
-            <a href="{{ path('app_compliance_mapping_seeds_index') }}" class="btn btn-outline-primary btn-sm">
+            <a href="{{ path('app_compliance_mapping_seeds_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                 <i class="bi bi-lightning-charge" aria-hidden="true"></i>
                 {{ 'compliance.mapping.wizard.cta.seeds'|trans({}, 'compliance') }}
             </a>
-            <a href="{{ path('app_compliance_mapping_new') }}" class="btn btn-outline-secondary btn-sm">
+            <a href="{{ path('app_compliance_mapping_new') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                 <i class="bi bi-gear" aria-hidden="true"></i>
                 {{ 'compliance.mapping.wizard.cta.advanced'|trans({}, 'compliance') }}
             </a>
@@ -224,10 +224,10 @@
         {% endembed %}
 
         <div class="d-flex justify-content-between mb-4">
-            <a href="{{ path('app_compliance_mapping_index') }}" class="btn btn-outline-secondary">
+            <a href="{{ path('app_compliance_mapping_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 {{ 'common.cancel'|trans({}, 'messages') }}
             </a>
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                 {{ 'compliance.mapping.wizard.submit'|trans({}, 'compliance') }}
             </button>

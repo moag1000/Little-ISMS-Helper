@@ -76,10 +76,10 @@
                     </select>
                 </div>
                 <div class="col-12">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                     </button>
-                    <a href="{{ path('app_risk_appetite_index') }}" class="btn btn-secondary">
+                    <a href="{{ path('app_risk_appetite_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
                     </a>
                 </div>
@@ -158,13 +158,13 @@
                     <td class="text-center">
                         <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                             <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}"
-                               class="btn btn-outline-primary"
+                               class="fa-cyber-btn fa-cyber-btn--ghost"
                                title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                 <i class="bi bi-eye" aria-hidden="true"></i>
                             </a>
                             {% if is_granted('ROLE_ADMIN') %}
                             <a href="{{ path('app_risk_appetite_edit', {id: appetite.id}) }}"
-                               class="btn btn-outline-secondary"
+                               class="fa-cyber-btn fa-cyber-btn--ghost"
                                title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                 <i class="bi bi-pencil" aria-hidden="true"></i>
                             </a>

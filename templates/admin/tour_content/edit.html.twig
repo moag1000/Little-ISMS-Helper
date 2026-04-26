@@ -100,17 +100,17 @@
                   class="d-inline"
                   onsubmit="return confirm('{{ 'admin.tour_content.confirm_reset'|trans({}, 'admin')|e('js') }}');">
                 <input type="hidden" name="_token" value="{{ csrf_token('admin_tour_content_reset_' ~ tour_id) }}">
-                <button type="submit" class="btn btn-outline-danger btn-sm">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                     <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
                     {{ 'admin.tour_content.reset_tour'|trans({}, 'admin') }}
                 </button>
             </form>
 
             <div class="d-flex gap-2">
-                <a href="{{ path('admin_tour_content_index') }}" class="btn btn-outline-secondary">
+                <a href="{{ path('admin_tour_content_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                     {{ 'common.cancel'|trans({}, 'messages') }}
                 </a>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                     <i class="bi bi-save" aria-hidden="true"></i>
                     {{ 'admin.tour_content.save'|trans({}, 'admin') }}
                 </button>

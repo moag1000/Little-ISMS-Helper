@@ -31,7 +31,7 @@
                     <i class="bi {{ form.vars.data.id ? 'bi-pencil' : 'bi-plus-circle' }}" aria-hidden="true"></i>
                     {{ form.vars.data.id ? 'consent.edit'|trans({}, 'consent') : 'consent.new'|trans({}, 'consent') }}
                 </h1>
-                <a href="{{ form.vars.data.id ? path('app_consent_show', {id: form.vars.data.id}) : path('app_consent_index') }}" class="btn btn-outline-secondary" data-turbo-action="advance">
+                <a href="{{ form.vars.data.id ? path('app_consent_show', {id: form.vars.data.id}) : path('app_consent_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo-action="advance">
                     <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                 </a>
             </div>
@@ -180,11 +180,11 @@
                     {# Form Actions #}
                     <div class="d-flex justify-content-between align-items-center pt-3 border-top">
                         <a href="{{ form.vars.data.id ? path('app_consent_show', {id: form.vars.data.id}) : path('app_consent_index') }}"
-                           class="btn btn-outline-secondary"
+                           class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance">
                             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                         </a>
-                        <button type="submit" class="btn btn-primary btn-lg">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                             <i class="bi bi-save" aria-hidden="true"></i> {{ 'consent.action.save'|trans({}, 'consent') }}
                         </button>
                     </div>

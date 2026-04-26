@@ -4,7 +4,7 @@
       data-action="submit->ui-actions#confirm"
       data-ui-actions-message-param="{{ 'document.confirm.delete'|trans({}, 'document') }}">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ document.id) }}">
-    <button type="submit" class="btn btn-danger">
+    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
         <i class="bi bi-trash" aria-hidden="true"></i>
         {{ 'common.delete'|trans({}, 'messages') }}
     </button>

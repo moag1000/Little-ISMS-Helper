@@ -11,10 +11,10 @@
             <p class="text-muted">{{ audit.title }} - {{ audit.scopeDescription }}</p>
         </div>
         <div class="button-group">
-            <a href="{{ path('app_audit_index') }}" class="btn btn-secondary">
+            <a href="{{ path('app_audit_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 ← {{ 'common.back'|trans({}, 'messages') }}
             </a>
-            <button class="btn btn-success" id="saveProgress">
+            <button class="fa-cyber-btn fa-cyber-btn--success" id="saveProgress">
                 {{ 'checklist.save_progress'|trans({}, 'audit') }}
             </button>
         </div>

@@ -63,10 +63,10 @@
 
                     {# Form Actions #}
                     <div class="form-actions d-flex gap-2 justify-content-between">
-                        <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}" class="btn btn-secondary">
+                        <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                         </a>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
                         </button>
                     </div>

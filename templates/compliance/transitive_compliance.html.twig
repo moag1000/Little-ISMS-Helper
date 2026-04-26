@@ -11,19 +11,19 @@
         <p class="text-muted">{{ 'compliance.description.transitive'|trans({}, 'compliance') }}</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_compliance_index') }}" class="btn btn-outline-secondary">
+        <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
-        <button id="createAllMappingsBtn" class="btn btn-primary">
+        <button id="createAllMappingsBtn" class="fa-cyber-btn fa-cyber-btn--primary">
             🔗 {{ 'compliance.action.create_missing_mappings'|trans({}, 'compliance') }}
         </button>
-        <a href="{{ path('app_compliance_export_transitive_pdf') }}" class="btn btn-danger" data-turbo="false">
+        <a href="{{ path('app_compliance_export_transitive_pdf') }}" class="fa-cyber-btn fa-cyber-btn--danger" data-turbo="false">
             📄 {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
         </a>
-        <a href="{{ path('app_compliance_export_transitive_excel') }}" class="btn btn-success" data-turbo="false">
+        <a href="{{ path('app_compliance_export_transitive_excel') }}" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false">
             📊 {{ 'compliance.action.export_excel'|trans({}, 'compliance') }}
         </a>
-        <a href="{{ path('app_compliance_export_transitive') }}" class="btn btn-secondary" data-turbo="false">
+        <a href="{{ path('app_compliance_export_transitive') }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo="false">
             📄 {{ 'compliance.action.export_csv'|trans({}, 'compliance') }}
         </a>
     </div>
@@ -87,11 +87,11 @@
                         </p>
                     </div>
                     <div class="inline-flex-center-wrap">
-                        <button id="createMappingsBtn" class="btn btn-light btn-light-primary-flex">
+                        <button id="createMappingsBtn" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--ghost-primary-flex">
                             <span id="btnIcon"><i class="bi bi-link-45deg" aria-hidden="true"></i></span>
                             <span id="btnText">Mappings jetzt erstellen</span>
                         </button>
-                        <a href="{{ path('app_compliance_index') }}" class="btn btn-outline-light fw-600">
+                        <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fw-600">
                             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_overview'|trans({}, 'messages') }}
                         </a>
                     </div>

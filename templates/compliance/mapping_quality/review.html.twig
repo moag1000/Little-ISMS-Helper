@@ -11,10 +11,10 @@
             <p class="text-muted">{{ 'mapping_review.subtitle'|trans({}, 'compliance') }}</p>
         </div>
         <div class="button-group">
-            <a href="{{ path('app_mapping_quality_review_queue') }}" class="btn btn-secondary">
+            <a href="{{ path('app_mapping_quality_review_queue') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'mapping_review.action.back_to_queue'|trans({}, 'compliance') }}
             </a>
-            <button type="button" class="btn btn-info"
+            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost"
                     data-controller="ui-actions"
                     data-action="ui-actions#confirmAndFetch"
                     data-ui-actions-confirm-param="{{ 'mapping_review.action.reanalyze_confirm'|trans({}, 'compliance') }}"
@@ -288,7 +288,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <div class="form-label">&nbsp;</div>
-                            <button type="submit" class="btn btn-success btn-block">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn-block">
                                 <i class="bi bi-save" aria-hidden="true"></i> {{ 'mapping_review.action.save_review'|trans({}, 'compliance') }}
                             </button>
                         </div>

@@ -150,11 +150,11 @@
                             </td>
                             <td>
                                 {% if item.route is defined and item.route %}
-                                    <a href="{{ path(item.route) }}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ path(item.route) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                         <i class="bi bi-arrow-right me-1" aria-hidden="true"></i>{{ 'wizard.go_to_module'|trans({}, 'wizard') }}
                                     </a>
                                 {% elseif item.gap and item.gap.route is defined and item.gap.route %}
-                                    <a href="{{ path(item.gap.route) }}" class="btn btn-sm btn-outline-warning">
+                                    <a href="{{ path(item.gap.route) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--warning">
                                         <i class="bi bi-flag me-1" aria-hidden="true"></i>{{ 'wizard.fix_gap'|trans({}, 'wizard') }}
                                     </a>
                                 {% endif %}
@@ -200,7 +200,7 @@
                             </p>
                         {% endif %}
                         {% if gap.route is defined and gap.route %}
-                            <a href="{{ path(gap.route) }}" class="btn btn-sm btn-outline-primary">
+                            <a href="{{ path(gap.route) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                 <i class="bi bi-arrow-right me-1" aria-hidden="true"></i>{{ 'wizard.take_action'|trans({}, 'wizard') }}
                             </a>
                         {% endif %}
@@ -214,7 +214,7 @@
 
     {# Navigation #}
     <div class="d-flex justify-content-between mt-4">
-        <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}" class="btn btn-outline-secondary">
+        <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>{{ 'wizard.back_to_results'|trans({}, 'wizard') }}
         </a>
     </div>

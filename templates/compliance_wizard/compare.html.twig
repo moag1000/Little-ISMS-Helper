@@ -49,7 +49,7 @@
                 </div>
                 {% endfor %}
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         <i class="bi bi-arrow-repeat me-1" aria-hidden="true"></i>{{ 'wizard.update_comparison'|trans({}, 'wizard') }}
                     </button>
                 </div>
@@ -95,7 +95,7 @@
                 {% endblock %}
                 {% block card_footer %}
                     <div class="card-footer bg-transparent text-center">
-                        <a href="{{ path('app_compliance_wizard_assess', {wizard: key}) }}" class="btn btn-sm btn-outline-{{ available_wizards[key].color|default('secondary') }}">
+                        <a href="{{ path('app_compliance_wizard_assess', {wizard: key}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                             {{ 'wizard.view_details'|trans({}, 'wizard') }}
                         </a>
                     </div>
@@ -254,7 +254,7 @@
 
     {# Navigation #}
     <div class="d-flex justify-content-between mt-4">
-        <a href="{{ path('app_compliance_wizard_index') }}" class="btn btn-outline-secondary">
+        <a href="{{ path('app_compliance_wizard_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>{{ 'wizard.back_to_wizards'|trans({}, 'wizard') }}
         </a>
     </div>

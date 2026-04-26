@@ -242,17 +242,17 @@
                         <td class="w-text-right">
                             <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                 <a href="{{ path('app_audit_show', {id: audit.id}) }}"
-                                   class="btn btn-sm btn-outline-primary"
+                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                                    title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                 </a>
                                 <a href="{{ path('app_audit_edit', {id: audit.id}) }}"
-                                   class="btn btn-sm btn-outline-secondary"
+                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                                    title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                 </a>
                                 <a href="{{ path('app_audit_export_pdf', {id: audit.id}) }}"
-                                   class="btn btn-sm btn-outline-success"
+                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
                                    data-turbo="false"
                                    title="{{ 'common.export_pdf'|trans({}, 'messages') }}" aria-label="{{ 'common.export_pdf'|trans({}, 'messages') }}">
                                     <i class="bi bi-file-pdf" aria-hidden="true"></i>

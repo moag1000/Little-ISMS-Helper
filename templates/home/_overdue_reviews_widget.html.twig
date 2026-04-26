@@ -41,7 +41,7 @@
                 {% block alert_body %}
                     <strong>{{ 'dashboard.widget.overdue_reviews.breach_alert'|trans({count: urgent_breaches}, 'dashboard') }}</strong>
                     <div class="small">{{ 'dashboard.widget.overdue_reviews.breach_alert_desc'|trans({}, 'dashboard') }}</div>
-                    <a href="{{ path('app_data_breach_index') }}" class="btn btn-sm btn-danger mt-2">
+                    <a href="{{ path('app_data_breach_index') }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger mt-2">
                         <i class="bi bi-arrow-right" aria-hidden="true"></i>
                         {{ 'dashboard.widget.overdue_reviews.view_breaches'|trans({}, 'dashboard') }}
                     </a>

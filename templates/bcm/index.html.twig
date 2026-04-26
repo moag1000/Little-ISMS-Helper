@@ -125,10 +125,10 @@
                             {% include '_components/_badge.html.twig' with { variant: 'info', content: process.supportingAssets|length ~ ' Assets' } %}
                         </td>
                         <td class="actions-column">
-                            <a href="{{ path('app_business_process_show', {id: process.id}) }}" class="btn btn-sm btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}">
+                            <a href="{{ path('app_business_process_show', {id: process.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}">
                                 <i class="bi bi-eye" aria-hidden="true"></i>
                             </a>
-                            <a href="{{ path('app_business_process_edit', {id: process.id}) }}" class="btn btn-sm btn-outline-secondary" title="{{ 'common.edit'|trans({}, 'messages') }}">
+                            <a href="{{ path('app_business_process_edit', {id: process.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}">
                                 <i class="bi bi-pencil" aria-hidden="true"></i>
                             </a>
                         </td>

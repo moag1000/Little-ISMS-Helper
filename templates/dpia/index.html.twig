@@ -101,35 +101,35 @@
         {% block card_body %}
             <div class="btn-group flex-wrap" role="group">
                 <a href="{{ path('app_dpia_index') }}"
-                   class="btn btn-outline-primary {{ current_filter == 'all' ? 'active' : '' }}">
+                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'all' ? 'active' : '' }}">
                     {{ 'dpia.index.all'|trans({}, 'privacy') }} ({{ statistics.total }})
                 </a>
                 <a href="{{ path('app_dpia_index', {filter: 'draft'}) }}"
-                   class="btn btn-outline-secondary {{ current_filter == 'draft' ? 'active' : '' }}">
+                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'draft' ? 'active' : '' }}">
                     {{ 'dpia.index.draft'|trans({}, 'privacy') }} ({{ statistics.draft }})
                 </a>
                 <a href="{{ path('app_dpia_index', {filter: 'in_review'}) }}"
-                   class="btn btn-outline-info {{ current_filter == 'in_review' ? 'active' : '' }}">
+                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'in_review' ? 'active' : '' }}">
                     {{ 'dpia.index.in_review'|trans({}, 'privacy') }} ({{ statistics.in_review }})
                 </a>
                 <a href="{{ path('app_dpia_index', {filter: 'approved'}) }}"
-                   class="btn btn-outline-success {{ current_filter == 'approved' ? 'active' : '' }}">
+                   class="fa-cyber-btn fa-cyber-btn--success {{ current_filter == 'approved' ? 'active' : '' }}">
                     {{ 'dpia.index.approved_filter'|trans({}, 'privacy') }} ({{ statistics.approved }})
                 </a>
                 <a href="{{ path('app_dpia_index', {filter: 'high_risk'}) }}"
-                   class="btn btn-outline-danger {{ current_filter == 'high_risk' ? 'active' : '' }}">
+                   class="fa-cyber-btn fa-cyber-btn--danger {{ current_filter == 'high_risk' ? 'active' : '' }}">
                     {{ 'dpia.index.high_risk_filter'|trans({}, 'privacy') }} ({{ statistics.high_risk }})
                 </a>
                 <a href="{{ path('app_dpia_index', {filter: 'incomplete'}) }}"
-                   class="btn btn-outline-warning {{ current_filter == 'incomplete' ? 'active' : '' }}">
+                   class="fa-cyber-btn fa-cyber-btn--warning {{ current_filter == 'incomplete' ? 'active' : '' }}">
                     {{ 'dpia.index.incomplete'|trans({}, 'privacy') }}
                 </a>
                 <a href="{{ path('app_dpia_index', {filter: 'awaiting_dpo'}) }}"
-                   class="btn btn-outline-warning {{ current_filter == 'awaiting_dpo' ? 'active' : '' }}">
+                   class="fa-cyber-btn fa-cyber-btn--warning {{ current_filter == 'awaiting_dpo' ? 'active' : '' }}">
                     {{ 'dpia.index.awaiting_dpo'|trans({}, 'privacy') }} ({{ statistics.awaiting_dpo_consultation }})
                 </a>
                 <a href="{{ path('app_dpia_index', {filter: 'requires_supervisory'}) }}"
-                   class="btn btn-outline-warning {{ current_filter == 'requires_supervisory' ? 'active' : '' }}">
+                   class="fa-cyber-btn fa-cyber-btn--warning {{ current_filter == 'requires_supervisory' ? 'active' : '' }}">
                     {{ 'dpia.index.requires_supervisory'|trans({}, 'privacy') }} ({{ statistics.requires_supervisory_consultation }})
                 </a>
             </div>
@@ -224,19 +224,19 @@
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                         <a href="{{ path('app_dpia_show', {id: dpia.id}) }}"
-                                           class="btn btn-outline-primary"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost"
                                            title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                             <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
                                         {% if dpia.status in ['draft', 'requires_revision'] %}
                                             <a href="{{ path('app_dpia_edit', {id: dpia.id}) }}"
-                                               class="btn btn-outline-secondary"
+                                               class="fa-cyber-btn fa-cyber-btn--ghost"
                                                title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                                 <i class="bi bi-pencil" aria-hidden="true"></i>
                                             </a>
                                         {% endif %}
                                         <a href="{{ path('app_dpia_export_pdf', {id: dpia.id}) }}"
-                                           class="btn btn-outline-success"
+                                           class="fa-cyber-btn fa-cyber-btn--success"
                                            title="{{ 'common.export_pdf'|trans({}, 'messages') }}" aria-label="{{ 'common.export_pdf'|trans({}, 'messages') }}">
                                             <i class="bi bi-file-pdf" aria-hidden="true"></i>
                                         </a>

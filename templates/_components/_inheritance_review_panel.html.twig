@@ -68,19 +68,19 @@
         </div>
 
         <div class="d-flex gap-2 flex-wrap">
-            <button type="submit" class="btn btn-primary"
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary"
                     data-inheritance-review-target="confirmBtn"
                     disabled>
                 <i class="bi bi-check-lg" aria-hidden="true"></i>
                 {{ 'compliance_inheritance.panel.confirm'|trans({ '%value%': log.suggestedPercentage }, 'compliance_inheritance') }}
             </button>
-            <button type="button" class="btn btn-outline-warning"
+            <button type="button" class="fa-cyber-btn fa-cyber-btn--warning"
                     data-bs-toggle="modal"
                     data-bs-target="#override-modal-{{ log.id }}">
                 <i class="bi bi-pencil-square" aria-hidden="true"></i>
                 {{ 'compliance_inheritance.panel.override'|trans({}, 'compliance_inheritance') }}
             </button>
-            <button type="button" class="btn btn-outline-danger"
+            <button type="button" class="fa-cyber-btn fa-cyber-btn--danger"
                     data-bs-toggle="modal"
                     data-bs-target="#reject-modal-{{ log.id }}">
                 <i class="bi bi-x-lg" aria-hidden="true"></i>
@@ -121,10 +121,10 @@
                 <div class="form-text">{{ 'compliance_inheritance.panel.chars_hint'|trans({ '%min%': 20 }, 'compliance_inheritance') }}</div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
                     {{ 'common.cancel'|trans({}, 'messages') }}
                 </button>
-                <button type="submit" class="btn btn-danger">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                     {{ 'compliance_inheritance.reject.submit'|trans({}, 'compliance_inheritance') }}
                 </button>
             </div>
@@ -172,10 +172,10 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
                     {{ 'common.cancel'|trans({}, 'messages') }}
                 </button>
-                <button type="submit" class="btn btn-warning">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning">
                     {{ 'compliance_inheritance.override.submit'|trans({}, 'compliance_inheritance') }}
                 </button>
             </div>

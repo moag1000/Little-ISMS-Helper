@@ -10,10 +10,10 @@
         <p class="text-muted">{{ 'document.description.by_type'|trans({}, 'document') }}</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_document_index') }}" class="btn btn-secondary">
+        <a href="{{ path('app_document_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             ← {{ 'common.back'|trans({}, 'messages') }}
         </a>
-        <a href="{{ path('app_document_new') }}" class="btn btn-primary">
+        <a href="{{ path('app_document_new') }}" class="fa-cyber-btn fa-cyber-btn--primary">
             <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'document.action.create'|trans({}, 'document') }}
         </a>
     </div>
@@ -165,7 +165,7 @@
                 <a href="{{ path('app_document_show', {id: document.id}) }}" class="btn btn-sm mr-025">
                     👁 {{ 'common.view'|trans({}, 'messages') }}
                 </a>
-                <a href="{{ path('app_document_download', {id: document.id}) }}" class="btn btn-sm btn-secondary">
+                <a href="{{ path('app_document_download', {id: document.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                     📥 {{ 'common.download'|trans({}, 'messages') }}
                 </a>
             </td>

@@ -56,10 +56,10 @@
                     } %}
 
                     <div class="d-flex gap-2 pt-3 border-top">
-                        <button type="submit" class="btn btn-warning">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning">
                             <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
                         </button>
-                        <a href="{{ path('app_compliance_framework_show', {id: framework.id}) }}" class="btn btn-outline-secondary">
+                        <a href="{{ path('app_compliance_framework_show', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                         </a>
                     </div>
@@ -102,7 +102,7 @@
                           data-action="submit->ui-actions#confirm"
                           data-ui-actions-message-param="{{ 'compliance.framework.confirm.delete'|trans({}, 'compliance') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ framework.id) }}">
-                        <button type="submit" class="btn btn-outline-danger w-100">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
                             <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                         </button>
                     </form>

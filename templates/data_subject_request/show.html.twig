@@ -199,7 +199,7 @@
                 {% endblock %}
                 {% block card_body %}
                     {% if dsr.status not in ['completed', 'rejected'] %}
-                        <a href="{{ path('app_data_subject_request_edit', {id: dsr.id}) }}" class="btn btn-outline-primary w-100 mb-2">
+                        <a href="{{ path('app_data_subject_request_edit', {id: dsr.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost w-100 mb-2">
                             <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'dsr.action.edit'|trans({}, 'data_subject_request') }}
                         </a>
 
@@ -213,7 +213,7 @@
                                     placeholder="{{ 'dsr.form.placeholder.response_description'|trans({}, 'data_subject_request') }}"
                                     required></textarea>
                             </div>
-                            <button type="submit" class="btn btn-success w-100 mb-2">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--success w-100 mb-2">
                                 <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'dsr.action.complete'|trans({}, 'data_subject_request') }}
                             </button>
                         </form>
@@ -228,7 +228,7 @@
                                     placeholder="{{ 'dsr.form.placeholder.rejection_reason'|trans({}, 'data_subject_request') }}"
                                     required></textarea>
                             </div>
-                            <button type="submit" class="btn btn-danger w-100 mb-2">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100 mb-2">
                                 <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'dsr.action.reject'|trans({}, 'data_subject_request') }}
                             </button>
                         </form>
@@ -245,7 +245,7 @@
                                         placeholder="{{ 'dsr.form.placeholder.extension_reason'|trans({}, 'data_subject_request') }}"
                                         required></textarea>
                                 </div>
-                                <button type="submit" class="btn btn-warning w-100 mb-2">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning w-100 mb-2">
                                     <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i> {{ 'dsr.action.extend'|trans({}, 'data_subject_request') }}
                                 </button>
                             </form>
@@ -263,7 +263,7 @@
                         <form method="post" action="{{ path('app_data_subject_request_delete', {id: dsr.id}) }}"
                               onsubmit="return confirm('{{ 'dsr.confirm.delete'|trans({}, 'data_subject_request')|e('js') }}');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ dsr.id) }}">
-                            <button type="submit" class="btn btn-outline-danger w-100">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
                                 <i class="bi bi-trash" aria-hidden="true"></i> {{ 'dsr.action.delete'|trans({}, 'data_subject_request') }}
                             </button>
                         </form>

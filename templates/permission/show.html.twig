@@ -13,7 +13,7 @@
 
 {% block admin_content %}
     <div class="mb-3">
-        <a href="{{ path('permission_index') }}" class="btn btn-outline-secondary">
+        <a href="{{ path('permission_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
@@ -105,7 +105,7 @@
                                 </td>
                                 <td class="text-end">
                                     <a href="{{ path('role_management_show', {id: role.id}) }}"
-                                       class="btn btn-sm btn-outline-primary">
+                                       class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                         <i class="bi bi-eye" aria-hidden="true"></i> Details
                                     </a>
                                 </td>

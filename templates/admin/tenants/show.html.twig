@@ -40,10 +40,10 @@
             </div>
         </div>
         <div class="btn-group" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-            <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}" class="btn btn-primary">
+            <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
             </a>
-            <a href="{{ path('tenant_management_organisation_context', {id: tenant.id}) }}" class="btn btn-info">
+            <a href="{{ path('tenant_management_organisation_context', {id: tenant.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-building-gear" aria-hidden="true"></i> {{ 'tenant.organisation_context.title'|trans({}, 'tenant') }}
             </a>
             <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline"
@@ -66,7 +66,7 @@
                 {% block card_body %}
                     <div class="d-flex align-items-center">
                         <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
-                            <i class="fa-icon fa-icon--group fa-icon--primary fs-3" aria-hidden="true"></i>
+                            <i class="bi bi-people text-primary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
                             <div class="text-muted mb-1 small fw-semibold">{{ 'tenant.stats.total_users'|trans({}, 'tenant') }}</div>
@@ -138,7 +138,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
-                <i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ 'tenant.tabs.users'|trans({}, 'tenant') }}
+                <i class="bi bi-people" aria-hidden="true"></i> {{ 'tenant.tabs.users'|trans({}, 'tenant') }}
                 {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'ms-1', content: userCount } %}
             </button>
         </li>
@@ -280,7 +280,7 @@
                             {% endblock %}
                         {% endembed %}</div>
                         <div class="d-grid">
-                            <a href="{{ path('tenant_management_corporate_structure') }}" class="btn btn-sm btn-outline-primary">
+                            <a href="{{ path('tenant_management_corporate_structure') }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                 <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'corporate.action.view_structure'|trans({}, 'tenant') }}
                             </a>
                         </div>
@@ -306,7 +306,7 @@
                                 <i class="bi bi-building-gear" aria-hidden="true"></i> {{ 'corporate.inheritance.title'|trans({}, 'tenant') }}
                             </h3>
                             {% if tenant.isCorporateParent %}
-                                <button type="button" class="btn btn-sm btn-primary"
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary"
                                         data-action="click->tenant-governance#propagateContext">
                                     <i class="bi bi-arrow-down-circle" aria-hidden="true"></i> {{ 'corporate.inheritance.propagate'|trans({}, 'tenant') }}
                                 </button>
@@ -328,7 +328,7 @@
                                 <h3 class="mb-0 h6">
                                     <i class="bi bi-gear" aria-hidden="true"></i> {{ 'corporate.granular.title'|trans({}, 'tenant') }}
                                 </h3>
-                                <button type="button" class="btn btn-sm btn-success"
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
                                         data-action="click->tenant-governance#showAddRuleModal">
                                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'corporate.granular.add_rule'|trans({}, 'tenant') }}
                                 </button>
@@ -377,8 +377,8 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                                        <button type="button" class="btn btn-primary"
+                                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                                        <button type="button" class="fa-cyber-btn fa-cyber-btn--primary"
                                                 data-action="click->tenant-governance#saveGovernanceRule">{{ 'common.save'|trans({}, 'messages') }}</button>
                                     </div>
                                 </div>
@@ -422,11 +422,11 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <h2 class="card-title mb-0 h5">
-                                <i class="fa-icon fa-icon--group fa-icon--primary" aria-hidden="true"></i>
+                                <i class="bi bi-people text-primary" aria-hidden="true"></i>
                                 {{ 'tenant.section.users'|trans({}, 'tenant') }}
                                 {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'ms-2', content: userCount } %}
                             </h2>
-                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#manageUsersModal">
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary" data-bs-toggle="modal" data-bs-target="#manageUsersModal">
                                 <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans({}, 'tenant') }}
                             </button>
                         </div>
@@ -483,7 +483,7 @@
             {% block card_header %}
                 <div class="card-header bg-danger text-white">
                     <h2 class="card-title mb-0 h5">
-                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                         {{ 'tenant.section.danger_zone'|trans({}, 'tenant') }}
                     </h2>
                 </div>
@@ -499,7 +499,7 @@
                           data-action="submit->ui-actions#confirm"
                           data-ui-actions-message-param="{{ 'tenant.confirm.delete'|trans({}, 'tenant') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete_tenant_' ~ tenant.id) }}">
-                        <button type="submit" class="btn btn-danger">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                             <i class="bi bi-trash" aria-hidden="true"></i> {{ 'tenant.action.delete'|trans({}, 'tenant') }}
                         </button>
                     </form>
@@ -532,7 +532,7 @@
                                        name="user_email"
                                        placeholder="{{ 'tenant.users.enter_email'|trans({}, 'tenant') }}"
                                        required>
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.users.add'|trans({}, 'tenant') }}
                                 </button>
                             </div>
@@ -586,7 +586,7 @@
                                                       data-ui-actions-message-param="{{ 'tenant.users.confirm_remove'|trans({'%email%': user.email}, 'tenant') }}">
                                                     <input type="hidden" name="_token" value="{{ csrf_token('remove_user_' ~ tenant.id ~ '_' ~ user.id) }}">
                                                     <button type="submit"
-                                                            class="btn btn-sm btn-outline-danger"
+                                                            class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
                                                             aria-label="{{ 'common.deactivate'|trans({}, 'messages') }}">
                                                         <i class="bi bi-person-dash" aria-hidden="true"></i>
                                                     </button>
@@ -600,8 +600,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'common.close'|trans({}, 'messages') }}
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.close'|trans({}, 'messages') }}
                     </button>
                 </div>
             </div>
@@ -675,7 +675,7 @@
                             <div class="fa-alert fa-alert--info" role="alert">
                                 <strong>{{ 'tenant.isms_context.not_configured'|trans({}, 'tenant') }}</strong><br>
                                 <p class="mb-0 mt-2">{{ 'tenant.isms_context.configure_prompt'|trans({}, 'tenant') }}</p>
-                                <a href="${escapeHtml(data.editUrl) || '{{ path('app_context_edit') }}'}" class="btn btn-primary mt-3">
+                                <a href="${escapeHtml(data.editUrl) || '{{ path('app_context_edit') }}'}" class="fa-cyber-btn fa-cyber-btn--primary mt-3">
                                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.isms_context.configure_now'|trans({}, 'tenant') }}
                                 </a>
                             </div>
@@ -725,10 +725,10 @@
                                     </div>
                                     <div>
                                         ${canEdit ?
-                                            `<a href="${escapeHtml(data.editUrl) || '{{ path('app_context_edit') }}'}" class="btn btn-primary">
+                                            `<a href="${escapeHtml(data.editUrl) || '{{ path('app_context_edit') }}'}" class="fa-cyber-btn fa-cyber-btn--primary">
                                                 <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                                             </a>` :
-                                            `<button class="btn btn-secondary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'tenant') }}">
+                                            `<button class="fa-cyber-btn fa-cyber-btn--ghost" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'tenant') }}">
                                                 <i class="bi bi-lock" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                                             </button>`
                                         }
@@ -783,7 +783,7 @@
                     // Link to full context view
                     html += `
                         <div class="text-center mt-4">
-                            <a href="{{ path('app_context_index') }}" class="btn btn-outline-primary">
+                            <a href="{{ path('app_context_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                                 <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'tenant.isms_context.view_full'|trans({}, 'tenant') }}
                             </a>
                         </div>
@@ -802,10 +802,10 @@
 
                     container.innerHTML = `
                         <div class="fa-alert fa-alert--danger" role="alert">
-                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                             ${errorMessage}
                             <br><br>
-                            <button class="btn btn-sm btn-outline-danger" id="retryIsmsContextBtn">
+                            <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger" id="retryIsmsContextBtn">
                                 <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'common.retry'|trans({}, 'messages') }}
                             </button>
                         </div>

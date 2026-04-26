@@ -21,7 +21,7 @@
             </h1>
             <p class="text-muted mb-0">{{ 'compliance.mapping.seeds.description'|trans({}, 'compliance') }}</p>
         </div>
-        <a href="{{ path('app_compliance_mapping_index') }}" class="btn btn-outline-secondary btn-sm">
+        <a href="{{ path('app_compliance_mapping_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
             <i class="bi bi-arrow-left" aria-hidden="true"></i>
             {{ 'common.back'|trans({}, 'messages') }}
         </a>
@@ -72,14 +72,14 @@
                             {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-warning', class: 'small mb-2' } } %}
                                 {% block alert_body %}{{ 'compliance.mapping.seeds.flash.framework_missing'|trans({ '%source%': seed.source_code, '%target%': seed.target_code }, 'compliance') }}{% endblock %}
                             {% endembed %}
-                            <button type="button" class="btn btn-primary w-100" disabled>
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--primary w-100" disabled>
                                 {{ 'compliance.mapping.seeds.action.apply'|trans({}, 'compliance') }}
                             </button>
                         {% else %}
                             <form method="post"
                                   action="{{ path('app_compliance_mapping_seeds_apply', { id: seed.id }) }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('seed_' ~ seed.id) }}">
-                                <button type="submit" class="btn btn-primary w-100">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary w-100">
                                     <i class="bi bi-play-circle" aria-hidden="true"></i>
                                     {% if seed.currently_loaded > 0 %}
                                         {{ 'compliance.mapping.seeds.action.reapply'|trans({}, 'compliance') }}

@@ -85,7 +85,7 @@
                                                   data-action="submit->ui-actions#confirm"
                                                   data-ui-actions-message-param="{{ 'admin.sample_data.confirm_remove'|trans({'%name%': sample.name, '%count%': sample.count}, 'admin') }}">
                                                 <input type="hidden" name="_token" value="{{ csrf_token('sample_data_remove_' ~ sample.key) }}">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger">
                                                     <i class="bi bi-trash" aria-hidden="true"></i> {{ 'admin.sample_data.remove_button'|trans({}, 'admin') }}
                                                 </button>
                                             </form>
@@ -100,7 +100,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         <i class="bi bi-download" aria-hidden="true"></i> {{ 'admin.sample_data.import_button'|trans({}, 'admin') }}
                     </button>
                 </div>

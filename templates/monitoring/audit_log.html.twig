@@ -9,7 +9,7 @@
 
 {% block admin_content %}
     <div class="mb-3">
-        <a href="{{ path('monitoring_health') }}" class="btn btn-outline-secondary">
+        <a href="{{ path('monitoring_health') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'audit_log.action.back_to_health'|trans({}, 'audit_log') }}
         </a>
     </div>
@@ -66,19 +66,19 @@
         {% block card_body %}
             <div class="btn-group btn-group-sm" role="group">
                 <a href="{{ path('monitoring_audit_log', {filter: 'all'}) }}"
-                   class="btn btn-sm {{ current_filter == 'all' ? 'btn-primary' : 'btn-outline-primary' }}">
+                   class="fa-cyber-btn fa-cyber-btn--sm {{ current_filter == 'all' ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}">
                     {{ 'audit_log.filter.quick.all'|trans({}, 'audit_log') }}
                 </a>
                 <a href="{{ path('monitoring_audit_log', {filter: 'today'}) }}"
-                   class="btn btn-sm {{ current_filter == 'today' ? 'btn-primary' : 'btn-outline-primary' }}">
+                   class="fa-cyber-btn fa-cyber-btn--sm {{ current_filter == 'today' ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}">
                     {{ 'audit_log.filter.quick.today'|trans({}, 'audit_log') }}
                 </a>
                 <a href="{{ path('monitoring_audit_log', {filter: 'week'}) }}"
-                   class="btn btn-sm {{ current_filter == 'week' ? 'btn-primary' : 'btn-outline-primary' }}">
+                   class="fa-cyber-btn fa-cyber-btn--sm {{ current_filter == 'week' ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}">
                     {{ 'audit_log.filter.quick.this_week'|trans({}, 'audit_log') }}
                 </a>
                 <a href="{{ path('monitoring_audit_log', {filter: 'critical'}) }}"
-                   class="btn btn-sm {{ current_filter == 'critical' ? 'btn-danger' : 'btn-outline-danger' }}">
+                   class="fa-cyber-btn fa-cyber-btn--sm {{ current_filter == 'critical' ? 'fa-cyber-btn--danger' : }}">
                     {{ 'audit_log.filter.quick.critical_actions'|trans({}, 'audit_log') }}
                 </a>
             </div>
@@ -141,7 +141,7 @@
                                 <td class="text-end">
                                     {% if log.description or log.newValues %}
                                         <button type="button"
-                                                class="btn btn-sm btn-outline-primary"
+                                                class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#logModal{{ log.id }}">
                                             <i class="bi bi-eye" aria-hidden="true"></i> {{ 'audit_log.table.view_details'|trans({}, 'audit_log') }}

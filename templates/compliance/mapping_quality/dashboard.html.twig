@@ -23,13 +23,13 @@
             <p class="text-muted">{{ 'compliance.mapping_quality.subtitle'|trans({}, 'compliance') }}</p>
         </div>
         <div class="button-group">
-            <a href="{{ path('app_mapping_quality_review_queue') }}" class="btn btn-primary">
+            <a href="{{ path('app_mapping_quality_review_queue') }}" class="fa-cyber-btn fa-cyber-btn--primary">
                 <span class="icon"><i class="bi bi-list-check" aria-hidden="true"></i></span> {{ 'compliance.mapping_quality.review_queue.title'|trans({}, 'compliance') }}
             </a>
-            <a href="{{ path('app_mapping_quality_gaps') }}" class="btn btn-secondary">
+            <a href="{{ path('app_mapping_quality_gaps') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <span class="icon">🔍</span> {{ 'compliance.mapping_quality.gaps.title'|trans({}, 'compliance') }}
             </a>
-            <a href="{{ path('app_compliance_index') }}" class="btn btn-secondary">
+            <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <span class="icon">←</span> {{ 'common.back'|trans({}, 'messages') }}
             </a>
         </div>
@@ -50,7 +50,7 @@
             <li>{{ 'compliance.mapping_quality.next_steps.create_mappings'|trans({}, 'compliance')|raw }}</li>
             <li>{{ 'compliance.mapping_quality.next_steps.return_here'|trans({}, 'compliance') }}</li>
         </ol>
-        <a href="{{ path('app_compliance_index') }}" class="btn btn-primary mt-2">← {{ 'common.back'|trans({}, 'messages') }}</a>
+        <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--primary mt-2">← {{ 'common.back'|trans({}, 'messages') }}</a>
         </div>
     </div>
     {% elseif quality_stats.analyzed_mappings == 0 %}
@@ -156,19 +156,19 @@
                 <div class="col-md-12">
                     <div class="btn-toolbar" role="toolbar">
                         <div class="btn-group me-2" role="group" aria-label="{{ 'compliance.mapping_quality.quick_analysis'|trans({}, 'compliance') }}">
-                            <button type="button" class="btn btn-outline-primary"
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost"
                                     data-action="click->batch-analysis#start"
                                     data-batch-analysis-count-param="10"
                                     data-batch-analysis-force-param="false">
                                 <i class="bi bi-play-circle" aria-hidden="true"></i> {{ 'compliance.mapping_quality.batch_analysis.analyze_count'|trans({'%count%': 10}, 'compliance') }}
                             </button>
-                            <button type="button" class="btn btn-outline-primary"
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost"
                                     data-action="click->batch-analysis#start"
                                     data-batch-analysis-count-param="25"
                                     data-batch-analysis-force-param="false">
                                 <i class="bi bi-play-circle" aria-hidden="true"></i> {{ 'compliance.mapping_quality.batch_analysis.analyze_count'|trans({'%count%': 25}, 'compliance') }}
                             </button>
-                            <button type="button" class="btn btn-outline-primary"
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost"
                                     data-action="click->batch-analysis#start"
                                     data-batch-analysis-count-param="50"
                                     data-batch-analysis-force-param="false">
@@ -176,7 +176,7 @@
                             </button>
                         </div>
                         <div class="btn-group me-2" role="group" aria-label="{{ 'compliance.mapping_quality.full_analysis'|trans({}, 'compliance') }}">
-                            <button type="button" class="btn btn-success"
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--success"
                                     data-action="click->batch-analysis#start"
                                     data-batch-analysis-count-param="all"
                                     data-batch-analysis-force-param="false">
@@ -185,7 +185,7 @@
                         </div>
                         {% if quality_stats.analyzed_mappings > 0 %}
                         <div class="btn-group" role="group" aria-label="{{ 'compliance.mapping_quality.re_analysis'|trans({}, 'compliance') }}">
-                            <button type="button" class="btn btn-outline-warning"
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--warning"
                                     data-action="click->batch-analysis#start"
                                     data-batch-analysis-count-param="all"
                                     data-batch-analysis-force-param="true"
@@ -229,7 +229,7 @@
                     </div>
                 </div>
 
-                <button type="button" class="btn btn-danger btn-sm"
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
                         data-action="click->batch-analysis#cancel"
                         data-batch-analysis-target="cancelBtn">
                     <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
@@ -246,7 +246,7 @@
                     <i class="bi bi-arrow-clockwise" fa-alert__icon" aria-hidden="true"></i>
                     <div class="fa-alert__body"><p class="fw-bold"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'compliance.mapping_quality.progress.complete'|trans({}, 'compliance') }}</p>
                     <p data-batch-analysis-target="resultsMessage"></p>
-                    <button type="button" class="btn btn-primary mt-2" data-controller="ui-actions" data-action="ui-actions#reload">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--primary mt-2" data-controller="ui-actions" data-action="ui-actions#reload">
                         <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'compliance.mapping_quality.progress.reload'|trans({}, 'compliance') }}
                     </button>
                     </div>

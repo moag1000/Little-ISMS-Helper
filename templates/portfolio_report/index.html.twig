@@ -40,7 +40,7 @@
                 _locale: app.request.locale,
                 stichtag: stichtag|date('Y-m-d'),
                 vorperiode: vorperiode ? vorperiode|date('Y-m-d') : null
-            }) }}" class="btn btn-outline-danger">
+            }) }}" class="fa-cyber-btn fa-cyber-btn--danger">
                 <i class="bi bi-file-pdf" aria-hidden="true"></i>
                 {{ 'portfolio_report.action.download_pdf'|trans({}, 'portfolio_report') }}
             </a>
@@ -48,7 +48,7 @@
                 _locale: app.request.locale,
                 stichtag: stichtag|date('Y-m-d'),
                 vorperiode: vorperiode ? vorperiode|date('Y-m-d') : null
-            }) }}" class="btn btn-outline-success">
+            }) }}" class="fa-cyber-btn fa-cyber-btn--success">
                 <i class="bi bi-file-earmark-excel" aria-hidden="true"></i>
                 {{ 'portfolio_report.action.download_excel'|trans({}, 'portfolio_report') }}
             </a>
@@ -167,7 +167,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
                         {{ 'portfolio_report.form.update'|trans({}, 'portfolio_report') }}
                     </button>

@@ -19,11 +19,11 @@
         </div>
         <div>
             {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('app_compliance_framework_new') }}" class="btn btn-success">
+                <a href="{{ path('app_compliance_framework_new') }}" class="fa-cyber-btn fa-cyber-btn--success">
                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.framework.action.new'|trans({}, 'compliance') }}
                 </a>
             {% endif %}
-            <a href="{{ path('app_compliance_index') }}" class="btn btn-outline-secondary">
+            <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
             </a>
         </div>
@@ -68,10 +68,10 @@
                     </select>
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary me-2">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary me-2">
                         <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                     </button>
-                    <a href="{{ path('app_compliance_framework_index') }}" class="btn btn-outline-secondary">
+                    <a href="{{ path('app_compliance_framework_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
                     </a>
                 </div>
@@ -151,16 +151,16 @@
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                         <a href="{{ path('app_compliance_framework_show', {id: framework.id}) }}"
-                                           class="btn btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                           class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                             <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
                                         <a href="{{ path('app_compliance_framework', {id: framework.id}) }}"
-                                           class="btn btn-outline-info" title="{{ 'compliance.framework.action.dashboard'|trans({}, 'compliance') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                           class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'compliance.framework.action.dashboard'|trans({}, 'compliance') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                             <i class="bi bi-speedometer2" aria-hidden="true"></i>
                                         </a>
                                         {% if is_granted('ROLE_ADMIN') %}
                                             <a href="{{ path('app_compliance_framework_edit', {id: framework.id}) }}"
-                                               class="btn btn-outline-warning" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                                               class="fa-cyber-btn fa-cyber-btn--warning" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                                 <i class="bi bi-pencil" aria-hidden="true"></i>
                                             </a>
                                         {% endif %}

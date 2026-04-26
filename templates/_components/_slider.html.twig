@@ -288,7 +288,7 @@
         {# Reset button in header #}
         {% if show_reset and not compact %}
         <button type="button"
-                class="btn btn-sm btn-outline-secondary"
+                class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                 data-action="click->{{ controller }}#reset"
                 title="{{ 'common.reset'|trans({}, 'messages') }}">
             <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
@@ -379,7 +379,7 @@
         {# Compact reset button #}
         {% if show_reset and compact %}
         <button type="button"
-                class="btn btn-sm btn-outline-secondary"
+                class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                 data-action="click->{{ controller }}#reset"
                 title="{{ 'common.reset'|trans({}, 'messages') }}">
             <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
@@ -412,7 +412,7 @@
         <div class="btn-group btn-group-sm w-100" role="group" aria-label="{{ 'common.presets'|trans({}, 'messages') }}">
             {% for preset in presets %}
             <button type="button"
-                    class="btn btn-outline-{{ preset.variant|default('secondary') }} {{ value == preset.value ? 'active' : '' }}"
+                    class="fa-cyber-btn fa-cyber-btn--ghost {{ value == preset.value ? 'active' : '' }}"
                     data-action="click->{{ controller }}#setValue"
                     data-{{ controller }}-value-param="{{ preset.value }}"
                     title="{{ preset.description|default('') }}">

@@ -111,12 +111,12 @@
 
                     {# Form Actions #}
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ path('tenant_management_show', {id: tenant.id}) }}" class="btn btn-outline-secondary">
+                        <a href="{{ path('tenant_management_show', {id: tenant.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
                             {{ 'common.back'|trans({}, 'messages') }}
                         </a>
 
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="bi bi-check-lg me-2" aria-hidden="true"></i>
                             {{ 'common.save'|trans({}, 'messages') }}
                         </button>

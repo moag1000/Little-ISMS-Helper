@@ -106,15 +106,15 @@ A.5.15,NIS2-21.2.h,full,100,high,true,"Access Control"</code></pre>
             </div>
         </div>
         <div class="card-footer d-flex gap-2 justify-content-between">
-            <a href="{{ path('app_compliance_mapping_hub') }}" class="btn btn-outline-secondary">
+            <a href="{{ path('app_compliance_mapping_hub') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 {{ 'common.cancel'|trans({}, 'messages') }}
             </a>
             <div class="d-flex gap-2">
-                <button type="submit" name="commit" value="0" class="btn btn-outline-primary">
+                <button type="submit" name="commit" value="0" class="fa-cyber-btn fa-cyber-btn--ghost">
                     <i class="bi bi-eye" aria-hidden="true"></i>
                     {{ 'compliance.mapping.import.action.preview'|trans({}, 'compliance') }}
                 </button>
-                <button type="submit" name="commit" value="1" class="btn btn-primary">
+                <button type="submit" name="commit" value="1" class="fa-cyber-btn fa-cyber-btn--primary">
                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                     {{ 'compliance.mapping.import.action.commit'|trans({}, 'compliance') }}
                 </button>
