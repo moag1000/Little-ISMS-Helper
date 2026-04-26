@@ -124,6 +124,26 @@ class Control
     )]
     private ?string $implementationStatus = 'not_started';
 
+    /**
+     * MRIS-Klassifikation gemäß Peddi (2026), MRIS v1.5 Anhang A.
+     * S = Standfest, T = Teilweise degradiert, R = Reine Reibung, N = Nicht betroffen.
+     * Quellenangabe (CC BY 4.0): Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5.
+     */
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
+    #[Assert\Choice(
+        choices: [null, 'standfest', 'degradiert', 'reibung', 'nicht_betroffen'],
+        message: 'Mythos resilience must be one of: standfest, degradiert, reibung, nicht_betroffen'
+    )]
+    private ?string $mythosResilience = null;
+
+    /**
+     * @var array<int, string>|null Liste der flankierenden MHC-IDs (z. B. ["MHC-04","MHC-05"]).
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
+    private ?array $mythosFlankingMhcs = null;
+
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['control:read', 'control:write'])]
     #[Assert\Range(
@@ -309,6 +329,34 @@ class Control
     public function setImplementationStatus(string $implementationStatus): static
     {
         $this->implementationStatus = $implementationStatus;
+        return $this;
+    }
+
+    public function getMythosResilience(): ?string
+    {
+        return $this->mythosResilience;
+    }
+
+    public function setMythosResilience(?string $mythosResilience): static
+    {
+        $this->mythosResilience = $mythosResilience;
+        return $this;
+    }
+
+    /**
+     * @return array<int, string>|null
+     */
+    public function getMythosFlankingMhcs(): ?array
+    {
+        return $this->mythosFlankingMhcs;
+    }
+
+    /**
+     * @param array<int, string>|null $mythosFlankingMhcs
+     */
+    public function setMythosFlankingMhcs(?array $mythosFlankingMhcs): static
+    {
+        $this->mythosFlankingMhcs = $mythosFlankingMhcs;
         return $this;
     }
 
