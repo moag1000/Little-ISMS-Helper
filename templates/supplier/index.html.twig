@@ -54,7 +54,7 @@
                         {% endif %}
                     </select>
                     <noscript>
-                        <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.apply'|trans({}, 'messages') }}</button>
                     </noscript>
                 </form>
             </div>
@@ -220,8 +220,8 @@
                         </td>
                         <td>{{ supplier.hasISO27001 ? '✓' : '✗' }}</td>
                         <td>
-                            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-sm btn-secondary">{{ 'supplier.action.view'|trans({}, 'suppliers') }}</a>
-                            <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}" class="btn btn-sm btn-primary">{{ 'supplier.action.edit'|trans({}, 'suppliers') }}</a>
+                            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'supplier.action.view'|trans({}, 'suppliers') }}</a>
+                            <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'supplier.action.edit'|trans({}, 'suppliers') }}</a>
                         </td>
                     </tr>
                     {% endfor %}
