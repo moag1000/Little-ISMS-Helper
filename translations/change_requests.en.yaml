@@ -120,3 +120,9 @@ change_request:
         closed: 'Closed'
         cancelled: 'Cancelled'
         not_scheduled: 'Not Scheduled'
+    tooltip:
+        risk_assessment: 'Assess potential risks that could result from this change (e.g. data loss, service outage, security vulnerabilities). Use the ISMS risk assessment methodology.'
+        rollback_plan: 'Describe the concrete steps to undo this change if it fails. A rollback plan is mandatory for all changes with medium to high risk.'
+        isms_impact: 'Analyse which ISMS components are affected by this change: confidentiality, integrity, availability, existing controls, policies or the ISMS scope.'
+        priority: 'Set the urgency of the change. Critical: immediate action required. High: within one week. Medium: within one month. Low: as planned.'
+        change_type: 'Classify the type of change to select the correct approval and testing process. ISMS Policy and ISMS Scope changes require special review by the Information Security Officer.'

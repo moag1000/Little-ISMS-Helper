@@ -6,8 +6,8 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'dpia.new.breadcrumb_gdpr'|trans({}, 'privacy'), icon: 'bi-shield-check' },
-            { label: 'dpia.new.breadcrumb_dpia'|trans({}, 'privacy'), url: path('app_dpia_index') },
+            { label: 'nav.privacy'|trans({}, 'nav') },
+            { label: 'nav.dpia'|trans({}, 'nav'), url: path('app_dpia_index') },
             { label: 'dpia.new.breadcrumb_new'|trans({}, 'privacy') }
         ]
     } %}
@@ -21,99 +21,130 @@
         ]
     } %}
 
-    {% embed '_components/_card.html.twig' %}
-        {% block card_header %}
-            <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--audit-internal" aria-hidden="true"></i> {{ 'dpia.new.form_title'|trans({}, 'privacy')}}</h2>
-            </div>
-        {% endblock %}
-        {% block card_body %}
-            {{ form_start(form) }}
-                {% include '_components/_auto_form.html.twig' with {
-                    'form': form,
-                    'sections': {
-                        'basic_info': {
-                            'label': ('<i class="bi bi-info-circle" aria-hidden="true"></i> ' ~ 'dpia.new.section_basic_info'|trans({}, 'privacy'))|raw,
-                            'fields': ['title', 'referenceNumber', 'processingActivity']
-                        },
-                        'processing_operations': {
-                            'label': ('<i class="bi bi-gear" aria-hidden="true"></i> ' ~ 'dpia.new.section_processing_operations'|trans({}, 'privacy'))|raw,
-                            'fields': ['processingDescription', 'processingPurposes', 'dataCategories', 'dataSubjectCategories', 'estimatedDataSubjects', 'dataRetentionPeriod', 'dataFlowDescription']
-                        },
-                        'necessity_proportionality': {
-                            'label': ('<i class="bi bi-balance-scale" aria-hidden="true"></i> ' ~ 'dpia.new.section_necessity_proportionality'|trans({}, 'privacy'))|raw,
-                            'fields': ['necessityAssessment', 'proportionalityAssessment', 'legalBasis', 'legislativeCompliance']
-                        },
-                        'risk_assessment': {
-                            'label': ('<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> ' ~ 'dpia.new.section_risk_assessment'|trans({}, 'privacy'))|raw,
-                            'fields': ['riskLevel', 'likelihood', 'impact', 'dataSubjectRisks']
-                        },
-                        'measures': {
-                            'label': ('<i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> ' ~ 'dpia.new.section_measures'|trans({}, 'privacy'))|raw,
-                            'fields': ['technicalMeasures', 'organizationalMeasures', 'implementedControls', 'complianceMeasures', 'residualRiskAssessment', 'residualRiskLevel']
-                        },
-                        'consultation': {
-                            'label': ('<i class="fa-icon fa-icon--group" aria-hidden="true"></i> ' ~ 'dpia.new.section_consultation'|trans({}, 'privacy'))|raw,
-                            'fields': ['dataProtectionOfficer', 'dpoConsultationDate', 'dpoAdvice', 'dataSubjectsConsulted', 'dataSubjectConsultationDetails']
-                        },
-                        'supervisory': {
-                            'label': ('<i class="bi bi-building" aria-hidden="true"></i> ' ~ 'dpia.new.section_supervisory'|trans({}, 'privacy'))|raw,
-                            'fields': ['requiresSupervisoryConsultation', 'supervisoryConsultationDate', 'supervisoryAuthorityFeedback']
-                        },
-                        'workflow': {
-                            'label': ('<i class="fa-icon fa-icon--recovery" aria-hidden="true"></i> ' ~ 'dpia.new.section_workflow'|trans({}, 'privacy'))|raw,
-                            'fields': ['conductor', 'reviewFrequencyMonths', 'nextReviewDate']
-                        }
-                    },
-                    'col_widths': {
-                        'title': 8,
-                        'referenceNumber': 4,
-                        'processingActivity': 12,
-                        'processingDescription': 12,
-                        'processingPurposes': 12,
-                        'dataCategories': 12,
-                        'dataSubjectCategories': 12,
-                        'estimatedDataSubjects': 6,
-                        'dataRetentionPeriod': 6,
-                        'dataFlowDescription': 12,
-                        'necessityAssessment': 12,
-                        'proportionalityAssessment': 12,
-                        'legalBasis': 6,
-                        'legislativeCompliance': 6,
-                        'riskLevel': 4,
-                        'likelihood': 4,
-                        'impact': 4,
-                        'dataSubjectRisks': 12,
-                        'technicalMeasures': 12,
-                        'organizationalMeasures': 12,
-                        'implementedControls': 12,
-                        'complianceMeasures': 12,
-                        'residualRiskAssessment': 6,
-                        'residualRiskLevel': 6,
-                        'dataProtectionOfficer': 6,
-                        'dpoConsultationDate': 6,
-                        'dpoAdvice': 12,
-                        'dataSubjectsConsulted': 12,
-                        'dataSubjectConsultationDetails': 12,
-                        'requiresSupervisoryConsultation': 12,
-                        'supervisoryConsultationDate': 6,
-                        'supervisoryAuthorityFeedback': 6,
-                        'conductor': 12,
-                        'reviewFrequencyMonths': 6,
-                        'nextReviewDate': 6
-                    },
-                    'translation_domain': 'privacy'
-                } %}
+    <div class="row">
+        <div class="col-lg-8">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--audit-internal" aria-hidden="true"></i> {{ 'dpia.new.form_title'|trans({}, 'privacy')}}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    {{ form_start(form) }}
+                        {% include '_components/_auto_form.html.twig' with {
+                            'form': form,
+                            'sections': {
+                                'basic_info': {
+                                    'label': ('<i class="bi bi-info-circle" aria-hidden="true"></i> ' ~ 'dpia.new.section_basic_info'|trans({}, 'privacy'))|raw,
+                                    'fields': ['title', 'referenceNumber', 'processingActivity']
+                                },
+                                'processing_operations': {
+                                    'label': ('<i class="bi bi-gear" aria-hidden="true"></i> ' ~ 'dpia.new.section_processing_operations'|trans({}, 'privacy'))|raw,
+                                    'fields': ['processingDescription', 'processingPurposes', 'dataCategories', 'dataSubjectCategories', 'estimatedDataSubjects', 'dataRetentionPeriod', 'dataFlowDescription']
+                                },
+                                'necessity_proportionality': {
+                                    'label': ('<i class="bi bi-balance-scale" aria-hidden="true"></i> ' ~ 'dpia.new.section_necessity_proportionality'|trans({}, 'privacy'))|raw,
+                                    'fields': ['necessityAssessment', 'proportionalityAssessment', 'legalBasis', 'legislativeCompliance']
+                                },
+                                'risk_assessment': {
+                                    'label': ('<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> ' ~ 'dpia.new.section_risk_assessment'|trans({}, 'privacy'))|raw,
+                                    'fields': ['riskLevel', 'likelihood', 'impact', 'dataSubjectRisks']
+                                },
+                                'measures': {
+                                    'label': ('<i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> ' ~ 'dpia.new.section_measures'|trans({}, 'privacy'))|raw,
+                                    'fields': ['technicalMeasures', 'organizationalMeasures', 'implementedControls', 'complianceMeasures', 'residualRiskAssessment', 'residualRiskLevel']
+                                },
+                                'consultation': {
+                                    'label': ('<i class="fa-icon fa-icon--group" aria-hidden="true"></i> ' ~ 'dpia.new.section_consultation'|trans({}, 'privacy'))|raw,
+                                    'fields': ['dataProtectionOfficer', 'dpoConsultationDate', 'dpoAdvice', 'dataSubjectsConsulted', 'dataSubjectConsultationDetails']
+                                },
+                                'supervisory': {
+                                    'label': ('<i class="bi bi-building" aria-hidden="true"></i> ' ~ 'dpia.new.section_supervisory'|trans({}, 'privacy'))|raw,
+                                    'fields': ['requiresSupervisoryConsultation', 'supervisoryConsultationDate', 'supervisoryAuthorityFeedback']
+                                },
+                                'workflow': {
+                                    'label': ('<i class="fa-icon fa-icon--recovery" aria-hidden="true"></i> ' ~ 'dpia.new.section_workflow'|trans({}, 'privacy'))|raw,
+                                    'fields': ['conductor', 'reviewFrequencyMonths', 'nextReviewDate']
+                                }
+                            },
+                            'col_widths': {
+                                'title': 8,
+                                'referenceNumber': 4,
+                                'processingActivity': 12,
+                                'processingDescription': 12,
+                                'processingPurposes': 12,
+                                'dataCategories': 12,
+                                'dataSubjectCategories': 12,
+                                'estimatedDataSubjects': 6,
+                                'dataRetentionPeriod': 6,
+                                'dataFlowDescription': 12,
+                                'necessityAssessment': 12,
+                                'proportionalityAssessment': 12,
+                                'legalBasis': 6,
+                                'legislativeCompliance': 6,
+                                'riskLevel': 4,
+                                'likelihood': 4,
+                                'impact': 4,
+                                'dataSubjectRisks': 12,
+                                'technicalMeasures': 12,
+                                'organizationalMeasures': 12,
+                                'implementedControls': 12,
+                                'complianceMeasures': 12,
+                                'residualRiskAssessment': 6,
+                                'residualRiskLevel': 6,
+                                'dataProtectionOfficer': 6,
+                                'dpoConsultationDate': 6,
+                                'dpoAdvice': 12,
+                                'dataSubjectsConsulted': 12,
+                                'dataSubjectConsultationDetails': 12,
+                                'requiresSupervisoryConsultation': 12,
+                                'supervisoryConsultationDate': 6,
+                                'supervisoryAuthorityFeedback': 6,
+                                'conductor': 12,
+                                'reviewFrequencyMonths': 6,
+                                'nextReviewDate': 6
+                            },
+                            'translation_domain': 'privacy'
+                        } %}
 
-                <div class="mt-4">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
-                        <i class="bi bi-save" aria-hidden="true"></i> {{ 'dpia.new.button_create'|trans({}, 'privacy')}}
-                    </button>
-                    <a href="{{ path('app_dpia_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="bi bi-x-lg" aria-hidden="true"></i> {{ 'dpia.new.button_cancel_bottom'|trans({}, 'privacy')}}
-                    </a>
-                </div>
-            {{ form_end(form) }}
-        {% endblock %}
-    {% endembed %}
+                        <div class="mt-4">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
+                                <i class="bi bi-save" aria-hidden="true"></i> {{ 'dpia.new.button_create'|trans({}, 'privacy')}}
+                            </button>
+                            <a href="{{ path('app_dpia_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                                <i class="bi bi-x-lg" aria-hidden="true"></i> {{ 'dpia.new.button_cancel_bottom'|trans({}, 'privacy')}}
+                            </a>
+                        </div>
+                    {{ form_end(form) }}
+                {% endblock %}
+            {% endembed %}
+        </div>
+        <div class="col-lg-4">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-body-secondary">
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'dpia.sidebar.title'|trans({}, 'privacy') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <h3 class="h6">{{ 'dpia.sidebar.what_title'|trans({}, 'privacy') }}</h3>
+                    <p class="small text-muted">{{ 'dpia.sidebar.what_text'|trans({}, 'privacy') }}</p>
+
+                    <h3 class="h6">{{ 'dpia.sidebar.when_title'|trans({}, 'privacy') }}</h3>
+                    <p class="small text-muted">{{ 'dpia.sidebar.when_text'|trans({}, 'privacy') }}</p>
+
+                    <h3 class="h6">{{ 'dpia.sidebar.elements_title'|trans({}, 'privacy') }}</h3>
+                    <ul class="small text-muted ps-3">
+                        <li>{{ 'dpia.sidebar.elements_a'|trans({}, 'privacy') }}</li>
+                        <li>{{ 'dpia.sidebar.elements_b'|trans({}, 'privacy') }}</li>
+                        <li>{{ 'dpia.sidebar.elements_c'|trans({}, 'privacy') }}</li>
+                        <li>{{ 'dpia.sidebar.elements_d'|trans({}, 'privacy') }}</li>
+                    </ul>
+
+                    <h3 class="h6">{{ 'dpia.sidebar.consultation_title'|trans({}, 'privacy') }}</h3>
+                    <p class="small text-muted">{{ 'dpia.sidebar.consultation_text'|trans({}, 'privacy') }}</p>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
 </div>
 {% endblock %}

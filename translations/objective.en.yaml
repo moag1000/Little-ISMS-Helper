@@ -38,6 +38,12 @@ objective:
         progress_notes: 'Notes on current progress, obstacles, etc.'
     help:
         target_date: 'Target date for achieving the objective'
+    tooltip:
+        measurable_indicators: 'Define quantifiable criteria to measure progress (e.g. "number of trainings conducted", "percentage of patchable systems"). Without measurable indicators the objective cannot be audited (ISO 27001 Cl. 6.2).'
+        current_value: 'Current actual value of the indicator at the time of entry. Used for progress calculation and should be updated regularly.'
+        target_value: 'Target value to be reached by the target date. Serves as reference for success evaluation and monitoring.'
+        category: 'Assign the objective to an ISMS area (e.g. Availability, Compliance). Enables filtered reporting and facilitates mapping to ISO 27001 clauses.'
+        status: 'Current processing status of the objective. "At risk" or "Delayed" signals the need for action to the ISB. Status is evaluated for management reviews and KPI dashboards.'
     stats:
         total: Total
         active: Active

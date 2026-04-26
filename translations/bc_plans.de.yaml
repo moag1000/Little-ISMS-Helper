@@ -110,6 +110,12 @@ bc_plans:
     plan_owner_user: Verantwortliche Person aus der Benutzerverwaltung.
   placeholder:
     plan_owner_user: -- Verantwortliche Person --
+  tooltip:
+    activation_criteria: 'Vordefinierte Bedingungen, bei deren Eintreten der Plan aktiviert wird (z. B. Serverausfall > 4h, Gebäudeevakuierung). Messbare Schwellenwerte erleichtern die Entscheidung im Krisenfall.'
+    recovery_procedures: 'Schritt-für-Schritt-Anleitung zur Wiederherstellung des Geschäftsbetriebs. Jeder Schritt sollte Verantwortliche, Zeitvorgaben und Prüfkriterien enthalten (ISO 22301 Kl. 8.4).'
+    communication_plan: 'Kommunikationsstrategie während einer Unterbrechungssituation: Wer informiert wen, über welchen Kanal, in welcher Reihenfolge? Enthält Eskalationswege und Backup-Kommunikationskanäle.'
+    alternative_site: 'Ausweichstandort für den Notbetrieb, falls der primäre Standort nicht verfügbar ist. Beschreiben Sie Kapazität, vorhandene Infrastruktur und Aktivierungsdauer.'
+    required_resources: 'Mindestressourcen, die für den Notbetrieb benötigt werden: Personal, IT-Systeme, Kommunikationsmittel, Räumlichkeiten und kritische Drittdienstleister (ISO 22301 Kl. 8.1).'
 bcm:
   field:
     activation_criteria: Aktivierungskriterien

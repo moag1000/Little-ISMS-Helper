@@ -89,6 +89,9 @@ document:
         inheritable: 'Makes the document visible to every subsidiary of this holding (default off).'
         override_allowed: 'When off: subsidiaries must use this policy verbatim (e.g. ISMS policy). When on: subsidiaries may author a local version.'
         data_classification: 'Information classification per TISAX/ISO 27001 A.8.2. Default configurable under Admin → System → Documents.'
+    tooltip:
+        category: 'Select the document type that describes the content purpose of the document (e.g. policy, procedure, evidence). The type controls filtering and assignment to ISMS areas.'
+        classification: 'Information classification per TISAX/ISO 27001 A.8.2. Determines who may access the document. "Strictly Confidential" applies to documents requiring special protection (e.g. key material, security concepts).'
     placeholder:
         data_classification: '-- Select classification --'
     delete_warning: 'Deleting this document cannot be undone.'

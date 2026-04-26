@@ -54,6 +54,7 @@ patch:
         failed: Failed
         rolled_back: 'Rolled Back'
         not_applicable: 'Not Applicable'
+        overdue: Overdue
     placeholder:
         patch_id: 'e.g. KB5001234 or CVE-2024-1234-fix'
         title: 'e.g. Security update for Windows Server'
@@ -81,3 +82,9 @@ patch:
         deployed: Deployed
         total: Total
     empty: 'No patches available'
+    show:
+        metadata: Metadata
+        created_at: 'Created at'
+        updated_at: 'Last updated'
+        estimated_minutes: 'approx. %minutes% min.'
+        linked_vulnerability: 'Linked vulnerability'

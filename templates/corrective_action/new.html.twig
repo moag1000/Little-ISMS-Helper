@@ -4,6 +4,13 @@
 
 {% block body %}
 <div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'audit_finding.page.title'|trans({}, 'audits'), url: path('app_audit_finding_index') },
+            { label: 'corrective_action.page.title'|trans({}, 'audits'), url: path('app_corrective_action_index') },
+            { label: 'corrective_action.page.new'|trans({}, 'audits') }
+        ]
+    } %}
     <h1 class="h3 mb-4">{{ 'corrective_action.page.new'|trans({}, 'audits') }}</h1>
     {% if finding %}
         <p class="text-muted mb-3">

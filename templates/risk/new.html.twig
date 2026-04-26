@@ -89,7 +89,12 @@
                 'residualProbability': 'risk.tooltip.residual_probability',
                 'residualImpact': 'risk.tooltip.residual_impact',
                 'treatmentStrategy': 'risk.tooltip.treatment_strategy',
-                'category': 'risk.tooltip.category'
+                'category': 'risk.tooltip.category',
+                'involvesPersonalData': 'risk.tooltip.involves_personal_data',
+                'requiresDPIA': 'risk.tooltip.requires_dpia',
+                'legalBasis': 'risk.tooltip.legal_basis',
+                'processingScale': 'risk.tooltip.processing_scale',
+                'dataSubjectImpact': 'risk.tooltip.data_subject_impact'
             },
             'translation_domain': 'risk'
         } %}
@@ -108,7 +113,7 @@
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#riskAssessmentGuidance"
-                                aria-expanded="false"
+                                aria-expanded="true"
                                 aria-controls="riskAssessmentGuidance">
                             <i class="bi bi-question-circle-fill text-primary" aria-hidden="true"></i>
                             {{ 'risk.guidance.title'|trans({}, 'risk')}}
@@ -116,7 +121,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="collapse" id="riskAssessmentGuidance">
+                <div class="collapse show" id="riskAssessmentGuidance">
                     <div class="card-body">
                         <p class="text-muted mb-3">
                             {{ 'risk.guidance.intro'|trans({}, 'risk')}}

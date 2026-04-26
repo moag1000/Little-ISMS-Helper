@@ -5,37 +5,37 @@
 
 {% block body %}
 <div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-lg-10 col-xl-9 mx-auto">
-            <nav aria-label="breadcrumb" class="mb-3">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="{{ path('app_consent_index') }}" data-turbo-action="advance">
-                            <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i> {{ 'nav.consents'|trans({}, 'nav') }}
-                        </a>
-                    </li>
-                    {% if form.vars.data.id %}
-                    <li class="breadcrumb-item">
-                        <a href="{{ path('app_consent_show', {id: form.vars.data.id}) }}" data-turbo-action="advance">
-                            {{ form.vars.data.dataSubjectIdentifier }}
-                        </a>
-                    </li>
-                    {% endif %}
-                    <li class="breadcrumb-item active" aria-current="page">{{ form.vars.data.id ? 'consent.edit'|trans({}, 'consent') : 'consent.new'|trans({}, 'consent') }}</li>
-                </ol>
-            </nav>
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0">
-                    {# TODO(aurora-migration): dynamic icon — keep bi-* #}
-                    <i class="bi {{ form.vars.data.id ? 'bi-pencil' : 'bi-plus-circle' }}" aria-hidden="true"></i>
-                    {{ form.vars.data.id ? 'consent.edit'|trans({}, 'consent') : 'consent.new'|trans({}, 'consent') }}
-                </h1>
-                <a href="{{ form.vars.data.id ? path('app_consent_show', {id: form.vars.data.id}) : path('app_consent_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo-action="advance">
-                    <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_consent_index') }}" data-turbo-action="advance">
+                    <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i> {{ 'nav.consents'|trans({}, 'nav') }}
                 </a>
-            </div>
+            </li>
+            {% if form.vars.data.id %}
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_consent_show', {id: form.vars.data.id}) }}" data-turbo-action="advance">
+                    {{ form.vars.data.dataSubjectIdentifier }}
+                </a>
+            </li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ form.vars.data.id ? 'consent.edit'|trans({}, 'consent') : 'consent.new'|trans({}, 'consent') }}</li>
+        </ol>
+    </nav>
 
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">
+            {# TODO(aurora-migration): dynamic icon — keep bi-* #}
+            <i class="bi {{ form.vars.data.id ? 'bi-pencil' : 'bi-plus-circle' }}" aria-hidden="true"></i>
+            {{ form.vars.data.id ? 'consent.edit'|trans({}, 'consent') : 'consent.new'|trans({}, 'consent') }}
+        </h1>
+        <a href="{{ form.vars.data.id ? path('app_consent_show', {id: form.vars.data.id}) : path('app_consent_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo-action="advance">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header">
@@ -190,6 +190,33 @@
                     </div>
 
                     {{ form_end(form) }}
+                {% endblock %}
+            {% endembed %}
+        </div>
+        <div class="col-lg-4">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-body-secondary">
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'consent.sidebar.title'|trans({}, 'consent') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <h3 class="h6">{{ 'consent.sidebar.valid_title'|trans({}, 'consent') }}</h3>
+                    <p class="small text-muted">{{ 'consent.sidebar.valid_text'|trans({}, 'consent') }}</p>
+
+                    <h3 class="h6">{{ 'consent.sidebar.conditions_title'|trans({}, 'consent') }}</h3>
+                    <ul class="small text-muted ps-3">
+                        <li>{{ 'consent.sidebar.condition_1'|trans({}, 'consent') }}</li>
+                        <li>{{ 'consent.sidebar.condition_2'|trans({}, 'consent') }}</li>
+                        <li>{{ 'consent.sidebar.condition_3'|trans({}, 'consent') }}</li>
+                        <li>{{ 'consent.sidebar.condition_4'|trans({}, 'consent') }}</li>
+                    </ul>
+
+                    <h3 class="h6">{{ 'consent.sidebar.methods_title'|trans({}, 'consent') }}</h3>
+                    <p class="small text-muted">{{ 'consent.sidebar.methods_text'|trans({}, 'consent') }}</p>
+
+                    <h3 class="h6">{{ 'consent.sidebar.proof_title'|trans({}, 'consent') }}</h3>
+                    <p class="small text-muted">{{ 'consent.sidebar.proof_text'|trans({}, 'consent') }}</p>
                 {% endblock %}
             {% endembed %}
         </div>

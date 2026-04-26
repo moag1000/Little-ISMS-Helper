@@ -170,6 +170,23 @@ tenant:
     title.edit: Bearbeiten
     title.create: Erstellen
     name: Name
+    email:
+        title: 'E-Mail-Branding'
+        subtitle: 'Absender, Logo und Footer für ausgehende E-Mails. Leere Felder werden aus Parent-Mandant oder SystemSettings geerbt.'
+        section:
+            branding: 'Branding-Einstellungen'
+            effective: 'Effektive Werte (nach Fallback-Kaskade)'
+        effective_hint: 'Diese Werte werden beim E-Mail-Versand verwendet — leere Felder werden aus dem Parent-Mandanten oder den SystemSettings übernommen.'
+        hint:
+            fallback: 'Leeres Feld → Parent-Mandant → SystemSettings (category=email) → Hardcoded-Default.'
+        field:
+            from_name: 'Absender-Name'
+            from_address: 'Absender-E-Mail-Adresse'
+            logo_url: 'Logo-URL (HTTPS)'
+            support_address: 'Support-E-Mail-Adresse'
+        logo_url:
+            https_only: 'Nur HTTPS-URLs erlaubt (sonst Mixed-Content in HTML-E-Mails).'
+        saved: 'E-Mail-Branding gespeichert.'
 corporate:
     view:
         own_only: 'Nur eigene'

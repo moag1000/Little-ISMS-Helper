@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block title %}Compliance Requirements{% endblock %}
+{% block title %}{{ 'compliance.requirement.index_title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
@@ -13,9 +13,9 @@
     } %}
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-list-check" aria-hidden="true"></i> Compliance Requirements</h1>
+        <h1><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'compliance.requirement.index_title'|trans({}, 'compliance') }}</h1>
         <a href="{{ path('app_compliance_requirement_new', {framework: selected_framework}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> New Requirement
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.requirement.action.new'|trans({}, 'compliance') }}
         </a>
     </div>
 
@@ -92,14 +92,14 @@
                 } %}
                     {% block table_head %}
                         <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Title</th>
-                            <th scope="col">Framework</th>
-                            <th scope="col">Category</th>
-                            <th scope="col">Priority</th>
-                            <th scope="col">Fulfillment</th>
-                            <th scope="col">Applicable</th>
-                            <th scope="col">Actions</th>
+                            <th scope="col">{{ 'compliance.requirement.col.id'|trans({}, 'compliance') }}</th>
+                            <th scope="col">{{ 'compliance.requirement.col.title'|trans({}, 'compliance') }}</th>
+                            <th scope="col">{{ 'compliance.requirement.col.framework'|trans({}, 'compliance') }}</th>
+                            <th scope="col">{{ 'compliance.requirement.col.category'|trans({}, 'compliance') }}</th>
+                            <th scope="col">{{ 'compliance.requirement.col.priority'|trans({}, 'compliance') }}</th>
+                            <th scope="col">{{ 'compliance.requirement.col.fulfillment'|trans({}, 'compliance') }}</th>
+                            <th scope="col">{{ 'compliance.requirement.col.applicable'|trans({}, 'compliance') }}</th>
+                            <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                         </tr>
                     {% endblock %}
                     {% block table_body %}
@@ -136,9 +136,9 @@
                                 </td>
                                 <td>
                                     {% if fulfillment.applicable %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Yes' } %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.yes'|trans({}, 'messages') } %}
                                     {% else %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'No' } %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.no'|trans({}, 'messages') } %}
                                     {% endif %}
                                 </td>
                                 <td>

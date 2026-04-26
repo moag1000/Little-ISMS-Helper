@@ -489,6 +489,18 @@ compliance:
         confirm:
             delete: 'Möchten Sie diese Anforderung wirklich löschen?'
         title: Compliance-Anforderung
+        index_title: 'Compliance-Anforderungen'
+        action:
+            new: 'Neue Anforderung'
+            create: 'Anforderung erstellen'
+        col:
+            id: 'ID'
+            title: 'Titel'
+            framework: 'Framework'
+            category: 'Kategorie'
+            priority: 'Priorität'
+            fulfillment: 'Erfüllungsgrad'
+            applicable: 'Anwendbar'
         mris:
             title: 'MRIS-Reifegrad'
             intro: 'Aktueller Reifegrad des MHC nach Mythos-Härtungs-Modell. Drei Stufen: Initial → Defined → Managed (kumulativ).'
@@ -520,9 +532,6 @@ compliance:
             title: 'Anforderungsdetails'
             mapped_controls: 'Zugeordnete Controls'
             sub_requirements: 'Unter-Anforderungen'
-        action:
-            new: 'Neue Anforderung'
-            create: 'Anforderung erstellen'
         help:
             types:
                 title: Anforderungstypen

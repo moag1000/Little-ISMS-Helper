@@ -13,6 +13,9 @@ asset:
     print_all_labels: All QR Labels
   details:
     title: Asset details
+  risk_item:
+    risk_level: 'Risk Level: %value%'
+    status: 'Status: %value%'
   section:
     basic_info: Basic Information
     assignment: Assignment

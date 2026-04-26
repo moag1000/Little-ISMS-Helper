@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% trans_default_domain 'documents' %}
+{% trans_default_domain 'document' %}
 
 {% block title %}{{ 'document.edit'|trans({}, 'document') }} - {{ parent() }}{% endblock %}
 
@@ -8,7 +8,7 @@
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'nav.documents'|trans({}, 'nav', 'nav'), url: path('app_document_index'), icon: 'bi-file-earmark-text' },
+        { label: 'nav.documents'|trans({}, 'nav'), url: path('app_document_index'), icon: 'bi-file-earmark-text' },
         { label: document.originalFilename, url: path('app_document_show', {id: document.id}) },
         { label: 'document.edit'|trans({}, 'document') }
     ]
@@ -33,7 +33,7 @@
                 'sections': {
                     'basic_info': {
                         'label': 'document.section.basic_info'|trans({}, 'document'),
-                        'fields': ['originalFilename', 'description', 'category']
+                        'fields': ['originalFilename', 'description', 'category', 'tisaxInformationClassification']
                     },
                     'file_upload': {
                         'label': 'document.section.file_upload'|trans({}, 'document'),
@@ -44,7 +44,12 @@
                     'originalFilename': 12,
                     'description': 12,
                     'category': 6,
+                    'tisaxInformationClassification': 6,
                     'file': 12
+                },
+                'tooltips': {
+                    'category': 'document.tooltip.category',
+                    'tisaxInformationClassification': 'document.tooltip.classification'
                 }
             } %}
 

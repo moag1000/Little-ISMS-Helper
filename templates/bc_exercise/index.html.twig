@@ -75,6 +75,7 @@
         {% endblock %}
         {% block card_body %}
             {% if bc_exercises|length > 0 %}
+            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
             {% embed '_components/_table.html.twig' with {
                 'wrapperClass': 'card-body',
                 'noMargin': true
@@ -112,7 +113,13 @@
                 {% endblock %}
             {% endembed %}
             {% else %}
-            <p>{{ 'bc_exercises.message.no_exercises'|trans({}, 'bc_exercises') }}. <a href="{{ path('app_bc_exercise_new') }}">{{ 'bc_exercises.message.schedule_first'|trans({}, 'bc_exercises') }}</a>.</p>
+            {{ _fa_empty_state.render({
+                mood: 'sleeping',
+                title: 'bc_exercises.message.no_exercises'|trans({}, 'bc_exercises'),
+                actions: [
+                    { label: 'bc_exercises.message.schedule_first'|trans({}, 'bc_exercises'), variant: 'primary', icon: 'plus-lg', href: path('app_bc_exercise_new') }
+                ]
+            }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}

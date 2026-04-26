@@ -119,13 +119,18 @@ delete: Delete
 save: Save
 cancel: Cancel
 search: Search
-filter: Filter
+filter:
+    _default: Filter
+    remove_chip: 'Remove filter "%label%"'
+    clear_all: 'Clear all filters'
 export: Export
 import: Import
 view: View
 details: Details
 close: Close
-confirm: Confirm
+confirm:
+    _default: Confirm
+    typing_hint: 'Type "%keyword%" to confirm:'
 back: Back
 common:
     please_select: 'Please select...'
@@ -445,7 +450,10 @@ error:
         subheading: 'Something Went Wrong'
         message: 'We encountered an error while processing your request.'
         help: 'Please try again or contact support if the problem persists.'
+        alva_line: 'Something went wrong.'
+        alva_sub: "Not your fault. Try again or report it to the admin."
     code_label: 'Not found'
+    code_label_generic: 'Unknown error'
     code_label_server: 'Server error'
     code_label_forbidden: 'Access denied'
     403:
@@ -1330,6 +1338,19 @@ processing_activity:
     marked_for_review: ''
     review_completed: ''
     cloned: ''
+    alert:
+        compliance_issues: 'Compliance issues have been detected. Please review the affected entries.'
+    stat:
+        completeness: Completeness
+        status: Status
+        risk_level: 'Risk Level'
+        dpia_status: 'DPIA Status'
+    dpia:
+        required: 'DPIA required'
+        not_required: 'No DPIA required'
+    compliance:
+        pass: Compliant
+        fail: 'Non-compliant'
 business_continuity_plan:
     success:
         created: ''
@@ -1909,6 +1930,9 @@ wizard:
     update_comparison: 'Update Comparison'
     view_details: 'View Details'
     what_to_expect: 'What to Expect'
+    missing_recommended_title: 'Recommended modules not activated'
+    missing_recommended_desc: 'Some modules recommended for this framework are not yet activated. Activate them to improve the compliance assessment.'
+    activate_modules: 'Activate Modules'
 
 # Four Eyes Principle
 four_eyes:

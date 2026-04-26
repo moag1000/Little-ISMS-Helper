@@ -276,8 +276,8 @@
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_body %}
         {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-        <h2>Training Coverage ({{ control.trainings|length }})</h2>
-        {{ _fa_alert.render({ variant: control.hasTrainingCoverage ? 'success' : 'warning', body: '<strong>Status: ' ~ control.trainingStatus|upper ~ '</strong>' ~ (not control.hasTrainingCoverage ? '<br>Keine abgeschlossenen Trainings für dieses Control.' : '') }) }}
+        <h2>{{ 'soa.section.training_coverage'|trans({}, 'soa') }} ({{ control.trainings|length }})</h2>
+        {{ _fa_alert.render({ variant: control.hasTrainingCoverage ? 'success' : 'warning', body: '<strong>Status: ' ~ control.trainingStatus|upper ~ '</strong>' ~ (not control.hasTrainingCoverage ? '<br>' ~ 'soa.empty.no_completed_trainings'|trans({}, 'soa') : '') }) }}
         <div class="data-reuse-list">
             {% for training in control.trainings %}
                 <div class="data-reuse-item">
@@ -297,17 +297,17 @@
 {% if control.applicable and control.implementationPercentage == 100 %}
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_body %}
-        <h2>Control Effectiveness</h2>
+        <h2>{{ 'soa.section.control_effectiveness'|trans({}, 'soa') }}</h2>
         <div class="stats-grid grid-responsive-200">
             <div class="stat-item">
                 <strong style="font-size: 2rem; color: {{ control.effectivenessScore >= 80 ? 'var(--color-success)' : (control.effectivenessScore >= 50 ? 'var(--color-warning)' : 'var(--color-danger)') }}">
                     {{ control.effectivenessScore|number_format(1) }}%
                 </strong>
-                <span>Effectiveness Score</span>
+                <span>{{ 'soa.label.effectiveness_score'|trans({}, 'soa') }}</span>
             </div>
         </div>
         <p class="text-light-mt-sm">
-            Basierend auf Incident-Analyse nach Control-Implementierung.
+            {{ 'soa.empty.effectiveness_note'|trans({}, 'soa') }}
         </p>
     {% endblock %}
 {% endembed %}

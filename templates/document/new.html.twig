@@ -29,7 +29,7 @@
                 'sections': {
                     'basic_info': {
                         'label': 'document.section.basic_info'|trans({}, 'document'),
-                        'fields': ['originalFilename', 'description', 'category']
+                        'fields': ['originalFilename', 'description', 'category', 'tisaxInformationClassification']
                     },
                     'file_upload': {
                         'label': 'document.section.file_upload'|trans({}, 'document'),
@@ -40,7 +40,12 @@
                     'originalFilename': 12,
                     'description': 12,
                     'category': 6,
+                    'tisaxInformationClassification': 6,
                     'file': 12
+                },
+                'tooltips': {
+                    'category': 'document.tooltip.category',
+                    'tisaxInformationClassification': 'document.tooltip.classification'
                 }
             } %}
 

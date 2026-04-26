@@ -108,6 +108,12 @@ bc_plans:
     plan_owner_user: Plan owner from user management.
   placeholder:
     plan_owner_user: -- Select owner --
+  tooltip:
+    activation_criteria: 'Predefined conditions that trigger plan activation (e.g. server outage > 4h, building evacuation). Measurable thresholds make the decision easier during a crisis.'
+    recovery_procedures: 'Step-by-step guide to restoring business operations. Each step should include responsible persons, time targets and verification criteria (ISO 22301 Cl. 8.4).'
+    communication_plan: 'Communication strategy during a disruption: who informs whom, via which channel, in what order? Includes escalation paths and backup communication channels.'
+    alternative_site: 'Fallback location for emergency operations if the primary site is unavailable. Describe capacity, available infrastructure and activation lead time.'
+    required_resources: 'Minimum resources needed for emergency operations: staff, IT systems, communication tools, premises and critical third-party service providers (ISO 22301 Cl. 8.1).'
 bcm:
   field:
     activation_criteria: Activation Criteria

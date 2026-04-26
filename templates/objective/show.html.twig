@@ -6,12 +6,12 @@
 
 {% block body %}
 <div class="container-fluid py-4">
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_objective_index') }}">{{ 'objective.page.title'|trans({}, 'objective') }}</a></li>
-            <li class="breadcrumb-item active">{{ objective.title }}</li>
-        </ol>
-    </nav>
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.objectives'|trans({}, 'nav'), url: path('app_objective_index') },
+            { label: objective.title }
+        ]
+    } %}
 
     <div class="row">
         <div class="col-lg-8">

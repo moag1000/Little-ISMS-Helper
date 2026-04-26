@@ -203,3 +203,19 @@ dsr:
     # Hilfetexte
     help:
         extend_deadline: "Art. 12(3) erlaubt eine Verlaengerung der Frist auf 90 Tage ab Eingang bei komplexen Anfragen oder hohem Anfragevolumen."
+
+    # Seitenleiste kontextbezogene Hilfe
+    sidebar:
+        title: "DSGVO-Betroffenenrechte"
+        rights_title: "Die 7 DSGVO-Rechte (Art. 15–22)"
+        right_access: "Art. 15 – Auskunftsrecht: Betroffene koennen Bestaetigung und Kopie ihrer Daten anfordern"
+        right_rectification: "Art. 16 – Recht auf Berichtigung unrichtiger oder unvollstaendiger Daten"
+        right_erasure: "Art. 17 – Recht auf Loeschung (\"Recht auf Vergessenwerden\")"
+        right_restriction: "Art. 18 – Recht auf Einschraenkung der Verarbeitung"
+        right_portability: "Art. 20 – Recht auf Datenuebertragbarkeit in maschinenlesbarem Format"
+        right_objection: "Art. 21 – Widerspruchsrecht gegen Verarbeitung auf Basis berechtigter Interessen"
+        right_automated: "Art. 22 – Recht auf Nicht-Unterwerfung unter ausschliesslich automatisierte Entscheidungen"
+        deadline_title: "30-Tage-Antwortfrist (Art. 12(3))"
+        deadline_text: "Sie muessen unverzueglich und spaetestens innerhalb eines Monats nach Eingang antworten. Bei komplexen oder zahlreichen Anfragen kann dies um bis zu zwei weitere Monate verlaengert werden – die betroffene Person muss jedoch innerhalb des ersten Monats informiert werden."
+        verification_title: "Identitaetspruefung"
+        verification_text: "Vor der Erfuellung einer Anfrage muessen Sie die Identitaet der anfragenden Person pruefen, um unberechtigte Offenbarungen zu verhindern. Die Methode muss verhaeltnismaessig sein – fordern Sie keine uebertriebenen Angaben an."

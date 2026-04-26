@@ -119,13 +119,18 @@ delete: Löschen
 save: Speichern
 cancel: Abbrechen
 search: Suchen
-filter: Filtern
+filter:
+    _default: Filtern
+    remove_chip: 'Filter "%label%" entfernen'
+    clear_all: 'Alle Filter löschen'
 export: Exportieren
 import: Importieren
 view: Ansicht
 details: Details
 close: Schließen
-confirm: Bestätigen
+confirm:
+    _default: Bestätigen
+    typing_hint: 'Geben Sie „%keyword%" ein, um zu bestätigen:'
 back: Zurück
 common:
     please_select: 'Bitte auswählen...'
@@ -458,7 +463,10 @@ error:
         subheading: 'Etwas ist schief gelaufen'
         message: 'Bei der Verarbeitung Ihrer Anfrage ist ein Fehler aufgetreten.'
         help: 'Bitte versuchen Sie es erneut oder kontaktieren Sie den Support, wenn das Problem weiterhin besteht.'
+        alva_line: 'Etwas ist schiefgelaufen.'
+        alva_sub: 'Das ist nicht deine Schuld. Versuche es nochmal oder melde es dem Admin.'
     code_label: 'Nicht gefunden'
+    code_label_generic: 'Unbekannter Fehler'
     code_label_server: 'Serverfehler'
     code_label_forbidden: 'Zugriff verweigert'
     403:
@@ -1446,6 +1454,19 @@ processing_activity:
     marked_for_review: 'Zur Überprüfung markiert'
     review_completed: 'Überprüfung abgeschlossen'
     cloned: 'Erfolgreich dupliziert'
+    alert:
+        compliance_issues: 'Es wurden Compliance-Probleme festgestellt. Bitte überprüfen Sie die betroffenen Einträge.'
+    stat:
+        completeness: 'Vollständigkeit'
+        status: Status
+        risk_level: 'Risikoniveau'
+        dpia_status: 'DPIA-Status'
+    dpia:
+        required: 'DPIA erforderlich'
+        not_required: 'Keine DPIA erforderlich'
+    compliance:
+        pass: 'Konform'
+        fail: 'Nicht konform'
 business_continuity_plan:
     success:
         created: 'Business-Continuity-Plan erfolgreich erstellt'
@@ -1968,6 +1989,9 @@ wizard:
     update_comparison: 'Vergleich aktualisieren'
     view_details: 'Details anzeigen'
     what_to_expect: 'Was Sie erwartet'
+    missing_recommended_title: 'Empfohlene Module nicht aktiviert'
+    missing_recommended_desc: 'Einige für dieses Framework empfohlene Module sind noch nicht aktiviert. Aktivieren Sie diese, um die Compliance-Bewertung zu verbessern.'
+    activate_modules: 'Module aktivieren'
 
 # Four Eyes Principle
 four_eyes:
