@@ -51,6 +51,7 @@ nav:
     mapping_quality: 'Mapping Quality'
     mris_kpis: 'MRIS KPIs'
     mris_baselines: 'MRIS Baselines'
+    mris_glossar: 'MRIS Glossary'
     ai_agents: 'AI Agent Inventory'
     data_reuse: 'Data-Reuse Hub'
     locations: Locations
@@ -144,6 +145,7 @@ nav:
             mapping_quality: 'Cross-framework mapping quality analysis'
             mris_kpis: 'Mythos-relevant KPIs (MRIS v1.5 Ch. 10.6)'
             mris_baselines: 'Industry baselines (KRITIS, Finance, Automotive, SaaS) — target maturity per MHC'
+            mris_glossar: 'Glossary with terms, 9001 analogies and standards references'
             ai_agents: 'AI Agent Inventory (EU AI Act + ISO 42001 + MHC-13)'
             data_reuse: 'Top-reused documents and suppliers across all frameworks'
             nis2: 'NIS2 Directive assessment'

@@ -3,7 +3,7 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
-## [Unreleased] — feat/mris-integration → v3.2.0
+## [Unreleased] — feat/mris-integration → v3.2.0 (Tag wartet auf Aurora-Finalisierung)
 
 ### Headline-Feature: MRIS-Integration v1.5 — Gen-AI-Bedrohungslage im ISMS
 
@@ -22,7 +22,51 @@ schließt sie über einen priorisierten Zusatzkatalog.
 ### MRIS-Integration v1.5 (CC-BY-4.0-Ableitung Peddi 2026)
 
 Komplette Integration des MRIS-Frameworks (Mythos-resistente Informationssicherheit
-v1.5 von Richard Peddi, CC BY 4.0) in 5 Phasen + Plan-Vollerfüllung-Batch.
+v1.5 von Richard Peddi, CC BY 4.0) in 5 Phasen + Plan-Vollerfüllung-Batch +
+zusätzliche Erweiterungen.
+
+**Plan-Erweiterungen (vom Ursprungs-Plan ausgenommen, aber priorisiert eingebaut):**
+
+- **Mythos-Resilience-Indikator (MRI)** — aggregierter Score aus 5 gewichteten
+  Dimensionen (Standfest 25 % / Reifegrad 30 % / Reibung-Inverse 20 % / Manual-KPIs
+  15 % / AI-Doku 10 %). Prominent als „internes Management-Indikator" mit
+  Audit-Disclaimer ausgewiesen — MRIS v1.5 selbst definiert kein Aggregat.
+  Dekomposition pro Dimension immer sichtbar (kein Black-Box).
+
+- **Auto-Re-Mapping bei MRIS-Versions-Updates** —
+  `app:mris:migrate-version --from=v1.5 --to=v1.6 --apply` zeigt Diff
+  (added/removed/renamed/maturity_changed), Soft-Delete via `dataSourceMapping`-
+  JSON-Marker (`lifecycle_state=deprecated`), Audit-Log via `AuditLogger::logCustom`.
+  Dry-Run als Default-Sicherung, `--apply` explizit erforderlich.
+
+- **MRIS-Glossar** unter `/mris/glossar` — lädt `fixtures/mris/help-texts.yaml`
+  und zeigt 20 Glossar-Einträge mit Definition + 9001-Analogie + Norm-Quelle.
+  Sortier- und filterbar via Stimulus-Controller.
+
+- **3 MRIS-Wizards:**
+  - `/mris/wizard/pure-friction` — 5-Schritt-Routine für Reine-Reibung-Controls
+  - `/mris/wizard/maturity-evidence` — Evidence-Checklist pro MHC (alle 13)
+  - `/mris/wizard/ai-risk-class` — 12-Tools-Tabelle + 4-Step-Decision-Flow
+
+- **AI-Agent-Form-Variante** — `AssetType` um 9 AI-Felder erweitert,
+  `assetType=ai_agent` triggert dynamische Sichtbarkeit via
+  `conditional_fields_controller`. Stimulus `asset_form_controller.js`
+  schlägt Risikoklasse aus 12-Tools-Matrix vor (Provider-Match,
+  case-insensitive, nur wenn Klasse leer).
+
+- **Branchen-Baseline-UI** unter `/mris/baselines` — Card-Grid mit Anwenden-Button,
+  Dry-Run-Vorschau, ROLE_MANAGER + CSRF.
+
+- **Tenant-Settings-UI** für `mris_kpis_enabled` — Checkbox in
+  `admin/tenants/form.html.twig`, persistiert via Settings-Merge.
+
+- **KPI-Trend-Sparklines** — `KpiSnapshotRepository::findRecentByTenant(90)`
+  liefert Trend-Daten, Inline-SVG-Polylines an jeder auto-KPI-Tile.
+
+- **Mega-Menu-Erweiterung** — MRIS-KPIs + AI-Agent-Inventar +
+  MRIS-Baselines + MRIS-Glossar im Compliance-Panel.
+
+
 
 **Neue Module:**
 

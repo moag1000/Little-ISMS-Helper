@@ -11,7 +11,7 @@
         </ol>
     </nav>
 
-    <div class="page-header mb-4">
+    <div class="page-header mb-4 d-flex justify-content-between align-items-start gap-3 flex-wrap">
         <div>
             <h1>
                 <i class="bi bi-speedometer2" aria-hidden="true"></i>
@@ -21,6 +21,24 @@
                 {{ 'mris.page.kpi_intro'|trans({}, 'mris')|nl2br }}<br>
                 <em>{{ 'mris.page.source'|trans({}, 'mris') }}</em>
             </p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ path('app_mris_glossar') }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-book" aria-hidden="true"></i> Glossar
+            </a>
+            <a href="{{ path('app_mris_baselines_index') }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-collection" aria-hidden="true"></i> Branchen-Baselines
+            </a>
+            <div class="btn-group btn-group-sm">
+                <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="bi bi-magic" aria-hidden="true"></i> Wizards
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ path('app_mris_wizard_pure_friction') }}"><i class="bi bi-shield-exclamation" aria-hidden="true"></i> Reine-Reibung-Routine</a></li>
+                    <li><a class="dropdown-item" href="{{ path('app_mris_wizard_maturity_evidence') }}"><i class="bi bi-clipboard-check" aria-hidden="true"></i> Reifegrad-Evidence</a></li>
+                    <li><a class="dropdown-item" href="{{ path('app_mris_wizard_ai_risk_class') }}"><i class="bi bi-cpu" aria-hidden="true"></i> AI-Risiko-Klasse</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 
