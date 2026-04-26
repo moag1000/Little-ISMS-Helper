@@ -146,16 +146,16 @@
 
                         <div class="framework-actions">
                             {% if framework.loaded %}
-                                <button class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--block" disabled>
+                                <button class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--full" disabled>
                                     <span class="icon"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></span> {{ 'compliance.already_loaded'|trans({}, 'compliance') }}
                                 </button>
-                                <button class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--block mt-1 delete-framework-btn"
+                                <button class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--full mt-1 delete-framework-btn"
                                         data-framework-code="{{ framework.code }}"
                                         data-framework-name="{{ framework.name }}">
                                     <span class="icon"><i class="bi bi-trash" aria-hidden="true"></i></span> {{ 'compliance.delete_framework'|trans({}, 'compliance') }}
                                 </button>
                             {% else %}
-                                <button class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--block load-framework-btn"
+                                <button class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--full load-framework-btn"
                                         data-framework-code="{{ framework.code }}"
                                         data-framework-name="{{ framework.name }}">
                                     <span class="icon"><i class="bi bi-download" aria-hidden="true"></i></span> {{ 'compliance.load_framework'|trans({}, 'compliance') }}
@@ -219,16 +219,16 @@ function initializeFrameworkButtons() {
                     if (result.framework_id) {
                         const actionContainer = this.closest('.framework-actions');
                         actionContainer.innerHTML = `
-                            <button class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--block" disabled>
+                            <button class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--full" disabled>
                                 <span class="icon"><i class="bi bi-check-circle text-success" aria-hidden="true"></i></span> {{ 'compliance.successfully_loaded'|trans({}, 'compliance') }}
                             </button>
-                            <a href="/{{ app.request.locale }}/compliance/framework/${result.framework_id}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--block mt-1"
+                            <a href="/{{ app.request.locale }}/compliance/framework/${result.framework_id}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--full mt-1"
                                data-bs-toggle="tooltip" data-bs-placement="right"
                                data-bs-title="{{ 'common.tooltip.framework_dashboard_description'|trans({}, 'messages') }}"
                                title="{{ 'common.tooltip.framework_dashboard_description'|trans({}, 'messages') }}">
                                 <span class="icon">🚀</span> Start Working →
                             </a>
-                            <button class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--block mt-1" data-controller="ui-actions" data-action="ui-actions#reload"
+                            <button class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--full mt-1" data-controller="ui-actions" data-action="ui-actions#reload"
                                     data-bs-toggle="tooltip" data-bs-placement="right"
                                     data-bs-title="{{ 'common.tooltip.reload_to_see_framework'|trans({}, 'messages') }}"
                                     title="{{ 'common.tooltip.reload_to_see_framework'|trans({}, 'messages') }}">
