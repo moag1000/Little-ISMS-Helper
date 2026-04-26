@@ -1,0 +1,180 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Fairy Aurora — Icon System (v4)
+   ═══════════════════════════════════════════════════════════════════
+   77 ISMS-Domain-Icons als CSS-Mask. Einfärbbar via currentColor.
+   Default-Größe: 1em. Inline mit Text per vertical-align: -0.125em.
+
+   Verwendung:
+     <i class="fa-icon fa-icon--audit-trail"></i>
+     <i class="fa-icon fa-icon--audit-trail fa-icon--20"></i>                  → 20px
+     <i class="fa-icon fa-icon--status-critical fa-icon--danger"></i>          → semantisch rot
+     <span class="fa-framework-lockup">
+       <i class="fa-icon fa-icon--compliance-shield"></i>
+       <span class="fa-framework-lockup__abbr">ISO 27001</span>
+     </span>
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Base ──────────────────────────────────────────────────────── */
+.fa-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    background-color: currentColor;
+    -webkit-mask-image: var(--fa-icon);
+            mask-image: var(--fa-icon);
+    -webkit-mask-size: contain;
+            mask-size: contain;
+    -webkit-mask-position: center;
+            mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+    vertical-align: -0.125em;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+/* ── Größen ────────────────────────────────────────────────────── */
+.fa-icon--16 { font-size: 16px; }
+.fa-icon--20 { font-size: 20px; }
+.fa-icon--24 { font-size: 24px; }
+.fa-icon--32 { font-size: 32px; }
+.fa-icon--48 { font-size: 48px; }
+
+/* ── Semantische Farben (für Status, RAG, etc.) ────────────────── */
+.fa-icon--success     { color: var(--success); }
+.fa-icon--warning     { color: var(--warning); }
+.fa-icon--danger      { color: var(--danger); }
+.fa-icon--info        { color: var(--accent); }
+.fa-icon--muted       { color: var(--fg-3); }
+.fa-icon--primary     { color: var(--primary); }
+
+/* RAG-Status — feste Defaults für die Status-* Icons */
+.fa-icon--status-ok        { color: var(--success); }
+.fa-icon--status-warning   { color: var(--warning); }
+.fa-icon--status-critical  { color: var(--danger); }
+.fa-icon--status-info      { color: var(--accent); }
+.fa-icon--status-pending   { color: var(--fg-3); }
+.fa-icon--status-archived  { color: var(--fg-3); }
+
+/* ── Framework-Lockup ──────────────────────────────────────────── */
+.fa-framework-lockup {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px 4px 8px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--fg);
+    font-size: 12px;
+    line-height: 1;
+    white-space: nowrap;
+    transition: border-color 0.15s, background 0.15s;
+}
+.fa-framework-lockup:hover {
+    border-color: var(--accent);
+    background: var(--surface-3, var(--surface-2));
+}
+.fa-framework-lockup .fa-icon {
+    color: var(--accent);
+    font-size: 16px;
+}
+.fa-framework-lockup__abbr {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--fg);
+}
+.fa-framework-lockup--lg {
+    padding: 8px 14px 8px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+}
+.fa-framework-lockup--lg .fa-icon {
+    font-size: 20px;
+}
+.fa-framework-lockup--ghost {
+    background: transparent;
+    border-color: transparent;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* ── Per-Icon Mask-URLs ────────────────────────────────────────── */
+.fa-icon--compliance-shield { --fa-icon: url(../icons/compliance-shield.svg); }
+.fa-icon--regulator { --fa-icon: url(../icons/regulator.svg); }
+.fa-icon--certificate { --fa-icon: url(../icons/certificate.svg); }
+.fa-icon--attestation { --fa-icon: url(../icons/attestation.svg); }
+.fa-icon--scope-statement { --fa-icon: url(../icons/scope-statement.svg); }
+.fa-icon--soa { --fa-icon: url(../icons/soa.svg); }
+.fa-icon--gap-analysis { --fa-icon: url(../icons/gap-analysis.svg); }
+.fa-icon--control { --fa-icon: url(../icons/control.svg); }
+.fa-icon--audit-trail { --fa-icon: url(../icons/audit-trail.svg); }
+.fa-icon--finding { --fa-icon: url(../icons/finding.svg); }
+.fa-icon--evidence { --fa-icon: url(../icons/evidence.svg); }
+.fa-icon--sign-off { --fa-icon: url(../icons/sign-off.svg); }
+.fa-icon--review { --fa-icon: url(../icons/review.svg); }
+.fa-icon--sample { --fa-icon: url(../icons/sample.svg); }
+.fa-icon--nonconformity { --fa-icon: url(../icons/nonconformity.svg); }
+.fa-icon--corrective-action { --fa-icon: url(../icons/corrective-action.svg); }
+.fa-icon--audit-internal { --fa-icon: url(../icons/audit-internal.svg); }
+.fa-icon--audit-external { --fa-icon: url(../icons/audit-external.svg); }
+.fa-icon--risk-score { --fa-icon: url(../icons/risk-score.svg); }
+.fa-icon--threat { --fa-icon: url(../icons/threat.svg); }
+.fa-icon--vulnerability { --fa-icon: url(../icons/vulnerability.svg); }
+.fa-icon--mitigation { --fa-icon: url(../icons/mitigation.svg); }
+.fa-icon--likelihood { --fa-icon: url(../icons/likelihood.svg); }
+.fa-icon--impact { --fa-icon: url(../icons/impact.svg); }
+.fa-icon--residual-risk { --fa-icon: url(../icons/residual-risk.svg); }
+.fa-icon--risk-register { --fa-icon: url(../icons/risk-register.svg); }
+.fa-icon--heatmap { --fa-icon: url(../icons/heatmap.svg); }
+.fa-icon--risk-accept { --fa-icon: url(../icons/risk-accept.svg); }
+.fa-icon--asset-server { --fa-icon: url(../icons/asset-server.svg); }
+.fa-icon--asset-database { --fa-icon: url(../icons/asset-database.svg); }
+.fa-icon--asset-cloud { --fa-icon: url(../icons/asset-cloud.svg); }
+.fa-icon--asset-endpoint { --fa-icon: url(../icons/asset-endpoint.svg); }
+.fa-icon--asset-network { --fa-icon: url(../icons/asset-network.svg); }
+.fa-icon--asset-iot { --fa-icon: url(../icons/asset-iot.svg); }
+.fa-icon--asset-ot { --fa-icon: url(../icons/asset-ot.svg); }
+.fa-icon--asset-application { --fa-icon: url(../icons/asset-application.svg); }
+.fa-icon--data-personal { --fa-icon: url(../icons/data-personal.svg); }
+.fa-icon--data-confidential { --fa-icon: url(../icons/data-confidential.svg); }
+.fa-icon--user { --fa-icon: url(../icons/user.svg); }
+.fa-icon--role { --fa-icon: url(../icons/role.svg); }
+.fa-icon--mfa { --fa-icon: url(../icons/mfa.svg); }
+.fa-icon--privileged { --fa-icon: url(../icons/privileged.svg); }
+.fa-icon--sso { --fa-icon: url(../icons/sso.svg); }
+.fa-icon--group { --fa-icon: url(../icons/group.svg); }
+.fa-icon--permission { --fa-icon: url(../icons/permission.svg); }
+.fa-icon--policy { --fa-icon: url(../icons/policy.svg); }
+.fa-icon--sop { --fa-icon: url(../icons/sop.svg); }
+.fa-icon--contract { --fa-icon: url(../icons/contract.svg); }
+.fa-icon--nda { --fa-icon: url(../icons/nda.svg); }
+.fa-icon--version { --fa-icon: url(../icons/version.svg); }
+.fa-icon--approval { --fa-icon: url(../icons/approval.svg); }
+.fa-icon--attachment { --fa-icon: url(../icons/attachment.svg); }
+.fa-icon--archive { --fa-icon: url(../icons/archive.svg); }
+.fa-icon--incident { --fa-icon: url(../icons/incident.svg); }
+.fa-icon--breach { --fa-icon: url(../icons/breach.svg); }
+.fa-icon--escalation { --fa-icon: url(../icons/escalation.svg); }
+.fa-icon--recovery { --fa-icon: url(../icons/recovery.svg); }
+.fa-icon--forensics { --fa-icon: url(../icons/forensics.svg); }
+.fa-icon--root-cause { --fa-icon: url(../icons/root-cause.svg); }
+.fa-icon--training { --fa-icon: url(../icons/training.svg); }
+.fa-icon--phishing-test { --fa-icon: url(../icons/phishing-test.svg); }
+.fa-icon--learning-path { --fa-icon: url(../icons/learning-path.svg); }
+.fa-icon--awareness-stat { --fa-icon: url(../icons/awareness-stat.svg); }
+.fa-icon--status-ok { --fa-icon: url(../icons/status-ok.svg); }
+.fa-icon--status-warning { --fa-icon: url(../icons/status-warning.svg); }
+.fa-icon--status-critical { --fa-icon: url(../icons/status-critical.svg); }
+.fa-icon--status-info { --fa-icon: url(../icons/status-info.svg); }
+.fa-icon--status-pending { --fa-icon: url(../icons/status-pending.svg); }
+.fa-icon--status-archived { --fa-icon: url(../icons/status-archived.svg); }
+.fa-icon--approve { --fa-icon: url(../icons/approve.svg); }
+.fa-icon--reject { --fa-icon: url(../icons/reject.svg); }
+.fa-icon--assign { --fa-icon: url(../icons/assign.svg); }
+.fa-icon--delegate { --fa-icon: url(../icons/delegate.svg); }
+.fa-icon--export { --fa-icon: url(../icons/export.svg); }
+.fa-icon--import { --fa-icon: url(../icons/import.svg); }
+.fa-icon--schedule { --fa-icon: url(../icons/schedule.svg); }
+.fa-icon--filter { --fa-icon: url(../icons/filter.svg); }

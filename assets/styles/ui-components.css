@@ -2105,13 +2105,15 @@
     width: 200px;
 }
 
-/* Icon-size utilities — for Bootstrap-Icon glyphs in cards/empty-states.
+/* Glyph-size utilities — for Bootstrap-Icon font-size in cards/empty-states.
+   Renamed from .fa-icon-{sm,md,lg,xl} to avoid collision with the Aurora
+   v4 mask-icon base class .fa-icon (spec: .fa-icon + .fa-icon--{name}).
    Avoids inline style="font-size: Nrem" patterns that defeat the design
    system layer. */
-.fa-icon-sm { font-size: 1.5rem; }
-.fa-icon-md { font-size: 2rem; }
-.fa-icon-lg { font-size: 3rem; }
-.fa-icon-xl { font-size: 4rem; }
+.fa-glyph-size-sm { font-size: 1.5rem; }
+.fa-glyph-size-md { font-size: 2rem; }
+.fa-glyph-size-lg { font-size: 3rem; }
+.fa-glyph-size-xl { font-size: 4rem; }
 
 .progress-h-4 {
     height: 4px;
