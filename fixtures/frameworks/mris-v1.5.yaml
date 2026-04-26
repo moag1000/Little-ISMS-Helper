@@ -1,0 +1,375 @@
+schema_version: '1.0'
+framework:
+  code: 'MRIS-v1.5'
+  name: 'MRIS — Mythos-resistente Informationssicherheit v1.5'
+  version: '1.5'
+  effective_from: '2026-04-01'
+  description: |
+    MRIS ist ein offener Zusatzkatalog zu ISO 27001/27002, der die unter
+    der Gen-AI-Bedrohungslage entstandenen Mythos-Lücken adressiert.
+    Der Katalog umfasst dreizehn Mythos-Härtungs-Controls (MHC-01..13),
+    die strukturelle Hartbarrieren gegen agentische Angreifer, fragmentierte
+    Angriffsketten und AI-qualitatives Phishing schaffen. MRIS ergänzt das
+    bestehende ISMS — es ersetzt kein Management-System, sondern wirkt
+    als priorisierte Soll-Erweiterung im Statement of Applicability.
+
+  # CC-BY-4.0 attribution mandatory on every export/display
+  provenance:
+    primary_source: 'Peddi, Richard (2026). MRIS — Mythos-resistente Informationssicherheit, Version 1.5'
+    primary_source_url: 'https://creativecommons.org/licenses/by/4.0/'
+    license: 'CC BY 4.0'
+    original_author: 'Richard Peddi'
+    publication_date: '2026-04-01'
+    derivative_notice: |
+      Diese YAML-Datei ist eine Ableitung des MRIS-Whitepapers v1.5 von
+      Richard Peddi unter CC-BY-4.0-Bedingungen. Die Quellenangabe muss
+      bei jeder Tool-Ausgabe (SoA-Export, KPI-Report, MHC-Detail-Seite)
+      mitgeführt werden.
+
+  regulatory_body: 'Independent (Open Standard)'
+  applicable_industry: 'all'
+  scope_description: |
+    Zusatzkatalog auf bestehendem ISO-27001-ISMS für Gen-AI-Bedrohungslage.
+    Nicht eigenständiges Management-System.
+
+requirements:
+  - requirement_id: 'MHC-01'
+    title: 'Post-Quantum-Cryptography-Strategie und kryptografisches Inventar'
+    category: 'mythos_haertung'
+    priority: 'high'
+    description: |
+      Mythos-Befund: Klassische asymmetrische Verfahren sind im Zeithorizont
+      kryptografisch relevanter Quantencomputer angreifbar; Store-now-decrypt-
+      later-Sammlungen werden bereits heute angelegt.
+      Härtungsempfehlung: Dokumentierte PQC-Strategie mit vier Elementen —
+      (1) kryptografisches Inventar aller eingesetzten Algorithmen,
+      Schlüssellängen und Implementierungen, priorisiert nach Impact und
+      Eintrittswahrscheinlichkeit von Quantum-Angriffen; (2) laufende
+      Beobachtung des Standes der Technik; (3) Einsatz hybrider
+      Kryptografie-Modelle; (4) definierte Trigger-Events, Ressourcen,
+      Transitionspfade und Erfolgskriterien. Jährliche oder anlassbezogene
+      Überprüfung. Mythos-Wirkung: Schafft strukturelle Crypto-Agility und
+      adressiert Store-now-decrypt-later kryptografisch, nicht durch Reibung.
+    framework_basis: 'C5:2026 CRY-01.01AC bis CRY-01.03AC, BSI TR-02102, NIST SP 1800-38, EU-Roadmap PQC-Migration'
+    iso_anchor: 'A.8.24'
+    maturity_levels:
+      initial: 'Kryptografisches Inventar dokumentiert'
+      defined: 'PQC-Strategie verabschiedet, Hybrid-Cryptography in Pilot'
+      managed: 'Hybrid-Cryptography produktiv, jährliche Review automatisiert'
+
+  - requirement_id: 'MHC-02'
+    title: 'Software Bill of Materials und Build-Provenance'
+    category: 'mythos_haertung'
+    priority: 'high'
+    description: |
+      Mythos-Befund: Supply-Chain-Angriffe auf Build-Pipelines und transitive
+      Abhängigkeiten sind ohne SBOM und Build-Provenance strukturell nicht
+      detektierbar; manuelle Lieferanten-Reviews skalieren nicht.
+      Härtungsempfehlung: SBOM-Generierung automatisch in der CI-Pipeline
+      (SPDX oder CycloneDX) für alle selbst entwickelten und weitergegebenen
+      Software-Artefakte. SBOM-Anforderung vertraglich bei allen kritischen
+      Softwarelieferanten. Automatisierte Vulnerability-Korrelation gegen
+      CVE, EUVD und OSV. SLSA Level 3+ für Build-Provenance bei kritischen
+      Artefakten. Mythos-Wirkung: Strukturelle Detektionsfähigkeit für
+      Supply-Chain-Angriffe; Detektionslatenz reduziert auf Publikationszeit
+      in Vulnerability-Datenbanken.
+    framework_basis: 'C5:2026 DEV-13, CRA Annex I Teil II (rechtsverbindliche SBOM-Pflicht), DORA Art. 28, NIS2-DVO Nr. 5, SLSA-Framework; ISO-Flanken A.5.19, A.5.20, A.8.4, A.8.30'
+    iso_anchor: 'A.5.21'
+    maturity_levels:
+      initial: 'SBOM-Generierung in einzelnen Pipelines'
+      defined: 'SBOM für alle eigenen Artefakte, Vulnerability-Korrelation'
+      managed: 'SBOM von kritischen Lieferanten, SLSA Level 3+, automatisierte Provenance-Verifikation'
+
+  - requirement_id: 'MHC-03'
+    title: 'Phishing-resistente Multi-Faktor-Authentisierung'
+    category: 'mythos_haertung'
+    priority: 'high'
+    description: |
+      Mythos-Befund: AI-qualitatives Spear-Phishing entwertet klassische
+      MFA-Verfahren wie SMS-OTP oder Push-Notifications; Adversary-in-the-
+      Middle-Proxies replizieren Sessions in Echtzeit.
+      Härtungsempfehlung: Phishing-resistente Verfahren nach WebAuthn-
+      Standard für alle privilegierten Accounts, extern erreichbaren Dienste
+      und Zugänge zu Systemen mit erhöhtem Schutzbedarf. Passkeys oder
+      Hardware-Token als Mindestform. Ausschluss von SMS-MFA und Push-
+      Notifications ohne Number-Matching für neue Deployments. Bestehende
+      Legacy-MFA-Verfahren mit Übergangsplan ersetzen. Mythos-Wirkung:
+      Origin-Bindung bei WebAuthn macht Authentisierungsnachweise auf
+      Phishing-Seiten kryptografisch wertlos.
+    framework_basis: 'NIST SP 800-63B AAL2/AAL3, C5:2026 IAM-08, FIDO-Alliance-Standards (WebAuthn, Passkeys, CTAP2), NIS2-DVO Nr. 11.2'
+    iso_anchor: 'A.8.5'
+    maturity_levels:
+      initial: 'FIDO2/Passkeys für privilegierte Accounts'
+      defined: 'FIDO2-Pflicht für alle extern erreichbaren Dienste'
+      managed: 'Passwortlose Authentisierung organisationsweit, SMS-MFA abgeschaltet'
+
+  - requirement_id: 'MHC-04'
+    title: 'Workload-Identität und Zero-Trust-Netzwerkarchitektur'
+    category: 'mythos_haertung'
+    priority: 'high'
+    description: |
+      Mythos-Befund: Klassische Netzwerk-Perimeter und Shared Secrets
+      ermöglichen Lateral Movement; AI-Agenten ohne eigene Workload-
+      Identität nutzen menschliche Developer-Credentials und entziehen
+      sich der Audit-Korrelation.
+      Härtungsempfehlung: Reifegrad-Pfad in drei Stufen statt Big-Bang-
+      Migration. Stufe 1: SPIFFE/SPIRE-Identitäten für privilegierte
+      Service-Accounts, mTLS auf den drei bis fünf kritischsten Service-
+      zu-Service-Pfaden. Stufe 2: Workload-Identity für alle produktiven
+      Microservices, ZTNA für privilegierten Remote-Zugriff. Stufe 3:
+      Workload-Identity für Dev/Test, identitätsbasierte Mikrosegmentierung.
+      AI-Agenten (Claude Code, Cursor, Copilot Workspace) erhalten eigene
+      Workload-Identitäten mit zeitlich begrenzten, capability-scoped
+      Berechtigungen pro Tool-Aufruf. Vollständiger Audit-Trail aller
+      Agent-Aktionen mit Korrelation zur initiierenden menschlichen
+      Identität. Mythos-Wirkung: Strukturelle Elimination klassischer
+      Lateral-Movement-Pfade.
+    framework_basis: 'NIST SP 800-207 Zero Trust Architecture, NIST NCCoE Agent Identity (2026), SPIFFE/SPIRE, Service-Mesh (Istio, Linkerd)'
+    iso_anchor: 'A.5.15'
+    maturity_levels:
+      initial: 'SPIFFE/SPIRE für privilegierte Workloads, mTLS auf 3-5 kritischsten Pfaden'
+      defined: 'Workload-Identity für alle produktiven Microservices, ZTNA für privilegierten Zugriff'
+      managed: 'Flächendeckend Workload-Identity inkl. Dev/Test, AI-Agenten mit capability-scoped Identitäten'
+
+  - requirement_id: 'MHC-05'
+    title: 'Verhaltensbasierte Detection und Kill-Chain-Korrelation'
+    category: 'mythos_haertung'
+    priority: 'high'
+    description: |
+      Mythos-Befund: Signaturbasierte Detection scheitert an
+      fragmentierten Mikroschritt-Angriffen, Living-off-the-Land-Binaries
+      und Beacon-less C2; agentische Angreifer aggregieren über
+      Zeitfenster, in denen klassische SIEMs blind sind.
+      Härtungsempfehlung: UEBA mit ML-gestützter Baseline-Erkennung und
+      Anomalie-Alerting. MITRE-ATT&CK-basierte Detection-Regeln mit
+      messbarer Coverage (mindestens 60 % der Top-10-Techniken der
+      eigenen Branche, validiert via DeTT&CT oder Atomic Red Team).
+      Kill-Chain-Korrelation über mehrere Ereignisse und Zeitfenster.
+      Detection-Schwerpunkte: Living-off-the-Land-Binaries, Beacon-less
+      C2 (DNS-Tunneling, HTTPS-C2 mit langen Sleep-Intervallen).
+      Threat-Hunting als eigene Funktion (PEAK oder TaHiTI), mindestens
+      zwölf hypothesen-basierte Hunts pro Jahr. Adversarial Robustness
+      der eigenen Detection-AI. Für Organisationen ohne SOC: MDR-Service
+      (CrowdStrike Falcon Complete, Arctic Wolf, SentinelOne Vigilance,
+      Sophos MDR). Mythos-Wirkung: Adressiert Aggregationsblindheit
+      klassischer Detection; Detection ist nicht Prevention.
+    framework_basis: 'C5:2026 OPS-13 (SIEM), NIS2-DVO Nr. 3.2, DORA Art. 10, MITRE ATT&CK, NIST SP 800-94'
+    iso_anchor: 'A.8.16'
+    maturity_levels:
+      initial: 'MITRE ATT&CK als Detection-Framework, < 30 % Coverage'
+      defined: '>= 60 % Coverage Top-10-Techniken, dokumentiertes Threat-Hunting'
+      managed: 'Adversarial-robuste ML-Detection, kontinuierliche ATT&CK-Coverage-Validierung'
+
+  - requirement_id: 'MHC-06'
+    title: 'Container-Sicherheit und Confidential Computing'
+    category: 'mythos_haertung'
+    priority: 'high'
+    description: |
+      Mythos-Befund: Container-Images aus unkontrollierten Registries
+      sind ein primärer Supply-Chain-Vektor; Workloads mit erhöhtem
+      Schutzbedarf sind in geteilter Cloud-Infrastruktur ohne TEE
+      strukturell nicht vor privilegierten Angreifern geschützt.
+      Härtungsempfehlung: Für Container — signierte Base-Images aus
+      kontrollierten Registries, Runtime-Protection mit Admission-
+      Controller-Policies, automatisierte Image-Scans vor dem Deployment.
+      Für Confidential Computing — Einsatz von TEE oder Secure Enclaves
+      für Workloads mit erhöhtem Schutzbedarf, mit Remote-Attestation.
+      Mythos-Wirkung: Container-Signatur schafft kryptografische
+      Hartbarriere gegen manipulierte Images; Confidential Computing
+      ist die derzeit härteste Barriere gegen Angreifer mit Provider-
+      Infrastruktur-Zugriff.
+    framework_basis: 'C5:2026 OPS-34/35 (Container Management), OPS-32/33 (Confidential Computing), PSS-11, NIST SP 800-190, Confidential Computing Consortium'
+    iso_anchor: 'A.8.27'
+    maturity_levels:
+      initial: 'Container-Images signiert, Vulnerability-Scan vor Deployment'
+      defined: 'Runtime-Protection mit Admission-Controllern, dokumentierte TEE-Use-Cases'
+      managed: 'Confidential Computing produktiv für hochsensitive Workloads, Remote-Attestation automatisiert'
+
+  - requirement_id: 'MHC-07'
+    title: 'Multi-Tenancy-Isolation mit nachweisbarer Trennung'
+    category: 'mythos_haertung'
+    priority: 'high'
+    description: |
+      Mythos-Befund: Multi-Tenant-Cloud-Plattformen ohne nachweisbare
+      Trennung haben einen unbegrenzten Blast Radius; ein Tenant-Breach
+      eskaliert ohne strukturelle Barriere zur Plattform-Kompromittierung.
+      Härtungsempfehlung: Dokumentierte Trennungskonzepte für Daten
+      (tenant-spezifische Schlüssel, logische oder physische Trennung),
+      für Netzwerke (tenant-spezifische VPCs, Namespaces, Software-
+      Defined-Networking-Regeln) und für Compute-Ressourcen (tenant-
+      spezifische Scheduling-Policies). Nachweisbare Trennung durch
+      regelmäßige, idealerweise automatisierte Tests. Mythos-Wirkung:
+      Strukturelle Begrenzung des Blast Radius — ein Angreifer in einem
+      Tenant wird nachweislich daran gehindert, auf andere Tenants
+      zuzugreifen.
+    framework_basis: 'C5:2026 OPS-30 und OPS-31, PSS-10 (Software Defined Networking), CSA Cloud Controls Matrix'
+    iso_anchor: 'A.8.22'
+    maturity_levels:
+      initial: 'Logische Tenant-Trennung dokumentiert'
+      defined: 'Tenant-spezifische Schlüssel, Netzwerk-/Compute-Isolation'
+      managed: 'Nachweisbare Trennung durch automatisierte Tests, regelmäßige Audits'
+
+  - requirement_id: 'MHC-08'
+    title: 'Unveränderliche Backups und Recovery-Validierung'
+    category: 'mythos_haertung'
+    priority: 'high'
+    description: |
+      Mythos-Befund: Klassische Backups ohne Unveränderlichkeit werden
+      bei Ransomware-Kampagnen mit-verschlüsselt; agentische Datenintegri-
+      tätsangriffe manipulieren Backup-Sätze unbemerkt.
+      Härtungsempfehlung: Umsetzung des 3-2-1-1-0-Modells — drei Kopien
+      auf zwei Medientypen, mindestens eine offsite und mindestens eine
+      unveränderlich oder offline, null Fehler beim periodischen Restore-
+      Test. Getrennte IAM-Pfade für Backup-Infrastruktur. Quartalsweise
+      Restore-Tests mit Dokumentation. Mythos-Wirkung: Eine der
+      wirksamsten Hartbarrieren gegen Ransomware und agentische
+      Datenintegritätsangriffe.
+    framework_basis: 'C5:2026 OPS-06 bis OPS-09 (Policies, Monitoring, Testing, Storage), DORA Art. 12, NIS2-DVO Nr. 4.1, Industriepraxis 3-2-1-1-0-Modell'
+    iso_anchor: 'A.8.13'
+    maturity_levels:
+      initial: 'Backups vorhanden, Restore-Tests jährlich'
+      defined: '3-2-1-1-0-Modell umgesetzt, quartalsweise Restore-Tests'
+      managed: 'Immutable Backups mit getrennten IAM-Pfaden, automatisierte Integritätsprüfung'
+
+  - requirement_id: 'MHC-09'
+    title: 'AI-gestütztes Security-Testing in der Pipeline'
+    category: 'mythos_haertung'
+    priority: 'medium'
+    description: |
+      Mythos-Befund: Der Patch-Gap zwischen CVE-Veröffentlichung und
+      Exploit-Verfügbarkeit kollabiert; AI-Coding-Assistenten generieren
+      regelmäßig unsichere Patterns (hardcodierte Credentials, fehlende
+      Input-Validierung, veraltete Dependencies).
+      Härtungsempfehlung: SAST (Semgrep, SonarQube, Checkmarx), DAST
+      (OWASP ZAP, Burp Suite Enterprise), SCA (Snyk, Dependency-Track).
+      AI-gestütztes Code-Scanning der nächsten Generation (GitHub Copilot
+      Autofix, Snyk Code DeepCode AI, Semgrep Pro AI-Assist). Pre-Merge-
+      Block bei High/Critical-Findings mit Confidence >= 80 %; KEV-
+      Findings sofort blockierend. Tägliche Vulnerability-Scans der
+      laufenden Systeme. Pre-Commit-Hooks mit AI-Code-Audit-Regeln.
+      Wöchentliches AI-Code-Audit-Reporting mit Trend-Tracking.
+      Vibe-Coded Code als eigene Risikokategorie im SoA. Mythos-Wirkung:
+      Shift-Left entzieht dem Angreifer das Zeitfenster zwischen Exploit-
+      Verfügbarkeit und Produktions-Patch.
+    framework_basis: 'C5:2026 DEV-07, OPS-22, OPS-25 mit Verschärfung OPS-25.01AS (tägliche Scans), NIST SP 800-218 SSDF, OWASP ASVS, CRA Annex I Teil II'
+    iso_anchor: 'A.8.29'
+    maturity_levels:
+      initial: 'SAST/DAST/SCA in CI'
+      defined: 'AI-gestütztes Code-Scanning + Pre-Merge-Block bei High-Findings'
+      managed: 'Tägliche Vulnerability-Scans, AI-Code-Audit für Vibe-Coded Code, automatisierter KEV-Hotfix-Channel'
+
+  - requirement_id: 'MHC-10'
+    title: 'Continuous Control Monitoring und Policy-as-Code'
+    category: 'mythos_haertung'
+    priority: 'medium'
+    description: |
+      Mythos-Befund: Manuelle, periodische Compliance-Reviews haben
+      Detektionslatenzen von Monaten bis Quartalen — unter Mythos-
+      Bedingungen ist das strukturell zu langsam; A.5.35/A.5.36 sind
+      in ihrer klassischen Wirksamkeit degradiert.
+      Härtungsempfehlung: Sicherheitsrichtlinien als ausführbare Regeln
+      in OPA/Rego, HashiCorp Sentinel oder vergleichbaren Engines
+      formalisieren. Integration in CI (Pre-Deploy-Checks) und Runtime-
+      Enforcement. Automatisierte, kontinuierliche Compliance-Checks
+      gegen Baselines. Echtzeit-Compliance-Dashboards mit quantifizierten
+      Abweichungsindikatoren. Abweichungen lösen automatisch Incident-
+      Tickets aus. Mythos-Wirkung: Detektionslatenz für Compliance-
+      Abweichungen sinkt von Monaten/Quartalen auf Sekunden bis Minuten.
+    framework_basis: 'C5:2026 COM-03 und COM-04, NIS2-DVO Nr. 2.2, DORA Art. 6(5), OWASP SAMM, Open Policy Agent (OPA/Rego), HashiCorp Sentinel'
+    iso_anchor: 'A.5.36'
+    maturity_levels:
+      initial: 'Compliance-Dashboards mit manueller Pflege'
+      defined: 'Policy-as-Code in CI, Echtzeit-Compliance-Checks gegen Baselines'
+      managed: 'Runtime-Enforcement, automatisierte Incident-Tickets bei Abweichung'
+
+  - requirement_id: 'MHC-11'
+    title: 'SOAR-basierte Tier-1-Automation und parallele IR-Playbooks'
+    category: 'mythos_haertung'
+    priority: 'medium'
+    description: |
+      Mythos-Befund: Agentische Angreifer agieren in Maschinen-
+      Geschwindigkeit; klassische manuelle Incident-Response-Ketten
+      verlieren das Tempo-Match. Parallele Multi-Vector-Angriffe
+      überfordern manuell betriebene SOC-Teams.
+      Härtungsempfehlung: SOAR-Plattform (Splunk SOAR, Palo Alto XSOAR,
+      Microsoft Sentinel mit Automation Rules) mit vordefinierten
+      Playbooks für vollautomatische Containment-Aktionen bei eindeutigen
+      Signalen. Menschliche Eskalation gezielt auf ambige Fälle. Mythos-
+      spezifische Playbooks: Massen-Datenexfiltration, paralleler Multi-
+      Vector-Angriff, Supply-Chain-Kompromittierung, Credential-Stuffing-
+      Welle, MFA-Fatigue. Tabletop-Übungen für 3-5 parallele Incidents,
+      mindestens halbjährlich. Härtung der Automation-Schicht selbst:
+      signierte Trigger-Events, Audit-Trail jeder Playbook-Ausführung,
+      Rate-Limits, Human-in-the-Loop für Aktionen mit hohem Blast-Radius,
+      Schutz der Playbook-Definitionen wie Quellcode. Für Organisationen
+      < 1.000 MA ohne Security-Team: MDR mit 24/7-SOC und MTTC-SLA.
+      Mythos-Wirkung: MTTC sinkt von Stunden auf Minuten.
+    framework_basis: 'C5:2026 SIM-02 und SIM-03, NIS2-DVO Nr. 3.5 (Reaktion auf Sicherheitsvorfälle), DORA Art. 17, Anthropic Glasswing-Defensivpost zu parallelen Incident-Szenarien'
+    iso_anchor: 'A.5.24'
+    maturity_levels:
+      initial: 'IR-Playbooks dokumentiert, manuelle Ausführung'
+      defined: 'SOAR mit teilautomatisierten Playbooks, MTTC < 60 Minuten'
+      managed: 'Vollautomatische Tier-1-Containment, MTTC < 10 Minuten, halbjährliche Multi-Incident-Tabletops; alternativ MDR-Service mit vertraglicher SLA'
+
+  - requirement_id: 'MHC-12'
+    title: 'Threat-Led Penetration Testing mit Mythos-Szenarien'
+    category: 'mythos_haertung'
+    priority: 'medium'
+    description: |
+      Mythos-Befund: Standard-Pentests mit dokumentiertem Scope testen
+      nicht, ob Controls gegen reale Mythos-TTPs wirken; Compliance-
+      Pentests laufen Gefahr, falsch-positive Sicherheitszusicherungen
+      zu produzieren.
+      Härtungsempfehlung: Threat-Led Penetration Tests mit externen
+      Red-Teamern nach realen Bedrohungs-Szenarien. Mythos-spezifische
+      Szenarien: AI-gestütztes Spear-Phishing mit Deepfake-Voice,
+      fragmentierte Angriffsketten über Mikroschritte, parallele Multi-
+      Vector-Angriffe, Supply-Chain-Kompromittierungen, Cloud-API-
+      Missbrauch über kompromittierte Service-Accounts. Mindestens
+      jährlich für kritische Funktionen. Purple-Team-Übungen zwischen
+      TLPT-Zyklen mit ATT&CK-Coverage-Mapping. Für Nicht-DORA-Adressaten
+      kostengünstigere Formate: Open-Source-Adversary-Emulation (Caldera,
+      Atomic Red Team), BAS-Plattformen (AttackIQ, SafeBreach, Picus).
+      Mythos-Wirkung: TLPT testet, ob Controls gegen reale Mythos-TTPs
+      wirken — nicht ob sie dokumentiert sind.
+    framework_basis: 'DORA Art. 26 und 27 (einziges verbindliches TLPT-Regime), TIBER-EU-Rahmenwerk der EZB, C5:2026 OPS-22, NIS2-DVO Nr. 3.5.5'
+    iso_anchor: 'A.8.29'
+    maturity_levels:
+      initial: 'Jährliche Penetrationstests mit Standard-Scope'
+      defined: 'Threat-Led Tests mit Mythos-Szenarien, Purple-Team zwischen Zyklen'
+      managed: 'Kontinuierliche Adversary-Emulation, BAS-Plattform produktiv, Closure-Rate >= 90 % im SLA-Zeitfenster'
+
+  - requirement_id: 'MHC-13'
+    title: 'AI-Agent-Governance und Harness-Sicherheit'
+    category: 'mythos_haertung'
+    priority: 'medium'
+    description: |
+      Mythos-Befund: Privilegierte AI-Agenten (Coding-Agenten, MCP-Server,
+      IDE-Extensions, Agentic Skills) operieren in den meisten
+      Organisationen außerhalb existierender Control-Frameworks
+      (Mythos-Ready CSA/SANS/OWASP April 2026: CRITICAL-Lücke
+      "Unmanaged AI Agent Attack Surface").
+      Härtungsempfehlung: Governance in fünf Dimensionen — (1) Harness-
+      Audit: Prompts, Tool-Definitionen, Retrieval-Pipelines und
+      Eskalationslogik mit Code-Review-Disziplin, Versionierung,
+      signierte Releases, Pre-Production-Pen-Tests gegen Prompt-Injection
+      und Tool-Confused-Deputy. (2) Blast-Radius-Limits: Capability-
+      Scoping pro Tool-Aufruf, Rate-Limits pro Agent-Identität, Circuit-
+      Breaker, Human-Approval für irreversible Aktionen. (3) Human-
+      Override: jede Agent-Sitzung mit menschlichem Owner und Kill-Switch;
+      Audit-Trail aller Agent-Aktionen mit Korrelation zur initiierenden
+      Identität, Retention >= 12 Monate. (4) Supply-Chain-Inventar für
+      MCP-Server, VS-Code-/JetBrains-Extensions mit AI-Funktion, Agentic
+      Skills, externe Agent-Frameworks. (5) Pre-Production-Checks vor
+      Agent-Deployment: Scope-Definition, Bedrohungsmodell, Rollback-
+      Plan, Monitoring-Plan. Audit-Schwellwerte: 100 % der produktionsnahen
+      Coding-Agenten mit dokumentiertem Bedrohungsmodell, Audit-Trail-
+      Coverage 100 %, Mean Time to Revoke < 5 Minuten. Mythos-Wirkung:
+      Schließt die CRITICAL-Lücke "Unmanaged AI Agent Attack Surface"
+      und ergänzt MHC-04 um agentische Spezifika.
+    framework_basis: 'OWASP LLM Top 10 (LLM01 Prompt Injection, LLM06 Excessive Agency, LLM08 Excessive Permissions), OWASP Agentic Security Initiative (ASI01-ASI10), MITRE ATLAS (AML.T0047, AML.T0051), Anthropic/OpenAI/Google Responsible-Use-Guidelines, NIST AI RMF 1.0, ISO/IEC 42001 Annex A'
+    iso_anchor: 'A.8.27'
+    maturity_levels:
+      initial: 'AI-Coding-Agenten dokumentiert, manuelles Inventar von MCP-Servern und Extensions'
+      defined: 'Capability-scoped Identitäten + Audit-Trail produktiv, dokumentiertes Bedrohungsmodell pro Agent-Use-Case, Allowlist für Extensions und MCP-Server'
+      managed: 'Vollständiger Harness-Code-Review-Prozess, automatisierte Pre-Production-Checks, Mean Time to Revoke < 5 Minuten, regelmäßige Prompt-Injection-Pen-Tests'

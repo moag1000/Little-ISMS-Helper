@@ -1,0 +1,94 @@
+control_id;title;category;flanking_mhcs
+A.5.1;Informationssicherheitsrichtlinien;N;
+A.5.2;"Informationssicherheitsrollen und -verantwortlichkeiten";N;
+A.5.3;Aufgabentrennung;T;MHC-05
+A.5.4;Verantwortlichkeiten der Leitung;N;
+A.5.5;Kontakt mit Behörden;T;MHC-11
+A.5.6;Kontakt mit speziellen Interessengruppen;N;
+A.5.7;Threat Intelligence;T;MHC-05
+A.5.8;Informationssicherheit im Projektmanagement;N;
+A.5.9;Inventar von Informationen und zugehörigen Werten;S;MHC-13
+A.5.10;Akzeptable Nutzung von Informationen;N;
+A.5.11;Rückgabe von Werten;N;
+A.5.12;Klassifizierung von Informationen;S;
+A.5.13;Kennzeichnung von Informationen;N;
+A.5.14;Informationsübertragung;T;MHC-05
+A.5.15;Zugriffskontrolle;T;"MHC-04,MHC-05"
+A.5.16;Identitätsmanagement;S;"MHC-04,MHC-13"
+A.5.17;Authentisierungsinformation;T;MHC-03
+A.5.18;Zugangsrechte;T;MHC-10
+A.5.19;Informationssicherheit in Lieferantenbeziehungen;T;MHC-02
+A.5.20;Adressierung in Lieferantenvereinbarungen;T;MHC-02
+A.5.21;Management der ICT-Lieferkette;T;MHC-02
+A.5.22;Überwachung Lieferantendienstleistungen;T;MHC-02
+A.5.23;Cloud-Dienste;T;"MHC-06,MHC-07"
+A.5.24;Planung IR-Management;T;MHC-11
+A.5.25;Beurteilung und Entscheidung zu Ereignissen;R;MHC-11
+A.5.26;Reaktion auf Vorfälle;T;MHC-11
+A.5.27;Lernen aus Vorfällen;S;
+A.5.28;Sammlung von Beweismaterial;S;
+A.5.29;Informationssicherheit während einer Störung;T;MHC-08
+A.5.30;ICT-Bereitschaft für BCM;S;MHC-08
+A.5.31;Identifikation rechtlicher Anforderungen;N;
+A.5.32;Rechte an geistigem Eigentum;N;
+A.5.33;Schutz von Aufzeichnungen;T;MHC-08
+A.5.34;Datenschutz und PII;T;
+A.5.35;Unabhängige Überprüfung;T;"MHC-10,MHC-12"
+A.5.36;Einhaltung von Richtlinien;R;MHC-10
+A.5.37;Dokumentierte Betriebsprozesse;N;
+A.6.1;Überprüfung (Screening);N;
+A.6.2;Beschäftigungsbedingungen;N;
+A.6.3;"Bewusstsein, Aus- und Weiterbildung";T;
+A.6.4;Disziplinarverfahren;N;
+A.6.5;Verantwortlichkeiten nach Beendigung;S;
+A.6.6;Vertraulichkeitsvereinbarungen;N;
+A.6.7;Remote-Arbeit;T;"MHC-03,MHC-04"
+A.6.8;Meldung von Sicherheitsereignissen;T;
+A.7.1;Physische Sicherheitsperimeter;S;
+A.7.2;Physische Zutrittskontrolle;S;
+A.7.3;Sicherung Büros und Einrichtungen;S;
+A.7.4;Physische Sicherheitsüberwachung;S;
+A.7.5;Schutz vor physischen und Umwelt-Bedrohungen;N;
+A.7.6;Arbeiten in Sicherheitsbereichen;S;
+A.7.7;Clear Desk und Screen Lock;N;
+A.7.8;Aufstellung und Schutz von Geräten;N;
+A.7.9;Sicherheit von Werten außerhalb der Räumlichkeiten;T;
+A.7.10;Speichermedien;S;
+A.7.11;Versorgungseinrichtungen;N;
+A.7.12;Verkabelungssicherheit;N;
+A.7.13;Wartung von Geräten;N;
+A.7.14;Sichere Entsorgung oder Wiederverwendung;S;
+A.8.1;Benutzer-Endpunktgeräte;T;"MHC-03,MHC-05"
+A.8.2;Privilegierte Zugriffsrechte;S;MHC-04
+A.8.3;Einschränkung des Informationszugangs;T;MHC-05
+A.8.4;Zugang zu Quellcode;T;"MHC-02,MHC-05"
+A.8.5;Sichere Authentisierung;T;MHC-03
+A.8.6;Kapazitätsmanagement;N;
+A.8.7;Schutz vor Malware;T;MHC-05
+A.8.8;Verwaltung technischer Schwachstellen;R;MHC-09
+A.8.9;Konfigurationsmanagement;S;MHC-10
+A.8.10;Informationslöschung;S;
+A.8.11;Datenmaskierung;S;
+A.8.12;Verhinderung von Datenabfluss;T;MHC-05
+A.8.13;Informationssicherung (Backup);S;MHC-08
+A.8.14;Redundanz;S;MHC-08
+A.8.15;Protokollierung (Logging);S;MHC-05
+A.8.16;Überwachungsaktivitäten;T;MHC-05
+A.8.17;Uhrenzeit-Synchronisation;S;
+A.8.18;Privilegierte Hilfsprogramme;S;
+A.8.19;Software-Installation;S;
+A.8.20;Netzwerksicherheit;T;MHC-04
+A.8.21;Sicherheit von Netzwerkdiensten;T;MHC-04
+A.8.22;Trennung in Netzwerken;T;"MHC-04,MHC-07"
+A.8.23;Webfilterung;R;MHC-03
+A.8.24;Verwendung von Kryptographie;S;MHC-01
+A.8.25;Sicherer Entwicklungslebenszyklus;T;MHC-09
+A.8.26;Sicherheitsanforderungen für Anwendungen;T;MHC-09
+A.8.27;Prinzipien der sicheren Systemarchitektur;S;MHC-13
+A.8.28;Sicheres Programmieren;T;MHC-09
+A.8.29;Sicherheitsprüfung in Entwicklung und Abnahme;S;"MHC-09,MHC-12"
+A.8.30;Ausgelagerte Entwicklung;T;MHC-02
+A.8.31;Trennung von Umgebungen;S;MHC-06
+A.8.32;Änderungsmanagement;T;MHC-09
+A.8.33;Testinformationen;S;
+A.8.34;Schutz während Audittests;N;
