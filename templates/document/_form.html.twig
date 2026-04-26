@@ -5,6 +5,7 @@
 #}
 
 {% trans_default_domain 'documents' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {# Basic Information #}
 <fieldset class="mb-4">
@@ -57,10 +58,7 @@
     </legend>
 
     {% if is_edit_mode|default(false) %}
-        <div class="alert alert-info" role="status">
-            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-            {{ 'document.help.edit_file'|trans({}, 'document') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'info', body: 'document.help.edit_file'|trans({}, 'document') }) }}
     {% endif %}
 
     <div class="row">

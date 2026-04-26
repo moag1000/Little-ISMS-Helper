@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'wizard' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ config.name }} - {{ 'wizard.title'|trans }}{% endblock %}
 
@@ -63,21 +64,21 @@
 
             {# Missing Recommended Modules Warning #}
             {% if missing_recommended|length > 0 %}
-            <div class="alert alert-warning">
-                <h4 class="alert-heading h6">
-                    <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ 'wizard.missing_recommended_title'|trans }}
-                </h4>
-                <p class="mb-2">{{ 'wizard.missing_recommended_desc'|trans }}</p>
-                <ul class="mb-0">
-                    {% for mod in missing_recommended %}
-                    <li><strong>{{ mod }}</strong></li>
-                    {% endfor %}
-                </ul>
-                <hr>
-                <a href="{{ path('admin_modules_index') }}" class="btn btn-warning btn-sm">
-                    <i class="bi bi-gear me-1" aria-hidden="true"></i>{{ 'wizard.activate_modules'|trans }}
-                </a>
-            </div>
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+                {% block alert_body %}
+                    <div class="fa-alert__title">{{ 'wizard.missing_recommended_title'|trans }}</div>
+                    <p class="mb-2">{{ 'wizard.missing_recommended_desc'|trans }}</p>
+                    <ul class="mb-0">
+                        {% for mod in missing_recommended %}
+                        <li><strong>{{ mod }}</strong></li>
+                        {% endfor %}
+                    </ul>
+                    <hr>
+                    <a href="{{ path('admin_modules_index') }}" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm">
+                        <i class="bi bi-gear" aria-hidden="true"></i>{{ 'wizard.activate_modules'|trans }}
+                    </a>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
 
             {# Start Button #}

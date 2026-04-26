@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}Lizenz-Zusammenfassung{% endblock %}
 
@@ -54,50 +55,56 @@
                     <div class="col-12">
                         {% set compliance_percentage = (stats.allowed / stats.total * 100)|round(1) %}
                         {% if compliance_percentage >= 95 %}
-                            <div class="alert alert-success" role="alert">
+                            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success' } } %}
+                                {% block alert_body %}
                                 <div class="d-flex align-items-center">
                                     <div class="flex-shrink-0">
                                         <i class="fa-icon fa-icon--status-ok fs-3 me-3" aria-hidden="true"></i>
                                     </div>
                                     <div>
-                                        <h2 class="alert-heading mb-1 h5"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> Hervorragend Lizenzkonform</h2>
+                                        <div class="fa-alert__title"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> Hervorragend Lizenzkonform</div>
                                         <p class="mb-0">
                                             {{ compliance_percentage }}% der Pakete haben permissive Lizenzen.
                                             Das Projekt ist für kommerzielle Nutzung freigegeben.
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                                {% endblock %}
+                            {% endembed %}
                         {% elseif compliance_percentage >= 80 %}
-                            <div class="alert alert-info" role="alert">
+                            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                                {% block alert_body %}
                                 <div class="d-flex align-items-center">
                                     <div class="flex-shrink-0">
                                         <i class="bi bi-info-circle-fill fs-3 me-3" aria-hidden="true"></i>
                                     </div>
                                     <div>
-                                        <h2 class="alert-heading mb-1 h5">✓ Überwiegend Lizenzkonform</h2>
+                                        <div class="fa-alert__title">✓ Überwiegend Lizenzkonform</div>
                                         <p class="mb-0">
                                             {{ compliance_percentage }}% der Pakete haben permissive Lizenzen.
                                             Einzelne Pakete erfordern besondere Aufmerksamkeit.
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                                {% endblock %}
+                            {% endembed %}
                         {% else %}
-                            <div class="alert alert-warning" role="alert">
+                            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+                                {% block alert_body %}
                                 <div class="d-flex align-items-center">
                                     <div class="flex-shrink-0">
                                         <i class="fa-icon fa-icon--status-warning fs-3 me-3" aria-hidden="true"></i>
                                     </div>
                                     <div>
-                                        <h2 class="alert-heading mb-1 h5"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Prüfung erforderlich</h2>
+                                        <div class="fa-alert__title"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Prüfung erforderlich</div>
                                         <p class="mb-0">
                                             {{ compliance_percentage }}% der Pakete haben permissive Lizenzen.
                                             Bitte prüfen Sie problematische Lizenzen im Detail.
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                                {% endblock %}
+                            {% endembed %}
                         {% endif %}
                     </div>
                 </div>
@@ -302,13 +309,14 @@
 
             {% else %}
                 {# No Report Found #}
-                <div class="alert alert-warning" role="alert">
+                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+                    {% block alert_body %}
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
                             <i class="fa-icon fa-icon--status-warning fs-3 me-3" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h2 class="alert-heading mb-1 h5">Kein Bericht gefunden</h2>
+                            <div class="fa-alert__title">Kein Bericht gefunden</div>
                             <p class="mb-3">
                                 Der Lizenzbericht wurde noch nicht generiert. Bitte führen Sie das folgende Kommando aus:
                             </p>
@@ -320,7 +328,8 @@
                             </p>
                         </div>
                     </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         </div>
     </div>

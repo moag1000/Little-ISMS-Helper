@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'mfa.setup_totp.title'|trans({}, 'mfa') }}{% endblock %}
 
@@ -15,10 +16,7 @@
         </a>
     </div>
 
-    <div class="alert alert-info mb-4">
-        <i class="bi bi-info-circle" aria-hidden="true"></i>
-        {{ 'mfa.setup_totp.subtitle'|trans({}, 'mfa') }}
-    </div>
+    {{ _fa_alert.render({ variant: 'info', class: 'mb-4', body: 'mfa.setup_totp.subtitle'|trans({}, 'mfa') }) }}
 
     <div class="row">
         <div class="col-lg-8">
@@ -41,14 +39,12 @@
                              style="max-width: 300px;">
                     </div>
 
-                    <div class="alert alert-info" data-controller="mfa-setup">
-                        <p class="fw-bold">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i>
-                            {{ 'mfa.setup_totp.manual_entry'|trans({}, 'mfa') }}
-                        </p>
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                        {% block alert_body %}
+                        <div class="fa-alert__title">{{ 'mfa.setup_totp.manual_entry'|trans({}, 'mfa') }}</div>
                         <p class="mb-2">{{ 'mfa.setup_totp.manual_instructions'|trans({}, 'mfa') }}</p>
                         <label for="secret-key" class="form-label">{{ 'mfa.setup.secret_key'|trans({}, 'mfa') }}</label>
-                        <div class="input-group">
+                        <div class="input-group" data-controller="mfa-setup">
                             <input type="text"
                                    class="form-control font-monospace"
                                    value="{{ secret }}"
@@ -64,18 +60,10 @@
                                 {{ 'common.copy'|trans({}, 'messages') }}
                             </button>
                         </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
 
-                    <div class="alert alert-secondary">
-                        <strong>
-                            <i class="bi bi-person" aria-hidden="true"></i>
-                            {{ 'user.field.email'|trans({}, 'user') }}:
-                        </strong> {{ user.email }}<br>
-                        <strong>
-                            <i class="bi bi-phone" aria-hidden="true"></i>
-                            {{ 'mfa.field.device_name'|trans({}, 'mfa') }}:
-                        </strong> {{ mfa_token.deviceName }}
-                    </div>
+                    {{ _fa_alert.render({ variant: 'info', body: '<strong><i class="bi bi-person" aria-hidden="true"></i> ' ~ 'user.field.email'|trans({}, 'user') ~ ':</strong> ' ~ user.email ~ '<br><strong><i class="bi bi-phone" aria-hidden="true"></i> ' ~ 'mfa.field.device_name'|trans({}, 'mfa') ~ ':</strong> ' ~ mfa_token.deviceName }) }}
                 {% endblock %}
             {% endembed %}
 
@@ -155,13 +143,15 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <div class="alert alert-danger">
-                        <strong>
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger' } } %}
+                        {% block alert_body %}
+                        <div class="fa-alert__title">
                             <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
                             {{ 'mfa.backup_codes.warning'|trans({}, 'mfa') }}
-                        </strong>
+                        </div>
                         <p class="mb-0 small">{{ 'mfa.backup_codes.warning_text'|trans({}, 'mfa') }}</p>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
 
                     <p class="small">{{ 'mfa.backup_codes.description'|trans({}, 'mfa') }}</p>
 

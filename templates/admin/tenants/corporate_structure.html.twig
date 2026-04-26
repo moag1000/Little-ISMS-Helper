@@ -14,7 +14,7 @@
 {% block admin_content %}
     {# Info message when only one tenant exists #}
     {% if not isMultiTenant %}
-        {{ _fa_alert.render({ variant: 'info', class: 'mb-4', title: 'corporate.single_tenant.title'|trans({}, 'tenant'), body: ('corporate.single_tenant.message'|trans({'%count%': activeTenantCount}, 'tenant')) ~ ' ' ~ ('corporate.single_tenant.hint'|trans({}, 'tenant')) }) }}
+        {{ _fa_alert.render({ variant: 'info', class: 'mb-4', title: 'corporate.single_tenant.title'|trans({}, 'tenant'), body: 'corporate.single_tenant.message'|trans({'%count%': activeTenantCount}, 'tenant') ~ ' ' ~ 'corporate.single_tenant.hint'|trans({}, 'tenant') }) }}
     {% endif %}
 
     {# Statistics Cards #}
@@ -92,7 +92,7 @@
                                         <small class="text-muted">{{ 'corporate.role.parent'|trans({}, 'tenant') }}</small>
                                     </div>
                                     <a href="{{ path('tenant_management_show', {id: group.id}) }}"
-                                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                       class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
                                     </a>
                                 </div>
@@ -144,7 +144,7 @@
                                 <td>{{ tenant.name }}</td>
                                 <td>
                                     <button type="button"
-                                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                            class="btn btn-sm btn-outline-primary"
                                             data-controller="corporate-modals"
                                             data-corporate-modals-tenant-id-value="{{ tenant.id }}"
                                             data-corporate-modals-tenant-name-value="{{ tenant.name }}"
@@ -153,7 +153,7 @@
                                         <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'corporate.action.set_parent'|trans({}, 'tenant') }}
                                     </button>
                                     <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
-                                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                       class="btn btn-sm btn-outline-secondary" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                 </td>
@@ -206,10 +206,10 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             {{ 'common.cancel'|trans({}, 'messages') }}
                         </button>
-                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                        <button type="submit" class="btn btn-primary">
                             <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
                         </button>
                     </div>
@@ -246,10 +246,10 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             {{ 'common.cancel'|trans({}, 'messages') }}
                         </button>
-                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                        <button type="submit" class="btn btn-primary">
                             <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
                         </button>
                     </div>
@@ -314,7 +314,7 @@
             </div>
             <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                 <button type="button"
-                        class="fa-cyber-btn fa-cyber-btn--warning"
+                        class="btn btn-outline-warning"
                         data-controller="corporate-modals"
                         data-corporate-modals-tenant-id-value="{{ subsidiary.id }}"
                         data-corporate-modals-tenant-name-value="{{ subsidiary.name }}"
@@ -325,7 +325,7 @@
                     <i class="bi bi-gear" aria-hidden="true"></i>
                 </button>
                 <a href="{{ path('tenant_management_show', {id: subsidiary.id}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--ghost"
+                   class="btn btn-outline-primary"
                    title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                     <i class="bi bi-eye" aria-hidden="true"></i>
                 </a>
@@ -335,7 +335,7 @@
                       data-ui-actions-message-param="{{ 'corporate.confirm.remove_parent'|trans({}, 'tenant') }}">
                     <input type="hidden" name="parent_id" value="">
                     <button type="submit"
-                            class="fa-cyber-btn fa-cyber-btn--danger"
+                            class="btn btn-outline-danger"
                             title="{{ 'corporate.action.remove_parent'|trans({}, 'tenant') }}"
                             aria-label="{{ 'common.close'|trans({}, 'messages') }}">
                         <i class="bi bi-x-circle" aria-hidden="true"></i>

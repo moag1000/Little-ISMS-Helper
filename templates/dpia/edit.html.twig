@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'privacy' %}
 
 {% block title %}Edit DPIA - {{ dpia.referenceNumber }}{% endblock %}
@@ -24,13 +25,7 @@
     } %}
 
     {% if dpia.status == 'requires_revision' and dpia.rejectionReason %}
-        <div class="fa-alert fa-alert--warning">
-            <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
-            <div class="fa-alert__body">
-                <div class="fw-bold">Revision Required</div>
-                <p class="mb-0">{{ dpia.rejectionReason }}</p>
-            </div>
-        </div>
+        {{ _fa_alert.render({ variant: 'warning', title: 'Revision Required', body: dpia.rejectionReason }) }}
     {% endif %}
 
     {% embed '_components/_card.html.twig' %}

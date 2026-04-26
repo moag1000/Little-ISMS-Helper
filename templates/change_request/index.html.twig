@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'change_requests' %}
 {% import '_macros/cards.html.twig' as cards %}
 
@@ -7,7 +8,6 @@
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -44,15 +44,15 @@
     {% if pending_approval|length > 0 %}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
         {% block alert_body %}
-            <div class="fw-bold mb-2">{{ 'change_request.alert.pending_approval'|trans({}, 'change_requests') }}</div>
-            <ul class="mb-0">
-                {% for change in pending_approval %}
-                <li>
-                    <a href="{{ path('app_change_request_show', {id: change.id}) }}">{{ change.changeNumber }} - {{ change.title }}</a>
-                    ({{ ('change_request.priority.' ~ change.priority)|trans({}, 'change_requests') }})
-                </li>
-                {% endfor %}
-            </ul>
+        <div class="fw-bold mb-2"><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'change_request.alert.pending_approval'|trans({}, 'change_requests') }}</div>
+        <ul>
+            {% for change in pending_approval %}
+            <li>
+                <a href="{{ path('app_change_request_show', {id: change.id}) }}">{{ change.changeNumber }} - {{ change.title }}</a>
+                ({{ ('change_request.priority.' ~ change.priority)|trans({}, 'change_requests') }})
+            </li>
+            {% endfor %}
+        </ul>
         {% endblock %}
     {% endembed %}
     {% endif %}
@@ -60,14 +60,14 @@
     {% if overdue|length > 0 %}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger' } } %}
         {% block alert_body %}
-            <div class="fw-bold mb-2">{{ 'change_request.alert.overdue'|trans({}, 'change_requests') }}</div>
-            <ul class="mb-0">
-                {% for change in overdue %}
-                <li>
-                    <a href="{{ path('app_change_request_show', {id: change.id}) }}">{{ change.changeNumber }} - {{ change.title }}</a>
-                </li>
-                {% endfor %}
-            </ul>
+        <div class="fw-bold mb-2">{{ 'change_request.alert.overdue'|trans({}, 'change_requests') }}</div>
+        <ul>
+            {% for change in overdue %}
+            <li>
+                <a href="{{ path('app_change_request_show', {id: change.id}) }}">{{ change.changeNumber }} - {{ change.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
         {% endblock %}
     {% endembed %}
     {% endif %}
@@ -80,7 +80,6 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
             {% if change_requests|length > 0 %}
             {% embed '_components/_table.html.twig' with {
                 'wrapperClass': 'card-body',
@@ -109,8 +108,8 @@
                         <td>{{ change.getComplexityScore() }}</td>
                         <td>{{ change.requestedDate|date('Y-m-d') }}</td>
                         <td>
-                            <a href="{{ path('app_change_request_show', {id: change.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'change_request.action.view'|trans({}, 'change_requests') }}</a>
-                            <a href="{{ path('app_change_request_edit', {id: change.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'change_request.action.edit'|trans({}, 'change_requests') }}</a>
+                            <a href="{{ path('app_change_request_show', {id: change.id}) }}" class="btn btn-sm btn-secondary">{{ 'change_request.action.view'|trans({}, 'change_requests') }}</a>
+                            <a href="{{ path('app_change_request_edit', {id: change.id}) }}" class="btn btn-sm btn-primary">{{ 'change_request.action.edit'|trans({}, 'change_requests') }}</a>
                         </td>
                     </tr>
                     {% endfor %}

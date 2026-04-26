@@ -222,11 +222,11 @@
 
     function showFlashMessage(message, type) {
         const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.className = `fa-alert fa-alert--${type}`;
         alertDiv.setAttribute('role', 'alert');
         alertDiv.innerHTML = `
             ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
+            <button type="button" class="fa-alert__dismiss" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}">×</button>
         `;
 
         const container = document.querySelector('.container-fluid') || document.body;

@@ -1,5 +1,6 @@
 {# GDPR Data Breach Assessment Wizard Modal #}
 {% trans_default_domain 'privacy' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 <div class="gdpr-wizard"
      data-translations='{
@@ -96,12 +97,7 @@
                             </label>
                         </div>
 
-                        <div class="fa-alert fa-alert--info mt-4" role="alert">
-                            <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
-                            <div class="fa-alert__body">
-                                <small>{{ 'data_breach.wizard.personal_data_hint'|trans({}, 'privacy') }}</small>
-                            </div>
-                        </div>
+                        {{ _fa_alert.render({ variant: 'info', class: 'mt-4 small', body: 'data_breach.wizard.personal_data_hint'|trans({}, 'privacy') }) }}
                     </div>
 
                     {# Step 2: Data Type Classification #}
@@ -250,7 +246,7 @@
                         <div class="card fa-section mb-3">
                             <div class="card-body">
                                 <div class="card-subtitle mb-2 text-muted fw-semibold">{{ 'data_breach.wizard.risk_level_label'|trans({}, 'privacy') }}</div>
-                                <div data-gdpr-breach-wizard-target="resultRiskLevel" class="badge bg-secondary fa-status-pill fa-status-pill--neutral fs-5">
+                                <div data-gdpr-breach-wizard-target="resultRiskLevel" class="badge bg-secondary fs-5">
                                     {{ 'data_breach.wizard.calculating'|trans({}, 'privacy') }}
                                 </div>
                             </div>
@@ -262,7 +258,7 @@
                                 <div class="card-subtitle mb-2 text-muted fw-semibold">
                                     {{ 'data_breach.wizard.gdpr_article_33_requirement'|trans({}, 'privacy') }}
                                 </div>
-                                <div data-gdpr-breach-wizard-target="resultReportable" class="badge bg-secondary fa-status-pill fa-status-pill--neutral fs-6">
+                                <div data-gdpr-breach-wizard-target="resultReportable" class="badge bg-secondary fs-6">
                                     {{ 'data_breach.wizard.calculating'|trans({}, 'privacy') }}
                                 </div>
                             </div>
@@ -270,14 +266,14 @@
 
                         {# 72h Deadline (conditional) #}
                         <div class="fa-alert fa-alert--danger d-none" role="alert">
-                            <i class="fa-icon fa-icon--status-pending fa-alert__icon" aria-hidden="true"></i>
-                            <div class="fa-alert__body">
-                                <strong>{{ 'data_breach.wizard.deadline_warning'|trans({}, 'privacy') }}</strong>
-                                <p class="mb-0 mt-2">
-                                    {{ 'data_breach.wizard.deadline_date'|trans({}, 'privacy') }}:
-                                    <strong data-gdpr-breach-wizard-target="resultDeadline">--</strong>
-                                </p>
-                            </div>
+                            <strong>
+                                <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
+                                {{ 'data_breach.wizard.deadline_warning'|trans({}, 'privacy') }}
+                            </strong>
+                            <p class="mb-0 mt-2">
+                                {{ 'data_breach.wizard.deadline_date'|trans({}, 'privacy') }}:
+                                <strong data-gdpr-breach-wizard-target="resultDeadline">--</strong>
+                            </p>
                         </div>
 
                         {# Recommendation #}
@@ -307,7 +303,7 @@
                 {# Modal Footer #}
                 <div class="modal-footer">
                     <button type="button"
-                            class="fa-cyber-btn fa-cyber-btn--ghost"
+                            class="btn btn-outline-secondary"
                             data-gdpr-breach-wizard-target="backBtn"
                             data-action="click->gdpr-breach-wizard#back">
                         <i class="bi bi-arrow-left" aria-hidden="true"></i>
@@ -315,7 +311,7 @@
                     </button>
 
                     <button type="button"
-                            class="fa-cyber-btn fa-cyber-btn--warning"
+                            class="btn btn-warning"
                             data-gdpr-breach-wizard-target="nextBtn"
                             data-action="click->gdpr-breach-wizard#next">
                         {{ 'common.next'|trans({}, 'messages') }}
@@ -323,7 +319,7 @@
                     </button>
 
                     <button type="button"
-                            class="fa-cyber-btn fa-cyber-btn--primary d-none"
+                            class="btn btn-primary d-none"
                             data-gdpr-breach-wizard-target="completeBtn"
                             data-action="click->gdpr-breach-wizard#completeWizard">
                         <i class="bi bi-check-circle" aria-hidden="true"></i>
@@ -444,18 +440,15 @@
 
 .gdpr-wizard .form-check-label {
     cursor: pointer;
-    color: var(--fg);
+    color: var(--text-primary, var(--surface));
 }
 
-/* Dark mode specific overrides — Aurora-Tokens resolve theme automatically,
-   so these blocks are mostly redundant. Kept for the bg-warning header
-   (where modal-header.bg-warning needs explicit warning-text color in dark)
-   and the muted-text fallback for text-muted scope. */
+/* Dark mode specific overrides */
 [data-bs-theme="dark"] .gdpr-wizard-content,
 [data-theme="dark"] .gdpr-wizard-content {
-    background-color: var(--surface);
-    color: var(--fg);
-    border-color: var(--border);
+    background-color: var(--bg-elevated, var(--surface));
+    color: var(--text-primary, var(--surface-2));
+    border-color: var(--border-color, var(--border-strong));
 }
 
 [data-bs-theme="dark"] .gdpr-wizard-content .modal-header.bg-warning,
@@ -466,11 +459,11 @@
 
 [data-bs-theme="dark"] .gdpr-wizard-content .bg-body-secondary,
 [data-theme="dark"] .gdpr-wizard-content .bg-body-secondary {
-    background-color: var(--surface-2) !important;
+    background-color: var(--bg-secondary, var(--bg)) !important;
 }
 
 [data-bs-theme="dark"] .gdpr-wizard-content .text-muted,
 [data-theme="dark"] .gdpr-wizard-content .text-muted {
-    color: var(--fg-2) !important;
+    color: var(--text-secondary, var(--fg-3)) !important;
 }
 </style>

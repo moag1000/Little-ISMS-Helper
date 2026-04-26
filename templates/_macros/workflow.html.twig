@@ -217,7 +217,7 @@
                 <div class="btn-group" role="group">
                     {% if canApprove and workflowInstance.status in ['pending', 'in_progress'] %}
                         <button type="button"
-                                class="btn btn-sm btn-success fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm"
+                                class="btn btn-sm btn-success"
                                 data-bs-toggle="modal"
                                 data-bs-target="#approveWorkflow{{ workflowInstance.id }}"
                                 title="{{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}">
@@ -225,7 +225,7 @@
                             {% if not compact %}{{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}{% endif %}
                         </button>
                         <button type="button"
-                                class="btn btn-sm btn-danger fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
+                                class="btn btn-sm btn-danger"
                                 data-bs-toggle="modal"
                                 data-bs-target="#rejectWorkflow{{ workflowInstance.id }}"
                                 title="{{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}">
@@ -235,7 +235,7 @@
                     {% endif %}
 
                     <a href="{{ path('app_workflow_instance_show', {id: workflowInstance.id}) }}"
-                       class="btn btn-sm btn-outline-primary fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                       class="btn btn-sm btn-outline-primary"
                        title="{{ 'workflow.action.view_full_workflow'|trans({}, 'workflows') }}">
                         <i class="bi bi-diagram-3" aria-hidden="true"></i>
                         {% if not compact %}{{ 'workflow.action.view_full_workflow'|trans({}, 'workflows') }}{% endif %}
@@ -266,12 +266,9 @@
                                 </p>
 
                                 {% if entity is defined %}
-                                    <div class="alert alert-info fa-alert fa-alert--info mb-3" role="alert">
-                                        <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
-                                        <div class="fa-alert__body">
-                                            <strong>{{ 'workflow.field.related_entity'|trans({}, 'workflows') }}:</strong>
-                                            {{ entity.title ?? entity.name ?? entity.referenceNumber ?? 'N/A' }}
-                                        </div>
+                                    <div class="fa-alert fa-alert--info mb-3" role="alert">
+                                        <strong>{{ 'workflow.field.related_entity'|trans({}, 'workflows') }}:</strong>
+                                        {{ entity.title ?? entity.name ?? entity.referenceNumber ?? 'N/A' }}
                                     </div>
                                 {% endif %}
 
@@ -289,10 +286,10 @@
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                     {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
                                 </button>
-                                <button type="submit" class="btn btn-success fa-cyber-btn fa-cyber-btn--success">
+                                <button type="submit" class="btn btn-success">
                                     <i class="bi bi-check-lg" aria-hidden="true"></i>
                                     {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
                                 </button>
@@ -309,7 +306,7 @@
                         <form method="post" action="{{ path('app_workflow_instance_reject', {id: workflowInstance.id}) }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ workflowInstance.id) }}">
 
-                            <div class="modal-header" style="background: var(--fa-danger, #dc3545); color: var(--fa-on-danger, #fff);">
+                            <div class="modal-header bg-danger text-white">
                                 <h5 class="modal-title" id="rejectWorkflowLabel{{ workflowInstance.id }}">
                                     <i class="bi bi-x-circle" aria-hidden="true"></i>
                                     {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
@@ -323,12 +320,9 @@
                                 </p>
 
                                 {% if entity is defined %}
-                                    <div class="alert alert-warning fa-alert fa-alert--warning mb-3" role="alert">
-                                        <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
-                                        <div class="fa-alert__body">
-                                            <strong>{{ 'workflow.field.related_entity'|trans({}, 'workflows') }}:</strong>
-                                            {{ entity.title ?? entity.name ?? entity.referenceNumber ?? 'N/A' }}
-                                        </div>
+                                    <div class="fa-alert fa-alert--warning mb-3" role="alert">
+                                        <strong>{{ 'workflow.field.related_entity'|trans({}, 'workflows') }}:</strong>
+                                        {{ entity.title ?? entity.name ?? entity.referenceNumber ?? 'N/A' }}
                                     </div>
                                 {% endif %}
 
@@ -350,10 +344,10 @@
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                     {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
                                 </button>
-                                <button type="submit" class="btn btn-danger fa-cyber-btn fa-cyber-btn--danger">
+                                <button type="submit" class="btn btn-danger">
                                     <i class="bi bi-x-lg" aria-hidden="true"></i>
                                     {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
                                 </button>

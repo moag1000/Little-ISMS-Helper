@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'wizard' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ category.name|trans({}, 'wizard') }} - {{ config.name }}{% endblock %}
 
@@ -108,13 +109,14 @@
                                     <br><small class="text-muted">{{ item.description|trans({}, 'wizard') }}</small>
                                 {% endif %}
                                 {% if item.gap %}
-                                    <div class="alert alert-danger py-1 px-2 mt-2 mb-0 small">
-                                        <i class="bi bi-flag me-1" aria-hidden="true"></i>
-                                        <strong>{{ item.gap.title|trans({}, 'wizard') }}</strong>
-                                        {% if item.gap.description is defined %}
-                                            <br>{{ item.gap.description|trans({}, 'wizard') }}
-                                        {% endif %}
-                                    </div>
+                                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', icon: 'bi-flag', class: 'py-1 px-2 mt-2 mb-0 small' } } %}
+                                        {% block alert_body %}
+                                            <strong>{{ item.gap.title|trans({}, 'wizard') }}</strong>
+                                            {% if item.gap.description is defined %}
+                                                <br>{{ item.gap.description|trans({}, 'wizard') }}
+                                            {% endif %}
+                                        {% endblock %}
+                                    {% endembed %}
                                 {% endif %}
 
                                 {# Details #}

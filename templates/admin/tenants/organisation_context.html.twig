@@ -24,7 +24,6 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     <p class="text-muted mb-4">
                         {{ 'tenant.organisation_context.description'|trans({}, 'tenant') }}
                     </p>
@@ -76,33 +75,33 @@
                     {% if current_settings %}
                     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
                         {% block alert_body %}
-                            <h2 class="h4 mb-2">{{ 'tenant.organisation_context.current_config'|trans({}, 'tenant') }}</h2>
-                            <ul class="mb-0">
-                                {% if current_settings.selected_modules is defined and current_settings.selected_modules %}
-                                <li>
-                                    <strong>{{ 'tenant.organisation_context.active_modules'|trans({}, 'tenant') }}:</strong>
-                                    {{ current_settings.selected_modules|join(', ') }}
-                                </li>
-                                {% endif %}
-                                {% if current_settings.selected_frameworks is defined and current_settings.selected_frameworks %}
-                                <li>
-                                    <strong>{{ 'tenant.organisation_context.active_frameworks'|trans({}, 'tenant') }}:</strong>
-                                    {{ current_settings.selected_frameworks|join(', ') }}
-                                </li>
-                                {% endif %}
-                                {% if current_settings.setup_completed_at is defined %}
-                                <li>
-                                    <strong>{{ 'tenant.organisation_context.setup_date'|trans({}, 'tenant') }}:</strong>
-                                    {{ current_settings.setup_completed_at|date('d.m.Y H:i') }}
-                                </li>
-                                {% endif %}
-                                {% if current_settings.last_modified_at is defined %}
-                                <li>
-                                    <strong>{{ 'tenant.organisation_context.last_modified'|trans({}, 'tenant') }}:</strong>
-                                    {{ current_settings.last_modified_at|date('d.m.Y H:i') }}
-                                </li>
-                                {% endif %}
-                            </ul>
+                        <div class="fa-alert__title">{{ 'tenant.organisation_context.current_config'|trans({}, 'tenant') }}</div>
+                        <ul class="mb-0">
+                            {% if current_settings.selected_modules is defined and current_settings.selected_modules %}
+                            <li>
+                                <strong>{{ 'tenant.organisation_context.active_modules'|trans({}, 'tenant') }}:</strong>
+                                {{ current_settings.selected_modules|join(', ') }}
+                            </li>
+                            {% endif %}
+                            {% if current_settings.selected_frameworks is defined and current_settings.selected_frameworks %}
+                            <li>
+                                <strong>{{ 'tenant.organisation_context.active_frameworks'|trans({}, 'tenant') }}:</strong>
+                                {{ current_settings.selected_frameworks|join(', ') }}
+                            </li>
+                            {% endif %}
+                            {% if current_settings.setup_completed_at is defined %}
+                            <li>
+                                <strong>{{ 'tenant.organisation_context.setup_date'|trans({}, 'tenant') }}:</strong>
+                                {{ current_settings.setup_completed_at|date('d.m.Y H:i') }}
+                            </li>
+                            {% endif %}
+                            {% if current_settings.last_modified_at is defined %}
+                            <li>
+                                <strong>{{ 'tenant.organisation_context.last_modified'|trans({}, 'tenant') }}:</strong>
+                                {{ current_settings.last_modified_at|date('d.m.Y H:i') }}
+                            </li>
+                            {% endif %}
+                        </ul>
                         {% endblock %}
                     {% endembed %}
                     {% endif %}

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'mapping_review.title'|trans({}, 'compliance') }} #{{ mapping.id }}{% endblock %}
 
@@ -195,11 +196,7 @@
         {% endblock %}
         {% block card_body %}
             {% if gap_summary %}
-                <div class="alert alert-warning">
-                    <strong>{{ 'mapping_review.gap.total_impact'|trans({}, 'compliance') }}:</strong> {{ gap_summary.total_impact }}% |
-                    <strong>{{ 'mapping_review.gap.total_effort'|trans({}, 'compliance') }}:</strong> {{ gap_summary.total_effort }}h |
-                    <strong>{{ 'mapping_review.gap.high_confidence'|trans({}, 'compliance') }}:</strong> {{ gap_summary.high_confidence_gaps }}/{{ gap_summary.total_gaps }}
-                </div>
+                {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'mapping_review.gap.total_impact'|trans({}, 'compliance') ~ ':</strong> ' ~ gap_summary.total_impact ~ '% | <strong>' ~ 'mapping_review.gap.total_effort'|trans({}, 'compliance') ~ ':</strong> ' ~ gap_summary.total_effort ~ 'h | <strong>' ~ 'mapping_review.gap.high_confidence'|trans({}, 'compliance') ~ ':</strong> ' ~ gap_summary.high_confidence_gaps ~ '/' ~ gap_summary.total_gaps }) }}
             {% endif %}
 
             {% for gap in gap_items %}
@@ -236,10 +233,12 @@
                     {% endif %}
 
                     {% if gap.recommendedAction %}
-                        <div class="alert alert-info mb-0">
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-0' } } %}
+                            {% block alert_body %}
                             <strong><i class="bi bi-lightbulb text-warning" aria-hidden="true"></i> {{ 'mapping_review.gap.recommendation'|trans({}, 'compliance') }}:</strong><br>
                             {{ gap.recommendedAction|nl2br }}
-                        </div>
+                            {% endblock %}
+                        {% endembed %}
                     {% endif %}
 
                     <div class="mt-2">
@@ -255,10 +254,7 @@
         {% endblock %}
     {% endembed %}
     {% else %}
-        <div class="alert alert-success">
-            <div class="fw-bold"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'mapping_review.gap.no_gaps'|trans({}, 'compliance') }}</div>
-            <p class="mb-0">{{ 'mapping_review.gap.no_gaps_desc'|trans({}, 'compliance') }}</p>
-        </div>
+        {{ _fa_alert.render({ variant: 'success', title: 'mapping_review.gap.no_gaps'|trans({}, 'compliance'), body: 'mapping_review.gap.no_gaps_desc'|trans({}, 'compliance') }) }}
     {% endif %}
 
     {# Review Form #}
@@ -354,7 +350,7 @@ document.getElementById('reviewForm').addEventListener('submit', async (e) => {
 
         if (result.success) {
             document.getElementById('reviewResult').innerHTML = `
-                <div class="alert alert-success">
+                <div class="fa-alert fa-alert--success" role="alert">
                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'mapping_review.message.review_saved'|trans({}, 'compliance') }}
                     ${data.manual_percentage ? `<br>{{ 'mapping_review.message.new_percentage'|trans({}, 'compliance') }}: ${data.manual_percentage}%` : ''}
                 </div>
@@ -362,14 +358,14 @@ document.getElementById('reviewForm').addEventListener('submit', async (e) => {
             setTimeout(() => window.location.reload(), 1500);
         } else {
             document.getElementById('reviewResult').innerHTML = `
-                <div class="alert alert-danger">
+                <div class="fa-alert fa-alert--danger" role="alert">
                     <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'mapping_review.message.error'|trans({}, 'compliance') }}: ${result.error || '{{ 'mapping_review.message.unknown_error'|trans({}, 'compliance') }}'}
                 </div>
             `;
         }
     } catch (error) {
         document.getElementById('reviewResult').innerHTML = `
-            <div class="alert alert-danger">
+            <div class="fa-alert fa-alert--danger" role="alert">
                 <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'mapping_review.message.network_error'|trans({}, 'compliance') }}: ${error.message}
             </div>
         `;

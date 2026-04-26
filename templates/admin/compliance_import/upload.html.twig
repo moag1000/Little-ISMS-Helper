@@ -31,15 +31,18 @@
                 {{ 'compliance_import.upload.intro'|trans({}, 'compliance_import') }}
             </p>
 
-            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'd-flex align-items-start gap-2' } } %}
                 {% block alert_body %}
+                <div>
                     <strong>{{ 'compliance_import.upload.template_label'|trans({}, 'compliance_import') }}</strong>
                     <div>
                         <a href="{{ template_url|default('#') }}" download
+                           class="fa-alert__link"
                            aria-label="{{ 'compliance_import.upload.template_download_aria'|trans({}, 'compliance_import') }}">
                             {{ 'compliance_import.upload.template_download'|trans({}, 'compliance_import') }}
                         </a>
                     </div>
+                </div>
                 {% endblock %}
             {% endembed %}
 
@@ -63,7 +66,7 @@
                 </div>
 
                 <div class="d-flex gap-2 justify-content-end mt-4">
-                    <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                    <a href="{{ path('admin_compliance_index') }}" class="btn btn-secondary">
                         <i class="bi bi-x-circle" aria-hidden="true"></i>
                         {{ 'compliance_import.common.cancel'|trans({}, 'compliance_import') }}
                     </a>

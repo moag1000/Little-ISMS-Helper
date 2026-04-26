@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'mfa.backup_codes.title'|trans({}, 'mfa') }}{% endblock %}
 
@@ -17,17 +18,19 @@
 
     <div class="row">
         <div class="col-lg-8 offset-lg-2">
-            <div class="alert alert-danger">
-                <p class="alert-heading fw-bold">
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger' } } %}
+                {% block alert_body %}
+                <div class="fa-alert__title">
                     <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
                     {{ 'mfa.backup_codes.warning'|trans({}, 'mfa') }}
-                </p>
+                </div>
                 <p>{{ 'mfa.backup_codes.warning_text'|trans({}, 'mfa') }}</p>
                 <hr>
                 <p class="mb-0">
                     <strong>{{ 'mfa.backup_codes.onetime_display'|trans({}, 'mfa') }}</strong>
                 </p>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {% embed '_components/_card.html.twig' with { 'class': 'border-warning mb-4' } %}
                 {% block card_header %}
@@ -39,20 +42,13 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <div class="alert alert-info">
-                        <strong>
-                            <i class="bi bi-person" aria-hidden="true"></i>
-                            {{ 'user.field.email'|trans({}, 'user') }}:
-                        </strong> {{ mfa_token.user.email }}<br>
-                        <strong>
-                            <i class="bi bi-phone" aria-hidden="true"></i>
-                            {{ 'mfa.field.device_name'|trans({}, 'mfa') }}:
-                        </strong> {{ mfa_token.deviceName }}<br>
-                        <strong>
-                            <i class="bi bi-calendar" aria-hidden="true"></i>
-                            {{ 'common.generated'|trans({}, 'messages') }}:
-                        </strong> {{ 'now'|date('d.m.Y H:i:s') }}
-                    </div>
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                        {% block alert_body %}
+                        <strong><i class="bi bi-person" aria-hidden="true"></i> {{ 'user.field.email'|trans({}, 'user') }}:</strong> {{ mfa_token.user.email }}<br>
+                        <strong><i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa.field.device_name'|trans({}, 'mfa') }}:</strong> {{ mfa_token.deviceName }}<br>
+                        <strong><i class="bi bi-calendar" aria-hidden="true"></i> {{ 'common.generated'|trans({}, 'messages') }}:</strong> {{ 'now'|date('d.m.Y H:i:s') }}
+                        {% endblock %}
+                    {% endembed %}
 
                     <div data-controller="backup-codes"
                          data-backup-codes-codes-value="{{ backup_codes|json_encode }}">
@@ -104,10 +100,7 @@
                         <li>{{ 'mfa.backup_codes.usage_4'|trans({}, 'mfa') }}</li>
                     </ul>
 
-                    <div class="alert alert-warning">
-                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                        {{ 'mfa.backup_codes.regenerate_warning'|trans({}, 'mfa') }}
-                    </div>
+                    {{ _fa_alert.render({ variant: 'warning', body: 'mfa.backup_codes.regenerate_warning'|trans({}, 'mfa') }) }}
                 {% endblock %}
             {% endembed %}
         </div>

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'admin' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% trans_default_domain 'admin' %}
 
 {% block title %}{{ 'admin.data_export.title'|trans({}, 'admin') }} - {{ 'admin.data_management.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -11,7 +11,15 @@
     </div>
 
     {# Info Box #}
-    {{ _fa_alert.render({ variant: 'info', class: 'mb-4', title: 'admin.data_export.about_title'|trans({}, 'admin'), body: 'admin.data_export.about_description'|trans({}, 'admin') ~ ' ' ~ 'admin.data_export.about_note'|trans({}, 'admin') }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-4' } } %}
+        {% block alert_body %}
+        <div class="fa-alert__title">{{ 'admin.data_export.about_title'|trans({}, 'admin') }}</div>
+        <p class="mb-0">
+            {{ 'admin.data_export.about_description'|trans({}, 'admin') }}
+            {{ 'admin.data_export.about_note'|trans({}, 'admin')|raw }}
+        </p>
+        {% endblock %}
+    {% endembed %}
 
     {# Export Form #}
     {% embed '_components/_card.html.twig' %}
@@ -92,14 +100,14 @@
     {# Warning Box #}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', class: 'mt-4' } } %}
         {% block alert_body %}
-            <div class="fa-alert__title">{{ 'admin.data_export.notes_title'|trans({}, 'admin') }}</div>
-            <ul class="mb-0">
-                <li>{{ 'data_management.export.includes_all_records'|trans({}, 'messages') }}</li>
-                <li>{{ 'data_management.export.sensitive_data_warning'|trans({}, 'messages') }}</li>
-                <li>{{ 'data_management.export.large_exports_warning'|trans({}, 'messages') }}</li>
-                <li>{{ 'data_management.export.relationships_warning'|trans({}, 'messages') }}</li>
-                <li>{{ 'admin.data_export.backup_link'|trans({'%url%': path('data_backup_index')}, 'admin')|raw }}</li>
-            </ul>
+        <div class="fa-alert__title">{{ 'admin.data_export.notes_title'|trans({}, 'admin') }}</div>
+        <ul class="mb-0">
+            <li>{{ 'data_management.export.includes_all_records'|trans({}, 'messages') }}</li>
+            <li>{{ 'data_management.export.sensitive_data_warning'|trans({}, 'messages') }}</li>
+            <li>{{ 'data_management.export.large_exports_warning'|trans({}, 'messages') }}</li>
+            <li>{{ 'data_management.export.relationships_warning'|trans({}, 'messages') }}</li>
+            <li>{{ 'admin.data_export.backup_link'|trans({'%url%': path('data_backup_index')}, 'admin')|raw }}</li>
+        </ul>
         {% endblock %}
     {% endembed %}
 </div>

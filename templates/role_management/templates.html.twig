@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'role.templates.title'|trans({}, 'role_management') }}{% endblock %}
 
@@ -12,14 +13,15 @@
     </div>
 
     {# Description #}
-    <div class="alert alert-info mb-4">
-        <i class="bi bi-info-circle" aria-hidden="true"></i>
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-4' } } %}
+        {% block alert_body %}
         <strong>{{ 'role.templates.description'|trans({}, 'role_management') }}</strong>
         <p class="mb-0 mt-2">
             Wählen Sie eine vordefinierte Rollenvorlage aus und passen Sie optional den Namen an.
             Die Vorlage enthält bereits eine sinnvolle Kombination von Berechtigungen für den jeweiligen Anwendungsfall.
         </p>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Template Cards #}
     <div class="row">
@@ -101,7 +103,8 @@
                                     </div>
                                 </div>
 
-                                <div class="alert alert-info">
+                                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                                    {% block alert_body %}
                                     <strong>Diese Vorlage enthält:</strong>
                                     <ul class="mb-0 mt-2">
                                         {% for permission in template.permissions|slice(0, 5) %}
@@ -113,7 +116,8 @@
                                             </li>
                                         {% endif %}
                                     </ul>
-                                </div>
+                                    {% endblock %}
+                                {% endembed %}
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -131,15 +135,17 @@
     </div>
 
     {# Info Box #}
-    <div class="alert alert-warning mt-4">
-        <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Wichtige Hinweise</h5>
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', class: 'mt-4' } } %}
+        {% block alert_body %}
+        <div class="fa-alert__title">Wichtige Hinweise</div>
         <ul class="mb-0">
             <li>Die erstellte Rolle kann nach der Erstellung angepasst werden</li>
             <li>Fehlende Berechtigungen werden übersprungen (z.B. wenn sie noch nicht existieren)</li>
             <li>Die Rolle wird als benutzerdefinierte Rolle (nicht System-Rolle) erstellt</li>
             <li>Nach der Erstellung können Sie Berechtigungen hinzufügen oder entfernen</li>
         </ul>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>

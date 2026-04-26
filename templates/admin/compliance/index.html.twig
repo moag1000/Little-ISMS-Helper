@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}{% endblock %}
 
@@ -107,11 +108,7 @@
                         </div>
 
                         {% if _applicability == 'conditional' and framework.applicability_condition_key %}
-                            <div class="alert alert-warning small py-2 px-3 mb-2">
-                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                                <strong>{{ 'admin.compliance.applicability.applies_when'|trans({}, 'compliance') }}:</strong>
-                                {{ framework.applicability_condition_key|trans({}, 'compliance') }}
-                            </div>
+                            {{ _fa_alert.render({ variant: 'warning', class: 'small py-2 px-3 mb-2', body: '<strong>' ~ 'admin.compliance.applicability.applies_when'|trans({}, 'compliance') ~ ':</strong> ' ~ framework.applicability_condition_key|trans({}, 'compliance') }) }}
                         {% endif %}
 
                         <p class="framework-description">{{ framework.description }}</p>

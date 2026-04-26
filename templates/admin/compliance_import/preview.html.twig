@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance_import.preview.title'|trans({}, 'compliance_import') }}{% endblock %}
 
@@ -19,11 +20,9 @@
 
     {% if header_error %}
         {% set parts = header_error|split(':', 2) %}
-        <div class="alert alert-danger" role="alert">
-            <strong>
-                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                {{ ('compliance_import.' ~ parts[0])|trans({}, 'compliance_import') }}
-            </strong>
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger' } } %}
+            {% block alert_body %}
+            <strong>{{ ('compliance_import.' ~ parts[0])|trans({}, 'compliance_import') }}</strong>
             {% if parts[1] is defined %}
                 <code>{{ parts[1] }}</code>
             {% endif %}
@@ -33,7 +32,8 @@
                     {{ 'compliance_import.common.back_to_upload'|trans({}, 'compliance_import') }}
                 </a>
             </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% else %}
         {# Summary chips #}
         {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } only %}
@@ -160,18 +160,7 @@
         {% endembed %}
 
         {% if requires_four_eyes|default(false) %}
-            <div class="alert alert-warning d-flex gap-2" role="note">
-                <i class="fa-icon fa-icon--status-warning mt-1" aria-hidden="true"></i>
-                <div>
-                    <strong>{{ 'compliance_import.preview.four_eyes_warning_title'|trans({}, 'compliance_import') }}</strong>
-                    <div class="small">
-                        {{ 'compliance_import.preview.four_eyes_warning_body'|trans({
-                            '%rows%': rows|length,
-                            '%threshold%': four_eyes_threshold,
-                        }, 'compliance_import') }}
-                    </div>
-                </div>
-            </div>
+            {{ _fa_alert.render({ variant: 'warning', class: 'd-flex gap-2', title: 'compliance_import.preview.four_eyes_warning_title'|trans({}, 'compliance_import'), body: 'compliance_import.preview.four_eyes_warning_body'|trans({'%rows%': rows|length, '%threshold%': four_eyes_threshold}, 'compliance_import') }) }}
         {% endif %}
 
         {# Action bar #}

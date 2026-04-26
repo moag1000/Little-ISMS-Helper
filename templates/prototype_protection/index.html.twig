@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'prototype_protection.page.index_title'|trans({}, 'prototype_protection') }}{% endblock %}
 
@@ -40,21 +41,20 @@
     <main class="fa-aurora-surface">
 
     {% if expiring|length > 0 %}
-        <div class="alert alert-warning">
-            <h2 class="h6 alert-heading">
-                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                {{ 'prototype_protection.expiring.heading'|trans({'%count%': expiring|length}, 'prototype_protection') }}
-            </h2>
-            <ul class="mb-0 small">
-                {% for a in expiring %}
-                    <li>
-                        <a href="{{ path('app_prototype_protection_show', {id: a.id}) }}" class="alert-link">{{ a.title }}</a>
-                        — {{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}:
-                        {{ a.nextAssessmentDue|date('d.m.Y') }}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+            {% block alert_body %}
+                <div class="fa-alert__title">{{ 'prototype_protection.expiring.heading'|trans({'%count%': expiring|length}, 'prototype_protection') }}</div>
+                <ul class="mb-0 small">
+                    {% for a in expiring %}
+                        <li>
+                            <a href="{{ path('app_prototype_protection_show', {id: a.id}) }}" class="fa-alert__link">{{ a.title }}</a>
+                            — {{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}:
+                            {{ a.nextAssessmentDue|date('d.m.Y') }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 
     {% embed '_components/_card.html.twig' %}

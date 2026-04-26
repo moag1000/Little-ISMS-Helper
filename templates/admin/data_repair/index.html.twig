@@ -1,5 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'admin'%}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% block title %}{{ 'admin.data_repair.title'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_title %}
@@ -21,11 +22,9 @@
 
     {# Sprint 10 / S10-2: Junior-Sorge „Titel klingt gefährlich" —
      # explizite Warn-Leiste mit Reversibilitäts-Information. #}
-    <div class="alert alert-danger border-start border-5 border-danger shadow-sm" role="alert">
-        <h4 class="alert-heading mb-2">
-            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-            {{ 'admin.data_repair.safety.title'|trans({}, 'admin') }}
-        </h4>
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', class: 'border-start border-5 border-danger shadow-sm' } } %}
+        {% block alert_body %}
+        <div class="fa-alert__title">{{ 'admin.data_repair.safety.title'|trans({}, 'admin') }}</div>
         <p class="mb-2">
             <strong>{{ 'admin.data_repair.safety.lead'|trans({}, 'admin') }}</strong>
         </p>
@@ -47,20 +46,15 @@
                 {{ 'admin.data_repair.safety.role_hint'|trans({}, 'admin') }}
             </span>
         </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {% for message in app.flashes('success') %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-        </div>
+        {{ _fa_alert.render({ variant: 'success', dismissible: true, body: message }) }}
     {% endfor %}
 
     {% for message in app.flashes('error') %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-        </div>
+        {{ _fa_alert.render({ variant: 'danger', dismissible: true, body: message }) }}
     {% endfor %}
 
     {# Data Health Summary #}
@@ -101,14 +95,9 @@
             </div>
 
             {% if summary.total_issues > 0 %}
-                <div class="alert alert-info mt-3 mb-0">
-                    <strong>{{ 'common.info'|trans({}, 'messages') }}:</strong>
-                    Found {{ summary.total_issues }} total issues. Use the repair tools below to fix them.
-                </div>
+                {{ _fa_alert.render({ variant: 'info', class: 'mt-3 mb-0', body: '<strong>' ~ 'common.info'|trans({}, 'messages') ~ ':</strong> Found ' ~ summary.total_issues ~ ' total issues. Use the repair tools below to fix them.' }) }}
             {% else %}
-                <div class="alert alert-success mt-3 mb-0">
-                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> <strong>All systems healthy!</strong> No data integrity issues detected.
-                </div>
+                {{ _fa_alert.render({ variant: 'success', class: 'mt-3 mb-0', body: '<strong>All systems healthy!</strong> No data integrity issues detected.' }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}
@@ -200,15 +189,9 @@
             {% set totalOrphans = 0 %}
             {% for entities in orphanedEntities %}{% set totalOrphans = totalOrphans + entities|length %}{% endfor %}
             {% if totalOrphans == 0 %}
-                <div class="alert alert-success mb-0">
-                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'admin.data_repair.no_orphans'|trans({}, 'admin') }}
-                </div>
+                {{ _fa_alert.render({ variant: 'success', class: 'mb-0', body: 'admin.data_repair.no_orphans'|trans({}, 'admin') }) }}
             {% else %}
-                <div class="alert alert-warning">
-                    <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong>
-                    {{ 'admin.data_repair.orphans_found'|trans({}, 'admin') }}
-                    — {{ 'admin.data_repair.total_orphans'|trans({'%count%': totalOrphans}, 'admin') }}
-                </div>
+                {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.orphans_found'|trans({}, 'admin') ~ ' — ' ~ 'admin.data_repair.total_orphans'|trans({'%count%': totalOrphans}, 'admin') }) }}
 
                 {# Dynamischer Orphan-Count-Grid — pro detektiertem Entity-Typ eine Karte.
                    Zeigt auch seltene/seit Refactor neu erkannte Typen (Controls, Workflows, …). #}
@@ -460,9 +443,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="alert alert-warning">
-                <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.risk_asset_assignment_desc'|trans({}, 'admin') }}
-            </div>
+            {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.risk_asset_assignment_desc'|trans({}, 'admin') }) }}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-sm table-striped',
                 'responsive': true,
@@ -531,9 +512,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="alert alert-warning">
-                <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.incident_asset_assignment_desc'|trans({}, 'admin') }}
-            </div>
+            {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.incident_asset_assignment_desc'|trans({}, 'admin') }) }}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-sm table-striped',
                 'responsive': true,
@@ -603,9 +582,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="alert alert-warning">
-                <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.controls_without_risks_desc'|trans({}, 'admin') }}
-            </div>
+            {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.controls_without_risks_desc'|trans({}, 'admin') }) }}
             <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutRisks|length}, 'admin') }}</p>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-sm table-striped',
@@ -667,9 +644,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="alert alert-info">
-                <strong>{{ 'common.info'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.controls_without_assets_desc'|trans({}, 'admin') }}
-            </div>
+            {{ _fa_alert.render({ variant: 'info', body: '<strong>' ~ 'common.info'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.controls_without_assets_desc'|trans({}, 'admin') }) }}
             <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutAssets|length}, 'admin') }}</p>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-sm table-striped',
@@ -731,10 +706,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="alert alert-warning">
-                <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong>
-                Found {{ duplicates.audits|length }} audit number(s) used multiple times within the same tenant.
-            </div>
+            {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> Found ' ~ duplicates.audits|length ~ ' audit number(s) used multiple times within the same tenant.' }) }}
             {% for dup in duplicates.audits %}
                 {% embed '_components/_card.html.twig' with { class: 'mb-3 border-warning' } %}
                     {% block card_header %}
@@ -773,10 +745,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="alert alert-warning">
-                <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong>
-                Found {{ duplicates.assets|length }} asset name(s) used multiple times within the same tenant.
-            </div>
+            {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> Found ' ~ duplicates.assets|length ~ ' asset name(s) used multiple times within the same tenant.' }) }}
             {% for dup in duplicates.assets %}
                 {% embed '_components/_card.html.twig' with { class: 'mb-3 border-warning' } %}
                     {% block card_header %}
@@ -813,9 +782,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="alert alert-info">
-                Found {{ inconsistentData.audits_completed_without_date|length }} audit(s) marked as completed but missing actual completion date.
-            </div>
+            {{ _fa_alert.render({ variant: 'info', body: 'Found ' ~ inconsistentData.audits_completed_without_date|length ~ ' audit(s) marked as completed but missing actual completion date.' }) }}
             <ul>
             {% for audit in inconsistentData.audits_completed_without_date %}
                 <li>
@@ -839,9 +806,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="alert alert-info">
-                Found {{ inconsistentData.risks_residual_higher_than_inherent|length }} risk(s) where residual risk is higher than inherent risk (should never happen).
-            </div>
+            {{ _fa_alert.render({ variant: 'info', body: 'Found ' ~ inconsistentData.risks_residual_higher_than_inherent|length ~ ' risk(s) where residual risk is higher than inherent risk (should never happen).' }) }}
             <ul>
             {% for risk in inconsistentData.risks_residual_higher_than_inherent %}
                 <li>
@@ -867,9 +832,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="alert alert-danger">
-                <strong>{{ 'common.error'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.broken_references_desc'|trans({}, 'admin') }}
-            </div>
+            {{ _fa_alert.render({ variant: 'danger', body: '<strong>' ~ 'common.error'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.broken_references_desc'|trans({}, 'admin') }) }}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-sm table-striped',
                 'responsive': true,

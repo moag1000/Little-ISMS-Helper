@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'mfa.title'|trans({}, 'mfa') }}{% endblock %}
 
@@ -16,7 +17,7 @@
     </div>
 
     {# MFA Status #}
-    <div class="alert {{ mfa_enabled ? 'alert-success' : 'alert-warning' }} mb-4">
+    <div class="fa-alert fa-alert--{{ mfa_enabled ? 'success' : 'warning' }} mb-4" role="alert">
         <div class="d-flex align-items-center">
             {# TODO(aurora-migration): dynamic MFA status icon — keep bi-* #}
             <i class="bi {{ mfa_enabled ? 'bi-shield-check' : 'bi-shield-exclamation' }} fs-1 me-3" aria-hidden="true"></i>
@@ -212,28 +213,31 @@
                     {% endblock %}
                 {% endembed %}
             {% else %}
-                <div class="alert alert-info mb-0">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-0' } } %}
+                    {% block alert_body %}
                     {{ 'mfa.no_tokens_registered'|trans({}, 'mfa') }}
-                    <a href="{{ path('app_profile_mfa_setup_totp') }}" class="alert-link">
+                    <a href="{{ path('app_profile_mfa_setup_totp') }}" class="fa-alert__link">
                         {{ 'mfa.setup_now'|trans({}, 'mfa') }}
                     </a>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         {% endblock %}
     {% endembed %}
 
     {# Security Recommendations #}
-    <div class="alert alert-info mt-4">
-        <p class="fw-bold fs-5">
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mt-4' } } %}
+        {% block alert_body %}
+        <div class="fa-alert__title">
             <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
             {{ 'mfa.security_recommendations.title'|trans({}, 'mfa') }}
-        </p>
+        </div>
         <ul class="mb-0">
             <li>{{ 'mfa.security_recommendations.item1'|trans({}, 'mfa') }}</li>
             <li>{{ 'mfa.security_recommendations.item2'|trans({}, 'mfa') }}</li>
             <li>{{ 'mfa.security_recommendations.item3'|trans({}, 'mfa') }}</li>
         </ul>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

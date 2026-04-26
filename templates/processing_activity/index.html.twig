@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'privacy' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% block title %}{{ 'processing_activity.title'|trans({}, 'privacy')}}{% endblock %}
@@ -218,15 +219,16 @@
                     {% endblock %}
                 {% endembed %}
             {% else %}
-                <div class="alert alert-info m-4">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i>
-                    <strong>{{ 'processing_activity.empty.title'|trans({}, 'privacy')}}</strong>
+                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'm-4' } } %}
+                    {% block alert_body %}
+                    <div class="fa-alert__title">{{ 'processing_activity.empty.title'|trans({}, 'privacy')}}</div>
                     {% if current_filter != 'all' %}
                         {{ 'processing_activity.empty.filter_hint'|trans({}, 'privacy')}} <a href="{{ path('app_processing_activity_index') }}">{{ 'processing_activity.view_all_activities'|trans({}, 'privacy')}}</a>.
                     {% else %}
                         {{ 'processing_activity.empty.create_hint'|trans({}, 'privacy')}} <a href="{{ path('app_processing_activity_new') }}">{{ 'processing_activity.empty.create_first'|trans({}, 'privacy')}}</a>.
                     {% endif %}
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         {% endblock %}
     {% endembed %}

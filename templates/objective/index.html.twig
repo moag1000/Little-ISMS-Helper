@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'objective'%}
 {% import '_macros/cards.html.twig' as cards %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
@@ -46,7 +47,7 @@
         {% endblock %}
         {% block card_body %}
             {% if objectives|length == 0 %}
-            <div class="fa-alert fa-alert--info" role="alert"><i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body">{{ 'objective.message.no_objectives'|trans({}, 'objective') }}</div></div>
+            {{ _fa_alert.render({ variant: 'info', body: 'objective.message.no_objectives'|trans({}, 'objective') }) }}
             {% else %}
             {% embed '_components/_table.html.twig' with {
                 'noMargin': true
@@ -75,9 +76,9 @@
                         </td>
                         <td>{% include '_components/_badge.html.twig' with { variant: objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning'), content: ('objective.status.' ~ objective.status)|trans({}, 'objective') } %}</td>
                         <td>
-                            <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view'|trans({}, 'messages') }}" title="{{ 'common.view'|trans({}, 'messages') }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
+                            <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}" title="{{ 'common.view'|trans({}, 'messages') }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
                             {% if is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.edit'|trans({}, 'messages') }}" title="{{ 'common.edit'|trans({}, 'messages') }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                            <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-sm btn-outline-secondary" aria-label="{{ 'common.edit'|trans({}, 'messages') }}" title="{{ 'common.edit'|trans({}, 'messages') }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
                             {% endif %}
                         </td>
                     </tr>

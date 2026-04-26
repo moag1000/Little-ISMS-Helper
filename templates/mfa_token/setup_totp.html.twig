@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}{{ 'mfa_token.setup_totp.title'|trans({}, 'mfa') }}{% endblock %}
 {% block admin_subtitle %}
@@ -30,8 +31,8 @@
                              style="max-width: 300px;">
                     </div>
 
-                    <div class="alert alert-info" data-controller="mfa-setup">
-                        <h4><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.manual_entry'|trans({}, 'mfa') }}</h4>
+                    <div class="fa-alert fa-alert--info" role="alert" data-controller="mfa-setup">
+                        <div class="fa-alert__title">{{ 'mfa_token.setup_totp.manual_entry'|trans({}, 'mfa') }}</div>
                         <p class="mb-2">{{ 'mfa_token.setup_totp.manual_instructions'|trans({}, 'mfa') }}</p>
                         <label for="secret-key" class="form-label">{{ 'mfa.setup.secret_key'|trans({}, 'mfa') }}</label>
                         <div class="input-group">
@@ -51,10 +52,12 @@
                         </div>
                     </div>
 
-                    <div class="alert alert-secondary">
-                        <strong><i class="bi bi-person" aria-hidden="true"></i> {{ 'mfa_token.field.user'|trans({}, 'mfa') }}:</strong> {{ user.email }}<br>
-                        <strong><i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}:</strong> {{ mfa_token.deviceName }}
-                    </div>
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                        {% block alert_body %}
+                        <strong>{{ 'mfa_token.field.user'|trans({}, 'mfa') }}:</strong> {{ user.email }}<br>
+                        <strong>{{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}:</strong> {{ mfa_token.deviceName }}
+                        {% endblock %}
+                    {% endembed %}
                 {% endblock %}
             {% endembed %}
 
@@ -126,10 +129,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <div class="alert alert-danger">
-                        <strong><i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.warning'|trans({}, 'mfa') }}</strong>
-                        <p class="mb-0 small">{{ 'mfa_token.backup_codes.warning_text'|trans({}, 'mfa') }}</p>
-                    </div>
+                    {{ _fa_alert.render({ variant: 'danger', title: 'mfa_token.backup_codes.warning'|trans({}, 'mfa'), body: 'mfa_token.backup_codes.warning_text'|trans({}, 'mfa') }) }}
 
                     <p class="small">{{ 'mfa_token.backup_codes.description'|trans({}, 'mfa') }}</p>
 

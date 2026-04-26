@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'documents' %}
 
 {% block title %}{{ 'document.edit'|trans({}, 'document') }} - {{ parent() }}{% endblock %}
@@ -24,10 +25,7 @@
 
 {% embed '_components/_card.html.twig' %}
     {% block card_body %}
-        <div class="alert alert-info" role="status">
-            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-            {{ 'document.help.edit_file'|trans({}, 'document') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'info', body: 'document.help.edit_file'|trans({}, 'document') }) }}
 
         {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
             {% include '_components/_auto_form.html.twig' with {

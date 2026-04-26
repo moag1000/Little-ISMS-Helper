@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'wizard' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'wizard.compare_title'|trans({}, 'wizard') }} - {{ 'wizard.title'|trans({}, 'wizard') }}{% endblock %}
 
@@ -248,9 +249,7 @@
         {% endblock %}
     {% endembed %}
     {% else %}
-    <div class="alert alert-info">
-        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ 'wizard.select_frameworks_hint'|trans({}, 'wizard') }}
-    </div>
+    {{ _fa_alert.render({ variant: 'info', body: 'wizard.select_frameworks_hint'|trans({}, 'wizard') }) }}
     {% endif %}
 
     {# Navigation #}

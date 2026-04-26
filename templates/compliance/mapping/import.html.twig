@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance.mapping.import.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -48,10 +49,7 @@ A.5.15,NIS2-21.2.h,full,100,high,true,"Access Control"</code></pre>
     {% endembed %}
 
     {% if error is not null %}
-        <div class="alert alert-danger">
-            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-            {{ error|trans({}, 'compliance') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'danger', body: error|trans({}, 'compliance') }) }}
     {% endif %}
 
     {# Upload-Formular #}
@@ -211,10 +209,7 @@ A.5.15,NIS2-21.2.h,full,100,high,true,"Access Control"</code></pre>
                 {% endif %}
 
                 {% if not was_commit and result.created > 0 and result.errors|length == 0 %}
-                    <div class="alert alert-info small mt-3 mb-0">
-                        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-                        {{ 'compliance.mapping.import.result.preview_ok_hint'|trans({}, 'compliance') }}
-                    </div>
+                    {{ _fa_alert.render({ variant: 'info', class: 'small mt-3 mb-0', body: 'compliance.mapping.import.result.preview_ok_hint'|trans({}, 'compliance') }) }}
                 {% endif %}
             {% endblock %}
         {% endembed %}

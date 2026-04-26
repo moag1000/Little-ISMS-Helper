@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'wizard' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'wizard.title'|trans({}, 'wizard') }} - {{ parent() }}{% endblock %}
 
@@ -103,15 +104,16 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <div class="alert alert-warning py-2 mb-3">
-                        <small>
-                            <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>
-                            {{ 'wizard.missing_modules'|trans({}, 'wizard') }}:
-                            {% for mod in wizard.missing_modules %}
-                                <strong>{{ mod }}</strong>{% if not loop.last %}, {% endif %}
-                            {% endfor %}
-                        </small>
-                    </div>
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', class: 'py-2 mb-3' } } %}
+                        {% block alert_body %}
+                            <small>
+                                {{ 'wizard.missing_modules'|trans({}, 'wizard') }}:
+                                {% for mod in wizard.missing_modules %}
+                                    <strong>{{ mod }}</strong>{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </small>
+                        {% endblock %}
+                    {% endembed %}
                 {% endblock %}
                 {% block card_footer %}
                     <div class="card-footer bg-transparent">

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'analytics' %}
 
 {% block title %}{{ 'analytics.compliance.title'|trans({}, 'analytics') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -188,16 +189,10 @@
                         {% endblock %}
                         {% block card_body %}
                             {% if overlap.overlaps|length > 0 %}
-                            <div class="alert alert-success">
-                                <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
-                                <strong>{{ 'analytics.compliance.overlap.efficiency_info'|trans({}, 'analytics') }}</strong>
-                            </div>
+                            {{ _fa_alert.render({ variant: 'success', body: 'analytics.compliance.overlap.efficiency_info'|trans({}, 'analytics') }) }}
                             <p>{{ 'analytics.compliance.overlap.efficiency_description'|trans({'%percentage%': (total_overlap / overlap.overlaps|length)|round}, 'analytics') }}</p>
                             {% else %}
-                            <div class="alert alert-info">
-                                <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                                {{ 'analytics.compliance.comparison.no_data'|trans({}, 'analytics') }}
-                            </div>
+                            {{ _fa_alert.render({ variant: 'info', body: 'analytics.compliance.comparison.no_data'|trans({}, 'analytics') }) }}
                             {% endif %}
                             <div style="height: 200px; position: relative;">
                                 <canvas id="overlapChart"></canvas>

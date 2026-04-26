@@ -1,6 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'admin' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'admin.sample_data.title'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -19,7 +19,7 @@
 
     <p class="text-muted mb-4">{{ 'admin.sample_data.description'|trans({}, 'admin') }}</p>
 
-    {{ _fa_alert.render({ variant: 'info', body: '<strong>' ~ ('admin.sample_data.tenant_label'|trans({}, 'admin')) ~ ':</strong> ' ~ tenant.name ~ ' — ' ~ ('admin.sample_data.total_imported'|trans({'%count%': totalImported}, 'admin')) }) }}
+    {{ _fa_alert.render({ variant: 'info', body: '<strong>' ~ 'admin.sample_data.tenant_label'|trans({}, 'admin') ~ ':</strong> ' ~ tenant.name ~ ' — ' ~ 'admin.sample_data.total_imported'|trans({'%count%': totalImported}, 'admin') }) }}
 
     {% embed '_components/_card.html.twig' with { class: 'mb-4' } %}
         {% block card_header %}
@@ -85,7 +85,7 @@
                                                   data-action="submit->ui-actions#confirm"
                                                   data-ui-actions-message-param="{{ 'admin.sample_data.confirm_remove'|trans({'%name%': sample.name, '%count%': sample.count}, 'admin') }}">
                                                 <input type="hidden" name="_token" value="{{ csrf_token('sample_data_remove_' ~ sample.key) }}">
-                                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
                                                     <i class="bi bi-trash" aria-hidden="true"></i> {{ 'admin.sample_data.remove_button'|trans({}, 'admin') }}
                                                 </button>
                                             </form>
@@ -100,7 +100,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <button type="submit" class="btn btn-primary">
                         <i class="bi bi-download" aria-hidden="true"></i> {{ 'admin.sample_data.import_button'|trans({}, 'admin') }}
                     </button>
                 </div>
@@ -108,6 +108,6 @@
         {% endblock %}
     {% endembed %}
 
-    {{ _fa_alert.render({ variant: 'warning', title: 'admin.sample_data.note_title'|trans({}, 'admin'), body: 'admin.sample_data.note_message'|trans({}, 'admin') }) }}
+    {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'admin.sample_data.note_title'|trans({}, 'admin') ~ ':</strong> ' ~ 'admin.sample_data.note_message'|trans({}, 'admin') }) }}
 </div>
 {% endblock %}
