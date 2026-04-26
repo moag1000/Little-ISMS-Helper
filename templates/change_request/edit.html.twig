@@ -29,7 +29,7 @@
                     {{ 'change_request.page.edit'|trans({}, 'change_requests') }}: {{ change_request.changeNumber }}
                 </h1>
                 <div>
-                    <a href="{{ path('app_change_request_show', {id: change_request.id}) }}" class="btn btn-outline-secondary" data-turbo-action="advance">
+                    <a href="{{ path('app_change_request_show', {id: change_request.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo-action="advance">
                         <i class="bi bi-eye" aria-hidden="true"></i> {{ 'change_request.action.view'|trans({}, 'change_requests') }}
                     </a>
                 </div>
@@ -104,10 +104,10 @@
 
                     {# Form Actions #}
                     <div class="d-flex justify-content-between align-items-center pt-3 border-top">
-                        <a href="{{ path('app_change_request_show', {id: change_request.id}) }}" class="btn btn-outline-secondary" data-turbo-action="advance">
+                        <a href="{{ path('app_change_request_show', {id: change_request.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo-action="advance">
                             <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                         </a>
-                        <button type="submit" class="btn btn-primary btn-lg">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                             <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
                         </button>
                     </div>

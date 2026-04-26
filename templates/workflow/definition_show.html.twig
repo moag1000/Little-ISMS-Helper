@@ -23,15 +23,15 @@
             </h1>
         </div>
         <div>
-            <a href="{{ path('app_workflow_definition_builder', {id: workflow.id}) }}" class="btn btn-success">
+            <a href="{{ path('app_workflow_definition_builder', {id: workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--success">
                 <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'workflow.action.builder'|trans({}, 'workflows') }}
             </a>
-            <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="btn btn-primary">
+            <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'workflow.action.edit'|trans({}, 'workflows') }}
             </a>
             <form method="post" action="{{ path('app_workflow_definition_toggle', {id: workflow.id}) }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ workflow.id) }}">
-                <button type="submit" class="btn btn-{{ workflow.isActive ? 'warning' : 'success' }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ workflow.isActive ? 'warning' : 'success' }}">
                     <i class="bi bi-{{ workflow.isActive ? 'pause-circle' : 'play-circle' }}" aria-hidden="true"></i>
                     {{ workflow.isActive ? 'workflow.action.deactivate'|trans({}, 'workflows') : 'workflow.action.activate'|trans({}, 'workflows') }}
                 </button>
@@ -177,7 +177,7 @@
                                         </td>
                                         <td>{{ instance.startedAt|date('d.m.Y H:i') }}</td>
                                         <td>
-                                            <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                            <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                                 <i class="bi bi-eye" aria-hidden="true"></i>
                                             </a>
                                         </td>
@@ -206,12 +206,12 @@
                 {% endblock %}
                 {% block card_body %}
                     <div class="d-grid gap-2">
-                        <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="btn btn-primary">
+                        <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'workflow.action.edit'|trans({}, 'workflows') }}
                         </a>
                         <form method="post" action="{{ path('app_workflow_definition_toggle', {id: workflow.id}) }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ workflow.id) }}">
-                            <button type="submit" class="btn btn-{{ workflow.isActive ? 'warning' : 'success' }} w-100">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ workflow.isActive ? 'warning' : 'success' }} w-100">
                                 <i class="bi bi-{{ workflow.isActive ? 'pause-circle' : 'play-circle' }}" aria-hidden="true"></i>
                                 {{ workflow.isActive ? 'workflow.action.deactivate'|trans({}, 'workflows') : 'workflow.action.activate'|trans({}, 'workflows') }}
                             </button>
@@ -222,7 +222,7 @@
                               data-action="submit->ui-actions#confirm"
                               data-ui-actions-message-param="{{ 'workflow.confirm.delete'|trans({}, 'workflows') }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ workflow.id) }}">
-                            <button type="submit" class="btn btn-danger w-100">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
                                 <i class="bi bi-trash" aria-hidden="true"></i> {{ 'workflow.action.delete'|trans({}, 'workflows') }}
                             </button>
                         </form>

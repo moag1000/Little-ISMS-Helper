@@ -63,13 +63,13 @@
                         <a href="{{ asset('docs/reports/license-report.md') }}" download class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                             <i class="bi bi-download" aria-hidden="true"></i>Report.md
                         </a>
-                        <button class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm"
+                        <button class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                 data-controller="report-regenerate"
                                 data-action="click->report-regenerate#regenerate"
                                 data-report-regenerate-url-value="{{ path('app_licenses_generate') }}"
                                 data-report-regenerate-loading-text-value="{{ 'common.generating_reports'|trans({}, 'messages') }}"
                                 data-report-regenerate-success-text-value="{{ 'common.report_regenerated'|trans({}, 'messages') }}">
-                            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>{{ 'common.regenerate'|trans({}, 'messages') }}
+                            <i class="bi bi-arrow-clockwise me-1" aria-hidden="true"></i>{{ 'common.regenerate'|trans({}, 'messages') }}
                         </button>
                     </div>
                     <div class="mt-3">

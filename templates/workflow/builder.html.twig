@@ -52,7 +52,7 @@
             </h1>
         </div>
         <div>
-            <a href="{{ path('app_workflow_definition_show', {id: workflow.id}) }}" class="btn btn-outline-secondary">
+            <a href="{{ path('app_workflow_definition_show', {id: workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'workflow.action.back'|trans({}, 'workflows') }}
             </a>
         </div>
@@ -96,7 +96,7 @@
                 {% endblock %}
                 {% block card_footer %}
                     <div class="card-footer">
-                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#addStepForm">
+                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-toggle="collapse" data-bs-target="#addStepForm">
                             <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'workflow.builder.add_step'|trans({}, 'workflows') }}
                         </button>
                     </div>
@@ -165,10 +165,10 @@
                             </div>
 
                             <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-success">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
                                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'workflow.builder.add_step'|trans({}, 'workflows') }}
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#addStepForm">
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-toggle="collapse" data-bs-target="#addStepForm">
                                     {{ 'common.cancel'|trans({}, 'messages') }}
                                 </button>
                             </div>
@@ -191,7 +191,7 @@
                 {% block card_body %}
                     <p class="text-muted small">{{ 'workflow.builder.templates_help'|trans({}, 'workflows') }}</p>
                     <div class="d-grid gap-2">
-                        <button class="btn btn-outline-primary text-start"
+                        <button class="fa-cyber-btn fa-cyber-btn--ghost text-start"
                                 data-action="click->workflow-builder#applyTemplate"
                                 data-template-key="risk_assessment">
                             <i class="bi bi-shield-exclamation me-2" aria-hidden="true"></i>
@@ -199,7 +199,7 @@
                             <br>
                             <small class="text-muted">{{ 'workflow.template.risk_assessment_desc'|trans({}, 'workflows') }}</small>
                         </button>
-                        <button class="btn btn-outline-success text-start"
+                        <button class="fa-cyber-btn fa-cyber-btn--success text-start"
                                 data-action="click->workflow-builder#applyTemplate"
                                 data-template-key="control_implementation">
                             <i class="bi bi-sliders me-2" aria-hidden="true"></i>
@@ -207,7 +207,7 @@
                             <br>
                             <small class="text-muted">{{ 'workflow.template.control_implementation_desc'|trans({}, 'workflows') }}</small>
                         </button>
-                        <button class="btn btn-outline-danger text-start"
+                        <button class="fa-cyber-btn fa-cyber-btn--danger text-start"
                                 data-action="click->workflow-builder#applyTemplate"
                                 data-template-key="incident_response">
                             <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
@@ -215,7 +215,7 @@
                             <br>
                             <small class="text-muted">{{ 'workflow.template.incident_response_desc'|trans({}, 'workflows') }}</small>
                         </button>
-                        <button class="btn btn-outline-warning text-start"
+                        <button class="fa-cyber-btn fa-cyber-btn--warning text-start"
                                 data-action="click->workflow-builder#applyTemplate"
                                 data-template-key="document_review">
                             <i class="bi bi-file-text me-2" aria-hidden="true"></i>
@@ -223,7 +223,7 @@
                             <br>
                             <small class="text-muted">{{ 'workflow.template.document_review_desc'|trans({}, 'workflows') }}</small>
                         </button>
-                        <button class="btn btn-outline-secondary text-start"
+                        <button class="fa-cyber-btn fa-cyber-btn--ghost text-start"
                                 data-action="click->workflow-builder#applyTemplate"
                                 data-template-key="change_request">
                             <i class="bi bi-arrow-repeat me-2" aria-hidden="true"></i>

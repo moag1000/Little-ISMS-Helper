@@ -9,7 +9,7 @@
             <i class="fa-icon fa-icon--user" aria-hidden="true"></i>
             {{ 'user.profile.action.edit'|trans({}, 'user') }}
         </h1>
-        <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary">
+        <a href="{{ path('app_profile') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i>
             {{ 'common.back'|trans({}, 'messages') }}
         </a>
@@ -61,11 +61,11 @@
                         } %}
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary">
+                            <a href="{{ path('app_profile') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                                 <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                                 {{ 'common.cancel'|trans({}, 'messages') }}
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                                 <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                 {{ 'user.save_changes'|trans({}, 'user') }}
                             </button>
@@ -94,7 +94,7 @@
                                   data-action="submit->ui-actions#confirm"
                                   data-ui-actions-message-param="{{ 'user.profile.confirm.delete_avatar'|trans({}, 'user') }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete_avatar' ~ user.id) }}">
-                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                                     <i class="bi bi-trash" aria-hidden="true"></i>
                                     {{ 'user.profile.action.delete_avatar'|trans({}, 'user') }}
                                 </button>

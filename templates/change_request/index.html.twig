@@ -108,8 +108,8 @@
                         <td>{{ change.getComplexityScore() }}</td>
                         <td>{{ change.requestedDate|date('Y-m-d') }}</td>
                         <td>
-                            <a href="{{ path('app_change_request_show', {id: change.id}) }}" class="btn btn-sm btn-secondary">{{ 'change_request.action.view'|trans({}, 'change_requests') }}</a>
-                            <a href="{{ path('app_change_request_edit', {id: change.id}) }}" class="btn btn-sm btn-primary">{{ 'change_request.action.edit'|trans({}, 'change_requests') }}</a>
+                            <a href="{{ path('app_change_request_show', {id: change.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'change_request.action.view'|trans({}, 'change_requests') }}</a>
+                            <a href="{{ path('app_change_request_edit', {id: change.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'change_request.action.edit'|trans({}, 'change_requests') }}</a>
                         </td>
                     </tr>
                     {% endfor %}

@@ -12,10 +12,10 @@
         <p class="text-muted">{{ 'workflow.description.definitions'|trans({}, 'workflows') }}</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
+        <a href="{{ path('app_workflow_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             ← {{ 'common.back'|trans({}, 'messages') }}
         </a>
-        <a href="{{ path('app_workflow_definition_new') }}" class="btn btn-primary">
+        <a href="{{ path('app_workflow_definition_new') }}" class="fa-cyber-btn fa-cyber-btn--primary">
             <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'workflow.action.create_definition'|trans({}, 'workflows') }}
         </a>
     </div>
@@ -88,10 +88,10 @@
                 {% endif %}
             </td>
             <td class="text-center">
-                <a href="{{ path('app_workflow_definition_show', {id: workflow.id}) }}" class="btn btn-sm mr-025">
+                <a href="{{ path('app_workflow_definition_show', {id: workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                     👁 {{ 'common.view'|trans({}, 'messages') }}
                 </a>
-                <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="btn btn-sm btn-secondary">
+                <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                     <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                 </a>
             </td>

@@ -113,13 +113,13 @@
                                     <td>{{ report.updatedAt ? report.updatedAt|date('d.m.Y H:i') : report.createdAt|date('d.m.Y H:i') }}</td>
                                     <td class="text-end">
                                         <div class="btn-group btn-group-sm">
-                                            <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="btn btn-outline-primary" title="{{ 'action.edit'|trans }}">
+                                            <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'action.edit'|trans }}">
                                                 <i class="bi bi-pencil" aria-hidden="true"></i>
                                             </a>
-                                            <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="btn btn-outline-secondary" title="{{ 'action.preview'|trans }}">
+                                            <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'action.preview'|trans }}">
                                                 <i class="bi bi-eye" aria-hidden="true"></i>
                                             </a>
-                                            <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="btn btn-outline-danger" title="{{ 'action.export_pdf'|trans }}">
+                                            <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--danger" title="{{ 'action.export_pdf'|trans }}">
                                                 <i class="bi bi-file-pdf" aria-hidden="true"></i>
                                             </a>
                                         </div>
@@ -186,7 +186,7 @@
                                 </div>
                                 <form method="post" action="{{ path('report_builder_clone', {id: template.id}) }}" class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token('clone' ~ template.id) }}">
-                                    <button type="submit" class="btn btn-sm btn-outline-primary" title="{{ 'action.use_template'|trans }}">
+                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'action.use_template'|trans }}">
                                         <i class="bi bi-copy" aria-hidden="true"></i>
                                     </button>
                                 </form>

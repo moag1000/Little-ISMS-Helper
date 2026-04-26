@@ -130,7 +130,7 @@
                                     <input type="text" name="reason" class="form-control form-control-sm mb-1" placeholder="{{ 'admin.mapping_quality.transition_reason_placeholder'|trans({}, 'admin') }}">
                                 {% endif %}
                                 {% set btnClass = state == 'published' ? 'success' : (state == 'deprecated' ? 'danger' : (state == 'approved' ? 'primary' : 'secondary')) %}
-                                <button type="submit" class="btn btn-sm btn-{{ btnClass }} w-100">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ btnClass }} fa-cyber-btn--sm w-100">
                                     <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ state }}
                                 </button>
                             </form>

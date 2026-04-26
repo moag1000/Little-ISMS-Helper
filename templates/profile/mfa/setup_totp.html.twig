@@ -9,7 +9,7 @@
             <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
             {{ 'mfa.setup_totp.title'|trans({}, 'mfa') }}
         </h1>
-        <a href="{{ path('app_profile_mfa_index') }}" class="btn btn-outline-secondary">
+        <a href="{{ path('app_profile_mfa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i>
             {{ 'common.back'|trans({}, 'messages') }}
         </a>
@@ -55,7 +55,7 @@
                                    id="secret-key"
                                    readonly
                                    aria-label="{{ 'mfa.setup.secret_key'|trans({}, 'mfa') }}">
-                            <button class="btn btn-outline-secondary"
+                            <button class="fa-cyber-btn fa-cyber-btn--ghost"
                                     type="button"
                                     data-action="mfa-setup#copySecret"
                                     data-mfa-setup-copy-target-param="secret-key"
@@ -121,7 +121,7 @@
 
                         <div data-mfa-setup-target="feedback"></div>
 
-                        <button type="submit" class="btn btn-success btn-lg w-100" data-mfa-setup-target="submitButton">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--lg w-100" data-mfa-setup-target="submitButton">
                             <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                             {{ 'mfa.setup_totp.verify_button'|trans({}, 'mfa') }}
                         </button>
@@ -175,13 +175,13 @@
 
                     <div class="d-grid gap-2 mt-3">
                         <button type="button"
-                                class="btn btn-outline-primary btn-sm"
+                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                 data-action="backup-codes#copy">
                             <i class="bi bi-clipboard" aria-hidden="true"></i>
                             {{ 'mfa.backup_codes.copy_all'|trans({}, 'mfa') }}
                         </button>
                         <button type="button"
-                                class="btn btn-outline-secondary btn-sm"
+                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                 data-action="backup-codes#print">
                             <i class="bi bi-printer" aria-hidden="true"></i>
                             {{ 'mfa.backup_codes.print'|trans({}, 'mfa') }}

@@ -9,7 +9,7 @@
             <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
             {{ 'mfa.title'|trans({}, 'mfa') }}
         </h1>
-        <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary">
+        <a href="{{ path('app_profile') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i>
             {{ 'common.back'|trans({}, 'messages') }}
         </a>
@@ -38,7 +38,7 @@
             </div>
             {% if not mfa_enabled %}
                 <div class="ms-auto">
-                    <a href="{{ path('app_profile_mfa_setup_totp') }}" class="btn btn-success">
+                    <a href="{{ path('app_profile_mfa_setup_totp') }}" class="fa-cyber-btn fa-cyber-btn--success">
                         <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
                         {{ 'mfa.action.setup'|trans({}, 'mfa') }}
                     </a>
@@ -97,7 +97,7 @@
                     {{ 'mfa.my_tokens'|trans({}, 'mfa') }}
                 </h2>
                 {% if mfa_enabled %}
-                    <a href="{{ path('app_profile_mfa_setup_totp') }}" class="btn btn-light btn-sm">
+                    <a href="{{ path('app_profile_mfa_setup_totp') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                         <i class="bi bi-plus-circle" aria-hidden="true"></i>
                         {{ 'mfa.action.add_token'|trans({}, 'mfa') }}
                     </a>
@@ -169,9 +169,9 @@
                                     {% endif %}
                                 </td>
                                 <td class="text-end">
-                                    <div class="btn-group" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+                                    <div class="d-flex gap-1">
                                         <a href="{{ path('app_profile_mfa_show', {id: token.id}) }}"
-                                           class="btn btn-sm btn-outline-primary"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                            title="{{ 'common.view'|trans({}, 'messages') }}">
                                             <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
@@ -185,7 +185,7 @@
                                                 <input type="hidden" name="_token"
                                                        value="{{ csrf_token('disable_' ~ token.id) }}">
                                                 <button type="submit"
-                                                        class="btn btn-sm btn-outline-warning"
+                                                        class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm"
                                                         title="{{ 'mfa.action.disable'|trans({}, 'mfa') }}">
                                                     <i class="bi bi-pause-circle" aria-hidden="true"></i>
                                                 </button>
@@ -200,7 +200,7 @@
                                             <input type="hidden" name="_token"
                                                    value="{{ csrf_token('delete_' ~ token.id) }}">
                                             <button type="submit"
-                                                    class="btn btn-sm btn-outline-danger"
+                                                    class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
                                                     title="{{ 'common.delete'|trans({}, 'messages') }}">
                                                 <i class="bi bi-trash" aria-hidden="true"></i>
                                             </button>

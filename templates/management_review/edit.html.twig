@@ -74,17 +74,17 @@
                     <div class="d-flex justify-content-between align-items-center pt-3 border-top">
                         <div>
                             <a href="{{ path('app_management_review_show', {id: review.id}) }}"
-                               class="btn btn-outline-secondary"
+                               class="fa-cyber-btn fa-cyber-btn--ghost"
                                data-turbo-action="advance">
                                 <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                             </a>
                             <a href="{{ path('app_management_review_index') }}"
-                               class="btn btn-outline-secondary"
+                               class="fa-cyber-btn fa-cyber-btn--ghost"
                                data-turbo-action="advance">
                                 <i class="bi bi-list" aria-hidden="true"></i> {{ 'common.to_list'|trans({}, 'messages') }}
                             </a>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                             <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save_changes'|trans({}, 'messages') }}
                         </button>
                     </div>

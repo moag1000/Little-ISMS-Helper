@@ -49,7 +49,7 @@
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
                     {% if selected_status or selected_severity %}
-                        <a href="{{ path('app_audit_finding_index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ path('app_audit_finding_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.clear'|trans({}, 'messages') }}
                         </a>
                     {% endif %}
@@ -103,7 +103,7 @@
                                     {% endif %}
                                 </td>
                                 <td class="text-end">
-                                    <a href="{{ path('app_audit_finding_show', {id: f.id}) }}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ path('app_audit_finding_show', {id: f.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                 </td>
