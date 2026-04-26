@@ -394,6 +394,26 @@ admin:
         broken_references: 'Defekte Referenzen'
         broken_references_desc: 'Diese Entities verweisen auf nicht existierende oder ungültige Daten. Dies kann Systemfehler verursachen und muss behoben werden.'
         invalid_entity_type: 'Ungültiger Entity-Typ ausgewählt'
+        schema:
+            migrations: Migrationen
+            drift: Schema-Drift
+            actions: Aktionen
+            pending: ausstehend
+            statements: Statements
+            destructive: destruktiv
+            up_to_date: Aktuell
+            in_sync: 'In Sync'
+            more: weitere
+            refresh: 'Status aktualisieren'
+            actions_desc: 'Status neu laden oder manuell überprüfen.'
+            run_migrations: 'Migrationen ausführen'
+            run_reconcile: 'Schema reconcilen'
+            show_sql: 'SQL anzeigen'
+            migrations_applied: '%count% Migration(en) erfolgreich ausgeführt.'
+            migrations_failed: 'Migrationen fehlgeschlagen: %error%'
+            reconcile_applied: 'Schema-Reconcile erfolgreich (%count% Statements ausgeführt).'
+            reconcile_failed: 'Schema-Reconcile fehlgeschlagen: %error%'
+            reconcile_blocked: 'Schema-Reconcile blockiert (%reason%). Bitte zuerst die ausstehenden Migrationen ausführen.'
     modules:
         title: Modul-Verwaltung
         dependency_graph: Abhängigkeitsgraph

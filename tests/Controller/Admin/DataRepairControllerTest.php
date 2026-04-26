@@ -154,6 +154,50 @@ final class DataRepairControllerTest extends WebTestCase
         );
     }
 
+    public function testIndexExposesSchemaMaintenanceCards(): void
+    {
+        // The 3-card grid (Migrations / Schema-Drift / Aktionen) must
+        // *always* render, regardless of pending count or drift count.
+        // Asserting the localized card titles is sufficient — they're
+        // unique on the page and only present when the grid renders.
+        $this->client->loginUser($this->adminUser);
+        $this->client->request('GET', '/de/admin/data-repair/');
+        self::assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('Migrationen', $html);
+        self::assertStringContainsString('Schema-Drift', $html);
+        // Both POST endpoints must be wired into the page so the buttons
+        // can submit even when disabled (CSS-disabled on a real submit).
+        self::assertStringContainsString('/admin/data-repair/schema/migrations', $html);
+        self::assertStringContainsString('/admin/data-repair/schema/reconcile', $html);
+    }
+
+    public function testSchemaMigrationsExecuteRejectsInvalidCsrf(): void
+    {
+        $this->client->loginUser($this->adminUser);
+        $this->client->request('POST', '/de/admin/data-repair/schema/migrations', [
+            '_token' => 'ignored-invalid',
+        ]);
+        self::assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
+        self::assertStringContainsString(
+            '/admin/data-repair/',
+            (string) $this->client->getResponse()->headers->get('Location'),
+        );
+    }
+
+    public function testSchemaReconcileRejectsInvalidCsrf(): void
+    {
+        $this->client->loginUser($this->adminUser);
+        $this->client->request('POST', '/de/admin/data-repair/schema/reconcile', [
+            '_token' => 'ignored-invalid',
+        ]);
+        self::assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
+        self::assertStringContainsString(
+            '/admin/data-repair/',
+            (string) $this->client->getResponse()->headers->get('Location'),
+        );
+    }
+
     private function countAudit(string $action): int
     {
         return (int) $this->em->createQuery(

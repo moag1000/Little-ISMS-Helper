@@ -11,6 +11,7 @@ use App\Repository\ControlRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\AuditLogger;
 use App\Service\DataIntegrityService;
+use App\Service\SchemaMaintenanceService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,6 +34,7 @@ class DataRepairController extends AbstractController
         private readonly DataIntegrityService $dataIntegrityService,
         private readonly TranslatorInterface $translator,
         private readonly AuditLogger $auditLogger,
+        private readonly SchemaMaintenanceService $schemaMaintenanceService,
     ) {
     }
 
@@ -119,10 +121,18 @@ class DataRepairController extends AbstractController
         $controlsWithoutAssets = array_filter($allControls, fn(Control $control): bool =>
             $control->isApplicable() && $control->getProtectedAssets()->isEmpty());
 
+        // Schema maintenance: Doctrine migration backlog + entity-vs-DB drift.
+        // Both are read-only here; the corresponding apply-routes are POST.
+        $maintenance = $this->schemaMaintenanceService->getMaintenanceStatus();
+
         return $this->render('admin/data_repair/index.html.twig', [
             // Tenants & Summary
             'tenants' => $tenants,
             'summary' => $summary,
+
+            // Schema maintenance status (3-card grid in template)
+            'migration_status' => $maintenance['migration_status'],
+            'schema_drift' => $maintenance['schema_drift'],
 
             // Comprehensive integrity check results
             'orphanedEntities' => $integrityCheck['orphaned_entities'],
@@ -647,6 +657,88 @@ class DataRepairController extends AbstractController
         $this->addFlash('success', $this->translator->trans('admin.data_repair.fixed_mismatches', [
             '%count%' => $fixedCount,
         ], 'admin'));
+
+        return $this->redirectToRoute('admin_data_repair_index');
+    }
+
+    /**
+     * Executes every pending Doctrine migration. Idempotent — when no
+     * migration is pending the route returns a neutral flash and the
+     * Migrator is not even spun up.
+     *
+     * Audit-log + ISB visibility live in
+     * {@see SchemaMaintenanceService::executePendingMigrations()}.
+     */
+    #[Route('/admin/data-repair/schema/migrations', name: 'admin_data_repair_migrations_execute', methods: ['POST'])]
+    public function executeMigrations(Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('migrations_execute', (string) $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $user = $this->getUser();
+        $actor = (is_object($user) && method_exists($user, 'getEmail')) ? (string) $user->getEmail() : 'admin';
+        $result = $this->schemaMaintenanceService->executePendingMigrations($actor);
+
+        if ($result['success']) {
+            $this->addFlash('success', $this->translator->trans(
+                'admin.data_repair.schema.migrations_applied',
+                ['%count%' => $result['executed']],
+                'admin',
+            ));
+        } else {
+            $this->addFlash('error', $this->translator->trans(
+                'admin.data_repair.schema.migrations_failed',
+                ['%error%' => (string) $result['error']],
+                'admin',
+            ));
+        }
+
+        return $this->redirectToRoute('admin_data_repair_index');
+    }
+
+    /**
+     * Reconciles entity metadata against the live DB. Idempotent — drift = 0
+     * means no SQL is executed. Destructive statements run unconditionally
+     * here (the UI button is only enabled with explicit operator intent),
+     * but the service still audit-logs every executed statement bundle.
+     */
+    #[Route('/admin/data-repair/schema/reconcile', name: 'admin_data_repair_schema_reconcile', methods: ['POST'])]
+    public function reconcileSchema(Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('schema_reconcile', (string) $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $user = $this->getUser();
+        $actor = (is_object($user) && method_exists($user, 'getEmail')) ? (string) $user->getEmail() : 'admin';
+        // Reconcile from the data-repair page intentionally bypasses the
+        // pending-migration gate: an admin who's looking at a populated
+        // drift card has already seen any pending migrations on the same
+        // page — the UX here is "apply both buttons explicitly".
+        $result = $this->schemaMaintenanceService->reconcileSchema($actor, bypassMigrationGate: true);
+
+        if ($result['blocked'] !== null) {
+            $this->addFlash('error', $this->translator->trans(
+                'admin.data_repair.schema.reconcile_blocked',
+                ['%reason%' => (string) $result['blocked']],
+                'admin',
+            ));
+        } elseif ($result['success']) {
+            $this->addFlash('success', $this->translator->trans(
+                'admin.data_repair.schema.reconcile_applied',
+                ['%count%' => $result['executed']],
+                'admin',
+            ));
+        } else {
+            $this->addFlash('error', $this->translator->trans(
+                'admin.data_repair.schema.reconcile_failed',
+                ['%error%' => (string) $result['error']],
+                'admin',
+            ));
+        }
 
         return $this->redirectToRoute('admin_data_repair_index');
     }
