@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance.mapping_quality.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -38,8 +39,9 @@
 
     {# Empty State for No Mappings #}
     {% if quality_stats.total_mappings == 0 %}
-    <div class="alert alert-warning">
-        <p class="fw-bold fs-5"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'compliance.mapping_quality.no_mappings'|trans({}, 'compliance') }}</p>
+    <div class="fa-alert fa-alert--warning" role="alert">
+        <i class="fa-icon fa-icon--status-warning" fa-alert__icon" aria-hidden="true"></i>
+        <div class="fa-alert__body"><p class="fw-bold fs-5"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'compliance.mapping_quality.no_mappings'|trans({}, 'compliance') }}</p>
         <p>{{ 'compliance.mapping_quality.no_mappings_found'|trans({}, 'compliance') }}</p>
         <hr>
         <p class="fw-bold">{{ 'compliance.mapping_quality.next_steps.title'|trans({}, 'compliance') }}:</p>
@@ -49,10 +51,12 @@
             <li>{{ 'compliance.mapping_quality.next_steps.return_here'|trans({}, 'compliance') }}</li>
         </ol>
         <a href="{{ path('app_compliance_index') }}" class="btn btn-primary mt-2">← {{ 'common.back'|trans({}, 'messages') }}</a>
+        </div>
     </div>
     {% elseif quality_stats.analyzed_mappings == 0 %}
-    <div class="alert alert-info">
-        <p class="fw-bold fs-5"><i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'compliance.mapping_quality.no_analysis_yet.title'|trans({}, 'compliance') }}</p>
+    <div class="fa-alert fa-alert--info" role="alert">
+        <i class="fa-icon fa-icon--status-info" fa-alert__icon" aria-hidden="true"></i>
+        <div class="fa-alert__body"><p class="fw-bold fs-5"><i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'compliance.mapping_quality.no_analysis_yet.title'|trans({}, 'compliance') }}</p>
         <p>{{ 'compliance.mapping_quality.no_analysis_yet.found_not_analyzed'|trans({'%count%': quality_stats.total_mappings}, 'compliance') }}</p>
         <hr>
         <p class="fw-bold">{{ 'compliance.mapping_quality.no_analysis_yet.start_analysis'|trans({}, 'compliance') }}</p>
@@ -61,6 +65,7 @@
             <li>{{ 'compliance.mapping_quality.no_analysis_yet.run_analysis'|trans({}, 'compliance')|raw }}</li>
             <li>{{ 'compliance.mapping_quality.no_analysis_yet.reload_page'|trans({}, 'compliance') }}</li>
         </ol>
+        </div>
     </div>
     {% endif %}
 
@@ -194,7 +199,7 @@
             </div>
 
             {# Progress Section (hidden initially) #}
-            <div data-batch-analysis-target="progress" style="display: none;">
+            <div data-batch-analysis-target="progress" class="d-none">
                 <hr>
                 <p class="fw-bold fs-5 mb-3">{{ 'compliance.mapping_quality.analysis_running'|trans({}, 'compliance') }}</p>
 
@@ -230,19 +235,21 @@
                     <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                 </button>
 
-                <div data-batch-analysis-target="log" class="mt-3 font-monospace small bg-body-secondary p-2 rounded" style="max-height: 200px; overflow-y: auto; display: none;">
+                <div data-batch-analysis-target="log" class="mt-3 font-monospace small bg-body-secondary p-2 rounded d-none" style="max-height: 200px; overflow-y: auto;">
                 </div>
             </div>
 
             {# Results Section (shown after completion) #}
-            <div data-batch-analysis-target="results" style="display: none;">
+            <div data-batch-analysis-target="results" class="d-none">
                 <hr>
-                <div class="alert alert-success">
-                    <p class="fw-bold"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'compliance.mapping_quality.progress.complete'|trans({}, 'compliance') }}</p>
+                <div class="fa-alert fa-alert--success" role="alert">
+                    <i class="bi bi-arrow-clockwise" fa-alert__icon" aria-hidden="true"></i>
+                    <div class="fa-alert__body"><p class="fw-bold"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'compliance.mapping_quality.progress.complete'|trans({}, 'compliance') }}</p>
                     <p data-batch-analysis-target="resultsMessage"></p>
                     <button type="button" class="btn btn-primary mt-2" data-controller="ui-actions" data-action="ui-actions#reload">
                         <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'compliance.mapping_quality.progress.reload'|trans({}, 'compliance') }}
                     </button>
+                    </div>
                 </div>
             </div>
         {% endblock %}
@@ -393,7 +400,8 @@
 
     {# Quick Actions - Show only if mappings exist #}
     {% if quality_stats.total_mappings > 0 %}
-    <div class="alert alert-info">
+    <div class="fa-alert fa-alert--info" role="alert">
+        <div class="fa-alert__body">
         <p class="fw-bold">{{ 'compliance.mapping_quality.next_actions.title'|trans({}, 'compliance') }}</p>
         <ul class="mb-0">
             <li><a href="{{ path('app_mapping_quality_review_queue') }}">{{ 'compliance.mapping_quality.next_actions.review_queue'|trans({}, 'compliance') }}</a> - {{ 'compliance.mapping_quality.next_actions.review_queue_desc'|trans({}, 'compliance') }}</li>
@@ -402,6 +410,8 @@
             <li>{{ 'compliance.mapping_quality.next_actions.unanalyzed'|trans({'%count%': quality_stats.unanalyzed_mappings}, 'compliance')|raw }}</li>
             {% endif %}
         </ul>
+    
+        </div>
     </div>
     {% endif %}
 </div>

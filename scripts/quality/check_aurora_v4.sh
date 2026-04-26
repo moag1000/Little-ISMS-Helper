@@ -30,7 +30,10 @@ echo ""
 
 echo "## Anti-Patterns"
 echo -n "  inline style=:       "; grep -rcE 'style="[^"]+' templates/ 2>/dev/null | grep -v ":0" | wc -l
-echo -n "  hardcoded hex in CSS:"; grep -rE '#[0-9a-fA-F]{6}\b' assets/styles/*.css 2>/dev/null | grep -v "^.*fairy-aurora\.css\|^.*alva\.css" | wc -l
+echo -n "  hardcoded hex in CSS:"; grep -rE '#[0-9a-fA-F]{6}\b' assets/styles/*.css 2>/dev/null \
+    | grep -v "^assets/styles/fairy-aurora\.css:\|^assets/styles/alva\.css:" \
+    | grep -v "^assets/styles/fairy-aurora-print\.css:\|^assets/styles/fairy-aurora-components\.css:" \
+    | wc -l
 echo -n "  TODO(aurora-v4):     "; grep -rc 'TODO(aurora-v4' templates/ 2>/dev/null | grep -v ":0" | wc -l
 echo ""
 

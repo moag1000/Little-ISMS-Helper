@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'suppliers' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_macros/cards.html.twig' as cards %}
@@ -38,7 +39,7 @@
                     <label for="view-filter" class="mb-0 fw-bold">
                         <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
                     </label>
-                    <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <select class="form-select form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                         <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
                             {{ 'corporate.view.own_only'|trans({}, 'messages') }}
                         </option>
@@ -85,8 +86,9 @@
     {% endif %}
 
     {% if overdueAssessments|length > 0 %}
-    <div class="alert alert-warning">
-        <div class="fw-bold mb-2"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'supplier.alert.overdue_assessments'|trans({}, 'suppliers') }}</div>
+    <div class="fa-alert fa-alert--warning" role="alert">
+        <i class="bi bi-exclamation-triangle fa-alert__icon" aria-hidden="true"></i>
+        <div class="fa-alert__body"><div class="fw-bold mb-2"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'supplier.alert.overdue_assessments'|trans({}, 'suppliers') }}</div>
         <ul>
             {% for supplier in overdueAssessments %}
             <li>
@@ -95,11 +97,13 @@
             </li>
             {% endfor %}
         </ul>
+        </div>
     </div>
     {% endif %}
 
     {% if nonCompliant|length > 0 %}
-    <div class="alert alert-danger">
+    <div class="fa-alert fa-alert--danger" role="alert">
+        <div class="fa-alert__body">
         <div class="fw-bold mb-2">🚨 {{ 'supplier.alert.non_compliant'|trans({}, 'suppliers') }}</div>
         <ul>
             {% for supplier in nonCompliant %}
@@ -109,6 +113,8 @@
             </li>
             {% endfor %}
         </ul>
+    
+        </div>
     </div>
     {% endif %}
 

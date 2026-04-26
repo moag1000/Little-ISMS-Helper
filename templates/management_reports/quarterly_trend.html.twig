@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'management_reports' %}
 
 {% block title %}{{ 'management_reports.quarterly_trend.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -27,10 +28,7 @@
     <p class="text-muted mb-4">{{ 'management_reports.quarterly_trend.subtitle'|trans({}, 'management_reports') }}</p>
 
     {% if not has_historical_data %}
-    <div class="alert alert-info">
-        <i class="bi bi-info-circle" aria-hidden="true"></i>
-        {{ 'management_reports.quarterly_trend.no_data_hint'|trans({}, 'management_reports') }}
-    </div>
+    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', body: '{{ \'management_reports.quarterly_trend.no_data_hint\'|trans({}, \'management_reports\') }}' }) }}
     {% endif %}
 
     {# Trend Comparison Table #}
@@ -55,7 +53,7 @@
                             <th scope="col" class="text-center">{{ 'management_reports.quarterly_trend.current_quarter'|trans({}, 'management_reports') }}</th>
                             <th scope="col" class="text-center">{{ 'management_reports.quarterly_trend.delta'|trans({}, 'management_reports') }}</th>
                             <th scope="col" class="text-center">{{ 'management_reports.quarterly_trend.trend_direction'|trans({}, 'management_reports') }}</th>
-                            <th scope="col" style="width: 25%;">{{ 'management_reports.quarterly_trend.current_quarter'|trans({}, 'management_reports') }}</th>
+                            <th scope="col" class="w-25">{{ 'management_reports.quarterly_trend.current_quarter'|trans({}, 'management_reports') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -89,11 +87,11 @@
                             </td>
                             <td class="text-center">
                                 {% if metric.trend == 'better' %}
-                                    <span class="badge bg-success">{{ 'management_reports.quarterly_trend.better'|trans({}, 'management_reports') }}</span>
+                                    <span class="badge bg-success fa-status-pill fa-status-pill--success">{{ 'management_reports.quarterly_trend.better'|trans({}, 'management_reports') }}</span>
                                 {% elseif metric.trend == 'worse' %}
-                                    <span class="badge bg-danger">{{ 'management_reports.quarterly_trend.worse'|trans({}, 'management_reports') }}</span>
+                                    <span class="badge bg-danger fa-status-pill fa-status-pill--danger">{{ 'management_reports.quarterly_trend.worse'|trans({}, 'management_reports') }}</span>
                                 {% else %}
-                                    <span class="badge bg-secondary">{{ 'management_reports.quarterly_trend.stable'|trans({}, 'management_reports') }}</span>
+                                    <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">{{ 'management_reports.quarterly_trend.stable'|trans({}, 'management_reports') }}</span>
                                 {% endif %}
                             </td>
                             <td>

@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}Benutzer: {{ user.firstName }} {{ user.lastName }}{% endblock %}
 
@@ -203,9 +204,7 @@
                             {% endfor %}
                         </ul>
                     {% else %}
-                        <div class="alert alert-info mb-0">
-                            {{ 'user.message.no_system_roles'|trans({}, 'user') }}
-                        </div>
+                        {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: '{{ \'user.message.no_system_roles\'|trans({}, \'user\') }}' }) }}
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -237,9 +236,7 @@
                             {% endfor %}
                         </ul>
                     {% else %}
-                        <div class="alert alert-info mb-0">
-                            {{ 'user.message.no_custom_roles_assigned'|trans({}, 'user') }}
-                        </div>
+                        {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: '{{ \'user.message.no_custom_roles_assigned\'|trans({}, \'user\') }}' }) }}
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -272,9 +269,7 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        <div class="alert alert-info mb-0">
-                            {{ 'user.message.no_specific_permissions'|trans({}, 'user') }}
-                        </div>
+                        {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: '{{ \'user.message.no_specific_permissions\'|trans({}, \'user\') }}' }) }}
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -295,14 +290,14 @@
                 </a>
                 {% if user.id != app.user.id %}
                     {% if user.isActive %}
-                        <form method="post" action="{{ path('user_management_toggle_active', {'id': user.id}) }}" style="display: inline;">
+                        <form method="post" action="{{ path('user_management_toggle_active', {'id': user.id}) }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle_active' ~ user.id) }}">
                             <button type="submit" class="btn btn-warning">
                                 <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'user.action.deactivate'|trans({}, 'user') }}
                             </button>
                         </form>
                     {% else %}
-                        <form method="post" action="{{ path('user_management_toggle_active', {'id': user.id}) }}" style="display: inline;">
+                        <form method="post" action="{{ path('user_management_toggle_active', {'id': user.id}) }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle_active' ~ user.id) }}">
                             <button type="submit" class="btn btn-success">
                                 <i class="bi bi-play-circle" aria-hidden="true"></i> {{ 'common.activate'|trans({}, 'messages') }}

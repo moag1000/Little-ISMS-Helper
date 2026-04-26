@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'audit' %}
 
 {% block title %}{{ 'audit.edit'|trans({}, 'audit') }} - {{ audit.title }} - {{ parent() }}{% endblock %}
@@ -35,14 +36,7 @@
                 </div>
             </div>
 
-            <div class="alert alert-info mb-4" role="alert">
-                <div class="fw-bold mb-2">
-                    <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'audit.iso_27001_requirement'|trans({}, 'audit') }}
-                </div>
-                <p class="mb-0 small">
-                    {{ 'audit.iso_27001_clause_info'|trans({}, 'audit') }}
-                </p>
-            </div>
+            {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'mb-4', body: '<div class="fw-bold mb-2"> <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ \'audit.iso_27001_requirement\'|trans({}, \'audit\') }} </div> <p class="mb-0 small"> {{ \'audit.iso_27001_clause_info\'|trans({}, \'audit\') }} </p>' }) }}
 
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
@@ -80,12 +74,8 @@
                                     'label': 'audit.field.scope_type'|trans({}, 'audit')
                                 } %}
                             </div>
-                            <div class="col-md-12" id="subsidiaries-container" style="display: none;">
-                                <div class="alert alert-info">
-                                    <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-                                    <strong>Konzernaudit:</strong> Wählen Sie die Tochtergesellschaften aus, die in dieses Audit einbezogen werden sollen.
-                                    Bei "Konzernweites Audit" sollten alle relevanten Tochtergesellschaften ausgewählt werden.
-                                </div>
+                            <div class="col-md-12 d-none" id="subsidiaries-container">
+                                {{ _fa_alert.render({ variant: 'info', icon: 'status-info', body: '<strong>Konzernaudit:</strong> Wählen Sie die Tochtergesellschaften aus, die in dieses Audit einbezogen werden sollen. Bei "Konzernweites Audit" sollten alle relevanten Tochtergesellschaften ausgewählt werden.' }) }}
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.auditedSubsidiaries,
                                     'label': 'audit.field.audited_subsidiaries'|trans({}, 'audit')

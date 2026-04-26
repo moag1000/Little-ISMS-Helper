@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block admin_title %}{{ 'mfa_token.title'|trans({}, 'mfa') }}{% endblock %}
@@ -68,9 +69,7 @@
 
     {# Users with MFA Tokens #}
     {% if tokens_by_user|length == 0 %}
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.empty'|trans({}, 'mfa') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', body: '{{ \'mfa_token.empty\'|trans({}, \'mfa\') }}' }) }}
     {% else %}
         {% for user_id, user_data in tokens_by_user %}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } %}
@@ -154,7 +153,7 @@
                                             {% if token.isActive %}
                                                 <form method="post"
                                                       action="{{ path('admin_mfa_disable', {id: token.id}) }}"
-                                                      style="display: inline;"
+                                                      class="d-inline"
                                                       data-controller="ui-actions"
                                                       data-action="submit->ui-actions#confirm"
                                                       data-ui-actions-message-param="{{ 'mfa_token.confirm_disable'|trans({}, 'mfa') }}">
@@ -168,7 +167,7 @@
                                             {% endif %}
                                             <form method="post"
                                                   action="{{ path('admin_mfa_delete', {id: token.id}) }}"
-                                                  style="display: inline;"
+                                                  class="d-inline"
                                                   data-controller="ui-actions"
                                                   data-action="submit->ui-actions#confirm"
                                                   data-ui-actions-message-param="{{ 'mfa_token.confirm_delete'|trans({}, 'mfa') }}">

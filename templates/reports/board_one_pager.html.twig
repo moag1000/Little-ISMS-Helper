@@ -306,23 +306,23 @@
             <table>
                 <tr>
                     <td>{{ 'board_one_pager.ops.open_incidents'|trans({}, 'reports') }}</td>
-                    <td style="text-align: right; font-weight: bold;">{{ kpis.incident_management.open_incidents.value|default(0) }}</td>
+                    <td class="text-end fw-bold">{{ kpis.incident_management.open_incidents.value|default(0) }}</td>
                 </tr>
                 <tr>
                     <td>{{ 'board_one_pager.ops.risk_treatment'|trans({}, 'reports') }}</td>
-                    <td style="text-align: right; font-weight: bold;">{{ kpis.risk_management.risk_treatment_rate.value|default(0) }}%</td>
+                    <td class="text-end fw-bold">{{ kpis.risk_management.risk_treatment_rate.value|default(0) }}%</td>
                 </tr>
                 <tr>
                     <td>{{ 'board_one_pager.ops.overdue_treatments'|trans({}, 'reports') }}</td>
-                    <td style="text-align: right; font-weight: bold;">{{ kpis.risk_management.overdue_treatments.value|default(0) }}</td>
+                    <td class="text-end fw-bold">{{ kpis.risk_management.overdue_treatments.value|default(0) }}</td>
                 </tr>
                 <tr>
                     <td>{{ 'board_one_pager.ops.training_completion'|trans({}, 'reports') }}</td>
-                    <td style="text-align: right; font-weight: bold;">{{ kpis.training.training_completion_rate.value|default(0) }}%</td>
+                    <td class="text-end fw-bold">{{ kpis.training.training_completion_rate.value|default(0) }}%</td>
                 </tr>
                 <tr>
                     <td>{{ 'board_one_pager.ops.control_compliance'|trans({}, 'reports') }}</td>
-                    <td style="text-align: right; font-weight: bold;">{{ kpis.core.control_compliance.value|default(0) }}%</td>
+                    <td class="text-end fw-bold">{{ kpis.core.control_compliance.value|default(0) }}%</td>
                 </tr>
             </table>
         </div>

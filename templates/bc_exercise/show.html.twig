@@ -20,7 +20,7 @@
             <a href="{{ path('app_bc_exercise_edit', {id: bc_exercise.id}) }}" class="btn btn-primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
             <a href="{{ path('app_bc_exercise_index') }}" class="btn btn-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') %}
-                <form method="post" action="{{ path('app_bc_exercise_delete', {id: bc_exercise.id}) }}" style="display:inline;"
+                <form method="post" action="{{ path('app_bc_exercise_delete', {id: bc_exercise.id}) }}" class="d-inline"
                       data-controller="ui-actions"
                       data-action="submit->ui-actions#confirm"
                       data-ui-actions-message-param="{{ 'bc_exercises.message.confirm_delete'|trans({}, 'bc_exercises') }}">
