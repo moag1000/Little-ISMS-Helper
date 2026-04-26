@@ -111,6 +111,24 @@ class GuidedTourServiceTest extends TestCase
         $this->assertCount(5, $service->stepsFor('isb'));
         $this->assertCount(2, $service->stepsFor('risk_owner'));
         $this->assertCount(3, $service->stepsFor('auditor'));
+        // MRIS-Topic-Tour: 8 Stopps (themenbezogen, nicht rollenbezogen).
+        $this->assertCount(8, $service->stepsFor('mris'));
+    }
+
+    public function testMrisSuggestionEligibilityRespectsAuditorExclusion(): void
+    {
+        // ROLE_USER ohne ROLE_AUDITOR → MRIS-Suggestion erlaubt
+        $service = $this->buildService(['ROLE_USER']);
+        $this->assertTrue($service->isEligibleForMrisSuggestion());
+
+        // ROLE_USER + ROLE_AUDITOR → keine MRIS-Suggestion (zu viele Re-Suggestions im
+        // Read-only-Workflow).
+        $service = $this->buildService(['ROLE_USER', 'ROLE_AUDITOR']);
+        $this->assertFalse($service->isEligibleForMrisSuggestion());
+
+        // Kein ROLE_USER (nicht eingeloggt) → keine Suggestion
+        $service = $this->buildService([]);
+        $this->assertFalse($service->isEligibleForMrisSuggestion());
     }
 
     public function testUnknownTourReturnsEmpty(): void

@@ -20,6 +20,8 @@ guided_tour:
             label: 'CISO / Admin tour'
         junior:
             label: 'Starter tour (Junior)'
+        mris:
+            label: 'MRIS module tour'
 
     mobile:
         title: 'Open tour on desktop'
@@ -147,6 +149,39 @@ guided_tour:
         bcm:
             title: 'Business continuity (optional, because BCM module is active)'
             body: 'Four stops in the BCM flow: capture business processes → perform BIA (Business Impact Analysis) → create BC plan → schedule BC exercise. All accessible via the "Business Continuity" menu. RTO/RPO are explained as tooltips on the respective fields.'
+
+    # MRIS module tour (8 steps, topic-based — not role-based)
+    # Goal: Junior ISB walkthrough of the Mythos-Resilience-Indicator System
+    # (MRIS v1.5 by Peddi 2026, CC BY 4.0). Short, active, with ISO-9001 bridges.
+    mris:
+        meta:
+            label: 'MRIS module tour'
+            description: 'Eight stops through the Mythos-Resilience-Indicator System — from the SoA column through MHC maturity to the glossary. Source: Peddi 2026, CC BY 4.0.'
+        step:
+            soa_column:
+                title: 'New MRIS column in the SoA'
+                body: 'The SoA has a new "MRIS" column. It classifies each ISO 27001 Annex A control by Mythos resilience: solid, degraded, pure friction, not affected. Filter at the top right. Source: Peddi 2026 (CC BY 4.0).'
+            reibung_warning:
+                title: 'Click on a "Pure Friction" control'
+                body: 'Open a control with MRIS status "pure friction". The red warning explains: this control does not help against the Mythos — you need a flanking MHC. Like a 9001 CAPA addressing the symptom, not the root cause.'
+            mhc_maturity:
+                title: 'MHC detail with maturity'
+                body: 'On a Mythos-Hardening-Control page (e.g. MHC-01 PQC) you see the maturity table: initial → defined → managed → measured → optimized. Maintain current + target, the tool shows the gap. Analogous to maturity models from 9001.'
+            kpi_score:
+                title: 'MRIS KPI overview'
+                body: 'At /mris/kpis you see 8 KPIs from the MHCs plus the aggregated score on the left. Auto KPIs are computed from tool data, manual ones you maintain yourself — like an audit programme tracker in 9001.'
+            mri_disclaimer:
+                title: 'Mythos-Resilience-Indicator (MRI) — note the disclaimer'
+                body: 'The yellow box below the score: the MRI is tool-internal, not audit evidence. It helps you spot trends — auditors want to see the standard evidence themselves. Like an internal QM index in 9001.'
+            ai_agents:
+                title: 'AI agent inventory'
+                body: 'At /ai-agents you maintain autonomous AI agents (e.g. copilots, auto-decisions) including EU AI Act risk class. Mandatory for CRA + AI Act from 2026 — and a prerequisite for MHC-13.'
+            wizards:
+                title: 'Wizards menu on the KPI page'
+                body: 'Three wizards walk you step-by-step through typical MRIS tasks: pure-friction routine, collect maturity evidence, set AI risk class. Like a guided 9001 audit checklist, just click-instead-of-paper.'
+            glossar:
+                title: 'MRIS glossary as a reference'
+                body: 'At /mris/glossar you find all MRIS terms with definition, 9001 bridge and standard reference. Ideal for Junior ISB with a QMB background. Tour finished — you can restart it anytime under Help → MRIS tour.'
 
     # Auditor (3 Steps)
     auditor:

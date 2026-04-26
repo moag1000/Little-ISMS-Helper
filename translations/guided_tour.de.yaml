@@ -20,6 +20,8 @@ guided_tour:
             label: 'CISO / Admin-Tour'
         junior:
             label: 'Einstiegs-Tour (Junior)'
+        mris:
+            label: 'MRIS-Modul-Tour'
 
     mobile:
         title: 'Tour am Desktop öffnen'
@@ -147,6 +149,39 @@ guided_tour:
         bcm:
             title: 'Business Continuity (optional, weil BCM-Modul aktiv)'
             body: 'Vier Stopps im BCM-Flow: Geschäftsprozesse erfassen → BIA (Business Impact Analysis) durchführen → BC-Plan erstellen → BC-Übung planen. Alles erreichbar über das Menü „Geschäftskontinuität". RTO/RPO werden als Tooltips an den jeweiligen Feldern erklärt.'
+
+    # MRIS-Modul-Tour (8 Steps, themenbezogen — nicht rollenbezogen)
+    # Ziel: Junior-ISB führt durch Mythos-Resilience-Indikator-System
+    # (MRIS v1.5 nach Peddi 2026, CC BY 4.0). Kurz, aktiv, mit ISO-9001-Brücke.
+    mris:
+        meta:
+            label: 'MRIS-Modul-Tour'
+            description: 'Acht Stopps durch das Mythos-Resilience-Indikator-System — von SoA-Spalte über MHC-Reifegrad bis Glossar. Quelle: Peddi 2026, CC BY 4.0.'
+        step:
+            soa_column:
+                title: 'Neue MRIS-Spalte in der SoA'
+                body: 'Die SoA hat eine neue Spalte „MRIS". Sie kategorisiert jeden ISO-27001-Annex-A-Control nach Mythos-Resilience: standfest, degradiert, reine Reibung, nicht betroffen. Filter oben rechts. Quelle: Peddi 2026 (CC BY 4.0).'
+            reibung_warning:
+                title: 'Klick auf einen „Reine Reibung"-Control'
+                body: 'Öffnen Sie einen Control mit MRIS-Status „reine Reibung". Die rote Warnung erklärt: dieser Control hilft nicht gegen den Mythos — Sie brauchen einen flankierenden MHC. Wie eine 9001-CAPA, die das Symptom adressiert, nicht die Ursache.'
+            mhc_maturity:
+                title: 'MHC-Detail mit Reifegrad'
+                body: 'Auf einer Mythos-Härtungs-Control-Seite (z. B. MHC-01 PQC) sehen Sie die Reifegrad-Tabelle: initial → defined → managed → measured → optimized. Sie pflegen Ist + Ziel, das Tool zeigt den Gap. Analog zu Reifegradmodellen aus 9001.'
+            kpi_score:
+                title: 'MRIS-KPI-Übersicht'
+                body: 'Unter /mris/kpis sehen Sie 8 KPIs aus den MHCs plus den aggregierten Score links. Auto-KPIs werden aus Tool-Daten berechnet, manuelle pflegen Sie selbst — wie ein Audit-Programm-Tracker in 9001.'
+            mri_disclaimer:
+                title: 'Mythos-Resilience-Indikator (MRI) — Disclaimer beachten'
+                body: 'Die gelbe Box unter dem Score: der MRI ist tool-intern, kein Audit-Nachweis. Er hilft Ihnen Trends zu erkennen — Auditoren wollen die Norm-Belege selbst sehen. Wie ein interner QM-Index in 9001.'
+            ai_agents:
+                title: 'AI-Agent-Inventar'
+                body: 'Unter /ai-agents pflegen Sie autonome AI-Agenten (z. B. Copiloten, Auto-Decisions) inkl. EU-AI-Act-Risiko-Klasse. Pflicht für CRA + AI-Act ab 2026 — und Voraussetzung für MHC-13.'
+            wizards:
+                title: 'Wizards-Menü auf der KPI-Seite'
+                body: 'Drei Wizards führen Sie schrittweise durch typische MRIS-Aufgaben: Reine-Reibung-Routine, Reifegrad-Evidence sammeln, AI-Risiko-Klasse setzen. Wie geführte 9001-Auditcheckliste, nur klick-statt-papier.'
+            glossar:
+                title: 'MRIS-Glossar als Nachschlagewerk'
+                body: 'Unter /mris/glossar finden Sie alle MRIS-Begriffe mit Definition, 9001-Brücke und Norm-Verweis. Ideal für Junior-ISB mit QMB-Vergangenheit. Tour fertig — Sie können jederzeit unter Hilfe → MRIS-Tour neu starten.'
 
     # Auditor (3 Steps)
     auditor:

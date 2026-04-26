@@ -703,6 +703,18 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.glossary'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        {# MRIS-Tour-Trigger: startet die Tour ohne Seitenwechsel.
+                           data-turbo="false" verhindert Turbo-Navigation auf "#". #}
+                        <li><a href="#"
+                               data-action="click->guided-tour#start"
+                               data-guided-tour-role-param="mris"
+                               data-turbo="false">
+                            <i class="bi bi-stars" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.mega.help.mris_tour'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.mris_tour'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
                     </ul>
                 </div>
                 <div class="mega-menu-section">
