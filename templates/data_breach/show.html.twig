@@ -201,6 +201,7 @@
                     <div class="card-header"><h2 class="mb-0"><i class="bi bi-building" aria-hidden="true"></i> {{ 'privacy.data_breach.section.authority'|trans({}, 'privacy') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     <p><strong>{{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }}:</strong>
                         {% if breach.requiresAuthorityNotification %}
                             <span class="text-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'privacy.data_breach.field.yes'|trans({}, 'privacy') }}</span>
@@ -277,6 +278,7 @@
             <div class="card-header"><h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'privacy.data_breach.section.nature'|trans({}, 'privacy') }}</h2></div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {% if breach.breachNature %}
                 <h3>{{ 'privacy.data_breach.section.nature'|trans({}, 'privacy') }} (Art. 33(3)(a)):</h3>
                 <p>{{ breach.breachNature|nl2br }}</p>

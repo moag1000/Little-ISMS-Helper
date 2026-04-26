@@ -34,6 +34,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     <dl class="row mb-0">
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.relationship'|trans({}, 'admin') }}</dt>
                         <dd class="col-sm-8">{% if mapping.relationship %}{% include '_components/_badge.html.twig' with { variant: 'secondary', content: mapping.relationship|replace({'_': ' '}) } %}{% else %}—{% endif %}</dd>

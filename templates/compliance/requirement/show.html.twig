@@ -255,6 +255,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     {% if is_inherited %}
                         {{ _fa_alert.render({ variant: 'info', icon: 'status-info', body: '<strong>Inherited from parent tenant</strong> <br><small>This fulfillment data is inherited from your parent organization. You cannot edit it directly.</small>' }) }}
                     {% endif %}

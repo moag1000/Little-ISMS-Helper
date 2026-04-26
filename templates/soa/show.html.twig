@@ -264,6 +264,7 @@
 {% if control.trainings is defined and control.trainings|length > 0 %}
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_body %}
+        {% import '_components/_fa_alert.html.twig' as _fa_alert %}
         <h2>Training Coverage ({{ control.trainings|length }})</h2>
         {{ _fa_alert.render({ variant: control.hasTrainingCoverage ? 'success' : 'warning', body: '<strong>Status: ' ~ control.trainingStatus|upper ~ '</strong>' ~ (not control.hasTrainingCoverage ? '<br>Keine abgeschlossenen Trainings für dieses Control.' : '') }) }}
         <div class="data-reuse-list">

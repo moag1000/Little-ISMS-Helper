@@ -178,6 +178,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
             {% if suppliers|length > 0 %}
             {% embed '_components/_table.html.twig' with {
                 'wrapperClass': 'card-body',

@@ -85,6 +85,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     <div class="mb-3">
                         {{ _fa_alert.render({ variant: 'info', dismissible: true, body: 'workflow.builder.drag_help'|trans({}, 'workflows') }) }}
                     </div>

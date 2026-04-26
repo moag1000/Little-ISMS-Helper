@@ -183,6 +183,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
                     {% if context.externalIssues %}
                     <div class="mb-3">
                         <label class="small">
@@ -225,6 +226,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
             <div class="row">
                 {# Junior-Finding #5 / CM-Blocker: Freitext entfernt. Aggregat
                    aus dem strukturierten Interested-Parties-Modul wird hier
@@ -365,6 +367,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
                     {% if context.ismsPolicy %}
                     <p class="mb-0">{{ context.ismsPolicy|nl2br }}</p>
                     {% else %}
@@ -388,6 +391,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
                     {% if context.rolesAndResponsibilities %}
                     <p class="mb-0">{{ context.rolesAndResponsibilities|nl2br }}</p>
                     {% else %}

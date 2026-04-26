@@ -18,6 +18,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     <div class="p-4">
                         <p class="lead mb-4">
                             {{ 'setup.step9.description'|trans({}, 'setup') }}

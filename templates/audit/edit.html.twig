@@ -47,6 +47,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'audit-form'}}) }}
 
                     {# Basic Information Section #}

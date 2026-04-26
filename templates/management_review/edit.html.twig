@@ -39,6 +39,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     {{ _fa_alert.render({ variant: 'info', class: 'mb-4', title: 'management_review.iso_requirement'|trans({}, 'management_review'), body: '<span class="small">' ~ 'management_review.iso_clause_93_info'|trans({}, 'management_review') ~ '</span>' }) }}
 
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
