@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MRIS-KPIs{% endblock %}
+
+{% block body %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">MRIS-KPIs</li>
+        </ol>
+    </nav>
+
+    <div class="page-header mb-4">
+        <div>
+            <h1>
+                <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                Mythos-relevante Kennzahlen
+            </h1>
+            <p class="text-muted small mb-0">
+                Acht KPIs aus MRIS v1.5 Kap. 10.6. Drei werden automatisch aus Bestandsdaten
+                berechnet, fünf erfordern manuelle Pflege je Mandant.<br>
+                <em>Quelle: Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. Lizenz: CC BY 4.0.</em>
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        {% for kpi in kpis %}
+            <div class="col-md-6 col-lg-3">
+                {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                    {% block card_body %}
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <code class="small text-muted">{{ kpi.mhc }}</code>
+                            {% if kpi.computable %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'auto' } %}
+                            {% else %}
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'manuell' } %}
+                            {% endif %}
+                        </div>
+                        <h2 class="h6 mb-2">{{ kpi.name }}</h2>
+                        {% if kpi.value is not null %}
+                            <p class="display-6 mb-1">
+                                {{ kpi.value }}
+                                <small class="fs-6 text-muted">{{ kpi.unit }}</small>
+                            </p>
+                        {% else %}
+                            <p class="text-muted fst-italic mb-1">— keine Daten —</p>
+                        {% endif %}
+                        <p class="small text-muted mb-0">{{ kpi.source }}</p>
+                    {% endblock %}
+                {% endembed %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="alert alert-light mt-4 small">
+        <strong><i class="bi bi-info-circle" aria-hidden="true"></i> Hinweis:</strong>
+        Die fünf manuell zu pflegenden KPIs (SBOM-Coverage, KEV-Patch-Latency, CCM-Coverage,
+        Krypto-Inventar-Abdeckung, TLPT-Findings-Closure) erfordern derzeit externe Datenquellen.
+        Manuelle Eingabefelder folgen in einer späteren Version.
+    </div>
+</div>
+{% endblock %}
