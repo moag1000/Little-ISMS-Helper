@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_entity_card.html.twig' as _fa_entity_card %}
 
 {% block title %}{{ 'audit_finding.page.title'|trans({}, 'audits') }}{% endblock %}
 
@@ -64,63 +65,37 @@
         {% endblock %}
     {% endembed %}
 
-    {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
-        {% block card_body %}
-            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-            {% if findings is empty %}
-                {{ _fa_empty_state.render({
-                    mood: 'celebrating',
-                    title: 'audit_finding.message.no_findings'|trans({}, 'audits')
+    {% if findings is empty %}
+        {{ _fa_empty_state.render({
+            mood: 'celebrating',
+            title: 'audit_finding.message.no_findings'|trans({}, 'audits')
+        }) }}
+    {% else %}
+        <div class="d-flex flex-column gap-2">
+            {% for f in findings %}
+                {% set _statusVariant = f.status == 'open' ? 'warning'
+                    : (f.status in ['verified', 'closed', 'resolved'] ? 'success'
+                    : (f.status == 'in_progress' ? 'info' : 'neutral')) %}
+                {% set _findingNumber = f.findingNumber ?? ('#' ~ f.id) %}
+                {% set _severityLabel = ('audit_finding.severity.' ~ f.severity)|trans({}, 'audits') %}
+                {% set _typeLabel = ('audit_finding.type.' ~ f.type)|trans({}, 'audits') %}
+                {% set _meta = [_findingNumber, _typeLabel, _severityLabel] %}
+                {% if f.dueDate %}
+                    {% set _meta = _meta|merge([
+                        (f.isOverdue ? '⚠ ' : '') ~ f.dueDate|date('Y-m-d')
+                    ]) %}
+                {% endif %}
+                {{ _fa_entity_card.render({
+                    type:   'finding',
+                    icon:   'finding',
+                    title:  f.title,
+                    meta:   _meta,
+                    href:   path('app_audit_finding_show', {id: f.id}),
+                    status: { variant: _statusVariant, label: ('audit_finding.status.' ~ f.status)|trans({}, 'audits') }
                 }) }}
-            {% else %}
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                        <tr>
-                            <th scope="col">{{ 'audit_finding.field.finding_number'|trans({}, 'audits') }}</th>
-                            <th scope="col">{{ 'audit_finding.field.title'|trans({}, 'audits') }}</th>
-                            <th scope="col">{{ 'audit_finding.field.type'|trans({}, 'audits') }}</th>
-                            <th scope="col">{{ 'audit_finding.field.severity'|trans({}, 'audits') }}</th>
-                            <th scope="col">{{ 'audit_finding.field.status'|trans({}, 'audits') }}</th>
-                            <th scope="col">{{ 'audit_finding.field.due_date'|trans({}, 'audits') }}</th>
-                            <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for f in findings %}
-                            <tr>
-                                <td>{{ f.(findingNumber ?? ('#' ~ f.id)) }}</td>
-                                <td>{{ f.title }}</td>
-                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ ('audit_finding.type.' ~ f.type)|trans({}, 'audits') }}</span></td>
-                                <td>
-                                    {% set sevClass = {critical: 'danger', high: 'warning', medium: 'info', low: 'secondary'}[f.severity] ?? 'secondary' %}
-                                    {% set sevPill = {critical: 'danger', high: 'warning', medium: 'primary', low: 'neutral'}[f.severity] ?? 'neutral' %}
-                                    <span class="fa-status-pill fa-status-pill--{{ sevPill }}">{{ ('audit_finding.severity.' ~ f.severity)|trans({}, 'audits') }}</span>
-                                </td>
-                                {% set _statusPill = f.status == 'open' ? 'warning' : (f.status in ['verified', 'closed'] ? 'success' : 'primary') %}
-                                <td><span class="fa-status-pill fa-status-pill--{{ _statusPill }}">{{ ('audit_finding.status.' ~ f.status)|trans({}, 'audits') }}</span></td>
-                                <td>
-                                    {% if f.dueDate %}
-                                        <span {% if f.isOverdue %}class="text-danger fw-bold"{% endif %}>
-                                            {{ f.dueDate|date('Y-m-d') }}
-                                        </span>
-                                    {% else %}
-                                        <span class="text-muted">—</span>
-                                    {% endif %}
-                                </td>
-                                <td class="text-end">
-                                    <a href="{{ path('app_audit_finding_show', {id: f.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% endif %}
-        {% endblock %}
-    {% endembed %}
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
 </main>
 {% endblock %}

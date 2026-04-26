@@ -11,6 +11,8 @@
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_fa_hero.html.twig' as _fa_hero %}
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+{% import '_components/_fa_entity_card.html.twig' as _fa_entity_card %}
+{% import '_components/_fa_entity_badge.html.twig' as _fa_entity_badge %}
 {% import '_components/_alva.html.twig' as alva %}
 
 {% block title %}Aurora v4 Living Styleguide{% endblock %}
@@ -31,6 +33,8 @@
             <a href="#sec-empty-state"  class="fa-filter-chip">fa-empty-state</a>
             <a href="#sec-hero"         class="fa-filter-chip">fa-hero</a>
             <a href="#sec-filter-chip"  class="fa-filter-chip">fa-filter-chip</a>
+            <a href="#sec-entity-card"  class="fa-filter-chip">fa-entity-card</a>
+            <a href="#sec-entity-badge" class="fa-filter-chip">fa-entity-badge</a>
             <a href="#sec-alva"         class="fa-filter-chip">Alva moods</a>
             <a href="#sec-cyber-btn"    class="fa-filter-chip">fa-cyber-btn</a>
             <a href="#sec-tokens"       class="fa-filter-chip">Aurora tokens</a>
@@ -369,6 +373,98 @@
     { label: 'In Bearbeitung', href: '?status=wip' },
     { label: 'Geschlossen', href: '?status=closed' }
 ], 0) }}{% endverbatim %}</code></pre>
+                </details>
+            </div>
+        </section>
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# 7b. fa-entity-card — Listen-Item-Card mit Entity-Icon          #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="sec-entity-card">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">fa-entity-card</h2>
+            </div>
+            <div class="fa-section__body">
+                <p class="text-muted mb-3">Listen-Item-Card für Findings, Risks, Controls, Incidents, Audits, NCs. 7 Entity-Type-Variants mit Akzent-Leiste + Icon-Färbung. Compact-Variante für dichte Listen.</p>
+
+                <div class="d-flex flex-column gap-2 mb-3">
+                    {{ _fa_entity_card.render({
+                        type:    'finding',
+                        icon:    'finding',
+                        title:   'F-2026-014 Lückenhafte Logging-Konfig',
+                        meta:    ['ISO 27001 A.8.15', 'fällig 12.05.'],
+                        href:    '#',
+                        status:  { variant: 'warning', label: 'Offen' }
+                    }) }}
+                    {{ _fa_entity_card.render({
+                        type:    'risk',
+                        icon:    'risk-register',
+                        title:   'R-2026-007 Lieferantenausfall Cloud-Provider',
+                        meta:    ['Likelihood: hoch', 'Impact: kritisch', 'Owner: CTO'],
+                        href:    '#',
+                        status:  { variant: 'danger', label: 'Hoch' }
+                    }) }}
+                    {{ _fa_entity_card.render({
+                        type:    'evidence',
+                        icon:    'evidence',
+                        title:   'EV-2026-091 Penetrationstest-Bericht Q1',
+                        meta:    ['ISO 27001 A.8.8', 'sha256 verifiziert'],
+                        href:    '#',
+                        status:  { variant: 'success', label: 'Validiert' },
+                        compact: true
+                    }) }}
+                </div>
+
+                <details>
+                    <summary>Twig snippet</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto;"><code>{% verbatim %}{% import '_components/_fa_entity_card.html.twig' as _fa_entity_card %}
+
+{{ _fa_entity_card.render({
+    type:    'finding',                           {# entity-type sets accent-line + icon-color #}
+    icon:    'finding',                           {# fa-icon-- name #}
+    title:   'F-2026-014 Lückenhafte Logging-Konfig',
+    meta:    ['ISO 27001 A.8.15', 'fällig 12.05.'],
+    href:    path('audit_finding_show', {id: 14}),
+    status:  { variant: 'warning', label: 'Offen' },
+    compact: false                                {# true for dense lists #}
+}) }}{% endverbatim %}</code></pre>
+                </details>
+            </div>
+        </section>
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# 7c. fa-entity-badge — ISMS-Entity-Marker (10 types)             #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="sec-entity-badge">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">fa-entity-badge</h2>
+            </div>
+            <div class="fa-section__body">
+                <p class="text-muted mb-3">Größer als status-pill, für Listen-Header und Detail-Marker. 10 Entity-Types mit Aurora-Semantik.</p>
+
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    {{ _fa_entity_badge.render({ type: 'finding',       icon: 'finding',          label: 'Finding' }) }}
+                    {{ _fa_entity_badge.render({ type: 'nonconformity', icon: 'nonconformity',    label: 'NC' }) }}
+                    {{ _fa_entity_badge.render({ type: 'risk',          icon: 'risk-register',    label: 'Risk' }) }}
+                    {{ _fa_entity_badge.render({ type: 'control',       icon: 'control',          label: 'Control' }) }}
+                    {{ _fa_entity_badge.render({ type: 'evidence',      icon: 'evidence',         label: 'Evidence' }) }}
+                    {{ _fa_entity_badge.render({ type: 'policy',        icon: 'policy',           label: 'Policy' }) }}
+                    {{ _fa_entity_badge.render({ type: 'asset',         icon: 'asset-server',     label: 'Asset' }) }}
+                    {{ _fa_entity_badge.render({ type: 'incident',      icon: 'incident',         label: 'Incident' }) }}
+                    {{ _fa_entity_badge.render({ type: 'audit',         icon: 'audit-internal',   label: 'Audit' }) }}
+                    {{ _fa_entity_badge.render({ type: 'training',      icon: 'training',         label: 'Training' }) }}
+                </div>
+
+                <details>
+                    <summary>Twig snippet</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto;"><code>{% verbatim %}{% import '_components/_fa_entity_badge.html.twig' as _fa_entity_badge %}
+
+{{ _fa_entity_badge.render({
+    type:  'risk',                  {# 10 types: finding, nonconformity, risk, control,
+                                        evidence, policy, asset, incident, audit, training #}
+    icon:  'risk-register',         {# fa-icon-- name (optional) #}
+    label: 'Risk'
+}) }}{% endverbatim %}</code></pre>
                 </details>
             </div>
         </section>
