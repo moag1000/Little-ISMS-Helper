@@ -120,6 +120,34 @@
     --on-warning:    #ffffff;
     --on-danger:     #ffffff;
 
+    /* — Semantic-Tints (subtile Backgrounds, ~10% opacity) — */
+    --success-tint: rgba(5, 150, 105, 0.1);
+    --warning-tint: rgba(217, 119, 6, 0.1);
+    --danger-tint:  rgba(220, 38, 38, 0.1);
+    --info-tint:    rgba(2, 132, 199, 0.1);
+
+    /* — RGB-Komponenten für rgba()-Komposition (themed shadows, borders) — */
+    --primary-rgb: 2, 132, 199;
+    --accent-rgb:  124, 58, 237;
+    --success-rgb: 5, 150, 105;
+    --warning-rgb: 217, 119, 6;
+    --danger-rgb:  220, 38, 38;
+
+    /* — Shadows (light mode default) — */
+    --shadow-sm:    0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-md:    0 4px 12px rgba(0, 0, 0, 0.06);
+    --shadow-lg:    0 8px 24px rgba(0, 0, 0, 0.08);
+    /* Inverted shadows for bottom-anchored sheets / sticky-bottom toolbars */
+    --shadow-up-sm: 0 -4px 12px rgba(0, 0, 0, 0.06);
+    --shadow-up-md: 0 -4px 20px rgba(0, 0, 0, 0.10);
+
+    /* — Print-Tokens (Cascade-overridable, semantically named) — */
+    --print-fg: #000;
+    --print-bg: #fff;
+
+    /* — Translucent surface for floating overlays on colored hero/gradient — */
+    --surface-translucent: rgba(255, 255, 255, 0.2);
+
     /* — Alva / Fairy — */
     --fairy-primary: #0284c7;
     --fairy-accent:  #7c3aed;
@@ -227,6 +255,29 @@ html[data-theme="dark"] {
     --on-warning: #0a0e1a;
     --on-danger:  #0a0e1a;
 
+    /* — Semantic-Tints (dark mode: ~12-15% opacity for visibility) — */
+    --success-tint: rgba(52, 211, 153, 0.12);
+    --warning-tint: rgba(251, 191, 36, 0.12);
+    --danger-tint:  rgba(248, 113, 113, 0.15);
+    --info-tint:    rgba(56, 189, 248, 0.12);
+
+    /* — RGB-Komponenten (dark palette) — */
+    --primary-rgb: 56, 189, 248;
+    --accent-rgb:  167, 139, 250;
+    --success-rgb: 52, 211, 153;
+    --warning-rgb: 251, 191, 36;
+    --danger-rgb:  248, 113, 113;
+
+    /* — Shadows (dark mode: stronger black + primary-aura accent) — */
+    --shadow-sm:    0 2px 4px rgba(0, 0, 0, 0.4),  0 0 8px  rgba(var(--primary-rgb), 0.10);
+    --shadow-md:    0 4px 12px rgba(0, 0, 0, 0.5), 0 0 12px rgba(var(--primary-rgb), 0.15);
+    --shadow-lg:    0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(var(--primary-rgb), 0.20);
+    --shadow-up-sm: 0 -4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-up-md: 0 -4px 20px rgba(0, 0, 0, 0.5);
+
+    /* Translucent surface — dark variant uses fg as base */
+    --surface-translucent: rgba(255, 255, 255, 0.06);
+
     --fairy-primary: #38bdf8;
     --fairy-accent:  #a78bfa;
     --fairy-aura:    #6366f1;
@@ -267,6 +318,19 @@ html[data-theme="dark"] {
         --info:    #38bdf8; --info-glow:    rgba(56,189,248,0.25);
         --on-primary: #0a0e1a; --on-accent: #0a0e1a; --on-success: #0a0e1a;
         --on-warning: #0a0e1a; --on-danger: #0a0e1a;
+        --success-tint: rgba(52, 211, 153, 0.12);
+        --warning-tint: rgba(251, 191, 36, 0.12);
+        --danger-tint:  rgba(248, 113, 113, 0.15);
+        --info-tint:    rgba(56, 189, 248, 0.12);
+        --primary-rgb: 56, 189, 248; --accent-rgb: 167, 139, 250;
+        --success-rgb: 52, 211, 153; --warning-rgb: 251, 191, 36;
+        --danger-rgb: 248, 113, 113;
+        --shadow-sm:    0 2px 4px rgba(0, 0, 0, 0.4),  0 0 8px  rgba(var(--primary-rgb), 0.10);
+        --shadow-md:    0 4px 12px rgba(0, 0, 0, 0.5), 0 0 12px rgba(var(--primary-rgb), 0.15);
+        --shadow-lg:    0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(var(--primary-rgb), 0.20);
+        --shadow-up-sm: 0 -4px 12px rgba(0, 0, 0, 0.4);
+        --shadow-up-md: 0 -4px 20px rgba(0, 0, 0, 0.5);
+        --surface-translucent: rgba(255, 255, 255, 0.06);
         --fairy-primary: #38bdf8;
         --fairy-accent:  #a78bfa;
         --fairy-aura:    #6366f1;

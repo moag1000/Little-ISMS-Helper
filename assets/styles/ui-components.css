@@ -88,7 +88,7 @@
     background: var(--surface);
     border-radius: var(--r-md);
     padding: var(--spacing-lg);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
@@ -115,7 +115,7 @@
 }
 
 .kpi-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 0 20px var(--primary-tint);
+    box-shadow: var(--shadow-md), 0 0 20px var(--primary-tint);
     transform: translateY(-2px);
 }
 
@@ -128,7 +128,7 @@
 }
 
 .kpi-card-success:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 0 10px var(--success-glow), 0 0 20px var(--success-glow);
+    box-shadow: var(--shadow-md), 0 0 10px var(--success-glow), 0 0 20px var(--success-glow);
 }
 
 .kpi-card-warning {
@@ -144,7 +144,7 @@
 }
 
 .kpi-card-info:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
+    box-shadow: var(--shadow-md), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
 .kpi-card-icon {
@@ -162,27 +162,27 @@
 
 .kpi-card-primary .kpi-card-icon {
     color: var(--fg);
-    background: rgba(44, 62, 80, 0.1);
+    background: var(--surface-2);
 }
 
 .kpi-card-success .kpi-card-icon {
     color: var(--success);
-    background: rgba(39, 174, 96, 0.1);
+    background: var(--success-tint);
 }
 
 .kpi-card-warning .kpi-card-icon {
     color: var(--warning);
-    background: rgba(243, 156, 18, 0.1);
+    background: var(--warning-tint);
 }
 
 .kpi-card-danger .kpi-card-icon {
     color: var(--danger);
-    background: rgba(231, 76, 60, 0.1);
+    background: var(--danger-tint);
 }
 
 .kpi-card-info .kpi-card-icon {
     color: var(--primary);
-    background: rgba(52, 152, 219, 0.1);
+    background: var(--primary-tint);
 }
 
 .kpi-card-content {
@@ -852,7 +852,7 @@
     align-items: center;
     justify-content: center;
     margin-bottom: var(--spacing-lg);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
 }
 
 .empty-state-icon i {
@@ -902,7 +902,7 @@
     z-index: 10;
     background: var(--surface);
     border-radius: var(--r-md);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-md);
     padding: var(--spacing-md) var(--spacing-lg);
     margin-bottom: var(--spacing-lg);
     animation: slideInDown 0.2s ease;
@@ -946,7 +946,7 @@
    Related Items
    ==================== */
 .related-items-card {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
 }
 
 .related-items-card .card-header h5 {
@@ -1822,18 +1822,18 @@
     border: none;
 }
 
-/* Info boxes with semi-transparent white background */
+/* Info boxes — translucent overlay, used on colored gradient hero/banner */
 .info-box-white {
-    background: rgba(255,255,255,0.2);
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
+    background: var(--surface-translucent);
+    padding: var(--spacing-lg);
+    border-radius: var(--r-md);
+    margin-bottom: var(--spacing-lg);
 }
 
 .info-box-white-no-mb {
-    background: rgba(255,255,255,0.2);
-    padding: 1.5rem;
-    border-radius: 8px;
+    background: var(--surface-translucent);
+    padding: var(--spacing-lg);
+    border-radius: var(--r-md);
 }
 
 /* Colored headings with no top margin */
@@ -2492,7 +2492,7 @@
         border: 1px solid var(--border);
         border-radius: var(--r-md);
         padding: 0.75rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        box-shadow: var(--shadow-sm);
     }
 
     .table-stacked tbody td {
@@ -2627,7 +2627,7 @@
         z-index: var(--z-sticky, 100);
         display: flex;
         gap: 0.75rem;
-        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow-up-sm);
     }
 
     .form-actions-sticky .btn {
@@ -2647,7 +2647,7 @@
     [data-theme="dark"] .form-actions-sticky {
         background: var(--bg);
         border-top-color: var(--border);
-        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+        box-shadow: var(--shadow-up-md);
     }
 
     /* Add padding to form content to prevent overlap with sticky bar */
