@@ -1,0 +1,55 @@
+mris:
+    page:
+        kpi_title: 'Mythos-relevante Kennzahlen'
+        kpi_intro: |
+            Acht KPIs aus MRIS v1.5 Kap. 10.6. Drei werden automatisch aus
+            Bestandsdaten berechnet, fünf erfordern manuelle Pflege je Mandant.
+        source: 'Quelle: Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. Lizenz: CC BY 4.0.'
+    badge:
+        auto: auto
+        manual: manuell
+    state:
+        no_data: '— keine Daten —'
+    kpi_help:
+        manual_note: |
+            Die fünf manuell zu pflegenden KPIs (SBOM-Coverage, KEV-Patch-Latency,
+            CCM-Coverage, Krypto-Inventar-Abdeckung, TLPT-Findings-Closure) erfordern
+            externe Datenquellen. Manuelle Eingabefelder folgen weiter unten.
+    manual_form:
+        title: 'Manuelle KPI-Werte'
+        save: 'Werte speichern'
+        intro: |
+            Werte als Prozent (0-100) bzw. Tage eingeben. Leer lassen = nicht gepflegt.
+            Audit-Trail wird beim Speichern angelegt.
+ai_agent:
+    page:
+        title: 'AI-Agent-Inventar'
+        intro: |
+            Asset-Subtyp <code>ai_agent</code>. Erfüllt gleichzeitig EU AI Act
+            Art. 6/9-16, ISO 42001 Annex A, MRIS MHC-13 und ISO 27001 A.5.16/A.8.27.
+        source: 'MRIS-Quelle: Peddi, R. (2026). MRIS v1.5. CC BY 4.0.'
+    stats:
+        total: 'AI-Agents gesamt'
+        high_risk: 'Hochrisiko (AI Act Art. 6)'
+        unclassified: 'Nicht klassifiziert'
+        avg_completeness: 'Ø Doku-Vollständigkeit'
+    table:
+        name: Name
+        provider: Anbieter
+        model: Modell
+        risk_class: Risikoklasse
+        completeness: 'Doku-Vollständigkeit'
+    risk:
+        prohibited: Verboten
+        high_risk: Hochrisiko
+        limited_risk: Begrenzt
+        minimal_risk: Minimal
+        unclassified: 'Nicht klassifiziert'
+    alert:
+        high_risk_incomplete: 'Hochrisiko-Agent(en) mit unvollständiger Dokumentation. EU AI Act Art. 11 verlangt für High-Risk-Systeme vollständige technische Dokumentation. Vor erster Nutzung ergänzen.'
+        empty: 'Noch keine AI-Agents im Inventar. Lege ein Asset mit assetType=ai_agent an (z. B. GitHub Copilot, Cursor, Claude Code, eigener MCP-Server).'
+        mandatory_fields: |
+            Pflichtfelder pro AI-Agent (9): Risikoklassifikation (AI Act Art. 6),
+            Zweckbestimmung (Art. 11), Datengovernance (Art. 10), Human Oversight
+            (Art. 14), Anbieter (Art. 16), Modell-Version (ISO 42001), Capability-Scope
+            (MHC-13), Bedrohungsmodell (Art. 9 + MHC-13), Extension-Allowlist (MHC-13).

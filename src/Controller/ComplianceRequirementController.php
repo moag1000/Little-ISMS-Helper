@@ -178,8 +178,10 @@ class ComplianceRequirementController extends AbstractController
     /**
      * Setzt MRIS-Reifegrad (current + target) für ein MHC-Requirement.
      * Audit-Log automatisch via MrisMaturityService.
+     * ROLE_MANAGER-Pflicht analog zu SoA-Edit (Auditor-relevante Änderung).
      */
     #[Route('/compliance/requirement/{id}/mris-maturity', name: 'app_compliance_requirement_mris_maturity', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function setMrisMaturity(Request $request, ComplianceRequirement $complianceRequirement): Response
     {
         if (!$this->isCsrfTokenValid('mris_maturity_' . $complianceRequirement->getId(), (string) $request->request->get('_token'))) {

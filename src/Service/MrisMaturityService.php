@@ -52,13 +52,26 @@ final class MrisMaturityService
     }
 
     /**
-     * Setzt den Soll-Stand (kein Audit-Eintrag, da deklarativ).
+     * Setzt den Soll-Stand. Loggt Vorher/Nachher im Audit-Trail (logUpdate),
+     * damit Soll-Anhebungen im Quartals-Review nachvollziehbar sind.
      */
     public function setTarget(ComplianceRequirement $requirement, ?string $stage): void
     {
         $this->guardStage($stage);
+        $previous = $requirement->getMaturityTarget();
+        if ($previous === $stage) {
+            return;
+        }
         $requirement->setMaturityTarget($stage);
         $this->entityManager->flush();
+
+        $this->auditLogger->logUpdate(
+            entityType: 'ComplianceRequirement',
+            entityId: $requirement->getId(),
+            oldValues: ['maturity_target' => $previous],
+            newValues: ['maturity_target' => $stage],
+            description: sprintf('MRIS-Reifegrad (Soll) %s → %s für %s', $previous ?? 'null', $stage ?? 'null', $requirement->getRequirementId() ?? '?'),
+        );
     }
 
     /**
