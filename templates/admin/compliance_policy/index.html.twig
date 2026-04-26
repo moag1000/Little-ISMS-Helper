@@ -42,11 +42,13 @@
         {% for groupKey, groupLabel in groups %}
             {% set groupDefs = defs|filter(def => def.group == groupKey) %}
             {% if groupDefs|length > 0 %}
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <h2 class="h6 mb-0">{{ groupLabel|trans({}, 'compliance_policy') }}</h2>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with {'class': 'mb-3', 'groupDefs': groupDefs, 'groupLabel': groupLabel, 'current': current, 'defaults': defaults} %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="h6 mb-0">{{ groupLabel|trans({}, 'compliance_policy') }}</h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         {% for key, def in groupDefs %}
                             {% set fieldId = 'field_' ~ key|replace({'.': '_'}) %}
                             {% set fieldName = key|replace({'.': '_'}) %}
@@ -100,8 +102,8 @@
                                 </div>
                             </div>
                         {% endfor %}
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         {% endfor %}
 
@@ -116,11 +118,13 @@
         </div>
     </form>
 
-    <div class="card mt-4">
-        <div class="card-header">
-            <h2 class="h6 mb-0">{{ 'compliance_policy.reset.heading'|trans({}, 'compliance_policy') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {'class': 'mt-4', 'defs': defs} %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="h6 mb-0">{{ 'compliance_policy.reset.heading'|trans({}, 'compliance_policy') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <p class="small text-muted">{{ 'compliance_policy.reset.lead'|trans({}, 'compliance_policy') }}</p>
             <div class="row g-2">
                 {% for key, def in defs %}
@@ -140,7 +144,7 @@
                     </div>
                 {% endfor %}
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

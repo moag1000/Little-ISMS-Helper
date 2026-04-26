@@ -52,7 +52,8 @@
         <div class="alert alert-{{ alertClass }} workflow-status-alert" role="alert">
             <div class="workflow-status-header">
                 <div class="workflow-status-title">
-                    <i class="bi bi-{{ isDataBreach ? 'exclamation-triangle-fill' : 'gear-fill' }}" aria-hidden="true"></i>
+                    {# TODO(aurora-v4-icons): dynamic icon switch — isDataBreach ? exclamation-triangle-fill : gear-fill #}
+                    <i class="{% if isDataBreach %}fa-icon fa-icon--status-warning{% else %}bi bi-gear-fill{% endif %}" aria-hidden="true"></i>
                     <strong>
                         {% if isDataBreach %}
                             {{ 'incident.workflow.data_breach_active'|trans({}, 'incident') }}
@@ -86,7 +87,7 @@
 
                 {% if isDataBreach and workflowStatus.due_date %}
                     <div class="gdpr-deadline-warning">
-                        <i class="bi bi-clock-history" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
                         <strong>{{ 'incident.workflow.gdpr_72h_deadline'|trans({}, 'incident') }}</strong>
                         {% set hoursRemaining = ((workflowStatus.due_date.timestamp - "now"|date('U')) / 3600)|round(1) %}
                         {% if workflowStatus.is_overdue %}
@@ -154,11 +155,11 @@
                         <div class="timeline-stage {% if incident.earlyWarningReportedAt %}completed{% elseif incident.isEarlyWarningOverdue %}overdue{% else %}pending{% endif %}">
                             <div class="timeline-icon">
                                 {% if incident.earlyWarningReportedAt %}
-                                    <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                 {% elseif incident.isEarlyWarningOverdue %}
-                                    <i class="bi bi-exclamation-triangle-fill text-danger" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                                 {% else %}
-                                    <i class="bi bi-clock-fill text-warning" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
                                 {% endif %}
                             </div>
                             <div class="timeline-content">
@@ -169,19 +170,19 @@
                                 </p>
                                 {% if incident.earlyWarningReportedAt %}
                                     <div class="timeline-completed">
-                                        <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                         {{ 'incident.timeline.reported_at'|trans({}, 'incident') }}:
                                         <strong>{{ incident.earlyWarningReportedAt|date('d.m.Y H:i') }}</strong>
                                     </div>
                                 {% elseif incident.isEarlyWarningOverdue %}
                                     <div class="timeline-overdue">
-                                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                         {{ 'incident.timeline.overdue'|trans({}, 'incident') }}
                                     </div>
                                 {% else %}
                                     <div class="timeline-countdown">
                                         {% set hoursRemaining = incident.hoursUntilEarlyWarningDeadline %}
-                                        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
                                         {{ 'incident.timeline.hours_remaining'|trans({'%hours%': hoursRemaining}, 'incident') }}
                                     </div>
                                 {% endif %}
@@ -192,11 +193,11 @@
                         <div class="timeline-stage {% if incident.detailedNotificationReportedAt %}completed{% elseif incident.isDetailedNotificationOverdue %}overdue{% else %}pending{% endif %}">
                             <div class="timeline-icon">
                                 {% if incident.detailedNotificationReportedAt %}
-                                    <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                 {% elseif incident.isDetailedNotificationOverdue %}
-                                    <i class="bi bi-exclamation-triangle-fill text-danger" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                                 {% else %}
-                                    <i class="bi bi-clock-fill text-secondary" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-pending fa-icon--muted" aria-hidden="true"></i>
                                 {% endif %}
                             </div>
                             <div class="timeline-content">
@@ -207,19 +208,19 @@
                                 </p>
                                 {% if incident.detailedNotificationReportedAt %}
                                     <div class="timeline-completed">
-                                        <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                         {{ 'incident.timeline.reported_at'|trans({}, 'incident') }}:
                                         <strong>{{ incident.detailedNotificationReportedAt|date('d.m.Y H:i') }}</strong>
                                     </div>
                                 {% elseif incident.isDetailedNotificationOverdue %}
                                     <div class="timeline-overdue">
-                                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                         {{ 'incident.timeline.overdue'|trans({}, 'incident') }}
                                     </div>
                                 {% else %}
                                     <div class="timeline-countdown">
                                         {% set hoursRemaining = incident.hoursUntilDetailedNotificationDeadline %}
-                                        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
                                         {{ 'incident.timeline.hours_remaining'|trans({'%hours%': hoursRemaining}, 'incident') }}
                                     </div>
                                 {% endif %}
@@ -230,11 +231,11 @@
                         <div class="timeline-stage {% if incident.finalReportSubmittedAt %}completed{% elseif incident.isFinalReportOverdue %}overdue{% else %}pending{% endif %}">
                             <div class="timeline-icon">
                                 {% if incident.finalReportSubmittedAt %}
-                                    <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                 {% elseif incident.isFinalReportOverdue %}
-                                    <i class="bi bi-exclamation-triangle-fill text-danger" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                                 {% else %}
-                                    <i class="bi bi-clock-fill text-secondary" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-pending fa-icon--muted" aria-hidden="true"></i>
                                 {% endif %}
                             </div>
                             <div class="timeline-content">
@@ -245,19 +246,19 @@
                                 </p>
                                 {% if incident.finalReportSubmittedAt %}
                                     <div class="timeline-completed">
-                                        <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                         {{ 'incident.timeline.reported_at'|trans({}, 'incident') }}:
                                         <strong>{{ incident.finalReportSubmittedAt|date('d.m.Y H:i') }}</strong>
                                     </div>
                                 {% elseif incident.isFinalReportOverdue %}
                                     <div class="timeline-overdue">
-                                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                         {{ 'incident.timeline.overdue'|trans({}, 'incident') }}
                                     </div>
                                 {% else %}
                                     <div class="timeline-countdown">
                                         {% set daysRemaining = incident.daysUntilFinalReportDeadline %}
-                                        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
                                         {{ 'incident.timeline.days_remaining'|trans({'%days%': daysRemaining}, 'incident') }}
                                     </div>
                                 {% endif %}
@@ -495,7 +496,7 @@
                     </div>
                 {% else %}
                     <div class="alert alert-info">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
                         <strong>{{ 'incident.bcm.empty_title'|trans({}, 'incident') }}</strong>
                         {{ 'incident.bcm.empty_description'|trans({}, 'incident') }}
                     </div>
@@ -511,7 +512,7 @@
             {# Data Reuse: Realized Risks #}
             {% if incident.realizedRisks is defined and incident.realizedRisks|length > 0 %}
                 <div class="detail-section">
-                    <h3 class="h5"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'incident.section.realized_risks'|trans({'%count%': incident.realizedRisks|length}, 'incident') }}</h3>
+                    <h3 class="h5"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'incident.section.realized_risks'|trans({'%count%': incident.realizedRisks|length}, 'incident') }}</h3>
                     <div class="alert alert-warning">
                         <strong>{{ 'incident.reuse.risk_realization'|trans({}, 'incident') }}:</strong> {{ 'incident.reuse.risk_realization_detail'|trans({'%count%': incident.realizedRisks|length}, 'incident') }}
                     </div>
@@ -539,7 +540,7 @@
                                 {% include '_components/_iso_reference_label.html.twig' with { control: control, code_class: 'fw-bold' } only %}
                                 {% include '_components/_badge.html.twig' with { variant: control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'danger'), content: control.implementationStatus|upper } %}
                                 {% if control.implementationStatus != 'implemented' %}
-                                    <small class="text-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'incident.reuse.control_not_implemented'|trans({}, 'incident') }}</small>
+                                    <small class="text-warning"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'incident.reuse.control_not_implemented'|trans({}, 'incident') }}</small>
                                 {% endif %}
                             </div>
                         {% endfor %}

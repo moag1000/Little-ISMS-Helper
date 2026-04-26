@@ -27,7 +27,7 @@
         <input type="hidden" name="_token" value="{{ csrf_token('admin_tour_content_' ~ tour_id) }}">
 
         {% if can_set_global %}
-            <div class="card shadow-sm mb-3">
+            <div class="card fa-section shadow-sm mb-3">
                 <div class="card-body py-2 px-3">
                     <div class="form-check">
                         <input type="checkbox" id="scope-global" name="scope_global" value="1" class="form-check-input">
@@ -45,7 +45,7 @@
         {% for row in rows %}
             {% if row.step_id != last_step %}
                 {% if not loop.first %}</div></div>{% endif %}
-                <div class="card shadow-sm mb-3">
+                <div class="card fa-section shadow-sm mb-3">
                     <div class="card-header">
                         <code class="text-primary">{{ row.step_id }}</code>
                         <span class="small text-muted ms-2">

@@ -26,7 +26,7 @@
 
     <div class="row row-cols-2 row-cols-md-5 g-2 mb-4">
         <div class="col">
-            <div class="card h-100 text-center">
+            <div class="card fa-section h-100 text-center">
                 <div class="card-body py-2">
                     <div class="display-6 fw-bold">{{ total_visible }}</div>
                     <div class="small text-muted">{{ 'group_report.incidents.stat.total'|trans({}, 'group_report') }}</div>
@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card h-100 text-center border-danger">
+            <div class="card fa-section h-100 text-center border-danger fa-rag-card fa-rag-card--red">
                 <div class="card-body py-2">
                     <div class="display-6 fw-bold text-danger">{{ severity_buckets.critical }}</div>
                     <div class="small text-muted">{{ 'group_report.incidents.severity.critical'|trans({}, 'group_report') }}</div>
@@ -42,7 +42,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card h-100 text-center border-warning">
+            <div class="card fa-section h-100 text-center border-warning fa-rag-card fa-rag-card--amber">
                 <div class="card-body py-2">
                     <div class="display-6 fw-bold text-warning">{{ severity_buckets.high }}</div>
                     <div class="small text-muted">{{ 'group_report.incidents.severity.high'|trans({}, 'group_report') }}</div>
@@ -50,7 +50,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card h-100 text-center">
+            <div class="card fa-section h-100 text-center">
                 <div class="card-body py-2">
                     <div class="display-6 fw-bold text-info">{{ severity_buckets.medium }}</div>
                     <div class="small text-muted">{{ 'group_report.incidents.severity.medium'|trans({}, 'group_report') }}</div>
@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card h-100 text-center">
+            <div class="card fa-section h-100 text-center">
                 <div class="card-body py-2">
                     <div class="display-6 fw-bold text-secondary">{{ severity_buckets.low }}</div>
                     <div class="small text-muted">{{ 'group_report.incidents.severity.low'|trans({}, 'group_report') }}</div>

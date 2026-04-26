@@ -47,7 +47,7 @@
     {% if isInherited is defined and isInherited %}
         <div class="alert alert-info mb-3">
             <div class="d-flex align-items-start">
-                <i class="bi bi-info-circle-fill me-2 mt-1" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-info me-2 mt-1" aria-hidden="true"></i>
                 <div>
                     <strong>{{ 'corporate.inheritance.view_only_title'|trans({}, 'messages') }}</strong>
                     <p class="mb-0">{{ 'corporate.inheritance.asset_inherited_message'|trans({}, 'messages') }}</p>
@@ -161,9 +161,10 @@
                         <h3>
                             <i class="bi bi-diagram-3" aria-hidden="true"></i>
                             {{ 'asset.section.inherited_protection'|trans({}, 'asset') }}
+                            {# bi-diagram-3 stays — here it represents structural/dependency diagram, not a network asset #}
                         </h3>
                         <div class="alert alert-warning" role="alert">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                             {{ 'asset.inherited_protection.warning'|trans({}, 'asset') }}
                         </div>
                         <table class="table table-sm">
@@ -249,7 +250,7 @@
                                     {% endif %}
                                     <div class="protection-source">
                                         <small class="text-muted">
-                                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
                                             {{ analysis.confidentiality.reasoning }}
                                         </small>
                                     </div>
@@ -275,7 +276,7 @@
                                     {% endif %}
                                     <div class="protection-source">
                                         <small class="text-muted">
-                                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
                                             {{ analysis.integrity.reasoning }}
                                         </small>
                                     </div>
@@ -301,7 +302,7 @@
                                     {% endif %}
                                     <div class="protection-source">
                                         <small class="text-muted">
-                                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
                                             {{ analysis.availability.reasoning }}
                                         </small>
                                     </div>

@@ -27,57 +27,59 @@
             {{ 'tags.admin.empty'|trans({}, 'tags') }}
         </div>
     {% else %}
-        <div class="card">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <caption class="visually-hidden">{{ 'tags.admin.table.caption'|trans({}, 'tags') }}</caption>
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'tags.form.name'|trans({}, 'tags') }}</th>
-                            <th scope="col">{{ 'tags.form.type'|trans({}, 'tags') }}</th>
-                            <th scope="col">{{ 'tags.form.framework_code'|trans({}, 'tags') }}</th>
-                            <th scope="col">{{ 'tags.admin.scope'|trans({}, 'tags') }}</th>
-                            <th scope="col" class="text-end">{{ 'tags.admin.actions'|trans({}, 'tags') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for tag in tags %}
+        {% embed '_components/_card.html.twig' with {'noPadding': true, 'tags': tags} %}
+            {% block card_body %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <caption class="visually-hidden">{{ 'tags.admin.table.caption'|trans({}, 'tags') }}</caption>
+                        <thead>
                             <tr>
-                                <td>
-                                    <span class="badge bg-{{ tag.color }}">{{ tag.name }}</span>
-                                    {% if tag.description %}
-                                        <br><small class="text-muted">{{ tag.description }}</small>
-                                    {% endif %}
-                                </td>
-                                <td>{{ ('tags.type.' ~ tag.type)|trans({}, 'tags') }}</td>
-                                <td>{{ tag.frameworkCode ?: '—' }}</td>
-                                <td>
-                                    {% if tag.tenant %}
-                                        <small class="text-muted">{{ tag.tenant.name }}</small>
-                                    {% else %}
-                                        <span class="badge bg-secondary">{{ 'tags.admin.scope_global'|trans({}, 'tags') }}</span>
-                                    {% endif %}
-                                </td>
-                                <td class="text-end">
-                                    <a href="{{ path('admin_tag_edit', {id: tag.id}) }}" class="btn btn-sm btn-outline-secondary"
-                                       aria-label="{{ 'tags.admin.aria.edit'|trans({'%name%': tag.name}, 'tags') }}">
-                                        <i class="bi bi-pencil" aria-hidden="true"></i>
-                                    </a>
-                                    <form method="post" action="{{ path('admin_tag_delete', {id: tag.id}) }}" class="d-inline"
-                                          onsubmit="return confirm('{{ 'tags.admin.confirm.delete'|trans({}, 'tags')|e('js') }}');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('tag_delete_' ~ tag.id) }}">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                aria-label="{{ 'tags.admin.aria.delete'|trans({'%name%': tag.name}, 'tags') }}">
-                                            <i class="bi bi-trash" aria-hidden="true"></i>
-                                        </button>
-                                    </form>
-                                </td>
+                                <th scope="col">{{ 'tags.form.name'|trans({}, 'tags') }}</th>
+                                <th scope="col">{{ 'tags.form.type'|trans({}, 'tags') }}</th>
+                                <th scope="col">{{ 'tags.form.framework_code'|trans({}, 'tags') }}</th>
+                                <th scope="col">{{ 'tags.admin.scope'|trans({}, 'tags') }}</th>
+                                <th scope="col" class="text-end">{{ 'tags.admin.actions'|trans({}, 'tags') }}</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                        </thead>
+                        <tbody>
+                            {% for tag in tags %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-{{ tag.color }}">{{ tag.name }}</span>
+                                        {% if tag.description %}
+                                            <br><small class="text-muted">{{ tag.description }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ ('tags.type.' ~ tag.type)|trans({}, 'tags') }}</td>
+                                    <td>{{ tag.frameworkCode ?: '—' }}</td>
+                                    <td>
+                                        {% if tag.tenant %}
+                                            <small class="text-muted">{{ tag.tenant.name }}</small>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ 'tags.admin.scope_global'|trans({}, 'tags') }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{{ path('admin_tag_edit', {id: tag.id}) }}" class="btn btn-sm btn-outline-secondary"
+                                           aria-label="{{ 'tags.admin.aria.edit'|trans({'%name%': tag.name}, 'tags') }}">
+                                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                                        </a>
+                                        <form method="post" action="{{ path('admin_tag_delete', {id: tag.id}) }}" class="d-inline"
+                                              onsubmit="return confirm('{{ 'tags.admin.confirm.delete'|trans({}, 'tags')|e('js') }}');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('tag_delete_' ~ tag.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                    aria-label="{{ 'tags.admin.aria.delete'|trans({'%name%': tag.name}, 'tags') }}">
+                                                <i class="bi bi-trash" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 </div>
 {% endblock %}

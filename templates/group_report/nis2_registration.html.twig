@@ -28,7 +28,7 @@
 
     <div class="row row-cols-2 row-cols-md-6 g-2 mb-4">
         <div class="col">
-            <div class="card h-100 text-center">
+            <div class="card fa-section h-100 text-center">
                 <div class="card-body py-2">
                     <div class="display-6 fw-bold">{{ stats.total }}</div>
                     <div class="small text-muted">{{ 'group_report.nis2.stat.total'|trans({}, 'group_report') }}</div>
@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card h-100 text-center border-danger">
+            <div class="card fa-section h-100 text-center border-danger fa-rag-card fa-rag-card--red">
                 <div class="card-body py-2">
                     <div class="display-6 fw-bold text-danger">{{ stats.essential }}</div>
                     <div class="small text-muted">{{ 'group_report.nis2.class.essential'|trans({}, 'group_report') }}</div>
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card h-100 text-center border-warning">
+            <div class="card fa-section h-100 text-center border-warning fa-rag-card fa-rag-card--amber">
                 <div class="card-body py-2">
                     <div class="display-6 fw-bold text-warning">{{ stats.important }}</div>
                     <div class="small text-muted">{{ 'group_report.nis2.class.important'|trans({}, 'group_report') }}</div>
@@ -52,7 +52,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card h-100 text-center">
+            <div class="card fa-section h-100 text-center">
                 <div class="card-body py-2">
                     <div class="display-6 fw-bold text-muted">{{ stats.not_regulated }}</div>
                     <div class="small text-muted">{{ 'group_report.nis2.class.not_regulated'|trans({}, 'group_report') }}</div>
@@ -60,7 +60,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card h-100 text-center">
+            <div class="card fa-section h-100 text-center">
                 <div class="card-body py-2">
                     <div class="display-6 fw-bold text-secondary">{{ stats.unknown }}</div>
                     <div class="small text-muted">{{ 'group_report.nis2.class.unknown'|trans({}, 'group_report') }}</div>
@@ -68,7 +68,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card h-100 text-center border-success">
+            <div class="card fa-section h-100 text-center border-success fa-rag-card fa-rag-card--green">
                 <div class="card-body py-2">
                     <div class="display-6 fw-bold text-success">{{ stats.registered }}</div>
                     <div class="small text-muted">{{ 'group_report.nis2.stat.registered'|trans({}, 'group_report') }}</div>

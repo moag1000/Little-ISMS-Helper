@@ -22,8 +22,8 @@
     <main class="fa-aurora-surface">
 
     {# Filters #}
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {'class': 'shadow-sm mb-4', 'purposes': purposes, 'years': years, 'selected_purpose': selected_purpose, 'selected_year': selected_year} %}
+        {% block card_body %}
             <form method="get" action="{{ path('app_audit_freeze_index') }}" class="row g-3 align-items-end">
                 <div class="col-md-4">
                     <label for="filter_purpose" class="form-label">
@@ -50,12 +50,12 @@
                     </select>
                 </div>
             </form>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# List #}
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
+    {% embed '_components/_card.html.twig' with {'class': 'shadow-sm', 'noPadding': true, 'freezes': freezes} %}
+        {% block card_body %}
             {% if freezes is empty %}
                 <div class="text-center py-5">
                     <i class="bi bi-snow text-muted fa-glyph-size-lg" aria-hidden="true"></i>
@@ -109,8 +109,8 @@
                     </table>
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     </main>
 </div>
 {% endblock %}
