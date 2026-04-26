@@ -5,7 +5,7 @@
 {% block title %}{{ 'admin.mapping_quality.coverage_title'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_title %}
-    <i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'admin.mapping_quality.coverage_title'|trans({}, 'admin') }}
+    <i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i> {{ 'admin.mapping_quality.coverage_title'|trans({}, 'admin') }}
 {% endblock %}
 
 {% block admin_content %}
@@ -41,7 +41,7 @@
                                 <tr>
                                     <td>
                                         <strong>{{ r.source.name }}</strong>
-                                        <i class="bi bi-arrow-right small text-muted" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--util-arrow-right small text-muted" aria-hidden="true"></i>
                                         <strong>{{ r.target.name }}</strong>
                                         <div class="small text-muted">{{ r.source_total }} {{ 'admin.mapping_quality.coverage.items'|trans({}, 'admin') }}</div>
                                     </td>

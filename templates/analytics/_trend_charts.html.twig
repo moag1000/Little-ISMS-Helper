@@ -14,14 +14,14 @@
     {% block card_header %}
         <div class="card-header">
             <h2 class="card-title">
-                <i class="bi bi-graph-up-arrow text-info" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-bar-chart text-info" aria-hidden="true"></i>
                 {{ 'analytics.card.trend_analysis'|trans({}, 'analytics') }}
             </h2>
             <div class="card-actions">
                 <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                         data-action="click->trend-chart#refresh"
                         title="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}">
-                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
                 </button>
                 <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                         data-action="click->trend-chart#exportImage"

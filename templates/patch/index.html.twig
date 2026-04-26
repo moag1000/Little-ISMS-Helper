@@ -33,7 +33,7 @@
         {% block card_body %}
             <form method="get" action="{{ path('app_patch_index') }}" class="d-flex align-items-center gap-2">
                 <label for="view-filter" class="mb-0 fw-bold">
-                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
+                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
                 </label>
                 <select class="form-select form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
@@ -110,10 +110,10 @@
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                         <a href="{{ path('app_patch_show', {id: patch.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                         </a>
                                         <a href="{{ path('app_patch_edit', {id: patch.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                         </a>
                                     </div>
                                 </td>

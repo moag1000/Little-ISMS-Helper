@@ -38,10 +38,10 @@
                             <i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>NOTICE
                         </a>
                         <a href="{{ path('admin_licensing_report') }}" class="list-group-item list-group-item-action">
-                            <i class="bi bi-file-earmark-bar-graph me-2" aria-hidden="true"></i>Detaillierter Bericht
+                            <i class="fa-icon fa-icon--nav-reports me-2" aria-hidden="true"></i>Detaillierter Bericht
                         </a>
                         <a href="{{ path('admin_licensing_summary') }}" class="list-group-item list-group-item-action active">
-                            <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>Zusammenfassung
+                            <i class="fa-icon fa-icon--nav-bar-chart me-2" aria-hidden="true"></i>Zusammenfassung
                         </a>
                     </div>
                 {% endblock %}
@@ -76,7 +76,7 @@
                                 {% block alert_body %}
                                 <div class="d-flex align-items-center">
                                     <div class="flex-shrink-0">
-                                        <i class="bi bi-info-circle-fill fs-3 me-3" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-info fs-3 me-3" aria-hidden="true"></i>
                                     </div>
                                     <div>
                                         <div class="fa-alert__title">✓ Überwiegend Lizenzkonform</div>
@@ -280,7 +280,7 @@
                             </ul>
                             <div class="mt-3">
                                 <a href="{{ path('admin_licensing_report') }}" class="fa-cyber-btn fa-cyber-btn--warning">
-                                    <i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i>Detailbericht anzeigen
+                                    <i class="fa-icon fa-icon--nav-reports" aria-hidden="true"></i>Detailbericht anzeigen
                                 </a>
                             </div>
                         {% endblock %}
@@ -292,7 +292,7 @@
                     {% block card_header %}
                         <div class="card-header">
                             <h2 class="card-title mb-0">
-                                <i class="bi bi-list-check me-2" aria-hidden="true"></i>Nächste Schritte
+                                <i class="fa-icon fa-icon--nav-list-check me-2" aria-hidden="true"></i>Nächste Schritte
                             </h2>
                         </div>
                     {% endblock %}
@@ -323,7 +323,7 @@
                             <code>./license-report.sh</code>
                             <p class="mt-3 mb-0">
                                 <a href="{{ path('admin_licensing_report') }}" class="fa-cyber-btn fa-cyber-btn--warning">
-                                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>Bericht generieren
+                                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>Bericht generieren
                                 </a>
                             </p>
                         </div>

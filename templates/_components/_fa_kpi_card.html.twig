@@ -47,15 +47,15 @@
             {% if trend is not null %}
                 {% if trend > 0 %}
                     <small class="fa-trend fa-trend--{% if trendInverse %}up-bad{% else %}up{% endif %}">
-                        <i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ trend }}{{ trendUnit }}
+                        <i class="fa-icon fa-icon--util-arrow-up" aria-hidden="true"></i> +{{ trend }}{{ trendUnit }}
                     </small>
                 {% elseif trend < 0 %}
                     <small class="fa-trend fa-trend--{% if trendInverse %}down-bad{% else %}down{% endif %}">
-                        <i class="bi bi-arrow-down" aria-hidden="true"></i> {{ trend }}{{ trendUnit }}
+                        <i class="fa-icon fa-icon--util-arrow-down" aria-hidden="true"></i> {{ trend }}{{ trendUnit }}
                     </small>
                 {% else %}
                     <small class="fa-trend fa-trend--flat">
-                        <i class="bi bi-arrow-right" aria-hidden="true"></i> 0{{ trendUnit }}
+                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i> 0{{ trendUnit }}
                     </small>
                 {% endif %}
             {% endif %}

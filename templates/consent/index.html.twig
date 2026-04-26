@@ -216,14 +216,14 @@
                            class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance"
                            title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                            <i class="bi bi-eye" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                         </a>
                         {% if is_granted('ROLE_USER') and (consent.status == 'pending_verification' or consent.status == 'active') %}
                         <a href="{{ path('app_consent_edit', {id: consent.id}) }}"
                            class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance"
                            title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                         </a>
                         {% endif %}
                         {% if is_granted('ROLE_DPO') %}
@@ -233,7 +233,7 @@
                               data-ui-actions-message-param="{{ 'consent.delete.confirm'|trans({}, 'consent') }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ consent.id) }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm" title="{{ 'common.delete'|trans({}, 'messages') }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
-                                <i class="bi bi-trash" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                             </button>
                         </form>
                         {% endif %}

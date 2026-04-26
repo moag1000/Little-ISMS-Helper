@@ -41,7 +41,7 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'soa.action.edit'|trans({}, 'soa') }}
+            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'soa.action.edit'|trans({}, 'soa') }}
         </a>
         {%- set categoryLabel = ('soa.category.' ~ control.category)|trans({}, 'soa') -%}
         <a href="{{ path('app_soa_by_category', {category: control.category}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
@@ -252,7 +252,7 @@
 {% if control.incidents is defined and control.incidents|length > 0 %}
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_body %}
-        <h2><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'soa.section.data_reuse_related_incidents'|trans({'%count%': control.incidents|length}, 'soa') }}</h2>
+        <h2><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'soa.section.data_reuse_related_incidents'|trans({'%count%': control.incidents|length}, 'soa') }}</h2>
         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-exclamation-triangle' } } %}
             {% block alert_body %}<strong><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ control.incidents|length }} {{ 'soa.label.incidents'|trans({}, 'soa') }}</strong> {{ 'soa.message.related_incidents_count'|trans({}, 'soa') }} {% if control.isReviewNeeded %} <br><strong>{{ 'soa.label.review_required'|trans({}, 'soa') }}</strong> {{ 'soa.message.review_required'|trans({}, 'soa') }} {% endif %}{% endblock %}
         {% endembed %}
@@ -351,7 +351,7 @@
         {% block card_header %}
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h2 class="h6 mb-0">
-                    <i class="bi bi-magic" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-magic" aria-hidden="true"></i>
                     {{ 'control.mapping_suggestions.title'|trans({
                         '%count%': mapping_suggestions_total,
                         '%frameworks%': mapping_suggestions|length
@@ -402,7 +402,7 @@
                                                value="{{ csrf_token('accept_suggestion_' ~ control.id ~ '_' ~ row.requirement.id) }}">
                                         <input type="hidden" name="confidence" value="{{ row.confidence }}">
                                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success">
-                                            <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
                                             {{ 'control.mapping_suggestions.accept'|trans({}, 'control') }}
                                         </button>
                                     </form>
@@ -414,7 +414,7 @@
             {% endfor %}
 
             <div class="small text-muted mt-2">
-                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                 {{ 'control.mapping_suggestions.footer_hint'|trans({}, 'control') }}
             </div>
         {% endblock %}
@@ -424,7 +424,7 @@
 {# Action Buttons #}
 <div class="d-flex gap-2 mt-4">
     <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--success">
-        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'soa.action.edit'|trans({}, 'soa') }}
+        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'soa.action.edit'|trans({}, 'soa') }}
     </a>
     <a href="{{ path('app_soa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
         <i class="bi bi-list" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}

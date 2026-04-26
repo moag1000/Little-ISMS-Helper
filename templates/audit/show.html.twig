@@ -41,7 +41,7 @@
 
                     {# Scope #}
                     <div class="mb-4">
-                        <h3><i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'audit.scope'|trans({}, 'audit') }}</h3>
+                        <h3><i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i> {{ 'audit.scope'|trans({}, 'audit') }}</h3>
                         <p class="text-muted">{{ audit.scope ? audit.scope|nl2br : '-' }}</p>
                         <div class="mt-2">
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audit') } %}
@@ -51,7 +51,7 @@
                         {% if audit.auditedSubsidiaries|length > 0 %}
                         <div class="mt-3 p-3 border border-primary rounded bg-body-secondary">
                             <div class="text-primary mb-2 fw-bold">
-                                <i class="bi bi-building" aria-hidden="true"></i> {{ 'audit.field.audited_subsidiaries'|trans({}, 'audit') }}
+                                <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'audit.field.audited_subsidiaries'|trans({}, 'audit') }}
                             </div>
                             <div class="d-flex flex-wrap gap-2">
                                 {% for subsidiary in audit.auditedSubsidiaries %}
@@ -69,7 +69,7 @@
                         {% if audit.scopedAssets|length > 0 %}
                         <div class="mt-3 p-3 border border-info rounded bg-body-secondary">
                             <div class="text-info mb-2 fw-bold">
-                                <i class="bi bi-hdd-stack" aria-hidden="true"></i> {{ 'audit.field.scoped_assets'|trans({}, 'audit') }}
+                                <i class="fa-icon fa-icon--nav-hdd" aria-hidden="true"></i> {{ 'audit.field.scoped_assets'|trans({}, 'audit') }}
                             </div>
                             <div class="d-flex flex-wrap gap-2">
                                 {% for asset in audit.scopedAssets %}
@@ -111,7 +111,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="text-muted mb-2 fw-semibold">
-                                <i class="bi bi-calendar-check" aria-hidden="true"></i> {{ 'audit.actual_date'|trans({}, 'audit') }}
+                                <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'audit.actual_date'|trans({}, 'audit') }}
                             </div>
                             <p class="fs-5">{{ audit.actualDate ? audit.actualDate|date('d.m.Y') : '-' }}</p>
                         </div>
@@ -121,7 +121,7 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="text-muted mb-2 fw-semibold">
-                                <i class="bi bi-person-badge" aria-hidden="true"></i> {{ 'audit.lead_auditor'|trans({}, 'audit') }}
+                                <i class="fa-icon fa-icon--ui-person-badge" aria-hidden="true"></i> {{ 'audit.lead_auditor'|trans({}, 'audit') }}
                             </div>
                             <p>{{ audit.leadAuditor ?? '-' }}</p>
                         </div>
@@ -137,7 +137,7 @@
                     {% if audit.objectives %}
                     <div class="mb-4">
                         <div class="text-muted mb-2 fw-semibold">
-                            <i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'audit.field.objectives'|trans({}, 'audit') }}
+                            <i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i> {{ 'audit.field.objectives'|trans({}, 'audit') }}
                         </div>
                         <p>{{ audit.objectives|nl2br }}</p>
                     </div>
@@ -212,7 +212,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
-                        <h2 class="h6 mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
+                        <h2 class="h6 mb-0"><i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -221,7 +221,7 @@
                         <a href="{{ path('app_audit_edit', {id: audit.id}) }}"
                            class="fa-cyber-btn fa-cyber-btn--primary"
                            data-turbo-action="advance">
-                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                         </a>
                         {% endif %}
 
@@ -235,7 +235,7 @@
                             <form method="post" action="{{ path('app_audit_clone', {id: audit.id}) }}" class="d-grid">
                                 <input type="hidden" name="_token" value="{{ csrf_token('clone_audit_' ~ audit.id) }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false">
-                                    <i class="bi bi-files" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i>
                                     {{ 'audit.action.clone'|trans({}, 'audits') }}
                                 </button>
                             </form>
@@ -244,7 +244,7 @@
                         <a href="{{ path('app_audit_index') }}"
                            class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance">
-                            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
                         </a>
 
                         {% if is_granted('ROLE_ADMIN') %}
@@ -253,7 +253,7 @@
                                 class="fa-cyber-btn fa-cyber-btn--danger"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal">
-                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                         </button>
                         {% endif %}
                     </div>
@@ -264,7 +264,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
-                        <h2 class="h6 mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'audit.quick_stats'|trans({}, 'audit') }}</h2>
+                        <h2 class="h6 mb-0"><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'audit.quick_stats'|trans({}, 'audit') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -425,7 +425,7 @@
                 <form method="post" action="{{ path('app_audit_delete', {id: audit.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ audit.id) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
+                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                     </button>
                 </form>
             </div>

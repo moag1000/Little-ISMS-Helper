@@ -29,7 +29,7 @@
             <span class="fa-tenant-switch__name">{{ currentTenant.name|default('Tenant') }}</span>
             <span class="fa-tenant-switch__hint">{{ 'tenant.switch_hint'|trans({}, 'tenant')|default('Wechseln') }}</span>
         </span>
-        <i class="bi bi-chevron-down fa-tenant-switch__chevron" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--util-chevron-down fa-tenant-switch__chevron" aria-hidden="true"></i>
     </button>
 
     <div class="fa-tenant-switch__panel fa-dropdown-panel fa-dropdown-panel--bottom-left"
@@ -54,7 +54,7 @@
                         {% endif %}
                     </span>
                     {% if t.isCurrent %}
-                        <i class="bi bi-check-lg fa-dropdown-panel__item-meta" aria-hidden="true" style="color: var(--success);"></i>
+                        <i class="fa-icon fa-icon--ui-check fa-dropdown-panel__item-meta" aria-hidden="true" style="color: var(--success);"></i>
                     {% endif %}
                 </a>
             {% endfor %}

@@ -41,7 +41,7 @@
                 <div class="col-md-6">
                     <div class="input-group">
                         <span class="input-group-text">
-                            <i class="bi bi-search" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
                         </span>
                         <input type="text"
                                class="form-control"
@@ -1857,7 +1857,7 @@
 
             {# ===== Operations ===== #}
             <h4 class="mb-3">
-                <i class="bi bi-gear text-primary me-2" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-settings text-primary me-2" aria-hidden="true"></i>
                 {{ 'help.glossary.category.operations'|trans({}, 'help') }}
             </h4>
 
@@ -2150,7 +2150,7 @@
 
             {# ===== Governance ===== #}
             <h4 class="mb-3">
-                <i class="bi bi-diagram-3 text-success me-2" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-process text-success me-2" aria-hidden="true"></i>
                 {{ 'help.glossary.category.governance'|trans({}, 'help') }}
             </h4>
 
@@ -2635,7 +2635,7 @@
 
             {# No results message #}
             <div class="text-center text-muted py-4 d-none" data-filter-target="noResults">
-                <i class="bi bi-search fs-1" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-search fs-1" aria-hidden="true"></i>
                 <p class="mt-2">{{ 'help.glossary.no_results'|trans({}, 'help') }}</p>
             </div>
         </div>
@@ -2643,7 +2643,7 @@
 
     {# Tip Box #}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'bi-check-circle-fill', class: 'mb-4' } } %}
-        {% block alert_body %}<div class="d-flex align-items-start"> <i class="bi bi-check-circle-fill me-3 fs-4" aria-hidden="true"></i> <div> <strong>{{ 'help.glossary.tip_title'|trans({}, 'help') }}</strong> <p class="mb-0 mt-1">{{ 'help.glossary.tip_text'|trans({}, 'help') }}</p> </div> </div>{% endblock %}
+        {% block alert_body %}<div class="d-flex align-items-start"> <i class="fa-icon fa-icon--ui-check-circle-fill me-3 fs-4" aria-hidden="true"></i> <div> <strong>{{ 'help.glossary.tip_title'|trans({}, 'help') }}</strong> <p class="mb-0 mt-1">{{ 'help.glossary.tip_text'|trans({}, 'help') }}</p> </div> </div>{% endblock %}
     {% endembed %}
 </div>
 {% endblock %}

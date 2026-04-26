@@ -16,13 +16,13 @@
     </nav>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-list-check" aria-hidden="true"></i> {{ requirement.requirementId }}</h1>
+        <h1><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ requirement.requirementId }}</h1>
         <div>
             <a href="{{ path('app_compliance_requirement_edit', {id: requirement.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-pencil" aria-hidden="true"></i> Edit
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> Edit
             </a>
             <a href="{{ path('app_compliance_requirement_index') }}?framework={{ requirement.framework.id }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to List
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> Back to List
             </a>
         </div>
     </div>
@@ -33,7 +33,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'compliance.requirement.details'|trans({}, 'compliance') }}</h2>
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'compliance.requirement.details'|trans({}, 'compliance') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -90,7 +90,7 @@
                     {% block card_header %}
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h2 class="mb-0">
-                                <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                                 {{ 'compliance.requirement.mris.title'|trans({}, 'compliance') }}
                             </h2>
                             {% if mris.gapStatus == 'gap' %}
@@ -126,12 +126,12 @@
                                             <td><code>{{ stage }}</code></td>
                                             <td class="text-center">
                                                 {% if mris.current == stage %}
-                                                    <i class="bi bi-check-circle-fill text-warning" aria-label="Ist"></i>
+                                                    <i class="fa-icon fa-icon--ui-check-circle-fill text-warning" aria-label="Ist"></i>
                                                 {% endif %}
                                             </td>
                                             <td class="text-center">
                                                 {% if mris.target == stage %}
-                                                    <i class="bi bi-bullseye text-success" aria-label="Soll"></i>
+                                                    <i class="fa-icon fa-icon--nav-bullseye text-success" aria-label="Soll"></i>
                                                 {% endif %}
                                             </td>
                                         </tr>
@@ -182,7 +182,7 @@
                 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                     {% block card_header %}
                         <div class="card-header">
-                            <h2 class="mb-0"><i class="bi bi-link-45deg" aria-hidden="true"></i> Mapped Controls ({{ requirement.mappedControls|length }})</h2>
+                            <h2 class="mb-0"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i> Mapped Controls ({{ requirement.mappedControls|length }})</h2>
                         </div>
                     {% endblock %}
                     {% block card_body %}
@@ -221,7 +221,7 @@
                 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                     {% block card_header %}
                         <div class="card-header">
-                            <h2 class="mb-0"><i class="bi bi-diagram-3" aria-hidden="true"></i> Detailed Sub-Requirements ({{ requirement.detailedRequirements|length }})</h2>
+                            <h2 class="mb-0"><i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> Detailed Sub-Requirements ({{ requirement.detailedRequirements|length }})</h2>
                         </div>
                     {% endblock %}
                     {% block card_body %}
@@ -285,7 +285,7 @@
                     {% if transitive_coverage is defined %}
                         <div class="mt-3">
                             <div class="fw-bold small mb-1">
-                                <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                                 {{ 'coverage.direct_heading'|trans({}, 'control') }} &amp; {{ 'coverage.transitive_heading'|trans({}, 'control') }}
                             </div>
                             {% include '_components/_transitive_coverage_badge.html.twig' with { coverage: transitive_coverage } %}
@@ -477,7 +477,7 @@
                           data-ui-actions-message-param="{{ 'compliance.requirement.confirm.delete'|trans({}, 'compliance') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ requirement.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">
-                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'compliance.action.delete_requirement'|trans({}, 'compliance') }}
+                            <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'compliance.action.delete_requirement'|trans({}, 'compliance') }}
                         </button>
                     </form>
                 {% endblock %}

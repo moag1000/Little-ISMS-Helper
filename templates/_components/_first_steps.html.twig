@@ -67,7 +67,7 @@
             <form method="post" action="{{ path('app_dashboard_dismiss_first_steps') }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('dismiss_first_steps') }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost border-0" title="{{ 'first_steps.dismiss'|trans({}, 'dashboard') }}" aria-label="{{ 'first_steps.dismiss'|trans({}, 'dashboard') }}">
-                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                 </button>
             </form>
         </div>
@@ -95,7 +95,7 @@
             <li class="d-flex align-items-start py-2 {% if not loop.last %}border-bottom{% endif %}">
                 <div class="flex-shrink-0 me-3 mt-1">
                     {% if step.done %}
-                        <i class="bi bi-check-circle-fill text-success fs-5" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-check-circle-fill text-success fs-5" aria-hidden="true"></i>
                     {% else %}
                         <i class="bi bi-circle text-muted fs-5" aria-hidden="true"></i>
                     {% endif %}

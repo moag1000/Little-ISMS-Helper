@@ -32,7 +32,7 @@
     {% block card_body %}
         <form method="get" action="{{ path('app_risk_index') }}" class="d-flex align-items-center gap-2 py-0">
             <label for="view-filter" class="mb-0 fw-bold">
-                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
             </label>
             <select class="form-select form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                 <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
@@ -102,7 +102,7 @@
 {% embed '_components/_card.html.twig' with {
     'title': 'risk.modern.matrix_overview'|trans({}, 'risk'),
     'headerIcon': 'bi-grid-3x3',
-    'actions': '<a href="' ~ path('app_risk_matrix') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">' ~ ('risk.modern.view_full_matrix'|trans({}, 'risk')) ~ ' <i class="bi bi-arrow-right" aria-hidden="true"></i></a>',
+    'actions': '<a href="' ~ path('app_risk_matrix') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">' ~ ('risk.modern.view_full_matrix'|trans({}, 'risk')) ~ ' <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i></a>',
     'class': 'mb-4'
 } %}
     {% block card_body %}
@@ -324,7 +324,7 @@
                     {% if residual < riskScore %}
                         <span class="risk-score risk-score-improved">
                             {{ residual }}
-                            <i class="bi bi-arrow-down text-success" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--util-arrow-down text-success" aria-hidden="true"></i>
                         </span>
                     {% else %}
                         <span class="risk-score">{{ residual }}</span>
@@ -344,11 +344,11 @@
                         </a>
                     {% elseif risk.person %}
                         <a href="{{ path('app_person_show', {id: risk.person.id}) }}" class="badge bg-info" title="{{ risk.person.fullName }}">
-                            <i class="bi bi-person" aria-hidden="true"></i> {{ 'risk.index.table.person'|trans({}, 'risk') }}
+                            <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'risk.index.table.person'|trans({}, 'risk') }}
                         </a>
                     {% elseif risk.location %}
                         <a href="{{ path('app_location_show', {id: risk.location.id}) }}" class="badge bg-warning-subtle text-warning" title="{{ risk.location.name }}">
-                            <i class="bi bi-geo-alt" aria-hidden="true"></i> {{ 'risk.index.table.location'|trans({}, 'risk') }}
+                            <i class="fa-icon fa-icon--nav-location" aria-hidden="true"></i> {{ 'risk.index.table.location'|trans({}, 'risk') }}
                         </a>
                     {% elseif risk.supplier %}
                         <a href="{{ path('app_supplier_show', {id: risk.supplier.id}) }}" class="badge bg-success" title="{{ risk.supplier.name }}">
@@ -364,14 +364,14 @@
                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                            data-turbo-action="advance"
                            title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                            <i class="bi bi-eye" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                         </a>
                         {% if is_granted('ROLE_USER') %}
                         <a href="{{ path('app_risk_edit', {id: risk.id}) }}"
                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                            data-turbo-action="advance"
                            title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                         </a>
                         {% endif %}
                     </div>

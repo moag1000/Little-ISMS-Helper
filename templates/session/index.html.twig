@@ -76,11 +76,11 @@
                 </div>
                 <div class="col-auto">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
+                        <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                     </button>
                     {% if search_email %}
                         <a href="{{ path('session_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="bi bi-x" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
                         </a>
                     {% endif %}
                 </div>
@@ -118,7 +118,7 @@
                     {% for session in sessions %}
                         <tr>
                             <td>
-                                <i class="bi bi-person" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i>
                                 <strong>{{ session.user.firstName }} {{ session.user.lastName }}</strong>
                                 <br>
                                 <small class="text-muted">{{ session.user.email }}</small>
@@ -138,7 +138,7 @@
                                         {% elseif 'Edge' in session.userAgent %}
                                             <i class="bi bi-browser-edge" aria-hidden="true"></i> Edge
                                         {% else %}
-                                            <i class="bi bi-globe" aria-hidden="true"></i> {{ session.userAgent|slice(0, 20) }}...
+                                            <i class="fa-icon fa-icon--ui-globe" aria-hidden="true"></i> {{ session.userAgent|slice(0, 20) }}...
                                         {% endif %}
                                     {% else %}
                                         N/A
@@ -169,7 +169,7 @@
                                     <a href="{{ path('session_show', {userName: session.user.email}) }}"
                                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                        title="{{ 'common.view_details'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                     </a>
                                     <form method="post"
                                           action="{{ path('session_terminate_single', {sessionId: session.sessionId}) }}"

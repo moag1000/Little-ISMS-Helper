@@ -24,7 +24,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">
-            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'management_review.edit'|trans({}, 'management_review') }}: {{ review.title }}
+            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'management_review.edit'|trans({}, 'management_review') }}: {{ review.title }}
         </h1>
     </div>
 
@@ -34,7 +34,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="h5 mb-0">
-                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'management_review.edit'|trans({}, 'management_review') }}
+                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'management_review.edit'|trans({}, 'management_review') }}
                         </h2>
                     </div>
                 {% endblock %}
@@ -77,7 +77,7 @@
                             <a href="{{ path('app_management_review_show', {id: review.id}) }}"
                                class="fa-cyber-btn fa-cyber-btn--ghost"
                                data-turbo-action="advance">
-                                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+                                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                             </a>
                             <a href="{{ path('app_management_review_index') }}"
                                class="fa-cyber-btn fa-cyber-btn--ghost"
@@ -86,7 +86,7 @@
                             </a>
                         </div>
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
-                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save_changes'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save_changes'|trans({}, 'messages') }}
                         </button>
                     </div>
 
@@ -98,7 +98,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
-                        <h2 class="h5 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}

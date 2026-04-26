@@ -14,7 +14,7 @@
     <div class="page-header mb-4">
         <div>
             <h1>
-                <i class="bi bi-collection" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
                 MRIS-Branchen-Baselines
             </h1>
             <p class="text-muted small mb-0">
@@ -34,7 +34,7 @@
 
     {% if baselines|length == 0 %}
         <div class="alert alert-info small">
-            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
             Keine Baselines verfügbar. Erwartet werden YAML-Dateien unter <code>fixtures/mris/baselines/</code>.
         </div>
     {% else %}
@@ -59,7 +59,7 @@
                                     <input type="hidden" name="_token" value="{{ csrf_token('mris_baseline_apply') }}">
                                     <input type="hidden" name="baseline_id" value="{{ baseline.id }}">
                                     <button type="submit" name="dry_run" value="1" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                         Vorschau (Dry-Run)
                                     </button>
                                     <button type="submit"
@@ -86,7 +86,7 @@
     {% endif %}
 
     <div class="alert alert-light mt-4 small">
-        <strong><i class="bi bi-info-circle" aria-hidden="true"></i></strong>
+        <strong><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i></strong>
         Konsolen-Pendant für Automatisierung:
         <code>php bin/console app:mris:apply-baseline --tenant=&lt;ID&gt; --baseline=&lt;ID&gt; [--dry-run]</code>.
         Die Baseline-Quelldateien liegen unter <code>fixtures/mris/baselines/*.yaml</code>.

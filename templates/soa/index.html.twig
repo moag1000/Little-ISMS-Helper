@@ -41,7 +41,7 @@
     {% block card_body %}
         <form method="get" action="{{ path('app_soa_index') }}" class="d-flex align-items-center gap-2">
             <label for="view-filter" class="mb-0 fw-bold">
-                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
             </label>
             <select class="form-select form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                 <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
@@ -160,7 +160,7 @@
 {% if is_granted('ROLE_MANAGER') %}
     <details class="card fa-section mb-3">
         <summary class="card-header" style="cursor: pointer;">
-            <i class="bi bi-check2-square" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--ui-check-square" aria-hidden="true"></i>
             <strong>{{ 'control.bulk.title'|trans({}, 'control') }}</strong>
             <small class="text-muted ms-2">{{ 'control.bulk.hint'|trans({}, 'control') }}</small>
         </summary>
@@ -187,13 +187,13 @@
                 <div class="col-md-2">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100"
                             onclick="this.form.querySelectorAll('[name=control_ids_raw]')[0].value.split(/[,\s]+/).filter(Boolean).forEach(id => { var h = document.createElement('input'); h.type='hidden'; h.name='control_ids[]'; h.value=id; this.form.appendChild(h); });">
-                        <i class="bi bi-check-lg" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                         {{ 'control.bulk.submit'|trans({}, 'control') }}
                     </button>
                 </div>
             </form>
             <div class="small text-muted mt-2">
-                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                 {{ 'control.bulk.footer_hint'|trans({}, 'control') }}
             </div>
         </div>
@@ -337,7 +337,7 @@
             <td class="text-center">
                 <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                     <a href="{{ path('app_soa_show', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">👁 {{ 'common.view'|trans({}, 'messages') }}</a>
-                    <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
+                    <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
                 </div>
             </td>
         </tr>

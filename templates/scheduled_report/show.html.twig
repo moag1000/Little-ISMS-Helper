@@ -15,14 +15,14 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h2 mb-0">
-            <i class="bi bi-clock-history" aria-hidden="true"></i> {{ report.name }}
+            <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ report.name }}
         </h1>
         <div class="btn-group">
             <a href="{{ path('app_scheduled_report_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'scheduled_report.action.edit'|trans({}, 'scheduled_reports') }}
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'scheduled_report.action.edit'|trans({}, 'scheduled_reports') }}
             </a>
             <a href="{{ path('app_scheduled_report_preview', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'scheduled_report.action.preview'|trans({}, 'scheduled_reports') }}
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'scheduled_report.action.preview'|trans({}, 'scheduled_reports') }}
             </a>
         </div>
     </div>
@@ -34,7 +34,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h3 class="h5 mb-0">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'scheduled_report.details.title'|trans({}, 'scheduled_reports') }}
+                            <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'scheduled_report.details.title'|trans({}, 'scheduled_reports') }}
                         </h3>
                     </div>
                 {% endblock %}
@@ -101,7 +101,7 @@
                     <ul class="list-group list-group-flush">
                         {% for email in report.recipients %}
                         <li class="list-group-item">
-                            <i class="bi bi-person" aria-hidden="true"></i> {{ email }}
+                            <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ email }}
                         </li>
                         {% endfor %}
                     </ul>
@@ -117,7 +117,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h3 class="h5 mb-0">
-                            <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'scheduled_report.last_run.title'|trans({}, 'scheduled_reports') }}
+                            <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'scheduled_report.last_run.title'|trans({}, 'scheduled_reports') }}
                         </h3>
                     </div>
                 {% endblock %}
@@ -205,7 +205,7 @@
                 {% block card_body %}
                     <div class="d-grid gap-2">
                         <a href="{{ path('app_scheduled_report_preview', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="bi bi-download" aria-hidden="true"></i> {{ 'scheduled_report.action.preview'|trans({}, 'scheduled_reports') }}
+                            <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i> {{ 'scheduled_report.action.preview'|trans({}, 'scheduled_reports') }}
                         </a>
 
                         {% if is_granted('ROLE_ADMIN') %}
@@ -222,7 +222,7 @@
                         <form action="{{ path('app_scheduled_report_delete', {id: report.id}) }}" method="post">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ report.id) }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100" onclick="return confirm('{{ 'scheduled_report.confirm.delete'|trans({}, 'scheduled_reports') }}')">
-                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'scheduled_report.action.delete'|trans({}, 'scheduled_reports') }}
+                                <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'scheduled_report.action.delete'|trans({}, 'scheduled_reports') }}
                             </button>
                         </form>
                     </div>

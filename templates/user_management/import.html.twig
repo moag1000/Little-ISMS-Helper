@@ -7,9 +7,9 @@
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-upload" aria-hidden="true"></i> {{ 'user.import.title'|trans({}, 'user') }}</h1>
+        <h1><i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i> {{ 'user.import.title'|trans({}, 'user') }}</h1>
         <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 
@@ -32,7 +32,7 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-file-earmark-arrow-up" aria-hidden="true"></i> {{ 'user.import.upload_title'|trans({}, 'user') }}
+                    <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i> {{ 'user.import.upload_title'|trans({}, 'user') }}
                 </h2>
             </div>
         {% endblock %}
@@ -56,7 +56,7 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
                         <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        <i class="bi bi-upload" aria-hidden="true"></i> {{ 'user.import.submit'|trans({}, 'user') }}
+                        <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i> {{ 'user.import.submit'|trans({}, 'user') }}
                     </button>
                 </div>
             </form>
@@ -68,7 +68,7 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-download" aria-hidden="true"></i> {{ 'user.import.template_title'|trans({}, 'user') }}
+                    <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i> {{ 'user.import.template_title'|trans({}, 'user') }}
                 </h2>
             </div>
         {% endblock %}

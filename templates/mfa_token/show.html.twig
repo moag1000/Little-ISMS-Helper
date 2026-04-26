@@ -17,7 +17,7 @@
 
     <div class="mb-4">
         <a href="{{ path('admin_mfa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 
@@ -27,14 +27,14 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.details.title'|trans({}, 'mfa') }}</h3>
+                        <h3 class="mb-0"><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'mfa_token.details.title'|trans({}, 'mfa') }}</h3>
                     </div>
                 {% endblock %}
                 {% block card_body %}
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'mfa_token.field.user'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
-                            <i class="bi bi-person-circle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-person-circle" aria-hidden="true"></i>
                             {{ mfa_token.user.firstName }} {{ mfa_token.user.lastName }}
                             <span class="text-muted">({{ mfa_token.user.email }})</span>
                         </dd>
@@ -75,14 +75,14 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h3 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'mfa_token.usage.title'|trans({}, 'mfa') }}</h3>
+                        <h3 class="mb-0"><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'mfa_token.usage.title'|trans({}, 'mfa') }}</h3>
                     </div>
                 {% endblock %}
                 {% block card_body %}
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'mfa_token.field.enrolled_at'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
-                            <i class="bi bi-calendar-check" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
                             {{ mfa_token.enrolledAt|date('Y-m-d H:i:s') }}
                             <small class="text-muted">({{ mfa_token.enrolledAt|date('r') }})</small>
                         </dd>
@@ -123,7 +123,7 @@
                 {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-warning' } %}
                     {% block card_header %}
                         <div class="card-header bg-warning-subtle text-warning">
-                            <h3 class="mb-0"><i class="bi bi-key-fill" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}</h3>
+                            <h3 class="mb-0"><i class="fa-icon fa-icon--nav-key" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}</h3>
                         </div>
                     {% endblock %}
                     {% block card_body %}
@@ -139,7 +139,7 @@
                                   data-ui-actions-message-param="{{ 'mfa_token.backup_codes.regenerate_confirm'|trans({}, 'mfa') }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('regenerate_backup_' ~ mfa_token.id) }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm">
-                                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.regenerate'|trans({}, 'mfa') }}
+                                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.regenerate'|trans({}, 'mfa') }}
                                 </button>
                             </form>
                         </div>
@@ -163,7 +163,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h3 class="mb-0"><i class="bi bi-gear" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h3>
+                        <h3 class="mb-0"><i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h3>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -186,7 +186,7 @@
                               data-ui-actions-message-param="{{ 'mfa_token.confirm_delete'|trans({}, 'mfa') }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ mfa_token.id) }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
-                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
+                                <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                             </button>
                         </form>
                     </div>

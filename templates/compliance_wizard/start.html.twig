@@ -75,7 +75,7 @@
                     </ul>
                     <hr>
                     <a href="{{ path('admin_modules_index') }}" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm">
-                        <i class="bi bi-gear" aria-hidden="true"></i>{{ 'wizard.activate_modules'|trans }}
+                        <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>{{ 'wizard.activate_modules'|trans }}
                     </a>
                 {% endblock %}
             {% endembed %}
@@ -84,7 +84,7 @@
             {# Start Button #}
             <div class="d-grid gap-2 d-md-flex justify-content-md-between">
                 <a href="{{ path('app_compliance_wizard_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                    <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>{{ 'wizard.back'|trans }}
+                    <i class="fa-icon fa-icon--util-arrow-left me-1" aria-hidden="true"></i>{{ 'wizard.back'|trans }}
                 </a>
                 <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}" class="btn btn-{{ config.color }} btn-lg">
                     <i class="bi bi-play-circle me-2" aria-hidden="true"></i>{{ 'wizard.run_assessment'|trans }}
@@ -127,7 +127,7 @@
                             <span class="small">{{ 'wizard.duration_hint'|trans }}</span>
                         </li>
                         <li class="mb-2">
-                            <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-bar-chart me-2" aria-hidden="true"></i>
                             <span class="small">{{ 'wizard.score_hint'|trans }}</span>
                         </li>
                         <li class="mb-2">

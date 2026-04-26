@@ -14,7 +14,7 @@
                 </ol>
             </nav>
             <h1>
-                <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ workflow.name }}
+                <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ workflow.name }}
                 {% if workflow.isActive %}
                     {% include '_components/_badge.html.twig' with { variant: 'success', content: 'workflow.status.active'|trans({}, 'workflows') } %}
                 {% else %}
@@ -24,10 +24,10 @@
         </div>
         <div>
             <a href="{{ path('app_workflow_definition_builder', {id: workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--success">
-                <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'workflow.action.builder'|trans({}, 'workflows') }}
+                <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'workflow.action.builder'|trans({}, 'workflows') }}
             </a>
             <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'workflow.action.edit'|trans({}, 'workflows') }}
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'workflow.action.edit'|trans({}, 'workflows') }}
             </a>
             <form method="post" action="{{ path('app_workflow_definition_toggle', {id: workflow.id}) }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ workflow.id) }}">
@@ -46,7 +46,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="mb-0">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.section.information'|trans({}, 'workflows') }}
+                            <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'workflow.section.information'|trans({}, 'workflows') }}
                         </h2>
                     </div>
                 {% endblock %}
@@ -88,7 +88,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="mb-0">
-                            <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'workflow.section.steps'|trans({}, 'workflows') }} ({{ workflow.steps|length }})
+                            <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'workflow.section.steps'|trans({}, 'workflows') }} ({{ workflow.steps|length }})
                         </h2>
                     </div>
                 {% endblock %}
@@ -107,7 +107,7 @@
                                                 <p class="mb-1 text-muted small">{{ step.description }}</p>
                                             {% endif %}
                                             <small class="text-muted">
-                                                <i class="bi bi-person" aria-hidden="true"></i> {{ step.approverRole ?: '—' }}
+                                                <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ step.approverRole ?: '—' }}
                                             </small>
                                         </div>
                                         <div>
@@ -124,7 +124,7 @@
                         </ul>
                     {% else %}
                         <p class="text-muted text-center py-4">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.message.no_steps'|trans({}, 'workflows') }}
+                            <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'workflow.message.no_steps'|trans({}, 'workflows') }}
                         </p>
                     {% endif %}
                 {% endblock %}
@@ -135,7 +135,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="mb-0">
-                            <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'workflow.section.recent_instances'|trans({}, 'workflows') }}
+                            <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'workflow.section.recent_instances'|trans({}, 'workflows') }}
                         </h2>
                     </div>
                 {% endblock %}
@@ -178,7 +178,7 @@
                                         <td>{{ instance.startedAt|date('d.m.Y H:i') }}</td>
                                         <td>
                                             <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -187,7 +187,7 @@
                         {% endembed %}
                     {% else %}
                         <p class="text-muted text-center py-4">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.message.no_instances'|trans({}, 'workflows') }}
+                            <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'workflow.message.no_instances'|trans({}, 'workflows') }}
                         </p>
                     {% endif %}
                 {% endblock %}
@@ -207,7 +207,7 @@
                 {% block card_body %}
                     <div class="d-grid gap-2">
                         <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'workflow.action.edit'|trans({}, 'workflows') }}
+                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'workflow.action.edit'|trans({}, 'workflows') }}
                         </a>
                         <form method="post" action="{{ path('app_workflow_definition_toggle', {id: workflow.id}) }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ workflow.id) }}">
@@ -223,7 +223,7 @@
                               data-ui-actions-message-param="{{ 'workflow.confirm.delete'|trans({}, 'workflows') }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ workflow.id) }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
-                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'workflow.action.delete'|trans({}, 'workflows') }}
+                                <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'workflow.action.delete'|trans({}, 'workflows') }}
                             </button>
                         </form>
                     </div>
@@ -235,7 +235,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="mb-0">
-                            <i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'workflow.section.statistics'|trans({}, 'workflows') }}
+                            <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'workflow.section.statistics'|trans({}, 'workflows') }}
                         </h2>
                     </div>
                 {% endblock %}

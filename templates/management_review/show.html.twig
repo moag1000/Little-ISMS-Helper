@@ -57,7 +57,7 @@
                             {% if review.participants|length > 0 %}
                             <ul class="list-unstyled mb-0">
                                 {% for participant in review.participants %}
-                                <li><i class="bi bi-person" aria-hidden="true"></i> {{ participant.firstName }} {{ participant.lastName }}</li>
+                                <li><i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ participant.firstName }} {{ participant.lastName }}</li>
                                 {% endfor %}
                             </ul>
                             {% else %}
@@ -113,7 +113,7 @@
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
                         <h2 class="h5 mb-0">
-                            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'management_review.section.followup'|trans({}, 'management_review') }}
+                            <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'management_review.section.followup'|trans({}, 'management_review') }}
                         </h2>
                     </div>
                 {% endblock %}
@@ -178,7 +178,7 @@
                     <div class="mb-0">
                         <div class="text-muted small fw-semibold">{{ 'management_review.action_items'|trans({}, 'management_review') }}</div>
                         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-list-check' } } %}
-                            {% block alert_body %}<strong><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'management_review.action_items_label'|trans({}, 'management_review') }}</strong> <p class="mb-0 mt-2">{{ review.actionItems|nl2br }}</p>{% endblock %}
+                            {% block alert_body %}<strong><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'management_review.action_items_label'|trans({}, 'management_review') }}</strong> <p class="mb-0 mt-2">{{ review.actionItems|nl2br }}</p>{% endblock %}
                         {% endembed %}
                     </div>
                     {% endif %}
@@ -191,7 +191,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
-                        <h2 class="h5 mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -200,7 +200,7 @@
                         <a href="{{ path('app_management_review_edit', {id: review.id}) }}"
                            class="fa-cyber-btn fa-cyber-btn--primary"
                            data-turbo-action="advance">
-                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                         </a>
                         {% endif %}
 
@@ -216,7 +216,7 @@
                         <a href="{{ path('app_management_review_index') }}"
                            class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance">
-                            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
                         </a>
 
                         {% if is_granted('ROLE_ADMIN') %}
@@ -225,7 +225,7 @@
                                 class="fa-cyber-btn fa-cyber-btn--danger"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal">
-                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                         </button>
                         {% endif %}
                     </div>
@@ -266,7 +266,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
-                        <h2 class="h5 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -308,7 +308,7 @@
                 <form method="post" action="{{ path('app_management_review_delete', {id: review.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
+                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                     </button>
                 </form>
             </div>

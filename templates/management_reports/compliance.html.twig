@@ -39,7 +39,7 @@
             <input type="date" id="filter-to" name="to" value="{{ app.request.query.get('to') }}" class="form-control form-control-sm">
         </div>
         <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-            <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'management_reports.filter.apply'|trans({}, 'management_reports') }}
+            <i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i> {{ 'management_reports.filter.apply'|trans({}, 'management_reports') }}
         </button>
         {% if app.request.query.get('from') or app.request.query.get('to') %}
         <a href="{{ path('app_management_reports_compliance') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
@@ -100,7 +100,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h3 class="h5 mb-0">
-                    <i class="bi bi-collection" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
                     {{ 'management_reports.compliance.frameworks'|trans({}, 'management_reports') }}
                 </h3>
             </div>
@@ -178,7 +178,7 @@
                             <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'management_reports.compliance.view_soa'|trans({}, 'management_reports') }}
                         </a>
                         <a href="{{ path('app_soa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'management_reports.compliance.view_controls'|trans({}, 'management_reports') }}
+                            <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'management_reports.compliance.view_controls'|trans({}, 'management_reports') }}
                         </a>
                     </div>
                 {% endblock %}

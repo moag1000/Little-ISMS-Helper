@@ -26,12 +26,12 @@
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 mb-0">
-                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                     {{ 'audit.edit'|trans({}, 'audit') }}: {{ audit.title }}
                 </h1>
                 <div>
                     <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo-action="advance">
-                        <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
+                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
                     </a>
                 </div>
             </div>
@@ -43,7 +43,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="mb-0"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'audit.edit'|trans({}, 'audit') }}</h2>
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'audit.edit'|trans({}, 'audit') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -126,7 +126,7 @@
                             <a href="{{ path('app_audit_show', {id: audit.id}) }}"
                                class="fa-cyber-btn fa-cyber-btn--ghost"
                                data-turbo-action="advance">
-                                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+                                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                             </a>
                             <a href="{{ path('app_audit_index') }}"
                                class="fa-cyber-btn fa-cyber-btn--ghost"
@@ -135,7 +135,7 @@
                             </a>
                         </div>
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
-                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save_changes'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save_changes'|trans({}, 'messages') }}
                         </button>
                     </div>
 

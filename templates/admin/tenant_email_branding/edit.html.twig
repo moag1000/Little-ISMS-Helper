@@ -21,7 +21,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h3 class="h5 mb-0">
-                            <i class="bi bi-gear" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>
                             {{ 'tenant.email.section.branding'|trans({}, 'tenant') }}
                         </h3>
                     </div>
@@ -35,7 +35,7 @@
                         <div class="mb-3">{{ form_row(form.emailSupportAddress, { attr: { class: 'form-control' } }) }}</div>
                         {{ _fa_alert.render({ variant: 'info', class: 'small mb-3', body: 'tenant.email.hint.fallback'|trans({}, 'tenant') }) }}
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                            <i class="bi bi-save" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
                             {{ 'common.save'|trans({}, 'messages') }}
                         </button>
                     {{ form_end(form) }}

@@ -22,7 +22,7 @@
             {% else %}
                 <div class="bg-body-secondary rounded d-flex align-items-center justify-content-center me-3"
                      style="width: 80px; height: 80px; border: 1px solid var(--border);">
-                    <i class="bi bi-building text-muted fs-2" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-building text-muted fs-2" aria-hidden="true"></i>
                 </div>
             {% endif %}
             <div>
@@ -41,10 +41,10 @@
         </div>
         <div class="btn-group" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
             <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
             </a>
             <a href="{{ path('tenant_management_organisation_context', {id: tenant.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-building-gear" aria-hidden="true"></i> {{ 'tenant.organisation_context.title'|trans({}, 'tenant') }}
+                <i class="fa-icon fa-icon--nav-building-gear" aria-hidden="true"></i> {{ 'tenant.organisation_context.title'|trans({}, 'tenant') }}
             </a>
             <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline"
                   data-controller="ui-actions"
@@ -66,7 +66,7 @@
                 {% block card_body %}
                     <div class="d-flex align-items-center">
                         <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
-                            <i class="bi bi-people text-primary fs-3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-people text-primary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
                             <div class="text-muted mb-1 small fw-semibold">{{ 'tenant.stats.total_users'|trans({}, 'tenant') }}</div>
@@ -81,7 +81,7 @@
                 {% block card_body %}
                     <div class="d-flex align-items-center">
                         <div class="bg-success bg-opacity-10 p-3 rounded me-3">
-                            <i class="bi bi-person-check text-success fs-3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-person-check text-success fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
                             <div class="text-muted mb-1 small fw-semibold">{{ 'tenant.stats.active_users'|trans({}, 'tenant') }}</div>
@@ -96,7 +96,7 @@
                 {% block card_body %}
                     <div class="d-flex align-items-center">
                         <div class="bg-secondary bg-opacity-10 p-3 rounded me-3">
-                            <i class="bi bi-person-x text-secondary fs-3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-person-x text-secondary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
                             <div class="text-muted mb-1 small fw-semibold">{{ 'tenant.stats.inactive_users'|trans({}, 'tenant') }}</div>
@@ -128,17 +128,17 @@
     <ul class="nav nav-tabs mb-4" id="tenantTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
-                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'tenant.tabs.details'|trans({}, 'tenant') }}
+                <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'tenant.tabs.details'|trans({}, 'tenant') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="isms-context-tab" data-bs-toggle="tab" data-bs-target="#isms-context" type="button" role="tab">
-                <i class="bi bi-building-gear" aria-hidden="true"></i> {{ 'tenant.tabs.isms_context'|trans({}, 'tenant') }}
+                <i class="fa-icon fa-icon--nav-building-gear" aria-hidden="true"></i> {{ 'tenant.tabs.isms_context'|trans({}, 'tenant') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
-                <i class="bi bi-people" aria-hidden="true"></i> {{ 'tenant.tabs.users'|trans({}, 'tenant') }}
+                <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i> {{ 'tenant.tabs.users'|trans({}, 'tenant') }}
                 {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'ms-1', content: userCount } %}
             </button>
         </li>
@@ -155,7 +155,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="card-title mb-0 h5">
-                            <i class="bi bi-info-circle text-primary" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-info text-primary" aria-hidden="true"></i>
                             {{ 'tenant.section.information'|trans({}, 'tenant') }}
                         </h2>
                     </div>
@@ -225,7 +225,7 @@
                     {% if tenant.isPartOfCorporateStructure %}
                         <hr>
                         <h3 class="mb-3 h6">
-                            <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'corporate.section.structure'|trans({}, 'tenant') }}
+                            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'corporate.section.structure'|trans({}, 'tenant') }}
                         </h3>
                         {% embed '_components/_table.html.twig' with {
                             'class': 'table-sm',
@@ -281,7 +281,7 @@
                         {% endembed %}</div>
                         <div class="d-grid">
                             <a href="{{ path('tenant_management_corporate_structure') }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'corporate.action.view_structure'|trans({}, 'tenant') }}
+                                <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'corporate.action.view_structure'|trans({}, 'tenant') }}
                             </a>
                         </div>
 
@@ -303,12 +303,12 @@
                              data-tenant-governance-organization-label-value="{{ 'corporate.inheritance.organization'|trans({}, 'tenant') }}">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h3 class="mb-0 h6">
-                                <i class="bi bi-building-gear" aria-hidden="true"></i> {{ 'corporate.inheritance.title'|trans({}, 'tenant') }}
+                                <i class="fa-icon fa-icon--nav-building-gear" aria-hidden="true"></i> {{ 'corporate.inheritance.title'|trans({}, 'tenant') }}
                             </h3>
                             {% if tenant.isCorporateParent %}
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary"
                                         data-action="click->tenant-governance#propagateContext">
-                                    <i class="bi bi-arrow-down-circle" aria-hidden="true"></i> {{ 'corporate.inheritance.propagate'|trans({}, 'tenant') }}
+                                    <i class="fa-icon fa-icon--util-arrow-down-circle" aria-hidden="true"></i> {{ 'corporate.inheritance.propagate'|trans({}, 'tenant') }}
                                 </button>
                             {% endif %}
                         </div>
@@ -326,11 +326,11 @@
                             <hr>
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h3 class="mb-0 h6">
-                                    <i class="bi bi-gear" aria-hidden="true"></i> {{ 'corporate.granular.title'|trans({}, 'tenant') }}
+                                    <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i> {{ 'corporate.granular.title'|trans({}, 'tenant') }}
                                 </h3>
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
                                         data-action="click->tenant-governance#showAddRuleModal">
-                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'corporate.granular.add_rule'|trans({}, 'tenant') }}
+                                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'corporate.granular.add_rule'|trans({}, 'tenant') }}
                                 </button>
                             </div>
                             <div id="governanceRulesContainer" data-tenant-governance-target="governanceRulesContainer">
@@ -422,12 +422,12 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <h2 class="card-title mb-0 h5">
-                                <i class="bi bi-people text-primary" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-people text-primary" aria-hidden="true"></i>
                                 {{ 'tenant.section.users'|trans({}, 'tenant') }}
                                 {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'ms-2', content: userCount } %}
                             </h2>
                             <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary" data-bs-toggle="modal" data-bs-target="#manageUsersModal">
-                                <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans({}, 'tenant') }}
+                                <i class="fa-icon fa-icon--ui-person-plus" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans({}, 'tenant') }}
                             </button>
                         </div>
                     </div>
@@ -500,7 +500,7 @@
                           data-ui-actions-message-param="{{ 'tenant.confirm.delete'|trans({}, 'tenant') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete_tenant_' ~ tenant.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'tenant.action.delete'|trans({}, 'tenant') }}
+                            <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'tenant.action.delete'|trans({}, 'tenant') }}
                         </button>
                     </form>
                 </div>
@@ -514,7 +514,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title h5">
-                        <i class="bi bi-people" aria-hidden="true"></i> {{ 'tenant.users.manage_title'|trans({}, 'tenant') }}
+                        <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i> {{ 'tenant.users.manage_title'|trans({}, 'tenant') }}
                     </h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
@@ -522,7 +522,7 @@
                     {# Add User Section #}
                     <div class="mb-4">
                         <h3 class="border-bottom pb-2 mb-3 h6">
-                            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'tenant.users.add_user'|trans({}, 'tenant') }}
+                            <i class="fa-icon fa-icon--ui-person-plus" aria-hidden="true"></i> {{ 'tenant.users.add_user'|trans({}, 'tenant') }}
                         </h3>
                         <form method="post" action="{{ path('tenant_management_add_user', {id: tenant.id}) }}" id="addUserForm">
                             <input type="hidden" name="_token" value="{{ csrf_token('add_user_' ~ tenant.id) }}">
@@ -533,7 +533,7 @@
                                        placeholder="{{ 'tenant.users.enter_email'|trans({}, 'tenant') }}"
                                        required>
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.users.add'|trans({}, 'tenant') }}
+                                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'tenant.users.add'|trans({}, 'tenant') }}
                                 </button>
                             </div>
                             <small class="form-text text-muted">
@@ -545,7 +545,7 @@
                     {# Current Users List #}
                     <div>
                         <h3 class="border-bottom pb-2 mb-3 h6">
-                            <i class="bi bi-people-fill" aria-hidden="true"></i> {{ 'tenant.users.current_users'|trans({}, 'tenant') }} ({{ userCount }})
+                            <i class="fa-icon fa-icon--nav-team" aria-hidden="true"></i> {{ 'tenant.users.current_users'|trans({}, 'tenant') }} ({{ userCount }})
                         </h3>
                         {% if userCount == 0 %}
                             {{ _fa_empty_state.render({
@@ -560,7 +560,7 @@
                                             <div class="flex-grow-1">
                                                 <div class="d-flex align-items-center">
                                                     <div class="me-3">
-                                                        <i class="bi bi-person-circle fs-3 text-muted" aria-hidden="true"></i>
+                                                        <i class="fa-icon fa-icon--ui-person-circle fs-3 text-muted" aria-hidden="true"></i>
                                                     </div>
                                                     <div>
                                                         <strong>{{ user.email }}</strong>
@@ -588,7 +588,7 @@
                                                     <button type="submit"
                                                             class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
                                                             aria-label="{{ 'common.deactivate'|trans({}, 'messages') }}">
-                                                        <i class="bi bi-person-dash" aria-hidden="true"></i>
+                                                        <i class="fa-icon fa-icon--ui-person-dash" aria-hidden="true"></i>
                                                     </button>
                                                 </form>
                                             </div>
@@ -676,7 +676,7 @@
                                 <strong>{{ 'tenant.isms_context.not_configured'|trans({}, 'tenant') }}</strong><br>
                                 <p class="mb-0 mt-2">{{ 'tenant.isms_context.configure_prompt'|trans({}, 'tenant') }}</p>
                                 <a href="${escapeHtml(data.editUrl) || '{{ path('app_context_edit') }}'}" class="fa-cyber-btn fa-cyber-btn--primary mt-3">
-                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.isms_context.configure_now'|trans({}, 'tenant') }}
+                                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'tenant.isms_context.configure_now'|trans({}, 'tenant') }}
                                 </a>
                             </div>
                         `;
@@ -697,7 +697,7 @@
                         html += `
                             <div class="fa-alert fa-alert--warning mb-4" role="alert">
                                 <div class="d-flex align-items-start">
-                                    <i class="bi bi-diagram-3 me-2 mt-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--nav-process me-2 mt-1" aria-hidden="true"></i>
                                     <div>
                                         <strong>{{ 'corporate.inheritance.isms_context_inherited'|trans({}, 'tenant') }}</strong><br>
                                         <span class="small">
@@ -726,10 +726,10 @@
                                     <div>
                                         ${canEdit ?
                                             `<a href="${escapeHtml(data.editUrl) || '{{ path('app_context_edit') }}'}" class="fa-cyber-btn fa-cyber-btn--primary">
-                                                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+                                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                                             </a>` :
                                             `<button class="fa-cyber-btn fa-cyber-btn--ghost" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'tenant') }}">
-                                                <i class="bi bi-lock" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+                                                <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                                             </button>`
                                         }
                                     </div>
@@ -784,7 +784,7 @@
                     html += `
                         <div class="text-center mt-4">
                             <a href="{{ path('app_context_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                                <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'tenant.isms_context.view_full'|trans({}, 'tenant') }}
+                                <i class="fa-icon fa-icon--util-arrow-right-circle" aria-hidden="true"></i> {{ 'tenant.isms_context.view_full'|trans({}, 'tenant') }}
                             </a>
                         </div>
                     `;
@@ -806,7 +806,7 @@
                             ${errorMessage}
                             <br><br>
                             <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger" id="retryIsmsContextBtn">
-                                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'common.retry'|trans({}, 'messages') }}
+                                <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'common.retry'|trans({}, 'messages') }}
                             </button>
                         </div>
                     `;

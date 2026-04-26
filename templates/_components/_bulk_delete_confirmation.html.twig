@@ -51,7 +51,7 @@
                         {{ 'bulk_delete.selection.title'|trans({}, 'bulk_delete') }}
                     </h6>
                     <div class="d-flex align-items-center gap-2 p-2 bg-body-secondary rounded">
-                        <i class="bi bi-check2-square text-primary" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-check-square text-primary" aria-hidden="true"></i>
                         <span>
                             <strong data-bulk-delete-confirmation-target="count">0</strong>
                             <span data-bulk-delete-confirmation-target="entityLabel">{{ 'common.entries'|trans({}, 'messages') }}</span>
@@ -102,7 +102,7 @@
                         data-bs-dismiss="modal"
                         data-action="click->bulk-delete-confirmation#cancel"
                         data-bulk-delete-confirmation-target="cancelButton">
-                    <i class="bi bi-x-lg me-1" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-close me-1" aria-hidden="true"></i>
                     {{ 'action.cancel'|trans({}, 'messages') }}
                 </button>
                 <button type="button"
@@ -110,7 +110,7 @@
                         data-action="click->bulk-delete-confirmation#confirm"
                         data-bulk-delete-confirmation-target="confirmButton"
                         autofocus>
-                    <i class="bi bi-trash me-1" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-trash me-1" aria-hidden="true"></i>
                     {{ 'action.delete'|trans({}, 'messages') }}
                 </button>
             </div>

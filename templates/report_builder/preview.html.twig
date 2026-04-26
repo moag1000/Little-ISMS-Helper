@@ -20,7 +20,7 @@
         </h1>
         <div class="btn-group">
             <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'action.edit'|trans }}
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'action.edit'|trans }}
             </a>
             <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--danger">
                 <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'action.export_pdf'|trans }}
@@ -34,7 +34,7 @@
             <div class="d-flex gap-3 text-muted small">
                 <span><i class="bi bi-folder" aria-hidden="true"></i> {{ report.category }}</span>
                 <span><i class="bi bi-calendar" aria-hidden="true"></i> {{ report_data.report.generated_at|date('d.m.Y H:i') }}</span>
-                <span><i class="bi bi-person" aria-hidden="true"></i> {{ report.owner.fullName }}</span>
+                <span><i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ report.owner.fullName }}</span>
             </div>
         </div>
     </div>

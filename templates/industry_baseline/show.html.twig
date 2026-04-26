@@ -14,7 +14,7 @@
     <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
         <div>
             <h1 class="h2 mb-1">
-                <i class="bi bi-box-seam text-primary" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-collection text-primary" aria-hidden="true"></i>
                 {{ baseline.name }}
             </h1>
             <p class="text-muted mb-0">
@@ -33,7 +33,7 @@
                 </span>
             {% elseif inherited_record %}
                 <span class="badge bg-info fa-status-pill fa-status-pill--primary fs-6" title="{{ 'industry_baseline.status.inherited_from'|trans({'%tenant%': inherited_record.tenant.name}, 'industry_baseline') }}">
-                    <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                     {{ 'industry_baseline.status.inherited'|trans({'%tenant%': inherited_record.tenant.name}, 'industry_baseline') }}
                 </span>
                 <form method="post" action="{{ path('app_industry_baseline_apply', {code: baseline.code}) }}"
@@ -60,7 +60,7 @@
                       onsubmit="return confirm('{{ 'industry_baseline.confirm_apply_recursive'|trans({'%count%': app.user.tenant.allSubsidiaries|length + 1}, 'industry_baseline')|e('js') }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('apply_baseline_recursive_' ~ baseline.code) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                         {{ 'industry_baseline.action.apply_recursive'|trans({'%count%': app.user.tenant.allSubsidiaries|length + 1}, 'industry_baseline') }}
                     </button>
                 </form>
@@ -175,7 +175,7 @@
                     {% block card_header %}
                         <div class="card-header">
                             <h2 class="h5 mb-0">
-                                <i class="bi bi-list-check text-success" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-list-check text-success" aria-hidden="true"></i>
                                 {{ 'industry_baseline.field.preset_controls'|trans({}, 'industry_baseline') }}
                                 <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral ms-1">{{ baseline.presetApplicableControls|length }}</span>
                             </h2>

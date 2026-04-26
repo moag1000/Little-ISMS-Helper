@@ -39,7 +39,7 @@
                         {% block card_header %}
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h2 class="h6 mb-0">
-                                    <i class="bi bi-box-seam me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--nav-collection me-1" aria-hidden="true"></i>
                                     {{ baseline.name }}
                                 </h2>
                                 {% if applied %}
@@ -49,7 +49,7 @@
                                     </span>
                                 {% elseif inheritedRecord %}
                                     <span class="badge bg-info fa-status-pill fa-status-pill--primary" title="{{ 'industry_baseline.status.inherited_from'|trans({'%tenant%': inheritedRecord.tenant.name}, 'industry_baseline') }}">
-                                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                                         {{ 'industry_baseline.status.inherited_short'|trans({}, 'industry_baseline') }}
                                     </span>
                                 {% endif %}
@@ -84,7 +84,7 @@
                         {% block card_footer %}
                             <div class="card-footer bg-transparent border-top-0">
                                 <a href="{{ path('app_industry_baseline_show', {code: baseline.code}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
-                                    {{ 'industry_baseline.action.details'|trans({}, 'industry_baseline') }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                    {{ 'industry_baseline.action.details'|trans({}, 'industry_baseline') }} <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                 </a>
                             </div>
                         {% endblock %}

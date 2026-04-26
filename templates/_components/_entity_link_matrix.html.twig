@@ -21,7 +21,7 @@
 
 <div class="detail-section entity-link-matrix" aria-labelledby="entity-link-matrix-heading-{{ source_type }}">
     <h3 id="entity-link-matrix-heading-{{ source_type }}" class="h5">
-        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
         {{ ('common.link_matrix.title_' ~ source_type)|trans({}, 'messages') }}
     </h3>
     <p class="text-muted small">
@@ -51,7 +51,7 @@
                 </ul>
             {% else %}
                 <p class="text-muted small mb-2">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                     {{ 'common.link_matrix.no_links_yet'|trans({}, 'messages') }}
                 </p>
             {% endif %}
@@ -60,7 +60,7 @@
                 <a href="{{ path('app_risk_new', {fromVulnerability: entity.id}) }}"
                    class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                    aria-describedby="link-matrix-help-derive-risk-from-vuln">
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
                     {{ 'common.link_matrix.derive_risk_from_vulnerability'|trans({}, 'messages') }}
                 </a>
                 <small id="link-matrix-help-derive-risk-from-vuln" class="text-muted ms-2">
@@ -70,7 +70,7 @@
                 <a href="{{ path('app_risk_new', {fromIncident: entity.id}) }}"
                    class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                    aria-describedby="link-matrix-help-derive-risk-from-incident">
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
                     {{ 'common.link_matrix.derive_risk_from_incident'|trans({}, 'messages') }}
                 </a>
                 <small id="link-matrix-help-derive-risk-from-incident" class="text-muted ms-2">
@@ -106,7 +106,7 @@
                 </ul>
             {% else %}
                 <p class="text-muted small mb-2">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                     {{ 'common.link_matrix.no_links_yet'|trans({}, 'messages') }}
                 </p>
             {% endif %}
@@ -115,7 +115,7 @@
                 <a href="{{ path('app_vulnerability_new', {fromIncident: entity.id}) }}"
                    class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                    aria-describedby="link-matrix-help-derive-vuln-from-incident">
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
                     {{ 'common.link_matrix.derive_vulnerability_from_incident'|trans({}, 'messages') }}
                 </a>
                 <small id="link-matrix-help-derive-vuln-from-incident" class="text-muted ms-2">
@@ -152,7 +152,7 @@
                 </ul>
             {% else %}
                 <p class="text-muted small mb-2">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                     {{ 'common.link_matrix.no_links_yet'|trans({}, 'messages') }}
                 </p>
             {% endif %}
@@ -161,7 +161,7 @@
                 <a href="{{ path('app_incident_new', {fromRisk: entity.id}) }}"
                    class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                    aria-describedby="link-matrix-help-derive-incident-from-risk">
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
                     {{ 'common.link_matrix.derive_incident_from_risk'|trans({}, 'messages') }}
                 </a>
                 <small id="link-matrix-help-derive-incident-from-risk" class="text-muted ms-2">

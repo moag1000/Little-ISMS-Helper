@@ -13,14 +13,14 @@
     {% block card_header %}
         <div class="card-header">
             <h2 class="card-title">
-                <i class="bi bi-diagram-3 text-success" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-process text-success" aria-hidden="true"></i>
                 {{ 'analytics.card.compliance_radar'|trans({}, 'analytics') }}
             </h2>
             <div class="card-actions">
                 <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                         data-action="click->radar-chart#refresh"
                         title="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}">
-                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
                 </button>
                 <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                         data-action="click->radar-chart#exportImage"

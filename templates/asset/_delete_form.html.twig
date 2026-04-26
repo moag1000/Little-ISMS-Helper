@@ -4,7 +4,7 @@
       data-ui-actions-message-param="{{ 'asset.confirm.delete'|trans({}, 'asset') }}">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ asset.id) }}">
     <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-        <i class="bi bi-trash" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
         {{ 'common.delete'|trans({}, 'messages') }}
     </button>
 </form>

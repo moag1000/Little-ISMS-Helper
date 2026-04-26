@@ -37,15 +37,15 @@
                         'form': form,
                         'sections': {
                             'organization': {
-                                'label': '<i class="bi bi-building" aria-hidden="true"></i> ' ~ 'context.section.organization'|trans({}, 'context'),
+                                'label': '<i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> ' ~ 'context.section.organization'|trans({}, 'context'),
                                 'fields': ['organizationName']
                             },
                             'scope': {
-                                'label': '<i class="bi bi-diagram-3" aria-hidden="true"></i> ' ~ 'context.section.scope'|trans({}, 'context'),
+                                'label': '<i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> ' ~ 'context.section.scope'|trans({}, 'context'),
                                 'fields': ['ismsScope', 'scopeExclusions']
                             },
                             'context_analysis': {
-                                'label': '<i class="bi bi-search" aria-hidden="true"></i> ' ~ 'context.section.context_analysis'|trans({}, 'context'),
+                                'label': '<i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i> ' ~ 'context.section.context_analysis'|trans({}, 'context'),
                                 'fields': ['externalIssues', 'internalIssues']
                             },
                             'stakeholders': {
@@ -61,7 +61,7 @@
                                 'fields': ['ismsPolicy', 'rolesAndResponsibilities']
                             },
                             'review': {
-                                'label': '<i class="bi bi-calendar-check" aria-hidden="true"></i> ' ~ 'context.section.review'|trans({}, 'context'),
+                                'label': '<i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> ' ~ 'context.section.review'|trans({}, 'context'),
                                 'fields': ['lastReviewDate', 'nextReviewDate']
                             }
                         },
@@ -91,7 +91,7 @@
                     {# Form Actions #}
                     <div class="form-actions d-flex gap-2 justify-content-between pt-3 border-top">
                         <a href="{{ path('app_context_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}</a>
-                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg"><i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}</button>
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg"><i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}</button>
                     </div>
 
                     {{ form_end(form) }}

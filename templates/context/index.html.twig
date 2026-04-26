@@ -32,9 +32,9 @@
     {% if context %}
     {# ISO 27001 Clause Information #}
     <div class="fa-alert fa-alert--info mb-4" role="alert">
-        <i class="bi bi-info-circle-fill fa-alert__icon" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--ui-info fa-alert__icon" aria-hidden="true"></i>
         <div class="fa-alert__body"><div class="d-flex align-items-center">
-            <i class="bi bi-info-circle-fill icon-15-mr-md" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--ui-info icon-15-mr-md" aria-hidden="true"></i>
             <div>
                 <div class="mb-1 fw-bold">{{ 'context.info.iso_clause'|trans({}, 'context') }}</div>
                 <p class="mb-0 small">{{ 'context.info.iso_description'|trans({}, 'context') }}</p>
@@ -121,7 +121,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="mb-0">
-                            <i class="bi bi-building" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i>
                             {{ 'context.section.organization'|trans({}, 'context') }}
                         </h2>
                     </div>
@@ -135,7 +135,7 @@
                     {% if context.ismsScope %}
                     <div class="mb-3">
                         <label class="small">
-                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-check-circle text-success" aria-hidden="true"></i>
                             {{ 'context.field.isms_scope'|trans({}, 'context') }}
                         </label>
                         <p class="mb-0">{{ context.ismsScope|nl2br }}</p>
@@ -156,7 +156,7 @@
                     <div class="mt-4 pt-3 border-top-light">
                         {% if context.lastReviewDate %}
                         <div class="small text-muted mb-1">
-                            <i class="bi bi-calendar-check" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
                             {{ 'context.kpi.last_review'|trans({}, 'context') }}: <strong>{{ context.lastReviewDate|date('d.m.Y') }}</strong>
                         </div>
                         {% endif %}
@@ -177,7 +177,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="mb-0">
-                            <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                             {{ 'context.section.context_analysis'|trans({}, 'context') }}
                         </h2>
                     </div>
@@ -187,7 +187,7 @@
                     {% if context.externalIssues %}
                     <div class="mb-3">
                         <label class="small">
-                            <i class="bi bi-globe" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-globe" aria-hidden="true"></i>
                             {{ 'context.field.external_issues'|trans({}, 'context') }}
                         </label>
                         <p class="mb-0 small">{{ context.externalIssues|nl2br }}</p>
@@ -197,7 +197,7 @@
                     {% if context.internalIssues %}
                     <div class="mb-3">
                         <label class="small">
-                            <i class="bi bi-building" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i>
                             {{ 'context.field.internal_issues'|trans({}, 'context') }}
                         </label>
                         <p class="mb-0 small">{{ context.internalIssues|nl2br }}</p>
@@ -220,7 +220,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-people" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i>
                     {{ 'context.section.interested_parties_and_requirements'|trans({}, 'context') }}
                 </h2>
             </div>
@@ -236,7 +236,7 @@
                    vorhanden (Migrations-Phase) mit Hinweis zur Umpflege. #}
                 <div class="col-md-6">
                     <label class="small mb-2">
-                        <i class="bi bi-people-fill text-primary" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-team text-primary" aria-hidden="true"></i>
                         {{ 'context.section.interested_parties'|trans({}, 'context') }}
                         {% if interestedPartiesList is defined and interestedPartiesList|length > 0 %}
                             <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral ms-1">{{ interestedPartiesList|length }}</span>
@@ -246,7 +246,7 @@
                         <ul class="list-unstyled mb-2">
                             {% for party in interestedPartiesList %}
                                 <li class="small">
-                                    <i class="bi bi-person-circle text-primary" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-person-circle text-primary" aria-hidden="true"></i>
                                     <a href="{{ path('app_interested_party_show', {id: party.id}) }}"
                                        data-turbo-action="advance">{{ party.name }}</a>
                                     {% if party.partyType %}
@@ -261,7 +261,7 @@
                         {% endembed %}
                     {% endif %}
                     <a href="{{ path('app_interested_party_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                        <i class="bi bi-people me-1" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-people me-1" aria-hidden="true"></i>
                         {{ 'context.link.interested_parties_module'|trans({}, 'context') }}
                     </a>
                     <small class="text-muted ms-2">{{ 'context.hint.structured_parties'|trans({}, 'context') }}</small>
@@ -284,7 +284,7 @@
                 <div class="col-md-6">
                     {% if context.interestedPartiesRequirements %}
                     <label class="small mb-2">
-                        <i class="bi bi-list-check text-success" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-list-check text-success" aria-hidden="true"></i>
                         {{ 'context.field.interested_parties_requirements'|trans({}, 'context') }}
                     </label>
                     <p class="mb-0">{{ context.interestedPartiesRequirements|nl2br }}</p>
@@ -385,7 +385,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="mb-0">
-                            <i class="bi bi-person-badge" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-person-badge" aria-hidden="true"></i>
                             {{ 'context.field.roles_and_responsibilities'|trans({}, 'context') }}
                         </h2>
                     </div>
@@ -416,7 +416,7 @@
                 </h2>
                 <a href="{{ path('app_objective_index') }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                     {{ 'context.action.manage_objectives'|trans({}, 'context') }}
-                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                 </a>
             </div>
         {% endblock %}
@@ -462,7 +462,7 @@
                         <td>
                             <a href="{{ path('app_objective_show', {id: objective.id}) }}"
                                class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                             </a>
                         </td>
                     </tr>

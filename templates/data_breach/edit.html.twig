@@ -33,7 +33,7 @@
                     'form': form,
                     'sections': {
                         'basic_info': {
-                            'label': '<i class="bi bi-info-circle" aria-hidden="true"></i> Basic Information'|raw,
+                            'label': '<i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> Basic Information'|raw,
                             'fields': ['title', 'incident', 'processingActivity']
                         },
                         'notification_content': {
@@ -45,15 +45,15 @@
                             'fields': ['riskLevel', 'riskAssessment', 'specialCategoriesAffected', 'criminalDataAffected']
                         },
                         'notification_requirements': {
-                            'label': '<i class="bi bi-bell" aria-hidden="true"></i> Notification Requirements'|raw,
+                            'label': '<i class="fa-icon fa-icon--ui-bell" aria-hidden="true"></i> Notification Requirements'|raw,
                             'fields': ['requiresAuthorityNotification', 'requiresSubjectNotification', 'noSubjectNotificationReason']
                         },
                         'investigation': {
-                            'label': '<i class="bi bi-search" aria-hidden="true"></i> Investigation & Follow-up'|raw,
+                            'label': '<i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i> Investigation & Follow-up'|raw,
                             'fields': ['rootCause', 'lessonsLearned']
                         },
                         'responsible_persons': {
-                            'label': '<i class="bi bi-person-badge" aria-hidden="true"></i> Responsible Persons'|raw,
+                            'label': '<i class="fa-icon fa-icon--ui-person-badge" aria-hidden="true"></i> Responsible Persons'|raw,
                             'fields': ['dataProtectionOfficer']
                         }
                     },
@@ -88,10 +88,10 @@
 
                 <div class="mt-4">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
-                        <i class="bi bi-save" aria-hidden="true"></i> {{ 'privacy.data_breach.action.update'|trans({}, 'privacy') }}
+                        <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'privacy.data_breach.action.update'|trans({}, 'privacy') }}
                     </button>
                     <a href="{{ path('app_data_breach_show', {id: breach.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="bi bi-x-lg" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
+                        <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
                 </div>
             {{ form_end(form) }}

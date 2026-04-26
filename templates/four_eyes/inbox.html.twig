@@ -37,13 +37,13 @@
                         <div class="d-flex flex-column gap-2">
                             <form method="post" action="{{ path('app_four_eyes_approve', { id: r.id }) }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm">
-                                    <i class="bi bi-check-lg" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                                     {{ 'four_eyes.approve'|trans({}, 'four_eyes') }}
                                 </button>
                             </form>
                             <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                     data-bs-toggle="modal" data-bs-target="#reject-{{ r.id }}">
-                                <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                                 {{ 'four_eyes.reject'|trans({}, 'four_eyes') }}
                             </button>
                         </div>

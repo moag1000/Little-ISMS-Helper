@@ -148,7 +148,7 @@
                                         {% elseif user.authProvider == 'azure_saml' %}
                                             <i class="bi bi-microsoft" aria-hidden="true"></i> {{ 'user.auth.azure_saml'|trans({}, 'user') }}
                                         {% else %}
-                                            <i class="bi bi-person-circle" aria-hidden="true"></i> {{ 'user.auth.local'|trans({}, 'user') }}
+                                            <i class="fa-icon fa-icon--ui-person-circle" aria-hidden="true"></i> {{ 'user.auth.local'|trans({}, 'user') }}
                                         {% endif %}
                                     </td>
                                     <td>
@@ -173,19 +173,19 @@
                                             <a href="{{ path('user_management_show', {'id': user.id}) }}"
                                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'common.view'|trans({}, 'messages') }}"
                                                data-turbo-frame="_top" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                             </a>
                                             <a href="{{ path('user_management_edit', {'id': user.id}) }}"
                                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'common.edit'|trans({}, 'messages') }}"
                                                data-turbo-frame="_top" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                             </a>
                                             {% if user.id != app.user.id %}
                                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
                                                         title="{{ 'common.delete'|trans({}, 'messages') }}"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#deleteModal{{ user.id }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
-                                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                                                 </button>
                                             {% endif %}
                                         </div>
@@ -207,7 +207,7 @@
                                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                                                 <form method="post" action="{{ path('user_management_delete', {'id': user.id}) }}" class="d-inline">
                                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
+                                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
                                                 </form>
                                             </div>
                                         </div>

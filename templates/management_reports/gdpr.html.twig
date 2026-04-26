@@ -124,7 +124,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h3 class="h5 mb-0">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                             {{ 'management_reports.gdpr.requirements'|trans({}, 'management_reports') }}
                         </h3>
                     </div>
@@ -158,7 +158,7 @@
         <h5><i class="bi bi-exclamation-octagon" aria-hidden="true"></i> {{ 'management_reports.gdpr.urgent_attention'|trans({}, 'management_reports') }}</h5>
         <p>{{ 'management_reports.gdpr.pending_notification_warning'|trans({'%count%': report.notification_status.pending}, 'management_reports') }}</p>
         <a href="{{ path('app_data_breach_index') }}" class="fa-cyber-btn fa-cyber-btn--danger">
-            <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'management_reports.gdpr.view_breaches'|trans({}, 'management_reports') }}
+            <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i> {{ 'management_reports.gdpr.view_breaches'|trans({}, 'management_reports') }}
         </a>
     </div>
     {% endif %}
@@ -243,7 +243,7 @@
                 </div>
                 <div class="col-md-4">
                     <a href="{{ path('app_dpia_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost w-100">
-                        <i class="bi bi-clipboard-data" aria-hidden="true"></i> {{ 'management_reports.gdpr.view_dpia'|trans({}, 'management_reports') }}
+                        <i class="fa-icon fa-icon--ui-copy-data" aria-hidden="true"></i> {{ 'management_reports.gdpr.view_dpia'|trans({}, 'management_reports') }}
                     </a>
                 </div>
             </div>

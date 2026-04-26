@@ -37,7 +37,7 @@
             <div class="py-2">
                 <form method="get" action="{{ path('app_supplier_index') }}" class="d-flex align-items-center gap-2">
                     <label for="view-filter" class="mb-0 fw-bold">
-                        <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
+                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
                     </label>
                     <select class="form-select form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                         <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>

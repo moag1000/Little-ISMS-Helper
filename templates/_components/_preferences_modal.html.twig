@@ -20,7 +20,7 @@
         {# Header #}
         <div class="fa-prefs-modal__header preferences-header">
             <h2 class="fa-prefs-modal__title preferences-title">
-                <i class="bi bi-gear-fill" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>
                 {{ 'preferences.title'|trans({}, 'preferences')|default('Einstellungen') }}
             </h2>
             <button type="button"
@@ -59,7 +59,7 @@
             {# Animations #}
             <section class="fa-prefs-section preference-section">
                 <h3 class="fa-prefs-section__title preference-section-title">
-                    <i class="bi bi-stars" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-stars" aria-hidden="true"></i>
                     {{ 'preferences.animations.title'|trans({}, 'preferences')|default('Animationen') }}
                 </h3>
                 <label class="fa-prefs-toggle">
@@ -118,7 +118,7 @@
             {# Export / Import #}
             <section class="fa-prefs-section preference-section">
                 <h3 class="fa-prefs-section__title preference-section-title">
-                    <i class="bi bi-arrow-down-up" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--util-arrow-down-up" aria-hidden="true"></i>
                     {{ 'preferences.backup.title'|trans({}, 'preferences')|default('Einstellungen sichern') }}
                 </h3>
                 <div class="fa-prefs-actions">
@@ -130,7 +130,7 @@
                         attrs: { 'data-action': 'click->preferences#exportPreferences' }
                     }) }}
                     <label class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--sm">
-                        <i class="bi bi-upload" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
                         <span class="fa-cyber-btn__label">{{ 'preferences.backup.import'|trans({}, 'preferences')|default('Importieren') }}</span>
                         <input type="file"
                                accept=".json"

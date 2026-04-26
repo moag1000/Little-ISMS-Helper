@@ -41,7 +41,7 @@
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'dsr.section.request_details'|trans({}, 'data_subject_request') }}</h2>
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'dsr.section.request_details'|trans({}, 'data_subject_request') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -178,7 +178,7 @@
                 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                     {% block card_header %}
                         <div class="card-header">
-                            <h2 class="mb-0"><i class="bi bi-journal-text" aria-hidden="true"></i> {{ 'dsr.section.internal_notes'|trans({}, 'data_subject_request') }}</h2>
+                            <h2 class="mb-0"><i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i> {{ 'dsr.section.internal_notes'|trans({}, 'data_subject_request') }}</h2>
                         </div>
                     {% endblock %}
                     {% block card_body %}
@@ -200,7 +200,7 @@
                 {% block card_body %}
                     {% if dsr.status not in ['completed', 'rejected'] %}
                         <a href="{{ path('app_data_subject_request_edit', {id: dsr.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost w-100 mb-2">
-                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'dsr.action.edit'|trans({}, 'data_subject_request') }}
+                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'dsr.action.edit'|trans({}, 'data_subject_request') }}
                         </a>
 
                         {# Complete Action #}
@@ -264,7 +264,7 @@
                               onsubmit="return confirm('{{ 'dsr.confirm.delete'|trans({}, 'data_subject_request')|e('js') }}');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ dsr.id) }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
-                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'dsr.action.delete'|trans({}, 'data_subject_request') }}
+                                <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'dsr.action.delete'|trans({}, 'data_subject_request') }}
                             </button>
                         </form>
                     {% endif %}
@@ -276,7 +276,7 @@
                 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                     {% block card_header %}
                         <div class="card-header">
-                            <h2 class="mb-0"><i class="bi bi-diagram-2" aria-hidden="true"></i> {{ 'dsr.section.processing_activity'|trans({}, 'data_subject_request') }}</h2>
+                            <h2 class="mb-0"><i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i> {{ 'dsr.section.processing_activity'|trans({}, 'data_subject_request') }}</h2>
                         </div>
                     {% endblock %}
                     {% block card_body %}
@@ -289,7 +289,7 @@
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'dsr.section.metadata'|trans({}, 'data_subject_request') }}</h2>
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'dsr.section.metadata'|trans({}, 'data_subject_request') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}

@@ -32,7 +32,7 @@
     {% block card_body %}
         <form method="get" action="{{ path('app_asset_index') }}" class="d-flex align-items-center gap-2">
             <label for="view-filter" class="mb-0 fw-bold">
-                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
             </label>
             <select class="form-select form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                 <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
@@ -303,14 +303,14 @@
                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                            data-turbo-action="advance"
                            aria-label="{{ 'asset.aria.view_asset'|trans({'%name%': asset.name}, 'asset') }}">
-                            <i class="bi bi-eye" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                         </a>
                         {% if is_granted('ROLE_USER') %}
                         <a href="{{ path('app_asset_edit', {id: asset.id}) }}"
                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                            data-turbo-action="advance"
                            aria-label="{{ 'asset.aria.edit_asset'|trans({'%name%': asset.name}, 'asset') }}">
-                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                         </a>
                         {% endif %}
                     </div>

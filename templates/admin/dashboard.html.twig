@@ -68,7 +68,7 @@
                 {% block card_footer %}
                     <div class="card-footer bg-transparent border-top-0">
                         <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
-                            {{ 'admin.dashboard.stats.manage'|trans({}, 'admin') }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                            {{ 'admin.dashboard.stats.manage'|trans({}, 'admin') }} <i class="fa-icon fa-icon--util-arrow-right ms-1" aria-hidden="true"></i>
                         </a>
                     </div>
                 {% endblock %}
@@ -85,7 +85,7 @@
                             <div class="fs-2 fw-bold">{{ stats.sessions.active_24h }}</div>
                         </div>
                         <div class="bg-success bg-opacity-10 p-3 rounded">
-                            <i class="bi bi-clock-history text-success fs-3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-calendar-check text-success fs-3" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="small text-muted">
@@ -113,14 +113,14 @@
                         </div>
                     </div>
                     <div class="small text-muted">
-                        <i class="bi bi-diagram-2" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
                         {{ 'admin.dashboard.stats.mappings_count'|trans({'%count%': stats.compliance.mappings_total}, 'admin') }}
                     </div>
                 {% endblock %}
                 {% block card_footer %}
                     <div class="card-footer bg-transparent border-top-0">
                         <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
-                            {{ 'admin.dashboard.stats.manage'|trans({}, 'admin') }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                            {{ 'admin.dashboard.stats.manage'|trans({}, 'admin') }} <i class="fa-icon fa-icon--util-arrow-right ms-1" aria-hidden="true"></i>
                         </a>
                     </div>
                 {% endblock %}
@@ -148,7 +148,7 @@
                             <i class="bi bi-kanban" aria-hidden="true"></i>
                             {{ 'admin.dashboard.stats.workflows_open'|trans({'%count%': stats.workflows.open}, 'admin') }}
                         {% else %}
-                            <i class="bi bi-check-all text-success" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-check-all text-success" aria-hidden="true"></i>
                             {{ 'admin.dashboard.stats.workflows_none'|trans({}, 'admin') }}
                         {% endif %}
                     </div>
@@ -157,7 +157,7 @@
                     {% if stats.compliance.unreviewed_seed_mappings > 0 %}
                         <div class="card-footer bg-transparent border-top-0">
                             <a href="{{ path('app_compliance_mapping_seed_review') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
-                                {{ 'admin.dashboard.stats.review_now'|trans({}, 'admin') }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                                {{ 'admin.dashboard.stats.review_now'|trans({}, 'admin') }} <i class="fa-icon fa-icon--util-arrow-right ms-1" aria-hidden="true"></i>
                             </a>
                         </div>
                     {% endif %}
@@ -318,29 +318,29 @@
                         {% endif %}
                         {% if stats.users.inactive > 0 %}
                             <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--warning">
-                                <i class="bi bi-person-x" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-person-x" aria-hidden="true"></i>
                                 {{ 'admin.dashboard.quick_actions.review_inactive_users'|trans({'%count%': stats.users.inactive}, 'admin') }}
                             </a>
                         {% endif %}
 
                         {# Standard-Shortcuts — immer sichtbar #}
                         <a href="{{ path('user_management_new') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.add_user'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--ui-person-plus" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.add_user'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('tenant_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="bi bi-building-add" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_tenants'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--nav-building-add" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_tenants'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_compliance'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('app_audit_log_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="bi bi-journal-text" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.view_logs'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.view_logs'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('app_admin_audit_retention') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="fa-icon fa-icon--status-archived" aria-hidden="true"></i> {{ 'audit_log.retention.title'|trans({}, 'audit_log') }}
                         </a>
                         <a href="{{ path('app_admin_risk_approval_config') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="bi bi-sliders" aria-hidden="true"></i> {{ 'risk_approval_config.title'|trans({}, 'risk_approval_config') }}
+                            <i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i> {{ 'risk_approval_config.title'|trans({}, 'risk_approval_config') }}
                         </a>
                         <a href="{{ path('app_admin_tenant_email_branding') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="bi bi-envelope-paper" aria-hidden="true"></i> {{ 'tenant.email.title'|trans({}, 'tenant') }}
@@ -389,7 +389,7 @@
                     {% endif %}
                     <div class="p-3 bg-transparent border-top">
                         <a href="{{ path('app_audit_log_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
-                            {{ 'admin.dashboard.activity.view_all'|trans({}, 'admin') }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                            {{ 'admin.dashboard.activity.view_all'|trans({}, 'admin') }} <i class="fa-icon fa-icon--util-arrow-right ms-1" aria-hidden="true"></i>
                         </a>
                     </div>
                 {% endblock %}

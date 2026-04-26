@@ -20,7 +20,7 @@
                 {% block card_body %}
                     <div class="d-flex align-items-center">
                         <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
-                            <i class="bi bi-building text-primary fs-3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-building text-primary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
                             <div class="text-muted mb-1 small fw-semibold">{{ 'tenant.stats.total'|trans({}, 'tenant') }}</div>
@@ -84,7 +84,7 @@
 
                 {# Create Button #}
                 <a href="{{ path('tenant_management_new') }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.action.create'|trans({}, 'tenant') }}
+                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'tenant.action.create'|trans({}, 'tenant') }}
                 </a>
             </div>
         {% endblock %}
@@ -132,7 +132,7 @@
                                     {% else %}
                                         <div class="bg-body-secondary rounded d-flex align-items-center justify-content-center"
                                              style="width: 40px; height: 40px;">
-                                            <i class="bi bi-building text-muted" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--nav-building text-muted" aria-hidden="true"></i>
                                         </div>
                                     {% endif %}
                                 </td>
@@ -170,12 +170,12 @@
                                         <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
                                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                            title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                         </a>
                                         <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}"
                                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                            title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                         </a>
                                         <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline"
                                               data-controller="ui-actions"

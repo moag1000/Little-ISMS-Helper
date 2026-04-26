@@ -20,10 +20,10 @@
                     <a href="{{ path('app_dora_register_export_csv') }}"
                        class="fa-cyber-btn fa-cyber-btn--ghost"
                        aria-label="{{ 'dora.register_export.aria'|trans }}">
-                        <i class="bi bi-download me-1" aria-hidden="true"></i>{{ 'dora.register_export.button'|trans }}
+                        <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>{{ 'dora.register_export.button'|trans }}
                     </a>
                     <a href="{{ path('app_compliance_wizard_assess', {wizard: 'dora'}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i>{{ 'dora.run_wizard'|trans }}
+                        <i class="fa-icon fa-icon--ui-copy-check me-1" aria-hidden="true"></i>{{ 'dora.run_wizard'|trans }}
                     </a>
                 </div>
             </div>
@@ -71,9 +71,9 @@
                             {% elseif pillar == 'incidents' %}
                                 <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dora.pillar.incidents'|trans }}
                             {% elseif pillar == 'testing' %}
-                                <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'dora.pillar.testing'|trans }}
+                                <i class="fa-icon fa-icon--ui-copy-check" aria-hidden="true"></i> {{ 'dora.pillar.testing'|trans }}
                             {% elseif pillar == 'third_party' %}
-                                <i class="bi bi-building" aria-hidden="true"></i> {{ 'dora.pillar.third_party'|trans }}
+                                <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'dora.pillar.third_party'|trans }}
                             {% endif %}
                         </div>
                         <div class="display-5 fw-bold text-{{ score >= 80 ? 'success' : (score >= 60 ? 'warning' : 'danger') }}">
@@ -209,7 +209,7 @@
                 {% block card_header %}
                     <div class="card-header bg-info bg-opacity-10">
                         <h3 class="card-title h5 mb-0">
-                            <i class="bi bi-clipboard-check me-2" aria-hidden="true"></i>{{ 'dora.pillar.testing'|trans }}
+                            <i class="fa-icon fa-icon--ui-copy-check me-2" aria-hidden="true"></i>{{ 'dora.pillar.testing'|trans }}
                         </h3>
                         <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '24-27'}) }}</small>
                     </div>
@@ -257,7 +257,7 @@
                 {% block card_header %}
                     <div class="card-header bg-secondary bg-opacity-10">
                         <h3 class="card-title h5 mb-0">
-                            <i class="bi bi-building me-2" aria-hidden="true"></i>{{ 'dora.pillar.third_party'|trans }}
+                            <i class="fa-icon fa-icon--nav-building me-2" aria-hidden="true"></i>{{ 'dora.pillar.third_party'|trans }}
                         </h3>
                         <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '28-44'}) }}</small>
                     </div>
@@ -380,12 +380,12 @@
                         </div>
                         <div class="col-md-3">
                             <a href="{{ path('app_bc_exercise_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost w-100">
-                                <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i>{{ 'dora.action.plan_exercises'|trans }}
+                                <i class="fa-icon fa-icon--ui-copy-check me-1" aria-hidden="true"></i>{{ 'dora.action.plan_exercises'|trans }}
                             </a>
                         </div>
                         <div class="col-md-3">
                             <a href="{{ path('app_supplier_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost w-100">
-                                <i class="bi bi-building me-1" aria-hidden="true"></i>{{ 'dora.action.manage_suppliers'|trans }}
+                                <i class="fa-icon fa-icon--nav-building me-1" aria-hidden="true"></i>{{ 'dora.action.manage_suppliers'|trans }}
                             </a>
                         </div>
                     </div>

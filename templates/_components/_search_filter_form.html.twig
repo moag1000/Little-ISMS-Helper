@@ -78,7 +78,7 @@
                         <label for="{{ form_id }}-q" class="visually-hidden">{{ search_label }}</label>
                         <div class="input-group input-group-lg">
                             <span class="input-group-text bg-body text-body-secondary" aria-hidden="true">
-                                <i class="bi bi-search"></i>
+                                <i class="fa-icon fa-icon--ui-search"></i>
                             </span>
                             <input type="search"
                                    class="form-control form-control-lg"
@@ -92,7 +92,7 @@
                     </div>
                     <div class="col-12 col-md-4 d-flex gap-2 align-items-stretch">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary flex-grow-1">
-                            <i class="bi bi-search" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
                             <span class="d-none d-sm-inline">{{ 'ui.filter.apply'|trans({}, 'ui') }}</span>
                         </button>
                         {% if active_count > 0 %}
@@ -113,7 +113,7 @@
                          {% if advanced_open or active_count > 0 %}open{% endif %}>
                     <summary class="search-filter-advanced-toggle text-body-secondary"
                              aria-controls="{{ form_id }}-advanced">
-                        <i class="bi bi-sliders" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i>
                         {{ 'ui.filter.advanced_filters'|trans({}, 'ui') }}
                         {% if active_count > 0 %}
                             <span class="badge bg-primary fa-status-pill fa-status-pill--primary ms-1">{{ active_count }}</span>
@@ -127,7 +127,7 @@
 
             {% if active_count > 0 %}
                 <p class="small text-body-secondary mt-2 mb-0">
-                    <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
                     {{ 'ui.filter.shareable_hint'|trans({}, 'ui') }}
                 </p>
             {% endif %}

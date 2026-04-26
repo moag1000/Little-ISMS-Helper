@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block title %}{{ 'compliance.requirement.index_title'|trans({}, 'compliance') }}{% endblock %}
+{% block title %}Compliance Requirements{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
@@ -13,9 +13,9 @@
     } %}
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'compliance.requirement.index_title'|trans({}, 'compliance') }}</h1>
+        <h1><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> Compliance Requirements</h1>
         <a href="{{ path('app_compliance_requirement_new', {framework: selected_framework}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.requirement.action.new'|trans({}, 'compliance') }}
+            <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> New Requirement
         </a>
     </div>
 
@@ -54,7 +54,7 @@
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
+                        <i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                     </button>
                     {% if selected_framework or selected_absicherungs_stufe or selected_anforderungs_typ %}
                         <a href="{{ path('app_compliance_requirement_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost ms-2" title="{{ 'common.clear'|trans({}, 'messages') }}">
@@ -92,14 +92,14 @@
                 } %}
                     {% block table_head %}
                         <tr>
-                            <th scope="col">{{ 'compliance.requirement.col.id'|trans({}, 'compliance') }}</th>
-                            <th scope="col">{{ 'compliance.requirement.col.title'|trans({}, 'compliance') }}</th>
-                            <th scope="col">{{ 'compliance.requirement.col.framework'|trans({}, 'compliance') }}</th>
-                            <th scope="col">{{ 'compliance.requirement.col.category'|trans({}, 'compliance') }}</th>
-                            <th scope="col">{{ 'compliance.requirement.col.priority'|trans({}, 'compliance') }}</th>
-                            <th scope="col">{{ 'compliance.requirement.col.fulfillment'|trans({}, 'compliance') }}</th>
-                            <th scope="col">{{ 'compliance.requirement.col.applicable'|trans({}, 'compliance') }}</th>
-                            <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Framework</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Priority</th>
+                            <th scope="col">Fulfillment</th>
+                            <th scope="col">Applicable</th>
+                            <th scope="col">Actions</th>
                         </tr>
                     {% endblock %}
                     {% block table_body %}
@@ -136,20 +136,20 @@
                                 </td>
                                 <td>
                                     {% if fulfillment.applicable %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.yes'|trans({}, 'messages') } %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Yes' } %}
                                     {% else %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.no'|trans({}, 'messages') } %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'No' } %}
                                     {% endif %}
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
                                         <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}"
                                            class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                         </a>
                                         <a href="{{ path('app_compliance_requirement_edit', {id: requirement.id}) }}"
                                            class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                         </a>
                                     </div>
                                 </td>

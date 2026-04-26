@@ -79,7 +79,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 class="h5 mb-0"><i class="bi bi-collection" aria-hidden="true"></i> {{ 'section.my_reports'|trans }}</h2>
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i> {{ 'section.my_reports'|trans }}</h2>
                         {% include '_components/_badge.html.twig' with { variant: 'secondary', content: reports|length } %}
                     </div>
                 {% endblock %}
@@ -115,10 +115,10 @@
                                     <td class="text-end">
                                         <div class="btn-group btn-group-sm">
                                             <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'action.edit'|trans }}">
-                                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                             </a>
                                             <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'action.preview'|trans }}">
-                                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                             </a>
                                             <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--danger" title="{{ 'action.export_pdf'|trans }}">
                                                 <i class="bi bi-file-pdf" aria-hidden="true"></i>
@@ -150,7 +150,7 @@
             {% embed '_components/_card.html.twig' with {class: 'mb-4', noPadding: true} %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="h5 mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'section.recently_used'|trans }}</h2>
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'section.recently_used'|trans }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -192,7 +192,7 @@
                                     </button>
                                 </form>
                             </div>
-                            <small class="text-muted"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ template.usageCount }} {{ 'uses'|trans }}</small>
+                            <small class="text-muted"><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ template.usageCount }} {{ 'uses'|trans }}</small>
                         </li>
                         {% endfor %}
                     </ul>

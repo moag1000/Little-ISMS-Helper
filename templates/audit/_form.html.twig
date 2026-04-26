@@ -239,7 +239,7 @@
 <fieldset class="card fa-section mb-4">
     <div class="card-header bg-body-secondary">
         <legend class="h5 mb-0">
-            <i class="bi bi-bullseye" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i>
             {{ 'audit.section.objectives' }}
         </legend>
     </div>
@@ -431,7 +431,7 @@
         <a href="{{ path('app_audit_show', {id: audit.id}) }}"
            class="fa-cyber-btn fa-cyber-btn--ghost"
            data-turbo-action="advance">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
             {{ 'common.back'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_audit_index') }}"
@@ -445,7 +445,7 @@
     <a href="{{ path('app_audit_index') }}"
        class="fa-cyber-btn fa-cyber-btn--ghost"
        data-turbo-action="advance">
-        <i class="bi bi-arrow-left" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
         {{ 'common.back'|trans({}, 'messages') }}
     </a>
     {% endif %}

@@ -17,7 +17,7 @@
                 </ol>
             </nav>
             <h1>
-                <i class="bi bi-pencil" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                 {{ 'supplier_criticality.action.edit'|trans({}, 'supplier_criticality') }}:
                 <code>{{ level.code }}</code>
             </h1>
@@ -33,7 +33,7 @@
                             {{ form_label(form.code) }}
                             {{ form_widget(form.code) }}
                             <div class="form-text text-muted">
-                                <i class="bi bi-lock" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i>
                                 {{ 'supplier_criticality.help.code_immutable'|trans({}, 'supplier_criticality') }}
                             </div>
                             {{ form_errors(form.code) }}
@@ -74,7 +74,7 @@
                         </div>
                         <div class="d-flex gap-2">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                                <i class="bi bi-save" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
                                 {{ 'common.save'|trans({}, 'messages') }}
                             </button>
                             <a href="{{ path('app_admin_supplier_criticality_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">

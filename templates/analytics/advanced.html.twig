@@ -9,14 +9,14 @@
     <div class="page-header">
         <div>
             <h1>
-                <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                 {{ 'analytics.advanced.title'|trans({}, 'analytics') }}
             </h1>
             <p class="text-muted">{{ 'analytics.advanced.subtitle'|trans({}, 'analytics') }}</p>
         </div>
         <div class="page-header-actions">
             <a href="{{ path('app_analytics_dashboard') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'analytics.action.back_to_basic'|trans({}, 'analytics') }}
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'analytics.action.back_to_basic'|trans({}, 'analytics') }}
             </a>
         </div>
     </div>
@@ -64,7 +64,7 @@
                             <h2 class="card-title mb-0">{{ control_metrics.implementation_rate }}%</h2>
                         </div>
                         <div class="display-6 text-warning">
-                            <i class="bi bi-check2-all" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-check-all" aria-hidden="true"></i>
                         </div>
                     </div>
                     <small class="text-muted">{{ control_metrics.implemented }} / {{ control_metrics.total_controls }} {{ 'analytics.advanced.kpi.implemented'|trans({}, 'analytics') }}</small>
@@ -89,7 +89,7 @@
                             </h2>
                         </div>
                         <div class="display-6 text-info">
-                            <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i>
                         </div>
                     </div>
                     <small class="text-muted">{{ 'analytics.advanced.kpi.velocity_period'|trans({'%days%': 30}, 'analytics') }}</small>
@@ -105,7 +105,7 @@
                 {% block card_body %}
                     <div class="d-flex align-items-center mb-3">
                         <div class="bg-primary bg-opacity-10 rounded-3 p-3 me-3">
-                            <i class="bi bi-diagram-3 fs-3 text-primary" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-process fs-3 text-primary" aria-hidden="true"></i>
                         </div>
                         <div>
                             <h5 class="card-title mb-1">{{ 'analytics.advanced.card.compliance_frameworks.title'|trans({}, 'analytics') }}</h5>
@@ -114,12 +114,12 @@
                     </div>
                     <p class="card-text">{{ 'analytics.advanced.card.compliance_frameworks.description'|trans({}, 'analytics') }}</p>
                     <ul class="list-unstyled mb-3">
-                        <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.compliance_frameworks.feature1'|trans({}, 'analytics') }}</li>
-                        <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.compliance_frameworks.feature2'|trans({}, 'analytics') }}</li>
-                        <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.compliance_frameworks.feature3'|trans({}, 'analytics') }}</li>
+                        <li><i class="fa-icon fa-icon--ui-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.compliance_frameworks.feature1'|trans({}, 'analytics') }}</li>
+                        <li><i class="fa-icon fa-icon--ui-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.compliance_frameworks.feature2'|trans({}, 'analytics') }}</li>
+                        <li><i class="fa-icon fa-icon--ui-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.compliance_frameworks.feature3'|trans({}, 'analytics') }}</li>
                     </ul>
                     <a href="{{ path('app_analytics_compliance_frameworks') }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                        <i class="bi bi-arrow-right me-1" aria-hidden="true"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
+                        <i class="fa-icon fa-icon--util-arrow-right me-1" aria-hidden="true"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
                     </a>
                 {% endblock %}
             {% endembed %}
@@ -138,12 +138,12 @@
                     </div>
                     <p class="card-text">{{ 'analytics.advanced.card.control_effectiveness.description'|trans({}, 'analytics') }}</p>
                     <ul class="list-unstyled mb-3">
-                        <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.control_effectiveness.feature1'|trans({}, 'analytics') }}</li>
-                        <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.control_effectiveness.feature2'|trans({}, 'analytics') }}</li>
-                        <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.control_effectiveness.feature3'|trans({}, 'analytics') }}</li>
+                        <li><i class="fa-icon fa-icon--ui-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.control_effectiveness.feature1'|trans({}, 'analytics') }}</li>
+                        <li><i class="fa-icon fa-icon--ui-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.control_effectiveness.feature2'|trans({}, 'analytics') }}</li>
+                        <li><i class="fa-icon fa-icon--ui-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.control_effectiveness.feature3'|trans({}, 'analytics') }}</li>
                     </ul>
                     <a href="{{ path('app_analytics_control_effectiveness') }}" class="fa-cyber-btn fa-cyber-btn--success">
-                        <i class="bi bi-arrow-right me-1" aria-hidden="true"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
+                        <i class="fa-icon fa-icon--util-arrow-right me-1" aria-hidden="true"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
                     </a>
                 {% endblock %}
             {% endembed %}
@@ -153,7 +153,7 @@
                 {% block card_body %}
                     <div class="d-flex align-items-center mb-3">
                         <div class="bg-warning bg-opacity-10 rounded-3 p-3 me-3">
-                            <i class="bi bi-graph-up-arrow fs-3 text-warning" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-bar-chart fs-3 text-warning" aria-hidden="true"></i>
                         </div>
                         <div>
                             <h5 class="card-title mb-1">{{ 'analytics.advanced.card.risk_forecast.title'|trans({}, 'analytics') }}</h5>
@@ -162,12 +162,12 @@
                     </div>
                     <p class="card-text">{{ 'analytics.advanced.card.risk_forecast.description'|trans({}, 'analytics') }}</p>
                     <ul class="list-unstyled mb-3">
-                        <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.risk_forecast.feature1'|trans({}, 'analytics') }}</li>
-                        <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.risk_forecast.feature2'|trans({}, 'analytics') }}</li>
-                        <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.risk_forecast.feature3'|trans({}, 'analytics') }}</li>
+                        <li><i class="fa-icon fa-icon--ui-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.risk_forecast.feature1'|trans({}, 'analytics') }}</li>
+                        <li><i class="fa-icon fa-icon--ui-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.risk_forecast.feature2'|trans({}, 'analytics') }}</li>
+                        <li><i class="fa-icon fa-icon--ui-check text-success me-2" aria-hidden="true"></i>{{ 'analytics.advanced.card.risk_forecast.feature3'|trans({}, 'analytics') }}</li>
                     </ul>
                     <a href="{{ path('app_analytics_risk_forecast') }}" class="fa-cyber-btn fa-cyber-btn--warning">
-                        <i class="bi bi-arrow-right me-1" aria-hidden="true"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
+                        <i class="fa-icon fa-icon--util-arrow-right me-1" aria-hidden="true"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
                     </a>
                 {% endblock %}
             {% endembed %}
@@ -190,7 +190,7 @@
                     </div>
                     <p class="card-text">{{ 'analytics.advanced.card.asset_criticality.description'|trans({}, 'analytics') }}</p>
                     <a href="{{ path('app_analytics_asset_criticality') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="bi bi-arrow-right me-1" aria-hidden="true"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
+                        <i class="fa-icon fa-icon--util-arrow-right me-1" aria-hidden="true"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
                     </a>
                 {% endblock %}
             {% endembed %}
@@ -200,7 +200,7 @@
                 {% block card_body %}
                     <div class="d-flex align-items-center mb-3">
                         <div class="bg-secondary bg-opacity-10 rounded-3 p-3 me-3">
-                            <i class="bi bi-bar-chart fs-3 text-secondary" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-bar-chart fs-3 text-secondary" aria-hidden="true"></i>
                         </div>
                         <div>
                             <h5 class="card-title mb-1">{{ 'analytics.advanced.card.basic_analytics.title'|trans({}, 'analytics') }}</h5>
@@ -209,7 +209,7 @@
                     </div>
                     <p class="card-text">{{ 'analytics.advanced.card.basic_analytics.description'|trans({}, 'analytics') }}</p>
                     <a href="{{ path('app_analytics_dashboard') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="bi bi-arrow-right me-1" aria-hidden="true"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
+                        <i class="fa-icon fa-icon--util-arrow-right me-1" aria-hidden="true"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
                     </a>
                 {% endblock %}
             {% endembed %}
@@ -221,7 +221,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h5 class="mb-0">
-                    <i class="bi bi-file-earmark-bar-graph me-2" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-reports me-2" aria-hidden="true"></i>
                     {{ 'analytics.advanced.executive_summary.title'|trans({}, 'analytics') }}
                 </h5>
             </div>

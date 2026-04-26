@@ -49,7 +49,7 @@
                     </li>
                     <li>
                         <a class="dropdown-item" href="{{ path('app_dashboard_risk_manager') }}">
-                            <i class="bi bi-bar-chart-line text-warning me-2" aria-hidden="true"></i>{{ 'dashboard.role.risk_manager'|trans({}, 'dashboard') }}
+                            <i class="fa-icon fa-icon--nav-bar-chart text-warning me-2" aria-hidden="true"></i>{{ 'dashboard.role.risk_manager'|trans({}, 'dashboard') }}
                         </a>
                     </li>
                     <li>
@@ -70,7 +70,7 @@
             <button class="fa-cyber-btn fa-cyber-btn--ghost"
                     data-action="click->dashboard-customizer#openSettings"
                     title="{{ 'dashboard.action.customize'|trans({}, 'dashboard') }}">
-                <i class="bi bi-sliders" aria-hidden="true"></i> {{ 'dashboard.action.customize'|trans({}, 'dashboard') }}
+                <i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i> {{ 'dashboard.action.customize'|trans({}, 'dashboard') }}
             </button>
         </div>
     </div>
@@ -121,7 +121,7 @@
                             {% endif %}
                         </p>
                         <a href="{{ path('app_workflow_pending') }}" class="fa-cyber-btn fa-cyber-btn--sm {% if total_overdue > 0 %}fa-cyber-btn--danger{% else %}fa-cyber-btn--warning{% endif %}">
-                            <i class="bi bi-list-check" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i>
                             {{ 'workflow.dashboard.alert.view_all'|trans({}, 'workflows') }}
                         </a>
                     </div>
@@ -150,7 +150,7 @@
             {% if stats.assets_total|default(0) == 0 %}
                 <div class="text-center mt-1">
                     <a href="{{ path('app_asset_new') }}" class="text-decoration-none small text-primary">
-                        <i class="bi bi-plus-circle me-1" aria-hidden="true"></i>{{ 'dashboard.create_first_asset'|trans({}, 'dashboard') }}
+                        <i class="fa-icon fa-icon--ui-plus me-1" aria-hidden="true"></i>{{ 'dashboard.create_first_asset'|trans({}, 'dashboard') }}
                     </a>
                 </div>
             {% endif %}
@@ -172,7 +172,7 @@
             {% if stats.risks_total|default(0) == 0 %}
                 <div class="text-center mt-1">
                     <a href="{{ path('app_risk_new') }}" class="text-decoration-none small text-warning">
-                        <i class="bi bi-plus-circle me-1" aria-hidden="true"></i>{{ 'dashboard.create_first_risk'|trans({}, 'dashboard') }}
+                        <i class="fa-icon fa-icon--ui-plus me-1" aria-hidden="true"></i>{{ 'dashboard.create_first_risk'|trans({}, 'dashboard') }}
                     </a>
                 </div>
             {% endif %}
@@ -244,7 +244,7 @@
                             </div>
                             <div class="text-end">
                                 <span class="badge bg-success-subtle text-success fs-6 fa-status-pill fa-status-pill--success">
-                                    <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                                     {{ 'dashboard.reuse_fte.cta'|trans({}, 'dashboard') }}
                                 </span>
                             </div>
@@ -284,7 +284,7 @@
                     {{ 'dashboard.quick_actions.title'|trans({}, 'dashboard') }}:
                 </span>
                 <a href="{{ path('app_asset_new') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'dashboard.quick_actions.new_asset'|trans({}, 'dashboard') }}
+                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'dashboard.quick_actions.new_asset'|trans({}, 'dashboard') }}
                 </a>
                 <a href="{{ path('app_risk_new') }}" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm">
                     <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'dashboard.quick_actions.new_risk'|trans({}, 'dashboard') }}
@@ -314,7 +314,7 @@
                     </h3>
                     <div class="widget-actions">
                         <button class="widget-action" title="{{ 'common.refresh'|trans({}, 'messages') }}" aria-label="{{ 'common.refresh'|trans({}, 'messages') }}">
-                            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
@@ -332,7 +332,7 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header">
                     <h3 class="widget-title">
-                        <i class="bi bi-bar-chart" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                         {{ 'dashboard.chart.assets_by_category'|trans({}, 'dashboard') }}
                     </h3>
                 </div>
@@ -359,7 +359,7 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header">
                     <h3 class="widget-title">
-                        <i class="bi bi-person-check" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-person-check" aria-hidden="true"></i>
                         {{ 'dashboard.my_tasks.title'|trans({}, 'dashboard') }}
                     </h3>
                     {% if my_tasks|default([])|length > 0 %}
@@ -473,7 +473,7 @@
                     {% if overdue_reviews|length > 5 %}
                         <div class="text-center mt-3">
                             <a href="{{ path('app_risk_index') }}" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm">
-                                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                 {{ 'dashboard.overdue_reviews.view_all'|trans({ '%count%': overdue_reviews|length - 5 }, 'dashboard') }}
                             </a>
                         </div>
@@ -489,7 +489,7 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header bg-info-subtle">
                     <h3 class="widget-title text-info">
-                        <i class="bi bi-calendar-check" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
                         {{ 'dashboard.upcoming_reviews.title'|trans({}, 'dashboard') }}
                     </h3>
                     {% include '_components/_badge.html.twig' with { variant: 'info', content: upcoming_reviews|length } %}
@@ -569,7 +569,7 @@
                     {% if overdue_treatment_plans|length > 5 %}
                         <div class="text-center mt-3">
                             <a href="{{ path('app_risk_treatment_plan_index') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
-                                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                 {{ 'dashboard.overdue_treatment_plans.view_all'|trans({ '%count%': overdue_treatment_plans|length - 5 }, 'dashboard') }}
                             </a>
                         </div>
@@ -585,7 +585,7 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header bg-warning-subtle">
                     <h3 class="widget-title text-warning">
-                        <i class="bi bi-clock-history" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
                         {{ 'dashboard.approaching_treatment_plans.title'|trans({}, 'dashboard') }}
                     </h3>
                     {% include '_components/_badge.html.twig' with { variant: 'warning', content: approaching_treatment_plans|length } %}

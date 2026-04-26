@@ -17,7 +17,7 @@
     <div class="page-header">
         <h1>{{ incident.title }}</h1>
         <div class="actions">
-            <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'incident.action.edit'|trans({}, 'incident') }}</a>
+            <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'incident.action.edit'|trans({}, 'incident') }}</a>
             {% if is_nis2_active() and incident.requiresNis2Reporting %}
                 <a href="{{ path('app_incident_nis2_report', {id: incident.id}) }}" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false" title="{{ 'incident.action.download_nis2_report'|trans({}, 'incident') }}">
                     <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> {{ 'incident.action.download_nis2_report'|trans({}, 'incident') }}
@@ -30,7 +30,7 @@
                       data-action="submit->ui-actions#confirm"
                       data-ui-actions-message-param="{{ 'incident.confirm.delete'|trans({}, 'incident') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ incident.id) }}">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'incident.action.delete'|trans({}, 'incident') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'incident.action.delete'|trans({}, 'incident') }}</button>
                 </form>
             {% endif %}
         </div>
@@ -146,7 +146,7 @@
             {% if is_nis2_active() and incident.requiresNis2Reporting and incident.detectedAt %}
                 <div class="detail-section nis2-timeline-section">
                     <h3 class="h5">
-                        <i class="bi bi-clock-history" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
                         {{ 'incident.nis2_timeline.title'|trans({}, 'incident') }}
                     </h3>
                     <p class="text-muted">{{ 'incident.nis2_timeline.description'|trans({}, 'incident') }}</p>
@@ -358,7 +358,7 @@
             {# Audit Log History #}
             {% if auditLogs is defined and auditLogs|length > 0 %}
                 <div class="detail-section">
-                    <h3 class="h5"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'incident.section.history'|trans({}, 'incident') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h3>
+                    <h3 class="h5"><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'incident.section.history'|trans({}, 'incident') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h3>
                     <div class="audit-log-list">
                         {% for log in auditLogs %}
                         <div class="audit-log-entry">
@@ -403,7 +403,7 @@
             {# Data Reuse: Affected Assets #}
             {% if incident.affectedAssets is defined and incident.affectedAssets|length > 0 %}
                 <div class="detail-section">
-                    <h3 class="h5"><i class="bi bi-building" aria-hidden="true"></i> {{ 'incident.section.affected_assets'|trans({'%count%': incident.affectedAssets|length}, 'incident') }}</h3>
+                    <h3 class="h5"><i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'incident.section.affected_assets'|trans({'%count%': incident.affectedAssets|length}, 'incident') }}</h3>
                     <div class="data-reuse-list">
                         {% for asset in incident.affectedAssets %}
                             <div class="data-reuse-item">
@@ -421,7 +421,7 @@
 
             {# CRITICAL-05: BCM Impact Analysis #}
             <div class="detail-section">
-                <h3 class="h5"><i class="bi bi-bar-chart-line" aria-hidden="true"></i> {{ 'incident.section.bcm_impact'|trans({}, 'incident') }}</h3>
+                <h3 class="h5"><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'incident.section.bcm_impact'|trans({}, 'incident') }}</h3>
 
                 {% if incident.affectedBusinessProcesses|length > 0 %}
                     <div class="row mb-3">
@@ -486,12 +486,12 @@
 
                     <div class="d-flex gap-2">
                         <a href="{{ path('app_incident_bcm_impact', {id: incident.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                            <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'incident.bcm.detailed_analysis'|trans({}, 'incident') }}
+                            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'incident.bcm.detailed_analysis'|trans({}, 'incident') }}
                         </a>
                         <form method="post" action="{{ path('app_incident_auto_detect_processes', {id: incident.id}) }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('auto-detect' ~ incident.id) }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
-                                <i class="bi bi-magic" aria-hidden="true"></i> {{ 'incident.bcm.auto_detect_more'|trans({}, 'incident') }}
+                                <i class="fa-icon fa-icon--nav-magic" aria-hidden="true"></i> {{ 'incident.bcm.auto_detect_more'|trans({}, 'incident') }}
                             </button>
                         </form>
                     </div>
@@ -502,7 +502,7 @@
                     <form method="post" action="{{ path('app_incident_auto_detect_processes', {id: incident.id}) }}" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('auto-detect' ~ incident.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                            <i class="bi bi-magic" aria-hidden="true"></i> {{ 'incident.bcm.auto_detect'|trans({}, 'incident') }}
+                            <i class="fa-icon fa-icon--nav-magic" aria-hidden="true"></i> {{ 'incident.bcm.auto_detect'|trans({}, 'incident') }}
                         </button>
                     </form>
                 {% endif %}

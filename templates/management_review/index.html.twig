@@ -34,7 +34,7 @@
                     {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="bi bi-collection text-primary icon-2rem" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-collection text-primary icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
                                 <div class="text-muted small mb-1">{{ 'management_review.statistics.total'|trans({}, 'management_review') }}</div>
@@ -158,21 +158,21 @@
                                    class="fa-cyber-btn fa-cyber-btn--ghost"
                                    data-turbo-action="advance"
                                    title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                    <i class="bi bi-eye" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                 </a>
                                 {% if is_granted('ROLE_ADMIN') %}
                                 <a href="{{ path('app_management_review_edit', {id: review.id}) }}"
                                    class="fa-cyber-btn fa-cyber-btn--ghost"
                                    data-turbo-action="advance"
                                    title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                 </a>
                                 <button type="button"
                                         class="fa-cyber-btn fa-cyber-btn--danger"
                                         data-bs-toggle="modal"
                                         data-bs-target="#deleteModal{{ review.id }}"
                                         title="{{ 'common.delete'|trans({}, 'messages') }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
-                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                                 </button>
                                 {% endif %}
                             </div>
@@ -209,7 +209,7 @@
                 <form method="post" action="{{ path('app_management_review_delete', {id: review.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
+                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                     </button>
                 </form>
             </div>

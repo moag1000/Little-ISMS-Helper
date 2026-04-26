@@ -2,7 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}
-    <i class="bi bi-stars fairy-icon-sparkle" aria-hidden="true"></i>
+    <i class="fa-icon fa-icon--nav-stars fairy-icon-sparkle" aria-hidden="true"></i>
     {{ 'admin.tour_completion.title'|trans({}, 'admin') }}
 {% endblock %}
 
@@ -45,7 +45,7 @@
         </div>
         <div class="col-md-4 d-flex align-items-end">
             <a href="{{ path('admin_tour_completion_export') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
-                <i class="bi bi-download" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                 {{ 'admin.tour_completion.export_csv'|trans({}, 'admin') }}
             </a>
         </div>

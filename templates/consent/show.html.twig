@@ -21,7 +21,7 @@
         <div class="actions">
             {% if is_granted('ROLE_USER') and (consent.status == 'pending_verification' or consent.status == 'active') %}
             <a href="{{ path('app_consent_edit', {id: consent.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
             </a>
             {% endif %}
             {% if is_granted('ROLE_DPO') and not consent.verifiedBy %}
@@ -41,12 +41,12 @@
                   data-ui-actions-message-param="{{ 'consent.delete.confirm'|trans({}, 'consent') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ consent.id) }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-                    <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
+                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                 </button>
             </form>
             {% endif %}
             <a href="{{ path('app_consent_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
             </a>
         </div>
     </div>
@@ -103,7 +103,7 @@
         {% block card_header %}
             <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
-                    <i class="bi bi-gear" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>
                     {{ 'consent.section.processing_activity'|trans({}, 'consent') }}
                 </h2>
             </div>
@@ -194,7 +194,7 @@
                 <span class="label">{{ 'consent.field.proof_document'|trans({}, 'consent') }}:</span>
                 <span class="value">
                     <a href="{{ consent.proofDocument }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" target="_blank" rel="noopener noreferrer">
-                        <i class="bi bi-download" aria-hidden="true"></i> {{ 'common.download'|trans({}, 'messages') }}
+                        <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i> {{ 'common.download'|trans({}, 'messages') }}
                     </a>
                 </span>
             </div>
@@ -292,7 +292,7 @@
         {% block card_header %}
             <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                     {{ 'consent.section.metadata'|trans({}, 'consent') }}
                 </h2>
             </div>

@@ -23,7 +23,7 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_workflow_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -98,7 +98,7 @@
         <i class="fa-icon fa-icon--status-warning fs-4 me-3" aria-hidden="true"></i>
         <div class="flex-grow-1">
             <h2 class="alert-heading mb-2">
-                <i class="bi bi-person-exclamation" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-person-exclamation" aria-hidden="true"></i>
                 {{ 'workflow.warning.no_eligible_approvers_title'|trans({}, 'workflows') }}
             </h2>
             <p class="mb-2">{{ 'workflow.warning.no_eligible_approvers_desc'|trans({}, 'workflows') }}</p>
@@ -109,7 +109,7 @@
                 <div class="d-flex gap-2 flex-wrap">
                     {% if instance.workflow %}
                     <a href="{{ path('app_workflow_definition_show', {id: instance.workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--warning">
-                        <i class="bi bi-gear" aria-hidden="true"></i> {{ 'workflow.warning.configure_step'|trans({}, 'workflows') }}
+                        <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i> {{ 'workflow.warning.configure_step'|trans({}, 'workflows') }}
                     </a>
                     {% endif %}
                 </div>
@@ -153,11 +153,11 @@
                         <form method="post" action="{{ path('app_workflow_instance_approve', {id: instance.id}) }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ instance.id) }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm">
-                                <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
+                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
                             </button>
                         </form>
                         <button type="button" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm" data-bs-toggle="modal" data-bs-target="#rejectModal">
-                            <i class="bi bi-x-lg" aria-hidden="true"></i> {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
+                            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
                         </button>
                     </div>
                     {% endif %}

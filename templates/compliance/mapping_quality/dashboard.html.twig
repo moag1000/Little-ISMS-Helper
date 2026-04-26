@@ -24,7 +24,7 @@
         </div>
         <div class="button-group">
             <a href="{{ path('app_mapping_quality_review_queue') }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <span class="icon"><i class="bi bi-list-check" aria-hidden="true"></i></span> {{ 'compliance.mapping_quality.review_queue.title'|trans({}, 'compliance') }}
+                <span class="icon"><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i></span> {{ 'compliance.mapping_quality.review_queue.title'|trans({}, 'compliance') }}
             </a>
             <a href="{{ path('app_mapping_quality_gaps') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <span class="icon">🔍</span> {{ 'compliance.mapping_quality.gaps.title'|trans({}, 'compliance') }}
@@ -113,7 +113,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h3 class="mb-0"><i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'compliance.mapping_quality.avg_confidence'|trans({}, 'compliance') }}</h3>
+                        <h3 class="mb-0"><i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i> {{ 'compliance.mapping_quality.avg_confidence'|trans({}, 'compliance') }}</h3>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -190,7 +190,7 @@
                                     data-batch-analysis-count-param="all"
                                     data-batch-analysis-force-param="true"
                                     title="{{ 'compliance.mapping_quality.re_analyze_title'|trans({}, 'compliance') }}">
-                                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'compliance.mapping_quality.re_analyze_button'|trans({}, 'compliance') }}
+                                <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'compliance.mapping_quality.re_analyze_button'|trans({}, 'compliance') }}
                             </button>
                         </div>
                         {% endif %}
@@ -243,11 +243,11 @@
             <div data-batch-analysis-target="results" class="d-none">
                 <hr>
                 <div class="fa-alert fa-alert--success" role="alert">
-                    <i class="bi bi-arrow-clockwise" fa-alert__icon" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-refresh" fa-alert__icon" aria-hidden="true"></i>
                     <div class="fa-alert__body"><p class="fw-bold"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'compliance.mapping_quality.progress.complete'|trans({}, 'compliance') }}</p>
                     <p data-batch-analysis-target="resultsMessage"></p>
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--primary mt-2" data-controller="ui-actions" data-action="ui-actions#reload">
-                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'compliance.mapping_quality.progress.reload'|trans({}, 'compliance') }}
+                        <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'compliance.mapping_quality.progress.reload'|trans({}, 'compliance') }}
                     </button>
                     </div>
                 </div>
@@ -366,7 +366,7 @@
         {% block card_body %}
             <div class="row">
                 <div class="col-md-4">
-                    <p class="fw-bold fs-5"><i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'compliance.mapping_quality.help.confidence_score.title'|trans({}, 'compliance') }}</p>
+                    <p class="fw-bold fs-5"><i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i> {{ 'compliance.mapping_quality.help.confidence_score.title'|trans({}, 'compliance') }}</p>
                     <p class="small">{{ 'compliance.mapping_quality.help.confidence_score.desc'|trans({}, 'compliance') }}</p>
                     <ul class="small">
                         <li>{{ 'compliance.mapping_quality.help.confidence_score.high'|trans({}, 'compliance')|raw }}</li>

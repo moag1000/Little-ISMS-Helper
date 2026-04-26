@@ -11,7 +11,7 @@
      data-dashboard-customizer-target="widget">
     <div class="widget-header">
         <h3 class="widget-title">
-            <i class="bi bi-graph-up" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
             {{ 'dashboard.management_kpis.title'|trans({}, 'dashboard') }}
         </h3>
         <div class="widget-actions">
@@ -73,7 +73,7 @@
                             <div class="accordion-body py-2 px-3">
                                 <div class="d-flex justify-content-end mb-2">
                                     <a href="{{ path(section.route) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm p-0" title="{{ 'common.view_all'|trans({}, 'messages') }}">
-                                        <i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--util-arrow-right-circle" aria-hidden="true"></i>
                                     </a>
                                 </div>
                                 <div class="row g-2">
@@ -94,7 +94,7 @@
                                                     {% if kpi.trend is defined and kpi.trend != 'stable' %}
                                                     <span class="fs-6 ms-1 text-{{ kpi.trend_sentiment|default('neutral') == 'good' ? 'success' : (kpi.trend_sentiment|default('neutral') == 'bad' ? 'danger' : 'muted') }}">
                                                         {% if kpi.trend == 'up' %}
-                                                            <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                                                            <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                                                         {% elseif kpi.trend == 'down' %}
                                                             <i class="bi bi-graph-down-arrow" aria-hidden="true"></i>
                                                         {% endif %}
@@ -125,7 +125,7 @@
                                                 {% if kpi.trend is defined and kpi.trend != 'stable' %}
                                                 <span class="fs-6 ms-1 text-{{ kpi.trend_sentiment|default('neutral') == 'good' ? 'success' : (kpi.trend_sentiment|default('neutral') == 'bad' ? 'danger' : 'muted') }}">
                                                     {% if kpi.trend == 'up' %}
-                                                        <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                                                        <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                                                     {% elseif kpi.trend == 'down' %}
                                                         <i class="bi bi-graph-down-arrow" aria-hidden="true"></i>
                                                     {% endif %}

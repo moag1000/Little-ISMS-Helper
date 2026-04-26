@@ -8,7 +8,7 @@
 {% block admin_content %}
     <div class="mb-4">
         <a href="{{ path('admin_mfa_show', {id: mfa_token.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 
@@ -57,7 +57,7 @@
                 {% endblock %}
                 {% block card_body %}
                     <div class="alert alert-info">
-                        <strong><i class="bi bi-person" aria-hidden="true"></i> {{ 'mfa_token.field.user'|trans({}, 'mfa') }}:</strong> {{ mfa_token.user.email }}<br>
+                        <strong><i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'mfa_token.field.user'|trans({}, 'mfa') }}:</strong> {{ mfa_token.user.email }}<br>
                         <strong><i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}:</strong> {{ mfa_token.deviceName }}<br>
                         <strong><i class="bi bi-calendar" aria-hidden="true"></i> {{ 'common.generated'|trans({}, 'messages') }}:</strong> {{ 'now'|date('Y-m-d H:i:s') }}
                     </div>
@@ -77,7 +77,7 @@
                         <button type="button"
                                 class="fa-cyber-btn fa-cyber-btn--primary"
                                 data-action="backup-codes#copy">
-                            <i class="bi bi-clipboard" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.copy_all'|trans({}, 'mfa') }}
+                            <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.copy_all'|trans({}, 'mfa') }}
                         </button>
                         <button type="button"
                                 class="fa-cyber-btn fa-cyber-btn--ghost"
@@ -87,7 +87,7 @@
                         <button type="button"
                                 class="fa-cyber-btn fa-cyber-btn--ghost"
                                 data-action="backup-codes#download">
-                            <i class="bi bi-download" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.download'|trans({}, 'mfa') }}
+                            <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.download'|trans({}, 'mfa') }}
                         </button>
                     </div>
                 {% endblock %}
@@ -95,7 +95,7 @@
 
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
-                    <h3 class="h5"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.usage_title'|trans({}, 'mfa') }}</h3>
+                    <h3 class="h5"><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.usage_title'|trans({}, 'mfa') }}</h3>
                     <ul>
                         <li>{{ 'mfa_token.backup_codes.usage_1'|trans({}, 'mfa') }}</li>
                         <li>{{ 'mfa_token.backup_codes.usage_2'|trans({}, 'mfa') }}</li>

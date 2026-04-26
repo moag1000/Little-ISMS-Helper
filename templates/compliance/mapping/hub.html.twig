@@ -14,7 +14,7 @@
     <div class="d-flex justify-content-between align-items-start mb-3">
         <div>
             <h1 class="h3 mb-1">
-                <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                 {{ 'compliance.mapping.hub.title'|trans({}, 'compliance') }}
             </h1>
             <p class="text-muted mb-0">{{ 'compliance.mapping.hub.subtitle'|trans({}, 'compliance') }}</p>
@@ -76,7 +76,7 @@
                 {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm border-primary' } %}
                     {% block card_body %}
                         <div class="h5 text-primary">
-                            <i class="bi bi-magic" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-magic" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.wizard.title'|trans({}, 'compliance') }}
                             <span class="badge text-bg-primary ms-1">{{ 'compliance.mapping.hub.badge.start_here'|trans({}, 'compliance') }}</span>
                         </div>
@@ -109,7 +109,7 @@
                 {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
                     {% block card_body %}
                         <div class="h5">
-                            <i class="bi bi-check2-circle text-info" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-check-circle text-info" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.quality.title'|trans({}, 'compliance') }}
                             {% if unreviewed_count > 0 %}
                                 <span class="badge text-bg-warning ms-1">{{ unreviewed_count }}</span>
@@ -128,7 +128,7 @@
                 {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
                     {% block card_body %}
                         <div class="h5">
-                            <i class="bi bi-arrow-left-right text-secondary" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--util-arrow-left-right text-secondary" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.transitive.title'|trans({}, 'compliance') }}
                         </div>
                         <p class="small text-body mb-0">
@@ -160,7 +160,7 @@
                 {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
                     {% block card_body %}
                         <div class="h5">
-                            <i class="bi bi-arrows-collapse text-success" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-collapse text-success" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.reuse.title'|trans({}, 'compliance') }}
                         </div>
                         <p class="small text-body mb-0">
@@ -177,7 +177,7 @@
                 {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
                     {% block card_body %}
                         <div class="h5">
-                            <i class="bi bi-file-earmark-arrow-up text-primary" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-upload text-primary" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.import.title'|trans({}, 'compliance') }}
                         </div>
                         <p class="small text-body mb-0">
@@ -193,7 +193,7 @@
                 {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
                     {% block card_body %}
                         <div class="h5">
-                            <i class="bi bi-person-check text-warning" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-person-check text-warning" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.seed_review.title'|trans({}, 'compliance') }}
                         </div>
                         <p class="small text-body mb-0">

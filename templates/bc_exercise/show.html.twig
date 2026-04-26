@@ -17,7 +17,7 @@
     <div class="page-header">
         <h1>{{ bc_exercise.name }}</h1>
         <div class="actions">
-            <a href="{{ path('app_bc_exercise_edit', {id: bc_exercise.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
+            <a href="{{ path('app_bc_exercise_edit', {id: bc_exercise.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
             <a href="{{ path('app_bc_exercise_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') %}
                 <form method="post" action="{{ path('app_bc_exercise_delete', {id: bc_exercise.id}) }}" class="d-inline"
@@ -25,7 +25,7 @@
                       data-action="submit->ui-actions#confirm"
                       data-ui-actions-message-param="{{ 'bc_exercises.message.confirm_delete'|trans({}, 'bc_exercises') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ bc_exercise.id) }}">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
                 </form>
             {% endif %}
         </div>
@@ -115,7 +115,7 @@
 
                 {% if bc_exercise.areasForImprovement %}
                 <div class="detail-section alert-warning">
-                    <h3><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'bc_exercises.section.improvements'|trans({}, 'bc_exercises') }}</h3>
+                    <h3><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'bc_exercises.section.improvements'|trans({}, 'bc_exercises') }}</h3>
                     <p>{{ bc_exercise.areasForImprovement|nl2br }}</p>
                 </div>
                 {% endif %}

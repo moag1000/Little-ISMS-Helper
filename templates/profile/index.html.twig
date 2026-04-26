@@ -14,7 +14,7 @@
         </div>
         <div class="col-auto">
             <a href="{{ path('app_profile_edit') }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="bi bi-pencil" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                 {{ 'user.profile.action.edit'|trans({}, 'user') }}
             </a>
         </div>
@@ -50,7 +50,7 @@
                                   data-ui-actions-message-param="{{ 'user.profile.confirm.delete_avatar'|trans({}, 'user') }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete_avatar' ~ user.id) }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
-                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                                     {{ 'user.profile.action.delete_avatar'|trans({}, 'user') }}
                                 </button>
                             </form>
@@ -140,7 +140,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="h5 mb-0">
-                            <i class="bi bi-stars" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-stars" aria-hidden="true"></i>
                             {{ 'user.profile.section.alva'|trans({}, 'user') }}
                         </h2>
                     </div>
@@ -240,7 +240,7 @@
                         </p>
                         <div class="mt-3">
                             <a href="{{ path('app_profile_mfa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                <i class="bi bi-gear" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>
                                 {{ 'user.profile.mfa.manage'|trans({}, 'user') }}
                             </a>
                         </div>

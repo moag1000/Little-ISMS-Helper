@@ -17,16 +17,16 @@
 
     <div class="page-header">
         <div>
-            <h1><i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'bcm.title.asset_insights'|trans({}, 'bcm') }}</h1>
+            <h1><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'bcm.title.asset_insights'|trans({}, 'bcm') }}</h1>
             <p class="text-muted">{{ asset.name }}</p>
         </div>
         <div class="button-group">
             <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
             </a>
             {% if canEdit %}
             <a href="{{ path('app_asset_edit', {id: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
             </a>
             {% endif %}
         </div>
@@ -130,7 +130,7 @@
                         <td>{{ process.rpo|default('-') }}h</td>
                         <td class="text-center">
                             <a href="{{ path('app_business_process_show', {id: process.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                             </a>
                         </td>
                     </tr>
@@ -140,10 +140,10 @@
             </div>
             {% else %}
             <div class="text-center text-muted py-4">
-                <i class="bi bi-diagram-3 fs-1 d-block mb-2" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-process fs-1 d-block mb-2" aria-hidden="true"></i>
                 <p>{{ 'bcm.message.no_processes'|trans({}, 'bcm') }}</p>
                 <a href="{{ path('app_business_process_new') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
-                    <i class="bi bi-plus-lg" aria-hidden="true"></i> {{ 'bcm.action.add_process'|trans({}, 'bcm') }}
+                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'bcm.action.add_process'|trans({}, 'bcm') }}
                 </a>
             </div>
             {% endif %}

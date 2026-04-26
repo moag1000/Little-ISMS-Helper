@@ -16,9 +16,9 @@
             } %}
 
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0"><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'incident.new'|trans({}, 'incident') }}</h1>
+                <h1 class="h3 mb-0"><i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'incident.new'|trans({}, 'incident') }}</h1>
                 <a href="{{ path('app_incident_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo-action="advance">
-                    <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+                    <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                 </a>
             </div>
 
@@ -184,7 +184,7 @@
                                     {{ 'incident.section.nis2_reporting'|trans({}, 'incident') }}
                                 </span>
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" id="hide-nis2-btn">
-                                    <i class="bi bi-eye-slash" aria-hidden="true"></i> {{ 'incident.nis2_toggle.hide'|trans({}, 'incident') }}
+                                    <i class="fa-icon fa-icon--ui-eye-off" aria-hidden="true"></i> {{ 'incident.nis2_toggle.hide'|trans({}, 'incident') }}
                                 </button>
                             </div>
                             <small class="d-block mt-2">{{ 'incident.section.nis2_info'|trans({}, 'incident') }}</small>
@@ -247,10 +247,10 @@
                         <a href="{{ path('app_incident_index') }}"
                            class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance">
-                            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                         </a>
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
-                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'incident.create'|trans({}, 'incident') }}
+                            <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'incident.create'|trans({}, 'incident') }}
                         </button>
                     </div>
 

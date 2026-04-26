@@ -19,7 +19,7 @@
                 {% block card_body %}
                     <div class="d-flex align-items-start mb-3">
                         <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
-                            <i class="bi bi-gear-fill text-primary fs-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-settings text-primary fs-2" aria-hidden="true"></i>
                         </div>
                         <div class="flex-grow-1">
                             <h2 class="card-title h5">{{ 'admin.settings.application.title'|trans({}, 'admin') }}</h2>
@@ -39,7 +39,7 @@
                 {% block card_footer %}
                     <div class="card-footer bg-transparent">
                         <a href="{{ path('admin_settings_application') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">
-                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
                         </a>
                     </div>
                 {% endblock %}
@@ -72,7 +72,7 @@
                 {% block card_footer %}
                     <div class="card-footer bg-transparent">
                         <a href="{{ path('admin_settings_security') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">
-                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
                         </a>
                     </div>
                 {% endblock %}
@@ -126,7 +126,7 @@
                 {% block card_footer %}
                     <div class="card-footer bg-transparent">
                         <a href="{{ path('admin_settings_features') }}" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm w-100">
-                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
                         </a>
                     </div>
                 {% endblock %}
