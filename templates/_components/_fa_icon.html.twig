@@ -22,9 +22,9 @@
 
 {% macro render(name, props = {}) %}
     {% set classes = ['fa-icon', 'fa-icon--' ~ name] %}
-    {% if props.size %}{% set classes = classes|merge(['fa-icon--' ~ props.size]) %}{% endif %}
-    {% if props.variant %}{% set classes = classes|merge(['fa-icon--' ~ props.variant]) %}{% endif %}
-    {% if props.class %}{% set classes = classes|merge([props.class]) %}{% endif %}
+    {% if props.size is defined and props.size %}{% set classes = classes|merge(['fa-icon--' ~ props.size]) %}{% endif %}
+    {% if props.variant is defined and props.variant %}{% set classes = classes|merge(['fa-icon--' ~ props.variant]) %}{% endif %}
+    {% if props.class is defined and props.class %}{% set classes = classes|merge([props.class]) %}{% endif %}
     <i class="{{ classes|join(' ') }}"
-       {% if props.label %}aria-label="{{ props.label }}"{% else %}aria-hidden="true"{% endif %}></i>
+       {% if props.label is defined and props.label %}aria-label="{{ props.label }}"{% else %}aria-hidden="true"{% endif %}></i>
 {% endmacro %}
