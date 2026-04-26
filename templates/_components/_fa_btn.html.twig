@@ -1,0 +1,57 @@
+{#
+ # FairyAurora v4.0 — Aurora-Cyber-Button Macro
+ #
+ # Rendert einen Aurora-Native-Button (.fa-cyber-btn). Für neuen Code.
+ # Bestehende .btn.btn-primary-Markup wird via CSS-Adapter Aurora-styled
+ # — das Macro hier ist für neue Templates die direkt Aurora-Native sein sollen.
+ #
+ # Usage:
+ #   {% import '_components/_fa_btn.html.twig' as _fa_btn %}
+ #   {{ _fa_btn.render({ label: 'Speichern', variant: 'primary' }) }}
+ #   {{ _fa_btn.render({ label: 'Abbrechen', variant: 'ghost', icon: 'x-lg' }) }}
+ #   {{ _fa_btn.render({ label: 'Löschen', variant: 'danger', size: 'sm', type: 'submit' }) }}
+ #
+ # Parameters:
+ #   label    - Button-Text (required)
+ #   variant  - 'primary' | 'ghost' | 'danger' | 'success' | 'warning' (default: primary)
+ #              Bootstrap-Mapping: btn-outline-* → ghost, btn-secondary → ghost.
+ #   size     - 'sm' | 'lg' | null (default 40px height)
+ #   type     - 'button' | 'submit' | 'reset' (default: button)
+ #   icon     - bi-* icon name (e.g. 'pencil', 'trash') OR fa-icon name
+ #              if name starts with `bi-` it's BS-Icon, otherwise fa-icon
+ #   href     - if set, renders <a> instead of <button>
+ #   disabled - boolean
+ #   class    - additional CSS classes
+ #   attrs    - extra HTML attributes as map
+ #}
+
+{% macro render(props) %}
+    {% set tag = props.href is defined and props.href ? 'a' : 'button' %}
+    {% set variant = props.variant|default('primary') %}
+    {# Bootstrap variant mapping — outline-* and secondary become ghost #}
+    {% set variant = variant in ['outline-secondary', 'outline-primary', 'secondary'] ? 'ghost' : variant %}
+    {% set classes = ['fa-cyber-btn', 'fa-cyber-btn--' ~ variant] %}
+    {% if props.size is defined and props.size %}
+        {% set classes = classes|merge(['fa-cyber-btn--' ~ props.size]) %}
+    {% endif %}
+    {% if props.class is defined and props.class %}
+        {% set classes = classes|merge([props.class]) %}
+    {% endif %}
+
+    <{{ tag }}
+        class="{{ classes|join(' ') }}"
+        {% if tag == 'button' %}type="{{ props.type|default('button') }}"{% endif %}
+        {% if props.href is defined and props.href %}href="{{ props.href }}"{% endif %}
+        {% if props.disabled is defined and props.disabled %}disabled aria-disabled="true"{% endif %}
+        {% for k, v in props.attrs|default({}) %} {{ k }}="{{ v|e('html_attr') }}"{% endfor %}
+    >
+        {% if props.icon is defined and props.icon %}
+            {% if props.icon starts with 'bi-' %}
+                <i class="bi {{ props.icon }}" aria-hidden="true"></i>
+            {% else %}
+                <i class="fa-icon fa-icon--{{ props.icon }}" aria-hidden="true"></i>
+            {% endif %}
+        {% endif %}
+        <span class="fa-cyber-btn__label">{{ props.label }}</span>
+    </{{ tag }}>
+{% endmacro %}
