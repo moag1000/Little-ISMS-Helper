@@ -40,7 +40,9 @@
 </div>
 
 {% if auto_seeded is defined and auto_seeded > 0 %}
-    {{ _fa_alert.render({ variant: 'success', icon: 'bi-check-circle-fill', body: '{{ \'soa.message.auto_seeded\'|trans({\'%count%\': auto_seeded}, \'soa\') }}' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'bi-check-circle-fill' } } %}
+        {% block alert_body %}{{ 'soa.message.auto_seeded'|trans({'%count%': auto_seeded}, 'soa') }}{% endblock %}
+    {% endembed %}
 {% endif %}
 
 {# Controls Table #}
@@ -73,7 +75,9 @@
         {% endblock %}
     {% endembed %}
 {% elseif controls|length == 0 %}
-    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', body: '{{ \'soa.empty.no_controls_in_category\'|trans({\'%category%\': category, \'%total%\': total_for_tenant}, \'soa\') }}' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle' } } %}
+        {% block alert_body %}{{ 'soa.empty.no_controls_in_category'|trans({'%category%': category, '%total%': total_for_tenant}, 'soa') }}{% endblock %}
+    {% endembed %}
 {% endif %}
 
 {% embed '_components/_table.html.twig' with {'class': 'table-container', 'noMargin': true} %}

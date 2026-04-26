@@ -299,6 +299,8 @@
     {% endembed %}
 
     {# Tip Box #}
-    {{ _fa_alert.render({ variant: 'success', icon: 'bi-check-circle-fill', class: 'mb-4', body: '<div class="d-flex align-items-start"> <i class="bi bi-check-circle-fill me-3 fs-4" aria-hidden="true"></i> <div> <strong>{{ \'help.iso9001_bridge.tip_title\'|trans({}, \'help\') }}</strong> <p class="mb-0 mt-1">{{ \'help.iso9001_bridge.tip_text\'|trans({}, \'help\') }}</p> </div> </div>' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'bi-check-circle-fill', class: 'mb-4' } } %}
+        {% block alert_body %}<div class="d-flex align-items-start"> <i class="bi bi-check-circle-fill me-3 fs-4" aria-hidden="true"></i> <div> <strong>{{ 'help.iso9001_bridge.tip_title'|trans({}, 'help') }}</strong> <p class="mb-0 mt-1">{{ 'help.iso9001_bridge.tip_text'|trans({}, 'help') }}</p> </div> </div>{% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

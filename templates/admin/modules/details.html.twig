@@ -17,8 +17,8 @@
 <div class="container-fluid mt-4">
     <div class="row mb-4">
         <div class="col-12">
-            <a href="{{ path('admin_modules_index') }}" class="btn btn-outline-secondary mb-3">
-                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
+            <a href="{{ path('admin_modules_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost mb-3">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
                 {{ 'common.back_to_overview'|trans({}, 'messages') }}
             </a>
 
@@ -151,8 +151,8 @@
                                     </label>
                                 </div>
                             {% endfor %}
-                            <button type="submit" class="btn btn-primary mt-3">
-                                <i class="bi bi-download me-2" aria-hidden="true"></i>
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary mt-3">
+                                <i class="bi bi-download" aria-hidden="true"></i>
                                 Ausgewählte Daten importieren
                             </button>
                         </form>
@@ -180,33 +180,33 @@
                                       data-controller="ui-actions"
                                       data-action="submit->ui-actions#confirm"
                                       data-ui-actions-message-param="Modul {{ module.name }} wirklich deaktivieren?">
-                                    <button type="submit" class="btn btn-danger w-100">
-                                        <i class="bi bi-x me-2" aria-hidden="true"></i>
+                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
+                                        <i class="bi bi-x" aria-hidden="true"></i>
                                         Modul deaktivieren
                                     </button>
                                 </form>
                             {% else %}
-                                <button type="button" class="btn btn-secondary" disabled>
-                                    <i class="bi bi-lock me-2" aria-hidden="true"></i>
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" disabled>
+                                    <i class="bi bi-lock" aria-hidden="true"></i>
                                     Modul ist erforderlich
                                 </button>
                             {% endif %}
 
-                            <a href="{{ path('admin_modules_export', {moduleKey: module_key}) }}" class="btn btn-outline-primary">
-                                <i class="bi bi-file-earmark-export me-2" aria-hidden="true"></i>
+                            <a href="{{ path('admin_modules_export', {moduleKey: module_key}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                                <i class="bi bi-file-earmark-export" aria-hidden="true"></i>
                                 Daten exportieren
                             </a>
                         {% else %}
                             <form method="post" action="{{ path('admin_modules_activate', {moduleKey: module_key}) }}">
-                                <button type="submit" class="btn btn-success w-100">
-                                    <i class="bi bi-check me-2" aria-hidden="true"></i>
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success w-100">
+                                    <i class="bi bi-check" aria-hidden="true"></i>
                                     Modul aktivieren
                                 </button>
                             </form>
                         {% endif %}
 
-                        <a href="{{ path('admin_modules_graph') }}" class="btn btn-outline-info">
-                            <i class="bi bi-diagram-3 me-2" aria-hidden="true"></i>
+                        <a href="{{ path('admin_modules_graph') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <i class="bi bi-diagram-3" aria-hidden="true"></i>
                             Dependency-Graph
                         </a>
                     </div>

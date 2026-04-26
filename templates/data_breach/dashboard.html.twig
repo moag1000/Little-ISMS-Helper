@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}Data Breach Dashboard{% endblock %}
 
@@ -110,9 +111,7 @@
             {% endblock %}
         {% endembed %}
     {% else %}
-        <div class="alert alert-success" role="alert">
-            <i class="bi bi-check-circle" aria-hidden="true"></i> <strong>All action items completed!</strong> No pending notifications or overdue deadlines.
-        </div>
+        {{ _fa_alert.render({ variant: 'success', body: '<strong>All action items completed!</strong> No pending notifications or overdue deadlines.' }) }}
     {% endif %}
 
     {# Statistics by Status #}

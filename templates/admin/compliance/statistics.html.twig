@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}<i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'admin.compliance.statistics'|trans({}, 'admin') }}{% endblock %}
 
@@ -12,7 +13,7 @@
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-end mb-4">
-        <a href="{{ path('admin_compliance_index') }}" class="btn btn-outline-secondary">
+        <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
@@ -131,10 +132,7 @@
             {% endblock %}
         {% endembed %}
     {% else %}
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle" aria-hidden="true"></i>
-            {{ 'admin.compliance.no_frameworks_loaded'|trans({}, 'admin') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'info', body: 'admin.compliance.no_frameworks_loaded'|trans({}, 'admin') }) }}
     {% endif %}
 </div>
 {% endblock admin_content %}

@@ -42,7 +42,9 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            {{ _fa_alert.render({ variant: 'info', body: '<strong>{{ \'change_request.field.complexity_score\'|trans({}, \'change_requests\') }} {{ change_request.getComplexityScore() }}</strong>' }) }}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                {% block alert_body %}<strong>{{ 'change_request.field.complexity_score'|trans({}, 'change_requests') }} {{ change_request.getComplexityScore() }}</strong>{% endblock %}
+            {% endembed %}
 
             <div class="detail-grid">
                 <div class="detail-item">

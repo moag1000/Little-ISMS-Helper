@@ -20,7 +20,9 @@
         <p class="text-muted mb-0">{{ 'group_report.incidents.subtitle'|trans({'%root%': root.name}, 'group_report') }}</p>
     </div>
 
-    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2', body: '<div class="small">{{ \'group_report.incidents.intro\'|trans({}, \'group_report\')|raw }}</div>' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2' } } %}
+        {% block alert_body %}<div class="small">{{ 'group_report.incidents.intro'|trans({}, 'group_report')|raw }}</div>{% endblock %}
+    {% endembed %}
 
     <div class="row row-cols-2 row-cols-md-5 g-2 mb-4">
         <div class="col">

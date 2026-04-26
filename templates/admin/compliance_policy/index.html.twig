@@ -29,7 +29,9 @@
         </div>
     </div>
 
-    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2', body: '<div> <strong>{{ \'compliance_policy.hint.heading\'|trans({}, \'compliance_policy\') }}</strong> <div class="small">{{ \'compliance_policy.hint.body\'|trans({}, \'compliance_policy\') }}</div> </div>' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2' } } %}
+        {% block alert_body %}<div> <strong>{{ 'compliance_policy.hint.heading'|trans({}, 'compliance_policy') }}</strong> <div class="small">{{ 'compliance_policy.hint.body'|trans({}, 'compliance_policy') }}</div> </div>{% endblock %}
+    {% endembed %}
 
     <form method="post" action="{{ path('admin_compliance_policy_index') }}" novalidate>
         <input type="hidden" name="_token" value="{{ csrf_token('compliance_policy_update') }}">
@@ -103,10 +105,10 @@
         {% endfor %}
 
         <div class="d-flex justify-content-between">
-            <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">
+            <a href="{{ path('admin_dashboard') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 {{ 'compliance_policy.action.cancel'|trans({}, 'compliance_policy') }}
             </a>
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                 {{ 'compliance_policy.action.save'|trans({}, 'compliance_policy') }}
             </button>
@@ -131,7 +133,7 @@
                             <span class="small text-truncate flex-grow-1" title="{{ key }}">
                                 <code>{{ key }}</code>
                             </span>
-                            <button type="submit" class="btn btn-sm btn-outline-warning">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm">
                                 <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
                                 {{ 'compliance_policy.reset.action'|trans({}, 'compliance_policy') }}
                             </button>

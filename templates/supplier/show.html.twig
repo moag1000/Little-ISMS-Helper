@@ -86,7 +86,9 @@
     </div>
 
     {% if isInherited is defined and isInherited %}
-        {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle-fill', class: 'mb-3', body: '<div class="d-flex align-items-start"> <i class="bi bi-info-circle-fill me-2 mt-1" aria-hidden="true"></i> <div> <strong>{{ \'corporate.inheritance.view_only_title\'|trans({}, \'messages\') }}</strong> <p class="mb-0">{{ \'corporate.inheritance.supplier_inherited_message\'|trans({}, \'messages\') }}</p> </div> </div>' }) }}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle-fill', class: 'mb-3' } } %}
+            {% block alert_body %}<div class="d-flex align-items-start"> <i class="bi bi-info-circle-fill me-2 mt-1" aria-hidden="true"></i> <div> <strong>{{ 'corporate.inheritance.view_only_title'|trans({}, 'messages') }}</strong> <p class="mb-0">{{ 'corporate.inheritance.supplier_inherited_message'|trans({}, 'messages') }}</p> </div> </div>{% endblock %}
+        {% endembed %}
     {% endif %}
 
     {# ── Header summary card (always visible above tabs) ──────────────────── #}
@@ -251,7 +253,9 @@
                         {% endif %}
 
                         {% if supplier.nonConformities %}
-                            {{ _fa_alert.render({ variant: 'warning', body: '<strong>{{ \'supplier.field.non_conformities\'|trans({}, \'suppliers\') }}:</strong> <p>{{ supplier.nonConformities }}</p>' }) }}
+                            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+                                {% block alert_body %}<strong>{{ 'supplier.field.non_conformities'|trans({}, 'suppliers') }}:</strong> <p>{{ supplier.nonConformities }}</p>{% endblock %}
+                            {% endembed %}
                         {% endif %}
                     </div>
 
@@ -483,7 +487,9 @@
                      aria-labelledby="tab-privacy"
                      tabindex="0">
 
-                    {{ _fa_alert.render({ variant: 'info', icon: 'bi-person-lock', body: '<strong>{{ \'supplier.gdpr.section_heading\'|trans({}, \'suppliers\') }}</strong> <p class="mb-0">{{ \'supplier.gdpr.section_description\'|trans({}, \'suppliers\') }}</p>' }) }}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-person-lock' } } %}
+                        {% block alert_body %}<strong>{{ 'supplier.gdpr.section_heading'|trans({}, 'suppliers') }}</strong> <p class="mb-0">{{ 'supplier.gdpr.section_description'|trans({}, 'suppliers') }}</p>{% endblock %}
+                    {% endembed %}
 
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'supplier.gdpr.field.gdpr_processor_status'|trans({}, 'suppliers') }}</dt>

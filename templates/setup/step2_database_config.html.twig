@@ -183,9 +183,13 @@
                         {# Test Result #}
                         {% if test_result is defined and test_result is not null %}
                             {% if test_result.success %}
-                                {{ _fa_alert.render({ variant: 'success', icon: 'bi-check-circle', body: '<strong>{{ \'setup.database.test.success\'|trans({}, \'setup\') }}</strong> <p class="mb-0">{{ test_result.message }}</p> {% if test_result.create_needed is defined and test_result.create_needed %} <p class="mb-0 mt-2"><small>{{ \'setup.database.test.create_needed\'|trans({}, \'setup\') }}</small></p> {% endif %}' }) }}
+                                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'bi-check-circle' } } %}
+                                    {% block alert_body %}<strong>{{ 'setup.database.test.success'|trans({}, 'setup') }}</strong> <p class="mb-0">{{ test_result.message }}</p> {% if test_result.create_needed is defined and test_result.create_needed %} <p class="mb-0 mt-2"><small>{{ 'setup.database.test.create_needed'|trans({}, 'setup') }}</small></p> {% endif %}{% endblock %}
+                                {% endembed %}
                             {% else %}
-                                {{ _fa_alert.render({ variant: 'danger', icon: 'bi-x-circle', body: '<strong>{{ \'setup.database.test.failed\'|trans({}, \'setup\') }}</strong> <p class="mb-0">{{ test_result.message }}</p>' }) }}
+                                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', icon: 'bi-x-circle' } } %}
+                                    {% block alert_body %}<strong>{{ 'setup.database.test.failed'|trans({}, 'setup') }}</strong> <p class="mb-0">{{ test_result.message }}</p>{% endblock %}
+                                {% endembed %}
                             {% endif %}
                         {% endif %}
 

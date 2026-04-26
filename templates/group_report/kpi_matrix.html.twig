@@ -20,7 +20,9 @@
         <p class="text-muted mb-0">{{ 'group_report.kpi.subtitle'|trans({'%root%': root.name}, 'group_report') }}</p>
     </div>
 
-    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2', body: '<div class="small">{{ \'group_report.kpi.intro\'|trans({}, \'group_report\') }}</div>' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2' } } %}
+        {% block alert_body %}<div class="small">{{ 'group_report.kpi.intro'|trans({}, 'group_report') }}</div>{% endblock %}
+    {% endembed %}
 
     {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
         {% block card_body %}

@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'admin' %}
 
 {% block title %}{{ 'admin.mapping_quality.coverage_title'|trans({}, 'admin') }}{% endblock %}
@@ -20,9 +21,7 @@
     <p class="text-muted mb-4">{{ 'admin.mapping_quality.coverage_description'|trans({}, 'admin') }}</p>
 
     {% if rows|length == 0 %}
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'admin.mapping_quality.coverage_empty'|trans({}, 'admin') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'info', body: 'admin.mapping_quality.coverage_empty'|trans({}, 'admin') }) }}
     {% else %}
         {% embed '_components/_card.html.twig' %}
             {% block card_body %}
@@ -84,10 +83,7 @@
             {% endblock %}
         {% endembed %}
 
-        <div class="alert alert-light mt-3 small">
-            <strong><i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'admin.mapping_quality.coverage.legend_title'|trans({}, 'admin') }}:</strong>
-            {{ 'admin.mapping_quality.coverage.legend'|trans({}, 'admin') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'info', class: 'mt-3 small', body: '<strong>' ~ ('admin.mapping_quality.coverage.legend_title'|trans({}, 'admin')) ~ ':</strong> ' ~ ('admin.mapping_quality.coverage.legend'|trans({}, 'admin')) }) }}
     {% endif %}
 </div>
 {% endblock %}

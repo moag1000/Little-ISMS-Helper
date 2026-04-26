@@ -213,7 +213,9 @@
         {% endblock %}
         {% block card_body %}
             {% if trainings|length == 0 %}
-            {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', body: '{{ \'training.no_trainings\'|trans({}, \'training\') }} {% if is_granted(\'ROLE_USER\') %} <a href="{{ path(\'app_training_new\') }}" class="alert-link" data-turbo-action="advance"> {{ \'training.create_first\'|trans({}, \'training\') }} </a> {% endif %}' }) }}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle' } } %}
+                {% block alert_body %}{{ 'training.no_trainings'|trans({}, 'training') }} {% if is_granted('ROLE_USER') %} <a href="{{ path('app_training_new') }}" class="alert-link" data-turbo-action="advance"> {{ 'training.create_first'|trans({}, 'training') }} </a> {% endif %}{% endblock %}
+            {% endembed %}
             {% else %}
             {% embed '_components/_table.html.twig' with {
                 'variant': 'striped'

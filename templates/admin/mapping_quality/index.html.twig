@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'admin' %}
 
 {% block title %}{{ 'admin.mapping_quality.title'|trans({}, 'admin') }}{% endblock %}
@@ -70,10 +71,10 @@
                 <label class="form-label small mb-1" for="min_score">{{ 'admin.mapping_quality.filter.min_score'|trans({}, 'admin') }}</label>
                 <input type="number" name="min_score" id="min_score" min="0" max="100" value="{{ filterMinScore }}" class="form-control form-control-sm" style="width: 100px;">
             </div>
-            <button type="submit" class="btn btn-sm btn-primary">{{ 'common.filter'|trans({}, 'messages')|default('Filter') }}</button>
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'common.filter'|trans({}, 'messages')|default('Filter') }}</button>
         </form>
         <div class="d-flex gap-2">
-            <a href="{{ path('admin_mapping_quality_coverage') }}" class="btn btn-sm btn-outline-primary">
+            <a href="{{ path('admin_mapping_quality_coverage') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                 <i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'admin.mapping_quality.coverage_button'|trans({}, 'admin') }}
             </a>
             <form method="post" action="{{ path('admin_mapping_quality_recompute') }}"
@@ -81,7 +82,7 @@
                   data-action="submit->ui-actions#confirm"
                   data-ui-actions-message-param="{{ 'admin.mapping_quality.recompute_confirm'|trans({}, 'admin') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('mapping_quality_recompute') }}">
-                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                     <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'admin.mapping_quality.recompute'|trans({}, 'admin') }}
                 </button>
             </form>
@@ -92,9 +93,7 @@
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}
             {% if mappings|length == 0 %}
-                <div class="alert alert-info mb-0">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'admin.mapping_quality.no_results'|trans({}, 'admin') }}
-                </div>
+                {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: 'admin.mapping_quality.no_results'|trans({}, 'admin') }) }}
             {% else %}
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
@@ -125,7 +124,7 @@
                                     <span class="fw-bold text-{{ scoreClass }}">{{ m.qualityScore ?? '–' }}</span>
                                 </td>
                                 <td class="text-end">
-                                    <a href="{{ path('admin_mapping_quality_show', {id: m.id}) }}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ path('admin_mapping_quality_show', {id: m.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                 </td>

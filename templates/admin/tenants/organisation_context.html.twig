@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}
     {{ 'tenant.organisation_context.title'|trans({}, 'tenant') }}
@@ -72,46 +73,41 @@
 
                     {# Current Configuration Info #}
                     {% if current_settings %}
-                    <div class="alert alert-info">
-                        <h2 class="alert-heading h4">
-                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                            {{ 'tenant.organisation_context.current_config'|trans({}, 'tenant') }}
-                        </h2>
-                        <ul class="mb-0">
-                            {% if current_settings.selected_modules is defined and current_settings.selected_modules %}
-                            <li>
-                                <strong>{{ 'tenant.organisation_context.active_modules'|trans({}, 'tenant') }}:</strong>
-                                {{ current_settings.selected_modules|join(', ') }}
-                            </li>
-                            {% endif %}
-                            {% if current_settings.selected_frameworks is defined and current_settings.selected_frameworks %}
-                            <li>
-                                <strong>{{ 'tenant.organisation_context.active_frameworks'|trans({}, 'tenant') }}:</strong>
-                                {{ current_settings.selected_frameworks|join(', ') }}
-                            </li>
-                            {% endif %}
-                            {% if current_settings.setup_completed_at is defined %}
-                            <li>
-                                <strong>{{ 'tenant.organisation_context.setup_date'|trans({}, 'tenant') }}:</strong>
-                                {{ current_settings.setup_completed_at|date('d.m.Y H:i') }}
-                            </li>
-                            {% endif %}
-                            {% if current_settings.last_modified_at is defined %}
-                            <li>
-                                <strong>{{ 'tenant.organisation_context.last_modified'|trans({}, 'tenant') }}:</strong>
-                                {{ current_settings.last_modified_at|date('d.m.Y H:i') }}
-                            </li>
-                            {% endif %}
-                        </ul>
-                    </div>
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                        {% block alert_body %}
+                            <h2 class="h4 mb-2">{{ 'tenant.organisation_context.current_config'|trans({}, 'tenant') }}</h2>
+                            <ul class="mb-0">
+                                {% if current_settings.selected_modules is defined and current_settings.selected_modules %}
+                                <li>
+                                    <strong>{{ 'tenant.organisation_context.active_modules'|trans({}, 'tenant') }}:</strong>
+                                    {{ current_settings.selected_modules|join(', ') }}
+                                </li>
+                                {% endif %}
+                                {% if current_settings.selected_frameworks is defined and current_settings.selected_frameworks %}
+                                <li>
+                                    <strong>{{ 'tenant.organisation_context.active_frameworks'|trans({}, 'tenant') }}:</strong>
+                                    {{ current_settings.selected_frameworks|join(', ') }}
+                                </li>
+                                {% endif %}
+                                {% if current_settings.setup_completed_at is defined %}
+                                <li>
+                                    <strong>{{ 'tenant.organisation_context.setup_date'|trans({}, 'tenant') }}:</strong>
+                                    {{ current_settings.setup_completed_at|date('d.m.Y H:i') }}
+                                </li>
+                                {% endif %}
+                                {% if current_settings.last_modified_at is defined %}
+                                <li>
+                                    <strong>{{ 'tenant.organisation_context.last_modified'|trans({}, 'tenant') }}:</strong>
+                                    {{ current_settings.last_modified_at|date('d.m.Y H:i') }}
+                                </li>
+                                {% endif %}
+                            </ul>
+                        {% endblock %}
+                    {% endembed %}
                     {% endif %}
 
                     {# Impact Warning #}
-                    <div class="alert alert-warning">
-                        <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>
-                        <strong>{{ 'tenant.organisation_context.impact_warning.title'|trans({}, 'tenant') }}</strong>
-                        <p class="mb-0 mt-2">{{ 'tenant.organisation_context.impact_warning.message'|trans({}, 'tenant') }}</p>
-                    </div>
+                    {{ _fa_alert.render({ variant: 'warning', title: 'tenant.organisation_context.impact_warning.title'|trans({}, 'tenant'), body: 'tenant.organisation_context.impact_warning.message'|trans({}, 'tenant') }) }}
 
                     {# Form Actions #}
                     <div class="d-flex justify-content-between mt-4">

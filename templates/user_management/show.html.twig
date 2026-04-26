@@ -204,7 +204,9 @@
                             {% endfor %}
                         </ul>
                     {% else %}
-                        {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: '{{ \'user.message.no_system_roles\'|trans({}, \'user\') }}' }) }}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-0' } } %}
+                            {% block alert_body %}{{ 'user.message.no_system_roles'|trans({}, 'user') }}{% endblock %}
+                        {% endembed %}
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -236,7 +238,9 @@
                             {% endfor %}
                         </ul>
                     {% else %}
-                        {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: '{{ \'user.message.no_custom_roles_assigned\'|trans({}, \'user\') }}' }) }}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-0' } } %}
+                            {% block alert_body %}{{ 'user.message.no_custom_roles_assigned'|trans({}, 'user') }}{% endblock %}
+                        {% endembed %}
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -269,7 +273,9 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: '{{ \'user.message.no_specific_permissions\'|trans({}, \'user\') }}' }) }}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-0' } } %}
+                            {% block alert_body %}{{ 'user.message.no_specific_permissions'|trans({}, 'user') }}{% endblock %}
+                        {% endembed %}
                     {% endif %}
                 {% endblock %}
             {% endembed %}

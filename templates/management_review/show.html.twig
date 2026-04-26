@@ -168,14 +168,18 @@
                     {% if review.decisions %}
                     <div class="mb-3">
                         <div class="text-muted small fw-semibold">{{ 'management_review.decisions'|trans({}, 'management_review') }}</div>
-                        {{ _fa_alert.render({ variant: 'warning', icon: 'bi-gavel', body: '<strong><i class="bi bi-gavel" aria-hidden="true"></i> {{ \'management_review.management_decisions\'|trans({}, \'management_review\') }}</strong> <p class="mb-0 mt-2">{{ review.decisions|nl2br }}</p>' }) }}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-gavel' } } %}
+                            {% block alert_body %}<strong><i class="bi bi-gavel" aria-hidden="true"></i> {{ 'management_review.management_decisions'|trans({}, 'management_review') }}</strong> <p class="mb-0 mt-2">{{ review.decisions|nl2br }}</p>{% endblock %}
+                        {% endembed %}
                     </div>
                     {% endif %}
 
                     {% if review.actionItems %}
                     <div class="mb-0">
                         <div class="text-muted small fw-semibold">{{ 'management_review.action_items'|trans({}, 'management_review') }}</div>
-                        {{ _fa_alert.render({ variant: 'info', icon: 'bi-list-check', body: '<strong><i class="bi bi-list-check" aria-hidden="true"></i> {{ \'management_review.action_items_label\'|trans({}, \'management_review\') }}</strong> <p class="mb-0 mt-2">{{ review.actionItems|nl2br }}</p>' }) }}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-list-check' } } %}
+                            {% block alert_body %}<strong><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'management_review.action_items_label'|trans({}, 'management_review') }}</strong> <p class="mb-0 mt-2">{{ review.actionItems|nl2br }}</p>{% endblock %}
+                        {% endembed %}
                     </div>
                     {% endif %}
                 {% endblock %}

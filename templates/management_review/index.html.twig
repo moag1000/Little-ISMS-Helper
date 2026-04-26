@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'management_review' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'management_review.title'|trans({}, 'management_review') }} - {{ parent() }}{% endblock %}
 
@@ -23,14 +24,7 @@
     <main class="fa-aurora-surface">
 
     {# ISO 27001 Clause Information #}
-    <div class="alert alert-info mb-4" role="alert">
-        <h2 class="alert-heading h6">
-            <i class="bi bi-info-circle-fill" aria-hidden="true"></i> {{ 'management_review.iso_requirement'|trans({}, 'management_review') }}
-        </h2>
-        <p class="mb-0 small">
-            {{ 'management_review.iso_clause_info'|trans({}, 'management_review') }}
-        </p>
-    </div>
+    {{ _fa_alert.render({ variant: 'info', class: 'mb-4', title: 'management_review.iso_requirement'|trans({}, 'management_review'), body: '<span class="small">' ~ 'management_review.iso_clause_info'|trans({}, 'management_review') ~ '</span>' }) }}
 
     {# Statistics Cards #}
     <turbo-frame id="review-stats">
@@ -110,14 +104,16 @@
         {% endblock %}
         {% block card_body %}
             {% if reviews|length == 0 %}
-            <div class="alert alert-info" role="alert">
-                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'management_review.no_reviews'|trans({}, 'management_review') }}
-                {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('app_management_review_new') }}" class="alert-link" data-turbo-action="advance">
-                    {{ 'management_review.create_first'|trans({}, 'management_review') }}
-                </a>
-                {% endif %}
-            </div>
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                {% block alert_body %}
+                    {{ 'management_review.no_reviews'|trans({}, 'management_review') }}
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_management_review_new') }}" class="fa-alert__link" data-turbo-action="advance">
+                        {{ 'management_review.create_first'|trans({}, 'management_review') }}
+                    </a>
+                    {% endif %}
+                {% endblock %}
+            {% endembed %}
             {% else %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover table-striped',

@@ -57,7 +57,9 @@
 </div>
 
 {% if effort_estimated_count == 0 %}
-    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'mb-4', body: '{{ \'gap_report.info.no_estimates\'|trans({}, \'gap_report\') }}' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'mb-4' } } %}
+        {% block alert_body %}{{ 'gap_report.info.no_estimates'|trans({}, 'gap_report') }}{% endblock %}
+    {% endembed %}
 {% else %}
     {# Budget simulator slider — 8H.4 migrated. Stimulus attrs hooked via card_attrs block #}
     {% embed '_components/_card.html.twig' with { class: 'border-0 shadow-sm mb-4' } %}

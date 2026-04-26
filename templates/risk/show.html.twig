@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ risk.title }}{% endblock %}
 
@@ -41,15 +42,7 @@
     </div>
 
     {% if isInherited is defined and isInherited %}
-        <div class="alert alert-info mb-3">
-            <div class="d-flex align-items-start">
-                <i class="fa-icon fa-icon--status-info me-2 mt-1" aria-hidden="true"></i>
-                <div>
-                    <strong>{{ 'corporate.inheritance.view_only_title'|trans({}, 'tenant') }}</strong>
-                    <p class="mb-0">{{ 'corporate.inheritance.risk_inherited_message'|trans({}, 'tenant') }}</p>
-                </div>
-            </div>
-        </div>
+        {{ _fa_alert.render({ variant: 'info', class: 'mb-3', title: 'corporate.inheritance.view_only_title'|trans({}, 'tenant'), body: 'corporate.inheritance.risk_inherited_message'|trans({}, 'tenant') }) }}
     {% endif %}
 
     {# Data-Reuse: Entity Link Matrix (Junior-Finding #8 / CM-Blocker) #}
@@ -162,10 +155,7 @@
             {% if risk.incidents is defined and risk.incidents|length > 0 %}
                 <div class="detail-section">
                     <h3>{{ 'risk.section.realization_history'|trans({}, 'risk') }} ({{ risk.incidents|length }} {{ 'risk.incidents'|trans({}, 'risk') }})</h3>
-                    <div class="alert alert-warning">
-                        <strong><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'risk.realization.warning'|trans({'%count%': risk.incidents|length}, 'risk') }}</strong>
-                        {{ 'risk.realization.review_suggestion'|trans({}, 'risk') }}
-                    </div>
+                    {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'risk.realization.warning'|trans({'%count%': risk.incidents|length}, 'risk') ~ '</strong> ' ~ 'risk.realization.review_suggestion'|trans({}, 'risk') }) }}
                     <div class="incidents-list">
                         {% for incident in risk.incidents %}
                             <div class="incident-item">
@@ -199,10 +189,7 @@
                                 <p><strong>{{ 'asset.field.type'|trans({}, 'asset') }}:</strong> {{ risk.asset.assetType }}</p>
                                 {% if risk.asset.monetaryValue %}
                                     <p><strong>{{ 'asset.field.monetary_value'|trans({}, 'asset') }}:</strong> €{{ risk.asset.monetaryValue|number_format(2, ',', '.') }}</p>
-                                    <div class="alert alert-info mb-0">
-                                        <i class="bi bi-lightbulb" aria-hidden="true"></i>
-                                        <small>{{ 'risk.subject.asset.monetary_value_hint'|trans({}, 'risk') }}</small>
-                                    </div>
+                                    {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: '<small>' ~ 'risk.subject.asset.monetary_value_hint'|trans({}, 'risk') ~ '</small>' }) }}
                                 {% endif %}
                                 {% if risk.asset.dataClassification %}
                                     <p><strong>{{ 'asset.field.classification'|trans({}, 'asset') }}:</strong>

@@ -13,6 +13,7 @@
  #}
 
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% set summary = overdue_reviews.summary %}
 {% set total_overdue = summary.total_overdue %}
 {% set urgent_breaches = summary.urgent_breaches %}
@@ -36,19 +37,16 @@
     <div class="widget-body p-3">
         {# Urgent Data Breach Alert #}
         {% if urgent_breaches > 0 %}
-            <div class="alert alert-danger mb-3 py-2">
-                <div class="d-flex align-items-center">
-                    <i class="bi bi-exclamation-triangle-fill fs-4 me-2" aria-hidden="true"></i>
-                    <div>
-                        <strong>{{ 'dashboard.widget.overdue_reviews.breach_alert'|trans({count: urgent_breaches}, 'dashboard') }}</strong>
-                        <div class="small">{{ 'dashboard.widget.overdue_reviews.breach_alert_desc'|trans({}, 'dashboard') }}</div>
-                    </div>
-                </div>
-                <a href="{{ path('app_data_breach_index') }}" class="btn btn-sm btn-danger mt-2">
-                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
-                    {{ 'dashboard.widget.overdue_reviews.view_breaches'|trans({}, 'dashboard') }}
-                </a>
-            </div>
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', class: 'mb-3' } } %}
+                {% block alert_body %}
+                    <strong>{{ 'dashboard.widget.overdue_reviews.breach_alert'|trans({count: urgent_breaches}, 'dashboard') }}</strong>
+                    <div class="small">{{ 'dashboard.widget.overdue_reviews.breach_alert_desc'|trans({}, 'dashboard') }}</div>
+                    <a href="{{ path('app_data_breach_index') }}" class="btn btn-sm btn-danger mt-2">
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                        {{ 'dashboard.widget.overdue_reviews.view_breaches'|trans({}, 'dashboard') }}
+                    </a>
+                {% endblock %}
+            {% endembed %}
         {% endif %}
 
         {% if total_overdue > 0 or urgent_breaches > 0 %}

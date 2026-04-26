@@ -57,7 +57,7 @@
                                         </td>
                                         <td class="text-end">
                                             <a href="{{ path('app_admin_incident_sla_config_edit', {id: config.id}) }}"
-                                               class="btn btn-sm btn-outline-primary"
+                                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                                aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                                 <i class="bi bi-pencil" aria-hidden="true"></i>
                                             </a>
@@ -67,7 +67,9 @@
                             </tbody>
                         </table>
                     </div>
-                    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'small mb-0 mt-3', body: '{{ \'incident_sla.hint.regulatory\'|trans({}, \'incident_sla\') }}' }) }}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'small mb-0 mt-3' } } %}
+                        {% block alert_body %}{{ 'incident_sla.hint.regulatory'|trans({}, 'incident_sla') }}{% endblock %}
+                    {% endembed %}
                 {% endblock %}
             {% endembed %}
         </div>

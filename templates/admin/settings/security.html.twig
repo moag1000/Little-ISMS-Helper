@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'admin'%}
 {% block admin_title %}{{ 'admin.settings.security.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -53,10 +54,10 @@
                         } %}
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ path('admin_settings_index') }}" class="btn btn-secondary">
+                            <a href="{{ path('admin_settings_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                                 <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                             </a>
-                            <button type="submit" class="btn btn-danger">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                                 <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
                             </button>
                         </div>
@@ -66,11 +67,7 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="alert alert-warning">
-                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                <strong>{{ 'common.warning'|trans({}, 'messages') }}</strong><br>
-                {{ 'admin.settings.security.warning'|trans({}, 'admin') }}
-            </div>
+            {{ _fa_alert.render({ variant: 'warning', title: 'common.warning'|trans({}, 'messages'), body: 'admin.settings.security.warning'|trans({}, 'admin') }) }}
         </div>
     </div>
 {% endblock %}

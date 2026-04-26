@@ -23,7 +23,7 @@
                     <i class="fa-icon fa-icon--policy" aria-hidden="true"></i>
                     {{ session.originalFilename }}
                 </h2>
-                <a href="{{ path('admin_import_history_index') }}" class="btn btn-sm btn-outline-secondary">
+                <a href="{{ path('admin_import_history_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                     <i class="bi bi-arrow-left" aria-hidden="true"></i>
                     {{ 'compliance_import.history.back_to_list'|trans({}, 'compliance_import') }}
                 </a>
@@ -119,18 +119,20 @@
                            placeholder="123">
                 </div>
                 <div class="col-md-3 d-flex gap-2">
-                    <button type="submit" class="btn btn-sm btn-primary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
                         <i class="bi bi-search" aria-hidden="true"></i>
                         {{ 'compliance_import.history.filter.apply'|trans({}, 'compliance_import') }}
                     </button>
                     <a href="{{ path('admin_import_history_show', { id: session.id }) }}"
-                       class="btn btn-sm btn-outline-secondary">
+                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                         {{ 'compliance_import.history.filter.reset'|trans({}, 'compliance_import') }}
                     </a>
                 </div>
             </form>
             {% if is_search %}
-                {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'mt-3 mb-0', body: '{{ \'compliance_import.history.filter.search_active\'|trans({ \'%type%\': filter.target_entity_type, \'%id%\': filter.search_entity_id }, \'compliance_import\') }}' }) }}
+                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'mt-3 mb-0' } } %}
+                    {% block alert_body %}{{ 'compliance_import.history.filter.search_active'|trans({ '%type%': filter.target_entity_type, '%id%': filter.search_entity_id }, 'compliance_import') }}{% endblock %}
+                {% endembed %}
             {% endif %}
         {% endblock %}
     {% endembed %}

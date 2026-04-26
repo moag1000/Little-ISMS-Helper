@@ -46,7 +46,9 @@
     </div>
 
     {% if isInherited is defined and isInherited %}
-        {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'mb-3', body: '<div class="d-flex align-items-start"> <i class="fa-icon fa-icon--status-info me-2 mt-1" aria-hidden="true"></i> <div> <strong>{{ \'corporate.inheritance.view_only_title\'|trans({}, \'messages\') }}</strong> <p class="mb-0">{{ \'corporate.inheritance.asset_inherited_message\'|trans({}, \'messages\') }}</p> </div> </div>' }) }}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'mb-3' } } %}
+            {% block alert_body %}<div class="d-flex align-items-start"> <i class="fa-icon fa-icon--status-info me-2 mt-1" aria-hidden="true"></i> <div> <strong>{{ 'corporate.inheritance.view_only_title'|trans({}, 'messages') }}</strong> <p class="mb-0">{{ 'corporate.inheritance.asset_inherited_message'|trans({}, 'messages') }}</p> </div> </div>{% endblock %}
+        {% endembed %}
     {% endif %}
 
     {% embed '_components/_card.html.twig' %}
@@ -156,7 +158,9 @@
                             {{ 'asset.section.inherited_protection'|trans({}, 'asset') }}
                             {# bi-diagram-3 stays — here it represents structural/dependency diagram, not a network asset #}
                         </h3>
-                        {{ _fa_alert.render({ variant: 'warning', icon: 'status-warning', body: '{{ \'asset.inherited_protection.warning\'|trans({}, \'asset\') }}' }) }}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-warning' } } %}
+                            {% block alert_body %}{{ 'asset.inherited_protection.warning'|trans({}, 'asset') }}{% endblock %}
+                        {% endembed %}
                         <table class="table table-sm">
                             <thead>
                                 <tr>

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'audit_log.retention.title'|trans({}, 'audit_log') }}{% endblock %}
 
@@ -48,13 +49,10 @@
                             </div>
                         </div>
 
-                        <div class="alert alert-warning small mb-3">
-                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                            {{ 'audit_log.retention.warning'|trans({}, 'audit_log') }}
-                        </div>
+                        {{ _fa_alert.render({ variant: 'warning', class: 'small mb-3', body: 'audit_log.retention.warning'|trans({}, 'audit_log') }) }}
 
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                                 <i class="bi bi-save" aria-hidden="true"></i>
                                 {{ 'common.save'|trans({}, 'messages') }}
                             </button>

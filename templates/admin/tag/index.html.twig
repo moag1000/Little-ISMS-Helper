@@ -17,14 +17,16 @@
             <h1 class="h3">{{ 'tags.admin.page.title'|trans({}, 'tags') }}</h1>
             <p class="text-muted mb-0">{{ 'tags.admin.page.lead'|trans({}, 'tags') }}</p>
         </div>
-        <a href="{{ path('admin_tag_new') }}" class="btn btn-primary">
+        <a href="{{ path('admin_tag_new') }}" class="fa-cyber-btn fa-cyber-btn--primary">
             <i class="bi bi-plus-circle" aria-hidden="true"></i>
             {{ 'tags.admin.action.new'|trans({}, 'tags') }}
         </a>
     </div>
 
     {% if tags|length == 0 %}
-        {{ _fa_alert.render({ variant: 'info', body: '{{ \'tags.admin.empty\'|trans({}, \'tags\') }}' }) }}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+            {% block alert_body %}{{ 'tags.admin.empty'|trans({}, 'tags') }}{% endblock %}
+        {% endembed %}
     {% else %}
         {% embed '_components/_card.html.twig' with {'noPadding': true, 'tags': tags} %}
             {% block card_body %}
@@ -60,14 +62,14 @@
                                         {% endif %}
                                     </td>
                                     <td class="text-end">
-                                        <a href="{{ path('admin_tag_edit', {id: tag.id}) }}" class="btn btn-sm btn-outline-secondary"
+                                        <a href="{{ path('admin_tag_edit', {id: tag.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                            aria-label="{{ 'tags.admin.aria.edit'|trans({'%name%': tag.name}, 'tags') }}">
                                             <i class="bi bi-pencil" aria-hidden="true"></i>
                                         </a>
                                         <form method="post" action="{{ path('admin_tag_delete', {id: tag.id}) }}" class="d-inline"
                                               onsubmit="return confirm('{{ 'tags.admin.confirm.delete'|trans({}, 'tags')|e('js') }}');">
                                             <input type="hidden" name="_token" value="{{ csrf_token('tag_delete_' ~ tag.id) }}">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
                                                     aria-label="{{ 'tags.admin.aria.delete'|trans({'%name%': tag.name}, 'tags') }}">
                                                 <i class="bi bi-trash" aria-hidden="true"></i>
                                             </button>

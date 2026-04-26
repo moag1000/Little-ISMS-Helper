@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance_import.upload.title'|trans({}, 'compliance_import') }}{% endblock %}
 
@@ -30,9 +31,8 @@
                 {{ 'compliance_import.upload.intro'|trans({}, 'compliance_import') }}
             </p>
 
-            <div class="alert alert-info d-flex align-items-start gap-2" role="note">
-                <i class="bi bi-info-circle-fill mt-1" aria-hidden="true"></i>
-                <div>
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                {% block alert_body %}
                     <strong>{{ 'compliance_import.upload.template_label'|trans({}, 'compliance_import') }}</strong>
                     <div>
                         <a href="{{ template_url|default('#') }}" download
@@ -40,8 +40,8 @@
                             {{ 'compliance_import.upload.template_download'|trans({}, 'compliance_import') }}
                         </a>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {{ form_start(form, { attr: { 'novalidate': 'novalidate', 'aria-label': 'compliance_import.upload.form_aria'|trans({}, 'compliance_import') } }) }}
                 <div class="mb-3">
@@ -63,7 +63,7 @@
                 </div>
 
                 <div class="d-flex gap-2 justify-content-end mt-4">
-                    <a href="{{ path('admin_compliance_index') }}" class="btn btn-secondary">
+                    <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         <i class="bi bi-x-circle" aria-hidden="true"></i>
                         {{ 'compliance_import.common.cancel'|trans({}, 'compliance_import') }}
                     </a>

@@ -41,7 +41,9 @@
             {# Body #}
             <div class="modal-body">
                 {# Main message #}
-                {{ _fa_alert.render({ variant: 'warning', icon: 'bi-exclamation-circle-fill', class: 'd-flex align-items-start gap-3', body: '<div class="flex-grow-1"> <p id="bulkDeleteModalDescription" class="mb-2 fw-semibold" data-bulk-delete-confirmation-target="message"> {# Dynamic message will be inserted here #} </p> <p class="mb-0 small text-muted"> {{ \'bulk_delete.confirm.warning\'|trans({}, \'bulk_delete\') }} </p> </div>' }) }}
+                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-exclamation-circle-fill', class: 'd-flex align-items-start gap-3' } } %}
+                    {% block alert_body %}<div class="flex-grow-1"> <p id="bulkDeleteModalDescription" class="mb-2 fw-semibold" data-bulk-delete-confirmation-target="message"> {# Dynamic message will be inserted here #} </p> <p class="mb-0 small text-muted"> {{ 'bulk_delete.confirm.warning'|trans({}, 'bulk_delete') }} </p> </div>{% endblock %}
+                {% endembed %}
 
                 {# Selection summary #}
                 <div class="mb-3">

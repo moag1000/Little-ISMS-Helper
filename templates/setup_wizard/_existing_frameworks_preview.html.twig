@@ -1,7 +1,9 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {# WS-8 Reuse Preview Fragment — rendered via AJAX into #existing-frameworks-preview #}
 {% if estimates is empty %}
-    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'border', body: '{{ \'existing_frameworks.preview.no_newly_added\'|trans({}, \'setup_wizard\') }}' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'border' } } %}
+        {% block alert_body %}{{ 'existing_frameworks.preview.no_newly_added'|trans({}, 'setup_wizard') }}{% endblock %}
+    {% endembed %}
 {% else %}
     <div class="table-responsive">
         <table class="table table-sm table-hover align-middle"

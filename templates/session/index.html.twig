@@ -193,11 +193,15 @@
                 {% endblock %}
             {% endembed %}
             {% else %}
-                {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', body: '{{ \'session.no_sessions_found\'|trans({}, \'session\') }}' }) }}
+                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle' } } %}
+                    {% block alert_body %}{{ 'session.no_sessions_found'|trans({}, 'session') }}{% endblock %}
+                {% endembed %}
             {% endif %}
         {% endblock %}
     {% endembed %}
 
     {# Info Box #}
-    {{ _fa_alert.render({ variant: 'success', icon: 'bi-check-circle', class: 'mt-4', body: '{{ \'session.info_box\'|trans({\'%max_concurrent%\': statistics.max_concurrent}, \'session\')|raw }}' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'bi-check-circle', class: 'mt-4' } } %}
+        {% block alert_body %}{{ 'session.info_box'|trans({'%max_concurrent%': statistics.max_concurrent}, 'session')|raw }}{% endblock %}
+    {% endembed %}
 {% endblock %}

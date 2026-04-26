@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}
     {{ is_edit ? 'workflow.definition.edit_title'|trans({}, 'workflows') : 'workflow.definition.new_title'|trans({}, 'workflows') }}
@@ -71,11 +72,7 @@
 
                     {{ form_rest(form) }}
 
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i>
-                        <strong>{{ 'workflow.info.steps_note_title'|trans({}, 'workflows') }}</strong><br>
-                        {{ 'workflow.info.steps_note_text'|trans({}, 'workflows') }}
-                    </div>
+                    {{ _fa_alert.render({ variant: 'info', title: 'workflow.info.steps_note_title'|trans({}, 'workflows'), body: 'workflow.info.steps_note_text'|trans({}, 'workflows') }) }}
 
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ is_edit ? path('app_workflow_definition_show', {id: workflow.id}) : path('app_workflow_definitions') }}"

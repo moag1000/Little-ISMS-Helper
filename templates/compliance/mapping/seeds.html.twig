@@ -69,7 +69,9 @@
                         </p>
 
                         {% if not seed.source_loaded or not seed.target_loaded %}
-                            {{ _fa_alert.render({ variant: 'warning', icon: 'status-warning', class: 'small mb-2', body: '{{ \'compliance.mapping.seeds.flash.framework_missing\'|trans({ \'%source%\': seed.source_code, \'%target%\': seed.target_code }, \'compliance\') }}' }) }}
+                            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-warning', class: 'small mb-2' } } %}
+                                {% block alert_body %}{{ 'compliance.mapping.seeds.flash.framework_missing'|trans({ '%source%': seed.source_code, '%target%': seed.target_code }, 'compliance') }}{% endblock %}
+                            {% endembed %}
                             <button type="button" class="btn btn-primary w-100" disabled>
                                 {{ 'compliance.mapping.seeds.action.apply'|trans({}, 'compliance') }}
                             </button>
@@ -93,6 +95,8 @@
         {% endfor %}
     </div>
 
-    {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'mt-4 small', body: '{{ \'compliance.mapping.seeds.footer_hint\'|trans({}, \'compliance\') }}' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'mt-4 small' } } %}
+        {% block alert_body %}{{ 'compliance.mapping.seeds.footer_hint'|trans({}, 'compliance') }}{% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

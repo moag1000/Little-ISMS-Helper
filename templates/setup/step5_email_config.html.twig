@@ -35,7 +35,9 @@
                 {% endblock %}
                 {% block card_body %}
                     <div class="p-4">
-                        {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'mb-4', body: '<strong>{{ \'setup.email.optional.title\'|trans({}, \'setup\') }}</strong> <p class="mb-0">{{ \'setup.email.optional.message\'|trans({}, \'setup\') }}</p>' }) }}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'mb-4' } } %}
+                            {% block alert_body %}<strong>{{ 'setup.email.optional.title'|trans({}, 'setup') }}</strong> <p class="mb-0">{{ 'setup.email.optional.message'|trans({}, 'setup') }}</p>{% endblock %}
+                        {% endembed %}
 
                         {# Email Configuration Form #}
                         {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}

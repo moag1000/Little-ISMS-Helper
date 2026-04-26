@@ -28,7 +28,9 @@
                 </a>
             </div>
 
-            {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'mb-4', body: '<div class="fw-bold mb-2"> <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ \'audit.iso_27001_requirement\'|trans({}, \'audit\') }} </div> <p class="mb-0 small"> {{ \'audit.iso_27001_clause_info\'|trans({}, \'audit\') }} </p>' }) }}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'mb-4' } } %}
+                {% block alert_body %}<div class="fw-bold mb-2"> <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'audit.iso_27001_requirement'|trans({}, 'audit') }} </div> <p class="mb-0 small"> {{ 'audit.iso_27001_clause_info'|trans({}, 'audit') }} </p>{% endblock %}
+            {% endembed %}
 
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
@@ -77,7 +79,9 @@
                                 } %}
                             </div>
                             <div class="col-md-12 d-none" id="subsidiaries-container">
-                                {{ _fa_alert.render({ variant: 'info', icon: 'status-info', body: '<strong>{{ \'audit.corporate_audit_note_title\'|trans({}, \'audit\') }}:</strong> {{ \'audit.corporate_audit_note\'|trans({}, \'audit\') }}' }) }}
+                                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info' } } %}
+                                    {% block alert_body %}<strong>{{ 'audit.corporate_audit_note_title'|trans({}, 'audit') }}:</strong> {{ 'audit.corporate_audit_note'|trans({}, 'audit') }}{% endblock %}
+                                {% endembed %}
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.auditedSubsidiaries,
                                     'label_key': form.auditedSubsidiaries.vars.label,

@@ -41,7 +41,9 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            {{ _fa_alert.render({ variant: 'info', body: '<strong>{{ \'interested_party.engagement_score\'|trans({}, \'interested_parties\') }}: {{ interested_party.getEngagementScore() }}</strong>' }) }}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                {% block alert_body %}<strong>{{ 'interested_party.engagement_score'|trans({}, 'interested_parties') }}: {{ interested_party.getEngagementScore() }}</strong>{% endblock %}
+            {% endembed %}
 
             {% if interested_party.description %}
             <div class="detail-section">
@@ -120,7 +122,9 @@
             {% endif %}
 
             {% if interested_party.issues %}
-            {{ _fa_alert.render({ variant: 'warning', body: '<strong>{{ \'interested_party.field.issues\'|trans({}, \'interested_parties\') }}:</strong> <p>{{ interested_party.issues }}</p>' }) }}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+                {% block alert_body %}<strong>{{ 'interested_party.field.issues'|trans({}, 'interested_parties') }}:</strong> <p>{{ interested_party.issues }}</p>{% endblock %}
+            {% endembed %}
             {% endif %}
 
             <div class="detail-section">

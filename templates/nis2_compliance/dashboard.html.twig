@@ -156,7 +156,9 @@
                                 </div>
                             </div>
                             {% if article23.overdue_count is defined and article23.overdue_count > 0 %}
-                                {{ _fa_alert.render({ variant: 'danger', icon: 'status-warning', class: 'mt-3 mb-0', body: '{{ \'nis2.dashboard.article23.overdue\'|trans({\'%count%\': article23.overdue_count}, \'messages\') }}' }) }}
+                                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', icon: 'status-warning', class: 'mt-3 mb-0' } } %}
+                                    {% block alert_body %}{{ 'nis2.dashboard.article23.overdue'|trans({'%count%': article23.overdue_count}, 'messages') }}{% endblock %}
+                                {% endembed %}
                             {% endif %}
                         {% endblock %}
                     {% endembed %}

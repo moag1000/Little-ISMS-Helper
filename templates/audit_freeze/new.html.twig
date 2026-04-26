@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'audit_freeze.new.title'|trans({}, 'audit_freeze') }}{% endblock %}
 
@@ -16,13 +17,7 @@
         {{ 'audit_freeze.new.title'|trans({}, 'audit_freeze') }}
     </h1>
 
-    <div class="alert alert-info d-flex gap-2" role="note">
-        <i class="bi bi-info-circle mt-1" aria-hidden="true"></i>
-        <div>
-            <strong>{{ 'audit_freeze.new.hint_title'|trans({}, 'audit_freeze') }}</strong>
-            <div class="small">{{ 'audit_freeze.new.hint_body'|trans({}, 'audit_freeze') }}</div>
-        </div>
-    </div>
+    {{ _fa_alert.render({ variant: 'info', title: 'audit_freeze.new.hint_title'|trans({}, 'audit_freeze'), body: '<span class="small">' ~ 'audit_freeze.new.hint_body'|trans({}, 'audit_freeze') ~ '</span>' }) }}
 
     <div class="card fa-section shadow-sm">
         <div class="card-body">

@@ -204,7 +204,12 @@
                         </div>
 
                         {# NIS2 Timeline - Article 23 #}
-                        {{ _fa_alert.render({ variant: 'info', class: 'mt-3', body: '<div class="alert-heading fw-bold">{{ \'incident.nis2_timeline.title\'|trans({}, \'incident\') }}</div> <p class="mb-0 small">{{ \'incident.nis2_timeline.description\'|trans({}, \'incident\') }}</p>' }) }}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mt-3' } } %}
+                            {% block alert_body %}
+                                <div class="alert-heading fw-bold">{{ 'incident.nis2_timeline.title'|trans({}, 'incident') }}</div>
+                                <p class="mb-0 small">{{ 'incident.nis2_timeline.description'|trans({}, 'incident') }}</p>
+                            {% endblock %}
+                        {% endembed %}
 
                         <div class="row">
                             <div class="col-md-4">

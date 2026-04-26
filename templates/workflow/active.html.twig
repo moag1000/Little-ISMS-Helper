@@ -6,6 +6,7 @@
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
 {% import '_macros/workflow.html.twig' as workflow_macros %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 <div class="page-header">
     <div>
@@ -155,10 +156,7 @@
                         </div>
                         <div class="modal-body">
                             <p>{{ 'workflow.widget.confirm.approve'|trans({workflow: instance.workflow.name}, 'workflows') }}</p>
-                            <div class="alert alert-info mb-3">
-                                <strong>{{ 'workflow.field.entity'|trans({}, 'workflows') }}:</strong>
-                                {{ instance.entityType|split('\\')|last }} #{{ instance.entityId }}
-                            </div>
+                            {{ _fa_alert.render({ variant: 'info', class: 'mb-3', body: '<strong>' ~ 'workflow.field.entity'|trans({}, 'workflows') ~ ':</strong> ' ~ instance.entityType|split('\\')|last ~ ' #' ~ instance.entityId }) }}
                             <div class="mb-3">
                                 <label class="form-label">
                                     {{ 'workflow.widget.field.comments'|trans({}, 'workflows') }}
@@ -196,10 +194,7 @@
                         </div>
                         <div class="modal-body">
                             <p>{{ 'workflow.widget.confirm.reject'|trans({workflow: instance.workflow.name}, 'workflows') }}</p>
-                            <div class="alert alert-warning mb-3">
-                                <strong>{{ 'workflow.field.entity'|trans({}, 'workflows') }}:</strong>
-                                {{ instance.entityType|split('\\')|last }} #{{ instance.entityId }}
-                            </div>
+                            {{ _fa_alert.render({ variant: 'warning', class: 'mb-3', body: '<strong>' ~ 'workflow.field.entity'|trans({}, 'workflows') ~ ':</strong> ' ~ instance.entityType|split('\\')|last ~ ' #' ~ instance.entityId }) }}
                             <div class="mb-3">
                                 <label class="form-label">
                                     {{ 'workflow.widget.field.reason'|trans({}, 'workflows') }}

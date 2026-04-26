@@ -15,7 +15,7 @@
             <p class="lead">{{ 'supplier_criticality.subtitle'|trans({}, 'supplier_criticality') }}</p>
         </div>
         <div class="col-auto d-flex align-items-start">
-            <a href="{{ path('app_admin_supplier_criticality_new') }}" class="btn btn-primary">
+            <a href="{{ path('app_admin_supplier_criticality_new') }}" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="bi bi-plus-circle" aria-hidden="true"></i>
                 {{ 'supplier_criticality.action.new'|trans({}, 'supplier_criticality') }}
             </a>
@@ -80,7 +80,7 @@
                                 </td>
                                 <td class="text-end">
                                     <a href="{{ path('app_admin_supplier_criticality_edit', {id: level.id}) }}"
-                                       class="btn btn-sm btn-outline-secondary me-1">
+                                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="bi bi-pencil" aria-hidden="true"></i>
                                     </a>
                                     <form action="{{ path('app_admin_supplier_criticality_delete', {id: level.id}) }}"
@@ -88,7 +88,7 @@
                                           onsubmit="return confirm('{{ 'supplier_criticality.confirm_delete'|trans({}, 'supplier_criticality') }}')">
                                         <input type="hidden" name="_token"
                                                value="{{ csrf_token('delete_supplier_criticality_' ~ level.id) }}">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                                             <i class="bi bi-trash" aria-hidden="true"></i>
                                         </button>
                                     </form>

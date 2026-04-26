@@ -14,7 +14,7 @@
     } %}
 
     <div class="d-flex justify-content-end align-items-center mb-4">
-        <a href="{{ path('admin_modules_graph') }}" class="btn btn-outline-primary">
+        <a href="{{ path('admin_modules_graph') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'admin.modules.dependency_graph'|trans({}, 'admin') }}
         </a>
     </div>
@@ -119,7 +119,7 @@
                                     {% endif %}
 
                                     <div class="d-grid gap-2 mt-3">
-                                        <a href="{{ path('admin_modules_details', {moduleKey: key}) }}" class="btn btn-sm btn-outline-primary">
+                                        <a href="{{ path('admin_modules_details', {moduleKey: key}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                             <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'admin.modules.details'|trans({}, 'admin') }}
                                         </a>
                                         {% if not module.required %}
@@ -127,12 +127,12 @@
                                                   data-controller="ui-actions"
                                                   data-action="submit->ui-actions#confirm"
                                                   data-ui-actions-message-param="{{ 'admin.modules.confirm_deactivate'|trans({'%name%': module.name}, 'admin') }}">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+                                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">
                                                     <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'admin.modules.deactivate'|trans({}, 'admin') }}
                                                 </button>
                                             </form>
                                         {% else %}
-                                            <button type="button" class="btn btn-sm btn-secondary" disabled>
+                                            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" disabled>
                                                 <i class="bi bi-lock" aria-hidden="true"></i> {{ 'admin.modules.required'|trans({}, 'admin') }}
                                             </button>
                                         {% endif %}
@@ -196,11 +196,11 @@
                                     {% endif %}
 
                                     <div class="d-grid gap-2 mt-3">
-                                        <a href="{{ path('admin_modules_details', {moduleKey: key}) }}" class="btn btn-sm btn-outline-primary">
+                                        <a href="{{ path('admin_modules_details', {moduleKey: key}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                             <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'admin.modules.details'|trans({}, 'admin') }}
                                         </a>
                                         <form method="post" action="{{ path('admin_modules_activate', {moduleKey: key}) }}">
-                                            <button type="submit" class="btn btn-sm btn-success w-100">
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm w-100">
                                                 <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.modules.activate'|trans({}, 'admin') }}
                                             </button>
                                         </form>

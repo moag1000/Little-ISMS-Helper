@@ -14,7 +14,9 @@
 <div class="container-fluid py-4">
 
     {% if overdue_count > 0 %}
-        {{ _fa_alert.render({ variant: 'warning', icon: 'bi-exclamation-triangle', body: '{{ \'corrective_action.alert.overdue\'|trans({\'%count%\': overdue_count}, \'audits\') }}' }) }}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-exclamation-triangle' } } %}
+            {% block alert_body %}{{ 'corrective_action.alert.overdue'|trans({'%count%': overdue_count}, 'audits') }}{% endblock %}
+        {% endembed %}
     {% endif %}
 
     {% embed '_components/_card.html.twig' with { 'noPadding': true } %}

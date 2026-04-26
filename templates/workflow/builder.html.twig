@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'workflow.builder.title'|trans({}, 'workflows') }} - {{ workflow.name }}{% endblock %}
 
@@ -85,11 +86,7 @@
                 {% endblock %}
                 {% block card_body %}
                     <div class="mb-3">
-                        <div class="alert alert-info alert-dismissible fade show" role="alert">
-                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                            {{ 'workflow.builder.drag_help'|trans({}, 'workflows') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
-                        </div>
+                        {{ _fa_alert.render({ variant: 'info', dismissible: true, body: 'workflow.builder.drag_help'|trans({}, 'workflows') }) }}
                     </div>
 
                     {# Steps List - Dynamic Content #}

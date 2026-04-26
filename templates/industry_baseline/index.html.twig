@@ -20,10 +20,14 @@
 
     <main class="fa-aurora-surface">
 
-    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2', body: '<div class="small">{{ \'industry_baseline.intro\'|trans({}, \'industry_baseline\')|raw }}</div>' }) }}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2' } } %}
+        {% block alert_body %}<div class="small">{{ 'industry_baseline.intro'|trans({}, 'industry_baseline')|raw }}</div>{% endblock %}
+    {% endembed %}
 
     {% if baselines is empty %}
-        {{ _fa_alert.render({ variant: 'warning', body: '{{ \'industry_baseline.empty\'|trans({}, \'industry_baseline\') }} <code>php bin/console app:load-industry-baselines</code>' }) }}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
+            {% block alert_body %}{{ 'industry_baseline.empty'|trans({}, 'industry_baseline') }} <code>php bin/console app:load-industry-baselines</code>{% endblock %}
+        {% endembed %}
     {% else %}
         <div class="row row-cols-1 row-cols-md-2 g-3">
             {% for baseline in baselines %}

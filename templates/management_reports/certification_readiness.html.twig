@@ -134,7 +134,9 @@
                 </table>
             </div>
             {% else %}
-            {{ _fa_alert.render({ variant: 'warning', icon: 'bi-info-circle', class: 'mb-0', body: '{{ \'cert_readiness.no_iso_wizard\'|trans({}, \'management_reports\') }}' }) }}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-info-circle', class: 'mb-0' } } %}
+                {% block alert_body %}{{ 'cert_readiness.no_iso_wizard'|trans({}, 'management_reports') }}{% endblock %}
+            {% endembed %}
             {% endif %}
         {% endblock %}
     {% endembed %}

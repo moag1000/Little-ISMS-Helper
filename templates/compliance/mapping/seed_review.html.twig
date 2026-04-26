@@ -44,7 +44,9 @@
     </div>
 
     {% if mappings|length == 0 %}
-        {{ _fa_alert.render({ variant: 'success', icon: 'status-ok', body: '{{ \'compliance.mapping.seed_review.empty\'|trans({}, \'compliance\') }}' }) }}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'status-ok' } } %}
+            {% block alert_body %}{{ 'compliance.mapping.seed_review.empty'|trans({}, 'compliance') }}{% endblock %}
+        {% endembed %}
     {% else %}
         <div class="card fa-section shadow-sm">
             <div class="card-header">

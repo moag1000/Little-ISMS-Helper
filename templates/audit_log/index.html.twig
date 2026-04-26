@@ -36,6 +36,7 @@
 
 {% block admin_content %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
         { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
@@ -251,9 +252,7 @@
     {% endif %}
 </div>
 {% else %}
-<div class="alert alert-info mt-2" role="status">
-    {{ 'audit_log.message.no_entries'|trans({}, 'audit_log') }}
-</div>
+{{ _fa_alert.render({ variant: 'info', class: 'mt-2', body: 'audit_log.message.no_entries'|trans({}, 'audit_log') }) }}
 {% endif %}
 
 </main>

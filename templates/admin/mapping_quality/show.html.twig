@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'admin' %}
 
 {% block title %}{{ 'admin.mapping_quality.detail_title'|trans({}, 'admin') }}{% endblock %}
@@ -61,15 +62,13 @@
                         {% if mapping.gapWarning %}
                             <dt class="col-sm-4">{{ 'admin.mapping_quality.field.gap_warning'|trans({}, 'admin') }}</dt>
                             <dd class="col-sm-8">
-                                <div class="alert alert-warning mb-0 small">
-                                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ mapping.gapWarning|nl2br }}
-                                </div>
+                                {{ _fa_alert.render({ variant: 'warning', class: 'mb-0 small', body: mapping.gapWarning|nl2br }) }}
                             </dd>
                         {% endif %}
 
                         {% if mapping.auditEvidenceHint %}
                             <dt class="col-sm-4">{{ 'admin.mapping_quality.field.audit_evidence'|trans({}, 'admin') }}</dt>
-                            <dd class="col-sm-8"><div class="alert alert-info mb-0 small"><i class="fa-icon fa-icon--audit-internal" aria-hidden="true"></i> {{ mapping.auditEvidenceHint|nl2br }}</div></dd>
+                            <dd class="col-sm-8">{{ _fa_alert.render({ variant: 'info', class: 'mb-0 small', icon: 'bi-journal-check', body: mapping.auditEvidenceHint|nl2br }) }}</dd>
                         {% endif %}
 
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.version'|trans({}, 'admin') }}</dt>
