@@ -63,7 +63,7 @@
 
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}
-            <div class="fs-2-mb-sm"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></div>
+            <div class="fs-2-mb-sm"><i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i></div>
             <h2>{{ 'workflow.section.in_progress'|trans({}, 'workflows') }}</h2>
             <p class="text-muted-mt-xs">
                 {{ 'workflow.description.in_progress'|trans({}, 'workflows') }}
@@ -152,20 +152,20 @@
                                 data-bs-toggle="modal"
                                 data-bs-target="#approveWorkflow{{ instance.id }}"
                                 title="{{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}">
-                            <i class="bi bi-check-lg" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                         </button>
                         <button type="button"
                                 class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
                                 data-bs-toggle="modal"
                                 data-bs-target="#rejectWorkflow{{ instance.id }}"
                                 title="{{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}">
-                            <i class="bi bi-x-lg" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                         </button>
                     {% endif %}
                     <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}"
                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                        title="{{ 'common.view'|trans({}, 'messages') }}">
-                        <i class="bi bi-eye" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                     </a>
                 </div>
             </td>
@@ -212,7 +212,7 @@
                                 {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
                             </button>
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
-                                <i class="bi bi-check-lg" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                                 {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
                             </button>
                         </div>
@@ -250,7 +250,7 @@
                                 {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
                             </button>
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-                                <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                                 {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
                             </button>
                         </div>

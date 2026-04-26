@@ -71,7 +71,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-graph-up" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
             {{ 'common.statistics'|trans({}, 'messages') }}
         </h6>
         <div class="row g-2">
@@ -92,10 +92,10 @@
 
     <div class="preview-actions">
         <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
-            <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'common.view_details'|trans({}, 'messages') }}
+            <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i> {{ 'common.view_details'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_asset_edit', {id: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
         </a>
     </div>
 </div>

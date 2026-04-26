@@ -9,14 +9,14 @@
     <div class="page-header">
         <div>
             <h1>
-                <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                 {{ 'analytics.forecast.title'|trans({}, 'analytics') }}
             </h1>
             <p class="text-muted">{{ 'analytics.forecast.subtitle'|trans({}, 'analytics') }}</p>
         </div>
         <div class="page-header-actions">
             <a href="{{ path('app_analytics_advanced') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'analytics.action.back_to_advanced'|trans({}, 'analytics') }}
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'analytics.action.back_to_advanced'|trans({}, 'analytics') }}
             </a>
         </div>
     </div>
@@ -51,7 +51,7 @@
                                 {{ predicted_count }}
                             </h2>
                         </div>
-                        <i class="bi bi-graph-up display-6 text-warning" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-bar-chart display-6 text-warning" aria-hidden="true"></i>
                     </div>
                     <small class="text-muted">{{ 'analytics.forecast.kpi.in_months'|trans({'%months%': 6}, 'analytics') }}</small>
                 {% endblock %}
@@ -67,7 +67,7 @@
                                 {% if net_velocity > 0 %}+{% endif %}{{ net_velocity }}
                             </h2>
                         </div>
-                        <i class="bi bi-speedometer2 display-6 text-info" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-dashboard display-6 text-info" aria-hidden="true"></i>
                     </div>
                     <small class="text-muted">{{ 'analytics.forecast.kpi.velocity_period'|trans({'%days%': 30}, 'analytics') }}</small>
                 {% endblock %}
@@ -94,17 +94,17 @@
     <ul class="nav nav-tabs mb-4" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#forecast-tab" type="button" role="tab">
-                <i class="bi bi-graph-up me-1" aria-hidden="true"></i> {{ 'analytics.forecast.tabs.forecast'|trans({}, 'analytics') }}
+                <i class="fa-icon fa-icon--nav-bar-chart me-1" aria-hidden="true"></i> {{ 'analytics.forecast.tabs.forecast'|trans({}, 'analytics') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#velocity-tab" type="button" role="tab">
-                <i class="bi bi-speedometer2 me-1" aria-hidden="true"></i> {{ 'analytics.forecast.tabs.velocity'|trans({}, 'analytics') }}
+                <i class="fa-icon fa-icon--nav-dashboard me-1" aria-hidden="true"></i> {{ 'analytics.forecast.tabs.velocity'|trans({}, 'analytics') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#appetite-tab" type="button" role="tab">
-                <i class="bi bi-sliders me-1" aria-hidden="true"></i> {{ 'analytics.forecast.tabs.appetite'|trans({}, 'analytics') }}
+                <i class="fa-icon fa-icon--nav-sliders me-1" aria-hidden="true"></i> {{ 'analytics.forecast.tabs.appetite'|trans({}, 'analytics') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -166,7 +166,7 @@
                             {% for level in ['critical', 'high', 'medium', 'low'] %}
                             <div class="d-flex justify-content-between mb-2">
                                 {% include '_components/_badge.html.twig' with { variant: level == 'critical' ? 'danger' : (level == 'high' ? 'warning' : (level == 'medium' ? 'info' : 'success')), content: level|title } %}
-                                <span>{{ attribute(last_hist, level)|default(0) }} <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ attribute(last_forecast, level)|default(0) }}</span>
+                                <span>{{ attribute(last_hist, level)|default(0) }} <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i> {{ attribute(last_forecast, level)|default(0) }}</span>
                             </div>
                             {% endfor %}
                             {% endif %}
@@ -390,7 +390,7 @@
                             <p>{{ anomaly.message }}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <small class="text-muted">
-                                    <i class="bi bi-bar-chart me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--nav-bar-chart me-1" aria-hidden="true"></i>
                                     Score: {{ anomaly.severity_score|round }}
                                 </small>
                                 {% if anomaly.week is defined %}

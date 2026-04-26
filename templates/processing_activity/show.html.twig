@@ -8,8 +8,8 @@
     {# Breadcrumb #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'processing_activity.breadcrumb.gdpr'|trans, url: path('app_processing_activity_index'), icon: 'bi-shield-check' },
-            { label: 'processing_activity.breadcrumb.vvt_short'|trans, url: path('app_processing_activity_index') },
+            { label: 'GDPR', url: path('app_processing_activity_index'), icon: 'bi-shield-check' },
+            { label: 'VVT', url: path('app_processing_activity_index') },
             { label: processing_activity.name }
         ]
     } %}
@@ -20,8 +20,8 @@
         subtitle: 'processing_activity.show.subtitle'|trans({}, 'privacy'),
         icon: 'bi-file-earmark-text',
         actions: [
-            { label: 'common.edit'|trans({}, 'messages'), url: path('app_processing_activity_edit', {id: processing_activity.id}), variant: 'primary', icon: 'bi-pencil' },
-            { label: 'processing_activity.action.clone'|trans, url: '#', variant: 'outline-secondary', icon: 'bi-files', attributes: 'data-action="clone"' },
+            { label: 'Edit', url: path('app_processing_activity_edit', {id: processing_activity.id}), variant: 'primary', icon: 'bi-pencil' },
+            { label: 'Clone', url: '#', variant: 'outline-secondary', icon: 'bi-files', attributes: 'data-action="clone"' },
             { label: 'Back to List', url: path('app_processing_activity_index'), variant: 'outline-secondary', icon: 'bi-arrow-left' }
         ]
     } %}
@@ -30,7 +30,7 @@
     {% if not compliance_report.is_compliant %}
         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
             {% block alert_body %}
-            <div class="fa-alert__title">{{ 'processing_activity.alert.compliance_issues'|trans }}</div>
+            <div class="fa-alert__title">Compliance Issues</div>
             <p>This processing activity has {{ compliance_report.validation_errors|length }} validation error(s):</p>
             <ul>
                 {% for error in compliance_report.validation_errors %}
@@ -47,7 +47,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.stat.completeness'|trans }}</div>
+                        <div class="text-muted mb-2 fw-semibold">Completeness</div>
                         {% set completeness = compliance_report.completeness_percentage %}
                         <div class="fs-2 fw-bold mb-0 {{ completeness == 100 ? 'text-success' : 'text-warning' }}">{{ completeness }}%</div>
                     </div>
@@ -58,7 +58,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.stat.status'|trans }}</div>
+                        <div class="text-muted mb-2 fw-semibold">Status</div>
                         <div class="fs-4 fw-bold mb-0"><span class="{{ badge_status(processing_activity.status) }}">{{ processing_activity.status|upper }}</span></div>
                     </div>
                 {% endblock %}
@@ -68,7 +68,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.stat.risk_level'|trans }}</div>
+                        <div class="text-muted mb-2 fw-semibold">Risk Level</div>
                         {% if processing_activity.riskLevel %}
                             <div class="fs-4 fw-bold mb-0"><span class="{{ badge_risk(processing_activity.riskLevel) }}">{{ processing_activity.riskLevel|upper }}</span></div>
                         {% else %}
@@ -82,17 +82,17 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.stat.dpia_status'|trans }}</div>
+                        <div class="text-muted mb-2 fw-semibold">DPIA Status</div>
                         {% if processing_activity.requiresDPIA %}
                             {% if processing_activity.dpiaCompleted %}
                                 <div class="fs-4 fw-bold mb-0 text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></div>
                                 <small class="text-muted">{{ processing_activity.dpiaDate|date('Y-m-d') }}</small>
                             {% else %}
                                 <div class="fs-4 fw-bold mb-0 text-danger"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i></div>
-                                <small class="text-danger">{{ 'processing_activity.dpia.required'|trans }}</small>
+                                <small class="text-danger">Required</small>
                             {% endif %}
                         {% else %}
-                            <div class="fs-4 fw-semibold mb-0 text-muted">{{ 'processing_activity.dpia.not_required'|trans }}</div>
+                            <div class="fs-4 fw-semibold mb-0 text-muted">Not Required</div>
                         {% endif %}
                     </div>
                 {% endblock %}
@@ -104,7 +104,7 @@
     <ul class="nav nav-tabs" id="processingActivityTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
-                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'processing_activity.show.tab.overview'|trans }}
+                <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> Overview
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -114,7 +114,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="compliance-tab" data-bs-toggle="tab" data-bs-target="#compliance" type="button" role="tab">
-                <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'processing_activity.show.tab.compliance'|trans }}
+                <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> Compliance
             </button>
         </li>
     </ul>
@@ -245,9 +245,9 @@
                                     <td>{{ check|replace({'_': ' '})|title }}</td>
                                     <td>
                                         {% if passed %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle-fill', content: 'processing_activity.compliance.pass'|trans } %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle-fill', content: 'Pass' } %}
                                         {% else %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle-fill', content: 'processing_activity.compliance.fail'|trans } %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle-fill', content: 'Fail' } %}
                                         {% endif %}
                                     </td>
                                 </tr>

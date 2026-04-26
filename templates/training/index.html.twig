@@ -33,7 +33,7 @@
         {% block card_body %}
             <form method="get" action="{{ path('app_training_index') }}" class="d-flex align-items-center gap-2">
                 <label for="view-filter" class="mb-0 fw-bold">
-                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
+                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
                 </label>
                 <select class="form-select form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
@@ -66,7 +66,7 @@
                     {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="bi bi-collection text-primary icon-2rem" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-collection text-primary icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
                                 <div class="text-muted mb-1 fw-semibold">{{ 'training.stats.total'|trans({}, 'training') }}</div>
@@ -89,7 +89,7 @@
                     {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="bi bi-calendar-check text-info icon-2rem" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-calendar-check text-info icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
                                 <div class="text-muted mb-1 fw-semibold">{{ 'training.stats.upcoming'|trans({}, 'training') }}</div>
@@ -192,7 +192,7 @@
                             <a href="{{ path('app_training_show', {id: training.id}) }}"
                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                data-turbo-action="advance">
-                                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
+                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
                             </a>
                         </td>
                     </tr>
@@ -281,14 +281,14 @@
                                    class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                    data-turbo-action="advance"
                                    title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                    <i class="bi bi-eye" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                 </a>
                                 {% if is_granted('ROLE_USER') %}
                                 <a href="{{ path('app_training_edit', {id: training.id}) }}"
                                    class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                    data-turbo-action="advance"
                                    title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                 </a>
                                 {% endif %}
                                 {% if is_granted('ROLE_ADMIN') %}
@@ -297,7 +297,7 @@
                                         data-bs-toggle="modal"
                                         data-bs-target="#deleteModal{{ training.id }}"
                                         title="{{ 'common.delete'|trans({}, 'messages') }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
-                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                                 </button>
                                 {% endif %}
                             </div>
@@ -341,7 +341,7 @@
                 <form method="post" action="{{ path('app_training_delete', {id: training.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ training.id) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
+                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                     </button>
                 </form>
             </div>

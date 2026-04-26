@@ -20,11 +20,11 @@
         <div>
             {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('app_compliance_framework_new') }}" class="fa-cyber-btn fa-cyber-btn--success">
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.framework.action.new'|trans({}, 'compliance') }}
+                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'compliance.framework.action.new'|trans({}, 'compliance') }}
                 </a>
             {% endif %}
             <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
             </a>
         </div>
     </div>
@@ -36,7 +36,7 @@
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header">
-                <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans({}, 'messages') }}
+                <i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans({}, 'messages') }}
             </div>
         {% endblock %}
         {% block card_body %}
@@ -69,7 +69,7 @@
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary me-2">
-                        <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
+                        <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                     </button>
                     <a href="{{ path('app_compliance_framework_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
@@ -152,16 +152,16 @@
                                     <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                         <a href="{{ path('app_compliance_framework_show', {id: framework.id}) }}"
                                            class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                         </a>
                                         <a href="{{ path('app_compliance_framework', {id: framework.id}) }}"
                                            class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'compliance.framework.action.dashboard'|trans({}, 'compliance') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                            <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i>
                                         </a>
                                         {% if is_granted('ROLE_ADMIN') %}
                                             <a href="{{ path('app_compliance_framework_edit', {id: framework.id}) }}"
                                                class="fa-cyber-btn fa-cyber-btn--warning" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                             </a>
                                         {% endif %}
                                     </div>

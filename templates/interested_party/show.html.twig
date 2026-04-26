@@ -16,7 +16,7 @@
     <div class="page-header">
         <h1>{{ interested_party.name }}</h1>
         <div class="actions">
-            <a href="{{ path('app_interested_party_edit', {id: interested_party.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
+            <a href="{{ path('app_interested_party_edit', {id: interested_party.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
             <a href="{{ path('app_interested_party_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') %}
                 <form method="post" action="{{ path('app_interested_party_delete', {id: interested_party.id}) }}" class="d-inline"
@@ -24,7 +24,7 @@
                       data-action="submit->ui-actions#confirm"
                       data-ui-actions-message-param="{{ 'interested_party.confirm.delete'|trans({}, 'interested_parties') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ interested_party.id) }}">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
                 </form>
             {% endif %}
         </div>

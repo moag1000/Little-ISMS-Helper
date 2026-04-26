@@ -12,7 +12,7 @@
             </h1>
             <p class="lead">
                 <a href="{{ path('app_admin_incident_sla_config') }}" class="text-decoration-none">
-                    <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'incident_sla.back_to_list'|trans({}, 'incident_sla') }}
+                    <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'incident_sla.back_to_list'|trans({}, 'incident_sla') }}
                 </a>
             </p>
         </div>
@@ -24,7 +24,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h3 class="h5 mb-0">
-                            <i class="bi bi-gear" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>
                             {{ 'incident_sla.section.edit'|trans({}, 'incident_sla') }}
                         </h3>
                     </div>
@@ -37,7 +37,7 @@
                         <div class="mb-3">{{ form_row(form.note, { attr: { class: 'form-control' } }) }}</div>
                         <div class="d-flex gap-2">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                                <i class="bi bi-save" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
                                 {{ 'common.save'|trans({}, 'messages') }}
                             </button>
                             <a href="{{ path('app_admin_incident_sla_config') }}" class="fa-cyber-btn fa-cyber-btn--ghost">

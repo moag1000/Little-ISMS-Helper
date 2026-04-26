@@ -10,7 +10,7 @@
 {% block admin_content %}
     <div class="mb-3">
         <a href="{{ path('monitoring_health') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'audit_log.action.back_to_health'|trans({}, 'audit_log') }}
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'audit_log.action.back_to_health'|trans({}, 'audit_log') }}
         </a>
     </div>
 
@@ -59,7 +59,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'audit_log.section.quick_filters'|trans({}, 'audit_log') }}
+                    <i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i> {{ 'audit_log.section.quick_filters'|trans({}, 'audit_log') }}
                 </h2>
             </div>
         {% endblock %}
@@ -119,7 +119,7 @@
                                     <small>{{ log.createdAt|date('Y-m-d H:i:s') }}</small>
                                 </td>
                                 <td>
-                                    <i class="bi bi-person" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i>
                                     {{ log.userName }}
                                 </td>
                                 <td>
@@ -144,7 +144,7 @@
                                                 class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#logModal{{ log.id }}">
-                                            <i class="bi bi-eye" aria-hidden="true"></i> {{ 'audit_log.table.view_details'|trans({}, 'audit_log') }}
+                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'audit_log.table.view_details'|trans({}, 'audit_log') }}
                                         </button>
                                     {% else %}
                                         <span class="text-muted">-</span>
@@ -196,7 +196,7 @@
                 {% endembed %}
             {% else %}
                 <div class="p-4 text-center">
-                    <i class="bi bi-info-circle text-info fs-1" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-info text-info fs-1" aria-hidden="true"></i>
                     <p class="mt-2">{{ 'audit_log.message.no_entries_filtered'|trans({}, 'audit_log') }}</p>
                 </div>
             {% endif %}

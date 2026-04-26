@@ -47,13 +47,13 @@
                 </ol>
             </nav>
             <h1>
-                <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'workflow.builder.heading'|trans({}, 'workflows') }}
+                <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'workflow.builder.heading'|trans({}, 'workflows') }}
                 <small class="text-muted">{{ workflow.name }}</small>
             </h1>
         </div>
         <div>
             <a href="{{ path('app_workflow_definition_show', {id: workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'workflow.action.back'|trans({}, 'workflows') }}
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'workflow.action.back'|trans({}, 'workflows') }}
             </a>
         </div>
     </div>
@@ -74,7 +74,7 @@
                     <div data-workflow-builder-target="notification"></div>
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 class="mb-0">
-                            <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'workflow.builder.steps'|trans({}, 'workflows') }}
+                            <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'workflow.builder.steps'|trans({}, 'workflows') }}
                         </h2>
                         <div class="d-flex align-items-center">
                             <span data-workflow-builder-target="loadingSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status">
@@ -98,7 +98,7 @@
                 {% block card_footer %}
                     <div class="card-footer">
                         <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-toggle="collapse" data-bs-target="#addStepForm">
-                            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'workflow.builder.add_step'|trans({}, 'workflows') }}
+                            <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'workflow.builder.add_step'|trans({}, 'workflows') }}
                         </button>
                     </div>
                 {% endblock %}
@@ -110,7 +110,7 @@
                     {% block card_header %}
                         <div class="card-header">
                             <h2 class="mb-0">
-                                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'workflow.builder.new_step'|trans({}, 'workflows') }}
+                                <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'workflow.builder.new_step'|trans({}, 'workflows') }}
                             </h2>
                         </div>
                     {% endblock %}
@@ -167,7 +167,7 @@
 
                             <div class="d-flex gap-2">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
-                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'workflow.builder.add_step'|trans({}, 'workflows') }}
+                                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'workflow.builder.add_step'|trans({}, 'workflows') }}
                                 </button>
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-toggle="collapse" data-bs-target="#addStepForm">
                                     {{ 'common.cancel'|trans({}, 'messages') }}
@@ -203,7 +203,7 @@
                         <button class="fa-cyber-btn fa-cyber-btn--success text-start"
                                 data-action="click->workflow-builder#applyTemplate"
                                 data-template-key="control_implementation">
-                            <i class="bi bi-sliders me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-sliders me-2" aria-hidden="true"></i>
                             <strong>{{ 'workflow.template.control_implementation'|trans({}, 'workflows') }}</strong>
                             <br>
                             <small class="text-muted">{{ 'workflow.template.control_implementation_desc'|trans({}, 'workflows') }}</small>
@@ -227,7 +227,7 @@
                         <button class="fa-cyber-btn fa-cyber-btn--ghost text-start"
                                 data-action="click->workflow-builder#applyTemplate"
                                 data-template-key="change_request">
-                            <i class="bi bi-arrow-repeat me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-workflow me-2" aria-hidden="true"></i>
                             <strong>{{ 'workflow.template.change_request'|trans({}, 'workflows') }}</strong>
                             <br>
                             <small class="text-muted">{{ 'workflow.template.change_request_desc'|trans({}, 'workflows') }}</small>
@@ -241,7 +241,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="mb-0">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.builder.info'|trans({}, 'workflows') }}
+                            <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'workflow.builder.info'|trans({}, 'workflows') }}
                         </h2>
                     </div>
                 {% endblock %}
@@ -273,18 +273,18 @@
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
                         <h2 class="mb-0">
-                            <i class="bi bi-question-circle" aria-hidden="true"></i> {{ 'workflow.builder.help'|trans({}, 'workflows') }}
+                            <i class="fa-icon fa-icon--nav-help" aria-hidden="true"></i> {{ 'workflow.builder.help'|trans({}, 'workflows') }}
                         </h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
                     <ul class="list-unstyled mb-0 small">
                         <li class="mb-2">
-                            <i class="bi bi-grip-vertical me-1" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--util-drag-handle me-1" aria-hidden="true"></i>
                             {{ 'workflow.builder.help_drag'|trans({}, 'workflows') }}
                         </li>
                         <li class="mb-2">
-                            <i class="bi bi-pencil text-primary me-1" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-edit text-primary me-1" aria-hidden="true"></i>
                             {{ 'workflow.builder.help_edit'|trans({}, 'workflows') }}
                         </li>
                         <li class="mb-2">
@@ -292,7 +292,7 @@
                             {{ 'workflow.builder.help_duplicate'|trans({}, 'workflows') }}
                         </li>
                         <li class="mb-2">
-                            <i class="bi bi-trash text-danger me-1" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-trash text-danger me-1" aria-hidden="true"></i>
                             {{ 'workflow.builder.help_delete'|trans({}, 'workflows') }}
                         </li>
                         <li>

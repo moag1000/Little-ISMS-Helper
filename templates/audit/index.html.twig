@@ -244,12 +244,12 @@
                                 <a href="{{ path('app_audit_show', {id: audit.id}) }}"
                                    class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                                    title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                    <i class="bi bi-eye" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                 </a>
                                 <a href="{{ path('app_audit_edit', {id: audit.id}) }}"
                                    class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                                    title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                 </a>
                                 <a href="{{ path('app_audit_export_pdf', {id: audit.id}) }}"
                                    class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
@@ -266,7 +266,7 @@
 
             {# No Results Message #}
             <div id="noResults" class="text-center p-5 d-none">
-                <i class="bi bi-search fs-3-text-muted-opacity-50" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-search fs-3-text-muted-opacity-50" aria-hidden="true"></i>
                 <p class="text-muted mt-3">{{ 'audit.filter.no_results'|trans({}, 'audit')}}</p>
             </div>
             {% else %}

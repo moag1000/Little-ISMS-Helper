@@ -8,7 +8,7 @@
 #}
 {% if suggested_tour is defined and suggested_tour %}
     <div class="guided-tour-banner" role="region" aria-label="{{ 'guided_tour.banner.aria_label'|trans({}, 'guided_tour') }}">
-        <i class="bi bi-stars guided-tour-banner-icon fairy-icon-sparkle" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--nav-stars guided-tour-banner-icon fairy-icon-sparkle" aria-hidden="true"></i>
         <div class="guided-tour-banner-content">
             <div class="guided-tour-banner-title">
                 {{ ('guided_tour.' ~ suggested_tour.id ~ '.meta.label')|trans({}, 'guided_tour') }}

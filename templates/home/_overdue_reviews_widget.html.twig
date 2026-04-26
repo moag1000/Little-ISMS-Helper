@@ -23,7 +23,7 @@
      data-dashboard-customizer-target="widget">
     <div class="widget-header {% if urgent_breaches > 0 %}bg-danger-subtle{% elseif total_overdue > 0 %}bg-warning-subtle{% else %}bg-success-subtle{% endif %}">
         <h3 class="widget-title {% if urgent_breaches > 0 %}text-danger{% elseif total_overdue > 0 %}text-warning{% else %}text-success{% endif %}">
-            <i class="bi bi-calendar-check" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
             {{ 'dashboard.widget.overdue_reviews.title'|trans({}, 'dashboard') }}
         </h3>
         {% if total_overdue > 0 or urgent_breaches > 0 %}
@@ -42,7 +42,7 @@
                     <strong>{{ 'dashboard.widget.overdue_reviews.breach_alert'|trans({count: urgent_breaches}, 'dashboard') }}</strong>
                     <div class="small">{{ 'dashboard.widget.overdue_reviews.breach_alert_desc'|trans({}, 'dashboard') }}</div>
                     <a href="{{ path('app_data_breach_index') }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger mt-2">
-                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                         {{ 'dashboard.widget.overdue_reviews.view_breaches'|trans({}, 'dashboard') }}
                     </a>
                 {% endblock %}
@@ -185,12 +185,12 @@
     <div class="widget-footer small">
         <div class="d-flex justify-content-between align-items-center px-3 py-2">
             <span class="text-muted">
-                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                 ISO 27001 | ISO 22301 | GDPR Art. 35
             </span>
             <a href="{{ path('app_risk_index') }}" class="text-decoration-none small">
                 {{ 'dashboard.widget.overdue_reviews.manage'|trans({}, 'dashboard') }}
-                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
             </a>
         </div>
     </div>

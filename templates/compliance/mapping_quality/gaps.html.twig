@@ -184,7 +184,7 @@
                         </td>
                         <td>
                             <a href="{{ path('app_mapping_quality_review', {id: gap.mapping.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'compliance.mapping_quality.column.action'|trans({}, 'compliance') }}
+                                <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i> {{ 'compliance.mapping_quality.column.action'|trans({}, 'compliance') }}
                             </a>
                         </td>
                     </tr>
@@ -288,13 +288,13 @@
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             <div class="card-header">
-                <h3 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.actions.title'|trans({}, 'compliance') }}</h3>
+                <h3 class="mb-0"><i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.actions.title'|trans({}, 'compliance') }}</h3>
             </div>
         {% endblock %}
         {% block card_body %}
             <div class="row">
                 <div class="col-md-4">
-                    <h4><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.actions.prioritization'|trans({}, 'compliance') }}</h4>
+                    <h4><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.actions.prioritization'|trans({}, 'compliance') }}</h4>
                     <ol>
                         <li>{{ 'compliance.mapping_quality.gaps.actions.critical_first'|trans({}, 'compliance') }} ({{ gap_stats_by_priority[0].count ?? 0 }})</li>
                         <li>{{ 'compliance.mapping_quality.gaps.actions.high_priority'|trans({}, 'compliance') }} ({{ gap_stats_by_priority[1].count ?? 0 }})</li>

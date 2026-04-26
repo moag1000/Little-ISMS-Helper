@@ -18,7 +18,7 @@
             <p class="text-muted mb-0">{{ 'kpi_threshold.page.subtitle'|trans({}, 'admin') }}</p>
         </div>
         <a href="{{ path('admin_kpi_threshold_new') }}" class="fa-cyber-btn fa-cyber-btn--primary">
-            <i class="bi bi-plus-lg" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
             {{ 'kpi_threshold.action.new'|trans({}, 'admin') }}
         </a>
     </div>
@@ -53,12 +53,12 @@
                                 <td>{{ c.updatedAt ? c.updatedAt|date('Y-m-d H:i') : c.createdAt|date('Y-m-d H:i') }}</td>
                                 <td class="text-end">
                                     <a href="{{ path('admin_kpi_threshold_edit', {id: c.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                     </a>
                                     <form method="post" action="{{ path('admin_kpi_threshold_delete', {id: c.id}) }}" class="d-inline" onsubmit="return confirm('{{ 'kpi_threshold.confirm.delete'|trans({}, 'admin') }}');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete_kth_' ~ c.id) }}">
                                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
-                                            <i class="bi bi-trash" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                                         </button>
                                     </form>
                                 </td>

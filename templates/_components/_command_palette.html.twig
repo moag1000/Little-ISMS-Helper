@@ -51,7 +51,7 @@
             <span class="command-palette-alva" aria-hidden="true">{{ faAlva.render('thinking', { size: 24 })|raw }}</span>
             {# Search Input #}
             <div class="command-palette-search">
-                <i class="bi bi-search command-palette-search-icon" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-search command-palette-search-icon" aria-hidden="true"></i>
                 <label>
                     <input
                         type="text"
@@ -73,7 +73,7 @@
 
             {# No Results State #}
             <div class="command-palette-no-results hidden" data-command-palette-target="noResults">
-                <i class="bi bi-search" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
                 <p>{{ 'ui.command_palette.no_results'|trans({}, 'ui') }}</p>
                 <small>{{ 'ui.command_palette.no_results_hint'|trans({}, 'ui') }}</small>
             </div>

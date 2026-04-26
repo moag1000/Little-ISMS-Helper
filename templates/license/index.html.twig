@@ -39,10 +39,10 @@
                         <i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>NOTICE
                     </a>
                     <a href="{{ path('app_licenses_report') }}" class="list-group-item list-group-item-action">
-                        <i class="bi bi-file-earmark-bar-graph me-2" aria-hidden="true"></i>Detaillierter Bericht
+                        <i class="fa-icon fa-icon--nav-reports me-2" aria-hidden="true"></i>Detaillierter Bericht
                     </a>
                     <a href="{{ path('app_licenses_summary') }}" class="list-group-item list-group-item-action">
-                        <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>Zusammenfassung
+                        <i class="fa-icon fa-icon--nav-bar-chart me-2" aria-hidden="true"></i>Zusammenfassung
                     </a>
                 </div>
                 <div class="h6 mb-2 fw-semibold mt-3">Projekt</div>
@@ -56,7 +56,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="h5 mb-0">
-                            <i class="bi bi-tools me-2" aria-hidden="true"></i>Aktionen
+                            <i class="fa-icon fa-icon--nav-tools me-2" aria-hidden="true"></i>Aktionen
                         </h2>
                     </div>
                 {% endblock %}
@@ -66,7 +66,7 @@
                             <i class="bi bi-printer me-1" aria-hidden="true"></i>Drucken
                         </button>
                         <a href="{{ asset('NOTICE.md') }}" download class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                            <i class="bi bi-download me-1" aria-hidden="true"></i>NOTICE.md
+                            <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>NOTICE.md
                         </a>
                     </div>
                 {% endblock %}
@@ -79,7 +79,7 @@
                 {% block alert_body %}
                 <div class="d-flex align-items-center">
                     <div class="flex-shrink-0">
-                        <i class="bi bi-check-circle-fill fs-3 me-3" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-check-circle-fill fs-3 me-3" aria-hidden="true"></i>
                     </div>
                     <div>
                         <div class="fa-alert__title"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> Lizenzkonform für kommerzielle Nutzung</div>
@@ -102,10 +102,10 @@
                             </h2>
                             <div class="btn-group btn-group-sm" role="group" data-controller="ui-actions">
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="ui-actions#setFontSize" data-ui-actions-size-param="14px" data-ui-actions-target-param="#license-content">
-                                    <i class="bi bi-zoom-out" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--util-zoom-out" aria-hidden="true"></i>
                                 </button>
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="ui-actions#setFontSize" data-ui-actions-size-param="16px" data-ui-actions-target-param="#license-content">
-                                    <i class="bi bi-zoom-in" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--util-zoom-in" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>

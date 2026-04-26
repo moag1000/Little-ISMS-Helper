@@ -67,7 +67,7 @@
                             <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                         </a>
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
                         </button>
                     </div>
 
@@ -83,8 +83,8 @@
                 {% endblock %}
                 {% block card_body %}
                     <ul class="list-unstyled small">
-                        <li><i class="bi bi-link-45deg" aria-hidden="true"></i> {{ requirement.mappedControls|length }} {{ 'compliance.requirement.info.mapped_controls'|trans({}, 'compliance') }}</li>
-                        <li><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ requirement.detailedRequirements|length }} {{ 'compliance.requirement.info.sub_requirements'|trans({}, 'compliance') }}</li>
+                        <li><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i> {{ requirement.mappedControls|length }} {{ 'compliance.requirement.info.mapped_controls'|trans({}, 'compliance') }}</li>
+                        <li><i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ requirement.detailedRequirements|length }} {{ 'compliance.requirement.info.sub_requirements'|trans({}, 'compliance') }}</li>
                         <li><i class="bi bi-calendar" aria-hidden="true"></i> {{ 'common.created'|trans({}, 'messages') }} {{ requirement.createdAt|date('Y-m-d') }}</li>
                     </ul>
                 {% endblock %}

@@ -27,7 +27,7 @@
 
     {% if fallback_used %}
         <div class="alert alert-info small">
-            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
             <strong>Hinweis:</strong>
             Wizard-Daten in <code>fixtures/mris/help-texts.yaml</code> unter
             <code>blocker_solutions:</code> pflegen, damit dieser Inhalt
@@ -39,7 +39,7 @@
     {# 4-Step-Decision-Flow als nummerierte Karten. #}
     {% if matrix.decision_flow is defined and matrix.decision_flow|length > 0 %}
         <h2 class="h5 mt-2 mb-3">
-            <i class="bi bi-diagram-3" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
             4-Schritt-Decision-Flow
         </h2>
         <div class="row g-3 mb-4">

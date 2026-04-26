@@ -26,7 +26,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h3 class="mb-0">
-                    <i class="bi bi-file-earmark-arrow-up" aria-hidden="true"></i> {{ 'admin.data_export.configure_title'|trans({}, 'admin') }}
+                    <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i> {{ 'admin.data_export.configure_title'|trans({}, 'admin') }}
                 </h3>
             </div>
         {% endblock %}
@@ -61,10 +61,10 @@
 
                     <div class="mb-2" role="group" aria-labelledby="entity-selection-label" data-controller="ui-actions">
                         <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" data-action="ui-actions#selectAll" data-ui-actions-container-param=".row">
-                            <i class="bi bi-check-all" aria-hidden="true"></i> {{ 'admin.data_export.select_all'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--ui-check-all" aria-hidden="true"></i> {{ 'admin.data_export.select_all'|trans({}, 'admin') }}
                         </button>
                         <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" data-action="ui-actions#deselectAll" data-ui-actions-container-param=".row">
-                            <i class="bi bi-x" aria-hidden="true"></i> {{ 'admin.data_export.deselect_all'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'admin.data_export.deselect_all'|trans({}, 'admin') }}
                         </button>
                     </div>
 
@@ -90,7 +90,7 @@
                 {# Submit Button #}
                 <div class="d-grid gap-2">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
-                        <i class="bi bi-download" aria-hidden="true"></i> {{ 'admin.data_export.submit'|trans({}, 'admin') }}
+                        <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i> {{ 'admin.data_export.submit'|trans({}, 'admin') }}
                     </button>
                 </div>
             </form>

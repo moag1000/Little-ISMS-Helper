@@ -14,19 +14,19 @@
     {% block card_header %}
         <div class="card-header">
             <h2 class="card-title">
-                <i class="bi bi-grid-3x3-gap text-danger" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-grid text-danger" aria-hidden="true"></i>
                 {{ 'analytics.card.risk_heat_map'|trans({}, 'analytics') }}
             </h2>
             <div class="card-actions">
                 <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                         data-action="click->heat-map#toggleFilters"
                         title="{{ 'analytics.action.filter'|trans({}, 'analytics') }}">
-                    <i class="bi bi-funnel" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i>
                 </button>
                 <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                         data-action="click->heat-map#refresh"
                         title="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}">
-                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
                 </button>
                 <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                         data-action="click->heat-map#exportImage"

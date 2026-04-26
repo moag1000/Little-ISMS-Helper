@@ -4,7 +4,7 @@
 {% block title %}{{ 'admin.data_repair.title'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_title %}
-    <i class="bi bi-tools" aria-hidden="true"></i> {{ 'admin.data_repair.title'|trans({}, 'admin') }}
+    <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'admin.data_repair.title'|trans({}, 'admin') }}
 {% endblock %}
 
 {% block admin_content %}
@@ -35,11 +35,11 @@
         </ul>
         <div class="d-flex gap-2 align-items-center">
             <a href="{{ path('data_backup_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                <i class="bi bi-hdd" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-hdd" aria-hidden="true"></i>
                 {{ 'admin.data_repair.safety.action_backup'|trans({}, 'admin') }}
             </a>
             <a href="{{ path('app_audit_log_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                <i class="bi bi-journal-text" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i>
                 {{ 'admin.data_repair.safety.action_audit_log'|trans({}, 'admin') }}
             </a>
             <span class="small text-muted ms-auto">
@@ -62,7 +62,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-heart-pulse" aria-hidden="true"></i> Data Health Score: {{ summary.health_score }}%
+                    <i class="fa-icon fa-icon--nav-heart-pulse" aria-hidden="true"></i> Data Health Score: {{ summary.health_score }}%
                 </h2>
             </div>
         {% endblock %}
@@ -80,7 +80,7 @@
                     {% embed '_components/_card.html.twig' with { 'class': 'text-center ' ~ (summary.broken_references_count > 0 ? 'bg-danger' : 'bg-success') ~ ' bg-opacity-10' } %}
                         {% block card_body %}
                             <h3 class="text-{% if summary.broken_references_count > 0 %}danger{% else %}success{% endif %}">{{ summary.broken_references_count }}</h3>
-                            <p class="mb-0"><i class="bi bi-link-45deg" aria-hidden="true"></i> Broken References</p>
+                            <p class="mb-0"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i> Broken References</p>
                         {% endblock %}
                     {% endembed %}
                 </div>
@@ -88,7 +88,7 @@
                     {% embed '_components/_card.html.twig' with { 'class': 'text-center ' ~ (summary.duplicates_count > 0 ? 'bg-warning' : 'bg-success') ~ ' bg-opacity-10' } %}
                         {% block card_body %}
                             <h3 class="text-{% if summary.duplicates_count > 0 %}warning{% else %}success{% endif %}">{{ summary.duplicates_count }}</h3>
-                            <p class="mb-0"><i class="bi bi-files" aria-hidden="true"></i> Duplicates</p>
+                            <p class="mb-0"><i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i> Duplicates</p>
                         {% endblock %}
                     {% endembed %}
                 </div>
@@ -108,7 +108,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-tools" aria-hidden="true"></i> Quick Fix Tools
+                    <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> Quick Fix Tools
                 </h2>
             </div>
         {% endblock %}
@@ -237,7 +237,7 @@
                         </div>
                         <div class="col-md-4">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning w-100">
-                                <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'admin.data_repair.assign_orphans'|trans({}, 'admin') }}
+                                <i class="fa-icon fa-icon--util-arrow-right-circle" aria-hidden="true"></i> {{ 'admin.data_repair.assign_orphans'|trans({}, 'admin') }}
                             </button>
                         </div>
                     </div>
@@ -276,7 +276,7 @@
                                                 {% endfor %}
                                             </select>
                                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.apply'|trans({}, 'messages') }}">
-                                                <i class="bi bi-check" aria-hidden="true"></i>
+                                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                                             </button>
                                         </div>
                                     </form>
@@ -320,7 +320,7 @@
                                                 {% endfor %}
                                             </select>
                                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.apply'|trans({}, 'messages') }}">
-                                                <i class="bi bi-check" aria-hidden="true"></i>
+                                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                                             </button>
                                         </div>
                                     </form>
@@ -364,7 +364,7 @@
                                                 {% endfor %}
                                             </select>
                                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.apply'|trans({}, 'messages') }}">
-                                                <i class="bi bi-check" aria-hidden="true"></i>
+                                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                                             </button>
                                         </div>
                                     </form>
@@ -384,7 +384,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-building" aria-hidden="true"></i> {{ 'admin.data_repair.tenant_statistics'|trans({}, 'admin') }}
+                    <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'admin.data_repair.tenant_statistics'|trans({}, 'admin') }}
                 </h2>
             </div>
         {% endblock %}
@@ -487,7 +487,7 @@
                                         {% endfor %}
                                     </select>
                                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view_details'|trans({}, 'messages') }}">
-                                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </form>
@@ -558,7 +558,7 @@
                                         {% endfor %}
                                     </select>
                                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view_details'|trans({}, 'messages') }}">
-                                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </form>
@@ -620,7 +620,7 @@
                                         {% endfor %}
                                     </select>
                                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                        <i class="bi bi-link" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </form>
@@ -682,7 +682,7 @@
                                         {% endfor %}
                                     </select>
                                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                        <i class="bi bi-link" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </form>
@@ -701,7 +701,7 @@
         {% block card_header %}
             <div class="card-header bg-warning-subtle text-warning">
                 <h2 class="mb-0">
-                    <i class="bi bi-files" aria-hidden="true"></i> Duplicate Audit Numbers
+                    <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i> Duplicate Audit Numbers
                 </h2>
             </div>
         {% endblock %}
@@ -740,7 +740,7 @@
         {% block card_header %}
             <div class="card-header bg-warning-subtle text-warning">
                 <h2 class="mb-0">
-                    <i class="bi bi-files" aria-hidden="true"></i> Duplicate Asset Names
+                    <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i> Duplicate Asset Names
                 </h2>
             </div>
         {% endblock %}

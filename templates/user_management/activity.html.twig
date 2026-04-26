@@ -11,7 +11,7 @@
             {{ 'user.activity.title'|trans({}, 'user') }}: {{ user.fullName }}
         </h1>
         <a href="{{ path('user_management_show', {id: user.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 
@@ -47,7 +47,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'user.activity.timeline'|trans({}, 'user') }}
+                    <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'user.activity.timeline'|trans({}, 'user') }}
                 </h2>
             </div>
         {% endblock %}
@@ -83,7 +83,7 @@
                                                 </div>
                                                 {% if activity.ipAddress %}
                                                     <small class="text-muted">
-                                                        <i class="bi bi-geo-alt" aria-hidden="true"></i>
+                                                        <i class="fa-icon fa-icon--nav-location" aria-hidden="true"></i>
                                                         <code>{{ activity.ipAddress }}</code>
                                                     </small>
                                                 {% endif %}

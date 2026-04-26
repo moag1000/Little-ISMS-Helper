@@ -43,7 +43,7 @@
 
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
-            <div class="card-header"><h2 class="mb-0"><i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'objective.list.title'|trans({'%count%': objectives|length}, 'objective') }}</h2></div>
+            <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i> {{ 'objective.list.title'|trans({'%count%': objectives|length}, 'objective') }}</h2></div>
         {% endblock %}
         {% block card_body %}
             {% if objectives|length == 0 %}
@@ -83,9 +83,9 @@
                         </td>
                         <td>{% include '_components/_badge.html.twig' with { variant: objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning'), content: ('objective.status.' ~ objective.status)|trans({}, 'objective') } %}</td>
                         <td>
-                            <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}" title="{{ 'common.view'|trans({}, 'messages') }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
+                            <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}" title="{{ 'common.view'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>
                             {% if is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.edit'|trans({}, 'messages') }}" title="{{ 'common.edit'|trans({}, 'messages') }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                            <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.edit'|trans({}, 'messages') }}" title="{{ 'common.edit'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i></a>
                             {% endif %}
                         </td>
                     </tr>

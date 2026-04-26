@@ -14,13 +14,13 @@
     } %}
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-diagram-2" aria-hidden="true"></i> Compliance Mapping</h1>
+        <h1><i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i> Compliance Mapping</h1>
         <div>
             <a href="{{ path('app_compliance_mapping_edit', {id: mapping.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-pencil" aria-hidden="true"></i> Edit
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> Edit
             </a>
             <a href="{{ path('app_compliance_mapping_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to List
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> Back to List
             </a>
         </div>
     </div>
@@ -31,7 +31,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="mb-0"><i class="bi bi-diagram-2" aria-hidden="true"></i> {{ 'compliance.mapping.overview'|trans({}, 'compliance') }}</h2>
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i> {{ 'compliance.mapping.overview'|trans({}, 'compliance') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -49,7 +49,7 @@
                         </div>
                         <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
                             <div>
-                                <i class="bi bi-arrow-right fs-1 text-primary" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--util-arrow-right fs-1 text-primary" aria-hidden="true"></i>
                                 <br>
                                 {% include '_components/_badge.html.twig' with { variant: mapping.mappingBadgeClass, content: mapping.finalPercentage ~ '%', class: 'mt-2' } %}
                             </div>
@@ -197,7 +197,7 @@
                     <form method="post" action="{{ path('app_compliance_mapping_analyze', {id: mapping.id}) }}" class="mt-3">
                         <input type="hidden" name="_token" value="{{ csrf_token('analyze' ~ mapping.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">
-                            <i class="bi bi-graph-up-arrow" aria-hidden="true"></i> Run Analysis
+                            <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> Run Analysis
                         </button>
                     </form>
                 {% endblock %}
@@ -237,7 +237,7 @@
                           data-ui-actions-message-param="{{ 'compliance.mapping.confirm.delete'|trans({}, 'compliance') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ mapping.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">
-                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'compliance.action.delete_mapping'|trans({}, 'compliance') }}
+                            <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'compliance.action.delete_mapping'|trans({}, 'compliance') }}
                         </button>
                     </form>
                 {% endblock %}

@@ -11,7 +11,7 @@
                 {% embed '_components/_card.html.twig' with {borderColor: 'warning', class: 'shadow-sm', urgent_tasks: urgent_tasks, total_urgent_count: total_urgent_count} only %}
                     {% block card_header %}
                         <div class="card-header bg-warning-subtle d-flex align-items-center">
-                            <i class="bi bi-bell-fill text-warning me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-bell text-warning me-2" aria-hidden="true"></i>
                             <h2 class="h5 mb-0">{{ 'welcome.urgent_tasks.title'|trans({}, 'welcome') }}</h2>
                             {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'ms-auto', content: total_urgent_count } only %}
                         </div>
@@ -92,7 +92,7 @@
                 {# Quick Action Buttons #}
                 <div class="d-flex justify-content-center gap-3 flex-wrap">
                     <a href="{{ path('app_dashboard') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
-                        <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-dashboard me-2" aria-hidden="true"></i>
                         {{ 'welcome.action.dashboard'|trans({}, 'welcome') }}
                     </a>
                     {% if total_urgent_count > 0 %}
@@ -167,7 +167,7 @@
     <div class="row justify-content-center mb-5">
         <div class="col-lg-10 col-xl-8">
             <h2 class="h4 mb-4 text-center">
-                <i class="bi bi-grid-3x3-gap me-2" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-grid me-2" aria-hidden="true"></i>
                 {{ 'welcome.modules.title'|trans({}, 'welcome') }}
             </h2>
             <div class="row g-3">
@@ -179,7 +179,7 @@
                                 <a href="{{ path(module.create_route) }}"
                                    class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm position-absolute top-0 end-0 m-2 module-create-btn"
                                    title="{{ 'welcome.create_new'|trans({}, 'welcome') }}">
-                                    <i class="bi bi-plus" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
                                 </a>
                             {% endif %}
                             <a href="{{ path(module.route) }}" class="text-decoration-none">
@@ -224,7 +224,7 @@
                             </label>
                         </div>
                         <small class="text-muted">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                             {{ 'welcome.preference.hint'|trans({}, 'welcome') }}
                         </small>
                         <small class="text-muted d-block mt-1">
@@ -241,7 +241,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-10 col-xl-8">
                 <div class="text-center text-muted small py-3">
-                    <i class="bi bi-building me-1" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-building me-1" aria-hidden="true"></i>
                     {{ 'welcome.footer.tenant'|trans({'%tenant%': tenant.name}, 'welcome') }}
                 </div>
             </div>

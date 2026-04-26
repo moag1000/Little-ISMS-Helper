@@ -18,7 +18,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <a href="{{ path('admin_modules_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost mb-3">
-                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--util-arrow-left me-2" aria-hidden="true"></i>
                 {{ 'common.back_to_overview'|trans({}, 'messages') }}
             </a>
 
@@ -41,7 +41,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="mb-0">
-                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-info me-2" aria-hidden="true"></i>
                             Modul-Informationen
                         </h2>
                     </div>
@@ -88,7 +88,7 @@
                     {% block card_header %}
                         <div class="card-header">
                             <h2 class="mb-0">
-                                <i class="bi bi-diagram-3 me-2" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-process me-2" aria-hidden="true"></i>
                                 Abhängigkeiten
                             </h2>
                         </div>
@@ -96,7 +96,7 @@
                     {% block card_body %}
                         {% if graph.dependencies|length > 0 %}
                             <h3 class="mb-2">
-                                <i class="bi bi-link text-warning me-2" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-link text-warning me-2" aria-hidden="true"></i>
                                 Benötigt folgende Module:
                             </h3>
                             <div class="mb-4">
@@ -108,7 +108,7 @@
 
                         {% if graph.dependents|length > 0 %}
                             <h3 class="mb-2">
-                                <i class="bi bi-arrow-right text-info me-2" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--util-arrow-right text-info me-2" aria-hidden="true"></i>
                                 Wird benötigt von:
                             </h3>
                             <div>
@@ -152,7 +152,7 @@
                                 </div>
                             {% endfor %}
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary mt-3">
-                                <i class="bi bi-download me-2" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-download me-2" aria-hidden="true"></i>
                                 Ausgewählte Daten importieren
                             </button>
                         </form>
@@ -181,13 +181,13 @@
                                       data-action="submit->ui-actions#confirm"
                                       data-ui-actions-message-param="Modul {{ module.name }} wirklich deaktivieren?">
                                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
-                                        <i class="bi bi-x" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                                         Modul deaktivieren
                                     </button>
                                 </form>
                             {% else %}
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" disabled>
-                                    <i class="bi bi-lock" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i>
                                     Modul ist erforderlich
                                 </button>
                             {% endif %}
@@ -199,14 +199,14 @@
                         {% else %}
                             <form method="post" action="{{ path('admin_modules_activate', {moduleKey: module_key}) }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--success w-100">
-                                    <i class="bi bi-check" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                                     Modul aktivieren
                                 </button>
                             </form>
                         {% endif %}
 
                         <a href="{{ path('admin_modules_graph') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="bi bi-diagram-3 me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-process me-2" aria-hidden="true"></i>
                             Dependency-Graph
                         </a>
                     </div>

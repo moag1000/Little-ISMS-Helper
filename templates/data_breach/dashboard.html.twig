@@ -82,7 +82,7 @@
                                     {% elseif item.priority == 'high' %}
                                         <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                     {% elseif item.priority == 'medium' %}
-                                        <i class="bi bi-info-circle text-info" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-info text-info" aria-hidden="true"></i>
                                     {% else %}
                                         <i class="bi bi-circle text-secondary" aria-hidden="true"></i>
                                     {% endif %}
@@ -119,7 +119,7 @@
         <div class="col-md-12">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> Breach Statistics by Status</h2></div>
+                    <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> Breach Statistics by Status</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     <div class="row">
@@ -200,7 +200,7 @@
     {% if recent_breaches|length > 0 %}
         {% embed '_components/_card.html.twig' with {class: 'mb-4', noPadding: true} %}
             {% block card_header %}
-                <div class="card-header"><h2 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> Recent Breaches (Last 30 Days)</h2></div>
+                <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> Recent Breaches (Last 30 Days)</h2></div>
             {% endblock %}
             {% block card_body %}
                 {% embed '_components/_table.html.twig' with {

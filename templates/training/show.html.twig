@@ -82,7 +82,7 @@
                     {% if training.targetAudience %}
                     <div class="mb-3">
                         <div class="text-muted mb-2 fw-semibold">
-                            <i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'training.target_audience'|trans({}, 'training')}}
+                            <i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i> {{ 'training.target_audience'|trans({}, 'training')}}
                         </div>
                         <p>{{ training.targetAudience }}</p>
                     </div>
@@ -114,7 +114,7 @@
                     <p>{{ training.participants|nl2br }}</p>
                     {% else %}
                     <p class="text-muted mb-0">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'training.no_participants'|trans({}, 'training')}}
+                        <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'training.no_participants'|trans({}, 'training')}}
                     </p>
                     {% endif %}
                 {% endblock %}
@@ -158,7 +158,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
-                        <h2 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -167,14 +167,14 @@
                         <a href="{{ path('app_training_edit', {id: training.id}) }}"
                            class="fa-cyber-btn fa-cyber-btn--primary"
                            data-turbo-action="advance">
-                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                         </a>
                         {% endif %}
 
                         <a href="{{ path('app_training_index') }}"
                            class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance">
-                            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
                         </a>
 
                         {% if is_granted('ROLE_ADMIN') %}
@@ -183,7 +183,7 @@
                                 class="fa-cyber-btn fa-cyber-btn--danger"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal">
-                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                         </button>
                         {% endif %}
                     </div>
@@ -249,7 +249,7 @@
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
                         <h2 class="mb-0">
-                            <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'training.statistics'|trans({}, 'training') }}
+                            <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'training.statistics'|trans({}, 'training') }}
                         </h2>
                     </div>
                 {% endblock %}
@@ -281,7 +281,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
-                        <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -322,7 +322,7 @@
                 <form method="post" action="{{ path('app_training_delete', {id: training.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ training.id) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
+                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                     </button>
                 </form>
             </div>

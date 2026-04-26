@@ -103,7 +103,7 @@
                                     class="dropdown-item"
                                     data-action="click->bulk-actions#bulkExport"
                                     aria-label="{{ 'tags.bulk.export'|trans({}, 'tags') }}">
-                                <i class="bi bi-download me-1" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>
                                 {{ 'tags.bulk.export'|trans({}, 'tags') }}
                             </button>
                         </li>
@@ -115,7 +115,7 @@
                     class="fa-cyber-btn fa-cyber-btn--ghost ms-auto"
                     data-action="click->bulk-actions#deselectAll"
                     aria-label="{{ 'tags.bulk.clear_selection'|trans({}, 'tags') }}">
-                <i class="bi bi-x-lg" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                 {{ 'tags.bulk.clear_selection'|trans({}, 'tags') }}
             </button>
         </div>
@@ -158,7 +158,7 @@
                         <button type="button"
                                 class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
                                 data-action="click->bulk-actions#submitTagApply">
-                            <i class="bi bi-check2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                             {{ 'tags.bulk.apply'|trans({}, 'tags') }}
                         </button>
                         <button type="button"
@@ -190,7 +190,7 @@
                 <button type="button"
                         class="bulk-action-fa-cyber-btn bulk-action-fa-cyber-btn--success"
                         data-action="click->bulk-actions#bulkExport">
-                    <i class="bi bi-download" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                     {{ 'bulk_actions.export'|trans({}, 'messages') }}
                 </button>
             {% endif %}
@@ -208,7 +208,7 @@
                 <button type="button"
                         class="bulk-action-btn"
                         data-action="click->bulk-actions#bulkAssign">
-                    <i class="bi bi-person" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i>
                     {{ 'bulk_actions.assign'|trans({}, 'messages') }}
                 </button>
             {% endif %}
@@ -217,7 +217,7 @@
                 <button type="button"
                         class="bulk-action-fa-cyber-btn bulk-action-fa-cyber-btn--danger"
                         data-action="click->bulk-actions#bulkDelete">
-                    <i class="bi bi-trash" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                     {{ 'bulk_actions.delete'|trans({}, 'messages') }}
                 </button>
             {% endif %}
@@ -228,7 +228,7 @@
                 data-action="click->bulk-actions#deselectAll"
                 title="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}"
                 aria-label="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}">
-            <i class="bi bi-x-lg" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
         </button>
     </div>
 {% endif %}

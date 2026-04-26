@@ -14,7 +14,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h3 class="mb-0">
-                            <i class="bi bi-cloud-download" aria-hidden="true"></i> {{ 'data_management.backup.section.create'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i> {{ 'data_management.backup.section.create'|trans({}, 'admin') }}
                         </h3>
                     </div>
                 {% endblock %}
@@ -45,7 +45,7 @@
                             </div>
                         </div>
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary" id="createBackupBtn">
-                            <i class="bi bi-cloud-download me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.create_now'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--nav-download me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.create_now'|trans({}, 'admin') }}
                         </button>
                     </form>
                     <div id="createBackupStatus" class="mt-3"></div>
@@ -61,7 +61,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h3 class="mb-0">
-                            <i class="bi bi-cloud-upload" aria-hidden="true"></i> {{ 'data_management.backup.section.upload'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i> {{ 'data_management.backup.section.upload'|trans({}, 'admin') }}
                         </h3>
                     </div>
                 {% endblock %}
@@ -79,7 +79,7 @@
                             <div class="form-text">{{ 'data_management.backup.upload.allowed_formats'|trans({}, 'admin') }}</div>
                         </div>
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost" id="uploadBackupBtn">
-                            <i class="bi bi-cloud-upload me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.upload'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--nav-upload me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.upload'|trans({}, 'admin') }}
                         </button>
                     </form>
                     <div id="uploadBackupStatus" class="mt-3"></div>
@@ -132,19 +132,19 @@
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
                                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost validate-backup" data-filename="{{ backup.filename }}" data-token="{{ csrf_token('data_backup_validate') }}">
-                                                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'data_management.backup.action.validate'|trans({}, 'admin') }}
+                                                    <i class="fa-icon fa-icon--ui-check-circle" aria-hidden="true"></i> {{ 'data_management.backup.action.validate'|trans({}, 'admin') }}
                                                 </button>
                                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost preview-backup" data-filename="{{ backup.filename }}">
-                                                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'data_management.backup.action.preview'|trans({}, 'admin') }}
+                                                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'data_management.backup.action.preview'|trans({}, 'admin') }}
                                                 </button>
                                                 <a href="{{ path('data_backup_download', {filename: backup.filename}) }}" class="fa-cyber-btn fa-cyber-btn--success">
-                                                    <i class="bi bi-download" aria-hidden="true"></i> {{ 'data_management.backup.action.download'|trans({}, 'admin') }}
+                                                    <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i> {{ 'data_management.backup.action.download'|trans({}, 'admin') }}
                                                 </a>
                                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--warning restore-backup" data-filename="{{ backup.filename }}">
-                                                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'data_management.backup.action.restore_action'|trans({}, 'admin') }}
+                                                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'data_management.backup.action.restore_action'|trans({}, 'admin') }}
                                                 </button>
                                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--danger delete-backup" data-filename="{{ backup.filename }}" data-token="{{ csrf_token('data_backup_delete') }}">
-                                                    <i class="bi bi-trash" aria-hidden="true"></i> {{ 'data_management.backup.action.delete'|trans({}, 'admin') }}
+                                                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'data_management.backup.action.delete'|trans({}, 'admin') }}
                                                 </button>
                                             </div>
                                         </td>
@@ -245,7 +245,7 @@
                             </label>
                             <input type="password" class="form-control" id="adminPassword" name="admin_password" placeholder="{{ 'data_management.backup.restore.admin_password_placeholder'|trans({}, 'admin') }}">
                             <div class="form-text">
-                                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                                 {{ 'data_management.backup.restore.admin_password_help'|trans({}, 'admin') }}
                             </div>
                         </div>
@@ -279,7 +279,7 @@
                         <i class="bi bi-shield-check me-2" aria-hidden="true"></i>{{ 'data.backup.restore_dry_run'|trans({}, 'data_management') }}
                     </button>
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" id="confirmRestoreBtn">
-                        <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.start_restore'|trans({}, 'admin') }}
+                        <i class="fa-icon fa-icon--ui-refresh me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.start_restore'|trans({}, 'admin') }}
                     </button>
                 </div>
             </div>
@@ -294,7 +294,7 @@
             <div class="backup-modal-content">
                 <div class="backup-modal-header">
                     <h5 class="backup-modal-title" id="previewModalLabel">
-                        <i class="bi bi-eye" aria-hidden="true"></i> {{ 'data_management.backup.preview.title'|trans({}, 'admin') }}
+                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'data_management.backup.preview.title'|trans({}, 'admin') }}
                     </h5>
                     <button type="button" class="btn-close backup-modal-close" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                 </div>
@@ -482,15 +482,15 @@
                     if (result.success) {
                         createBackupStatus.innerHTML = `
                             <div class="fa-alert fa-alert--success" role="alert">
-                                <i class="bi bi-check-circle" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="bi bi-check-circle" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-check-circle" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="fa-icon fa-icon--ui-check-circle" aria-hidden="true"></i>
                                 <strong>${result.message}</strong><br>
                                 {{ 'data_management.backup.message.file'|trans({}, 'admin') }}: ${result.filename}<br>
                                 <small>{{ 'data_management.backup.message.saved_entries'|trans({}, 'admin') }}: ${Object.values(result.statistics).reduce((a, b) => a + b, 0)}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                 </div>
                                 <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
-                                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                                 </button>
                             </div>
                         `;
@@ -510,7 +510,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                 </div>
                                 <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
-                                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                                 </button>
                             </div>
                         `;
@@ -523,14 +523,14 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                             </div>
                             <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
-                                <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                             </button>
                         </div>
                     `;
                 } finally {
                     resetWizardBusy(createBackupForm);
                     createBackupBtn.disabled = false;
-                    createBackupBtn.innerHTML = '<i class="bi bi-cloud-download me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.create_now'|trans({}, 'admin') }}';
+                    createBackupBtn.innerHTML = '<i class="fa-icon fa-icon--nav-download me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.create_now'|trans({}, 'admin') }}';
                 }
             });
 
@@ -568,12 +568,12 @@
                     if (result.success) {
                         uploadBackupStatus.innerHTML = `
                             <div class="fa-alert fa-alert--success" role="alert">
-                                <i class="bi bi-check-circle" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="bi bi-check-circle" aria-hidden="true"></i> ${result.message}
+                                <i class="fa-icon fa-icon--ui-check-circle" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="fa-icon fa-icon--ui-check-circle" aria-hidden="true"></i> ${result.message}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                 </div>
                                 <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
-                                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                                 </button>
                             </div>
                         `;
@@ -594,7 +594,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                 </div>
                                 <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
-                                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                                 </button>
                             </div>
                         `;
@@ -607,14 +607,14 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                             </div>
                             <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
-                                <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                             </button>
                         </div>
                     `;
                 } finally {
                     resetWizardBusy(uploadBackupForm);
                     uploadBackupBtn.disabled = false;
-                    uploadBackupBtn.innerHTML = '<i class="bi bi-cloud-upload me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.upload'|trans({}, 'admin') }}';
+                    uploadBackupBtn.innerHTML = '<i class="fa-icon fa-icon--nav-upload me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.upload'|trans({}, 'admin') }}';
                 }
             });
 
@@ -685,7 +685,7 @@
                         alert('{{ 'data_management.backup.message.validation_error'|trans({}, 'admin') }}: ' + error.message);
                     } finally {
                         this.disabled = false;
-                        this.innerHTML = '<i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'data_management.backup.action.validate'|trans({}, 'admin') }}';
+                        this.innerHTML = '<i class="fa-icon fa-icon--ui-check-circle" aria-hidden="true"></i> {{ 'data_management.backup.action.validate'|trans({}, 'admin') }}';
                     }
                 });
             });
@@ -845,8 +845,8 @@
                         let html = isDryRun
                             ? `<div class="fa-alert fa-alert--info" role="alert"><i class="bi bi-shield-check fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body"><strong>${result.message}</strong>`
                             : `<div class="fa-alert fa-alert--success" role="alert">
-                                <i class="bi bi-check-circle" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="bi bi-check-circle" aria-hidden="true"></i> <strong>${result.message}</strong>`;
+                                <i class="fa-icon fa-icon--ui-check-circle" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="fa-icon fa-icon--ui-check-circle" aria-hidden="true"></i> <strong>${result.message}</strong>`;
 
                         if (isDryRun) {
                             // Count total simulated entities
@@ -908,7 +908,7 @@
                 } finally {
                     confirmBtn.disabled = false;
                     dryRunBtn.disabled = false;
-                    confirmBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.start_restore'|trans({}, 'admin') }}';
+                    confirmBtn.innerHTML = '<i class="fa-icon fa-icon--ui-refresh me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.start_restore'|trans({}, 'admin') }}';
                 }
             }
 

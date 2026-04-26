@@ -18,7 +18,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h2 mb-0">
-            <i class="bi bi-patch-check" aria-hidden="true"></i> {{ 'cert_readiness.title'|trans({}, 'management_reports') }}
+            <i class="fa-icon fa-icon--nav-patch-check" aria-hidden="true"></i> {{ 'cert_readiness.title'|trans({}, 'management_reports') }}
         </h1>
         <a href="{{ path('app_management_reports_cert_readiness_pdf') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
@@ -81,7 +81,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h3 class="h5 mb-0">
-                    <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'cert_readiness.section.clause_compliance'|trans({}, 'management_reports') }}
+                    <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'cert_readiness.section.clause_compliance'|trans({}, 'management_reports') }}
                 </h3>
             </div>
         {% endblock %}
@@ -173,7 +173,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h3 class="h5 mb-0">
-                            <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'cert_readiness.section.controls_in_progress'|trans({}, 'management_reports') }}
+                            <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'cert_readiness.section.controls_in_progress'|trans({}, 'management_reports') }}
                             <span class="fa-status-pill fa-status-pill--neutral ms-2">{{ controls_in_progress|length }}</span>
                         </h3>
                     </div>
@@ -234,7 +234,7 @@
             <ul class="list-group list-group-flush">
                 {% for improvement in recommended_improvements[:20] %}
                 <li class="list-group-item">
-                    <i class="bi bi-arrow-right text-info" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--util-arrow-right text-info" aria-hidden="true"></i>
                     {{ improvement.name|default(improvement.check|default('')) }}
                     {% if improvement.description|default('') %}
                         <br><small class="text-muted">{{ improvement.description }}</small>

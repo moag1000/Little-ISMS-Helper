@@ -117,7 +117,7 @@
     {# Affected Processes Detail #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
-            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-diagram-3" aria-hidden="true"></i> Affected Business Processes</h2></div>
+            <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> Affected Business Processes</h2></div>
         {% endblock %}
         {% block card_body %}
             {% import '_components/_fa_alert.html.twig' as _fa_alert %}
@@ -207,7 +207,7 @@
     {% if analysis.recommendations|length > 0 %}
         {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
             {% block card_header %}
-                <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> Recommendations</h2></div>
+                <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> Recommendations</h2></div>
             {% endblock %}
             {% block card_body %}
                 {% for recommendation in analysis.recommendations %}
@@ -228,7 +228,7 @@
     {% if analysis.historical_context.total_past_incidents > 0 %}
         {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
             {% block card_header %}
-                <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> Historical Context</h2></div>
+                <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> Historical Context</h2></div>
             {% endblock %}
             {% block card_body %}
                 <div class="row">

@@ -21,7 +21,7 @@
               onsubmit="return confirm('{{ 'loader_fixer.confirm.all'|trans({}, 'loader_fixer')|e('js') }}');">
             <input type="hidden" name="_token" value="{{ csrf_token('loader_fixer_run_all') }}">
             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
                 {{ 'loader_fixer.action.run_all'|trans({}, 'loader_fixer') }}
             </button>
         </form>
@@ -71,7 +71,7 @@
                                   action="{{ path('admin_loader_fixer_run_one', { code: row.code }) }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('loader_fixer_run_' ~ row.code) }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
                                     {{ 'loader_fixer.action.run_one'|trans({}, 'loader_fixer') }}
                                 </button>
                             </form>

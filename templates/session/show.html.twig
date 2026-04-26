@@ -14,7 +14,7 @@
 {% block admin_content %}
     <div class="mb-3">
         <a href="{{ path('session_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 
@@ -57,7 +57,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-geo-alt" aria-hidden="true"></i> {{ 'session.ip_addresses_title'|trans({}, 'session') }}
+                    <i class="fa-icon fa-icon--nav-location" aria-hidden="true"></i> {{ 'session.ip_addresses_title'|trans({}, 'session') }}
                 </h2>
             </div>
         {% endblock %}
@@ -73,7 +73,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'session.activity_timeline'|trans({}, 'session') }}
+                    <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'session.activity_timeline'|trans({}, 'session') }}
                 </h2>
             </div>
         {% endblock %}
@@ -106,7 +106,7 @@
                                     </div>
                                     {% if activity.ipAddress %}
                                         <small class="text-muted">
-                                            <i class="bi bi-geo-alt" aria-hidden="true"></i> {{ activity.ipAddress }}
+                                            <i class="fa-icon fa-icon--nav-location" aria-hidden="true"></i> {{ activity.ipAddress }}
                                         </small>
                                     {% endif %}
                                 </li>

@@ -12,7 +12,7 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
         <button id="createAllMappingsBtn" class="fa-cyber-btn fa-cyber-btn--primary">
             🔗 {{ 'compliance.action.create_missing_mappings'|trans({}, 'compliance') }}
@@ -58,7 +58,7 @@
             <i class="bi bi-grid-3x3" aria-hidden="true"></i> {{ 'compliance.tab.matrix'|trans({}, 'compliance') }}
         </button>
         <button class="tab-button" data-tabs-target="button" data-action="click->tabs#switch" data-tab="details">
-            <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'compliance.tab.details'|trans({}, 'compliance') }}
+            <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'compliance.tab.details'|trans({}, 'compliance') }}
         </button>
         <button class="tab-button" data-tabs-target="button" data-action="click->tabs#switch" data-tab="info">
             <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'compliance.tab.explanation'|trans({}, 'compliance') }}
@@ -73,7 +73,7 @@
         {% if framework_relationships is empty %}
             {% embed '_components/_card.html.twig' with { 'class': 'gradient-purple' } %}
                 {% block card_body %}
-                    <div class="icon-xlarge mb-md"><i class="bi bi-link-45deg" aria-hidden="true"></i></div>
+                    <div class="icon-xlarge mb-md"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i></div>
                     <p class="fs-15-white-mb fw-bold">Noch keine Framework-Mappings vorhanden</p>
                     <p class="fs-11-lh-mb">
                         Die Cross-Framework Mappings zwischen Ihren Compliance-Frameworks wurden noch nicht erstellt.
@@ -88,11 +88,11 @@
                     </div>
                     <div class="inline-flex-center-wrap">
                         <button id="createMappingsBtn" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--ghost-primary-flex">
-                            <span id="btnIcon"><i class="bi bi-link-45deg" aria-hidden="true"></i></span>
+                            <span id="btnIcon"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i></span>
                             <span id="btnText">Mappings jetzt erstellen</span>
                         </button>
                         <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fw-600">
-                            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_overview'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_overview'|trans({}, 'messages') }}
                         </a>
                     </div>
                 {% endblock %}
@@ -108,7 +108,7 @@
                                     {{ relationship.sourceFramework.code }}
                                 </div>
                                 <div class="fs-2-primary-center-margin">
-                                    <i class="bi bi-arrow-down" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--util-arrow-down" aria-hidden="true"></i>
                                 </div>
                                 <div class="fw-600-fs-095-secondary-mt">
                                     {{ relationship.targetFramework.code }}
@@ -222,7 +222,7 @@
         {% if cross_mappings is empty %}
             {% embed '_components/_card.html.twig' with { 'class': 'gradient-pink' } %}
                 {% block card_body %}
-                    <div class="icon-xlarge mb-md"><i class="bi bi-list-check" aria-hidden="true"></i></div>
+                    <div class="icon-xlarge mb-md"><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i></div>
                     <h2 class="fs-15-white-mb">Keine detaillierten Mappings verfügbar</h2>
                     <p class="fs-11-lh-mb-sm">
                         Es wurden noch keine Cross-Framework Mappings zwischen den Requirements erstellt.

@@ -9,7 +9,7 @@
     <div class="designer-header bg-body text-body py-2 px-3 d-flex justify-content-between align-items-center border-bottom">
         <div class="d-flex align-items-center gap-3">
             <a href="{{ path('report_builder_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
             </a>
             <div>
                 <input type="text" class="form-control form-control-sm bg-body-secondary border-secondary"
@@ -19,10 +19,10 @@
         </div>
         <div class="d-flex align-items-center gap-2">
             <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-action="click->report-designer#save">
-                <i class="bi bi-save" aria-hidden="true"></i> {{ 'action.save'|trans({}, 'report_builder') }}
+                <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'action.save'|trans({}, 'report_builder') }}
             </button>
             <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" target="_blank">
-                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'action.preview'|trans({}, 'report_builder') }}
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'action.preview'|trans({}, 'report_builder') }}
             </a>
             <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                 <i class="bi bi-file-pdf" aria-hidden="true"></i> PDF
@@ -34,7 +34,7 @@
         {# Widget Library Sidebar #}
         <div class="widget-library bg-body-secondary border-end" style="width: 280px; overflow-y: auto;">
             <div class="p-3">
-                <h2 class="h6 mb-3"><i class="bi bi-grid-3x3-gap" aria-hidden="true"></i> {{ 'designer.widgets'|trans({}, 'report_builder') }}</h2>
+                <h2 class="h6 mb-3"><i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i> {{ 'designer.widgets'|trans({}, 'report_builder') }}</h2>
 
                 {% for categoryKey, category in widget_library %}
                 <div class="mb-3">
@@ -90,11 +90,11 @@
                             <div class="widget-actions">
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm p-0 text-muted"
                                         data-action="click->report-designer#configureWidget">
-                                    <i class="bi bi-gear" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>
                                 </button>
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm p-0"
                                         data-action="click->report-designer#removeWidget">
-                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
@@ -109,7 +109,7 @@
                     {# Drop Zone Placeholder #}
                     {% if report.widgets|length == 0 %}
                     <div class="drop-placeholder text-center py-5" data-report-designer-target="placeholder">
-                        <i class="bi bi-plus-circle display-4 text-muted" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-plus display-4 text-muted" aria-hidden="true"></i>
                         <p class="mt-3 text-muted">{{ 'designer.drop_hint'|trans({}, 'report_builder') }}</p>
                     </div>
                     {% endif %}
@@ -120,7 +120,7 @@
         {# Settings Sidebar #}
         <div class="designer-settings bg-body border-start" style="width: 300px; overflow-y: auto;">
             <div class="p-3">
-                <h2 class="h6 mb-3"><i class="bi bi-sliders" aria-hidden="true"></i> {{ 'designer.settings'|trans({}, 'report_builder') }}</h2>
+                <h2 class="h6 mb-3"><i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i> {{ 'designer.settings'|trans({}, 'report_builder') }}</h2>
 
                 {# Report Settings #}
                 <div class="mb-4">
@@ -198,7 +198,7 @@
                 <div class="border-top pt-3">
                     <div class="d-grid gap-2">
                         <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" data-action="click->report-designer#save">
-                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'action.save'|trans({}, 'report_builder') }}
+                            <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'action.save'|trans({}, 'report_builder') }}
                         </button>
                         <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-toggle="modal" data-bs-target="#shareModal">
                             <i class="bi bi-share" aria-hidden="true"></i> {{ 'action.share'|trans({}, 'report_builder') }}
@@ -206,7 +206,7 @@
                         <form method="post" action="{{ path('report_builder_delete', {id: report.id}) }}" onsubmit="return confirm('{{ 'confirm.delete'|trans({}, 'report_builder')|e('js') }}');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ report.id) }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
-                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'action.delete'|trans({}, 'report_builder') }}
+                                <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'action.delete'|trans({}, 'report_builder') }}
                             </button>
                         </form>
                     </div>

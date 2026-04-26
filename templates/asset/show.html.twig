@@ -22,10 +22,10 @@
         </h1>
         <div class="actions">
             {% if canEdit is defined and canEdit %}
-                <a href="{{ path('app_asset_edit', {id: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
+                <a href="{{ path('app_asset_edit', {id: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
             {% else %}
                 <button class="fa-cyber-btn fa-cyber-btn--primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}">
-                    <i class="bi bi-lock" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+                    <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                 </button>
             {% endif %}
             <a href="{{ path('app_asset_bcm_insights', {id: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'asset.action.bcm_insights'|trans({}, 'asset') }}</a>
@@ -39,7 +39,7 @@
                       data-action="submit->ui-actions#confirm"
                       data-ui-actions-message-param="{{ 'asset.confirm.delete'|trans({}, 'asset') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ asset.id) }}">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
                 </form>
             {% endif %}
         </div>
@@ -79,7 +79,7 @@
             {% if asset.isAiAgent %}
                 <div class="detail-section">
                     <h3>
-                        <i class="bi bi-robot" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-robot" aria-hidden="true"></i>
                         AI-Agent (EU AI Act + ISO 42001 + MRIS MHC-13)
                     </h3>
                     <p class="small text-muted">
@@ -184,7 +184,7 @@
                                 {{ 'mris.ai_agent.dpia.warning_missing'|trans({}, 'mris') }}
                                 <div class="mt-2">
                                     <a href="{{ path('app_dpia_new', {related_asset: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--warning">
-                                        <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-plus me-1" aria-hidden="true"></i>
                                         {{ 'mris.ai_agent.dpia.create_button'|trans({}, 'mris') }}
                                     </a>
                                 </div>
@@ -272,7 +272,7 @@
                 {% if hasInc %}
                     <div class="detail-section">
                         <h3>
-                            <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                             {{ 'asset.section.inherited_protection'|trans({}, 'asset') }}
                             {# bi-diagram-3 stays — here it represents structural/dependency diagram, not a network asset #}
                         </h3>
@@ -356,7 +356,7 @@
                                     </div>
                                     {% if analysis.confidentiality.recommendation %}
                                         <div class="protection-recommendation">
-                                            <i class="bi bi-arrow-up text-warning" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--util-arrow-up text-warning" aria-hidden="true"></i>
                                             {{ 'asset.protection.recommended'|trans({}, 'asset') }}: {{ analysis.confidentiality.recommendation }}/5
                                         </div>
                                     {% endif %}
@@ -373,7 +373,7 @@
                             <div class="col-md-4">
                                 <div class="protection-card">
                                     <div class="protection-header">
-                                        <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-check-circle" aria-hidden="true"></i>
                                         {{ 'asset.label.integrity'|trans({}, 'asset') }}
                                     </div>
                                     <div class="protection-level">
@@ -382,7 +382,7 @@
                                     </div>
                                     {% if analysis.integrity.recommendation %}
                                         <div class="protection-recommendation">
-                                            <i class="bi bi-arrow-up text-warning" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--util-arrow-up text-warning" aria-hidden="true"></i>
                                             {{ 'asset.protection.recommended'|trans({}, 'asset') }}: {{ analysis.integrity.recommendation }}/5
                                         </div>
                                     {% endif %}
@@ -408,7 +408,7 @@
                                     </div>
                                     {% if analysis.availability.recommendation %}
                                         <div class="protection-recommendation">
-                                            <i class="bi bi-arrow-up text-warning" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--util-arrow-up text-warning" aria-hidden="true"></i>
                                             {{ 'asset.protection.recommended'|trans({}, 'asset') }}: {{ analysis.availability.recommendation }}/5
                                         </div>
                                     {% endif %}
@@ -519,7 +519,7 @@
                                                     <span class="field-name">{{ field }}:</span>
                                                     {% if oldValues and oldValues[field] is defined %}
                                                         <span class="old-value">{{ oldValues[field] }}</span>
-                                                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                                     {% endif %}
                                                     <span class="new-value">{{ newValue }}</span>
                                                 </div>
@@ -533,7 +533,7 @@
                     {% if totalAuditLogs > 10 %}
                         <div class="text-center mt-3">
                             <a href="{{ path('app_audit_log_index', {entity: 'Asset', entityId: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'audit_log.view_all'|trans({}, 'audit_log') }} ({{ totalAuditLogs }})
+                                <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'audit_log.view_all'|trans({}, 'audit_log') }} ({{ totalAuditLogs }})
                             </a>
                         </div>
                     {% endif %}

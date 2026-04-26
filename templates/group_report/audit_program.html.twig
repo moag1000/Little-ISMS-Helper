@@ -92,7 +92,7 @@
                                               onsubmit="return confirm('{{ 'group_report.audit_program.confirm_derive'|trans({'%count%': subsidiaries|length}, 'group_report')|e('js') }}');">
                                             <input type="hidden" name="_token" value="{{ csrf_token('audit_program_derive_' ~ program.id) }}">
                                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                                <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                                                <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                                                 {{ 'group_report.audit_program.action.derive'|trans({}, 'group_report') }}
                                             </button>
                                         </form>

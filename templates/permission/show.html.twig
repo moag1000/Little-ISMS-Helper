@@ -14,7 +14,7 @@
 {% block admin_content %}
     <div class="mb-3">
         <a href="{{ path('permission_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 
@@ -23,7 +23,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i> Berechtigungsdetails
+                    <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> Berechtigungsdetails
                 </h2>
             </div>
         {% endblock %}
@@ -70,7 +70,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-people-fill" aria-hidden="true"></i> {{ 'permission.roles_using'|trans({}, 'messages') }}
+                    <i class="fa-icon fa-icon--nav-team" aria-hidden="true"></i> {{ 'permission.roles_using'|trans({}, 'messages') }}
                     {% include '_components/_badge.html.twig' with { variant: 'light', content: roles|length } %}
                 </h2>
             </div>
@@ -106,7 +106,7 @@
                                 <td class="text-end">
                                     <a href="{{ path('role_management_show', {id: role.id}) }}"
                                        class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                        <i class="bi bi-eye" aria-hidden="true"></i> Details
+                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> Details
                                     </a>
                                 </td>
                             </tr>

@@ -22,10 +22,10 @@
         </h1>
         <div class="actions">
             {% if canEdit is defined and canEdit %}
-                <a href="{{ path('app_risk_edit', {id: risk.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'action.edit'|trans({}, 'messages') }}</a>
+                <a href="{{ path('app_risk_edit', {id: risk.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'action.edit'|trans({}, 'messages') }}</a>
             {% else %}
                 <button class="fa-cyber-btn fa-cyber-btn--primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'tenant') }}">
-                    <i class="bi bi-lock" aria-hidden="true"></i> {{ 'action.edit'|trans({}, 'messages') }}
+                    <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i> {{ 'action.edit'|trans({}, 'messages') }}
                 </button>
             {% endif %}
             <a href="{{ path('app_risk_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'action.back_to_list'|trans({}, 'messages') }}</a>
@@ -35,7 +35,7 @@
                       data-action="submit->ui-actions#confirm"
                       data-ui-actions-message-param="{{ 'risk.delete.confirm_message'|trans({}, 'risk') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ risk.id) }}">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'action.delete'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'action.delete'|trans({}, 'messages') }}</button>
                 </form>
             {% endif %}
         </div>
@@ -175,7 +175,7 @@
             {% if risk.asset or risk.person or risk.location or risk.supplier %}
                 <div class="detail-section">
                     <h3>
-                        <i class="bi bi-bullseye" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i>
                         {{ 'risk.section.risk_subject'|trans({}, 'risk') }}
                         {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'ms-2', content: risk.riskSubjectType|upper } %}
                     </h3>
@@ -209,7 +209,7 @@
                     {% if risk.person %}
                         <div class="subject-info card fa-section mb-3">
                             <div class="card-header bg-info text-white">
-                                <i class="bi bi-person" aria-hidden="true"></i> {{ 'person.title'|trans({}, 'messages') }}
+                                <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'person.title'|trans({}, 'messages') }}
                             </div>
                             <div class="card-body">
                                 <div class="fw-bold fs-5">{{ risk.person.fullName }}</div>
@@ -229,7 +229,7 @@
                     {% if risk.location %}
                         <div class="subject-info card fa-section mb-3">
                             <div class="card-header bg-warning-subtle text-warning">
-                                <i class="bi bi-geo-alt" aria-hidden="true"></i> {{ 'location.title'|trans({}, 'locations') }}
+                                <i class="fa-icon fa-icon--nav-location" aria-hidden="true"></i> {{ 'location.title'|trans({}, 'locations') }}
                             </div>
                             <div class="card-body">
                                 <div class="fw-bold fs-5">{{ risk.location.name }}</div>
@@ -296,7 +296,7 @@
                                                     <span class="field-name">{{ field }}:</span>
                                                     {% if oldValues and oldValues[field] is defined %}
                                                         <span class="old-value">{{ oldValues[field] }}</span>
-                                                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                                     {% endif %}
                                                     <span class="new-value">{{ newValue }}</span>
                                                 </div>

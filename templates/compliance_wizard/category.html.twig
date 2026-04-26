@@ -58,7 +58,7 @@
                     <h2 class="h6 mb-3">{{ 'wizard.category_summary'|trans({}, 'wizard') }}</h2>
                     <ul class="list-unstyled mb-0">
                         <li class="mb-2">
-                            <i class="bi bi-list-check text-muted me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-list-check text-muted me-2" aria-hidden="true"></i>
                             {{ category.items|length }} {{ 'wizard.total_checks'|trans({}, 'wizard') }}
                         </li>
                         <li class="mb-2">
@@ -94,7 +94,7 @@
                         <tr>
                             <td class="text-center">
                                 {% if item.score >= 100 %}
-                                    <i class="bi bi-check-circle-fill text-success fs-5" aria-hidden="true" title="{{ 'wizard.status.compliant'|trans({}, 'wizard') }}"></i>
+                                    <i class="fa-icon fa-icon--ui-check-circle-fill text-success fs-5" aria-hidden="true" title="{{ 'wizard.status.compliant'|trans({}, 'wizard') }}"></i>
                                 {% elseif item.score >= 50 %}
                                     <i class="bi bi-exclamation-circle-fill text-warning fs-5" aria-hidden="true" title="{{ 'wizard.status.partial'|trans({}, 'wizard') }}"></i>
                                 {% elseif item.score > 0 %}
@@ -123,7 +123,7 @@
                                 {% if item.details|default({})|length > 0 %}
                                 <details class="mt-2">
                                     <summary class="small text-muted" style="cursor: pointer;">
-                                        <i class="bi bi-info-circle me-1" aria-hidden="true"></i>{{ 'wizard.view_details'|trans({}, 'wizard') }}
+                                        <i class="fa-icon fa-icon--ui-info me-1" aria-hidden="true"></i>{{ 'wizard.view_details'|trans({}, 'wizard') }}
                                     </summary>
                                     <div class="small bg-body-secondary p-2 rounded mt-1">
                                         {% for detailKey, detailValue in item.details %}
@@ -151,7 +151,7 @@
                             <td>
                                 {% if item.route is defined and item.route %}
                                     <a href="{{ path(item.route) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                        <i class="bi bi-arrow-right me-1" aria-hidden="true"></i>{{ 'wizard.go_to_module'|trans({}, 'wizard') }}
+                                        <i class="fa-icon fa-icon--util-arrow-right me-1" aria-hidden="true"></i>{{ 'wizard.go_to_module'|trans({}, 'wizard') }}
                                     </a>
                                 {% elseif item.gap and item.gap.route is defined and item.gap.route %}
                                     <a href="{{ path(item.gap.route) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--warning">
@@ -201,7 +201,7 @@
                         {% endif %}
                         {% if gap.route is defined and gap.route %}
                             <a href="{{ path(gap.route) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                <i class="bi bi-arrow-right me-1" aria-hidden="true"></i>{{ 'wizard.take_action'|trans({}, 'wizard') }}
+                                <i class="fa-icon fa-icon--util-arrow-right me-1" aria-hidden="true"></i>{{ 'wizard.take_action'|trans({}, 'wizard') }}
                             </a>
                         {% endif %}
                     </div>
@@ -215,7 +215,7 @@
     {# Navigation #}
     <div class="d-flex justify-content-between mt-4">
         <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>{{ 'wizard.back_to_results'|trans({}, 'wizard') }}
+            <i class="fa-icon fa-icon--util-arrow-left me-1" aria-hidden="true"></i>{{ 'wizard.back_to_results'|trans({}, 'wizard') }}
         </a>
     </div>
 </div>

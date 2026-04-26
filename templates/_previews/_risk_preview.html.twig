@@ -35,7 +35,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-bar-chart" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
             {{ 'risk.section.assessment'|trans({}, 'risk') }}
         </h6>
         <div class="row g-3">
@@ -65,7 +65,7 @@
         {% if risk.riskReduction > 0 %}
         <div class="mt-2">
             <small class="text-success">
-                <i class="bi bi-arrow-down" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--util-arrow-down" aria-hidden="true"></i>
                 {{ 'risk.field.risk_reduction'|trans({}, 'risk') }}: {{ risk.riskReduction }}%
             </small>
         </div>
@@ -98,7 +98,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-graph-up" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
             {{ 'control.title.plural'|trans({}, 'control') }}
         </h6>
         <div class="stat-mini">
@@ -109,10 +109,10 @@
 
     <div class="preview-actions">
         <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
-            <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'common.view_details'|trans({}, 'messages') }}
+            <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i> {{ 'common.view_details'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_risk_edit', {id: risk.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
         </a>
     </div>
 </div>

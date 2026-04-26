@@ -44,7 +44,7 @@
                                 <strong>{{ 'reports.license_report.notice_md'|trans({}, 'reports') }}</strong> - {{ 'reports.license_report.notice_md_desc'|trans({}, 'reports') }}
                             </li>
                             <li class="mb-2">
-                                <i class="bi bi-file-earmark-bar-graph text-primary me-2" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-reports text-primary me-2" aria-hidden="true"></i>
                                 <strong>{{ 'reports.license_report.detailed_report'|trans({}, 'reports') }}</strong> - {{ 'reports.license_report.detailed_report_desc'|trans({}, 'reports') }}
                                 {% if license_stats.exists %}
                                     {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'reports.status.available'|trans({}, 'reports'), class: 'ms-2' } %}
@@ -53,7 +53,7 @@
                                 {% endif %}
                             </li>
                             <li>
-                                <i class="bi bi-bar-chart text-primary me-2" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-bar-chart text-primary me-2" aria-hidden="true"></i>
                                 <strong>{{ 'reports.license_report.summary'|trans({}, 'reports') }}</strong> - {{ 'reports.license_report.summary_desc'|trans({}, 'reports') }}
                             </li>
                         </ul>
@@ -68,7 +68,7 @@
                     <div class="card-footer bg-body-secondary">
                         <div class="d-grid gap-2">
                             <a href="{{ path('app_licenses') }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                                <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>{{ 'reports.license_report.open'|trans({}, 'reports') }}
+                                <i class="fa-icon fa-icon--util-arrow-right-circle me-1" aria-hidden="true"></i>{{ 'reports.license_report.open'|trans({}, 'reports') }}
                             </a>
                         </div>
                     </div>
@@ -126,7 +126,7 @@
                     <div class="card-footer bg-body-secondary">
                         <div class="d-grid gap-2">
                             <a href="{{ path('app_security_report') }}" class="fa-cyber-btn fa-cyber-btn--danger">
-                                <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>{{ 'reports.security_report.open'|trans({}, 'reports') }}
+                                <i class="fa-icon fa-icon--util-arrow-right-circle me-1" aria-hidden="true"></i>{{ 'reports.security_report.open'|trans({}, 'reports') }}
                             </a>
                         </div>
                     </div>
@@ -142,7 +142,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="card-title mb-0">
-                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ 'reports.generation.title'|trans({}, 'reports') }}
+                            <i class="fa-icon fa-icon--ui-info me-2" aria-hidden="true"></i>{{ 'reports.generation.title'|trans({}, 'reports') }}
                         </h2>
                     </div>
                 {% endblock %}

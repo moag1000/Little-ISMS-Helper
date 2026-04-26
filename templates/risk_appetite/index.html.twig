@@ -52,7 +52,7 @@
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_header %}
         <div class="card-header">
-            <h2><i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans({}, 'messages') }}</h2>
+            <h2><i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans({}, 'messages') }}</h2>
         </div>
     {% endblock %}
     {% block card_body %}
@@ -77,7 +77,7 @@
                 </div>
                 <div class="col-12">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
+                        <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                     </button>
                     <a href="{{ path('app_risk_appetite_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
@@ -117,7 +117,7 @@
                     <td>
                         <strong>
                             {% if appetite.isGlobal() %}
-                                <i class="bi bi-globe" aria-hidden="true"></i> {{ 'risk_appetite.category.global'|trans({}, 'risk_appetite') }}
+                                <i class="fa-icon fa-icon--ui-globe" aria-hidden="true"></i> {{ 'risk_appetite.category.global'|trans({}, 'risk_appetite') }}
                             {% else %}
                                 <i class="bi bi-folder" aria-hidden="true"></i> {{ appetite.category }}
                             {% endif %}
@@ -160,13 +160,13 @@
                             <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}"
                                class="fa-cyber-btn fa-cyber-btn--ghost"
                                title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                             </a>
                             {% if is_granted('ROLE_ADMIN') %}
                             <a href="{{ path('app_risk_appetite_edit', {id: appetite.id}) }}"
                                class="fa-cyber-btn fa-cyber-btn--ghost"
                                title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                             </a>
                             {% endif %}
                         </div>

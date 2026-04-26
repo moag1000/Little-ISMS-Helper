@@ -17,11 +17,11 @@
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
         <div>
             <h1 class="h2 mb-1">
-                <i class="bi bi-grid-3x3-gap-fill text-primary" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-grid-fill text-primary" aria-hidden="true"></i>
                 {{ 'portfolio_report.title'|trans({}, 'portfolio_report') }}
             </h1>
             <p class="text-muted mb-0">
-                <i class="bi bi-building" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i>
                 <strong>{{ tenant.name }}</strong>
                 <span class="mx-2">&middot;</span>
                 <i class="bi bi-calendar-event" aria-hidden="true"></i>
@@ -29,7 +29,7 @@
                 <strong>{{ stichtag|date('Y-m-d') }}</strong>
                 {% if vorperiode %}
                     <span class="mx-2">&middot;</span>
-                    <i class="bi bi-arrow-left-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--util-arrow-left-circle" aria-hidden="true"></i>
                     {{ 'portfolio_report.header.vorperiode'|trans({}, 'portfolio_report') }}:
                     <strong>{{ vorperiode|date('Y-m-d') }}</strong>
                 {% endif %}
@@ -82,7 +82,7 @@
             {% block card_header %}
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h2 class="h6 mb-0">
-                        <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                         {{ 'portfolio_report.reuse_trend.title'|trans({}, 'portfolio_report') }}
                     </h2>
                     <span class="small text-muted">{{ 'portfolio_report.reuse_trend.hint'|trans({'%count%': reuse_trend|length}, 'portfolio_report') }}</span>
@@ -94,7 +94,7 @@
                         data-fte="{{ reuse_trend|map(p => p.fte_saved)|json_encode }}"
                         data-pct="{{ reuse_trend|map(p => p.inheritance_pct)|json_encode }}"></canvas>
                 <p class="small text-muted mt-2 mb-0">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                     {{ 'portfolio_report.reuse_trend.footer'|trans({}, 'portfolio_report') }}
                 </p>
             {% endblock %}
@@ -138,7 +138,7 @@
             <form method="get" action="{{ path('app_management_reports_portfolio', { _locale: app.request.locale }) }}" class="row g-3 align-items-end">
                 <div class="col-md-4">
                     <label for="portfolio_stichtag" class="form-label">
-                        <i class="bi bi-calendar-check" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
                         {{ 'portfolio_report.form.stichtag'|trans({}, 'portfolio_report') }}
                     </label>
                     <input type="date"
@@ -168,7 +168,7 @@
                 </div>
                 <div class="col-md-4">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
                         {{ 'portfolio_report.form.update'|trans({}, 'portfolio_report') }}
                     </button>
                 </div>
@@ -181,7 +181,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="h5 mb-0">
-                    <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                     {{ 'portfolio_report.matrix.title'|trans({}, 'portfolio_report') }}
                 </h2>
             </div>
@@ -312,7 +312,7 @@
         {% endblock %}
         {% block card_footer %}
             <div class="card-footer small text-muted">
-                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                 {{ 'portfolio_report.matrix.legend'|trans({}, 'portfolio_report') }}
             </div>
         {% endblock %}

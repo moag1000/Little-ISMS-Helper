@@ -67,7 +67,7 @@
         {% block card_body %}
             <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
                 <label for="gap-report-budget-slider" class="form-label fw-semibold mb-0">
-                    <i class="bi bi-sliders me-1" aria-hidden="true"></i>{{ 'gap_report.budget.title'|trans({}, 'gap_report') }}
+                    <i class="fa-icon fa-icon--nav-sliders me-1" aria-hidden="true"></i>{{ 'gap_report.budget.title'|trans({}, 'gap_report') }}
                 </label>
                 <output for="gap-report-budget-slider"
                         class="text-muted small"
@@ -134,7 +134,7 @@
                                 {% if row.effective_effort_days is not null %}
                                     {{ row.effective_effort_days }}
                                     {% if row.adjusted_effort_days is not null %}
-                                        <i class="bi bi-pencil-square text-primary ms-1"
+                                        <i class="fa-icon fa-icon--ui-edit-square text-primary ms-1"
                                            title="{{ 'gap_report.table.override_hint'|trans({}, 'gap_report') }}"
                                            aria-label="{{ 'gap_report.table.override_hint'|trans({}, 'gap_report') }}"></i>
                                     {% endif %}

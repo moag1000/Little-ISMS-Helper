@@ -12,7 +12,7 @@
         </div>
         <div class="button-group">
             <a href="{{ path('app_mapping_quality_review_queue') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'mapping_review.action.back_to_queue'|trans({}, 'compliance') }}
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'mapping_review.action.back_to_queue'|trans({}, 'compliance') }}
             </a>
             <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost"
                     data-controller="ui-actions"
@@ -21,7 +21,7 @@
                     data-ui-actions-url-param="{{ path('app_mapping_quality_analyze', {id: mapping.id}) }}"
                     data-ui-actions-method-param="POST"
                     data-ui-actions-reload-param="true">
-                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'mapping_review.action.reanalyze'|trans({}, 'compliance') }}
+                <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'mapping_review.action.reanalyze'|trans({}, 'compliance') }}
             </button>
         </div>
     </div>
@@ -261,7 +261,7 @@
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header">
-                <h3 class="mb-0"><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ 'mapping_review.section.perform_review'|trans({}, 'compliance') }}</h3>
+                <h3 class="mb-0"><i class="fa-icon fa-icon--ui-edit-square" aria-hidden="true"></i> {{ 'mapping_review.section.perform_review'|trans({}, 'compliance') }}</h3>
             </div>
         {% endblock %}
         {% block card_body %}
@@ -289,7 +289,7 @@
                         <div class="form-group">
                             <div class="form-label">&nbsp;</div>
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn-block">
-                                <i class="bi bi-save" aria-hidden="true"></i> {{ 'mapping_review.action.save_review'|trans({}, 'compliance') }}
+                                <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'mapping_review.action.save_review'|trans({}, 'compliance') }}
                             </button>
                         </div>
                     </div>

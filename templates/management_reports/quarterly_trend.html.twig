@@ -18,7 +18,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h2 mb-0">
-            <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'management_reports.quarterly_trend.title'|trans({}, 'management_reports') }}
+            <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'management_reports.quarterly_trend.title'|trans({}, 'management_reports') }}
         </h1>
         <a href="{{ path('app_management_reports_quarterly_trend_pdf') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
@@ -38,7 +38,7 @@
         {% block card_header %}
             <div class="card-header bg-body-secondary">
                 <h3 class="h5 mb-0">
-                    <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--util-arrow-left-right" aria-hidden="true"></i>
                     {{ 'management_reports.quarterly_trend.current_quarter'|trans({}, 'management_reports') }}
                     vs.
                     {{ 'management_reports.quarterly_trend.previous_quarter'|trans({}, 'management_reports') }}

@@ -127,13 +127,13 @@
 
         <div class="d-flex gap-1">
             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'audit_log.filter.apply'|trans({}, 'audit_log') }}
+                <i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i> {{ 'audit_log.filter.apply'|trans({}, 'audit_log') }}
             </button>
             <a href="{{ path('app_audit_log_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'audit_log.filter.reset'|trans({}, 'audit_log') }}
             </a>
             <a href="{{ path('app_audit_log_statistics') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'audit_log.filter.statistics'|trans({}, 'audit_log') }}
+                <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'audit_log.filter.statistics'|trans({}, 'audit_log') }}
             </a>
         </div>
     </form>
@@ -160,7 +160,7 @@
                     data-bs-target="#timeline-view"
                     type="button"
                     role="tab">
-                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'audit_log.section.timeline'|trans({}, 'audit_log') }}
+                <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'audit_log.section.timeline'|trans({}, 'audit_log') }}
             </button>
         </li>
     </ul>

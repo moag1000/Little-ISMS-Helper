@@ -22,10 +22,10 @@
         </h1>
         <div class="actions">
             {% if canEdit is defined and canEdit %}
-                <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'supplier.action.edit'|trans({}, 'suppliers') }}</a>
+                <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'supplier.action.edit'|trans({}, 'suppliers') }}</a>
             {% else %}
                 <button class="fa-cyber-btn fa-cyber-btn--primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}">
-                    <i class="bi bi-lock" aria-hidden="true"></i> {{ 'supplier.action.edit'|trans({}, 'suppliers') }}
+                    <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i> {{ 'supplier.action.edit'|trans({}, 'suppliers') }}
                 </button>
             {% endif %}
             <a href="{{ path('app_supplier_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
@@ -35,7 +35,7 @@
                       data-action="submit->ui-actions#confirm"
                       data-ui-actions-message-param="{{ 'supplier.confirm.delete'|trans({}, 'suppliers') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ supplier.id) }}">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
                 </form>
             {% endif %}
         </div>
@@ -87,7 +87,7 @@
 
     {% if isInherited is defined and isInherited %}
         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle-fill', class: 'mb-3' } } %}
-            {% block alert_body %}<div class="d-flex align-items-start"> <i class="bi bi-info-circle-fill me-2 mt-1" aria-hidden="true"></i> <div> <strong>{{ 'corporate.inheritance.view_only_title'|trans({}, 'messages') }}</strong> <p class="mb-0">{{ 'corporate.inheritance.supplier_inherited_message'|trans({}, 'messages') }}</p> </div> </div>{% endblock %}
+            {% block alert_body %}<div class="d-flex align-items-start"> <i class="fa-icon fa-icon--ui-info me-2 mt-1" aria-hidden="true"></i> <div> <strong>{{ 'corporate.inheritance.view_only_title'|trans({}, 'messages') }}</strong> <p class="mb-0">{{ 'corporate.inheritance.supplier_inherited_message'|trans({}, 'messages') }}</p> </div> </div>{% endblock %}
         {% endembed %}
     {% endif %}
 
@@ -120,7 +120,7 @@
                             role="tab"
                             aria-controls="pane-master-data"
                             aria-selected="true">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                         {{ 'supplier.tab.master_data'|trans({}, 'suppliers') }}
                     </button>
                 </li>
@@ -164,7 +164,7 @@
                             role="tab"
                             aria-controls="pane-privacy"
                             aria-selected="false">
-                        <i class="bi bi-person-lock" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-person-lock" aria-hidden="true"></i>
                         {{ 'supplier.tab.privacy'|trans({}, 'suppliers') }}
                     </button>
                 </li>
@@ -412,7 +412,7 @@
                     #}
                     <details class="mb-3" {{ isCriticalIct ? 'open' : '' }}>
                         <summary class="h5 mb-2" style="cursor: pointer;">
-                            <i class="bi bi-diagram-3 me-1" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-process me-1" aria-hidden="true"></i>
                             {{ 'supplier.dora.advanced.subcontractors_title'|trans({}, 'suppliers') }}
                             {% if isCriticalIct %}
                                 {% include '_components/_badge.html.twig' with { variant: 'danger', size: 'sm', class: 'ms-2', content: 'supplier.dora.advanced.auto_expanded'|trans({}, 'suppliers') } %}
@@ -448,7 +448,7 @@
 
                     <details class="mb-3" {{ isCriticalIct ? 'open' : '' }}>
                         <summary class="h5 mb-2" style="cursor: pointer;">
-                            <i class="bi bi-box-arrow-right me-1" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-logout me-1" aria-hidden="true"></i>
                             {{ 'supplier.dora.advanced.exit_strategy_title'|trans({}, 'suppliers') }}
                             {% if isCriticalIct %}
                                 {% include '_components/_badge.html.twig' with { variant: 'danger', size: 'sm', class: 'ms-2', content: 'supplier.dora.advanced.auto_expanded'|trans({}, 'suppliers') } %}
@@ -532,7 +532,7 @@
             {% block card_header %}
                 <div class="card-header">
                     <h2 class="h6 mb-0">
-                        <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
                         {{ 'inverse_coverage.supplier.heading'|trans({}, 'control') }}
                     </h2>
                 </div>

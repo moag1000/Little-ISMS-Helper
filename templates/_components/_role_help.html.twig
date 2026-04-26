@@ -9,7 +9,7 @@
 <div class="card fa-section border-info mb-4" id="role-help-card">
     <div class="card-header bg-info bg-opacity-10 d-flex justify-content-between align-items-center">
         <h6 class="mb-0">
-            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--ui-info me-2" aria-hidden="true"></i>
             {{ 'user.roles_info.title'|trans({}, 'user') }}
         </h6>
         <button class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm p-0"
@@ -20,7 +20,7 @@
                 aria-controls="roleHelpContent">
             <span class="expand-text">{{ 'ui.common.show_details'|trans({}, 'ui') }}</span>
             <span class="collapse-text d-none">{{ 'ui.common.hide_details'|trans({}, 'ui') }}</span>
-            <i class="bi bi-chevron-down ms-1" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--util-chevron-down ms-1" aria-hidden="true"></i>
         </button>
     </div>
 
@@ -37,26 +37,26 @@
                         icon: 'bi-person',
                         content: 'user.role.user'|trans({}, 'user')
                     } %}
-                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                     {% include '_components/_badge.html.twig' with {
                         variant: 'info',
                         icon: 'bi-search',
                         content: 'user.role.auditor'|trans({}, 'user')
                     } %}
-                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                     {% include '_components/_badge.html.twig' with {
                         variant: 'primary',
                         icon: 'bi-briefcase',
                         content: 'user.role.manager'|trans({}, 'user')
                     } %}
-                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                     {% include '_components/_badge.html.twig' with {
                         variant: 'warning',
                         icon: 'bi-gear',
                         class: '',
                         content: 'user.role.admin'|trans({}, 'user')
                     } %}
-                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                     {% include '_components/_badge.html.twig' with {
                         variant: 'danger',
                         icon: 'bi-shield-lock',
@@ -105,7 +105,7 @@
                     <div class="card fa-section h-100 border-secondary">
                         <div class="card-header bg-secondary bg-opacity-10">
                             <h6 class="mb-0">
-                                <i class="bi bi-person-gear me-2" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-person-gear me-2" aria-hidden="true"></i>
                                 {{ 'user.roles_info.custom_title'|trans({}, 'user') }}
                             </h6>
                         </div>

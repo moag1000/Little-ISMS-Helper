@@ -127,7 +127,7 @@
                 {% if schema_detail.pending_sql is not empty %}
                     <details class="mt-2 schema-preview">
                         <summary class="small text-warning">
-                            <i class="bi bi-eye" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                             {{ 'monitoring.schema.preview_open'|trans({}, 'monitoring') }}
                         </summary>
 
@@ -204,7 +204,7 @@
                             data-action="click->autofix#fix"
                             data-autofix-action-param="optimize-disk"
                             data-autofix-url-value="{{ path('monitoring_health') }}">
-                        <i class="bi bi-tools" aria-hidden="true"></i> {{ 'monitoring.action.optimize_disk'|trans({}, 'monitoring') }}
+                        <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'monitoring.action.optimize_disk'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-optimize-disk"></div>
                 {% endif %}
@@ -313,7 +313,7 @@
                             data-action="click->autofix#fix"
                             data-autofix-action-param="clear-cache"
                             data-autofix-url-value="{{ path('monitoring_health') }}">
-                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'monitoring.action.clear_cache'|trans({}, 'monitoring') }}
+                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'monitoring.action.clear_cache'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-cache"></div>
                     <div id="fix-result-clear-cache"></div>
@@ -364,14 +364,14 @@
                             data-action="click->autofix#fix"
                             data-autofix-action-param="clean-logs"
                             data-autofix-url-value="{{ path('monitoring_health') }}">
-                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'monitoring.action.clean_logs'|trans({}, 'monitoring') }}
+                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'monitoring.action.clean_logs'|trans({}, 'monitoring') }}
                     </button>
                     <button class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm auto-fix-btn"
                             data-controller="autofix"
                             data-action="click->autofix#fix"
                             data-autofix-action-param="rotate-logs"
                             data-autofix-url-value="{{ path('monitoring_health') }}">
-                        <i class="bi bi-arrow-repeat" aria-hidden="true"></i> {{ 'monitoring.action.rotate_logs'|trans({}, 'monitoring') }}
+                        <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i> {{ 'monitoring.action.rotate_logs'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-logs"></div>
                     <div id="fix-result-clean-logs"></div>
@@ -489,7 +489,7 @@
                             data-action="click->autofix#fix"
                             data-autofix-action-param="composer-install"
                             data-autofix-url-value="{{ path('monitoring_health') }}">
-                        <i class="bi bi-download" aria-hidden="true"></i> {{ 'monitoring.action.composer_install'|trans({}, 'monitoring') }}
+                        <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i> {{ 'monitoring.action.composer_install'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-composer-install"></div>
                 {% endif %}
@@ -654,7 +654,7 @@
                             data-action="click->autofix#fix"
                             data-autofix-action-param="clean-uploads"
                             data-autofix-url-value="{{ path('monitoring_health') }}">
-                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'monitoring.action.clean_uploads'|trans({}, 'monitoring') }}
+                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'monitoring.action.clean_uploads'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-clean-uploads"></div>
                 {% endif %}
@@ -669,7 +669,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-link-45deg" aria-hidden="true"></i> {{ 'monitoring.related'|trans({}, 'monitoring') }}
+                    <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i> {{ 'monitoring.related'|trans({}, 'monitoring') }}
                 </h2>
             </div>
         {% endblock %}
@@ -677,7 +677,7 @@
             <div class="row">
                 <div class="col-md-3 mb-2">
                     <a href="{{ path('monitoring_performance') }}" class="fa-cyber-btn fa-cyber-btn--ghost w-100">
-                        <i class="bi bi-speedometer" aria-hidden="true"></i> {{ 'monitoring.performance.title'|trans({}, 'monitoring') }}
+                        <i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i> {{ 'monitoring.performance.title'|trans({}, 'monitoring') }}
                     </a>
                 </div>
                 <div class="col-md-3 mb-2">
@@ -687,12 +687,12 @@
                 </div>
                 <div class="col-md-3 mb-2">
                     <a href="{{ path('monitoring_audit_log') }}" class="fa-cyber-btn fa-cyber-btn--ghost w-100">
-                        <i class="bi bi-journal-text" aria-hidden="true"></i> {{ 'monitoring.audit_log.title'|trans({}, 'monitoring') }}
+                        <i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i> {{ 'monitoring.audit_log.title'|trans({}, 'monitoring') }}
                     </a>
                 </div>
                 <div class="col-md-3 mb-2">
                     <button data-controller="ui-actions" data-action="ui-actions#reload" class="fa-cyber-btn fa-cyber-btn--ghost w-100">
-                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'monitoring.refresh'|trans({}, 'monitoring') }}
+                        <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'monitoring.refresh'|trans({}, 'monitoring') }}
                     </button>
                 </div>
             </div>
