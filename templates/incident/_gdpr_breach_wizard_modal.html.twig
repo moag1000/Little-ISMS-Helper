@@ -444,15 +444,18 @@
 
 .gdpr-wizard .form-check-label {
     cursor: pointer;
-    color: var(--text-primary, var(--surface));
+    color: var(--fg);
 }
 
-/* Dark mode specific overrides */
+/* Dark mode specific overrides — Aurora-Tokens resolve theme automatically,
+   so these blocks are mostly redundant. Kept for the bg-warning header
+   (where modal-header.bg-warning needs explicit warning-text color in dark)
+   and the muted-text fallback for text-muted scope. */
 [data-bs-theme="dark"] .gdpr-wizard-content,
 [data-theme="dark"] .gdpr-wizard-content {
-    background-color: var(--bg-elevated, var(--surface));
-    color: var(--text-primary, var(--surface-2));
-    border-color: var(--border-color, var(--border-strong));
+    background-color: var(--surface);
+    color: var(--fg);
+    border-color: var(--border);
 }
 
 [data-bs-theme="dark"] .gdpr-wizard-content .modal-header.bg-warning,
@@ -463,11 +466,11 @@
 
 [data-bs-theme="dark"] .gdpr-wizard-content .bg-body-secondary,
 [data-theme="dark"] .gdpr-wizard-content .bg-body-secondary {
-    background-color: var(--bg-secondary, var(--bg)) !important;
+    background-color: var(--surface-2) !important;
 }
 
 [data-bs-theme="dark"] .gdpr-wizard-content .text-muted,
 [data-theme="dark"] .gdpr-wizard-content .text-muted {
-    color: var(--text-secondary, var(--fg-3)) !important;
+    color: var(--fg-2) !important;
 }
 </style>
