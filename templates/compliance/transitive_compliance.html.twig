@@ -61,7 +61,7 @@
             <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'compliance.tab.details'|trans({}, 'compliance') }}
         </button>
         <button class="tab-button" data-tabs-target="button" data-action="click->tabs#switch" data-tab="info">
-            <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'compliance.tab.explanation'|trans({}, 'compliance') }}
+            <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> {{ 'compliance.tab.explanation'|trans({}, 'compliance') }}
         </button>
     </div>
     {% endblock %}
@@ -80,7 +80,7 @@
                         <br>Diese Mappings zeigen, wie Anforderungen verschiedener Frameworks zusammenhängen.
                     </p>
                     <div class="info-box-white">
-                        <p class="h-white-no-mt-mb-sm fw-bold"><i class="bi bi-lightbulb" aria-hidden="true"></i> So erstellen Sie Mappings:</p>
+                        <p class="h-white-no-mt-mb-sm fw-bold"><i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> So erstellen Sie Mappings:</p>
                         <p class="fs-095-opacity-09">
                             Mappings müssen manuell erstellt oder über ein Datenimport-Script geladen werden.
                             <br>Kontaktieren Sie Ihren Administrator für weitere Informationen.
@@ -229,7 +229,7 @@
                     </p>
                     <div class="info-box-white-no-mb">
                         <p class="fs-095-opacity-09">
-                            <i class="bi bi-lightbulb" aria-hidden="true"></i> Mappings werden benötigt, um zu zeigen, wie sich Anforderungen verschiedener
+                            <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> Mappings werden benötigt, um zu zeigen, wie sich Anforderungen verschiedener
                             Compliance-Frameworks gegenseitig abdecken.
                         </p>
                     </div>
@@ -329,7 +329,7 @@
 
     {# Tab 4: Explanation #}
     <div id="tab-info" class="tab-content d-none" data-tabs-target="panel" data-tab="info">
-        <h2 class="section-title"><i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'compliance.section.mapping_explanation'|trans({}, 'compliance') }}</h2>
+        <h2 class="section-title"><i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> {{ 'compliance.section.mapping_explanation'|trans({}, 'compliance') }}</h2>
 
         <div class="grid-gap-15">
             {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info', 'class': 'card-card-border-left-info-lg' } %}

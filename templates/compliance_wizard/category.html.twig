@@ -62,7 +62,7 @@
                             {{ category.items|length }} {{ 'wizard.total_checks'|trans({}, 'wizard') }}
                         </li>
                         <li class="mb-2">
-                            <i class="bi bi-flag text-danger me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-flag text-danger me-2" aria-hidden="true"></i>
                             {{ category.gap_count }} {{ 'wizard.gaps_identified'|trans({}, 'wizard') }}
                         </li>
                     </ul>
@@ -96,11 +96,11 @@
                                 {% if item.score >= 100 %}
                                     <i class="fa-icon fa-icon--ui-check-circle-fill text-success fs-5" aria-hidden="true" title="{{ 'wizard.status.compliant'|trans({}, 'wizard') }}"></i>
                                 {% elseif item.score >= 50 %}
-                                    <i class="bi bi-exclamation-circle-fill text-warning fs-5" aria-hidden="true" title="{{ 'wizard.status.partial'|trans({}, 'wizard') }}"></i>
+                                    <i class="fa-icon fa-icon--status-warning text-warning fs-5" aria-hidden="true" title="{{ 'wizard.status.partial'|trans({}, 'wizard') }}"></i>
                                 {% elseif item.score > 0 %}
                                     <i class="bi bi-dash-circle-fill text-info fs-5" aria-hidden="true" title="{{ 'wizard.status.in_progress'|trans({}, 'wizard') }}"></i>
                                 {% else %}
-                                    <i class="bi bi-x-circle-fill text-danger fs-5" aria-hidden="true" title="{{ 'wizard.status.not_started'|trans({}, 'wizard') }}"></i>
+                                    <i class="fa-icon fa-icon--status-critical text-danger fs-5" aria-hidden="true" title="{{ 'wizard.status.not_started'|trans({}, 'wizard') }}"></i>
                                 {% endif %}
                             </td>
                             <td>
@@ -155,7 +155,7 @@
                                     </a>
                                 {% elseif item.gap and item.gap.route is defined and item.gap.route %}
                                     <a href="{{ path(item.gap.route) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--warning">
-                                        <i class="bi bi-flag me-1" aria-hidden="true"></i>{{ 'wizard.fix_gap'|trans({}, 'wizard') }}
+                                        <i class="fa-icon fa-icon--ui-flag me-1" aria-hidden="true"></i>{{ 'wizard.fix_gap'|trans({}, 'wizard') }}
                                     </a>
                                 {% endif %}
                             </td>
@@ -173,7 +173,7 @@
         {% block card_header %}
             <div class="card-header bg-danger bg-opacity-10">
                 <h2 class="card-title h5 mb-0 text-danger">
-                    <i class="bi bi-flag me-2" aria-hidden="true"></i>{{ 'wizard.gaps_to_address'|trans({}, 'wizard') }}
+                    <i class="fa-icon fa-icon--ui-flag me-2" aria-hidden="true"></i>{{ 'wizard.gaps_to_address'|trans({}, 'wizard') }}
                 </h2>
             </div>
         {% endblock %}
@@ -195,7 +195,7 @@
                         {% endif %}
                         {% if gap.action is defined %}
                             <p class="small mb-2">
-                                <i class="bi bi-lightbulb text-warning me-1" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-lightbulb text-warning me-1" aria-hidden="true"></i>
                                 <strong>{{ 'wizard.recommended_action'|trans({}, 'wizard') }}:</strong> {{ gap.action|trans({}, 'wizard') }}
                             </p>
                         {% endif %}

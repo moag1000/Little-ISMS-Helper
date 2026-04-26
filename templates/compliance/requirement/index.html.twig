@@ -58,7 +58,7 @@
                     </button>
                     {% if selected_framework or selected_absicherungs_stufe or selected_anforderungs_typ %}
                         <a href="{{ path('app_compliance_requirement_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost ms-2" title="{{ 'common.clear'|trans({}, 'messages') }}">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                         </a>
                     {% endif %}
                 </div>

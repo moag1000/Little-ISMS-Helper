@@ -25,7 +25,7 @@
     {% embed '_components/_card.html.twig' with { class: 'mb-4' } %}
         {% block card_body %}
             <div class="d-flex align-items-start">
-                <i class="bi bi-lightbulb-fill text-warning me-3 fs-3" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-lightbulb text-warning me-3 fs-3" aria-hidden="true"></i>
                 <div>
                     <h5 class="card-title mb-2">{{ 'help.iso9001_bridge.intro_title'|trans({}, 'help') }}</h5>
                     <p class="card-text mb-0">{{ 'help.iso9001_bridge.intro_text'|trans({}, 'help') }}</p>
@@ -64,7 +64,7 @@
                             <td>{{ 'help.iso9001_bridge.map.context.to'|trans({}, 'help') }}</td>
                             <td>
                                 <a href="{{ path('app_context_index') }}" class="text-decoration-none">
-                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
                                     {{ 'help.iso9001_bridge.map.context.module'|trans({}, 'help') }}
                                 </a>
                             </td>
@@ -78,7 +78,7 @@
                             <td>{{ 'help.iso9001_bridge.map.process_map.to'|trans({}, 'help') }}</td>
                             <td>
                                 <a href="{{ path('app_soa_index') }}" class="text-decoration-none">
-                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
                                     {{ 'help.iso9001_bridge.map.process_map.module'|trans({}, 'help') }}
                                 </a>
                             </td>
@@ -92,7 +92,7 @@
                             <td>{{ 'help.iso9001_bridge.map.risks.to'|trans({}, 'help') }}</td>
                             <td>
                                 <a href="{{ path('app_risk_index') }}" class="text-decoration-none">
-                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
                                     {{ 'help.iso9001_bridge.map.risks.module'|trans({}, 'help') }}
                                 </a>
                             </td>
@@ -106,7 +106,7 @@
                             <td>{{ 'help.iso9001_bridge.map.capa.to'|trans({}, 'help') }}</td>
                             <td>
                                 <a href="{{ path('app_risk_treatment_plan_index') }}" class="text-decoration-none">
-                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
                                     {{ 'help.iso9001_bridge.map.capa.module'|trans({}, 'help') }}
                                 </a>
                             </td>
@@ -120,7 +120,7 @@
                             <td>{{ 'help.iso9001_bridge.map.audit.to'|trans({}, 'help') }}</td>
                             <td>
                                 <a href="{{ path('app_audit_index') }}" class="text-decoration-none">
-                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
                                     {{ 'help.iso9001_bridge.map.audit.module'|trans({}, 'help') }}
                                 </a>
                             </td>
@@ -134,7 +134,7 @@
                             <td>{{ 'help.iso9001_bridge.map.review.to'|trans({}, 'help') }}</td>
                             <td>
                                 <a href="{{ path('app_management_review_index') }}" class="text-decoration-none">
-                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
                                     {{ 'help.iso9001_bridge.map.review.module'|trans({}, 'help') }}
                                 </a>
                             </td>
@@ -148,7 +148,7 @@
                             <td>{{ 'help.iso9001_bridge.map.infrastructure.to'|trans({}, 'help') }}</td>
                             <td>
                                 <a href="{{ path('app_asset_index') }}" class="text-decoration-none">
-                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
                                     {{ 'help.iso9001_bridge.map.infrastructure.module'|trans({}, 'help') }}
                                 </a>
                             </td>
@@ -156,13 +156,13 @@
                         </tr>
                         <tr>
                             <td class="ps-3">
-                                <i class="bi bi-mortarboard me-1" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-mortarboard me-1" aria-hidden="true"></i>
                                 {{ 'help.iso9001_bridge.map.competence.from'|trans({}, 'help') }}
                             </td>
                             <td>{{ 'help.iso9001_bridge.map.competence.to'|trans({}, 'help') }}</td>
                             <td>
                                 <a href="{{ path('app_training_index') }}" class="text-decoration-none">
-                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
                                     {{ 'help.iso9001_bridge.map.competence.module'|trans({}, 'help') }}
                                 </a>
                             </td>
@@ -170,13 +170,13 @@
                         </tr>
                         <tr>
                             <td class="ps-3">
-                                <i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--policy me-1" aria-hidden="true"></i>
                                 {{ 'help.iso9001_bridge.map.documents.from'|trans({}, 'help') }}
                             </td>
                             <td>{{ 'help.iso9001_bridge.map.documents.to'|trans({}, 'help') }}</td>
                             <td>
                                 <a href="{{ path('app_document_index') }}" class="text-decoration-none">
-                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
                                     {{ 'help.iso9001_bridge.map.documents.module'|trans({}, 'help') }}
                                 </a>
                             </td>
@@ -190,7 +190,7 @@
                             <td>{{ 'help.iso9001_bridge.map.suppliers.to'|trans({}, 'help') }}</td>
                             <td>
                                 <a href="{{ path('app_supplier_index') }}" class="text-decoration-none">
-                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
                                     {{ 'help.iso9001_bridge.map.suppliers.module'|trans({}, 'help') }}
                                 </a>
                             </td>
@@ -204,7 +204,7 @@
                             <td>{{ 'help.iso9001_bridge.map.nonconformity.to'|trans({}, 'help') }}</td>
                             <td>
                                 <a href="{{ path('app_incident_index') }}" class="text-decoration-none">
-                                    <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
                                     {{ 'help.iso9001_bridge.map.nonconformity.module'|trans({}, 'help') }}
                                 </a>
                             </td>
@@ -274,7 +274,7 @@
                     {% embed '_components/_card.html.twig' with { class: 'h-100 border-danger' } %}
                         {% block card_body %}
                             <h6 class="card-title">
-                                <i class="bi bi-lightning-charge text-danger me-2" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--threat text-danger me-2" aria-hidden="true"></i>
                                 {{ 'help.iso9001_bridge.new.bcm.title'|trans({}, 'help') }}
                             </h6>
                             <p class="card-text small mb-0">{{ 'help.iso9001_bridge.new.bcm.description'|trans({}, 'help') }}</p>

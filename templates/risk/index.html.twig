@@ -252,7 +252,7 @@
     {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/risk"{% endblock %}
     {% block card_header %}
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h2 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk.index.all_risks'|trans({}, 'risk') }} ({{ risks|length }})</h2>
+            <h2 class="mb-0"><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'risk.index.all_risks'|trans({}, 'risk') }} ({{ risks|length }})</h2>
         </div>
     {% endblock %}
     {% block card_body %}
@@ -340,7 +340,7 @@
                 <td class="text-center">
                     {% if risk.asset %}
                         <a href="{{ path('app_asset_show', {id: risk.asset.id}) }}" class="badge bg-primary" title="{{ risk.asset.name }}">
-                            <i class="bi bi-cpu" aria-hidden="true"></i> {{ 'risk.index.table.asset'|trans({}, 'risk') }}
+                            <i class="fa-icon fa-icon--nav-cpu" aria-hidden="true"></i> {{ 'risk.index.table.asset'|trans({}, 'risk') }}
                         </a>
                     {% elseif risk.person %}
                         <a href="{{ path('app_person_show', {id: risk.person.id}) }}" class="badge bg-info" title="{{ risk.person.fullName }}">

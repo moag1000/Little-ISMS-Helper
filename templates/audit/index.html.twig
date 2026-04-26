@@ -70,7 +70,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-pie-chart" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-pie-chart" aria-hidden="true"></i>
                     {{ 'audit.status_overview'|trans({}, 'audit')}}
                 </h2>
             </div>
@@ -81,7 +81,7 @@
                 <div class="col-md-3">
                     <div class="status-card text-center p-4 bg-audit-planned">
                         <div class="status-icon mb-3 audit-icon-planned">
-                            <i class="bi bi-calendar3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
                         </div>
                         <div class="status-label text-muted mb-2">{{ 'audit.status.planned'|trans({}, 'audit') }}</div>
                         <div class="status-count audit-count-planned">
@@ -142,7 +142,7 @@
         {% block card_header %}
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h2 class="mb-0">
-                    <i class="bi bi-list-ul" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i>
                     {{ 'audit.list.all'|trans({}, 'audit')}}
                 </h2>
 
@@ -219,7 +219,7 @@
                         </td>
                         <td>
                             {% if audit.plannedDate %}
-                            <i class="bi bi-calendar3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
                             {{ audit.plannedDate|date('d.m.Y') }}
                             {% else %}
                             <span class="text-muted">-</span>
@@ -228,7 +228,7 @@
                         <td>
                             <span class="{{ badge_status(audit.status) }}">
                                 {% if audit.status == 'planned' %}
-                                    <i class="bi bi-calendar3" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
                                 {% elseif audit.status == 'in_progress' %}
                                     <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
                                 {% elseif audit.status == 'completed' %}
@@ -255,7 +255,7 @@
                                    class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
                                    data-turbo="false"
                                    title="{{ 'common.export_pdf'|trans({}, 'messages') }}" aria-label="{{ 'common.export_pdf'|trans({}, 'messages') }}">
-                                    <i class="bi bi-file-pdf" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                                 </a>
                             </div>
                         </td>

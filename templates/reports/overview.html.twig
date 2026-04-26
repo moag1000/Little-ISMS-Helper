@@ -40,7 +40,7 @@
                         <div class="text-muted small mb-2 fw-semibold">{{ 'reports.license_report.available'|trans({}, 'reports') }}</div>
                         <ul class="list-unstyled mb-0">
                             <li class="mb-2">
-                                <i class="bi bi-file-earmark-text text-primary me-2" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--policy text-primary me-2" aria-hidden="true"></i>
                                 <strong>{{ 'reports.license_report.notice_md'|trans({}, 'reports') }}</strong> - {{ 'reports.license_report.notice_md_desc'|trans({}, 'reports') }}
                             </li>
                             <li class="mb-2">
@@ -60,7 +60,7 @@
                     </div>
                     {% if license_stats.exists %}
                         <small class="text-muted">
-                            <i class="bi bi-calendar me-1" aria-hidden="true"></i>{{ 'reports.license_report.last_updated'|trans({}, 'reports') }} {{ license_stats.updated_at }}
+                            <i class="fa-icon fa-icon--ui-calendar me-1" aria-hidden="true"></i>{{ 'reports.license_report.last_updated'|trans({}, 'reports') }} {{ license_stats.updated_at }}
                         </small>
                     {% endif %}
                 {% endblock %}
@@ -178,7 +178,7 @@
             {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
                 {% block alert_body %}
                 <div class="d-flex align-items-start">
-                    <i class="bi bi-lightbulb fs-4 me-3" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-lightbulb fs-4 me-3" aria-hidden="true"></i>
                     <div>
                         <div class="fa-alert__title">{{ 'reports.generation.best_practices.title'|trans({}, 'reports') }}</div>
                         <ul class="mb-0">

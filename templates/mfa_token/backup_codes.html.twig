@@ -59,7 +59,7 @@
                     <div class="alert alert-info">
                         <strong><i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'mfa_token.field.user'|trans({}, 'mfa') }}:</strong> {{ mfa_token.user.email }}<br>
                         <strong><i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}:</strong> {{ mfa_token.deviceName }}<br>
-                        <strong><i class="bi bi-calendar" aria-hidden="true"></i> {{ 'common.generated'|trans({}, 'messages') }}:</strong> {{ 'now'|date('Y-m-d H:i:s') }}
+                        <strong><i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i> {{ 'common.generated'|trans({}, 'messages') }}:</strong> {{ 'now'|date('Y-m-d H:i:s') }}
                     </div>
 
                     <div class="row">
@@ -82,7 +82,7 @@
                         <button type="button"
                                 class="fa-cyber-btn fa-cyber-btn--ghost"
                                 data-action="backup-codes#print">
-                            <i class="bi bi-printer" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.print'|trans({}, 'mfa') }}
+                            <i class="fa-icon fa-icon--ui-printer" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.print'|trans({}, 'mfa') }}
                         </button>
                         <button type="button"
                                 class="fa-cyber-btn fa-cyber-btn--ghost"

@@ -102,7 +102,7 @@
         <div class="col-md-4">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header"><h3 class="mb-0 h5"><i class="bi bi-star" aria-hidden="true"></i> {{ 'mapping_review.section.quality_confidence'|trans({}, 'compliance') }}</h3></div>
+                    <div class="card-header"><h3 class="mb-0 h5"><i class="fa-icon fa-icon--ui-star" aria-hidden="true"></i> {{ 'mapping_review.section.quality_confidence'|trans({}, 'compliance') }}</h3></div>
                 {% endblock %}
                 {% block card_body %}
                     {% if mapping.qualityScore is not null %}
@@ -144,7 +144,7 @@
         <div class="col-md-4">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header"><h4 class="mb-0 h5"><i class="bi bi-activity" aria-hidden="true"></i> {{ 'mapping_review.section.similarity_scores'|trans({}, 'compliance') }}</h4></div>
+                    <div class="card-header"><h4 class="mb-0 h5"><i class="fa-icon fa-icon--nav-activity" aria-hidden="true"></i> {{ 'mapping_review.section.similarity_scores'|trans({}, 'compliance') }}</h4></div>
                 {% endblock %}
                 {% block card_body %}
                     {% if mapping.textualSimilarity is not null %}
@@ -235,7 +235,7 @@
                     {% if gap.recommendedAction %}
                         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-0' } } %}
                             {% block alert_body %}
-                            <strong><i class="bi bi-lightbulb text-warning" aria-hidden="true"></i> {{ 'mapping_review.gap.recommendation'|trans({}, 'compliance') }}:</strong><br>
+                            <strong><i class="fa-icon fa-icon--ui-lightbulb text-warning" aria-hidden="true"></i> {{ 'mapping_review.gap.recommendation'|trans({}, 'compliance') }}:</strong><br>
                             {{ gap.recommendedAction|nl2br }}
                             {% endblock %}
                         {% endembed %}

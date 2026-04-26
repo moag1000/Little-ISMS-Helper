@@ -26,14 +26,14 @@
         <div class="d-flex gap-2">
             {% if freeze.pdfPath %}
                 <a href="{{ path('app_audit_freeze_download_pdf', {id: freeze.id}) }}" class="fa-cyber-btn fa-cyber-btn--danger">
-                    <i class="bi bi-file-pdf" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                     {{ 'audit_freeze.action.download_pdf'|trans({}, 'audit_freeze') }}
                 </a>
             {% else %}
                 <form method="post" action="{{ path('app_audit_freeze_generate_pdf', {id: freeze.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('audit_freeze_generate_pdf_' ~ freeze.id) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="bi bi-file-pdf" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                         {{ 'audit_freeze.action.generate_pdf'|trans({}, 'audit_freeze') }}
                     </button>
                 </form>

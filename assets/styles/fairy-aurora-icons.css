@@ -230,6 +230,13 @@
 .fa-icon--nav-database-add { --fa-icon: url(../icons/nav-database-add.svg); }
 .fa-icon--nav-heart-pulse { --fa-icon: url(../icons/nav-heart-pulse.svg); }
 .fa-icon--nav-journal { --fa-icon: url(../icons/nav-journal.svg); }
+.fa-icon--nav-inbox { --fa-icon: url(../icons/nav-inbox.svg); }
+.fa-icon--nav-mortarboard { --fa-icon: url(../icons/nav-mortarboard.svg); }
+.fa-icon--nav-shield-alert { --fa-icon: url(../icons/nav-shield-alert.svg); }
+.fa-icon--nav-activity { --fa-icon: url(../icons/nav-activity.svg); }
+.fa-icon--nav-list-ordered { --fa-icon: url(../icons/nav-list-ordered.svg); }
+.fa-icon--nav-cpu { --fa-icon: url(../icons/nav-cpu.svg); }
+.fa-icon--nav-pie-chart { --fa-icon: url(../icons/nav-pie-chart.svg); }
 
 /* ── UI Chrome ─────────────────────────────────────────────────── */
 .fa-icon--ui-search { --fa-icon: url(../icons/ui-search.svg); }
@@ -258,6 +265,19 @@
 .fa-icon--ui-unlock { --fa-icon: url(../icons/ui-unlock.svg); }
 .fa-icon--ui-refresh { --fa-icon: url(../icons/ui-refresh.svg); }
 .fa-icon--ui-settings { --fa-icon: url(../icons/ui-settings.svg); }
+.fa-icon--ui-hourglass { --fa-icon: url(../icons/ui-hourglass.svg); }
+.fa-icon--ui-calendar { --fa-icon: url(../icons/ui-calendar.svg); }
+.fa-icon--ui-inbox { --fa-icon: url(../icons/ui-inbox.svg); }
+.fa-icon--ui-help { --fa-icon: url(../icons/ui-help.svg); }
+.fa-icon--ui-lightbulb { --fa-icon: url(../icons/ui-lightbulb.svg); }
+.fa-icon--ui-clock { --fa-icon: url(../icons/ui-clock.svg); }
+.fa-icon--ui-list { --fa-icon: url(../icons/ui-list.svg); }
+.fa-icon--ui-calendar-event { --fa-icon: url(../icons/ui-calendar-event.svg); }
+.fa-icon--ui-flag { --fa-icon: url(../icons/ui-flag.svg); }
+.fa-icon--ui-printer { --fa-icon: url(../icons/ui-printer.svg); }
+.fa-icon--ui-send { --fa-icon: url(../icons/ui-send.svg); }
+.fa-icon--ui-star { --fa-icon: url(../icons/ui-star.svg); }
+.fa-icon--ui-tag { --fa-icon: url(../icons/ui-tag.svg); }
 
 /* ── Utility / Status ──────────────────────────────────────────── */
 .fa-icon--util-chevron-up { --fa-icon: url(../icons/util-chevron-up.svg); }

@@ -145,7 +145,7 @@
     {% embed '_components/_card.html.twig' with {class: 'mb-4', borderColor: 'info'} %}
         {% block card_header %}
             <div class="card-header bg-info text-white">
-                <h2 class="mb-0"><i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'training.upcoming_trainings'|trans({}, 'training') }}</h2>
+                <h2 class="mb-0"><i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i> {{ 'training.upcoming_trainings'|trans({}, 'training') }}</h2>
             </div>
         {% endblock %}
         {% block card_body %}
@@ -177,7 +177,7 @@
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('training.type.' ~ training.trainingType)|trans({}, 'training') } %}
                         </td>
                         <td>
-                            <i class="bi bi-clock" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
                             {{ training.scheduledDate|date('d.m.Y') }}
                         </td>
                         <td>{{ ('training.delivery.' ~ training.deliveryMethod)|trans({}, 'training') }}</td>
@@ -208,7 +208,7 @@
         {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/training"{% endblock %}
         {% block card_header %}
             <div class="card-header bg-primary text-white">
-                <h2 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'training.all_trainings'|trans({}, 'training') }}</h2>
+                <h2 class="mb-0"><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'training.all_trainings'|trans({}, 'training') }}</h2>
             </div>
         {% endblock %}
         {% block card_body %}

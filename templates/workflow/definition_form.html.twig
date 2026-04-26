@@ -78,7 +78,7 @@
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ is_edit ? path('app_workflow_definition_show', {id: workflow.id}) : path('app_workflow_definitions') }}"
                            class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                         </a>
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>

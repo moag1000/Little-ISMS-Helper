@@ -212,7 +212,7 @@
                         <form action="{{ path('app_scheduled_report_trigger', {id: report.id}) }}" method="post">
                             <input type="hidden" name="_token" value="{{ csrf_token('trigger' ~ report.id) }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning w-100" onclick="return confirm('{{ 'scheduled_report.confirm.trigger'|trans({}, 'scheduled_reports') }}')">
-                                <i class="bi bi-send" aria-hidden="true"></i> {{ 'scheduled_report.action.trigger'|trans({}, 'scheduled_reports') }}
+                                <i class="fa-icon fa-icon--ui-send" aria-hidden="true"></i> {{ 'scheduled_report.action.trigger'|trans({}, 'scheduled_reports') }}
                             </button>
                         </form>
                         {% endif %}
@@ -234,7 +234,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h3 class="h5 mb-0">
-                            <i class="bi bi-clock" aria-hidden="true"></i> {{ 'scheduled_report.metadata.title'|trans({}, 'scheduled_reports') }}
+                            <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i> {{ 'scheduled_report.metadata.title'|trans({}, 'scheduled_reports') }}
                         </h3>
                     </div>
                 {% endblock %}
