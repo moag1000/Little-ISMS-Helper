@@ -321,6 +321,42 @@ html[data-theme="dark"] .fa-card--premium {
     box-shadow: 0 0 15px var(--danger-glow);
 }
 
+/* — Success — */
+.fa-cyber-btn--success {
+    background: var(--success-strong);
+    color: var(--on-success);
+    border-color: var(--success-strong);
+    box-shadow: 0 0 12px var(--success-glow);
+}
+.fa-cyber-btn--success:hover:not(.is-disabled) {
+    background: var(--success);
+    color: var(--on-success);
+    transform: translateY(-1px);
+    box-shadow: 0 0 20px var(--success-glow);
+}
+.fa-cyber-btn--success:active:not(.is-disabled) {
+    transform: translateY(0);
+    box-shadow: 0 0 8px var(--success-glow);
+}
+
+/* — Warning — */
+.fa-cyber-btn--warning {
+    background: var(--warning-strong);
+    color: var(--on-warning);
+    border-color: var(--warning-strong);
+    box-shadow: 0 0 12px var(--warning-glow);
+}
+.fa-cyber-btn--warning:hover:not(.is-disabled) {
+    background: var(--warning);
+    color: var(--on-warning);
+    transform: translateY(-1px);
+    box-shadow: 0 0 20px var(--warning-glow);
+}
+.fa-cyber-btn--warning:active:not(.is-disabled) {
+    transform: translateY(0);
+    box-shadow: 0 0 8px var(--warning-glow);
+}
+
 /* — Loading-Dots — */
 .fa-cyber-btn__dots {
     display: inline-flex;
@@ -3880,6 +3916,24 @@ button.fa-filter-chip.fa-filter-chip--active {
                 box-shadow var(--t-fast) var(--ease-out),
                 color var(--t-fast) var(--ease-out);
 }
+
+/* Double-class specificity bump (0,2,0) — wins over Bootstrap's own .btn (0,1,0).
+   Applies Aurora sizing and radius to every .btn element without touching markup. */
+.btn.btn {
+    border-radius: var(--r-md);
+    padding: 10px 18px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1;
+}
+
+.btn.btn:focus-visible,
+.btn.btn:focus {
+    outline: 1px solid var(--primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+/* Legacy .btn:focus (non-visible keyboard) keeps glow only */
 .btn:focus-visible,
 .btn:focus {
     outline: none;
@@ -3892,9 +3946,31 @@ button.fa-filter-chip.fa-filter-chip--active {
     pointer-events: none;
 }
 
-/* Sizes aligned with fa-cyber-btn scale */
+/* Sizes aligned with fa-cyber-btn scale (double-class for specificity) */
+.btn.btn-sm { padding: 6px 12px; font-size: 12px; border-radius: var(--r-sm); }
+.btn.btn-lg { padding: 12px 22px; font-size: 15px; border-radius: var(--r-md); }
+/* Single-class fallbacks for .btn-sm/.btn-lg used outside .btn context */
 .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: var(--r-sm); }
 .btn-lg { padding: 12px 22px; font-size: 15px; border-radius: var(--r-md); }
+
+/* btn-group / btn-toolbar edge-case:
+   Buttons inside .btn-group need no individual lift — sibling layouts would shift.
+   Remove translateY for grouped buttons; glow is still applied per variant above. */
+.btn-group .btn:hover,
+.btn-toolbar .btn:hover {
+    transform: none;
+}
+/* Preserve border-radius reset at group boundaries as Bootstrap expects */
+.btn-group > .btn:not(:first-child),
+.btn-group > .btn-group:not(:first-child) > .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.btn-group > .btn:not(:last-child):not(.dropdown-toggle),
+.btn-group > .btn-group:not(:last-child) > .btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
 
 /* Solid variants — token-only colour map; Bootstrap reads --bs-btn-*
    for bg/color/border/hover/active/disabled. Hover-lift (transform) and
