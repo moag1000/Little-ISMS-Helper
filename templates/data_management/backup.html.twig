@@ -767,7 +767,7 @@
                             html += `{{ _fa_alert.render({ variant: 'info', body: '<strong>{{ \'data_management.backup.preview.total_records\'|trans({}, \'admin\') }}:</strong> ${result.preview.total_records}' }) }}`;
 
                             if (result.preview.metadata) {
-                                html += `<div class="card"><div class="card-body"><h4>{{ 'data_management.backup.preview.metadata'|trans({}, 'admin') }}:</h4><pre>${JSON.stringify(result.preview.metadata, null, 2)}</pre></div></div>`;
+                                html += `<div class="card fa-section"><div class="card-body"><h4>{{ 'data_management.backup.preview.metadata'|trans({}, 'admin') }}:</h4><pre>${JSON.stringify(result.preview.metadata, null, 2)}</pre></div></div>`;
                             }
 
                             previewContent.innerHTML = html;
