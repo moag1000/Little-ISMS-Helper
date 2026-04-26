@@ -129,6 +129,72 @@ AI-Agent-Inventory 7 + Baseline 13). Alle grün.
   Lizenz: Creative Commons Attribution 4.0 International (CC BY 4.0).
   Original-Whitepaper: `docs/MRIS- mythos-resistente infosec.pdf`
 
+### Aurora v4 — flächendeckende Migration finalisiert (Wellen 1–8, ~3000 Site-Konvertierungen)
+
+**Audit-Endstand** (gemessen via `scripts/quality/check_aurora_v4.sh`):
+
+| Aurora-Komponente | Verwendungen | Bootstrap-Restbestand | Reduktion |
+|---|---:|---:|---:|
+| `fa-icon--*` | 729 | bi bi-* = 398 (alles generic UI) | -1700 ISMS-Domain-Icons |
+| `fa-cyber-btn` | 356 | btn btn-* = 20 (setup/security/qr) | -658 |
+| `fa-status-pill` | 56 | badge bg-* = 51 (Stimulus-controlled BC) | -87 |
+| `fa-aurora-surface` | 55 | — | flächendeckend auf `<main>` |
+| `fa-section` | 43 | — | via `_card`-Macro + Markup |
+| `fa-alert` | 33 | alert alert-* = 15 (Modal-Forms) | -203 |
+| `fa-empty-state` | 28 | — | mit Alva-Mood + CTA |
+| `fa-rag-card` | 11 | — | Dashboard-RAG-Pattern |
+| Hardcoded Hex in CSS | **0** | — | komplett auf Aurora-Tokens |
+
+**Token-Layer komplettiert** (`fairy-aurora.css`):
+- Tints: `--success-tint`, `--warning-tint`, `--danger-tint`, `--info-tint` (light + dark)
+- RGB-Komponenten: `--primary-rgb`, `--accent-rgb`, `--success-rgb`, `--warning-rgb`, `--danger-rgb` (für rgba()-Komposition)
+- Shadows: `--shadow-sm`, `--shadow-md`, `--shadow-lg`, `--shadow-up-sm`, `--shadow-up-md` (light + dark mit primary-Aura)
+- Print-Tokens: `--print-fg`, `--print-bg`
+- `--surface-translucent` für Overlay-on-Gradient
+
+**Neue Aurora-Komponenten:**
+- `.fa-rag-card` mit `--green/--amber/--red` Modifiern für RAG-Status-Kacheln
+- `.fa-data-table` Aurora-themed Tabelle (ersetzt `.table.table-bordered`)
+- `.fa-issue-list` semantisch statt `<ul><li class="text-warning">`-Pattern
+- `.fa-trend` mit `--up/--up-bad/--down/--down-bad/--flat` für KPI-Trends
+- `.fa-glyph-size-{sm,md,lg,xl}` Bootstrap-Icon-Größen-Utilities (kein Konflikt mit `.fa-icon` Mask-Base)
+- `.progress-h-{4,5,10,18,24,25}` ergänzt (Reihe komplett: 4/5/6/8/10/18/20/24/25/30/40)
+
+**Neue Macros:**
+- `_fa_icon.html.twig` (Aurora-Mask-Icons, 77 ISMS-Domain-Icons)
+- `_fa_kpi_card.html.twig` (Dashboard-KPI-Tile mit Trend-Indicator)
+- `_fa_rag_card.html.twig` (R/A/G-Status-Tile)
+- `_fa_btn.html.twig` (Aurora-Native-Button-Macro)
+- `_fa_alert.html.twig` (Aurora-Native-Alert-Macro)
+- 77 SVG-Icons in `assets/icons/` + `fairy-aurora-icons.css`
+
+**`.fa-cyber-btn` Default-Sizing**: Base-Klasse hat jetzt padding/font-size/border-radius wie `--md` Default, plus `:where()`-Safety-Net (zero-specificity-defaults für variant-lose Buttons).
+
+**TomSelect-Override mit `!important`**: Tom-Select-Lib lädt CSS via Stimulus-Controller-Import (Source-Order-Konflikt). Aurora-Tokens werden durchgesetzt.
+
+**Bug-Fixes während Migration:**
+- Twig-3 Macro-Scope (`_fa_empty_state`, `_fa_hero`): file-top `{% import '_alva' as alva %}` propagiert nicht in eigene macros → ersetzt durch `{% include %}`-Pattern + file-body in `_alva.html.twig`.
+- Embed-Block-Scope: 50 Sites in 39 Templates wo `_fa_*`-Macro-Calls inside `{% block %}` von `{% embed %}` ohne block-Import → Imports inline ergänzt.
+- `_fa_alert.body` mit Twig-im-String-Literal (132 Sites): String-literal Twig wird nicht interpoliert → konvertiert zu `{% embed %}` mit `{% block alert_body %}`.
+- `fa-cyber-btn--block` (BS-Naming-Carry-Over) → `fa-cyber-btn--full` (Aurora-Spec-Name).
+- 3 fehlende CSS-Klassen ergänzt: `.fa-status-pill--lg`, `.fa-alert--dismissible`, `.fa-alert--with-alva`.
+- GDPR-Wizard `.gdpr-wizard .form-check-label`: `var(--text-primary, var(--surface))` (dead-token-fallback → unsichtbar) → `var(--fg)`.
+- Aurora-Klassen-Audit-Skript `scripts/quality/check_aurora_v4.sh` als Living-Audit + Stylelint-Hex-Verbot via `declaration-property-value-disallowed-list`.
+
+**Skip-Kategorien (intentional Bootstrap):**
+- `templates/setup/`, `templates/setup_wizard/`, `templates/security/` (eigener Style)
+- Email/PDF/QR/Print-Templates
+- `.btn-close`, `.dropdown-toggle`, `.btn-link`-Patterns wo kein Aurora-Pendant
+- Modal-Footer-Buttons in einigen komplexen Stimulus-Containern
+- 5 TODO-Kommentare für PHP/JS-driven dynamic icon switches
+
+**Welle-Übersicht:**
+- Welle 1-3: Token-Layer + Macro-Bridges + Dashboard-Primitives
+- Welle 4: Lead-Pages-Buttons (E4) + Alert-Migration (E5) + Hex-Cleanup (E6)
+- Welle 5: Badges (J1) + Detail-Page-Buttons (J2) + Inline-Style-Cleanup (J3)
+- Welle 6-7: Admin/Profile-Buttons (K1) + Alert-Round-2 (K2) + _macros/-Library (N1) + Restmodule (N2)
+- Welle 8: Final btn-* (P1, 579 Buttons) + bi-* Domain-Audit (P2, 449 Icons)
+
 ## [3.1.0] - 2026-04-26
 
 ### Mapping-Quality-Library: 24 Files / 314 Pairs / 100% Reciprocity
