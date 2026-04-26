@@ -1,0 +1,858 @@
+# MRIS Help-Texts — Tooltip / Inline-Help / Glossar
+# ---------------------------------------------------------------------------
+# Zweck: Deklarative Hilfetexte fuer das MRIS-Modul (SoA-Spalte, KPIs,
+#        AI-Agents). Junior-ISB-tauglich, mit 9001-Bruecken, Norm-Quelle,
+#        und Markt-Vergleichen wo sinnvoll.
+#
+# Quelle Fachkonzept: Peddi, R. (2026). MRIS — Mythos-resistente
+# Informationssicherheit, v1.5. Lizenz: Creative Commons Attribution 4.0
+# International (CC BY 4.0). Original: siehe Repo /docs/mris/.
+#
+# Sekundaerquellen: ISO/IEC 27001:2022, ISO/IEC 27002:2022, ISO/IEC 42001:2023,
+# EU AI Act (VO 2024/1689), NIST SP 800-63B, CISA KEV Catalog, DORA Art. 26.
+#
+# Lieferform: 20 Items (Junior-Bedarfsliste 2026-04-26) + 3 Top-Blocker-
+# Loesungen (Entscheidungsroutine "Reine Reibung", Reifegrad-Evidence pro
+# MHC, AI-Risiko-Matrix mit 12 typischen Tools).
+#
+# Autor: Senior-Consultant-Persona, 2026-04-26.
+# ---------------------------------------------------------------------------
+
+meta:
+  version: '1.0.0'
+  created: '2026-04-26'
+  source: 'Peddi (2026) MRIS v1.5 — CC BY 4.0'
+  language: ['de', 'en']
+  audience: 'Junior-ISB / ehem. QMB mit 9001-Hintergrund'
+
+# ===========================================================================
+# 20 HILFE-ITEMS
+# ===========================================================================
+items:
+
+  # -------------------------------------------------------------------------
+  # 1. Standfest
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.standfest'
+    where: 'soa.list.column.mris'
+    tooltip:
+      de: 'Control wirkt gegen die reale Bedrohungslage und du hast Belege. Kein Mythos, kein Theater — fertig im Sinne von MRIS.'
+      en: 'Control works against the actual threat landscape and is evidenced. No myth, no theatre — done in the MRIS sense.'
+    inline_help:
+      de: 'Standfest = Ziel-Zustand. Beispiel A.5.17 Authentication Information: phishing-resistente MFA (FIDO2) ist ausgerollt, Coverage-Report >95%, KPI gruen. Bei 9001 entspricht das einem stabilen, wirksam nachgewiesenen Prozess.'
+      en: 'Resilient = target state. Example A.5.17 Authentication Information: phishing-resistant MFA (FIDO2) deployed, coverage >95%, KPI green. In ISO 9001 terms this is a stable, evidenced process.'
+    glossar:
+      term_de: 'Standfest'
+      term_en: 'Resilient'
+      definition_de: 'Status eines Controls, das die reale Bedrohungslage adressiert und durch Evidenzen (KPI, Test, Audit) belegt ist. Hoechste Stufe der MRIS-Klassifikation.'
+      definition_en: 'Status of a control that addresses the actual threat landscape and is evidenced (KPI, test, audit). Highest level of the MRIS classification.'
+      analogy_9001: 'Bei ISO 9001 entspricht das einem Prozess auf CMMI-Level 4-5: messbar, gesteuert, kontinuierlich verbessert.'
+      source: 'Peddi (2026) MRIS v1.5 Kap. 4 — Klassifikation Annex-A-Controls'
+
+  # -------------------------------------------------------------------------
+  # 2. Teilweise degradiert
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.teilweise_degradiert'
+    where: 'soa.list.filter.mris'
+    tooltip:
+      de: 'Control wirkt grundsaetzlich, aber Teilbereiche sind veraltet (z.B. SMS-MFA statt FIDO2). Nicht abschalten — nachschaerfen.'
+      en: 'Control still works in principle but parts are outdated (e.g. SMS-MFA instead of FIDO2). Do not disable — upgrade.'
+    inline_help:
+      de: 'Beispiel A.8.5 Secure Authentication: TOTP fuer User OK, aber Admins nutzen noch SMS. Massnahme: Gap-Ticket auf FIDO2 fuer privilegierte Konten. Bei Verinice/HiScout waere das ein "teilweise umgesetzt" mit Massnahmenplan.'
+      en: 'Example A.8.5 Secure Authentication: TOTP fine for users, but admins still on SMS. Action: gap ticket to roll out FIDO2 for privileged accounts. In Verinice/HiScout this would be "partially implemented" with an action plan.'
+    glossar:
+      term_de: 'Teilweise degradiert'
+      term_en: 'Partially degraded'
+      definition_de: 'Control deckt die Bedrohung nur partiell ab — wirksam fuer Standardfaelle, schwach bei aktuellen Angriffsmustern. Erfordert Massnahmenplan, kein Abschalten.'
+      definition_en: 'Control covers the threat only partially — effective for standard cases, weak against current attack patterns. Requires action plan, not removal.'
+      analogy_9001: 'Wie eine Lenkungsmassnahme mit "minor nonconformity" im 9001-Audit: Prozess laeuft, Korrekturmassnahme noetig.'
+      source: 'Peddi (2026) MRIS v1.5 Kap. 5 — Degradationsstufen'
+
+  # -------------------------------------------------------------------------
+  # 3. Reine Reibung
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.reine_reibung'
+    where: 'soa.list.badge.red'
+    tooltip:
+      de: 'Control erzeugt nur Aufwand, keine Schutzwirkung gegen die reale Bedrohungslage. Kandidat fuer Reduktion oder Streichung mit Risk-Owner-Freigabe.'
+      en: 'Control only creates effort, no protective effect against actual threats. Candidate for reduction or removal with risk-owner sign-off.'
+    inline_help:
+      de: 'Beispiel: 90-Tage-Passwortwechselzwang. NIST SP 800-63B raet seit 2017 davon ab — Nutzer waehlen schwaechere Passwoerter, Helpdesk-Tickets steigen, Schutz null. Loesungspfad: siehe Entscheidungsroutine "Reine Reibung" unten.'
+      en: 'Example: 90-day password rotation. NIST SP 800-63B advises against it since 2017 — users pick weaker passwords, helpdesk load rises, zero protection. See "Pure Friction" decision routine below.'
+    glossar:
+      term_de: 'Reine Reibung'
+      term_en: 'Pure Friction'
+      definition_de: 'Control, das Ressourcen bindet, aber gegen aktuelle Bedrohungen keinen messbaren Schutz liefert. Typisch: Compliance-Theater aus alten Standards. Loesung: dokumentierte Entscheidung (anpassen, ersetzen, streichen).'
+      definition_en: 'Control that consumes resources but provides no measurable protection against current threats. Typical: compliance theatre from outdated standards. Resolution: documented decision (adapt, replace, retire).'
+      analogy_9001: 'In 9001-Sprache: nicht-wertschoepfende Taetigkeit im Sinne der Lean-Prinzipien. Aber: Annex-A-Streichung braucht SoA-Begruendung, nicht nur Lean-Workshop.'
+      source: 'Peddi (2026) MRIS v1.5 Kap. 6 — Reine Reibung; NIST SP 800-63B §5.1.1.2'
+    decision_logic: |
+      Siehe top_blockers.pure_friction_decision_routine (5 Schritte).
+
+  # -------------------------------------------------------------------------
+  # 4. Nicht betroffen
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.nicht_betroffen'
+    where: 'soa.list.column.mris'
+    tooltip:
+      de: 'Bedrohung trifft uns nicht (z.B. keine OT-Anlagen). Anders als "nicht anwendbar": dort begruendest du fachlich, hier sagt MRIS "irrelevant fuer eure Lage".'
+      en: 'Threat does not apply to us (e.g. no OT systems). Different from "Not Applicable": there you justify by scope, here MRIS says "irrelevant to your landscape".'
+    inline_help:
+      de: 'Abgrenzung: "Nicht anwendbar" (SoA Spalte Anwendbarkeit) ist eine 27001-Kategorie nach Annex-A-Scope. "Nicht betroffen" (MRIS) ist die Bedrohungslage-Sicht. Beispiel: A.7.5 Physical Security Perimeters bei reinem Cloud-SaaS-Anbieter ohne eigenes RZ — beides trifft hier zu, beide Felder ausfuellen.'
+      en: 'Boundary: "Not Applicable" (SoA applicability column) is an ISO 27001 scoping decision. "Not affected" (MRIS) is a threat-landscape view. Example: A.7.5 Physical Security Perimeters for a cloud-only SaaS firm without its own DC — both apply, fill both fields.'
+    glossar:
+      term_de: 'Nicht betroffen'
+      term_en: 'Not affected'
+      definition_de: 'MRIS-Status: die Bedrohung, gegen die das Control wirkt, existiert in eurer Umgebung nicht. Entscheidung dokumentieren, jaehrlich pruefen.'
+      definition_en: 'MRIS status: the threat the control mitigates does not exist in your environment. Document decision, review annually.'
+      analogy_9001: 'Wie ein nicht-zutreffender Prozess im 9001-QM-Handbuch (z.B. Wareneingang bei reinem Dienstleister) — begruenden, nicht verschweigen.'
+      source: 'Peddi (2026) MRIS v1.5 Kap. 7 — Anwendbarkeit vs. Betroffenheit'
+
+  # -------------------------------------------------------------------------
+  # 5. MHC-Codes (MHC-01..13)
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.mhc_codes'
+    where: 'soa.detail.ai_agent.mhc_list'
+    tooltip:
+      de: 'MHC = Mythos-Hardening-Cluster. 13 Buendel von Massnahmen gegen reale Bedrohungstrends. Klick auf Code oeffnet Detail-Seite mit Reifegrad und Evidenzen.'
+      en: 'MHC = Myth-Hardening Cluster. 13 bundles of measures against real threat trends. Click code to open detail page with maturity and evidence.'
+    inline_help:
+      de: 'Uebersicht der 13 MHCs: MHC-01 Identitaet & MFA, MHC-02 Endpoint, MHC-03 Privileged Access, MHC-04 Patching, MHC-05 Backup & Recovery, MHC-06 Logging & Detection, MHC-07 Email & Phishing, MHC-08 Network Segmentation, MHC-09 Cloud Hardening, MHC-10 Supply Chain, MHC-11 Awareness & Training, MHC-12 Incident Response, MHC-13 AI/Agent Governance.'
+      en: 'Overview of the 13 MHCs: MHC-01 Identity & MFA, MHC-02 Endpoint, MHC-03 Privileged Access, MHC-04 Patching, MHC-05 Backup & Recovery, MHC-06 Logging & Detection, MHC-07 Email & Phishing, MHC-08 Network Segmentation, MHC-09 Cloud Hardening, MHC-10 Supply Chain, MHC-11 Awareness & Training, MHC-12 Incident Response, MHC-13 AI/Agent Governance.'
+    glossar:
+      term_de: 'MHC (Mythos-Hardening-Cluster)'
+      term_en: 'MHC (Myth-Hardening Cluster)'
+      definition_de: 'Buendel zusammengehoerender Massnahmen gegen einen Bedrohungstrend. Ersetzt das traditionelle Annex-A-Einzel-Control-Denken durch wirkungsorientierte Cluster.'
+      definition_en: 'Bundle of related measures targeting one threat trend. Replaces traditional single-Annex-A-control thinking with outcome-oriented clusters.'
+      analogy_9001: 'Wie Prozessgruppen im 9001 (Fuehrung, Realisierung, Unterstuetzung) — nur dass MHCs sich an Bedrohungen, nicht an Prozesslogik orientieren.'
+      source: 'Peddi (2026) MRIS v1.5 Kap. 9 — MHC-Katalog'
+
+  # -------------------------------------------------------------------------
+  # 6. Reifegrad Initial / Defined / Managed
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.reifegrad'
+    where: 'mris.mhc.detail.maturity'
+    tooltip:
+      de: 'Drei Stufen pro MHC: Initial (erste Schritte dokumentiert), Defined (org-weit verbindlich), Managed (gemessen, gesteuert, KPI). Wie CMMI, nur kompakter.'
+      en: 'Three levels per MHC: Initial (first steps documented), Defined (org-wide mandatory), Managed (measured, governed, KPI-driven). Like CMMI, but compact.'
+    inline_help:
+      de: 'Initial = "haben wir mal angefangen, ein paar Belege". Defined = "Policy gilt fuer alle, Coverage messbar". Managed = "KPI laeuft, Reviews, kontinuierliche Verbesserung". Konkrete Audit-Evidenzen siehe Top-Blocker-Loesung "Reifegrad-Evidence" unten — fuer alle 13 MHCs ausgearbeitet.'
+      en: 'Initial = "we started, some evidence". Defined = "policy applies to all, coverage measurable". Managed = "KPI live, reviews, continuous improvement". Audit evidence per level see "Maturity Evidence" routine below — worked out for all 13 MHCs.'
+    glossar:
+      term_de: 'Reifegrad (MRIS)'
+      term_en: 'Maturity Level (MRIS)'
+      definition_de: 'Drei-Stufen-Modell zur Beurteilung der Umsetzungstiefe eines MHC: Initial, Defined, Managed. Vereinfacht das fuenfstufige CMMI fuer schnelle Selbstbewertung.'
+      definition_en: 'Three-level model assessing MHC implementation depth: Initial, Defined, Managed. Simplifies five-level CMMI for rapid self-assessment.'
+      analogy_9001: 'Bei 9001/CMMI-Audits ueblich: Stufe 1-2 = Initial, Stufe 3 = Defined, Stufe 4-5 = Managed/Optimizing.'
+      source: 'Peddi (2026) MRIS v1.5 Kap. 9.5 — Reifegradmodell'
+
+  # -------------------------------------------------------------------------
+  # 7. Soll vs. Ist
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.soll_ist'
+    where: 'mris.mhc.detail.target_actual'
+    tooltip:
+      de: 'Soll = Zielreife laut Risk-Appetite. Ist = aktuelle Umsetzung. Pflicht ist Ist (jetzt), Soll setzt das Management. Soll < Ist ist erlaubt — sollte aber begruendet werden.'
+      en: 'Target = desired maturity per risk appetite. Actual = current state. Actual is mandatory, target is set by management. Target < Actual is allowed but should be justified.'
+    inline_help:
+      de: 'Beispiel MHC-01 Identitaet: Ist = Defined (alle haben MFA), Soll = Managed (KPI ueber FIDO2-Coverage). Delta zeigt Investitionsbedarf. Bei 9001: das ist klassische Soll-Ist-Analyse aus dem Management-Review, hier nur fuer InfoSec-Hardening.'
+      en: 'Example MHC-01 Identity: Actual = Defined (all have MFA), Target = Managed (KPI on FIDO2 coverage). Delta drives investment. In ISO 9001 this is the classic target-actual gap from the management review, here applied to InfoSec hardening.'
+    glossar:
+      term_de: 'Soll-Ist-Reifegrad'
+      term_en: 'Target-Actual Maturity'
+      definition_de: 'Vergleich der gewuenschten (Soll, vom Management gesetzt) mit der aktuellen (Ist, vom ISB gemessen) Reife eines MHC. Steuert Massnahmenplanung.'
+      definition_en: 'Comparison of desired (target, set by management) and current (actual, measured by ISO) maturity per MHC. Drives action planning.'
+      analogy_9001: 'Identisch zur Soll-Ist-Analyse im 9001-Management-Review.'
+      source: 'Peddi (2026) MRIS v1.5 Kap. 9.6'
+
+  # -------------------------------------------------------------------------
+  # 8. Mythos-Bedrohungslage
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.mythos_bedrohungslage'
+    where: 'mris.module.intro'
+    tooltip:
+      de: 'Mythos = veraltete Annahme, die in vielen ISMS noch herumspukt (z.B. "Passwortwechsel = sicher"). MRIS macht das sichtbar und ersetzt es durch Wirkung.'
+      en: 'Myth = outdated assumption still haunting many ISMSs (e.g. "password rotation = safe"). MRIS surfaces and replaces it with evidence-based effect.'
+    inline_help:
+      de: 'Mythos-Beispiele: "Antivirus reicht", "VPN = Zero Trust", "ISO 27001 zertifiziert = sicher". MRIS zwingt zur Frage: Welche reale Bedrohung adressiert das Control 2026? Wenn die Antwort fehlt, ist es Mythos.'
+      en: 'Myth examples: "antivirus is enough", "VPN equals zero trust", "ISO 27001 certified = secure". MRIS forces the question: which real 2026 threat does this control mitigate? No answer = myth.'
+    glossar:
+      term_de: 'Mythos-Bedrohungslage'
+      term_en: 'Mythical Threat Landscape'
+      definition_de: 'Annahmen ueber Bedrohungen, die historisch gewachsen, aber empirisch ueberholt sind. Erzeugen Schein-Sicherheit und binden Ressourcen ohne Schutzwirkung.'
+      definition_en: 'Assumptions about threats that grew historically but are empirically obsolete. Create pseudo-security and consume resources without protective effect.'
+      analogy_9001: 'In 9001 wuerde man das als "veraltete Annahme im Kontext der Organisation" (Klausel 4.1) markieren — beim naechsten Management-Review fallen lassen.'
+      source: 'Peddi (2026) MRIS v1.5 Kap. 1 — Einfuehrung'
+
+  # -------------------------------------------------------------------------
+  # 9. MTTC
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.mttc'
+    where: 'mris.kpis.mttc'
+    tooltip:
+      de: 'MTTC = Mean Time To Contain. Mittlere Zeit von Incident-Erkennung bis Eindaemmung. Ziel <4h fuer Kritisch. Quelle: Mandiant/Verizon DBIR Benchmark.'
+      en: 'MTTC = Mean Time To Contain. Average time from incident detection to containment. Target <4h for critical incidents. Source: Mandiant/Verizon DBIR benchmark.'
+    inline_help:
+      de: 'Formel: MTTC = SUM(t_contained - t_detected) / N(incidents). Beispielwert 2026: Branche Mittelstand 8h, Top-Quartil 2h. Fuer DORA-pflichtige Finanzdienstleister: Reporting an Aufsicht nach 4h ist real.'
+      en: 'Formula: MTTC = SUM(t_contained - t_detected) / N(incidents). 2026 benchmark: mid-market 8h, top-quartile 2h. DORA-regulated financial entities: 4h supervisory reporting is real.'
+    glossar:
+      term_de: 'MTTC (Mean Time To Contain)'
+      term_en: 'MTTC (Mean Time To Contain)'
+      definition_de: 'Kennzahl der Incident Response: durchschnittliche Zeitspanne zwischen Erkennung eines Sicherheitsvorfalls und seiner Eindaemmung (Containment).'
+      definition_en: 'Incident response metric: average time between detection of a security incident and its containment.'
+      analogy_9001: 'Vergleichbar mit "Reaktionszeit auf Reklamation" im 9001 — nur dass hier Stunden statt Werktage zaehlen.'
+      source: 'Peddi (2026) MRIS v1.5 Kap. 10.6; Verizon DBIR 2025'
+
+  # -------------------------------------------------------------------------
+  # 10. KEV-Patch-Latency
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.kev_patch_latency'
+    where: 'mris.kpis.kev_latency'
+    tooltip:
+      de: 'KEV = Known Exploited Vulnerabilities (CISA-Liste aktiv ausgenutzter CVEs). Latency = Tage von KEV-Listung bis Patch bei euch. Ziel: <14 Tage.'
+      en: 'KEV = Known Exploited Vulnerabilities (CISA list of actively exploited CVEs). Latency = days from KEV listing to your patch. Target: <14 days.'
+    inline_help:
+      de: 'CISA fuehrt die KEV-Liste seit 2021. Wenn ein CVE dort steht, wird er gerade weltweit ausgenutzt. Beispiel CVE-2024-3400 (PAN-OS): Listung 12.04.2024, US-Behoerden mussten in 7 Tagen patchen. KEV-Feed: cisa.gov/known-exploited-vulnerabilities-catalog'
+      en: 'CISA maintains the KEV list since 2021. A CVE on it is being actively exploited. Example CVE-2024-3400 (PAN-OS): listed 2024-04-12, US agencies had 7 days to patch. KEV feed: cisa.gov/known-exploited-vulnerabilities-catalog'
+    glossar:
+      term_de: 'KEV-Patch-Latency'
+      term_en: 'KEV Patch Latency'
+      definition_de: 'Zeitspanne zwischen Aufnahme einer CVE in den CISA-KEV-Katalog und Einspielen des Patches in eurer Umgebung. Direkter Indikator fuer reale Angriffsflaeche.'
+      definition_en: 'Time between CVE inclusion in the CISA KEV catalog and patch deployment in your environment. Direct indicator of real attack surface.'
+      analogy_9001: 'Wie "Time-to-Correction" bei einer kritischen Reklamation — nur dass hier nicht Kunden, sondern Angreifer warten.'
+      source: 'CISA KEV Catalog; Peddi (2026) MRIS v1.5 Kap. 10.6'
+
+  # -------------------------------------------------------------------------
+  # 11. TLPT-Findings-Closure
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.tlpt_findings_closure'
+    where: 'mris.kpis.tlpt_closure'
+    tooltip:
+      de: 'TLPT = Threat-Led Penetration Test (DORA Art. 26). Wie regulaerer Pentest, aber threat-intelligence-getrieben und fuer Finanzaufsicht verpflichtend. KPI: % Findings geschlossen.'
+      en: 'TLPT = Threat-Led Penetration Test (DORA Art. 26). Like a regular pentest but driven by threat intelligence and mandatory for financial supervision. KPI: % findings closed.'
+    inline_help:
+      de: 'Unterschied zum Standard-Pentest: TLPT nutzt aktuelle TI-Daten zu eurer Branche, simuliert echte APT-Gruppen, dauert 12+ Wochen. Fuer Banken/Versicherungen ab 2025 alle 3 Jahre Pflicht. Auch Nicht-Finanzbranche kann das fahren — gilt als Top-Reifegrad-Beleg.'
+      en: 'Difference from standard pentest: TLPT uses current TI data on your sector, simulates real APT groups, lasts 12+ weeks. Mandatory every 3 years for banks/insurance from 2025. Other industries can adopt it — counts as top-tier maturity evidence.'
+    glossar:
+      term_de: 'TLPT (Threat-Led Penetration Test)'
+      term_en: 'TLPT (Threat-Led Penetration Test)'
+      definition_de: 'Threat-Intelligence-gestuetzter Penetrationstest nach TIBER-EU-Methodik, fuer DORA-pflichtige Finanzdienstleister verpflichtend. Geht ueber Standard-Pentest hinaus durch realistische Angreifersimulation.'
+      definition_en: 'Threat-intelligence-led penetration test based on TIBER-EU methodology, mandatory for DORA-regulated financial entities. Goes beyond standard pentests via realistic adversary simulation.'
+      analogy_9001: '9001-Aequivalent gibt es nicht — am ehesten ein "Stress-Test" vor Produktstart, aber mit echtem Wettbewerber als Tester.'
+      source: 'DORA Art. 26-27; TIBER-EU Framework 2018; Peddi (2026) MRIS v1.5 Kap. 10.6'
+
+  # -------------------------------------------------------------------------
+  # 12. Phishing-resistente MFA
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.phishing_resistant_mfa'
+    where: 'mris.kpis.mfa_phishing_resistant'
+    tooltip:
+      de: 'Nicht jede MFA ist phishing-resistent. SMS und TOTP sind es NICHT — werden via AiTM-Phishing umgangen. Phishing-resistent = FIDO2/WebAuthn, Passkeys, Smartcards.'
+      en: 'Not every MFA is phishing-resistant. SMS and TOTP are NOT — bypassed via AiTM phishing. Phishing-resistant = FIDO2/WebAuthn, passkeys, smartcards.'
+    inline_help:
+      de: 'NIST SP 800-63B AAL3 Whitelist: FIDO2/WebAuthn, Smartcards (PIV/CAC), Hardware-Token mit Krypto. Auf der Streichliste fuer Privileged Accounts: SMS, Voice, E-Mail-OTP, Push ohne Number-Matching. Microsoft hat seit 2024 SMS fuer Admins komplett deaktiviert.'
+      en: 'NIST SP 800-63B AAL3 whitelist: FIDO2/WebAuthn, smartcards (PIV/CAC), hardware tokens with crypto. Banlist for privileged accounts: SMS, voice, email OTP, push without number-matching. Microsoft fully disabled SMS for admins from 2024.'
+    glossar:
+      term_de: 'Phishing-resistente MFA'
+      term_en: 'Phishing-resistant MFA'
+      definition_de: 'Mehrfaktor-Authentifizierung, die durch kryptografische Bindung an die Origin-Domain nicht via Adversary-in-the-Middle-Phishing umgangen werden kann.'
+      definition_en: 'Multi-factor authentication that cannot be bypassed via adversary-in-the-middle phishing due to cryptographic binding to the origin domain.'
+      analogy_9001: 'Wie ein gesiegelter QM-Pruefstempel vs. ein nachstempelbarer Stempel — beides "Stempel", nur einer ist faelschungssicher.'
+      source: 'NIST SP 800-63B AAL3; CISA Fact Sheet 2022; Peddi (2026) MRIS v1.5 Kap. 10.6'
+
+  # -------------------------------------------------------------------------
+  # 13. auto vs. manuell Badge
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.auto_manuell_badge'
+    where: 'mris.kpis.tile_badge'
+    tooltip:
+      de: '"auto" = KPI wird aus Daten/Schnittstelle berechnet. "manuell" = ISB pflegt den Wert. Manuell ist nicht schlecht — bei kleinen Orgs oft pragmatisch.'
+      en: '"auto" = KPI computed from data/integration. "manual" = ISO maintains the value. Manual is not bad — often pragmatic in small orgs.'
+    inline_help:
+      de: 'Manuelle KPIs sind erlaubt, brauchen aber: dokumentierten Erhebungs-Rhythmus (z.B. quartalsweise), Quelle (Excel-Sheet, Vendor-Dashboard), Vier-Augen-Pruefung. Bei Vanta/Drata laeuft alles auto — bei euch eben hybrid. Audit-Pruefer akzeptiert manuell, wenn Verfahren beschrieben ist.'
+      en: 'Manual KPIs are allowed but require: documented collection cadence (e.g. quarterly), source (Excel sheet, vendor dashboard), four-eyes review. Vanta/Drata do everything auto — you do hybrid. Auditors accept manual if the procedure is documented.'
+    glossar:
+      term_de: 'KPI-Erhebungsmodus'
+      term_en: 'KPI collection mode'
+      definition_de: 'Unterscheidet automatisch berechnete (auto) von manuell gepflegten (manuell) KPIs. Auto bevorzugt fuer Hochfrequenz-Indikatoren, manuell fuer seltene oder qualitative Werte.'
+      definition_en: 'Distinguishes automatically computed (auto) from manually maintained (manual) KPIs. Auto preferred for high-frequency indicators, manual for rare or qualitative values.'
+      analogy_9001: 'Wie automatische SPC-Datenerfassung vs. manuelle Pruefprotokolle in der QS — beides erlaubt, je nach Prozessrelevanz.'
+      source: 'Peddi (2026) MRIS v1.5 Kap. 10.7'
+
+  # -------------------------------------------------------------------------
+  # 14. AI-Agent Capability-Scope
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.ai_capability_scope'
+    where: 'ai_agent.form.capability_scope'
+    tooltip:
+      de: 'Was darf der Agent tun? Konkrete Aktionsliste — nicht "hilft beim Coden" sondern "darf Dateien <100KB lesen, kein Internet, keine Shell-Befehle".'
+      en: 'What is the agent allowed to do? Concrete action list — not "helps with coding" but "may read files <100KB, no internet, no shell commands".'
+    inline_help:
+      de: 'Pflichtfeld nach ISO 42001 A.6.2 + EU AI Act Art. 11. Vorlage: 1) Erlaubte Aktionen (read/write/execute), 2) Datenscope (welche Repos/Ordner), 3) Netzwerk (online/offline), 4) Eskalationsregel (wann braucht Agent Mensch), 5) Hard-Limits (z.B. "kein Code in Production-Branch"). Beispiel Claude Code: read/write Repo, kein Auto-Push, MCP-Whitelist.'
+      en: 'Mandatory per ISO 42001 A.6.2 + EU AI Act Art. 11. Template: 1) allowed actions (read/write/execute), 2) data scope (which repos/folders), 3) network (online/offline), 4) escalation rule (when does agent need a human), 5) hard limits (e.g. "no code in production branch"). Example Claude Code: read/write repo, no auto-push, MCP whitelist.'
+    glossar:
+      term_de: 'Capability-Scope (AI-Agent)'
+      term_en: 'Capability Scope (AI agent)'
+      definition_de: 'Eindeutig dokumentierter Handlungsrahmen eines AI-Agents: Aktionen, Datenzugriff, Netzwerk, Eskalation, Hard-Limits. Basis fuer Risiko-Klassifikation und Audit.'
+      definition_en: 'Clearly documented operating envelope of an AI agent: actions, data access, network, escalation, hard limits. Basis for risk classification and audit.'
+      analogy_9001: 'Wie eine Stellenbeschreibung — nur fuer eine Software, die schneller "lernt" als Mitarbeiter und deren Befugnisse explizit gemacht werden muessen.'
+      source: 'ISO/IEC 42001:2023 A.6.2; EU AI Act Art. 11; Peddi (2026) MRIS v1.5 MHC-13'
+
+  # -------------------------------------------------------------------------
+  # 15. AI-Risikoklasse
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.ai_risk_class'
+    where: 'ai_agent.list.badge.risk_class'
+    tooltip:
+      de: 'EU AI Act unterscheidet 4 Klassen: prohibited / high_risk / limited_risk / minimal_risk. Fuer Hochrisiko (Anhang III) ist Konformitaetsbewertung Pflicht ab 2026.'
+      en: 'EU AI Act distinguishes 4 classes: prohibited / high_risk / limited_risk / minimal_risk. For high-risk (Annex III), conformity assessment mandatory from 2026.'
+    inline_help:
+      de: 'Faustregel: Verboten = Social Scoring, biometrische Massueberwachung. Hochrisiko = Beschaeftigung, Kreditwuerdigkeit, kritische Infrastruktur, Medizinprodukt (Anhang III). Begrenzt = Chatbot, Deepfake-Generator (Transparenz-Pflicht). Minimal = Spamfilter, Spielautomat. Fuer 12 typische Tools siehe Top-Blocker-Loesung "AI-Risiko-Matrix" unten.'
+      en: 'Rule of thumb: prohibited = social scoring, mass biometric surveillance. High-risk = employment, creditworthiness, critical infrastructure, medical device (Annex III). Limited = chatbot, deepfake generator (transparency duty). Minimal = spam filter, slot machine. For 12 typical tools see "AI Risk Matrix" routine below.'
+    glossar:
+      term_de: 'AI-Risikoklasse (EU AI Act)'
+      term_en: 'AI Risk Class (EU AI Act)'
+      definition_de: 'Vierstufige Einstufung von KI-Systemen nach EU AI Act (VO 2024/1689): verboten, hochrisiko, begrenzt, minimal. Bestimmt Anforderungen an Konformitaet, Dokumentation und Aufsicht.'
+      definition_en: 'Four-tier classification of AI systems under the EU AI Act (Reg. 2024/1689): prohibited, high-risk, limited, minimal. Drives conformity, documentation, and oversight requirements.'
+      analogy_9001: 'Wie Produkthaftungsklassen in der Medizinprodukteverordnung — je hoeher die Klasse, desto mehr Pruefaufwand.'
+      source: 'EU AI Act (VO 2024/1689) Art. 6 + Anhang III; Peddi (2026) MRIS v1.5 MHC-13'
+
+  # -------------------------------------------------------------------------
+  # 16. Bedrohungsmodell-Doc
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.threat_model_doc'
+    where: 'ai_agent.form.threat_model'
+    tooltip:
+      de: 'Pro AI-Agent ein Bedrohungsmodell: Was kann schiefgehen? Prompt-Injection, Datenleck, Halluzination, Privilege-Escalation. Vorlage liegt unter /docs/templates.'
+      en: 'One threat model per AI agent: what can go wrong? Prompt injection, data leak, hallucination, privilege escalation. Template under /docs/templates.'
+    inline_help:
+      de: 'Pflichtbestandteile (ISO 42001 + AI Act Art. 11): 1) STRIDE-Analyse fuer Agent, 2) OWASP LLM Top-10-Mapping, 3) Datenfluss-Diagramm, 4) Mitigationen pro Bedrohung, 5) Restrisiken mit Risk-Owner. Vorlage anlegen via UI-Button "Bedrohungsmodell aus Template" — NICHT freischreiben, sonst fehlt Kapitel im Audit.'
+      en: 'Mandatory parts (ISO 42001 + AI Act Art. 11): 1) STRIDE analysis for agent, 2) OWASP LLM Top-10 mapping, 3) data-flow diagram, 4) mitigations per threat, 5) residual risks with owner. Create via UI button "Threat model from template" — DO NOT freestyle, you will miss chapters in audit.'
+    glossar:
+      term_de: 'Bedrohungsmodell (AI-Agent)'
+      term_en: 'Threat Model (AI agent)'
+      definition_de: 'Strukturierte Analyse der Angriffs- und Versagensmoeglichkeiten eines AI-Agents. Folgt STRIDE und OWASP LLM Top-10. Pflichtdokument fuer Hochrisiko-Systeme.'
+      definition_en: 'Structured analysis of attack and failure modes of an AI agent. Follows STRIDE and OWASP LLM Top-10. Mandatory for high-risk systems.'
+      analogy_9001: 'Wie FMEA in der Produktentwicklung — nur dass das "Produkt" ein autonomer Agent mit lernfaehigem Verhalten ist.'
+      source: 'ISO/IEC 42001:2023 A.6.3; EU AI Act Art. 11 + Annex IV; Peddi (2026) MRIS v1.5 MHC-13'
+
+  # -------------------------------------------------------------------------
+  # 17. Extension-Allowlist
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.extension_allowlist'
+    where: 'ai_agent.form.extension_allowlist'
+    tooltip:
+      de: 'Liste freigegebener Plugins/Extensions/MCP-Server fuer den Agent. Verhindert Supply-Chain-Angriffe ueber kompromittierte Marketplaces.'
+      en: 'List of approved plugins/extensions/MCP servers for the agent. Prevents supply-chain attacks via compromised marketplaces.'
+    inline_help:
+      de: 'Beispiele: VS-Code-Extensions (z.B. nur Microsoft-, GitHub-, eslint-publisher), Claude-MCP-Server (nur firmen-eigene + verifizierte), Browser-Extensions (Liste explizit). Realer Vorfall 2024: malicious VS-Code-Extension "Material Theme" — daher Allowlist statt Blocklist. Format: JSON-Array mit publisher/extension/version.'
+      en: 'Examples: VS Code extensions (e.g. only Microsoft-, GitHub-, eslint-publisher), Claude MCP servers (only own + verified), browser extensions (explicit list). Real 2024 incident: malicious VS Code "Material Theme" extension — therefore allowlist not blocklist. Format: JSON array with publisher/extension/version.'
+    glossar:
+      term_de: 'Extension-Allowlist'
+      term_en: 'Extension Allowlist'
+      definition_de: 'Positive Liste der fuer einen AI-Agent oder Entwickler-Tool freigegebenen Erweiterungen. Default-Deny-Prinzip — alles nicht-Gelistete ist verboten.'
+      definition_en: 'Positive list of extensions approved for an AI agent or developer tool. Default-deny — anything not listed is prohibited.'
+      analogy_9001: 'Wie eine freigegebene Lieferantenliste in der Beschaffung — nur freigegebene Quellen, alles andere durchlaeuft Erstmusterpruefung.'
+      source: 'Peddi (2026) MRIS v1.5 MHC-13; OWASP LLM Top-10 LLM05 Supply Chain'
+
+  # -------------------------------------------------------------------------
+  # 18. Branchen-Baseline
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.industry_baseline'
+    where: 'mris.baseline.console_command'
+    tooltip:
+      de: 'Vordefinierte MHC-Sollwerte pro Branche (Produktion, Healthcare, Finance, KRITIS). Heute Console-Befehl, geplant als UI-Knopf mit Dry-Run.'
+      en: 'Predefined MHC targets per industry (manufacturing, healthcare, finance, critical infrastructure). Today a console command, planned as UI button with dry-run.'
+    inline_help:
+      de: 'Aktuell: php bin/console app:mris:baseline:apply --industry=finance --tenant=42 --dry-run. Geplant Q3/2026: UI-Button im MRIS-Modul, Vorschau der Aenderungen, Mehrfachauswahl. Bei Verinice gibt es BSI-Profile-Import — bei uns kommt das gerade. Tipp: zuerst --dry-run, Diff pruefen, dann anwenden.'
+      en: 'Today: php bin/console app:mris:baseline:apply --industry=finance --tenant=42 --dry-run. Planned Q3/2026: UI button in MRIS module, change preview, multi-select. Verinice has BSI profile import — we are catching up. Tip: --dry-run first, review diff, then apply.'
+    glossar:
+      term_de: 'Branchen-Baseline'
+      term_en: 'Industry Baseline'
+      definition_de: 'Vorlage mit branchentypischen MHC-Sollwerten und Standard-Controls. Beschleunigt Onboarding und sichert Mindestreife. Anpassbar nach Anwendung.'
+      definition_en: 'Template with industry-typical MHC targets and standard controls. Speeds onboarding and ensures minimum maturity. Customizable after applying.'
+      analogy_9001: 'Wie ein Branchen-spezifischer QM-Handbuch-Template (Automotive IATF 16949, Medizin ISO 13485) — Startpunkt, kein Endprodukt.'
+      source: 'Peddi (2026) MRIS v1.5 Kap. 11; Verinice BSI-Profile (Vergleich)'
+
+  # -------------------------------------------------------------------------
+  # 19. Doku-Vollstaendigkeit %
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.doc_completeness_pct'
+    where: 'ai_agent.list.column.completeness'
+    tooltip:
+      de: 'Prozentsatz der Pflichtfelder pro AI-Agent gemaess EU AI Act Art. 11 + Anhang IV. Hover zeigt fehlende Felder. <100% = Audit-Risiko.'
+      en: 'Percentage of mandatory fields per AI agent under EU AI Act Art. 11 + Annex IV. Hover shows missing fields. <100% = audit risk.'
+    inline_help:
+      de: 'Pflichtfelder (Hover-Liste): 1) Capability-Scope, 2) Bedrohungsmodell, 3) Trainingsdaten-Quelle, 4) Bias-Bewertung, 5) Human-Oversight-Rolle, 6) Logging-Konfiguration, 7) Performance-Metriken, 8) Risk-Owner, 9) Konformitaetsbewertung (nur Hochrisiko), 10) Extension-Allowlist. Tipp: bei limited_risk reichen 6 von 10, bei high_risk alle 10.'
+      en: 'Mandatory fields (hover list): 1) capability scope, 2) threat model, 3) training data source, 4) bias assessment, 5) human-oversight role, 6) logging config, 7) performance metrics, 8) risk owner, 9) conformity assessment (high-risk only), 10) extension allowlist. Tip: limited_risk needs 6/10, high_risk all 10.'
+    glossar:
+      term_de: 'Doku-Vollstaendigkeit (AI-Agent)'
+      term_en: 'Documentation Completeness (AI agent)'
+      definition_de: 'Quotient erfuellter zu geforderten Pflichtfeldern pro AI-Agent. Misst Audit-Reife unter EU AI Act und ISO 42001.'
+      definition_en: 'Ratio of completed to required mandatory fields per AI agent. Measures audit readiness under EU AI Act and ISO 42001.'
+      analogy_9001: 'Wie Vollstaendigkeitspruefung des Lieferantenbewertungsfragebogens — nur dass hier Behoerden im Hintergrund stehen.'
+      source: 'EU AI Act Art. 11 + Anhang IV; ISO/IEC 42001:2023 A.7; Peddi (2026) MRIS v1.5 MHC-13'
+
+  # -------------------------------------------------------------------------
+  # 20. Flankierende MHCs
+  # -------------------------------------------------------------------------
+  - key: 'mris.help.flanking_mhcs'
+    where: 'soa.list.mhc_grey_codes'
+    tooltip:
+      de: 'Graue MHC-Codes = flankierend, nicht primaer. Tipps zur Verstaerkung — nicht Pflicht, aber bei Audit-Reife Managed faktisch erwartet.'
+      en: 'Grey MHC codes = flanking, not primary. Hardening hints — not mandatory, but expected at Managed maturity in practice.'
+    inline_help:
+      de: 'Beispiel A.5.17 Authentication Information: primaer MHC-01 (Identitaet), flankierend MHC-03 (Privileged Access) und MHC-11 (Awareness). Bei Initial reicht primaer. Bei Defined sollten flankierende Aspekte addressiert sein. Bei Managed sind sie KPI-relevant. Bei Auditoren von DEKRA/TUEV: graue Codes werden gefragt, wenn primaere Reife behauptet wird.'
+      en: 'Example A.5.17 Authentication Information: primary MHC-01 (identity), flanking MHC-03 (privileged access) and MHC-11 (awareness). Initial: primary suffices. Defined: flanking aspects addressed. Managed: flanking is KPI-relevant. DEKRA/TUEV auditors will ask about grey codes when high maturity is claimed.'
+    glossar:
+      term_de: 'Flankierende MHCs'
+      term_en: 'Flanking MHCs'
+      definition_de: 'MHCs, die ein Annex-A-Control ergaenzend absichern, ohne primaer zustaendig zu sein. Erhoehen Robustheit, sind ab Reifegrad Defined empfohlen.'
+      definition_en: 'MHCs that complement an Annex A control without being primarily responsible. Increase robustness, recommended from Defined maturity.'
+      analogy_9001: 'Wie unterstuetzende Prozesse im 9001 (Personal, Infrastruktur) — nicht Kernprozess, aber ohne sie kein nachhaltiges Ergebnis.'
+      source: 'Peddi (2026) MRIS v1.5 Kap. 9.3 — Primaer- vs. Flankier-MHCs'
+
+
+# ===========================================================================
+# TOP-3 BLOCKER-LOESUNGEN
+# ===========================================================================
+top_blockers:
+
+  # -------------------------------------------------------------------------
+  # Blocker 1: "Reine Reibung" — Entscheidungsroutine
+  # -------------------------------------------------------------------------
+  pure_friction_decision_routine:
+    title_de: 'Entscheidungsroutine "Reine Reibung" — 5 Schritte vom Verdacht zur Entscheidung'
+    title_en: 'Pure Friction Decision Routine — 5 Steps from Suspicion to Decision'
+    intent_de: |
+      Junior-ISB hat ein Annex-A-Control unter Verdacht "Reine Reibung". Diese Routine
+      fuehrt zur dokumentierten Entscheidung, die im Audit standhaelt. Niemals einfach
+      streichen — immer dokumentieren.
+    intent_en: |
+      Junior ISO suspects an Annex A control of being pure friction. This routine leads
+      to a documented decision that holds up in audit. Never just remove — always document.
+    steps:
+      - step: 1
+        name_de: 'Identifikation'
+        name_en: 'Identification'
+        question_de: 'Welche reale Bedrohung adressiert das Control 2026? Belege?'
+        question_en: 'Which real 2026 threat does this control mitigate? Evidence?'
+        action_de: |
+          Lies die Control-Begruendung in der SoA. Pruefe gegen aktuelle Bedrohungslage
+          (BSI-Lagebericht, Verizon DBIR, MITRE ATT&CK). Wenn keine konkrete Bedrohung
+          benannt werden kann → weiter zu Schritt 2.
+        action_en: |
+          Read the control rationale in the SoA. Compare with current threat landscape
+          (BSI report, Verizon DBIR, MITRE ATT&CK). If no concrete threat can be named
+          → continue to step 2.
+        artifact: 'Notiz im Control-Kommentarfeld: "Bedrohungsbezug 2026 unklar"'
+
+      - step: 2
+        name_de: 'Wirkungs-Check'
+        name_en: 'Effectiveness Check'
+        question_de: 'Hat das Control in den letzten 24 Monaten messbar etwas verhindert?'
+        question_en: 'Has this control measurably prevented anything in the last 24 months?'
+        action_de: |
+          Incident-Datenbank durchsuchen, KPI-Historie pruefen, Logs sichten. Wenn null
+          Wirkung dokumentiert → weiter zu Schritt 3. Wenn Wirkung sichtbar → kein
+          Reibungs-Kandidat, anders einstufen.
+        action_en: |
+          Search incident DB, review KPI history, scan logs. If zero effect documented
+          → continue to step 3. If effect visible → not a friction candidate, reclassify.
+        artifact: 'Wirkungsanalyse als PDF an Control-Datensatz haengen'
+
+      - step: 3
+        name_de: 'Risk-Owner-Befragung'
+        name_en: 'Risk Owner Consultation'
+        question_de: 'Akzeptiert der Risk-Owner das Restrisiko bei Reduktion oder Streichung?'
+        question_en: 'Does the risk owner accept residual risk on reduction or removal?'
+        action_de: |
+          Termin mit Risk-Owner (Fachbereich, NICHT IT). Optionen vorlegen: a) Control
+          anpassen (z.B. NIST-konform statt Legacy), b) Control durch wirksameres ersetzen,
+          c) komplett streichen mit Risk-Akzeptanz. Entscheidung schriftlich.
+        action_en: |
+          Meeting with risk owner (business, NOT IT). Present options: a) adapt control
+          (e.g. NIST-conformant instead of legacy), b) replace with more effective one,
+          c) full removal with risk acceptance. Decision in writing.
+        artifact: 'Risk-Acceptance-Form unterschrieben (digital), Tenant-Owner CC'
+
+      - step: 4
+        name_de: 'SoA-Begruendung'
+        name_en: 'SoA Justification'
+        question_de: 'Wie wird die Entscheidung in der SoA dokumentiert?'
+        question_en: 'How is the decision documented in the SoA?'
+        action_de: |
+          SoA-Eintrag aktualisieren: Status (anpassen/ersetzen/streichen), Begruendung
+          (Bedrohung obsolet, NIST-Aktualisierung, etc.), Datum, Genehmiger. Bei "nicht
+          anwendbar": pruefen ob Anwendbarkeit wirklich fehlt, sonst "Reine Reibung"
+          als Sub-Status setzen.
+        action_en: |
+          Update SoA entry: status (adapt/replace/remove), justification (threat obsolete,
+          NIST update, etc.), date, approver. For "not applicable": verify true non-
+          applicability, otherwise set "pure friction" as sub-status.
+        artifact: 'SoA-Versionierung mit Diff im Audit-Log'
+
+      - step: 5
+        name_de: 'Auditor-Briefing-Vorbereitung'
+        name_en: 'Auditor Briefing Preparation'
+        question_de: 'Was zeige ich dem externen Auditor, wenn er fragt?'
+        question_en: 'What do I show the external auditor when asked?'
+        action_de: |
+          Briefing-Pack zusammenstellen: 1) Bedrohungsanalyse, 2) Wirkungsanalyse,
+          3) Risk-Acceptance, 4) SoA-Diff, 5) Externe Quelle (NIST/CISA/BSI), die die
+          Entscheidung stuetzt. Auditoren akzeptieren begruendete Reduktion — sie
+          akzeptieren keine stille Streichung.
+        action_en: |
+          Assemble briefing pack: 1) threat analysis, 2) effectiveness analysis,
+          3) risk acceptance, 4) SoA diff, 5) external source (NIST/CISA/BSI) supporting
+          the decision. Auditors accept justified reductions — they do not accept silent
+          removals.
+        artifact: 'Briefing-Pack als ZIP im Audit-Ordner'
+
+    typical_examples:
+      - control: 'A.5.17 / A.8.5 — 90-Tage-Passwortwechsel'
+        outcome: 'anpassen'
+        rationale: 'NIST SP 800-63B 2017+ raet ab; Wechsel nur bei Kompromittierung'
+      - control: 'A.5.10 — Acceptable Use Policy mit jaehrlichem Klick-Quittieren'
+        outcome: 'ersetzen'
+        rationale: 'durch kontextuelle Just-in-Time-Hinweise ersetzen, mehr Wirkung'
+      - control: 'A.7.7 — Clear-Desk-Policy in reinem Remote-Setup'
+        outcome: 'streichen'
+        rationale: 'kein physisches Office, Bedrohung adressiert; Risk-Owner-Akzeptanz'
+
+  # -------------------------------------------------------------------------
+  # Blocker 2: Reifegrad-Evidence pro MHC
+  # -------------------------------------------------------------------------
+  maturity_evidence_per_mhc:
+    title_de: 'Reifegrad-Evidence-Checklist pro MHC — Initial / Defined / Managed'
+    title_en: 'Maturity Evidence Checklist per MHC — Initial / Defined / Managed'
+    intent_de: |
+      Pro MHC drei konkrete Audit-Beispiele, was der Junior-ISB in welchem Reifegrad
+      vorzeigen muss. Direkt Audit-tauglich, keine Theorie.
+    intent_en: |
+      Per MHC three concrete audit examples of what Junior ISO must show at which
+      maturity. Directly audit-grade, no theory.
+    clusters:
+
+      - mhc: 'MHC-01'
+        name_de: 'Identitaet & MFA'
+        name_en: 'Identity & MFA'
+        initial:
+          de: 'MFA-Policy als PDF existiert, Pilotgruppe (z.B. IT-Team) nutzt MFA, Screenshot Admin-Konsole.'
+          en: 'MFA policy as PDF exists, pilot group (e.g. IT team) uses MFA, screenshot of admin console.'
+        defined:
+          de: 'MFA org-weit Pflicht (>90% Coverage), Audit-Report aus IdP, Onboarding-Prozess fuer Neue.'
+          en: 'MFA org-wide mandatory (>90% coverage), IdP audit report, onboarding process for new joiners.'
+        managed:
+          de: 'Phishing-resistente MFA (FIDO2) >95%, KPI-Dashboard, SMS-MFA fuer Admins komplett deaktiviert, monatliches Review.'
+          en: 'Phishing-resistant MFA (FIDO2) >95%, KPI dashboard, SMS-MFA fully disabled for admins, monthly review.'
+
+      - mhc: 'MHC-02'
+        name_de: 'Endpoint Security'
+        name_en: 'Endpoint Security'
+        initial:
+          de: 'EDR-Lizenz beschafft, auf 50% der Endpoints, Asset-Liste mit Status-Spalte.'
+          en: 'EDR license procured, on 50% of endpoints, asset list with status column.'
+        defined:
+          de: 'EDR auf >95% Endpoints inkl. Server, MDM fuer Mobile, Coverage-Report aus Konsole.'
+          en: 'EDR on >95% endpoints incl. servers, MDM for mobile, coverage report from console.'
+        managed:
+          de: 'EDR + XDR mit SOC-Integration, MTTC <4h, monatliche Threat-Hunts dokumentiert.'
+          en: 'EDR + XDR with SOC integration, MTTC <4h, monthly threat hunts documented.'
+
+      - mhc: 'MHC-03'
+        name_de: 'Privileged Access Management'
+        name_en: 'Privileged Access Management'
+        initial:
+          de: 'FIDO2 fuer privilegierte Konten dokumentiert (mindestens 1 PDF-Procedure), Liste der Privileged Accounts.'
+          en: 'FIDO2 for privileged accounts documented (at least 1 PDF procedure), list of privileged accounts.'
+        defined:
+          de: 'PAM-Tool im Einsatz (CyberArk, BeyondTrust, Delinea), alle externen Dienste FIDO2-pflichtig, Coverage-Report 100%.'
+          en: 'PAM tool deployed (CyberArk, BeyondTrust, Delinea), all external services FIDO2-mandatory, coverage report 100%.'
+        managed:
+          de: 'Just-in-Time-Privileges, Session-Recording, passwortlos org-weit, SMS-MFA tot, quartalsweise Access-Review.'
+          en: 'Just-in-time privileges, session recording, passwordless org-wide, SMS-MFA dead, quarterly access reviews.'
+
+      - mhc: 'MHC-04'
+        name_de: 'Patching & Vulnerability Mgmt'
+        name_en: 'Patching & Vulnerability Mgmt'
+        initial:
+          de: 'Patch-Plan existiert, monatlicher Patchday, Liste offener CVEs aus Vulnerability-Scanner.'
+          en: 'Patch plan exists, monthly patch day, list of open CVEs from vulnerability scanner.'
+        defined:
+          de: 'KEV-Patches <14 Tage SLA, Risk-based Patching, Vendor-Patch-Reports archiviert.'
+          en: 'KEV patches <14d SLA, risk-based patching, vendor patch reports archived.'
+        managed:
+          de: 'Auto-Patching wo moeglich, KEV-Latency <7 Tage, Vulnerability-Aging-KPI, Exception-Workflow dokumentiert.'
+          en: 'Auto-patching where possible, KEV latency <7d, vulnerability aging KPI, exception workflow documented.'
+
+      - mhc: 'MHC-05'
+        name_de: 'Backup & Recovery'
+        name_en: 'Backup & Recovery'
+        initial:
+          de: '3-2-1-Backup-Strategie als Policy, taegliche Backups laufen, Logs vorhanden.'
+          en: '3-2-1 backup strategy as policy, daily backups running, logs available.'
+        defined:
+          de: 'Immutable Backups (S3 Object Lock o.ae.), quartalsweise Restore-Tests mit Protokoll.'
+          en: 'Immutable backups (S3 Object Lock or similar), quarterly restore tests with protocol.'
+        managed:
+          de: 'Air-Gapped Backups, jaehrlicher Disaster-Recovery-Test mit RTO/RPO-Messung, Ransomware-Tabletop.'
+          en: 'Air-gapped backups, annual DR test with RTO/RPO measurement, ransomware tabletop.'
+
+      - mhc: 'MHC-06'
+        name_de: 'Logging & Detection'
+        name_en: 'Logging & Detection'
+        initial:
+          de: 'Zentrales Logging (SIEM/Log-Server), kritische Systeme erfasst, Aufbewahrung dokumentiert.'
+          en: 'Central logging (SIEM/log server), critical systems covered, retention documented.'
+        defined:
+          de: 'Detection-Use-Cases (>10) implementiert, MITRE-ATT&CK-Mapping, Alerting an SOC/ISB.'
+          en: 'Detection use cases (>10) implemented, MITRE ATT&CK mapping, alerting to SOC/ISO.'
+        managed:
+          de: 'SOAR-Integration, MTTD <1h, monatliche Detection-Engineering-Reviews, Purple-Team-Uebung.'
+          en: 'SOAR integration, MTTD <1h, monthly detection engineering reviews, purple team exercise.'
+
+      - mhc: 'MHC-07'
+        name_de: 'Email & Phishing Defense'
+        name_en: 'Email & Phishing Defense'
+        initial:
+          de: 'SPF/DKIM/DMARC im Reject-Mode, Anti-Phishing-Gateway aktiv, Spam-Quote dokumentiert.'
+          en: 'SPF/DKIM/DMARC in reject mode, anti-phishing gateway active, spam rate documented.'
+        defined:
+          de: 'Phishing-Simulationen quartalsweise, Click-Rate <10%, Reporting-Button (Phish-Alert).'
+          en: 'Phishing simulations quarterly, click rate <10%, reporting button (phish-alert).'
+        managed:
+          de: 'BIMI implementiert, monatliche Phish-Simulation, Click-Rate <3%, MTTR fuer gemeldete Mails <1h.'
+          en: 'BIMI implemented, monthly phish-sim, click rate <3%, MTTR for reported mails <1h.'
+
+      - mhc: 'MHC-08'
+        name_de: 'Network Segmentation'
+        name_en: 'Network Segmentation'
+        initial:
+          de: 'VLAN-Konzept dokumentiert, kritische Systeme separiert, Firewall-Regelwerk archiviert.'
+          en: 'VLAN concept documented, critical systems separated, firewall ruleset archived.'
+        defined:
+          de: 'Mikrosegmentierung in Cloud (Security Groups), Zero-Trust-Konzept, halbjaehrliches Firewall-Audit.'
+          en: 'Microsegmentation in cloud (security groups), zero-trust concept, semi-annual firewall audit.'
+        managed:
+          de: 'Software-Defined Perimeter (SASE), kontinuierliche Verifikation, automatische Anomalie-Detection im Ost-West-Verkehr.'
+          en: 'Software-defined perimeter (SASE), continuous verification, automatic anomaly detection in east-west traffic.'
+
+      - mhc: 'MHC-09'
+        name_de: 'Cloud Hardening'
+        name_en: 'Cloud Hardening'
+        initial:
+          de: 'CIS-Benchmark fuer Hauptcloud (AWS/Azure/GCP) initial gelaufen, Findings-Liste.'
+          en: 'CIS benchmark for main cloud (AWS/Azure/GCP) initially run, findings list.'
+        defined:
+          de: 'CSPM-Tool aktiv (Wiz, Prisma, Defender for Cloud), Coverage 100%, monatliche Drift-Reports.'
+          en: 'CSPM tool active (Wiz, Prisma, Defender for Cloud), coverage 100%, monthly drift reports.'
+        managed:
+          de: 'CNAPP mit Workload-Protection, Policy-as-Code (OPA, Sentinel), KEV-CVE-Schliessung <7 Tage in Cloud-Workloads.'
+          en: 'CNAPP with workload protection, policy-as-code (OPA, Sentinel), KEV-CVE closure <7d on cloud workloads.'
+
+      - mhc: 'MHC-10'
+        name_de: 'Supply Chain Security'
+        name_en: 'Supply Chain Security'
+        initial:
+          de: 'Lieferantenliste mit Risikoklasse, jaehrliche Selbstauskunft fuer Hochrisiko-Vendors.'
+          en: 'Supplier list with risk class, annual self-attestation for high-risk vendors.'
+        defined:
+          de: 'SBOM fuer alle eigenen Produkte, Vendor-Pentest-Reports archiviert, vertragliche Audit-Rechte.'
+          en: 'SBOM for all own products, vendor pentest reports archived, contractual audit rights.'
+        managed:
+          de: 'Vendor-Risk-Score automatisiert (z.B. SecurityScorecard), kontinuierliche SBOM-Validierung, Supply-Chain-Tabletop.'
+          en: 'Vendor risk score automated (e.g. SecurityScorecard), continuous SBOM validation, supply-chain tabletop.'
+
+      - mhc: 'MHC-11'
+        name_de: 'Awareness & Training'
+        name_en: 'Awareness & Training'
+        initial:
+          de: 'Onboarding-Schulung fuer Neue, jaehrlicher E-Learning-Kurs, Teilnehmerliste.'
+          en: 'Onboarding training for new joiners, annual e-learning course, participant list.'
+        defined:
+          de: 'Rollenspezifische Trainings (Entwickler, HR, Mgmt), Phishing-Simulation gekoppelt mit Just-in-Time-Schulung.'
+          en: 'Role-specific trainings (developers, HR, mgmt), phishing simulation coupled with just-in-time training.'
+        managed:
+          de: 'Behavioral-Metrics (Click-Rate-Trend, Report-Rate), Champion-Programm, Verhaltensaenderung messbar.'
+          en: 'Behavioral metrics (click-rate trend, report rate), champion program, behavior change measurable.'
+
+      - mhc: 'MHC-12'
+        name_de: 'Incident Response'
+        name_en: 'Incident Response'
+        initial:
+          de: 'IR-Plan als PDF, Eskalationsmatrix, Erreichbarkeit der Notfall-Kontakte dokumentiert.'
+          en: 'IR plan as PDF, escalation matrix, emergency contact reachability documented.'
+        defined:
+          de: 'IR-Playbooks fuer Top-5-Szenarien (Ransomware, Phishing, Insider, DDoS, Datenleck), jaehrliche Tabletop.'
+          en: 'IR playbooks for top-5 scenarios (ransomware, phishing, insider, DDoS, data leak), annual tabletop.'
+        managed:
+          de: 'MTTD/MTTR/MTTC als KPI, halbjaehrliche Live-Uebung, Lessons-Learned in Playbooks zurueckgespielt.'
+          en: 'MTTD/MTTR/MTTC as KPI, semi-annual live exercise, lessons learned fed back into playbooks.'
+
+      - mhc: 'MHC-13'
+        name_de: 'AI / Agent Governance'
+        name_en: 'AI / Agent Governance'
+        initial:
+          de: 'AI-Inventar (Liste aller Tools), Capability-Scope fuer Top-3-Tools, AI-Policy-Draft.'
+          en: 'AI inventory (list of all tools), capability scope for top-3 tools, AI policy draft.'
+        defined:
+          de: 'Bedrohungsmodell pro Hochrisiko-Agent, Extension-Allowlist, Risk-Klassifikation aller Tools.'
+          en: 'Threat model per high-risk agent, extension allowlist, risk classification of all tools.'
+        managed:
+          de: 'ISO-42001-konformes AIMS, kontinuierliches Bias-Monitoring, Human-Oversight-Logs, AI-Act-Konformitaetsbewertung.'
+          en: 'ISO 42001-conformant AIMS, continuous bias monitoring, human-oversight logs, AI Act conformity assessment.'
+
+  # -------------------------------------------------------------------------
+  # Blocker 3: AI-Risiko-Entscheidungsmatrix
+  # -------------------------------------------------------------------------
+  ai_risk_decision_matrix:
+    title_de: 'AI-Risiko-Entscheidungsmatrix — 12 typische Tools mit empfohlener Klasse'
+    title_en: 'AI Risk Decision Matrix — 12 Typical Tools with Recommended Class'
+    intent_de: |
+      Junior-ISB will Copilot, Cursor, ChatGPT-Enterprise einsortieren. Diese Matrix
+      gibt eine Vorab-Empfehlung mit AI-Act-Anhang-Referenz. Achtung: Klasse haengt am
+      Use-Case, nicht am Tool — bei Abweichung dokumentieren.
+    intent_en: |
+      Junior ISO wants to classify Copilot, Cursor, ChatGPT Enterprise. This matrix
+      gives a pre-classification with AI Act annex reference. Caution: the class
+      depends on the use case, not the tool — document deviations.
+    legend:
+      prohibited: 'Verboten — Einsatz nicht zulaessig (AI Act Art. 5)'
+      high_risk: 'Hochrisiko — Konformitaetsbewertung Pflicht (AI Act Anhang III)'
+      limited_risk: 'Begrenzt — Transparenz-Pflicht (AI Act Art. 52)'
+      minimal_risk: 'Minimal — keine spezifischen Pflichten, gute Praxis empfohlen'
+
+    tools:
+      - name: 'GitHub Copilot'
+        recommended_class: 'limited_risk'
+        rationale_de: 'Code-Vorschlaege, kein Personenbezug, kein Entscheidungs-Output. Transparenz-Pflicht: Entwickler muss wissen, dass Code von KI stammt.'
+        rationale_en: 'Code suggestions, no personal data, no decision output. Transparency duty: developers must know code originates from AI.'
+        ai_act_ref: 'Art. 52 (Transparenz); ggf. Art. 50 fuer Output-Kennzeichnung'
+        notes_de: 'Wenn Copilot fuer sicherheitskritische Embedded-Software → einzelfallabhaengig hochstufen.'
+        notes_en: 'If Copilot used for safety-critical embedded software → upgrade case-by-case.'
+
+      - name: 'Cursor IDE'
+        recommended_class: 'limited_risk'
+        rationale_de: 'Wie Copilot, Code-Assistent. Zusaetzlich: Repo-weite Refactoring-Faehigkeit erhoeht Bedrohungsmodell-Anforderungen.'
+        rationale_en: 'Like Copilot, code assistant. Additional: repo-wide refactoring capability raises threat-modeling needs.'
+        ai_act_ref: 'Art. 52'
+        notes_de: 'Capability-Scope MUSS Repos und Datenscope eingrenzen.'
+        notes_en: 'Capability scope MUST constrain repos and data scope.'
+
+      - name: 'Claude Code (lokal)'
+        recommended_class: 'limited_risk'
+        rationale_de: 'Lokale Ausfuehrung, kein PII-Training, MCP-Whitelist moeglich. Dennoch Transparenz-Pflicht und Capability-Scope erforderlich.'
+        rationale_en: 'Local execution, no PII training, MCP whitelist possible. Still requires transparency and capability scope.'
+        ai_act_ref: 'Art. 52'
+        notes_de: 'Bei MCP-Server mit externen Tools (Slack/Gmail/Calendar) Datenscope explizit dokumentieren.'
+        notes_en: 'For MCP servers with external tools (Slack/Gmail/Calendar) document data scope explicitly.'
+
+      - name: 'ChatGPT Enterprise'
+        recommended_class: 'limited_risk'
+        rationale_de: 'Allgemein-Assistent, kein Training auf Eingaben. Solange NICHT fuer Personalentscheidungen, Bewerber-Screening, Kreditpruefung oder Medizin eingesetzt.'
+        rationale_en: 'General assistant, no training on inputs. As long as NOT used for HR decisions, applicant screening, credit checks or medical use.'
+        ai_act_ref: 'Art. 52; bei abweichendem Use-Case Anhang III'
+        notes_de: 'Sobald HR/Recruiting-Use-Case → high_risk hochstufen.'
+        notes_en: 'Once HR/recruiting use case → upgrade to high_risk.'
+
+      - name: 'AI-Recruiter-Tool (z.B. HireVue, Eightfold)'
+        recommended_class: 'high_risk'
+        rationale_de: 'Beschaeftigungs-Entscheidungen — Anhang III Punkt 4. Konformitaetsbewertung, Transparenz an Bewerber, Bias-Pruefung Pflicht.'
+        rationale_en: 'Employment decisions — Annex III point 4. Conformity assessment, applicant transparency, bias testing mandatory.'
+        ai_act_ref: 'Anhang III Punkt 4 (Beschaeftigung, Personalmanagement, Selbststaendige)'
+        notes_de: 'Auch wenn nur "Vor-Filterung": gilt als Hochrisiko. DPIA + Bedrohungsmodell + Bias-Report erforderlich.'
+        notes_en: 'Even if only "pre-filtering": counts as high-risk. DPIA + threat model + bias report required.'
+
+      - name: 'Robo-Advisor (Finance) / Bonitaets-Scoring'
+        recommended_class: 'high_risk'
+        rationale_de: 'Bonitaet/Versicherungs-Scoring — Anhang III Punkt 5b. Konformitaetsbewertung Pflicht, Erklaerbarkeit gefordert.'
+        rationale_en: 'Creditworthiness/insurance scoring — Annex III point 5b. Conformity assessment mandatory, explainability required.'
+        ai_act_ref: 'Anhang III Punkt 5b (Kreditwuerdigkeit/Bonitaet); Art. 86 (Erklaerungs-Recht)'
+        notes_de: 'Bei DORA-Geltung zusaetzlich Art. 6 Operational-Resilience-Pflichten.'
+        notes_en: 'If DORA applies, additionally Art. 6 operational resilience duties.'
+
+      - name: 'Predictive Policing / Migrations-Risk-Tools'
+        recommended_class: 'prohibited'
+        rationale_de: 'Social Scoring durch oeffentliche Stellen / Migrations-Risikobewertung sind in Teilen verboten (Art. 5). Praediktive Strafverfolgung allein auf Profiling-Basis: verboten.'
+        rationale_en: 'Public-authority social scoring / migration risk assessments are partially prohibited (Art. 5). Predictive policing solely based on profiling: prohibited.'
+        ai_act_ref: 'Art. 5 Abs. 1 lit. c, d (verbotene Praktiken)'
+        notes_de: 'Falls aehnliche Tools beschafft werden: zwingend Rechtsabteilung + DPO einbeziehen, kein produktiver Einsatz.'
+        notes_en: 'If similar tools are procured: mandatory legal + DPO involvement, no productive use.'
+
+      - name: 'Medical-Imaging-AI (z.B. Radiologie)'
+        recommended_class: 'high_risk'
+        rationale_de: 'Medizinprodukt + AI Act Anhang III Punkt 5h (medizinische Notdienste-Triage) bzw. MDR-Klasse IIa+. Doppelte Konformitaet (MDR + AI Act).'
+        rationale_en: 'Medical device + AI Act Annex III point 5h (medical emergency triage) resp. MDR class IIa+. Dual conformity (MDR + AI Act).'
+        ai_act_ref: 'Anhang III Punkt 5h; Art. 6 i.V.m. MDR'
+        notes_de: 'Notified Body fuer MDR + AI-Act-Konformitaetsbewertung kombinierbar (MDCG 2024-7).'
+        notes_en: 'Notified body can combine MDR + AI Act conformity (MDCG 2024-7).'
+
+      - name: 'Fraud Detection (Banking, kontoseitig)'
+        recommended_class: 'high_risk'
+        rationale_de: 'Beeinflusst Zahlungsverkehr und Kontosperren — Anhang III Punkt 5b (Lebensbasis-Dienstleistungen). DORA-relevant.'
+        rationale_en: 'Affects payments and account freezes — Annex III point 5b (essential services). DORA-relevant.'
+        ai_act_ref: 'Anhang III Punkt 5b; DORA Art. 6'
+        notes_de: 'Erklaerbarkeit fuer Kunden-Beschwerde-Faelle nach BaFin-MaRisk vorhalten.'
+        notes_en: 'Provide explainability for customer complaints under BaFin MaRisk.'
+
+      - name: 'Marketing-Personalisierung / Recommender (B2C)'
+        recommended_class: 'limited_risk'
+        rationale_de: 'Profiling-naehe, aber kein Hochrisiko-Use-Case nach Anhang III. Transparenz-Pflicht (Art. 52). DSGVO Art. 22 separat zu beachten.'
+        rationale_en: 'Profiling-adjacent, but no high-risk use case under Annex III. Transparency duty (Art. 52). GDPR Art. 22 separately applicable.'
+        ai_act_ref: 'Art. 52; ggf. DSA Art. 38 (DSA-Anforderung an Recommender bei VLOPs)'
+        notes_de: 'Bei Empfehlungen, die rechtliche Wirkung entfalten (z.B. Versicherungspraemie): hochstufen.'
+        notes_en: 'For recommendations with legal effect (e.g. insurance premium): upgrade.'
+
+      - name: 'Smart-Home / Spam-Filter / Spielautomat'
+        recommended_class: 'minimal_risk'
+        rationale_de: 'Keine Hochrisiko-Auswirkung, keine Personenentscheidungen. Beste Praxis: trotzdem Capability-Scope und Logging.'
+        rationale_en: 'No high-risk impact, no personal decisions. Best practice: still capability scope and logging.'
+        ai_act_ref: 'Keine spezifischen Pflichten; Art. 95 (freiwillige Codes of Conduct)'
+        notes_de: 'In ISMS dennoch im AI-Inventar fuehren — bei Reklassifikation durch Hersteller schnell reagieren koennen.'
+        notes_en: 'Still keep in AI inventory — be ready for vendor reclassification.'
+
+      - name: 'KRITIS-Steuerung (Energie, Wasser, Verkehr)'
+        recommended_class: 'high_risk'
+        rationale_de: 'Kritische Infrastruktur — Anhang III Punkt 2. Konformitaetsbewertung + NIS2 + KRITIS-Pflichten kumulativ.'
+        rationale_en: 'Critical infrastructure — Annex III point 2. Conformity assessment + NIS2 + national critical-infrastructure duties cumulative.'
+        ai_act_ref: 'Anhang III Punkt 2; NIS2 Art. 21'
+        notes_de: 'Funktionale Sicherheit (IEC 61508/61511) zusaetzlich beruecksichtigen.'
+        notes_en: 'Additionally consider functional safety (IEC 61508/61511).'
+
+    decision_flow:
+      step_1_de: 'Faellt der Use-Case unter Art. 5 (verbotene Praktiken)? → JA = prohibited, Stop.'
+      step_1_en: 'Does the use case fall under Art. 5 (prohibited practices)? → YES = prohibited, stop.'
+      step_2_de: 'Ist der Use-Case in Anhang III gelistet (Beschaeftigung, Bildung, Kreditwuerdigkeit, KRITIS, Strafverfolgung, Medizin, Migration)? → JA = high_risk.'
+      step_2_en: 'Is the use case listed in Annex III (employment, education, creditworthiness, critical infrastructure, law enforcement, medical, migration)? → YES = high_risk.'
+      step_3_de: 'Interagiert das System direkt mit Menschen oder erzeugt Deepfakes/synthetischen Content? → JA = limited_risk (Transparenz-Pflicht).'
+      step_3_en: 'Does the system interact directly with humans or generate deepfakes/synthetic content? → YES = limited_risk (transparency duty).'
+      step_4_de: 'Sonst → minimal_risk. Trotzdem AI-Inventar + Capability-Scope fuehren.'
+      step_4_en: 'Otherwise → minimal_risk. Still maintain AI inventory + capability scope.'
+
+# ===========================================================================
+# REFERENZEN
+# ===========================================================================
+references:
+  - id: 'mris-v1.5'
+    citation: 'Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. CC BY 4.0.'
+  - id: 'iso-27001-2022'
+    citation: 'ISO/IEC 27001:2022 — Information security management systems.'
+  - id: 'iso-27002-2022'
+    citation: 'ISO/IEC 27002:2022 — Information security controls.'
+  - id: 'iso-42001-2023'
+    citation: 'ISO/IEC 42001:2023 — Artificial intelligence management system.'
+  - id: 'eu-ai-act'
+    citation: 'EU AI Act — Verordnung (EU) 2024/1689 ueber kuenstliche Intelligenz.'
+  - id: 'nist-800-63b'
+    citation: 'NIST SP 800-63B — Digital Identity Guidelines, Authentication and Lifecycle Management.'
+  - id: 'cisa-kev'
+    citation: 'CISA Known Exploited Vulnerabilities Catalog — cisa.gov/known-exploited-vulnerabilities-catalog.'
+  - id: 'dora'
+    citation: 'DORA — Verordnung (EU) 2022/2554 (Digital Operational Resilience Act).'
+  - id: 'tiber-eu'
+    citation: 'TIBER-EU Framework 2018 — Threat Intelligence-based Ethical Red Teaming.'
+  - id: 'verizon-dbir'
+    citation: 'Verizon Data Breach Investigations Report 2025.'
+  - id: 'owasp-llm-top10'
+    citation: 'OWASP Top 10 for LLM Applications — owasp.org/www-project-top-10-for-large-language-model-applications.'
