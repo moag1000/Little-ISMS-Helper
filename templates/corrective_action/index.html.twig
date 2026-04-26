@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_entity_card.html.twig' as _fa_entity_card %}
 
 {% block title %}{{ 'corrective_action.page.title'|trans({}, 'audits') }}{% endblock %}
 
@@ -28,55 +29,42 @@
         {% endembed %}
     {% endif %}
 
-    {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
-        {% block card_body %}
-            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-            {% if actions is empty %}
-                {{ _fa_empty_state.render({
-                    mood: 'sleeping',
-                    title: 'corrective_action.message.none'|trans({}, 'audits')
+    {% if actions is empty %}
+        {{ _fa_empty_state.render({
+            mood: 'sleeping',
+            title: 'corrective_action.message.none'|trans({}, 'audits')
+        }) }}
+    {% else %}
+        <div class="d-flex flex-column gap-2">
+            {% for a in actions %}
+                {% set _statusVariant = a.status == 'verified_effective' ? 'success'
+                    : (a.status == 'verified_ineffective' ? 'danger'
+                    : (a.status in ['completed', 'closed'] ? 'success'
+                    : (a.status == 'in_progress' ? 'warning'
+                    : (a.status == 'planned' ? 'info' : 'neutral')))) %}
+                {% set _meta = [] %}
+                {% if a.finding %}
+                    {% set _meta = _meta|merge([a.finding.findingNumber ?? ('#' ~ a.finding.id)]) %}
+                {% endif %}
+                {% if a.responsiblePerson %}
+                    {% set _meta = _meta|merge([a.responsiblePerson.fullName]) %}
+                {% endif %}
+                {% if a.plannedCompletionDate %}
+                    {% set _meta = _meta|merge([
+                        (a.isOverdue ? '⚠ ' : '') ~ a.plannedCompletionDate|date('Y-m-d')
+                    ]) %}
+                {% endif %}
+                {{ _fa_entity_card.render({
+                    type:   'nonconformity',
+                    icon:   'nonconformity',
+                    title:  a.title,
+                    meta:   _meta,
+                    href:   path('app_corrective_action_show', {id: a.id}),
+                    status: { variant: _statusVariant, label: ('corrective_action.status.' ~ a.status)|trans({}, 'audits') }
                 }) }}
-            {% else %}
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                        <tr>
-                            <th scope="col">{{ 'corrective_action.field.title'|trans({}, 'audits') }}</th>
-                            <th scope="col">{{ 'corrective_action.field.finding'|trans({}, 'audits') }}</th>
-                            <th scope="col">{{ 'corrective_action.field.status'|trans({}, 'audits') }}</th>
-                            <th scope="col">{{ 'corrective_action.field.responsible_person'|trans({}, 'audits') }}</th>
-                            <th scope="col">{{ 'corrective_action.field.planned_completion_date'|trans({}, 'audits') }}</th>
-                            <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for a in actions %}
-                            <tr>
-                                <td>{{ a.title }}</td>
-                                <td>{% if a.finding %}<a href="{{ path('app_audit_finding_show', {id: a.finding.id}) }}">{{ a.finding.(findingNumber ?? ('#' ~ a.finding.id)) }}</a>{% else %}—{% endif %}</td>
-                                {% set _csp = a.status in ['verified_effective'] ? 'success' : (a.status == 'verified_ineffective' ? 'danger' : 'primary') %}
-                                <td><span class="fa-status-pill fa-status-pill--{{ _csp }}">{{ ('corrective_action.status.' ~ a.status)|trans({}, 'audits') }}</span></td>
-                                <td>{{ a.responsiblePerson ? a.responsiblePerson.fullName : '—' }}</td>
-                                <td>
-                                    {% if a.plannedCompletionDate %}
-                                        <span {% if a.isOverdue %}class="text-danger fw-bold"{% endif %}>
-                                            {{ a.plannedCompletionDate|date('Y-m-d') }}
-                                        </span>
-                                    {% else %}—{% endif %}
-                                </td>
-                                <td class="text-end">
-                                    <a href="{{ path('app_corrective_action_show', {id: a.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% endif %}
-        {% endblock %}
-    {% endembed %}
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
 </main>
 {% endblock %}

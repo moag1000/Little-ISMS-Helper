@@ -294,6 +294,8 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-empty-state` | Empty state with Alva mood + CTA | `_fa_empty_state.html.twig` |
 | `fa-hero` | Welcome-banner + module intro | `_fa_hero.html.twig` |
 | `fa-filter-chip` | Filter chip + chip-group | `_fa_filter_chip.html.twig` |
+| `fa-entity-card` | Listen-Item-Card with entity-icon, title, meta, status — for Findings/Risks/Incidents/Audits/NCs | `_fa_entity_card.html.twig` |
+| `fa-entity-badge` | ISMS-entity marker (10 types: finding/nonconformity/risk/control/evidence/policy/asset/incident/audit/training) | `_fa_entity_badge.html.twig` |
 | `.fa-aurora-surface` | Opt-in page-level Aurora atmosphere (CSS utility, not macro) | — |
 
 Import pattern: `{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}`.
