@@ -9,6 +9,7 @@ use App\Form\ComplianceRequirementType;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Service\ComplianceRequirementFulfillmentService;
+use App\Service\MrisMaturityService;
 use App\Service\TenantContext;
 use App\Service\TransitiveCoverageService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,6 +29,7 @@ class ComplianceRequirementController extends AbstractController
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
         private readonly TenantContext $tenantContext,
         private readonly TransitiveCoverageService $transitiveCoverageService,
+        private readonly MrisMaturityService $mrisMaturityService,
     ) {}
 
     #[Route('/compliance/requirement/', name: 'app_compliance_requirement_index', methods: ['GET'])]
@@ -146,6 +148,20 @@ class ComplianceRequirementController extends AbstractController
             $subRequirementFulfillments[$detailedRequirement->getId()] = $subFulfillment;
         }
 
+        // MRIS: Reifegrad-Stufen (nur für MHC-Requirements gefüllt)
+        $isMris = $complianceRequirement->getComplianceFramework()?->getCode() === 'MRIS-v1.5';
+        $mrisData = null;
+        if ($isMris) {
+            $mrisData = [
+                'current'    => $complianceRequirement->getMaturityCurrent(),
+                'target'     => $complianceRequirement->getMaturityTarget(),
+                'reviewedAt' => $complianceRequirement->getMaturityReviewedAt(),
+                'gapStatus'  => $this->mrisMaturityService->gapStatus($complianceRequirement),
+                'delta'      => $this->mrisMaturityService->delta($complianceRequirement),
+                'stages'     => MrisMaturityService::STAGES,
+            ];
+        }
+
         return $this->render('compliance/requirement/show.html.twig', [
             'requirement' => $complianceRequirement,
             'fulfillment' => $fulfillment,
@@ -154,7 +170,41 @@ class ComplianceRequirementController extends AbstractController
             'can_edit' => $canEdit,
             'sub_requirement_fulfillments' => $subRequirementFulfillments,
             'transitive_coverage' => $this->transitiveCoverageService->computeForRequirement($complianceRequirement),
+            'is_mris' => $isMris,
+            'mris' => $mrisData,
         ]);
+    }
+
+    /**
+     * Setzt MRIS-Reifegrad (current + target) für ein MHC-Requirement.
+     * Audit-Log automatisch via MrisMaturityService.
+     */
+    #[Route('/compliance/requirement/{id}/mris-maturity', name: 'app_compliance_requirement_mris_maturity', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function setMrisMaturity(Request $request, ComplianceRequirement $complianceRequirement): Response
+    {
+        if (!$this->isCsrfTokenValid('mris_maturity_' . $complianceRequirement->getId(), (string) $request->request->get('_token'))) {
+            $this->addFlash('error', 'Invalid CSRF token.');
+            return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
+        }
+        if ($complianceRequirement->getComplianceFramework()?->getCode() !== 'MRIS-v1.5') {
+            $this->addFlash('error', 'Reifegrad ist nur für MRIS-MHC-Requirements verfügbar.');
+            return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
+        }
+
+        $current = $request->request->get('maturity_current');
+        $target  = $request->request->get('maturity_target');
+        $current = $current === '' ? null : $current;
+        $target  = $target === '' ? null : $target;
+
+        try {
+            $this->mrisMaturityService->setTarget($complianceRequirement, $target);
+            $this->mrisMaturityService->setCurrent($complianceRequirement, $current);
+            $this->addFlash('success', 'MRIS-Reifegrad gespeichert.');
+        } catch (\DomainException $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
     }
 
     #[Route('/compliance/requirement/{id}/edit', name: 'app_compliance_requirement_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

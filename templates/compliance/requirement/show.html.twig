@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ requirement.requirementId }} - {{ requirement.title }}{% endblock %}
 
@@ -82,6 +83,98 @@
                 {% endblock %}
             {% endembed %}
 
+            {# MRIS — Reifegrad-Tracking pro MHC (nur für MRIS-v1.5 Framework) #}
+            {% if is_mris and mris %}
+                {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                    {% block card_header %}
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h2 class="mb-0">
+                                <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                                {{ 'compliance.requirement.mris.title'|trans({}, 'compliance') }}
+                            </h2>
+                            {% if mris.gapStatus == 'gap' %}
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: ('compliance.requirement.mris.status.gap'|trans({}, 'compliance')) ~ ' (' ~ mris.delta ~ ')' } %}
+                            {% elseif mris.gapStatus == 'on_target' %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'compliance.requirement.mris.status.on_target'|trans({}, 'compliance') } %}
+                            {% elseif mris.gapStatus == 'exceeded' %}
+                                {% include '_components/_badge.html.twig' with { variant: 'info', content: 'compliance.requirement.mris.status.exceeded'|trans({}, 'compliance') } %}
+                            {% else %}
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'compliance.requirement.mris.status.unset'|trans({}, 'compliance') } %}
+                            {% endif %}
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <p class="text-muted small mb-3">
+                            {{ 'compliance.requirement.mris.intro'|trans({}, 'compliance') }}
+                            <br>
+                            <em>{{ 'compliance.requirement.mris.source'|trans({}, 'compliance') }}</em>
+                        </p>
+
+                        <div class="table-responsive mb-3">
+                            <table class="table table-sm align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">{{ 'compliance.requirement.mris.stage'|trans({}, 'compliance') }}</th>
+                                        <th scope="col">{{ 'compliance.requirement.mris.current'|trans({}, 'compliance') }}</th>
+                                        <th scope="col">{{ 'compliance.requirement.mris.target'|trans({}, 'compliance') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for stage in mris.stages %}
+                                        <tr>
+                                            <td><code>{{ stage }}</code></td>
+                                            <td class="text-center">
+                                                {% if mris.current == stage %}
+                                                    <i class="bi bi-check-circle-fill text-warning" aria-label="Ist"></i>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                {% if mris.target == stage %}
+                                                    <i class="bi bi-bullseye text-success" aria-label="Soll"></i>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <form method="post" action="{{ path('app_compliance_requirement_mris_maturity', {id: requirement.id}) }}" class="row g-2 align-items-end">
+                            <input type="hidden" name="_token" value="{{ csrf_token('mris_maturity_' ~ requirement.id) }}">
+                            <div class="col-md-5">
+                                <label for="maturity_current" class="form-label small">{{ 'compliance.requirement.mris.set_current'|trans({}, 'compliance') }}</label>
+                                <select id="maturity_current" name="maturity_current" class="form-select form-select-sm">
+                                    <option value="">—</option>
+                                    {% for stage in mris.stages %}
+                                        <option value="{{ stage }}" {{ mris.current == stage ? 'selected' : '' }}>{{ stage }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <label for="maturity_target" class="form-label small">{{ 'compliance.requirement.mris.set_target'|trans({}, 'compliance') }}</label>
+                                <select id="maturity_target" name="maturity_target" class="form-select form-select-sm">
+                                    <option value="">—</option>
+                                    {% for stage in mris.stages %}
+                                        <option value="{{ stage }}" {{ mris.target == stage ? 'selected' : '' }}>{{ stage }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-sm btn-primary w-100">
+                                    {{ 'compliance.requirement.mris.save'|trans({}, 'compliance') }}
+                                </button>
+                            </div>
+                        </form>
+
+                        {% if mris.reviewedAt %}
+                            <p class="text-muted small mb-0 mt-2">
+                                {{ 'compliance.requirement.mris.last_review'|trans({}, 'compliance') }}: {{ mris.reviewedAt|date('Y-m-d H:i') }}
+                            </p>
+                        {% endif %}
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+
             {# Mapped Controls #}
             {% if requirement.mappedControls|length > 0 %}
                 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
@@ -163,10 +256,7 @@
                 {% endblock %}
                 {% block card_body %}
                     {% if is_inherited %}
-                        <div class="alert alert-info">
-                            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> <strong>Inherited from parent tenant</strong>
-                            <br><small>This fulfillment data is inherited from your parent organization. You cannot edit it directly.</small>
-                        </div>
+                        {{ _fa_alert.render({ variant: 'info', icon: 'status-info', body: '<strong>Inherited from parent tenant</strong> <br><small>This fulfillment data is inherited from your parent organization. You cannot edit it directly.</small>' }) }}
                     {% endif %}
 
                     <div class="text-center mb-3">
@@ -184,9 +274,7 @@
                     </div>
 
                     {% if calculated_fulfillment != fulfillment.fulfillmentPercentage %}
-                        <div class="alert alert-info">
-                            <small><i class="bi bi-calculator" aria-hidden="true"></i> Calculated from controls: <strong>{{ calculated_fulfillment }}%</strong></small>
-                        </div>
+                        {{ _fa_alert.render({ variant: 'info', icon: 'bi-calculator', body: '<small><i class="bi bi-calculator" aria-hidden="true"></i> Calculated from controls: <strong>{{ calculated_fulfillment }}%</strong></small>' }) }}
                     {% endif %}
 
                     {% if transitive_coverage is defined %}
@@ -278,9 +366,7 @@
                             </button>
                         </form>
                     {% else %}
-                        <div class="alert alert-warning mt-3">
-                            <i class="bi bi-lock" aria-hidden="true"></i> You cannot edit inherited fulfillment data. Only the parent tenant can modify this.
-                        </div>
+                        {{ _fa_alert.render({ variant: 'warning', icon: 'bi-lock', class: 'mt-3', body: 'You cannot edit inherited fulfillment data. Only the parent tenant can modify this.' }) }}
                     {% endif %}
 
                     <script>

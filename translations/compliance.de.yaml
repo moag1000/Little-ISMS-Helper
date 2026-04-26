@@ -489,6 +489,22 @@ compliance:
         confirm:
             delete: 'Möchten Sie diese Anforderung wirklich löschen?'
         title: Compliance-Anforderung
+        mris:
+            title: 'MRIS-Reifegrad'
+            intro: 'Aktueller Reifegrad des MHC nach Mythos-Härtungs-Modell. Drei Stufen: Initial → Defined → Managed (kumulativ).'
+            source: 'Quelle: Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. Lizenz: CC BY 4.0.'
+            stage: Stufe
+            current: Ist
+            target: Soll
+            set_current: 'Ist-Reifegrad setzen'
+            set_target: 'Soll-Reifegrad setzen'
+            save: Speichern
+            last_review: 'Zuletzt bewertet'
+            status:
+                gap: 'Lücke (Soll > Ist)'
+                on_target: 'Soll erfüllt'
+                exceeded: 'Soll übertroffen'
+                unset: 'Nicht bewertet'
         edit:
             title: 'Anforderung bearbeiten'
             note: 'Änderungen an Anforderungen können die Compliance-Bewertung beeinflussen'
