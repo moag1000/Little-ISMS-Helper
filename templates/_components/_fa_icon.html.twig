@@ -1,0 +1,30 @@
+{#
+ # FairyAurora v4.0 — Aurora-Icon Macro (CSS-Mask-Icons)
+ #
+ # Rendert ein Aurora ISMS-Domain-Icon (eines der 77 .fa-icon--*).
+ # Bootstrap-Icons (bi-*) bleiben für generic UI; .fa-icon--* nur für
+ # ISMS-Fach-Vokabular (compliance, audit, risk, asset, identity, etc).
+ #
+ # Usage:
+ #   {% import '_components/_fa_icon.html.twig' as _fa_icon %}
+ #   {{ _fa_icon.render('compliance-shield') }}                      → 1em
+ #   {{ _fa_icon.render('audit-trail', { size: '20' }) }}            → 20px
+ #   {{ _fa_icon.render('threat', { variant: 'danger' }) }}          → red
+ #   {{ _fa_icon.render('check', { label: 'Erledigt' }) }}           → with aria-label
+ #
+ # Parameters:
+ #   name    - icon-key (one of the 77, see fairy-aurora-icons.css)
+ #   size    - '16' | '20' | '24' | '32' | '48' | null (= 1em)
+ #   variant - 'success' | 'warning' | 'danger' | 'info' | 'muted' | 'primary' | null
+ #   label   - aria-label (decorative if null → aria-hidden="true")
+ #   class   - additional classes
+ #}
+
+{% macro render(name, props = {}) %}
+    {% set classes = ['fa-icon', 'fa-icon--' ~ name] %}
+    {% if props.size %}{% set classes = classes|merge(['fa-icon--' ~ props.size]) %}{% endif %}
+    {% if props.variant %}{% set classes = classes|merge(['fa-icon--' ~ props.variant]) %}{% endif %}
+    {% if props.class %}{% set classes = classes|merge([props.class]) %}{% endif %}
+    <i class="{{ classes|join(' ') }}"
+       {% if props.label %}aria-label="{{ props.label }}"{% else %}aria-hidden="true"{% endif %}></i>
+{% endmacro %}
