@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'admin' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'admin.title'|trans({}, 'admin') }} - {{ parent() }}{% endblock %}
 
@@ -232,14 +233,9 @@
             {# Flash Messages #}
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                        {% if message is iterable %}
-                            {{ message|join(', ') }}
-                        {% else %}
-                            {{ message|trans }}
-                        {% endif %}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
-                    </div>
+                    {% set faVariant = label in ['danger','error'] ? 'danger' : (label == 'success' ? 'success' : (label == 'warning' ? 'warning' : 'info')) %}
+                    {% set flashBody = message is iterable ? message|join(', ') : message|trans %}
+                    {{ _fa_alert.render({ variant: faVariant, dismissible: true, body: flashBody }) }}
                 {% endfor %}
             {% endfor %}
 

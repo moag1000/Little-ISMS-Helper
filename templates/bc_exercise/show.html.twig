@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'bc_exercises' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ bc_exercise.name }}{% endblock %}
 
@@ -43,9 +44,8 @@
         {% block card_body %}
             {% if bc_exercise.status == 'completed' %}
                 {% set effectiveness = bc_exercise.getEffectivenessScore() %}
-                <div class="alert alert-{{ effectiveness >= 80 ? 'success' : (effectiveness >= 60 ? 'info' : 'warning') }}">
-                    <strong>{{ 'bc_plans.message.readiness_score'|trans({'%score%': effectiveness}, 'bc_plans') }}</strong>
-                </div>
+                {% set effectivenessVariant = effectiveness >= 80 ? 'success' : (effectiveness >= 60 ? 'info' : 'warning') %}
+                {{ _fa_alert.render({ variant: effectivenessVariant, body: '<strong>' ~ 'bc_plans.message.readiness_score'|trans({'%score%': effectiveness}, 'bc_plans') ~ '</strong>' }) }}
             {% endif %}
 
             <div class="detail-grid">

@@ -1,4 +1,5 @@
 {% extends 'setup/_layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% set active_step = 'organisation' %}
 
 {% block title %}{{ 'setup.organisation.title'|trans({}, 'setup') }} - Deployment Wizard{% endblock %}
@@ -17,10 +18,8 @@
             {# Flash Messages #}
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                        {{ message|raw }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'setup.common.close'|trans({}, 'setup') }}"></button>
-                    </div>
+                    {% set faVariant = label in ['danger','error'] ? 'danger' : (label == 'success' ? 'success' : (label == 'warning' ? 'warning' : 'info')) %}
+                    {{ _fa_alert.render({ variant: faVariant, dismissible: true, body: message }) }}
                 {% endfor %}
             {% endfor %}
 
@@ -54,10 +53,7 @@
                         </div>
 
                         {# Multi-Industry Selection for Corporate Structures #}
-                        <div class="alert alert-light mb-2">
-                            <i class="bi bi-diagram-3 me-2 text-primary" aria-hidden="true"></i>
-                            <small>{{ 'setup.organisation.industries_help'|trans({}, 'setup') }}</small>
-                        </div>
+                        {{ _fa_alert.render({ variant: 'info', icon: 'bi-diagram-3', class: 'mb-2', body: '<small>{{ \'setup.organisation.industries_help\'|trans({}, \'setup\') }}</small>' }) }}
                         <div class="row">
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
@@ -92,11 +88,7 @@
                         </div>
 
                         {# Information Box #}
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                            <strong>{{ 'setup.organisation.usage.title'|trans({}, 'setup') }}</strong>
-                            <p class="mb-0">{{ 'setup.organisation.usage.message'|trans({}, 'setup') }}</p>
-                        </div>
+                        {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', body: '<strong>{{ \'setup.organisation.usage.title\'|trans({}, \'setup\') }}</strong> <p class="mb-0">{{ \'setup.organisation.usage.message\'|trans({}, \'setup\') }}</p>' }) }}
 
                         {# Navigation #}
                         <div class="d-flex justify-content-between mt-4">

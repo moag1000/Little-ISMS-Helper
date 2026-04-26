@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'bc_plans' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ bc_plan.name }}{% endblock %}
 
@@ -39,9 +40,8 @@
         {% endblock %}
         {% block card_body %}
             {% set readiness = bc_plan.getReadinessScore() %}
-            <div class="alert alert-{{ readiness >= 80 ? 'success' : (readiness >= 60 ? 'info' : 'warning') }}">
-                <strong>{{ 'bc_plans.message.readiness_score'|trans({'%score%': readiness}, 'bc_plans') }}</strong>
-            </div>
+            {% set readinessVariant = readiness >= 80 ? 'success' : (readiness >= 60 ? 'info' : 'warning') %}
+            {{ _fa_alert.render({ variant: readinessVariant, body: '<strong>' ~ 'bc_plans.message.readiness_score'|trans({'%score%': readiness}, 'bc_plans') ~ '</strong>' }) }}
 
             <div class="detail-grid">
                 <div class="detail-item">

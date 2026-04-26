@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'dora' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'dora.dashboard.title'|trans }}{% endblock %}
 
@@ -195,10 +196,8 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="alert alert-{{ incidents.reporting_compliance_rate >= 80 ? 'success' : (incidents.reporting_compliance_rate >= 60 ? 'warning' : 'danger') }} mb-0 py-2">
-                        <strong>{{ 'dora.metric.4h_reporting'|trans }}:</strong> {{ incidents.reporting_compliance_rate }}%
-                        <small class="d-block">{{ 'dora.article_19_hint'|trans }}</small>
-                    </div>
+                    {% set reportingVariant = incidents.reporting_compliance_rate >= 80 ? 'success' : (incidents.reporting_compliance_rate >= 60 ? 'warning' : 'danger') %}
+                    {{ _fa_alert.render({ variant: reportingVariant, class: 'mb-0 py-2', body: '<strong>' ~ 'dora.metric.4h_reporting'|trans ~ ':</strong> ' ~ incidents.reporting_compliance_rate ~ '%<small class="d-block">' ~ 'dora.article_19_hint'|trans ~ '</small>' }) }}
                 {% endblock %}
             {% endembed %}
         </div>
@@ -244,10 +243,8 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="alert alert-{{ testing.exercise_compliance >= 100 ? 'success' : 'warning' }} mb-0 py-2">
-                        <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
-                        {{ 'dora.testing_requirement'|trans }}
-                    </div>
+                    {% set testingVariant = testing.exercise_compliance >= 100 ? 'success' : 'warning' %}
+                    {{ _fa_alert.render({ variant: testingVariant, class: 'mb-0 py-2', body: 'dora.testing_requirement'|trans }) }}
                 {% endblock %}
             {% endembed %}
         </div>
