@@ -5,12 +5,12 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased] — feat/mris-integration → v3.2.0
 
-### 🆕 Headline-Feature: MRIS-Integration v1.5 — Gen-AI-Bedrohungslage im ISMS
+### Headline-Feature: MRIS-Integration v1.5 — Gen-AI-Bedrohungslage im ISMS
 
-**Marktdifferenzierung:** Stand April 2026 hat kein Mainstream-GRC-Tool (Vanta, Drata,
-Verinice, HiScout, Archer, LogicGate) MRIS produktiv integriert. Little ISMS Helper
-ist damit **erstes GRC-Tool mit out-of-the-box-MRIS-Klassifikation aller 93 ISO-Annex-A-
-Controls + 13 Mythos-Härtungs-Controls (MHC) als zweite Control-Schicht im SoA**.
+Out-of-the-box-MRIS-Klassifikation aller 93 ISO-Annex-A-Controls + 13 Mythos-
+Härtungs-Controls (MHC) als zweite Control-Schicht im Statement of Applicability.
+Macht Gen-AI-getriebene Wirksamkeitsverluste bestehender Controls sichtbar und
+schließt sie über einen priorisierten Zusatzkatalog.
 
 **Wirtschaftlicher Hebel** (laut CM- + Senior-Consultant-Persona-Review):
 - **Compliance-Manager intern:** ~11 FTE-Tage Quartal-Ersparnis bei 27001+NIS2-Bestand
