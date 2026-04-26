@@ -53,6 +53,9 @@ class StatementOfApplicabilityController extends AbstractController
         $q = trim((string) $request->query->get('q', ''));
         $category = $request->query->get('category');
         $status = $request->query->get('status');
+        // MRIS-Mythos-Klassifikation gem. Peddi (2026) MRIS v1.5 Anhang A.
+        // Werte: standfest|degradiert|reibung|nicht_betroffen.
+        $mris = $request->query->get('mris');
 
         // Get controls based on view filter
         if ($tenant) {
@@ -93,6 +96,9 @@ class StatementOfApplicabilityController extends AbstractController
         if ($status) {
             $controls = array_filter($controls, fn(Control $c): bool => $c->getImplementationStatus() === $status);
         }
+        if (is_string($mris) && $mris !== '') {
+            $controls = array_filter($controls, fn(Control $c): bool => $c->getMythosResilience() === $mris);
+        }
         if ($q !== '') {
             $needle = mb_strtolower($q);
             $controls = array_filter($controls, function (Control $c) use ($needle): bool {
@@ -121,6 +127,22 @@ class StatementOfApplicabilityController extends AbstractController
             $detailedStats = ['own' => count($controls), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($controls)];
         }
 
+        // MRIS-Verteilung pro Kategorie (alle Controls, nicht gefiltert) — für UI-Filter-Counts
+        $mrisStats = ['standfest' => 0, 'degradiert' => 0, 'reibung' => 0, 'nicht_betroffen' => 0];
+        if ($tenant) {
+            $allControls = match ($view) {
+                'own' => $this->controlRepository->findByTenant($tenant),
+                'subsidiaries' => $this->controlRepository->findByTenantIncludingSubsidiaries($tenant),
+                default => $this->controlRepository->findByTenantIncludingParent($tenant),
+            };
+            foreach ($allControls as $c) {
+                $cat = $c->getMythosResilience();
+                if ($cat !== null && isset($mrisStats[$cat])) {
+                    $mrisStats[$cat]++;
+                }
+            }
+        }
+
         return $this->render('soa/index.html.twig', [
             'controls' => $controls,
             'stats' => $stats,
@@ -128,6 +150,8 @@ class StatementOfApplicabilityController extends AbstractController
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
             'detailedStats' => $detailedStats,
+            'mrisStats' => $mrisStats,
+            'mrisFilter' => $mris,
         ]);
     }
     #[Route('/soa/category/{category}', name: 'app_soa_by_category')]

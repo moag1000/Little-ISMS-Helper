@@ -19,6 +19,8 @@ soa:
         status: Status
         all_categories: 'Alle Kategorien'
         all_status: 'Alle Status'
+        mris: 'MRIS-Mythos-Kategorie'
+        mris_all: 'Alle MRIS-Kategorien'
         reset: 'Filter zurücksetzen'
     kpi:
         total_controls: 'Gesamt Controls'
@@ -60,6 +62,13 @@ soa:
         justification_notes: 'Begründung / Notizen'
         target_date: Zieldatum
         actions: Aktionen
+        mris: 'MRIS'
+        mris_help: 'Mythos-Resilienz gem. MRIS v1.5 (Peddi 2026, CC BY 4.0)'
+    mris:
+        standfest: Standfest
+        degradiert: 'Teilweise degradiert'
+        reibung: 'Reine Reibung'
+        nicht_betroffen: 'Nicht betroffen'
     status:
         implemented: Implementiert
         in_progress: 'In Arbeit'
