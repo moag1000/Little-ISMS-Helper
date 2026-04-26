@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'reuse.page.title'|trans({}, 'messages') }}{% endblock %}
@@ -39,21 +40,21 @@
                     <div class="small text-muted">{{ 'reuse.fte.subtitle'|trans({}, 'messages') }}</div>
                 </div>
                 <div class="d-flex flex-column align-items-end gap-1">
-                    <span class="badge bg-body-secondary border">
+                    <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">
                         <i class="bi bi-file-earmark" aria-hidden="true"></i>
                         {{ 'reuse.stats.documents'|trans({
                             '%reused%': stats.documents_reused,
                             '%total%': stats.documents_total
                         }, 'messages') }}
                     </span>
-                    <span class="badge bg-body-secondary border">
+                    <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">
                         <i class="bi bi-building" aria-hidden="true"></i>
                         {{ 'reuse.stats.suppliers'|trans({
                             '%reused%': stats.suppliers_reused,
                             '%total%': stats.suppliers_total
                         }, 'messages') }}
                     </span>
-                    <span class="badge bg-body-secondary border">
+                    <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">
                         <i class="bi bi-ui-checks" aria-hidden="true"></i>
                         {{ 'reuse.stats.requirements'|trans({'%count%': stats.requirements_total}, 'messages') }}
                     </span>
@@ -63,11 +64,7 @@
     {% endembed %}
 
     {# 9001-Brücke für Junior-Einstieg #}
-    <div class="alert alert-info small mb-4">
-        <i class="bi bi-lightbulb" aria-hidden="true"></i>
-        <strong>{{ 'reuse.iso9001_bridge.title'|trans({}, 'messages') }}</strong>
-        {{ 'reuse.iso9001_bridge.text'|trans({}, 'messages') }}
-    </div>
+    {{ _fa_alert.render({ variant: 'info', icon: 'bi-lightbulb', class: 'small mb-4', body: '<strong>{{ \'reuse.iso9001_bridge.title\'|trans({}, \'messages\') }}</strong> {{ \'reuse.iso9001_bridge.text\'|trans({}, \'messages\') }}' }) }}
 
     <div class="row g-3">
         {# TOP DOKUMENTE — 8H.4 migrated #}
@@ -163,10 +160,7 @@
         </div>
     </div>
 
-    <div class="alert alert-secondary small mt-4 mb-0">
-        <i class="bi bi-info-circle" aria-hidden="true"></i>
-        {{ 'reuse.page.footer_hint'|trans({}, 'messages') }}
-    </div>
+    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'small mt-4 mb-0', body: '{{ \'reuse.page.footer_hint\'|trans({}, \'messages\') }}' }) }}
     </main>
 </div>
 {% endblock %}

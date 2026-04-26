@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'four_eyes.inbox.title'|trans({}, 'four_eyes') }}{% endblock %}
 
@@ -8,10 +9,7 @@
     <p class="text-muted">{{ 'four_eyes.inbox.lead'|trans({}, 'four_eyes') }}</p>
 
     {% if requests is empty %}
-        <div class="alert alert-success" role="status">
-            <i class="bi bi-check-circle" aria-hidden="true"></i>
-            {{ 'four_eyes.inbox.empty'|trans({}, 'four_eyes') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'success', icon: 'bi-check-circle', body: '{{ \'four_eyes.inbox.empty\'|trans({}, \'four_eyes\') }}' }) }}
     {% else %}
         <div class="list-group">
             {% for r in requests %}
@@ -19,7 +17,7 @@
                     <div class="d-flex justify-content-between align-items-start gap-3">
                         <div class="flex-grow-1">
                             <div class="d-flex align-items-center gap-2 mb-1">
-                                <span class="badge bg-info-subtle text-info">
+                                <span class="badge bg-info-subtle text-info fa-status-pill fa-status-pill--primary">
                                     {{ ('four_eyes.action.' ~ r.actionType)|trans({}, 'four_eyes') }}
                                 </span>
                                 <strong>#{{ r.id }}</strong>

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'group_report.incidents.title'|trans({}, 'group_report') }}{% endblock %}
 
@@ -19,10 +20,7 @@
         <p class="text-muted mb-0">{{ 'group_report.incidents.subtitle'|trans({'%root%': root.name}, 'group_report') }}</p>
     </div>
 
-    <div class="alert alert-info d-flex gap-2" role="note">
-        <i class="bi bi-info-circle mt-1" aria-hidden="true"></i>
-        <div class="small">{{ 'group_report.incidents.intro'|trans({}, 'group_report')|raw }}</div>
-    </div>
+    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2', body: '<div class="small">{{ \'group_report.incidents.intro\'|trans({}, \'group_report\')|raw }}</div>' }) }}
 
     <div class="row row-cols-2 row-cols-md-5 g-2 mb-4">
         <div class="col">
@@ -101,7 +99,7 @@
                                 <td>
                                     <code class="small">{{ incident.tenant.code }}</code>
                                     {% if incident.tenant is same as(root) %}
-                                        <span class="badge bg-primary ms-1">{{ 'group_report.incidents.own'|trans({}, 'group_report') }}</span>
+                                        <span class="badge bg-primary fa-status-pill fa-status-pill--primary ms-1">{{ 'group_report.incidents.own'|trans({}, 'group_report') }}</span>
                                     {% endif %}
                                 </td>
                                 <td><span class="badge {{ sevBadge }}">{{ sev }}</span></td>

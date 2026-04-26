@@ -1,9 +1,7 @@
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {# WS-8 Reuse Preview Fragment — rendered via AJAX into #existing-frameworks-preview #}
 {% if estimates is empty %}
-    <div class="alert alert-light border">
-        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-        {{ 'existing_frameworks.preview.no_newly_added'|trans({}, 'setup_wizard') }}
-    </div>
+    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'border', body: '{{ \'existing_frameworks.preview.no_newly_added\'|trans({}, \'setup_wizard\') }}' }) }}
 {% else %}
     <div class="table-responsive">
         <table class="table table-sm table-hover align-middle"
@@ -43,7 +41,7 @@
                         </td>
                         <td class="text-end">
                             {% if row.estimated_reusable > 0 %}
-                                <span class="badge bg-success">
+                                <span class="badge bg-success fa-status-pill fa-status-pill--success">
                                     {{ row.estimated_reusable }}
                                     <small class="ms-1">({{ row.reuse_percentage }}%)</small>
                                 </span>
@@ -65,7 +63,7 @@
                                 </span>
                             {% else %}
                                 {% for source in row.sources %}
-                                    <span class="badge bg-body-secondary border me-1">{{ source }}</span>
+                                    <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral me-1">{{ source }}</span>
                                 {% endfor %}
                             {% endif %}
                         </td>

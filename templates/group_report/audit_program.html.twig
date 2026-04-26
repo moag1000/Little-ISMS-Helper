@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'group_report.audit_program.title'|trans({}, 'group_report') }}{% endblock %}
 
@@ -19,19 +20,12 @@
         <p class="text-muted mb-0">{{ 'group_report.audit_program.subtitle'|trans({'%root%': root.name}, 'group_report') }}</p>
     </div>
 
-    <div class="alert alert-info d-flex gap-2" role="note">
-        <i class="bi bi-info-circle mt-1" aria-hidden="true"></i>
-        <div class="small">{{ 'group_report.audit_program.intro'|trans({}, 'group_report')|raw }}</div>
-    </div>
+    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2', body: '<div class="small">{{ \'group_report.audit_program.intro\'|trans({}, \'group_report\')|raw }}</div>' }) }}
 
     {% if programs is empty %}
-        <div class="alert alert-warning">
-            {{ 'group_report.audit_program.empty'|trans({}, 'group_report') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'warning', body: '{{ \'group_report.audit_program.empty\'|trans({}, \'group_report\') }}' }) }}
     {% elseif subsidiaries is empty %}
-        <div class="alert alert-warning">
-            {{ 'group_report.audit_program.no_subsidiaries'|trans({}, 'group_report') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'warning', body: '{{ \'group_report.audit_program.no_subsidiaries\'|trans({}, \'group_report\') }}' }) }}
     {% else %}
         {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
             {% block card_body %}
@@ -67,7 +61,7 @@
                                         {% set derived = matrix[program.id][sub.code] %}
                                         <td class="text-center">
                                             {% if derived is null %}
-                                                <span class="badge bg-body-secondary border" title="{{ 'group_report.audit_program.cell.missing_help'|trans({}, 'group_report') }}">
+                                                <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral" title="{{ 'group_report.audit_program.cell.missing_help'|trans({}, 'group_report') }}">
                                                     <i class="bi bi-dash" aria-hidden="true"></i>
                                                 </span>
                                             {% else %}
@@ -106,10 +100,10 @@
             {% block card_footer %}
                 <div class="card-footer small text-muted">
                     <strong>{{ 'group_report.soa.legend.title'|trans({}, 'group_report') }}:</strong>
-                    <span class="badge bg-success">✓</span> {{ 'group_report.audit_program.legend.completed'|trans({}, 'group_report') }}
-                    · <span class="badge bg-warning-subtle text-warning">◐</span> {{ 'group_report.audit_program.legend.in_progress'|trans({}, 'group_report') }}
-                    · <span class="badge bg-info">◯</span> {{ 'group_report.audit_program.legend.planned'|trans({}, 'group_report') }}
-                    · <span class="badge bg-body-secondary border">–</span> {{ 'group_report.audit_program.legend.missing'|trans({}, 'group_report') }}
+                    <span class="badge bg-success fa-status-pill fa-status-pill--success">✓</span> {{ 'group_report.audit_program.legend.completed'|trans({}, 'group_report') }}
+                    · <span class="badge bg-warning-subtle text-warning fa-status-pill fa-status-pill--warning">◐</span> {{ 'group_report.audit_program.legend.in_progress'|trans({}, 'group_report') }}
+                    · <span class="badge bg-info fa-status-pill fa-status-pill--primary">◯</span> {{ 'group_report.audit_program.legend.planned'|trans({}, 'group_report') }}
+                    · <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">–</span> {{ 'group_report.audit_program.legend.missing'|trans({}, 'group_report') }}
                 </div>
             {% endblock %}
         {% endembed %}

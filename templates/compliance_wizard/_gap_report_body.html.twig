@@ -1,3 +1,4 @@
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {#
     WS-6 Gap-Report body partial.
 
@@ -56,10 +57,7 @@
 </div>
 
 {% if effort_estimated_count == 0 %}
-    <div class="alert alert-info mb-4" role="status">
-        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-        {{ 'gap_report.info.no_estimates'|trans({}, 'gap_report') }}
-    </div>
+    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'mb-4', body: '{{ \'gap_report.info.no_estimates\'|trans({}, \'gap_report\') }}' }) }}
 {% else %}
     {# Budget simulator slider — 8H.4 migrated. Stimulus attrs hooked via card_attrs block #}
     {% embed '_components/_card.html.twig' with { class: 'border-0 shadow-sm mb-4' } %}
@@ -122,7 +120,9 @@
                             <td class="small">{{ row.category|default('—') }}</td>
                             <td class="text-center">
                                 {% if row.priority %}
-                                    <span class="badge bg-{{ row.priority == 'critical' ? 'danger' : (row.priority == 'high' ? 'warning' : (row.priority == 'medium' ? 'info' : 'secondary')) }}">
+                                    {% set _pv = row.priority == 'critical' ? 'danger' : (row.priority == 'high' ? 'warning' : (row.priority == 'medium' ? 'info' : 'secondary')) %}
+                                    {% set _pp = row.priority == 'critical' ? 'danger' : (row.priority == 'high' ? 'warning' : (row.priority == 'medium' ? 'primary' : 'neutral')) %}
+                                    <span class="badge bg-{{ _pv }} fa-status-pill fa-status-pill--{{ _pp }}">
                                         {{ row.priority }}
                                     </span>
                                 {% else %}—{% endif %}
@@ -147,7 +147,7 @@
                             </td>
                             <td class="text-center">
                                 {% if row.is_quick_win %}
-                                    <span class="badge bg-success">
+                                    <span class="badge bg-success fa-status-pill fa-status-pill--success">
                                         <i class="bi bi-lightning-charge" aria-hidden="true"></i>
                                         {{ 'gap_report.table.quick_win_badge'|trans({}, 'gap_report') }}
                                     </span>

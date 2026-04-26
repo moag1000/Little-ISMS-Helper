@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance_policy.page.title'|trans({}, 'compliance_policy') }}{% endblock %}
 
@@ -28,13 +29,7 @@
         </div>
     </div>
 
-    <div class="alert alert-info d-flex gap-2" role="note">
-        <i class="bi bi-info-circle mt-1" aria-hidden="true"></i>
-        <div>
-            <strong>{{ 'compliance_policy.hint.heading'|trans({}, 'compliance_policy') }}</strong>
-            <div class="small">{{ 'compliance_policy.hint.body'|trans({}, 'compliance_policy') }}</div>
-        </div>
-    </div>
+    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2', body: '<div> <strong>{{ \'compliance_policy.hint.heading\'|trans({}, \'compliance_policy\') }}</strong> <div class="small">{{ \'compliance_policy.hint.body\'|trans({}, \'compliance_policy\') }}</div> </div>' }) }}
 
     <form method="post" action="{{ path('admin_compliance_policy_index') }}" novalidate>
         <input type="hidden" name="_token" value="{{ csrf_token('compliance_policy_update') }}">
@@ -95,7 +90,7 @@
                                         </strong>
                                     </span>
                                     {% if isOverride %}
-                                        <span class="badge bg-warning-subtle text-warning mt-1">
+                                        <span class="badge bg-warning-subtle text-warning fa-status-pill fa-status-pill--warning mt-1">
                                             {{ 'compliance_policy.override'|trans({}, 'compliance_policy') }}
                                         </span>
                                     {% endif %}

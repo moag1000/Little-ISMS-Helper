@@ -60,21 +60,22 @@
                                 <td>{{ level.labelEn }}</td>
                                 <td>
                                     {% if level.color %}
-                                        <span class="badge bg-{{ level.color }}">{{ level.color }}</span>
+                                        {% set _cpill = level.color in ['info'] ? 'primary' : (level.color in ['secondary','light','dark'] ? 'neutral' : level.color) %}
+                                        <span class="badge bg-{{ level.color }} fa-status-pill fa-status-pill--{{ _cpill }}">{{ level.color }}</span>
                                     {% else %}
                                         <span class="text-muted">—</span>
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if level.isDefault %}
-                                        <span class="badge bg-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></span>
+                                        <span class="badge bg-success fa-status-pill fa-status-pill--success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></span>
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if level.isActive %}
-                                        <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
+                                        <span class="badge bg-success fa-status-pill fa-status-pill--success">{{ 'common.active'|trans({}, 'messages') }}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
+                                        <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">{{ 'common.inactive'|trans({}, 'messages') }}</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-end">

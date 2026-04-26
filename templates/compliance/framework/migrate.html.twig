@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance.framework.migrate.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -26,16 +27,10 @@
         </div>
     </div>
 
-    <div class="alert alert-info small">
-        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-        {{ 'compliance.framework.migrate.intro'|trans({}, 'compliance') }}
-    </div>
+    {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'small', body: '{{ \'compliance.framework.migrate.intro\'|trans({}, \'compliance\') }}' }) }}
 
     {% if error is not null %}
-        <div class="alert alert-danger">
-            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-            {{ error|trans({}, 'compliance') }}
-        </div>
+        {{ _fa_alert.render({ variant: 'danger', icon: 'status-critical', body: '{{ error|trans({}, \'compliance\') }}' }) }}
     {% endif %}
 
     <form method="post"
@@ -176,7 +171,7 @@
                                         <td><code>{{ m.source_id }}</code> {{ m.source_title|u.truncate(60, '…') }}</td>
                                         <td class="text-muted">→</td>
                                         <td><code>{{ m.target_id }}</code> {{ m.target_title|u.truncate(60, '…') }}</td>
-                                        <td><span class="badge bg-body-secondary border">{{ m.via }}</span></td>
+                                        <td><span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">{{ m.via }}</span></td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -212,10 +207,7 @@
                 {% endif %}
 
                 {% if not was_commit and result.bridges_created > 0 %}
-                    <div class="alert alert-info small mt-3 mb-0">
-                        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-                        {{ 'compliance.framework.migrate.result.preview_ok_hint'|trans({}, 'compliance') }}
-                    </div>
+                    {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'small mt-3 mb-0', body: '{{ \'compliance.framework.migrate.result.preview_ok_hint\'|trans({}, \'compliance\') }}' }) }}
                 {% endif %}
             </div>
         </div>

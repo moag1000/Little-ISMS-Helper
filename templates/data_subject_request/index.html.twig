@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'data_subject_request' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
@@ -26,8 +27,9 @@
 
     {# Overdue Alert #}
     {% if statistics.overdue_count > 0 %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <div class="alert-heading fw-bold">
+        <div class="fa-alert fa-alert--danger" role="alert">
+            <i class="fa-icon fa-icon--status-warning" fa-alert__icon" aria-hidden="true"></i>
+            <div class="fa-alert__body"><div class="alert-heading fw-bold">
                 <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                 {{ 'dsr.alert.overdue_title'|trans({}, 'data_subject_request') }}
             </div>
@@ -36,6 +38,10 @@
                 {{ 'dsr.alert.view_overdue'|trans({}, 'data_subject_request') }}
             </a>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
+            </div>
+            <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+            </button>
         </div>
     {% endif %}
 
@@ -124,7 +130,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <span class="badge bg-info">{{ ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') }}</span>
+                                        <span class="badge bg-info fa-status-pill fa-status-pill--primary">{{ ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') }}</span>
                                         <br><small class="text-muted">{{ dsr.gdprArticle }}</small>
                                     </td>
                                     <td>

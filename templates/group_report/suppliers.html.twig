@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'group_report.suppliers.title'|trans({}, 'group_report') }}{% endblock %}
 
@@ -19,10 +20,7 @@
         <p class="text-muted mb-0">{{ 'group_report.suppliers.subtitle'|trans({'%root%': root.name}, 'group_report') }}</p>
     </div>
 
-    <div class="alert alert-info d-flex gap-2" role="note">
-        <i class="bi bi-info-circle mt-1" aria-hidden="true"></i>
-        <div class="small">{{ 'group_report.suppliers.intro'|trans({}, 'group_report')|raw }}</div>
-    </div>
+    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2', body: '<div class="small">{{ \'group_report.suppliers.intro\'|trans({}, \'group_report\')|raw }}</div>' }) }}
 
     <div class="row row-cols-2 row-cols-md-4 g-2 mb-4">
         <div class="col">
@@ -93,9 +91,9 @@
                                 <td>
                                     {% if group.has_lei %}
                                         <code class="small">{{ rep.leiCode }}</code>
-                                        <span class="badge bg-success ms-1">LEI</span>
+                                        <span class="badge bg-success fa-status-pill fa-status-pill--success ms-1">LEI</span>
                                     {% else %}
-                                        <span class="badge bg-body-secondary border" title="{{ 'group_report.suppliers.no_lei_help'|trans({}, 'group_report') }}">
+                                        <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral" title="{{ 'group_report.suppliers.no_lei_help'|trans({}, 'group_report') }}">
                                             {{ 'group_report.suppliers.matched_by_name'|trans({}, 'group_report') }}
                                         </span>
                                     {% endif %}
@@ -109,7 +107,7 @@
                                 </td>
                                 <td>
                                     {% if refCount >= 2 %}
-                                        <span class="badge bg-primary me-1">{{ refCount }}×</span>
+                                        <span class="badge bg-primary fa-status-pill fa-status-pill--primary me-1">{{ refCount }}×</span>
                                     {% endif %}
                                     {% for code in group.tenant_codes %}
                                         <code class="badge bg-body-secondary border me-1">{{ code }}</code>

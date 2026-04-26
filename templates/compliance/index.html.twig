@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance.page_title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -62,7 +63,7 @@
                                 {% set variant = level_variant[m.level] ?? 'secondary' %}
                                 <tr>
                                     <td>
-                                        <span class="badge bg-body-secondary border">{{ code }}</span>
+                                        <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">{{ code }}</span>
                                         <span class="ms-1">{{ row.framework.name }}</span>
                                     </td>
                                     <td>
@@ -118,12 +119,7 @@
     {% endif %}
 
     {# Data Reuse Value Highlight #}
-    <div class="alert alert-success alert-gradient-success">
-        <p class="fw-bold fs-4 mb-2">💎 {{ 'compliance.data_reuse.title'|trans({}, 'compliance') }}</p>
-        <p class="text-lg-m0">
-            {{ 'compliance.data_reuse.description'|trans({'%hours%': total_time_savings, '%days%': total_days_savings}, 'compliance')|raw }}
-        </p>
-    </div>
+    {{ _fa_alert.render({ variant: 'success', body: '<p class="fw-bold fs-4 mb-2">💎 {{ \'compliance.data_reuse.title\'|trans({}, \'compliance\') }}</p> <p class="text-lg-m0"> {{ \'compliance.data_reuse.description\'|trans({\'%hours%\': total_time_savings, \'%days%\': total_days_savings}, \'compliance\')|raw }} </p>' }) }}
 
     {# Framework Overview Cards - Simplified #}
     <div class="framework-grid">
