@@ -18,12 +18,20 @@
 {% set title = title|default(null) %}
 {% set pill = pill|default(false) %}
 
-{# Build CSS classes #}
-{% set badgeClasses = ['badge', 'bg-' ~ variant] %}
+{# Build CSS classes
+   Aurora-bridge: emits both Bootstrap-compat (.badge.bg-*) and Aurora-native
+   (.fa-status-pill, .fa-status-pill--*) classes. Aurora's .badge.bg-* rules
+   already drive bg/color via tokens; adding .fa-status-pill grants border
+   tone + dot/icon spacing per the v4 status-pill spec. The 'pill' param
+   is redundant (Aurora pills are always pill-shaped) — kept for BC. #}
+{% set faVariant = variant in ['info']                ? 'primary'
+                : variant in ['secondary','light','dark'] ? 'neutral'
+                : variant %}
+{% set badgeClasses = ['badge', 'bg-' ~ variant, 'fa-status-pill', 'fa-status-pill--' ~ faVariant] %}
 {% if size == 'sm' %}
-    {% set badgeClasses = badgeClasses|merge(['badge-sm']) %}
+    {% set badgeClasses = badgeClasses|merge(['badge-sm', 'fa-status-pill--sm']) %}
 {% elseif size == 'lg' %}
-    {% set badgeClasses = badgeClasses|merge(['badge-lg']) %}
+    {% set badgeClasses = badgeClasses|merge(['badge-lg', 'fa-status-pill--lg']) %}
 {% endif %}
 {% if pill %}
     {% set badgeClasses = badgeClasses|merge(['rounded-pill']) %}

@@ -59,19 +59,27 @@
 {% set noPadding = noPadding|default(false) %}
 {% set borderColor = borderColor|default('primary') %}
 
-{# Build card classes #}
+{# Build card classes — Aurora-bridge: each variant emits both the
+   existing class names AND the Aurora-native fa-* names so legacy CSS
+   keeps working AND the v4 spec rules (.fa-section, .fa-kpi-card,
+   .fa-feature-card) apply. Legacy classes can be retired once all
+   templates have migrated. #}
+{% set faBorderColor = borderColor == 'info' ? 'primary' : borderColor %}
 {% set cardClasses = ['card'] %}
 {% if variant == 'kpi' %}
-    {% set cardClasses = cardClasses|merge(['kpi-card', 'kpi-card-' ~ borderColor]) %}
+    {% set cardClasses = cardClasses|merge(['kpi-card', 'kpi-card-' ~ borderColor, 'fa-kpi-card', 'fa-kpi-card--' ~ faBorderColor]) %}
 {% elseif variant == 'stat' %}
-    {# stat is deprecated alias for kpi - use stat-card class for backwards compatibility #}
-    {% set cardClasses = cardClasses|merge(['stat-card']) %}
+    {# stat is deprecated alias for kpi #}
+    {% set cardClasses = cardClasses|merge(['stat-card', 'fa-kpi-card']) %}
 {% elseif variant == 'widget' %}
     {% set cardClasses = cardClasses|merge(['widget-card']) %}
 {% elseif variant == 'bordered' %}
     {% set cardClasses = cardClasses|merge(['card-border-left-' ~ borderColor]) %}
 {% elseif variant == 'feature' %}
-    {% set cardClasses = cardClasses|merge(['feature-card']) %}
+    {% set cardClasses = cardClasses|merge(['feature-card', 'fa-feature-card']) %}
+{% else %}
+    {# default — pair Bootstrap .card with Aurora .fa-section spec #}
+    {% set cardClasses = cardClasses|merge(['fa-section']) %}
 {% endif %}
 
 {% if hoverable %}
