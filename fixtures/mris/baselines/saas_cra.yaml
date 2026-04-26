@@ -1,0 +1,53 @@
+schema_version: '1.0'
+baseline:
+  id: 'saas-cra-2027'
+  name: 'SaaS-Anbieter / CRA-pflichtig 2027'
+  industry: 'saas'
+  description: |
+    Pre-Konfiguration für SaaS-Anbieter mit Cyber-Resilience-Act-Pflicht
+    ab 2027 (Verordnung 2024/2847). Inkl. Cloud-Native-Stack, Multi-Tenant,
+    SBOM-Rechtspflicht, Vulnerability-Disclosure-Pflicht.
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung CRA-Readiness'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: defined
+      reason: 'PQC-Strategie für Kunden-Datenkryptografie.'
+    MHC-02:
+      target: managed
+      reason: 'SBOM RECHTSPFLICHT — CRA Annex I Teil II + automatisierte Provenance.'
+    MHC-03:
+      target: managed
+      reason: 'Phishing-resistente MFA passwortlos für alle Kunden-Admin-Accounts.'
+    MHC-04:
+      target: defined
+      reason: 'Workload-Identity SPIFFE/SPIRE für alle Microservices.'
+    MHC-05:
+      target: defined
+      reason: 'Behavioural Detection mit ATT&CK-Coverage für Cloud-SaaS-typische TTPs.'
+    MHC-06:
+      target: managed
+      reason: 'Container-Sicherheit + Confidential Computing für Tenant-Isolation.'
+    MHC-07:
+      target: managed
+      reason: 'Multi-Tenancy-Isolation Kern-Geschäftsmodell — automatisierte Tests Pflicht.'
+    MHC-08:
+      target: defined
+      reason: 'Immutable Backups je Tenant-Schema — DR-RTO < 4h.'
+    MHC-09:
+      target: managed
+      reason: 'AI-gestütztes Security-Testing in CI — CRA Art. 13 Vulnerability-Handling.'
+    MHC-10:
+      target: defined
+      reason: 'Continuous Control Monitoring + Policy-as-Code für Cloud-Native.'
+    MHC-11:
+      target: defined
+      reason: 'SOAR für 24/7-Incident-Response — CRA Art. 14 Meldepflichten.'
+    MHC-12:
+      target: defined
+      reason: 'Threat-Led Pen-Testing in Releases ≥ Major.'
+    MHC-13:
+      target: defined
+      reason: 'AI-Agent-Governance verpflichtend bei Coding-Tools im Eng-Team (Copilot/Claude).'

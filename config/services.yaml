@@ -125,6 +125,10 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
+    App\Service\MrisBaselineService:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
     # Runtime-configurable compliance policy (admin UI /admin/compliance/settings).
     # YAML params remain as fallback defaults if no DB override is set.
     App\Service\CompliancePolicyService:

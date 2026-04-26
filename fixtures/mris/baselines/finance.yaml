@@ -1,0 +1,53 @@
+schema_version: '1.0'
+baseline:
+  id: 'finance-dora'
+  name: 'Finance / DORA-Adressat'
+  industry: 'finance'
+  description: |
+    Pre-Konfiguration für Finanzunternehmen unter DORA (Verordnung 2022/2554).
+    Banken, Versicherungen, Wertpapierfirmen, Zahlungsdienstleister.
+    Anker: DORA Art. 6/9-15, DORA Art. 26/27 TLPT, BAIT, ergänzend NIS2.
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Finance/BaFin-Praxis'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: defined
+      reason: 'PQC-Strategie für Langzeit-Vertraulichkeit von Transaktionsdaten.'
+    MHC-02:
+      target: defined
+      reason: 'SBOM Pflicht — DORA Art. 28 ICT-Drittanbieter-Risiken.'
+    MHC-03:
+      target: managed
+      reason: 'Phishing-resistente MFA — DORA Art. 9 + BAIT 5.6 Authentisierung.'
+    MHC-04:
+      target: defined
+      reason: 'Workload-Identity für Trading-/Settlement-Microservices.'
+    MHC-05:
+      target: defined
+      reason: 'Behavioural Detection — Schutz vor Account-Takeover-Schemata.'
+    MHC-06:
+      target: defined
+      reason: 'Container-Sicherheit für Cloud-Banking-Workloads.'
+    MHC-07:
+      target: defined
+      reason: 'Multi-Tenancy-Isolation für Banking-as-a-Service-Provider.'
+    MHC-08:
+      target: managed
+      reason: 'Immutable Backups Pflicht — DORA Art. 12 Backup-Methoden + RTO-Pflicht.'
+    MHC-09:
+      target: defined
+      reason: 'AI-Security-Testing für Trading-Algorithmen + KI-gestützte Risk-Models.'
+    MHC-10:
+      target: defined
+      reason: 'Continuous Control Monitoring — DORA Art. 6(5) angemessene Überwachung.'
+    MHC-11:
+      target: managed
+      reason: 'SOAR/Tier-1-Automation Pflicht — DORA Art. 17/19 Klassifikation + Meldefristen.'
+    MHC-12:
+      target: managed
+      reason: 'TLPT VERPFLICHTEND — DORA Art. 26/27 Threat-Led Penetration Testing.'
+    MHC-13:
+      target: defined
+      reason: 'AI-Agent-Governance für robo-advisory + KI-Trading; Hochrisiko gem. EU AI Act.'
