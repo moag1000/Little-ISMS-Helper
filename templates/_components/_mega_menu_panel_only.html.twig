@@ -386,6 +386,13 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.ai_agents'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        <li><a href="{{ path('app_mris_glossar') }}" class="{% if current_route starts with 'app_mris_glossar' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-book" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.mris_glossar'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.mris_glossar'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
                         <li><a href="{{ path('app_data_reuse_hub') }}" class="{% if current_route starts with 'app_data_reuse_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-arrows-collapse" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
