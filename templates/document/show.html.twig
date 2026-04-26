@@ -21,22 +21,22 @@
             {% endif %}
         </h1>
         <div class="actions">
-            <a href="{{ path('app_document_download', {id: document.id}) }}" class="btn btn-primary">{{ 'common.download'|trans({}, 'messages') }}</a>
+            <a href="{{ path('app_document_download', {id: document.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">{{ 'common.download'|trans({}, 'messages') }}</a>
             {% if canEdit is defined and canEdit %}
-                <a href="{{ path('app_document_edit', {id: document.id}) }}" class="btn btn-secondary">{{ 'common.edit'|trans({}, 'messages') }}</a>
+                <a href="{{ path('app_document_edit', {id: document.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.edit'|trans({}, 'messages') }}</a>
             {% else %}
-                <button class="btn btn-secondary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}">
+                <button class="fa-cyber-btn fa-cyber-btn--ghost" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}">
                     <i class="bi bi-lock" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                 </button>
             {% endif %}
-            <a href="{{ path('app_document_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
+            <a href="{{ path('app_document_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
                 <form method="post" action="{{ path('app_document_delete', {id: document.id}) }}" class="d-inline"
                       data-controller="ui-actions"
                       data-action="submit->ui-actions#confirm"
                       data-ui-actions-message-param="{{ 'document.confirm.delete'|trans({}, 'document') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ document.id) }}">
-                    <button type="submit" class="btn btn-danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
                 </form>
             {% endif %}
         </div>

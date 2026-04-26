@@ -17,20 +17,20 @@
     <div class="page-header">
         <h1>{{ incident.title }}</h1>
         <div class="actions">
-            <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'incident.action.edit'|trans({}, 'incident') }}</a>
+            <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'incident.action.edit'|trans({}, 'incident') }}</a>
             {% if is_nis2_active() and incident.requiresNis2Reporting %}
-                <a href="{{ path('app_incident_nis2_report', {id: incident.id}) }}" class="btn btn-success" data-turbo="false" title="{{ 'incident.action.download_nis2_report'|trans({}, 'incident') }}">
+                <a href="{{ path('app_incident_nis2_report', {id: incident.id}) }}" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false" title="{{ 'incident.action.download_nis2_report'|trans({}, 'incident') }}">
                     <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> {{ 'incident.action.download_nis2_report'|trans({}, 'incident') }}
                 </a>
             {% endif %}
-            <a href="{{ path('app_incident_index') }}" class="btn btn-secondary">{{ 'incident.action.back_to_list'|trans({}, 'incident') }}</a>
+            <a href="{{ path('app_incident_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'incident.action.back_to_list'|trans({}, 'incident') }}</a>
             {% if is_granted('ROLE_ADMIN') %}
                 <form method="post" action="{{ path('app_incident_delete', {id: incident.id}) }}" class="d-inline"
                       data-controller="ui-actions"
                       data-action="submit->ui-actions#confirm"
                       data-ui-actions-message-param="{{ 'incident.confirm.delete'|trans({}, 'incident') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ incident.id) }}">
-                    <button type="submit" class="btn btn-danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'incident.action.delete'|trans({}, 'incident') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'incident.action.delete'|trans({}, 'incident') }}</button>
                 </form>
             {% endif %}
         </div>
@@ -485,12 +485,12 @@
                     </div>
 
                     <div class="d-flex gap-2">
-                        <a href="{{ path('app_incident_bcm_impact', {id: incident.id}) }}" class="btn btn-primary">
+                        <a href="{{ path('app_incident_bcm_impact', {id: incident.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'incident.bcm.detailed_analysis'|trans({}, 'incident') }}
                         </a>
                         <form method="post" action="{{ path('app_incident_auto_detect_processes', {id: incident.id}) }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('auto-detect' ~ incident.id) }}">
-                            <button type="submit" class="btn btn-outline-secondary">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
                                 <i class="bi bi-magic" aria-hidden="true"></i> {{ 'incident.bcm.auto_detect_more'|trans({}, 'incident') }}
                             </button>
                         </form>
@@ -499,7 +499,7 @@
                     {{ _fa_alert.render({ variant: 'info', icon: 'status-info', body: '<strong>{{ \'incident.bcm.empty_title\'|trans({}, \'incident\') }}</strong> {{ \'incident.bcm.empty_description\'|trans({}, \'incident\') }}' }) }}
                     <form method="post" action="{{ path('app_incident_auto_detect_processes', {id: incident.id}) }}" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('auto-detect' ~ incident.id) }}">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="bi bi-magic" aria-hidden="true"></i> {{ 'incident.bcm.auto_detect'|trans({}, 'incident') }}
                         </button>
                     </form>

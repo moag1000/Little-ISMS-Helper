@@ -215,14 +215,14 @@
                     <div class="d-grid gap-2">
                         {% if is_granted('ROLE_USER') %}
                         <a href="{{ path('app_audit_edit', {id: audit.id}) }}"
-                           class="btn btn-primary"
+                           class="fa-cyber-btn fa-cyber-btn--primary"
                            data-turbo-action="advance">
                             <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                         </a>
                         {% endif %}
 
                         <a href="{{ path('app_audit_export_pdf', {id: audit.id}) }}"
-                           class="btn btn-outline-danger"
+                           class="fa-cyber-btn fa-cyber-btn--danger"
                            data-turbo="false">
                             <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'audit.export_pdf'|trans({}, 'audit') }}
                         </a>
@@ -230,7 +230,7 @@
                         {% if is_granted('ROLE_MANAGER') %}
                             <form method="post" action="{{ path('app_audit_clone', {id: audit.id}) }}" class="d-grid">
                                 <input type="hidden" name="_token" value="{{ csrf_token('clone_audit_' ~ audit.id) }}">
-                                <button type="submit" class="btn btn-outline-success" data-turbo="false">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false">
                                     <i class="bi bi-files" aria-hidden="true"></i>
                                     {{ 'audit.action.clone'|trans({}, 'audits') }}
                                 </button>
@@ -238,7 +238,7 @@
                         {% endif %}
 
                         <a href="{{ path('app_audit_index') }}"
-                           class="btn btn-outline-secondary"
+                           class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance">
                             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
                         </a>
@@ -246,7 +246,7 @@
                         {% if is_granted('ROLE_ADMIN') %}
                         <hr>
                         <button type="button"
-                                class="btn btn-outline-danger"
+                                class="fa-cyber-btn fa-cyber-btn--danger"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal">
                             <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}

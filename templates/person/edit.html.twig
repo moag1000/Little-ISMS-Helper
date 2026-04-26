@@ -19,7 +19,7 @@
         <h1>{{ 'person.title.edit'|trans({}, 'messages') }}: {{ person.fullName }}</h1>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-secondary">
+        <a href="{{ path('app_person_show', {id: person.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             ← {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
@@ -71,10 +71,10 @@
             } %}
 
             <div class="d-flex justify-content-between mt-4">
-                <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-secondary">
+                <a href="{{ path('app_person_show', {id: person.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                     {{ 'common.cancel'|trans({}, 'messages') }}
                 </a>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                     {{ 'common.save'|trans({}, 'messages') }}
                 </button>
             </div>

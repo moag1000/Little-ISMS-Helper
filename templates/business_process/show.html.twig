@@ -15,10 +15,10 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>{{ business_process.name }}</h1>
         <div>
-            <a href="{{ path('app_business_process_bia', {'id': business_process.id}) }}" class="btn btn-info">
+            <a href="{{ path('app_business_process_bia', {'id': business_process.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'business_process.action.bia_view'|trans({}, 'bcm') }}
             </a>
-            <a href="{{ path('app_business_process_edit', {'id': business_process.id}) }}" class="btn btn-primary">
+            <a href="{{ path('app_business_process_edit', {'id': business_process.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
             </a>
             <form method="post" action="{{ path('app_business_process_delete', {'id': business_process.id}) }}" class="d-inline-block"
@@ -26,7 +26,7 @@
                   data-action="submit->ui-actions#confirm"
                   data-ui-actions-message-param="{{ 'business_process.confirm.delete'|trans({}, 'bcm') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ business_process.id) }}">
-                <button class="btn btn-danger">
+                <button class="fa-cyber-btn fa-cyber-btn--danger">
                     <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                 </button>
             </form>

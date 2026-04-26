@@ -30,7 +30,7 @@
                     {{ 'audit.edit'|trans({}, 'audit') }}: {{ audit.title }}
                 </h1>
                 <div>
-                    <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="btn btn-outline-secondary" data-turbo-action="advance">
+                    <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo-action="advance">
                         <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
                     </a>
                 </div>
@@ -121,17 +121,17 @@
                     <div class="d-flex justify-content-between align-items-center pt-3 border-top">
                         <div>
                             <a href="{{ path('app_audit_show', {id: audit.id}) }}"
-                               class="btn btn-outline-secondary"
+                               class="fa-cyber-btn fa-cyber-btn--ghost"
                                data-turbo-action="advance">
                                 <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                             </a>
                             <a href="{{ path('app_audit_index') }}"
-                               class="btn btn-outline-secondary"
+                               class="fa-cyber-btn fa-cyber-btn--ghost"
                                data-turbo-action="advance">
                                 <i class="bi bi-list" aria-hidden="true"></i> {{ 'common.to_list'|trans({}, 'messages') }}
                             </a>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                             <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save_changes'|trans({}, 'messages') }}
                         </button>
                     </div>
