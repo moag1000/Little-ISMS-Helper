@@ -1446,11 +1446,47 @@ Beliebig viele `AppliedBaseline` pro Tenant sind heute schon möglich (z. B. Pro
 
 ---
 
-## 📅 Zukünftige Phasen (Backlog)
+## 📅 Phase 10: Workflow-Erweiterung (14 neue Workflows)
 
-### Phase 10: Global Expansion (Vision)
+**Status:** 📅 Geplant
+**Aufwand:** ~15-20 Tage (3 Phasen)
+**Grundlage:** Persona-Audit (Junior + CM + Consultant, Apr 2026)
+
+Alle Workflows nutzen das bestehende `GenerateRegulatoryWorkflowsCommand` + `WorkflowAutoProgressionService` Pattern.
+
+### Phase 10.1 — CRITICAL (Compliance-Risiko)
+
+| # | Workflow | Regulatorik | Steps | Aufwand |
+|---|----------|-------------|-------|---------|
+| 1 | **Data Subject Request (DSR)** | GDPR Art. 12(3) — 30-Tage-Frist | Empfang → Identitaetspruefung → Bearbeitung → Antwort (+ Verlaengerung) | 3 Tage |
+| 2 | **Corrective Action (CAPA)** | ISO 27001 Klausel 10.1 | Finding → Ursachenanalyse → Massnahmenplan → Umsetzung → Wirksamkeitspruefung → Abschluss (Loop bei Unwirksamkeit) | 2 Tage |
+| 3 | **Change Request (CAB)** | ISO 27001 Klausel 8.5.3 | Antrag → Risikobewertung → CAB-Review → Genehmigung → Umsetzung → Verifizierung | 3 Tage |
+| 4 | **Management Review** | ISO 27001 Klausel 9.3 | Planung → Input-Sammlung (Audit/KPI/Incidents) → Durchfuehrung → Massnahmenplanung → Nachverfolgung | 2 Tage |
+
+### Phase 10.2 — HIGH (Best Practice)
+
+| # | Workflow | Regulatorik | Steps | Aufwand |
+|---|----------|-------------|-------|---------|
+| 5 | **Control Verification** | ISO 27001 Klausel 8 | Implementiert → Risk Owner Zertifizierung → CISO Validierung → Auditor Abnahme | 1 Tag |
+| 6 | **DPIA Publication** | GDPR Art. 35(10) | DPIA Genehmigt → ProcessingActivity aktivieren → Alte DPIA archivieren | 0.5 Tage |
+| 7 | **Supplier Assessment** | ISO 27001 A.5.19-22 | Neuer Lieferant → Sicherheitsfragebogen → Risikobewertung → Onboarding-Genehmigung → Jaehrliche Re-Bewertung | 3 Tage |
+| 8 | **AuditFinding → CAPA Link** | ISO 27001 Klausel 10 | Finding erstellt → CorrectiveAction auto-erstellt → Verantwortlicher zugewiesen → Frist gesetzt | 1 Tag |
+
+### Phase 10.3 — MEDIUM (Operational)
+
+| # | Workflow | Steps | Aufwand |
+|---|----------|-------|---------|
+| 9 | **Training Verification** | Zugewiesen → Geplant → Abgeschlossen → Manager-Bestaetigung | 1 Tag |
+| 10 | **BC Plan Activation** | Krise erklaert → Team benachrichtigt → Plan aktiv → Deaktivierung → Post-Mortem | 1.5 Tage |
+| 11 | **Document Review Cycle** | Veroeffentlicht → Review faellig (Auto-Eskalation) → Revision → Genehmigung → Neuveroeffentlichung | 1 Tag |
+| 12 | **Incident Post-Mortem** | Vorfall geschlossen → Review geplant → Durchgefuehrt → Lessons Learned → Massnahmen → Umsetzung | 0.5 Tage |
+
+---
+
+## 📅 Zukuenftige Phasen (Backlog)
+
+### Phase 11: Global Expansion (Vision)
 - 🔄 Real-time Collaboration (WebSocket)
-- 🔄 Advanced Workflow Automation
 - 🔄 Multi-Cloud Deployment (AWS, Azure, GCP)
 
 ---
