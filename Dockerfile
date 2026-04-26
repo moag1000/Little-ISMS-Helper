@@ -99,13 +99,17 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
 RUN DATABASE_URL="mysql://build:build@localhost/isms?serverVersion=mariadb-11.4.0" \
     composer run-script --no-dev auto-scripts || true
 
-# Create required directories for logs and cache
-RUN mkdir -p var/cache var/log /var/log/supervisor /var/log/nginx && \
-    chmod -R 755 var/cache var/log /var/log/supervisor /var/log/nginx
+# Create required directories (gem. config/modules.yaml: var/cache, var/log,
+# var/sessions, public/uploads) plus log mounts for supervisor/nginx
+RUN mkdir -p var/cache var/log var/sessions public/uploads \
+        /var/log/supervisor /var/log/nginx && \
+    chmod -R 775 var/cache var/log var/sessions public/uploads && \
+    chmod -R 755 /var/log/supervisor /var/log/nginx
 
-# Set permissions
+# Set permissions: app owned by www-data, group-writable für var/ + uploads
+# (775 statt 755, damit Volume-Mounts mit non-root-UIDs schreiben können)
 RUN chown -R www-data:www-data /var/www/html && \
-    chmod -R 755 /var/www/html/var && \
+    chmod -R 775 /var/www/html/var /var/www/html/public/uploads && \
     chown -R root:root /var/log/supervisor /var/log/nginx
 
 # Configure OPcache for production (separate file for better management)

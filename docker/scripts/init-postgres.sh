@@ -9,6 +9,15 @@ PGDATA=/var/lib/postgresql/data
 mkdir -p /run/postgresql
 chown postgres:postgres /run/postgresql
 
+# Ensure app writable directories exist (gem. config/modules.yaml).
+# Wichtig wenn /var/www/html/var über Volume gemountet ist — Build-time-Dirs
+# verschwinden dann und müssen runtime neu angelegt werden.
+for dir in var/cache var/log var/sessions public/uploads var/backups; do
+    mkdir -p "/var/www/html/$dir"
+    chown www-data:www-data "/var/www/html/$dir"
+    chmod 775 "/var/www/html/$dir"
+done
+
 # Initialize database if needed
 if [ ! -f "$PGDATA/PG_VERSION" ]; then
     echo "Initializing PostgreSQL database..."
