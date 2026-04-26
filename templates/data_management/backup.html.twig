@@ -95,7 +95,7 @@
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
                         <h3 class="mb-0">
-                            <i class="bi bi-archive" aria-hidden="true"></i> {{ 'data_management.backup.section.available'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--archive" aria-hidden="true"></i> {{ 'data_management.backup.section.available'|trans({}, 'admin') }}
                         </h3>
                     </div>
                 {% endblock %}
@@ -132,7 +132,7 @@
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
                                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost validate-backup" data-filename="{{ backup.filename }}" data-token="{{ csrf_token('data_backup_validate') }}">
-                                                    <i class="fa-icon fa-icon--ui-check-circle" aria-hidden="true"></i> {{ 'data_management.backup.action.validate'|trans({}, 'admin') }}
+                                                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'data_management.backup.action.validate'|trans({}, 'admin') }}
                                                 </button>
                                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost preview-backup" data-filename="{{ backup.filename }}">
                                                     <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'data_management.backup.action.preview'|trans({}, 'admin') }}
@@ -482,8 +482,8 @@
                     if (result.success) {
                         createBackupStatus.innerHTML = `
                             <div class="fa-alert fa-alert--success" role="alert">
-                                <i class="fa-icon fa-icon--ui-check-circle" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="fa-icon fa-icon--ui-check-circle" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-check" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                                 <strong>${result.message}</strong><br>
                                 {{ 'data_management.backup.message.file'|trans({}, 'admin') }}: ${result.filename}<br>
                                 <small>{{ 'data_management.backup.message.saved_entries'|trans({}, 'admin') }}: ${Object.values(result.statistics).reduce((a, b) => a + b, 0)}</small>
@@ -568,8 +568,8 @@
                     if (result.success) {
                         uploadBackupStatus.innerHTML = `
                             <div class="fa-alert fa-alert--success" role="alert">
-                                <i class="fa-icon fa-icon--ui-check-circle" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="fa-icon fa-icon--ui-check-circle" aria-hidden="true"></i> ${result.message}
+                                <i class="fa-icon fa-icon--ui-check" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> ${result.message}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                 </div>
                                 <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
@@ -685,7 +685,7 @@
                         alert('{{ 'data_management.backup.message.validation_error'|trans({}, 'admin') }}: ' + error.message);
                     } finally {
                         this.disabled = false;
-                        this.innerHTML = '<i class="fa-icon fa-icon--ui-check-circle" aria-hidden="true"></i> {{ 'data_management.backup.action.validate'|trans({}, 'admin') }}';
+                        this.innerHTML = '<i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'data_management.backup.action.validate'|trans({}, 'admin') }}';
                     }
                 });
             });
@@ -845,8 +845,8 @@
                         let html = isDryRun
                             ? `<div class="fa-alert fa-alert--info" role="alert"><i class="bi bi-shield-check fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body"><strong>${result.message}</strong>`
                             : `<div class="fa-alert fa-alert--success" role="alert">
-                                <i class="fa-icon fa-icon--ui-check-circle" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="fa-icon fa-icon--ui-check-circle" aria-hidden="true"></i> <strong>${result.message}</strong>`;
+                                <i class="fa-icon fa-icon--ui-check" fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> <strong>${result.message}</strong>`;
 
                         if (isDryRun) {
                             // Count total simulated entities

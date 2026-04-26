@@ -135,7 +135,7 @@
                     {% if context.ismsScope %}
                     <div class="mb-3">
                         <label class="small">
-                            <i class="fa-icon fa-icon--ui-check-circle text-success" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-check text-success" aria-hidden="true"></i>
                             {{ 'context.field.isms_scope'|trans({}, 'context') }}
                         </label>
                         <p class="mb-0">{{ context.ismsScope|nl2br }}</p>
@@ -246,7 +246,7 @@
                         <ul class="list-unstyled mb-2">
                             {% for party in interestedPartiesList %}
                                 <li class="small">
-                                    <i class="fa-icon fa-icon--ui-person-circle text-primary" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-person text-primary" aria-hidden="true"></i>
                                     <a href="{{ path('app_interested_party_show', {id: party.id}) }}"
                                        data-turbo-action="advance">{{ party.name }}</a>
                                     {% if party.partyType %}
@@ -304,7 +304,7 @@
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">
-                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--mitigation" aria-hidden="true"></i>
                     {{ 'context.section.compliance'|trans({}, 'context') }}
                 </h2>
             </div>
@@ -340,7 +340,7 @@
                 <div class="col-md-4">
                     <div class="requirement-box">
                         <label class="small mb-2">
-                            <i class="bi bi-file-earmark-check text-success" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--approval text-success" aria-hidden="true"></i>
                             {{ 'context.section.contractual_obligations'|trans({}, 'context') }}
                         </label>
                         {% if context.contractualObligations %}
@@ -385,7 +385,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="mb-0">
-                            <i class="fa-icon fa-icon--ui-person-badge" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i>
                             {{ 'context.field.roles_and_responsibilities'|trans({}, 'context') }}
                         </h2>
                     </div>

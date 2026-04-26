@@ -12,7 +12,7 @@
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <h1 class="mb-2">
-                        <i class="bi bi-bank me-2" aria-hidden="true"></i>{{ 'dora.dashboard.title'|trans }}
+                        <i class="fa-icon fa-icon--regulator me-2" aria-hidden="true"></i>{{ 'dora.dashboard.title'|trans }}
                     </h1>
                     <p class="text-muted mb-0">{{ 'dora.dashboard.subtitle'|trans }}</p>
                 </div>
@@ -23,7 +23,7 @@
                         <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>{{ 'dora.register_export.button'|trans }}
                     </a>
                     <a href="{{ path('app_compliance_wizard_assess', {wizard: 'dora'}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="fa-icon fa-icon--ui-copy-check me-1" aria-hidden="true"></i>{{ 'dora.run_wizard'|trans }}
+                        <i class="fa-icon fa-icon--ui-copy me-1" aria-hidden="true"></i>{{ 'dora.run_wizard'|trans }}
                     </a>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                             {% elseif pillar == 'incidents' %}
                                 <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'dora.pillar.incidents'|trans }}
                             {% elseif pillar == 'testing' %}
-                                <i class="fa-icon fa-icon--ui-copy-check" aria-hidden="true"></i> {{ 'dora.pillar.testing'|trans }}
+                                <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i> {{ 'dora.pillar.testing'|trans }}
                             {% elseif pillar == 'third_party' %}
                                 <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'dora.pillar.third_party'|trans }}
                             {% endif %}
@@ -209,7 +209,7 @@
                 {% block card_header %}
                     <div class="card-header bg-info bg-opacity-10">
                         <h3 class="card-title h5 mb-0">
-                            <i class="fa-icon fa-icon--ui-copy-check me-2" aria-hidden="true"></i>{{ 'dora.pillar.testing'|trans }}
+                            <i class="fa-icon fa-icon--ui-copy me-2" aria-hidden="true"></i>{{ 'dora.pillar.testing'|trans }}
                         </h3>
                         <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '24-27'}) }}</small>
                     </div>
@@ -380,7 +380,7 @@
                         </div>
                         <div class="col-md-3">
                             <a href="{{ path('app_bc_exercise_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost w-100">
-                                <i class="fa-icon fa-icon--ui-copy-check me-1" aria-hidden="true"></i>{{ 'dora.action.plan_exercises'|trans }}
+                                <i class="fa-icon fa-icon--ui-copy me-1" aria-hidden="true"></i>{{ 'dora.action.plan_exercises'|trans }}
                             </a>
                         </div>
                         <div class="col-md-3">

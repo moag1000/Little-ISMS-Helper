@@ -147,7 +147,7 @@
                             role="tab"
                             aria-controls="pane-dora"
                             aria-selected="false">
-                        <i class="bi bi-bank" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--regulator" aria-hidden="true"></i>
                         {{ 'supplier.tab.dora'|trans({}, 'suppliers') }}
                         {% if supplier.ictCriticality == 'critical' %}
                             {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-1', size: 'sm', content: 'supplier.dora.ict_criticality.critical'|trans({}, 'suppliers') } %}
@@ -164,7 +164,7 @@
                             role="tab"
                             aria-controls="pane-privacy"
                             aria-selected="false">
-                        <i class="fa-icon fa-icon--ui-person-lock" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i>
                         {{ 'supplier.tab.privacy'|trans({}, 'suppliers') }}
                     </button>
                 </li>
@@ -359,7 +359,7 @@
                      tabindex="0">
 
                     <div class="alert {{ isCriticalIct ? 'alert-danger' : 'alert-info' }}">
-                        <i class="bi bi-bank me-1" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--regulator me-1" aria-hidden="true"></i>
                         <strong>{{ 'supplier.dora.section_heading'|trans({}, 'suppliers') }}</strong>
                         <p class="mb-0">{{ 'supplier.dora.section_description'|trans({}, 'suppliers') }}</p>
                     </div>

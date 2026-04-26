@@ -243,7 +243,7 @@
                         <td>
                             {# File Type Icon #}
                             {% if document.mimeType == 'application/pdf' %}
-                                <i class="fa-icon fa-icon--nav-file-pdf-fill text-danger fs-15" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-file-pdf text-danger fs-15" aria-hidden="true"></i>
                             {% elseif document.mimeType starts with 'image/' %}
                                 <i class="bi bi-file-image-fill text-primary fs-15" aria-hidden="true"></i>
                             {% elseif document.mimeType matches '/spreadsheet/' %}
@@ -272,7 +272,7 @@
                         </td>
                         <td>
                             <div class="d-flex align-items-center">
-                                <i class="fa-icon fa-icon--ui-person-circle me-1" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-person me-1" aria-hidden="true"></i>
                                 {{ document.uploadedBy ? document.uploadedBy.fullName : '-' }}
                             </div>
                         </td>

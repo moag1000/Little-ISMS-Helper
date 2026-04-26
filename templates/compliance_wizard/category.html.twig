@@ -94,7 +94,7 @@
                         <tr>
                             <td class="text-center">
                                 {% if item.score >= 100 %}
-                                    <i class="fa-icon fa-icon--ui-check-circle-fill text-success fs-5" aria-hidden="true" title="{{ 'wizard.status.compliant'|trans({}, 'wizard') }}"></i>
+                                    <i class="fa-icon fa-icon--ui-check text-success fs-5" aria-hidden="true" title="{{ 'wizard.status.compliant'|trans({}, 'wizard') }}"></i>
                                 {% elseif item.score >= 50 %}
                                     <i class="fa-icon fa-icon--status-warning text-warning fs-5" aria-hidden="true" title="{{ 'wizard.status.partial'|trans({}, 'wizard') }}"></i>
                                 {% elseif item.score > 0 %}

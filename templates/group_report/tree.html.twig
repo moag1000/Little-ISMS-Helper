@@ -15,7 +15,7 @@
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
                 {% if tenant.isCorporateParent %}
-                    <i class="fa-icon fa-icon--nav-building-fill text-primary" aria-hidden="true" title="{{ 'group_report.tree.holding_marker'|trans({}, 'group_report') }}"></i>
+                    <i class="fa-icon fa-icon--nav-building text-primary" aria-hidden="true" title="{{ 'group_report.tree.holding_marker'|trans({}, 'group_report') }}"></i>
                 {% else %}
                     <i class="fa-icon fa-icon--nav-workflow text-muted" aria-hidden="true"></i>
                 {% endif %}
@@ -87,7 +87,7 @@
                 {{ 'group_report.incidents.title'|trans({}, 'group_report') }}
             </a>
             <a href="{{ path('app_group_report_audit_program') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-clipboard2-check" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--audit-external" aria-hidden="true"></i>
                 {{ 'group_report.audit_program.title'|trans({}, 'group_report') }}
             </a>
         </div>

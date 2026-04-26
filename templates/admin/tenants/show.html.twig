@@ -44,7 +44,7 @@
                 <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
             </a>
             <a href="{{ path('tenant_management_organisation_context', {id: tenant.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--nav-building-gear" aria-hidden="true"></i> {{ 'tenant.organisation_context.title'|trans({}, 'tenant') }}
+                <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'tenant.organisation_context.title'|trans({}, 'tenant') }}
             </a>
             <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline"
                   data-controller="ui-actions"
@@ -81,7 +81,7 @@
                 {% block card_body %}
                     <div class="d-flex align-items-center">
                         <div class="bg-success bg-opacity-10 p-3 rounded me-3">
-                            <i class="fa-icon fa-icon--ui-person-check text-success fs-3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-person text-success fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
                             <div class="text-muted mb-1 small fw-semibold">{{ 'tenant.stats.active_users'|trans({}, 'tenant') }}</div>
@@ -96,7 +96,7 @@
                 {% block card_body %}
                     <div class="d-flex align-items-center">
                         <div class="bg-secondary bg-opacity-10 p-3 rounded me-3">
-                            <i class="fa-icon fa-icon--ui-person-x text-secondary fs-3" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-person text-secondary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
                             <div class="text-muted mb-1 small fw-semibold">{{ 'tenant.stats.inactive_users'|trans({}, 'tenant') }}</div>
@@ -133,7 +133,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="isms-context-tab" data-bs-toggle="tab" data-bs-target="#isms-context" type="button" role="tab">
-                <i class="fa-icon fa-icon--nav-building-gear" aria-hidden="true"></i> {{ 'tenant.tabs.isms_context'|trans({}, 'tenant') }}
+                <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'tenant.tabs.isms_context'|trans({}, 'tenant') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -303,12 +303,12 @@
                              data-tenant-governance-organization-label-value="{{ 'corporate.inheritance.organization'|trans({}, 'tenant') }}">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h3 class="mb-0 h6">
-                                <i class="fa-icon fa-icon--nav-building-gear" aria-hidden="true"></i> {{ 'corporate.inheritance.title'|trans({}, 'tenant') }}
+                                <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'corporate.inheritance.title'|trans({}, 'tenant') }}
                             </h3>
                             {% if tenant.isCorporateParent %}
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary"
                                         data-action="click->tenant-governance#propagateContext">
-                                    <i class="fa-icon fa-icon--util-arrow-down-circle" aria-hidden="true"></i> {{ 'corporate.inheritance.propagate'|trans({}, 'tenant') }}
+                                    <i class="fa-icon fa-icon--util-arrow-down" aria-hidden="true"></i> {{ 'corporate.inheritance.propagate'|trans({}, 'tenant') }}
                                 </button>
                             {% endif %}
                         </div>
@@ -427,7 +427,7 @@
                                 {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'ms-2', content: userCount } %}
                             </h2>
                             <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary" data-bs-toggle="modal" data-bs-target="#manageUsersModal">
-                                <i class="fa-icon fa-icon--ui-person-plus" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans({}, 'tenant') }}
+                                <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans({}, 'tenant') }}
                             </button>
                         </div>
                     </div>
@@ -522,7 +522,7 @@
                     {# Add User Section #}
                     <div class="mb-4">
                         <h3 class="border-bottom pb-2 mb-3 h6">
-                            <i class="fa-icon fa-icon--ui-person-plus" aria-hidden="true"></i> {{ 'tenant.users.add_user'|trans({}, 'tenant') }}
+                            <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'tenant.users.add_user'|trans({}, 'tenant') }}
                         </h3>
                         <form method="post" action="{{ path('tenant_management_add_user', {id: tenant.id}) }}" id="addUserForm">
                             <input type="hidden" name="_token" value="{{ csrf_token('add_user_' ~ tenant.id) }}">
@@ -560,7 +560,7 @@
                                             <div class="flex-grow-1">
                                                 <div class="d-flex align-items-center">
                                                     <div class="me-3">
-                                                        <i class="fa-icon fa-icon--ui-person-circle fs-3 text-muted" aria-hidden="true"></i>
+                                                        <i class="fa-icon fa-icon--ui-person fs-3 text-muted" aria-hidden="true"></i>
                                                     </div>
                                                     <div>
                                                         <strong>{{ user.email }}</strong>
@@ -588,7 +588,7 @@
                                                     <button type="submit"
                                                             class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
                                                             aria-label="{{ 'common.deactivate'|trans({}, 'messages') }}">
-                                                        <i class="fa-icon fa-icon--ui-person-dash" aria-hidden="true"></i>
+                                                        <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i>
                                                     </button>
                                                 </form>
                                             </div>
@@ -784,7 +784,7 @@
                     html += `
                         <div class="text-center mt-4">
                             <a href="{{ path('app_context_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                                <i class="fa-icon fa-icon--util-arrow-right-circle" aria-hidden="true"></i> {{ 'tenant.isms_context.view_full'|trans({}, 'tenant') }}
+                                <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i> {{ 'tenant.isms_context.view_full'|trans({}, 'tenant') }}
                             </a>
                         </div>
                     `;

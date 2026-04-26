@@ -34,7 +34,7 @@
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'mfa_token.field.user'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
-                            <i class="fa-icon fa-icon--ui-person-circle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i>
                             {{ mfa_token.user.firstName }} {{ mfa_token.user.lastName }}
                             <span class="text-muted">({{ mfa_token.user.email }})</span>
                         </dd>
@@ -107,7 +107,7 @@
                         {% if mfa_token.expiresAt %}
                             <dt class="col-sm-4">{{ 'mfa_token.field.expires_at'|trans({}, 'mfa') }}</dt>
                             <dd class="col-sm-8">
-                                <i class="fa-icon fa-icon--ui-calendar-x" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
                                 {{ mfa_token.expiresAt|date('Y-m-d H:i:s') }}
                                 {% if mfa_token.isExpired %}
                                     {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'mfa_token.status.expired'|trans({}, 'mfa'), class: 'ms-2' } %}

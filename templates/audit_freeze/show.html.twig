@@ -48,7 +48,7 @@
     {# Integrity badge #}
     <div class="alert {{ verified ? 'alert-success' : 'alert-danger' }}" role="alert">
         {% if verified %}
-            <i class="fa-icon fa-icon--compliance-shield-fill" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
             <strong>{{ 'audit_freeze.integrity.verified'|trans({}, 'audit_freeze') }}</strong>
             — {{ 'audit_freeze.integrity.verified_body'|trans({'%hash%': freeze.payloadSha256|slice(0, 16)}, 'audit_freeze') }}
         {% else %}

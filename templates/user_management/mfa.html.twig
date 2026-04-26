@@ -107,7 +107,7 @@
                                     {% if token.tokenType == 'totp' %}
                                         <i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa.token_type.totp'|trans({}, 'mfa') }}
                                     {% elseif token.tokenType == 'webauthn' %}
-                                        <i class="bi bi-fingerprint" aria-hidden="true"></i> {{ 'mfa.token_type.webauthn'|trans({}, 'mfa') }}
+                                        <i class="fa-icon fa-icon--sso" aria-hidden="true"></i> {{ 'mfa.token_type.webauthn'|trans({}, 'mfa') }}
                                     {% elseif token.tokenType == 'sms' %}
                                         <i class="bi bi-chat" aria-hidden="true"></i> {{ 'mfa.token_type.sms'|trans({}, 'mfa') }}
                                     {% elseif token.tokenType == 'hardware' %}

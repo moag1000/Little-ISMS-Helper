@@ -89,7 +89,7 @@
                         </div>
                     </div>
                     <div class="small text-muted">
-                        <i class="fa-icon fa-icon--ui-calendar-week" aria-hidden="true"></i> {{ 'admin.dashboard.stats.last_24h'|trans({}, 'admin') }}
+                        <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i> {{ 'admin.dashboard.stats.last_24h'|trans({}, 'admin') }}
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -148,7 +148,7 @@
                             <i class="bi bi-kanban" aria-hidden="true"></i>
                             {{ 'admin.dashboard.stats.workflows_open'|trans({'%count%': stats.workflows.open}, 'admin') }}
                         {% else %}
-                            <i class="fa-icon fa-icon--ui-check-all text-success" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-check text-success" aria-hidden="true"></i>
                             {{ 'admin.dashboard.stats.workflows_none'|trans({}, 'admin') }}
                         {% endif %}
                     </div>
@@ -312,23 +312,23 @@
                         {% endif %}
                         {% if stats.compliance.frameworks_missing > 0 %}
                             <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--warning">
-                                <i class="bi bi-cloud-arrow-down" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--import" aria-hidden="true"></i>
                                 {{ 'admin.dashboard.quick_actions.load_frameworks'|trans({'%count%': stats.compliance.frameworks_missing}, 'admin') }}
                             </a>
                         {% endif %}
                         {% if stats.users.inactive > 0 %}
                             <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--warning">
-                                <i class="fa-icon fa-icon--ui-person-x" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i>
                                 {{ 'admin.dashboard.quick_actions.review_inactive_users'|trans({'%count%': stats.users.inactive}, 'admin') }}
                             </a>
                         {% endif %}
 
                         {# Standard-Shortcuts — immer sichtbar #}
                         <a href="{{ path('user_management_new') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="fa-icon fa-icon--ui-person-plus" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.add_user'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.add_user'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('tenant_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="fa-icon fa-icon--nav-building-add" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_tenants'|trans({}, 'admin') }}
+                            <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_tenants'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_compliance'|trans({}, 'admin') }}
