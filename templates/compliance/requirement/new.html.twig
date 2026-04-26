@@ -74,7 +74,7 @@
         <div class="col-md-4">
             {% embed '_components/_card.html.twig' with { 'class': 'bg-body-secondary' } %}
                 {% block card_header %}
-                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.help'|trans({}, 'messages') }}</h2></div>
+                    <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'common.help'|trans({}, 'messages') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     <h3>{{ 'compliance.requirement.help.types.title'|trans({}, 'compliance') }}</h3>

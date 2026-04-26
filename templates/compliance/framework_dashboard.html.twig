@@ -99,7 +99,7 @@
             <div class="workflow-step {% if dashboard.statistics.total > 0 %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
                  title="{{ 'common.tooltip.framework_loaded_success'|trans({}, 'messages') }}">
-                <div class="step-icon">{% if dashboard.statistics.total > 0 %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}<span class="step-number">1</span>{% endif %}</div>
+                <div class="step-icon">{% if dashboard.statistics.total > 0 %}<i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>{% else %}<span class="step-number">1</span>{% endif %}</div>
                 <div class="step-content">
                     <p class="fw-bold">Framework Loaded</p>
                     <p>{{ dashboard.statistics.total }} requirements loaded</p>
@@ -109,7 +109,7 @@
             <div class="workflow-step {% if dashboard.statistics.applicable > 0 %}active{% endif %} {% if dashboard.statistics.applicable == dashboard.statistics.total %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
                  title="{{ 'compliance.dashboard.tooltip.review_requirements'|trans({}, 'compliance') }}">
-                <div class="step-icon">{% if dashboard.statistics.applicable == dashboard.statistics.total %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}{% if dashboard.statistics.applicable > 0 %}<i class="bi bi-arrow-clockwise text-info" aria-hidden="true"></i>{% else %}<span class="step-number">2</span>{% endif %}{% endif %}</div>
+                <div class="step-icon">{% if dashboard.statistics.applicable == dashboard.statistics.total %}<i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>{% else %}{% if dashboard.statistics.applicable > 0 %}<i class="bi bi-arrow-clockwise text-info" aria-hidden="true"></i>{% else %}<span class="step-number">2</span>{% endif %}{% endif %}</div>
                 <div class="step-content">
                     <p class="fw-bold">{{ 'compliance.dashboard.review_applicable'|trans({}, 'compliance') }}</p>
                     <p>{{ 'compliance.dashboard.reviewed_count'|trans({'%reviewed%': dashboard.statistics.applicable, '%total%': dashboard.statistics.total}, 'compliance') }}</p>
@@ -126,7 +126,7 @@
             <div class="workflow-step {% if dashboard.statistics.fulfilled > 0 %}active{% endif %} {% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
                  title="{{ 'compliance.dashboard.tooltip.implement_requirements'|trans({}, 'compliance') }}">
-                <div class="step-icon">{% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}{% if dashboard.statistics.fulfilled > 0 %}<i class="bi bi-arrow-clockwise text-info" aria-hidden="true"></i>{% else %}<span class="step-number">3</span>{% endif %}{% endif %}</div>
+                <div class="step-icon">{% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}<i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>{% else %}{% if dashboard.statistics.fulfilled > 0 %}<i class="bi bi-arrow-clockwise text-info" aria-hidden="true"></i>{% else %}<span class="step-number">3</span>{% endif %}{% endif %}</div>
                 <div class="step-content">
                     <p class="fw-bold">{{ 'compliance.dashboard.implement_requirements'|trans({}, 'compliance') }}</p>
                     <p>{{ 'compliance.dashboard.implemented_count'|trans({'%implemented%': dashboard.statistics.fulfilled, '%total%': dashboard.statistics.applicable}, 'compliance') }}</p>
@@ -143,7 +143,7 @@
             <div class="workflow-step {% if dashboard.compliance_percentage >= 75 %}active{% endif %} {% if dashboard.compliance_percentage == 100 %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
                  title="{{ 'common.tooltip.reach_100_percent'|trans({}, 'messages') }}">
-                <div class="step-icon">{% if dashboard.compliance_percentage == 100 %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}{% if dashboard.compliance_percentage >= 75 %}<i class="bi bi-arrow-clockwise text-info" aria-hidden="true"></i>{% else %}<span class="step-number">4</span>{% endif %}{% endif %}</div>
+                <div class="step-icon">{% if dashboard.compliance_percentage == 100 %}<i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>{% else %}{% if dashboard.compliance_percentage >= 75 %}<i class="bi bi-arrow-clockwise text-info" aria-hidden="true"></i>{% else %}<span class="step-number">4</span>{% endif %}{% endif %}</div>
                 <div class="step-content">
                     <p class="fw-bold">{{ 'compliance.dashboard.achieve_100'|trans({}, 'compliance') }}</p>
                     <p>{{ 'compliance.dashboard.currently_at'|trans({'%percentage%': dashboard.compliance_percentage}, 'compliance') }}</p>
@@ -180,10 +180,10 @@
                         <div class="module-card {% if isActive %}active{% else %}inactive{% endif %}">
                             <div class="module-status">
                                 {% if isActive %}
-                                    <span class="status-icon active"><i class="bi bi-check-circle" aria-hidden="true"></i></span>
+                                    <span class="status-icon active"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></span>
                                     <span class="status-text active">{{ 'common.active'|trans({}, 'messages') }}</span>
                                 {% else %}
-                                    <span class="status-icon inactive"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></span>
+                                    <span class="status-icon inactive"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i></span>
                                     <span class="status-text inactive">{{ 'common.not_active'|trans({}, 'messages') }}</span>
                                 {% endif %}
                             </div>
@@ -225,6 +225,7 @@
             'priority': 'medium'
         } %}
     {% elseif dashboard.gaps.total > 0 %}
+        {# TODO(aurora-v4-icons): icon string in dict — bi-exclamation-triangle; migrate when template refactored to avoid inline HTML strings #}
         {% set next_action = {
             'title': 'Fill Compliance Gaps',
             'description': dashboard.gaps.total ~ ' requirements need controls or improved implementation',
@@ -470,7 +471,7 @@
                         {% endfor %}
                     {% else %}
                         <div class="text-center p-xl">
-                            <div class="icon-3rem-mb-md"><i class="bi bi-check-circle text-success" aria-hidden="true"></i></div>
+                            <div class="icon-3rem-mb-md"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></div>
                             <h3>{{ 'compliance.gaps.none'|trans({}, 'compliance') }}</h3>
                             <p class="text-muted">{{ 'compliance.gaps.none_description'|trans({}, 'compliance') }}</p>
                         </div>

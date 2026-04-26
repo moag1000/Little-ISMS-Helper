@@ -200,7 +200,7 @@
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_header %}
             <div class="card-header">
-                <h3 class="mb-0"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.low_confidence_gaps'|trans({}, 'compliance') }} ({{ low_confidence_gaps|length }})</h3>
+                <h3 class="mb-0"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.low_confidence_gaps'|trans({}, 'compliance') }} ({{ low_confidence_gaps|length }})</h3>
             </div>
         {% endblock %}
         {% block card_body %}
@@ -263,7 +263,7 @@
     {% if high_priority_gaps is empty and low_confidence_gaps is empty %}
         {% if remediation_effort.total_gaps == 0 %}
         <div class="alert alert-info">
-            <h4><i class="bi bi-info-circle text-info" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.no_gaps_found.title'|trans({}, 'compliance') }}</h4>
+            <h4><i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.no_gaps_found.title'|trans({}, 'compliance') }}</h4>
             <p>{{ 'compliance.mapping_quality.gaps.no_gaps_found.desc'|trans({}, 'compliance') }}</p>
             <hr>
             <h4>{{ 'compliance.mapping_quality.gaps.no_gaps_found.next_steps'|trans({}, 'compliance') }}</h4>
@@ -276,7 +276,7 @@
         </div>
         {% else %}
         <div class="alert alert-success">
-            <h5><i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.no_critical_gaps.title'|trans({}, 'compliance') }}</h5>
+            <h5><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'compliance.mapping_quality.gaps.no_critical_gaps.title'|trans({}, 'compliance') }}</h5>
             <p class="mb-0">{{ 'compliance.mapping_quality.gaps.no_critical_gaps.desc'|trans({}, 'compliance') }}</p>
         </div>
         {% endif %}
