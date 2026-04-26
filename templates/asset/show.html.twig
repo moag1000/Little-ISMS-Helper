@@ -76,6 +76,78 @@
                 </div>
             {% endif %}
 
+            {% if asset.isAiAgent %}
+                <div class="detail-section">
+                    <h3>
+                        <i class="bi bi-robot" aria-hidden="true"></i>
+                        AI-Agent (EU AI Act + ISO 42001 + MRIS MHC-13)
+                    </h3>
+                    <p class="small text-muted">
+                        <em>Quelle: Peddi (2026) MRIS v1.5. Lizenz: CC BY 4.0.</em>
+                    </p>
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <th scope="row" style="width: 30%;">Risikoklasse <small class="text-muted">(AI Act Art. 6)</small></th>
+                                <td>
+                                    {% if asset.aiAgentClassification %}
+                                        <code>{{ asset.aiAgentClassification }}</code>
+                                    {% else %}<span class="text-warning">— nicht klassifiziert —</span>{% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Anbieter <small class="text-muted">(Art. 16)</small></th>
+                                <td>{{ asset.aiAgentProvider|default('—') }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Modell-Version <small class="text-muted">(ISO 42001)</small></th>
+                                <td><code>{{ asset.aiAgentModelVersion|default('—') }}</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Zweckbestimmung <small class="text-muted">(Art. 11)</small></th>
+                                <td>{{ asset.aiAgentPurpose|default('—')|nl2br }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Datengovernance <small class="text-muted">(Art. 10)</small></th>
+                                <td>{{ asset.aiAgentDataSources|default('—')|nl2br }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Human Oversight <small class="text-muted">(Art. 14)</small></th>
+                                <td>{{ asset.aiAgentOversightMechanism|default('—') }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Capability-Scope <small class="text-muted">(MHC-13)</small></th>
+                                <td>
+                                    {% if asset.aiAgentCapabilityScope is not empty %}
+                                        {% for cap in asset.aiAgentCapabilityScope %}
+                                            <code class="me-1">{{ cap }}</code>
+                                        {% endfor %}
+                                    {% else %}—{% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Bedrohungsmodell-Doc <small class="text-muted">(Art. 9 + MHC-13)</small></th>
+                                <td>
+                                    {% if asset.aiAgentThreatModelDocId %}
+                                        <a href="{{ path('app_document_show', {id: asset.aiAgentThreatModelDocId}) }}">Dokument #{{ asset.aiAgentThreatModelDocId }}</a>
+                                    {% else %}<span class="text-warning">— nicht hinterlegt —</span>{% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Extension-Allowlist <small class="text-muted">(MHC-13)</small></th>
+                                <td>
+                                    {% if asset.aiAgentExtensionAllowlist is not empty %}
+                                        {% for ext in asset.aiAgentExtensionAllowlist %}
+                                            <code class="me-1">{{ ext }}</code>
+                                        {% endfor %}
+                                    {% else %}—{% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
             <div class="detail-section">
                 <h3>{{ 'asset.section.valuation'|trans({}, 'asset') }}</h3>
                 {# Phase 8H.1: standardised via _detail_group component #}

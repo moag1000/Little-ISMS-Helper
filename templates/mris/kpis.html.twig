@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}MRIS-KPIs{% endblock %}
+{% block title %}{{ 'mris.page.kpi_title'|trans({}, 'mris') }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">MRIS-KPIs</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'mris.page.kpi_title'|trans({}, 'mris') }}</li>
         </ol>
     </nav>
 
@@ -15,12 +15,11 @@
         <div>
             <h1>
                 <i class="bi bi-speedometer2" aria-hidden="true"></i>
-                Mythos-relevante Kennzahlen
+                {{ 'mris.page.kpi_title'|trans({}, 'mris') }}
             </h1>
             <p class="text-muted small mb-0">
-                Acht KPIs aus MRIS v1.5 Kap. 10.6. Drei werden automatisch aus Bestandsdaten
-                berechnet, fünf erfordern manuelle Pflege je Mandant.<br>
-                <em>Quelle: Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. Lizenz: CC BY 4.0.</em>
+                {{ 'mris.page.kpi_intro'|trans({}, 'mris')|nl2br }}<br>
+                <em>{{ 'mris.page.source'|trans({}, 'mris') }}</em>
             </p>
         </div>
     </div>
@@ -33,9 +32,9 @@
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <code class="small text-muted">{{ kpi.mhc }}</code>
                             {% if kpi.computable %}
-                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'auto' } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'mris.badge.auto'|trans({}, 'mris') } %}
                             {% else %}
-                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'manuell' } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'mris.badge.manual'|trans({}, 'mris') } %}
                             {% endif %}
                         </div>
                         <h2 class="h6 mb-2">{{ kpi.name }}</h2>
@@ -45,7 +44,7 @@
                                 <small class="fs-6 text-muted">{{ kpi.unit }}</small>
                             </p>
                         {% else %}
-                            <p class="text-muted fst-italic mb-1">— keine Daten —</p>
+                            <p class="text-muted fst-italic mb-1">{{ 'mris.state.no_data'|trans({}, 'mris') }}</p>
                         {% endif %}
                         <p class="small text-muted mb-0">{{ kpi.source }}</p>
                     {% endblock %}
@@ -54,11 +53,49 @@
         {% endfor %}
     </div>
 
+    {# Manual KPI entry — die 5 nicht automatisch berechenbaren KPIs #}
+    {% if manual_kpis is defined and manual_kpis|length > 0 %}
+        {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+            {% block card_header %}
+                <div class="card-header">
+                    <h2 class="mb-0">
+                        <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                        {{ 'mris.manual_form.title'|trans({}, 'mris') }}
+                    </h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
+                <p class="small text-muted">{{ 'mris.manual_form.intro'|trans({}, 'mris')|nl2br }}</p>
+                <form method="post" action="{{ path('app_mris_kpis_manual_save') }}" class="row g-3">
+                    <input type="hidden" name="_token" value="{{ csrf_token('mris_manual_kpis') }}">
+                    {% for kpi in manual_kpis %}
+                        <div class="col-md-6">
+                            <label for="kpi_{{ kpi.id }}" class="form-label small">
+                                <code>{{ kpi.mhc }}</code> · {{ kpi.name }} ({{ kpi.unit }})
+                            </label>
+                            <input type="number" step="0.1" min="0"
+                                   id="kpi_{{ kpi.id }}"
+                                   name="manual[{{ kpi.id }}]"
+                                   value="{{ kpi.value }}"
+                                   class="form-control form-control-sm"
+                                   placeholder="—">
+                            <div class="form-text small">{{ kpi.source }}</div>
+                        </div>
+                    {% endfor %}
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            <i class="bi bi-check-circle" aria-hidden="true"></i>
+                            {{ 'mris.manual_form.save'|trans({}, 'mris') }}
+                        </button>
+                    </div>
+                </form>
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
+
     <div class="alert alert-light mt-4 small">
-        <strong><i class="bi bi-info-circle" aria-hidden="true"></i> Hinweis:</strong>
-        Die fünf manuell zu pflegenden KPIs (SBOM-Coverage, KEV-Patch-Latency, CCM-Coverage,
-        Krypto-Inventar-Abdeckung, TLPT-Findings-Closure) erfordern derzeit externe Datenquellen.
-        Manuelle Eingabefelder folgen in einer späteren Version.
+        <strong><i class="bi bi-info-circle" aria-hidden="true"></i></strong>
+        {{ 'mris.kpi_help.manual_note'|trans({}, 'mris')|nl2br }}
     </div>
 </div>
 {% endblock %}

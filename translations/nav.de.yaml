@@ -49,6 +49,8 @@ nav:
     compare: Vergleichen
     mapping_hub: Mapping-Hub
     mapping_quality: Mapping-Qualität
+    mris_kpis: 'MRIS-KPIs'
+    ai_agents: 'AI-Agent-Inventar'
     data_reuse: Data-Reuse-Hub
     locations: Standorte
     people: Personen
@@ -139,6 +141,8 @@ nav:
             framework_dashboard: 'Framework-übergreifende Übersicht'
             mapping_hub: 'Zentraler Einstieg: Wizard, Seeds, Qualität, transitive Abdeckung'
             mapping_quality: 'Framework-übergreifende Mapping-Qualitätsanalyse'
+            mris_kpis: 'Mythos-relevante Kennzahlen (MRIS v1.5 Kap. 10.6)'
+            ai_agents: 'AI-Agent-Inventar (EU AI Act + ISO 42001 + MHC-13)'
             data_reuse: 'Top-wiederverwendete Dokumente und Lieferanten über alle Frameworks'
             nis2: 'NIS2-Richtlinienbewertung'
             bsi_check: 'BSI IT-Grundschutz Soll/Ist pro Baustein mit MUSS/SOLLTE/KANN-Gewichtung'

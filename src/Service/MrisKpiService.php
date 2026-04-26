@@ -142,66 +142,69 @@ final class MrisKpiService
 
     private function sbomCoverage(Tenant $tenant): array
     {
-        return [
-            'id' => 'sbom_coverage',
-            'name' => 'SBOM-Coverage',
-            'value' => null,
-            'unit' => '%',
-            'source' => 'manuell (CRA-Pflicht)',
-            'computable' => false,
-            'mhc' => 'MHC-02',
-        ];
+        return $this->manualKpi($tenant, 'sbom_coverage', 'SBOM-Coverage', '%', 'manuell (CRA-Pflicht)', 'MHC-02');
     }
 
     private function kevPatchLatency(Tenant $tenant): array
     {
-        return [
-            'id' => 'kev_patch_latency',
-            'name' => 'KEV-Patch-Latency',
-            'value' => null,
-            'unit' => 'Tage',
-            'source' => 'manuell (CISA-KEV-Liste)',
-            'computable' => false,
-            'mhc' => 'MHC-09',
-        ];
+        return $this->manualKpi($tenant, 'kev_patch_latency', 'KEV-Patch-Latency', 'Tage', 'manuell (CISA-KEV-Liste)', 'MHC-09');
     }
 
     private function continuousMonitoringCoverage(Tenant $tenant): array
     {
-        return [
-            'id' => 'ccm_coverage',
-            'name' => 'Continuous-Monitoring-Coverage',
-            'value' => null,
-            'unit' => '%',
-            'source' => 'manuell (Policy-as-Code-Bestand)',
-            'computable' => false,
-            'mhc' => 'MHC-10',
-        ];
+        return $this->manualKpi($tenant, 'ccm_coverage', 'Continuous-Monitoring-Coverage', '%', 'manuell (Policy-as-Code-Bestand)', 'MHC-10');
     }
 
     private function cryptoInventoryCoverage(Tenant $tenant): array
     {
-        return [
-            'id' => 'crypto_inventory_coverage',
-            'name' => 'Krypto-Inventar-Abdeckung',
-            'value' => null,
-            'unit' => '%',
-            'source' => 'manuell (PQC-Strategie)',
-            'computable' => false,
-            'mhc' => 'MHC-01',
-        ];
+        return $this->manualKpi($tenant, 'crypto_inventory_coverage', 'Krypto-Inventar-Abdeckung', '%', 'manuell (PQC-Strategie)', 'MHC-01');
     }
 
     private function tlptFindingsClosure(Tenant $tenant): array
     {
+        return $this->manualKpi($tenant, 'tlpt_findings_closure', 'TLPT-Findings-Closure', '%', 'manuell (DORA Art. 26/27)', 'MHC-12');
+    }
+
+    /**
+     * Liefert einen manuell gepflegten KPI mit Wert aus tenant.settings.mris.manual_kpis[id].
+     *
+     * @return array{id: string, name: string, value: float|null, unit: string, source: string, computable: bool, mhc: string}
+     */
+    private function manualKpi(Tenant $tenant, string $id, string $name, string $unit, string $source, string $mhc): array
+    {
+        $settings = $tenant->getSettings() ?? [];
+        $value = $settings['mris']['manual_kpis'][$id] ?? null;
         return [
-            'id' => 'tlpt_findings_closure',
-            'name' => 'TLPT-Findings-Closure',
-            'value' => null,
-            'unit' => '%',
-            'source' => 'manuell (DORA Art. 26/27)',
+            'id' => $id,
+            'name' => $name,
+            'value' => is_numeric($value) ? (float) $value : null,
+            'unit' => $unit,
+            'source' => $source,
             'computable' => false,
-            'mhc' => 'MHC-12',
+            'mhc' => $mhc,
         ];
+    }
+
+    /**
+     * Persistiert manuelle KPI-Werte unter tenant.settings.mris.manual_kpis.
+     *
+     * @param array<string, float|int|string|null> $values keyed by KPI-ID
+     */
+    public function setManualKpis(Tenant $tenant, array $values): void
+    {
+        $settings = $tenant->getSettings() ?? [];
+        $settings['mris'] ??= [];
+        $existing = $settings['mris']['manual_kpis'] ?? [];
+
+        foreach ($values as $id => $val) {
+            if ($val === '' || $val === null) {
+                unset($existing[$id]);
+            } elseif (is_numeric($val)) {
+                $existing[$id] = (float) $val;
+            }
+        }
+        $settings['mris']['manual_kpis'] = $existing;
+        $tenant->setSettings($settings);
+        $this->entityManager->flush();
     }
 }

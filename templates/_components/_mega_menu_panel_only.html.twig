@@ -365,6 +365,20 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.mapping_quality'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        <li><a href="{{ path('app_mris_kpis') }}" class="{% if current_route starts with 'app_mris_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.mris_kpis'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.mris_kpis'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_ai_agents_index') }}" class="{% if current_route starts with 'app_ai_agents_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-robot" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.ai_agents'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.ai_agents'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
                         <li><a href="{{ path('app_data_reuse_hub') }}" class="{% if current_route starts with 'app_data_reuse_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-arrows-collapse" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">

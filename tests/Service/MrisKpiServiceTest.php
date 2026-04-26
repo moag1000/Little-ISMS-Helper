@@ -144,4 +144,57 @@ final class MrisKpiServiceTest extends TestCase
 
         self::assertSame(80.0, $rate['value']);
     }
+
+    public function testManualKpiReadsValueFromTenantSettings(): void
+    {
+        $conn = $this->createMock(Connection::class);
+        $result = $this->createMock(Result::class);
+        $result->method('fetchOne')->willReturn(0);
+        $result->method('fetchAssociative')->willReturn(['total' => 0, 'passing' => 0]);
+        $conn->method('executeQuery')->willReturn($result);
+
+        $tenant = $this->makeTenant();
+        $tenant->setSettings([
+            'mris' => [
+                'manual_kpis' => [
+                    'sbom_coverage' => 67.5,
+                    'tlpt_findings_closure' => 92,
+                ],
+            ],
+        ]);
+
+        $kpis = $this->makeService($conn)->computeAll($tenant);
+        $sbom = array_values(array_filter($kpis, static fn(array $k): bool => $k['id'] === 'sbom_coverage'))[0];
+        $tlpt = array_values(array_filter($kpis, static fn(array $k): bool => $k['id'] === 'tlpt_findings_closure'))[0];
+
+        self::assertSame(67.5, $sbom['value']);
+        self::assertSame(92.0, $tlpt['value']);
+    }
+
+    public function testSetManualKpisStoresValuesAndSkipsEmpties(): void
+    {
+        $conn = $this->createMock(Connection::class);
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('getConnection')->willReturn($conn);
+
+        $service = new \App\Service\MrisKpiService(
+            $em,
+            $this->createMock(\App\Repository\IncidentRepository::class),
+            $this->createMock(\App\Repository\BCExerciseRepository::class),
+        );
+
+        $tenant = $this->makeTenant();
+        $service->setManualKpis($tenant, [
+            'sbom_coverage' => '67.5',
+            'kev_patch_latency' => 14,
+            'ccm_coverage' => '',           // skip
+            'crypto_inventory_coverage' => null, // skip
+        ]);
+
+        $stored = $tenant->getSettings()['mris']['manual_kpis'] ?? [];
+        self::assertSame(67.5, $stored['sbom_coverage']);
+        self::assertSame(14.0, $stored['kev_patch_latency']);
+        self::assertArrayNotHasKey('ccm_coverage', $stored);
+        self::assertArrayNotHasKey('crypto_inventory_coverage', $stored);
+    }
 }
