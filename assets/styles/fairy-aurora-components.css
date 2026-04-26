@@ -231,6 +231,20 @@ html[data-theme="dark"] .fa-card--premium {
                 color var(--t-fast) var(--ease-out);
     position: relative;
 }
+/* Safety-net for variant-less buttons: zero-specificity defaults via :where()
+   so any --primary/--ghost/--danger/etc. variant always wins. Without this,
+   a button with bare class="fa-cyber-btn" would have transparent bg + body
+   fg-color → just text, no button-shape. With this, it looks like a
+   secondary-style button. */
+:where(.fa-cyber-btn) {
+    background: transparent;
+    color: var(--fg);
+    border-color: var(--border-strong);
+}
+:where(.fa-cyber-btn):hover:not(.is-disabled):not([disabled]) {
+    background: var(--surface-2);
+    border-color: var(--primary);
+}
 .fa-cyber-btn:focus-visible {
     outline: 3px solid var(--primary);
     outline-offset: 2px;
