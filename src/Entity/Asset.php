@@ -90,6 +90,52 @@ class Asset
     #[Assert\Length(max: 100, maxMessage: 'Asset type cannot exceed { limit } characters')]
     private ?string $assetType = null;
 
+    // ── AI-Agent-Inventar (Asset-Subtyp 'ai_agent') ───────────────────────
+    // Erfüllt EU AI Act Art. 6/9-16, ISO 42001 Annex A, MRIS MHC-13
+    // (Peddi 2026, CC BY 4.0), ISO 27001 A.5.16/A.8.27.
+
+    #[ORM\Column(length: 30, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    #[Assert\Choice(
+        choices: [null, 'prohibited', 'high_risk', 'limited_risk', 'minimal_risk'],
+        message: 'AI risk classification must be one of: prohibited, high_risk, limited_risk, minimal_risk',
+    )]
+    private ?string $aiAgentClassification = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?string $aiAgentPurpose = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?string $aiAgentDataSources = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?string $aiAgentOversightMechanism = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?string $aiAgentProvider = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?string $aiAgentModelVersion = null;
+
+    /** @var array<int, string>|null */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?array $aiAgentCapabilityScope = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?int $aiAgentThreatModelDocId = null;
+
+    /** @var array<int, string>|null */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?array $aiAgentExtensionAllowlist = null;
+
     #[ORM\Column(length: 100)]
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotBlank(message: 'Asset owner is required')]
@@ -305,6 +351,42 @@ class Asset
         $this->assetType = $assetType;
         return $this;
     }
+
+    public function isAiAgent(): bool
+    {
+        return $this->assetType === 'ai_agent';
+    }
+
+    public function getAiAgentClassification(): ?string { return $this->aiAgentClassification; }
+    public function setAiAgentClassification(?string $v): static { $this->aiAgentClassification = $v; return $this; }
+
+    public function getAiAgentPurpose(): ?string { return $this->aiAgentPurpose; }
+    public function setAiAgentPurpose(?string $v): static { $this->aiAgentPurpose = $v; return $this; }
+
+    public function getAiAgentDataSources(): ?string { return $this->aiAgentDataSources; }
+    public function setAiAgentDataSources(?string $v): static { $this->aiAgentDataSources = $v; return $this; }
+
+    public function getAiAgentOversightMechanism(): ?string { return $this->aiAgentOversightMechanism; }
+    public function setAiAgentOversightMechanism(?string $v): static { $this->aiAgentOversightMechanism = $v; return $this; }
+
+    public function getAiAgentProvider(): ?string { return $this->aiAgentProvider; }
+    public function setAiAgentProvider(?string $v): static { $this->aiAgentProvider = $v; return $this; }
+
+    public function getAiAgentModelVersion(): ?string { return $this->aiAgentModelVersion; }
+    public function setAiAgentModelVersion(?string $v): static { $this->aiAgentModelVersion = $v; return $this; }
+
+    /** @return array<int, string>|null */
+    public function getAiAgentCapabilityScope(): ?array { return $this->aiAgentCapabilityScope; }
+    /** @param array<int, string>|null $v */
+    public function setAiAgentCapabilityScope(?array $v): static { $this->aiAgentCapabilityScope = $v; return $this; }
+
+    public function getAiAgentThreatModelDocId(): ?int { return $this->aiAgentThreatModelDocId; }
+    public function setAiAgentThreatModelDocId(?int $v): static { $this->aiAgentThreatModelDocId = $v; return $this; }
+
+    /** @return array<int, string>|null */
+    public function getAiAgentExtensionAllowlist(): ?array { return $this->aiAgentExtensionAllowlist; }
+    /** @param array<int, string>|null $v */
+    public function setAiAgentExtensionAllowlist(?array $v): static { $this->aiAgentExtensionAllowlist = $v; return $this; }
 
     public function getOwner(): ?string
     {
