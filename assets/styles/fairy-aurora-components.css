@@ -3817,73 +3817,114 @@ button.fa-filter-chip.fa-filter-chip--active {
 /* ==========================================================================
    Aurora v4 — Tom-Select Theme-Override
    ==========================================================================
-   Tom-Select lib ships `tom-select.default.min.css` with hardcoded #303030
-   text + light grey borders. Aurora tokens must win — override with matching
-   specificity (.ts-* alone = 0,1,0; selector-stacking = 0,2,0).
+   Tom-Select lib's tom-select.default.min.css ships with hardcoded #303030
+   text, #d0d0d0 borders, linear-gradient(#fefefe,#f2f2f2) backgrounds, and
+   blue-#1da7ee tags. Same-specificity rules conflict with Aurora — and
+   Tom-Select's CSS often loads AFTER Aurora's via the Stimulus controller's
+   `import 'tom-select/.../tom-select.default.min.css'`, so source-order
+   reverses our wins. !important on color/background/border tokens is the
+   pragmatic fix.
    ========================================================================== */
 .ts-wrapper.ts-wrapper,
 .ts-control.ts-control,
 .ts-dropdown.ts-dropdown {
-    color: var(--fg);
-    font-family: var(--font-sans);
-    background-color: var(--surface);
+    color: var(--fg) !important;
+    font-family: var(--font-sans) !important;
+    background-color: var(--surface) !important;
+    background-image: none !important;  /* kill TS linear-gradient */
 }
-.ts-wrapper.ts-wrapper .ts-control {
-    background-color: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    color: var(--fg);
+.ts-wrapper.ts-wrapper .ts-control,
+.ts-wrapper.ts-wrapper.single .ts-control,
+.ts-wrapper.ts-wrapper.multi .ts-control {
+    background-color: var(--surface) !important;
+    background-image: none !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--r-md) !important;
+    color: var(--fg) !important;
     min-height: 40px;
     padding: 6px 10px;
-    box-shadow: none;
+    box-shadow: none !important;
 }
-.ts-wrapper.ts-wrapper .ts-control:hover { border-color: var(--border-strong); }
+.ts-wrapper.ts-wrapper .ts-control:hover { border-color: var(--border-strong) !important; }
 .ts-wrapper.ts-wrapper.focus .ts-control,
 .ts-wrapper.ts-wrapper .ts-control:focus-within {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px var(--primary-glow);
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px var(--primary-glow) !important;
 }
 .ts-wrapper.ts-wrapper.disabled .ts-control {
-    background-color: var(--surface-2);
-    color: var(--fg-3);
+    background-color: var(--surface-2) !important;
+    color: var(--fg-3) !important;
     cursor: not-allowed;
 }
 /* Input inside control (search field of select) */
-.ts-control > input {
-    color: var(--fg);
+.ts-control > input,
+.ts-wrapper .ts-control > input {
+    color: var(--fg) !important;
     background: transparent !important;
 }
-.ts-control > input::placeholder { color: var(--fg-3); }
-/* Selected-items chips in multi-select */
-.ts-wrapper.ts-wrapper .ts-control > .item {
-    background-color: var(--primary-tint);
-    color: var(--primary-strong);
-    border: 1px solid var(--primary);
-    border-radius: var(--r-sm);
-    padding: 2px 8px;
-    margin: 2px;
+.ts-control > input::placeholder { color: var(--fg-3) !important; }
+/* Selected-items chips in multi-select — TS uses [data-value] selector and
+   linear-gradient. Override both. */
+.ts-wrapper.ts-wrapper .ts-control > .item,
+.ts-wrapper.ts-wrapper.multi .ts-control [data-value] {
+    background-color: var(--primary-tint) !important;
+    background-image: none !important;
+    color: var(--primary-strong) !important;
+    border: 1px solid var(--primary) !important;
+    border-radius: var(--r-sm) !important;
+    padding: 2px 8px !important;
+    margin: 2px !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
 }
-.ts-wrapper.ts-wrapper .ts-control > .item.active {
-    background-color: var(--primary);
-    color: var(--on-primary);
+.ts-wrapper.ts-wrapper .ts-control > .item.active,
+.ts-wrapper.ts-wrapper.multi .ts-control [data-value].active {
+    background-color: var(--primary) !important;
+    color: var(--on-primary) !important;
+    border-color: var(--primary-strong) !important;
 }
 /* Dropdown panel */
-.ts-dropdown.ts-dropdown {
-    background-color: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    color: var(--fg);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+.ts-dropdown.ts-dropdown,
+.ts-dropdown.ts-dropdown.single,
+.ts-dropdown.ts-dropdown.multi {
+    background-color: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--r-md) !important;
+    color: var(--fg) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
     margin-top: 4px;
 }
-.ts-dropdown .option { color: var(--fg); padding: 8px 12px; }
+.ts-dropdown .option { color: var(--fg) !important; padding: 8px 12px; }
 .ts-dropdown .option:hover,
-.ts-dropdown .option.active { background-color: var(--primary-tint); color: var(--primary-strong); }
-.ts-dropdown .option.selected { background-color: var(--primary); color: var(--on-primary); }
+.ts-dropdown .option.active,
+.ts-dropdown [data-selectable].option.active,
+.ts-dropdown .active { background-color: var(--primary-tint) !important; color: var(--primary-strong) !important; }
+.ts-dropdown .option.selected,
+.ts-dropdown [data-selectable].option.selected { background-color: var(--primary) !important; color: var(--on-primary) !important; }
 .ts-dropdown .no-results,
 .ts-dropdown .create {
-    color: var(--fg-3);
+    color: var(--fg-3) !important;
     padding: 10px 12px;
+}
+.ts-dropdown .optgroup-header {
+    background-color: var(--surface-2) !important;
+    color: var(--fg-2) !important;
+    border-color: var(--border) !important;
+}
+/* Single-select dropdown caret arrow — TS uses border-color: gray hardcoded */
+.ts-wrapper.single .ts-control:after {
+    border-color: var(--fg-3) transparent transparent !important;
+}
+.ts-wrapper.single.dropdown-active .ts-control:after {
+    border-color: transparent transparent var(--fg-3) !important;
+}
+/* Remove-button on multi-tags */
+.ts-wrapper.plugin-remove_button .item .remove {
+    color: inherit !important;
+    border-left-color: var(--primary) !important;
+}
+.ts-wrapper.plugin-remove_button .item .remove:hover {
+    background: rgba(0, 0, 0, 0.05) !important;
 }
 /* Inside our cyber-input frame: flatten Tom-Select's own border — frame owns it */
 .fa-cyber-input__frame .ts-wrapper .ts-control,
