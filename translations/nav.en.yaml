@@ -107,6 +107,7 @@ nav:
             iso9001_bridge: 'ISO 9001 → 27001 Bridge'
             glossary: 'Glossary'
             keyboard_shortcuts: 'Keyboard Shortcuts'
+            mris_tour: 'Start MRIS tour'
 
         desc:
             home: 'Overview and quick access'
@@ -165,6 +166,7 @@ nav:
             iso9001_bridge: 'Conceptual translation: CAPA ↔ risk treatment, process map ↔ SoA'
             glossary: 'ISMS terms explained — from Asset to Vulnerability'
             keyboard_shortcuts: 'All keyboard shortcuts at a glance'
+            mris_tour: 'Eight-stop walkthrough of the MRIS module (~6 min, skip anytime)'
 
     section:
         isms_core: 'ISMS Core'
