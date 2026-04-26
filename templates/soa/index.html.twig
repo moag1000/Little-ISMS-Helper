@@ -203,7 +203,7 @@
 {# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
 {% embed '_components/_search_filter_form.html.twig' with {
     action: path('app_soa_index'),
-    filter_keys: ['category', 'status', 'view', 'tag'],
+    filter_keys: ['category', 'status', 'mris', 'view', 'tag'],
     search_placeholder: 'soa.filter.search_placeholder'|trans({}, 'soa'),
     form_id: 'soa-filter-form'
 } %}
@@ -211,7 +211,7 @@
         {% if app.request.query.get('view') %}
             <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">
         {% endif %}
-        <div class="col-md-6">
+        <div class="col-md-4">
             <label for="category-filter" class="form-label">{{ 'soa.filter.category'|trans({}, 'soa') }}</label>
             <select id="category-filter" name="category" class="form-select">
                 <option value="">{{ 'soa.filter.all_categories'|trans({}, 'soa') }}</option>
@@ -221,7 +221,7 @@
                 <option value="Technological" {{ app.request.query.get('category') == 'Technological' ? 'selected' : '' }}>{{ 'soa.category.Technological'|trans({}, 'soa') }}</option>
             </select>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <label for="status-filter" class="form-label">{{ 'soa.filter.status'|trans({}, 'soa') }}</label>
             <select id="status-filter" name="status" class="form-select">
                 <option value="">{{ 'soa.filter.all_status'|trans({}, 'soa') }}</option>
@@ -229,6 +229,18 @@
                 <option value="in_progress" {{ app.request.query.get('status') == 'in_progress' ? 'selected' : '' }}>{{ 'soa.status.in_progress'|trans({}, 'soa') }}</option>
                 <option value="not_started" {{ app.request.query.get('status') == 'not_started' ? 'selected' : '' }}>{{ 'soa.status.not_started'|trans({}, 'soa') }}</option>
                 <option value="not_applicable" {{ app.request.query.get('status') == 'not_applicable' ? 'selected' : '' }}>{{ 'soa.status.not_applicable'|trans({}, 'soa') }}</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="mris-filter" class="form-label">{{ 'soa.filter.mris'|trans({}, 'soa') }}
+                <small class="text-muted" title="MRIS v1.5 nach Peddi (CC BY 4.0)">ⓘ</small>
+            </label>
+            <select id="mris-filter" name="mris" class="form-select">
+                <option value="">{{ 'soa.filter.mris_all'|trans({}, 'soa') }}</option>
+                <option value="standfest" {{ mrisFilter == 'standfest' ? 'selected' : '' }}>{{ 'soa.mris.standfest'|trans({}, 'soa') }} ({{ mrisStats.standfest|default(0) }})</option>
+                <option value="degradiert" {{ mrisFilter == 'degradiert' ? 'selected' : '' }}>{{ 'soa.mris.degradiert'|trans({}, 'soa') }} ({{ mrisStats.degradiert|default(0) }})</option>
+                <option value="reibung" {{ mrisFilter == 'reibung' ? 'selected' : '' }}>{{ 'soa.mris.reibung'|trans({}, 'soa') }} ({{ mrisStats.reibung|default(0) }})</option>
+                <option value="nicht_betroffen" {{ mrisFilter == 'nicht_betroffen' ? 'selected' : '' }}>{{ 'soa.mris.nicht_betroffen'|trans({}, 'soa') }} ({{ mrisStats.nicht_betroffen|default(0) }})</option>
             </select>
         </div>
     {% endblock %}
@@ -245,6 +257,7 @@
             <th scope="col" style="min-width: 100px;">{{ 'soa.table.control_id'|trans({}, 'soa') }}</th>
             <th scope="col" style="min-width: 250px;">{{ 'soa.table.name'|trans({}, 'soa') }}</th>
             <th scope="col" style="min-width: 120px;">{{ 'soa.table.category'|trans({}, 'soa') }}</th>
+            <th scope="col" class="text-center" style="min-width: 130px;" title="{{ 'soa.table.mris_help'|trans({}, 'soa') }}">{{ 'soa.table.mris'|trans({}, 'soa') }}</th>
             <th scope="col" class="text-center" style="min-width: 100px;">{{ 'soa.table.applicable'|trans({}, 'soa') }}</th>
             <th scope="col" style="min-width: 150px;">{{ 'soa.table.implementation_status'|trans({}, 'soa') }}</th>
             <th scope="col" class="text-center" style="min-width: 120px;">{{ 'soa.table.progress'|trans({}, 'soa') }}</th>
@@ -262,6 +275,22 @@
             </td>
             <td>
                 {% include '_components/_badge.html.twig' with { variant: 'info', content: ('soa.category.' ~ control.category)|trans({}, 'soa') } %}
+            </td>
+            <td class="text-center">
+                {% if control.mythosResilience == 'standfest' %}
+                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'soa.mris.standfest'|trans({}, 'soa') } %}
+                {% elseif control.mythosResilience == 'degradiert' %}
+                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'soa.mris.degradiert'|trans({}, 'soa') } %}
+                {% elseif control.mythosResilience == 'reibung' %}
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'soa.mris.reibung'|trans({}, 'soa') } %}
+                {% elseif control.mythosResilience == 'nicht_betroffen' %}
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'badge-neutral', content: 'soa.mris.nicht_betroffen'|trans({}, 'soa') } %}
+                {% else %}
+                    <span class="text-muted small">—</span>
+                {% endif %}
+                {% if control.mythosFlankingMhcs is not empty %}
+                    <div class="small text-muted mt-1">{{ control.mythosFlankingMhcs|join(', ') }}</div>
+                {% endif %}
             </td>
             <td class="text-center">
                 {% if control.applicable %}
