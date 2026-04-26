@@ -1,0 +1,37 @@
+{#
+ # FairyAurora v4.0 — fa-rag-card macro (executive RAG status tile)
+ #
+ # Red/Amber/Green status tile for board-level dashboards. Includes a
+ # status pill at the top with mood-icon, a title, and a detail line.
+ #
+ # Usage:
+ #   {% import '_components/_fa_rag_card.html.twig' as _fa_rag_card %}
+ #   {{ _fa_rag_card.render({
+ #       status: dashboard.rag_status.security,    {# 'green'|'amber'|'red' #}
+ #       title:  'board.rag.security'|trans({}, 'dashboards'),
+ #       detail: dashboard.rag_details.security,
+ #   }) }}
+ #
+ # Parameters:
+ #   status - 'green' | 'amber' | 'red' (required)
+ #   title  - heading text (required)
+ #   detail - small caption (optional)
+ #}
+
+{% macro render(props = {}) %}
+    {% set status = props.status|default('green') %}
+    {% set faVariant = status == 'green' ? 'success' : (status == 'amber' ? 'warning' : 'danger') %}
+    {% set icon = status == 'green' ? 'bi-check-circle' : (status == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle') %}
+
+    <article class="fa-rag-card fa-rag-card--{{ status }}">
+        <div class="fa-rag-card__pill">
+            <span class="badge bg-{{ faVariant }} fa-status-pill fa-status-pill--{{ faVariant }} fs-5 px-3 py-2">
+                <i class="bi {{ icon }}" aria-hidden="true"></i>
+            </span>
+        </div>
+        <h5 class="fa-rag-card__title">{{ props.title|default('') }}</h5>
+        {% if props.detail is defined and props.detail %}
+            <small class="fa-rag-card__detail">{{ props.detail }}</small>
+        {% endif %}
+    </article>
+{% endmacro %}

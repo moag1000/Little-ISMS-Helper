@@ -127,7 +127,7 @@
                                     {{ framework.compliance_percentage }}%
                                 </span>
                             </div>
-                            <div class="progress" style="height: 8px;">
+                            <div class="progress progress-h-8">
                                 <div class="progress-bar bg-{% if framework.compliance_percentage >= 80 %}success{% elseif framework.compliance_percentage >= 60 %}warning{% else %}danger{% endif %}"
                                      style="width: {{ framework.compliance_percentage }}%"></div>
                             </div>

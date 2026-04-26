@@ -4,6 +4,7 @@
 {% block title %}{{ 'auditor.title'|trans({}, 'dashboards') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
 
 {% block body %}
 <main class="fa-aurora-surface role-dashboard auditor-dashboard">
@@ -26,60 +27,32 @@
 
         <div data-skeleton-target="content" class="hidden">
 
-    {# Summary Cards #}
+    {# Summary KPIs — Aurora _fa_kpi_card macro #}
     <div class="row g-3 mb-4">
-        <div class="col-md-2">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-success' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0 text-success">{{ dashboard.summary.audits_this_year }}</h3>
-                        <small class="text-muted">{{ 'auditor.kpi.audits_ytd'|trans({}, 'dashboards') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-2">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-primary' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0">{{ dashboard.summary.upcoming_audits }}</h3>
-                        <small class="text-muted">{{ 'auditor.kpi.upcoming'|trans({}, 'dashboards') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-2">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-warning' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0 {% if dashboard.summary.open_findings > 0 %}text-warning{% endif %}">{{ dashboard.summary.open_findings }}</h3>
-                        <small class="text-muted">{{ 'auditor.kpi.open_findings'|trans({}, 'dashboards') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-2">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-danger' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0 {% if dashboard.summary.overdue_actions > 0 %}text-danger{% endif %}">{{ dashboard.summary.overdue_actions }}</h3>
-                        <small class="text-muted">{{ 'auditor.kpi.overdue_actions'|trans({}, 'dashboards') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-4">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-info' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h3 class="mb-0 {% if dashboard.summary.evidence_coverage >= 80 %}text-success{% elseif dashboard.summary.evidence_coverage >= 60 %}text-warning{% else %}text-danger{% endif %}">
-                            {{ dashboard.summary.evidence_coverage }}%
-                        </h3>
-                        <small class="text-muted">{{ 'auditor.kpi.evidence_coverage'|trans({}, 'dashboards') }}</small>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
+        <div class="col-md-2">{{ _fa_kpi_card.render({
+            value: dashboard.summary.audits_this_year,
+            label: 'auditor.kpi.audits_ytd'|trans({}, 'dashboards')
+        }) }}</div>
+        <div class="col-md-2">{{ _fa_kpi_card.render({
+            value: dashboard.summary.upcoming_audits,
+            label: 'auditor.kpi.upcoming'|trans({}, 'dashboards')
+        }) }}</div>
+        <div class="col-md-2">{{ _fa_kpi_card.render({
+            value: dashboard.summary.open_findings,
+            label: 'auditor.kpi.open_findings'|trans({}, 'dashboards'),
+            valueDanger: dashboard.summary.open_findings > 0
+        }) }}</div>
+        <div class="col-md-2">{{ _fa_kpi_card.render({
+            value: dashboard.summary.overdue_actions,
+            label: 'auditor.kpi.overdue_actions'|trans({}, 'dashboards'),
+            valueDanger: dashboard.summary.overdue_actions > 0
+        }) }}</div>
+        <div class="col-md-4">{{ _fa_kpi_card.render({
+            value: dashboard.summary.evidence_coverage,
+            unit: '%',
+            label: 'auditor.kpi.evidence_coverage'|trans({}, 'dashboards'),
+            valueDanger: dashboard.summary.evidence_coverage < 60
+        }) }}</div>
     </div>
 
     <div class="row g-4">
@@ -137,7 +110,7 @@
                         </div>
                         <small class="text-muted">{{ 'auditor.evidence_coverage_label'|trans({}, 'dashboards') }}</small>
                     </div>
-                    <div class="progress mb-3" style="height: 20px;">
+                    <div class="progress progress-h-20 mb-3">
                         <div class="progress-bar bg-success" style="width: {{ dashboard.evidence_status.coverage_percentage }}%">
                             {{ dashboard.evidence_status.with_evidence }} / {{ dashboard.evidence_status.total_controls }}
                         </div>
