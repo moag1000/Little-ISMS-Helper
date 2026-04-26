@@ -198,7 +198,7 @@
                     <div class="d-grid gap-2">
                         {% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('app_management_review_edit', {id: review.id}) }}"
-                           class="btn btn-primary"
+                           class="fa-cyber-btn fa-cyber-btn--primary"
                            data-turbo-action="advance">
                             <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                         </a>
@@ -206,7 +206,7 @@
 
                         {% if is_granted('ROLE_MANAGER') %}
                         <a href="{{ path('app_management_review_pdf', {id: review.id}) }}"
-                           class="btn btn-outline-primary"
+                           class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo="false">
                             <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
                             {{ 'management_review.action.pdf'|trans({}, 'management_review') }}
@@ -214,7 +214,7 @@
                         {% endif %}
 
                         <a href="{{ path('app_management_review_index') }}"
-                           class="btn btn-outline-secondary"
+                           class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance">
                             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
                         </a>
@@ -222,7 +222,7 @@
                         {% if is_granted('ROLE_ADMIN') %}
                         <hr>
                         <button type="button"
-                                class="btn btn-outline-danger"
+                                class="fa-cyber-btn fa-cyber-btn--danger"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal">
                             <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
@@ -302,12 +302,12 @@
                 <p class="text-muted"><small>{{ 'common.action_irreversible'|trans({}, 'messages') }}</small></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
                     {{ 'common.cancel'|trans({}, 'messages') }}
                 </button>
                 <form method="post" action="{{ path('app_management_review_delete', {id: review.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">
-                    <button type="submit" class="btn btn-danger">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                         <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                     </button>
                 </form>

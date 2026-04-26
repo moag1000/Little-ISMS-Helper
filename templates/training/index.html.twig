@@ -51,7 +51,7 @@
                     {% endif %}
                 </select>
                 <noscript>
-                    <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.apply'|trans({}, 'messages') }}</button>
                 </noscript>
             </form>
         {% endblock %}
@@ -190,7 +190,7 @@
                         </td>
                         <td>
                             <a href="{{ path('app_training_show', {id: training.id}) }}"
-                               class="btn btn-sm btn-outline-primary"
+                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                data-turbo-action="advance">
                                 <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
                             </a>
@@ -273,14 +273,14 @@
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
                                 <a href="{{ path('app_training_show', {id: training.id}) }}"
-                                   class="btn btn-outline-primary"
+                                   class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                    data-turbo-action="advance"
                                    title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                 </a>
                                 {% if is_granted('ROLE_USER') %}
                                 <a href="{{ path('app_training_edit', {id: training.id}) }}"
-                                   class="btn btn-outline-secondary"
+                                   class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                    data-turbo-action="advance"
                                    title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                     <i class="bi bi-pencil" aria-hidden="true"></i>
@@ -288,7 +288,7 @@
                                 {% endif %}
                                 {% if is_granted('ROLE_ADMIN') %}
                                 <button type="button"
-                                        class="btn btn-outline-danger"
+                                        class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
                                         data-bs-toggle="modal"
                                         data-bs-target="#deleteModal{{ training.id }}"
                                         title="{{ 'common.delete'|trans({}, 'messages') }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
@@ -330,12 +330,12 @@
                 <p class="text-muted"><small>{{ 'common.action_irreversible'|trans({}, 'messages') }}</small></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
                     {{ 'common.cancel'|trans({}, 'messages') }}
                 </button>
                 <form method="post" action="{{ path('app_training_delete', {id: training.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ training.id) }}">
-                    <button type="submit" class="btn btn-danger">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                         <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                     </button>
                 </form>

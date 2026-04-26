@@ -586,7 +586,7 @@
                                                       data-ui-actions-message-param="{{ 'tenant.users.confirm_remove'|trans({'%email%': user.email}, 'tenant') }}">
                                                     <input type="hidden" name="_token" value="{{ csrf_token('remove_user_' ~ tenant.id ~ '_' ~ user.id) }}">
                                                     <button type="submit"
-                                                            class="btn btn-sm btn-outline-danger"
+                                                            class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
                                                             aria-label="{{ 'common.deactivate'|trans({}, 'messages') }}">
                                                         <i class="bi bi-person-dash" aria-hidden="true"></i>
                                                     </button>
@@ -600,7 +600,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.close'|trans({}, 'messages') }}
                     </button>
                 </div>
@@ -672,13 +672,15 @@
                 .then(data => {
                     if (data.error) {
                         container.innerHTML = `
-                            <div class="alert alert-info">
-                                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            <div class="fa-alert fa-alert--info">
+                                <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body">
                                 <strong>{{ 'tenant.isms_context.not_configured'|trans({}, 'tenant') }}</strong><br>
                                 <p class="mb-0 mt-2">{{ 'tenant.isms_context.configure_prompt'|trans({}, 'tenant') }}</p>
-                                <a href="${escapeHtml(data.editUrl) || '{{ path('app_context_edit') }}'}" class="btn btn-primary mt-3">
+                                <a href="${escapeHtml(data.editUrl) || '{{ path('app_context_edit') }}'}" class="fa-cyber-btn fa-cyber-btn--primary mt-3">
                                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.isms_context.configure_now'|trans({}, 'tenant') }}
                                 </a>
+                                </div>
                             </div>
                         `;
                         return;
@@ -696,8 +698,9 @@
                         const parentId = parseInt(inheritanceInfo.inheritedFrom?.id) || 0;
                         const parentName = escapeHtml(inheritanceInfo.inheritedFrom?.name || 'Parent');
                         html += `
-                            <div class="alert alert-warning mb-4">
-                                <div class="d-flex align-items-start">
+                            <div class="fa-alert fa-alert--warning mb-4">
+                                <i class="fa-icon fa-icon--status-warning fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body d-flex align-items-start">
                                     <i class="bi bi-diagram-3 me-2 mt-1" aria-hidden="true"></i>
                                     <div>
                                         <strong>{{ 'corporate.inheritance.isms_context_inherited'|trans({}, 'tenant') }}</strong><br>
@@ -726,10 +729,10 @@
                                     </div>
                                     <div>
                                         ${canEdit ?
-                                            `<a href="${escapeHtml(data.editUrl) || '{{ path('app_context_edit') }}'}" class="btn btn-primary">
+                                            `<a href="${escapeHtml(data.editUrl) || '{{ path('app_context_edit') }}'}" class="fa-cyber-btn fa-cyber-btn--primary">
                                                 <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                                             </a>` :
-                                            `<button class="btn btn-secondary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'tenant') }}">
+                                            `<button class="fa-cyber-btn fa-cyber-btn--ghost" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'tenant') }}">
                                                 <i class="bi bi-lock" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                                             </button>`
                                         }
@@ -784,7 +787,7 @@
                     // Link to full context view
                     html += `
                         <div class="text-center mt-4">
-                            <a href="{{ path('app_context_index') }}" class="btn btn-outline-primary">
+                            <a href="{{ path('app_context_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                                 <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'tenant.isms_context.view_full'|trans({}, 'tenant') }}
                             </a>
                         </div>
@@ -802,13 +805,15 @@
                     }
 
                     container.innerHTML = `
-                        <div class="alert alert-danger">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                        <div class="fa-alert fa-alert--danger">
+                            <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body">
                             ${errorMessage}
                             <br><br>
-                            <button class="btn btn-sm btn-outline-danger" id="retryIsmsContextBtn">
+                            <button class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm" id="retryIsmsContextBtn">
                                 <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'common.retry'|trans({}, 'messages') }}
                             </button>
+                            </div>
                         </div>
                     `;
                     // Add event listener for retry button
