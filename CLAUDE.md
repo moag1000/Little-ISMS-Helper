@@ -17,7 +17,7 @@ Guidelines for Claude Code in this repository.
 
 ## Quick Reference
 
-**Stack:** Symfony 7.4, PHP 8.4, Doctrine ORM, Twig, Stimulus/Turbo, Bootstrap 5.3
+**Stack:** Symfony 7.4.8, PHP 8.5+, Doctrine ORM 3.6, Twig 3.24, Stimulus/Turbo, Bootstrap 5.3, FairyAurora v4 Design System, PHPUnit 12.5, API Platform 4.3
 
 **Multi-tenancy:** All entities use `tenant_id` field. `TenantContext` service manages context.
 
@@ -218,6 +218,20 @@ $dataBreach->setNotificationRequired(true);
 - 4-space indent, max 120 char lines
 - Type hints and return types required
 - Commit format: `feat(scope): message` / `fix(scope): message`
+
+## Symfony 7.4 Best Practices (Audit Apr 2026)
+
+**Routing:** ALL routes via `#[Route]` attributes — no YAML route definitions.
+**Security:** Use `#[IsGranted('ROLE_X')]` attribute, not `denyAccessUnlessGranted()`.
+**CSRF:** Use `#[IsCsrfTokenValid('token_id')]` attribute (Symfony 7.1+) where possible.
+**Controllers:** Constructor injection with `private readonly`. All extend `AbstractController`.
+**Entities:** PHP 8 attributes (`#[ORM\Entity]`), no annotations. Typed properties. `Collection<int, T>` generics.
+**Repositories:** `ServiceEntityRepository` pattern. Autowired.
+**Forms:** Single-action with `handleRequest()`. Translation domain via FormType.
+**Testing:** PHPUnit 12.5. Use `#[Test]` attribute. `WebTestCase` for HTTP, `KernelTestCase` for services.
+**Templates:** FairyAurora v4 macros (`_fa_page_header`, `_fa_empty_state`, `_fa_alert`). `_breadcrumb.html.twig` for navigation. `trans_default_domain` at top of every template.
+**Translations:** 87 domains x 2 languages. Check `debug:translation --only-missing` before commit. No YAML duplicate keys.
+**PHP 8.5:** `readonly` properties, `match` expressions, `enum` types where appropriate.
 
 ## Security Checklist
 
