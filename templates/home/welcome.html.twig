@@ -91,12 +91,12 @@
 
                 {# Quick Action Buttons #}
                 <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a href="{{ path('app_dashboard') }}" class="btn btn-primary btn-lg">
+                    <a href="{{ path('app_dashboard') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                         <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>
                         {{ 'welcome.action.dashboard'|trans({}, 'welcome') }}
                     </a>
                     {% if total_urgent_count > 0 %}
-                        <a href="#urgent-tasks" class="btn btn-outline-warning btn-lg">
+                        <a href="#urgent-tasks" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--lg">
                             <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>
                             {{ 'welcome.action.urgent_tasks'|trans({'%count%': total_urgent_count}, 'welcome') }}
                         </a>
@@ -115,7 +115,7 @@
                         <div class="card-header bg-info-subtle d-flex align-items-center">
                             <i class="fa-icon fa-icon--audit-internal text-info me-2" aria-hidden="true"></i>
                             <h2 class="h5 mb-0">{{ 'welcome.wizards.title'|trans({}, 'welcome') }}</h2>
-                            <a href="{{ path('app_compliance_wizard_index') }}" class="btn btn-sm btn-outline-info ms-auto">
+                            <a href="{{ path('app_compliance_wizard_index') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm ms-auto">
                                 {{ 'welcome.wizards.view_all'|trans({}, 'welcome') }}
                             </a>
                         </div>
@@ -175,6 +175,7 @@
                     <div class="col-6 col-md-4 col-lg-3">
                         <div class="card fa-section h-100 text-center module-card hover-lift border-0 shadow-sm position-relative">
                             {% if module.create_route is defined %}
+                                {# TODO Aurora Sprint E5+: module.color is fully dynamic (any Bootstrap color); map to fa-cyber-btn variant when Aurora has a dynamic-variant API #}
                                 <a href="{{ path(module.create_route) }}"
                                    class="btn btn-sm btn-outline-{{ module.color }} position-absolute top-0 end-0 m-2 module-create-btn"
                                    title="{{ 'welcome.create_new'|trans({}, 'welcome') }}">

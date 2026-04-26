@@ -50,7 +50,7 @@
                 {% endif %}
             </select>
             <noscript>
-                <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.apply'|trans({}, 'messages') }}</button>
             </noscript>
         </form>
     {% endblock %}
@@ -102,7 +102,7 @@
 {% embed '_components/_card.html.twig' with {
     'title': 'risk.modern.matrix_overview'|trans({}, 'risk'),
     'headerIcon': 'bi-grid-3x3',
-    'actions': '<a href="' ~ path('app_risk_matrix') ~ '" class="btn btn-sm btn-outline-primary">' ~ ('risk.modern.view_full_matrix'|trans({}, 'risk')) ~ ' <i class="bi bi-arrow-right" aria-hidden="true"></i></a>',
+    'actions': '<a href="' ~ path('app_risk_matrix') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">' ~ ('risk.modern.view_full_matrix'|trans({}, 'risk')) ~ ' <i class="bi bi-arrow-right" aria-hidden="true"></i></a>',
     'class': 'mb-4'
 } %}
     {% block card_body %}
@@ -361,14 +361,14 @@
                 <td class="text-center">
                     <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                         <a href="{{ path('app_risk_show', {id: risk.id}) }}"
-                           class="btn btn-outline-primary"
+                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                            data-turbo-action="advance"
                            title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                             <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
                         {% if is_granted('ROLE_USER') %}
                         <a href="{{ path('app_risk_edit', {id: risk.id}) }}"
-                           class="btn btn-outline-secondary"
+                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                            data-turbo-action="advance"
                            title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                             <i class="bi bi-pencil" aria-hidden="true"></i>

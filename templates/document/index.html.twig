@@ -51,7 +51,7 @@
                     {% endif %}
                 </select>
                 <noscript>
-                    <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.apply'|trans({}, 'messages') }}</button>
                 </noscript>
             </form>
         {% endblock %}
@@ -285,17 +285,17 @@
                         <td class="text-right">
                             <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                 <a href="{{ path('app_document_download', {id: document.id}) }}"
-                                   class="btn btn-sm btn-outline-success"
+                                   class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm"
                                    title="{{ 'common.download'|trans({}, 'messages') }}" aria-label="{{ 'common.download'|trans({}, 'messages') }}">
                                     <i class="bi bi-download" aria-hidden="true"></i>
                                 </a>
                                 <a href="{{ path('app_document_show', {id: document.id}) }}"
-                                   class="btn btn-sm btn-outline-primary"
+                                   class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                    title="{{ 'common.details'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                 </a>
                                 <a href="{{ path('app_document_edit', {id: document.id}) }}"
-                                   class="btn btn-sm btn-outline-secondary"
+                                   class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                    title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                 </a>

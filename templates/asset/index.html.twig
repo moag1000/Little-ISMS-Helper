@@ -50,7 +50,7 @@
                 {% endif %}
             </select>
             <noscript>
-                <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.apply'|trans({}, 'messages') }}</button>
             </noscript>
         </form>
     {% endblock %}
@@ -300,14 +300,14 @@
                 <td class="text-center">
                     <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'asset.aria.actions_for_asset'|trans({'%name%': asset.name}, 'asset') }}">
                         <a href="{{ path('app_asset_show', {id: asset.id}) }}"
-                           class="btn btn-outline-primary"
+                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                            data-turbo-action="advance"
                            aria-label="{{ 'asset.aria.view_asset'|trans({'%name%': asset.name}, 'asset') }}">
                             <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
                         {% if is_granted('ROLE_USER') %}
                         <a href="{{ path('app_asset_edit', {id: asset.id}) }}"
-                           class="btn btn-outline-secondary"
+                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                            data-turbo-action="advance"
                            aria-label="{{ 'asset.aria.edit_asset'|trans({'%name%': asset.name}, 'asset') }}">
                             <i class="bi bi-pencil" aria-hidden="true"></i>
