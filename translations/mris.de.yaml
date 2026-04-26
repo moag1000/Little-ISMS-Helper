@@ -53,3 +53,11 @@ ai_agent:
             Zweckbestimmung (Art. 11), Datengovernance (Art. 10), Human Oversight
             (Art. 14), Anbieter (Art. 16), Modell-Version (ISO 42001), Capability-Scope
             (MHC-13), Bedrohungsmodell (Art. 9 + MHC-13), Extension-Allowlist (MHC-13).
+    dpia:
+        section_title: 'DPIA-Status (DSGVO Art. 35 + AI Act Art. 9)'
+        col_title: 'Titel'
+        col_status: 'Status'
+        col_link: 'Aktion'
+        open: 'Öffnen'
+        warning_missing: 'Hochrisiko-AI ohne DPIA — gem. DSGVO Art. 35 + AI Act Art. 9 erforderlich.'
+        create_button: 'DPIA anlegen'
