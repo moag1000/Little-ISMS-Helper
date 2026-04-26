@@ -21,6 +21,7 @@
 
     {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
         {% block card_body %}
+            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
             {% if actions is empty %}
                 {{ _fa_empty_state.render({
                     mood: 'sleeping',

@@ -66,6 +66,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {# Phase 8H.1: standardised via _detail_group component #}
             {% include '_components/_detail_group.html.twig' with {
                 items: [

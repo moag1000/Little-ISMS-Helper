@@ -24,6 +24,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     <p class="text-muted mb-4">
                         {{ 'tenant.organisation_context.description'|trans({}, 'tenant') }}
                     </p>

@@ -17,6 +17,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     <div class="p-5">
                         {% if setup_complete %}
                             {{ _fa_alert.render({ variant: 'success', title: 'setup.already_complete.title'|trans({}, 'setup'), body: 'setup.already_complete.description'|trans({}, 'setup') }) }}

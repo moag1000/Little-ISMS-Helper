@@ -137,6 +137,7 @@
     {# Action Buttons #}
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ _fa_alert.render({ variant: 'warning', class: 'mb-3', body: '<strong>Import functionality is currently in preview mode.</strong> The actual import execution is not yet implemented. This preview shows what would be imported.' }) }}
 
             <form method="post" action="{{ path('data_import_execute') }}"

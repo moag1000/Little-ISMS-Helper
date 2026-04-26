@@ -88,6 +88,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
                     {% if dashboard.compliance.frameworks|length > 0 %}
                         {% for framework in dashboard.compliance.frameworks %}
                         <div class="mb-3">
@@ -168,6 +169,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
                     {% if dashboard.critical_risks|length > 0 %}
                         <div class="list-group list-group-flush">
                             {% for risk in dashboard.critical_risks %}
@@ -208,6 +210,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
                     {% if dashboard.pending_approvals|length > 0 %}
                         <div class="list-group list-group-flush">
                             {% for approval in dashboard.pending_approvals %}

@@ -123,6 +123,7 @@
                         </div>
                     {% endblock %}
                     {% block card_body %}
+                        {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
                                 <strong>{{ 'mfa.backup_codes.remaining'|trans({}, 'mfa') }}:</strong>

@@ -42,6 +42,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {% if bc_exercise.status == 'completed' %}
                 {% set effectiveness = bc_exercise.getEffectivenessScore() %}
                 {% set effectivenessVariant = effectiveness >= 80 ? 'success' : (effectiveness >= 60 ? 'info' : 'warning') %}

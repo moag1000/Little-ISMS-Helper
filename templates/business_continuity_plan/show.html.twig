@@ -39,6 +39,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {% set readiness = bc_plan.getReadinessScore() %}
             {% set readinessVariant = readiness >= 80 ? 'success' : (readiness >= 60 ? 'info' : 'warning') %}
             {{ _fa_alert.render({ variant: readinessVariant, body: '<strong>' ~ 'bc_plans.message.readiness_score'|trans({'%score%': readiness}, 'bc_plans') ~ '</strong>' }) }}

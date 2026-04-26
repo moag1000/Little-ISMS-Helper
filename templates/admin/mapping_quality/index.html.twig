@@ -92,6 +92,7 @@
     {# Liste #}
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {% if mappings|length == 0 %}
                 {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: 'admin.mapping_quality.no_results'|trans({}, 'admin') }) }}
             {% else %}

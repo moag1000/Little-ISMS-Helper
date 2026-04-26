@@ -27,6 +27,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     <form method="post" action="{{ path('app_admin_audit_retention') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('audit_retention') }}">
 
