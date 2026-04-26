@@ -83,8 +83,8 @@
             } %}
 
             <div class="d-flex justify-content-between pt-3 border-top">
-                <a href="{{ path('app_patch_show', {id: patch.id}) }}" class="btn btn-outline-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
-                <button type="submit" class="btn btn-primary">{{ 'common.save'|trans({}, 'messages') }}</button>
+                <a href="{{ path('app_patch_show', {id: patch.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back'|trans({}, 'messages') }}</a>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">{{ 'common.save'|trans({}, 'messages') }}</button>
             </div>
 
             {{ form_end(form) }}

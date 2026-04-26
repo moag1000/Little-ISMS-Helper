@@ -14,7 +14,7 @@
         <p class="text-muted">{{ 'workflow.description.pending_detail'|trans({}, 'workflows') }}</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
+        <a href="{{ path('app_workflow_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
@@ -94,7 +94,7 @@
                 {% include '_components/_badge.html.twig' with { variant: statusColors[instance.status] ?? 'secondary', content: ('workflow.status.' ~ instance.status)|trans({}, 'workflows') } %}
             </td>
             <td class="text-center">
-                <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm">
+                <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                     {{ 'common.view'|trans({}, 'messages') }}
                 </a>
             </td>
@@ -137,10 +137,10 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
                                 {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
                             </button>
-                            <button type="submit" class="btn btn-success">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
                                 <i class="bi bi-check-lg" aria-hidden="true"></i>
                                 {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
                             </button>
@@ -175,10 +175,10 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
                                 {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
                             </button>
-                            <button type="submit" class="btn btn-danger">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                                 <i class="bi bi-x-lg" aria-hidden="true"></i>
                                 {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
                             </button>

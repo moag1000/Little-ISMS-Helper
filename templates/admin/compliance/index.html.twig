@@ -1,5 +1,4 @@
 {% extends 'admin/layout.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}{% endblock %}
 
@@ -108,7 +107,11 @@
                         </div>
 
                         {% if _applicability == 'conditional' and framework.applicability_condition_key %}
-                            {{ _fa_alert.render({ variant: 'warning', class: 'small py-2 px-3 mb-2', body: '<strong>' ~ ('admin.compliance.applicability.applies_when'|trans({}, 'compliance')) ~ ':</strong> ' ~ (framework.applicability_condition_key|trans({}, 'compliance')) }) }}
+                            <div class="alert alert-warning small py-2 px-3 mb-2">
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                                <strong>{{ 'admin.compliance.applicability.applies_when'|trans({}, 'compliance') }}:</strong>
+                                {{ framework.applicability_condition_key|trans({}, 'compliance') }}
+                            </div>
                         {% endif %}
 
                         <p class="framework-description">{{ framework.description }}</p>
@@ -143,16 +146,16 @@
 
                         <div class="framework-actions">
                             {% if framework.loaded %}
-                                <button class="fa-cyber-btn fa-cyber-btn--success btn-block" disabled>
+                                <button class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--block" disabled>
                                     <span class="icon"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></span> {{ 'compliance.already_loaded'|trans({}, 'compliance') }}
                                 </button>
-                                <button class="fa-cyber-btn fa-cyber-btn--danger btn-block mt-1 delete-framework-btn"
+                                <button class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--block mt-1 delete-framework-btn"
                                         data-framework-code="{{ framework.code }}"
                                         data-framework-name="{{ framework.name }}">
                                     <span class="icon"><i class="bi bi-trash" aria-hidden="true"></i></span> {{ 'compliance.delete_framework'|trans({}, 'compliance') }}
                                 </button>
                             {% else %}
-                                <button class="fa-cyber-btn fa-cyber-btn--primary btn-block load-framework-btn"
+                                <button class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--block load-framework-btn"
                                         data-framework-code="{{ framework.code }}"
                                         data-framework-name="{{ framework.name }}">
                                     <span class="icon"><i class="bi bi-download" aria-hidden="true"></i></span> {{ 'compliance.load_framework'|trans({}, 'compliance') }}
@@ -206,8 +209,8 @@ function initializeFrameworkButtons() {
 
                 if (result.success) {
                     this.innerHTML = '<span class="icon"><i class="bi bi-check-circle text-success" aria-hidden="true"></i></span> {{ 'compliance.successfully_loaded'|trans({}, 'compliance') }}';
-                    this.classList.remove('btn-primary');
-                    this.classList.add('btn-success');
+                    this.classList.remove('fa-cyber-btn--primary');
+                    this.classList.add('fa-cyber-btn--success');
 
                     // Mark card as loaded
                     this.closest('.framework-card').classList.add('loaded');
@@ -216,16 +219,16 @@ function initializeFrameworkButtons() {
                     if (result.framework_id) {
                         const actionContainer = this.closest('.framework-actions');
                         actionContainer.innerHTML = `
-                            <button class="btn btn-success btn-block" disabled>
+                            <button class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--block" disabled>
                                 <span class="icon"><i class="bi bi-check-circle text-success" aria-hidden="true"></i></span> {{ 'compliance.successfully_loaded'|trans({}, 'compliance') }}
                             </button>
-                            <a href="/{{ app.request.locale }}/compliance/framework/${result.framework_id}" class="btn btn-primary btn-block mt-1"
+                            <a href="/{{ app.request.locale }}/compliance/framework/${result.framework_id}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--block mt-1"
                                data-bs-toggle="tooltip" data-bs-placement="right"
                                data-bs-title="{{ 'common.tooltip.framework_dashboard_description'|trans({}, 'messages') }}"
                                title="{{ 'common.tooltip.framework_dashboard_description'|trans({}, 'messages') }}">
                                 <span class="icon">🚀</span> Start Working →
                             </a>
-                            <button class="btn btn-secondary btn-block mt-1" data-controller="ui-actions" data-action="ui-actions#reload"
+                            <button class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--block mt-1" data-controller="ui-actions" data-action="ui-actions#reload"
                                     data-bs-toggle="tooltip" data-bs-placement="right"
                                     data-bs-title="{{ 'common.tooltip.reload_to_see_framework'|trans({}, 'messages') }}"
                                     title="{{ 'common.tooltip.reload_to_see_framework'|trans({}, 'messages') }}">
@@ -246,7 +249,7 @@ function initializeFrameworkButtons() {
                     }
                 } else {
                     this.innerHTML = '<span class="icon"><i class="bi bi-x-circle text-danger" aria-hidden="true"></i></span> {{ 'compliance.load_failed'|trans({}, 'compliance') }}';
-                    this.classList.add('btn-danger');
+                    this.classList.add('fa-cyber-btn--danger');
 
                     alert('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + result.message);
 
@@ -254,22 +257,22 @@ function initializeFrameworkButtons() {
                     setTimeout(() => {
                         this.disabled = false;
                         this.innerHTML = '<span class="icon"><i class="bi bi-download" aria-hidden="true"></i></span> {{ 'compliance.load_framework'|trans({}, 'compliance') }}';
-                        this.classList.remove('btn-danger');
-                        this.classList.add('btn-primary');
+                        this.classList.remove('fa-cyber-btn--danger');
+                        this.classList.add('fa-cyber-btn--primary');
                     }, 3000);
                 }
             } catch (error) {
                 console.error('Error loading framework:', error);
                 this.innerHTML = '<span class="icon"><i class="bi bi-x-circle text-danger" aria-hidden="true"></i></span> {{ 'compliance.load_failed'|trans({}, 'compliance') }}';
-                this.classList.add('btn-danger');
+                this.classList.add('fa-cyber-btn--danger');
 
                 alert('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + error.message);
 
                 setTimeout(() => {
                     this.disabled = false;
                     this.innerHTML = '<span class="icon"><i class="bi bi-download" aria-hidden="true"></i></span> {{ 'compliance.load_framework'|trans({}, 'compliance') }}';
-                    this.classList.remove('btn-danger');
-                    this.classList.add('btn-primary');
+                    this.classList.remove('fa-cyber-btn--danger');
+                    this.classList.add('fa-cyber-btn--primary');
                 }, 3000);
             }
         });

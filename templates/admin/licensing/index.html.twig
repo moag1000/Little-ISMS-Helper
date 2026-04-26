@@ -1,5 +1,4 @@
 {% extends 'admin/layout.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}Lizenzinformationen{% endblock %}
 
@@ -66,7 +65,7 @@
                             <i class="bi bi-printer" aria-hidden="true"></i>Drucken
                         </button>
                         <a href="{{ asset('NOTICE.md') }}" download class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                            <i class="bi bi-download" aria-hidden="true"></i>NOTICE.md
+                            <i class="bi bi-download me-1" aria-hidden="true"></i>NOTICE.md
                         </a>
                     </div>
                 {% endblock %}
@@ -75,7 +74,20 @@
 
         <div class="col-lg-9">
             {# Compliance Status Alert #}
-            {{ _fa_alert.render({ variant: 'success', class: 'mb-4', title: 'Lizenzkonform für kommerzielle Nutzung', body: 'Alle verwendeten Third-Party-Komponenten sind für kommerzielle Nutzung freigegeben. Bitte beachten Sie die Attributions- und Lizenzvorgaben.' }) }}
+            <div class="alert alert-success mb-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fa-icon fa-icon--status-ok fs-3 me-3" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h2 class="alert-heading mb-1 h5"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> Lizenzkonform für kommerzielle Nutzung</h2>
+                        <p class="mb-0">
+                            Alle verwendeten Third-Party-Komponenten sind für kommerzielle Nutzung freigegeben.
+                            Bitte beachten Sie die Attributions- und Lizenzvorgaben.
+                        </p>
+                    </div>
+                </div>
+            </div>
 
             {# NOTICE Content #}
             {% embed '_components/_card.html.twig' %}

@@ -1,5 +1,4 @@
 {% extends 'base.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'tenant.email.title'|trans({}, 'tenant') }}{% endblock %}
 
@@ -33,7 +32,10 @@
                         <div class="mb-3">{{ form_row(form.emailLogoUrl, { attr: { class: 'form-control' } }) }}</div>
                         <div class="mb-3">{{ form_row(form.emailFooterText, { attr: { class: 'form-control' } }) }}</div>
                         <div class="mb-3">{{ form_row(form.emailSupportAddress, { attr: { class: 'form-control' } }) }}</div>
-                        {{ _fa_alert.render({ variant: 'info', class: 'small mb-3', body: 'tenant.email.hint.fallback'|trans({}, 'tenant') }) }}
+                        <div class="alert alert-info small mb-3">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            {{ 'tenant.email.hint.fallback'|trans({}, 'tenant') }}
+                        </div>
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="bi bi-save" aria-hidden="true"></i>
                             {{ 'common.save'|trans({}, 'messages') }}

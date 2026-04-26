@@ -51,7 +51,7 @@
                     {% endif %}
                 </select>
                 <noscript>
-                    <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.apply'|trans({}, 'messages') }}</button>
                 </noscript>
             </form>
         {% endblock %}
@@ -109,10 +109,10 @@
                                 <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('patch.status.' ~ patch.status)|trans({}, 'patches') } %}</td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                                        <a href="{{ path('app_patch_show', {id: patch.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                        <a href="{{ path('app_patch_show', {id: patch.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                             <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
-                                        <a href="{{ path('app_patch_edit', {id: patch.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                                        <a href="{{ path('app_patch_edit', {id: patch.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                             <i class="bi bi-pencil" aria-hidden="true"></i>
                                         </a>
                                     </div>

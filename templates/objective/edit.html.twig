@@ -15,7 +15,7 @@
 
     <div class="page-header">
         <h1>{{ 'objective.title.edit'|trans({}, 'objective')}}: {{ objective.title }}</h1>
-        <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
+        <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back'|trans({}, 'messages') }}</a>
     </div>
 
     {% embed '_components/_card.html.twig' %}
@@ -59,10 +59,10 @@
                 } %}
 
                 <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-secondary">
+                    <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         {{ 'common.save_changes'|trans({}, 'messages') }}
                     </button>
                 </div>

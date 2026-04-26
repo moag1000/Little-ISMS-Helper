@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
+        <a href="{{ path('app_workflow_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
         </a>
     </div>
@@ -108,7 +108,7 @@
                 <p class="mb-3">{{ 'workflow.warning.no_eligible_approvers_admin'|trans({}, 'workflows') }}</p>
                 <div class="d-flex gap-2 flex-wrap">
                     {% if instance.workflow %}
-                    <a href="{{ path('app_workflow_definition_show', {id: instance.workflow.id}) }}" class="btn btn-outline-warning">
+                    <a href="{{ path('app_workflow_definition_show', {id: instance.workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--warning">
                         <i class="bi bi-gear" aria-hidden="true"></i> {{ 'workflow.warning.configure_step'|trans({}, 'workflows') }}
                     </a>
                     {% endif %}
@@ -152,11 +152,11 @@
                     <div>
                         <form method="post" action="{{ path('app_workflow_instance_approve', {id: instance.id}) }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ instance.id) }}">
-                            <button type="submit" class="btn btn-success btn-sm">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm">
                                 <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
                             </button>
                         </form>
-                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                        <button type="button" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm" data-bs-toggle="modal" data-bs-target="#rejectModal">
                             <i class="bi bi-x-lg" aria-hidden="true"></i> {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
                         </button>
                     </div>
@@ -242,13 +242,13 @@
           data-action="submit->ui-actions#confirm"
           data-ui-actions-message-param="{{ 'workflow.confirm.cancel'|trans({}, 'workflows') }}">
         <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ instance.id) }}">
-        <button type="submit" class="btn btn-danger">
+        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
             <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
         </button>
     </form>
     {% endif %}
 
-    <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
+    <a href="{{ path('app_workflow_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
         <i class="bi bi-list" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
     </a>
 </div>
@@ -271,8 +271,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                    <button type="submit" class="btn btn-danger">{{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}</button>
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">{{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}</button>
                 </div>
             </form>
         </div>

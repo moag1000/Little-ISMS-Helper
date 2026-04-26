@@ -8,7 +8,7 @@
     {# Designer Header #}
     <div class="designer-header bg-body text-body py-2 px-3 d-flex justify-content-between align-items-center border-bottom">
         <div class="d-flex align-items-center gap-3">
-            <a href="{{ path('report_builder_index') }}" class="btn btn-sm btn-outline-secondary">
+            <a href="{{ path('report_builder_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                 <i class="bi bi-arrow-left" aria-hidden="true"></i>
             </a>
             <div>
@@ -18,13 +18,13 @@
             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'v' ~ report.version } %}
         </div>
         <div class="d-flex align-items-center gap-2">
-            <button type="button" class="btn btn-sm btn-outline-light" data-action="click->report-designer#save">
+            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-action="click->report-designer#save">
                 <i class="bi bi-save" aria-hidden="true"></i> {{ 'action.save'|trans({}, 'report_builder') }}
             </button>
-            <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="btn btn-sm btn-outline-info" target="_blank">
+            <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" target="_blank">
                 <i class="bi bi-eye" aria-hidden="true"></i> {{ 'action.preview'|trans({}, 'report_builder') }}
             </a>
-            <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="btn btn-sm btn-danger">
+            <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                 <i class="bi bi-file-pdf" aria-hidden="true"></i> PDF
             </a>
         </div>
@@ -197,15 +197,15 @@
                 {# Actions #}
                 <div class="border-top pt-3">
                     <div class="d-grid gap-2">
-                        <button type="button" class="btn btn-primary" data-action="click->report-designer#save">
+                        <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" data-action="click->report-designer#save">
                             <i class="bi bi-save" aria-hidden="true"></i> {{ 'action.save'|trans({}, 'report_builder') }}
                         </button>
-                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#shareModal">
+                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-toggle="modal" data-bs-target="#shareModal">
                             <i class="bi bi-share" aria-hidden="true"></i> {{ 'action.share'|trans({}, 'report_builder') }}
                         </button>
                         <form method="post" action="{{ path('report_builder_delete', {id: report.id}) }}" onsubmit="return confirm('{{ 'confirm.delete'|trans({}, 'report_builder')|e('js') }}');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ report.id) }}">
-                            <button type="submit" class="btn btn-outline-danger w-100">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
                                 <i class="bi bi-trash" aria-hidden="true"></i> {{ 'action.delete'|trans({}, 'report_builder') }}
                             </button>
                         </form>
@@ -235,8 +235,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'action.cancel'|trans({}, 'report_builder') }}</button>
-                <button type="button" class="btn btn-primary" data-action="click->report-designer#saveSharing">{{ 'action.save'|trans({}, 'report_builder') }}</button>
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'action.cancel'|trans({}, 'report_builder') }}</button>
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" data-action="click->report-designer#saveSharing">{{ 'action.save'|trans({}, 'report_builder') }}</button>
             </div>
         </div>
     </div>
@@ -254,8 +254,8 @@
                 {# Dynamic content #}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'action.cancel'|trans({}, 'report_builder') }}</button>
-                <button type="button" class="btn btn-primary" data-action="click->report-designer#applyWidgetConfig">{{ 'action.apply'|trans({}, 'report_builder') }}</button>
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'action.cancel'|trans({}, 'report_builder') }}</button>
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" data-action="click->report-designer#applyWidgetConfig">{{ 'action.apply'|trans({}, 'report_builder') }}</button>
             </div>
         </div>
     </div>

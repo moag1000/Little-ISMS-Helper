@@ -76,10 +76,10 @@
 
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ is_edit ? path('app_workflow_definition_show', {id: workflow.id}) : path('app_workflow_definitions') }}"
-                           class="btn btn-secondary">
+                           class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                         </a>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="bi bi-check-circle" aria-hidden="true"></i>
                             {{ is_edit ? 'workflow.action.update'|trans({}, 'workflows') : 'workflow.action.create'|trans({}, 'workflows') }}
                         </button>
@@ -105,7 +105,7 @@
                               data-action="submit->ui-actions#confirm"
                               data-ui-actions-message-param="{{ 'workflow.confirm.delete'|trans({}, 'workflows') }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ workflow.id) }}">
-                            <button type="submit" class="btn btn-danger">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                                 <i class="bi bi-trash" aria-hidden="true"></i> {{ 'workflow.action.delete_definition'|trans({}, 'workflows') }}
                             </button>
                         </form>

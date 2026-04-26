@@ -14,7 +14,7 @@
                 </div>
             {% endif %}
         </div>
-        <a href="{{ path('app_corrective_action_edit', {id: action.id}) }}" class="btn btn-outline-primary">
+        <a href="{{ path('app_corrective_action_edit', {id: action.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
         </a>
     </div>
@@ -47,7 +47,7 @@
 
     <form method="post" action="{{ path('app_corrective_action_delete', {id: action.id}) }}" class="mt-4" onsubmit="return confirm('{{ 'corrective_action.confirm.delete'|trans({}, 'audits') }}');">
         <input type="hidden" name="_token" value="{{ csrf_token('delete_ca_' ~ action.id) }}">
-        <button type="submit" class="btn btn-outline-danger btn-sm">
+        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
             <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
         </button>
     </form>

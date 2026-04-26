@@ -56,7 +56,7 @@
                 <strong class="fs-4">{{ statistics.pending }}</strong>
             </div>
             <div class="mt-2">
-                <a href="{{ path('app_workflow_pending') }}" class="btn btn-sm">{{ 'common.view'|trans({}, 'messages') }}</a>
+                <a href="{{ path('app_workflow_pending') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
             </div>
         {% endblock %}
     {% endembed %}
@@ -72,7 +72,7 @@
                 <strong class="fs-4">{{ statistics.in_progress }}</strong>
             </div>
             <div class="mt-2">
-                <a href="{{ path('app_workflow_active') }}" class="btn btn-sm">{{ 'common.view'|trans({}, 'messages') }}</a>
+                <a href="{{ path('app_workflow_active') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
             </div>
         {% endblock %}
     {% endembed %}
@@ -88,7 +88,7 @@
                 <strong class="fs-15-danger">{{ instances|filter(i => i.overdue)|length }}</strong>
             </div>
             <div class="mt-2">
-                <a href="{{ path('app_workflow_overdue') }}" class="btn btn-sm btn-danger">{{ 'common.view'|trans({}, 'messages') }}</a>
+                <a href="{{ path('app_workflow_overdue') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
             </div>
         {% endblock %}
     {% endembed %}
@@ -148,14 +148,14 @@
                 <div class="btn-group" role="group">
                     {% if instance.status in ['pending', 'in_progress'] and (userCanApprove[instance.id] ?? false) %}
                         <button type="button"
-                                class="btn btn-sm btn-success"
+                                class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm"
                                 data-bs-toggle="modal"
                                 data-bs-target="#approveWorkflow{{ instance.id }}"
                                 title="{{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}">
                             <i class="bi bi-check-lg" aria-hidden="true"></i>
                         </button>
                         <button type="button"
-                                class="btn btn-sm btn-danger"
+                                class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
                                 data-bs-toggle="modal"
                                 data-bs-target="#rejectWorkflow{{ instance.id }}"
                                 title="{{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}">
@@ -163,7 +163,7 @@
                         </button>
                     {% endif %}
                     <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}"
-                       class="btn btn-sm btn-outline-primary"
+                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                        title="{{ 'common.view'|trans({}, 'messages') }}">
                         <i class="bi bi-eye" aria-hidden="true"></i>
                     </a>
@@ -208,10 +208,10 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
                                 {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
                             </button>
-                            <button type="submit" class="btn btn-success">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
                                 <i class="bi bi-check-lg" aria-hidden="true"></i>
                                 {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
                             </button>
@@ -246,10 +246,10 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
                                 {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
                             </button>
-                            <button type="submit" class="btn btn-danger">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                                 <i class="bi bi-x-lg" aria-hidden="true"></i>
                                 {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
                             </button>

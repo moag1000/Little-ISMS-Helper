@@ -18,10 +18,10 @@
             <i class="bi bi-clock-history" aria-hidden="true"></i> {{ report.name }}
         </h1>
         <div class="btn-group">
-            <a href="{{ path('app_scheduled_report_edit', {id: report.id}) }}" class="btn btn-outline-primary">
+            <a href="{{ path('app_scheduled_report_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'scheduled_report.action.edit'|trans({}, 'scheduled_reports') }}
             </a>
-            <a href="{{ path('app_scheduled_report_preview', {id: report.id}) }}" class="btn btn-outline-info">
+            <a href="{{ path('app_scheduled_report_preview', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 <i class="bi bi-eye" aria-hidden="true"></i> {{ 'scheduled_report.action.preview'|trans({}, 'scheduled_reports') }}
             </a>
         </div>
@@ -204,14 +204,14 @@
                 {% endblock %}
                 {% block card_body %}
                     <div class="d-grid gap-2">
-                        <a href="{{ path('app_scheduled_report_preview', {id: report.id}) }}" class="btn btn-outline-info">
+                        <a href="{{ path('app_scheduled_report_preview', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="bi bi-download" aria-hidden="true"></i> {{ 'scheduled_report.action.preview'|trans({}, 'scheduled_reports') }}
                         </a>
 
                         {% if is_granted('ROLE_ADMIN') %}
                         <form action="{{ path('app_scheduled_report_trigger', {id: report.id}) }}" method="post">
                             <input type="hidden" name="_token" value="{{ csrf_token('trigger' ~ report.id) }}">
-                            <button type="submit" class="btn btn-outline-warning w-100" onclick="return confirm('{{ 'scheduled_report.confirm.trigger'|trans({}, 'scheduled_reports') }}')">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning w-100" onclick="return confirm('{{ 'scheduled_report.confirm.trigger'|trans({}, 'scheduled_reports') }}')">
                                 <i class="bi bi-send" aria-hidden="true"></i> {{ 'scheduled_report.action.trigger'|trans({}, 'scheduled_reports') }}
                             </button>
                         </form>
@@ -221,7 +221,7 @@
 
                         <form action="{{ path('app_scheduled_report_delete', {id: report.id}) }}" method="post">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ report.id) }}">
-                            <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('{{ 'scheduled_report.confirm.delete'|trans({}, 'scheduled_reports') }}')">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100" onclick="return confirm('{{ 'scheduled_report.confirm.delete'|trans({}, 'scheduled_reports') }}')">
                                 <i class="bi bi-trash" aria-hidden="true"></i> {{ 'scheduled_report.action.delete'|trans({}, 'scheduled_reports') }}
                             </button>
                         </form>
