@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'context' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'context_management.title'|trans({}, 'context') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -196,10 +197,10 @@
                     {% endif %}
 
                     {% if not context.externalIssues and not context.internalIssues %}
-                    <div class="text-center py-4 text-muted">
-                        <i class="bi bi-info-circle icon-2-opacity-3" aria-hidden="true"></i>
-                        <p class="small mt-2 mb-0">{{ 'context.message.no_context_topics'|trans({}, 'context') }}</p>
-                    </div>
+                    {{ _fa_empty_state.render({
+                        mood: 'sleeping',
+                        title: 'context.message.no_context_topics'|trans({}, 'context')
+                    }) }}
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -280,10 +281,10 @@
                     </label>
                     <p class="mb-0">{{ context.interestedPartiesRequirements|nl2br }}</p>
                     {% else %}
-                    <div class="text-center py-3 text-muted">
-                        <i class="bi bi-list-check icon-2-opacity-3" aria-hidden="true"></i>
-                        <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans({}, 'context') }}</p>
-                    </div>
+                    {{ _fa_empty_state.render({
+                        mood: 'sleeping',
+                        title: 'context.message.no_requirements'|trans({}, 'context')
+                    }) }}
                     {% endif %}
                 </div>
             </div>
@@ -361,10 +362,10 @@
                     {% if context.ismsPolicy %}
                     <p class="mb-0">{{ context.ismsPolicy|nl2br }}</p>
                     {% else %}
-                    <div class="text-center py-4 text-muted">
-                        <i class="bi bi-file-earmark-text icon-3-opacity-3" aria-hidden="true"></i>
-                        <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans({}, 'context') }}</p>
-                    </div>
+                    {{ _fa_empty_state.render({
+                        mood: 'sleeping',
+                        title: 'context.message.no_requirements'|trans({}, 'context')
+                    }) }}
                     {% endif %}
                 {% endblock %}
             {% endembed %}
@@ -384,10 +385,10 @@
                     {% if context.rolesAndResponsibilities %}
                     <p class="mb-0">{{ context.rolesAndResponsibilities|nl2br }}</p>
                     {% else %}
-                    <div class="text-center py-4 text-muted">
-                        <i class="bi bi-person-badge icon-3-opacity-3" aria-hidden="true"></i>
-                        <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans({}, 'context') }}</p>
-                    </div>
+                    {{ _fa_empty_state.render({
+                        mood: 'sleeping',
+                        title: 'context.message.no_requirements'|trans({}, 'context')
+                    }) }}
                     {% endif %}
                 {% endblock %}
             {% endembed %}

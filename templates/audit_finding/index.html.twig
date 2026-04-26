@@ -4,6 +4,7 @@
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {{ _fa_page_header.render({
     badge: { icon: 'clipboard2-check', label: 'audit_finding.page.title'|trans({}, 'audits') },
     title: 'audit_finding.page.title'|trans({}, 'audits'),
@@ -60,10 +61,10 @@
     {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
         {% block card_body %}
             {% if findings is empty %}
-                <div class="alert alert-info m-3">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i>
-                    {{ 'audit_finding.message.no_findings'|trans({}, 'audits') }}
-                </div>
+                {{ _fa_empty_state.render({
+                    mood: 'celebrating',
+                    title: 'audit_finding.message.no_findings'|trans({}, 'audits')
+                }) }}
             {% else %}
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">

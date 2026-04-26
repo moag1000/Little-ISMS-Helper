@@ -6,6 +6,7 @@
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -110,7 +111,13 @@
                 {% endblock %}
             {% endembed %}
             {% else %}
-            <p>{{ 'change_request.empty.message'|trans({}, 'change_requests') }} <a href="{{ path('app_change_request_new') }}">{{ 'change_request.empty.create_first'|trans({}, 'change_requests') }}</a>.</p>
+            {{ _fa_empty_state.render({
+                mood: 'sleeping',
+                title: 'change_request.empty.message'|trans({}, 'change_requests'),
+                actions: [
+                    { label: 'change_request.empty.create_first'|trans({}, 'change_requests'), variant: 'primary', icon: 'plus-circle', href: path('app_change_request_new') }
+                ]
+            }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}

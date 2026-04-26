@@ -2,6 +2,7 @@
 {% trans_default_domain 'suppliers' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'supplier.title'|trans({}, 'suppliers') }}{% endblock %}
 
@@ -227,7 +228,13 @@
                 {% endblock %}
             {% endembed %}
             {% else %}
-            <p>{{ 'supplier.empty.message'|trans({}, 'suppliers') }} <a href="{{ path('app_supplier_new') }}">{{ 'supplier.empty.add_first'|trans({}, 'suppliers') }}</a>.</p>
+            {{ _fa_empty_state.render({
+                mood: 'sleeping',
+                title: 'supplier.empty.message'|trans({}, 'suppliers'),
+                actions: [
+                    { label: 'supplier.empty.add_first'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus-circle', href: path('app_supplier_new') }
+                ]
+            }) }}
             {% endif %}
 
             {# Bulk Action Bar #}
