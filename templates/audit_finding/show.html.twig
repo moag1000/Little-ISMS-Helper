@@ -6,7 +6,7 @@
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
-            <div class="text-muted small">{{ finding.findingNumber ?? '#' ~ finding.id }}</div>
+            <div class="text-muted small">{{ finding.(findingNumber ?? ('#' ~ finding.id)) }}</div>
             <h1 class="h3 mb-1">{{ finding.title }}</h1>
             {% if finding.clauseReference %}
                 <div class="text-muted">{{ finding.clauseReference }}</div>

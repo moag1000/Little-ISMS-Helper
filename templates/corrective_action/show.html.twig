@@ -10,7 +10,7 @@
             {% if action.finding %}
                 <div class="text-muted">
                     {{ 'corrective_action.message.for_finding'|trans({}, 'audits') }}:
-                    <a href="{{ path('app_audit_finding_show', {id: action.finding.id}) }}">{{ action.finding.findingNumber ?? '#' ~ action.finding.id }} — {{ action.finding.title }}</a>
+                    <a href="{{ path('app_audit_finding_show', {id: action.finding.id}) }}">{{ action.finding.(findingNumber ?? ('#' ~ action.finding.id)) }} — {{ action.finding.title }}</a>
                 </div>
             {% endif %}
         </div>
