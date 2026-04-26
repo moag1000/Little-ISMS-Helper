@@ -36,7 +36,7 @@
                 <div class="modal-header bg-warning-subtle text-warning">
                     <div class="w-100">
                         <div class="modal-title h5" id="gdpr-wizard-title">
-                            <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--breach" aria-hidden="true"></i>
                             {{ 'data_breach.wizard.title'|trans({}, 'privacy') }}
                         </div>
                         <p class="mb-0 small">{{ 'data_breach.wizard.subtitle'|trans({}, 'privacy') }}</p>
@@ -98,7 +98,7 @@
 
                         <div class="alert alert-info mt-4" role="alert">
                             <small>
-                                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
                                 {{ 'data_breach.wizard.personal_data_hint'|trans({}, 'privacy') }}
                             </small>
                         </div>
@@ -271,7 +271,7 @@
                         {# 72h Deadline (conditional) #}
                         <div class="alert alert-danger d-none" role="alert">
                             <strong>
-                                <i class="bi bi-clock-fill" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
                                 {{ 'data_breach.wizard.deadline_warning'|trans({}, 'privacy') }}
                             </strong>
                             <p class="mb-0 mt-2">

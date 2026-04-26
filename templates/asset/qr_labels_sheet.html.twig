@@ -255,17 +255,17 @@
                             <div class="label-info">
                                 <div class="label-type">
                                     {% if label.asset.assetType == 'hardware' %}
-                                        <i class="bi bi-pc-display" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--asset-endpoint" aria-hidden="true"></i>
                                     {% elseif label.asset.assetType == 'software' %}
-                                        <i class="bi bi-code-square" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i>
                                     {% elseif label.asset.assetType == 'data' %}
-                                        <i class="bi bi-database" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--asset-database" aria-hidden="true"></i>
                                     {% elseif label.asset.assetType == 'service' %}
-                                        <i class="bi bi-cloud" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--asset-cloud" aria-hidden="true"></i>
                                     {% elseif label.asset.assetType == 'personnel' %}
                                         <i class="bi bi-person" aria-hidden="true"></i>
                                     {% else %}
-                                        <i class="bi bi-hdd-network" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--asset-server" aria-hidden="true"></i>
                                     {% endif %}
                                     {{ ('asset.type.' ~ label.asset.assetType)|trans({}, 'asset') }}
                                 </div>

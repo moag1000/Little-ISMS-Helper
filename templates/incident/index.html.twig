@@ -111,10 +111,10 @@
     {% block card_body %}
         <div class="row">
             {% set severities = {
-                'critical': { label: 'incident.severity.critical'|trans({}, 'incident'), icon: '<i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>', color: 'danger' },
-                'high': { label: 'incident.severity.high'|trans({}, 'incident'), icon: '<i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>', color: 'warning' },
-                'medium': { label: 'incident.severity.medium'|trans({}, 'incident'), icon: '<i class="bi bi-exclamation-triangle" aria-hidden="true"></i>', color: 'info' },
-                'low': { label: 'incident.severity.low'|trans({}, 'incident'), icon: '<i class="bi bi-info-circle" aria-hidden="true"></i>', color: 'success' }
+                'critical': { label: 'incident.severity.critical'|trans({}, 'incident'), icon: '<i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>', color: 'danger' },
+                'high': { label: 'incident.severity.high'|trans({}, 'incident'), icon: '<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>', color: 'warning' },
+                'medium': { label: 'incident.severity.medium'|trans({}, 'incident'), icon: '<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>', color: 'info' },
+                'low': { label: 'incident.severity.low'|trans({}, 'incident'), icon: '<i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>', color: 'success' }
             } %}
             {% for severity, data in severities %}
                 {% set count = allIncidents|filter(i => i.severity == severity)|length %}
