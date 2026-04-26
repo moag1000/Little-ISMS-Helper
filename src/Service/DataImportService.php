@@ -533,11 +533,19 @@ class DataImportService
 
         foreach ($data as $property => $value) {
             $propertyUcFirst = ucfirst((string) $property);
+            // snake_case → camelCase Variante (z. B. `inherent_risk_level`
+            // → `setInherentRiskLevel`). Ergänzt direkten Setter und
+            // Entity-Prefix-Setter um eine dritte Auflösungs-Stufe.
+            $camelCase = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', (string) $property))));
+            $camelUcFirst = ucfirst($camelCase);
+
             // Setter-Kandidaten: direkter Name, Entity-Prefix-Variante (z. B.
-            // `type` → `setAssetType` auf Asset), bekannter Alias.
+            // `type` → `setAssetType` auf Asset), snake-to-camel, bekannter Alias.
             $setterCandidates = [
                 'set' . $propertyUcFirst,
                 'set' . $shortName . $propertyUcFirst,
+                'set' . $camelUcFirst,
+                'set' . $shortName . $camelUcFirst,
             ];
             // Aliases: YAML-Convention vs. Entity-Konvention
             $aliases = [
