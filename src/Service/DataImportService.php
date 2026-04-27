@@ -405,7 +405,12 @@ class DataImportService
                                 }
                                 $existing = $this->entityManager->getRepository($entityClass)->findOneBy($criteria);
                                 if ($existing !== null) {
-                                    $this->addLog("Skipped duplicate {$entityClass} where {$naturalKeyField}={$keyValue}");
+                                    $this->addLog("Skipped duplicate {$entityClass} where {$naturalKeyField}={$keyValue} — re-tracking as imported");
+                                    // Auch existierende Entities tracken, damit das Status-Badge
+                                    // im Sample-Data-Index die Sample als "importiert" zeigt — sonst
+                                    // führt eine Idempotenz-Skip dazu, dass count=0 ausgewiesen wird.
+                                    $created[] = $existing;
+                                    $count++;
                                     continue;
                                 }
                             }
