@@ -8,6 +8,7 @@ use App\Entity\SampleDataImport;
 use App\Repository\TenantRepository;
 use App\Service\DataImportService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
@@ -32,9 +33,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class SampleDataPurgeCommand
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
         private readonly TenantRepository $tenantRepository,
         private readonly DataImportService $importer,
+        private readonly ?ManagerRegistry $managerRegistry = null,
     ) {
     }
 
@@ -91,19 +93,66 @@ final class SampleDataPurgeCommand
         }
 
         $totalRemoved = 0;
-        $totalErrors = 0;
+        $allErrors = [];
         foreach ($byKey as $key => $rows) {
             $result = $this->importer->removeSampleData((string) $key, $tenant);
             $totalRemoved += $result['removed'] ?? 0;
-            $totalErrors += count($result['errors'] ?? []);
+            $errors = $result['errors'] ?? [];
             $io->writeln(sprintf('  sample[%s]: removed=%d errors=%d',
-                $key, $result['removed'] ?? 0, count($result['errors'] ?? [])));
-            foreach ($result['errors'] ?? [] as $err) {
+                $key, $result['removed'] ?? 0, count($errors)));
+            foreach ($errors as $err) {
+                $io->writeln('    <error>' . $err . '</error>');
+                $allErrors[] = $err;
+            }
+        }
+
+        // Retry-pass: parse failed (Class#Id) tuples from error messages, try
+        // again now that all dependent samples are processed. Catches the
+        // "BCPlan referencing BP" case where sample 15 partially failed in
+        // the first pass.
+        $retryRemoved = 0;
+        $persistentFailures = [];
+        if ($allErrors !== []) {
+            $io->writeln('');
+            $io->writeln('<comment>Retry-pass for FK-blocked entities …</comment>');
+            $retryItems = [];
+            foreach ($allErrors as $err) {
+                if (preg_match('/^(App\\\\Entity\\\\\w+)#(\d+):/', $err, $m)) {
+                    $retryItems[$m[1] . '#' . $m[2]] = ['class' => $m[1], 'id' => (int) $m[2]];
+                }
+            }
+            foreach ($retryItems as $item) {
+                try {
+                    $entity = $this->entityManager->find($item['class'], $item['id']);
+                    if ($entity === null) {
+                        $retryRemoved++; // already gone
+                        continue;
+                    }
+                    $this->entityManager->remove($entity);
+                    $this->entityManager->flush();
+                    $retryRemoved++;
+                } catch (\Throwable $e) {
+                    $persistentFailures[] = sprintf('%s#%d: %s', $item['class'], $item['id'], $e->getMessage());
+                    if (!$this->entityManager->isOpen() && $this->managerRegistry !== null) {
+                        $this->managerRegistry->resetManager();
+                        $this->entityManager = $this->managerRegistry->getManager();
+                    }
+                }
+            }
+            $io->writeln(sprintf('  Retry-pass: removed=%d, still-failing=%d', $retryRemoved, count($persistentFailures)));
+            foreach ($persistentFailures as $err) {
                 $io->writeln('    <error>' . $err . '</error>');
             }
         }
 
-        $io->success(sprintf('Purge complete: %d entities removed, %d errors.', $totalRemoved, $totalErrors));
+        $totalErrors = count($persistentFailures);
+        $totalRemoved += $retryRemoved;
+        if ($persistentFailures !== []) {
+            $io->writeln('');
+            $io->warning(sprintf('%d entities still blocked by FKs from rows outside sample-tracking. Manual cleanup may be needed:', count($persistentFailures)));
+            $io->writeln('  e.g. SET FOREIGN_KEY_CHECKS=0; DELETE FROM <table> WHERE id=N; SET FOREIGN_KEY_CHECKS=1;');
+        }
+        $io->success(sprintf('Purge complete: %d entities removed, %d still-failing.', $totalRemoved, $totalErrors));
         return Command::SUCCESS;
     }
 }
