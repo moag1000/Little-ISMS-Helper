@@ -112,6 +112,19 @@ RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 775 /var/www/html/var /var/www/html/public/uploads && \
     chown -R root:root /var/log/supervisor /var/log/nginx
 
+# Configure PHP session storage to use the application var/sessions directory.
+# Without this, PHP defaults to /var/lib/php/sessions which doesn't exist in
+# this container — Symfony's framework.yaml save_path overrides per-request,
+# but any code path that uses PHP-native session_start() before the kernel
+# would silently fail to persist. Explicit setting here keeps both paths consistent.
+RUN cat > "$PHP_INI_DIR/conf.d/session.ini" <<'EOF'
+session.save_path = "/var/www/html/var/sessions"
+session.gc_maxlifetime = 3600
+session.cookie_httponly = 1
+session.cookie_samesite = "Lax"
+session.use_strict_mode = 1
+EOF
+
 # Configure OPcache for production (separate file for better management)
 RUN cat > "$PHP_INI_DIR/conf.d/opcache-prod.ini" <<'EOF'
 opcache.enable=1
