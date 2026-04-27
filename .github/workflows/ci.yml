@@ -284,7 +284,7 @@ jobs:
 
           # Build and start services (this will reuse cached layers from previous builds)
           echo "Starting Docker Compose services..."
-          COMPOSE_HTTP_TIMEOUT=200 docker compose up -d --wait || {
+          COMPOSE_HTTP_TIMEOUT=600 docker compose up -d --wait --wait-timeout 540 || {
             echo "Docker Compose failed to start services. Showing logs:"
             docker compose ps
             docker compose logs --tail=100
