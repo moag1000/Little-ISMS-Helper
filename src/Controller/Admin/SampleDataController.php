@@ -75,8 +75,8 @@ class SampleDataController extends AbstractController
                 'description' => $data['description'] ?? '',
                 'required_modules' => $requiredModules,
                 'modules_ok' => $modulesOk,
-                'count' => $importedCounts[$key] ?? 0,
-                'imported' => ($importedCounts[$key] ?? 0) > 0,
+                'count' => $importedCounts[$key] ?? $countsByStringKey[(string) $key] ?? 0,
+                'imported' => ($importedCounts[$key] ?? $countsByStringKey[(string) $key] ?? 0) > 0,
                 'removable' => isset($data['file']),  // Commands können wir (noch) nicht tracken
             ];
         }
