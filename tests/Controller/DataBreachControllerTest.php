@@ -176,7 +176,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->testBreach->setReferenceNumber('BREACH-' . $uniqueId);
         $this->testBreach->setTitle('Test Data Breach ' . $uniqueId);
         $this->testBreach->setStatus('draft');
-        $this->testBreach->setSeverity(\App\Enum\IncidentSeverity::High);
+        $this->testBreach->setSeverity("high");
         $this->testBreach->setDetectedAt(new DateTimeImmutable());
         $this->testBreach->setDataCategories(['identification', 'contact']);
         $this->testBreach->setDataSubjectCategories(['customers']);
@@ -809,7 +809,7 @@ class DataBreachControllerTest extends WebTestCase
         $otherBreach->setReferenceNumber('BREACH-OTHER-' . $uniqueId);
         $otherBreach->setTitle('Other Tenant Breach ' . $uniqueId);
         $otherBreach->setStatus('draft');
-        $otherBreach->setSeverity(\App\Enum\IncidentSeverity::Low);
+        $otherBreach->setSeverity("low");
         $otherBreach->setDetectedAt(new DateTimeImmutable());
         $otherBreach->setDataCategories(['contact']);
         $otherBreach->setDataSubjectCategories(['employees']);
