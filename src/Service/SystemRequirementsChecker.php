@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use Exception;
@@ -28,6 +30,7 @@ class SystemRequirementsChecker
             'extensions' => $this->checkPhpExtensions(),
             'database' => $this->checkDatabaseConnection(),
             'permissions' => $this->checkDirectoryPermissions(),
+            'session_write' => $this->checkSessionWrite(),
             'memory' => $this->checkMemoryLimit(),
             'execution_time' => $this->checkExecutionTime(),
             'symfony' => $this->checkSymfonyVersion(),
@@ -172,6 +175,41 @@ class SystemRequirementsChecker
                 ),
             'writable' => $writable,
             'not_writable' => $notWritable,
+            'critical' => true,
+        ];
+    }
+
+    /**
+     * Echter Session-Write-Test: Schreibt + liest eine Probe-Datei im
+     * Symfony-Session-Verzeichnis. Erkennt Edge-Cases wie SELinux/AppArmor,
+     * inkonsistente PHP-FPM-User-IDs oder open_basedir-Restriktionen, die
+     * der reine is_writable()-Check nicht aufdeckt.
+     */
+    private function checkSessionWrite(): array
+    {
+        $sessionDir = $this->projectDir . '/var/sessions';
+        if (!is_dir($sessionDir)) {
+            @mkdir($sessionDir, 0775, true);
+        }
+
+        $testFile = $sessionDir . '/.write_test_' . bin2hex(random_bytes(4));
+        $payload = 'mris-setup-write-test';
+
+        $writeOk = @file_put_contents($testFile, $payload) !== false;
+        $readOk = $writeOk && @file_get_contents($testFile) === $payload;
+        if ($writeOk) {
+            @unlink($testFile);
+        }
+
+        $passed = $writeOk && $readOk;
+
+        return [
+            'status' => $passed ? 'success' : 'error',
+            'message' => $passed
+                ? 'Session-Verzeichnis kann geschrieben und gelesen werden'
+                : 'Session-Schreibtest fehlgeschlagen — Wizard riskiert "too many redirects"-Loop. '
+                  . 'Prüfe Permissions auf var/sessions, PHP-FPM-User-ID, SELinux/AppArmor, open_basedir.',
+            'session_dir' => $sessionDir,
             'critical' => true,
         ];
     }
