@@ -546,8 +546,32 @@ class DataImportService
                 continue;
             }
 
+            // YAML uses plural keys (data_breaches, people, processing_activities);
+            // referenceNaturalKeys() is keyed singular. rtrim 's' breaks on
+            // irregular plurals — also try a curated plural→singular map.
+            $singularMap = [
+                'people' => 'person',
+                'data_breaches' => 'data_breach',
+                'processing_activities' => 'processing_activity',
+                'risk_appetites' => 'risk_appetite',
+                'dpias' => 'dpia',
+                'consents' => 'consent',
+                'crisis_teams' => 'crisis_team',
+                'bc_plans' => 'bc_plan',
+                'bc_exercises' => 'bc_exercise',
+                'data_subject_requests' => 'data_subject_request',
+                'business_processes' => 'business_process',
+                'compliance_frameworks' => 'compliance_framework',
+                'compliance_requirements' => 'compliance_requirement',
+                'interested_parties' => 'interested_party',
+                'management_reviews' => 'management_review',
+                'business_continuity_plans' => 'business_continuity_plan',
+                'objectives' => 'ismsobjective',
+                'audits' => 'internal_audit',
+            ];
+            $singular = $singularMap[$entityType] ?? rtrim($entityType, 's');
             $naturalKeyField = $this->referenceNaturalKeys()[$entityType]
-                ?? $this->referenceNaturalKeys()[rtrim($entityType, 's')]
+                ?? $this->referenceNaturalKeys()[$singular]
                 ?? null;
 
             foreach ($entities as $entityData) {
