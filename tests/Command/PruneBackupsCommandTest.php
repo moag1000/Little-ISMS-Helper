@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use PHPUnit\Framework\Attributes\Test;
 
 class PruneBackupsCommandTest extends TestCase
 {
@@ -36,6 +37,7 @@ class PruneBackupsCommandTest extends TestCase
 
     // ------------------------------------------------------------------ //
 
+    #[Test]
     public function testOldFilesArePruned(): void
     {
         // Create a file that is 10 days old
@@ -54,6 +56,7 @@ class PruneBackupsCommandTest extends TestCase
         $this->assertFileExists($new, 'Recent file should be kept');
     }
 
+    #[Test]
     public function testRecentFilesAreKept(): void
     {
         $file = $this->backupDir . '/backup_recent.json';
@@ -66,6 +69,7 @@ class PruneBackupsCommandTest extends TestCase
         $this->assertFileExists($file);
     }
 
+    #[Test]
     public function testKeepLastOverridesAge(): void
     {
         // Create 3 files, all 60 days old
@@ -95,6 +99,7 @@ class PruneBackupsCommandTest extends TestCase
         );
     }
 
+    #[Test]
     public function testDryRunPrintsButDoesNotDelete(): void
     {
         $old = $this->backupDir . '/backup_dryrun.json';
@@ -108,6 +113,7 @@ class PruneBackupsCommandTest extends TestCase
         $this->assertStringContainsString('DRY RUN', $this->tester->getDisplay());
     }
 
+    #[Test]
     public function testMissingBackupDirReturnsFailure(): void
     {
         // Point to a project dir that has no var/backups
@@ -126,6 +132,7 @@ class PruneBackupsCommandTest extends TestCase
         rmdir($emptyProject);
     }
 
+    #[Test]
     public function testTableContainsFilenameColumn(): void
     {
         $file = $this->backupDir . '/backup_table.json';

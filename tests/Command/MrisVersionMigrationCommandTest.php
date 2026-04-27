@@ -18,6 +18,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Yaml\Yaml;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests für app:mris:migrate-version: Diff- und Apply-Logik zwischen
@@ -71,6 +72,7 @@ final class MrisVersionMigrationCommandTest extends TestCase
 
     // ------------------------------------------------------------------ //
 
+    #[Test]
     public function testDryRunPrintsDiffAndDoesNotWrite(): void
     {
         $this->frameworkRepository->method('findOneBy')->willReturn($this->makeFramework('MRIS-v1.5'));
@@ -99,6 +101,7 @@ final class MrisVersionMigrationCommandTest extends TestCase
         self::assertStringContainsString('Quelle: Peddi (2026) MRIS v1.5', $output);
     }
 
+    #[Test]
     public function testApplyRequiresExplicitFlagAndWritesAddedRequirements(): void
     {
         $framework = $this->makeFramework('MRIS-v1.5');
@@ -137,6 +140,7 @@ final class MrisVersionMigrationCommandTest extends TestCase
         self::assertGreaterThanOrEqual(4, count($migrationLogs), 'Mind. 4 Audit-Einträge mit Action MrisVersionMigration.');
     }
 
+    #[Test]
     public function testWithoutApplyFlagNoWritesEvenIfDryRunNotPassed(): void
     {
         $this->frameworkRepository->method('findOneBy')->willReturn($this->makeFramework('MRIS-v1.5'));
@@ -154,6 +158,7 @@ final class MrisVersionMigrationCommandTest extends TestCase
         self::assertStringContainsString('DRY-RUN', $tester->getDisplay());
     }
 
+    #[Test]
     public function testRemovedMhcIsDeprecatedSoftAndNotDeleted(): void
     {
         $framework = $this->makeFramework('MRIS-v1.5');

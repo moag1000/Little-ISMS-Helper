@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class EntityVoterTest extends TestCase
@@ -35,6 +36,7 @@ class EntityVoterTest extends TestCase
         return new UsernamePasswordToken($user, 'main', $user->getRoles());
     }
 
+    #[Test]
     public function testAdminCanViewAnyEntity(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -45,6 +47,7 @@ class EntityVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testAdminCanEditAnyEntity(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -55,6 +58,7 @@ class EntityVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testInactiveUserCannotPerformActions(): void
     {
         $user = $this->createUser(['ROLE_USER'], false);
@@ -65,6 +69,7 @@ class EntityVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testUserWithPermissionCanView(): void
     {
         $user = $this->createUser(['ROLE_USER'], true, ['stdclass.view']);
@@ -75,6 +80,7 @@ class EntityVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserWithoutPermissionCannotView(): void
     {
         $user = $this->createUser(['ROLE_USER'], true, []);
@@ -85,6 +91,7 @@ class EntityVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testVoterAbstainsForUnsupportedAttribute(): void
     {
         $user = $this->createUser(['ROLE_USER']);
@@ -95,6 +102,7 @@ class EntityVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_ABSTAIN, $result);
     }
 
+    #[Test]
     public function testVoterAbstainsForNonObjectSubject(): void
     {
         $user = $this->createUser(['ROLE_USER']);

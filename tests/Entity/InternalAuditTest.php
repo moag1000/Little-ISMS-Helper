@@ -6,9 +6,11 @@ use App\Entity\Asset;
 use App\Entity\ComplianceFramework;
 use App\Entity\InternalAudit;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class InternalAuditTest extends TestCase
 {
+    #[Test]
     public function testGetScopeDescriptionWithFullIsms(): void
     {
         $audit = new InternalAudit();
@@ -17,6 +19,7 @@ class InternalAuditTest extends TestCase
         $this->assertEquals('Vollständiges ISMS Audit', $audit->getScopeDescription());
     }
 
+    #[Test]
     public function testGetScopeDescriptionWithComplianceFramework(): void
     {
         $audit = new InternalAudit();
@@ -30,6 +33,7 @@ class InternalAuditTest extends TestCase
         $this->assertEquals('Compliance Audit: ISO 27001', $audit->getScopeDescription());
     }
 
+    #[Test]
     public function testGetScopeDescriptionWithComplianceFrameworkNoFramework(): void
     {
         $audit = new InternalAudit();
@@ -39,6 +43,7 @@ class InternalAuditTest extends TestCase
         $this->assertEquals('Compliance Framework Audit', $audit->getScopeDescription());
     }
 
+    #[Test]
     public function testGetScopeDescriptionWithAssets(): void
     {
         $audit = new InternalAudit();
@@ -55,6 +60,7 @@ class InternalAuditTest extends TestCase
         $this->assertEquals('Asset Audit (3 Assets)', $audit->getScopeDescription());
     }
 
+    #[Test]
     public function testGetScopeDescriptionWithAssetType(): void
     {
         $audit = new InternalAudit();
@@ -64,6 +70,7 @@ class InternalAuditTest extends TestCase
         $this->assertEquals('Asset-Typ Audit: Server', $audit->getScopeDescription());
     }
 
+    #[Test]
     public function testGetScopeDescriptionWithAssetTypeNoDetails(): void
     {
         $audit = new InternalAudit();
@@ -72,6 +79,7 @@ class InternalAuditTest extends TestCase
         $this->assertEquals('Asset-Typ Audit: N/A', $audit->getScopeDescription());
     }
 
+    #[Test]
     public function testGetScopeDescriptionWithAssetGroup(): void
     {
         $audit = new InternalAudit();
@@ -81,6 +89,7 @@ class InternalAuditTest extends TestCase
         $this->assertEquals('Asset-Gruppe Audit: Production Servers', $audit->getScopeDescription());
     }
 
+    #[Test]
     public function testGetScopeDescriptionWithLocation(): void
     {
         $audit = new InternalAudit();
@@ -90,6 +99,7 @@ class InternalAuditTest extends TestCase
         $this->assertEquals('Standort Audit: Munich Office', $audit->getScopeDescription());
     }
 
+    #[Test]
     public function testGetScopeDescriptionWithDepartment(): void
     {
         $audit = new InternalAudit();
@@ -99,6 +109,7 @@ class InternalAuditTest extends TestCase
         $this->assertEquals('Abteilungs Audit: IT Security', $audit->getScopeDescription());
     }
 
+    #[Test]
     public function testGetScopeDescriptionWithUnknownType(): void
     {
         $audit = new InternalAudit();
@@ -107,6 +118,7 @@ class InternalAuditTest extends TestCase
         $this->assertEquals('Unbekannter Scope', $audit->getScopeDescription());
     }
 
+    #[Test]
     public function testHasAssetScopeWithAssetType(): void
     {
         $audit = new InternalAudit();
@@ -115,6 +127,7 @@ class InternalAuditTest extends TestCase
         $this->assertTrue($audit->hasAssetScope());
     }
 
+    #[Test]
     public function testHasAssetScopeWithAssetTypeType(): void
     {
         $audit = new InternalAudit();
@@ -123,6 +136,7 @@ class InternalAuditTest extends TestCase
         $this->assertTrue($audit->hasAssetScope());
     }
 
+    #[Test]
     public function testHasAssetScopeWithAssetGroup(): void
     {
         $audit = new InternalAudit();
@@ -131,6 +145,7 @@ class InternalAuditTest extends TestCase
         $this->assertTrue($audit->hasAssetScope());
     }
 
+    #[Test]
     public function testHasAssetScopeWithNonAssetTypes(): void
     {
         $audit = new InternalAudit();
@@ -143,6 +158,7 @@ class InternalAuditTest extends TestCase
         }
     }
 
+    #[Test]
     public function testIsComplianceAuditWithFramework(): void
     {
         $audit = new InternalAudit();
@@ -156,6 +172,7 @@ class InternalAuditTest extends TestCase
         $this->assertTrue($audit->isComplianceAudit());
     }
 
+    #[Test]
     public function testIsComplianceAuditWithoutFramework(): void
     {
         $audit = new InternalAudit();
@@ -165,6 +182,7 @@ class InternalAuditTest extends TestCase
         $this->assertFalse($audit->isComplianceAudit());
     }
 
+    #[Test]
     public function testIsComplianceAuditWithWrongScopeType(): void
     {
         $audit = new InternalAudit();
@@ -179,6 +197,7 @@ class InternalAuditTest extends TestCase
         $this->assertFalse($audit->isComplianceAudit());
     }
 
+    #[Test]
     public function testAddAndRemoveScopedAsset(): void
     {
         $audit = new InternalAudit();
@@ -195,6 +214,7 @@ class InternalAuditTest extends TestCase
         $this->assertFalse($audit->getScopedAssets()->contains($asset));
     }
 
+    #[Test]
     public function testStatusChoices(): void
     {
         $audit = new InternalAudit();
@@ -208,6 +228,7 @@ class InternalAuditTest extends TestCase
         }
     }
 
+    #[Test]
     public function testScopeTypeChoices(): void
     {
         $audit = new InternalAudit();
@@ -229,6 +250,7 @@ class InternalAuditTest extends TestCase
         }
     }
 
+    #[Test]
     public function testDatesHandling(): void
     {
         $audit = new InternalAudit();
@@ -246,6 +268,7 @@ class InternalAuditTest extends TestCase
         $this->assertEquals($reportDate, $audit->getReportDate());
     }
 
+    #[Test]
     public function testScopeDetailsArrayHandling(): void
     {
         $audit = new InternalAudit();

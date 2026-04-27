@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class ExecuteScheduledTaskHandlerTest extends TestCase
@@ -33,6 +34,7 @@ class ExecuteScheduledTaskHandlerTest extends TestCase
         );
     }
 
+    #[Test]
     public function testInvokeWithNonExistentTask(): void
     {
         $message = new ExecuteScheduledTaskMessage(999, new DateTimeImmutable());
@@ -52,6 +54,7 @@ class ExecuteScheduledTaskHandlerTest extends TestCase
         ($this->handler)($message);
     }
 
+    #[Test]
     public function testInvokeWithDisabledTask(): void
     {
         $message = new ExecuteScheduledTaskMessage(1, new DateTimeImmutable());
@@ -76,6 +79,7 @@ class ExecuteScheduledTaskHandlerTest extends TestCase
         ($this->handler)($message);
     }
 
+    #[Test]
     public function testInvokeWithEnabledTask(): void
     {
         $message = new ExecuteScheduledTaskMessage(1, new DateTimeImmutable());
@@ -104,6 +108,7 @@ class ExecuteScheduledTaskHandlerTest extends TestCase
         ($this->handler)($message);
     }
 
+    #[Test]
     public function testInvokeWithTaskWithoutArguments(): void
     {
         $message = new ExecuteScheduledTaskMessage(1, new DateTimeImmutable());
@@ -129,6 +134,7 @@ class ExecuteScheduledTaskHandlerTest extends TestCase
         ($this->handler)($message);
     }
 
+    #[Test]
     public function testMessageCreation(): void
     {
         $scheduledAt = new DateTimeImmutable('2024-01-15 10:00:00');

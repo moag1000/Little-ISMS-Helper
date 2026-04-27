@@ -38,6 +38,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for StatementOfApplicabilityController
@@ -145,6 +146,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test index action renders controls with inherited view (default)
      */
+    #[Test]
     public function testIndexWithInheritedView(): void
     {
         $tenant = $this->createTenant(1);
@@ -194,6 +196,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test index action with 'own' view filter
      */
+    #[Test]
     public function testIndexWithOwnView(): void
     {
         $tenant = $this->createTenant(1);
@@ -226,6 +229,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test index action with 'subsidiaries' view filter
      */
+    #[Test]
     public function testIndexWithSubsidiariesView(): void
     {
         $tenant = $this->createTenant(1);
@@ -258,6 +262,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test index action sorts controls by ISO reference (controlId)
      */
+    #[Test]
     public function testIndexSortsControlsByIsoReference(): void
     {
         $tenant = $this->createTenant(1);
@@ -295,6 +300,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test index action when user has no tenant
      */
+    #[Test]
     public function testIndexWhenUserHasNoTenant(): void
     {
         $user = $this->createMock(User::class);
@@ -326,6 +332,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test index calculates detailed statistics correctly
      */
+    #[Test]
     public function testIndexCalculatesDetailedStatistics(): void
     {
         // Set up tenant hierarchy with proper IDs
@@ -388,6 +395,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test byCategory action displays controls for specific category
      */
+    #[Test]
     public function testByCategoryDisplaysControlsForCategory(): void
     {
         $controls = [
@@ -420,6 +428,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test export action generates HTML export
      */
+    #[Test]
     public function testExportGeneratesHtmlExport(): void
     {
         $controls = [
@@ -458,6 +467,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test export action saves session before export
      */
+    #[Test]
     public function testExportSavesSessionBeforeExport(): void
     {
         $controls = [$this->createControl(1, '5.1', 'Organizational')];
@@ -480,6 +490,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test exportPdf action generates PDF download
      */
+    #[Test]
     public function testExportPdfGeneratesPdfDownload(): void
     {
         $pdfResponse = new Response('PDF content', 200, [
@@ -504,6 +515,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test exportPdf closes session before PDF generation
      */
+    #[Test]
     public function testExportPdfClosesSessionBeforeGeneration(): void
     {
         $pdfResponse = new Response('PDF content');
@@ -524,6 +536,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test previewPdf action streams PDF for browser preview
      */
+    #[Test]
     public function testPreviewPdfStreamsPdfInBrowser(): void
     {
         $pdfResponse = new Response('PDF content', 200, [
@@ -545,6 +558,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test show action displays control details
      */
+    #[Test]
     public function testShowDisplaysControlDetails(): void
     {
         $control = $this->createControl(1, '5.1', 'Organizational');
@@ -569,6 +583,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test edit action renders form with control ID readonly
      */
+    #[Test]
     public function testEditRendersFormWithReadonlyControlId(): void
     {
         $control = $this->createControl(1, '5.1', 'Organizational');
@@ -608,6 +623,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test edit action updates control successfully
      */
+    #[Test]
     public function testEditUpdatesControlSuccessfully(): void
     {
         $control = $this->createControl(1, '5.1', 'Organizational');
@@ -635,6 +651,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test edit action updates control's updatedAt timestamp
      */
+    #[Test]
     public function testEditUpdatesControlTimestamp(): void
     {
         $control = new Control();
@@ -664,6 +681,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test edit action redirects to show page after successful update
      */
+    #[Test]
     public function testEditRedirectsToShowPageAfterUpdate(): void
     {
         $control = $this->createControl(1, '5.1', 'Organizational');
@@ -691,6 +709,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test edit action re-renders form on validation error
      */
+    #[Test]
     public function testEditReRendersFormOnValidationError(): void
     {
         $control = $this->createControl(1, '5.1', 'Organizational');
@@ -719,6 +738,7 @@ class StatementOfApplicabilityControllerTest extends TestCase
     /**
      * Test edit action adds flash message on success
      */
+    #[Test]
     public function testEditAddsFlashMessageOnSuccess(): void
     {
         $control = $this->createControl(1, '5.1', 'Organizational');

@@ -4,9 +4,11 @@ namespace App\Tests\Command;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class LoadKritisHealthRequirementsCommandTest extends KernelTestCase
 {
+    #[Test]
     public function testCommandExists(): void
     {
         $kernel = self::bootKernel();
@@ -15,6 +17,7 @@ class LoadKritisHealthRequirementsCommandTest extends KernelTestCase
         $this->assertTrue($application->has('app:load-kritis-health-requirements'));
     }
 
+    #[Test]
     public function testCommandHasCorrectName(): void
     {
         $kernel = self::bootKernel();
@@ -24,6 +27,7 @@ class LoadKritisHealthRequirementsCommandTest extends KernelTestCase
         $this->assertSame('app:load-kritis-health-requirements', $command->getName());
     }
 
+    #[Test]
     public function testCommandHasDescription(): void
     {
         $kernel = self::bootKernel();

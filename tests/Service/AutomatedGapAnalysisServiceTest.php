@@ -8,6 +8,7 @@ use App\Service\AutomatedGapAnalysisService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class AutomatedGapAnalysisServiceTest extends TestCase
@@ -19,6 +20,7 @@ class AutomatedGapAnalysisServiceTest extends TestCase
         $this->service = new AutomatedGapAnalysisService();
     }
 
+    #[Test]
     public function testAnalyzeGapsWithNoGaps(): void
     {
         $mapping = $this->createMapping();
@@ -37,6 +39,7 @@ class AutomatedGapAnalysisServiceTest extends TestCase
         $this->assertEmpty($gaps);
     }
 
+    #[Test]
     public function testAnalyzeGapsWithMissingCriticalKeywords(): void
     {
         $mapping = $this->createMapping();
@@ -61,6 +64,7 @@ class AutomatedGapAnalysisServiceTest extends TestCase
         $this->assertContains('authentication', $keywordGap->getMissingKeywords());
     }
 
+    #[Test]
     public function testAnalyzeGapsWithHighPriorityMissingKeywords(): void
     {
         $mapping = $this->createMapping();
@@ -80,6 +84,7 @@ class AutomatedGapAnalysisServiceTest extends TestCase
         $this->assertSame('high', $keywordGap->getPriority());
     }
 
+    #[Test]
     public function testAnalyzeGapsWithManyMediumKeywords(): void
     {
         $mapping = $this->createMapping();
@@ -100,6 +105,7 @@ class AutomatedGapAnalysisServiceTest extends TestCase
         $this->assertSame('high', $keywordGap->getPriority());
     }
 
+    #[Test]
     public function testAnalyzeGapsWithPartialCoverage(): void
     {
         $mapping = $this->createMapping();
@@ -119,6 +125,7 @@ class AutomatedGapAnalysisServiceTest extends TestCase
         $this->assertSame('identified', $partialGap->getStatus());
     }
 
+    #[Test]
     public function testAnalyzeGapsWithScopeDifferences(): void
     {
         $mapping = $this->createMapping();
@@ -137,6 +144,7 @@ class AutomatedGapAnalysisServiceTest extends TestCase
         $this->assertNotNull($scopeGap);
     }
 
+    #[Test]
     public function testAnalyzeGapsWithMultipleIssues(): void
     {
         $mapping = $this->createMapping();
@@ -159,6 +167,7 @@ class AutomatedGapAnalysisServiceTest extends TestCase
         $this->assertNotNull($this->findGapByType($gaps, 'scope_difference'));
     }
 
+    #[Test]
     public function testGapItemProperties(): void
     {
         $mapping = $this->createMapping();
@@ -187,6 +196,7 @@ class AutomatedGapAnalysisServiceTest extends TestCase
         $this->assertSame('identified', $gap->getStatus());
     }
 
+    #[Test]
     public function testMissingKeywordsEstimatedEffort(): void
     {
         $mapping = $this->createMapping();
@@ -211,6 +221,7 @@ class AutomatedGapAnalysisServiceTest extends TestCase
         $this->assertGreaterThanOrEqual(4, $keywordGap->getEstimatedEffort());
     }
 
+    #[Test]
     public function testRecommendationsAreGenerated(): void
     {
         $mapping = $this->createMapping();
@@ -230,6 +241,7 @@ class AutomatedGapAnalysisServiceTest extends TestCase
         $this->assertNotEmpty($keywordGap->getRecommendedAction());
     }
 
+    #[Test]
     public function testAnalyzeGapsWithEmptyResults(): void
     {
         $mapping = $this->createMapping();
@@ -241,6 +253,7 @@ class AutomatedGapAnalysisServiceTest extends TestCase
         $this->assertIsArray($gaps);
     }
 
+    #[Test]
     public function testAnalyzeGapsWithNullKeywords(): void
     {
         $mapping = $this->createMapping();
@@ -258,6 +271,7 @@ class AutomatedGapAnalysisServiceTest extends TestCase
         $this->assertIsArray($gaps);
     }
 
+    #[Test]
     public function testConfidenceCalculation(): void
     {
         $mapping = $this->createMapping();

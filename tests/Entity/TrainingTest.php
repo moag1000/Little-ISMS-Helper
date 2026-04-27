@@ -5,9 +5,11 @@ namespace App\Tests\Entity;
 use App\Entity\Control;
 use App\Entity\Training;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class TrainingTest extends TestCase
 {
+    #[Test]
     public function testGetControlCoverageCountWithNoControls(): void
     {
         $training = new Training();
@@ -15,6 +17,7 @@ class TrainingTest extends TestCase
         $this->assertEquals(0, $training->getControlCoverageCount());
     }
 
+    #[Test]
     public function testGetControlCoverageCountWithMultipleControls(): void
     {
         $training = new Training();
@@ -30,6 +33,7 @@ class TrainingTest extends TestCase
         $this->assertEquals(3, $training->getControlCoverageCount());
     }
 
+    #[Test]
     public function testGetTrainingEffectivenessWithNotCompletedStatus(): void
     {
         $training = new Training();
@@ -43,6 +47,7 @@ class TrainingTest extends TestCase
         $this->assertNull($training->getTrainingEffectiveness());
     }
 
+    #[Test]
     public function testGetTrainingEffectivenessWithNoControls(): void
     {
         $training = new Training();
@@ -52,6 +57,7 @@ class TrainingTest extends TestCase
         $this->assertNull($training->getTrainingEffectiveness());
     }
 
+    #[Test]
     public function testGetTrainingEffectivenessWithSingleControl(): void
     {
         $training = new Training();
@@ -65,6 +71,7 @@ class TrainingTest extends TestCase
         $this->assertEquals(75.0, $training->getTrainingEffectiveness());
     }
 
+    #[Test]
     public function testGetTrainingEffectivenessWithMultipleControls(): void
     {
         $training = new Training();
@@ -87,6 +94,7 @@ class TrainingTest extends TestCase
         $this->assertEquals(80.0, $training->getTrainingEffectiveness());
     }
 
+    #[Test]
     public function testGetTrainingEffectivenessWithNullImplementation(): void
     {
         $training = new Training();
@@ -105,6 +113,7 @@ class TrainingTest extends TestCase
         $this->assertEquals(50.0, $training->getTrainingEffectiveness());
     }
 
+    #[Test]
     public function testGetCoveredCategoriesWithNoControls(): void
     {
         $training = new Training();
@@ -115,6 +124,7 @@ class TrainingTest extends TestCase
         $this->assertEmpty($categories);
     }
 
+    #[Test]
     public function testGetCoveredCategoriesWithSingleCategory(): void
     {
         $training = new Training();
@@ -134,6 +144,7 @@ class TrainingTest extends TestCase
         $this->assertContains('Access Control', $categories);
     }
 
+    #[Test]
     public function testGetCoveredCategoriesWithMultipleCategories(): void
     {
         $training = new Training();
@@ -164,6 +175,7 @@ class TrainingTest extends TestCase
         $this->assertContains('Physical Security', $categories);
     }
 
+    #[Test]
     public function testHasCriticalControlsWithNoControls(): void
     {
         $training = new Training();
@@ -172,6 +184,7 @@ class TrainingTest extends TestCase
         $this->assertFalse($training->hasCriticalControls());
     }
 
+    #[Test]
     public function testHasCriticalControlsWithFullyImplementedApplicableControls(): void
     {
         $training = new Training();
@@ -191,6 +204,7 @@ class TrainingTest extends TestCase
         $this->assertFalse($training->hasCriticalControls());
     }
 
+    #[Test]
     public function testHasCriticalControlsWithNonApplicableControl(): void
     {
         $training = new Training();
@@ -205,6 +219,7 @@ class TrainingTest extends TestCase
         $this->assertTrue($training->hasCriticalControls());
     }
 
+    #[Test]
     public function testHasCriticalControlsWithLowImplementation(): void
     {
         $training = new Training();
@@ -219,6 +234,7 @@ class TrainingTest extends TestCase
         $this->assertTrue($training->hasCriticalControls());
     }
 
+    #[Test]
     public function testHasCriticalControlsWithBoundaryCase(): void
     {
         $training = new Training();
@@ -242,6 +258,7 @@ class TrainingTest extends TestCase
         $this->assertTrue($training->hasCriticalControls());
     }
 
+    #[Test]
     public function testHasCriticalControlsWithMixedControls(): void
     {
         $training = new Training();
@@ -266,6 +283,7 @@ class TrainingTest extends TestCase
         $this->assertTrue($training->hasCriticalControls());
     }
 
+    #[Test]
     public function testAddAndRemoveCoveredControl(): void
     {
         $training = new Training();
@@ -282,6 +300,7 @@ class TrainingTest extends TestCase
         $this->assertFalse($training->getCoveredControls()->contains($control));
     }
 
+    #[Test]
     public function testTrainingTypeChoices(): void
     {
         $training = new Training();
@@ -295,6 +314,7 @@ class TrainingTest extends TestCase
         }
     }
 
+    #[Test]
     public function testStatusChoices(): void
     {
         $training = new Training();
@@ -308,6 +328,7 @@ class TrainingTest extends TestCase
         }
     }
 
+    #[Test]
     public function testDatesHandling(): void
     {
         $training = new Training();

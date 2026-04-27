@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 class ISMSObjectiveControllerTest extends WebTestCase
 {
@@ -114,6 +115,7 @@ class ISMSObjectiveControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexDisplaysWithoutAuthentication(): void
     {
         // ISMSObjectiveController index has no IsGranted attribute
@@ -122,6 +124,7 @@ class ISMSObjectiveControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -129,6 +132,7 @@ class ISMSObjectiveControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testNewRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -136,6 +140,7 @@ class ISMSObjectiveControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testNewDisplaysFormForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -144,6 +149,7 @@ class ISMSObjectiveControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testShowDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -151,6 +157,7 @@ class ISMSObjectiveControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testEditRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -158,6 +165,7 @@ class ISMSObjectiveControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testEditDisplaysFormForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -166,6 +174,7 @@ class ISMSObjectiveControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testDeleteRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -173,6 +182,7 @@ class ISMSObjectiveControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteRequiresPost(): void
     {
         $this->client->loginUser($this->adminUser);

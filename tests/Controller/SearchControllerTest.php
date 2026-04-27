@@ -7,6 +7,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for SearchController
@@ -79,12 +80,14 @@ class SearchControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testSearchRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/api/search?q=test');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testSearchReturnsJsonForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -93,6 +96,7 @@ class SearchControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
+    #[Test]
     public function testSearchWithEmptyQuery(): void
     {
         $this->client->loginUser($this->testUser);
@@ -100,18 +104,21 @@ class SearchControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testAssetPreviewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/api/asset/1/preview');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testRiskPreviewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/api/risk/1/preview');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIncidentPreviewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/api/incident/1/preview');

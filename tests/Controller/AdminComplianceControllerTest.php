@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 class AdminComplianceControllerTest extends WebTestCase
 {
@@ -93,12 +94,14 @@ class AdminComplianceControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/compliance');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexRequiresPermission(): void
     {
         $this->client->loginUser($this->testUser);
@@ -106,6 +109,7 @@ class AdminComplianceControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testIndexDisplaysForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -113,12 +117,14 @@ class AdminComplianceControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testAvailableFrameworksRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/compliance/frameworks/available');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testAvailableFrameworksReturnsJsonForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -127,12 +133,14 @@ class AdminComplianceControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
+    #[Test]
     public function testStatisticsRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/compliance/statistics');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testStatisticsDisplaysForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);

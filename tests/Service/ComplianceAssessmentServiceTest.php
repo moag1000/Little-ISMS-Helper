@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class ComplianceAssessmentServiceTest extends TestCase
@@ -55,6 +56,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testAssessFrameworkWithNoRequirements(): void
     {
         $framework = $this->createFramework('Test Framework', 100.0);
@@ -74,6 +76,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertEmpty($result['details']);
     }
 
+    #[Test]
     public function testAssessFrameworkWithRequirements(): void
     {
         $framework = $this->createFramework('NIS2', 75.0);
@@ -106,6 +109,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertCount(2, $result['details']);
     }
 
+    #[Test]
     public function testAssessRequirementNotApplicable(): void
     {
         $requirement = $this->createRequirement('REQ-1', 'Test Req', false);
@@ -133,6 +137,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertEmpty($result['data_sources']);
     }
 
+    #[Test]
     public function testAssessRequirementWithDataSources(): void
     {
         $requirement = $this->createRequirement('REQ-1', 'Test Req', true);
@@ -157,6 +162,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertCount(2, $result['data_sources']);
     }
 
+    #[Test]
     public function testAssessRequirementWithNoSources(): void
     {
         $requirement = $this->createRequirement('REQ-1', 'Test Req', true);
@@ -174,6 +180,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertSame(0, $result['calculated_fulfillment']);
     }
 
+    #[Test]
     public function testAssessRequirementIdentifiesNoControlsGap(): void
     {
         $requirement = $this->createRequirement('REQ-1', 'Test Req', true);
@@ -194,6 +201,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertSame('high', $gap['severity']);
     }
 
+    #[Test]
     public function testAssessRequirementIdentifiesIncompleteControlsGap(): void
     {
         $control = $this->createMock(Control::class);
@@ -221,6 +229,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertSame('A.5.1', $gap['details'][0]['control_id']);
     }
 
+    #[Test]
     public function testAssessRequirementIdentifiesHighSeverityGap(): void
     {
         $control = $this->createMock(Control::class);
@@ -244,6 +253,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertSame('high', $gap['severity']); // 80 gap > 50
     }
 
+    #[Test]
     public function testAssessRequirementIdentifiesBCMGap(): void
     {
         $requirement = $this->createRequirement('REQ-1', 'Test Req', true);
@@ -270,6 +280,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertSame('medium', $bcmGap['severity']);
     }
 
+    #[Test]
     public function testAssessRequirementIdentifiesIncidentGap(): void
     {
         $requirement = $this->createRequirement('REQ-1', 'Test Req', true);
@@ -296,6 +307,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertSame('medium', $incidentGap['severity']);
     }
 
+    #[Test]
     public function testAssessRequirementWithFullCompliance(): void
     {
         $control = $this->createMock(Control::class);
@@ -319,6 +331,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertEmpty($result['gaps']);
     }
 
+    #[Test]
     public function testGetComplianceDashboard(): void
     {
         $framework = $this->createFramework('DORA', 85.0);
@@ -354,6 +367,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertSame(1, $dashboard['gaps']['critical']);
     }
 
+    #[Test]
     public function testGetComplianceDashboardWithTimeSavings(): void
     {
         $framework = $this->createFramework('NIS2', 90.0);
@@ -380,6 +394,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertSame(3.0, $dashboard['data_reuse']['total_days_saved']);
     }
 
+    #[Test]
     public function testGetComplianceDashboardRecommendationsWithGaps(): void
     {
         $framework = $this->createFramework('DORA', 60.0);
@@ -420,6 +435,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertTrue($hasUnmappedRec);
     }
 
+    #[Test]
     public function testGetComplianceDashboardRecommendationsWithNoGaps(): void
     {
         $framework = $this->createFramework('ISO 27001', 100.0);
@@ -444,6 +460,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertStringContainsString('Maintain', $rec['title']);
     }
 
+    #[Test]
     public function testCompareFrameworks(): void
     {
         $framework1 = $this->createFramework('NIS2', 85.0);
@@ -471,6 +488,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertSame(89.33, $result[1]['compliance_percentage']); // 67/75 * 100 = 89.33
     }
 
+    #[Test]
     public function testCompareEmptyFrameworks(): void
     {
         $result = $this->service->compareFrameworks([]);

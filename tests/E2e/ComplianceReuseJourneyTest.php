@@ -28,6 +28,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * End-to-end acceptance test for the DATA_REUSE_IMPROVEMENT_PLAN v1.1 journey.
@@ -121,6 +122,7 @@ final class ComplianceReuseJourneyTest extends KernelTestCase
         parent::tearDown();
     }
 
+    #[Test]
     public function testFullReuseJourney(): void
     {
         // ── Step 1 — Fresh tenant + modules already set up in setUp() ─────────

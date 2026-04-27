@@ -24,6 +24,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for the DeltaAssessmentExcelExporter (CM-2).
@@ -74,6 +75,7 @@ final class DeltaAssessmentExcelExporterTest extends TestCase
         $this->baselineFramework = $this->buildFramework('ISO27001', '2022');
     }
 
+    #[Test]
     public function testExportProducesThreeSheetsWithExpectedTitles(): void
     {
         $this->stubFixture();
@@ -91,6 +93,7 @@ final class DeltaAssessmentExcelExporterTest extends TestCase
         self::assertSame('compliance_wizard.delta.sheet.m', $spreadsheet->getSheet(2)->getTitle());
     }
 
+    #[Test]
     public function testDetailSheetHasOneRowPerTargetRequirement(): void
     {
         $this->stubFixture();
@@ -110,6 +113,7 @@ final class DeltaAssessmentExcelExporterTest extends TestCase
         self::assertSame(100, $detail->getCell('E2')->getValue());
     }
 
+    #[Test]
     public function testMappingSheetHasOneRowPerMapping(): void
     {
         $this->stubFixture();
@@ -125,6 +129,7 @@ final class DeltaAssessmentExcelExporterTest extends TestCase
         self::assertSame(7, $mapping->getHighestDataRow());
     }
 
+    #[Test]
     public function testSummaryContainsTenantAndFrameworkMetadata(): void
     {
         $this->stubFixture();
@@ -144,6 +149,7 @@ final class DeltaAssessmentExcelExporterTest extends TestCase
         self::assertContains('10', $values); // total requirements
     }
 
+    #[Test]
     public function testSummaryReflectsInheritancePreFillRate(): void
     {
         $this->stubFixture();
@@ -161,6 +167,7 @@ final class DeltaAssessmentExcelExporterTest extends TestCase
         self::assertContains('6 (60%)', $values);
     }
 
+    #[Test]
     public function testExportWithoutBaselineProducesEmptyMappingSheet(): void
     {
         $this->stubFixture(withBaselineMappings: false);

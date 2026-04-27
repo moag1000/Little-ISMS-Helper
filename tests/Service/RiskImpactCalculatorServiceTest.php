@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class RiskImpactCalculatorServiceTest extends TestCase
@@ -24,6 +25,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->service = new RiskImpactCalculatorService($this->entityManager, $this->logger);
     }
 
+    #[Test]
     public function testCalculateSuggestedImpactReturnsNullWhenNoAsset(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -34,6 +36,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testCalculateSuggestedImpactReturnsNullWhenNoMonetaryValue(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -47,6 +50,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testCalculateSuggestedImpactReturnsNullWhenMonetaryValueIsZero(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -60,6 +64,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testCalculateSuggestedImpactNegligible(): void
     {
         // Loss < €10,000 = Impact 1 (Negligible)
@@ -74,6 +79,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertEquals(1, $result);
     }
 
+    #[Test]
     public function testCalculateSuggestedImpactMinor(): void
     {
         // Loss €10,000 - €50,000 = Impact 2 (Minor)
@@ -92,6 +98,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testCalculateSuggestedImpactModerate(): void
     {
         // Loss €50,000 - €250,000 = Impact 3 (Moderate)
@@ -110,6 +117,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testCalculateSuggestedImpactMajor(): void
     {
         // Loss €250,000 - €1,000,000 = Impact 4 (Major)
@@ -128,6 +136,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testCalculateSuggestedImpactCatastrophic(): void
     {
         // Loss > €1,000,000 = Impact 5 (Catastrophic)
@@ -146,6 +155,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testGetImpactCalculationDetailsWithNoMonetaryValue(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -160,6 +170,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertStringContainsString('No monetary value', $result['rationale']);
     }
 
+    #[Test]
     public function testGetImpactCalculationDetailsWhenAligned(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -178,6 +189,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertStringContainsString('aligns', $result['rationale']);
     }
 
+    #[Test]
     public function testGetImpactCalculationDetailsSuggestsHigher(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -196,6 +208,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertStringContainsString('higher impact level', $result['rationale']);
     }
 
+    #[Test]
     public function testGetImpactCalculationDetailsSuggestsLower(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -214,6 +227,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertStringContainsString('lower impact level', $result['rationale']);
     }
 
+    #[Test]
     public function testShouldUpdateOnlyWhenDifferenceIsSignificant(): void
     {
         // Difference of 1 should NOT trigger update
@@ -239,6 +253,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertTrue($result2['should_update']);
     }
 
+    #[Test]
     public function testGetSuggestionReturnsFailureWhenNoMonetaryValue(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -253,6 +268,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertNull($result['new_impact']);
     }
 
+    #[Test]
     public function testGetSuggestionReturnsFailureWhenAlreadyAligned(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -268,6 +284,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertStringContainsString('already matches', $result['message']);
     }
 
+    #[Test]
     public function testGetSuggestionReturnsSuccessWithNewValue(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -285,6 +302,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertStringContainsString('Suggested impact: 4', $result['message']);
     }
 
+    #[Test]
     public function testUpdateRiskImpactRequiresConfirmation(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -295,6 +313,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertStringContainsString('confirmation required', $result['message']);
     }
 
+    #[Test]
     public function testUpdateRiskImpactValidatesRange(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -310,6 +329,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertStringContainsString('between 1 and 5', $result2['message']);
     }
 
+    #[Test]
     public function testUpdateRiskImpactSuccessfullyUpdates(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -327,6 +347,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertStringContainsString('updated from 2 to 4', $result['message']);
     }
 
+    #[Test]
     public function testUpdateRiskImpactRecalculatesResidualImpact(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -344,6 +365,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->service->updateRiskImpact($risk, 4, true);
     }
 
+    #[Test]
     public function testUpdateRiskImpactClampsResidualImpactTo5(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -362,6 +384,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->service->updateRiskImpact($risk, 5, true);
     }
 
+    #[Test]
     public function testBoundaryValueAt10000(): void
     {
         // €9,999.99 should be impact 1
@@ -379,6 +402,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertEquals(2, $this->service->calculateSuggestedImpact($risk2));
     }
 
+    #[Test]
     public function testBoundaryValueAt1Million(): void
     {
         // €999,999.99 should be impact 4

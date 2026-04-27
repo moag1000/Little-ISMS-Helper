@@ -12,6 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for IncidentRepository
@@ -77,6 +78,7 @@ class IncidentRepositoryTest extends TestCase
     /**
      * Test that repository extends ServiceEntityRepository
      */
+    #[Test]
     public function testRepositoryExtendsServiceEntityRepository(): void
     {
         $this->assertInstanceOf(ServiceEntityRepository::class, $this->repository);
@@ -89,6 +91,7 @@ class IncidentRepositoryTest extends TestCase
      * This tests the number generation and formatting logic by testing
      * the algorithm directly, simulating different scenarios.
      */
+    #[Test]
     public function testGetNextIncidentNumberFormatting(): void
     {
         $year = date('Y');
@@ -121,6 +124,7 @@ class IncidentRepositoryTest extends TestCase
      * This tests the logic that extracts the number from an existing
      * incident number and increments it.
      */
+    #[Test]
     public function testIncidentNumberExtractionAndIncrement(): void
     {
         $year = date('Y');
@@ -150,6 +154,7 @@ class IncidentRepositoryTest extends TestCase
     /**
      * Test that incident number prefix includes current year
      */
+    #[Test]
     public function testIncidentNumberPrefixIncludesCurrentYear(): void
     {
         $year = date('Y');
@@ -165,6 +170,7 @@ class IncidentRepositoryTest extends TestCase
      *
      * Integration test required: Actual tenant filtering with database
      */
+    #[Test]
     public function testFindByTenantMethodSignature(): void
     {
         $this->assertTrue(method_exists($this->repository, 'findByTenant'));
@@ -187,6 +193,7 @@ class IncidentRepositoryTest extends TestCase
      *
      * Integration test required: Actual hierarchical query with database
      */
+    #[Test]
     public function testFindByTenantIncludingParentMethodSignature(): void
     {
         $this->assertTrue(method_exists($this->repository, 'findByTenantIncludingParent'));
@@ -209,6 +216,7 @@ class IncidentRepositoryTest extends TestCase
      *
      * Integration test required: Actual subsidiary aggregation with database
      */
+    #[Test]
     public function testFindByTenantIncludingSubsidiariesMethodSignature(): void
     {
         $this->assertTrue(method_exists($this->repository, 'findByTenantIncludingSubsidiaries'));
@@ -230,6 +238,7 @@ class IncidentRepositoryTest extends TestCase
      *
      * Integration test required: Verify status filtering and ordering
      */
+    #[Test]
     public function testFindOpenIncidentsMethodSignature(): void
     {
         $this->assertTrue(method_exists($this->repository, 'findOpenIncidents'));
@@ -253,6 +262,7 @@ class IncidentRepositoryTest extends TestCase
      *
      * Integration test required: Verify aggregation behavior
      */
+    #[Test]
     public function testCountByCategoryMethodSignature(): void
     {
         $this->assertTrue(method_exists($this->repository, 'countByCategory'));
@@ -276,6 +286,7 @@ class IncidentRepositoryTest extends TestCase
      *
      * Integration test required: Verify aggregation behavior
      */
+    #[Test]
     public function testCountBySeverityMethodSignature(): void
     {
         $this->assertTrue(method_exists($this->repository, 'countBySeverity'));
@@ -299,6 +310,7 @@ class IncidentRepositoryTest extends TestCase
      *
      * Integration test required: Verify actual number generation with database
      */
+    #[Test]
     public function testGetNextIncidentNumberMethodSignature(): void
     {
         $this->assertTrue(method_exists($this->repository, 'getNextIncidentNumber'));

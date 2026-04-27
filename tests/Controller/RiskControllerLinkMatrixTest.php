@@ -10,6 +10,7 @@ use App\Repository\RiskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests for Junior-Finding #8 / CM Data-Reuse Blocker:
@@ -134,6 +135,7 @@ class RiskControllerLinkMatrixTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testRiskNewPrefillsFromSameTenantVulnerability(): void
     {
         $this->client->loginUser($this->userA);
@@ -171,6 +173,7 @@ class RiskControllerLinkMatrixTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testRiskNewIgnoresCrossTenantVulnerability(): void
     {
         $this->client->loginUser($this->userA);
@@ -203,6 +206,7 @@ class RiskControllerLinkMatrixTest extends WebTestCase
         }
     }
 
+    #[Test]
     public function testVulnerabilityShowRendersLinkMatrixSection(): void
     {
         $this->client->loginUser($this->userA);

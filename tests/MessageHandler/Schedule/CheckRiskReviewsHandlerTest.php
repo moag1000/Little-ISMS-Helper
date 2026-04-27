@@ -11,6 +11,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests for CheckRiskReviewsHandler
@@ -39,6 +40,7 @@ class CheckRiskReviewsHandlerTest extends TestCase
         );
     }
 
+    #[Test]
     public function testInvokeWithNoRisksDueForReview(): void
     {
         $message = new CheckRiskReviewsMessage(new DateTimeImmutable());
@@ -53,6 +55,7 @@ class CheckRiskReviewsHandlerTest extends TestCase
         ($this->handler)($message);
     }
 
+    #[Test]
     public function testInvokeLogsErrorOnRepositoryException(): void
     {
         $message = new CheckRiskReviewsMessage(new DateTimeImmutable());
@@ -70,6 +73,7 @@ class CheckRiskReviewsHandlerTest extends TestCase
         ($this->handler)($message);
     }
 
+    #[Test]
     public function testMessageCreation(): void
     {
         $scheduledAt = new DateTimeImmutable('2024-01-15 10:00:00');
@@ -78,6 +82,7 @@ class CheckRiskReviewsHandlerTest extends TestCase
         $this->assertSame($scheduledAt, $message->getScheduledAt());
     }
 
+    #[Test]
     public function testMessageDefaultScheduledAt(): void
     {
         $before = new DateTimeImmutable();

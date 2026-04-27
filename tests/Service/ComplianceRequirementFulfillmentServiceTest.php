@@ -15,6 +15,7 @@ use App\Service\CorporateStructureService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class ComplianceRequirementFulfillmentServiceTest extends TestCase
@@ -49,6 +50,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
     // getFulfillmentsForTenant Tests
     // =========================================================================
 
+    #[Test]
     public function testGetFulfillmentsForTenantReturnsOwnFulfillmentsWithoutParent(): void
     {
         $this->tenant->method('getParent')->willReturn(null);
@@ -68,6 +70,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->assertSame($fulfillments, $result);
     }
 
+    #[Test]
     public function testGetFulfillmentsForTenantReturnsOwnFulfillmentsWithFrameworkFilter(): void
     {
         $this->tenant->method('getParent')->willReturn(null);
@@ -84,6 +87,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->assertCount(1, $result);
     }
 
+    #[Test]
     public function testGetFulfillmentsForTenantIncludesParentFulfillmentsWithHierarchicalGovernance(): void
     {
         $this->tenant->method('getParent')->willReturn($this->parentTenant);
@@ -108,6 +112,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->assertCount(2, $result);
     }
 
+    #[Test]
     public function testGetFulfillmentsForTenantExcludesParentFulfillmentsWithSharedGovernance(): void
     {
         $this->tenant->method('getParent')->willReturn($this->parentTenant);
@@ -131,6 +136,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->assertCount(1, $result);
     }
 
+    #[Test]
     public function testGetFulfillmentsForTenantUsesDefaultGovernanceWhenNoSpecificScope(): void
     {
         $this->tenant->method('getParent')->willReturn($this->parentTenant);
@@ -158,6 +164,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->assertCount(1, $result);
     }
 
+    #[Test]
     public function testGetFulfillmentsForTenantFiltersParentFulfillmentsByFramework(): void
     {
         $this->tenant->method('getParent')->willReturn($this->parentTenant);
@@ -207,6 +214,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
     // getFulfillmentInheritanceInfo Tests
     // =========================================================================
 
+    #[Test]
     public function testGetFulfillmentInheritanceInfoReturnsNoInheritanceWithoutParent(): void
     {
         $this->tenant->method('getParent')->willReturn(null);
@@ -218,6 +226,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->assertNull($result['governanceModel']);
     }
 
+    #[Test]
     public function testGetFulfillmentInheritanceInfoWithHierarchicalGovernance(): void
     {
         $this->tenant->method('getParent')->willReturn($this->parentTenant);
@@ -237,6 +246,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->assertSame('hierarchical', $result['governanceModel']);
     }
 
+    #[Test]
     public function testGetFulfillmentInheritanceInfoWithSharedGovernance(): void
     {
         $this->tenant->method('getParent')->willReturn($this->parentTenant);
@@ -256,6 +266,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->assertSame('shared', $result['governanceModel']);
     }
 
+    #[Test]
     public function testGetFulfillmentInheritanceInfoWithIndependentGovernance(): void
     {
         $this->tenant->method('getParent')->willReturn($this->parentTenant);
@@ -279,6 +290,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
     // isInheritedFulfillment Tests
     // =========================================================================
 
+    #[Test]
     public function testIsInheritedFulfillmentReturnsFalseForOwnFulfillment(): void
     {
         $fulfillment = $this->createMock(ComplianceRequirementFulfillment::class);
@@ -289,6 +301,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testIsInheritedFulfillmentReturnsTrueForParentFulfillment(): void
     {
         $fulfillment = $this->createMock(ComplianceRequirementFulfillment::class);
@@ -299,6 +312,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testIsInheritedFulfillmentReturnsFalseForNullTenant(): void
     {
         $fulfillment = $this->createMock(ComplianceRequirementFulfillment::class);
@@ -309,6 +323,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testIsInheritedFulfillmentReturnsFalseForNullIds(): void
     {
         $unsavedTenant = $this->createMock(Tenant::class);
@@ -326,6 +341,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
     // canEditFulfillment Tests
     // =========================================================================
 
+    #[Test]
     public function testCanEditFulfillmentReturnsTrueForOwnFulfillment(): void
     {
         $fulfillment = $this->createMock(ComplianceRequirementFulfillment::class);
@@ -336,6 +352,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testCanEditFulfillmentReturnsFalseForInheritedFulfillment(): void
     {
         $fulfillment = $this->createMock(ComplianceRequirementFulfillment::class);
@@ -350,6 +367,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
     // getOrCreateFulfillment Tests
     // =========================================================================
 
+    #[Test]
     public function testGetOrCreateFulfillmentReturnsExistingFulfillment(): void
     {
         $this->tenant->method('getParent')->willReturn(null);
@@ -368,6 +386,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->assertSame($existingFulfillment, $result);
     }
 
+    #[Test]
     public function testGetOrCreateFulfillmentInheritsFromParentWithHierarchicalGovernance(): void
     {
         $this->tenant->method('getParent')->willReturn($this->parentTenant);
@@ -410,6 +429,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->assertSame('Inherited justification', $result->getApplicabilityJustification());
     }
 
+    #[Test]
     public function testGetOrCreateFulfillmentDoesNotInheritWithIndependentGovernance(): void
     {
         $this->tenant->method('getParent')->willReturn($this->parentTenant);
@@ -447,6 +467,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
     // getFulfillmentStatsWithInheritance Tests
     // =========================================================================
 
+    #[Test]
     public function testGetFulfillmentStatsWithInheritanceReturnsCorrectCounts(): void
     {
         $this->tenant->method('getParent')->willReturn($this->parentTenant);
@@ -497,6 +518,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->assertSame(50.0, $result['avg_fulfillment']);
     }
 
+    #[Test]
     public function testGetFulfillmentStatsWithInheritanceWithFrameworkFilter(): void
     {
         $this->tenant->method('getParent')->willReturn(null);
@@ -531,6 +553,7 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
     // Service without optional dependencies
     // =========================================================================
 
+    #[Test]
     public function testServiceWorksWithoutCorporateStructureService(): void
     {
         $serviceWithoutOptional = new ComplianceRequirementFulfillmentService(

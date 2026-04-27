@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class BackupNotifierTest extends TestCase
@@ -29,6 +30,7 @@ class BackupNotifierTest extends TestCase
 
     // ------------------------------------------------------------------ //
 
+    #[Test]
     public function testNotifySuccessSendsEmailWithCorrectSubject(): void
     {
         $sentEmail = null;
@@ -57,6 +59,7 @@ class BackupNotifierTest extends TestCase
         $this->assertStringContainsString('backup_2026-04-24_12-00-00.json', $sentEmail->getSubject());
     }
 
+    #[Test]
     public function testNotifySuccessBodyContainsKeyData(): void
     {
         $sentEmail = null;
@@ -85,6 +88,7 @@ class BackupNotifierTest extends TestCase
         $this->assertStringContainsString('deadbeef', $body);
     }
 
+    #[Test]
     public function testNotifySuccessWithWarningsIncludesThemInBody(): void
     {
         $sentEmail = null;
@@ -112,6 +116,7 @@ class BackupNotifierTest extends TestCase
         $this->assertStringContainsString('File not found: logo.png', $body);
     }
 
+    #[Test]
     public function testNotifyFailureSendsEmailWithCorrectSubject(): void
     {
         $sentEmail = null;
@@ -132,6 +137,7 @@ class BackupNotifierTest extends TestCase
         $this->assertStringContainsString('RuntimeException', $sentEmail->getSubject());
     }
 
+    #[Test]
     public function testNotifyFailureBodyContainsExceptionMessage(): void
     {
         $sentEmail = null;
@@ -151,6 +157,7 @@ class BackupNotifierTest extends TestCase
         $this->assertStringContainsString('RuntimeException', $body);
     }
 
+    #[Test]
     public function testFromAddressIsCorrect(): void
     {
         $sentEmail = null;
@@ -171,6 +178,7 @@ class BackupNotifierTest extends TestCase
         $this->assertSame('noreply@little-isms-helper.local', $fromAddresses[0]->getAddress());
     }
 
+    #[Test]
     public function testRecipientIsCorrect(): void
     {
         $sentEmail = null;

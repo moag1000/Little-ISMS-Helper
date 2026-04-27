@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Test suite for RiskTreatmentPlanApprovalService
@@ -50,6 +51,7 @@ class RiskTreatmentPlanApprovalServiceTest extends TestCase
     /**
      * Test low-cost plan approval (< €10k)
      */
+    #[Test]
     public function testRequestApprovalLowCost(): void
     {
         // Arrange
@@ -78,6 +80,7 @@ class RiskTreatmentPlanApprovalServiceTest extends TestCase
     /**
      * Test medium-cost plan approval (€10k - €50k)
      */
+    #[Test]
     public function testRequestApprovalMediumCost(): void
     {
         // Arrange
@@ -100,6 +103,7 @@ class RiskTreatmentPlanApprovalServiceTest extends TestCase
     /**
      * Test high-cost plan approval (> €50k)
      */
+    #[Test]
     public function testRequestApprovalHighCost(): void
     {
         // Arrange
@@ -122,6 +126,7 @@ class RiskTreatmentPlanApprovalServiceTest extends TestCase
     /**
      * Test approval request when workflow already active
      */
+    #[Test]
     public function testRequestApprovalWorkflowAlreadyActive(): void
     {
         // Arrange
@@ -145,6 +150,7 @@ class RiskTreatmentPlanApprovalServiceTest extends TestCase
     /**
      * Test approval request when no workflow definition exists
      */
+    #[Test]
     public function testRequestApprovalNoWorkflowDefinition(): void
     {
         // Arrange
@@ -165,6 +171,7 @@ class RiskTreatmentPlanApprovalServiceTest extends TestCase
     /**
      * Test approval request handles exception gracefully
      */
+    #[Test]
     public function testRequestApprovalHandlesException(): void
     {
         // Arrange
@@ -186,6 +193,7 @@ class RiskTreatmentPlanApprovalServiceTest extends TestCase
     /**
      * Test cost threshold boundaries
      */
+    #[Test]
     public function testCostThresholdBoundaries(): void
     {
         $workflowInstance = $this->createMock(WorkflowInstance::class);

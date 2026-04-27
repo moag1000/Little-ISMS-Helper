@@ -6,9 +6,11 @@ use App\Entity\Permission;
 use App\Entity\Role;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class RoleTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $role = new Role();
@@ -20,6 +22,7 @@ class RoleTest extends TestCase
         $this->assertFalse($role->isSystemRole()); // Default
     }
 
+    #[Test]
     public function testGettersAndSetters(): void
     {
         $role = new Role();
@@ -31,6 +34,7 @@ class RoleTest extends TestCase
         $this->assertEquals('Manager role with elevated permissions', $role->getDescription());
     }
 
+    #[Test]
     public function testIsSystemRole(): void
     {
         $role = new Role();
@@ -41,6 +45,7 @@ class RoleTest extends TestCase
         $this->assertTrue($role->isSystemRole());
     }
 
+    #[Test]
     public function testTimestamps(): void
     {
         $role = new Role();
@@ -56,6 +61,7 @@ class RoleTest extends TestCase
         $this->assertEquals($now, $role->getUpdatedAt());
     }
 
+    #[Test]
     public function testAddAndRemoveUser(): void
     {
         $role = new Role();
@@ -73,6 +79,7 @@ class RoleTest extends TestCase
         $this->assertEquals(0, $role->getUsers()->count());
     }
 
+    #[Test]
     public function testAddAndRemovePermission(): void
     {
         $role = new Role();
@@ -89,6 +96,7 @@ class RoleTest extends TestCase
         $this->assertEquals(0, $role->getPermissions()->count());
     }
 
+    #[Test]
     public function testHasPermission(): void
     {
         $role = new Role();
@@ -108,6 +116,7 @@ class RoleTest extends TestCase
         $this->assertTrue($role->hasPermission('edit_risks'));
     }
 
+    #[Test]
     public function testToString(): void
     {
         $role = new Role();
@@ -116,6 +125,7 @@ class RoleTest extends TestCase
         $this->assertEquals('ROLE_ADMIN', (string)$role);
     }
 
+    #[Test]
     public function testToStringWhenNameIsNull(): void
     {
         $role = new Role();

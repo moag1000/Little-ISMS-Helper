@@ -4,9 +4,11 @@ namespace App\Tests\Command;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class Nis2NotificationCommandTest extends KernelTestCase
 {
+    #[Test]
     public function testCommandExists(): void
     {
         $kernel = self::bootKernel();
@@ -15,6 +17,7 @@ class Nis2NotificationCommandTest extends KernelTestCase
         $this->assertTrue($application->has('app:nis2-notification-check'));
     }
 
+    #[Test]
     public function testCommandHasCorrectName(): void
     {
         $kernel = self::bootKernel();
@@ -24,6 +27,7 @@ class Nis2NotificationCommandTest extends KernelTestCase
         $this->assertSame('app:nis2-notification-check', $command->getName());
     }
 
+    #[Test]
     public function testCommandHasDescription(): void
     {
         $kernel = self::bootKernel();

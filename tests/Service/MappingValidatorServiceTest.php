@@ -9,6 +9,7 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Service\MappingValidatorService;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class MappingValidatorServiceTest extends TestCase
@@ -56,6 +57,7 @@ class MappingValidatorServiceTest extends TestCase
         ];
     }
 
+    #[Test]
     public function testValidPayloadHasNoErrors(): void
     {
         $fw = new ComplianceFramework();
@@ -68,6 +70,7 @@ class MappingValidatorServiceTest extends TestCase
         $this->assertEmpty($result['errors'], 'Expected no errors, got: ' . implode('; ', $result['errors']));
     }
 
+    #[Test]
     public function testMissingSchemaVersionIsError(): void
     {
         $payload = $this->validPayload();
@@ -80,6 +83,7 @@ class MappingValidatorServiceTest extends TestCase
         $this->assertStringContainsString('schema_version', $result['errors'][0]);
     }
 
+    #[Test]
     public function testMissingProvenanceIsError(): void
     {
         $payload = $this->validPayload();
@@ -92,6 +96,7 @@ class MappingValidatorServiceTest extends TestCase
         $this->assertStringContainsString('provenance', $errors);
     }
 
+    #[Test]
     public function testInvalidRelationshipIsError(): void
     {
         $payload = $this->validPayload();
@@ -104,6 +109,7 @@ class MappingValidatorServiceTest extends TestCase
         $this->assertStringContainsString('relationship', $errors);
     }
 
+    #[Test]
     public function testInvalidLifecycleStateIsError(): void
     {
         $payload = $this->validPayload();
@@ -116,6 +122,7 @@ class MappingValidatorServiceTest extends TestCase
         $this->assertStringContainsString('lifecycle.state', $errors);
     }
 
+    #[Test]
     public function testMissingFrameworkInDbIsError(): void
     {
         $payload = $this->validPayload();
@@ -127,6 +134,7 @@ class MappingValidatorServiceTest extends TestCase
         $this->assertStringContainsString('not found in DB', $errors);
     }
 
+    #[Test]
     public function testMissingRationaleIsWarning(): void
     {
         $payload = $this->validPayload();

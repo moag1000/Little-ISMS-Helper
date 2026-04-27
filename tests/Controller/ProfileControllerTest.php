@@ -15,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Comprehensive functional tests for ProfileController
@@ -104,6 +105,7 @@ class ProfileControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/profile');
@@ -117,6 +119,7 @@ class ProfileControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/profile/edit');
@@ -130,6 +133,7 @@ class ProfileControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testDeleteAvatarRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/profile/avatar/delete');
@@ -143,6 +147,7 @@ class ProfileControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testIndexDisplaysUserProfile(): void
     {
         $this->loginAsUser($this->testUser);
@@ -155,6 +160,7 @@ class ProfileControllerTest extends WebTestCase
         $this->assertSelectorTextContains('html', $this->testUser->getEmail());
     }
 
+    #[Test]
     public function testEditDisplaysProfileForm(): void
     {
         $this->loginAsUser($this->testUser);
@@ -172,6 +178,7 @@ class ProfileControllerTest extends WebTestCase
         $this->assertSelectorExists('input[name="user[jobTitle]"]');
     }
 
+    #[Test]
     public function testEditProfileWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -199,6 +206,7 @@ class ProfileControllerTest extends WebTestCase
         $this->assertSame('Senior Developer', $updatedUser->getJobTitle());
     }
 
+    #[Test]
     public function testEditProfileUpdatesTimestamp(): void
     {
         $this->loginAsUser($this->testUser);
@@ -227,6 +235,7 @@ class ProfileControllerTest extends WebTestCase
         }
     }
 
+    #[Test]
     public function testChangePasswordWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -257,6 +266,7 @@ class ProfileControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testEmptyPasswordDoesNotChangePassword(): void
     {
         $this->loginAsUser($this->testUser);
@@ -282,6 +292,7 @@ class ProfileControllerTest extends WebTestCase
         $this->assertSame('UpdatedName', $updatedUser->getFirstName());
     }
 
+    #[Test]
     public function testWhitespacePasswordDoesNotChangePassword(): void
     {
         $this->loginAsUser($this->testUser);
@@ -303,6 +314,7 @@ class ProfileControllerTest extends WebTestCase
         $this->assertSame($oldPasswordHash, $updatedUser->getPassword());
     }
 
+    #[Test]
     public function testAvatarUploadWithValidFile(): void
     {
         $this->loginAsUser($this->testUser);
@@ -361,6 +373,7 @@ class ProfileControllerTest extends WebTestCase
         }
     }
 
+    #[Test]
     public function testAvatarUploadWithInvalidFile(): void
     {
         $this->loginAsUser($this->testUser);
@@ -408,6 +421,7 @@ class ProfileControllerTest extends WebTestCase
         }
     }
 
+    #[Test]
     public function testDeleteAvatarWithValidToken(): void
     {
         $this->loginAsUser($this->testUser);
@@ -439,6 +453,7 @@ class ProfileControllerTest extends WebTestCase
         $this->assertNull($updatedUser->getProfilePicture());
     }
 
+    #[Test]
     public function testDeleteAvatarWithInvalidTokenFails(): void
     {
         $this->loginAsUser($this->testUser);
@@ -457,6 +472,7 @@ class ProfileControllerTest extends WebTestCase
         $this->assertSame('uploads/users/test-avatar.jpg', $this->testUser->getProfilePicture());
     }
 
+    #[Test]
     public function testDeleteAvatarWhenNoAvatarExists(): void
     {
         $this->loginAsUser($this->testUser);
@@ -481,6 +497,7 @@ class ProfileControllerTest extends WebTestCase
         $this->assertNull($updatedUser->getProfilePicture());
     }
 
+    #[Test]
     public function testProfileEditLogsAuditEntry(): void
     {
         $this->loginAsUser($this->testUser);
@@ -503,6 +520,7 @@ class ProfileControllerTest extends WebTestCase
         // Audit logging is internal to the controller; if no exception is thrown, logging succeeded
     }
 
+    #[Test]
     public function testAvatarDeletionLogsAuditEntry(): void
     {
         $this->loginAsUser($this->testUser);
@@ -534,6 +552,7 @@ class ProfileControllerTest extends WebTestCase
         // Audit logging is internal to the controller; if no exception is thrown, logging succeeded
     }
 
+    #[Test]
     public function testProfileIndexWorksWithDifferentLocales(): void
     {
         $this->loginAsUser($this->testUser);
@@ -547,6 +566,7 @@ class ProfileControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testProfileEditPreservesExistingData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -575,6 +595,7 @@ class ProfileControllerTest extends WebTestCase
         $this->assertSame('+49123456789', $updatedUser->getPhoneNumber());
     }
 
+    #[Test]
     public function testSuccessFlashMessageOnProfileUpdate(): void
     {
         $this->loginAsUser($this->testUser);
@@ -591,6 +612,7 @@ class ProfileControllerTest extends WebTestCase
         $this->assertSelectorExists('.alert-success, .flash-success, .fa-alert--success');
     }
 
+    #[Test]
     public function testSuccessFlashMessageOnPasswordChange(): void
     {
         $this->loginAsUser($this->testUser);

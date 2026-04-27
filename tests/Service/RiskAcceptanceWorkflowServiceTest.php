@@ -19,6 +19,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class RiskAcceptanceWorkflowServiceTest extends TestCase
@@ -60,6 +61,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testDetermineApprovalLevelAutomaticForLowScore(): void
     {
         $risk = $this->createRiskWithResidualLevel(3);
@@ -69,6 +71,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->assertSame('automatic', $result);
     }
 
+    #[Test]
     public function testDetermineApprovalLevelAutomaticForMinimumScore(): void
     {
         $risk = $this->createRiskWithResidualLevel(1);
@@ -78,6 +81,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->assertSame('automatic', $result);
     }
 
+    #[Test]
     public function testDetermineApprovalLevelManagerForMediumScore(): void
     {
         $risk = $this->createRiskWithResidualLevel(4);
@@ -87,6 +91,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->assertSame('manager', $result);
     }
 
+    #[Test]
     public function testDetermineApprovalLevelManagerForScore7(): void
     {
         $risk = $this->createRiskWithResidualLevel(7);
@@ -96,6 +101,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->assertSame('manager', $result);
     }
 
+    #[Test]
     public function testDetermineApprovalLevelExecutiveForHighScore(): void
     {
         $risk = $this->createRiskWithResidualLevel(8);
@@ -105,6 +111,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->assertSame('executive', $result);
     }
 
+    #[Test]
     public function testDetermineApprovalLevelExecutiveForMaxScore(): void
     {
         $risk = $this->createRiskWithResidualLevel(25);
@@ -114,6 +121,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->assertSame('executive', $result);
     }
 
+    #[Test]
     public function testRequestAcceptanceThrowsExceptionForNonAcceptStrategy(): void
     {
         $risk = $this->createRisk();
@@ -127,6 +135,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->service->requestAcceptance($risk, $user, 'Test justification');
     }
 
+    #[Test]
     public function testRequestAcceptanceThrowsExceptionWithoutProbability(): void
     {
         $risk = $this->createRisk();
@@ -142,6 +151,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->service->requestAcceptance($risk, $user, 'Test justification');
     }
 
+    #[Test]
     public function testRequestAcceptanceThrowsExceptionWithoutImpact(): void
     {
         $risk = $this->createRisk();
@@ -157,6 +167,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->service->requestAcceptance($risk, $user, 'Test justification');
     }
 
+    #[Test]
     public function testRequestAcceptanceThrowsExceptionWithoutResidualProbability(): void
     {
         $risk = $this->createRisk();
@@ -174,6 +185,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->service->requestAcceptance($risk, $user, 'Test justification');
     }
 
+    #[Test]
     public function testRequestAcceptanceThrowsExceptionIfAlreadyAccepted(): void
     {
         $risk = $this->createRisk();
@@ -192,6 +204,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->service->requestAcceptance($risk, $user, 'Test justification');
     }
 
+    #[Test]
     public function testRequestAcceptanceThrowsExceptionWhenAppetiteNotApproved(): void
     {
         $risk = $this->createValidRiskForAcceptance();
@@ -210,6 +223,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->service->requestAcceptance($risk, $user, 'Test justification');
     }
 
+    #[Test]
     public function testRequestAcceptanceThrowsExceptionWhenExceedsAppetite(): void
     {
         $risk = $this->createValidRiskForAcceptance();
@@ -233,6 +247,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->service->requestAcceptance($risk, $user, 'Test justification');
     }
 
+    #[Test]
     public function testApproveAcceptanceSetsRiskAsAccepted(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -258,6 +273,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->assertArrayHasKey('approved_at', $result);
     }
 
+    #[Test]
     public function testRejectAcceptanceResetsRiskStatus(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -281,6 +297,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->assertSame('Needs more mitigation', $result['reason']);
     }
 
+    #[Test]
     public function testGetApprovalThresholdsReturnsCorrectConfiguration(): void
     {
         $thresholds = $this->service->getApprovalThresholds();

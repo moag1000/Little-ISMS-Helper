@@ -20,6 +20,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use RuntimeException;
 use Symfony\Bundle\SecurityBundle\Security;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class DataProtectionImpactAssessmentServiceTest extends TestCase
@@ -64,6 +65,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
     // CRUD Tests
     // =========================================================================
 
+    #[Test]
     public function testCreateDPIASetsDefaultValues(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -92,6 +94,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertSame($dpia, $result);
     }
 
+    #[Test]
     public function testCreateDPIAPreservesExistingReferenceNumber(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -117,6 +120,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertSame($dpia, $result);
     }
 
+    #[Test]
     public function testUpdateDPIASetsUpdatedBy(): void
     {
         $this->security->method('getUser')->willReturn($this->user);
@@ -136,6 +140,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertSame($dpia, $result);
     }
 
+    #[Test]
     public function testDeleteDPIA(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -152,6 +157,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
     // Finder Method Tests
     // =========================================================================
 
+    #[Test]
     public function testFindAllReturnsTenantDPIAs(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -171,6 +177,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertSame($dpias, $result);
     }
 
+    #[Test]
     public function testFindByStatusReturnsDPIAsWithMatchingStatus(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -186,6 +193,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertCount(1, $result);
     }
 
+    #[Test]
     public function testFindHighRiskReturnsDPIAsWithHighRisk(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -201,6 +209,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertCount(1, $result);
     }
 
+    #[Test]
     public function testFindRequiringSupervisoryConsultation(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -216,6 +225,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertCount(1, $result);
     }
 
+    #[Test]
     public function testFindDueForReview(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -231,6 +241,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertCount(1, $result);
     }
 
+    #[Test]
     public function testFindByProcessingActivity(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -249,6 +260,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
     // Workflow Tests
     // =========================================================================
 
+    #[Test]
     public function testSubmitForReviewThrowsExceptionForNonDraftStatus(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -260,6 +272,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->service->submitForReview($dpia);
     }
 
+    #[Test]
     public function testSubmitForReviewThrowsExceptionForIncompleteDPIA(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -272,6 +285,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->service->submitForReview($dpia);
     }
 
+    #[Test]
     public function testSubmitForReviewChangesStatusToInReview(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -290,6 +304,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertSame($dpia, $result);
     }
 
+    #[Test]
     public function testApproveThrowsExceptionForNonInReviewStatus(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -301,6 +316,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->service->approve($dpia, $this->user);
     }
 
+    #[Test]
     public function testApproveSetsDPIAAsApproved(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -323,6 +339,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertSame($dpia, $result);
     }
 
+    #[Test]
     public function testApproveUpdatesLinkedProcessingActivity(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -342,6 +359,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->service->approve($dpia, $this->user);
     }
 
+    #[Test]
     public function testRejectThrowsExceptionForNonInReviewStatus(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -353,6 +371,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->service->reject($dpia, $this->user, 'Insufficient analysis');
     }
 
+    #[Test]
     public function testRejectSetsDPIAAsRejected(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -371,6 +390,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertSame($dpia, $result);
     }
 
+    #[Test]
     public function testRequestRevisionThrowsExceptionForInvalidStatus(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -382,6 +402,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->service->requestRevision($dpia, 'Needs more detail');
     }
 
+    #[Test]
     public function testRequestRevisionSetsStatusToRequiresRevision(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -400,6 +421,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertSame($dpia, $result);
     }
 
+    #[Test]
     public function testReopenThrowsExceptionForNonRequiresRevisionStatus(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -411,6 +433,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->service->reopen($dpia);
     }
 
+    #[Test]
     public function testReopenSetsStatusToDraft(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -432,6 +455,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
     // DPO Consultation Tests (Art. 35(4))
     // =========================================================================
 
+    #[Test]
     public function testRecordDPOConsultation(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -453,6 +477,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
     // Supervisory Authority Consultation Tests (Art. 36)
     // =========================================================================
 
+    #[Test]
     public function testRecordSupervisoryConsultation(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -473,6 +498,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
     // Review Management Tests (Art. 35(11))
     // =========================================================================
 
+    #[Test]
     public function testMarkForReview(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -489,6 +515,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertSame($dpia, $result);
     }
 
+    #[Test]
     public function testMarkForReviewWithDueDate(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -508,6 +535,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertSame($dpia, $result);
     }
 
+    #[Test]
     public function testCompleteReviewIncrementsVersion(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -533,6 +561,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
     // Validation Tests (Art. 35(7))
     // =========================================================================
 
+    #[Test]
     public function testValidateReturnsErrorsForMissingMandatoryFields(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -573,6 +602,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertContains('Organizational measures to mitigate risks are required (Art. 35(7)(d))', $errors);
     }
 
+    #[Test]
     public function testValidateReturnsErrorForMissingDPOConsultationInReview(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -601,6 +631,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertContains('DPO should be consulted before approval (Art. 35(4))', $errors);
     }
 
+    #[Test]
     public function testValidateReturnsErrorForMissingSupervisoryConsultation(): void
     {
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -629,6 +660,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertContains('Prior consultation with supervisory authority is required (Art. 36)', $errors);
     }
 
+    #[Test]
     public function testValidateReturnsEmptyArrayForCompleteDPIA(): void
     {
         $dpia = $this->createCompleteDPIAMock();
@@ -642,6 +674,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
     // Statistics Tests
     // =========================================================================
 
+    #[Test]
     public function testGetDashboardStatistics(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -662,6 +695,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertSame($stats, $result);
     }
 
+    #[Test]
     public function testCalculateComplianceScoreReturns100ForNoDPIAs(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -678,6 +712,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertSame(0, $result['total_dpias']);
     }
 
+    #[Test]
     public function testCalculateComplianceScoreWithMixedDPIAs(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -709,6 +744,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->assertSame(60, $result['overall_score']);
     }
 
+    #[Test]
     public function testGenerateComplianceReport(): void
     {
         $dpia = $this->createCompleteDPIAMock();
@@ -742,6 +778,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
     // Clone Test
     // =========================================================================
 
+    #[Test]
     public function testCloneDPIA(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);

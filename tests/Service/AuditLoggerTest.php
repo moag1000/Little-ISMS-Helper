@@ -12,6 +12,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class AuditLoggerTest extends TestCase
@@ -34,6 +35,7 @@ class AuditLoggerTest extends TestCase
         );
     }
 
+    #[Test]
     public function testLogCreatePersistsAuditLog(): void
     {
         $this->setupRequest('127.0.0.1', 'TestAgent');
@@ -55,6 +57,7 @@ class AuditLoggerTest extends TestCase
         $this->logger->logCreate('Risk', 1, ['name' => 'Test Risk', 'level' => 'high'], 'Created new risk');
     }
 
+    #[Test]
     public function testLogUpdateWithChanges(): void
     {
         $this->setupRequest('192.168.1.1', 'Browser');
@@ -78,6 +81,7 @@ class AuditLoggerTest extends TestCase
         $this->logger->logUpdate('Risk', 1, $oldValues, $newValues, 'Updated risk');
     }
 
+    #[Test]
     public function testLogUpdateWithNoChanges(): void
     {
         $this->setupRequest('127.0.0.1', 'TestAgent');
@@ -93,6 +97,7 @@ class AuditLoggerTest extends TestCase
         $this->logger->logUpdate('Risk', 1, $oldValues, $newValues);
     }
 
+    #[Test]
     public function testLogDelete(): void
     {
         $this->setupRequest('10.0.0.1', 'CLI');
@@ -112,6 +117,7 @@ class AuditLoggerTest extends TestCase
         $this->logger->logDelete('Asset', 5, $oldValues, 'Asset removed');
     }
 
+    #[Test]
     public function testLogView(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -130,6 +136,7 @@ class AuditLoggerTest extends TestCase
         $this->logger->logView('Document', 10, 'Viewed sensitive document');
     }
 
+    #[Test]
     public function testLogExport(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -146,6 +153,7 @@ class AuditLoggerTest extends TestCase
         $this->logger->logExport('RiskReport', null, 'Exported risk report to PDF');
     }
 
+    #[Test]
     public function testLogImport(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -162,6 +170,7 @@ class AuditLoggerTest extends TestCase
         $this->logger->logImport('Control', 50, 'Imported controls from CSV');
     }
 
+    #[Test]
     public function testLogCustomAction(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -185,6 +194,7 @@ class AuditLoggerTest extends TestCase
         );
     }
 
+    #[Test]
     public function testLogCustomActionWithCustomUserName(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -206,6 +216,7 @@ class AuditLoggerTest extends TestCase
         );
     }
 
+    #[Test]
     public function testSanitizesSensitiveData(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -232,6 +243,7 @@ class AuditLoggerTest extends TestCase
         $this->logger->logCreate('User', 1, $newValues);
     }
 
+    #[Test]
     public function testConvertsDateTimeObjects(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -250,6 +262,7 @@ class AuditLoggerTest extends TestCase
         $this->logger->logCreate('Entity', 1, $newValues);
     }
 
+    #[Test]
     public function testTruncatesLongStrings(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -269,6 +282,7 @@ class AuditLoggerTest extends TestCase
         $this->logger->logCreate('Document', 1, $newValues);
     }
 
+    #[Test]
     public function testHandlesDateTimeComparison(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -292,6 +306,7 @@ class AuditLoggerTest extends TestCase
         $this->logger->logUpdate('Context', 1, $oldValues, $newValues);
     }
 
+    #[Test]
     public function testUsesSystemUserWhenNoUserLoggedIn(): void
     {
         $this->setupRequest('127.0.0.1', 'CLI');
@@ -306,6 +321,7 @@ class AuditLoggerTest extends TestCase
         $this->logger->logCreate('Entity', 1, ['name' => 'Test']);
     }
 
+    #[Test]
     public function testHandlesNoRequest(): void
     {
         $this->requestStack->method('getCurrentRequest')->willReturn(null);
@@ -321,6 +337,7 @@ class AuditLoggerTest extends TestCase
         $this->logger->logCreate('Entity', 1, ['name' => 'Test']);
     }
 
+    #[Test]
     public function testGetEntityTypeName(): void
     {
         $entity = new \App\Entity\Risk();
@@ -329,6 +346,7 @@ class AuditLoggerTest extends TestCase
         $this->assertSame('Risk', $typeName);
     }
 
+    #[Test]
     public function testExtractEntityValuesBasic(): void
     {
         $entity = new \App\Entity\ISMSContext();
@@ -343,6 +361,7 @@ class AuditLoggerTest extends TestCase
         $this->assertSame('Global Scope', $values['ismsScope']);
     }
 
+    #[Test]
     public function testExtractEntityValuesSkipsCollections(): void
     {
         $entity = new \App\Entity\Risk();
@@ -354,6 +373,7 @@ class AuditLoggerTest extends TestCase
         $this->assertArrayNotHasKey('__cloner__', $values);
     }
 
+    #[Test]
     public function testLogUpdateWithPartialChanges(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -378,6 +398,7 @@ class AuditLoggerTest extends TestCase
         $this->logger->logUpdate('Risk', 1, $oldValues, $newValues);
     }
 
+    #[Test]
     public function testConvertsArraysToJson(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');

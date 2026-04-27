@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for SessionController
@@ -101,12 +102,14 @@ class SessionControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/sessions');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -114,6 +117,7 @@ class SessionControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testIndexDisplaysForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -121,12 +125,14 @@ class SessionControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testStatisticsRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/sessions/statistics');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testStatisticsRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -134,6 +140,7 @@ class SessionControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testStatisticsDisplaysForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -141,6 +148,7 @@ class SessionControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testTerminateRequiresPost(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -148,6 +156,7 @@ class SessionControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testTerminateSingleRequiresPost(): void
     {
         $this->client->loginUser($this->adminUser);

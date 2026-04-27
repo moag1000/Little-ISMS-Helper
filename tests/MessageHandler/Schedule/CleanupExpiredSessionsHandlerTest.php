@@ -10,6 +10,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class CleanupExpiredSessionsHandlerTest extends TestCase
@@ -28,6 +29,7 @@ class CleanupExpiredSessionsHandlerTest extends TestCase
         );
     }
 
+    #[Test]
     public function testInvokeCleanupsSessions(): void
     {
         $message = new CleanupExpiredSessionsMessage(new DateTimeImmutable());
@@ -42,6 +44,7 @@ class CleanupExpiredSessionsHandlerTest extends TestCase
         ($this->handler)($message);
     }
 
+    #[Test]
     public function testInvokeLogsErrorOnException(): void
     {
         $message = new CleanupExpiredSessionsMessage(new DateTimeImmutable());
@@ -59,6 +62,7 @@ class CleanupExpiredSessionsHandlerTest extends TestCase
         ($this->handler)($message);
     }
 
+    #[Test]
     public function testInvokeReturnsZeroCleanedSessions(): void
     {
         $message = new CleanupExpiredSessionsMessage(new DateTimeImmutable());

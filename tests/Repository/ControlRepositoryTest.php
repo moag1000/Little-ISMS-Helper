@@ -10,6 +10,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for ControlRepository
@@ -48,6 +49,7 @@ class ControlRepositoryTest extends TestCase
         $this->repository = new ControlRepository($this->managerRegistry);
     }
 
+    #[Test]
     public function testConstructor(): void
     {
         $this->assertInstanceOf(ControlRepository::class, $this->repository);
@@ -62,6 +64,7 @@ class ControlRepositoryTest extends TestCase
      *
      * Integration test required: Actual database ordering with LENGTH() function
      */
+    #[Test]
     public function testNaturalOrderingLogic(): void
     {
         // Document the natural ordering approach
@@ -87,6 +90,7 @@ class ControlRepositoryTest extends TestCase
      *
      * Integration test required: Verify getImplementationStats() aggregation
      */
+    #[Test]
     public function testImplementationStatusMapping(): void
     {
         $validStatuses = ['implemented', 'in_progress', 'not_started', 'not_applicable'];
@@ -106,6 +110,7 @@ class ControlRepositoryTest extends TestCase
      *
      * Integration test required: Verify countByCategory() aggregation
      */
+    #[Test]
     public function testCategoryGroupingConcept(): void
     {
         // ISO 27001:2022 Annex A categories
@@ -130,6 +135,7 @@ class ControlRepositoryTest extends TestCase
      *
      * Integration test required: Verify findApplicableControls() filtering
      */
+    #[Test]
     public function testApplicableFilterConcept(): void
     {
         // Controls can be marked as applicable or not applicable
@@ -147,6 +153,7 @@ class ControlRepositoryTest extends TestCase
      *
      * Integration test required: Verify findByControlIdAndTenant() lookup
      */
+    #[Test]
     public function testControlIdFormatConcept(): void
     {
         // Valid ISO 27001 control ID formats
@@ -175,6 +182,7 @@ class ControlRepositoryTest extends TestCase
      *
      * Integration test required: Verify actual stats calculation
      */
+    #[Test]
     public function testStatsArrayStructure(): void
     {
         $stats = [
@@ -210,6 +218,7 @@ class ControlRepositoryTest extends TestCase
      *
      * Integration test required: Verify actual count aggregation
      */
+    #[Test]
     public function testCategoryCountResultStructure(): void
     {
         // Expected structure from countByCategory
@@ -238,6 +247,7 @@ class ControlRepositoryTest extends TestCase
      *
      * Integration test required: Verify hierarchical query with real entities
      */
+    #[Test]
     public function testTenantHierarchyParentConcept(): void
     {
         $grandparent = $this->createMock(Tenant::class);
@@ -260,6 +270,7 @@ class ControlRepositoryTest extends TestCase
      *
      * Integration test required: Verify subsidiary aggregation with real entities
      */
+    #[Test]
     public function testTenantHierarchySubsidiaryConcept(): void
     {
         $parent = $this->createMock(Tenant::class);
@@ -282,6 +293,7 @@ class ControlRepositoryTest extends TestCase
      *
      * ISO 27001:2022 Annex A has exactly 93 controls
      */
+    #[Test]
     public function testIso27001ControlCount(): void
     {
         $iso27001ControlCount = 93;
@@ -296,6 +308,7 @@ class ControlRepositoryTest extends TestCase
      * findByTenantIncludingParent() has a deprecated $parentTenant parameter
      * that should be ignored in favor of getAllAncestors()
      */
+    #[Test]
     public function testFindByTenantIncludingParentDeprecatedParameter(): void
     {
         $parent = $this->createMock(Tenant::class);
@@ -315,6 +328,7 @@ class ControlRepositoryTest extends TestCase
      *
      * When tenant has no parent, only its own controls should be queried
      */
+    #[Test]
     public function testFindByTenantIncludingParentWithoutAncestors(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -329,6 +343,7 @@ class ControlRepositoryTest extends TestCase
      *
      * When tenant has no subsidiaries, only its own controls should be queried
      */
+    #[Test]
     public function testFindByTenantIncludingSubsidiariesWithoutSubsidiaries(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -341,6 +356,7 @@ class ControlRepositoryTest extends TestCase
     /**
      * Test category names are consistent with ISO 27001:2022
      */
+    #[Test]
     public function testIso27001CategoryNames(): void
     {
         $expectedCategories = [
@@ -360,6 +376,7 @@ class ControlRepositoryTest extends TestCase
     /**
      * Test implementation status values cover all states
      */
+    #[Test]
     public function testImplementationStatusCoverage(): void
     {
         $statuses = [
@@ -383,6 +400,7 @@ class ControlRepositoryTest extends TestCase
     /**
      * Test ordering ensures controls appear in correct sequence
      */
+    #[Test]
     public function testControlIdOrdering(): void
     {
         // Controls should be ordered numerically within each major section
@@ -403,6 +421,7 @@ class ControlRepositoryTest extends TestCase
     /**
      * Test that stats calculation handles edge cases
      */
+    #[Test]
     public function testStatsCalculationEdgeCases(): void
     {
         // All controls not applicable
@@ -433,6 +452,7 @@ class ControlRepositoryTest extends TestCase
     /**
      * Test tenant filtering concept
      */
+    #[Test]
     public function testTenantFilteringConcept(): void
     {
         $tenant1 = $this->createMock(Tenant::class);
@@ -448,6 +468,7 @@ class ControlRepositoryTest extends TestCase
     /**
      * Test that repository methods follow naming conventions
      */
+    #[Test]
     public function testRepositoryMethodNamingConventions(): void
     {
         // Repository should have standard find methods

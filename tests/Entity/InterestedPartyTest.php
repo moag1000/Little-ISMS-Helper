@@ -4,9 +4,11 @@ namespace App\Tests\Entity;
 
 use App\Entity\InterestedParty;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class InterestedPartyTest extends TestCase
 {
+    #[Test]
     public function testNewInterestedPartyHasDefaultValues(): void
     {
         $party = new InterestedParty();
@@ -34,6 +36,7 @@ class InterestedPartyTest extends TestCase
         $this->assertNull($party->getUpdatedAt());
     }
 
+    #[Test]
     public function testSetAndGetName(): void
     {
         $party = new InterestedParty();
@@ -42,6 +45,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals('European Data Protection Authority', $party->getName());
     }
 
+    #[Test]
     public function testSetAndGetPartyType(): void
     {
         $party = new InterestedParty();
@@ -56,6 +60,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals('employee', $party->getPartyType());
     }
 
+    #[Test]
     public function testSetAndGetContactDetails(): void
     {
         $party = new InterestedParty();
@@ -68,6 +73,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals('+49 123 456789', $party->getPhone());
     }
 
+    #[Test]
     public function testSetAndGetImportance(): void
     {
         $party = new InterestedParty();
@@ -79,6 +85,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals('low', $party->getImportance());
     }
 
+    #[Test]
     public function testSetAndGetRequirements(): void
     {
         $party = new InterestedParty();
@@ -89,6 +96,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals($requirements, $party->getRequirements());
     }
 
+    #[Test]
     public function testSetAndGetLegalRequirements(): void
     {
         $party = new InterestedParty();
@@ -99,6 +107,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals($legal, $party->getLegalRequirements());
     }
 
+    #[Test]
     public function testSetAndGetHowAddressed(): void
     {
         $party = new InterestedParty();
@@ -109,6 +118,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals($addressed, $party->getHowAddressed());
     }
 
+    #[Test]
     public function testSetAndGetCommunicationFrequency(): void
     {
         $party = new InterestedParty();
@@ -120,6 +130,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals('quarterly', $party->getCommunicationFrequency());
     }
 
+    #[Test]
     public function testSetAndGetCommunicationMethod(): void
     {
         $party = new InterestedParty();
@@ -128,6 +139,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals('Email updates, quarterly meetings', $party->getCommunicationMethod());
     }
 
+    #[Test]
     public function testSetAndGetCommunicationDates(): void
     {
         $party = new InterestedParty();
@@ -141,6 +153,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals($nextComm, $party->getNextCommunication());
     }
 
+    #[Test]
     public function testSetAndGetFeedback(): void
     {
         $party = new InterestedParty();
@@ -151,6 +164,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals($feedback, $party->getFeedback());
     }
 
+    #[Test]
     public function testSetAndGetSatisfactionLevel(): void
     {
         $party = new InterestedParty();
@@ -162,6 +176,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals(3, $party->getSatisfactionLevel());
     }
 
+    #[Test]
     public function testSetAndGetIssues(): void
     {
         $party = new InterestedParty();
@@ -172,6 +187,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals($issues, $party->getIssues());
     }
 
+    #[Test]
     public function testIsCommunicationOverdueReturnsFalseWhenNoNextCommunication(): void
     {
         $party = new InterestedParty();
@@ -179,6 +195,7 @@ class InterestedPartyTest extends TestCase
         $this->assertFalse($party->isCommunicationOverdue());
     }
 
+    #[Test]
     public function testIsCommunicationOverdueReturnsTrueWhenPastDue(): void
     {
         $party = new InterestedParty();
@@ -188,6 +205,7 @@ class InterestedPartyTest extends TestCase
         $this->assertTrue($party->isCommunicationOverdue());
     }
 
+    #[Test]
     public function testIsCommunicationOverdueReturnsFalseWhenNotYetDue(): void
     {
         $party = new InterestedParty();
@@ -197,6 +215,7 @@ class InterestedPartyTest extends TestCase
         $this->assertFalse($party->isCommunicationOverdue());
     }
 
+    #[Test]
     public function testGetCommunicationStatusReturnsNeverCommunicatedInitially(): void
     {
         $party = new InterestedParty();
@@ -204,6 +223,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals('never_communicated', $party->getCommunicationStatus());
     }
 
+    #[Test]
     public function testGetCommunicationStatusReturnsOverdueWhenPastDue(): void
     {
         $party = new InterestedParty();
@@ -213,6 +233,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals('overdue', $party->getCommunicationStatus());
     }
 
+    #[Test]
     public function testGetCommunicationStatusReturnsDueSoonWhenWithin7Days(): void
     {
         $party = new InterestedParty();
@@ -222,6 +243,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals('due_soon', $party->getCommunicationStatus());
     }
 
+    #[Test]
     public function testGetCommunicationStatusReturnsCurrentWhenNotDueSoon(): void
     {
         $party = new InterestedParty();
@@ -231,6 +253,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals('current', $party->getCommunicationStatus());
     }
 
+    #[Test]
     public function testGetEngagementScoreReturnsZeroInitially(): void
     {
         $party = new InterestedParty();
@@ -239,6 +262,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals(20, $party->getEngagementScore());
     }
 
+    #[Test]
     public function testGetEngagementScoreCalculatesFromSatisfaction(): void
     {
         $party = new InterestedParty();
@@ -248,6 +272,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals(70, $party->getEngagementScore());
     }
 
+    #[Test]
     public function testGetEngagementScoreIncludesRecentCommunication(): void
     {
         $party = new InterestedParty();
@@ -258,6 +283,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals(100, $party->getEngagementScore());
     }
 
+    #[Test]
     public function testGetEngagementScoreIncludesNoIssues(): void
     {
         $party = new InterestedParty();
@@ -268,6 +294,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals(100, $party->getEngagementScore());
     }
 
+    #[Test]
     public function testGetEngagementScoreDecreasesWithOldCommunication(): void
     {
         $party = new InterestedParty();
@@ -278,6 +305,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals(90, $party->getEngagementScore());
     }
 
+    #[Test]
     public function testGetEngagementScoreDecreasesWithOutstandingIssues(): void
     {
         $party = new InterestedParty();
@@ -288,6 +316,7 @@ class InterestedPartyTest extends TestCase
         $this->assertEquals(80, $party->getEngagementScore());
     }
 
+    #[Test]
     public function testInterestedPartyCanStoreCompleteStakeholderProfile(): void
     {
         $party = new InterestedParty();

@@ -9,6 +9,7 @@ use App\Service\GuidedTourService;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit-Tests für GuidedTourService (Sprint 13).
@@ -25,12 +26,14 @@ class GuidedTourServiceTest extends TestCase
         return new GuidedTourService($authChecker);
     }
 
+    #[Test]
     public function testAutoDetectFallsBackToJunior(): void
     {
         $service = $this->buildService([]);
         $this->assertSame('junior', $service->autoDetectTour(new User()));
     }
 
+    #[Test]
     public function testAutoDetectAuditorBeatsAdmin(): void
     {
         // Auditor hat oft zusätzlich ROLE_USER. Die Priorisierung muss
@@ -39,24 +42,28 @@ class GuidedTourServiceTest extends TestCase
         $this->assertSame('auditor', $service->autoDetectTour(new User()));
     }
 
+    #[Test]
     public function testAutoDetectRiskOwnerBeforeCm(): void
     {
         $service = $this->buildService(['ROLE_RISK_OWNER', 'ROLE_COMPLIANCE_MANAGER']);
         $this->assertSame('risk_owner', $service->autoDetectTour(new User()));
     }
 
+    #[Test]
     public function testAutoDetectCm(): void
     {
         $service = $this->buildService(['ROLE_COMPLIANCE_MANAGER']);
         $this->assertSame('cm', $service->autoDetectTour(new User()));
     }
 
+    #[Test]
     public function testAutoDetectIsb(): void
     {
         $service = $this->buildService(['ROLE_ISB']);
         $this->assertSame('isb', $service->autoDetectTour(new User()));
     }
 
+    #[Test]
     public function testAutoDetectManagerMapsToIsb(): void
     {
         // Manager ist eine RBAC-Rolle oberhalb USER — die Tour soll
@@ -65,18 +72,21 @@ class GuidedTourServiceTest extends TestCase
         $this->assertSame('isb', $service->autoDetectTour(new User()));
     }
 
+    #[Test]
     public function testAutoDetectCisoFromGroupCiso(): void
     {
         $service = $this->buildService(['ROLE_GROUP_CISO']);
         $this->assertSame('ciso', $service->autoDetectTour(new User()));
     }
 
+    #[Test]
     public function testAutoDetectCisoFromAdmin(): void
     {
         $service = $this->buildService(['ROLE_ADMIN']);
         $this->assertSame('ciso', $service->autoDetectTour(new User()));
     }
 
+    #[Test]
     public function testAllToursHaveSteps(): void
     {
         $service = $this->buildService([]);
@@ -86,6 +96,7 @@ class GuidedTourServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testEveryStepHasRequiredKeys(): void
     {
         $service = $this->buildService([]);
@@ -101,6 +112,7 @@ class GuidedTourServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testStepCountsMatchPlan(): void
     {
         // Plan-Vertrag aus .claude/GUIDED_TOUR_PLAN.md § Tour-Matrix.
@@ -115,6 +127,7 @@ class GuidedTourServiceTest extends TestCase
         $this->assertCount(8, $service->stepsFor('mris'));
     }
 
+    #[Test]
     public function testMrisSuggestionEligibilityRespectsAuditorExclusion(): void
     {
         // ROLE_USER ohne ROLE_AUDITOR → MRIS-Suggestion erlaubt
@@ -131,12 +144,14 @@ class GuidedTourServiceTest extends TestCase
         $this->assertFalse($service->isEligibleForMrisSuggestion());
     }
 
+    #[Test]
     public function testUnknownTourReturnsEmpty(): void
     {
         $service = $this->buildService([]);
         $this->assertSame([], $service->stepsFor('wurst'));
     }
 
+    #[Test]
     public function testMetaReflectsStepCount(): void
     {
         $service = $this->buildService([]);
@@ -146,6 +161,7 @@ class GuidedTourServiceTest extends TestCase
         $this->assertGreaterThan(0, $meta['duration_min']);
     }
 
+    #[Test]
     public function testAllMetaCoversAllTours(): void
     {
         $service = $this->buildService([]);

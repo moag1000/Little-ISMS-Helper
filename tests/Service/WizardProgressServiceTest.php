@@ -8,6 +8,7 @@ use App\Entity\WizardSession;
 use App\Service\ComplianceWizardService;
 use App\Service\WizardProgressService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests for WizardProgressService
@@ -58,6 +59,7 @@ class WizardProgressServiceTest extends KernelTestCase
         }
     }
 
+    #[Test]
     public function testServiceIsInjectable(): void
     {
         $this->requireDatabase();
@@ -67,6 +69,7 @@ class WizardProgressServiceTest extends KernelTestCase
         $this->assertNotNull($this->progressService);
     }
 
+    #[Test]
     public function testWizardSessionEntityHasRequiredMethods(): void
     {
         $session = new WizardSession();
@@ -83,6 +86,7 @@ class WizardProgressServiceTest extends KernelTestCase
         $this->assertInstanceOf(WizardSession::class, $session->setCriticalGaps([]));
     }
 
+    #[Test]
     public function testWizardSessionProgressCalculation(): void
     {
         $session = new WizardSession();
@@ -98,6 +102,7 @@ class WizardProgressServiceTest extends KernelTestCase
         $this->assertEquals(0, $session->getProgressPercentage());
     }
 
+    #[Test]
     public function testWizardSessionStatusHelpers(): void
     {
         $session = new WizardSession();
@@ -119,6 +124,7 @@ class WizardProgressServiceTest extends KernelTestCase
         $this->assertEquals(WizardSession::STATUS_ABANDONED, $session2->getStatus());
     }
 
+    #[Test]
     public function testWizardSessionWizardName(): void
     {
         $session = new WizardSession();
@@ -142,6 +148,7 @@ class WizardProgressServiceTest extends KernelTestCase
         $this->assertEquals('BSI IT-Grundschutz', $session->getWizardName());
     }
 
+    #[Test]
     public function testWizardSessionStatusBadgeClass(): void
     {
         $session = new WizardSession();
@@ -156,6 +163,7 @@ class WizardProgressServiceTest extends KernelTestCase
         $this->assertEquals('bg-secondary', $session->getStatusBadgeClass());
     }
 
+    #[Test]
     public function testWizardSessionAddCompletedCategory(): void
     {
         $session = new WizardSession();
@@ -171,6 +179,7 @@ class WizardProgressServiceTest extends KernelTestCase
         $this->assertCount(2, $session->getCompletedCategories());
     }
 
+    #[Test]
     public function testWizardSessionConstants(): void
     {
         // Status constants

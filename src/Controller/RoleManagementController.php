@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RoleManagementController extends AbstractController
@@ -30,13 +31,13 @@ class RoleManagementController extends AbstractController
         ]);
     }
     #[Route('/admin/roles/new', name: 'role_management_new')]
+    #[IsGranted(RoleVoter::CREATE)]
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
         PermissionRepository $permissionRepository,
         TranslatorInterface $translator
     ): Response {
-        $this->denyAccessUnlessGranted(RoleVoter::CREATE);
 
         $role = new Role();
         $form = $this->createForm(RoleType::class, $role);
@@ -113,13 +114,13 @@ class RoleManagementController extends AbstractController
         ]);
     }
     #[Route('/admin/roles/templates', name: 'role_management_templates')]
+    #[IsGranted(RoleVoter::CREATE)]
     public function templates(
         Request $request,
         EntityManagerInterface $entityManager,
         PermissionRepository $permissionRepository,
         TranslatorInterface $translator
     ): Response {
-        $this->denyAccessUnlessGranted(RoleVoter::CREATE);
 
         // Define role templates
         $templates = $this->getRoleTemplates();

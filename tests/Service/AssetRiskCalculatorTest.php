@@ -8,6 +8,7 @@ use App\Entity\Incident;
 use App\Entity\Risk;
 use App\Service\AssetRiskCalculator;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class AssetRiskCalculatorTest extends TestCase
 {
@@ -18,6 +19,7 @@ class AssetRiskCalculatorTest extends TestCase
         $this->calculator = new AssetRiskCalculator();
     }
 
+    #[Test]
     public function testCalculateRiskScoreWithNoRisksOrIncidents(): void
     {
         $asset = new Asset();
@@ -34,6 +36,7 @@ class AssetRiskCalculatorTest extends TestCase
         $this->assertEquals(30.0, $this->calculator->calculateRiskScore($asset));
     }
 
+    #[Test]
     public function testCalculateRiskScoreWithActiveRisks(): void
     {
         $asset = new Asset();
@@ -59,6 +62,7 @@ class AssetRiskCalculatorTest extends TestCase
         $this->assertEquals(30.0, $this->calculator->calculateRiskScore($asset));
     }
 
+    #[Test]
     public function testCalculateRiskScoreWithControls(): void
     {
         $asset = new Asset();
@@ -83,6 +87,7 @@ class AssetRiskCalculatorTest extends TestCase
         $this->assertEquals(24.0, $this->calculator->calculateRiskScore($asset));
     }
 
+    #[Test]
     public function testIsHighRisk(): void
     {
         $asset = new Asset();
@@ -144,6 +149,7 @@ class AssetRiskCalculatorTest extends TestCase
         $this->assertFalse($this->calculator->isHighRisk($asset3));
     }
 
+    #[Test]
     public function testGetProtectionStatusUnprotected(): void
     {
         $asset = new Asset();
@@ -157,6 +163,7 @@ class AssetRiskCalculatorTest extends TestCase
         $this->assertEquals('unprotected', $this->calculator->getProtectionStatus($asset));
     }
 
+    #[Test]
     public function testGetProtectionStatusUnderProtected(): void
     {
         $asset = new Asset();
@@ -176,6 +183,7 @@ class AssetRiskCalculatorTest extends TestCase
         $this->assertEquals('under_protected', $this->calculator->getProtectionStatus($asset));
     }
 
+    #[Test]
     public function testGetProtectionStatusAdequatelyProtected(): void
     {
         $asset = new Asset();
@@ -194,6 +202,7 @@ class AssetRiskCalculatorTest extends TestCase
         $this->assertEquals('adequately_protected', $this->calculator->getProtectionStatus($asset));
     }
 
+    #[Test]
     public function testGetProtectionStatusNoRisks(): void
     {
         $asset = new Asset();
@@ -205,6 +214,7 @@ class AssetRiskCalculatorTest extends TestCase
         $this->assertEquals('adequately_protected', $this->calculator->getProtectionStatus($asset));
     }
 
+    #[Test]
     public function testCalculateRiskScoreWithRecentIncidents(): void
     {
         $asset = new Asset();
@@ -229,6 +239,7 @@ class AssetRiskCalculatorTest extends TestCase
         $this->assertEquals(30.0, $this->calculator->calculateRiskScore($asset));
     }
 
+    #[Test]
     public function testCalculateRiskScoreMaximum(): void
     {
         $asset = new Asset();
@@ -249,6 +260,7 @@ class AssetRiskCalculatorTest extends TestCase
         $this->assertEquals(100.0, $score);
     }
 
+    #[Test]
     public function testCalculateRiskScoreMinimum(): void
     {
         $asset = new Asset();

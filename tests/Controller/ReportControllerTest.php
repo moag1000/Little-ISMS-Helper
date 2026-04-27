@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for ReportController
@@ -120,12 +121,14 @@ class ReportControllerTest extends WebTestCase
 
     // ========== INDEX TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/reports/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -133,6 +136,7 @@ class ReportControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexShowsReportTypes(): void
     {
         $this->loginAsUser($this->testUser);
@@ -142,12 +146,14 @@ class ReportControllerTest extends WebTestCase
 
     // ========== DASHBOARD REPORTS ==========
 
+    #[Test]
     public function testDashboardPdfRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/reports/dashboard/pdf');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDashboardExcelRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/reports/dashboard/excel');
@@ -156,12 +162,14 @@ class ReportControllerTest extends WebTestCase
 
     // ========== RISKS REPORTS ==========
 
+    #[Test]
     public function testRisksPdfRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/reports/risks/pdf');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testRisksExcelRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/reports/risks/excel');
@@ -170,12 +178,14 @@ class ReportControllerTest extends WebTestCase
 
     // ========== CONTROLS REPORTS ==========
 
+    #[Test]
     public function testControlsPdfRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/reports/controls/pdf');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testControlsExcelRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/reports/controls/excel');
@@ -184,12 +194,14 @@ class ReportControllerTest extends WebTestCase
 
     // ========== INCIDENTS REPORTS ==========
 
+    #[Test]
     public function testIncidentsPdfRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/reports/incidents/pdf');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIncidentsExcelRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/reports/incidents/excel');
@@ -198,12 +210,14 @@ class ReportControllerTest extends WebTestCase
 
     // ========== TRAININGS REPORTS ==========
 
+    #[Test]
     public function testTrainingsPdfRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/reports/trainings/pdf');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testTrainingsExcelRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/reports/trainings/excel');
@@ -212,6 +226,7 @@ class ReportControllerTest extends WebTestCase
 
     // ========== AUTHENTICATED REPORT GENERATION ==========
 
+    #[Test]
     public function testDashboardPdfGeneratesForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -224,6 +239,7 @@ class ReportControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testDashboardExcelGeneratesForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -236,6 +252,7 @@ class ReportControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testRisksPdfGeneratesForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -247,6 +264,7 @@ class ReportControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testControlsPdfGeneratesForUser(): void
     {
         $this->loginAsUser($this->testUser);

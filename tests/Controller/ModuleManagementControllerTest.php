@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 class ModuleManagementControllerTest extends WebTestCase
 {
@@ -93,12 +94,14 @@ class ModuleManagementControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/modules/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -106,6 +109,7 @@ class ModuleManagementControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testIndexRedirectsToAdminForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);

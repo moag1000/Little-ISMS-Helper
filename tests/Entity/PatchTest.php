@@ -7,9 +7,11 @@ use App\Entity\Patch;
 use App\Entity\Tenant;
 use App\Entity\Vulnerability;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PatchTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $patch = new Patch();
@@ -23,6 +25,7 @@ class PatchTest extends TestCase
         $this->assertEquals('pending', $patch->getStatus());
     }
 
+    #[Test]
     public function testBasicGettersAndSetters(): void
     {
         $patch = new Patch();
@@ -46,6 +49,7 @@ class PatchTest extends TestCase
         $this->assertEquals('22H2', $patch->getVersion());
     }
 
+    #[Test]
     public function testPatchTypeAndPriority(): void
     {
         $patch = new Patch();
@@ -61,6 +65,7 @@ class PatchTest extends TestCase
         $this->assertEquals('critical', $patch->getPriority());
     }
 
+    #[Test]
     public function testVulnerabilityRelationship(): void
     {
         $patch = new Patch();
@@ -72,6 +77,7 @@ class PatchTest extends TestCase
         $this->assertSame($vulnerability, $patch->getVulnerability());
     }
 
+    #[Test]
     public function testAddAndRemoveAffectedAsset(): void
     {
         $patch = new Patch();
@@ -87,6 +93,7 @@ class PatchTest extends TestCase
         $this->assertEquals(0, $patch->getAffectedAssets()->count());
     }
 
+    #[Test]
     public function testStatus(): void
     {
         $patch = new Patch();
@@ -97,6 +104,7 @@ class PatchTest extends TestCase
         $this->assertEquals('deployed', $patch->getStatus());
     }
 
+    #[Test]
     public function testDates(): void
     {
         $patch = new Patch();
@@ -114,6 +122,7 @@ class PatchTest extends TestCase
         $this->assertEquals($deployedDate, $patch->getDeployedDate());
     }
 
+    #[Test]
     public function testResponsiblePerson(): void
     {
         $patch = new Patch();
@@ -124,6 +133,7 @@ class PatchTest extends TestCase
         $this->assertEquals('John Doe', $patch->getResponsiblePerson());
     }
 
+    #[Test]
     public function testNotes(): void
     {
         $patch = new Patch();
@@ -138,6 +148,7 @@ class PatchTest extends TestCase
         $this->assertEquals('Uninstall KB5012345', $patch->getRollbackPlan());
     }
 
+    #[Test]
     public function testDowntimeRequirements(): void
     {
         $patch = new Patch();
@@ -151,6 +162,7 @@ class PatchTest extends TestCase
         $this->assertEquals(30, $patch->getEstimatedDowntimeMinutes());
     }
 
+    #[Test]
     public function testRebootRequirement(): void
     {
         $patch = new Patch();
@@ -161,6 +173,7 @@ class PatchTest extends TestCase
         $this->assertTrue($patch->isRequiresReboot());
     }
 
+    #[Test]
     public function testKnownIssues(): void
     {
         $patch = new Patch();
@@ -171,6 +184,7 @@ class PatchTest extends TestCase
         $this->assertEquals('May cause network connectivity issues', $patch->getKnownIssues());
     }
 
+    #[Test]
     public function testDependencies(): void
     {
         $patch = new Patch();
@@ -182,6 +196,7 @@ class PatchTest extends TestCase
         $this->assertEquals($dependencies, $patch->getDependencies());
     }
 
+    #[Test]
     public function testUrls(): void
     {
         $patch = new Patch();
@@ -193,6 +208,7 @@ class PatchTest extends TestCase
         $this->assertEquals('https://support.microsoft.com/kb5012345', $patch->getDocumentationUrl());
     }
 
+    #[Test]
     public function testTenantRelationship(): void
     {
         $patch = new Patch();
@@ -204,6 +220,7 @@ class PatchTest extends TestCase
         $this->assertSame($tenant, $patch->getTenant());
     }
 
+    #[Test]
     public function testIsOverdueWhenNoDeadline(): void
     {
         $patch = new Patch();
@@ -212,6 +229,7 @@ class PatchTest extends TestCase
         $this->assertFalse($patch->isOverdue());
     }
 
+    #[Test]
     public function testIsOverdueWhenAlreadyDeployed(): void
     {
         $patch = new Patch();
@@ -222,6 +240,7 @@ class PatchTest extends TestCase
         $this->assertFalse($patch->isOverdue());
     }
 
+    #[Test]
     public function testIsOverdueWithPastDeadline(): void
     {
         $patch = new Patch();
@@ -232,6 +251,7 @@ class PatchTest extends TestCase
         $this->assertTrue($patch->isOverdue());
     }
 
+    #[Test]
     public function testIsOverdueWithFutureDeadline(): void
     {
         $patch = new Patch();
@@ -242,6 +262,7 @@ class PatchTest extends TestCase
         $this->assertFalse($patch->isOverdue());
     }
 
+    #[Test]
     public function testGetPriorityBadgeClass(): void
     {
         $patch = new Patch();
@@ -259,6 +280,7 @@ class PatchTest extends TestCase
         $this->assertEquals('secondary', $patch->getPriorityBadgeClass());
     }
 
+    #[Test]
     public function testCalculateDeploymentDeadline(): void
     {
         $releaseDate = new \DateTimeImmutable('2024-01-01');
@@ -282,6 +304,7 @@ class PatchTest extends TestCase
         $this->assertEquals('2024-03-31', $deadline->format('Y-m-d')); // +90 days
     }
 
+    #[Test]
     public function testGetDaysUntilDeadlineWhenNoDeadline(): void
     {
         $patch = new Patch();
@@ -290,6 +313,7 @@ class PatchTest extends TestCase
         $this->assertNull($patch->getDaysUntilDeadline());
     }
 
+    #[Test]
     public function testGetDaysUntilDeadlineWithFutureDeadline(): void
     {
         $patch = new Patch();
@@ -302,6 +326,7 @@ class PatchTest extends TestCase
         $this->assertLessThanOrEqual(10, $days);
     }
 
+    #[Test]
     public function testGetDaysUntilDeadlineWithPastDeadline(): void
     {
         $patch = new Patch();
@@ -312,6 +337,7 @@ class PatchTest extends TestCase
         $this->assertEquals(-5, $days);
     }
 
+    #[Test]
     public function testTimestamps(): void
     {
         $patch = new Patch();

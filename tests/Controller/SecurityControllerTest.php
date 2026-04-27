@@ -15,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for SecurityController
@@ -46,6 +47,7 @@ class SecurityControllerTest extends WebTestCase
         $this->client = static::createClient();
     }
 
+    #[Test]
     public function testLoginPageRendersSuccessfully(): void
     {
         // Act
@@ -56,6 +58,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testLoginPageSetsCorrectCacheHeaders(): void
     {
         // Act
@@ -68,6 +71,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertTrue($response->headers->hasCacheControlDirective('must-revalidate'));
     }
 
+    #[Test]
     public function testLoginPageAcceptsLocaleQueryParameter(): void
     {
         // Act - Request login with locale query parameter
@@ -77,6 +81,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testLoginPageUsesSessionLocaleWhenNoQueryParameter(): void
     {
         // Set session locale
@@ -91,6 +96,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSame('en', $session->get('_locale'));
     }
 
+    #[Test]
     public function testLoginPageDefaultsToSupportedLocale(): void
     {
         // Act
@@ -101,6 +107,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertContains($session->get('_locale'), ['de', 'en']);
     }
 
+    #[Test]
     public function testLoginPageAccessibleWhenNotAuthenticated(): void
     {
         // Act - Access login page without authentication
@@ -111,6 +118,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testLogoutThrowsLogicException(): void
     {
         // The logout route should never actually execute the controller method
@@ -123,6 +131,7 @@ class SecurityControllerTest extends WebTestCase
         $controller->logout();
     }
 
+    #[Test]
     public function testOAuthAzureConnectRouteExists(): void
     {
         // Act - Note: OAuth routes are locale-prefixed
@@ -133,6 +142,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertTrue($response->isRedirect());
     }
 
+    #[Test]
     public function testOAuthAzureCheckHandlesNoSession(): void
     {
         // This route is intercepted by the authenticator in production
@@ -145,6 +155,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertTrue($response->isRedirect());
     }
 
+    #[Test]
     public function testSamlLoginRouteExists(): void
     {
         // Verify the SAML login route exists and responds appropriately
@@ -158,6 +169,7 @@ class SecurityControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testSamlLoginHandlesNoConfiguration(): void
     {
         // Without proper SAML configuration, the login should redirect gracefully
@@ -168,6 +180,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertTrue($response->isRedirect());
     }
 
+    #[Test]
     public function testSamlAcsHandlesAuthenticationAttempt(): void
     {
         // This route is intercepted by the SAML authenticator in production
@@ -179,6 +192,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertTrue($response->isRedirect());
     }
 
+    #[Test]
     public function testSamlMetadataRequiresAuthentication(): void
     {
         // Act - SAML metadata route requires authentication
@@ -188,6 +202,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testSamlMetadataValidationErrorsHandledGracefully(): void
     {
         // Without proper mocking infrastructure for SAML factory in WebTestCase,
@@ -203,6 +218,7 @@ class SecurityControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testSamlMetadataRouteExists(): void
     {
         // Verify the route exists and is accessible (even if it requires auth)
@@ -217,6 +233,7 @@ class SecurityControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testSamlSlsRouteExists(): void
     {
         // Verify the SLS route exists and handles requests gracefully
@@ -226,6 +243,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testSamlSlsRedirectsToLogin(): void
     {
         // Act - Without active SAML session, SLS should redirect to login
@@ -236,6 +254,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertTrue($response->isRedirect());
     }
 
+    #[Test]
     public function testSamlSlsHandlesNoSamlSession(): void
     {
         // When no SAML session exists, SLS should gracefully redirect
@@ -249,6 +268,7 @@ class SecurityControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testLoginPageDisplaysUsernameField(): void
     {
         // Act
@@ -259,6 +279,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorExists('input[name="_username"]');
     }
 
+    #[Test]
     public function testLoginPageDisplaysPasswordField(): void
     {
         // Act
@@ -269,6 +290,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorExists('input[name="_password"]');
     }
 
+    #[Test]
     public function testSecurityControllerIsRegisteredAsService(): void
     {
         // Act

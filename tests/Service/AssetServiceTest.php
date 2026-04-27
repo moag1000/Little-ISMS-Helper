@@ -13,6 +13,7 @@ use App\Service\CorporateStructureService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class AssetServiceTest extends TestCase
@@ -35,6 +36,7 @@ class AssetServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGetAssetsForTenantWithoutParent(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -49,6 +51,7 @@ class AssetServiceTest extends TestCase
         $this->assertSame($assets, $result);
     }
 
+    #[Test]
     public function testGetAssetsForTenantWithHierarchicalGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -74,6 +77,7 @@ class AssetServiceTest extends TestCase
         $this->assertCount(2, $result);
     }
 
+    #[Test]
     public function testGetAssetsForTenantWithIndependentGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -94,6 +98,7 @@ class AssetServiceTest extends TestCase
         $this->assertSame($ownAssets, $result);
     }
 
+    #[Test]
     public function testGetAssetsForTenantFallbackToDefaultGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -118,6 +123,7 @@ class AssetServiceTest extends TestCase
         $this->assertSame($ownAssets, $result);
     }
 
+    #[Test]
     public function testGetAssetInheritanceInfoWithoutParent(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -129,6 +135,7 @@ class AssetServiceTest extends TestCase
         $this->assertNull($info['governanceModel']);
     }
 
+    #[Test]
     public function testGetAssetInheritanceInfoWithHierarchicalParent(): void
     {
         $parent = $this->createTenant(1, null);
@@ -146,6 +153,7 @@ class AssetServiceTest extends TestCase
         $this->assertSame('hierarchical', $info['governanceModel']);
     }
 
+    #[Test]
     public function testGetAssetInheritanceInfoWithSharedParent(): void
     {
         $parent = $this->createTenant(1, null);
@@ -163,6 +171,7 @@ class AssetServiceTest extends TestCase
         $this->assertSame('shared', $info['governanceModel']);
     }
 
+    #[Test]
     public function testIsInheritedAssetTrue(): void
     {
         $parentTenant = $this->createTenant(1, null);
@@ -174,6 +183,7 @@ class AssetServiceTest extends TestCase
         $this->assertTrue($this->service->isInheritedAsset($asset, $childTenant));
     }
 
+    #[Test]
     public function testIsInheritedAssetFalse(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -184,6 +194,7 @@ class AssetServiceTest extends TestCase
         $this->assertFalse($this->service->isInheritedAsset($asset, $tenant));
     }
 
+    #[Test]
     public function testIsInheritedAssetWithNullTenant(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -194,6 +205,7 @@ class AssetServiceTest extends TestCase
         $this->assertFalse($this->service->isInheritedAsset($asset, $tenant));
     }
 
+    #[Test]
     public function testIsInheritedAssetWithNullIds(): void
     {
         $tenant1 = $this->createTenant(null, null);
@@ -205,6 +217,7 @@ class AssetServiceTest extends TestCase
         $this->assertFalse($this->service->isInheritedAsset($asset, $tenant2));
     }
 
+    #[Test]
     public function testCanEditAssetOwnAsset(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -215,6 +228,7 @@ class AssetServiceTest extends TestCase
         $this->assertTrue($this->service->canEditAsset($asset, $tenant));
     }
 
+    #[Test]
     public function testCanEditAssetInheritedAsset(): void
     {
         $parentTenant = $this->createTenant(1, null);
@@ -226,6 +240,7 @@ class AssetServiceTest extends TestCase
         $this->assertFalse($this->service->canEditAsset($asset, $childTenant));
     }
 
+    #[Test]
     public function testServiceWorksWithoutOptionalDependencies(): void
     {
         $simpleService = new AssetService($this->assetRepository, null, null);
@@ -243,6 +258,7 @@ class AssetServiceTest extends TestCase
         $this->assertSame($ownAssets, $result);
     }
 
+    #[Test]
     public function testGetAssetInheritanceInfoWithNoGovernance(): void
     {
         $parent = $this->createTenant(1, null);

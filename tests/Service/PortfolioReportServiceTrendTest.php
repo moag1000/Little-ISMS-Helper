@@ -13,6 +13,7 @@ use App\Repository\PortfolioSnapshotRepository;
 use App\Service\PortfolioReportService;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Trend-delta coverage for PortfolioReportService::buildMatrixWithTrend()
@@ -35,6 +36,7 @@ class PortfolioReportServiceTrendTest extends TestCase
         $this->framework->setName('ISO/IEC 27001:2022');
     }
 
+    #[Test]
     public function testDeltaIsNullWhenNoSnapshotRepository(): void
     {
         $frameworkRepo = $this->createStub(ComplianceFrameworkRepository::class);
@@ -58,6 +60,7 @@ class PortfolioReportServiceTrendTest extends TestCase
         self::assertNull($protectRow['cells']['ISO27001']['delta']);
     }
 
+    #[Test]
     public function testDeltaIsNullWhenNoHistoricalSnapshot(): void
     {
         $frameworkRepo = $this->createStub(ComplianceFrameworkRepository::class);
@@ -84,6 +87,7 @@ class PortfolioReportServiceTrendTest extends TestCase
         self::assertNull($protectRow['cells']['ISO27001']['delta']);
     }
 
+    #[Test]
     public function testDeltaIsComputedAgainstHistoricalSnapshot(): void
     {
         $frameworkRepo = $this->createStub(ComplianceFrameworkRepository::class);
@@ -125,6 +129,7 @@ class PortfolioReportServiceTrendTest extends TestCase
         self::assertSame(15, $protectRow['cells']['ISO27001']['delta']);
     }
 
+    #[Test]
     public function testDeltaIsNullWhenCellIsEmpty(): void
     {
         $frameworkRepo = $this->createStub(ComplianceFrameworkRepository::class);
@@ -154,6 +159,7 @@ class PortfolioReportServiceTrendTest extends TestCase
         }
     }
 
+    #[Test]
     public function testBuildMatrixLegacyShapeIsUntouched(): void
     {
         $frameworkRepo = $this->createStub(ComplianceFrameworkRepository::class);

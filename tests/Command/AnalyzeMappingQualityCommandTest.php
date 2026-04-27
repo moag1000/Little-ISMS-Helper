@@ -5,6 +5,7 @@ namespace App\Tests\Command;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use PHPUnit\Framework\Attributes\Test;
 
 class AnalyzeMappingQualityCommandTest extends KernelTestCase
 {
@@ -19,6 +20,7 @@ class AnalyzeMappingQualityCommandTest extends KernelTestCase
         $this->commandTester = new CommandTester($command);
     }
 
+    #[Test]
     public function testCommandHasCorrectName(): void
     {
         $kernel = self::bootKernel();
@@ -28,6 +30,7 @@ class AnalyzeMappingQualityCommandTest extends KernelTestCase
         $this->assertSame('app:analyze-mapping-quality', $command->getName());
     }
 
+    #[Test]
     public function testCommandHasDescription(): void
     {
         $kernel = self::bootKernel();

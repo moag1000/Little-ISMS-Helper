@@ -10,6 +10,7 @@ use App\Service\MappingQualityScoreService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class MappingLifecycleServiceTest extends TestCase
@@ -39,6 +40,7 @@ class MappingLifecycleServiceTest extends TestCase
             ->setMappingRationale('Begründung.');
     }
 
+    #[Test]
     public function testValidTransitionDraftToReview(): void
     {
         $svc = $this->makeService();
@@ -47,6 +49,7 @@ class MappingLifecycleServiceTest extends TestCase
         $this->assertSame('review', $mapping->getLifecycleState());
     }
 
+    #[Test]
     public function testInvalidTransitionDraftToApproved(): void
     {
         $svc = $this->makeService();
@@ -55,6 +58,7 @@ class MappingLifecycleServiceTest extends TestCase
         $svc->transition($mapping, 'approved', $this->makeUser());
     }
 
+    #[Test]
     public function testPublishRequiresCisoRole(): void
     {
         $svc = $this->makeService();
@@ -64,6 +68,7 @@ class MappingLifecycleServiceTest extends TestCase
         $svc->transition($mapping, 'published', $this->makeUser(['ROLE_USER']));
     }
 
+    #[Test]
     public function testPublishWithCisoSucceeds(): void
     {
         $svc = $this->makeService();
@@ -72,6 +77,7 @@ class MappingLifecycleServiceTest extends TestCase
         $this->assertSame('published', $mapping->getLifecycleState());
     }
 
+    #[Test]
     public function testApprovedRequiresProvenanceAndMethodology(): void
     {
         $svc = $this->makeService();
@@ -81,6 +87,7 @@ class MappingLifecycleServiceTest extends TestCase
         $svc->transition($bare, 'approved', $this->makeUser());
     }
 
+    #[Test]
     public function testDeprecatedFromAnyState(): void
     {
         $svc = $this->makeService();
@@ -94,6 +101,7 @@ class MappingLifecycleServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testAllowedNextStates(): void
     {
         $svc = $this->makeService();

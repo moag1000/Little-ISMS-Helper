@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Smoke tests for the app:backup:repair console command.
@@ -110,6 +111,7 @@ class RepairBackupCommandTest extends TestCase
     // Test: non-existent file → exit 1 with clear error
     // ==================================================================
 
+    #[Test]
     public function testFileNotFoundExitsWithFailure(): void
     {
         // Use a real service here so we test the actual "file not found" branch
@@ -128,6 +130,7 @@ class RepairBackupCommandTest extends TestCase
         );
     }
 
+    #[Test]
     public function testFileNotFoundWithJsonFlagEmitsJsonError(): void
     {
         $realService     = new BackupRepairService();
@@ -147,6 +150,7 @@ class RepairBackupCommandTest extends TestCase
     // Test: --dry-run reports but does NOT write an output file
     // ==================================================================
 
+    #[Test]
     public function testDryRunDoesNotWriteOutputFile(): void
     {
         $inputPath = $this->tmpDir . '/source.json';
@@ -186,6 +190,7 @@ class RepairBackupCommandTest extends TestCase
     // Test: --json mode emits parseable JSON report
     // ==================================================================
 
+    #[Test]
     public function testJsonModeEmitsParseableReport(): void
     {
         $inputPath  = $this->tmpDir . '/input.json';
@@ -228,6 +233,7 @@ class RepairBackupCommandTest extends TestCase
     // Test: unrecoverable backup → exit 1
     // ==================================================================
 
+    #[Test]
     public function testUnrecoverableBackupReturnsExitOne(): void
     {
         $inputPath  = $this->tmpDir . '/broken.json';
@@ -248,6 +254,7 @@ class RepairBackupCommandTest extends TestCase
     // Test: happy-path repair succeeds, exit 0
     // ==================================================================
 
+    #[Test]
     public function testSuccessfulRepairExitsZero(): void
     {
         $inputPath  = $this->tmpDir . '/good.json';
@@ -278,6 +285,7 @@ class RepairBackupCommandTest extends TestCase
     // Test: default output path derivation
     // ==================================================================
 
+    #[Test]
     public function testDefaultOutputPathIsDerivedException(): void
     {
         // Test that passing no --output causes the command to derive

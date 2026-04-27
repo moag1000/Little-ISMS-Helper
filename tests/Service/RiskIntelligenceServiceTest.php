@@ -13,6 +13,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class RiskIntelligenceServiceTest extends TestCase
@@ -32,6 +33,7 @@ class RiskIntelligenceServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testSuggestRisksFromIncidentsWithNoIncidents(): void
     {
         $this->incidentRepo->method('findAll')->willReturn([]);
@@ -41,6 +43,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    #[Test]
     public function testSuggestRisksFromIncidentsSuggestsNewRisks(): void
     {
         $incident = $this->createMock(Incident::class);
@@ -68,6 +71,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $this->assertEquals(4, $suggestedRisk['impact']); // high severity -> impact 4
     }
 
+    #[Test]
     public function testSuggestRisksFromIncidentsMapsSeverityToImpact(): void
     {
         $severityMappings = [
@@ -97,6 +101,7 @@ class RiskIntelligenceServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testSuggestRisksEstimatesProbabilityFromIncidentCount(): void
     {
         $incident = $this->createMock(Incident::class);
@@ -135,6 +140,7 @@ class RiskIntelligenceServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testCalculateResidualRiskWithNoControls(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -150,6 +156,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $this->assertStringContainsString('Keine Controls', $result['recommendation']);
     }
 
+    #[Test]
     public function testCalculateResidualRiskWithImplementedControls(): void
     {
         $control1 = $this->createMock(Control::class);
@@ -174,6 +181,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $this->assertGreaterThan(0, $result['reduction_percentage']);
     }
 
+    #[Test]
     public function testCalculateResidualRiskWithInProgressControls(): void
     {
         $control = $this->createMock(Control::class);
@@ -192,6 +200,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $this->assertStringContainsString('in Planung', $result['recommendation']);
     }
 
+    #[Test]
     public function testCalculateResidualRiskCapsReductionAt80Percent(): void
     {
         // Create many implemented controls to test cap
@@ -214,6 +223,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $this->assertLessThanOrEqual(80, $result['reduction_percentage']);
     }
 
+    #[Test]
     public function testCalculateResidualRiskRecommendationsBasedOnResidual(): void
     {
         $testCases = [
@@ -237,6 +247,7 @@ class RiskIntelligenceServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testSuggestControlsForRiskWithNoSimilarIncidents(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -259,6 +270,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    #[Test]
     public function testSuggestControlsForRiskSuggestsRelevantControls(): void
     {
         $control1 = $this->createMock(Control::class);
@@ -298,6 +310,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $this->assertStringContainsString('INC-001', $result[0]['reason']);
     }
 
+    #[Test]
     public function testSuggestControlsForRiskDoesNotSuggestExistingControls(): void
     {
         $control = $this->createMock(Control::class);
@@ -330,6 +343,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    #[Test]
     public function testAnalyzeIncidentTrendsWithNoIncidents(): void
     {
         $this->incidentRepo->method('findAll')->willReturn([]);
@@ -345,6 +359,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $this->assertEmpty($result['by_month']);
     }
 
+    #[Test]
     public function testAnalyzeIncidentTrendsGroupsByCategory(): void
     {
         $incident1 = $this->createMock(Incident::class);
@@ -370,6 +385,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $this->assertEquals(1, $result['by_category']['data_breach']);
     }
 
+    #[Test]
     public function testAnalyzeIncidentTrendsGroupsBySeverity(): void
     {
         $incident1 = $this->createMock(Incident::class);
@@ -395,6 +411,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $this->assertEquals(1, $result['by_severity']['medium']);
     }
 
+    #[Test]
     public function testAnalyzeIncidentTrendsGroupsByMonth(): void
     {
         $incident1 = $this->createMock(Incident::class);
@@ -420,6 +437,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $this->assertEquals(1, $result['by_month']['2024-02']);
     }
 
+    #[Test]
     public function testAnalyzeIncidentTrendsSortsCategoriesByFrequency(): void
     {
         $incidents = [];
@@ -451,6 +469,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $this->assertEquals('data_breach', $categories[1]);
     }
 
+    #[Test]
     public function testAnalyzeIncidentTrendsSortsMonthsChronologically(): void
     {
         $incident1 = $this->createMock(Incident::class);

@@ -8,9 +8,11 @@ use App\Entity\RiskTreatmentPlan;
 use App\Entity\Tenant;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class RiskTreatmentPlanTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -23,6 +25,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertEquals(0, $plan->getCompletionPercentage());
     }
 
+    #[Test]
     public function testBasicGettersAndSetters(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -40,6 +43,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertEquals('critical', $plan->getPriority());
     }
 
+    #[Test]
     public function testRelationships(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -57,6 +61,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertSame($user, $plan->getResponsiblePerson());
     }
 
+    #[Test]
     public function testDates(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -74,6 +79,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertEquals($actualDate, $plan->getActualCompletionDate());
     }
 
+    #[Test]
     public function testBudget(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -84,6 +90,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertEquals('50000.00', $plan->getBudget());
     }
 
+    #[Test]
     public function testAddAndRemoveControl(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -101,6 +108,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertEquals(0, $plan->getControls()->count());
     }
 
+    #[Test]
     public function testImplementationNotes(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -111,6 +119,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertEquals('Phase 1 completed successfully', $plan->getImplementationNotes());
     }
 
+    #[Test]
     public function testCompletionPercentage(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -121,6 +130,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertEquals(75, $plan->getCompletionPercentage());
     }
 
+    #[Test]
     public function testIsOverdueWhenCompleted(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -131,6 +141,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertFalse($plan->isOverdue());
     }
 
+    #[Test]
     public function testIsOverdueWhenCancelled(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -141,6 +152,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertFalse($plan->isOverdue());
     }
 
+    #[Test]
     public function testIsOverdueWithPastTarget(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -151,6 +163,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertTrue($plan->isOverdue());
     }
 
+    #[Test]
     public function testIsOverdueWithFutureTarget(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -161,6 +174,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertFalse($plan->isOverdue());
     }
 
+    #[Test]
     public function testGetDaysUntilTargetWithFutureDate(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -172,6 +186,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertLessThanOrEqual(10, $days);
     }
 
+    #[Test]
     public function testGetDaysUntilTargetWithPastDate(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -183,6 +198,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertGreaterThanOrEqual(-5, $days);
     }
 
+    #[Test]
     public function testIsOnTrackWhenCompleted(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -191,6 +207,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertTrue($plan->isOnTrack());
     }
 
+    #[Test]
     public function testIsOnTrackWhenNotStarted(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -199,6 +216,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertTrue($plan->isOnTrack());
     }
 
+    #[Test]
     public function testIsOnTrackWithGoodProgress(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -210,6 +228,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertTrue($plan->isOnTrack());
     }
 
+    #[Test]
     public function testHasStartedWhenNotStarted(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -221,6 +240,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertFalse($plan->hasStarted());
     }
 
+    #[Test]
     public function testHasStartedWhenStarted(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -230,6 +250,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertTrue($plan->hasStarted());
     }
 
+    #[Test]
     public function testIsCompleteWhenNotCompleted(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -238,6 +259,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertFalse($plan->isComplete());
     }
 
+    #[Test]
     public function testIsCompleteWhenCompletedButNoDate(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -246,6 +268,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertFalse($plan->isComplete());
     }
 
+    #[Test]
     public function testIsCompleteWhenFullyCompleted(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -255,6 +278,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertTrue($plan->isComplete());
     }
 
+    #[Test]
     public function testGetResponsiblePersonName(): void
     {
         $plan = new RiskTreatmentPlan();
@@ -269,6 +293,7 @@ class RiskTreatmentPlanTest extends TestCase
         $this->assertEquals('Jane Doe', $plan->getResponsiblePersonName());
     }
 
+    #[Test]
     public function testTimestamps(): void
     {
         $plan = new RiskTreatmentPlan();

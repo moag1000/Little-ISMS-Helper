@@ -4,6 +4,7 @@ namespace App\Tests\Service;
 
 use App\Service\ExcelExportService;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ExcelExportServiceTest extends TestCase
 {
@@ -14,6 +15,7 @@ class ExcelExportServiceTest extends TestCase
         $this->service = new ExcelExportService();
     }
 
+    #[Test]
     public function testCreateSpreadsheet(): void
     {
         $spreadsheet = $this->service->createSpreadsheet('Test Export');
@@ -22,6 +24,7 @@ class ExcelExportServiceTest extends TestCase
         $this->assertEquals('Little ISMS Helper', $spreadsheet->getProperties()->getCreator());
     }
 
+    #[Test]
     public function testExportArray(): void
     {
         $headers = ['Name', 'Email', 'Role'];
@@ -38,6 +41,7 @@ class ExcelExportServiceTest extends TestCase
         $this->assertEquals('jane@example.com', $spreadsheet->getActiveSheet()->getCell('B3')->getValue());
     }
 
+    #[Test]
     public function testGenerateExcel(): void
     {
         $spreadsheet = $this->service->createSpreadsheet('Test');

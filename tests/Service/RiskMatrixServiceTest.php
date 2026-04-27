@@ -8,6 +8,7 @@ use App\Service\RiskMatrixService;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class RiskMatrixServiceTest extends TestCase
@@ -26,6 +27,7 @@ class RiskMatrixServiceTest extends TestCase
         $this->service = new RiskMatrixService($this->riskRepository, $translator);
     }
 
+    #[Test]
     public function testCalculateRiskLevelForCritical(): void
     {
         // Score >= 20 is critical
@@ -34,6 +36,7 @@ class RiskMatrixServiceTest extends TestCase
         $this->assertEquals('critical', $this->service->calculateRiskLevel(5, 5)); // 25
     }
 
+    #[Test]
     public function testCalculateRiskLevelForHigh(): void
     {
         // Score >= 12 and < 20 is high
@@ -42,6 +45,7 @@ class RiskMatrixServiceTest extends TestCase
         $this->assertEquals('high', $this->service->calculateRiskLevel(4, 4)); // 16
     }
 
+    #[Test]
     public function testCalculateRiskLevelForMedium(): void
     {
         // Score >= 6 and < 12 is medium
@@ -50,6 +54,7 @@ class RiskMatrixServiceTest extends TestCase
         $this->assertEquals('medium', $this->service->calculateRiskLevel(3, 3)); // 9
     }
 
+    #[Test]
     public function testCalculateRiskLevelForLow(): void
     {
         // Score < 6 is low
@@ -58,6 +63,7 @@ class RiskMatrixServiceTest extends TestCase
         $this->assertEquals('low', $this->service->calculateRiskLevel(2, 2)); // 4
     }
 
+    #[Test]
     public function testGetRiskLevelClassReturnsCorrectClasses(): void
     {
         $this->assertEquals('risk-critical', $this->service->getRiskLevelClass('critical'));
@@ -67,6 +73,7 @@ class RiskMatrixServiceTest extends TestCase
         $this->assertEquals('risk-unknown', $this->service->getRiskLevelClass('invalid'));
     }
 
+    #[Test]
     public function testGetRiskLevelColorReturnsCorrectColors(): void
     {
         $this->assertEquals('#dc3545', $this->service->getRiskLevelColor('critical'));
@@ -76,6 +83,7 @@ class RiskMatrixServiceTest extends TestCase
         $this->assertEquals('#6c757d', $this->service->getRiskLevelColor('invalid'));
     }
 
+    #[Test]
     public function testGenerateMatrixWithEmptyRiskArray(): void
     {
         $result = $this->service->generateMatrix([]);
@@ -103,6 +111,7 @@ class RiskMatrixServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testGenerateMatrixWithRisks(): void
     {
         $risks = [];
@@ -153,6 +162,7 @@ class RiskMatrixServiceTest extends TestCase
         $this->assertEquals('low', $result['riskLevels'][1][1]);
     }
 
+    #[Test]
     public function testGenerateMatrixHandlesNullLikelihoodAndImpact(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -167,6 +177,7 @@ class RiskMatrixServiceTest extends TestCase
         $this->assertEquals(1, $result['statistics']['medium']); // 3x3 = 9 is medium
     }
 
+    #[Test]
     public function testGenerateMatrixClampsOutOfRangeValues(): void
     {
         // Test lower bound clamping
@@ -186,6 +197,7 @@ class RiskMatrixServiceTest extends TestCase
         $this->assertCount(1, $result['matrix'][5][5]); // Clamped to maximum
     }
 
+    #[Test]
     public function testGenerateHeatmapDataReturnsCorrectStructure(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -215,6 +227,7 @@ class RiskMatrixServiceTest extends TestCase
         $this->assertEquals('#dc3545', $cell['color']); // Red for critical
     }
 
+    #[Test]
     public function testGetRisksByLevelGroupsRisksCorrectly(): void
     {
         $risks = [];
@@ -255,6 +268,7 @@ class RiskMatrixServiceTest extends TestCase
         $this->assertCount(1, $result['low']);
     }
 
+    #[Test]
     public function testGetRiskStatistics(): void
     {
         $risks = [];
@@ -281,6 +295,7 @@ class RiskMatrixServiceTest extends TestCase
         $this->assertEquals(0, $stats['medium']);
     }
 
+    #[Test]
     public function testGenerateMatrixLabelsAreCorrect(): void
     {
         $result = $this->service->generateMatrix([]);

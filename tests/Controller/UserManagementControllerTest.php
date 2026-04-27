@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for UserManagementController
@@ -174,6 +175,7 @@ class UserManagementControllerTest extends WebTestCase
 
     // ========== INDEX ACTION TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/users');
@@ -181,6 +183,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -190,6 +193,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testIndexShowsUsersForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -200,6 +204,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertSelectorExists('html');
     }
 
+    #[Test]
     public function testIndexDisplaysStatistics(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -211,6 +216,7 @@ class UserManagementControllerTest extends WebTestCase
 
     // ========== SHOW ACTION TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/users/' . $this->targetUser->getId());
@@ -218,6 +224,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysUserForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -227,6 +234,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testShowReturns404ForNonexistentUser(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -238,6 +246,7 @@ class UserManagementControllerTest extends WebTestCase
 
     // ========== NEW ACTION TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/users/new');
@@ -245,6 +254,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -254,6 +264,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testNewDisplaysFormForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -264,6 +275,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="user"]');
     }
 
+    #[Test]
     public function testNewCreatesUserWithValidData(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -283,6 +295,7 @@ class UserManagementControllerTest extends WebTestCase
 
     // ========== EDIT ACTION TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/users/' . $this->targetUser->getId() . '/edit');
@@ -290,6 +303,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysFormForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -300,6 +314,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="user"]');
     }
 
+    #[Test]
     public function testEditUpdatesUserWithValidData(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -315,6 +330,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditReturns404ForNonexistentUser(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -326,6 +342,7 @@ class UserManagementControllerTest extends WebTestCase
 
     // ========== DELETE ACTION TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/users/' . $this->targetUser->getId() . '/delete');
@@ -333,6 +350,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -342,6 +360,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteRemovesUserWithValidToken(): void
     {
         $this->loginAsUser($this->superAdminUser);
@@ -372,6 +391,7 @@ class UserManagementControllerTest extends WebTestCase
 
     // ========== TOGGLE ACTIVE TESTS ==========
 
+    #[Test]
     public function testToggleActiveRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/users/' . $this->targetUser->getId() . '/toggle-active');
@@ -379,6 +399,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testToggleActiveChangesUserStatus(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -402,6 +423,7 @@ class UserManagementControllerTest extends WebTestCase
 
     // ========== ACTIVITY ACTION TESTS ==========
 
+    #[Test]
     public function testActivityRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/users/' . $this->targetUser->getId() . '/activity');
@@ -409,6 +431,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testActivityDisplaysForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -420,6 +443,7 @@ class UserManagementControllerTest extends WebTestCase
 
     // ========== MFA ACTION TESTS ==========
 
+    #[Test]
     public function testMfaRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/users/' . $this->targetUser->getId() . '/mfa');
@@ -427,6 +451,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testMfaDisplaysForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -438,6 +463,7 @@ class UserManagementControllerTest extends WebTestCase
 
     // ========== EXPORT ACTION TESTS ==========
 
+    #[Test]
     public function testExportRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/users/export');
@@ -445,6 +471,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testExportRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -454,6 +481,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testExportReturnsCsvForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -466,6 +494,7 @@ class UserManagementControllerTest extends WebTestCase
 
     // ========== IMPORT ACTION TESTS ==========
 
+    #[Test]
     public function testImportRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/users/import');
@@ -473,6 +502,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testImportRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -482,6 +512,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testImportDisplaysFormForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -493,6 +524,7 @@ class UserManagementControllerTest extends WebTestCase
 
     // ========== BULK ACTIONS TESTS ==========
 
+    #[Test]
     public function testBulkActionsRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/users/bulk-actions');
@@ -500,6 +532,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testBulkActionsRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -512,6 +545,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testBulkActionsActivateUsers(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -528,6 +562,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects('/en/admin/users');
     }
 
+    #[Test]
     public function testBulkActionsDeactivateUsers(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -540,6 +575,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects('/en/admin/users');
     }
 
+    #[Test]
     public function testBulkActionsDeleteUsers(): void
     {
         $this->loginAsUser($this->superAdminUser);
@@ -555,6 +591,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->targetUser = null; // Prevent cleanup failure
     }
 
+    #[Test]
     public function testBulkActionsHandlesNoUsersSelected(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -569,6 +606,7 @@ class UserManagementControllerTest extends WebTestCase
 
     // ========== IMPERSONATE ACTION TESTS ==========
 
+    #[Test]
     public function testImpersonateRequiresSuperAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -578,6 +616,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testImpersonateRedirectsForSuperAdmin(): void
     {
         $this->loginAsUser($this->superAdminUser);
@@ -589,6 +628,7 @@ class UserManagementControllerTest extends WebTestCase
 
     // ========== EMPTY STATE TESTS ==========
 
+    #[Test]
     public function testShowHandlesUserWithNoActivity(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -598,6 +638,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testActivityHandlesUserWithNoActivity(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -607,6 +648,7 @@ class UserManagementControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testMfaHandlesUserWithNoTokens(): void
     {
         $this->loginAsUser($this->adminUser);

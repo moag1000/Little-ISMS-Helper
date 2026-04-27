@@ -9,6 +9,7 @@ use App\Service\HealthAutoFixService;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\NullLogger;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Verifies the Consultant-Review A3 / ISB MINOR-3 audit coverage of
@@ -44,6 +45,7 @@ final class HealthAutoFixServiceAuditTest extends TestCase
         }
     }
 
+    #[Test]
     public function testFixCachePermissionsWritesAuditEntry(): void
     {
         $auditLogger = $this->createMock(AuditLogger::class);
@@ -69,6 +71,7 @@ final class HealthAutoFixServiceAuditTest extends TestCase
         $service->fixCachePermissions();
     }
 
+    #[Test]
     public function testCleanOldLogsAuditsDaysToKeep(): void
     {
         mkdir($this->logsDir, 0775, true);
@@ -98,6 +101,7 @@ final class HealthAutoFixServiceAuditTest extends TestCase
         $service->cleanOldLogs(45);
     }
 
+    #[Test]
     public function testFixCachePermissionsIsIdempotent(): void
     {
         // Second invocation must not change the outcome (both success) —
@@ -123,6 +127,7 @@ final class HealthAutoFixServiceAuditTest extends TestCase
         self::assertSame($first['success'], $second['success']);
     }
 
+    #[Test]
     public function testServiceWorksWithoutAuditLogger(): void
     {
         // Backwards-compat: existing wiring constructs the service without

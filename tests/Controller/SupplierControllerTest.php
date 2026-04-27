@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for SupplierController
@@ -181,6 +182,7 @@ class SupplierControllerTest extends WebTestCase
 
     // ========== INDEX ACTION TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/supplier/');
@@ -188,6 +190,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexShowsSuppliersForAuthenticatedUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -198,6 +201,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertSelectorExists('html');
     }
 
+    #[Test]
     public function testIndexSupportsOwnViewParameter(): void
     {
         $this->loginAsUser($this->testUser);
@@ -207,6 +211,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexSupportsSubsidiariesViewParameter(): void
     {
         $this->loginAsUser($this->testUser);
@@ -216,6 +221,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexSupportsInheritedViewParameter(): void
     {
         $this->loginAsUser($this->testUser);
@@ -227,6 +233,7 @@ class SupplierControllerTest extends WebTestCase
 
     // ========== SHOW ACTION TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/supplier/' . $this->testSupplier->getId());
@@ -234,6 +241,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysSupplierDetails(): void
     {
         $this->loginAsUser($this->testUser);
@@ -244,6 +252,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertSelectorTextContains('html', 'Test Supplier');
     }
 
+    #[Test]
     public function testShowReturns404ForNonexistentSupplier(): void
     {
         $this->loginAsUser($this->testUser);
@@ -255,6 +264,7 @@ class SupplierControllerTest extends WebTestCase
 
     // ========== NEW ACTION TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/supplier/new');
@@ -262,6 +272,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewDisplaysFormForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -272,6 +283,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="supplier"]');
     }
 
+    #[Test]
     public function testNewCreatesSupplierWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -298,6 +310,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertSelectorTextContains('html', 'New Test Supplier');
     }
 
+    #[Test]
     public function testNewRejectsInvalidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -318,6 +331,7 @@ class SupplierControllerTest extends WebTestCase
 
     // ========== EDIT ACTION TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/supplier/' . $this->testSupplier->getId() . '/edit');
@@ -325,6 +339,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysFormForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -335,6 +350,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="supplier"]');
     }
 
+    #[Test]
     public function testEditUpdatesSupplierWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -356,6 +372,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertSelectorTextContains('html', 'Updated Test Supplier');
     }
 
+    #[Test]
     public function testEditReturns404ForNonexistentSupplier(): void
     {
         $this->loginAsUser($this->testUser);
@@ -367,6 +384,7 @@ class SupplierControllerTest extends WebTestCase
 
     // ========== DELETE ACTION TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/supplier/' . $this->testSupplier->getId() . '/delete');
@@ -374,6 +392,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -387,6 +406,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteRedirectsWithAdminRole(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -401,6 +421,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertResponseRedirects('/en/supplier/');
     }
 
+    #[Test]
     public function testDeleteRequiresValidCsrfToken(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -420,6 +441,7 @@ class SupplierControllerTest extends WebTestCase
 
     // ========== BULK DELETE TESTS ==========
 
+    #[Test]
     public function testBulkDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/supplier/bulk-delete');
@@ -427,6 +449,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testBulkDeleteRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -438,6 +461,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testBulkDeleteRemovesMultipleSuppliers(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -468,6 +492,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertEquals(2, $response['deleted']);
     }
 
+    #[Test]
     public function testBulkDeleteReturnsErrorForEmptyIds(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -482,6 +507,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertArrayHasKey('error', $response);
     }
 
+    #[Test]
     public function testBulkDeleteRespectsMultiTenancy(): void
     {
         $uniqueId = uniqid('other_', true);
@@ -525,6 +551,7 @@ class SupplierControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testBulkDeleteHandlesNonexistentSuppliers(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -542,6 +569,7 @@ class SupplierControllerTest extends WebTestCase
 
     // ========== MULTI-TENANCY TESTS ==========
 
+    #[Test]
     public function testIndexRespectsMultiTenancyIsolation(): void
     {
         $uniqueId = uniqid('other_', true);
@@ -579,6 +607,7 @@ class SupplierControllerTest extends WebTestCase
 
     // ========== CRITICALITY TESTS ==========
 
+    #[Test]
     public function testSupplierCriticalityHigh(): void
     {
         $this->testSupplier->setCriticality('high');
@@ -591,6 +620,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testSupplierCriticalityMedium(): void
     {
         $this->testSupplier->setCriticality('medium');
@@ -603,6 +633,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testSupplierCriticalityLow(): void
     {
         $this->testSupplier->setCriticality('low');
@@ -617,6 +648,7 @@ class SupplierControllerTest extends WebTestCase
 
     // ========== STATUS TESTS ==========
 
+    #[Test]
     public function testSupplierStatusActive(): void
     {
         $this->testSupplier->setStatus('active');
@@ -629,6 +661,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testSupplierStatusInactive(): void
     {
         $this->testSupplier->setStatus('inactive');
@@ -641,6 +674,7 @@ class SupplierControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testSupplierStatusUnderReview(): void
     {
         $this->testSupplier->setStatus('under_review');

@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for ProfileMfaController
@@ -97,12 +98,14 @@ class ProfileMfaControllerTest extends WebTestCase
 
     // ========== INDEX TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/profile/mfa');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -112,12 +115,14 @@ class ProfileMfaControllerTest extends WebTestCase
 
     // ========== SETUP TOTP TESTS ==========
 
+    #[Test]
     public function testSetupTotpRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/profile/mfa/setup-totp');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testSetupTotpDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -127,12 +132,14 @@ class ProfileMfaControllerTest extends WebTestCase
 
     // ========== VERIFY TESTS ==========
 
+    #[Test]
     public function testVerifyRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/profile/mfa/1/verify');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testVerifyRequiresPost(): void
     {
         $this->loginAsUser($this->testUser);
@@ -142,12 +149,14 @@ class ProfileMfaControllerTest extends WebTestCase
 
     // ========== REGENERATE BACKUP CODES TESTS ==========
 
+    #[Test]
     public function testRegenerateBackupRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/profile/mfa/1/regenerate-backup-codes');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testRegenerateBackupRequiresPost(): void
     {
         $this->loginAsUser($this->testUser);
@@ -157,6 +166,7 @@ class ProfileMfaControllerTest extends WebTestCase
 
     // ========== SHOW TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/profile/mfa/1');
@@ -165,12 +175,14 @@ class ProfileMfaControllerTest extends WebTestCase
 
     // ========== DISABLE TESTS ==========
 
+    #[Test]
     public function testDisableRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/profile/mfa/1/disable');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDisableRequiresPost(): void
     {
         $this->loginAsUser($this->testUser);
@@ -180,12 +192,14 @@ class ProfileMfaControllerTest extends WebTestCase
 
     // ========== DELETE TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/profile/mfa/1/delete');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresPost(): void
     {
         $this->loginAsUser($this->testUser);

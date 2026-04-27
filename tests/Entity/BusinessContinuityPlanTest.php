@@ -9,9 +9,11 @@ use App\Entity\Document;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class BusinessContinuityPlanTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -23,6 +25,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertEquals(0, $plan->getDocuments()->count());
     }
 
+    #[Test]
     public function testGettersAndSetters(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -76,6 +79,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertEquals('Plan reviewed and updated', $plan->getReviewNotes());
     }
 
+    #[Test]
     public function testStatusGetterAndSetter(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -93,6 +97,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertEquals('archived', $plan->getStatus());
     }
 
+    #[Test]
     public function testVersionGetterAndSetter(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -104,6 +109,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertEquals('2.1', $plan->getVersion());
     }
 
+    #[Test]
     public function testResponseTeamGetterAndSetter(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -121,6 +127,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertEquals($team, $plan->getResponseTeam());
     }
 
+    #[Test]
     public function testStakeholderContactsGetterAndSetter(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -136,6 +143,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertEquals($contacts, $plan->getStakeholderContacts());
     }
 
+    #[Test]
     public function testRequiredResourcesGetterAndSetter(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -152,6 +160,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertEquals($resources, $plan->getRequiredResources());
     }
 
+    #[Test]
     public function testBusinessProcessRelationship(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -163,6 +172,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertSame($process, $plan->getBusinessProcess());
     }
 
+    #[Test]
     public function testTenantRelationship(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -177,6 +187,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertSame($tenant, $plan->getTenant());
     }
 
+    #[Test]
     public function testAddAndRemoveCriticalSupplier(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -197,6 +208,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertFalse($plan->getCriticalSuppliers()->contains($supplier));
     }
 
+    #[Test]
     public function testAddAndRemoveCriticalAsset(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -217,6 +229,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertFalse($plan->getCriticalAssets()->contains($asset));
     }
 
+    #[Test]
     public function testAddAndRemoveDocument(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -237,6 +250,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertFalse($plan->getDocuments()->contains($document));
     }
 
+    #[Test]
     public function testDateFields(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -263,6 +277,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertEquals($nextReview, $plan->getNextReviewDate());
     }
 
+    #[Test]
     public function testTimestamps(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -279,6 +294,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertEquals($updatedAt, $plan->getUpdatedAt());
     }
 
+    #[Test]
     public function testUpdateTimestamps(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -291,6 +307,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertInstanceOf(\DateTimeImmutable::class, $plan->getUpdatedAt());
     }
 
+    #[Test]
     public function testIsTestOverdue(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -317,6 +334,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertFalse($plan2->isTestOverdue());
     }
 
+    #[Test]
     public function testIsReviewOverdue(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -333,6 +351,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertTrue($plan->isReviewOverdue());
     }
 
+    #[Test]
     public function testGetReadinessScore(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -360,6 +379,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertEquals(100, $plan->getReadinessScore());
     }
 
+    #[Test]
     public function testGetReadinessScoreWithOlderTestAndReview(): void
     {
         $plan = new BusinessContinuityPlan();
@@ -384,6 +404,7 @@ class BusinessContinuityPlanTest extends TestCase
         $this->assertEquals(80, $plan->getReadinessScore());
     }
 
+    #[Test]
     public function testGetCompletenessPercentage(): void
     {
         $plan = new BusinessContinuityPlan();

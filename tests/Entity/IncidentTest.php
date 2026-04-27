@@ -7,9 +7,11 @@ use App\Entity\Control;
 use App\Entity\Incident;
 use App\Entity\Risk;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class IncidentTest extends TestCase
 {
+    #[Test]
     public function testHasCriticalAssetsAffectedWithNoAssets(): void
     {
         $incident = new Incident();
@@ -17,6 +19,7 @@ class IncidentTest extends TestCase
         $this->assertFalse($incident->hasCriticalAssetsAffected());
     }
 
+    #[Test]
     public function testHasCriticalAssetsAffectedWithOnlyLowRiskAssets(): void
     {
         $incident = new Incident();
@@ -32,6 +35,7 @@ class IncidentTest extends TestCase
         $this->assertFalse($incident->hasCriticalAssetsAffected());
     }
 
+    #[Test]
     public function testHasCriticalAssetsAffectedWithHighRiskAsset(): void
     {
         $incident = new Incident();
@@ -54,6 +58,7 @@ class IncidentTest extends TestCase
         $this->assertTrue($incident->hasCriticalAssetsAffected());
     }
 
+    #[Test]
     public function testHasCriticalAssetsAffectedWithMixedAssets(): void
     {
         $incident = new Incident();
@@ -82,6 +87,7 @@ class IncidentTest extends TestCase
         $this->assertTrue($incident->hasCriticalAssetsAffected());
     }
 
+    #[Test]
     public function testGetRealizedRiskCountWithNoRisks(): void
     {
         $incident = new Incident();
@@ -89,6 +95,7 @@ class IncidentTest extends TestCase
         $this->assertEquals(0, $incident->getRealizedRiskCount());
     }
 
+    #[Test]
     public function testGetRealizedRiskCountWithMultipleRisks(): void
     {
         $incident = new Incident();
@@ -104,6 +111,7 @@ class IncidentTest extends TestCase
         $this->assertEquals(3, $incident->getRealizedRiskCount());
     }
 
+    #[Test]
     public function testGetTotalAssetImpactWithNoAssets(): void
     {
         $incident = new Incident();
@@ -111,6 +119,7 @@ class IncidentTest extends TestCase
         $this->assertEquals(0, $incident->getTotalAssetImpact());
     }
 
+    #[Test]
     public function testGetTotalAssetImpactWithSingleAsset(): void
     {
         $incident = new Incident();
@@ -126,6 +135,7 @@ class IncidentTest extends TestCase
         $this->assertEquals(5, $incident->getTotalAssetImpact());
     }
 
+    #[Test]
     public function testGetTotalAssetImpactWithMultipleAssets(): void
     {
         $incident = new Incident();
@@ -156,6 +166,7 @@ class IncidentTest extends TestCase
         $this->assertEquals(12, $incident->getTotalAssetImpact());
     }
 
+    #[Test]
     public function testIsRiskValidatedWithNoRisks(): void
     {
         $incident = new Incident();
@@ -164,6 +175,7 @@ class IncidentTest extends TestCase
         $this->assertFalse($incident->isRiskValidated());
     }
 
+    #[Test]
     public function testIsRiskValidatedWithRisks(): void
     {
         $incident = new Incident();
@@ -175,6 +187,7 @@ class IncidentTest extends TestCase
         $this->assertTrue($incident->isRiskValidated());
     }
 
+    #[Test]
     public function testIsRiskValidatedWithMultipleRisks(): void
     {
         $incident = new Incident();
@@ -188,6 +201,7 @@ class IncidentTest extends TestCase
         $this->assertTrue($incident->isRiskValidated());
     }
 
+    #[Test]
     public function testAddAndRemoveRelatedControl(): void
     {
         $incident = new Incident();
@@ -204,6 +218,7 @@ class IncidentTest extends TestCase
         $this->assertFalse($incident->getRelatedControls()->contains($control));
     }
 
+    #[Test]
     public function testAddAndRemoveAffectedAsset(): void
     {
         $incident = new Incident();
@@ -220,6 +235,7 @@ class IncidentTest extends TestCase
         $this->assertFalse($incident->getAffectedAssets()->contains($asset));
     }
 
+    #[Test]
     public function testAddAndRemoveRealizedRisk(): void
     {
         $incident = new Incident();
@@ -236,6 +252,7 @@ class IncidentTest extends TestCase
         $this->assertFalse($incident->getRealizedRisks()->contains($risk));
     }
 
+    #[Test]
     public function testSeverityChoices(): void
     {
         $incident = new Incident();
@@ -249,6 +266,7 @@ class IncidentTest extends TestCase
         }
     }
 
+    #[Test]
     public function testStatusChoices(): void
     {
         $incident = new Incident();
@@ -262,6 +280,7 @@ class IncidentTest extends TestCase
         }
     }
 
+    #[Test]
     public function testDataBreachFlag(): void
     {
         $incident = new Incident();

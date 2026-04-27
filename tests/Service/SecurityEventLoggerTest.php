@@ -13,6 +13,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class SecurityEventLoggerTest extends TestCase
@@ -38,6 +39,7 @@ class SecurityEventLoggerTest extends TestCase
         );
     }
 
+    #[Test]
     public function testLogLoginSuccessLogsToAllTargets(): void
     {
         $user = $this->createUser(1, 'admin@example.com');
@@ -75,6 +77,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logLoginSuccess($user);
     }
 
+    #[Test]
     public function testLogLoginSuccessWithoutSessionId(): void
     {
         $user = $this->createUser(1, 'admin@example.com');
@@ -101,6 +104,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logLoginSuccess($user);
     }
 
+    #[Test]
     public function testLogLoginFailureLogsWarning(): void
     {
         $this->setupRequest('192.168.1.1', 'Browser');
@@ -131,6 +135,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logLoginFailure('hacker@example.com');
     }
 
+    #[Test]
     public function testLogLoginFailureWithCustomReason(): void
     {
         $this->setupRequest('10.0.0.1', 'CLI');
@@ -145,6 +150,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logLoginFailure('locked@example.com', 'Account locked');
     }
 
+    #[Test]
     public function testLogLogoutLogsAndEndsSession(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -168,6 +174,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logLogout($user);
     }
 
+    #[Test]
     public function testLogAccessDeniedLogsWarning(): void
     {
         $user = $this->createUser(2, 'nonadmin@example.com');
@@ -187,6 +194,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logAccessDenied('/admin/users', 'view', $user);
     }
 
+    #[Test]
     public function testLogAccessDeniedWithoutUser(): void
     {
         $this->setupRequest('10.0.0.1', 'Bot');
@@ -201,6 +209,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logAccessDenied('/api/protected', 'access');
     }
 
+    #[Test]
     public function testLogFileUploadSuccessLogsInfo(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -220,6 +229,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logFileUpload('document.pdf', 'application/pdf', 1024000, true);
     }
 
+    #[Test]
     public function testLogFileUploadFailureLogsWarning(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -234,6 +244,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logFileUpload('large.zip', 'application/zip', 999999999, false, 'File too large');
     }
 
+    #[Test]
     public function testLogDataChangeLogsWithSanitizedChanges(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -264,6 +275,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logDataChange('User', 5, 'UPDATE', $changes);
     }
 
+    #[Test]
     public function testLogDataChangeWithoutChanges(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -278,6 +290,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logDataChange('Document', 10, 'DELETE');
     }
 
+    #[Test]
     public function testLogRateLimitHitLogsWarning(): void
     {
         $this->setupRequest('10.0.0.1', 'Bot');
@@ -292,6 +305,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logRateLimitHit('api_requests');
     }
 
+    #[Test]
     public function testLogPasswordChangeSuccessLogsInfo(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -310,6 +324,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logPasswordChange($user, true);
     }
 
+    #[Test]
     public function testLogPasswordChangeFailureLogsWarning(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -325,6 +340,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logPasswordChange($user, false);
     }
 
+    #[Test]
     public function testLogSuspiciousActivityLogsCritical(): void
     {
         $this->setupRequest('192.168.1.100', 'Suspicious-Bot');
@@ -346,6 +362,7 @@ class SecurityEventLoggerTest extends TestCase
         );
     }
 
+    #[Test]
     public function testLogConfigChangeLogsWithSanitizedValues(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -364,6 +381,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logConfigChange('max_login_attempts', 5, 3);
     }
 
+    #[Test]
     public function testLogConfigChangeTruncatesLongStrings(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -384,6 +402,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logConfigChange('description', 'old', $longString);
     }
 
+    #[Test]
     public function testLogConfigChangeSanitizesSensitiveArrays(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');
@@ -409,6 +428,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logConfigChange('database', [], $sensitiveConfig);
     }
 
+    #[Test]
     public function testLogsWithCliContext(): void
     {
         $this->requestStack->method('getCurrentRequest')->willReturn(null);
@@ -427,6 +447,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->securityLogger->logDataChange('Migration', 1, 'CREATE');
     }
 
+    #[Test]
     public function testTimestampIncludedInAllLogs(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');

@@ -8,9 +8,11 @@ use App\Entity\Incident;
 use App\Entity\Risk;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class RiskTest extends TestCase
 {
+    #[Test]
     public function testGetInherentRiskLevel(): void
     {
         $risk = new Risk();
@@ -20,6 +22,7 @@ class RiskTest extends TestCase
         $this->assertEquals(15, $risk->getInherentRiskLevel());
     }
 
+    #[Test]
     public function testGetResidualRiskLevel(): void
     {
         $risk = new Risk();
@@ -29,6 +32,7 @@ class RiskTest extends TestCase
         $this->assertEquals(6, $risk->getResidualRiskLevel());
     }
 
+    #[Test]
     public function testGetRiskReduction(): void
     {
         $risk = new Risk();
@@ -41,6 +45,7 @@ class RiskTest extends TestCase
         $this->assertEquals(80.0, $risk->getRiskReduction());
     }
 
+    #[Test]
     public function testGetRiskReductionWithZeroInherent(): void
     {
         $risk = new Risk();
@@ -52,6 +57,7 @@ class RiskTest extends TestCase
         $this->assertEquals(0.0, $risk->getRiskReduction());
     }
 
+    #[Test]
     public function testIsHighRisk(): void
     {
         $risk = new Risk();
@@ -72,6 +78,7 @@ class RiskTest extends TestCase
         $this->assertTrue($risk->isHighRisk());
     }
 
+    #[Test]
     public function testGetControlCoverageCount(): void
     {
         $risk = new Risk();
@@ -88,6 +95,7 @@ class RiskTest extends TestCase
         $this->assertEquals(3, $risk->getControlCoverageCount());
     }
 
+    #[Test]
     public function testGetIncidentCount(): void
     {
         $risk = new Risk();
@@ -102,6 +110,7 @@ class RiskTest extends TestCase
         $this->assertEquals(2, $risk->getIncidentCount());
     }
 
+    #[Test]
     public function testGetRealizationCount(): void
     {
         $risk = new Risk();
@@ -117,6 +126,7 @@ class RiskTest extends TestCase
         $this->assertEquals(3, $risk->getRealizationCount());
     }
 
+    #[Test]
     public function testWasAssessmentAccurateWithNoIncidents(): void
     {
         $risk = new Risk();
@@ -127,6 +137,7 @@ class RiskTest extends TestCase
         $this->assertNull($risk->isAssessmentAccurate());
     }
 
+    #[Test]
     public function testWasAssessmentAccurateWithHighRiskAndIncidents(): void
     {
         $risk = new Risk();
@@ -145,6 +156,7 @@ class RiskTest extends TestCase
         $this->assertTrue($risk->isAssessmentAccurate());
     }
 
+    #[Test]
     public function testWasAssessmentAccurateWithLowRiskAndNoIncidents(): void
     {
         $risk = new Risk();
@@ -157,6 +169,7 @@ class RiskTest extends TestCase
         $this->assertNull($risk->isAssessmentAccurate());
     }
 
+    #[Test]
     public function testWasAssessmentAccurateWithLowRiskButCriticalIncident(): void
     {
         $risk = new Risk();
@@ -172,6 +185,7 @@ class RiskTest extends TestCase
         $this->assertFalse($risk->isAssessmentAccurate());
     }
 
+    #[Test]
     public function testWasAssessmentAccurateWithHighRiskButOnlyLowIncidents(): void
     {
         $risk = new Risk();
@@ -187,6 +201,7 @@ class RiskTest extends TestCase
         $this->assertFalse($risk->isAssessmentAccurate());
     }
 
+    #[Test]
     public function testAddAndRemoveControl(): void
     {
         $risk = new Risk();
@@ -203,6 +218,7 @@ class RiskTest extends TestCase
         $this->assertFalse($risk->getControls()->contains($control));
     }
 
+    #[Test]
     public function testAddAndRemoveIncident(): void
     {
         $risk = new Risk();

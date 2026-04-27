@@ -6,12 +6,14 @@ namespace App\Tests\Entity;
 
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit-Tests für User::completedTours-Helpers (Sprint 13).
  */
 class UserCompletedToursTest extends TestCase
 {
+    #[Test]
     public function testDefaultsToEmptyArray(): void
     {
         $user = new User();
@@ -19,6 +21,7 @@ class UserCompletedToursTest extends TestCase
         $this->assertFalse($user->hasCompletedTour('junior'));
     }
 
+    #[Test]
     public function testMarkTourAppendsOnce(): void
     {
         $user = new User();
@@ -28,6 +31,7 @@ class UserCompletedToursTest extends TestCase
         $this->assertTrue($user->hasCompletedTour('junior'));
     }
 
+    #[Test]
     public function testMarkMultipleToursPreservesOrder(): void
     {
         $user = new User();
@@ -37,6 +41,7 @@ class UserCompletedToursTest extends TestCase
         $this->assertSame(['junior', 'cm', 'ciso'], $user->getCompletedTours());
     }
 
+    #[Test]
     public function testResetTourRemovesOnlyThatTour(): void
     {
         $user = new User();
@@ -48,6 +53,7 @@ class UserCompletedToursTest extends TestCase
         $this->assertTrue($user->hasCompletedTour('cm'));
     }
 
+    #[Test]
     public function testResetTourIsIdempotent(): void
     {
         $user = new User();
@@ -57,6 +63,7 @@ class UserCompletedToursTest extends TestCase
         $this->assertSame(['cm'], $user->getCompletedTours());
     }
 
+    #[Test]
     public function testResetAllClears(): void
     {
         $user = new User();
@@ -66,6 +73,7 @@ class UserCompletedToursTest extends TestCase
         $this->assertSame([], $user->getCompletedTours());
     }
 
+    #[Test]
     public function testFluentInterface(): void
     {
         $user = new User();

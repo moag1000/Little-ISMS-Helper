@@ -10,6 +10,7 @@ use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class MultiTenantCheckServiceTest extends TestCase
@@ -23,6 +24,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->service = new MultiTenantCheckService($this->tenantRepository);
     }
 
+    #[Test]
     public function testIsMultiTenantReturnsTrueWhenMultipleTenantsExist(): void
     {
         $this->tenantRepository->method('count')
@@ -34,6 +36,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testIsMultiTenantReturnsFalseWhenOnlyOneTenantExists(): void
     {
         $this->tenantRepository->method('count')
@@ -45,6 +48,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testIsMultiTenantReturnsFalseWhenNoTenantsExist(): void
     {
         $this->tenantRepository->method('count')
@@ -56,6 +60,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testIsMultiTenantUsesCacheOnSubsequentCalls(): void
     {
         $this->tenantRepository->expects($this->once())
@@ -76,6 +81,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertTrue($result3);
     }
 
+    #[Test]
     public function testGetActiveTenantCountReturnsCorrectCount(): void
     {
         $this->tenantRepository->method('count')
@@ -87,6 +93,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertEquals(5, $count);
     }
 
+    #[Test]
     public function testGetActiveTenantCountReturnsZeroWhenNoTenants(): void
     {
         $this->tenantRepository->method('count')
@@ -98,6 +105,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertEquals(0, $count);
     }
 
+    #[Test]
     public function testGetActiveTenantCountUsesCacheOnSubsequentCalls(): void
     {
         $this->tenantRepository->expects($this->once())
@@ -114,6 +122,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertEquals(7, $count2);
     }
 
+    #[Test]
     public function testGetActiveTenantCountReturnsZeroWhenTableNotFound(): void
     {
         $this->tenantRepository->method('count')
@@ -124,6 +133,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertEquals(0, $count);
     }
 
+    #[Test]
     public function testGetActiveTenantCountReturnsZeroWhenConnectionFails(): void
     {
         $this->tenantRepository->method('count')
@@ -134,6 +144,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertEquals(0, $count);
     }
 
+    #[Test]
     public function testGetActiveTenantCountReturnsZeroWhenGenericExceptionThrown(): void
     {
         $this->tenantRepository->method('count')
@@ -144,6 +155,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertEquals(0, $count);
     }
 
+    #[Test]
     public function testIsMultiTenantReturnsFalseWhenExceptionOccurs(): void
     {
         $this->tenantRepository->method('count')
@@ -154,6 +166,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testShowCorporateFeaturesReturnsTrueForMultipleTenants(): void
     {
         $this->tenantRepository->method('count')
@@ -165,6 +178,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testShowCorporateFeaturesReturnsFalseForSingleTenant(): void
     {
         $this->tenantRepository->method('count')
@@ -176,6 +190,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testShowCorporateFeaturesReturnsFalseWhenNoTenants(): void
     {
         $this->tenantRepository->method('count')
@@ -187,6 +202,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testClearCacheResetsCountCache(): void
     {
         // First call to populate cache
@@ -211,6 +227,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertEquals(5, $count3);
     }
 
+    #[Test]
     public function testClearCacheResetsIsMultiTenantCache(): void
     {
         // First call to populate cache
@@ -235,6 +252,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertTrue($result3);
     }
 
+    #[Test]
     public function testClearCacheResetsBothCaches(): void
     {
         // Populate both caches
@@ -257,6 +275,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertFalse($isMulti);
     }
 
+    #[Test]
     public function testGetHiddenReasonReturnsMessageWhenNoTenants(): void
     {
         $this->tenantRepository->method('count')
@@ -268,6 +287,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertEquals('No active tenants exist', $reason);
     }
 
+    #[Test]
     public function testGetHiddenReasonReturnsMessageWhenOnlyOneTenant(): void
     {
         $this->tenantRepository->method('count')
@@ -282,6 +302,7 @@ class MultiTenantCheckServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGetHiddenReasonReturnsEmptyStringWhenMultipleTenants(): void
     {
         $this->tenantRepository->method('count')
@@ -293,6 +314,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertEquals('', $reason);
     }
 
+    #[Test]
     public function testGetHiddenReasonReturnsEmptyStringWhenManyTenants(): void
     {
         $this->tenantRepository->method('count')
@@ -304,6 +326,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertEquals('', $reason);
     }
 
+    #[Test]
     public function testGetHiddenReasonUsesCachedCount(): void
     {
         $this->tenantRepository->expects($this->once())
@@ -323,6 +346,7 @@ class MultiTenantCheckServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testExactlyTwoTenantsIsConsideredMultiTenant(): void
     {
         $this->tenantRepository->method('count')
@@ -333,6 +357,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertEquals('', $this->service->getHiddenReason());
     }
 
+    #[Test]
     public function testCacheIsSharedBetweenIsMultiTenantAndGetActiveTenantCount(): void
     {
         $this->tenantRepository->expects($this->once())
@@ -353,6 +378,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertTrue($show);
     }
 
+    #[Test]
     public function testServiceHandlesEdgeCaseOfExactlyOneTenant(): void
     {
         $this->tenantRepository->method('count')
@@ -368,6 +394,7 @@ class MultiTenantCheckServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testServiceHandlesLargeNumberOfTenants(): void
     {
         $this->tenantRepository->method('count')
@@ -380,6 +407,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertEquals('', $this->service->getHiddenReason());
     }
 
+    #[Test]
     public function testExceptionDuringCachePopulationIsHandledGracefully(): void
     {
         // First call throws exception, subsequent calls should work
@@ -406,6 +434,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertEquals(3, $count2);
     }
 
+    #[Test]
     public function testMultipleSequentialClearCacheCalls(): void
     {
         $this->tenantRepository->method('count')
@@ -425,6 +454,7 @@ class MultiTenantCheckServiceTest extends TestCase
         $this->assertEquals(2, $count);
     }
 
+    #[Test]
     public function testIsMultiTenantCachesResultIndependentlyFromGetActiveTenantCount(): void
     {
         $this->tenantRepository->expects($this->once())

@@ -7,9 +7,11 @@ use App\Entity\Workflow;
 use App\Entity\WorkflowStep;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class WorkflowInstanceTest extends TestCase
 {
+    #[Test]
     public function testNewWorkflowInstanceHasDefaultValues(): void
     {
         $instance = new WorkflowInstance();
@@ -29,6 +31,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertNull($instance->getDueDate());
     }
 
+    #[Test]
     public function testSetAndGetWorkflow(): void
     {
         $instance = new WorkflowInstance();
@@ -40,6 +43,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertSame($workflow, $instance->getWorkflow());
     }
 
+    #[Test]
     public function testSetAndGetEntityType(): void
     {
         $instance = new WorkflowInstance();
@@ -48,6 +52,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertEquals('App\Entity\Risk', $instance->getEntityType());
     }
 
+    #[Test]
     public function testSetAndGetEntityId(): void
     {
         $instance = new WorkflowInstance();
@@ -56,6 +61,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertEquals(123, $instance->getEntityId());
     }
 
+    #[Test]
     public function testSetAndGetStatus(): void
     {
         $instance = new WorkflowInstance();
@@ -64,6 +70,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertEquals('in_progress', $instance->getStatus());
     }
 
+    #[Test]
     public function testSetAndGetInitiatedBy(): void
     {
         $instance = new WorkflowInstance();
@@ -75,6 +82,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertSame($user, $instance->getInitiatedBy());
     }
 
+    #[Test]
     public function testSetAndGetCurrentStep(): void
     {
         $instance = new WorkflowInstance();
@@ -86,6 +94,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertSame($step, $instance->getCurrentStep());
     }
 
+    #[Test]
     public function testSetAndGetCompletedSteps(): void
     {
         $instance = new WorkflowInstance();
@@ -96,6 +105,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertEquals($steps, $instance->getCompletedSteps());
     }
 
+    #[Test]
     public function testAddCompletedStep(): void
     {
         $instance = new WorkflowInstance();
@@ -111,6 +121,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertContains(2, $instance->getCompletedSteps());
     }
 
+    #[Test]
     public function testAddCompletedStepDoesNotDuplicate(): void
     {
         $instance = new WorkflowInstance();
@@ -121,6 +132,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertCount(1, $instance->getCompletedSteps());
     }
 
+    #[Test]
     public function testSetAndGetApprovalHistory(): void
     {
         $instance = new WorkflowInstance();
@@ -134,6 +146,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertEquals($history, $instance->getApprovalHistory());
     }
 
+    #[Test]
     public function testAddApprovalHistoryEntry(): void
     {
         $instance = new WorkflowInstance();
@@ -149,6 +162,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertEquals($entry2, $instance->getApprovalHistory()[1]);
     }
 
+    #[Test]
     public function testSetAndGetComments(): void
     {
         $instance = new WorkflowInstance();
@@ -157,6 +171,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertEquals('Needs additional review', $instance->getComments());
     }
 
+    #[Test]
     public function testSetAndGetStartedAt(): void
     {
         $instance = new WorkflowInstance();
@@ -167,6 +182,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertEquals($date, $instance->getStartedAt());
     }
 
+    #[Test]
     public function testSetAndGetCompletedAt(): void
     {
         $instance = new WorkflowInstance();
@@ -177,6 +193,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertEquals($date, $instance->getCompletedAt());
     }
 
+    #[Test]
     public function testSetAndGetDueDate(): void
     {
         $instance = new WorkflowInstance();
@@ -187,6 +204,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertEquals($date, $instance->getDueDate());
     }
 
+    #[Test]
     public function testIsOverdueReturnsFalseWhenNoDueDate(): void
     {
         $instance = new WorkflowInstance();
@@ -194,6 +212,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertFalse($instance->isOverdue());
     }
 
+    #[Test]
     public function testIsOverdueReturnsTrueWhenPastDueAndNotCompleted(): void
     {
         $instance = new WorkflowInstance();
@@ -203,6 +222,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertTrue($instance->isOverdue());
     }
 
+    #[Test]
     public function testIsOverdueReturnsFalseWhenPastDueButCompleted(): void
     {
         $instance = new WorkflowInstance();
@@ -213,6 +233,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertFalse($instance->isOverdue());
     }
 
+    #[Test]
     public function testIsOverdueReturnsFalseWhenDueDateInFuture(): void
     {
         $instance = new WorkflowInstance();
@@ -222,6 +243,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertFalse($instance->isOverdue());
     }
 
+    #[Test]
     public function testGetProgressPercentageReturnsZeroWhenNoSteps(): void
     {
         $instance = new WorkflowInstance();
@@ -231,6 +253,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertEquals(0, $instance->getProgressPercentage());
     }
 
+    #[Test]
     public function testGetProgressPercentageCalculatesCorrectly(): void
     {
         $instance = new WorkflowInstance();
@@ -259,6 +282,7 @@ class WorkflowInstanceTest extends TestCase
         $this->assertEquals(50, $instance->getProgressPercentage());
     }
 
+    #[Test]
     public function testGetProgressPercentageReturns100WhenAllStepsCompleted(): void
     {
         $instance = new WorkflowInstance();

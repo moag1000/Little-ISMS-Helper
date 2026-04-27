@@ -20,6 +20,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class RestoreServiceTest extends TestCase
@@ -49,6 +50,7 @@ class RestoreServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testValidateBackupWithValidData(): void
     {
         $backup = [
@@ -69,6 +71,7 @@ class RestoreServiceTest extends TestCase
         $this->assertIsArray($result['warnings']);
     }
 
+    #[Test]
     public function testValidateBackupFailsWithoutMetadata(): void
     {
         $backup = [
@@ -81,6 +84,7 @@ class RestoreServiceTest extends TestCase
         $this->assertContains('Missing metadata section', $result['errors']);
     }
 
+    #[Test]
     public function testValidateBackupFailsWithUnsupportedVersion(): void
     {
         // Use a version that is truly unsupported (3.0 is beyond current max)
@@ -99,6 +103,7 @@ class RestoreServiceTest extends TestCase
         }));
     }
 
+    #[Test]
     public function testValidateBackupFailsWithoutDataSection(): void
     {
         $backup = [
@@ -113,6 +118,7 @@ class RestoreServiceTest extends TestCase
         $this->assertContains('Missing or invalid data section', $result['errors']);
     }
 
+    #[Test]
     public function testValidateBackupWarnsAboutUnknownEntities(): void
     {
         $backup = [
@@ -130,6 +136,7 @@ class RestoreServiceTest extends TestCase
         }));
     }
 
+    #[Test]
     public function testGetRestorePreviewReturnsPreviewData(): void
     {
         $backup = [
@@ -177,6 +184,7 @@ class RestoreServiceTest extends TestCase
         $this->assertEquals(5, $preview['entities']['User']['existing']);
     }
 
+    #[Test]
     public function testRestoreFromBackupWithInvalidDataThrowsException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -190,6 +198,7 @@ class RestoreServiceTest extends TestCase
         $this->service->restoreFromBackup($backup);
     }
 
+    #[Test]
     public function testRestoreFromBackupInDryRunMode(): void
     {
         $backup = [
@@ -216,6 +225,7 @@ class RestoreServiceTest extends TestCase
         $this->assertArrayHasKey('statistics', $result);
     }
 
+    #[Test]
     public function testRestoreFromBackupCreatesNewEntities(): void
     {
         $backup = [
@@ -244,6 +254,7 @@ class RestoreServiceTest extends TestCase
         $this->assertArrayHasKey('statistics', $result);
     }
 
+    #[Test]
     public function testRestoreFromBackupSkipsExistingEntitiesWhenConfigured(): void
     {
         $backup = [
@@ -272,6 +283,7 @@ class RestoreServiceTest extends TestCase
         $this->assertIsArray($result['statistics']);
     }
 
+    #[Test]
     public function testRestoreFromBackupUpdatesExistingEntitiesWhenConfigured(): void
     {
         $backup = [
@@ -300,6 +312,7 @@ class RestoreServiceTest extends TestCase
         $this->assertIsArray($result['statistics']);
     }
 
+    #[Test]
     public function testRestoreFromBackupClearsDataBeforeRestoreWhenConfigured(): void
     {
         $backup = [
@@ -327,6 +340,7 @@ class RestoreServiceTest extends TestCase
         $this->assertIsArray($result['statistics']);
     }
 
+    #[Test]
     public function testRestoreFromBackupHandlesClosedEntityManager(): void
     {
         $backup = [
@@ -353,6 +367,7 @@ class RestoreServiceTest extends TestCase
         $this->assertArrayHasKey('success', $result);
     }
 
+    #[Test]
     public function testRestoreFromBackupSetsAdminPasswordWhenProvided(): void
     {
         // This tests that admin password can be set after restore
@@ -381,6 +396,7 @@ class RestoreServiceTest extends TestCase
         $this->assertTrue($result['success']);
     }
 
+    #[Test]
     public function testGetValidationErrorsReturnsErrors(): void
     {
         $backup = [
@@ -395,6 +411,7 @@ class RestoreServiceTest extends TestCase
         $this->assertNotEmpty($errors);
     }
 
+    #[Test]
     public function testGetWarningsReturnsWarnings(): void
     {
         $backup = [
@@ -410,6 +427,7 @@ class RestoreServiceTest extends TestCase
         $this->assertIsArray($warnings);
     }
 
+    #[Test]
     public function testGetStatisticsReturnsStatistics(): void
     {
         $stats = $this->service->getStatistics();
@@ -423,6 +441,7 @@ class RestoreServiceTest extends TestCase
      * Prüft, dass restoreManyToManyAssociations() INSERT IGNORE-Statements
      * für owning-side ManyToMany-Assoziationen in die Pivot-Tabelle schreibt.
      */
+    #[Test]
     public function testManyToManyAssociationsAreRestored(): void
     {
         // Build a minimal backup with one Asset that has two dependsOn IDs
@@ -515,6 +534,7 @@ class RestoreServiceTest extends TestCase
      * Audit-Befund: DQL DELETE FROM Entity löscht keine Pivot-Tabellen.
      * Prüft, dass clearExistingData() vor den Entity-DELETEs die Pivot-Tabellen leert.
      */
+    #[Test]
     public function testPivotTablesAreClearedBeforeEntityDelete(): void
     {
         $backup = [
@@ -603,6 +623,7 @@ class RestoreServiceTest extends TestCase
      * Alle Scalar-Felder und ManyToMany-Associations (dependsOn_ids) müssen
      * nach dem Round-Trip identisch zur Original-Fixture sein.
      */
+    #[Test]
     public function testFullRoundTripPreservesAllData(): void
     {
         // ------------------------------------------------------------------ //
@@ -827,6 +848,7 @@ class RestoreServiceTest extends TestCase
      *  - Only one entity is persisted (User A)
      *  - User B is silently skipped (no persist call for it)
      */
+    #[Test]
     public function testTenantScopedRestoreLeavesOtherTenantsUntouched(): void
     {
         $backup = [
@@ -904,6 +926,7 @@ class RestoreServiceTest extends TestCase
      *
      * The scope sets do not overlap → a cross-tenant warning must appear.
      */
+    #[Test]
     public function testCrossTenantRestoreGeneratesWarning(): void
     {
         $backup = [
@@ -981,6 +1004,7 @@ class RestoreServiceTest extends TestCase
         $this->entityManager->method('isOpen')->willReturn(true);
     }
 
+    #[Test]
     public function testRestoreThrowsWhenSha256Tampered(): void
     {
         $data = ['User' => [['id' => 1, 'email' => 'a@b.com']]];
@@ -1002,6 +1026,7 @@ class RestoreServiceTest extends TestCase
         $this->service->restoreFromBackup($backup);
     }
 
+    #[Test]
     public function testRestoreAcceptsValidSha256(): void
     {
         $data = [];
@@ -1019,6 +1044,7 @@ class RestoreServiceTest extends TestCase
         $this->assertTrue($result['success']);
     }
 
+    #[Test]
     public function testLegacyBackupWithoutSha256WarnsAndContinues(): void
     {
         // Legacy backup: no sha256 field in metadata.
@@ -1045,6 +1071,7 @@ class RestoreServiceTest extends TestCase
     // P1 — Encrypted SystemSettings decryption on restore                //
     // ------------------------------------------------------------------ //
 
+    #[Test]
     public function testRestoreDecryptsEncryptedSystemSettingsValue(): void
     {
         $originalValue = 'my-smtp-password-secret';
@@ -1128,6 +1155,7 @@ class RestoreServiceTest extends TestCase
      * P5 T1 — Clean backup in best_effort mode must produce zero failures
      * and behave identically to strict mode for valid data.
      */
+    #[Test]
     public function testBestEffortEmptyFailuresOnCleanBackup(): void
     {
         $backup = [
@@ -1156,6 +1184,7 @@ class RestoreServiceTest extends TestCase
      * savepoint can be created. The FINAL entity-type flush must throw.
      * We use a counter: first N-1 calls succeed; the last (final flush) throws.
      */
+    #[Test]
     public function testBestEffortSkipsRowWithFKViolation(): void
     {
         $fieldMapping = new FieldMapping(type: 'string', fieldName: 'name', columnName: 'name');
@@ -1222,6 +1251,7 @@ class RestoreServiceTest extends TestCase
      * it should let the exception bubble up or record it as a warning (existing behaviour).
      * The key assertion is that 'failures' key in the result is always present.
      */
+    #[Test]
     public function testStrictModeAlwaysIncludesFailuresKeyInResult(): void
     {
         $backup = [
@@ -1247,6 +1277,7 @@ class RestoreServiceTest extends TestCase
      * P5 T4 — SHA256 mismatch in best_effort mode must NOT throw; instead it must
      * record a failure and continue. In strict mode it must throw.
      */
+    #[Test]
     public function testBestEffortSurvivesSha256Mismatch(): void
     {
         $data = ['Role' => [['id' => 1, 'name' => 'ROLE_USER']]];
@@ -1279,6 +1310,7 @@ class RestoreServiceTest extends TestCase
     /**
      * P5 T5 — Strict mode SHA256 mismatch must throw RuntimeException.
      */
+    #[Test]
     public function testStrictModeSha256MismatchThrows(): void
     {
         $data = ['Role' => [['id' => 1, 'name' => 'ROLE_USER']]];
@@ -1304,6 +1336,7 @@ class RestoreServiceTest extends TestCase
      * P5 T6 — Encrypted SystemSetting with wrong APP_SECRET in best_effort mode.
      * The row must be skipped with a failure entry; no exception thrown.
      */
+    #[Test]
     public function testBestEffortReportsEncryptedFieldFailure(): void
     {
         // Encrypt with a DIFFERENT key than the service uses

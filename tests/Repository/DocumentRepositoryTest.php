@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for DocumentRepository
@@ -60,11 +61,13 @@ class DocumentRepositoryTest extends TestCase
         $this->repository = new DocumentRepository($this->registry);
     }
 
+    #[Test]
     public function testConstructorCreatesRepositorySuccessfully(): void
     {
         $this->assertInstanceOf(DocumentRepository::class, $this->repository);
     }
 
+    #[Test]
     public function testFindByEntityAcceptsValidParameters(): void
     {
         // This test verifies that the method signature is correct
@@ -81,6 +84,7 @@ class DocumentRepositoryTest extends TestCase
         // Full testing requires integration tests
     }
 
+    #[Test]
     public function testFindByCategoryAcceptsValidParameters(): void
     {
         // This test verifies method signature
@@ -91,6 +95,7 @@ class DocumentRepositoryTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    #[Test]
     public function testFindByTenantAcceptsValidTenantParameter(): void
     {
         $tenant = $this->createTenant(1, 'test-tenant');
@@ -99,6 +104,7 @@ class DocumentRepositoryTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    #[Test]
     public function testFindByTenantIncludingParentHandlesEmptyAncestors(): void
     {
         // Test the logic for handling tenants with no ancestors
@@ -110,6 +116,7 @@ class DocumentRepositoryTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    #[Test]
     public function testFindByTenantIncludingParentHandlesMultipleAncestors(): void
     {
         // Test the logic for handling tenants with multiple ancestors
@@ -125,6 +132,7 @@ class DocumentRepositoryTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    #[Test]
     public function testFindByTenantIncludingParentIgnoresDeprecatedParameter(): void
     {
         // Verify that the deprecated second parameter doesn't affect behavior
@@ -137,6 +145,7 @@ class DocumentRepositoryTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    #[Test]
     public function testFindByCategoryAndTenantAcceptsValidParameters(): void
     {
         $tenant = $this->createTenant(1, 'tenant');
@@ -146,6 +155,7 @@ class DocumentRepositoryTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    #[Test]
     public function testFindByTenantIncludingSubsidiariesHandlesEmptySubsidiaries(): void
     {
         // Test handling of tenants with no subsidiaries
@@ -156,6 +166,7 @@ class DocumentRepositoryTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    #[Test]
     public function testFindByTenantIncludingSubsidiariesHandlesMultipleSubsidiaries(): void
     {
         // Test handling of complex subsidiary hierarchies
@@ -180,6 +191,7 @@ class DocumentRepositoryTest extends TestCase
      * - Archived documents are excluded (isArchived = false)
      * - Results are ordered by uploadedAt DESC
      */
+    #[Test]
     public function testFindByCategoryMethodSignature(): void
     {
         // Verify the method exists and has the correct signature
@@ -201,6 +213,7 @@ class DocumentRepositoryTest extends TestCase
      * - Archived documents are excluded
      * - Results are ordered by uploadedAt DESC
      */
+    #[Test]
     public function testFindByEntityMethodSignature(): void
     {
         $reflection = new \ReflectionMethod(DocumentRepository::class, 'findByEntity');
@@ -223,6 +236,7 @@ class DocumentRepositoryTest extends TestCase
      * - Archived documents are excluded
      * - Results are ordered by uploadedAt DESC
      */
+    #[Test]
     public function testFindByTenantMethodSignature(): void
     {
         $reflection = new \ReflectionMethod(DocumentRepository::class, 'findByTenant');
@@ -245,6 +259,7 @@ class DocumentRepositoryTest extends TestCase
      * - Archived documents are excluded
      * - Results are ordered by uploadedAt DESC
      */
+    #[Test]
     public function testFindByTenantIncludingParentMethodSignature(): void
     {
         $reflection = new \ReflectionMethod(DocumentRepository::class, 'findByTenantIncludingParent');
@@ -269,6 +284,7 @@ class DocumentRepositoryTest extends TestCase
      * - Archived documents are excluded
      * - Results are ordered by uploadedAt DESC
      */
+    #[Test]
     public function testFindByCategoryAndTenantMethodSignature(): void
     {
         $reflection = new \ReflectionMethod(DocumentRepository::class, 'findByCategoryAndTenant');
@@ -292,6 +308,7 @@ class DocumentRepositoryTest extends TestCase
      * - Archived documents are excluded
      * - Results are ordered by uploadedAt DESC
      */
+    #[Test]
     public function testFindByTenantIncludingSubsidiariesMethodSignature(): void
     {
         $reflection = new \ReflectionMethod(DocumentRepository::class, 'findByTenantIncludingSubsidiaries');
@@ -307,6 +324,7 @@ class DocumentRepositoryTest extends TestCase
     /**
      * Test the repository extends ServiceEntityRepository correctly
      */
+    #[Test]
     public function testRepositoryExtendsServiceEntityRepository(): void
     {
         $reflection = new \ReflectionClass(DocumentRepository::class);
@@ -319,6 +337,7 @@ class DocumentRepositoryTest extends TestCase
     /**
      * Test all custom methods return array type
      */
+    #[Test]
     public function testCustomMethodsReturnArrayType(): void
     {
         $methods = [
@@ -343,6 +362,7 @@ class DocumentRepositoryTest extends TestCase
      * Test that the repository handles tenant hierarchy correctly
      * by verifying it calls the appropriate Tenant methods
      */
+    #[Test]
     public function testRepositoryUsesTenantHierarchyMethods(): void
     {
         $tenant = $this->createTenant(1, 'test');
@@ -369,6 +389,7 @@ class DocumentRepositoryTest extends TestCase
     /**
      * Test that the repository handles subsidiary hierarchy correctly
      */
+    #[Test]
     public function testRepositoryUsesTenantSubsidiaryMethods(): void
     {
         $tenant = $this->createTenant(1, 'test');

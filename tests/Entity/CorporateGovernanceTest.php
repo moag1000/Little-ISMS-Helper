@@ -7,9 +7,11 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\GovernanceModel;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CorporateGovernanceTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $governance = new CorporateGovernance();
@@ -19,6 +21,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertNull($governance->getUpdatedAt());
     }
 
+    #[Test]
     public function testTenantRelationship(): void
     {
         $governance = new CorporateGovernance();
@@ -30,6 +33,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertSame($tenant, $governance->getTenant());
     }
 
+    #[Test]
     public function testParentRelationship(): void
     {
         $governance = new CorporateGovernance();
@@ -41,6 +45,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertSame($parent, $governance->getParent());
     }
 
+    #[Test]
     public function testScope(): void
     {
         $governance = new CorporateGovernance();
@@ -69,6 +74,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertEquals('default', $governance->getScope());
     }
 
+    #[Test]
     public function testScopeId(): void
     {
         $governance = new CorporateGovernance();
@@ -82,6 +88,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertNull($governance->getScopeId());
     }
 
+    #[Test]
     public function testGovernanceModel(): void
     {
         $governance = new CorporateGovernance();
@@ -98,6 +105,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertEquals(GovernanceModel::INDEPENDENT, $governance->getGovernanceModel());
     }
 
+    #[Test]
     public function testNotes(): void
     {
         $governance = new CorporateGovernance();
@@ -111,6 +119,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertNull($governance->getNotes());
     }
 
+    #[Test]
     public function testCreatedAt(): void
     {
         $governance = new CorporateGovernance();
@@ -123,6 +132,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertEquals($newDate, $governance->getCreatedAt());
     }
 
+    #[Test]
     public function testUpdatedAt(): void
     {
         $governance = new CorporateGovernance();
@@ -137,6 +147,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertNull($governance->getUpdatedAt());
     }
 
+    #[Test]
     public function testCreatedByRelationship(): void
     {
         $governance = new CorporateGovernance();
@@ -151,6 +162,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertNull($governance->getCreatedBy());
     }
 
+    #[Test]
     public function testSetUpdatedAtValue(): void
     {
         $governance = new CorporateGovernance();
@@ -164,6 +176,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertInstanceOf(\DateTimeImmutable::class, $governance->getUpdatedAt());
     }
 
+    #[Test]
     public function testGetScopeLabelControl(): void
     {
         $governance = new CorporateGovernance();
@@ -172,6 +185,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertEquals('ISO Control', $governance->getScopeLabel());
     }
 
+    #[Test]
     public function testGetScopeLabelIsmsContext(): void
     {
         $governance = new CorporateGovernance();
@@ -180,6 +194,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertEquals('ISMS Kontext', $governance->getScopeLabel());
     }
 
+    #[Test]
     public function testGetScopeLabelRisk(): void
     {
         $governance = new CorporateGovernance();
@@ -188,6 +203,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertEquals('Risikomanagement', $governance->getScopeLabel());
     }
 
+    #[Test]
     public function testGetScopeLabelAsset(): void
     {
         $governance = new CorporateGovernance();
@@ -196,6 +212,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertEquals('Asset Management', $governance->getScopeLabel());
     }
 
+    #[Test]
     public function testGetScopeLabelProcess(): void
     {
         $governance = new CorporateGovernance();
@@ -204,6 +221,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertEquals('Prozess', $governance->getScopeLabel());
     }
 
+    #[Test]
     public function testGetScopeLabelDocument(): void
     {
         $governance = new CorporateGovernance();
@@ -212,6 +230,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertEquals('Dokument', $governance->getScopeLabel());
     }
 
+    #[Test]
     public function testGetScopeLabelDefault(): void
     {
         $governance = new CorporateGovernance();
@@ -220,6 +239,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertEquals('Standard (Alle)', $governance->getScopeLabel());
     }
 
+    #[Test]
     public function testGetScopeLabelUnknown(): void
     {
         $governance = new CorporateGovernance();
@@ -228,6 +248,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertEquals('unknown_scope', $governance->getScopeLabel());
     }
 
+    #[Test]
     public function testGetScopeDescriptionWithScopeId(): void
     {
         $governance = new CorporateGovernance();
@@ -237,6 +258,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertEquals('ISO Control: A.5.1', $governance->getScopeDescription());
     }
 
+    #[Test]
     public function testGetScopeDescriptionWithoutScopeId(): void
     {
         $governance = new CorporateGovernance();
@@ -245,6 +267,7 @@ class CorporateGovernanceTest extends TestCase
         $this->assertEquals('ISO Control (Alle)', $governance->getScopeDescription());
     }
 
+    #[Test]
     public function testFluentSetters(): void
     {
         $governance = new CorporateGovernance();

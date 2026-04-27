@@ -15,6 +15,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\NullLogger;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class CreateBackupCommandTest extends TestCase
@@ -40,6 +41,7 @@ class CreateBackupCommandTest extends TestCase
 
     // ------------------------------------------------------------------ //
 
+    #[Test]
     public function testNonExistentTenantReturnsFailure(): void
     {
         $this->tenantRepository
@@ -53,6 +55,7 @@ class CreateBackupCommandTest extends TestCase
         $this->assertStringContainsString('nonexistent', $tester->getDisplay());
     }
 
+    #[Test]
     public function testNonExistentTenantReturnsFailureWithJsonFlag(): void
     {
         $this->tenantRepository
@@ -68,6 +71,7 @@ class CreateBackupCommandTest extends TestCase
         $this->assertStringContainsString('nonexistent', $decoded['error']);
     }
 
+    #[Test]
     public function testSuccessfulBackupWritesFileAndOutputsPath(): void
     {
         $backupFilePath = $this->projectDir . '/var/backups/backup_test.json';
@@ -98,6 +102,7 @@ class CreateBackupCommandTest extends TestCase
         $this->assertStringContainsString('backup_test.json', $tester->getDisplay());
     }
 
+    #[Test]
     public function testSuccessfulBackupJsonOutput(): void
     {
         $backupFilePath = $this->projectDir . '/var/backups/backup_json.json';
@@ -126,6 +131,7 @@ class CreateBackupCommandTest extends TestCase
         $this->assertArrayHasKey('sha256', $decoded);
     }
 
+    #[Test]
     public function testBackupServiceExceptionReturnsFailure(): void
     {
         $this->backupService
@@ -141,6 +147,7 @@ class CreateBackupCommandTest extends TestCase
         $this->assertStringContainsString('DB connection lost', $tester->getDisplay());
     }
 
+    #[Test]
     public function testNotifierCalledOnSuccessWhenFlagProvided(): void
     {
         $backupFilePath = $this->projectDir . '/var/backups/backup_notify.json';
@@ -165,6 +172,7 @@ class CreateBackupCommandTest extends TestCase
         $this->assertSame(0, $tester->getStatusCode());
     }
 
+    #[Test]
     public function testNotifierCalledOnFailureWhenFlagProvided(): void
     {
         $this->backupService

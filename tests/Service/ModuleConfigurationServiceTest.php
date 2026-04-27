@@ -4,6 +4,7 @@ namespace App\Tests\Service;
 
 use App\Service\ModuleConfigurationService;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ModuleConfigurationServiceTest extends TestCase
 {
@@ -71,6 +72,7 @@ class ModuleConfigurationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testGetAllModulesReturnsAllModules(): void
     {
         $modules = $this->service->getAllModules();
@@ -81,6 +83,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertArrayHasKey('compliance', $modules);
     }
 
+    #[Test]
     public function testGetModuleReturnsSpecificModule(): void
     {
         $module = $this->service->getModule('risk');
@@ -90,6 +93,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertFalse($module['required']);
     }
 
+    #[Test]
     public function testGetModuleReturnsNullForNonexistent(): void
     {
         $module = $this->service->getModule('nonexistent');
@@ -97,6 +101,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertNull($module);
     }
 
+    #[Test]
     public function testGetRequiredModulesReturnsOnlyRequired(): void
     {
         $required = $this->service->getRequiredModules();
@@ -105,6 +110,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertArrayHasKey('core', $required);
     }
 
+    #[Test]
     public function testGetOptionalModulesReturnsOnlyOptional(): void
     {
         $optional = $this->service->getOptionalModules();
@@ -114,6 +120,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertArrayHasKey('compliance', $optional);
     }
 
+    #[Test]
     public function testValidateModuleSelectionWithValidSelection(): void
     {
         $result = $this->service->validateModuleSelection(['core', 'risk']);
@@ -122,6 +129,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertEmpty($result['errors']);
     }
 
+    #[Test]
     public function testValidateModuleSelectionAddsRequiredModules(): void
     {
         $result = $this->service->validateModuleSelection(['risk']);
@@ -131,6 +139,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertNotEmpty($result['warnings']);
     }
 
+    #[Test]
     public function testValidateModuleSelectionDetectsMissingDependencies(): void
     {
         $result = $this->service->validateModuleSelection(['compliance']);
@@ -139,6 +148,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertNotEmpty($result['errors']);
     }
 
+    #[Test]
     public function testValidateModuleSelectionWithNonexistentModule(): void
     {
         $result = $this->service->validateModuleSelection(['nonexistent']);
@@ -147,6 +157,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertNotEmpty($result['errors']);
     }
 
+    #[Test]
     public function testResolveModuleDependenciesAddsRequiredModules(): void
     {
         $result = $this->service->resolveModuleDependencies(['risk']);
@@ -156,6 +167,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertContains('core', $result['added']);
     }
 
+    #[Test]
     public function testResolveModuleDependenciesHandlesChainedDependencies(): void
     {
         $result = $this->service->resolveModuleDependencies(['compliance']);
@@ -165,6 +177,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertContains('compliance', $result['modules']);
     }
 
+    #[Test]
     public function testSaveActiveModulesCreatesFile(): void
     {
         $this->service->saveActiveModules(['core', 'risk']);
@@ -178,6 +191,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertContains('risk', $config['active_modules']);
     }
 
+    #[Test]
     public function testGetActiveModulesReturnsRequiredWhenNoFile(): void
     {
         $active = $this->service->getActiveModules();
@@ -186,6 +200,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertContains('core', $active);
     }
 
+    #[Test]
     public function testGetActiveModulesReadsFromFile(): void
     {
         $this->service->saveActiveModules(['core', 'risk']);
@@ -196,6 +211,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertContains('risk', $active);
     }
 
+    #[Test]
     public function testIsModuleActiveReturnsTrueForActive(): void
     {
         $this->service->saveActiveModules(['core', 'risk']);
@@ -204,6 +220,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertTrue($this->service->isModuleActive('risk'));
     }
 
+    #[Test]
     public function testIsModuleActiveReturnsFalseForInactive(): void
     {
         $this->service->saveActiveModules(['core']);
@@ -211,6 +228,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertFalse($this->service->isModuleActive('compliance'));
     }
 
+    #[Test]
     public function testActivateModuleSucceeds(): void
     {
         $this->service->saveActiveModules(['core']);
@@ -221,6 +239,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertTrue($this->service->isModuleActive('risk'));
     }
 
+    #[Test]
     public function testActivateModuleWithNonexistent(): void
     {
         $result = $this->service->activateModule('nonexistent');
@@ -229,6 +248,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertArrayHasKey('error', $result);
     }
 
+    #[Test]
     public function testActivateModuleAlreadyActive(): void
     {
         $this->service->saveActiveModules(['core', 'risk']);
@@ -239,6 +259,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertTrue($result['already_active']);
     }
 
+    #[Test]
     public function testActivateModuleIncludesDependencies(): void
     {
         $this->service->saveActiveModules(['core']);
@@ -250,6 +271,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertTrue($this->service->isModuleActive('risk'));
     }
 
+    #[Test]
     public function testDeactivateModuleSucceeds(): void
     {
         $this->service->saveActiveModules(['core', 'risk']);
@@ -260,6 +282,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertFalse($this->service->isModuleActive('risk'));
     }
 
+    #[Test]
     public function testDeactivateRequiredModuleFails(): void
     {
         $this->service->saveActiveModules(['core', 'risk']);
@@ -270,6 +293,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertArrayHasKey('error', $result);
     }
 
+    #[Test]
     public function testDeactivateModuleWithDependentsFails(): void
     {
         $this->service->saveActiveModules(['core', 'risk', 'compliance']);
@@ -280,6 +304,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertArrayHasKey('dependents', $result);
     }
 
+    #[Test]
     public function testDeactivateAlreadyInactiveModule(): void
     {
         $this->service->saveActiveModules(['core']);
@@ -290,6 +315,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertTrue($result['already_inactive']);
     }
 
+    #[Test]
     public function testGetBaseDataReturnsArray(): void
     {
         $baseData = $this->service->getBaseData();
@@ -298,6 +324,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertNotEmpty($baseData);
     }
 
+    #[Test]
     public function testGetSampleDataReturnsArray(): void
     {
         $sampleData = $this->service->getSampleData();
@@ -306,6 +333,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertNotEmpty($sampleData);
     }
 
+    #[Test]
     public function testGetAvailableSampleDataFiltersInactive(): void
     {
         $available = $this->service->getAvailableSampleData(['core']);
@@ -313,6 +341,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertIsArray($available);
     }
 
+    #[Test]
     public function testGetStatisticsReturnsCorrectCounts(): void
     {
         $this->service->saveActiveModules(['core', 'risk']);
@@ -326,6 +355,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertSame(2, $stats['optional_modules']);
     }
 
+    #[Test]
     public function testGetDependencyGraphReturnsCompleteGraph(): void
     {
         $graph = $this->service->getDependencyGraph();
@@ -342,6 +372,7 @@ class ModuleConfigurationServiceTest extends TestCase
         $this->assertArrayHasKey('required', $graph['core']);
     }
 
+    #[Test]
     public function testGetDependencyGraphCalculatesDependents(): void
     {
         $graph = $this->service->getDependencyGraph();

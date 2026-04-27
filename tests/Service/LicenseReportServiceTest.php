@@ -5,6 +5,7 @@ namespace App\Tests\Service;
 use App\Service\LicenseReportService;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Process;
+use PHPUnit\Framework\Attributes\Test;
 
 class LicenseReportServiceTest extends TestCase
 {
@@ -31,6 +32,7 @@ class LicenseReportServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testGenerateReportThrowsExceptionWhenScriptNotFound(): void
     {
         $this->expectException(\RuntimeException::class);
@@ -39,6 +41,7 @@ class LicenseReportServiceTest extends TestCase
         $this->service->generateReport();
     }
 
+    #[Test]
     public function testGenerateReportExecutesScriptSuccessfully(): void
     {
         // Create a mock shell script
@@ -68,6 +71,7 @@ BASH;
         $this->assertStringContainsString('Generated successfully', $result['output']);
     }
 
+    #[Test]
     public function testGenerateReportHandlesScriptFailure(): void
     {
         // Create a failing shell script
@@ -88,6 +92,7 @@ BASH;
         $this->assertStringContainsString('Error occurred', $result['error_output']);
     }
 
+    #[Test]
     public function testGenerateReportIncludesReportMetadata(): void
     {
         // Create mock script and report
@@ -114,6 +119,7 @@ BASH;
         $this->assertNotNull($result['report']['updated_at']);
     }
 
+    #[Test]
     public function testGenerateReportWhenReportFileNotCreated(): void
     {
         // Create script that doesn't create report
@@ -135,6 +141,7 @@ BASH;
         $this->assertNull($result['report']['updated_at']);
     }
 
+    #[Test]
     public function testGetReportStatusWhenReportExists(): void
     {
         $reportDir = $this->projectDir . '/docs/reports';
@@ -150,6 +157,7 @@ BASH;
         $this->assertNotNull($result['updated_at']);
     }
 
+    #[Test]
     public function testGetReportStatusWhenReportDoesNotExist(): void
     {
         $result = $this->service->getReportStatus();
@@ -158,6 +166,7 @@ BASH;
         $this->assertNull($result['updated_at']);
     }
 
+    #[Test]
     public function testGetReportStatusReturnsCorrectFormat(): void
     {
         $result = $this->service->getReportStatus();
@@ -168,6 +177,7 @@ BASH;
         $this->assertIsBool($result['exists']);
     }
 
+    #[Test]
     public function testGenerateReportHandlesLongRunningScript(): void
     {
         // Create script that takes a bit of time
@@ -192,6 +202,7 @@ BASH;
         $this->assertLessThan(10, $duration); // But not too long
     }
 
+    #[Test]
     public function testGenerateReportCapturesStdout(): void
     {
         $scriptPath = $this->projectDir . '/license-report.sh';
@@ -213,6 +224,7 @@ BASH;
         $this->assertStringContainsString('Report generated', $result['output']);
     }
 
+    #[Test]
     public function testGenerateReportCapturesStderr(): void
     {
         $scriptPath = $this->projectDir . '/license-report.sh';
@@ -234,6 +246,7 @@ BASH;
         $this->assertStringContainsString('Error:', $result['error_output']);
     }
 
+    #[Test]
     public function testGenerateReportWithComplexOutput(): void
     {
         $scriptPath = $this->projectDir . '/license-report.sh';
@@ -266,6 +279,7 @@ BASH;
         $this->assertGreaterThan(50, $result['report']['size']);
     }
 
+    #[Test]
     public function testGenerateReportHandlesPermissionErrors(): void
     {
         $scriptPath = $this->projectDir . '/license-report.sh';
@@ -284,6 +298,7 @@ BASH;
         $this->assertEquals(13, $result['exit_code']);
     }
 
+    #[Test]
     public function testGetReportStatusMultipleTimes(): void
     {
         // First call - no report
@@ -300,6 +315,7 @@ BASH;
         $this->assertTrue($result2['exists']);
     }
 
+    #[Test]
     public function testGenerateReportRespectsTimeout(): void
     {
         $scriptPath = $this->projectDir . '/license-report.sh';

@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests for ComplianceFrameworkLoaderService
@@ -44,6 +45,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         self::ensureKernelShutdown();
     }
 
+    #[Test]
     public function testGetAvailableFrameworksReturnsAllFrameworks(): void
     {
         $frameworks = $this->service->getAvailableFrameworks();
@@ -58,6 +60,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         $this->assertEquals('automotive', $frameworks[0]['industry']);
     }
 
+    #[Test]
     public function testGetAvailableFrameworksIncludesAllRequiredFields(): void
     {
         $frameworks = $this->service->getAvailableFrameworks();
@@ -76,6 +79,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         }
     }
 
+    #[Test]
     public function testGetFrameworkStatistics(): void
     {
         $stats = $this->service->getFrameworkStatistics();
@@ -94,6 +98,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         $this->assertEquals(1, $stats['mandatory_frameworks']);
     }
 
+    #[Test]
     public function testLoadFrameworkWithInvalidCode(): void
     {
         $result = $this->service->loadFramework('INVALID_CODE');
@@ -102,6 +107,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         $this->assertEquals('Framework not found', $result['message']);
     }
 
+    #[Test]
     public function testGetAvailableFrameworksContainsExpectedCodes(): void
     {
         $frameworks = $this->service->getAvailableFrameworks();
@@ -120,6 +126,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         }
     }
 
+    #[Test]
     public function testApplicabilityIsCorrectlyClassified(): void
     {
         $frameworks = $this->service->getAvailableFrameworks();
@@ -158,6 +165,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         }
     }
 
+    #[Test]
     public function testFrameworksHaveRequiredModules(): void
     {
         $frameworks = $this->service->getAvailableFrameworks();
@@ -169,6 +177,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         }
     }
 
+    #[Test]
     public function testFrameworksHaveIcons(): void
     {
         $frameworks = $this->service->getAvailableFrameworks();
@@ -178,6 +187,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         }
     }
 
+    #[Test]
     public function testFrameworkIndustryCategories(): void
     {
         $frameworks = $this->service->getAvailableFrameworks();

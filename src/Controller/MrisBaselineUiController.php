@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -46,13 +47,9 @@ final class MrisBaselineUiController extends AbstractController
 
     #[Route('/mris/baselines/apply', name: 'app_mris_baselines_apply', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
+    #[IsCsrfTokenValid('mris_baseline_apply', tokenKey: '_token')]
     public function apply(Request $request): Response
     {
-        if (!$this->isCsrfTokenValid('mris_baseline_apply', (string) $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
-            return $this->redirectToRoute('app_mris_baselines_index');
-        }
-
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
             $this->addFlash('warning', 'Kein Mandant zugewiesen — Baselines benötigen einen Mandantenkontext.');

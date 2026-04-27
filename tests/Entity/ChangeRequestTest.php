@@ -9,9 +9,11 @@ use App\Entity\BusinessProcess;
 use App\Entity\Risk;
 use App\Entity\Document;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ChangeRequestTest extends TestCase
 {
+    #[Test]
     public function testNewChangeRequestHasDefaultValues(): void
     {
         $changeRequest = new ChangeRequest();
@@ -37,6 +39,7 @@ class ChangeRequestTest extends TestCase
         $this->assertNull($changeRequest->getUpdatedAt());
     }
 
+    #[Test]
     public function testSetAndGetChangeNumber(): void
     {
         $changeRequest = new ChangeRequest();
@@ -45,6 +48,7 @@ class ChangeRequestTest extends TestCase
         $this->assertEquals('CHG-2024-001', $changeRequest->getChangeNumber());
     }
 
+    #[Test]
     public function testSetAndGetTitle(): void
     {
         $changeRequest = new ChangeRequest();
@@ -53,6 +57,7 @@ class ChangeRequestTest extends TestCase
         $this->assertEquals('Migrate to cloud infrastructure', $changeRequest->getTitle());
     }
 
+    #[Test]
     public function testSetAndGetChangeType(): void
     {
         $changeRequest = new ChangeRequest();
@@ -61,6 +66,7 @@ class ChangeRequestTest extends TestCase
         $this->assertEquals('technology', $changeRequest->getChangeType());
     }
 
+    #[Test]
     public function testSetAndGetPriority(): void
     {
         $changeRequest = new ChangeRequest();
@@ -75,6 +81,7 @@ class ChangeRequestTest extends TestCase
         $this->assertEquals('low', $changeRequest->getPriority());
     }
 
+    #[Test]
     public function testSetAndGetStatus(): void
     {
         $changeRequest = new ChangeRequest();
@@ -89,6 +96,7 @@ class ChangeRequestTest extends TestCase
         $this->assertEquals('closed', $changeRequest->getStatus());
     }
 
+    #[Test]
     public function testAddAndRemoveAffectedAsset(): void
     {
         $changeRequest = new ChangeRequest();
@@ -105,6 +113,7 @@ class ChangeRequestTest extends TestCase
         $this->assertCount(0, $changeRequest->getAffectedAssets());
     }
 
+    #[Test]
     public function testAddAffectedAssetDoesNotDuplicate(): void
     {
         $changeRequest = new ChangeRequest();
@@ -117,6 +126,7 @@ class ChangeRequestTest extends TestCase
         $this->assertCount(1, $changeRequest->getAffectedAssets());
     }
 
+    #[Test]
     public function testAddAndRemoveAffectedControl(): void
     {
         $changeRequest = new ChangeRequest();
@@ -130,6 +140,7 @@ class ChangeRequestTest extends TestCase
         $this->assertCount(0, $changeRequest->getAffectedControls());
     }
 
+    #[Test]
     public function testAddAndRemoveAffectedProcess(): void
     {
         $changeRequest = new ChangeRequest();
@@ -143,6 +154,7 @@ class ChangeRequestTest extends TestCase
         $this->assertCount(0, $changeRequest->getAffectedProcesses());
     }
 
+    #[Test]
     public function testAddAndRemoveAssociatedRisk(): void
     {
         $changeRequest = new ChangeRequest();
@@ -156,6 +168,7 @@ class ChangeRequestTest extends TestCase
         $this->assertCount(0, $changeRequest->getAssociatedRisks());
     }
 
+    #[Test]
     public function testAddAndRemoveDocument(): void
     {
         $changeRequest = new ChangeRequest();
@@ -169,6 +182,7 @@ class ChangeRequestTest extends TestCase
         $this->assertCount(0, $changeRequest->getDocuments());
     }
 
+    #[Test]
     public function testIsApprovedReturnsTrueForApprovedStatuses(): void
     {
         $changeRequest = new ChangeRequest();
@@ -186,6 +200,7 @@ class ChangeRequestTest extends TestCase
         $this->assertTrue($changeRequest->isApproved());
     }
 
+    #[Test]
     public function testIsApprovedReturnsFalseForNonApprovedStatuses(): void
     {
         $changeRequest = new ChangeRequest();
@@ -200,6 +215,7 @@ class ChangeRequestTest extends TestCase
         $this->assertFalse($changeRequest->isApproved());
     }
 
+    #[Test]
     public function testIsPendingApprovalReturnsTrueForReviewStatuses(): void
     {
         $changeRequest = new ChangeRequest();
@@ -211,6 +227,7 @@ class ChangeRequestTest extends TestCase
         $this->assertTrue($changeRequest->isPendingApproval());
     }
 
+    #[Test]
     public function testIsPendingApprovalReturnsFalseForOtherStatuses(): void
     {
         $changeRequest = new ChangeRequest();
@@ -225,6 +242,7 @@ class ChangeRequestTest extends TestCase
         $this->assertFalse($changeRequest->isPendingApproval());
     }
 
+    #[Test]
     public function testGetComplexityScoreCalculatesCorrectly(): void
     {
         $changeRequest = new ChangeRequest();
@@ -250,6 +268,7 @@ class ChangeRequestTest extends TestCase
         $this->assertEquals(34, $changeRequest->getComplexityScore()); // 15 + 15 + 4
     }
 
+    #[Test]
     public function testGetComplexityScoreIsCappedAt100(): void
     {
         $changeRequest = new ChangeRequest();
@@ -287,6 +306,7 @@ class ChangeRequestTest extends TestCase
         $this->assertEquals(100, $changeRequest->getComplexityScore());
     }
 
+    #[Test]
     public function testGetWorkflowProgressReturnsCorrectPercentages(): void
     {
         $changeRequest = new ChangeRequest();
@@ -322,6 +342,7 @@ class ChangeRequestTest extends TestCase
         $this->assertEquals(0, $changeRequest->getWorkflowProgress());
     }
 
+    #[Test]
     public function testGetStatusBadgeReturnsCorrectColors(): void
     {
         $changeRequest = new ChangeRequest();

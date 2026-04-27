@@ -23,6 +23,8 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class StatementOfApplicabilityController extends AbstractController
@@ -231,14 +233,10 @@ class StatementOfApplicabilityController extends AbstractController
      * CTA. Idempotent — re-running is a no-op after initial load.
      */
     #[Route('/soa/bootstrap/annex-a', name: 'app_soa_bootstrap_annex_a', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    #[IsCsrfTokenValid('bootstrap_annex_a', tokenKey: '_token')]
     public function bootstrapAnnexA(Request $request): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        if (!$this->isCsrfTokenValid('bootstrap_annex_a', (string) $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token.');
-            return $this->redirectToRoute('app_soa_index');
-        }
-
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
         if (!$tenant instanceof Tenant) {
@@ -266,12 +264,9 @@ class StatementOfApplicabilityController extends AbstractController
      * Every row change is recorded in the audit log with actor + reason.
      */
     #[Route('/soa/bulk/applicability', name: 'app_soa_bulk_applicability', methods: ['POST'])]
+    #[IsCsrfTokenValid('soa_bulk_applicability', tokenKey: '_token')]
     public function bulkApplicability(Request $request): Response
     {
-        if (!$this->isCsrfTokenValid('soa_bulk_applicability', (string) $request->request->get('_token'))) {
-            throw $this->createAccessDeniedException('Invalid CSRF token.');
-        }
-
         $ids = $request->request->all('control_ids');
         if (!is_array($ids) || $ids === []) {
             $this->addFlash('warning', $this->translator->trans('control.bulk.flash.no_selection', [], 'control'));

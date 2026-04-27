@@ -13,6 +13,7 @@ use App\Service\MappingQualityScoreService;
 use App\Service\MappingValidatorService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class MappingLibraryLoaderTest extends TestCase
 {
@@ -120,6 +121,7 @@ mappings:
 YAML;
     }
 
+    #[Test]
     public function testFileNotReadableReturnsError(): void
     {
         $loader = $this->makeLoader();
@@ -130,6 +132,7 @@ YAML;
         $this->assertStringContainsString('not readable', $result['errors'][0]);
     }
 
+    #[Test]
     public function testInvalidYamlReturnsParseError(): void
     {
         $path = $this->writeYaml('broken.yaml', "schema_version: '1.1'\nbroken:\n  - [unclosed");
@@ -140,6 +143,7 @@ YAML;
         $this->assertNotEmpty($result['errors']);
     }
 
+    #[Test]
     public function testValidationErrorsBlockImport(): void
     {
         $path = $this->writeYaml('invalid.yaml', $this->validYaml());
@@ -151,6 +155,7 @@ YAML;
         $this->assertSame(0, $result['imported']);
     }
 
+    #[Test]
     public function testNewMappingIsImported(): void
     {
         $sourceFw = (new ComplianceFramework())->setCode('ISO27001');
@@ -172,6 +177,7 @@ YAML;
         $this->assertSame(0, $result['updated']);
     }
 
+    #[Test]
     public function testExistingMappingIsUpdated(): void
     {
         $sourceFw = (new ComplianceFramework())->setCode('ISO27001');
@@ -201,6 +207,7 @@ YAML;
         $this->assertSame('Test', $existingMapping->getProvenanceSource());
     }
 
+    #[Test]
     public function testMissingRequirementsAreSkipped(): void
     {
         $sourceFw = (new ComplianceFramework())->setCode('ISO27001');
@@ -220,6 +227,7 @@ YAML;
         $this->assertSame(0, $result['imported']);
     }
 
+    #[Test]
     public function testRelationshipTranslatesToMappingPercentage(): void
     {
         $sourceFw = (new ComplianceFramework())->setCode('ISO27001');

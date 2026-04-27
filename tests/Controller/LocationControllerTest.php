@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for LocationController
@@ -166,6 +167,7 @@ class LocationControllerTest extends WebTestCase
 
     // ========== INDEX ACTION TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/location/');
@@ -173,6 +175,7 @@ class LocationControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexShowsLocationsForAuthenticatedUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -183,6 +186,7 @@ class LocationControllerTest extends WebTestCase
         $this->assertSelectorExists('html');
     }
 
+    #[Test]
     public function testIndexDisplaysTopLevelLocations(): void
     {
         $this->loginAsUser($this->testUser);
@@ -192,6 +196,7 @@ class LocationControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexShowsTestLocation(): void
     {
         $this->loginAsUser($this->testUser);
@@ -203,6 +208,7 @@ class LocationControllerTest extends WebTestCase
 
     // ========== SHOW ACTION TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/location/' . $this->testLocation->getId());
@@ -210,6 +216,7 @@ class LocationControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysLocation(): void
     {
         $this->loginAsUser($this->testUser);
@@ -219,6 +226,7 @@ class LocationControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testShowDisplaysChildLocations(): void
     {
         $this->loginAsUser($this->testUser);
@@ -242,6 +250,7 @@ class LocationControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testShowReturns404ForNonexistentLocation(): void
     {
         $this->loginAsUser($this->testUser);
@@ -253,6 +262,7 @@ class LocationControllerTest extends WebTestCase
 
     // ========== NEW ACTION TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/location/new');
@@ -260,6 +270,7 @@ class LocationControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewDisplaysFormForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -270,6 +281,7 @@ class LocationControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="location"]');
     }
 
+    #[Test]
     public function testNewCreatesLocationWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -290,6 +302,7 @@ class LocationControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewRejectsInvalidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -308,6 +321,7 @@ class LocationControllerTest extends WebTestCase
 
     // ========== EDIT ACTION TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/location/' . $this->testLocation->getId() . '/edit');
@@ -315,6 +329,7 @@ class LocationControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysFormForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -325,6 +340,7 @@ class LocationControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="location"]');
     }
 
+    #[Test]
     public function testEditUpdatesLocationWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -346,6 +362,7 @@ class LocationControllerTest extends WebTestCase
         $this->assertSelectorTextContains('html', 'Updated Test Location');
     }
 
+    #[Test]
     public function testEditReturns404ForNonexistentLocation(): void
     {
         $this->loginAsUser($this->testUser);
@@ -357,6 +374,7 @@ class LocationControllerTest extends WebTestCase
 
     // ========== DELETE ACTION TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -366,6 +384,7 @@ class LocationControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteRequiresCsrfToken(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -383,6 +402,7 @@ class LocationControllerTest extends WebTestCase
         $this->assertNotNull($location);
     }
 
+    #[Test]
     public function testDeleteRemovesLocationWithValidToken(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -413,6 +433,7 @@ class LocationControllerTest extends WebTestCase
 
     // ========== HIERARCHICAL STRUCTURE TESTS ==========
 
+    #[Test]
     public function testLocationCanHaveParent(): void
     {
         $this->loginAsUser($this->testUser);
@@ -437,6 +458,7 @@ class LocationControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testLocationShowsAssociatedAssets(): void
     {
         $this->loginAsUser($this->testUser);
@@ -447,6 +469,7 @@ class LocationControllerTest extends WebTestCase
         // Page should show assets section even if empty
     }
 
+    #[Test]
     public function testLocationShowsAccessLogs(): void
     {
         $this->loginAsUser($this->testUser);
@@ -459,6 +482,7 @@ class LocationControllerTest extends WebTestCase
 
     // ========== EMPTY STATE TESTS ==========
 
+    #[Test]
     public function testIndexHandlesNoLocations(): void
     {
         // Remove test location
@@ -475,6 +499,7 @@ class LocationControllerTest extends WebTestCase
 
     // ========== LOCATION TYPE TESTS ==========
 
+    #[Test]
     public function testNewLocationWithDifferentTypes(): void
     {
         $this->loginAsUser($this->testUser);

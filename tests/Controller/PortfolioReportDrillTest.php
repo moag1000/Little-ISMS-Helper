@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for the portfolio drill-down (CM-3).
@@ -92,12 +93,14 @@ class PortfolioReportDrillTest extends WebTestCase
         parent::tearDown();
     }
 
+    #[Test]
     public function testDrillRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/reports/management/portfolio/drill/ISO27001/Protect');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDrillForbiddenForPlainUser(): void
     {
         $this->client->loginUser($this->plainUser);
@@ -105,6 +108,7 @@ class PortfolioReportDrillTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDrillAllowsManagerRole(): void
     {
         $this->client->loginUser($this->managerUser);
@@ -119,6 +123,7 @@ class PortfolioReportDrillTest extends WebTestCase
         $this->assertContains($status, [Response::HTTP_OK, Response::HTTP_NOT_FOUND, Response::HTTP_FOUND]);
     }
 
+    #[Test]
     public function testDrillInvalidCategoryIs404(): void
     {
         $this->client->loginUser($this->managerUser);
@@ -126,6 +131,7 @@ class PortfolioReportDrillTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    #[Test]
     public function testDrillUnknownFrameworkIs404(): void
     {
         $this->client->loginUser($this->managerUser);

@@ -5,6 +5,7 @@ namespace App\Tests\Command;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use PHPUnit\Framework\Attributes\Test;
 
 class AuditLogCleanupCommandTest extends KernelTestCase
 {
@@ -19,6 +20,7 @@ class AuditLogCleanupCommandTest extends KernelTestCase
         $this->commandTester = new CommandTester($command);
     }
 
+    #[Test]
     public function testExecuteWithDryRun(): void
     {
         $this->commandTester->execute(['--dry-run' => true]);
@@ -28,6 +30,7 @@ class AuditLogCleanupCommandTest extends KernelTestCase
         $this->assertStringContainsString('DRY RUN', $output);
     }
 
+    #[Test]
     public function testCommandHasCorrectName(): void
     {
         $kernel = self::bootKernel();
@@ -37,6 +40,7 @@ class AuditLogCleanupCommandTest extends KernelTestCase
         $this->assertSame('app:audit-log:cleanup', $command->getName());
     }
 
+    #[Test]
     public function testCommandHasDescription(): void
     {
         $kernel = self::bootKernel();

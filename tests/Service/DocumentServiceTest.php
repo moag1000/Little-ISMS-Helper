@@ -13,6 +13,7 @@ use App\Service\DocumentService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class DocumentServiceTest extends TestCase
@@ -35,6 +36,7 @@ class DocumentServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGetDocumentsForTenantWithoutParent(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -49,6 +51,7 @@ class DocumentServiceTest extends TestCase
         $this->assertSame($documents, $result);
     }
 
+    #[Test]
     public function testGetDocumentsForTenantWithHierarchicalGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -75,6 +78,7 @@ class DocumentServiceTest extends TestCase
         $this->assertCount(3, $result);
     }
 
+    #[Test]
     public function testGetDocumentsForTenantWithIndependentGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -95,6 +99,7 @@ class DocumentServiceTest extends TestCase
         $this->assertSame($ownDocuments, $result);
     }
 
+    #[Test]
     public function testGetDocumentsForTenantFallbackToDefaultGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -119,6 +124,7 @@ class DocumentServiceTest extends TestCase
         $this->assertSame($ownDocuments, $result);
     }
 
+    #[Test]
     public function testGetDocumentInheritanceInfoWithoutParent(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -130,6 +136,7 @@ class DocumentServiceTest extends TestCase
         $this->assertNull($info['governanceModel']);
     }
 
+    #[Test]
     public function testGetDocumentInheritanceInfoWithHierarchicalParent(): void
     {
         $parent = $this->createTenant(1, null);
@@ -147,6 +154,7 @@ class DocumentServiceTest extends TestCase
         $this->assertSame('hierarchical', $info['governanceModel']);
     }
 
+    #[Test]
     public function testGetDocumentInheritanceInfoWithSharedParent(): void
     {
         $parent = $this->createTenant(1, null);
@@ -164,6 +172,7 @@ class DocumentServiceTest extends TestCase
         $this->assertSame('shared', $info['governanceModel']);
     }
 
+    #[Test]
     public function testIsInheritedDocumentTrue(): void
     {
         $parentTenant = $this->createTenant(1, null);
@@ -175,6 +184,7 @@ class DocumentServiceTest extends TestCase
         $this->assertTrue($this->service->isInheritedDocument($document, $childTenant));
     }
 
+    #[Test]
     public function testIsInheritedDocumentFalse(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -185,6 +195,7 @@ class DocumentServiceTest extends TestCase
         $this->assertFalse($this->service->isInheritedDocument($document, $tenant));
     }
 
+    #[Test]
     public function testIsInheritedDocumentWithNullTenant(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -195,6 +206,7 @@ class DocumentServiceTest extends TestCase
         $this->assertFalse($this->service->isInheritedDocument($document, $tenant));
     }
 
+    #[Test]
     public function testIsInheritedDocumentWithNullIds(): void
     {
         $tenant1 = $this->createTenant(null, null);
@@ -206,6 +218,7 @@ class DocumentServiceTest extends TestCase
         $this->assertFalse($this->service->isInheritedDocument($document, $tenant2));
     }
 
+    #[Test]
     public function testCanEditDocumentOwnDocument(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -216,6 +229,7 @@ class DocumentServiceTest extends TestCase
         $this->assertTrue($this->service->canEditDocument($document, $tenant));
     }
 
+    #[Test]
     public function testCanEditDocumentInheritedDocument(): void
     {
         $parentTenant = $this->createTenant(1, null);
@@ -227,6 +241,7 @@ class DocumentServiceTest extends TestCase
         $this->assertFalse($this->service->canEditDocument($document, $childTenant));
     }
 
+    #[Test]
     public function testGetDocumentStatsWithInheritance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -261,6 +276,7 @@ class DocumentServiceTest extends TestCase
         $this->assertSame(3, $stats['inheritedDocuments']);
     }
 
+    #[Test]
     public function testServiceWorksWithoutOptionalDependencies(): void
     {
         $simpleService = new DocumentService($this->documentRepository, null, null);

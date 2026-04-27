@@ -6,9 +6,11 @@ use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Entity\Control;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ComplianceRequirementTest extends TestCase
 {
+    #[Test]
     public function testNewRequirementHasDefaultValues(): void
     {
         $requirement = new ComplianceRequirement();
@@ -27,6 +29,7 @@ class ComplianceRequirementTest extends TestCase
         $this->assertCount(0, $requirement->getTrainings());
     }
 
+    #[Test]
     public function testSetAndGetFramework(): void
     {
         $requirement = new ComplianceRequirement();
@@ -38,6 +41,7 @@ class ComplianceRequirementTest extends TestCase
         $this->assertSame($framework, $requirement->getFramework());
     }
 
+    #[Test]
     public function testSetAndGetRequirementId(): void
     {
         $requirement = new ComplianceRequirement();
@@ -46,6 +50,7 @@ class ComplianceRequirementTest extends TestCase
         $this->assertEquals('A.5.1', $requirement->getRequirementId());
     }
 
+    #[Test]
     public function testSetAndGetTitle(): void
     {
         $requirement = new ComplianceRequirement();
@@ -54,6 +59,7 @@ class ComplianceRequirementTest extends TestCase
         $this->assertEquals('Policies for information security', $requirement->getTitle());
     }
 
+    #[Test]
     public function testSetAndGetDescription(): void
     {
         $requirement = new ComplianceRequirement();
@@ -62,6 +68,7 @@ class ComplianceRequirementTest extends TestCase
         $this->assertEquals('Information security policy shall be defined', $requirement->getDescription());
     }
 
+    #[Test]
     public function testSetAndGetCategory(): void
     {
         $requirement = new ComplianceRequirement();
@@ -70,6 +77,7 @@ class ComplianceRequirementTest extends TestCase
         $this->assertEquals('Organizational controls', $requirement->getCategory());
     }
 
+    #[Test]
     public function testSetAndGetPriority(): void
     {
         $requirement = new ComplianceRequirement();
@@ -81,6 +89,7 @@ class ComplianceRequirementTest extends TestCase
     // NOTE: testSetAndGetFulfillmentPercentage() and testSetAndGetFulfillmentNotes() removed
     // Fulfillment tracking moved to ComplianceRequirementFulfillment entity (CRITICAL-03 Multi-Tenancy)
 
+    #[Test]
     public function testAddAndRemoveMappedControl(): void
     {
         $requirement = new ComplianceRequirement();
@@ -98,6 +107,7 @@ class ComplianceRequirementTest extends TestCase
         $this->assertFalse($requirement->getMappedControls()->contains($control));
     }
 
+    #[Test]
     public function testAddMappedControlDoesNotDuplicate(): void
     {
         $requirement = new ComplianceRequirement();
@@ -110,6 +120,7 @@ class ComplianceRequirementTest extends TestCase
         $this->assertCount(1, $requirement->getMappedControls());
     }
 
+    #[Test]
     public function testSetUpdatedAt(): void
     {
         $requirement = new ComplianceRequirement();

@@ -5,9 +5,11 @@ namespace App\Tests\Entity;
 use App\Entity\ComplianceMapping;
 use App\Entity\MappingGapItem;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class MappingGapItemTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $item = new MappingGapItem();
@@ -23,6 +25,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals([], $item->getMissingKeywords());
     }
 
+    #[Test]
     public function testMappingRelationship(): void
     {
         $item = new MappingGapItem();
@@ -37,6 +40,7 @@ class MappingGapItemTest extends TestCase
         $this->assertNull($item->getMapping());
     }
 
+    #[Test]
     public function testGapType(): void
     {
         $item = new MappingGapItem();
@@ -59,6 +63,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('evidence_gap', $item->getGapType());
     }
 
+    #[Test]
     public function testDescription(): void
     {
         $item = new MappingGapItem();
@@ -69,6 +74,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('Missing implementation of encryption requirements', $item->getDescription());
     }
 
+    #[Test]
     public function testMissingKeywords(): void
     {
         $item = new MappingGapItem();
@@ -83,6 +89,7 @@ class MappingGapItemTest extends TestCase
         $this->assertNull($item->getMissingKeywords());
     }
 
+    #[Test]
     public function testRecommendedAction(): void
     {
         $item = new MappingGapItem();
@@ -96,6 +103,7 @@ class MappingGapItemTest extends TestCase
         $this->assertNull($item->getRecommendedAction());
     }
 
+    #[Test]
     public function testPriority(): void
     {
         $item = new MappingGapItem();
@@ -112,6 +120,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('low', $item->getPriority());
     }
 
+    #[Test]
     public function testEstimatedEffort(): void
     {
         $item = new MappingGapItem();
@@ -125,6 +134,7 @@ class MappingGapItemTest extends TestCase
         $this->assertNull($item->getEstimatedEffort());
     }
 
+    #[Test]
     public function testPercentageImpact(): void
     {
         $item = new MappingGapItem();
@@ -135,6 +145,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals(25, $item->getPercentageImpact());
     }
 
+    #[Test]
     public function testPercentageImpactClampingMin(): void
     {
         $item = new MappingGapItem();
@@ -143,6 +154,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals(0, $item->getPercentageImpact());
     }
 
+    #[Test]
     public function testPercentageImpactClampingMax(): void
     {
         $item = new MappingGapItem();
@@ -151,6 +163,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals(100, $item->getPercentageImpact());
     }
 
+    #[Test]
     public function testIdentificationSource(): void
     {
         $item = new MappingGapItem();
@@ -161,6 +174,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('manual', $item->getIdentificationSource());
     }
 
+    #[Test]
     public function testConfidence(): void
     {
         $item = new MappingGapItem();
@@ -171,6 +185,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals(85, $item->getConfidence());
     }
 
+    #[Test]
     public function testConfidenceClampingMin(): void
     {
         $item = new MappingGapItem();
@@ -179,6 +194,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals(0, $item->getConfidence());
     }
 
+    #[Test]
     public function testConfidenceClampingMax(): void
     {
         $item = new MappingGapItem();
@@ -187,6 +203,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals(100, $item->getConfidence());
     }
 
+    #[Test]
     public function testStatus(): void
     {
         $item = new MappingGapItem();
@@ -206,6 +223,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('wont_fix', $item->getStatus());
     }
 
+    #[Test]
     public function testTimestamps(): void
     {
         $item = new MappingGapItem();
@@ -224,6 +242,7 @@ class MappingGapItemTest extends TestCase
         $this->assertNull($item->getUpdatedAt());
     }
 
+    #[Test]
     public function testGetPriorityBadgeClassCritical(): void
     {
         $item = new MappingGapItem();
@@ -232,6 +251,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('danger', $item->getPriorityBadgeClass());
     }
 
+    #[Test]
     public function testGetPriorityBadgeClassHigh(): void
     {
         $item = new MappingGapItem();
@@ -240,6 +260,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('warning', $item->getPriorityBadgeClass());
     }
 
+    #[Test]
     public function testGetPriorityBadgeClassMedium(): void
     {
         $item = new MappingGapItem();
@@ -248,6 +269,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('info', $item->getPriorityBadgeClass());
     }
 
+    #[Test]
     public function testGetPriorityBadgeClassLow(): void
     {
         $item = new MappingGapItem();
@@ -256,6 +278,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('secondary', $item->getPriorityBadgeClass());
     }
 
+    #[Test]
     public function testGetPriorityBadgeClassUnknown(): void
     {
         $item = new MappingGapItem();
@@ -264,6 +287,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('secondary', $item->getPriorityBadgeClass());
     }
 
+    #[Test]
     public function testGetGapTypeLabelMissingControl(): void
     {
         $item = new MappingGapItem();
@@ -272,6 +296,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('Fehlende Kontrolle', $item->getGapTypeLabel());
     }
 
+    #[Test]
     public function testGetGapTypeLabelPartialCoverage(): void
     {
         $item = new MappingGapItem();
@@ -280,6 +305,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('Teilweise Abdeckung', $item->getGapTypeLabel());
     }
 
+    #[Test]
     public function testGetGapTypeLabelScopeDifference(): void
     {
         $item = new MappingGapItem();
@@ -288,6 +314,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('Scope-Unterschied', $item->getGapTypeLabel());
     }
 
+    #[Test]
     public function testGetGapTypeLabelAdditionalRequirement(): void
     {
         $item = new MappingGapItem();
@@ -296,6 +323,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('Zusätzliche Anforderung', $item->getGapTypeLabel());
     }
 
+    #[Test]
     public function testGetGapTypeLabelEvidenceGap(): void
     {
         $item = new MappingGapItem();
@@ -304,6 +332,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('Fehlende Evidenz', $item->getGapTypeLabel());
     }
 
+    #[Test]
     public function testGetGapTypeLabelUnknown(): void
     {
         $item = new MappingGapItem();
@@ -312,6 +341,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('unknown_type', $item->getGapTypeLabel());
     }
 
+    #[Test]
     public function testGetStatusBadgeClassIdentified(): void
     {
         $item = new MappingGapItem();
@@ -320,6 +350,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('secondary', $item->getStatusBadgeClass());
     }
 
+    #[Test]
     public function testGetStatusBadgeClassPlanned(): void
     {
         $item = new MappingGapItem();
@@ -328,6 +359,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('info', $item->getStatusBadgeClass());
     }
 
+    #[Test]
     public function testGetStatusBadgeClassInProgress(): void
     {
         $item = new MappingGapItem();
@@ -336,6 +368,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('warning', $item->getStatusBadgeClass());
     }
 
+    #[Test]
     public function testGetStatusBadgeClassResolved(): void
     {
         $item = new MappingGapItem();
@@ -344,6 +377,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('success', $item->getStatusBadgeClass());
     }
 
+    #[Test]
     public function testGetStatusBadgeClassWontFix(): void
     {
         $item = new MappingGapItem();
@@ -352,6 +386,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('dark', $item->getStatusBadgeClass());
     }
 
+    #[Test]
     public function testGetStatusBadgeClassUnknown(): void
     {
         $item = new MappingGapItem();
@@ -360,6 +395,7 @@ class MappingGapItemTest extends TestCase
         $this->assertEquals('secondary', $item->getStatusBadgeClass());
     }
 
+    #[Test]
     public function testFluentSetters(): void
     {
         $item = new MappingGapItem();

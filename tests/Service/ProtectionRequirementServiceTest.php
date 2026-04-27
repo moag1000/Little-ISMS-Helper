@@ -14,6 +14,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class ProtectionRequirementServiceTest extends TestCase
@@ -36,6 +37,7 @@ class ProtectionRequirementServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testCalculateAvailabilityRequirementWithNoBusinessProcesses(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -60,6 +62,7 @@ class ProtectionRequirementServiceTest extends TestCase
         $this->assertStringContainsString('Keine BCM-Daten', $result['reasoning']);
     }
 
+    #[Test]
     public function testCalculateAvailabilityRequirementWithBusinessProcess(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -94,6 +97,7 @@ class ProtectionRequirementServiceTest extends TestCase
         $this->assertSame($process, $result['process']);
     }
 
+    #[Test]
     public function testCalculateAvailabilityRequirementSelectsMostCriticalProcess(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -131,6 +135,7 @@ class ProtectionRequirementServiceTest extends TestCase
         $this->assertSame($process2, $result['process']);
     }
 
+    #[Test]
     public function testCalculateConfidentialityRequirementWithNoIncidentsOrRisks(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -160,6 +165,7 @@ class ProtectionRequirementServiceTest extends TestCase
         $this->assertEquals(0, $result['risks']);
     }
 
+    #[Test]
     public function testCalculateConfidentialityRequirementWithDataBreachIncidents(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -200,6 +206,7 @@ class ProtectionRequirementServiceTest extends TestCase
         $this->assertStringContainsString('Datenschutzverletzung', $result['reasoning']);
     }
 
+    #[Test]
     public function testCalculateConfidentialityRequirementWithMultipleConfidentialityRisks(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -239,6 +246,7 @@ class ProtectionRequirementServiceTest extends TestCase
         $this->assertStringContainsString('Vertraulichkeitsrisiken', $result['reasoning']);
     }
 
+    #[Test]
     public function testCalculateIntegrityRequirementWithNoIncidents(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -267,6 +275,7 @@ class ProtectionRequirementServiceTest extends TestCase
         $this->assertStringContainsString('Keine Integritätsvorfälle', $result['reasoning']);
     }
 
+    #[Test]
     public function testCalculateIntegrityRequirementWithIntegrityIncidents(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -297,6 +306,7 @@ class ProtectionRequirementServiceTest extends TestCase
         $this->assertStringContainsString('Integritätsverletzung', $result['reasoning']);
     }
 
+    #[Test]
     public function testGetCompleteProtectionRequirementAnalysis(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -335,6 +345,7 @@ class ProtectionRequirementServiceTest extends TestCase
         $this->assertArrayHasKey('reasoning', $result['confidentiality']);
     }
 
+    #[Test]
     public function testNoRecommendationWhenValueMatchesCurrent(): void
     {
         $asset = $this->createMock(Asset::class);

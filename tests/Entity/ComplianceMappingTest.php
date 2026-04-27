@@ -6,9 +6,11 @@ use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use App\Entity\ComplianceFramework;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ComplianceMappingTest extends TestCase
 {
+    #[Test]
     public function testNewComplianceMappingHasDefaultValues(): void
     {
         $mapping = new ComplianceMapping();
@@ -27,6 +29,7 @@ class ComplianceMappingTest extends TestCase
         $this->assertNull($mapping->getUpdatedAt());
     }
 
+    #[Test]
     public function testSetAndGetSourceRequirement(): void
     {
         $mapping = new ComplianceMapping();
@@ -38,6 +41,7 @@ class ComplianceMappingTest extends TestCase
         $this->assertSame($requirement, $mapping->getSourceRequirement());
     }
 
+    #[Test]
     public function testSetAndGetTargetRequirement(): void
     {
         $mapping = new ComplianceMapping();
@@ -49,6 +53,7 @@ class ComplianceMappingTest extends TestCase
         $this->assertSame($requirement, $mapping->getTargetRequirement());
     }
 
+    #[Test]
     public function testSetMappingPercentageAutoUpdatesType(): void
     {
         $mapping = new ComplianceMapping();
@@ -74,6 +79,7 @@ class ComplianceMappingTest extends TestCase
         $this->assertEquals('exceeds', $mapping->getMappingType());
     }
 
+    #[Test]
     public function testSetMappingPercentageClampsBetween0And150(): void
     {
         $mapping = new ComplianceMapping();
@@ -87,6 +93,7 @@ class ComplianceMappingTest extends TestCase
         $this->assertEquals(150, $mapping->getMappingPercentage());
     }
 
+    #[Test]
     public function testSetAndGetMappingRationale(): void
     {
         $mapping = new ComplianceMapping();
@@ -97,6 +104,7 @@ class ComplianceMappingTest extends TestCase
         $this->assertEquals($rationale, $mapping->getMappingRationale());
     }
 
+    #[Test]
     public function testSetAndGetBidirectional(): void
     {
         $mapping = new ComplianceMapping();
@@ -110,6 +118,7 @@ class ComplianceMappingTest extends TestCase
         $this->assertFalse($mapping->isBidirectional());
     }
 
+    #[Test]
     public function testSetAndGetConfidence(): void
     {
         $mapping = new ComplianceMapping();
@@ -121,6 +130,7 @@ class ComplianceMappingTest extends TestCase
         $this->assertEquals('low', $mapping->getConfidence());
     }
 
+    #[Test]
     public function testSetAndGetVerifiedBy(): void
     {
         $mapping = new ComplianceMapping();
@@ -129,6 +139,7 @@ class ComplianceMappingTest extends TestCase
         $this->assertEquals('Compliance Officer', $mapping->getVerifiedBy());
     }
 
+    #[Test]
     public function testSetAndGetVerificationDate(): void
     {
         $mapping = new ComplianceMapping();
@@ -139,6 +150,7 @@ class ComplianceMappingTest extends TestCase
         $this->assertEquals($date, $mapping->getVerificationDate());
     }
 
+    #[Test]
     public function testSetAndGetCreatedAt(): void
     {
         $mapping = new ComplianceMapping();
@@ -149,6 +161,7 @@ class ComplianceMappingTest extends TestCase
         $this->assertEquals($date, $mapping->getCreatedAt());
     }
 
+    #[Test]
     public function testSetAndGetUpdatedAt(): void
     {
         $mapping = new ComplianceMapping();
@@ -159,6 +172,7 @@ class ComplianceMappingTest extends TestCase
         $this->assertEquals($date, $mapping->getUpdatedAt());
     }
 
+    #[Test]
     public function testGetMappingBadgeClass(): void
     {
         $mapping = new ComplianceMapping();
@@ -176,6 +190,7 @@ class ComplianceMappingTest extends TestCase
         $this->assertEquals('success', $mapping->getMappingBadgeClass());
     }
 
+    #[Test]
     public function testGetMappingDescription(): void
     {
         $mapping = new ComplianceMapping();
@@ -193,6 +208,7 @@ class ComplianceMappingTest extends TestCase
         $this->assertEquals('Exceeds target requirement (120%)', $mapping->getMappingDescription());
     }
 
+    #[Test]
     public function testCalculateTransitiveFulfillment(): void
     {
         $framework = new ComplianceFramework();
@@ -221,6 +237,7 @@ class ComplianceMappingTest extends TestCase
         $this->assertEquals(75, $mapping->getMappingPercentage());
     }
 
+    #[Test]
     public function testCalculateTransitiveFulfillmentWithFullMapping(): void
     {
         $framework = new ComplianceFramework();

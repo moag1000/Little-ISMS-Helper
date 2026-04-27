@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for MappingQualityController
@@ -121,12 +122,14 @@ class MappingQualityControllerTest extends WebTestCase
 
     // ========== DASHBOARD TESTS ==========
 
+    #[Test]
     public function testDashboardRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/compliance/mapping-quality/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDashboardAccessibleForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -139,6 +142,7 @@ class MappingQualityControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testDashboardAccessibleForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -152,12 +156,14 @@ class MappingQualityControllerTest extends WebTestCase
 
     // ========== REVIEW QUEUE TESTS ==========
 
+    #[Test]
     public function testReviewQueueRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/compliance/mapping-quality/review-queue');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testReviewQueueAccessibleForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -171,12 +177,14 @@ class MappingQualityControllerTest extends WebTestCase
 
     // ========== REVIEW MAPPING TESTS ==========
 
+    #[Test]
     public function testReviewMappingRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/compliance/mapping-quality/review/1');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testReviewMappingReturns404ForNonexistent(): void
     {
         $this->loginAsUser($this->testUser);
@@ -184,12 +192,14 @@ class MappingQualityControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    #[Test]
     public function testUpdateReviewRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/compliance/mapping-quality/review/1/update');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testUpdateReviewRequiresPost(): void
     {
         $this->loginAsUser($this->testUser);
@@ -197,6 +207,7 @@ class MappingQualityControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testUpdateReviewReturns404ForNonexistent(): void
     {
         $this->loginAsUser($this->testUser);
@@ -213,12 +224,14 @@ class MappingQualityControllerTest extends WebTestCase
 
     // ========== ANALYZE MAPPING TESTS ==========
 
+    #[Test]
     public function testAnalyzeMappingRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/compliance/mapping-quality/analyze/1');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testAnalyzeMappingRequiresPost(): void
     {
         $this->loginAsUser($this->testUser);
@@ -226,6 +239,7 @@ class MappingQualityControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testAnalyzeMappingReturns404ForNonexistent(): void
     {
         $this->loginAsUser($this->testUser);
@@ -235,12 +249,14 @@ class MappingQualityControllerTest extends WebTestCase
 
     // ========== GAPS TESTS ==========
 
+    #[Test]
     public function testGapsRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/compliance/mapping-quality/gaps');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testGapsAccessibleForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -254,12 +270,14 @@ class MappingQualityControllerTest extends WebTestCase
 
     // ========== UPDATE GAP TESTS ==========
 
+    #[Test]
     public function testUpdateGapRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/compliance/mapping-quality/gap/1/update');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testUpdateGapRequiresPost(): void
     {
         $this->loginAsUser($this->testUser);
@@ -267,6 +285,7 @@ class MappingQualityControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testUpdateGapReturns404ForNonexistent(): void
     {
         $this->loginAsUser($this->testUser);
@@ -283,12 +302,14 @@ class MappingQualityControllerTest extends WebTestCase
 
     // ========== BATCH ANALYZE TESTS ==========
 
+    #[Test]
     public function testBatchAnalyzeRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/compliance/mapping-quality/batch-analyze');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testBatchAnalyzeRequiresPost(): void
     {
         $this->loginAsUser($this->testUser);
@@ -296,6 +317,7 @@ class MappingQualityControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testBatchAnalyzeReturnsJsonForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -311,6 +333,7 @@ class MappingQualityControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
+    #[Test]
     public function testBatchAnalyzeValidatesLimit(): void
     {
         $this->loginAsUser($this->testUser);
@@ -325,6 +348,7 @@ class MappingQualityControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
+    #[Test]
     public function testBatchAnalyzeValidatesJson(): void
     {
         $this->loginAsUser($this->testUser);
@@ -341,12 +365,14 @@ class MappingQualityControllerTest extends WebTestCase
 
     // ========== STATS TESTS ==========
 
+    #[Test]
     public function testStatsRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/compliance/mapping-quality/stats');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testStatsReturnsJsonForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -355,6 +381,7 @@ class MappingQualityControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
+    #[Test]
     public function testStatsContainsExpectedFields(): void
     {
         $this->loginAsUser($this->testUser);
@@ -370,12 +397,14 @@ class MappingQualityControllerTest extends WebTestCase
 
     // ========== EXPORT TESTS ==========
 
+    #[Test]
     public function testExportRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/compliance/mapping-quality/export');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testExportReturnsJsonForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -384,6 +413,7 @@ class MappingQualityControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
+    #[Test]
     public function testExportContainsExpectedFields(): void
     {
         $this->loginAsUser($this->testUser);
@@ -398,6 +428,7 @@ class MappingQualityControllerTest extends WebTestCase
 
     // ========== INPUT VALIDATION TESTS ==========
 
+    #[Test]
     public function testUpdateReviewValidatesReviewStatus(): void
     {
         $this->loginAsUser($this->testUser);
@@ -415,6 +446,7 @@ class MappingQualityControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    #[Test]
     public function testUpdateGapValidatesStatus(): void
     {
         $this->loginAsUser($this->testUser);

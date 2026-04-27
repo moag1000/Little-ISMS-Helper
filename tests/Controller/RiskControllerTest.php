@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 class RiskControllerTest extends WebTestCase
 {
@@ -181,6 +182,7 @@ class RiskControllerTest extends WebTestCase
 
     // ========== INDEX ACTION TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/risk/');
@@ -188,6 +190,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexShowsRisksForAuthenticatedUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -198,6 +201,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertSelectorExists('html');
     }
 
+    #[Test]
     public function testIndexFiltersRisksByLevel(): void
     {
         $this->loginAsUser($this->testUser);
@@ -209,6 +213,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersRisksByStatus(): void
     {
         $this->loginAsUser($this->testUser);
@@ -220,6 +225,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersRisksByTreatment(): void
     {
         $this->loginAsUser($this->testUser);
@@ -231,6 +237,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersRisksByOwner(): void
     {
         $this->loginAsUser($this->testUser);
@@ -242,6 +249,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexSupportsViewParameter(): void
     {
         $this->loginAsUser($this->testUser);
@@ -255,6 +263,7 @@ class RiskControllerTest extends WebTestCase
 
     // ========== SHOW ACTION TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/risk/' . $this->testRisk->getId());
@@ -262,6 +271,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysRiskDetails(): void
     {
         $this->loginAsUser($this->testUser);
@@ -272,6 +282,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertSelectorTextContains('html', 'Test Risk');
     }
 
+    #[Test]
     public function testShowReturns404ForNonexistentRisk(): void
     {
         $this->loginAsUser($this->testUser);
@@ -283,6 +294,7 @@ class RiskControllerTest extends WebTestCase
 
     // ========== NEW ACTION TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/risk/new');
@@ -290,6 +302,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewDisplaysForm(): void
     {
         $this->loginAsUser($this->testUser);
@@ -300,6 +313,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="risk"]');
     }
 
+    #[Test]
     public function testNewCreatesRiskWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -331,6 +345,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertEquals('financial', $newRisk->getCategory());
     }
 
+    #[Test]
     public function testNewSetsTenantFromCurrentUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -366,6 +381,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertEquals($expectedTenantId, $newRisk->getTenant()->getId());
     }
 
+    #[Test]
     public function testNewRejectsInvalidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -388,6 +404,7 @@ class RiskControllerTest extends WebTestCase
 
     // ========== EDIT ACTION TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/edit');
@@ -395,6 +412,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysForm(): void
     {
         $this->loginAsUser($this->testUser);
@@ -407,6 +425,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertSelectorExists('input[name="risk[title]"]');
     }
 
+    #[Test]
     public function testEditUpdatesRiskWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -428,6 +447,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertEquals('assessed', $updatedRisk->getStatus());
     }
 
+    #[Test]
     public function testEditReturns404ForNonexistentRisk(): void
     {
         $this->loginAsUser($this->testUser);
@@ -439,6 +459,7 @@ class RiskControllerTest extends WebTestCase
 
     // ========== DELETE ACTION TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/risk/' . $this->testRisk->getId() . '/delete');
@@ -446,6 +467,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresAdminRole(): void
     {
         $token = $this->loginAndGenerateCsrfToken($this->testUser, 'delete' . $this->testRisk->getId());
@@ -457,6 +479,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteRedirectsWithAdminRole(): void
     {
         $uniqueId = uniqid('admin_', true);
@@ -484,6 +507,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseRedirects('/en/risk/');
     }
 
+    #[Test]
     public function testDeleteRequiresValidCsrfToken(): void
     {
         $uniqueId = uniqid('admin_', true);
@@ -517,6 +541,7 @@ class RiskControllerTest extends WebTestCase
 
     // ========== EXPORT ACTION TESTS ==========
 
+    #[Test]
     public function testExportRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/risk/export');
@@ -524,6 +549,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testExportGeneratesCsvFile(): void
     {
         $this->loginAsUser($this->testUser);
@@ -535,6 +561,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseHasHeader('Content-Disposition');
     }
 
+    #[Test]
     public function testExportRespectFilters(): void
     {
         $this->loginAsUser($this->testUser);
@@ -549,6 +576,7 @@ class RiskControllerTest extends WebTestCase
 
     // ========== EXPORT EXCEL TESTS ==========
 
+    #[Test]
     public function testExportExcelRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/risk/export/excel');
@@ -556,6 +584,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testExportExcelGeneratesXlsxFile(): void
     {
         $this->loginAsUser($this->testUser);
@@ -569,6 +598,7 @@ class RiskControllerTest extends WebTestCase
 
     // ========== EXPORT PDF TESTS ==========
 
+    #[Test]
     public function testExportPdfRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/risk/export/pdf');
@@ -576,6 +606,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testExportPdfGeneratesPdfFile(): void
     {
         $this->loginAsUser($this->testUser);
@@ -589,6 +620,7 @@ class RiskControllerTest extends WebTestCase
 
     // ========== MATRIX ACTION TESTS ==========
 
+    #[Test]
     public function testMatrixDisplaysRiskMatrix(): void
     {
         $this->loginAsUser($this->testUser);
@@ -600,6 +632,7 @@ class RiskControllerTest extends WebTestCase
 
     // ========== BULK DELETE TESTS ==========
 
+    #[Test]
     public function testBulkDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/risk/bulk-delete');
@@ -607,6 +640,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testBulkDeleteRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -618,6 +652,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testBulkDeleteRemovesMultipleRisks(): void
     {
         $uniqueId = uniqid('admin_', true);
@@ -663,6 +698,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertEquals(2, $response['deleted']);
     }
 
+    #[Test]
     public function testBulkDeleteReturnsErrorForEmptyIds(): void
     {
         $uniqueId = uniqid('admin_', true);
@@ -693,6 +729,7 @@ class RiskControllerTest extends WebTestCase
 
     // ========== RISK ACCEPTANCE WORKFLOW TESTS ==========
 
+    #[Test]
     public function testRequestAcceptanceRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/request-acceptance');
@@ -700,6 +737,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testRequestAcceptanceRequiresManagerRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -709,6 +747,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testRequestAcceptanceDisplaysFormForAcceptStrategy(): void
     {
         $uniqueId = uniqid('manager_', true);
@@ -735,6 +774,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testRequestAcceptanceRedirectsForWrongStrategy(): void
     {
         $uniqueId = uniqid('manager_', true);
@@ -761,6 +801,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testApproveAcceptanceRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/risk/' . $this->testRisk->getId() . '/approve-acceptance');
@@ -768,6 +809,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testApproveAcceptanceRequiresManagerRole(): void
     {
         $token = $this->loginAndGenerateCsrfToken($this->testUser, 'approve-acceptance' . $this->testRisk->getId());
@@ -779,6 +821,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testRejectAcceptanceRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/risk/' . $this->testRisk->getId() . '/reject-acceptance');
@@ -786,6 +829,7 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testRejectAcceptanceRequiresManagerRole(): void
     {
         $token = $this->loginAndGenerateCsrfToken($this->testUser, 'reject-acceptance' . $this->testRisk->getId());

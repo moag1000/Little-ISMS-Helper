@@ -13,6 +13,7 @@ use App\Service\RiskService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class RiskServiceTest extends TestCase
@@ -35,6 +36,7 @@ class RiskServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGetRisksForTenantWithoutParent(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -49,6 +51,7 @@ class RiskServiceTest extends TestCase
         $this->assertSame($risks, $result);
     }
 
+    #[Test]
     public function testGetRisksForTenantWithHierarchicalGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -75,6 +78,7 @@ class RiskServiceTest extends TestCase
         $this->assertCount(3, $result);
     }
 
+    #[Test]
     public function testGetRisksForTenantWithSharedGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -95,6 +99,7 @@ class RiskServiceTest extends TestCase
         $this->assertSame($ownRisks, $result);
     }
 
+    #[Test]
     public function testGetRisksForTenantFallbackToDefaultGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -119,6 +124,7 @@ class RiskServiceTest extends TestCase
         $this->assertSame($inheritedRisks, $result);
     }
 
+    #[Test]
     public function testGetRiskInheritanceInfoWithoutParent(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -130,6 +136,7 @@ class RiskServiceTest extends TestCase
         $this->assertNull($info['governanceModel']);
     }
 
+    #[Test]
     public function testGetRiskInheritanceInfoWithHierarchicalParent(): void
     {
         $parent = $this->createTenant(1, null);
@@ -147,6 +154,7 @@ class RiskServiceTest extends TestCase
         $this->assertSame('hierarchical', $info['governanceModel']);
     }
 
+    #[Test]
     public function testGetRiskInheritanceInfoWithIndependentParent(): void
     {
         $parent = $this->createTenant(1, null);
@@ -164,6 +172,7 @@ class RiskServiceTest extends TestCase
         $this->assertSame('independent', $info['governanceModel']);
     }
 
+    #[Test]
     public function testIsInheritedRiskTrue(): void
     {
         $parentTenant = $this->createTenant(1, null);
@@ -175,6 +184,7 @@ class RiskServiceTest extends TestCase
         $this->assertTrue($this->service->isInheritedRisk($risk, $childTenant));
     }
 
+    #[Test]
     public function testIsInheritedRiskFalse(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -185,6 +195,7 @@ class RiskServiceTest extends TestCase
         $this->assertFalse($this->service->isInheritedRisk($risk, $tenant));
     }
 
+    #[Test]
     public function testIsInheritedRiskWithNullTenant(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -195,6 +206,7 @@ class RiskServiceTest extends TestCase
         $this->assertFalse($this->service->isInheritedRisk($risk, $tenant));
     }
 
+    #[Test]
     public function testIsInheritedRiskWithNullIds(): void
     {
         $tenant1 = $this->createTenant(null, null);
@@ -207,6 +219,7 @@ class RiskServiceTest extends TestCase
         $this->assertFalse($this->service->isInheritedRisk($risk, $tenant2));
     }
 
+    #[Test]
     public function testCanEditRiskOwnRisk(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -217,6 +230,7 @@ class RiskServiceTest extends TestCase
         $this->assertTrue($this->service->canEditRisk($risk, $tenant));
     }
 
+    #[Test]
     public function testCanEditRiskInheritedRisk(): void
     {
         $parentTenant = $this->createTenant(1, null);
@@ -228,6 +242,7 @@ class RiskServiceTest extends TestCase
         $this->assertFalse($this->service->canEditRisk($risk, $childTenant));
     }
 
+    #[Test]
     public function testGetRiskStatsWithInheritance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -271,6 +286,7 @@ class RiskServiceTest extends TestCase
         $this->assertSame(2, $stats['high']);
     }
 
+    #[Test]
     public function testServiceWorksWithoutOptionalDependencies(): void
     {
         $simpleService = new RiskService($this->riskRepository, null, null);
@@ -288,6 +304,7 @@ class RiskServiceTest extends TestCase
         $this->assertSame($ownRisks, $result);
     }
 
+    #[Test]
     public function testRiskInheritanceInfoFallsBackToDefaultGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -311,6 +328,7 @@ class RiskServiceTest extends TestCase
 
     // ========== HIGH RISK TESTS ==========
 
+    #[Test]
     public function testGetHighRisksForTenantFiltersCorrectly(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -336,6 +354,7 @@ class RiskServiceTest extends TestCase
         $this->assertNotContains($lowRisk, $result);
     }
 
+    #[Test]
     public function testGetHighRisksForTenantWithCustomThreshold(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -355,6 +374,7 @@ class RiskServiceTest extends TestCase
         $this->assertContains($risk2, $result);
     }
 
+    #[Test]
     public function testGetHighRisksForTenantWithNullProbabilityOrImpact(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -373,6 +393,7 @@ class RiskServiceTest extends TestCase
         $this->assertContains($normalHighRisk, $result);
     }
 
+    #[Test]
     public function testGetHighRisksForTenantReturnsEmptyWhenNoHighRisks(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -388,6 +409,7 @@ class RiskServiceTest extends TestCase
         $this->assertCount(0, $result);
     }
 
+    #[Test]
     public function testGetHighRisksForTenantIncludesInheritedRisks(): void
     {
         $parent = $this->createTenant(1, null);
@@ -411,6 +433,7 @@ class RiskServiceTest extends TestCase
         $this->assertContains($parentHighRisk, $result);
     }
 
+    #[Test]
     public function testGetHighRisksForTenantEdgeCaseExactThreshold(): void
     {
         $tenant = $this->createTenant(1, null);

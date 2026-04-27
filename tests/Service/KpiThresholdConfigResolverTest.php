@@ -12,6 +12,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Phase 8M.3 — Unit-Tests für KpiThresholdConfigResolver Fallback-Kaskade.
@@ -51,6 +52,7 @@ class KpiThresholdConfigResolverTest extends TestCase
     /**
      * Child hat eigenen Config-Eintrag → wird sofort verwendet (Pick-First).
      */
+    #[Test]
     public function testChildConfigUsedFirst(): void
     {
         $parent = $this->makeTenant(10, []);
@@ -75,6 +77,7 @@ class KpiThresholdConfigResolverTest extends TestCase
     /**
      * Child hat keinen Eintrag → fällt auf Parent zurück.
      */
+    #[Test]
     public function testFallsBackToParentWhenChildHasNoConfig(): void
     {
         $parent = $this->makeTenant(10, []);
@@ -99,6 +102,7 @@ class KpiThresholdConfigResolverTest extends TestCase
     /**
      * 3-Ebenen-Hierarchie: nur Root hat Config → Child erbt von Root.
      */
+    #[Test]
     public function testThreeLevelFallbackToRoot(): void
     {
         $root       = $this->makeTenant(1, []);
@@ -125,6 +129,7 @@ class KpiThresholdConfigResolverTest extends TestCase
     /**
      * Kein Eintrag in gesamter Hierarchie → Service-Default wird verwendet.
      */
+    #[Test]
     public function testNoConfigInHierarchyUsesServiceDefault(): void
     {
         $parent = $this->makeTenant(10, []);
@@ -143,6 +148,7 @@ class KpiThresholdConfigResolverTest extends TestCase
     /**
      * Root-Tenant ohne Parent mit eigenem Config-Eintrag.
      */
+    #[Test]
     public function testRootTenantWithOwnConfig(): void
     {
         $root = $this->makeTenant(1, []);
@@ -165,6 +171,7 @@ class KpiThresholdConfigResolverTest extends TestCase
     /**
      * Cache-Treffer verhindert erneuten DB-Zugriff bei identischem Aufruf.
      */
+    #[Test]
     public function testCachePreventsDuplicateDbLookup(): void
     {
         $tenant = $this->makeTenant(5, []);
@@ -187,6 +194,7 @@ class KpiThresholdConfigResolverTest extends TestCase
     /**
      * Cache-Invalidation: nach invalidate() wird erneut aus Repository geladen.
      */
+    #[Test]
     public function testCacheInvalidation(): void
     {
         $tenant = $this->makeTenant(5, []);
@@ -213,6 +221,7 @@ class KpiThresholdConfigResolverTest extends TestCase
     /**
      * invalidateAll() leert den gesamten Cache.
      */
+    #[Test]
     public function testInvalidateAll(): void
     {
         $tenant1 = $this->makeTenant(1, []);

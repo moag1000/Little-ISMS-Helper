@@ -12,6 +12,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class RiskReviewServiceTest extends TestCase
@@ -34,6 +35,7 @@ class RiskReviewServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGetReviewScheduleReturnsCorrectIntervals(): void
     {
         $schedule = $this->service->getReviewSchedule();
@@ -55,6 +57,7 @@ class RiskReviewServiceTest extends TestCase
      * unit tests. These are better covered by integration tests.
      */
 
+    #[Test]
     public function testScheduleNextReviewForCriticalRisk(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -77,6 +80,7 @@ class RiskReviewServiceTest extends TestCase
         $this->assertInstanceOf(\DateTimeInterface::class, $result);
     }
 
+    #[Test]
     public function testScheduleNextReviewForHighRisk(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -99,6 +103,7 @@ class RiskReviewServiceTest extends TestCase
         $this->assertInstanceOf(\DateTimeInterface::class, $result);
     }
 
+    #[Test]
     public function testScheduleNextReviewForMediumRisk(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -121,6 +126,7 @@ class RiskReviewServiceTest extends TestCase
         $this->assertInstanceOf(\DateTimeInterface::class, $result);
     }
 
+    #[Test]
     public function testScheduleNextReviewForLowRisk(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -143,6 +149,7 @@ class RiskReviewServiceTest extends TestCase
         $this->assertInstanceOf(\DateTimeInterface::class, $result);
     }
 
+    #[Test]
     public function testScheduleNextReviewWithoutFlush(): void
     {
         $risk = $this->createMock(Risk::class);

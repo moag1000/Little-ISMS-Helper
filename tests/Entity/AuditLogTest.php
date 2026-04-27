@@ -4,9 +4,11 @@ namespace App\Tests\Entity;
 
 use App\Entity\AuditLog;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class AuditLogTest extends TestCase
 {
+    #[Test]
     public function testNewAuditLogHasDefaultValues(): void
     {
         $auditLog = new AuditLog();
@@ -24,6 +26,7 @@ class AuditLogTest extends TestCase
         $this->assertInstanceOf(\DateTimeImmutable::class, $auditLog->getCreatedAt());
     }
 
+    #[Test]
     public function testSetAndGetUserName(): void
     {
         $auditLog = new AuditLog();
@@ -32,6 +35,7 @@ class AuditLogTest extends TestCase
         $this->assertEquals('test@example.com', $auditLog->getUserName());
     }
 
+    #[Test]
     public function testSetAndGetAction(): void
     {
         $auditLog = new AuditLog();
@@ -40,6 +44,7 @@ class AuditLogTest extends TestCase
         $this->assertEquals('create', $auditLog->getAction());
     }
 
+    #[Test]
     public function testSetAndGetEntityType(): void
     {
         $auditLog = new AuditLog();
@@ -48,6 +53,7 @@ class AuditLogTest extends TestCase
         $this->assertEquals('Risk', $auditLog->getEntityType());
     }
 
+    #[Test]
     public function testSetAndGetEntityId(): void
     {
         $auditLog = new AuditLog();
@@ -56,6 +62,7 @@ class AuditLogTest extends TestCase
         $this->assertEquals(42, $auditLog->getEntityId());
     }
 
+    #[Test]
     public function testSetAndGetOldValues(): void
     {
         $auditLog = new AuditLog();
@@ -66,6 +73,7 @@ class AuditLogTest extends TestCase
         $this->assertEquals($oldValues, $auditLog->getOldValues());
     }
 
+    #[Test]
     public function testSetAndGetNewValues(): void
     {
         $auditLog = new AuditLog();
@@ -76,6 +84,7 @@ class AuditLogTest extends TestCase
         $this->assertEquals($newValues, $auditLog->getNewValues());
     }
 
+    #[Test]
     public function testGetOldValuesArrayDecodesJson(): void
     {
         $auditLog = new AuditLog();
@@ -85,6 +94,7 @@ class AuditLogTest extends TestCase
         $this->assertEquals($values, $auditLog->getOldValuesArray());
     }
 
+    #[Test]
     public function testGetNewValuesArrayDecodesJson(): void
     {
         $auditLog = new AuditLog();
@@ -94,6 +104,7 @@ class AuditLogTest extends TestCase
         $this->assertEquals($values, $auditLog->getNewValuesArray());
     }
 
+    #[Test]
     public function testSetAndGetDescription(): void
     {
         $auditLog = new AuditLog();
@@ -104,6 +115,7 @@ class AuditLogTest extends TestCase
         $this->assertEquals($description, $auditLog->getDescription());
     }
 
+    #[Test]
     public function testSetAndGetIpAddress(): void
     {
         $auditLog = new AuditLog();
@@ -112,6 +124,7 @@ class AuditLogTest extends TestCase
         $this->assertEquals('192.168.1.1', $auditLog->getIpAddress());
     }
 
+    #[Test]
     public function testSetAndGetUserAgent(): void
     {
         $auditLog = new AuditLog();
@@ -122,6 +135,7 @@ class AuditLogTest extends TestCase
         $this->assertEquals($userAgent, $auditLog->getUserAgent());
     }
 
+    #[Test]
     public function testSetCreatedAt(): void
     {
         $auditLog = new AuditLog();
@@ -132,6 +146,7 @@ class AuditLogTest extends TestCase
         $this->assertEquals($createdAt, $auditLog->getCreatedAt());
     }
 
+    #[Test]
     public function testConstructorSetsCreatedAt(): void
     {
         $before = new \DateTimeImmutable();
@@ -144,6 +159,7 @@ class AuditLogTest extends TestCase
         $this->assertLessThanOrEqual($after, $createdAt);
     }
 
+    #[Test]
     public function testCanStoreCompleteAuditTrail(): void
     {
         $auditLog = new AuditLog();

@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for TrainingController
@@ -163,6 +164,7 @@ class TrainingControllerTest extends WebTestCase
 
     // ========== INDEX ACTION TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/training/');
@@ -170,6 +172,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexShowsTrainingsForAuthenticatedUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -180,6 +183,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertSelectorExists('html');
     }
 
+    #[Test]
     public function testIndexDisplaysStatistics(): void
     {
         $this->loginAsUser($this->testUser);
@@ -189,6 +193,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersOwnTrainings(): void
     {
         $this->loginAsUser($this->testUser);
@@ -198,6 +203,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersInheritedTrainings(): void
     {
         $this->loginAsUser($this->testUser);
@@ -207,6 +213,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersSubsidiariesTrainings(): void
     {
         $this->loginAsUser($this->testUser);
@@ -218,6 +225,7 @@ class TrainingControllerTest extends WebTestCase
 
     // ========== SHOW ACTION TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/training/' . $this->testTraining->getId());
@@ -225,6 +233,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysTraining(): void
     {
         $this->loginAsUser($this->testUser);
@@ -234,6 +243,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testShowReturns404ForNonexistentTraining(): void
     {
         $this->loginAsUser($this->testUser);
@@ -245,6 +255,7 @@ class TrainingControllerTest extends WebTestCase
 
     // ========== NEW ACTION TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/training/new');
@@ -252,6 +263,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewDisplaysFormForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -262,6 +274,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="training"]');
     }
 
+    #[Test]
     public function testNewCreatesTrainingWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -287,6 +300,7 @@ class TrainingControllerTest extends WebTestCase
 
     // ========== EDIT ACTION TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/training/' . $this->testTraining->getId() . '/edit');
@@ -294,6 +308,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysFormForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -304,6 +319,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="training"]');
     }
 
+    #[Test]
     public function testEditUpdatesTrainingWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -320,6 +336,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditReturns404ForNonexistentTraining(): void
     {
         $this->loginAsUser($this->testUser);
@@ -331,6 +348,7 @@ class TrainingControllerTest extends WebTestCase
 
     // ========== DELETE ACTION TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -340,6 +358,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteRequiresCsrfToken(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -357,6 +376,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertNotNull($training);
     }
 
+    #[Test]
     public function testDeleteRemovesTrainingWithValidToken(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -388,6 +408,7 @@ class TrainingControllerTest extends WebTestCase
 
     // ========== BULK DELETE TESTS ==========
 
+    #[Test]
     public function testBulkDeleteRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -399,6 +420,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testBulkDeleteRemovesMultipleTrainings(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -430,6 +452,7 @@ class TrainingControllerTest extends WebTestCase
         $this->testTraining = null; // Prevent cleanup from failing
     }
 
+    #[Test]
     public function testBulkDeleteReturnsErrorForEmptyIds(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -444,6 +467,7 @@ class TrainingControllerTest extends WebTestCase
         $this->assertArrayHasKey('error', $response);
     }
 
+    #[Test]
     public function testBulkDeleteRespectsMultiTenancy(): void
     {
         $uniqueId = uniqid('other_', true);
@@ -489,6 +513,7 @@ class TrainingControllerTest extends WebTestCase
         $this->testTraining = null; // Already deleted
     }
 
+    #[Test]
     public function testBulkDeleteHandlesNonexistentTrainings(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -506,6 +531,7 @@ class TrainingControllerTest extends WebTestCase
 
     // ========== STATISTICS TESTS ==========
 
+    #[Test]
     public function testIndexCountsCompletedTrainings(): void
     {
         $this->loginAsUser($this->testUser);
@@ -531,6 +557,7 @@ class TrainingControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexCountsMandatoryTrainings(): void
     {
         $this->loginAsUser($this->testUser);
@@ -541,6 +568,7 @@ class TrainingControllerTest extends WebTestCase
         // The test training has isMandatory = true
     }
 
+    #[Test]
     public function testIndexCountsUpcomingTrainings(): void
     {
         $this->loginAsUser($this->testUser);

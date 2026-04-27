@@ -12,6 +12,7 @@ use App\Service\Mail\RecipientFilter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * ISB MINOR-4: tenant + role gate at recipient-filter level.
@@ -36,6 +37,7 @@ class ScheduledReportServiceRecipientFilterTest extends TestCase
         $this->tenantB = $this->makeTenant(2);
     }
 
+    #[Test]
     public function testManagerInSameTenantIsAccepted(): void
     {
         $user = $this->makeUser('manager@tenant-a.test', $this->tenantA, ['ROLE_MANAGER']);
@@ -47,6 +49,7 @@ class ScheduledReportServiceRecipientFilterTest extends TestCase
         self::assertSame([], $result['dropped']);
     }
 
+    #[Test]
     public function testUserInSameTenantIsDroppedAsRoleTooLow(): void
     {
         $user = $this->makeUser('user@tenant-a.test', $this->tenantA, ['ROLE_USER']);
@@ -61,6 +64,7 @@ class ScheduledReportServiceRecipientFilterTest extends TestCase
         );
     }
 
+    #[Test]
     public function testManagerInOtherTenantIsDroppedAsCrossTenant(): void
     {
         $foreign = $this->makeUser('manager@tenant-b.test', $this->tenantB, ['ROLE_MANAGER']);
@@ -75,6 +79,7 @@ class ScheduledReportServiceRecipientFilterTest extends TestCase
         );
     }
 
+    #[Test]
     public function testEmailNotInDatabaseIsDroppedAsUnknownUser(): void
     {
         $this->userRepository->method('findOneBy')->willReturn(null);
@@ -88,6 +93,7 @@ class ScheduledReportServiceRecipientFilterTest extends TestCase
         );
     }
 
+    #[Test]
     public function testAdminAndSuperAdminAreAccepted(): void
     {
         $admin = $this->makeUser('admin@tenant-a.test', $this->tenantA, ['ROLE_ADMIN']);
@@ -110,6 +116,7 @@ class ScheduledReportServiceRecipientFilterTest extends TestCase
         self::assertSame([], $result['dropped']);
     }
 
+    #[Test]
     public function testMixedRosterReturnsBothBuckets(): void
     {
         $manager = $this->makeUser('m@tenant-a.test', $this->tenantA, ['ROLE_MANAGER']);
@@ -136,6 +143,7 @@ class ScheduledReportServiceRecipientFilterTest extends TestCase
         self::assertCount(3, $result['dropped']);
     }
 
+    #[Test]
     public function testValidateSingleRolesAndTenancy(): void
     {
         $manager = $this->makeUser('m@tenant-a.test', $this->tenantA, ['ROLE_MANAGER']);

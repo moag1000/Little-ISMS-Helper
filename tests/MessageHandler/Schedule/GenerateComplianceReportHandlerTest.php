@@ -11,6 +11,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class GenerateComplianceReportHandlerTest extends TestCase
@@ -32,6 +33,7 @@ class GenerateComplianceReportHandlerTest extends TestCase
         );
     }
 
+    #[Test]
     public function testInvokeGeneratesReportWithCompliantRequirements(): void
     {
         $message = new GenerateComplianceReportMessage(new DateTimeImmutable());
@@ -51,6 +53,7 @@ class GenerateComplianceReportHandlerTest extends TestCase
         ($this->handler)($message);
     }
 
+    #[Test]
     public function testInvokeHandlesZeroRequirements(): void
     {
         $message = new GenerateComplianceReportMessage(new DateTimeImmutable());
@@ -70,6 +73,7 @@ class GenerateComplianceReportHandlerTest extends TestCase
         ($this->handler)($message);
     }
 
+    #[Test]
     public function testInvokeLogsErrorOnException(): void
     {
         $message = new GenerateComplianceReportMessage(new DateTimeImmutable());
@@ -87,6 +91,7 @@ class GenerateComplianceReportHandlerTest extends TestCase
         ($this->handler)($message);
     }
 
+    #[Test]
     public function testInvokeCalculates100PercentCompliance(): void
     {
         $message = new GenerateComplianceReportMessage(new DateTimeImmutable());

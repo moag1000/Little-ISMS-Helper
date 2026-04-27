@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class DashboardLayoutControllerTest extends TestCase
@@ -54,6 +55,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->controller->setContainer($this->container);
     }
 
+    #[Test]
     public function testGetLayoutReturnsUnauthorizedWhenUserNotFound(): void
     {
         $this->mockAuthenticatedUser(null);
@@ -68,6 +70,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertStringContainsString('User or tenant not found', $data['error']);
     }
 
+    #[Test]
     public function testGetLayoutReturnsUnauthorizedWhenTenantNotFound(): void
     {
         $user = $this->createMock(User::class);
@@ -81,6 +84,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertArrayHasKey('error', $data);
     }
 
+    #[Test]
     public function testGetLayoutReturnsLayoutSuccessfully(): void
     {
         $user = $this->createMock(User::class);
@@ -119,6 +123,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertEquals('2025-11-28T12:00:00+00:00', $data['updated_at']);
     }
 
+    #[Test]
     public function testSaveLayoutReturnsUnauthorizedWhenUserNotFound(): void
     {
         $this->mockAuthenticatedUser(null);
@@ -131,6 +136,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertArrayHasKey('error', $data);
     }
 
+    #[Test]
     public function testSaveLayoutReturnsUnauthorizedWhenTenantNotFound(): void
     {
         $user = $this->createMock(User::class);
@@ -143,6 +149,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
     }
 
+    #[Test]
     public function testSaveLayoutReturnsBadRequestForInvalidJson(): void
     {
         $user = $this->createMock(User::class);
@@ -160,6 +167,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertStringContainsString('Invalid JSON data', $data['error']);
     }
 
+    #[Test]
     public function testSaveLayoutReturnsBadRequestForNonArrayData(): void
     {
         $user = $this->createMock(User::class);
@@ -174,6 +182,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
+    #[Test]
     public function testSaveLayoutSuccessfully(): void
     {
         $user = $this->createMock(User::class);
@@ -222,6 +231,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertArrayHasKey('updated_at', $data);
     }
 
+    #[Test]
     public function testResetLayoutReturnsUnauthorizedWhenUserNotFound(): void
     {
         $this->mockAuthenticatedUser(null);
@@ -231,6 +241,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
     }
 
+    #[Test]
     public function testResetLayoutReturnsUnauthorizedWhenTenantNotFound(): void
     {
         $user = $this->createMock(User::class);
@@ -242,6 +253,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
     }
 
+    #[Test]
     public function testResetLayoutSuccessfully(): void
     {
         $user = $this->createMock(User::class);
@@ -279,6 +291,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertEquals($defaultConfig, $data['layout']);
     }
 
+    #[Test]
     public function testUpdateWidgetReturnsUnauthorizedWhenUserNotFound(): void
     {
         $this->mockAuthenticatedUser(null);
@@ -289,6 +302,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
     }
 
+    #[Test]
     public function testUpdateWidgetReturnsUnauthorizedWhenTenantNotFound(): void
     {
         $user = $this->createMock(User::class);
@@ -301,6 +315,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
     }
 
+    #[Test]
     public function testUpdateWidgetReturnsBadRequestForInvalidJson(): void
     {
         $user = $this->createMock(User::class);
@@ -317,6 +332,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertStringContainsString('Invalid JSON data', $data['error']);
     }
 
+    #[Test]
     public function testUpdateWidgetReturnsBadRequestForNonArrayData(): void
     {
         $user = $this->createMock(User::class);
@@ -331,6 +347,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
+    #[Test]
     public function testUpdateWidgetSuccessfully(): void
     {
         $user = $this->createMock(User::class);
@@ -375,6 +392,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertArrayHasKey('widget', $data);
     }
 
+    #[Test]
     public function testUpdateWidgetHandlesNonExistentWidget(): void
     {
         $user = $this->createMock(User::class);
@@ -410,6 +428,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
 
+    #[Test]
     public function testGetLayoutHandlesEmptyLayoutConfig(): void
     {
         $user = $this->createMock(User::class);
@@ -437,6 +456,7 @@ class DashboardLayoutControllerTest extends TestCase
         $this->assertEmpty($data['layout']);
     }
 
+    #[Test]
     public function testSaveLayoutPreservesComplexNestedStructure(): void
     {
         $user = $this->createMock(User::class);

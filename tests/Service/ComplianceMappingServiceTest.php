@@ -20,6 +20,7 @@ use App\Service\TenantContext;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class ComplianceMappingServiceTest extends TestCase
@@ -67,6 +68,7 @@ class ComplianceMappingServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testMapControlsToRequirementWithNoMapping(): void
     {
         $requirement = $this->createMock(ComplianceRequirement::class);
@@ -77,6 +79,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    #[Test]
     public function testMapControlsToRequirementWithEmptyIsoControls(): void
     {
         $requirement = $this->createMock(ComplianceRequirement::class);
@@ -87,6 +90,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    #[Test]
     public function testMapControlsToRequirementMapsCorrectly(): void
     {
         $control1 = $this->createMock(Control::class);
@@ -118,6 +122,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertSame($control2, $result[1]);
     }
 
+    #[Test]
     public function testGetDataReuseAnalysisWithNoData(): void
     {
         $requirement = $this->createMock(ComplianceRequirement::class);
@@ -136,6 +141,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEmpty($result['sources']);
     }
 
+    #[Test]
     public function testGetDataReuseAnalysisWithControlsSource(): void
     {
         $control1 = $this->createMock(Control::class);
@@ -165,6 +171,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEquals('high', $result['confidence']); // 1/1 = 100% contributing
     }
 
+    #[Test]
     public function testGetDataReuseAnalysisWithAssetsSource(): void
     {
         $requirement = $this->createMock(ComplianceRequirement::class);
@@ -197,6 +204,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEquals('high', $result['confidence']); // 1/1 = 100%
     }
 
+    #[Test]
     public function testGetDataReuseAnalysisWithBCMSource(): void
     {
         $process1 = $this->createMock(BusinessProcess::class);
@@ -221,6 +229,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEquals('high', $result['confidence']);
     }
 
+    #[Test]
     public function testGetDataReuseAnalysisWithIncidentsSource(): void
     {
         $requirement = $this->createMock(ComplianceRequirement::class);
@@ -249,6 +258,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEquals('high', $result['confidence']);
     }
 
+    #[Test]
     public function testGetDataReuseAnalysisWithAuditsSource(): void
     {
         $requirement = $this->createMock(ComplianceRequirement::class);
@@ -277,6 +287,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEquals('high', $result['confidence']);
     }
 
+    #[Test]
     public function testGetDataReuseAnalysisWithMultipleSources(): void
     {
         $control = $this->createMock(Control::class);
@@ -309,6 +320,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEquals('high', $result['confidence']); // All sources contributing
     }
 
+    #[Test]
     public function testConfidenceCalculationMedium(): void
     {
         $control = $this->createMock(Control::class);
@@ -337,6 +349,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEquals('medium', $result['confidence']);
     }
 
+    #[Test]
     public function testConfidenceCalculationLow(): void
     {
         $requirement = $this->createMock(ComplianceRequirement::class);
@@ -361,6 +374,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEquals('low', $result['confidence']);
     }
 
+    #[Test]
     public function testGetCrossFrameworkInsights(): void
     {
         $control1 = $this->createMock(Control::class);
@@ -382,6 +396,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEquals('A.8.1', $result[1]['control_id']);
     }
 
+    #[Test]
     public function testCalculateDataReuseValueWithNoSources(): void
     {
         $requirement = $this->createMock(ComplianceRequirement::class);
@@ -398,6 +413,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEquals('low', $result['confidence']);
     }
 
+    #[Test]
     public function testCalculateDataReuseValueWithMultipleSources(): void
     {
         $control = $this->createMock(Control::class);
@@ -429,6 +445,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEquals('high', $result['confidence']);
     }
 
+    #[Test]
     public function testAnalyzeControlsContributionWithNoControls(): void
     {
         $requirement = $this->createMock(ComplianceRequirement::class);
@@ -443,6 +460,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertArrayNotHasKey('controls', $result['sources']);
     }
 
+    #[Test]
     public function testAnalyzeAssetsContributionWithNoAssets(): void
     {
         $requirement = $this->createMock(ComplianceRequirement::class);
@@ -461,6 +479,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEquals(0, $result['sources']['assets']['contribution']);
     }
 
+    #[Test]
     public function testAnalyzeBCMContributionWithNoProcesses(): void
     {
         $requirement = $this->createMock(ComplianceRequirement::class);
@@ -481,6 +500,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEquals(0, $result['sources']['bcm']['contribution']);
     }
 
+    #[Test]
     public function testAnalyzeIncidentContributionWithNoIncidents(): void
     {
         $requirement = $this->createMock(ComplianceRequirement::class);
@@ -500,6 +520,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEquals(0, $result['sources']['incidents']['contribution']);
     }
 
+    #[Test]
     public function testAnalyzeAuditContributionWithNoAudits(): void
     {
         $requirement = $this->createMock(ComplianceRequirement::class);

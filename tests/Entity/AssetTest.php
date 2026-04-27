@@ -7,9 +7,11 @@ use App\Entity\Control;
 use App\Entity\Incident;
 use App\Entity\Risk;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class AssetTest extends TestCase
 {
+    #[Test]
     public function testGetTotalValue(): void
     {
         $asset = new Asset();
@@ -21,6 +23,7 @@ class AssetTest extends TestCase
         $this->assertEquals(5, $asset->getTotalValue());
     }
 
+    #[Test]
     public function testGetTotalValueWithMinimumValues(): void
     {
         $asset = new Asset();
@@ -32,6 +35,7 @@ class AssetTest extends TestCase
         $this->assertEquals(1, $asset->getTotalValue());
     }
 
+    #[Test]
     public function testGetTotalValueWithMaximumValues(): void
     {
         $asset = new Asset();
@@ -46,6 +50,7 @@ class AssetTest extends TestCase
     // Note: Risk calculation tests moved to AssetRiskCalculatorTest
     // (Business logic now in dedicated service)
 
+    #[Test]
     public function testAddAndRemoveRisk(): void
     {
         $asset = new Asset();
@@ -62,6 +67,7 @@ class AssetTest extends TestCase
         $this->assertFalse($asset->getRisks()->contains($risk));
     }
 
+    #[Test]
     public function testAddAndRemoveIncident(): void
     {
         $asset = new Asset();
@@ -78,6 +84,7 @@ class AssetTest extends TestCase
         $this->assertFalse($asset->getIncidents()->contains($incident));
     }
 
+    #[Test]
     public function testAddAndRemoveProtectingControl(): void
     {
         $asset = new Asset();

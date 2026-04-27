@@ -32,6 +32,7 @@ use Doctrine\ORM\Query;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class DataIntegrityServiceTest extends TestCase
@@ -95,6 +96,7 @@ class DataIntegrityServiceTest extends TestCase
 
     // ========== runFullIntegrityCheck TESTS ==========
 
+    #[Test]
     public function testRunFullIntegrityCheckReturnsAllCategories(): void
     {
         $this->setupEmptyRepositoryMocks();
@@ -111,6 +113,7 @@ class DataIntegrityServiceTest extends TestCase
 
     // ========== findAllOrphanedEntities TESTS ==========
 
+    #[Test]
     public function testFindAllOrphanedEntitiesReturnsEmptyArraysWhenNoOrphans(): void
     {
         // Service was refactored to use MetadataFactory + QueryBuilder (generic scan
@@ -120,6 +123,7 @@ class DataIntegrityServiceTest extends TestCase
         $this->markTestSkipped('Refactored to generic MetadataFactory scan — covered by integration tests.');
     }
 
+    #[Test]
     public function testFindAllOrphanedEntitiesReturnsOrphanedAssets(): void
     {
         $this->markTestSkipped('Refactored to generic MetadataFactory scan — covered by integration tests.');
@@ -127,6 +131,7 @@ class DataIntegrityServiceTest extends TestCase
 
     // ========== findDuplicateEntities TESTS ==========
 
+    #[Test]
     public function testFindDuplicateEntitiesReturnsEmptyWhenNoDuplicates(): void
     {
         $tenant = $this->createTenantMock(1, 'Test Tenant');
@@ -145,6 +150,7 @@ class DataIntegrityServiceTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    #[Test]
     public function testFindDuplicateEntitiesDetectsDuplicateAuditNumbers(): void
     {
         $tenant = $this->createTenantMock(1, 'Test Tenant');
@@ -164,6 +170,7 @@ class DataIntegrityServiceTest extends TestCase
         $this->assertSame('auditNumber', $result['audits'][0]['field']);
     }
 
+    #[Test]
     public function testFindDuplicateEntitiesDetectsDuplicateAssetNames(): void
     {
         $tenant = $this->createTenantMock(1, 'Test Tenant');
@@ -182,6 +189,7 @@ class DataIntegrityServiceTest extends TestCase
         $this->assertSame('name', $result['assets'][0]['field']);
     }
 
+    #[Test]
     public function testFindDuplicateEntitiesIgnoresEntitiesWithoutTenant(): void
     {
         // Entities without tenant should not be counted as duplicates
@@ -197,6 +205,7 @@ class DataIntegrityServiceTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    #[Test]
     public function testFindDuplicateEntitiesDistinguishesBetweenTenants(): void
     {
         $tenant1 = $this->createTenantMock(1, 'Tenant 1');
@@ -217,6 +226,7 @@ class DataIntegrityServiceTest extends TestCase
 
     // ========== findBrokenReferences TESTS ==========
 
+    #[Test]
     public function testFindBrokenReferencesReturnsEmptyWhenAllValid(): void
     {
         $tenant = $this->createTenantMock(1, 'Test');
@@ -240,6 +250,7 @@ class DataIntegrityServiceTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    #[Test]
     public function testFindBrokenReferencesDetectsTenantMismatch(): void
     {
         $tenant1 = $this->createTenantMock(1, 'Tenant 1');
@@ -266,6 +277,7 @@ class DataIntegrityServiceTest extends TestCase
 
     // ========== findMissingRelationships TESTS ==========
 
+    #[Test]
     public function testFindMissingRelationshipsDetectsRisksWithoutAsset(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -283,6 +295,7 @@ class DataIntegrityServiceTest extends TestCase
         $this->assertCount(1, $result['risks_without_asset']);
     }
 
+    #[Test]
     public function testFindMissingRelationshipsDetectsIncidentsWithoutAssets(): void
     {
         $incident = $this->createMock(Incident::class);
@@ -301,6 +314,7 @@ class DataIntegrityServiceTest extends TestCase
         $this->assertCount(1, $result['incidents_without_assets']);
     }
 
+    #[Test]
     public function testFindMissingRelationshipsDetectsApplicableControlsWithoutRisks(): void
     {
         $control = $this->createMock(Control::class);
@@ -325,6 +339,7 @@ class DataIntegrityServiceTest extends TestCase
 
     // ========== findInconsistentData TESTS ==========
 
+    #[Test]
     public function testFindInconsistentDataDetectsCompletedAuditWithoutDate(): void
     {
         $audit = $this->createMock(InternalAudit::class);
@@ -341,6 +356,7 @@ class DataIntegrityServiceTest extends TestCase
         $this->assertCount(1, $result['audits_completed_without_date']);
     }
 
+    #[Test]
     public function testFindInconsistentDataDetectsRisksWithResidualHigherThanInherent(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -357,6 +373,7 @@ class DataIntegrityServiceTest extends TestCase
         $this->assertCount(1, $result['risks_residual_higher_than_inherent']);
     }
 
+    #[Test]
     public function testFindInconsistentDataDetectsResolvedIncidentWithoutDate(): void
     {
         $incident = $this->createMock(Incident::class);
@@ -375,6 +392,7 @@ class DataIntegrityServiceTest extends TestCase
 
     // ========== getSummaryStatistics TESTS ==========
 
+    #[Test]
     public function testGetSummaryStatisticsReturnsAllKeys(): void
     {
         $this->setupEmptyRepositoryMocks();
@@ -390,6 +408,7 @@ class DataIntegrityServiceTest extends TestCase
         $this->assertArrayHasKey('health_score', $result);
     }
 
+    #[Test]
     public function testGetSummaryStatisticsReturns100HealthScoreWhenNoEntities(): void
     {
         $this->setupEmptyRepositoryMocks();
@@ -399,6 +418,7 @@ class DataIntegrityServiceTest extends TestCase
         $this->assertSame(100, $result['health_score']);
     }
 
+    #[Test]
     public function testGetSummaryStatisticsCalculatesTotalIssues(): void
     {
         $this->markTestSkipped('orphaned_count now sourced from MetadataFactory scan — covered by integration tests.');

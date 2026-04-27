@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -111,12 +112,9 @@ class MappingQualityController extends AbstractController
     }
 
     #[Route('/admin/mapping-quality/recompute', name: 'admin_mapping_quality_recompute', methods: ['POST'])]
-    public function recompute(Request $request): Response
+    #[IsCsrfTokenValid('mapping_quality_recompute', tokenKey: '_token')]
+    public function recompute(): Response
     {
-        if (!$this->isCsrfTokenValid('mapping_quality_recompute', $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
-            return $this->redirectToRoute('admin_mapping_quality_index');
-        }
         $count = 0;
         foreach ($this->mappingRepository->findAll() as $mapping) {
             $this->mqsService->compute($mapping);

@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for BusinessContinuityPlanController
@@ -210,6 +211,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
 
     // ========== INDEX ACTION TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/business-continuity-plan/');
@@ -217,6 +219,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexShowsPlansForAuthenticatedUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -227,6 +230,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertSelectorExists('html');
     }
 
+    #[Test]
     public function testIndexDisplaysOverdueTests(): void
     {
         // Create plan with overdue test
@@ -253,6 +257,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexDisplaysOverdueReviews(): void
     {
         // Create plan with overdue review
@@ -281,6 +286,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
 
     // ========== SHOW ACTION TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/business-continuity-plan/' . $this->testPlan->getId());
@@ -288,6 +294,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysPlanDetails(): void
     {
         $this->loginAsUser($this->testUser);
@@ -298,6 +305,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertSelectorTextContains('html', 'Test BC Plan');
     }
 
+    #[Test]
     public function testShowReturns404ForNonexistentPlan(): void
     {
         $this->loginAsUser($this->testUser);
@@ -309,6 +317,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
 
     // ========== NEW ACTION TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/business-continuity-plan/new');
@@ -316,6 +325,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewDisplaysFormForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -326,6 +336,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="business_continuity_plan"]');
     }
 
+    #[Test]
     public function testNewCreatesPlanWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -352,6 +363,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertSelectorTextContains('html', 'New Test BC Plan');
     }
 
+    #[Test]
     public function testNewRejectsInvalidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -371,6 +383,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
 
     // ========== EDIT ACTION TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/business-continuity-plan/' . $this->testPlan->getId() . '/edit');
@@ -378,6 +391,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysFormForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -388,6 +402,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="business_continuity_plan"]');
     }
 
+    #[Test]
     public function testEditUpdatesPlanWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -409,6 +424,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertSelectorTextContains('html', 'Updated Test BC Plan');
     }
 
+    #[Test]
     public function testEditReturns404ForNonexistentPlan(): void
     {
         $this->loginAsUser($this->testUser);
@@ -420,6 +436,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
 
     // ========== DELETE ACTION TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/business-continuity-plan/' . $this->testPlan->getId() . '/delete');
@@ -427,6 +444,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -440,6 +458,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteRedirectsWithAdminRole(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -454,6 +473,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertResponseRedirects('/en/business-continuity-plan/');
     }
 
+    #[Test]
     public function testDeleteRequiresValidCsrfToken(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -473,6 +493,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
 
     // ========== MULTI-TENANCY TESTS ==========
 
+    #[Test]
     public function testIndexRespectsMultiTenancyIsolation(): void
     {
         $uniqueId = uniqid('other_', true);
@@ -525,6 +546,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
 
     // ========== STATUS TESTS ==========
 
+    #[Test]
     public function testPlanStatusDraft(): void
     {
         $this->testPlan->setStatus('draft');
@@ -537,6 +559,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testPlanStatusActive(): void
     {
         $this->testPlan->setStatus('active');
@@ -549,6 +572,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testPlanStatusUnderReview(): void
     {
         $this->testPlan->setStatus('under_review');
@@ -561,6 +585,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testPlanStatusArchived(): void
     {
         $this->testPlan->setStatus('archived');

@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Integration tests for the ISB MINOR-1 per-row import-audit UI.
@@ -111,6 +112,7 @@ final class ImportHistoryControllerTest extends WebTestCase
         parent::tearDown();
     }
 
+    #[Test]
     public function testIndexRequiresAdmin(): void
     {
         // ROLE_USER is blocked by the firewall access_control on /admin/*.
@@ -119,6 +121,7 @@ final class ImportHistoryControllerTest extends WebTestCase
         self::assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
     }
 
+    #[Test]
     public function testIndexReturns200ForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -126,6 +129,7 @@ final class ImportHistoryControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testRecordedSessionAndRowEventAreRetrievable(): void
     {
         // Simulate the upload→commit flow by driving the recorder directly

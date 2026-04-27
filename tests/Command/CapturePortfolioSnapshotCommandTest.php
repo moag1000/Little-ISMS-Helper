@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for app:portfolio:capture-snapshot (CM-3).
@@ -65,6 +66,7 @@ class CapturePortfolioSnapshotCommandTest extends KernelTestCase
         parent::tearDown();
     }
 
+    #[Test]
     public function testCommandHasCorrectName(): void
     {
         $kernel = self::bootKernel();
@@ -73,6 +75,7 @@ class CapturePortfolioSnapshotCommandTest extends KernelTestCase
         $this->assertSame('app:portfolio:capture-snapshot', $command->getName());
     }
 
+    #[Test]
     public function testDryRunDoesNotWrite(): void
     {
         $this->commandTester->execute([
@@ -87,6 +90,7 @@ class CapturePortfolioSnapshotCommandTest extends KernelTestCase
         $this->assertSame(0, $countAfter, 'Dry-run must not persist snapshots');
     }
 
+    #[Test]
     public function testIdempotentOnSameDay(): void
     {
         // First run — should write one row per (framework, category).

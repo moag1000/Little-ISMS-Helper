@@ -21,6 +21,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class ReviewReminderServiceTest extends TestCase
@@ -60,6 +61,7 @@ class ReviewReminderServiceTest extends TestCase
 
     // ========== getAllOverdueReviews TESTS ==========
 
+    #[Test]
     public function testGetAllOverdueReviewsReturnsAllCategories(): void
     {
         $this->setupEmptyRepositories();
@@ -74,6 +76,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->assertArrayHasKey('summary', $result);
     }
 
+    #[Test]
     public function testGetAllOverdueReviewsSummaryCalculation(): void
     {
         // Set up 2 overdue risks
@@ -98,6 +101,7 @@ class ReviewReminderServiceTest extends TestCase
 
     // ========== getOverdueRiskReviews TESTS ==========
 
+    #[Test]
     public function testGetOverdueRiskReviewsFiltersCorrectly(): void
     {
         $overdueRisk = $this->createOverdueRisk();
@@ -114,6 +118,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->assertContains($overdueRisk, $result);
     }
 
+    #[Test]
     public function testGetOverdueRiskReviewsExcludesAcceptedRisks(): void
     {
         $acceptedRisk = $this->createMock(Risk::class);
@@ -129,6 +134,7 @@ class ReviewReminderServiceTest extends TestCase
 
     // ========== getOverdueBcPlanReviews TESTS ==========
 
+    #[Test]
     public function testGetOverdueBcPlanReviewsDetectsOverdue(): void
     {
         $overduePlan = $this->createOverdueBcPlan();
@@ -146,6 +152,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->assertContains($overduePlan, $result);
     }
 
+    #[Test]
     public function testGetOverdueBcPlanReviewsDetectsTestOverdue(): void
     {
         $testOverduePlan = $this->createMock(BusinessContinuityPlan::class);
@@ -161,6 +168,7 @@ class ReviewReminderServiceTest extends TestCase
 
     // ========== getOverdueProcessingActivityReviews TESTS ==========
 
+    #[Test]
     public function testGetOverdueProcessingActivityReviewsFiltersCorrectly(): void
     {
         $overdueActivity = $this->createMock(ProcessingActivity::class);
@@ -181,6 +189,7 @@ class ReviewReminderServiceTest extends TestCase
 
     // ========== getOverdueDpiaReviews TESTS ==========
 
+    #[Test]
     public function testGetOverdueDpiaReviewsFiltersCorrectly(): void
     {
         $overdueDpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -201,6 +210,7 @@ class ReviewReminderServiceTest extends TestCase
 
     // ========== getUrgentDataBreaches TESTS ==========
 
+    #[Test]
     public function testGetUrgentDataBreachesFiltersNotified(): void
     {
         $notifiedBreach = $this->createMock(DataBreach::class);
@@ -216,6 +226,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->assertCount(0, $result);
     }
 
+    #[Test]
     public function testGetUrgentDataBreachesIncludesUrgent(): void
     {
         $urgentBreach = $this->createMock(DataBreach::class);
@@ -231,6 +242,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->assertCount(1, $result);
     }
 
+    #[Test]
     public function testGetUrgentDataBreachesIncludesOverdue(): void
     {
         $overdueBreach = $this->createMock(DataBreach::class);
@@ -246,6 +258,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->assertCount(1, $result);
     }
 
+    #[Test]
     public function testGetUrgentDataBreachesExcludesNotUrgent(): void
     {
         $notUrgentBreach = $this->createMock(DataBreach::class);
@@ -261,6 +274,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->assertCount(0, $result);
     }
 
+    #[Test]
     public function testGetUrgentDataBreachesCustomThreshold(): void
     {
         $breach = $this->createMock(DataBreach::class);
@@ -282,6 +296,7 @@ class ReviewReminderServiceTest extends TestCase
 
     // ========== getUpcomingReviews TESTS ==========
 
+    #[Test]
     public function testGetUpcomingReviewsReturnsAllCategories(): void
     {
         $this->riskRepository->method('findAll')->willReturn([]);
@@ -297,6 +312,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->assertArrayHasKey('dpias', $result);
     }
 
+    #[Test]
     public function testGetUpcomingReviewsFindsUpcomingRisks(): void
     {
         $upcomingRisk = $this->createMock(Risk::class);
@@ -320,6 +336,7 @@ class ReviewReminderServiceTest extends TestCase
 
     // ========== getDashboardStatistics TESTS ==========
 
+    #[Test]
     public function testGetDashboardStatisticsReturnsAllKeys(): void
     {
         $this->setupEmptyRepositories();
@@ -333,6 +350,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->assertArrayHasKey('by_days_overdue', $result);
     }
 
+    #[Test]
     public function testGetDashboardStatisticsCountsCriticalItems(): void
     {
         // 1 urgent breach
@@ -358,6 +376,7 @@ class ReviewReminderServiceTest extends TestCase
         $this->assertSame(2, $result['critical']);
     }
 
+    #[Test]
     public function testGetDashboardStatisticsCategorizesByDaysOverdue(): void
     {
         $risk3Days = $this->createMock(Risk::class);

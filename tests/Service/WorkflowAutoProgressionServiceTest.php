@@ -19,6 +19,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class WorkflowAutoProgressionServiceTest extends TestCase
@@ -49,6 +50,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
 
     // ========== checkAndProgressWorkflow TESTS ==========
 
+    #[Test]
     public function testCheckAndProgressWorkflowReturnsFalseForNewEntity(): void
     {
         $entity = new TestEntity();
@@ -60,6 +62,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testCheckAndProgressWorkflowReturnsFalseWhenNoWorkflowInstance(): void
     {
         $entity = new TestEntity();
@@ -75,6 +78,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testCheckAndProgressWorkflowReturnsFalseWhenWorkflowNotInProgress(): void
     {
         $entity = new TestEntity();
@@ -92,6 +96,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testCheckAndProgressWorkflowReturnsFalseWhenNoCurrentStep(): void
     {
         $entity = new TestEntity();
@@ -110,6 +115,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testCheckAndProgressWorkflowReturnsFalseWhenNoAutoProgressConditions(): void
     {
         $entity = new TestEntity();
@@ -133,6 +139,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
 
     // ========== Field Completion Tests ==========
 
+    #[Test]
     public function testFieldCompletionReturnsTrueWhenAllFieldsFilled(): void
     {
         $entity = new TestEntity();
@@ -156,6 +163,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testFieldCompletionReturnsFalseWhenFieldEmpty(): void
     {
         $entity = new TestEntity();
@@ -175,6 +183,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testFieldCompletionReturnsFalseWhenEntityTypeMismatch(): void
     {
         $entity = new TestEntity();
@@ -194,6 +203,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testFieldCompletionWithEmptyStringReturnsFalse(): void
     {
         $entity = new TestEntity();
@@ -212,6 +222,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testFieldCompletionWithEmptyArrayReturnsFalse(): void
     {
         $entity = new TestEntity();
@@ -232,6 +243,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
 
     // ========== Condition Evaluation Tests ==========
 
+    #[Test]
     public function testSimpleConditionGreaterThanOrEqual(): void
     {
         $entity = new TestEntity();
@@ -255,6 +267,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testSimpleConditionLessThanFails(): void
     {
         $entity = new TestEntity();
@@ -278,6 +291,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testBooleanConditionTrue(): void
     {
         $entity = new TestEntity();
@@ -301,6 +315,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testBooleanConditionFalse(): void
     {
         $entity = new TestEntity();
@@ -324,6 +339,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testNotEqualCondition(): void
     {
         $entity = new TestEntity();
@@ -347,6 +363,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testNullConditionEqual(): void
     {
         $entity = new TestEntity();
@@ -370,6 +387,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testNullConditionNotEqual(): void
     {
         $entity = new TestEntity();
@@ -395,6 +413,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
 
     // ========== Complex Condition Tests (AND/OR) ==========
 
+    #[Test]
     public function testAndConditionBothTrue(): void
     {
         $entity = new TestEntity();
@@ -419,6 +438,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testAndConditionOneFalse(): void
     {
         $entity = new TestEntity();
@@ -443,6 +463,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testOrConditionOneTrue(): void
     {
         $entity = new TestEntity();
@@ -467,6 +488,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testOrConditionBothFalse(): void
     {
         $entity = new TestEntity();
@@ -493,6 +515,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
 
     // ========== Auto-Type Progression Tests ==========
 
+    #[Test]
     public function testAutoTypeProgressesUnconditionally(): void
     {
         $entity = new TestEntity();
@@ -510,6 +533,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testAutoTypeWithConditionChecksCondition(): void
     {
         $entity = new TestEntity();
@@ -530,6 +554,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
 
     // ========== Risk Appetite Tests ==========
 
+    #[Test]
     public function testRiskAppetiteReturnsFalseForNonRiskEntity(): void
     {
         $entity = new TestEntity();

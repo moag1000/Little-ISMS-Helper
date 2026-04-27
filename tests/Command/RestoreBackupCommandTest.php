@@ -14,6 +14,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class RestoreBackupCommandTest extends TestCase
@@ -50,6 +51,7 @@ class RestoreBackupCommandTest extends TestCase
     /**
      * Smoke test: file does not exist → exit 1 with a clear error message.
      */
+    #[Test]
     public function testNonexistentFileExitsWithFailure(): void
     {
         $this->commandTester->execute([
@@ -67,6 +69,7 @@ class RestoreBackupCommandTest extends TestCase
     /**
      * Smoke test: file does not exist, --json flag → exit 1 with JSON error.
      */
+    #[Test]
     public function testNonexistentFileJsonOutputExitsWithFailure(): void
     {
         $this->commandTester->execute([
@@ -85,6 +88,7 @@ class RestoreBackupCommandTest extends TestCase
     /**
      * Unknown tenant code → exit 1.
      */
+    #[Test]
     public function testUnknownTenantExitsWithFailure(): void
     {
         $this->tenantRepository->method('findOneBy')->willReturn(null);
@@ -107,6 +111,7 @@ class RestoreBackupCommandTest extends TestCase
     /**
      * Successful restore → exit 0.
      */
+    #[Test]
     public function testSuccessfulRestoreExitsZero(): void
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'restore_test_');
@@ -136,6 +141,7 @@ class RestoreBackupCommandTest extends TestCase
     /**
      * Best-effort partial restore (some failures) → exit 0.
      */
+    #[Test]
     public function testBestEffortPartialRestoreExitsZero(): void
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'restore_test_');
@@ -179,6 +185,7 @@ class RestoreBackupCommandTest extends TestCase
     /**
      * Dry-run flag is passed through to RestoreService options.
      */
+    #[Test]
     public function testDryRunFlagPassedToRestoreService(): void
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'restore_test_');
@@ -215,6 +222,7 @@ class RestoreBackupCommandTest extends TestCase
     /**
      * Best-effort flag is passed through to RestoreService options.
      */
+    #[Test]
     public function testBestEffortFlagPassedToRestoreService(): void
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'restore_test_');
@@ -251,6 +259,7 @@ class RestoreBackupCommandTest extends TestCase
     /**
      * Skip-entities option is parsed and passed as an array.
      */
+    #[Test]
     public function testSkipEntitiesOptionParsed(): void
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'restore_test_');

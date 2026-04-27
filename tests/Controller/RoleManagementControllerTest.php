@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for RoleManagementController
@@ -136,12 +137,14 @@ class RoleManagementControllerTest extends WebTestCase
 
     // ========== INDEX TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/roles');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -149,6 +152,7 @@ class RoleManagementControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testIndexDisplaysForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -158,12 +162,14 @@ class RoleManagementControllerTest extends WebTestCase
 
     // ========== SHOW TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/roles/' . $this->testRole->getId());
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysRole(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -173,12 +179,14 @@ class RoleManagementControllerTest extends WebTestCase
 
     // ========== NEW TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/roles/new');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -186,6 +194,7 @@ class RoleManagementControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testNewDisplaysForm(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -196,12 +205,14 @@ class RoleManagementControllerTest extends WebTestCase
 
     // ========== EDIT TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/roles/' . $this->testRole->getId() . '/edit');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysForm(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -212,12 +223,14 @@ class RoleManagementControllerTest extends WebTestCase
 
     // ========== DELETE TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/roles/' . $this->testRole->getId() . '/delete');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -227,12 +240,14 @@ class RoleManagementControllerTest extends WebTestCase
 
     // ========== COMPARE TESTS ==========
 
+    #[Test]
     public function testCompareRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/roles/compare');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testCompareDisplaysForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -242,12 +257,14 @@ class RoleManagementControllerTest extends WebTestCase
 
     // ========== TEMPLATES TESTS ==========
 
+    #[Test]
     public function testTemplatesRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/roles/templates');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testTemplatesDisplaysForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -257,6 +274,7 @@ class RoleManagementControllerTest extends WebTestCase
 
     // ========== EMPTY STATE TESTS ==========
 
+    #[Test]
     public function testIndexHandlesNoRoles(): void
     {
         // Remove test role

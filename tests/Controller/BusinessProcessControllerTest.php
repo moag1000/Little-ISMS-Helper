@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for BusinessProcessController
@@ -123,12 +124,14 @@ class BusinessProcessControllerTest extends WebTestCase
 
     // ========== INDEX TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/bcm/business-process/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -136,6 +139,7 @@ class BusinessProcessControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexAcceptsViewFilter(): void
     {
         $this->loginAsUser($this->testUser);
@@ -152,12 +156,14 @@ class BusinessProcessControllerTest extends WebTestCase
 
     // ========== NEW TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/bcm/business-process/new');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewDisplaysFormForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -168,12 +174,14 @@ class BusinessProcessControllerTest extends WebTestCase
 
     // ========== SHOW TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/bcm/business-process/' . $this->testProcess->getId());
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysProcessForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -181,6 +189,7 @@ class BusinessProcessControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testShowReturns404ForNonexistent(): void
     {
         $this->loginAsUser($this->testUser);
@@ -190,12 +199,14 @@ class BusinessProcessControllerTest extends WebTestCase
 
     // ========== EDIT TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/bcm/business-process/' . $this->testProcess->getId() . '/edit');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysFormForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -206,12 +217,14 @@ class BusinessProcessControllerTest extends WebTestCase
 
     // ========== DELETE TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/bcm/business-process/' . $this->testProcess->getId());
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresCsrfToken(): void
     {
         $this->loginAsUser($this->testUser);
@@ -222,12 +235,14 @@ class BusinessProcessControllerTest extends WebTestCase
 
     // ========== STATS API TESTS ==========
 
+    #[Test]
     public function testStatsApiRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/bcm/business-process/api/stats');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testStatsApiReturnsJsonForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -236,6 +251,7 @@ class BusinessProcessControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
+    #[Test]
     public function testStatsApiContainsExpectedFields(): void
     {
         $this->loginAsUser($this->testUser);
@@ -251,12 +267,14 @@ class BusinessProcessControllerTest extends WebTestCase
 
     // ========== BIA TESTS ==========
 
+    #[Test]
     public function testBiaRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/bcm/business-process/' . $this->testProcess->getId() . '/bia');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testBiaDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -264,6 +282,7 @@ class BusinessProcessControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testBiaReturns404ForNonexistent(): void
     {
         $this->loginAsUser($this->testUser);
@@ -273,6 +292,7 @@ class BusinessProcessControllerTest extends WebTestCase
 
     // ========== EMPTY STATE TESTS ==========
 
+    #[Test]
     public function testIndexHandlesNoProcesses(): void
     {
         // Remove test process

@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class IncidentVoterTest extends TestCase
@@ -45,6 +46,7 @@ class IncidentVoterTest extends TestCase
         return new UsernamePasswordToken($user, 'main', $user->getRoles());
     }
 
+    #[Test]
     public function testAdminCanViewAnyIncident(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -56,6 +58,7 @@ class IncidentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testAdminCanEditAnyIncident(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -67,6 +70,7 @@ class IncidentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testAdminCanDeleteAnyIncident(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -78,6 +82,7 @@ class IncidentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCanViewOwnTenantIncident(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -89,6 +94,7 @@ class IncidentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCannotViewOtherTenantIncident(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -100,6 +106,7 @@ class IncidentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testUserCannotDeleteIncident(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -111,6 +118,7 @@ class IncidentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testVoterAbstainsForNonIncidentSubject(): void
     {
         $user = $this->createUser(['ROLE_USER']);
@@ -121,6 +129,7 @@ class IncidentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_ABSTAIN, $result);
     }
 
+    #[Test]
     public function testGroupCisoCanViewVisibleCrossTenantIncident(): void
     {
         // Phase 9.P2.3: default is visibleToHolding=true, group-CISO sees it.
@@ -140,6 +149,7 @@ class IncidentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $incident, [IncidentVoter::VIEW]));
     }
 
+    #[Test]
     public function testGroupCisoCannotViewOptedOutIncident(): void
     {
         // Phase 9.P2.3 opt-out: Tochter flipped visibleToHolding to false
@@ -160,6 +170,7 @@ class IncidentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $incident, [IncidentVoter::VIEW]));
     }
 
+    #[Test]
     public function testOwnTenantSeesIncidentEvenWhenNotVisibleToHolding(): void
     {
         // The opt-out flag only fires on the cross-tenant path. A user

@@ -19,6 +19,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class DataBreachServiceTest extends TestCase
@@ -54,6 +55,7 @@ class DataBreachServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testPrepareNewBreachThrowsExceptionWithoutTenant(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn(null);
@@ -64,6 +66,7 @@ class DataBreachServiceTest extends TestCase
         $this->service->prepareNewBreach();
     }
 
+    #[Test]
     public function testPrepareNewBreachCreatesBreachWithDefaults(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -81,6 +84,7 @@ class DataBreachServiceTest extends TestCase
         $this->assertFalse($dataBreach->getRequiresSubjectNotification());
     }
 
+    #[Test]
     public function testCreateFromIncidentThrowsExceptionWithoutTenant(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn(null);
@@ -93,6 +97,7 @@ class DataBreachServiceTest extends TestCase
         $this->service->createFromIncident($incident, $user);
     }
 
+    #[Test]
     public function testCreateFromIncidentCreatesBreachWithCorrectData(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -124,6 +129,7 @@ class DataBreachServiceTest extends TestCase
         $this->assertSame('draft', $dataBreach->getStatus());
     }
 
+    #[Test]
     public function testCreateFromIncidentWithProcessingActivity(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -147,6 +153,7 @@ class DataBreachServiceTest extends TestCase
         $this->assertSame($processingActivity, $dataBreach->getProcessingActivity());
     }
 
+    #[Test]
     public function testCreateStandaloneThrowsExceptionWithoutTenant(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn(null);
@@ -158,6 +165,7 @@ class DataBreachServiceTest extends TestCase
         $this->service->createStandalone($user, new DateTime());
     }
 
+    #[Test]
     public function testCreateStandaloneCreatesBreachWithoutIncident(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -174,6 +182,7 @@ class DataBreachServiceTest extends TestCase
         $this->assertSame('draft', $dataBreach->getStatus());
     }
 
+    #[Test]
     public function testUpdateExistingBreach(): void
     {
         $dataBreach = $this->createMock(DataBreach::class);
@@ -193,6 +202,7 @@ class DataBreachServiceTest extends TestCase
         $this->assertSame($dataBreach, $result);
     }
 
+    #[Test]
     public function testUpdateNewBreach(): void
     {
         $dataBreach = $this->createMock(DataBreach::class);
@@ -212,6 +222,7 @@ class DataBreachServiceTest extends TestCase
         $this->assertSame($dataBreach, $result);
     }
 
+    #[Test]
     public function testDelete(): void
     {
         $dataBreach = $this->createMock(DataBreach::class);
@@ -224,6 +235,7 @@ class DataBreachServiceTest extends TestCase
         $this->service->delete($dataBreach);
     }
 
+    #[Test]
     public function testSubmitForAssessmentThrowsExceptionForNonDraftStatus(): void
     {
         $dataBreach = $this->createMock(DataBreach::class);
@@ -237,6 +249,7 @@ class DataBreachServiceTest extends TestCase
         $this->service->submitForAssessment($dataBreach, $user);
     }
 
+    #[Test]
     public function testSubmitForAssessmentThrowsExceptionForIncompleteData(): void
     {
         $dataBreach = $this->createMock(DataBreach::class);
@@ -252,6 +265,7 @@ class DataBreachServiceTest extends TestCase
         $this->service->submitForAssessment($dataBreach, $user);
     }
 
+    #[Test]
     public function testNotifySupervisoryAuthorityThrowsExceptionWhenNotRequired(): void
     {
         $dataBreach = $this->createMock(DataBreach::class);
@@ -263,6 +277,7 @@ class DataBreachServiceTest extends TestCase
         $this->service->notifySupervisoryAuthority($dataBreach, 'Authority', 'email');
     }
 
+    #[Test]
     public function testNotifySupervisoryAuthorityThrowsExceptionWhenAlreadyNotified(): void
     {
         $dataBreach = $this->createMock(DataBreach::class);
@@ -275,6 +290,7 @@ class DataBreachServiceTest extends TestCase
         $this->service->notifySupervisoryAuthority($dataBreach, 'Authority', 'email');
     }
 
+    #[Test]
     public function testNotifyDataSubjectsThrowsExceptionWhenNotRequired(): void
     {
         $dataBreach = $this->createMock(DataBreach::class);
@@ -286,6 +302,7 @@ class DataBreachServiceTest extends TestCase
         $this->service->notifyDataSubjects($dataBreach, 'email', 100);
     }
 
+    #[Test]
     public function testNotifyDataSubjectsThrowsExceptionWhenAlreadyNotified(): void
     {
         $dataBreach = $this->createMock(DataBreach::class);
@@ -298,6 +315,7 @@ class DataBreachServiceTest extends TestCase
         $this->service->notifyDataSubjects($dataBreach, 'email', 100);
     }
 
+    #[Test]
     public function testCloseThrowsExceptionForInvalidStatus(): void
     {
         $dataBreach = $this->createMock(DataBreach::class);
@@ -311,6 +329,7 @@ class DataBreachServiceTest extends TestCase
         $this->service->close($dataBreach, $user);
     }
 
+    #[Test]
     public function testCloseThrowsExceptionWhenAuthorityNotificationRequired(): void
     {
         $dataBreach = $this->createMock(DataBreach::class);
@@ -326,6 +345,7 @@ class DataBreachServiceTest extends TestCase
         $this->service->close($dataBreach, $user);
     }
 
+    #[Test]
     public function testReopenThrowsExceptionForNonClosedStatus(): void
     {
         $dataBreach = $this->createMock(DataBreach::class);
@@ -339,6 +359,7 @@ class DataBreachServiceTest extends TestCase
         $this->service->reopen($dataBreach, $user, 'New information received');
     }
 
+    #[Test]
     public function testRecordNotificationDelayThrowsExceptionWhenNotOverdue(): void
     {
         $dataBreach = $this->createMock(DataBreach::class);
@@ -350,6 +371,7 @@ class DataBreachServiceTest extends TestCase
         $this->service->recordNotificationDelay($dataBreach, 'Some reason');
     }
 
+    #[Test]
     public function testFindAllReturnsEmptyArrayWithoutTenant(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn(null);
@@ -359,6 +381,7 @@ class DataBreachServiceTest extends TestCase
         $this->assertSame([], $result);
     }
 
+    #[Test]
     public function testFindAllReturnsTenantBreaches(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -378,6 +401,7 @@ class DataBreachServiceTest extends TestCase
         $this->assertSame($breaches, $result);
     }
 
+    #[Test]
     public function testGetDashboardStatisticsReturnsEmptyWithoutTenant(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn(null);
@@ -388,6 +412,7 @@ class DataBreachServiceTest extends TestCase
         $this->assertSame(0, $result['draft']);
     }
 
+    #[Test]
     public function testCalculateComplianceScoreReturns100ForNoBreaches(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -412,6 +437,7 @@ class DataBreachServiceTest extends TestCase
         $this->assertSame(0, $result['overdue_notifications']);
     }
 
+    #[Test]
     public function testGetActionItemsReturnsEmptyWithoutTenant(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn(null);

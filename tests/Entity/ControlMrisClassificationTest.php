@@ -7,6 +7,7 @@ namespace App\Tests\Entity;
 use App\Entity\Control;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Stellt sicher, dass die MRIS-Klassifikation auf der Control-Entität
@@ -17,6 +18,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class ControlMrisClassificationTest extends TestCase
 {
+    #[Test]
     public function testDefaultValuesAreNull(): void
     {
         $control = new Control();
@@ -25,6 +27,7 @@ final class ControlMrisClassificationTest extends TestCase
     }
 
     #[DataProvider('validCategoryProvider')]
+    #[Test]
     public function testValidMythosResilienceCategoriesAreAccepted(string $category): void
     {
         $control = new Control();
@@ -45,6 +48,7 @@ final class ControlMrisClassificationTest extends TestCase
         ];
     }
 
+    #[Test]
     public function testFlankingMhcsAcceptsArrayOfStrings(): void
     {
         $control = new Control();
@@ -52,6 +56,7 @@ final class ControlMrisClassificationTest extends TestCase
         $this->assertSame(['MHC-04', 'MHC-05'], $control->getMythosFlankingMhcs());
     }
 
+    #[Test]
     public function testFlankingMhcsAcceptsNullForControlsWithoutFlanking(): void
     {
         $control = new Control();
@@ -60,6 +65,7 @@ final class ControlMrisClassificationTest extends TestCase
         $this->assertNull($control->getMythosFlankingMhcs());
     }
 
+    #[Test]
     public function testReineReibungControlsCarryFlankingMhcsPerMrisAnhangA(): void
     {
         // MRIS Anhang A: 4 "Reine Reibung"-Controls + ihre flankierenden MHCs
@@ -81,6 +87,7 @@ final class ControlMrisClassificationTest extends TestCase
         }
     }
 
+    #[Test]
     public function testSetterIsFluent(): void
     {
         $control = new Control();

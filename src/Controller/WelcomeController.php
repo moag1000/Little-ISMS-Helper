@@ -20,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_USER')]
@@ -87,14 +88,9 @@ class WelcomeController extends AbstractController
     }
 
     #[Route('/welcome/preference', name: 'app_welcome_preference', methods: ['POST'])]
+    #[IsCsrfTokenValid('welcome_preference', tokenKey: '_token')]
     public function setPreference(Request $request): Response
     {
-        // Validate CSRF token
-        $token = $request->request->get('_token');
-        if (!$this->isCsrfTokenValid('welcome_preference', $token)) {
-            throw $this->createAccessDeniedException('Invalid CSRF token.');
-        }
-
         $skipWelcome = $request->request->getBoolean('skip_welcome');
         $request->getSession()->set('skip_welcome_page', $skipWelcome);
 

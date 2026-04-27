@@ -18,6 +18,7 @@ use App\Service\ISOComplianceIntelligenceService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class ISOComplianceIntelligenceServiceTest extends TestCase
@@ -49,6 +50,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGetComplianceDashboardReturnsCompleteStructure(): void
     {
         $this->setupDefaultMocks();
@@ -65,6 +67,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertArrayHasKey('recommendations', $dashboard);
     }
 
+    #[Test]
     public function testGetISO27001ComplianceWithNoInterestedParties(): void
     {
         $this->supplierRepository->method('getStatistics')
@@ -80,6 +83,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertSame('critical', $result['status']);
     }
 
+    #[Test]
     public function testGetISO27001ComplianceWithInterestedParties(): void
     {
         $this->supplierRepository->method('getStatistics')
@@ -97,6 +101,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertGreaterThanOrEqual(80, $result['score']);
     }
 
+    #[Test]
     public function testGetISO27001ComplianceWithOverdueCommunications(): void
     {
         $this->supplierRepository->method('getStatistics')
@@ -112,6 +117,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertSame(1, $result['overdue_communications']);
     }
 
+    #[Test]
     public function testGetISO27001ComplianceWithSupplierIssues(): void
     {
         $this->supplierRepository->method('getStatistics')
@@ -127,6 +133,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertLessThan(100, $result['score']);
     }
 
+    #[Test]
     public function testGetISO22301ComplianceWithNoBCPlans(): void
     {
         $this->bcPlanRepository->method('findAll')->willReturn([]);
@@ -144,6 +151,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertSame('critical', $result['status']);
     }
 
+    #[Test]
     public function testGetISO22301ComplianceWithActivePlans(): void
     {
         $plan = $this->createMock(BusinessContinuityPlan::class);
@@ -163,6 +171,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertSame(85, $result['readiness_level']);
     }
 
+    #[Test]
     public function testGetISO22301ComplianceWithOverdueTests(): void
     {
         $plan = $this->createMock(BusinessContinuityPlan::class);
@@ -182,6 +191,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertSame(1, $result['overdue_tests']);
     }
 
+    #[Test]
     public function testGetISO27005ComplianceWithNoRisks(): void
     {
         $this->riskRepository->method('findAll')->willReturn([]);
@@ -194,6 +204,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertSame('critical', $result['status']);
     }
 
+    #[Test]
     public function testGetISO27005ComplianceWithAcceptedRisks(): void
     {
         $risk1 = $this->createMock(Risk::class);
@@ -213,6 +224,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertSame(1, $result['accepted_risks']);
     }
 
+    #[Test]
     public function testGetISO27005ComplianceWithPendingApprovals(): void
     {
         $risk1 = $this->createMock(Risk::class);
@@ -227,6 +239,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertSame(1, $result['pending_approval']);
     }
 
+    #[Test]
     public function testGetISO31000ComplianceWithNoData(): void
     {
         $this->changeRequestRepository->method('getStatistics')
@@ -239,6 +252,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertSame(0, $result['change_requests_total']);
     }
 
+    #[Test]
     public function testGetISO31000ComplianceWithChangeManagement(): void
     {
         $this->changeRequestRepository->method('getStatistics')
@@ -253,6 +267,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertSame(10, $result['change_requests_total']);
     }
 
+    #[Test]
     public function testGetISO31000ComplianceWithOverdueChanges(): void
     {
         $this->changeRequestRepository->method('getStatistics')
@@ -267,6 +282,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertSame(3, $result['overdue_changes']);
     }
 
+    #[Test]
     public function testCalculateOverallComplianceScore(): void
     {
         $this->setupDefaultMocks();
@@ -278,6 +294,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertLessThanOrEqual(100, $score);
     }
 
+    #[Test]
     public function testGetCriticalActionsWithSupplierIssues(): void
     {
         $supplier = $this->createMock(Supplier::class);
@@ -299,6 +316,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertSame('supplier', $actions[0]['category']);
     }
 
+    #[Test]
     public function testGetCriticalActionsWithHighRiskSupplier(): void
     {
         $supplier = $this->createMock(Supplier::class);
@@ -324,6 +342,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertNotNull($criticalAction);
     }
 
+    #[Test]
     public function testGetCriticalActionsWithOverdueBCTests(): void
     {
         $plan = $this->createMock(BusinessContinuityPlan::class);
@@ -349,6 +368,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertNotNull($bcAction);
     }
 
+    #[Test]
     public function testGetCriticalActionsWithRiskApproval(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -376,6 +396,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertNotNull($riskAction);
     }
 
+    #[Test]
     public function testGetRecommendationsForLowCompliance(): void
     {
         $this->setupLowComplianceMocks();
@@ -386,6 +407,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $this->assertNotEmpty($recommendations);
     }
 
+    #[Test]
     public function testGetRecommendationsIncludesBCExercises(): void
     {
         // Override default mocks to trigger exercise recommendation

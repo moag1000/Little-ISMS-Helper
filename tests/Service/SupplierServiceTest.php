@@ -13,6 +13,7 @@ use App\Service\SupplierService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class SupplierServiceTest extends TestCase
@@ -35,6 +36,7 @@ class SupplierServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGetSuppliersForTenantWithoutParent(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -49,6 +51,7 @@ class SupplierServiceTest extends TestCase
         $this->assertSame($suppliers, $result);
     }
 
+    #[Test]
     public function testGetSuppliersForTenantWithHierarchicalGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -75,6 +78,7 @@ class SupplierServiceTest extends TestCase
         $this->assertCount(3, $result);
     }
 
+    #[Test]
     public function testGetSuppliersForTenantWithSharedGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -95,6 +99,7 @@ class SupplierServiceTest extends TestCase
         $this->assertSame($ownSuppliers, $result);
     }
 
+    #[Test]
     public function testGetSuppliersForTenantWithIndependentGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -115,6 +120,7 @@ class SupplierServiceTest extends TestCase
         $this->assertSame($ownSuppliers, $result);
     }
 
+    #[Test]
     public function testGetSuppliersForTenantFallbackToDefaultGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -142,6 +148,7 @@ class SupplierServiceTest extends TestCase
         $this->assertSame($inheritedSuppliers, $result);
     }
 
+    #[Test]
     public function testGetSupplierInheritanceInfoWithoutParent(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -153,6 +160,7 @@ class SupplierServiceTest extends TestCase
         $this->assertNull($info['governanceModel']);
     }
 
+    #[Test]
     public function testGetSupplierInheritanceInfoWithHierarchicalParent(): void
     {
         $parent = $this->createTenant(1, null);
@@ -170,6 +178,7 @@ class SupplierServiceTest extends TestCase
         $this->assertSame('hierarchical', $info['governanceModel']);
     }
 
+    #[Test]
     public function testGetSupplierInheritanceInfoWithSharedParent(): void
     {
         $parent = $this->createTenant(1, null);
@@ -187,6 +196,7 @@ class SupplierServiceTest extends TestCase
         $this->assertSame('shared', $info['governanceModel']);
     }
 
+    #[Test]
     public function testGetSupplierInheritanceInfoWithIndependentParent(): void
     {
         $parent = $this->createTenant(1, null);
@@ -204,6 +214,7 @@ class SupplierServiceTest extends TestCase
         $this->assertSame('independent', $info['governanceModel']);
     }
 
+    #[Test]
     public function testIsInheritedSupplierTrue(): void
     {
         $parentTenant = $this->createTenant(1, null);
@@ -215,6 +226,7 @@ class SupplierServiceTest extends TestCase
         $this->assertTrue($this->service->isInheritedSupplier($supplier, $childTenant));
     }
 
+    #[Test]
     public function testIsInheritedSupplierFalse(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -225,6 +237,7 @@ class SupplierServiceTest extends TestCase
         $this->assertFalse($this->service->isInheritedSupplier($supplier, $tenant));
     }
 
+    #[Test]
     public function testIsInheritedSupplierWithNullTenant(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -235,6 +248,7 @@ class SupplierServiceTest extends TestCase
         $this->assertFalse($this->service->isInheritedSupplier($supplier, $tenant));
     }
 
+    #[Test]
     public function testIsInheritedSupplierWithNullIds(): void
     {
         $tenant1 = $this->createTenant(null, null);
@@ -246,6 +260,7 @@ class SupplierServiceTest extends TestCase
         $this->assertFalse($this->service->isInheritedSupplier($supplier, $tenant2));
     }
 
+    #[Test]
     public function testCanEditSupplierOwnSupplier(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -256,6 +271,7 @@ class SupplierServiceTest extends TestCase
         $this->assertTrue($this->service->canEditSupplier($supplier, $tenant));
     }
 
+    #[Test]
     public function testCanEditSupplierInheritedSupplier(): void
     {
         $parentTenant = $this->createTenant(1, null);
@@ -267,6 +283,7 @@ class SupplierServiceTest extends TestCase
         $this->assertFalse($this->service->canEditSupplier($supplier, $childTenant));
     }
 
+    #[Test]
     public function testGetSupplierStatsWithInheritance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -314,6 +331,7 @@ class SupplierServiceTest extends TestCase
         $this->assertSame(2, $stats['critical']);
     }
 
+    #[Test]
     public function testServiceWorksWithoutOptionalDependencies(): void
     {
         $simpleService = new SupplierService($this->supplierRepository, null, null);
@@ -331,6 +349,7 @@ class SupplierServiceTest extends TestCase
         $this->assertSame($ownSuppliers, $result);
     }
 
+    #[Test]
     public function testGetSupplierInheritanceInfoWithNoGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -348,6 +367,7 @@ class SupplierServiceTest extends TestCase
         $this->assertNull($info['governanceModel']);
     }
 
+    #[Test]
     public function testGetSupplierStatsWithNoInheritance(): void
     {
         $tenant = $this->createTenant(1, null);

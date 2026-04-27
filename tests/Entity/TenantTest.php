@@ -5,9 +5,11 @@ namespace App\Tests\Entity;
 use App\Entity\Tenant;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class TenantTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $tenant = new Tenant();
@@ -18,6 +20,7 @@ class TenantTest extends TestCase
         $this->assertEquals(0, $tenant->getSubsidiaries()->count());
     }
 
+    #[Test]
     public function testGettersAndSetters(): void
     {
         $tenant = new Tenant();
@@ -39,6 +42,7 @@ class TenantTest extends TestCase
         $this->assertEquals('/logos/tenant.png', $tenant->getLogoPath());
     }
 
+    #[Test]
     public function testIsActiveDefault(): void
     {
         $tenant = new Tenant();
@@ -46,6 +50,7 @@ class TenantTest extends TestCase
         $this->assertTrue($tenant->isActive());
     }
 
+    #[Test]
     public function testSetIsActive(): void
     {
         $tenant = new Tenant();
@@ -54,6 +59,7 @@ class TenantTest extends TestCase
         $this->assertFalse($tenant->isActive());
     }
 
+    #[Test]
     public function testSettings(): void
     {
         $tenant = new Tenant();
@@ -66,6 +72,7 @@ class TenantTest extends TestCase
         $this->assertEquals($settings, $tenant->getSettings());
     }
 
+    #[Test]
     public function testAddAndRemoveUser(): void
     {
         $tenant = new Tenant();
@@ -83,6 +90,7 @@ class TenantTest extends TestCase
         $this->assertNull($user->getTenant());
     }
 
+    #[Test]
     public function testSetUpdatedAtValue(): void
     {
         $tenant = new Tenant();
@@ -95,6 +103,7 @@ class TenantTest extends TestCase
         $this->assertInstanceOf(\DateTimeImmutable::class, $tenant->getUpdatedAt());
     }
 
+    #[Test]
     public function testIsCorporateParentDefault(): void
     {
         $tenant = new Tenant();
@@ -102,6 +111,7 @@ class TenantTest extends TestCase
         $this->assertFalse($tenant->isCorporateParent());
     }
 
+    #[Test]
     public function testSetIsCorporateParent(): void
     {
         $tenant = new Tenant();
@@ -110,6 +120,7 @@ class TenantTest extends TestCase
         $this->assertTrue($tenant->isCorporateParent());
     }
 
+    #[Test]
     public function testCorporateNotes(): void
     {
         $tenant = new Tenant();
@@ -120,6 +131,7 @@ class TenantTest extends TestCase
         $this->assertEquals('Important corporate information', $tenant->getCorporateNotes());
     }
 
+    #[Test]
     public function testParentSubsidiaryRelationship(): void
     {
         $parent = new Tenant();
@@ -147,6 +159,7 @@ class TenantTest extends TestCase
         $this->assertNull($subsidiary->getParent());
     }
 
+    #[Test]
     public function testIsPartOfCorporateStructure(): void
     {
         $standalone = new Tenant();
@@ -161,6 +174,7 @@ class TenantTest extends TestCase
         $this->assertTrue($subsidiary->isPartOfCorporateStructure()); // Has parent
     }
 
+    #[Test]
     public function testGetRootParent(): void
     {
         $root = new Tenant();
@@ -186,6 +200,7 @@ class TenantTest extends TestCase
         $this->assertSame($root, $grandchild->getRootParent());
     }
 
+    #[Test]
     public function testGetAllSubsidiaries(): void
     {
         $parent = new Tenant();
@@ -205,6 +220,7 @@ class TenantTest extends TestCase
         $this->assertContains($grandchild, $allSubsidiaries);
     }
 
+    #[Test]
     public function testGetHierarchyDepth(): void
     {
         $root = new Tenant();
@@ -219,6 +235,7 @@ class TenantTest extends TestCase
         $this->assertEquals(2, $level2->getHierarchyDepth());
     }
 
+    #[Test]
     public function testGetAllAncestors(): void
     {
         $root = new Tenant();
@@ -252,6 +269,7 @@ class TenantTest extends TestCase
         $this->assertSame($root, $leafAncestors[1]); // Root parent last
     }
 
+    #[Test]
     public function testIsChildOfDirectAndIndirect(): void
     {
         $root = new Tenant();
@@ -269,6 +287,7 @@ class TenantTest extends TestCase
         $this->assertFalse($root->isChildOf($root));
     }
 
+    #[Test]
     public function testSetParentRejectsSelfReference(): void
     {
         $tenant = (new Tenant())->setCode('t1');
@@ -279,6 +298,7 @@ class TenantTest extends TestCase
         $tenant->setParent($tenant);
     }
 
+    #[Test]
     public function testSetParentRejectsCycle(): void
     {
         $root = (new Tenant())->setCode('root');

@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for MonitoringController
@@ -119,12 +120,14 @@ class MonitoringControllerTest extends WebTestCase
 
     // ========== HEALTH CHECK TESTS ==========
 
+    #[Test]
     public function testHealthRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/monitoring/health');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testHealthRequiresMonitoringViewPermission(): void
     {
         $this->loginAsUser($this->testUser);
@@ -132,6 +135,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testHealthDisplaysForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -139,12 +143,14 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testHealthJsonRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/monitoring/health/json');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testHealthJsonReturnsJsonForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -155,12 +161,14 @@ class MonitoringControllerTest extends WebTestCase
 
     // ========== PERFORMANCE TESTS ==========
 
+    #[Test]
     public function testPerformanceRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/monitoring/performance');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testPerformanceRequiresMonitoringViewPermission(): void
     {
         $this->loginAsUser($this->testUser);
@@ -168,6 +176,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testPerformanceDisplaysForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -177,12 +186,14 @@ class MonitoringControllerTest extends WebTestCase
 
     // ========== ERROR LOG TESTS ==========
 
+    #[Test]
     public function testErrorsRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/monitoring/errors');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testErrorsRequiresMonitoringViewPermission(): void
     {
         $this->loginAsUser($this->testUser);
@@ -190,6 +201,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testErrorsDisplaysForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -197,6 +209,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testErrorsAcceptsLimitParameter(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -206,12 +219,14 @@ class MonitoringControllerTest extends WebTestCase
 
     // ========== AUDIT LOG TESTS ==========
 
+    #[Test]
     public function testAuditLogRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/monitoring/audit-log');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testAuditLogRequiresAuditViewPermission(): void
     {
         $this->loginAsUser($this->testUser);
@@ -219,6 +234,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testAuditLogDisplaysForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -226,6 +242,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testAuditLogAcceptsFilterParameter(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -243,12 +260,14 @@ class MonitoringControllerTest extends WebTestCase
 
     // ========== FIX ENDPOINTS TESTS ==========
 
+    #[Test]
     public function testFixCacheRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/monitoring/health/fix/cache');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testFixCacheRequiresMonitoringManagePermission(): void
     {
         $this->loginAsUser($this->testUser);
@@ -256,6 +275,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testFixCacheRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -263,6 +283,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testFixLogsRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -270,6 +291,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testClearCacheRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -277,6 +299,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testCleanLogsRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -284,6 +307,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testRotateLogsRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -291,6 +315,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testOptimizeDiskRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -298,6 +323,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testFixVarPermissionsRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -305,6 +331,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testFixUploadsPermissionsRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -312,6 +339,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testFixSessionPermissionsRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -319,6 +347,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testCleanUploadsRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -326,6 +355,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testComposerInstallRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -335,6 +365,7 @@ class MonitoringControllerTest extends WebTestCase
 
     // ========== FIX ENDPOINT EXECUTION TESTS ==========
 
+    #[Test]
     public function testFixCacheExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -343,6 +374,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
+    #[Test]
     public function testFixLogsExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -351,6 +383,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
+    #[Test]
     public function testClearCacheExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -359,6 +392,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
+    #[Test]
     public function testRotateLogsExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -367,6 +401,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
+    #[Test]
     public function testOptimizeDiskExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -375,6 +410,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
+    #[Test]
     public function testFixVarPermissionsExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -383,6 +419,7 @@ class MonitoringControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
+    #[Test]
     public function testFixSessionPermissionsExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);

@@ -8,6 +8,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for BCMController
@@ -128,6 +129,7 @@ class BCMControllerTest extends WebTestCase
 
     // ========== INDEX ACTION TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/bcm/');
@@ -135,6 +137,7 @@ class BCMControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexShowsProcessesForAuthenticatedUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -145,6 +148,7 @@ class BCMControllerTest extends WebTestCase
         $this->assertSelectorExists('html');
     }
 
+    #[Test]
     public function testIndexDisplaysStatistics(): void
     {
         $this->loginAsUser($this->testUser);
@@ -155,6 +159,7 @@ class BCMControllerTest extends WebTestCase
         // Page should render successfully with statistics
     }
 
+    #[Test]
     public function testIndexShowsTestProcess(): void
     {
         $this->loginAsUser($this->testUser);
@@ -166,6 +171,7 @@ class BCMControllerTest extends WebTestCase
 
     // ========== CRITICAL PROCESSES TESTS ==========
 
+    #[Test]
     public function testCriticalRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/bcm/critical');
@@ -173,6 +179,7 @@ class BCMControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testCriticalShowsProcessesForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -182,6 +189,7 @@ class BCMControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testCriticalFiltersHighAndCriticalProcesses(): void
     {
         $this->loginAsUser($this->testUser);
@@ -213,6 +221,7 @@ class BCMControllerTest extends WebTestCase
 
     // ========== DATA REUSE INSIGHTS TESTS ==========
 
+    #[Test]
     public function testDataReuseInsightsRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/bcm/data-reuse-insights');
@@ -220,6 +229,7 @@ class BCMControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDataReuseInsightsShowsForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -229,6 +239,7 @@ class BCMControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testDataReuseInsightsDisplaysAnalysis(): void
     {
         $this->loginAsUser($this->testUser);
@@ -241,6 +252,7 @@ class BCMControllerTest extends WebTestCase
 
     // ========== STATISTICS CALCULATION TESTS ==========
 
+    #[Test]
     public function testIndexCalculatesAverageRTO(): void
     {
         $this->loginAsUser($this->testUser);
@@ -270,6 +282,7 @@ class BCMControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexCalculatesAverageMTPD(): void
     {
         $this->loginAsUser($this->testUser);
@@ -279,6 +292,7 @@ class BCMControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexCountsCriticalProcesses(): void
     {
         $this->loginAsUser($this->testUser);
@@ -308,6 +322,7 @@ class BCMControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexCountsHighProcesses(): void
     {
         $this->loginAsUser($this->testUser);
@@ -320,6 +335,7 @@ class BCMControllerTest extends WebTestCase
 
     // ========== EMPTY STATE TESTS ==========
 
+    #[Test]
     public function testIndexHandlesNoProcesses(): void
     {
         // Remove test process to simulate empty state
@@ -334,6 +350,7 @@ class BCMControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testCriticalHandlesNoProcesses(): void
     {
         // Remove test process
@@ -348,6 +365,7 @@ class BCMControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testDataReuseInsightsHandlesNoProcesses(): void
     {
         // Remove test process

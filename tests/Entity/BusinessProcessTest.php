@@ -6,9 +6,11 @@ use App\Entity\BusinessProcess;
 use App\Entity\Asset;
 use App\Entity\Risk;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class BusinessProcessTest extends TestCase
 {
+    #[Test]
     public function testNewBusinessProcessHasDefaultValues(): void
     {
         $process = new BusinessProcess();
@@ -35,6 +37,7 @@ class BusinessProcessTest extends TestCase
         $this->assertCount(0, $process->getIdentifiedRisks());
     }
 
+    #[Test]
     public function testSetAndGetName(): void
     {
         $process = new BusinessProcess();
@@ -43,6 +46,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals('Order Processing System', $process->getName());
     }
 
+    #[Test]
     public function testSetAndGetDescription(): void
     {
         $process = new BusinessProcess();
@@ -51,6 +55,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals('Handles all customer orders from receipt to fulfillment', $process->getDescription());
     }
 
+    #[Test]
     public function testSetAndGetProcessOwner(): void
     {
         $process = new BusinessProcess();
@@ -59,6 +64,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals('Sales Director', $process->getProcessOwner());
     }
 
+    #[Test]
     public function testSetAndGetCriticality(): void
     {
         $process = new BusinessProcess();
@@ -67,6 +73,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals('critical', $process->getCriticality());
     }
 
+    #[Test]
     public function testSetAndGetRTO(): void
     {
         $process = new BusinessProcess();
@@ -75,6 +82,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals(4, $process->getRto());
     }
 
+    #[Test]
     public function testSetAndGetRPO(): void
     {
         $process = new BusinessProcess();
@@ -83,6 +91,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals(1, $process->getRpo());
     }
 
+    #[Test]
     public function testSetAndGetMTPD(): void
     {
         $process = new BusinessProcess();
@@ -91,6 +100,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals(24, $process->getMtpd());
     }
 
+    #[Test]
     public function testSetAndGetFinancialImpacts(): void
     {
         $process = new BusinessProcess();
@@ -101,6 +111,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals('120000.00', $process->getFinancialImpactPerDay());
     }
 
+    #[Test]
     public function testSetAndGetImpactScores(): void
     {
         $process = new BusinessProcess();
@@ -113,6 +124,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals(3, $process->getOperationalImpact());
     }
 
+    #[Test]
     public function testSetAndGetDependencies(): void
     {
         $process = new BusinessProcess();
@@ -123,6 +135,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals('Shipping System, Accounting', $process->getDependenciesDownstream());
     }
 
+    #[Test]
     public function testSetAndGetRecoveryStrategy(): void
     {
         $process = new BusinessProcess();
@@ -131,6 +144,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals('Failover to backup datacenter within 2 hours', $process->getRecoveryStrategy());
     }
 
+    #[Test]
     public function testAddAndRemoveSupportingAsset(): void
     {
         $process = new BusinessProcess();
@@ -147,6 +161,7 @@ class BusinessProcessTest extends TestCase
         $this->assertCount(0, $process->getSupportingAssets());
     }
 
+    #[Test]
     public function testAddSupportingAssetDoesNotDuplicate(): void
     {
         $process = new BusinessProcess();
@@ -159,6 +174,7 @@ class BusinessProcessTest extends TestCase
         $this->assertCount(1, $process->getSupportingAssets());
     }
 
+    #[Test]
     public function testAddAndRemoveIdentifiedRisk(): void
     {
         $process = new BusinessProcess();
@@ -172,6 +188,7 @@ class BusinessProcessTest extends TestCase
         $this->assertCount(0, $process->getIdentifiedRisks());
     }
 
+    #[Test]
     public function testGetBusinessImpactScoreCalculatesAverage(): void
     {
         $process = new BusinessProcess();
@@ -183,6 +200,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals(4, $process->getBusinessImpactScore());
     }
 
+    #[Test]
     public function testGetBusinessImpactScoreRoundsCorrectly(): void
     {
         $process = new BusinessProcess();
@@ -194,6 +212,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals(5, $process->getBusinessImpactScore());
     }
 
+    #[Test]
     public function testGetSuggestedAvailabilityValueBasedOnRTO(): void
     {
         $process = new BusinessProcess();
@@ -219,6 +238,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals(1, $process->getSuggestedAvailabilityValue());
     }
 
+    #[Test]
     public function testGetProcessRiskLevelReturnsUnknownWhenNoRisks(): void
     {
         $process = new BusinessProcess();
@@ -226,6 +246,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals('unknown', $process->getProcessRiskLevel());
     }
 
+    #[Test]
     public function testGetActiveRiskCountReturnsZeroWhenNoRisks(): void
     {
         $process = new BusinessProcess();
@@ -233,6 +254,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals(0, $process->getActiveRiskCount());
     }
 
+    #[Test]
     public function testHasUnmitigatedHighRisksReturnsFalseWhenNoRisks(): void
     {
         $process = new BusinessProcess();
@@ -240,6 +262,7 @@ class BusinessProcessTest extends TestCase
         $this->assertFalse($process->hasUnmitigatedHighRisks());
     }
 
+    #[Test]
     public function testIsCriticalityAlignedReturnsTrueWhenNoRisks(): void
     {
         $process = new BusinessProcess();
@@ -249,6 +272,7 @@ class BusinessProcessTest extends TestCase
         $this->assertTrue($process->isCriticalityAligned());
     }
 
+    #[Test]
     public function testGetSuggestedRTOReturnsCurrentRTOWhenNoRisks(): void
     {
         $process = new BusinessProcess();
@@ -258,6 +282,7 @@ class BusinessProcessTest extends TestCase
         $this->assertEquals(24, $process->getSuggestedRTO());
     }
 
+    #[Test]
     public function testBusinessProcessCanStoreCompleteBIAData(): void
     {
         $process = new BusinessProcess();

@@ -13,6 +13,7 @@ use Doctrine\DBAL\Result;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 final class MrisKpiServiceTest extends TestCase
@@ -36,6 +37,7 @@ final class MrisKpiServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testComputeAllReturnsEightKpis(): void
     {
         $conn = $this->createMock(Connection::class);
@@ -60,6 +62,7 @@ final class MrisKpiServiceTest extends TestCase
         ], $ids);
     }
 
+    #[Test]
     public function testEachKpiHasMandatoryFields(): void
     {
         $conn = $this->createMock(Connection::class);
@@ -82,6 +85,7 @@ final class MrisKpiServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testComputableKpisAreThree(): void
     {
         $conn = $this->createMock(Connection::class);
@@ -96,6 +100,7 @@ final class MrisKpiServiceTest extends TestCase
         self::assertCount(3, $computable, 'Drei KPIs sollten automatisch berechnet werden: MTTC, MFA-Share, Restore-Test-Quote.');
     }
 
+    #[Test]
     public function testManualKpisCarrySourceHint(): void
     {
         $conn = $this->createMock(Connection::class);
@@ -114,6 +119,7 @@ final class MrisKpiServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testMttcReturnsHoursWhenIncidentDataPresent(): void
     {
         $conn = $this->createMock(Connection::class);
@@ -130,6 +136,7 @@ final class MrisKpiServiceTest extends TestCase
         self::assertSame('Stunden', $mttc['unit']);
     }
 
+    #[Test]
     public function testRestoreTestRateComputesCorrectPercentage(): void
     {
         $conn = $this->createMock(Connection::class);
@@ -145,6 +152,7 @@ final class MrisKpiServiceTest extends TestCase
         self::assertSame(80.0, $rate['value']);
     }
 
+    #[Test]
     public function testManualKpiReadsValueFromTenantSettings(): void
     {
         $conn = $this->createMock(Connection::class);
@@ -171,6 +179,7 @@ final class MrisKpiServiceTest extends TestCase
         self::assertSame(92.0, $tlpt['value']);
     }
 
+    #[Test]
     public function testSetManualKpisStoresValuesAndSkipsEmpties(): void
     {
         $conn = $this->createMock(Connection::class);

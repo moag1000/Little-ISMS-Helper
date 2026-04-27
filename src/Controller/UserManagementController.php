@@ -42,9 +42,9 @@ class UserManagementController extends AbstractController
     ) {
     }
     #[Route('/admin/users', name: 'user_management_index')]
+    #[IsGranted(UserVoter::VIEW_ALL)]
     public function index(UserRepository $userRepository): Response
     {
-        $this->denyAccessUnlessGranted(UserVoter::VIEW_ALL);
 
         $users = $userRepository->findAll();
         $statistics = $userRepository->getUserStatistics();
@@ -60,13 +60,13 @@ class UserManagementController extends AbstractController
         ]);
     }
     #[Route('/admin/users/new', name: 'user_management_new')]
+    #[IsGranted(UserVoter::CREATE)]
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $userPasswordHasher,
         TranslatorInterface $translator
     ): Response {
-        $this->denyAccessUnlessGranted(UserVoter::CREATE);
 
         $user = new User();
         $user->setAuthProvider('local');
@@ -132,6 +132,7 @@ class UserManagementController extends AbstractController
         ]);
     }
     #[Route('/admin/users/bulk-actions', name: 'user_management_bulk_actions', methods: ['POST'])]
+    #[IsGranted(UserVoter::VIEW_ALL)]
     public function bulkActions(
         Request $request,
         UserRepository $userRepository,
@@ -139,7 +140,6 @@ class UserManagementController extends AbstractController
         EntityManagerInterface $entityManager,
         TranslatorInterface $translator
     ): Response {
-        $this->denyAccessUnlessGranted(UserVoter::VIEW_ALL);
 
         if (!$this->isCsrfTokenValid('bulk_actions', $request->request->get('_token'))) {
             $this->addFlash('error', 'Invalid CSRF token');
@@ -300,10 +300,10 @@ class UserManagementController extends AbstractController
         return $this->redirectToRoute('user_management_index');
     }
     #[Route('/admin/users/export', name: 'user_management_export', methods: ['GET'])]
+    #[IsGranted(UserVoter::VIEW_ALL)]
     public function export(
         UserRepository $userRepository
     ): StreamedResponse {
-        $this->denyAccessUnlessGranted(UserVoter::VIEW_ALL);
 
         $users = $userRepository->findAll();
 
@@ -355,6 +355,7 @@ class UserManagementController extends AbstractController
         return $streamedResponse;
     }
     #[Route('/admin/users/import', name: 'user_management_import', methods: ['GET', 'POST'])]
+    #[IsGranted(UserVoter::CREATE)]
     public function import(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -362,7 +363,6 @@ class UserManagementController extends AbstractController
         RoleRepository $roleRepository,
         TranslatorInterface $translator
     ): Response {
-        $this->denyAccessUnlessGranted(UserVoter::CREATE);
 
         if ($request->isMethod('POST')) {
             $file = $request->files->get('import_file');
@@ -794,6 +794,7 @@ class UserManagementController extends AbstractController
         ]);
     }
     #[Route('/admin/users/{id}/mfa/{tokenId}/reset', name: 'user_management_mfa_reset', requirements: ['id' => '\d+', 'tokenId' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
     public function mfaReset(
         User $user,
         int $tokenId,
@@ -802,7 +803,6 @@ class UserManagementController extends AbstractController
         EntityManagerInterface $entityManager,
         TranslatorInterface $translator
     ): Response {
-        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
 
         $token = $mfaTokenRepository->find($tokenId);
 

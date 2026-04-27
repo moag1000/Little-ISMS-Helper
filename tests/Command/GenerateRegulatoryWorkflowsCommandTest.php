@@ -5,6 +5,7 @@ namespace App\Tests\Command;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use PHPUnit\Framework\Attributes\Test;
 
 class GenerateRegulatoryWorkflowsCommandTest extends KernelTestCase
 {
@@ -19,6 +20,7 @@ class GenerateRegulatoryWorkflowsCommandTest extends KernelTestCase
         $this->commandTester = new CommandTester($command);
     }
 
+    #[Test]
     public function testExecuteWithSpecificWorkflow(): void
     {
         $this->commandTester->execute([
@@ -29,6 +31,7 @@ class GenerateRegulatoryWorkflowsCommandTest extends KernelTestCase
         $this->assertContains($this->commandTester->getStatusCode(), [0, 1]);
     }
 
+    #[Test]
     public function testCommandHasCorrectName(): void
     {
         $kernel = self::bootKernel();
@@ -38,6 +41,7 @@ class GenerateRegulatoryWorkflowsCommandTest extends KernelTestCase
         $this->assertSame('app:generate-regulatory-workflows', $command->getName());
     }
 
+    #[Test]
     public function testCommandHasDescription(): void
     {
         $kernel = self::bootKernel();

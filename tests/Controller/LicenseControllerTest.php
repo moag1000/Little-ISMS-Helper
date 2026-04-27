@@ -7,6 +7,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class LicenseControllerTest extends WebTestCase
 {
@@ -72,12 +73,14 @@ class LicenseControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/about/licenses');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -85,12 +88,14 @@ class LicenseControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testReportRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/about/licenses/report');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testReportForUser(): void
     {
         $this->client->loginUser($this->testUser);

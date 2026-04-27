@@ -17,6 +17,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class IncidentRiskFeedbackServiceTest extends TestCase
@@ -44,6 +45,7 @@ class IncidentRiskFeedbackServiceTest extends TestCase
 
     // ========== processIncidentFeedback TESTS ==========
 
+    #[Test]
     public function testProcessIncidentFeedbackReturnsZeroForNonClosedIncident(): void
     {
         $incident = $this->createIncidentMock('open', 'high');
@@ -54,6 +56,7 @@ class IncidentRiskFeedbackServiceTest extends TestCase
         $this->assertSame(0, $result);
     }
 
+    #[Test]
     public function testProcessIncidentFeedbackReturnsZeroWhenNoRealizedRisks(): void
     {
         $incident = $this->createIncidentMock('closed', 'high', new ArrayCollection());
@@ -74,6 +77,7 @@ class IncidentRiskFeedbackServiceTest extends TestCase
      * as they don't touch the notes functionality.
      */
 
+    #[Test]
     public function testProcessIncidentFeedbackSkipsReEvaluationForMediumWithoutFailedControls(): void
     {
         $risk = $this->createRiskMock(1, 'Test Risk');
@@ -94,6 +98,7 @@ class IncidentRiskFeedbackServiceTest extends TestCase
         $this->assertSame(0, $result);
     }
 
+    #[Test]
     public function testProcessIncidentFeedbackSkipsLowSeverityWithFewIncidents(): void
     {
         $risk = $this->createRiskMock(1, 'Test Risk');
@@ -119,6 +124,7 @@ class IncidentRiskFeedbackServiceTest extends TestCase
 
     // ========== getRecommendedLikelihoodIncrease TESTS ==========
 
+    #[Test]
     public function testGetRecommendedLikelihoodIncreaseForCritical(): void
     {
         $incident = $this->createIncidentMock('closed', 'critical');
@@ -128,6 +134,7 @@ class IncidentRiskFeedbackServiceTest extends TestCase
         $this->assertSame(2, $result);
     }
 
+    #[Test]
     public function testGetRecommendedLikelihoodIncreaseForHigh(): void
     {
         $incident = $this->createIncidentMock('closed', 'high');
@@ -137,6 +144,7 @@ class IncidentRiskFeedbackServiceTest extends TestCase
         $this->assertSame(2, $result);
     }
 
+    #[Test]
     public function testGetRecommendedLikelihoodIncreaseForMedium(): void
     {
         $incident = $this->createIncidentMock('closed', 'medium');
@@ -146,6 +154,7 @@ class IncidentRiskFeedbackServiceTest extends TestCase
         $this->assertSame(1, $result);
     }
 
+    #[Test]
     public function testGetRecommendedLikelihoodIncreaseForLow(): void
     {
         $incident = $this->createIncidentMock('closed', 'low');
@@ -155,6 +164,7 @@ class IncidentRiskFeedbackServiceTest extends TestCase
         $this->assertSame(0, $result);
     }
 
+    #[Test]
     public function testGetRecommendedLikelihoodIncreaseForUnknownSeverity(): void
     {
         $incident = $this->createIncidentMock('closed', 'unknown');

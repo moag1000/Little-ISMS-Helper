@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for DPIAController
@@ -152,12 +153,14 @@ class DPIAControllerTest extends WebTestCase
 
     // ========== INDEX TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/dpia/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -167,12 +170,14 @@ class DPIAControllerTest extends WebTestCase
 
     // ========== DASHBOARD TESTS ==========
 
+    #[Test]
     public function testDashboardRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/dpia/dashboard');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDashboardDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -182,12 +187,14 @@ class DPIAControllerTest extends WebTestCase
 
     // ========== SHOW TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/dpia/' . $this->testDPIA->getId());
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysDPIA(): void
     {
         $this->loginAsUser($this->testUser);
@@ -197,12 +204,14 @@ class DPIAControllerTest extends WebTestCase
 
     // ========== NEW TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/dpia/new');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewDisplaysForm(): void
     {
         $this->loginAsUser($this->testUser);
@@ -213,12 +222,14 @@ class DPIAControllerTest extends WebTestCase
 
     // ========== EDIT TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/dpia/' . $this->testDPIA->getId() . '/edit');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysForm(): void
     {
         $this->loginAsUser($this->testUser);
@@ -229,6 +240,7 @@ class DPIAControllerTest extends WebTestCase
 
     // ========== DELETE TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/dpia/' . $this->testDPIA->getId() . '/delete');
@@ -237,12 +249,14 @@ class DPIAControllerTest extends WebTestCase
 
     // ========== SEARCH TESTS ==========
 
+    #[Test]
     public function testSearchRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/dpia/search');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testSearchDisplaysResults(): void
     {
         $this->loginAsUser($this->testUser);
@@ -252,18 +266,21 @@ class DPIAControllerTest extends WebTestCase
 
     // ========== WORKFLOW TESTS ==========
 
+    #[Test]
     public function testSubmitForReviewRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/dpia/' . $this->testDPIA->getId() . '/submit-for-review');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testApproveRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/dpia/' . $this->testDPIA->getId() . '/approve');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testRejectRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/dpia/' . $this->testDPIA->getId() . '/reject');
@@ -272,6 +289,7 @@ class DPIAControllerTest extends WebTestCase
 
     // ========== EXPORT TESTS ==========
 
+    #[Test]
     public function testExportPdfRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/dpia/' . $this->testDPIA->getId() . '/export/pdf');
@@ -280,6 +298,7 @@ class DPIAControllerTest extends WebTestCase
 
     // ========== CLONE TESTS ==========
 
+    #[Test]
     public function testCloneRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/dpia/' . $this->testDPIA->getId() . '/clone');
@@ -288,12 +307,14 @@ class DPIAControllerTest extends WebTestCase
 
     // ========== VALIDATE TESTS ==========
 
+    #[Test]
     public function testValidateRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/dpia/' . $this->testDPIA->getId() . '/validate');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testValidateDisplaysResults(): void
     {
         $this->loginAsUser($this->testUser);

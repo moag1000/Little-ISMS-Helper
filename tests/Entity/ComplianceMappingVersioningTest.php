@@ -7,9 +7,11 @@ namespace App\Tests\Entity;
 use App\Entity\ComplianceMapping;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 final class ComplianceMappingVersioningTest extends TestCase
 {
+    #[Test]
     public function testValidAtReturnsTrueForCurrentMapping(): void
     {
         $mapping = new ComplianceMapping();
@@ -18,6 +20,7 @@ final class ComplianceMappingVersioningTest extends TestCase
         $this->assertTrue($mapping->isValidAt(new DateTimeImmutable('2026-01-01')));
     }
 
+    #[Test]
     public function testValidAtReturnsFalseBeforeValidFrom(): void
     {
         $mapping = new ComplianceMapping();
@@ -26,6 +29,7 @@ final class ComplianceMappingVersioningTest extends TestCase
         $this->assertFalse($mapping->isValidAt(new DateTimeImmutable('2025-01-01')));
     }
 
+    #[Test]
     public function testValidAtRespectsValidUntil(): void
     {
         $mapping = new ComplianceMapping();
@@ -36,6 +40,7 @@ final class ComplianceMappingVersioningTest extends TestCase
         $this->assertFalse($mapping->isValidAt(new DateTimeImmutable('2025-07-01')));
     }
 
+    #[Test]
     public function testDefaultSourceValue(): void
     {
         $mapping = new ComplianceMapping();

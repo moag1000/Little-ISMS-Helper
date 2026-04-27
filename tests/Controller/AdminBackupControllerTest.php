@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for AdminBackupController
@@ -147,12 +148,14 @@ class AdminBackupControllerTest extends WebTestCase
 
     // ========== BACKUP INDEX TESTS ==========
 
+    #[Test]
     public function testBackupIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/data/backup');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testBackupIndexRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -160,6 +163,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testBackupIndexDisplaysForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -169,12 +173,14 @@ class AdminBackupControllerTest extends WebTestCase
 
     // ========== CREATE BACKUP TESTS ==========
 
+    #[Test]
     public function testCreateBackupRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/data/backup/create');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testCreateBackupRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -182,6 +188,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testCreateBackupRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -189,6 +196,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testCreateBackupExecutesForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -199,12 +207,14 @@ class AdminBackupControllerTest extends WebTestCase
 
     // ========== UPLOAD BACKUP TESTS ==========
 
+    #[Test]
     public function testUploadBackupRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/data/backup/upload');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testUploadBackupRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -212,6 +222,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testUploadBackupRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -219,6 +230,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testUploadBackupWithoutFileReturnsError(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -229,12 +241,14 @@ class AdminBackupControllerTest extends WebTestCase
 
     // ========== DOWNLOAD BACKUP TESTS ==========
 
+    #[Test]
     public function testDownloadBackupRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/data/backup/download/backup_2024-01-01_00-00-00.json');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDownloadBackupRejectsInvalidFilename(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -242,6 +256,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    #[Test]
     public function testDownloadBackupRejectsDirectoryTraversal(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -251,12 +266,14 @@ class AdminBackupControllerTest extends WebTestCase
 
     // ========== VALIDATE BACKUP TESTS ==========
 
+    #[Test]
     public function testValidateBackupRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/data/backup/validate/backup_2024-01-01_00-00-00.json');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testValidateBackupRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -264,6 +281,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testValidateBackupRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -273,12 +291,14 @@ class AdminBackupControllerTest extends WebTestCase
 
     // ========== PREVIEW RESTORE TESTS ==========
 
+    #[Test]
     public function testPreviewRestoreRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/data/backup/preview/backup_2024-01-01_00-00-00.json');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testPreviewRestoreRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -288,12 +308,14 @@ class AdminBackupControllerTest extends WebTestCase
 
     // ========== RESTORE BACKUP TESTS ==========
 
+    #[Test]
     public function testRestoreBackupRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/data/backup/restore/backup_2024-01-01_00-00-00.json');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testRestoreBackupRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -301,6 +323,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testRestoreBackupRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -310,12 +333,14 @@ class AdminBackupControllerTest extends WebTestCase
 
     // ========== DELETE BACKUP TESTS ==========
 
+    #[Test]
     public function testDeleteBackupRequiresAuthentication(): void
     {
         $this->client->request('DELETE', '/en/admin/data/backup/delete/backup_2024-01-01_00-00-00.json');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteBackupRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -323,6 +348,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteBackupRequiresDeleteMethod(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -332,12 +358,14 @@ class AdminBackupControllerTest extends WebTestCase
 
     // ========== EXPORT TESTS ==========
 
+    #[Test]
     public function testExportIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/data/export');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testExportIndexRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -345,6 +373,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testExportIndexDisplaysForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -352,12 +381,14 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testExportExecuteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/data/export/execute');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testExportExecuteRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -365,6 +396,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testExportExecuteRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -372,6 +404,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testExportExecuteRequiresCsrfToken(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -382,12 +415,14 @@ class AdminBackupControllerTest extends WebTestCase
 
     // ========== IMPORT TESTS ==========
 
+    #[Test]
     public function testImportIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/data/import');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testImportIndexRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -395,6 +430,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testImportIndexDisplaysForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -402,12 +438,14 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testImportUploadRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/data/import/upload');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testImportUploadRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -415,6 +453,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testImportUploadRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -422,12 +461,14 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testImportPreviewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/data/import/preview');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testImportPreviewRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -435,6 +476,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testImportPreviewRedirectsWithoutData(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -443,12 +485,14 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testImportExecuteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/data/import/execute');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testImportExecuteRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -456,6 +500,7 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testImportExecuteRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);

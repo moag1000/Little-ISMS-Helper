@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for AuditController
@@ -169,6 +170,7 @@ class AuditControllerTest extends WebTestCase
 
     // ========== INDEX ACTION TESTS ==========
 
+    #[Test]
     public function testIndexWithoutAuthentication(): void
     {
         $this->client->request('GET', '/en/audit/');
@@ -176,6 +178,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexShowsAuditsForAuthenticatedUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -186,6 +189,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertSelectorExists('html');
     }
 
+    #[Test]
     public function testIndexFiltersAuditsByStatus(): void
     {
         $this->loginAsUser($this->testUser);
@@ -197,6 +201,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersAuditsByScopeType(): void
     {
         $this->loginAsUser($this->testUser);
@@ -208,6 +213,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersAuditsByDateRange(): void
     {
         $this->loginAsUser($this->testUser);
@@ -220,6 +226,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersAuditsByDateFrom(): void
     {
         $this->loginAsUser($this->testUser);
@@ -231,6 +238,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersAuditsByDateTo(): void
     {
         $this->loginAsUser($this->testUser);
@@ -242,6 +250,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersAuditsByMultipleCriteria(): void
     {
         $this->loginAsUser($this->testUser);
@@ -258,6 +267,7 @@ class AuditControllerTest extends WebTestCase
 
     // ========== NEW ACTION TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/audit/new');
@@ -265,6 +275,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewAllowsAnyAuthenticatedUser(): void
     {
         // Any authenticated user should be able to access the new audit form
@@ -276,6 +287,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testNewDisplaysForm(): void
     {
         $this->loginAsUser($this->testUser);
@@ -286,6 +298,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="internal_audit"]');
     }
 
+    #[Test]
     public function testNewCreatesAuditWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -328,6 +341,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertEquals('full_isms', $newAudit->getScopeType());
     }
 
+    #[Test]
     public function testNewAuditFormSubmitSucceeds(): void
     {
         $this->loginAsUser($this->testUser);
@@ -356,6 +370,7 @@ class AuditControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testNewAuditFormDisplaysCorrectFields(): void
     {
         $this->loginAsUser($this->testUser);
@@ -371,6 +386,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertSelectorExists('select[name="internal_audit[status]"]');
     }
 
+    #[Test]
     public function testNewFormValidation(): void
     {
         $this->loginAsUser($this->testUser);
@@ -386,6 +402,7 @@ class AuditControllerTest extends WebTestCase
 
     // ========== SHOW ACTION TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/audit/' . $this->testAudit->getId());
@@ -393,6 +410,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysAuditDetails(): void
     {
         $this->loginAsUser($this->testUser);
@@ -403,6 +421,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertSelectorTextContains('html', 'Test Internal Audit');
     }
 
+    #[Test]
     public function testShowReturns404ForNonexistentAudit(): void
     {
         $this->loginAsUser($this->testUser);
@@ -412,6 +431,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    #[Test]
     public function testShowDisplaysAuditLogs(): void
     {
         $this->loginAsUser($this->testUser);
@@ -425,6 +445,7 @@ class AuditControllerTest extends WebTestCase
 
     // ========== EDIT ACTION TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/audit/' . $this->testAudit->getId() . '/edit');
@@ -432,6 +453,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditAllowsAnyAuthenticatedUser(): void
     {
         // Any authenticated user with ROLE_USER can access the edit page
@@ -442,6 +464,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testEditDisplaysForm(): void
     {
         $this->loginAsUser($this->testUser);
@@ -454,6 +477,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertSelectorExists('input[name="internal_audit[title]"]');
     }
 
+    #[Test]
     public function testEditUpdatesAuditWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -478,6 +502,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertEquals('in_progress', $updatedAudit->getStatus());
     }
 
+    #[Test]
     public function testEditReturns404ForNonexistentAudit(): void
     {
         $this->loginAsUser($this->testUser);
@@ -489,6 +514,7 @@ class AuditControllerTest extends WebTestCase
 
     // ========== DELETE ACTION TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/audit/' . $this->testAudit->getId() . '/delete');
@@ -496,6 +522,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresAdminRole(): void
     {
         $token = $this->loginAndGenerateCsrfToken($this->testUser, 'delete' . $this->testAudit->getId());
@@ -507,6 +534,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteRedirectsWithAdminRole(): void
     {
         $auditId = $this->testAudit->getId();
@@ -520,6 +548,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseRedirects('/en/audit/');
     }
 
+    #[Test]
     public function testDeleteRequiresValidCsrfToken(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -539,6 +568,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertNotNull($audit);
     }
 
+    #[Test]
     public function testDeleteOnlyAcceptsPostMethod(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -550,6 +580,7 @@ class AuditControllerTest extends WebTestCase
 
     // ========== EXPORT EXCEL TESTS ==========
 
+    #[Test]
     public function testExportExcelRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/audit/export/excel');
@@ -557,6 +588,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testExportExcelGeneratesXlsxFile(): void
     {
         $this->loginAsUser($this->testUser);
@@ -570,6 +602,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertStringContainsString('.xlsx', $this->client->getResponse()->headers->get('Content-Disposition'));
     }
 
+    #[Test]
     public function testExportExcelContainsAuditData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -585,6 +618,7 @@ class AuditControllerTest extends WebTestCase
 
     // ========== EXPORT PDF TESTS ==========
 
+    #[Test]
     public function testExportPdfRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/audit/' . $this->testAudit->getId() . '/export/pdf');
@@ -592,6 +626,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testExportPdfGeneratesPdfFile(): void
     {
         $this->loginAsUser($this->testUser);
@@ -605,6 +640,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertStringContainsString('.pdf', $this->client->getResponse()->headers->get('Content-Disposition'));
     }
 
+    #[Test]
     public function testExportPdfReturns404ForNonexistentAudit(): void
     {
         $this->loginAsUser($this->testUser);
@@ -616,6 +652,7 @@ class AuditControllerTest extends WebTestCase
 
     // ========== BULK DELETE TESTS ==========
 
+    #[Test]
     public function testBulkDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/audit/bulk-delete');
@@ -623,6 +660,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testBulkDeleteRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -636,6 +674,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testBulkDeleteRemovesMultipleAudits(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -673,6 +712,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertNull($auditRepository->find($ids[1]));
     }
 
+    #[Test]
     public function testBulkDeleteReturnsErrorForEmptyIds(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -689,6 +729,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertArrayHasKey('error', $response);
     }
 
+    #[Test]
     public function testBulkDeleteHandlesNonexistentAudits(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -707,6 +748,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertEquals(0, $response['deleted']);
     }
 
+    #[Test]
     public function testBulkDeleteHandlesMixedValidAndInvalidIds(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -733,6 +775,7 @@ class AuditControllerTest extends WebTestCase
         $this->assertNull($auditRepository->find($validId));
     }
 
+    #[Test]
     public function testBulkDeleteOnlyAcceptsPostMethod(): void
     {
         $this->loginAsUser($this->adminUser);

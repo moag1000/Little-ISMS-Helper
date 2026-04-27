@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Integration tests for DataRepairController covering:
@@ -83,6 +84,7 @@ final class DataRepairControllerTest extends WebTestCase
         parent::tearDown();
     }
 
+    #[Test]
     public function testFixTenantMismatchesRejectsShortReason(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -108,6 +110,7 @@ final class DataRepairControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testRepairIndexRendersForAdmin(): void
     {
         // Smoke-test the route — confirms authentication, rendering and
@@ -121,6 +124,7 @@ final class DataRepairControllerTest extends WebTestCase
         self::assertStringContainsString('Daten-Reparatur', $html);
     }
 
+    #[Test]
     public function testAssignOrphansIdempotencyWhenNoOrphans(): void
     {
         // ISB MINOR-6 analog: calling assign-orphans with no orphans in the
@@ -154,6 +158,7 @@ final class DataRepairControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testIndexExposesSchemaMaintenanceCards(): void
     {
         // The 3-card grid (Migrations / Schema-Drift / Aktionen) must
@@ -172,6 +177,7 @@ final class DataRepairControllerTest extends WebTestCase
         self::assertStringContainsString('/admin/data-repair/schema/reconcile', $html);
     }
 
+    #[Test]
     public function testSchemaMigrationsExecuteRejectsInvalidCsrf(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -185,6 +191,7 @@ final class DataRepairControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testSchemaReconcileRejectsInvalidCsrf(): void
     {
         $this->client->loginUser($this->adminUser);

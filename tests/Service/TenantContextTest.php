@@ -9,6 +9,7 @@ use App\Service\TenantContext;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Bundle\SecurityBundle\Security;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class TenantContextTest extends TestCase
@@ -24,6 +25,7 @@ class TenantContextTest extends TestCase
         $this->tenantContext = new TenantContext($this->security, $this->tenantRepository);
     }
 
+    #[Test]
     public function testGetCurrentTenantReturnsNullWhenNoUserIsLoggedIn(): void
     {
         $this->security->method('getUser')->willReturn(null);
@@ -31,6 +33,7 @@ class TenantContextTest extends TestCase
         $this->assertNull($this->tenantContext->getCurrentTenant());
     }
 
+    #[Test]
     public function testGetCurrentTenantReturnsUserTenant(): void
     {
         $tenant = new Tenant();
@@ -50,6 +53,7 @@ class TenantContextTest extends TestCase
         $this->assertEquals('Test Tenant', $result->getName());
     }
 
+    #[Test]
     public function testSetCurrentTenantOverridesInitialization(): void
     {
         $tenant = new Tenant();
@@ -63,6 +67,7 @@ class TenantContextTest extends TestCase
         $this->assertSame($tenant, $this->tenantContext->getCurrentTenant());
     }
 
+    #[Test]
     public function testGetCurrentTenantIdReturnsNullWhenNoTenant(): void
     {
         $this->security->method('getUser')->willReturn(null);
@@ -70,6 +75,7 @@ class TenantContextTest extends TestCase
         $this->assertNull($this->tenantContext->getCurrentTenantId());
     }
 
+    #[Test]
     public function testGetCurrentTenantIdReturnsTenantId(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -83,6 +89,7 @@ class TenantContextTest extends TestCase
         $this->assertEquals(42, $this->tenantContext->getCurrentTenantId());
     }
 
+    #[Test]
     public function testHasTenantReturnsFalseWhenNoTenant(): void
     {
         $this->security->method('getUser')->willReturn(null);
@@ -90,6 +97,7 @@ class TenantContextTest extends TestCase
         $this->assertFalse($this->tenantContext->hasTenant());
     }
 
+    #[Test]
     public function testHasTenantReturnsTrueWhenTenantExists(): void
     {
         $tenant = new Tenant();
@@ -106,6 +114,7 @@ class TenantContextTest extends TestCase
         $this->assertTrue($this->tenantContext->hasTenant());
     }
 
+    #[Test]
     public function testBelongsToTenantReturnsTrueForSameTenant(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -122,6 +131,7 @@ class TenantContextTest extends TestCase
         $this->assertTrue($this->tenantContext->belongsToTenant($checkTenant));
     }
 
+    #[Test]
     public function testBelongsToTenantReturnsFalseForDifferentTenant(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -138,6 +148,7 @@ class TenantContextTest extends TestCase
         $this->assertFalse($this->tenantContext->belongsToTenant($checkTenant));
     }
 
+    #[Test]
     public function testBelongsToTenantReturnsFalseWhenNoCurrentTenant(): void
     {
         $this->security->method('getUser')->willReturn(null);
@@ -148,6 +159,7 @@ class TenantContextTest extends TestCase
         $this->assertFalse($this->tenantContext->belongsToTenant($checkTenant));
     }
 
+    #[Test]
     public function testGetActiveTenantsReturnsActiveTenants(): void
     {
         $tenant1 = new Tenant();
@@ -177,6 +189,7 @@ class TenantContextTest extends TestCase
         $this->assertSame($activeTenants, $result);
     }
 
+    #[Test]
     public function testResetClearsCurrentTenant(): void
     {
         $tenant = new Tenant();
@@ -195,6 +208,7 @@ class TenantContextTest extends TestCase
         $this->assertFalse($this->tenantContext->hasTenant());
     }
 
+    #[Test]
     public function testGetAccessibleTenantsReturnsEmptyWithoutCurrentTenant(): void
     {
         $this->security->method('getUser')->willReturn(null);
@@ -202,6 +216,7 @@ class TenantContextTest extends TestCase
         $this->assertSame([], $this->tenantContext->getAccessibleTenants());
     }
 
+    #[Test]
     public function testGetAccessibleTenantsReturnsSelfPlusDescendants(): void
     {
         $holding = (new Tenant())->setCode('holding')->setName('Holding');
@@ -224,6 +239,7 @@ class TenantContextTest extends TestCase
         $this->assertContains($grandchild, $accessible);
     }
 
+    #[Test]
     public function testCanAccessTenantCurrentTenantItself(): void
     {
         $current = $this->createMock(Tenant::class);
@@ -234,6 +250,7 @@ class TenantContextTest extends TestCase
         $this->assertTrue($this->tenantContext->canAccessTenant($current));
     }
 
+    #[Test]
     public function testCanAccessTenantDescendantReturnsTrue(): void
     {
         $holding = (new Tenant())->setCode('holding');
@@ -245,6 +262,7 @@ class TenantContextTest extends TestCase
         $this->assertTrue($this->tenantContext->canAccessTenant($sub));
     }
 
+    #[Test]
     public function testCanAccessTenantSiblingReturnsFalse(): void
     {
         $holding = (new Tenant())->setCode('holding');
@@ -258,6 +276,7 @@ class TenantContextTest extends TestCase
         $this->assertFalse($this->tenantContext->canAccessTenant($sub2));
     }
 
+    #[Test]
     public function testGetCurrentRootReturnsRoot(): void
     {
         $holding = (new Tenant())->setCode('holding');
@@ -271,6 +290,7 @@ class TenantContextTest extends TestCase
         $this->assertSame($holding, $this->tenantContext->getCurrentRoot());
     }
 
+    #[Test]
     public function testMultipleCallsToGetCurrentTenantUseCachedValue(): void
     {
         $tenant = new Tenant();

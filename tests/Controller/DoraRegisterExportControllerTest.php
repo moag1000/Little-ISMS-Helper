@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for DoraRegisterExportController (MINOR-6).
@@ -114,6 +115,7 @@ class DoraRegisterExportControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testUnauthenticatedRedirectsToLogin(): void
     {
         $this->client->request('GET', '/en/dora-compliance/register-export.csv');
@@ -126,6 +128,7 @@ class DoraRegisterExportControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testRoleUserIsForbidden(): void
     {
         $this->client->loginUser($this->userRoleUser);
@@ -134,6 +137,7 @@ class DoraRegisterExportControllerTest extends WebTestCase
         self::assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
     }
 
+    #[Test]
     public function testRoleManagerReceivesCsvDownload(): void
     {
         $this->client->loginUser($this->userRoleManager);
@@ -155,6 +159,7 @@ class DoraRegisterExportControllerTest extends WebTestCase
         self::assertStringStartsWith("\xEF\xBB\xBF", $response->getContent() ?: '');
     }
 
+    #[Test]
     public function testAuditLogEntryCreatedOnExport(): void
     {
         $this->client->loginUser($this->userRoleManager);

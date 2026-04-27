@@ -5,9 +5,11 @@ namespace App\Tests\Entity;
 use App\Entity\User;
 use App\Entity\UserSession;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UserSessionTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $session = new UserSession();
@@ -19,6 +21,7 @@ class UserSessionTest extends TestCase
         $this->assertTrue($session->isActive());
     }
 
+    #[Test]
     public function testBasicGettersAndSetters(): void
     {
         $session = new UserSession();
@@ -37,6 +40,7 @@ class UserSessionTest extends TestCase
         $this->assertEquals('Mozilla/5.0', $session->getUserAgent());
     }
 
+    #[Test]
     public function testIsActive(): void
     {
         $session = new UserSession();
@@ -47,6 +51,7 @@ class UserSessionTest extends TestCase
         $this->assertFalse($session->isActive());
     }
 
+    #[Test]
     public function testTimestamps(): void
     {
         $session = new UserSession();
@@ -62,6 +67,7 @@ class UserSessionTest extends TestCase
         $this->assertEquals($now, $session->getEndedAt());
     }
 
+    #[Test]
     public function testUpdateActivity(): void
     {
         $session = new UserSession();
@@ -76,6 +82,7 @@ class UserSessionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testEndReason(): void
     {
         $session = new UserSession();
@@ -86,6 +93,7 @@ class UserSessionTest extends TestCase
         $this->assertEquals('logout', $session->getEndReason());
     }
 
+    #[Test]
     public function testTerminatedBy(): void
     {
         $session = new UserSession();
@@ -96,6 +104,7 @@ class UserSessionTest extends TestCase
         $this->assertEquals('admin@example.com', $session->getTerminatedBy());
     }
 
+    #[Test]
     public function testTerminate(): void
     {
         $session = new UserSession();
@@ -113,6 +122,7 @@ class UserSessionTest extends TestCase
         $this->assertEquals('admin@example.com', $session->getTerminatedBy());
     }
 
+    #[Test]
     public function testTerminateWithDefaultReason(): void
     {
         $session = new UserSession();
@@ -123,6 +133,7 @@ class UserSessionTest extends TestCase
         $this->assertNull($session->getTerminatedBy());
     }
 
+    #[Test]
     public function testIsExpiredWhenInactive(): void
     {
         $session = new UserSession();
@@ -131,6 +142,7 @@ class UserSessionTest extends TestCase
         $this->assertTrue($session->isExpired());
     }
 
+    #[Test]
     public function testIsExpiredWithRecentActivity(): void
     {
         $session = new UserSession();
@@ -140,6 +152,7 @@ class UserSessionTest extends TestCase
         $this->assertFalse($session->isExpired(3600)); // 1 hour timeout
     }
 
+    #[Test]
     public function testIsExpiredWithOldActivity(): void
     {
         $session = new UserSession();
@@ -150,6 +163,7 @@ class UserSessionTest extends TestCase
         $this->assertTrue($session->isExpired(3600)); // 1 hour timeout
     }
 
+    #[Test]
     public function testGetDurationForActiveSession(): void
     {
         $session = new UserSession();
@@ -161,6 +175,7 @@ class UserSessionTest extends TestCase
         $this->assertLessThanOrEqual(3605, $duration); // Allow 5 seconds tolerance
     }
 
+    #[Test]
     public function testGetDurationForEndedSession(): void
     {
         $session = new UserSession();
@@ -173,6 +188,7 @@ class UserSessionTest extends TestCase
         $this->assertEquals(5400, $duration); // 1.5 hours = 5400 seconds
     }
 
+    #[Test]
     public function testGetFormattedDurationInHours(): void
     {
         $session = new UserSession();
@@ -185,6 +201,7 @@ class UserSessionTest extends TestCase
         $this->assertEquals('2h 30m', $formatted);
     }
 
+    #[Test]
     public function testGetFormattedDurationInMinutes(): void
     {
         $session = new UserSession();

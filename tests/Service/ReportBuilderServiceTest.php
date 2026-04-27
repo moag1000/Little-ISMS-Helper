@@ -22,6 +22,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * ReportBuilderService Unit Tests
@@ -86,6 +87,7 @@ class ReportBuilderServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGetWidgetLibraryReturnsAllCategories(): void
     {
         $library = $this->service->getWidgetLibrary();
@@ -97,6 +99,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertArrayHasKey(ReportBuilderService::WIDGET_CATEGORY_TEXT, $library);
     }
 
+    #[Test]
     public function testGetWidgetLibraryHasKpiWidgets(): void
     {
         $library = $this->service->getWidgetLibrary();
@@ -108,6 +111,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertArrayHasKey(ReportBuilderService::WIDGET_KPI_COMPLIANCE_SCORE, $kpiWidgets);
     }
 
+    #[Test]
     public function testGetWidgetLibraryHasChartWidgets(): void
     {
         $library = $this->service->getWidgetLibrary();
@@ -118,6 +122,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertArrayHasKey(ReportBuilderService::WIDGET_CHART_CONTROL_STATUS, $chartWidgets);
     }
 
+    #[Test]
     public function testGetWidgetLibraryHasTableWidgets(): void
     {
         $library = $this->service->getWidgetLibrary();
@@ -128,6 +133,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertArrayHasKey(ReportBuilderService::WIDGET_TABLE_CRITICAL_ASSETS, $tableWidgets);
     }
 
+    #[Test]
     public function testGetWidgetDataReturnsRiskCount(): void
     {
         $this->riskRepository->method('count')->willReturn(15);
@@ -139,6 +145,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertEquals(15, $data['value']);
     }
 
+    #[Test]
     public function testGetWidgetDataReturnsControlCount(): void
     {
         $this->controlRepository->method('count')->willReturn(93);
@@ -149,6 +156,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertEquals(93, $data['value']);
     }
 
+    #[Test]
     public function testGetWidgetDataReturnsAssetCount(): void
     {
         $this->assetRepository->method('count')->willReturn(50);
@@ -159,6 +167,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertEquals(50, $data['value']);
     }
 
+    #[Test]
     public function testGetWidgetDataReturnsIncidentCount(): void
     {
         $this->incidentRepository->method('count')->willReturn(12);
@@ -169,6 +178,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertEquals(12, $data['value']);
     }
 
+    #[Test]
     public function testGetWidgetDataReturnsRiskMatrixStructure(): void
     {
         $this->riskRepository->method('findAll')->willReturn([]);
@@ -181,6 +191,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertEquals('heatmap', $data['type']);
     }
 
+    #[Test]
     public function testGetWidgetDataReturnsTopRisksTable(): void
     {
         $this->riskRepository->method('findAll')->willReturn([]);
@@ -193,6 +204,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertIsArray($data['rows']);
     }
 
+    #[Test]
     public function testGetWidgetDataReturnsRAGStatus(): void
     {
         $this->controlRepository->method('findAll')->willReturn([]);
@@ -205,6 +217,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertContains($data['status'], ['green', 'amber', 'red']);
     }
 
+    #[Test]
     public function testGetWidgetDataReturnsUnknownWidgetError(): void
     {
         $data = $this->service->getWidgetData('invalid_widget_type');
@@ -212,6 +225,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertArrayHasKey('error', $data);
     }
 
+    #[Test]
     public function testGetPredefinedTemplatesReturnsAllTemplates(): void
     {
         $templates = $this->service->getPredefinedTemplates();
@@ -224,6 +238,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertArrayHasKey('asset_overview', $templates);
     }
 
+    #[Test]
     public function testGetPredefinedTemplatesHaveRequiredFields(): void
     {
         $templates = $this->service->getPredefinedTemplates();
@@ -237,6 +252,7 @@ class ReportBuilderServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testCreateFromTemplateReturnsReport(): void
     {
         $user = $this->createMock(User::class);
@@ -250,6 +266,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertNotEmpty($report->getWidgets());
     }
 
+    #[Test]
     public function testCreateFromTemplateReturnsNullForInvalidTemplate(): void
     {
         $user = $this->createMock(User::class);
@@ -259,6 +276,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertNull($report);
     }
 
+    #[Test]
     public function testGenerateReportDataReturnsExpectedStructure(): void
     {
         $report = new CustomReport();
@@ -285,6 +303,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertArrayHasKey('widget1', $data['widgets']);
     }
 
+    #[Test]
     public function testWidgetLibraryWidgetsHaveRequiredMetadata(): void
     {
         $library = $this->service->getWidgetLibrary();
@@ -302,6 +321,7 @@ class ReportBuilderServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testWidgetCountMeetsMinimumRequirement(): void
     {
         $library = $this->service->getWidgetLibrary();
@@ -315,6 +335,7 @@ class ReportBuilderServiceTest extends TestCase
         $this->assertGreaterThanOrEqual(20, $totalWidgets, 'Should have at least 20 widgets');
     }
 
+    #[Test]
     public function testTemplateCountMeetsMinimumRequirement(): void
     {
         $templates = $this->service->getPredefinedTemplates();

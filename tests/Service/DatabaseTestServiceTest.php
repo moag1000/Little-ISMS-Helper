@@ -7,6 +7,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class DatabaseTestServiceTest extends TestCase
@@ -42,6 +43,7 @@ class DatabaseTestServiceTest extends TestCase
 
     // testConnection() Tests
 
+    #[Test]
     public function testTestConnectionReturnsErrorForUnsupportedDatabaseType(): void
     {
         $config = ['type' => 'oracle'];
@@ -55,6 +57,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertStringContainsString('Unsupported database type: oracle', $result['message']);
     }
 
+    #[Test]
     public function testTestConnectionDefaultsToMysql(): void
     {
         $config = []; // No type specified
@@ -67,6 +70,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertArrayHasKey('message', $result);
     }
 
+    #[Test]
     public function testTestConnectionSanitizesErrorMessages(): void
     {
         // Test with invalid MySQL config to trigger error
@@ -87,6 +91,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertLessThanOrEqual(203, strlen($result['message'])); // 200 + '...'
     }
 
+    #[Test]
     public function testTestConnectionRecognizesMysqlType(): void
     {
         $config = [
@@ -100,6 +105,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertArrayHasKey('success', $result);
     }
 
+    #[Test]
     public function testTestConnectionRecognizesMariadbType(): void
     {
         $config = [
@@ -113,6 +119,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertArrayHasKey('success', $result);
     }
 
+    #[Test]
     public function testTestConnectionRecognizesPostgresqlType(): void
     {
         $config = [
@@ -126,6 +133,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertArrayHasKey('success', $result);
     }
 
+    #[Test]
     public function testTestConnectionRecognizesSqliteType(): void
     {
         $config = [
@@ -139,6 +147,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertArrayHasKey('success', $result);
     }
 
+    #[Test]
     public function testTestConnectionSqliteSuccessfulConnection(): void
     {
         $config = [
@@ -160,6 +169,7 @@ class DatabaseTestServiceTest extends TestCase
 
     // createDatabaseIfNotExists() Tests
 
+    #[Test]
     public function testCreateDatabaseIfNotExistsReturnsErrorForUnsupportedType(): void
     {
         $config = ['type' => 'mongodb'];
@@ -170,6 +180,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertStringContainsString('Unsupported database type: mongodb', $result['message']);
     }
 
+    #[Test]
     public function testCreateDatabaseIfNotExistsDefaultsToMysql(): void
     {
         $config = []; // No type specified
@@ -181,6 +192,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertArrayHasKey('success', $result);
     }
 
+    #[Test]
     public function testCreateDatabaseIfNotExistsSqliteCreatesVarDirectory(): void
     {
         $config = [
@@ -195,6 +207,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertDirectoryExists($this->projectDir . '/var');
     }
 
+    #[Test]
     public function testCreateDatabaseIfNotExistsSqliteCreatesDatabase(): void
     {
         $config = [
@@ -209,6 +222,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertFileExists($dbPath);
     }
 
+    #[Test]
     public function testCreateDatabaseIfNotExistsSqliteUsesDefaultName(): void
     {
         $config = [
@@ -225,6 +239,7 @@ class DatabaseTestServiceTest extends TestCase
 
     // checkExistingTables() Tests
 
+    #[Test]
     public function testCheckExistingTablesReturnsEmptyForUnsupportedType(): void
     {
         $config = ['type' => 'redis'];
@@ -240,6 +255,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertEquals([], $result['tables']);
     }
 
+    #[Test]
     public function testCheckExistingTablesSqliteReturnsEmptyWhenDatabaseDoesNotExist(): void
     {
         $config = [
@@ -254,6 +270,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertEquals([], $result['tables']);
     }
 
+    #[Test]
     public function testCheckExistingTablesSqliteReturnsEmptyForNewDatabase(): void
     {
         $config = [
@@ -274,6 +291,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertIsArray($result['tables']);
     }
 
+    #[Test]
     public function testCheckExistingTablesSqliteDetectsExistingTables(): void
     {
         $config = [
@@ -298,6 +316,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertContains('roles', $result['tables']);
     }
 
+    #[Test]
     public function testCheckExistingTablesSqliteExcludesSqliteMasterTables(): void
     {
         $config = [
@@ -320,6 +339,7 @@ class DatabaseTestServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testCheckExistingTablesHandlesExceptions(): void
     {
         $config = [
@@ -338,6 +358,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertArrayHasKey('error', $result);
     }
 
+    #[Test]
     public function testCheckExistingTablesDefaultsToMysql(): void
     {
         $config = []; // No type specified
@@ -350,6 +371,7 @@ class DatabaseTestServiceTest extends TestCase
 
     // sanitizeErrorMessage() Tests (tested indirectly through other methods)
 
+    #[Test]
     public function testSanitizeErrorMessageRemovesPassword(): void
     {
         $config = [
@@ -366,6 +388,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertStringNotContainsString('MySecretPassword123', $result['message']);
     }
 
+    #[Test]
     public function testSanitizeErrorMessageTruncatesLongMessages(): void
     {
         // This is tested indirectly in testTestConnectionSanitizesErrorMessages
@@ -375,6 +398,7 @@ class DatabaseTestServiceTest extends TestCase
 
     // Edge Cases and Additional Coverage
 
+    #[Test]
     public function testMysqlConnectionWithDefaultValues(): void
     {
         $config = [
@@ -389,6 +413,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertArrayHasKey('message', $result);
     }
 
+    #[Test]
     public function testPostgresqlConnectionWithDefaultValues(): void
     {
         $config = [
@@ -402,6 +427,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertArrayHasKey('success', $result);
     }
 
+    #[Test]
     public function testMysqlConnectionWithCustomPort(): void
     {
         $config = [
@@ -419,6 +445,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertArrayHasKey('success', $result);
     }
 
+    #[Test]
     public function testPostgresqlConnectionWithCustomPort(): void
     {
         $config = [
@@ -436,6 +463,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertArrayHasKey('success', $result);
     }
 
+    #[Test]
     public function testMysqlConnectionWithUnixSocket(): void
     {
         $config = [
@@ -453,6 +481,7 @@ class DatabaseTestServiceTest extends TestCase
         // Will fail because socket doesn't exist, but tests the code path
     }
 
+    #[Test]
     public function testMysqlCreateDatabaseWithUnixSocket(): void
     {
         $config = [
@@ -469,6 +498,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertArrayHasKey('success', $result);
     }
 
+    #[Test]
     public function testSqliteConnectionWithCustomName(): void
     {
         $config = [
@@ -484,6 +514,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertTrue($result['success']);
     }
 
+    #[Test]
     public function testMultipleCallsToSameService(): void
     {
         $config = [
@@ -506,6 +537,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertEquals($result1, $result2);
     }
 
+    #[Test]
     public function testCreateDatabaseThenCheckTables(): void
     {
         $config = [
@@ -523,6 +555,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertEquals(0, $checkResult['count']);
     }
 
+    #[Test]
     public function testCheckExistingTablesAfterCreatingTables(): void
     {
         $config = [
@@ -548,6 +581,7 @@ class DatabaseTestServiceTest extends TestCase
         $this->assertCount(3, $result['tables']);
     }
 
+    #[Test]
     public function testErrorMessageContainsConnectionType(): void
     {
         $sqliteConfig = [

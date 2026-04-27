@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class ControlVoterTest extends TestCase
@@ -45,6 +46,7 @@ class ControlVoterTest extends TestCase
         return new UsernamePasswordToken($user, 'main', $user->getRoles());
     }
 
+    #[Test]
     public function testAdminCanViewAnyControl(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -56,6 +58,7 @@ class ControlVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testAdminCanEditAnyControl(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -67,6 +70,7 @@ class ControlVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testAdminCanDeleteAnyControl(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -78,6 +82,7 @@ class ControlVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCanViewOwnTenantControl(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -89,6 +94,7 @@ class ControlVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCannotViewOtherTenantControl(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -100,6 +106,7 @@ class ControlVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testUserCannotDeleteControl(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -111,6 +118,7 @@ class ControlVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testVoterAbstainsForNonControlSubject(): void
     {
         $user = $this->createUser(['ROLE_USER']);

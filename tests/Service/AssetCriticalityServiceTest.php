@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests for AssetCriticalityService
@@ -46,6 +47,7 @@ class AssetCriticalityServiceTest extends TestCase
 
     // ==================== getCriticalityDashboard() Tests ====================
 
+    #[Test]
     public function testGetCriticalityDashboardReturnsAllSections(): void
     {
         $asset = $this->createAsset(1, 'Test', 'server', 3, 3, 3);
@@ -62,6 +64,7 @@ class AssetCriticalityServiceTest extends TestCase
         $this->assertArrayHasKey('summary', $result);
     }
 
+    #[Test]
     public function testGetCriticalityDashboardWithNoAssets(): void
     {
         $this->assetRepository->method('findAll')->willReturn([]);
@@ -73,6 +76,7 @@ class AssetCriticalityServiceTest extends TestCase
         $this->assertEmpty($result['profiles']);
     }
 
+    #[Test]
     public function testCriticalityDistributionCalculation(): void
     {
         $critical = $this->createAsset(1, 'Critical', 'server', 5, 5, 5);  // 15 = critical
@@ -94,6 +98,7 @@ class AssetCriticalityServiceTest extends TestCase
 
     // ==================== getAssetIncidentProbability() Tests ====================
 
+    #[Test]
     public function testGetAssetIncidentProbabilityReturnsAllSections(): void
     {
         $this->assetRepository->method('findAll')->willReturn([]);
@@ -106,6 +111,7 @@ class AssetCriticalityServiceTest extends TestCase
         $this->assertArrayHasKey('summary', $result);
     }
 
+    #[Test]
     public function testAssetIncidentProbabilityCalculation(): void
     {
         $asset = $this->createAsset(1, 'Server', 'server', 5, 5, 5);
@@ -121,6 +127,7 @@ class AssetCriticalityServiceTest extends TestCase
         $this->assertGreaterThan(0, $profile['incident_probability']);
     }
 
+    #[Test]
     public function testHighRiskAssetsFiltering(): void
     {
         $highRisk = $this->createAsset(1, 'High Risk', 'server', 5, 5, 5);
@@ -143,6 +150,7 @@ class AssetCriticalityServiceTest extends TestCase
 
     // ==================== getVulnerabilityMatrix() Tests ====================
 
+    #[Test]
     public function testGetVulnerabilityMatrixReturnsAllSections(): void
     {
         $this->assetRepository->method('findAll')->willReturn([]);
@@ -154,6 +162,7 @@ class AssetCriticalityServiceTest extends TestCase
         $this->assertArrayHasKey('summary', $result);
     }
 
+    #[Test]
     public function testVulnerabilityMatrixWithRisks(): void
     {
         $asset = $this->createAsset(1, 'Server', 'server', 3, 3, 3);
@@ -169,6 +178,7 @@ class AssetCriticalityServiceTest extends TestCase
         $this->assertEquals(1, $result['summary']['total_risk_links']);
     }
 
+    #[Test]
     public function testVulnerabilityMatrixCoordinates(): void
     {
         $asset = $this->createAsset(1, 'Server', 'server', 4, 3, 2); // criticality = 9
@@ -186,6 +196,7 @@ class AssetCriticalityServiceTest extends TestCase
 
     // ==================== getTypeAnalysis() Tests ====================
 
+    #[Test]
     public function testGetTypeAnalysisGroupsByType(): void
     {
         $server1 = $this->createAsset(1, 'Server 1', 'server', 5, 5, 5);
@@ -202,6 +213,7 @@ class AssetCriticalityServiceTest extends TestCase
         $this->assertEquals(13.5, $serverType['average_criticality']); // (15+12)/2
     }
 
+    #[Test]
     public function testGetTypeAnalysisSortsByCriticality(): void
     {
         $server = $this->createAsset(1, 'Server', 'server', 5, 5, 5);  // 15
@@ -218,6 +230,7 @@ class AssetCriticalityServiceTest extends TestCase
 
     // ==================== getSupplyChainRisk() Tests ====================
 
+    #[Test]
     public function testGetSupplyChainRiskFiltersSuppliers(): void
     {
         $supplier = $this->createAsset(1, 'Cloud', 'cloud_service', 3, 3, 3);
@@ -233,6 +246,7 @@ class AssetCriticalityServiceTest extends TestCase
         $this->assertEquals('Cloud', $result['suppliers'][0]['asset_name']);
     }
 
+    #[Test]
     public function testGetSupplyChainRiskConcentration(): void
     {
         $supplier1 = $this->createAssetWithOwner(1, 'Service 1', 'cloud_service', 3, 3, 3, 'AWS');
@@ -251,6 +265,7 @@ class AssetCriticalityServiceTest extends TestCase
 
     // ==================== Edge Cases ====================
 
+    #[Test]
     public function testHandlesNullCIAValues(): void
     {
         $asset = $this->createAssetWithNullCIA(1, 'Null CIA', 'server');
@@ -265,6 +280,7 @@ class AssetCriticalityServiceTest extends TestCase
         $this->assertEquals('low', $result['profiles'][0]['criticality_level']);
     }
 
+    #[Test]
     public function testHandlesIncidentsWithNullDates(): void
     {
         $asset = $this->createAsset(1, 'Test', 'server', 3, 3, 3);

@@ -6,6 +6,7 @@ use App\Entity\PortfolioSnapshot;
 use App\Entity\Tenant;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Entity-level unit tests for PortfolioSnapshot (CM-3).
@@ -16,6 +17,7 @@ use PHPUnit\Framework\TestCase;
  */
 class PortfolioSnapshotTest extends TestCase
 {
+    #[Test]
     public function testNewSnapshotHasDefaults(): void
     {
         $snapshot = new PortfolioSnapshot();
@@ -27,6 +29,7 @@ class PortfolioSnapshotTest extends TestCase
         $this->assertInstanceOf(DateTimeImmutable::class, $snapshot->getCreatedAt());
     }
 
+    #[Test]
     public function testSettersAndGetters(): void
     {
         $tenant = new Tenant();
@@ -50,6 +53,7 @@ class PortfolioSnapshotTest extends TestCase
         $this->assertSame(4, $snapshot->getGapCount());
     }
 
+    #[Test]
     public function testFulfillmentPercentageIsClampedToRange(): void
     {
         $snapshot = new PortfolioSnapshot();
@@ -64,6 +68,7 @@ class PortfolioSnapshotTest extends TestCase
         $this->assertSame(85, $snapshot->getFulfillmentPercentage());
     }
 
+    #[Test]
     public function testCountsCannotGoNegative(): void
     {
         $snapshot = new PortfolioSnapshot();
@@ -80,6 +85,7 @@ class PortfolioSnapshotTest extends TestCase
      * guarantee. This test documents the semantic key shape: all four components
      * must be set before persist() is meaningful.
      */
+    #[Test]
     public function testUniqueKeyShapeIsRepresentedOnEntity(): void
     {
         $snapshot = new PortfolioSnapshot();

@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class EmailNotificationServiceTest extends TestCase
@@ -34,6 +35,7 @@ class EmailNotificationServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testSendIncidentNotificationWithStringRecipient(): void
     {
         $incident = $this->createMock(Incident::class);
@@ -49,6 +51,7 @@ class EmailNotificationServiceTest extends TestCase
         $this->service->sendIncidentNotification($incident, ['user@example.com']);
     }
 
+    #[Test]
     public function testSendIncidentNotificationWithUserObject(): void
     {
         $incident = $this->createMock(Incident::class);
@@ -63,6 +66,7 @@ class EmailNotificationServiceTest extends TestCase
         $this->service->sendIncidentNotification($incident, [$user]);
     }
 
+    #[Test]
     public function testSendIncidentNotificationSanitizesSubject(): void
     {
         $incident = $this->createMock(Incident::class);
@@ -83,6 +87,7 @@ class EmailNotificationServiceTest extends TestCase
         $this->service->sendIncidentNotification($incident, ['user@example.com']);
     }
 
+    #[Test]
     public function testSendIncidentNotificationToMultipleRecipients(): void
     {
         $incident = $this->createMock(Incident::class);
@@ -98,6 +103,7 @@ class EmailNotificationServiceTest extends TestCase
         ]);
     }
 
+    #[Test]
     public function testSendIncidentUpdateNotification(): void
     {
         $incident = $this->createMock(Incident::class);
@@ -116,6 +122,7 @@ class EmailNotificationServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testSendAuditDueNotification(): void
     {
         $audit = $this->createMock(InternalAudit::class);
@@ -131,6 +138,7 @@ class EmailNotificationServiceTest extends TestCase
         $this->service->sendAuditDueNotification($audit, ['auditor@example.com']);
     }
 
+    #[Test]
     public function testSendTrainingDueNotification(): void
     {
         $training = $this->createMock(Training::class);
@@ -146,6 +154,7 @@ class EmailNotificationServiceTest extends TestCase
         $this->service->sendTrainingDueNotification($training, ['trainee@example.com']);
     }
 
+    #[Test]
     public function testSendControlDueNotification(): void
     {
         $control = $this->createMock(Control::class);
@@ -161,6 +170,7 @@ class EmailNotificationServiceTest extends TestCase
         $this->service->sendControlDueNotification($control, ['manager@example.com']);
     }
 
+    #[Test]
     public function testSendWorkflowOverdueNotification(): void
     {
         $workflow = $this->createMock(Workflow::class);
@@ -179,6 +189,7 @@ class EmailNotificationServiceTest extends TestCase
         $this->service->sendWorkflowOverdueNotification($instance, ['approver@example.com']);
     }
 
+    #[Test]
     public function testSendGenericNotification(): void
     {
         $this->mailer->expects($this->once())
@@ -196,6 +207,7 @@ class EmailNotificationServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testSendGenericNotificationSanitizesSubject(): void
     {
         $this->mailer->expects($this->once())
@@ -214,6 +226,7 @@ class EmailNotificationServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testSubjectIsTruncatedToMaxLength(): void
     {
         $incident = $this->createMock(Incident::class);
@@ -233,6 +246,7 @@ class EmailNotificationServiceTest extends TestCase
         $this->service->sendIncidentNotification($incident, ['user@example.com']);
     }
 
+    #[Test]
     public function testControlCharactersAreRemoved(): void
     {
         $incident = $this->createMock(Incident::class);
@@ -251,6 +265,7 @@ class EmailNotificationServiceTest extends TestCase
         $this->service->sendIncidentNotification($incident, ['user@example.com']);
     }
 
+    #[Test]
     public function testEmailFromAddressIsCorrect(): void
     {
         $incident = $this->createMock(Incident::class);
@@ -268,6 +283,7 @@ class EmailNotificationServiceTest extends TestCase
         $this->service->sendIncidentNotification($incident, ['user@example.com']);
     }
 
+    #[Test]
     public function testEmptyRecipientsDoesNotSendEmail(): void
     {
         $incident = $this->createMock(Incident::class);
@@ -279,6 +295,7 @@ class EmailNotificationServiceTest extends TestCase
         $this->service->sendIncidentNotification($incident, []);
     }
 
+    #[Test]
     public function testWhitespaceIsTrimmedFromSubject(): void
     {
         $incident = $this->createMock(Incident::class);
@@ -296,6 +313,7 @@ class EmailNotificationServiceTest extends TestCase
         $this->service->sendIncidentNotification($incident, ['user@example.com']);
     }
 
+    #[Test]
     public function testMultibyteCharactersArePreserved(): void
     {
         $incident = $this->createMock(Incident::class);

@@ -63,9 +63,9 @@ final class TagController extends AbstractController
     }
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
+    #[IsGranted(TagVoter::TAG_MANAGE)]
     public function new(Request $request): Response
     {
-        $this->denyAccessUnlessGranted(TagVoter::TAG_MANAGE);
 
         $tag = new Tag();
         $tag->setTenant($this->tenantContext->getCurrentTenant());
@@ -134,9 +134,9 @@ final class TagController extends AbstractController
      * Returns JSON (for fetch-based Stimulus controllers) with counts.
      */
     #[Route('/bulk/{entityClass}', name: 'bulk_apply', methods: ['POST'], requirements: ['entityClass' => '[A-Za-z\\\\]+'])]
+    #[IsGranted(TagVoter::TAG_APPLY)]
     public function bulkApply(string $entityClass, Request $request): Response
     {
-        $this->denyAccessUnlessGranted(TagVoter::TAG_APPLY);
 
         if (!$this->isCsrfTokenValid('tag_bulk_apply', (string) $request->headers->get('X-CSRF-Token', (string) $request->request->get('_token')))) {
             return new JsonResponse(
