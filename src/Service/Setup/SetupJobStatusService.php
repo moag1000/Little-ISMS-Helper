@@ -70,7 +70,7 @@ final class SetupJobStatusService
     }
 
     /**
-     * @return array{status: string, message: ?string, started_at?: int, updated_at?: int}
+     * @return array{status: string, message: ?string, started_at?: int, updated_at?: int, payload?: array<string, mixed>}
      */
     public function read(string $job): array
     {

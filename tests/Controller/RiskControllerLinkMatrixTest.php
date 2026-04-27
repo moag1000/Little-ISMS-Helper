@@ -116,7 +116,7 @@ class RiskControllerLinkMatrixTest extends WebTestCase
         $this->vulnA->setCveId('CVE-2099-A' . substr($uid, -6));
         $this->vulnA->setTitle('Log4Shell-like RCE in TestApp');
         $this->vulnA->setDescription('Remote code execution via crafted payloads.');
-        $this->vulnA->setSeverity(\App\Enum\IncidentSeverity::Critical);
+        $this->vulnA->setSeverity("critical");
         $this->vulnA->setSource('internal');
         $this->vulnA->setStatus(\App\Enum\RiskStatus::Open);
         $this->vulnA->setDiscoveredDate(new \DateTimeImmutable());
@@ -128,7 +128,7 @@ class RiskControllerLinkMatrixTest extends WebTestCase
         $this->vulnB->setCveId('CVE-2099-B' . substr($uid, -6));
         $this->vulnB->setTitle('Cross-Tenant Leakage Probe');
         $this->vulnB->setDescription('This MUST NOT leak into another tenant.');
-        $this->vulnB->setSeverity(\App\Enum\IncidentSeverity::High);
+        $this->vulnB->setSeverity("high");
         $this->vulnB->setSource('internal');
         $this->vulnB->setStatus(\App\Enum\RiskStatus::Open);
         $this->vulnB->setDiscoveredDate(new \DateTimeImmutable());

@@ -1094,9 +1094,9 @@ class ReportBuilderService
         return [
             'text' => sprintf(
                 $this->translator->trans('widget.text_summary.content', [], 'report_builder'),
-                $stats['risks']['total'] ?? 0,
-                $stats['controls']['implemented'] ?? 0,
-                $stats['incidents']['open'] ?? 0
+                $stats['risks_total'] ?? 0,
+                $stats['controls_implemented'] ?? 0,
+                $stats['incidents_open'] ?? 0
             ),
         ];
     }
