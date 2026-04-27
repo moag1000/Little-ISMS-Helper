@@ -23,6 +23,7 @@ use App\Repository\ProcessingActivityRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\LocationRepository;
 use App\Repository\PersonRepository;
+use App\Repository\DataProtectionImpactAssessmentRepository;
 use App\Repository\DataSubjectRequestRepository;
 use App\Repository\KpiSnapshotRepository;
 
@@ -56,7 +57,8 @@ class DataIntegrityService
         private readonly LocationRepository $locationRepository,
         private readonly PersonRepository $personRepository,
         private readonly ?DataSubjectRequestRepository $dataSubjectRequestRepository = null,
-        private readonly ?KpiSnapshotRepository $kpiSnapshotRepository = null
+        private readonly ?KpiSnapshotRepository $kpiSnapshotRepository = null,
+        private readonly ?DataProtectionImpactAssessmentRepository $dpiaRepository = null
     ) {
     }
 
@@ -622,6 +624,112 @@ class DataIntegrityService
         }
         if (count($pastReviewDate) > 0) {
             $issues['risks_past_review_date'] = $pastReviewDate;
+        }
+
+        return $issues;
+    }
+
+    /**
+     * Compliance-specific health checks (GDPR / ISO 27001 privacy extensions).
+     *
+     * Returns five keyed arrays:
+     *   - 'assets_without_cia'    : Asset objects where all three CIA values are NULL or 0
+     *   - 'breaches_overdue_72h'  : DataBreach objects requiring authority notification but overdue
+     *   - 'dsr_overdue_30d'       : DataSubjectRequest objects past their deadline and still open
+     *   - 'dpia_without_dpo'      : DataProtectionImpactAssessment objects approved without DPO consultation
+     *   - 'vvt_incomplete'        : ProcessingActivity objects active but incomplete per Art. 30
+     */
+    public function findComplianceHealthIssues(): array
+    {
+        $issues = [];
+
+        // Check 1: Assets without CIA values (all three NULL or 0 = no classification)
+        try {
+            $assetsWithoutCia = $this->assetRepository->createQueryBuilder('a')
+                ->where(
+                    '(a.confidentialityValue IS NULL OR a.confidentialityValue = 0) AND ' .
+                    '(a.integrityValue IS NULL OR a.integrityValue = 0) AND ' .
+                    '(a.availabilityValue IS NULL OR a.availabilityValue = 0)'
+                )
+                ->getQuery()
+                ->getResult();
+            if (count($assetsWithoutCia) > 0) {
+                $issues['assets_without_cia'] = $assetsWithoutCia;
+            }
+        } catch (\Throwable) {
+        }
+
+        // Check 2: Data Breaches overdue 72h supervisory authority notification (GDPR Art. 33)
+        try {
+            $cutoff = new \DateTimeImmutable('-72 hours');
+            $overdueBreaches = $this->dataBreachRepository->createQueryBuilder('db')
+                ->where('db.requiresAuthorityNotification = :req')
+                ->andWhere('db.supervisoryAuthorityNotifiedAt IS NULL')
+                ->andWhere('db.detectedAt IS NOT NULL')
+                ->andWhere('db.detectedAt < :cutoff')
+                ->setParameter('req', true)
+                ->setParameter('cutoff', $cutoff)
+                ->getQuery()
+                ->getResult();
+            if (count($overdueBreaches) > 0) {
+                $issues['breaches_overdue_72h'] = $overdueBreaches;
+            }
+        } catch (\Throwable) {
+        }
+
+        // Check 3: Data Subject Requests past 30-day deadline and still open (GDPR Art. 12(3))
+        if ($this->dataSubjectRequestRepository !== null) {
+            try {
+                $now = new \DateTimeImmutable();
+                $overdueDsr = $this->dataSubjectRequestRepository->createQueryBuilder('d')
+                    ->where('d.deadlineAt IS NOT NULL')
+                    ->andWhere('d.deadlineAt < :now')
+                    ->andWhere('d.status NOT IN (:terminal)')
+                    ->setParameter('now', $now)
+                    ->setParameter('terminal', ['completed', 'rejected'])
+                    ->getQuery()
+                    ->getResult();
+                if (count($overdueDsr) > 0) {
+                    $issues['dsr_overdue_30d'] = $overdueDsr;
+                }
+            } catch (\Throwable) {
+            }
+        }
+
+        // Check 4: DPIA approved without DPO consultation (GDPR Art. 35/36)
+        if ($this->dpiaRepository !== null) {
+            try {
+                $dpiaWithoutDpo = $this->dpiaRepository->createQueryBuilder('d')
+                    ->where('d.status = :approved')
+                    ->andWhere('d.dpoConsultationDate IS NULL')
+                    ->setParameter('approved', 'approved')
+                    ->getQuery()
+                    ->getResult();
+                if (count($dpiaWithoutDpo) > 0) {
+                    $issues['dpia_without_dpo'] = $dpiaWithoutDpo;
+                }
+            } catch (\Throwable) {
+            }
+        }
+
+        // Check 5: Active processing activities incomplete per Art. 30 VVT
+        try {
+            $allActiveActivities = $this->processingActivityRepository->createQueryBuilder('pa')
+                ->where('pa.status = :active')
+                ->setParameter('active', 'active')
+                ->getQuery()
+                ->getResult();
+            $incomplete = array_filter(
+                $allActiveActivities,
+                fn($pa): bool =>
+                    empty($pa->getName()) ||
+                    empty($pa->getPurposes()) ||
+                    empty($pa->getLegalBasis())
+            );
+            if (count($incomplete) > 0) {
+                $issues['vvt_incomplete'] = array_values($incomplete);
+            }
+        } catch (\Throwable) {
         }
 
         return $issues;

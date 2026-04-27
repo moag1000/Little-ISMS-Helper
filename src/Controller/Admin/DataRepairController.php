@@ -131,6 +131,10 @@ class DataRepairController extends AbstractController
             fn() => $this->dataIntegrityService->findRiskHealthIssues()
         );
 
+        $complianceHealthIssues = $this->withoutTenantFilter(
+            fn() => $this->dataIntegrityService->findComplianceHealthIssues()
+        );
+
         return $this->render('admin/data_repair/index.html.twig', [
             // Tenants & Summary
             'tenants' => $tenants,
@@ -160,6 +164,9 @@ class DataRepairController extends AbstractController
 
             // Risk health checks (ISO 27005)
             'riskHealthIssues' => $riskHealthIssues,
+
+            // Compliance health checks (GDPR / Art. 30 VVT)
+            'complianceHealthIssues' => $complianceHealthIssues,
         ]);
     }
 
