@@ -374,6 +374,10 @@ class DataImportService
                 continue;
             }
 
+            $naturalKeyField = $this->referenceNaturalKeys()[$entityType]
+                ?? $this->referenceNaturalKeys()[rtrim($entityType, 's')]
+                ?? null;
+
             foreach ($entities as $entityData) {
                 try {
                     $entity = $this->createEntity($entityClass, $entityData);
@@ -384,6 +388,30 @@ class DataImportService
                     if ($tenant && method_exists($entity, 'setTenant') && method_exists($entity, 'getTenant') && $entity->getTenant() === null) {
                         $entity->setTenant($tenant);
                     }
+
+                    // Idempotenz: Wenn ein Datensatz mit gleichem Natural-Key
+                    // bereits existiert, überspringen statt Duplicate-Key-
+                    // Constraint-Violation auszulösen. So kann der User den
+                    // gleichen Sample mehrfach klicken ohne Fehler.
+                    if ($naturalKeyField !== null) {
+                        $criteria = [];
+                        $getter = 'get' . ucfirst($naturalKeyField);
+                        if (method_exists($entity, $getter)) {
+                            $keyValue = $entity->$getter();
+                            if ($keyValue !== null && $keyValue !== '') {
+                                $criteria[$naturalKeyField] = $keyValue;
+                                if ($tenant && method_exists($entity, 'getTenant')) {
+                                    $criteria['tenant'] = $tenant;
+                                }
+                                $existing = $this->entityManager->getRepository($entityClass)->findOneBy($criteria);
+                                if ($existing !== null) {
+                                    $this->addLog("Skipped duplicate {$entityClass} where {$naturalKeyField}={$keyValue}");
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+
                     $this->entityManager->persist($entity);
                     $created[] = $entity;
                     $count++;
@@ -411,6 +439,24 @@ class DataImportService
 
         // Tracking-Records nach dem Flush (damit Entity-IDs existieren).
         if ($ctx !== null && $count > 0) {
+            // Tenant + User auf den AKTUELLEN EM neu binden — könnten durch
+            // resetEntityManagerIfClosed() detached worden sein, und dann
+            // beim setTenant/setImportedBy einen "new entity"-Cascade-Error
+            // werfen.
+            $trackTenant = $ctx['tenant'] ?? null;
+            if ($trackTenant !== null && $trackTenant->getId() !== null) {
+                $managedTenant = $this->entityManager->find(get_class($trackTenant), $trackTenant->getId());
+                if ($managedTenant !== null) {
+                    $trackTenant = $managedTenant;
+                }
+            }
+            $trackUser = $ctx['importedBy'] ?? null;
+            if ($trackUser !== null && method_exists($trackUser, 'getId') && $trackUser->getId() !== null) {
+                $managedUser = $this->entityManager->find(get_class($trackUser), $trackUser->getId());
+                if ($managedUser !== null) {
+                    $trackUser = $managedUser;
+                }
+            }
             foreach ($created as $entity) {
                 if (!method_exists($entity, 'getId') || $entity->getId() === null) {
                     continue;
@@ -419,11 +465,16 @@ class DataImportService
                 $track->setSampleKey((string) $ctx['sampleKey']);
                 $track->setEntityClass($entity::class);
                 $track->setEntityId((int) $entity->getId());
-                $track->setTenant($ctx['tenant']);
-                $track->setImportedBy($ctx['importedBy']);
+                $track->setTenant($trackTenant);
+                $track->setImportedBy($trackUser);
                 $this->entityManager->persist($track);
             }
-            $this->entityManager->flush();
+            try {
+                $this->entityManager->flush();
+            } catch (Exception $e) {
+                $errors[] = 'Tracking-Flush fehlgeschlagen: ' . $e->getMessage();
+                $this->addLog('Tracking-Flush failed: ' . $e->getMessage());
+            }
         }
 
         $this->addLog("Imported {$count} entities");
