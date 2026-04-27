@@ -38,6 +38,7 @@ use App\Repository\TenantRepository;
 use DateTime;
 use ReflectionClass;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -76,13 +77,33 @@ class DataImportService
     private ?array $activeImportContext = null;
 
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
         private readonly KernelInterface $kernel,
         private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly TenantRepository $tenantRepository,
         private readonly SampleDataImportRepository $sampleImportRepository,
-        private readonly string $projectDir
+        private readonly string $projectDir,
+        private readonly ?ManagerRegistry $managerRegistry = null
     ) {
+    }
+
+    /**
+     * Wenn der EntityManager nach einer Constraint-Violation geschlossen
+     * wurde, einen frischen vom ManagerRegistry holen, damit nachfolgende
+     * Sample-Imports im selben Request nicht alle mit "EM is closed"
+     * cascaden. Setzt $this->entityManager auf den frischen Manager um.
+     */
+    private function resetEntityManagerIfClosed(): void
+    {
+        if ($this->entityManager->isOpen() || $this->managerRegistry === null) {
+            return;
+        }
+        $this->managerRegistry->resetManager();
+        $fresh = $this->managerRegistry->getManager();
+        if ($fresh instanceof EntityManagerInterface) {
+            $this->entityManager = $fresh;
+            $this->addLog('EntityManager re-opened after closure');
+        }
     }
 
     /**
@@ -209,9 +230,19 @@ class DataImportService
                     'removable' => false,
                 ];
             } elseif (isset($data['file'])) {
+                $this->resetEntityManagerIfClosed();
+                // Tenant ggf. neu laden, falls EM zwischenzeitlich resettet wurde —
+                // sonst löst Doctrine ihn als "new entity" und verlangt cascade=persist.
+                $boundTenant = $tenant;
+                if ($tenant !== null && $tenant->getId() !== null) {
+                    $managed = $this->entityManager->find(get_class($tenant), $tenant->getId());
+                    if ($managed instanceof Tenant) {
+                        $boundTenant = $managed;
+                    }
+                }
                 $this->activeImportContext = [
                     'sampleKey' => $sampleKey,
-                    'tenant' => $tenant,
+                    'tenant' => $boundTenant,
                     'importedBy' => $importedBy,
                 ];
                 $result = $this->importFromFile($data['file']);
