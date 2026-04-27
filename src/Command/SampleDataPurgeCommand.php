@@ -66,10 +66,14 @@ final class SampleDataPurgeCommand
         // Group per sample-key so we can call removeSampleData() — same code
         // path the UI's "Entfernen" button hits, so any per-entity error
         // surfaces consistently.
+        // Reverse-index order (23 → 0) so dependent samples come down first:
+        // BCPlan (15) and BCExercise (16) reference BusinessProcess (2),
+        // tracking-write child rows reference parent IDs in earlier samples.
         $byKey = [];
         foreach ($tracks as $t) {
             $byKey[$t->getSampleKey()][] = $t;
         }
+        krsort($byKey, SORT_NATURAL);
 
         $io->writeln(sprintf('Found %d tracking rows across %d sample-keys.', count($tracks), count($byKey)));
         foreach ($byKey as $key => $rows) {
