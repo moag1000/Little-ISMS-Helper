@@ -471,9 +471,58 @@ class DataImportService
             'objectives' => ISMSObjective::class,
             'risk_appetites' => RiskAppetite::class,
             'risk_appetite' => RiskAppetite::class,
+            // Singular-Aliase für ref:-Lookups (irreguläre Plurale wie
+            // activity→activities oder person→people brechen sonst den
+            // Default-`+s`-Fallback in resolveReference).
+            'asset' => Asset::class,
+            'risk' => Risk::class,
+            'control' => Control::class,
+            'incident' => Incident::class,
+            'business_process' => BusinessProcess::class,
+            'training' => Training::class,
+            'document' => Document::class,
+            'management_review' => ManagementReview::class,
+            'processing_activity' => ProcessingActivity::class,
+            'data_breach' => DataBreach::class,
+            'consent' => Consent::class,
+            'dpia' => DataProtectionImpactAssessment::class,
+            'data_subject_request' => DataSubjectRequest::class,
+            'bc_plan' => BusinessContinuityPlan::class,
+            'business_continuity_plan' => BusinessContinuityPlan::class,
+            'bc_exercise' => BCExercise::class,
+            'crisis_team' => CrisisTeam::class,
+            'supplier' => Supplier::class,
+            'location' => Location::class,
+            'person' => Person::class,
+            'interested_party' => InterestedParty::class,
+            'objective' => ISMSObjective::class,
         ];
 
         return $mapping[$entityType] ?? null;
+    }
+
+    /**
+     * Liest den Doctrine-Column-Type (z. B. 'date', 'datetime_immutable')
+     * für ein Property. Liefert null wenn Property kein gemapptes Feld ist.
+     */
+    private function resolveDoctrineColumnType(string $entityClass, string $property): ?string
+    {
+        try {
+            $metadata = $this->entityManager->getClassMetadata($entityClass);
+        } catch (\Throwable) {
+            return null;
+        }
+        // YAML kann snake_case verwenden, Entity-Property ist camelCase.
+        $candidates = [
+            $property,
+            lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $property)))),
+        ];
+        foreach ($candidates as $field) {
+            if (isset($metadata->fieldMappings[$field]['type'])) {
+                return (string) $metadata->fieldMappings[$field]['type'];
+            }
+        }
+        return null;
     }
 
     /**
@@ -620,23 +669,23 @@ class DataImportService
                 continue;
             }
 
-            // Datum-Strings: je nach Setter-Parametertyp DateTimeImmutable oder
-            // DateTime konstruieren. Bei DateTimeInterface bevorzugen wir
-            // DateTimeImmutable, weil Doctrine-Columns mit Type DATETIME_IMMUTABLE
-            // explicit DateTimeImmutable verlangen (Doctrine wirft sonst Conversion-
-            // Error, siehe RiskAppetite::approvedAt etc.).
+            // Datum-Strings: je nach Doctrine-Column-Type DateTimeImmutable
+            // oder DateTime konstruieren. Setter-Reflection allein reicht
+            // nicht (Property-Typ ist meist DateTimeInterface), Doctrine
+            // unterscheidet aber zwischen *_MUTABLE und *_IMMUTABLE und wirft
+            // sonst beim flush() Conversion-Errors.
             if (is_string($value) && strtotime($value) !== false) {
+                $columnType = $this->resolveDoctrineColumnType($entity::class, (string) $property);
+                $useImmutable = match (true) {
+                    $columnType === null => true, // Konservativer Default
+                    str_contains($columnType, '_immutable') => true,
+                    in_array($columnType, ['date', 'datetime', 'datetimetz', 'time'], true) => false,
+                    default => true,
+                };
                 try {
-                    $reflection = new \ReflectionMethod($entity, $setter);
-                    $paramType = $reflection->getParameters()[0]?->getType();
-                    $typeName = $paramType instanceof \ReflectionNamedType ? $paramType->getName() : null;
-                    if ($typeName === \DateTimeImmutable::class || $typeName === \DateTimeInterface::class) {
-                        $value = new \DateTimeImmutable($value);
-                    } elseif ($typeName === \DateTime::class) {
-                        $value = new DateTime($value);
-                    }
-                } catch (\ReflectionException) {
-                    // Reflection konnte Typ nicht lesen — String durchlassen, setter wirft ggf.
+                    $value = $useImmutable ? new \DateTimeImmutable($value) : new \DateTime($value);
+                } catch (\Exception) {
+                    // String-Format unbrauchbar — setter wirft ggf.
                 }
             }
 
