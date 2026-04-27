@@ -8,26 +8,309 @@
             { label: 'nav.patches'|trans({}, 'nav'), url: path('app_patch_index') },
             { label: patch.title }
         ]
-    } %}
+    } only %}
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>{{ patch.title }}</h1>
+        <h1>
+            <i class="fa-icon fa-icon--patches" aria-hidden="true"></i>
+            {{ patch.title }}
+            {% include '_components/_badge.html.twig' with {
+                variant: patch.priority == 'critical' ? 'danger' : (patch.priority == 'high' ? 'warning' : (patch.priority == 'medium' ? 'info' : 'secondary')),
+                content: ('patch.priority.' ~ patch.priority)|trans({}, 'patches')
+            } only %}
+            {% include '_components/_badge.html.twig' with {
+                variant: patch.status == 'deployed' ? 'success' : (patch.status == 'failed' or patch.status == 'rolled_back' ? 'danger' : 'info'),
+                content: ('patch.status.' ~ patch.status)|trans({}, 'patches')
+            } only %}
+            {% if patch.overdue %}
+                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'patch.status.overdue'|trans({}, 'patches') } only %}
+            {% endif %}
+        </h1>
         <div>
-            <a href="{{ path('app_patch_edit', {id: patch.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
-            <a href="{{ path('app_patch_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back'|trans({}, 'messages') }}</a>
+            <a href="{{ path('app_patch_edit', {id: patch.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+            </a>
+            <a href="{{ path('app_patch_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+            </a>
         </div>
     </div>
-    {% embed '_components/_card.html.twig' %}
-        {% block card_body %}
-            <dl class="row">
-                <dt class="col-sm-3">{{ 'patch.field.patch_id'|trans({}, 'patches') }}</dt>
-                <dd class="col-sm-9"><code>{{ patch.patchId }}</code></dd>
-                <dt class="col-sm-3">{{ 'patch.field.status'|trans({}, 'patches') }}</dt>
-                <dd class="col-sm-9">{% include '_components/_badge.html.twig' with { variant: 'info', content: ('patch.status.' ~ patch.status)|trans({}, 'patches') } %}</dd>
-                <dt class="col-sm-3">{{ 'patch.field.description'|trans({}, 'patches') }}</dt>
-                <dd class="col-sm-9">{{ patch.description|nl2br }}</dd>
-            </dl>
-        {% endblock %}
-    {% endembed %}
+
+    <div class="row">
+        <div class="col-md-8">
+
+            {# Description #}
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'patch.field.description'|trans({}, 'patches') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <p class="mb-0">{{ patch.description|nl2br }}</p>
+                {% endblock %}
+            {% endembed %}
+
+            {# Basic Info #}
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i> {{ 'patch.section.basic_info'|trans({}, 'patches') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">{{ 'patch.field.patch_id'|trans({}, 'patches') }}</dt>
+                        <dd class="col-sm-8"><code>{{ patch.patchId }}</code></dd>
+
+                        <dt class="col-sm-4">{{ 'patch.field.priority'|trans({}, 'patches') }}</dt>
+                        <dd class="col-sm-8">
+                            {% include '_components/_badge.html.twig' with {
+                                variant: patch.priority == 'critical' ? 'danger' : (patch.priority == 'high' ? 'warning' : (patch.priority == 'medium' ? 'info' : 'secondary')),
+                                content: ('patch.priority.' ~ patch.priority)|trans({}, 'patches')
+                            } only %}
+                        </dd>
+
+                        <dt class="col-sm-4">{{ 'patch.field.patch_type'|trans({}, 'patches') }}</dt>
+                        <dd class="col-sm-8">
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('patch.type.' ~ patch.patchType)|trans({}, 'patches') } only %}
+                        </dd>
+
+                        <dt class="col-sm-4">{{ 'patch.field.vendor'|trans({}, 'patches') }}</dt>
+                        <dd class="col-sm-8">{{ patch.vendor }}</dd>
+
+                        <dt class="col-sm-4">{{ 'patch.field.product'|trans({}, 'patches') }}</dt>
+                        <dd class="col-sm-8">{{ patch.product }}</dd>
+
+                        {% if patch.version %}
+                            <dt class="col-sm-4">{{ 'patch.field.version'|trans({}, 'patches') }}</dt>
+                            <dd class="col-sm-8"><code>{{ patch.version }}</code></dd>
+                        {% endif %}
+                    </dl>
+                {% endblock %}
+            {% endembed %}
+
+            {# Deployment #}
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--recovery" aria-hidden="true"></i> {{ 'patch.section.deployment'|trans({}, 'patches') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <dl class="row mb-0">
+                        {% if patch.deploymentDeadline %}
+                            <dt class="col-sm-4">{{ 'patch.field.deployment_deadline'|trans({}, 'patches') }}</dt>
+                            <dd class="col-sm-8">
+                                <span class="{{ patch.overdue ? 'text-danger fw-bold' : '' }}">
+                                    {{ patch.deploymentDeadline|date('Y-m-d') }}
+                                </span>
+                                {% if patch.overdue %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'patch.status.overdue'|trans({}, 'patches') } only %}
+                                {% endif %}
+                            </dd>
+                        {% endif %}
+
+                        {% if patch.deployedDate %}
+                            <dt class="col-sm-4">{{ 'patch.field.deployed_date'|trans({}, 'patches') }}</dt>
+                            <dd class="col-sm-8">{{ patch.deployedDate|date('Y-m-d') }}</dd>
+                        {% endif %}
+
+                        {% if patch.responsiblePerson %}
+                            <dt class="col-sm-4">{{ 'patch.field.responsible_person'|trans({}, 'patches') }}</dt>
+                            <dd class="col-sm-8">{{ patch.responsiblePerson }}</dd>
+                        {% endif %}
+
+                        <dt class="col-sm-4">{{ 'patch.field.requires_downtime'|trans({}, 'patches') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if patch.requiresDowntime %}
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'common.yes'|trans({}, 'messages') } only %}
+                                {% if patch.estimatedDowntimeMinutes %}
+                                    <span class="ms-2 text-muted small">{{ 'patch.show.estimated_minutes'|trans({'%minutes%': patch.estimatedDowntimeMinutes}, 'patches') }}</span>
+                                {% endif %}
+                            {% else %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.no'|trans({}, 'messages') } only %}
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">{{ 'patch.field.requires_reboot'|trans({}, 'patches') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if patch.requiresReboot %}
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'common.yes'|trans({}, 'messages') } only %}
+                            {% else %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.no'|trans({}, 'messages') } only %}
+                            {% endif %}
+                        </dd>
+                    </dl>
+                {% endblock %}
+            {% endembed %}
+
+            {# Testing & Deployment Notes #}
+            {% if patch.testingNotes or patch.deploymentNotes %}
+                {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="h5 mb-0"><i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i> {{ 'patch.section.testing_deployment'|trans({}, 'patches') }}</h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        {% if patch.testingNotes %}
+                            <h3 class="h6">{{ 'patch.field.testing_notes'|trans({}, 'patches') }}</h3>
+                            <p class="mb-3">{{ patch.testingNotes|nl2br }}</p>
+                        {% endif %}
+                        {% if patch.deploymentNotes %}
+                            <h3 class="h6">{{ 'patch.field.deployment_notes'|trans({}, 'patches') }}</h3>
+                            <p class="mb-0">{{ patch.deploymentNotes|nl2br }}</p>
+                        {% endif %}
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+
+            {# Rollback Plan #}
+            {% if patch.rollbackPlan %}
+                {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="h5 mb-0"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'patch.field.rollback_plan'|trans({}, 'patches') }}</h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <p class="mb-0">{{ patch.rollbackPlan|nl2br }}</p>
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+
+            {# Known Issues & Dependencies #}
+            {% if patch.knownIssues or patch.dependencies %}
+                {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="h5 mb-0"><i class="fa-icon fa-icon--status-error" aria-hidden="true"></i> {{ 'patch.section.requirements'|trans({}, 'patches') }}</h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        {% if patch.knownIssues %}
+                            <h3 class="h6">{{ 'patch.field.known_issues'|trans({}, 'patches') }}</h3>
+                            <p class="{{ patch.dependencies ? 'mb-3' : 'mb-0' }}">{{ patch.knownIssues|nl2br }}</p>
+                        {% endif %}
+                        {% if patch.dependencies %}
+                            <h3 class="h6">{{ 'patch.show.dependencies'|trans({}, 'patches') }}</h3>
+                            <ul class="mb-0">
+                                {% for dep in patch.dependencies %}
+                                    <li><code>{{ dep }}</code></li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+
+            {# Linked Vulnerability #}
+            {% if patch.vulnerability %}
+                {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="h5 mb-0"><i class="fa-icon fa-icon--vulnerability" aria-hidden="true"></i> {{ 'patch.show.linked_vulnerability'|trans({}, 'patches') }}</h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <p class="mb-0">
+                            <a href="{{ path('app_vulnerability_show', {id: patch.vulnerability.id}) }}">
+                                {{ patch.vulnerability.title }}
+                            </a>
+                        </p>
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+
+            {# Affected Assets #}
+            {% if patch.affectedAssets|length > 0 %}
+                {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="h5 mb-0"><i class="fa-icon fa-icon--assets" aria-hidden="true"></i> {{ 'patch.field.affected_assets'|trans({}, 'patches') }}</h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for asset in patch.affectedAssets %}
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: asset.name } only %}
+                            {% endfor %}
+                        </div>
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+
+            {# Download & Documentation URLs #}
+            {% if patch.downloadUrl or patch.documentationUrl %}
+                {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="h5 mb-0"><i class="fa-icon fa-icon--documents" aria-hidden="true"></i> {{ 'patch.section.resources'|trans({}, 'patches') }}</h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <dl class="row mb-0">
+                            {% if patch.downloadUrl %}
+                                <dt class="col-sm-4">{{ 'patch.field.download_url'|trans({}, 'patches') }}</dt>
+                                <dd class="col-sm-8">
+                                    <a href="{{ patch.downloadUrl }}" target="_blank" rel="noopener noreferrer">
+                                        {{ patch.downloadUrl }}
+                                        <i class="fa-icon fa-icon--ui-external-link" aria-hidden="true"></i>
+                                    </a>
+                                </dd>
+                            {% endif %}
+                            {% if patch.documentationUrl %}
+                                <dt class="col-sm-4">{{ 'patch.field.documentation_url'|trans({}, 'patches') }}</dt>
+                                <dd class="col-sm-8">
+                                    <a href="{{ patch.documentationUrl }}" target="_blank" rel="noopener noreferrer">
+                                        {{ patch.documentationUrl }}
+                                        <i class="fa-icon fa-icon--ui-external-link" aria-hidden="true"></i>
+                                    </a>
+                                </dd>
+                            {% endif %}
+                        </dl>
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+
+        </div>{# /col-md-8 #}
+
+        <div class="col-md-4">
+
+            {# Metadata #}
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'patch.show.metadata'|trans({}, 'patches') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5 small">{{ 'patch.show.created_at'|trans({}, 'patches') }}</dt>
+                        <dd class="col-sm-7 small">{{ patch.createdAt|date('Y-m-d H:i') }}</dd>
+
+                        {% if patch.updatedAt %}
+                            <dt class="col-sm-5 small">{{ 'patch.show.updated_at'|trans({}, 'patches') }}</dt>
+                            <dd class="col-sm-7 small">{{ patch.updatedAt|date('Y-m-d H:i') }}</dd>
+                        {% endif %}
+
+                        <dt class="col-sm-5 small">{{ 'patch.show.release_date'|trans({}, 'patches') }}</dt>
+                        <dd class="col-sm-7 small">{{ patch.releaseDate|date('Y-m-d') }}</dd>
+
+                        {% if patch.daysUntilDeadline is not null %}
+                            <dt class="col-sm-5 small">{{ 'patch.show.days_until_deadline'|trans({}, 'patches') }}</dt>
+                            <dd class="col-sm-7 small">
+                                <span class="{{ patch.daysUntilDeadline < 0 ? 'text-danger fw-bold' : (patch.daysUntilDeadline < 7 ? 'text-warning fw-bold' : '') }}">
+                                    {{ patch.daysUntilDeadline }}d
+                                </span>
+                            </dd>
+                        {% endif %}
+                    </dl>
+                {% endblock %}
+            {% endembed %}
+
+        </div>{# /col-md-4 #}
+    </div>{# /row #}
 </div>
 {% endblock %}

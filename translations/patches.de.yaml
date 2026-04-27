@@ -86,5 +86,8 @@ patch:
         metadata: Metadaten
         created_at: 'Erstellt am'
         updated_at: 'Zuletzt aktualisiert'
+        release_date: 'Veröffentlichungsdatum'
+        days_until_deadline: 'Tage bis zur Frist'
         estimated_minutes: 'ca. %minutes% Min.'
         linked_vulnerability: 'Verknüpfte Schwachstelle'
+        dependencies: 'Abhängigkeiten'

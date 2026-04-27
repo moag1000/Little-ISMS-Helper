@@ -22,64 +22,99 @@
         ]
     } only %}
 
-    {% embed '_components/_card.html.twig' %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="mb-0"><i class="fa-icon fa-icon--audit-internal" aria-hidden="true"></i> {{ 'dsr.form.title'|trans({}, 'data_subject_request') }}</h2>
-            </div>
-        {% endblock %}
-        {% block card_body %}
-            {{ form_start(form) }}
-                {% include '_components/_auto_form.html.twig' with {
-                    'form': form,
-                    'sections': {
-                        'request_details': {
-                            'label': '<i class="fa-icon fa-icon--policy" aria-hidden="true"></i> ' ~ 'dsr.section.request_details'|trans({}, 'data_subject_request'),
-                            'fields': ['requestType', 'receivedAt', 'description']
-                        },
-                        'data_subject_info': {
-                            'label': '<i class="fa-icon fa-icon--user" aria-hidden="true"></i> ' ~ 'dsr.section.data_subject_info'|trans({}, 'data_subject_request'),
-                            'fields': ['dataSubjectName', 'dataSubjectEmail', 'dataSubjectIdentifier']
-                        },
-                        'identity_verification': {
-                            'label': '<i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> ' ~ 'dsr.section.identity_verification'|trans({}, 'data_subject_request'),
-                            'fields': ['identityVerified', 'identityVerificationMethod']
-                        },
-                        'assignment': {
-                            'label': '<i class="fa-icon fa-icon--role" aria-hidden="true"></i> ' ~ 'dsr.section.assignment'|trans({}, 'data_subject_request'),
-                            'fields': ['assignedTo', 'processingActivity']
-                        },
-                        'internal': {
-                            'label': '<i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i> ' ~ 'dsr.section.internal_notes'|trans({}, 'data_subject_request'),
-                            'fields': ['notes']
-                        }
-                    },
-                    'col_widths': {
-                        'requestType': 6,
-                        'receivedAt': 6,
-                        'description': 12,
-                        'dataSubjectName': 4,
-                        'dataSubjectEmail': 4,
-                        'dataSubjectIdentifier': 4,
-                        'identityVerified': 6,
-                        'identityVerificationMethod': 6,
-                        'assignedTo': 6,
-                        'processingActivity': 6,
-                        'notes': 12
-                    },
-                    'translation_domain': 'data_subject_request'
-                } %}
+    <div class="row">
+        <div class="col-lg-8">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--audit-internal" aria-hidden="true"></i> {{ 'dsr.form.title'|trans({}, 'data_subject_request') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    {{ form_start(form) }}
+                        {% include '_components/_auto_form.html.twig' with {
+                            'form': form,
+                            'sections': {
+                                'request_details': {
+                                    'label': '<i class="fa-icon fa-icon--policy" aria-hidden="true"></i> ' ~ 'dsr.section.request_details'|trans({}, 'data_subject_request'),
+                                    'fields': ['requestType', 'receivedAt', 'description']
+                                },
+                                'data_subject_info': {
+                                    'label': '<i class="fa-icon fa-icon--user" aria-hidden="true"></i> ' ~ 'dsr.section.data_subject_info'|trans({}, 'data_subject_request'),
+                                    'fields': ['dataSubjectName', 'dataSubjectEmail', 'dataSubjectIdentifier']
+                                },
+                                'identity_verification': {
+                                    'label': '<i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> ' ~ 'dsr.section.identity_verification'|trans({}, 'data_subject_request'),
+                                    'fields': ['identityVerified', 'identityVerificationMethod']
+                                },
+                                'assignment': {
+                                    'label': '<i class="fa-icon fa-icon--role" aria-hidden="true"></i> ' ~ 'dsr.section.assignment'|trans({}, 'data_subject_request'),
+                                    'fields': ['assignedTo', 'processingActivity']
+                                },
+                                'internal': {
+                                    'label': '<i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i> ' ~ 'dsr.section.internal_notes'|trans({}, 'data_subject_request'),
+                                    'fields': ['notes']
+                                }
+                            },
+                            'col_widths': {
+                                'requestType': 6,
+                                'receivedAt': 6,
+                                'description': 12,
+                                'dataSubjectName': 4,
+                                'dataSubjectEmail': 4,
+                                'dataSubjectIdentifier': 4,
+                                'identityVerified': 6,
+                                'identityVerificationMethod': 6,
+                                'assignedTo': 6,
+                                'processingActivity': 6,
+                                'notes': 12
+                            },
+                            'translation_domain': 'data_subject_request'
+                        } %}
 
-                <div class="mt-4">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'dsr.action.create'|trans({}, 'data_subject_request') }}
-                    </button>
-                    <a href="{{ path('app_data_subject_request_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
-                    </a>
-                </div>
-            {{ form_end(form) }}
-        {% endblock %}
-    {% endembed %}
+                        <div class="mt-4">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                                <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'dsr.action.create'|trans({}, 'data_subject_request') }}
+                            </button>
+                            <a href="{{ path('app_data_subject_request_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
+                            </a>
+                        </div>
+                    {{ form_end(form) }}
+                {% endblock %}
+            {% endembed %}
+        </div>{# /col-lg-8 #}
+
+        <div class="col-lg-4">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">
+                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
+                            {{ 'dsr.sidebar.title'|trans({}, 'data_subject_request') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <h3 class="h6 text-primary">{{ 'dsr.sidebar.rights_title'|trans({}, 'data_subject_request') }}</h3>
+                    <ul class="list-unstyled small">
+                        <li class="mb-1"><i class="fa-icon fa-icon--status-ok text-success me-1" aria-hidden="true"></i> {{ 'dsr.sidebar.right_access'|trans({}, 'data_subject_request') }}</li>
+                        <li class="mb-1"><i class="fa-icon fa-icon--status-ok text-success me-1" aria-hidden="true"></i> {{ 'dsr.sidebar.right_rectification'|trans({}, 'data_subject_request') }}</li>
+                        <li class="mb-1"><i class="fa-icon fa-icon--status-ok text-success me-1" aria-hidden="true"></i> {{ 'dsr.sidebar.right_erasure'|trans({}, 'data_subject_request') }}</li>
+                        <li class="mb-1"><i class="fa-icon fa-icon--status-ok text-success me-1" aria-hidden="true"></i> {{ 'dsr.sidebar.right_restriction'|trans({}, 'data_subject_request') }}</li>
+                        <li class="mb-1"><i class="fa-icon fa-icon--status-ok text-success me-1" aria-hidden="true"></i> {{ 'dsr.sidebar.right_portability'|trans({}, 'data_subject_request') }}</li>
+                        <li class="mb-1"><i class="fa-icon fa-icon--status-ok text-success me-1" aria-hidden="true"></i> {{ 'dsr.sidebar.right_objection'|trans({}, 'data_subject_request') }}</li>
+                        <li class="mb-1"><i class="fa-icon fa-icon--status-ok text-success me-1" aria-hidden="true"></i> {{ 'dsr.sidebar.right_automated'|trans({}, 'data_subject_request') }}</li>
+                    </ul>
+
+                    <h3 class="h6 text-primary">{{ 'dsr.sidebar.deadline_title'|trans({}, 'data_subject_request') }}</h3>
+                    <p class="small">{{ 'dsr.sidebar.deadline_text'|trans({}, 'data_subject_request') }}</p>
+
+                    <h3 class="h6 text-primary">{{ 'dsr.sidebar.verification_title'|trans({}, 'data_subject_request') }}</h3>
+                    <p class="small mb-0">{{ 'dsr.sidebar.verification_text'|trans({}, 'data_subject_request') }}</p>
+                {% endblock %}
+            {% endembed %}
+        </div>{# /col-lg-4 #}
+    </div>{# /row #}
 </div>
 {% endblock %}
