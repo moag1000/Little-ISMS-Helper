@@ -135,6 +135,23 @@ final class SampleDataPurgeCommand
             }
         }
 
+        // Final cleanup: orphan tracking-rows whose entity no longer exists.
+        // Cascade-delete removed BP entities but left the tracking pointing
+        // at vanished IDs — those then over-inflate sample counts.
+        $orphanRows = 0;
+        $allTracks = $this->entityManager->getRepository(\App\Entity\SampleDataImport::class)
+            ->findBy(['tenant' => $tenant]);
+        foreach ($allTracks as $t) {
+            if ($this->entityManager->find($t->getEntityClass(), $t->getEntityId()) === null) {
+                $this->entityManager->remove($t);
+                $orphanRows++;
+            }
+        }
+        if ($orphanRows > 0) {
+            try { $this->entityManager->flush(); } catch (\Throwable) {}
+            $io->writeln(sprintf('  Cleaned %d orphan tracking-row(s) pointing at non-existent entities.', $orphanRows));
+        }
+
         $totalErrors = count($persistentFailures);
         $totalRemoved += $retryRemoved;
         if ($persistentFailures !== []) {
