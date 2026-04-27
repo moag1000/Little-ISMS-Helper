@@ -57,8 +57,14 @@ class TenantFilter extends SQLFilter
             return '';
         }
 
-        // If no tenant ID is set, don't filter (admin mode)
-        if ($tenantId === 'null') {
+        // SQLFilter::getParameter quotes the value via the connection's
+        // quote() method, so the literal string sentinel from the subscriber
+        // arrives here as `'null'` (single-quoted), not `null`. Strip outer
+        // quoting before the sentinel check, otherwise the filter generates
+        // `tenant_id = 'null'` which never matches integer columns and
+        // silently hides every row from authenticated-but-no-tenant users.
+        $rawValue = trim($tenantId, "'\"");
+        if ($rawValue === 'null' || $rawValue === '') {
             return '';
         }
 
