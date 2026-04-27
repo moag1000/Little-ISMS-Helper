@@ -41,7 +41,15 @@ PR_DESCRIPTION.md
 
 ###> claude-code ###
 .claude.md
+.claude/scheduled_tasks.lock
 ###< claude-code ###
+
+# macOS junk
+.DS_Store
+**/.DS_Store
+
+# Stray design-canvas project (not part of the app)
+/assets/Little ISMS Helper Design System/
 
 # JetBrains IDE
 .idea/
