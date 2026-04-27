@@ -46,6 +46,35 @@ class SampleDataController extends AbstractController
         $activeModules = $this->moduleConfigurationService->getActiveModules();
         $availableSamples = $this->moduleConfigurationService->getSampleData();
         $importedCounts = $this->sampleImportRepository->countsByKey($tenant);
+
+        // TEMP DEBUG (please paste relevant lines from var/log/dev.log when
+        // reporting UI counts mismatching CLI). Remove once root cause known.
+        $em = $this->sampleImportRepository->getEntityManager();
+        $f = $em->getFilters();
+        $filterParam = 'DISABLED';
+        if ($f->isEnabled('tenant_filter')) {
+            try {
+                $filterParam = (string) $f->getFilter('tenant_filter')->getParameter('tenant_id');
+            } catch (\Throwable) {
+                $filterParam = 'NOT-SET';
+            }
+        }
+        $rawSql = $em->createQueryBuilder()
+            ->select('s.sampleKey AS k, COUNT(s.id) AS c')
+            ->from(\App\Entity\SampleDataImport::class, 's')
+            ->where('s.tenant = :t')->setParameter('t', $tenant)
+            ->groupBy('s.sampleKey')
+            ->getQuery()->getSQL();
+        error_log(sprintf(
+            '[sd] tenant=%d em-hash=%s tenant_filter=%s | importedCounts.count=%d keys=[%s] | sql=%s',
+            $tenant->getId() ?? 0,
+            spl_object_hash($em),
+            $filterParam,
+            count($importedCounts),
+            implode(',', array_map(fn($k) => var_export($k, true), array_keys($importedCounts))),
+            preg_replace('/\s+/', ' ', $rawSql),
+        ));
+
         // Defensive: PHP coerces numeric string keys to int when storing in
         // arrays, but if the DB driver returns sample_key as a non-numeric
         // string for any reason the lookup `$importedCounts[$key]` (with
