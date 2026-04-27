@@ -70,6 +70,17 @@ class DataImportService
     private array $importLog = [];
 
     /**
+     * Wird beim importFromFile()-Aufruf zurückgesetzt und sammelt alle
+     * ref:-Lookups, die nicht aufgelöst werden konnten. Wird in der
+     * Result-Message surfaced, damit der User merkt wenn er Beispiele in
+     * einer Reihenfolge importiert die Abhängigkeiten verletzt
+     * (z. B. Risks ohne vorher Assets).
+     *
+     * @var list<string>
+     */
+    private array $unresolvedRefs = [];
+
+    /**
      * Laufzeit-Kontext eines aktuell aktiven Sample-Imports.
      * Wird vor importFromFile() gesetzt, damit importEntities() die
      * angelegten Entities tracken kann. Null zwischen Imports.
@@ -321,6 +332,10 @@ class DataImportService
             $data = Yaml::parseFile($filePath);
             $this->addLog("Loaded data from {$filePath}");
 
+            // Reset Ref-Tracker pro Sample, sonst summieren sich Werte aus
+            // vorigen Samples — User würde irreführend ref-Anzahlen sehen.
+            $this->unresolvedRefs = [];
+
             // Importiere Entitäten basierend auf Datenstruktur
             $errors = [];
             $imported = $this->importEntities($data, $errors);
@@ -333,11 +348,29 @@ class DataImportService
                 $message .= sprintf(' — %d Fehler: %s%s', count($errors), $errorPreview, $more);
             }
 
+            // Unresolved-Refs surfacen — typischer Fall: User importiert
+            // Risks ohne vorher Assets, oder DPIA ohne vorher
+            // Verarbeitungstätigkeiten. Daten landen in DB, aber Beziehungen
+            // fehlen. Hinweis im Flash erlaubt dem User die fehlenden
+            // Samples nachzuladen, dann Re-Import (Merge füllt Refs nach).
+            $unresolved = array_unique($this->unresolvedRefs);
+            if ($unresolved !== []) {
+                $previewRefs = array_slice($unresolved, 0, 3);
+                $more = count($unresolved) > 3 ? sprintf(' (+%d weitere)', count($unresolved) - 3) : '';
+                $message .= sprintf(
+                    ' — %d Beziehungen nicht aufgelöst (zugehörige Beispiele zuerst importieren?): %s%s',
+                    count($unresolved),
+                    implode(' · ', $previewRefs),
+                    $more,
+                );
+            }
+
             return [
                 'success' => $imported > 0 && !$hasErrors,
                 'message' => $message,
                 'count' => $imported,
                 'errors' => $errors,
+                'unresolved_refs' => $unresolved,
             ];
         } catch (Exception $e) {
             $this->addLog("Error importing from file '{$file}': " . $e->getMessage());
@@ -713,6 +746,7 @@ class DataImportService
         $entity = $this->entityManager->getRepository($entityClass)->findOneBy([$keyField => $key]);
         if ($entity === null) {
             $this->addLog("Reference not found: {$entityClass}.{$keyField} = '{$key}' (from '{$value}')");
+            $this->unresolvedRefs[] = $value;
         }
         return $entity;
     }
