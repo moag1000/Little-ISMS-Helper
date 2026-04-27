@@ -13,6 +13,7 @@ use App\Service\CorporateStructureService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class ControlServiceTest extends TestCase
@@ -35,6 +36,7 @@ class ControlServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGetControlsForTenantWithoutParent(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -49,6 +51,7 @@ class ControlServiceTest extends TestCase
         $this->assertSame($controls, $result);
     }
 
+    #[Test]
     public function testGetControlsForTenantWithHierarchicalGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -74,6 +77,7 @@ class ControlServiceTest extends TestCase
         $this->assertCount(2, $result);
     }
 
+    #[Test]
     public function testGetControlsForTenantWithIndependentGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -94,6 +98,7 @@ class ControlServiceTest extends TestCase
         $this->assertSame($ownControls, $result);
     }
 
+    #[Test]
     public function testGetControlsForTenantFallbackToDefaultGovernance(): void
     {
         $parent = $this->createTenant(1, null);
@@ -120,6 +125,7 @@ class ControlServiceTest extends TestCase
         $this->assertSame($ownControls, $result);
     }
 
+    #[Test]
     public function testGetControlInheritanceInfoWithoutParent(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -131,6 +137,7 @@ class ControlServiceTest extends TestCase
         $this->assertNull($info['governanceModel']);
     }
 
+    #[Test]
     public function testGetControlInheritanceInfoWithHierarchicalParent(): void
     {
         $parent = $this->createTenant(1, null);
@@ -148,6 +155,7 @@ class ControlServiceTest extends TestCase
         $this->assertSame('hierarchical', $info['governanceModel']);
     }
 
+    #[Test]
     public function testGetControlInheritanceInfoWithIndependentParent(): void
     {
         $parent = $this->createTenant(1, null);
@@ -165,6 +173,7 @@ class ControlServiceTest extends TestCase
         $this->assertSame('independent', $info['governanceModel']);
     }
 
+    #[Test]
     public function testIsInheritedControlTrue(): void
     {
         $parentTenant = $this->createTenant(1, null);
@@ -176,6 +185,7 @@ class ControlServiceTest extends TestCase
         $this->assertTrue($this->service->isInheritedControl($control, $childTenant));
     }
 
+    #[Test]
     public function testIsInheritedControlFalse(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -186,6 +196,7 @@ class ControlServiceTest extends TestCase
         $this->assertFalse($this->service->isInheritedControl($control, $tenant));
     }
 
+    #[Test]
     public function testIsInheritedControlWithNullTenant(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -196,6 +207,7 @@ class ControlServiceTest extends TestCase
         $this->assertFalse($this->service->isInheritedControl($control, $tenant));
     }
 
+    #[Test]
     public function testCanEditControlOwnControl(): void
     {
         $tenant = $this->createTenant(1, null);
@@ -206,6 +218,7 @@ class ControlServiceTest extends TestCase
         $this->assertTrue($this->service->canEditControl($control, $tenant));
     }
 
+    #[Test]
     public function testCanEditControlInheritedControl(): void
     {
         $parentTenant = $this->createTenant(1, null);
@@ -217,6 +230,7 @@ class ControlServiceTest extends TestCase
         $this->assertFalse($this->service->canEditControl($control, $childTenant));
     }
 
+    #[Test]
     public function testServiceWorksWithoutOptionalDependencies(): void
     {
         // Service without corporate structure service

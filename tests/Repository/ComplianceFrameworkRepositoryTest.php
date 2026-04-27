@@ -13,6 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for ComplianceFrameworkRepository
@@ -108,6 +109,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
     /**
      * Test that the repository can be instantiated correctly
      */
+    #[Test]
     public function testRepositoryInstantiation(): void
     {
         $this->assertInstanceOf(ComplianceFrameworkRepository::class, $this->repository);
@@ -118,6 +120,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
      *
      * This verifies the repository's API surface without executing queries
      */
+    #[Test]
     public function testRepositoryHasExpectedMethods(): void
     {
         $this->assertTrue(method_exists($this->repository, 'findActiveFrameworks'));
@@ -129,6 +132,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
     /**
      * Test findActiveFrameworks signature
      */
+    #[Test]
     public function testFindActiveFrameworksSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findActiveFrameworks');
@@ -143,6 +147,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
     /**
      * Test findMandatoryFrameworks signature
      */
+    #[Test]
     public function testFindMandatoryFrameworksSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findMandatoryFrameworks');
@@ -157,6 +162,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
     /**
      * Test findByIndustry signature
      */
+    #[Test]
     public function testFindByIndustrySignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByIndustry');
@@ -173,6 +179,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
     /**
      * Test getComplianceOverview signature
      */
+    #[Test]
     public function testGetComplianceOverviewSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'getComplianceOverview');
@@ -187,6 +194,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
     /**
      * Test that the repository uses correct entity class
      */
+    #[Test]
     public function testRepositoryUsesCorrectEntityClass(): void
     {
         $reflection = new \ReflectionClass($this->repository);
@@ -203,6 +211,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
      *
      * Integration test required: Verify actual filtering with different industries
      */
+    #[Test]
     public function testIndustryValuesConcept(): void
     {
         $validIndustries = [
@@ -224,6 +233,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
      *
      * Mandatory frameworks are required by regulation or organizational policy
      */
+    #[Test]
     public function testMandatoryFrameworkConcept(): void
     {
         $mandatoryValue = true;
@@ -240,6 +250,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
      *
      * Only active frameworks should be considered in most queries
      */
+    #[Test]
     public function testActiveFrameworkConcept(): void
     {
         $activeValue = true;
@@ -258,6 +269,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
      *
      * Integration test required: Verify actual statistics calculation
      */
+    #[Test]
     public function testComplianceOverviewResultStructure(): void
     {
         // Expected structure from getComplianceOverview
@@ -319,6 +331,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
      *
      * This tests the formula: (fulfilled / applicable) * 100, rounded to 2 decimals
      */
+    #[Test]
     public function testCompliancePercentageCalculation(): void
     {
         // Test normal case
@@ -355,6 +368,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
      *
      * When applicable=0, the method should return 0 instead of division by zero
      */
+    #[Test]
     public function testCompliancePercentageCalculationWithZeroApplicable(): void
     {
         $applicable = 0;
@@ -373,6 +387,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
      *
      * This validates the expected structure from ComplianceRequirementRepository::getFrameworkStatisticsForTenant()
      */
+    #[Test]
     public function testFrameworkStatisticsStructure(): void
     {
         $mockStats = [
@@ -403,6 +418,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
      *
      * Validates typical framework codes and names
      */
+    #[Test]
     public function testCommonComplianceFrameworks(): void
     {
         $commonFrameworks = [
@@ -429,6 +445,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
      *
      * Frameworks can be applicable to specific industries or 'all'
      */
+    #[Test]
     public function testIndustryFilteringLogic(): void
     {
         // A framework with applicableIndustry='finance' should match 'finance' query
@@ -454,6 +471,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
      *
      * All repository methods order results alphabetically by name (ASC)
      */
+    #[Test]
     public function testOrderingByNameConcept(): void
     {
         $frameworkNames = [
@@ -477,6 +495,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
      *
      * getComplianceOverview() requires a current tenant from TenantContext
      */
+    #[Test]
     public function testTenantContextDependency(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -492,6 +511,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
     /**
      * Test repository constructor dependencies
      */
+    #[Test]
     public function testConstructorDependencies(): void
     {
         $reflection = new \ReflectionClass($this->repository);
@@ -516,6 +536,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
     /**
      * Test that framework codes are unique identifiers
      */
+    #[Test]
     public function testFrameworkCodeUniqueness(): void
     {
         $codes = ['ISO27001', 'GDPR', 'SOC2', 'HIPAA', 'PCI-DSS', 'NIST-CSF'];
@@ -533,6 +554,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
     /**
      * Test edge case: all requirements not applicable
      */
+    #[Test]
     public function testEdgeCaseAllRequirementsNotApplicable(): void
     {
         $stats = [
@@ -552,6 +574,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
     /**
      * Test edge case: all requirements fulfilled
      */
+    #[Test]
     public function testEdgeCaseAllRequirementsFulfilled(): void
     {
         $stats = [
@@ -570,6 +593,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
     /**
      * Test edge case: no requirements fulfilled
      */
+    #[Test]
     public function testEdgeCaseNoRequirementsFulfilled(): void
     {
         $stats = [
@@ -588,6 +612,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
     /**
      * Test rounding precision for compliance percentage
      */
+    #[Test]
     public function testCompliancePercentageRoundingPrecision(): void
     {
         // Test that rounding is always to 2 decimal places
@@ -609,6 +634,7 @@ class ComplianceFrameworkRepositoryTest extends TestCase
      *
      * findMandatoryFrameworks() requires BOTH mandatory=true AND active=true
      */
+    #[Test]
     public function testMandatoryAndActiveLogic(): void
     {
         // Only this combination should match

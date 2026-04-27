@@ -10,6 +10,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for TenantRepository
@@ -80,6 +81,7 @@ class TenantRepositoryTest extends TestCase
     /**
      * Test that the repository can be instantiated correctly
      */
+    #[Test]
     public function testRepositoryInstantiation(): void
     {
         $this->assertInstanceOf(TenantRepository::class, $this->repository);
@@ -90,6 +92,7 @@ class TenantRepositoryTest extends TestCase
      *
      * This verifies the repository's API surface without executing queries
      */
+    #[Test]
     public function testRepositoryHasExpectedMethods(): void
     {
         $this->assertTrue(method_exists($this->repository, 'findActive'));
@@ -102,6 +105,7 @@ class TenantRepositoryTest extends TestCase
      *
      * Uses reflection to verify parameter types and return types without executing
      */
+    #[Test]
     public function testFindActiveSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findActive');
@@ -121,6 +125,7 @@ class TenantRepositoryTest extends TestCase
      *
      * Verifies the method accepts a string parameter and returns nullable Tenant
      */
+    #[Test]
     public function testFindByAzureTenantIdSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByAzureTenantId');
@@ -145,6 +150,7 @@ class TenantRepositoryTest extends TestCase
      *
      * Verifies the method accepts a string parameter and returns nullable Tenant
      */
+    #[Test]
     public function testFindByCodeSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByCode');
@@ -167,6 +173,7 @@ class TenantRepositoryTest extends TestCase
     /**
      * Test that the repository uses correct entity class
      */
+    #[Test]
     public function testRepositoryUsesCorrectEntityClass(): void
     {
         $reflection = new \ReflectionClass($this->repository);
@@ -184,6 +191,7 @@ class TenantRepositoryTest extends TestCase
      * Azure AD tenant IDs are GUIDs in the format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
      * Integration test required: Verify actual lookup with valid Azure tenant IDs
      */
+    #[Test]
     public function testAzureTenantIdFormatConcept(): void
     {
         // Valid Azure AD tenant ID (GUID format)
@@ -221,6 +229,7 @@ class TenantRepositoryTest extends TestCase
      * Tenant codes are unique identifiers, typically short alphanumeric strings
      * Integration test required: Verify uniqueness constraint and lookup
      */
+    #[Test]
     public function testTenantCodeFormatConcept(): void
     {
         // Valid tenant code examples
@@ -256,6 +265,7 @@ class TenantRepositoryTest extends TestCase
      * Tenants can be active (isActive = true) or inactive (isActive = false)
      * Integration test required: Verify findActive() only returns active tenants
      */
+    #[Test]
     public function testActiveStatusFilteringConcept(): void
     {
         $activeStatus = true;
@@ -276,6 +286,7 @@ class TenantRepositoryTest extends TestCase
      * findActive() orders results alphabetically by name (ASC)
      * Integration test required: Verify actual ordering with database
      */
+    #[Test]
     public function testFindActiveOrderingConcept(): void
     {
         $tenantNames = ['Zebra Corp', 'Alpha Inc', 'Beta LLC', 'Gamma GmbH'];
@@ -295,6 +306,7 @@ class TenantRepositoryTest extends TestCase
      * Both findByAzureTenantId and findByCode return null when no match is found
      * Integration test required: Verify null is returned for non-existent lookups
      */
+    #[Test]
     public function testNullResultHandlingConcept(): void
     {
         // When no tenant matches the criteria, methods should return null
@@ -315,6 +327,7 @@ class TenantRepositoryTest extends TestCase
      * findByAzureTenantId is used for Azure AD Single Sign-On integration
      * Integration test required: Verify SSO workflow with Azure AD
      */
+    #[Test]
     public function testAzureSsoIntegrationConcept(): void
     {
         // Azure AD SSO workflow:
@@ -335,6 +348,7 @@ class TenantRepositoryTest extends TestCase
      * Each tenant has its own unique code and optional Azure tenant ID
      * Integration test required: Verify tenant isolation and uniqueness
      */
+    #[Test]
     public function testMultiTenancyIsolationConcept(): void
     {
         // Tenant codes must be unique (enforced by database constraint)
@@ -352,6 +366,7 @@ class TenantRepositoryTest extends TestCase
      * Tenants can have parent-subsidiary relationships
      * Integration test required: Verify findActive includes both parents and subsidiaries
      */
+    #[Test]
     public function testCorporateHierarchyConcept(): void
     {
         $parent = $this->createMock(Tenant::class);
@@ -377,6 +392,7 @@ class TenantRepositoryTest extends TestCase
      * Tenants can have optional JSON settings and logo paths
      * Integration test required: Verify settings are preserved during lookups
      */
+    #[Test]
     public function testTenantSettingsConcept(): void
     {
         $mockSettings = [
@@ -403,6 +419,7 @@ class TenantRepositoryTest extends TestCase
     /**
      * Test repository method naming conventions
      */
+    #[Test]
     public function testRepositoryMethodNamingConventions(): void
     {
         // Repository should follow standard Doctrine naming conventions
@@ -422,6 +439,7 @@ class TenantRepositoryTest extends TestCase
     /**
      * Test that custom methods complement inherited Doctrine methods
      */
+    #[Test]
     public function testCustomMethodsComplementInheritedMethods(): void
     {
         // Inherited from ServiceEntityRepository
@@ -445,6 +463,7 @@ class TenantRepositoryTest extends TestCase
      * findActive should return an empty array when no active tenants exist
      * Integration test required: Verify empty array is returned correctly
      */
+    #[Test]
     public function testEmptyResultHandlingConcept(): void
     {
         $emptyResult = [];
@@ -468,6 +487,7 @@ class TenantRepositoryTest extends TestCase
      * Code and Azure tenant ID lookups should be case-sensitive
      * Integration test required: Verify exact matching behavior
      */
+    #[Test]
     public function testCaseSensitivityConcept(): void
     {
         $code1 = 'ABC123';
@@ -485,6 +505,7 @@ class TenantRepositoryTest extends TestCase
     /**
      * Test that repository is properly configured as a service
      */
+    #[Test]
     public function testRepositoryConfiguration(): void
     {
         // Repository should extend ServiceEntityRepository
@@ -510,6 +531,7 @@ class TenantRepositoryTest extends TestCase
      * Tenants have createdAt and updatedAt timestamps
      * Integration test required: Verify timestamps are set correctly
      */
+    #[Test]
     public function testTenantTimestampsConcept(): void
     {
         $now = new \DateTimeImmutable();

@@ -12,6 +12,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class SoAReportServiceTest extends TestCase
@@ -39,6 +40,7 @@ class SoAReportServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGenerateSoAReport(): void
     {
         $control1 = $this->createMock(Control::class);
@@ -90,6 +92,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertEquals('PDF_CONTENT', $result);
     }
 
+    #[Test]
     public function testGenerateSoAReportWithCustomOptions(): void
     {
         $this->controlRepository->method('findAllInIsoOrder')->willReturn([]);
@@ -116,6 +119,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertEquals('PDF_CONTENT', $result);
     }
 
+    #[Test]
     public function testDownloadSoAReport(): void
     {
         $this->controlRepository->method('findAllInIsoOrder')->willReturn([]);
@@ -132,6 +136,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertEquals('PDF_CONTENT', $response->getContent());
     }
 
+    #[Test]
     public function testDownloadSoAReportWithCustomFilename(): void
     {
         $this->controlRepository->method('findAllInIsoOrder')->willReturn([]);
@@ -145,6 +150,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertStringContainsString('Custom_SoA_Report.pdf', $response->headers->get('Content-Disposition'));
     }
 
+    #[Test]
     public function testDownloadSoAReportAutoAddsExtension(): void
     {
         $this->controlRepository->method('findAllInIsoOrder')->willReturn([]);
@@ -158,6 +164,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertStringContainsString('MyReport.pdf', $response->headers->get('Content-Disposition'));
     }
 
+    #[Test]
     public function testDownloadSoAReportSanitizesFilename(): void
     {
         $this->controlRepository->method('findAllInIsoOrder')->willReturn([]);
@@ -175,6 +182,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertStringNotContainsString('>', $disposition);
     }
 
+    #[Test]
     public function testStreamSoAReport(): void
     {
         $this->controlRepository->method('findAllInIsoOrder')->willReturn([]);
@@ -190,6 +198,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertStringStartsWith('inline', $response->headers->get('Content-Disposition'));
     }
 
+    #[Test]
     public function testStreamSoAReportWithCustomFilename(): void
     {
         $this->controlRepository->method('findAllInIsoOrder')->willReturn([]);
@@ -204,6 +213,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertStringContainsString('Inline_Report.pdf', $response->headers->get('Content-Disposition'));
     }
 
+    #[Test]
     public function testGetSoAStatistics(): void
     {
         $stats = [
@@ -220,6 +230,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertEquals($stats, $result);
     }
 
+    #[Test]
     public function testGetCategoryStatistics(): void
     {
         $categoryStats = [
@@ -236,6 +247,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertEquals($categoryStats, $result);
     }
 
+    #[Test]
     public function testGetImplementationProgress(): void
     {
         $this->controlRepository->method('getImplementationStats')->willReturn([
@@ -248,6 +260,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertEquals(49.46, $progress);
     }
 
+    #[Test]
     public function testGetImplementationProgressWithZeroTotal(): void
     {
         $this->controlRepository->method('getImplementationStats')->willReturn([
@@ -260,6 +273,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertEquals(0.0, $progress);
     }
 
+    #[Test]
     public function testGetImplementationProgressRoundsCorrectly(): void
     {
         $this->controlRepository->method('getImplementationStats')->willReturn([
@@ -272,6 +286,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertEquals(32.26, $progress); // 30/93 * 100 = 32.258...
     }
 
+    #[Test]
     public function testGetControlsRequiringAttentionFindsNotApplicableWithoutJustification(): void
     {
         $control = $this->createMock(Control::class);
@@ -289,6 +304,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertSame($control, $result[0]['control']);
     }
 
+    #[Test]
     public function testGetControlsRequiringAttentionFindsOverdueControls(): void
     {
         $control = $this->createMock(Control::class);
@@ -304,6 +320,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertEquals('overdue', $result[0]['reason']);
     }
 
+    #[Test]
     public function testGetControlsRequiringAttentionIgnoresImplementedOverdue(): void
     {
         $control = $this->createMock(Control::class);
@@ -318,6 +335,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertEmpty($result); // Implemented controls don't need attention
     }
 
+    #[Test]
     public function testGetControlsRequiringAttentionIgnoresNotApplicableWithJustification(): void
     {
         $control = $this->createMock(Control::class);
@@ -332,6 +350,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    #[Test]
     public function testGetControlsRequiringAttentionIgnoresFutureDates(): void
     {
         $control = $this->createMock(Control::class);
@@ -346,6 +365,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    #[Test]
     public function testGetControlsRequiringAttentionWithMultipleIssues(): void
     {
         $control1 = $this->createMock(Control::class);
@@ -366,6 +386,7 @@ class SoAReportServiceTest extends TestCase
         $this->assertCount(2, $result);
     }
 
+    #[Test]
     public function testGroupControlsByCategoryCorrectly(): void
     {
         $control1 = $this->createMock(Control::class);
@@ -395,6 +416,7 @@ class SoAReportServiceTest extends TestCase
         $this->service->generateSoAReport();
     }
 
+    #[Test]
     public function testDownloadSoAReportSetsContentLength(): void
     {
         $this->controlRepository->method('findAllInIsoOrder')->willReturn([]);

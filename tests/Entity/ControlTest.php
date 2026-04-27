@@ -7,9 +7,11 @@ use App\Entity\Control;
 use App\Entity\Incident;
 use App\Entity\Training;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ControlTest extends TestCase
 {
+    #[Test]
     public function testGetProtectedAssetValueWithNoAssets(): void
     {
         $control = new Control();
@@ -17,6 +19,7 @@ class ControlTest extends TestCase
         $this->assertEquals(0, $control->getProtectedAssetValue());
     }
 
+    #[Test]
     public function testGetProtectedAssetValueWithMultipleAssets(): void
     {
         $control = new Control();
@@ -40,6 +43,7 @@ class ControlTest extends TestCase
         $this->assertEquals(9, $control->getProtectedAssetValue());
     }
 
+    #[Test]
     public function testGetHighRiskAssetCountWithNoAssets(): void
     {
         $control = new Control();
@@ -47,6 +51,7 @@ class ControlTest extends TestCase
         $this->assertEquals(0, $control->getHighRiskAssetCount());
     }
 
+    #[Test]
     public function testGetHighRiskAssetCountWithMixedAssets(): void
     {
         $control = new Control();
@@ -77,6 +82,7 @@ class ControlTest extends TestCase
         $this->assertEquals(1, $control->getHighRiskAssetCount());
     }
 
+    #[Test]
     public function testGetEffectivenessScoreNotFullyImplemented(): void
     {
         $control = new Control();
@@ -86,6 +92,7 @@ class ControlTest extends TestCase
         $this->assertEquals(0.0, $control->getEffectivenessScore());
     }
 
+    #[Test]
     public function testGetEffectivenessScoreNoProtectedAssets(): void
     {
         $control = new Control();
@@ -95,6 +102,7 @@ class ControlTest extends TestCase
         $this->assertEquals(100.0, $control->getEffectivenessScore());
     }
 
+    #[Test]
     public function testGetEffectivenessScoreWithNoIncidents(): void
     {
         $control = new Control();
@@ -108,6 +116,7 @@ class ControlTest extends TestCase
         $this->assertEquals(100.0, $control->getEffectivenessScore());
     }
 
+    #[Test]
     public function testGetEffectivenessScoreWithIncidentsAfterImplementation(): void
     {
         $control = new Control();
@@ -129,6 +138,7 @@ class ControlTest extends TestCase
         $this->assertEquals(80.0, $control->getEffectivenessScore());
     }
 
+    #[Test]
     public function testGetEffectivenessScoreWithIncidentsBeforeImplementation(): void
     {
         $control = new Control();
@@ -148,6 +158,7 @@ class ControlTest extends TestCase
         $this->assertEquals(100.0, $control->getEffectivenessScore());
     }
 
+    #[Test]
     public function testGetEffectivenessScoreMultipleIncidents(): void
     {
         $control = new Control();
@@ -178,6 +189,7 @@ class ControlTest extends TestCase
         $this->assertEquals(60.0, $control->getEffectivenessScore());
     }
 
+    #[Test]
     public function testNeedsReviewWithNoIncidents(): void
     {
         $control = new Control();
@@ -188,6 +200,7 @@ class ControlTest extends TestCase
         $this->assertFalse($control->isReviewNeeded());
     }
 
+    #[Test]
     public function testNeedsReviewWithRecentIncident(): void
     {
         $control = new Control();
@@ -203,6 +216,7 @@ class ControlTest extends TestCase
         $this->assertTrue($control->isReviewNeeded());
     }
 
+    #[Test]
     public function testNeedsReviewWithOldIncident(): void
     {
         $control = new Control();
@@ -218,6 +232,7 @@ class ControlTest extends TestCase
         $this->assertFalse($control->isReviewNeeded());
     }
 
+    #[Test]
     public function testNeedsReviewWithPastDueReviewDate(): void
     {
         $control = new Control();
@@ -227,6 +242,7 @@ class ControlTest extends TestCase
         $this->assertTrue($control->isReviewNeeded());
     }
 
+    #[Test]
     public function testNeedsReviewWithFutureReviewDate(): void
     {
         $control = new Control();
@@ -236,6 +252,7 @@ class ControlTest extends TestCase
         $this->assertFalse($control->isReviewNeeded());
     }
 
+    #[Test]
     public function testHasTrainingCoverageWithNoTrainings(): void
     {
         $control = new Control();
@@ -243,6 +260,7 @@ class ControlTest extends TestCase
         $this->assertFalse($control->hasTrainingCoverage());
     }
 
+    #[Test]
     public function testHasTrainingCoverageWithCompletedTraining(): void
     {
         $control = new Control();
@@ -254,6 +272,7 @@ class ControlTest extends TestCase
         $this->assertTrue($control->hasTrainingCoverage());
     }
 
+    #[Test]
     public function testHasTrainingCoverageWithOnlyPlannedTraining(): void
     {
         $control = new Control();
@@ -266,6 +285,7 @@ class ControlTest extends TestCase
         $this->assertFalse($control->hasTrainingCoverage());
     }
 
+    #[Test]
     public function testGetTrainingStatusNoTraining(): void
     {
         $control = new Control();
@@ -273,6 +293,7 @@ class ControlTest extends TestCase
         $this->assertEquals('no_training', $control->getTrainingStatus());
     }
 
+    #[Test]
     public function testGetTrainingStatusTrainingCurrent(): void
     {
         $control = new Control();
@@ -286,6 +307,7 @@ class ControlTest extends TestCase
         $this->assertEquals('training_current', $control->getTrainingStatus());
     }
 
+    #[Test]
     public function testGetTrainingStatusTrainingOutdated(): void
     {
         $control = new Control();
@@ -299,6 +321,7 @@ class ControlTest extends TestCase
         $this->assertEquals('training_outdated', $control->getTrainingStatus());
     }
 
+    #[Test]
     public function testGetTrainingStatusTrainingPlanned(): void
     {
         $control = new Control();
@@ -310,6 +333,7 @@ class ControlTest extends TestCase
         $this->assertEquals('training_planned', $control->getTrainingStatus());
     }
 
+    #[Test]
     public function testGetTrainingStatusTrainingIncomplete(): void
     {
         $control = new Control();
@@ -322,6 +346,7 @@ class ControlTest extends TestCase
         $this->assertEquals('training_incomplete', $control->getTrainingStatus());
     }
 
+    #[Test]
     public function testGetTrainingStatusMostRecentCompleted(): void
     {
         $control = new Control();
@@ -343,6 +368,7 @@ class ControlTest extends TestCase
         $this->assertEquals('training_current', $control->getTrainingStatus());
     }
 
+    #[Test]
     public function testAddAndRemoveRisk(): void
     {
         $control = new Control();
@@ -359,6 +385,7 @@ class ControlTest extends TestCase
         $this->assertFalse($control->getRisks()->contains($risk));
     }
 
+    #[Test]
     public function testAddAndRemoveIncident(): void
     {
         $control = new Control();
@@ -375,6 +402,7 @@ class ControlTest extends TestCase
         $this->assertFalse($control->getIncidents()->contains($incident));
     }
 
+    #[Test]
     public function testAddAndRemoveProtectedAsset(): void
     {
         $control = new Control();
@@ -391,6 +419,7 @@ class ControlTest extends TestCase
         $this->assertFalse($control->getProtectedAssets()->contains($asset));
     }
 
+    #[Test]
     public function testAddAndRemoveTraining(): void
     {
         $control = new Control();

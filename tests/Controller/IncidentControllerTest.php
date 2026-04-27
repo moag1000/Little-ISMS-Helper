@@ -47,6 +47,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for IncidentController
@@ -170,6 +171,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test index action renders correctly with no filters
      */
+    #[Test]
     public function testIndexWithoutFilters(): void
     {
         $tenant = $this->createTenant(1);
@@ -204,6 +206,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test index action with severity filter
      */
+    #[Test]
     public function testIndexWithSeverityFilter(): void
     {
         $tenant = $this->createTenant(1);
@@ -238,6 +241,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test index action with data breach filter
      */
+    #[Test]
     public function testIndexWithDataBreachFilter(): void
     {
         $tenant = $this->createTenant(1);
@@ -271,6 +275,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test index action with view filter: own
      */
+    #[Test]
     public function testIndexWithViewFilterOwn(): void
     {
         $tenant = $this->createTenant(1);
@@ -297,6 +302,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test new action renders form
      */
+    #[Test]
     public function testNewRendersForm(): void
     {
         $tenant = $this->createTenant(1);
@@ -335,6 +341,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test new action throws exception when no tenant context
      */
+    #[Test]
     public function testNewThrowsExceptionWithoutTenantContext(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn(null);
@@ -349,6 +356,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test new action creates incident successfully
      */
+    #[Test]
     public function testNewCreatesIncidentSuccessfully(): void
     {
         $tenant = $this->createTenant(1);
@@ -378,6 +386,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test new action sends notification for high severity incidents
      */
+    #[Test]
     public function testNewSendsNotificationForHighSeverityIncidents(): void
     {
         $tenant = $this->createTenant(1);
@@ -427,6 +436,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test show action displays incident details
      */
+    #[Test]
     public function testShowDisplaysIncidentDetails(): void
     {
         $incident = $this->createIncident(1, 'high', 'in_progress');
@@ -460,6 +470,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test edit action renders form
      */
+    #[Test]
     public function testEditRendersForm(): void
     {
         $incident = $this->createIncident(1, 'medium', 'investigating');
@@ -488,6 +499,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test edit action updates incident successfully
      */
+    #[Test]
     public function testEditUpdatesIncidentSuccessfully(): void
     {
         $incident = $this->createIncident(1, 'medium', 'investigating');
@@ -511,6 +523,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test edit action sends notification on status change
      */
+    #[Test]
     public function testEditSendsNotificationOnStatusChange(): void
     {
         $tenant = $this->createTenant(1);
@@ -559,6 +572,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test delete action removes incident
      */
+    #[Test]
     public function testDeleteRemovesIncident(): void
     {
         $incident = $this->createIncident(1, 'low', 'closed');
@@ -582,6 +596,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test bulk delete with valid IDs
      */
+    #[Test]
     public function testBulkDeleteWithValidIds(): void
     {
         $tenant = $this->createTenant(1);
@@ -622,6 +637,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test bulk delete with empty IDs
      */
+    #[Test]
     public function testBulkDeleteWithEmptyIds(): void
     {
         $request = new Request([], [], [], [], [], [], json_encode(['ids' => []]));
@@ -638,6 +654,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test bulk delete rejects incidents from other tenants
      */
+    #[Test]
     public function testBulkDeleteRejectsOtherTenantsIncidents(): void
     {
         $userTenant = $this->createTenant(1);
@@ -665,6 +682,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test GDPR wizard result endpoint
      */
+    #[Test]
     public function testGdprWizardResultReturnsAssessment(): void
     {
         $assessment = [
@@ -699,6 +717,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test GDPR wizard result with missing parameters
      */
+    #[Test]
     public function testGdprWizardResultWithMissingParameters(): void
     {
         $request = new Request([], [], [], [], [], [], json_encode(['dataTypes' => ['personal_data']]));
@@ -713,6 +732,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test NIS2 report download when framework is active
      */
+    #[Test]
     public function testDownloadNis2ReportWhenFrameworkActive(): void
     {
         $incident = $this->createIncident(1, 'critical', 'investigating');
@@ -741,6 +761,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test NIS2 report download when framework is inactive
      */
+    #[Test]
     public function testDownloadNis2ReportWhenFrameworkInactive(): void
     {
         $incident = $this->createIncident(1, 'critical', 'investigating');
@@ -763,6 +784,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test BCM impact analysis
      */
+    #[Test]
     public function testBcmImpact(): void
     {
         $incident = $this->createIncident(1, 'high', 'investigating');
@@ -791,6 +813,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test BCM impact API endpoint
      */
+    #[Test]
     public function testBcmImpactApi(): void
     {
         $incident = $this->createIncident(1, 'high', 'investigating');
@@ -811,6 +834,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test auto-detect processes
      */
+    #[Test]
     public function testAutoDetectProcesses(): void
     {
         $incident = $this->createIncident(1, 'high', 'investigating');
@@ -834,6 +858,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test escalation preview with valid data
      */
+    #[Test]
     public function testEscalationPreviewWithValidData(): void
     {
         $preview = [
@@ -876,6 +901,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test escalation preview with missing severity
      */
+    #[Test]
     public function testEscalationPreviewWithMissingSeverity(): void
     {
         $request = new Request([], [], [], [], [], [], json_encode(['dataBreachOccurred' => false]));
@@ -890,6 +916,7 @@ class IncidentControllerTest extends TestCase
     /**
      * Test escalation preview with invalid severity
      */
+    #[Test]
     public function testEscalationPreviewWithInvalidSeverity(): void
     {
         $request = new Request(

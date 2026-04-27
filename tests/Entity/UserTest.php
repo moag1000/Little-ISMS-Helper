@@ -6,9 +6,11 @@ use App\Entity\Role;
 use App\Entity\Tenant;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UserTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $user = new User();
@@ -18,6 +20,7 @@ class UserTest extends TestCase
         $this->assertEquals(0, $user->getCustomRoles()->count());
     }
 
+    #[Test]
     public function testGettersAndSetters(): void
     {
         $user = new User();
@@ -35,6 +38,7 @@ class UserTest extends TestCase
         $this->assertEquals('hashed_password', $user->getPassword());
     }
 
+    #[Test]
     public function testGetUserIdentifier(): void
     {
         $user = new User();
@@ -43,6 +47,7 @@ class UserTest extends TestCase
         $this->assertEquals('identifier@example.com', $user->getUserIdentifier());
     }
 
+    #[Test]
     public function testGetFullName(): void
     {
         $user = new User();
@@ -52,6 +57,7 @@ class UserTest extends TestCase
         $this->assertEquals('Jane Smith', $user->getFullName());
     }
 
+    #[Test]
     public function testGetRolesIncludesDefaultRoleUser(): void
     {
         $user = new User();
@@ -61,6 +67,7 @@ class UserTest extends TestCase
         $this->assertContains('ROLE_USER', $roles);
     }
 
+    #[Test]
     public function testSetAndGetRoles(): void
     {
         $user = new User();
@@ -73,6 +80,7 @@ class UserTest extends TestCase
         $this->assertContains('ROLE_MANAGER', $roles);
     }
 
+    #[Test]
     public function testGetStoredRoles(): void
     {
         $user = new User();
@@ -85,6 +93,7 @@ class UserTest extends TestCase
         $this->assertNotContains('ROLE_USER', $storedRoles);
     }
 
+    #[Test]
     public function testAddAndRemoveCustomRole(): void
     {
         $user = new User();
@@ -104,6 +113,7 @@ class UserTest extends TestCase
         $this->assertEquals(0, $user->getCustomRoles()->count());
     }
 
+    #[Test]
     public function testIsActiveDefault(): void
     {
         $user = new User();
@@ -111,6 +121,7 @@ class UserTest extends TestCase
         $this->assertTrue($user->isActive());
     }
 
+    #[Test]
     public function testSetIsActive(): void
     {
         $user = new User();
@@ -119,6 +130,7 @@ class UserTest extends TestCase
         $this->assertFalse($user->isActive());
     }
 
+    #[Test]
     public function testIsVerifiedDefault(): void
     {
         $user = new User();
@@ -126,6 +138,7 @@ class UserTest extends TestCase
         $this->assertFalse($user->isVerified());
     }
 
+    #[Test]
     public function testSetIsVerified(): void
     {
         $user = new User();
@@ -134,6 +147,7 @@ class UserTest extends TestCase
         $this->assertTrue($user->isVerified());
     }
 
+    #[Test]
     public function testAuthProvider(): void
     {
         $user = new User();
@@ -144,6 +158,7 @@ class UserTest extends TestCase
         $this->assertEquals('azure_oauth', $user->getAuthProvider());
     }
 
+    #[Test]
     public function testAzureFields(): void
     {
         $user = new User();
@@ -159,6 +174,7 @@ class UserTest extends TestCase
         $this->assertEquals($metadata, $user->getAzureMetadata());
     }
 
+    #[Test]
     public function testTenantRelationship(): void
     {
         $user = new User();
@@ -173,6 +189,7 @@ class UserTest extends TestCase
         $this->assertSame($tenant, $user->getTenant());
     }
 
+    #[Test]
     public function testProfileFields(): void
     {
         $user = new User();
@@ -193,6 +210,7 @@ class UserTest extends TestCase
         $this->assertEquals('UTC', $user->getTimezone());
     }
 
+    #[Test]
     public function testLastLoginAt(): void
     {
         $user = new User();
@@ -205,6 +223,7 @@ class UserTest extends TestCase
         $this->assertEquals($now, $user->getLastLoginAt());
     }
 
+    #[Test]
     public function testUpdatedAt(): void
     {
         $user = new User();
@@ -217,6 +236,7 @@ class UserTest extends TestCase
         $this->assertEquals($now, $user->getUpdatedAt());
     }
 
+    #[Test]
     public function testEraseCredentials(): void
     {
         $user = new User();
@@ -228,6 +248,7 @@ class UserTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testRolesAreUnique(): void
     {
         $user = new User();

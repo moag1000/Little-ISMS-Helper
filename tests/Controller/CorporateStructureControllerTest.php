@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for CorporateStructureController
@@ -166,12 +167,14 @@ class CorporateStructureControllerTest extends WebTestCase
 
     // ========== TREE TESTS ==========
 
+    #[Test]
     public function testGetTreeRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/api/corporate-structure/tree/' . $this->testTenant->getId());
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testGetTreeRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -179,6 +182,7 @@ class CorporateStructureControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testGetTreeReturnsJsonForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -189,12 +193,14 @@ class CorporateStructureControllerTest extends WebTestCase
 
     // ========== GROUPS TESTS ==========
 
+    #[Test]
     public function testGetGroupsRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/api/corporate-structure/groups');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testGetGroupsRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -202,6 +208,7 @@ class CorporateStructureControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testGetGroupsReturnsJsonForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -212,12 +219,14 @@ class CorporateStructureControllerTest extends WebTestCase
 
     // ========== SET PARENT TESTS ==========
 
+    #[Test]
     public function testSetParentRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/api/corporate-structure/set-parent');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testSetParentRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -225,6 +234,7 @@ class CorporateStructureControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testSetParentRequiresTenantId(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -232,6 +242,7 @@ class CorporateStructureControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
+    #[Test]
     public function testSetParentReturns404ForNonexistentTenant(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -239,6 +250,7 @@ class CorporateStructureControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    #[Test]
     public function testSetParentRequiresValidGovernanceModel(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -252,12 +264,14 @@ class CorporateStructureControllerTest extends WebTestCase
 
     // ========== GOVERNANCE MODEL TESTS ==========
 
+    #[Test]
     public function testUpdateGovernanceModelRequiresAuthentication(): void
     {
         $this->client->request('PATCH', '/en/api/corporate-structure/governance-model/' . $this->testTenant->getId());
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testUpdateGovernanceModelRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -265,6 +279,7 @@ class CorporateStructureControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testUpdateGovernanceModelRequiresValidModel(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -278,12 +293,14 @@ class CorporateStructureControllerTest extends WebTestCase
 
     // ========== EFFECTIVE CONTEXT TESTS ==========
 
+    #[Test]
     public function testGetEffectiveContextRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/api/corporate-structure/effective-context/' . $this->testTenant->getId());
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testGetEffectiveContextRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -293,12 +310,14 @@ class CorporateStructureControllerTest extends WebTestCase
 
     // ========== GOVERNANCE MODELS LIST TESTS ==========
 
+    #[Test]
     public function testGetGovernanceModelsRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/api/corporate-structure/governance-models');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testGetGovernanceModelsReturnsJsonForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -309,12 +328,14 @@ class CorporateStructureControllerTest extends WebTestCase
 
     // ========== CHECK ACCESS TESTS ==========
 
+    #[Test]
     public function testCheckAccessRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/api/corporate-structure/check-access/' . $this->testTenant->getId());
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testCheckAccessRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -322,6 +343,7 @@ class CorporateStructureControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testCheckAccessReturns404ForNonexistentTarget(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -329,6 +351,7 @@ class CorporateStructureControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    #[Test]
     public function testCheckAccessReturnsJsonForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -339,12 +362,14 @@ class CorporateStructureControllerTest extends WebTestCase
 
     // ========== PROPAGATE CONTEXT TESTS ==========
 
+    #[Test]
     public function testPropagateContextRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/api/corporate-structure/propagate-context/' . $this->testTenant->getId());
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testPropagateContextRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -354,12 +379,14 @@ class CorporateStructureControllerTest extends WebTestCase
 
     // ========== GET GOVERNANCE RULES TESTS ==========
 
+    #[Test]
     public function testGetGovernanceRulesRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/api/corporate-structure/' . $this->testTenant->getId() . '/governance');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testGetGovernanceRulesRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -367,6 +394,7 @@ class CorporateStructureControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testGetGovernanceRulesReturns404ForNonexistentTenant(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -374,6 +402,7 @@ class CorporateStructureControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    #[Test]
     public function testGetGovernanceRulesReturnsJsonForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -384,12 +413,14 @@ class CorporateStructureControllerTest extends WebTestCase
 
     // ========== SET SCOPE GOVERNANCE TESTS ==========
 
+    #[Test]
     public function testSetScopeGovernanceRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/api/corporate-structure/' . $this->testTenant->getId() . '/governance/risks');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testSetScopeGovernanceRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -397,6 +428,7 @@ class CorporateStructureControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testSetScopeGovernanceRequiresValidModel(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -410,12 +442,14 @@ class CorporateStructureControllerTest extends WebTestCase
 
     // ========== DELETE SCOPE GOVERNANCE TESTS ==========
 
+    #[Test]
     public function testDeleteScopeGovernanceRequiresAuthentication(): void
     {
         $this->client->request('DELETE', '/en/api/corporate-structure/' . $this->testTenant->getId() . '/governance/risks/1');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteScopeGovernanceRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);

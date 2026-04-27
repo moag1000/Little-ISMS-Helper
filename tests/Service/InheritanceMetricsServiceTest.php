@@ -15,6 +15,7 @@ use App\Service\InheritanceMetricsService;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Contract-level tests for the InheritanceMetricsService (CM-1 / CM-5 quick-wins).
@@ -37,6 +38,7 @@ final class InheritanceMetricsServiceTest extends TestCase
         $this->policy = $this->createStub(CompliancePolicyService::class);
     }
 
+    #[Test]
     public function testEmptyTenantYieldsZeroInheritanceRate(): void
     {
         $tenant = $this->createStub(Tenant::class);
@@ -55,6 +57,7 @@ final class InheritanceMetricsServiceTest extends TestCase
         $this->assertSame(0.0, $service->fteSavedForTenant($tenant));
     }
 
+    #[Test]
     public function testMixedInheritedAndManualFulfillments(): void
     {
         $tenant = $this->createStub(Tenant::class);
@@ -82,6 +85,7 @@ final class InheritanceMetricsServiceTest extends TestCase
         $this->assertSame(12, $result['pending_review_count']);
     }
 
+    #[Test]
     public function testOnlyPendingReviewsYieldsZeroInheritanceRate(): void
     {
         $tenant = $this->createStub(Tenant::class);
@@ -105,6 +109,7 @@ final class InheritanceMetricsServiceTest extends TestCase
         $this->assertSame(20, $result['pending_review_count']);
     }
 
+    #[Test]
     public function testFteSavedWithTenInheritedYieldsThreeDays(): void
     {
         $tenant = $this->createStub(Tenant::class);
@@ -124,6 +129,7 @@ final class InheritanceMetricsServiceTest extends TestCase
         $this->assertSame(3.0, $service->fteSavedForTenant($tenant));
     }
 
+    #[Test]
     public function testFteSavedWithNoInheritedYieldsZero(): void
     {
         $tenant = $this->createStub(Tenant::class);
@@ -140,6 +146,7 @@ final class InheritanceMetricsServiceTest extends TestCase
         $this->assertSame(0.0, $service->fteSavedForTenant($tenant));
     }
 
+    #[Test]
     public function testTenantAggregateCombinesFrameworks(): void
     {
         $tenant = $this->createStub(Tenant::class);

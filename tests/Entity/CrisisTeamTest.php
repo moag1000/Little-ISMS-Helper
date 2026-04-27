@@ -7,9 +7,11 @@ use App\Entity\CrisisTeam;
 use App\Entity\Tenant;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CrisisTeamTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $team = new CrisisTeam();
@@ -23,6 +25,7 @@ class CrisisTeamTest extends TestCase
         $this->assertEquals([], $team->getDocumentation());
     }
 
+    #[Test]
     public function testGettersAndSetters(): void
     {
         $team = new CrisisTeam();
@@ -64,6 +67,7 @@ class CrisisTeamTest extends TestCase
         $this->assertEquals('Additional information', $team->getNotes());
     }
 
+    #[Test]
     public function testTeamTypeGetterAndSetter(): void
     {
         $team = new CrisisTeam();
@@ -81,6 +85,7 @@ class CrisisTeamTest extends TestCase
         $this->assertEquals('communication', $team->getTeamType());
     }
 
+    #[Test]
     public function testIsActiveGetterAndSetter(): void
     {
         $team = new CrisisTeam();
@@ -95,6 +100,7 @@ class CrisisTeamTest extends TestCase
         $this->assertTrue($team->isActive());
     }
 
+    #[Test]
     public function testTeamLeaderRelationship(): void
     {
         $team = new CrisisTeam();
@@ -110,6 +116,7 @@ class CrisisTeamTest extends TestCase
         $this->assertNull($team->getTeamLeader());
     }
 
+    #[Test]
     public function testDeputyLeaderRelationship(): void
     {
         $team = new CrisisTeam();
@@ -125,6 +132,7 @@ class CrisisTeamTest extends TestCase
         $this->assertNull($team->getDeputyLeader());
     }
 
+    #[Test]
     public function testTenantRelationship(): void
     {
         $team = new CrisisTeam();
@@ -139,6 +147,7 @@ class CrisisTeamTest extends TestCase
         $this->assertSame($tenant, $team->getTenant());
     }
 
+    #[Test]
     public function testMembersManagement(): void
     {
         $team = new CrisisTeam();
@@ -184,6 +193,7 @@ class CrisisTeamTest extends TestCase
         $this->assertEquals('Bob Johnson', $team->getMembers()[1]['name']);
     }
 
+    #[Test]
     public function testGetMemberCount(): void
     {
         $team = new CrisisTeam();
@@ -198,6 +208,7 @@ class CrisisTeamTest extends TestCase
         $this->assertEquals(3, $team->getMemberCount());
     }
 
+    #[Test]
     public function testEmergencyContactsGetterAndSetter(): void
     {
         $team = new CrisisTeam();
@@ -214,6 +225,7 @@ class CrisisTeamTest extends TestCase
         $this->assertEquals($contacts, $team->getEmergencyContacts());
     }
 
+    #[Test]
     public function testAvailableResourcesGetterAndSetter(): void
     {
         $team = new CrisisTeam();
@@ -230,6 +242,7 @@ class CrisisTeamTest extends TestCase
         $this->assertEquals($resources, $team->getAvailableResources());
     }
 
+    #[Test]
     public function testDocumentationGetterAndSetter(): void
     {
         $team = new CrisisTeam();
@@ -245,6 +258,7 @@ class CrisisTeamTest extends TestCase
         $this->assertEquals($docs, $team->getDocumentation());
     }
 
+    #[Test]
     public function testDateTimeFields(): void
     {
         $team = new CrisisTeam();
@@ -266,6 +280,7 @@ class CrisisTeamTest extends TestCase
         $this->assertEquals($nextTraining, $team->getNextTrainingAt());
     }
 
+    #[Test]
     public function testTimestamps(): void
     {
         $team = new CrisisTeam();
@@ -282,6 +297,7 @@ class CrisisTeamTest extends TestCase
         $this->assertEquals($updatedAt, $team->getUpdatedAt());
     }
 
+    #[Test]
     public function testAddAndRemoveBusinessContinuityPlan(): void
     {
         $team = new CrisisTeam();
@@ -302,6 +318,7 @@ class CrisisTeamTest extends TestCase
         $this->assertFalse($team->getBusinessContinuityPlans()->contains($plan));
     }
 
+    #[Test]
     public function testIsTrainingOverdue(): void
     {
         $team = new CrisisTeam();
@@ -323,6 +340,7 @@ class CrisisTeamTest extends TestCase
         $this->assertFalse($team->isTrainingOverdue());
     }
 
+    #[Test]
     public function testGetDaysSinceLastTraining(): void
     {
         $team = new CrisisTeam();
@@ -340,6 +358,7 @@ class CrisisTeamTest extends TestCase
         $this->assertEquals(0, $team->getDaysSinceLastTraining());
     }
 
+    #[Test]
     public function testGetTeamTypeDisplayName(): void
     {
         $team = new CrisisTeam();
@@ -360,6 +379,7 @@ class CrisisTeamTest extends TestCase
         $this->assertEquals('Unbekannt', $team->getTeamTypeDisplayName());
     }
 
+    #[Test]
     public function testIsProperlyConfigured(): void
     {
         $team = new CrisisTeam();
@@ -385,6 +405,7 @@ class CrisisTeamTest extends TestCase
         $this->assertTrue($team->isProperlyConfigured());
     }
 
+    #[Test]
     public function testIsProperlyConfiguredWithAllFields(): void
     {
         $team = new CrisisTeam();
@@ -400,6 +421,7 @@ class CrisisTeamTest extends TestCase
         $this->assertTrue($team->isProperlyConfigured());
     }
 
+    #[Test]
     public function testIsProperlyConfiguredWithEmptyMembers(): void
     {
         $team = new CrisisTeam();

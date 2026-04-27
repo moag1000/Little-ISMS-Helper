@@ -7,9 +7,11 @@ use App\Entity\BusinessContinuityPlan;
 use App\Entity\Document;
 use App\Entity\Tenant;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class BCExerciseTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $exercise = new BCExercise();
@@ -20,6 +22,7 @@ class BCExerciseTest extends TestCase
         $this->assertEquals(0, $exercise->getDocuments()->count());
     }
 
+    #[Test]
     public function testGettersAndSetters(): void
     {
         $exercise = new BCExercise();
@@ -70,6 +73,7 @@ class BCExerciseTest extends TestCase
         $this->assertEquals('Update RTO values', $exercise->getPlanUpdatesRequired());
     }
 
+    #[Test]
     public function testExerciseTypeGetterAndSetter(): void
     {
         $exercise = new BCExercise();
@@ -84,6 +88,7 @@ class BCExerciseTest extends TestCase
         $this->assertEquals('full_test', $exercise->getExerciseType());
     }
 
+    #[Test]
     public function testStatusGetterAndSetter(): void
     {
         $exercise = new BCExercise();
@@ -101,6 +106,7 @@ class BCExerciseTest extends TestCase
         $this->assertEquals('cancelled', $exercise->getStatus());
     }
 
+    #[Test]
     public function testDurationHoursGetterAndSetter(): void
     {
         $exercise = new BCExercise();
@@ -111,6 +117,7 @@ class BCExerciseTest extends TestCase
         $this->assertEquals(4, $exercise->getDurationHours());
     }
 
+    #[Test]
     public function testSuccessCriteriaGetterAndSetter(): void
     {
         $exercise = new BCExercise();
@@ -128,6 +135,7 @@ class BCExerciseTest extends TestCase
         $this->assertEquals($criteria, $exercise->getSuccessCriteria());
     }
 
+    #[Test]
     public function testSuccessRatingGetterAndSetter(): void
     {
         $exercise = new BCExercise();
@@ -138,6 +146,7 @@ class BCExerciseTest extends TestCase
         $this->assertEquals(4, $exercise->getSuccessRating());
     }
 
+    #[Test]
     public function testReportCompletedGetterAndSetter(): void
     {
         $exercise = new BCExercise();
@@ -149,6 +158,7 @@ class BCExerciseTest extends TestCase
         $this->assertTrue($exercise->isReportCompleted());
     }
 
+    #[Test]
     public function testExerciseDateGetterAndSetter(): void
     {
         $exercise = new BCExercise();
@@ -160,6 +170,7 @@ class BCExerciseTest extends TestCase
         $this->assertEquals($date, $exercise->getExerciseDate());
     }
 
+    #[Test]
     public function testReportDateGetterAndSetter(): void
     {
         $exercise = new BCExercise();
@@ -171,6 +182,7 @@ class BCExerciseTest extends TestCase
         $this->assertEquals($date, $exercise->getReportDate());
     }
 
+    #[Test]
     public function testTenantRelationship(): void
     {
         $exercise = new BCExercise();
@@ -185,6 +197,7 @@ class BCExerciseTest extends TestCase
         $this->assertSame($tenant, $exercise->getTenant());
     }
 
+    #[Test]
     public function testAddAndRemoveTestedPlan(): void
     {
         $exercise = new BCExercise();
@@ -205,6 +218,7 @@ class BCExerciseTest extends TestCase
         $this->assertFalse($exercise->getTestedPlans()->contains($plan));
     }
 
+    #[Test]
     public function testAddAndRemoveDocument(): void
     {
         $exercise = new BCExercise();
@@ -225,6 +239,7 @@ class BCExerciseTest extends TestCase
         $this->assertFalse($exercise->getDocuments()->contains($document));
     }
 
+    #[Test]
     public function testTimestamps(): void
     {
         $exercise = new BCExercise();
@@ -241,6 +256,7 @@ class BCExerciseTest extends TestCase
         $this->assertEquals($updatedAt, $exercise->getUpdatedAt());
     }
 
+    #[Test]
     public function testUpdateTimestamps(): void
     {
         $exercise = new BCExercise();
@@ -253,6 +269,7 @@ class BCExerciseTest extends TestCase
         $this->assertInstanceOf(\DateTimeImmutable::class, $exercise->getUpdatedAt());
     }
 
+    #[Test]
     public function testIsFullyComplete(): void
     {
         $exercise = new BCExercise();
@@ -275,6 +292,7 @@ class BCExerciseTest extends TestCase
         $this->assertTrue($exercise->isFullyComplete());
     }
 
+    #[Test]
     public function testGetSuccessPercentage(): void
     {
         $exercise = new BCExercise();
@@ -320,6 +338,7 @@ class BCExerciseTest extends TestCase
         $this->assertEquals(0, $exercise->getSuccessPercentage());
     }
 
+    #[Test]
     public function testGetEffectivenessScore(): void
     {
         $exercise = new BCExercise();
@@ -355,6 +374,7 @@ class BCExerciseTest extends TestCase
         $this->assertEquals(39, $exercise2->getEffectivenessScore());
     }
 
+    #[Test]
     public function testGetExerciseTypeDescription(): void
     {
         $exercise = new BCExercise();

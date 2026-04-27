@@ -8,9 +8,11 @@ use App\Entity\Tenant;
 use App\Entity\ThreatIntelligence;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ThreatIntelligenceTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $threat = new ThreatIntelligence();
@@ -27,6 +29,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertEquals(0, $threat->getResultingIncidents()->count());
     }
 
+    #[Test]
     public function testTitle(): void
     {
         $threat = new ThreatIntelligence();
@@ -37,6 +40,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertEquals('Critical Zero-Day Vulnerability in Apache', $threat->getTitle());
     }
 
+    #[Test]
     public function testDescription(): void
     {
         $threat = new ThreatIntelligence();
@@ -47,6 +51,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertEquals('A critical vulnerability has been discovered...', $threat->getDescription());
     }
 
+    #[Test]
     public function testThreatType(): void
     {
         $threat = new ThreatIntelligence();
@@ -87,6 +92,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertEquals('other', $threat->getThreatType());
     }
 
+    #[Test]
     public function testSeverity(): void
     {
         $threat = new ThreatIntelligence();
@@ -106,6 +112,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertEquals('informational', $threat->getSeverity());
     }
 
+    #[Test]
     public function testSource(): void
     {
         $threat = new ThreatIntelligence();
@@ -119,6 +126,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertNull($threat->getSource());
     }
 
+    #[Test]
     public function testCveId(): void
     {
         $threat = new ThreatIntelligence();
@@ -132,6 +140,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertNull($threat->getCveId());
     }
 
+    #[Test]
     public function testAffectedSystems(): void
     {
         $threat = new ThreatIntelligence();
@@ -146,6 +155,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertNull($threat->getAffectedSystems());
     }
 
+    #[Test]
     public function testIndicators(): void
     {
         $threat = new ThreatIntelligence();
@@ -160,6 +170,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertNull($threat->getIndicators());
     }
 
+    #[Test]
     public function testMitigationRecommendations(): void
     {
         $threat = new ThreatIntelligence();
@@ -173,6 +184,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertNull($threat->getMitigationRecommendations());
     }
 
+    #[Test]
     public function testStatus(): void
     {
         $threat = new ThreatIntelligence();
@@ -192,6 +204,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertEquals('closed', $threat->getStatus());
     }
 
+    #[Test]
     public function testDetectionDate(): void
     {
         $threat = new ThreatIntelligence();
@@ -204,6 +217,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertEquals($newDate, $threat->getDetectionDate());
     }
 
+    #[Test]
     public function testMitigationDate(): void
     {
         $threat = new ThreatIntelligence();
@@ -218,6 +232,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertNull($threat->getMitigationDate());
     }
 
+    #[Test]
     public function testActionsTaken(): void
     {
         $threat = new ThreatIntelligence();
@@ -231,6 +246,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertNull($threat->getActionsTaken());
     }
 
+    #[Test]
     public function testAssignedToRelationship(): void
     {
         $threat = new ThreatIntelligence();
@@ -245,6 +261,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertNull($threat->getAssignedTo());
     }
 
+    #[Test]
     public function testIsAffectsOrganization(): void
     {
         $threat = new ThreatIntelligence();
@@ -258,6 +275,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertFalse($threat->isAffectsOrganization());
     }
 
+    #[Test]
     public function testCvssScore(): void
     {
         $threat = new ThreatIntelligence();
@@ -271,6 +289,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertNull($threat->getCvssScore());
     }
 
+    #[Test]
     public function testReferences(): void
     {
         $threat = new ThreatIntelligence();
@@ -284,6 +303,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertNull($threat->getReferences());
     }
 
+    #[Test]
     public function testTimestamps(): void
     {
         $threat = new ThreatIntelligence();
@@ -302,6 +322,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertNull($threat->getUpdatedAt());
     }
 
+    #[Test]
     public function testTenantRelationship(): void
     {
         $threat = new ThreatIntelligence();
@@ -316,6 +337,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertNull($threat->getTenant());
     }
 
+    #[Test]
     public function testAddAndRemoveAffectedAsset(): void
     {
         $threat = new ThreatIntelligence();
@@ -345,6 +367,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertEquals(0, $threat->getAffectedAssets()->count());
     }
 
+    #[Test]
     public function testAddAndRemoveResultingIncident(): void
     {
         $threat = new ThreatIntelligence();
@@ -376,6 +399,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertEquals(0, $threat->getResultingIncidents()->count());
     }
 
+    #[Test]
     public function testRemoveResultingIncidentWhenNotOwned(): void
     {
         $threat1 = new ThreatIntelligence();
@@ -393,6 +417,7 @@ class ThreatIntelligenceTest extends TestCase
         $this->assertSame($threat2, $incident->getOriginatingThreat());
     }
 
+    #[Test]
     public function testFluentSetters(): void
     {
         $threat = new ThreatIntelligence();

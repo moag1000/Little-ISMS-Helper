@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests for DoraComplianceController
@@ -114,12 +115,14 @@ class DoraComplianceControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testDashboardRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/dora-compliance');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDashboardRequiresManagerRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -127,6 +130,7 @@ class DoraComplianceControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDashboardDisplaysForManager(): void
     {
         $this->client->loginUser($this->managerUser);
@@ -136,6 +140,7 @@ class DoraComplianceControllerTest extends WebTestCase
         $this->assertTrue($response->isSuccessful() || $response->isRedirect());
     }
 
+    #[Test]
     public function testDashboardRedirectsWhenDoraNotInstalled(): void
     {
         $this->client->loginUser($this->managerUser);

@@ -14,6 +14,7 @@ use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class InitialAdminServiceTest extends TestCase
@@ -36,6 +37,7 @@ class InitialAdminServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGetInitialAdminReturnsFirstAdminUser(): void
     {
         $admin = $this->createUser(1, 'admin@example.com', ['ROLE_ADMIN']);
@@ -74,6 +76,7 @@ class InitialAdminServiceTest extends TestCase
         $this->assertSame($admin, $result);
     }
 
+    #[Test]
     public function testGetInitialAdminReturnsFirstSuperAdminUser(): void
     {
         $superAdmin = $this->createUser(1, 'superadmin@example.com', ['ROLE_SUPER_ADMIN']);
@@ -107,6 +110,7 @@ class InitialAdminServiceTest extends TestCase
         $this->assertSame($superAdmin, $result);
     }
 
+    #[Test]
     public function testGetInitialAdminReturnsNullWhenNoAdminExists(): void
     {
         $this->cache->method('get')
@@ -134,6 +138,7 @@ class InitialAdminServiceTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testGetInitialAdminReturnsNullWhenCachedIdIsNull(): void
     {
         $this->cache->method('get')
@@ -144,6 +149,7 @@ class InitialAdminServiceTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testGetInitialAdminUsesCachedValue(): void
     {
         $admin = $this->createUser(1, 'admin@example.com', ['ROLE_ADMIN']);
@@ -166,6 +172,7 @@ class InitialAdminServiceTest extends TestCase
         $this->assertSame($admin, $result);
     }
 
+    #[Test]
     public function testGetInitialAdminHandlesExceptionAndReturnsNull(): void
     {
         $this->cache->method('get')
@@ -185,6 +192,7 @@ class InitialAdminServiceTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testGetInitialAdminSetsCorrectCacheTtl(): void
     {
         $admin = $this->createUser(1, 'admin@example.com', ['ROLE_ADMIN']);
@@ -218,6 +226,7 @@ class InitialAdminServiceTest extends TestCase
         $this->service->getInitialAdmin();
     }
 
+    #[Test]
     public function testIsInitialAdminReturnsTrueForInitialAdmin(): void
     {
         $admin = $this->createUser(1, 'admin@example.com', ['ROLE_ADMIN']);
@@ -234,6 +243,7 @@ class InitialAdminServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testIsInitialAdminReturnsFalseForDifferentUser(): void
     {
         $admin = $this->createUser(1, 'admin@example.com', ['ROLE_ADMIN']);
@@ -251,6 +261,7 @@ class InitialAdminServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testIsInitialAdminReturnsFalseWhenNoInitialAdminExists(): void
     {
         $user = $this->createUser(1, 'user@example.com', ['ROLE_USER']);
@@ -263,6 +274,7 @@ class InitialAdminServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testIsInitialAdminReturnsFalseForUnpersistedUser(): void
     {
         $admin = $this->createUser(1, 'admin@example.com', ['ROLE_ADMIN']);
@@ -280,6 +292,7 @@ class InitialAdminServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testClearCacheDeletesCacheEntry(): void
     {
         $this->cache->expects($this->once())
@@ -293,6 +306,7 @@ class InitialAdminServiceTest extends TestCase
         $this->service->clearCache();
     }
 
+    #[Test]
     public function testClearCacheHandlesExceptionGracefully(): void
     {
         $this->cache->method('delete')
@@ -311,6 +325,7 @@ class InitialAdminServiceTest extends TestCase
         $this->service->clearCache();
     }
 
+    #[Test]
     public function testValidateOperationAllowsOperationOnNonInitialAdmin(): void
     {
         $user = $this->createUser(2, 'user@example.com', ['ROLE_USER']);
@@ -331,6 +346,7 @@ class InitialAdminServiceTest extends TestCase
         $this->assertTrue(true); // If we get here, no exception was thrown
     }
 
+    #[Test]
     public function testValidateOperationThrowsExceptionForDeleteOnInitialAdmin(): void
     {
         $admin = $this->createUser(1, 'admin@example.com', ['ROLE_ADMIN']);
@@ -359,6 +375,7 @@ class InitialAdminServiceTest extends TestCase
         $this->service->validateOperation($admin, 'delete');
     }
 
+    #[Test]
     public function testValidateOperationThrowsExceptionForDeactivateOnInitialAdmin(): void
     {
         $admin = $this->createUser(1, 'admin@example.com', ['ROLE_ADMIN']);
@@ -385,6 +402,7 @@ class InitialAdminServiceTest extends TestCase
         $this->service->validateOperation($admin, 'deactivate');
     }
 
+    #[Test]
     public function testValidateOperationThrowsExceptionForRemoveAdminRoleOnInitialAdmin(): void
     {
         $admin = $this->createUser(1, 'admin@example.com', ['ROLE_ADMIN']);
@@ -411,6 +429,7 @@ class InitialAdminServiceTest extends TestCase
         $this->service->validateOperation($admin, 'remove_admin_role');
     }
 
+    #[Test]
     public function testValidateOperationThrowsExceptionForUnknownOperation(): void
     {
         $admin = $this->createUser(1, 'admin@example.com', ['ROLE_ADMIN']);
@@ -437,6 +456,7 @@ class InitialAdminServiceTest extends TestCase
         $this->service->validateOperation($admin, 'unknown_operation');
     }
 
+    #[Test]
     public function testGetInitialAdminUsesCorrectCacheKey(): void
     {
         $admin = $this->createUser(1, 'admin@example.com', ['ROLE_ADMIN']);
@@ -452,6 +472,7 @@ class InitialAdminServiceTest extends TestCase
         $this->service->getInitialAdmin();
     }
 
+    #[Test]
     public function testGetInitialAdminQueriesForLowestIdAdmin(): void
     {
         $admin = $this->createUser(5, 'admin@example.com', ['ROLE_ADMIN']);
@@ -494,6 +515,7 @@ class InitialAdminServiceTest extends TestCase
         $this->assertSame($admin, $result);
     }
 
+    #[Test]
     public function testIsInitialAdminHandlesNullFromGetInitialAdmin(): void
     {
         $user = $this->createUser(1, 'user@example.com', ['ROLE_USER']);
@@ -509,6 +531,7 @@ class InitialAdminServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testMultipleCallsUseCacheEffectively(): void
     {
         $admin = $this->createUser(1, 'admin@example.com', ['ROLE_ADMIN']);

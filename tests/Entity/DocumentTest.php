@@ -5,9 +5,11 @@ namespace App\Tests\Entity;
 use App\Entity\Document;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class DocumentTest extends TestCase
 {
+    #[Test]
     public function testNewDocumentHasDefaultValues(): void
     {
         $document = new Document();
@@ -32,6 +34,7 @@ class DocumentTest extends TestCase
         $this->assertEquals('active', $document->getStatus());
     }
 
+    #[Test]
     public function testSetAndGetFilename(): void
     {
         $document = new Document();
@@ -40,6 +43,7 @@ class DocumentTest extends TestCase
         $this->assertEquals('abc123def456.pdf', $document->getFilename());
     }
 
+    #[Test]
     public function testSetAndGetOriginalFilename(): void
     {
         $document = new Document();
@@ -48,6 +52,7 @@ class DocumentTest extends TestCase
         $this->assertEquals('security-policy-v1.pdf', $document->getOriginalFilename());
     }
 
+    #[Test]
     public function testSetAndGetMimeType(): void
     {
         $document = new Document();
@@ -56,6 +61,7 @@ class DocumentTest extends TestCase
         $this->assertEquals('application/pdf', $document->getMimeType());
     }
 
+    #[Test]
     public function testSetAndGetFileSize(): void
     {
         $document = new Document();
@@ -64,6 +70,7 @@ class DocumentTest extends TestCase
         $this->assertEquals(1048576, $document->getFileSize());
     }
 
+    #[Test]
     public function testSetAndGetFilePath(): void
     {
         $document = new Document();
@@ -72,6 +79,7 @@ class DocumentTest extends TestCase
         $this->assertEquals('/uploads/documents/abc123def456.pdf', $document->getFilePath());
     }
 
+    #[Test]
     public function testSetAndGetCategory(): void
     {
         $document = new Document();
@@ -80,6 +88,7 @@ class DocumentTest extends TestCase
         $this->assertEquals('Policy', $document->getCategory());
     }
 
+    #[Test]
     public function testSetAndGetDescription(): void
     {
         $document = new Document();
@@ -88,6 +97,7 @@ class DocumentTest extends TestCase
         $this->assertEquals('Company-wide security policy document', $document->getDescription());
     }
 
+    #[Test]
     public function testSetAndGetEntityTypeAndId(): void
     {
         $document = new Document();
@@ -98,6 +108,7 @@ class DocumentTest extends TestCase
         $this->assertEquals(42, $document->getEntityId());
     }
 
+    #[Test]
     public function testSetAndGetUploadedBy(): void
     {
         $document = new Document();
@@ -109,6 +120,7 @@ class DocumentTest extends TestCase
         $this->assertSame($user, $document->getUploadedBy());
     }
 
+    #[Test]
     public function testSetAndGetUploadedAt(): void
     {
         $document = new Document();
@@ -119,6 +131,7 @@ class DocumentTest extends TestCase
         $this->assertEquals($uploadedAt, $document->getUploadedAt());
     }
 
+    #[Test]
     public function testSetAndGetUpdatedAt(): void
     {
         $document = new Document();
@@ -129,6 +142,7 @@ class DocumentTest extends TestCase
         $this->assertEquals($updatedAt, $document->getUpdatedAt());
     }
 
+    #[Test]
     public function testSetAndGetSha256Hash(): void
     {
         $document = new Document();
@@ -139,6 +153,7 @@ class DocumentTest extends TestCase
         $this->assertEquals($hash, $document->getSha256Hash());
     }
 
+    #[Test]
     public function testSetAndGetIsPublic(): void
     {
         $document = new Document();
@@ -152,6 +167,7 @@ class DocumentTest extends TestCase
         $this->assertFalse($document->isPublic());
     }
 
+    #[Test]
     public function testSetAndGetIsArchived(): void
     {
         $document = new Document();
@@ -165,6 +181,7 @@ class DocumentTest extends TestCase
         $this->assertFalse($document->isArchived());
     }
 
+    #[Test]
     public function testSetAndGetStatus(): void
     {
         $document = new Document();
@@ -175,6 +192,7 @@ class DocumentTest extends TestCase
         $this->assertEquals('archived', $document->getStatus());
     }
 
+    #[Test]
     public function testGetFileExtension(): void
     {
         $document = new Document();
@@ -183,6 +201,7 @@ class DocumentTest extends TestCase
         $this->assertEquals('pdf', $document->getFileExtension());
     }
 
+    #[Test]
     public function testGetFileSizeFormatted(): void
     {
         $document = new Document();
@@ -200,6 +219,7 @@ class DocumentTest extends TestCase
         $this->assertEquals('1 GB', $document->getFileSizeFormatted());
     }
 
+    #[Test]
     public function testIsImageReturnsTrueForImageMimeTypes(): void
     {
         $document = new Document();
@@ -214,6 +234,7 @@ class DocumentTest extends TestCase
         $this->assertTrue($document->isImage());
     }
 
+    #[Test]
     public function testIsImageReturnsFalseForNonImageMimeTypes(): void
     {
         $document = new Document();
@@ -225,6 +246,7 @@ class DocumentTest extends TestCase
         $this->assertFalse($document->isImage());
     }
 
+    #[Test]
     public function testIsPdfReturnsTrueForPdfMimeType(): void
     {
         $document = new Document();
@@ -233,6 +255,7 @@ class DocumentTest extends TestCase
         $this->assertTrue($document->isPdf());
     }
 
+    #[Test]
     public function testIsPdfReturnsFalseForNonPdfMimeTypes(): void
     {
         $document = new Document();
@@ -244,6 +267,7 @@ class DocumentTest extends TestCase
         $this->assertFalse($document->isPdf());
     }
 
+    #[Test]
     public function testConstructorSetsUploadedAt(): void
     {
         $before = new \DateTimeImmutable();
@@ -256,6 +280,7 @@ class DocumentTest extends TestCase
         $this->assertLessThanOrEqual($after, $uploadedAt);
     }
 
+    #[Test]
     public function testCanStoreCompleteDocumentMetadata(): void
     {
         $document = new Document();

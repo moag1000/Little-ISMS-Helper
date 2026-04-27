@@ -16,6 +16,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Integration tests for Workflow Auto-Trigger Service
@@ -49,6 +50,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testShouldTriggerWorkflowForNewIncident(): void
     {
         $incident = $this->createIncident(1, 'INC-001', 'high', false);
@@ -59,6 +61,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testShouldTriggerWorkflowForSeverityChange(): void
     {
         $incident = $this->createIncident(2, 'INC-002', 'critical', false);
@@ -73,6 +76,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testShouldTriggerWorkflowForDataBreachChange(): void
     {
         $incident = $this->createIncident(3, 'INC-003', 'medium', true);
@@ -87,6 +91,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testShouldNotTriggerForIrrelevantIncidentChange(): void
     {
         $incident = $this->createIncident(4, 'INC-004', 'low', false);
@@ -104,6 +109,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testShouldTriggerForPlannedRiskTreatmentPlan(): void
     {
         $plan = $this->createRiskTreatmentPlan(5, 'planned');
@@ -113,6 +119,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testShouldNotTriggerForNonPlannedRiskTreatmentPlan(): void
     {
         $plan = $this->createRiskTreatmentPlan(6, 'in_progress');
@@ -122,6 +129,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testShouldTriggerForPolicyDocument(): void
     {
         $document = $this->createDocument(7, 'policy');
@@ -131,6 +139,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testShouldTriggerForProcedureDocument(): void
     {
         $document = $this->createDocument(8, 'procedure');
@@ -140,6 +149,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testShouldTriggerForGuidelineDocument(): void
     {
         $document = $this->createDocument(9, 'guideline');
@@ -149,6 +159,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testShouldNotTriggerForOtherDocumentCategories(): void
     {
         $document = $this->createDocument(10, 'contract');
@@ -158,6 +169,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testShouldNotTriggerForRiskEntity(): void
     {
         // Risk entities require manual workflow triggering via controller
@@ -168,6 +180,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testShouldNotTriggerForNonWorkflowEntities(): void
     {
         $randomEntity = new \stdClass();
@@ -177,6 +190,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testTriggerIncidentWorkflowsForNewIncident(): void
     {
         $incident = $this->createIncident(11, 'INC-011', 'high', false);
@@ -201,6 +215,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertTrue($results['escalation']['workflow_started']);
     }
 
+    #[Test]
     public function testTriggerIncidentWorkflowsHandlesException(): void
     {
         $incident = $this->createIncident(12, 'INC-012', 'critical', false);
@@ -230,6 +245,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertSame('Escalation service error', $results['escalation']['error']);
     }
 
+    #[Test]
     public function testTriggerRiskAcceptanceWorkflow(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -258,6 +274,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertTrue($results['acceptance']['workflow_started']);
     }
 
+    #[Test]
     public function testTriggerRiskAcceptanceWorkflowHandlesException(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -290,6 +307,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertArrayHasKey('error', $results['acceptance']);
     }
 
+    #[Test]
     public function testGetApplicableWorkflowsForIncident(): void
     {
         $incident = $this->createIncident(15, 'INC-015', 'medium', false);
@@ -304,6 +322,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertStringContainsString('ISO 27001:2022', $workflows[0]['compliance']);
     }
 
+    #[Test]
     public function testGetApplicableWorkflowsForDataBreachIncident(): void
     {
         $incident = $this->createIncident(16, 'INC-016', 'critical', true);
@@ -323,6 +342,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertSame(72, $workflows[1]['deadline_hours']);
     }
 
+    #[Test]
     public function testGetApplicableWorkflowsForPlannedTreatmentPlan(): void
     {
         $plan = $this->createRiskTreatmentPlan(17, 'planned');
@@ -337,6 +357,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertStringContainsString('ISO 27005:2022', $workflows[0]['compliance']);
     }
 
+    #[Test]
     public function testGetApplicableWorkflowsForNonPlannedTreatmentPlan(): void
     {
         $plan = $this->createRiskTreatmentPlan(18, 'completed');
@@ -347,6 +368,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertEmpty($workflows); // No workflows for non-planned status
     }
 
+    #[Test]
     public function testGetApplicableWorkflowsForPolicyDocument(): void
     {
         $document = $this->createDocument(19, 'policy');
@@ -361,6 +383,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertStringContainsString('ISO 27001:2022', $workflows[0]['compliance']);
     }
 
+    #[Test]
     public function testGetApplicableWorkflowsForNonPolicyDocument(): void
     {
         $document = $this->createDocument(20, 'report');
@@ -371,6 +394,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $this->assertEmpty($workflows);
     }
 
+    #[Test]
     public function testGetApplicableWorkflowsForNonWorkflowEntity(): void
     {
         $randomEntity = new \stdClass();

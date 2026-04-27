@@ -5,9 +5,11 @@ namespace App\Tests\Entity;
 use App\Entity\Permission;
 use App\Entity\Role;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PermissionTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $permission = new Permission();
@@ -18,6 +20,7 @@ class PermissionTest extends TestCase
         $this->assertFalse($permission->isSystemPermission()); // Default
     }
 
+    #[Test]
     public function testGettersAndSetters(): void
     {
         $permission = new Permission();
@@ -35,6 +38,7 @@ class PermissionTest extends TestCase
         $this->assertEquals('edit', $permission->getAction());
     }
 
+    #[Test]
     public function testIsSystemPermission(): void
     {
         $permission = new Permission();
@@ -45,6 +49,7 @@ class PermissionTest extends TestCase
         $this->assertTrue($permission->isSystemPermission());
     }
 
+    #[Test]
     public function testCreatedAt(): void
     {
         $permission = new Permission();
@@ -57,6 +62,7 @@ class PermissionTest extends TestCase
         $this->assertEquals($now, $permission->getCreatedAt());
     }
 
+    #[Test]
     public function testAddAndRemoveRole(): void
     {
         $permission = new Permission();
@@ -75,6 +81,7 @@ class PermissionTest extends TestCase
         $this->assertEquals(0, $permission->getRoles()->count());
     }
 
+    #[Test]
     public function testToString(): void
     {
         $permission = new Permission();
@@ -83,6 +90,7 @@ class PermissionTest extends TestCase
         $this->assertEquals('delete_incidents', (string)$permission);
     }
 
+    #[Test]
     public function testToStringWhenNameIsNull(): void
     {
         $permission = new Permission();

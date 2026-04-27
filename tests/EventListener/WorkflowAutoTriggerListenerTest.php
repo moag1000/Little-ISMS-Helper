@@ -15,6 +15,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Integration tests for Workflow Auto-Trigger Listener
@@ -39,6 +40,7 @@ class WorkflowAutoTriggerListenerTest extends TestCase
         );
     }
 
+    #[Test]
     public function testPostPersistTriggersWorkflow(): void
     {
         $incident = $this->createIncident(1, 'INC-001', 'high');
@@ -75,6 +77,7 @@ class WorkflowAutoTriggerListenerTest extends TestCase
         $this->listener->postPersist($incident, $args);
     }
 
+    #[Test]
     public function testPostUpdateTriggersOnSeverityChange(): void
     {
         $incident = $this->createIncident(2, 'INC-002', 'critical');
@@ -109,6 +112,7 @@ class WorkflowAutoTriggerListenerTest extends TestCase
         $this->listener->postUpdate($incident, $args);
     }
 
+    #[Test]
     public function testPostUpdateTriggersOnBreachFlagChange(): void
     {
         $incident = $this->createIncident(3, 'INC-003', 'high');
@@ -145,6 +149,7 @@ class WorkflowAutoTriggerListenerTest extends TestCase
         $this->listener->postUpdate($incident, $args);
     }
 
+    #[Test]
     public function testListenerDoesNotTriggerForIrrelevantChanges(): void
     {
         $incident = $this->createIncident(4, 'INC-004', 'medium');
@@ -173,6 +178,7 @@ class WorkflowAutoTriggerListenerTest extends TestCase
         $this->listener->postUpdate($incident, $args);
     }
 
+    #[Test]
     public function testPostPersistHandlesServiceException(): void
     {
         $incident = $this->createIncident(5, 'INC-005', 'critical');
@@ -203,6 +209,7 @@ class WorkflowAutoTriggerListenerTest extends TestCase
         $this->listener->postPersist($incident, $args);
     }
 
+    #[Test]
     public function testPostUpdateHandlesServiceException(): void
     {
         $incident = $this->createIncident(6, 'INC-006', 'high');
@@ -233,6 +240,7 @@ class WorkflowAutoTriggerListenerTest extends TestCase
         $this->listener->postUpdate($incident, $args);
     }
 
+    #[Test]
     public function testPostPersistHandlesDocumentEntity(): void
     {
         $document = $this->createDocument(7, 'policy');
@@ -259,6 +267,7 @@ class WorkflowAutoTriggerListenerTest extends TestCase
         $this->listener->postPersist($document, $args);
     }
 
+    #[Test]
     public function testPostPersistHandlesRiskTreatmentPlanEntity(): void
     {
         $plan = $this->createRiskTreatmentPlan(8, 'planned');
@@ -285,6 +294,7 @@ class WorkflowAutoTriggerListenerTest extends TestCase
         $this->listener->postPersist($plan, $args);
     }
 
+    #[Test]
     public function testPostPersistSkipsNonWorkflowEntities(): void
     {
         // Create some random entity that doesn't require workflows

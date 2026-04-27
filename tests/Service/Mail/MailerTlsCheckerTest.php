@@ -7,6 +7,7 @@ namespace App\Tests\Service\Mail;
 use App\Service\Mail\MailerTlsChecker;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * ISB MINOR-4: DSN TLS gate coverage.
@@ -17,12 +18,14 @@ use PHPUnit\Framework\TestCase;
 class MailerTlsCheckerTest extends TestCase
 {
     #[DataProvider('dsnProvider')]
+    #[Test]
     public function testIsTlsConfigured(string $dsn, bool $expected): void
     {
         $checker = new MailerTlsChecker($dsn);
         self::assertSame($expected, $checker->isTlsConfigured(), sprintf('DSN: %s', $dsn));
     }
 
+    #[Test]
     public function testAssertThrowsOnPlainSmtp(): void
     {
         $checker = new MailerTlsChecker('smtp://mail.example.com:25');
@@ -30,6 +33,7 @@ class MailerTlsCheckerTest extends TestCase
         $checker->assertTlsConfigured();
     }
 
+    #[Test]
     public function testAssertDoesNotThrowOnSmtps(): void
     {
         $checker = new MailerTlsChecker('smtps://user:pass@mail.example.com:465');

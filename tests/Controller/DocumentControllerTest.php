@@ -43,6 +43,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for DocumentController
@@ -152,6 +153,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test index action renders correctly with default view (inherited)
      */
+    #[Test]
     public function testIndexWithDefaultView(): void
     {
         $tenant = $this->createTenant(1);
@@ -192,6 +194,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test index action with view filter: own
      */
+    #[Test]
     public function testIndexWithViewFilterOwn(): void
     {
         $tenant = $this->createTenant(1);
@@ -224,6 +227,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test index action with view filter: subsidiaries
      */
+    #[Test]
     public function testIndexWithViewFilterSubsidiaries(): void
     {
         $tenant = $this->createTenant(1);
@@ -257,6 +261,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test index filters out non-active documents
      */
+    #[Test]
     public function testIndexFiltersNonActiveDocuments(): void
     {
         $tenant = $this->createTenant(1);
@@ -294,6 +299,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test index without tenant (super admin view)
      */
+    #[Test]
     public function testIndexWithoutTenant(): void
     {
         $user = $this->createMock(User::class);
@@ -324,6 +330,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test new action renders form
      */
+    #[Test]
     public function testNewRendersForm(): void
     {
         $tenant = $this->createTenant(1);
@@ -359,6 +366,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test new action creates document successfully
      */
+    #[Test]
     public function testNewCreatesDocumentSuccessfully(): void
     {
         // Skip: This test requires full container context for AbstractController::addFlash()
@@ -370,6 +378,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test new action is rate limited
      */
+    #[Test]
     public function testNewIsRateLimited(): void
     {
         $tenant = $this->createTenant(1);
@@ -428,6 +437,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test new action handles file upload exception
      */
+    #[Test]
     public function testNewHandlesFileUploadException(): void
     {
         $tenant = $this->createTenant(1);
@@ -485,6 +495,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test show action displays document details
      */
+    #[Test]
     public function testShowDisplaysDocumentDetails(): void
     {
         $tenant = $this->createTenant(1);
@@ -526,6 +537,7 @@ class DocumentControllerTest extends TestCase
      * The AbstractController::denyAccessUnlessGranted() method requires full Symfony container context.
      * Functional tests with WebTestCase would be more appropriate for testing access control.
      */
+    #[Test]
     public function testShowDeniesAccessWhenNotAuthorized(): void
     {
         $this->markTestSkipped('Unit test limitation: AccessDeniedException requires SecurityBundle context');
@@ -534,6 +546,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test download action returns binary file response
      */
+    #[Test]
     public function testDownloadReturnsBinaryFile(): void
     {
         // Create a specific mock for this test with setters
@@ -568,6 +581,7 @@ class DocumentControllerTest extends TestCase
      * The AbstractController::denyAccessUnlessGranted() method requires full Symfony container context.
      * Functional tests with WebTestCase would be more appropriate for testing access control.
      */
+    #[Test]
     public function testDownloadDeniesAccessWhenNotAuthorized(): void
     {
         $this->markTestSkipped('Unit test limitation: AccessDeniedException requires SecurityBundle context');
@@ -576,6 +590,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test download prevents path traversal attacks
      */
+    #[Test]
     public function testDownloadPreventsPathTraversal(): void
     {
         $document = $this->createDocument(1, 'active');
@@ -594,6 +609,7 @@ class DocumentControllerTest extends TestCase
      *
      * NOTE: Skipped because this requires the SecurityBundle context to properly execute denyAccessUnlessGranted()
      */
+    #[Test]
     public function testDownloadThrowsExceptionWhenFileNotFound(): void
     {
         $this->markTestSkipped('Unit test limitation: Requires SecurityBundle for access control checks');
@@ -602,6 +618,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test edit action renders form
      */
+    #[Test]
     public function testEditRendersForm(): void
     {
         $tenant = $this->createTenant(1);
@@ -643,6 +660,7 @@ class DocumentControllerTest extends TestCase
      * The AbstractController::denyAccessUnlessGranted() method requires full Symfony container context.
      * Functional tests with WebTestCase would be more appropriate for testing access control.
      */
+    #[Test]
     public function testEditDeniesAccessWhenNotAuthorized(): void
     {
         $this->markTestSkipped('Unit test limitation: AccessDeniedException requires SecurityBundle context');
@@ -651,6 +669,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test edit redirects when document is inherited
      */
+    #[Test]
     public function testEditRedirectsWhenDocumentIsInherited(): void
     {
         $tenant = $this->createTenant(1);
@@ -676,6 +695,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test edit updates document successfully
      */
+    #[Test]
     public function testEditUpdatesDocumentSuccessfully(): void
     {
         $tenant = $this->createTenant(1);
@@ -706,6 +726,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test delete action removes document
      */
+    #[Test]
     public function testDeleteRemovesDocument(): void
     {
         $tenant = $this->createTenant(1);
@@ -730,6 +751,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test delete redirects when document is inherited
      */
+    #[Test]
     public function testDeleteRedirectsWhenDocumentIsInherited(): void
     {
         $tenant = $this->createTenant(1);
@@ -751,6 +773,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test bulk delete with valid IDs
      */
+    #[Test]
     public function testBulkDeleteWithValidIds(): void
     {
         $tenant = $this->createTenant(1);
@@ -790,6 +813,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test bulk delete with empty IDs
      */
+    #[Test]
     public function testBulkDeleteWithEmptyIds(): void
     {
         $request = new Request([], [], [], [], [], [], json_encode(['ids' => []]));
@@ -806,6 +830,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test bulk delete rejects documents from other tenants
      */
+    #[Test]
     public function testBulkDeleteRejectsOtherTenantsDocuments(): void
     {
         $userTenant = $this->createTenant(1);
@@ -833,6 +858,7 @@ class DocumentControllerTest extends TestCase
     /**
      * Test bulk delete handles not found documents
      */
+    #[Test]
     public function testBulkDeleteHandlesNotFoundDocuments(): void
     {
         $tenant = $this->createTenant(1);
@@ -862,6 +888,7 @@ class DocumentControllerTest extends TestCase
      * It calls $document->getType() but Document entity doesn't have a getType() method
      * It should call $document->getCategory() instead
      */
+    #[Test]
     public function testByTypeFiltersDocumentsByType(): void
     {
         $this->markTestSkipped('Controller bug: Document::getType() does not exist, should use getCategory()');
@@ -897,6 +924,7 @@ class DocumentControllerTest extends TestCase
      * NOTE: This test is skipped because the controller has a bug:
      * It calls $document->getType() but Document entity doesn't have a getType() method
      */
+    #[Test]
     public function testByTypeWithoutTenant(): void
     {
         $this->markTestSkipped('Controller bug: Document::getType() does not exist, should use getCategory()');

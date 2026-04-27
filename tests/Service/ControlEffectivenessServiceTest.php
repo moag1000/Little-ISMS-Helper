@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests for ControlEffectivenessService
@@ -49,6 +50,7 @@ class ControlEffectivenessServiceTest extends TestCase
 
     // ==================== getEffectivenessDashboard() Tests ====================
 
+    #[Test]
     public function testGetEffectivenessDashboardReturnsAllSections(): void
     {
         $control = $this->createControl('A.5.1', 'Test', 'implemented', 100);
@@ -65,6 +67,7 @@ class ControlEffectivenessServiceTest extends TestCase
         $this->assertArrayHasKey('implementation_status', $result);
     }
 
+    #[Test]
     public function testGetEffectivenessDashboardWithEmptyControls(): void
     {
         $this->controlRepository->method('findAll')->willReturn([]);
@@ -76,6 +79,7 @@ class ControlEffectivenessServiceTest extends TestCase
         $this->assertEquals(0, $result['metrics']['average_effectiveness']);
     }
 
+    #[Test]
     public function testEffectivenessMetricsCalculation(): void
     {
         $implemented = $this->createControl('A.5.1', 'Impl', 'implemented', 100);
@@ -95,6 +99,7 @@ class ControlEffectivenessServiceTest extends TestCase
 
     // ==================== calculateControlEffectiveness() Tests ====================
 
+    #[Test]
     public function testCalculateControlEffectivenessForImplementedControl(): void
     {
         $control = $this->createControl('A.5.1', 'Test', 'implemented', 100);
@@ -111,6 +116,7 @@ class ControlEffectivenessServiceTest extends TestCase
         $this->assertGreaterThanOrEqual(50, $score);
     }
 
+    #[Test]
     public function testCalculateControlEffectivenessForPartialControl(): void
     {
         $control = $this->createControl('A.5.1', 'Test', 'partially_implemented', 50);
@@ -122,6 +128,7 @@ class ControlEffectivenessServiceTest extends TestCase
         $this->assertLessThan(50, $score);
     }
 
+    #[Test]
     public function testCalculateControlEffectivenessWithLinkedRisks(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -134,6 +141,7 @@ class ControlEffectivenessServiceTest extends TestCase
         $this->assertGreaterThanOrEqual(55, $score);
     }
 
+    #[Test]
     public function testCalculateControlEffectivenessWithRecentReview(): void
     {
         $control = $this->createControlWithReview('A.5.1', 'Test', 'implemented', 100, new \DateTime('-30 days'));
@@ -145,6 +153,7 @@ class ControlEffectivenessServiceTest extends TestCase
         $this->assertGreaterThanOrEqual(60, $score);
     }
 
+    #[Test]
     public function testCalculateControlEffectivenessNeverExceeds100(): void
     {
         // Create optimal control
@@ -168,6 +177,7 @@ class ControlEffectivenessServiceTest extends TestCase
 
     // ==================== getControlPerformance() Tests ====================
 
+    #[Test]
     public function testGetControlPerformanceRanking(): void
     {
         $high = $this->createControl('A.5.1', 'High', 'implemented', 100);
@@ -186,6 +196,7 @@ class ControlEffectivenessServiceTest extends TestCase
 
     // ==================== Orphaned Controls Tests ====================
 
+    #[Test]
     public function testOrphanedControlsDetection(): void
     {
         $orphan = $this->createControl('A.5.1', 'Orphan', 'implemented', 100);
@@ -202,6 +213,7 @@ class ControlEffectivenessServiceTest extends TestCase
 
     // ==================== Aging Analysis Tests ====================
 
+    #[Test]
     public function testAgingAnalysisWithCurrentReview(): void
     {
         $control = $this->createControlWithReview('A.5.1', 'Test', 'implemented', 100, new \DateTime('-30 days'));
@@ -216,6 +228,7 @@ class ControlEffectivenessServiceTest extends TestCase
         $this->assertEquals(0, $aging['distribution']['overdue']);
     }
 
+    #[Test]
     public function testAgingAnalysisWithOverdueReview(): void
     {
         $control = $this->createControlWithReview('A.5.1', 'Test', 'implemented', 100, new \DateTime('-200 days'));
@@ -230,6 +243,7 @@ class ControlEffectivenessServiceTest extends TestCase
         $this->assertEquals(1, $aging['distribution']['overdue']);
     }
 
+    #[Test]
     public function testAgingAnalysisWithNeverReviewed(): void
     {
         $control = $this->createControl('A.5.1', 'Test', 'implemented', 100);
@@ -246,6 +260,7 @@ class ControlEffectivenessServiceTest extends TestCase
 
     // ==================== Implementation Status Distribution Tests ====================
 
+    #[Test]
     public function testImplementationStatusDistribution(): void
     {
         $impl = $this->createControl('A.5.1', 'Impl', 'implemented', 100);
@@ -265,6 +280,7 @@ class ControlEffectivenessServiceTest extends TestCase
 
     // ==================== getControlRiskMatrix() Tests ====================
 
+    #[Test]
     public function testGetControlRiskMatrixWithRisks(): void
     {
         $risk = $this->createRiskWithLevels(15, 8); // 15 inherent, 8 residual
@@ -283,6 +299,7 @@ class ControlEffectivenessServiceTest extends TestCase
         $this->assertEquals(7, $result['summary']['total_risk_reduction']); // 15 - 8
     }
 
+    #[Test]
     public function testGetControlRiskMatrixWithNoRisks(): void
     {
         $control = $this->createControl('A.5.1', 'Test', 'implemented', 100);
@@ -296,6 +313,7 @@ class ControlEffectivenessServiceTest extends TestCase
 
     // ==================== getCategoryPerformance() Tests ====================
 
+    #[Test]
     public function testGetCategoryPerformance(): void
     {
         $ctrl1 = $this->createControlWithCategory('A.5.1', 'Test 1', 'implemented', 100, 'A.5');

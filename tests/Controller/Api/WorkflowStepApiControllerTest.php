@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class WorkflowStepApiControllerTest extends TestCase
@@ -50,6 +51,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->controller->setContainer($this->container);
     }
 
+    #[Test]
     public function testListStepsReturnsEmptyArray(): void
     {
         $workflow = $this->createMock(Workflow::class);
@@ -64,6 +66,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertEmpty($data['steps']);
     }
 
+    #[Test]
     public function testListStepsReturnsSteps(): void
     {
         $step = $this->createConfiguredMock(WorkflowStep::class, [
@@ -91,6 +94,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertEquals([1, 2], $data['steps'][0]['approverUsers']);
     }
 
+    #[Test]
     public function testAddStepRejectsMissingCsrfToken(): void
     {
         $request = new Request();
@@ -106,6 +110,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertStringContainsString('CSRF', $data['error']);
     }
 
+    #[Test]
     public function testAddStepRejectsInvalidJson(): void
     {
         $request = new Request([], [], [], [], [], [], 'invalid json {');
@@ -122,6 +127,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertFalse($data['success']);
     }
 
+    #[Test]
     public function testAddStepRejectsEmptyBody(): void
     {
         $request = new Request([], [], [], [], [], [], '{}');
@@ -136,6 +142,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertEquals(400, $response->getStatusCode());
     }
 
+    #[Test]
     public function testAddStepValidationErrorsForEmptyName(): void
     {
         // Test with empty name - should get validation error, not exception
@@ -164,6 +171,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertTrue($data['success']);
     }
 
+    #[Test]
     public function testUpdateStepRejectsMissingCsrfToken(): void
     {
         $request = new Request();
@@ -176,6 +184,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertEquals(403, $response->getStatusCode());
     }
 
+    #[Test]
     public function testDeleteStepRejectsMissingCsrfToken(): void
     {
         $request = new Request();
@@ -188,6 +197,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertEquals(403, $response->getStatusCode());
     }
 
+    #[Test]
     public function testDeleteStepHandlesNullWorkflow(): void
     {
         $request = new Request();
@@ -206,6 +216,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertStringContainsString('not found', $data['error']);
     }
 
+    #[Test]
     public function testReorderStepsRejectsMissingCsrfToken(): void
     {
         $request = new Request();
@@ -218,6 +229,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertEquals(403, $response->getStatusCode());
     }
 
+    #[Test]
     public function testReorderStepsRejectsMissingStepIds(): void
     {
         $request = new Request([], [], [], [], [], [], json_encode(['invalid' => 'data']));
@@ -234,6 +246,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertStringContainsString('stepIds', $data['error']);
     }
 
+    #[Test]
     public function testReorderStepsValidatesStepIds(): void
     {
         $request = new Request([], [], [], [], [], [], json_encode(['stepIds' => [999]]));
@@ -251,6 +264,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertStringContainsString('Invalid step ID', $data['error']);
     }
 
+    #[Test]
     public function testDuplicateStepRejectsMissingCsrfToken(): void
     {
         $request = new Request();
@@ -263,6 +277,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertEquals(403, $response->getStatusCode());
     }
 
+    #[Test]
     public function testDuplicateStepHandlesNullWorkflow(): void
     {
         $request = new Request();
@@ -278,6 +293,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertEquals(404, $response->getStatusCode());
     }
 
+    #[Test]
     public function testApplyTemplateRejectsMissingCsrfToken(): void
     {
         $request = new Request();
@@ -290,6 +306,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertEquals(403, $response->getStatusCode());
     }
 
+    #[Test]
     public function testApplyTemplateRejectsMissingTemplateKey(): void
     {
         $request = new Request([], [], [], [], [], [], json_encode(['invalid' => 'data']));
@@ -306,6 +323,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertStringContainsString('templateKey', $data['error']);
     }
 
+    #[Test]
     public function testApplyTemplateRejectsInvalidTemplateKey(): void
     {
         $request = new Request([], [], [], [], [], [], json_encode(['templateKey' => 'nonexistent']));
@@ -320,6 +338,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertEquals(404, $response->getStatusCode());
     }
 
+    #[Test]
     public function testGetTemplatesReturnsAllTemplates(): void
     {
         $response = $this->controller->getTemplates();
@@ -336,6 +355,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertArrayHasKey('change_request', $data['templates']);
     }
 
+    #[Test]
     public function testGetTemplatesHasCorrectStructure(): void
     {
         $response = $this->controller->getTemplates();
@@ -357,6 +377,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertArrayHasKey('daysToComplete', $step);
     }
 
+    #[Test]
     public function testSerializeStepHandlesNullApproverUsers(): void
     {
         $step = $this->createConfiguredMock(WorkflowStep::class, [
@@ -382,6 +403,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertEmpty($data['steps'][0]['approverUsers']);
     }
 
+    #[Test]
     public function testAddStepWithValidData(): void
     {
         $request = new Request([], [], [], [], [], [], json_encode([
@@ -412,6 +434,7 @@ class WorkflowStepApiControllerTest extends TestCase
         $this->assertArrayHasKey('step', $data);
     }
 
+    #[Test]
     public function testReorderStepsWithValidData(): void
     {
         $step1 = $this->createConfiguredMock(WorkflowStep::class, [

@@ -6,6 +6,7 @@ use App\Service\PdfExportService;
 use PHPUnit\Framework\TestCase;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
+use PHPUnit\Framework\Attributes\Test;
 
 class PdfExportServiceTest extends TestCase
 {
@@ -21,6 +22,7 @@ class PdfExportServiceTest extends TestCase
         $this->service = new PdfExportService($this->twig);
     }
 
+    #[Test]
     public function testGeneratePdf(): void
     {
         $pdf = $this->service->generatePdf('test.html.twig', [
@@ -33,6 +35,7 @@ class PdfExportServiceTest extends TestCase
         $this->assertGreaterThan(0, strlen($pdf));
     }
 
+    #[Test]
     public function testGeneratePdfWithOptions(): void
     {
         $pdf = $this->service->generatePdf('test.html.twig', [

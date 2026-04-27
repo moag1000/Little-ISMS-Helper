@@ -9,6 +9,7 @@ use App\Service\MappingQualityAnalysisService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class MappingQualityAnalysisServiceTest extends TestCase
@@ -20,6 +21,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->service = new MappingQualityAnalysisService();
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityReturnsCompleteAnalysis(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -43,6 +45,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertArrayHasKey('extracted_keywords', $result);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityWithHighSimilarity(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -59,6 +62,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertGreaterThan(70, $result['calculated_percentage']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityWithLowSimilarity(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -74,6 +78,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertLessThan(0.5, $result['textual_similarity']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityExtractsKeywords(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -91,6 +96,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertNotEmpty($result['extracted_keywords']['source']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityCalculatesConfidence(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -107,6 +113,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertLessThanOrEqual(100, $result['analysis_confidence']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityRequiresReviewForLowConfidence(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -122,6 +129,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertIsBool($result['requires_review']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityWithMatchingCategories(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -139,6 +147,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertGreaterThan(0.3, $result['structural_similarity']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityWithDifferentCategories(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -156,6 +165,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertIsFloat($result['structural_similarity']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityWithMatchingPriorities(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -175,6 +185,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertGreaterThan(0, $result['structural_similarity']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityCalculatesQualityScore(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -191,6 +202,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertLessThanOrEqual(100, $result['quality_score']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityWithVerifiedMapping(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -207,6 +219,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertGreaterThan(20, $result['quality_score']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityWithReviewedMapping(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -223,6 +236,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertGreaterThan(0, $result['quality_score']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityWithISO27001Framework(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -244,6 +258,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertGreaterThan(0, $result['calculated_percentage']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityWithEURegulations(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -265,6 +280,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertGreaterThan(0, $result['calculated_percentage']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityClampPercentage(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -281,6 +297,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertGreaterThanOrEqual(0, $result['calculated_percentage']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityWithEmptyText(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -300,6 +317,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertEquals(1.0, $result['keyword_overlap']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityWithOnlyTitle(): void
     {
         $sourceReq = $this->createRequirement('A.9.1', 'Access Control', null);
@@ -318,6 +336,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertArrayHasKey('calculated_percentage', $result);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityWithSecurityKeywords(): void
     {
         $mapping = $this->createMappingWithRequirements(
@@ -335,6 +354,7 @@ class MappingQualityAnalysisServiceTest extends TestCase
         $this->assertNotEmpty($result['extracted_keywords']['target']);
     }
 
+    #[Test]
     public function testAnalyzeMappingQualityAlgorithmVersion(): void
     {
         $mapping = $this->createMappingWithRequirements(

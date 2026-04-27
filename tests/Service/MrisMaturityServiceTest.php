@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use DomainException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 final class MrisMaturityServiceTest extends TestCase
@@ -22,6 +23,7 @@ final class MrisMaturityServiceTest extends TestCase
         return new MrisMaturityService($em, $log);
     }
 
+    #[Test]
     public function testSetCurrentValidStageStoresAndStampsReviewedAt(): void
     {
         $req = new ComplianceRequirement();
@@ -33,6 +35,7 @@ final class MrisMaturityServiceTest extends TestCase
         self::assertNotNull($req->getMaturityReviewedAt());
     }
 
+    #[Test]
     public function testSetCurrentNullClearsField(): void
     {
         $req = new ComplianceRequirement();
@@ -44,6 +47,7 @@ final class MrisMaturityServiceTest extends TestCase
         self::assertNull($req->getMaturityCurrent());
     }
 
+    #[Test]
     public function testSetCurrentInvalidStageThrows(): void
     {
         $service = $this->makeService();
@@ -53,6 +57,7 @@ final class MrisMaturityServiceTest extends TestCase
         $service->setCurrent($req, 'optimized'); // not in MRIS Kap. 9.5
     }
 
+    #[Test]
     public function testSetTargetStoresValue(): void
     {
         $req = new ComplianceRequirement();
@@ -63,6 +68,7 @@ final class MrisMaturityServiceTest extends TestCase
         self::assertSame('managed', $req->getMaturityTarget());
     }
 
+    #[Test]
     public function testDeltaReturnsPositiveWhenTargetAboveCurrent(): void
     {
         $req = new ComplianceRequirement();
@@ -74,6 +80,7 @@ final class MrisMaturityServiceTest extends TestCase
         self::assertSame('gap', $service->gapStatus($req));
     }
 
+    #[Test]
     public function testDeltaReturnsZeroWhenOnTarget(): void
     {
         $req = new ComplianceRequirement();
@@ -85,6 +92,7 @@ final class MrisMaturityServiceTest extends TestCase
         self::assertSame('on_target', $service->gapStatus($req));
     }
 
+    #[Test]
     public function testDeltaReturnsNullWhenAnyFieldMissing(): void
     {
         $req = new ComplianceRequirement();
@@ -95,6 +103,7 @@ final class MrisMaturityServiceTest extends TestCase
         self::assertSame('unset', $service->gapStatus($req));
     }
 
+    #[Test]
     public function testGapStatusExceededWhenCurrentAboveTarget(): void
     {
         $req = new ComplianceRequirement();

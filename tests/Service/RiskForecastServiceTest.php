@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests for RiskForecastService
@@ -46,6 +47,7 @@ class RiskForecastServiceTest extends TestCase
 
     // ==================== getRiskForecast() Tests ====================
 
+    #[Test]
     public function testGetRiskForecastReturnsAllSections(): void
     {
         $risk = $this->createRisk(1, 'Test Risk', 10, 'open', new \DateTime('-2 months'));
@@ -60,6 +62,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertArrayHasKey('confidence_interval', $result);
     }
 
+    #[Test]
     public function testGetRiskForecastWithNoRisks(): void
     {
         $this->riskRepository->method('findAll')->willReturn([]);
@@ -71,6 +74,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertEquals(0, $result['historical'][0]['total']);
     }
 
+    #[Test]
     public function testGetRiskForecastDefaultSixMonths(): void
     {
         $risks = [
@@ -87,6 +91,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertLessThanOrEqual(6, count($result['forecast']));
     }
 
+    #[Test]
     public function testGetRiskForecastHistoricalDataStructure(): void
     {
         $risk = $this->createRisk(1, 'Test', 10, 'open', new \DateTime('-1 month'));
@@ -107,6 +112,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertArrayHasKey('closed', $historical);
     }
 
+    #[Test]
     public function testGetRiskForecastRiskLevelClassification(): void
     {
         $lowRisk = $this->createRisk(1, 'Low', 3, 'open', new \DateTime('-1 month'));      // < 6
@@ -131,6 +137,7 @@ class RiskForecastServiceTest extends TestCase
 
     // ==================== getRiskVelocity() Tests ====================
 
+    #[Test]
     public function testGetRiskVelocityReturnsAllMetrics(): void
     {
         $this->riskRepository->method('findAll')->willReturn([]);
@@ -143,6 +150,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertArrayHasKey('status', $result);
     }
 
+    #[Test]
     public function testGetRiskVelocityWithNoRisks(): void
     {
         $this->riskRepository->method('findAll')->willReturn([]);
@@ -155,6 +163,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertEquals('stable', $result['trend']);
     }
 
+    #[Test]
     public function testGetRiskVelocityPositiveVelocity(): void
     {
         // Create recent risks (in last 30 days)
@@ -174,6 +183,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertEquals('increasing', $result['trend']);
     }
 
+    #[Test]
     public function testGetRiskVelocityNegativeVelocity(): void
     {
         // Create a closed risk
@@ -193,6 +203,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertEquals('decreasing', $result['trend']);
     }
 
+    #[Test]
     public function testGetRiskVelocityStatusWarning(): void
     {
         // Create many new risks (velocity > 5)
@@ -208,6 +219,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertEquals('warning', $result['status']);
     }
 
+    #[Test]
     public function testGetRiskVelocityStatusExcellent(): void
     {
         // Create many closed risks (velocity < -5)
@@ -229,6 +241,7 @@ class RiskForecastServiceTest extends TestCase
 
     // ==================== getAssetIncidentProbability() Tests ====================
 
+    #[Test]
     public function testGetAssetIncidentProbabilityReturnsAllSections(): void
     {
         $this->assetRepository->method('findAll')->willReturn([]);
@@ -241,6 +254,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertArrayHasKey('summary', $result);
     }
 
+    #[Test]
     public function testGetAssetIncidentProbabilityWithNoAssets(): void
     {
         $this->assetRepository->method('findAll')->willReturn([]);
@@ -253,6 +267,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertEquals(0, $result['summary']['average_probability']);
     }
 
+    #[Test]
     public function testGetAssetIncidentProbabilityCalculation(): void
     {
         $asset = $this->createAsset(1, 'Test Server', 'server', 5, 5, 5);
@@ -273,6 +288,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertEquals(0, $profile['historical_incidents']);
     }
 
+    #[Test]
     public function testGetAssetIncidentProbabilityWithIncidents(): void
     {
         $asset = $this->createAsset(1, 'Test Server', 'server', 3, 3, 3);
@@ -288,6 +304,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertGreaterThan(0, $profile['incident_probability']);
     }
 
+    #[Test]
     public function testGetAssetIncidentProbabilitySortsByRiskScore(): void
     {
         $lowRiskAsset = $this->createAsset(1, 'Low Risk', 'workstation', 1, 1, 1);
@@ -302,6 +319,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertEquals('High Risk', $result['profiles'][0]['asset_name']);
     }
 
+    #[Test]
     public function testGetAssetIncidentProbabilityCriticalityLevels(): void
     {
         $criticalAsset = $this->createAsset(1, 'Critical', 'server', 5, 5, 5);   // 15 = critical
@@ -330,6 +348,7 @@ class RiskForecastServiceTest extends TestCase
 
     // ==================== getAnomalyDetection() Tests ====================
 
+    #[Test]
     public function testGetAnomalyDetectionReturnsAllSections(): void
     {
         $this->riskRepository->method('findAll')->willReturn([]);
@@ -342,6 +361,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertArrayHasKey('by_type', $result);
     }
 
+    #[Test]
     public function testGetAnomalyDetectionWithNoData(): void
     {
         $this->riskRepository->method('findAll')->willReturn([]);
@@ -352,6 +372,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertEquals(0, $result['total_count']);
     }
 
+    #[Test]
     public function testGetAnomalyDetectionDetectsIncidentPatterns(): void
     {
         $this->riskRepository->method('findAll')->willReturn([]);
@@ -371,6 +392,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertGreaterThanOrEqual(1, count($incidentPatterns));
     }
 
+    #[Test]
     public function testGetAnomalyDetectionSortsBySeverity(): void
     {
         $this->riskRepository->method('findAll')->willReturn([]);
@@ -401,6 +423,7 @@ class RiskForecastServiceTest extends TestCase
 
     // ==================== getRiskAppetiteCompliance() Tests ====================
 
+    #[Test]
     public function testGetRiskAppetiteComplianceReturnsAllSections(): void
     {
         $this->riskRepository->method('findAll')->willReturn([]);
@@ -414,6 +437,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertArrayHasKey('compliance_score', $result);
     }
 
+    #[Test]
     public function testGetRiskAppetiteComplianceWithNoRisks(): void
     {
         $this->riskRepository->method('findAll')->willReturn([]);
@@ -428,6 +452,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertEquals(100, $result['compliance_score']);
     }
 
+    #[Test]
     public function testGetRiskAppetiteComplianceWithinLimits(): void
     {
         // Create risks within appetite limits
@@ -444,6 +469,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertEmpty($result['breaches']);
     }
 
+    #[Test]
     public function testGetRiskAppetiteComplianceBreachesDetected(): void
     {
         // Create many critical risks (> 2 critical_max)
@@ -465,6 +491,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertEquals(3, $criticalBreach['excess']);
     }
 
+    #[Test]
     public function testGetRiskAppetiteComplianceScoreCalculation(): void
     {
         // Create risks that breach limits
@@ -484,6 +511,7 @@ class RiskForecastServiceTest extends TestCase
 
     // ==================== Edge Cases ====================
 
+    #[Test]
     public function testHandlesNullDateValues(): void
     {
         $risk = $this->createRiskWithNullDates(1, 'Null Dates', 10, 'open');
@@ -496,6 +524,7 @@ class RiskForecastServiceTest extends TestCase
         $this->assertArrayHasKey('historical', $result);
     }
 
+    #[Test]
     public function testHandlesEmptyIncidentTimestamps(): void
     {
         $asset = $this->createAsset(1, 'Test', 'server', 3, 3, 3);

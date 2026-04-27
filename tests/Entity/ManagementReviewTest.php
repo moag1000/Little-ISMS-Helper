@@ -6,9 +6,11 @@ use App\Entity\ManagementReview;
 use App\Entity\User;
 use Doctrine\Common\Collections\Collection;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ManagementReviewTest extends TestCase
 {
+    #[Test]
     public function testNewManagementReviewHasDefaultValues(): void
     {
         $review = new ManagementReview();
@@ -34,6 +36,7 @@ class ManagementReviewTest extends TestCase
         $this->assertNull($review->getUpdatedAt());
     }
 
+    #[Test]
     public function testSetAndGetTitle(): void
     {
         $review = new ManagementReview();
@@ -42,6 +45,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals('Q4 2024 ISMS Management Review', $review->getTitle());
     }
 
+    #[Test]
     public function testSetAndGetReviewDate(): void
     {
         $review = new ManagementReview();
@@ -52,6 +56,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals($date, $review->getReviewDate());
     }
 
+    #[Test]
     public function testAddAndRemoveParticipants(): void
     {
         $review = new ManagementReview();
@@ -74,6 +79,7 @@ class ManagementReviewTest extends TestCase
         $this->assertFalse($review->getParticipants()->contains($user1));
     }
 
+    #[Test]
     public function testSetAndGetChangesRelevantToISMS(): void
     {
         $review = new ManagementReview();
@@ -84,6 +90,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals($changes, $review->getChangesRelevantToISMS());
     }
 
+    #[Test]
     public function testSetAndGetFeedbackFromInterestedParties(): void
     {
         $review = new ManagementReview();
@@ -94,6 +101,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals($feedback, $review->getFeedbackFromInterestedParties());
     }
 
+    #[Test]
     public function testSetAndGetAuditResults(): void
     {
         $review = new ManagementReview();
@@ -104,6 +112,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals($results, $review->getAuditResults());
     }
 
+    #[Test]
     public function testSetAndGetPerformanceEvaluation(): void
     {
         $review = new ManagementReview();
@@ -114,6 +123,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals($evaluation, $review->getPerformanceEvaluation());
     }
 
+    #[Test]
     public function testSetAndGetNonConformitiesStatus(): void
     {
         $review = new ManagementReview();
@@ -124,6 +134,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals($status, $review->getNonConformitiesStatus());
     }
 
+    #[Test]
     public function testSetAndGetCorrectiveActionsStatus(): void
     {
         $review = new ManagementReview();
@@ -134,6 +145,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals($status, $review->getCorrectiveActionsStatus());
     }
 
+    #[Test]
     public function testSetAndGetPreviousReviewActions(): void
     {
         $review = new ManagementReview();
@@ -144,6 +156,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals($actions, $review->getPreviousReviewActions());
     }
 
+    #[Test]
     public function testSetAndGetOpportunitiesForImprovement(): void
     {
         $review = new ManagementReview();
@@ -154,6 +167,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals($opportunities, $review->getOpportunitiesForImprovement());
     }
 
+    #[Test]
     public function testSetAndGetResourceNeeds(): void
     {
         $review = new ManagementReview();
@@ -164,6 +178,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals($needs, $review->getResourceNeeds());
     }
 
+    #[Test]
     public function testSetAndGetDecisions(): void
     {
         $review = new ManagementReview();
@@ -174,6 +189,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals($decisions, $review->getDecisions());
     }
 
+    #[Test]
     public function testSetAndGetActionItems(): void
     {
         $review = new ManagementReview();
@@ -184,6 +200,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals($actions, $review->getActionItems());
     }
 
+    #[Test]
     public function testSetAndGetStatus(): void
     {
         $review = new ManagementReview();
@@ -198,6 +215,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals('cancelled', $review->getStatus());
     }
 
+    #[Test]
     public function testSetAndGetCreatedAt(): void
     {
         $review = new ManagementReview();
@@ -208,6 +226,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals($date, $review->getCreatedAt());
     }
 
+    #[Test]
     public function testSetAndGetUpdatedAt(): void
     {
         $review = new ManagementReview();
@@ -218,6 +237,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals($date, $review->getUpdatedAt());
     }
 
+    #[Test]
     public function testManagementReviewCanDocumentCompleteReview(): void
     {
         $review = new ManagementReview();
@@ -241,6 +261,7 @@ class ManagementReviewTest extends TestCase
         $this->assertInstanceOf(Collection::class, $review->getParticipants());
     }
 
+    #[Test]
     public function testManagementReviewStatusLifecycle(): void
     {
         $review = new ManagementReview();

@@ -12,6 +12,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class ScheduledTaskServiceTest extends TestCase
@@ -39,6 +40,7 @@ class ScheduledTaskServiceTest extends TestCase
 
     // ========== createTask TESTS ==========
 
+    #[Test]
     public function testCreateTaskCreatesValidTask(): void
     {
         $this->tenantContext->method('getCurrentTenantId')->willReturn(1);
@@ -62,6 +64,7 @@ class ScheduledTaskServiceTest extends TestCase
         $this->assertNotNull($task->getNextRunAt());
     }
 
+    #[Test]
     public function testCreateTaskThrowsExceptionForInvalidCron(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -74,6 +77,7 @@ class ScheduledTaskServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testCreateTaskWithArguments(): void
     {
         $this->tenantContext->method('getCurrentTenantId')->willReturn(1);
@@ -95,6 +99,7 @@ class ScheduledTaskServiceTest extends TestCase
 
     // ========== updateTask TESTS ==========
 
+    #[Test]
     public function testUpdateTaskUpdatesName(): void
     {
         $task = $this->createTask();
@@ -106,6 +111,7 @@ class ScheduledTaskServiceTest extends TestCase
         $this->assertSame('Updated Name', $result->getName());
     }
 
+    #[Test]
     public function testUpdateTaskUpdatesCommand(): void
     {
         $task = $this->createTask();
@@ -117,6 +123,7 @@ class ScheduledTaskServiceTest extends TestCase
         $this->assertSame('app:new-command', $result->getCommand());
     }
 
+    #[Test]
     public function testUpdateTaskUpdatesCronExpression(): void
     {
         $task = $this->createTask();
@@ -131,6 +138,7 @@ class ScheduledTaskServiceTest extends TestCase
         $this->assertNotEquals($originalNextRun, $result->getNextRunAt());
     }
 
+    #[Test]
     public function testUpdateTaskThrowsExceptionForInvalidCron(): void
     {
         $task = $this->createTask();
@@ -141,6 +149,7 @@ class ScheduledTaskServiceTest extends TestCase
         $this->service->updateTask($task, cronExpression: 'invalid');
     }
 
+    #[Test]
     public function testUpdateTaskUpdatesDescription(): void
     {
         $task = $this->createTask();
@@ -152,6 +161,7 @@ class ScheduledTaskServiceTest extends TestCase
         $this->assertSame('New description', $result->getDescription());
     }
 
+    #[Test]
     public function testUpdateTaskUpdatesArguments(): void
     {
         $task = $this->createTask();
@@ -164,6 +174,7 @@ class ScheduledTaskServiceTest extends TestCase
         $this->assertSame($newArgs, $result->getArguments());
     }
 
+    #[Test]
     public function testUpdateTaskPartialUpdate(): void
     {
         $task = $this->createTask();
@@ -180,6 +191,7 @@ class ScheduledTaskServiceTest extends TestCase
 
     // ========== toggleTask TESTS ==========
 
+    #[Test]
     public function testToggleTaskEnables(): void
     {
         $task = $this->createTask();
@@ -192,6 +204,7 @@ class ScheduledTaskServiceTest extends TestCase
         $this->assertTrue($task->isEnabled());
     }
 
+    #[Test]
     public function testToggleTaskDisables(): void
     {
         $task = $this->createTask();
@@ -206,6 +219,7 @@ class ScheduledTaskServiceTest extends TestCase
 
     // ========== deleteTask TESTS ==========
 
+    #[Test]
     public function testDeleteTaskRemovesTask(): void
     {
         $task = $this->createTask();
@@ -220,6 +234,7 @@ class ScheduledTaskServiceTest extends TestCase
 
     // ========== validateCronExpression TESTS ==========
 
+    #[Test]
     public function testValidateCronExpressionReturnsTrue(): void
     {
         $this->assertTrue($this->service->validateCronExpression('* * * * *'));
@@ -229,6 +244,7 @@ class ScheduledTaskServiceTest extends TestCase
         $this->assertTrue($this->service->validateCronExpression('0 0 1 * *'));
     }
 
+    #[Test]
     public function testValidateCronExpressionReturnsFalse(): void
     {
         $this->assertFalse($this->service->validateCronExpression('invalid'));
@@ -239,6 +255,7 @@ class ScheduledTaskServiceTest extends TestCase
 
     // ========== describeCronExpression TESTS ==========
 
+    #[Test]
     public function testDescribeCronExpressionValid(): void
     {
         $result = $this->service->describeCronExpression('0 0 * * *');
@@ -246,6 +263,7 @@ class ScheduledTaskServiceTest extends TestCase
         $this->assertStringContainsString('Next run:', $result);
     }
 
+    #[Test]
     public function testDescribeCronExpressionInvalid(): void
     {
         $result = $this->service->describeCronExpression('invalid');
@@ -255,6 +273,7 @@ class ScheduledTaskServiceTest extends TestCase
 
     // ========== getTasksForCurrentTenant TESTS ==========
 
+    #[Test]
     public function testGetTasksForCurrentTenantFilters(): void
     {
         $this->tenantContext->method('getCurrentTenantId')->willReturn(42);
@@ -275,6 +294,7 @@ class ScheduledTaskServiceTest extends TestCase
 
     // ========== getStatistics TESTS ==========
 
+    #[Test]
     public function testGetStatisticsReturnsAllKeys(): void
     {
         $this->tenantContext->method('getCurrentTenantId')->willReturn(1);
@@ -290,6 +310,7 @@ class ScheduledTaskServiceTest extends TestCase
         $this->assertArrayHasKey('running', $result);
     }
 
+    #[Test]
     public function testGetStatisticsCountsCorrectly(): void
     {
         $this->tenantContext->method('getCurrentTenantId')->willReturn(1);
@@ -323,6 +344,7 @@ class ScheduledTaskServiceTest extends TestCase
         $this->assertSame(1, $result['running']);
     }
 
+    #[Test]
     public function testGetStatisticsEmptyWhenNoTasks(): void
     {
         $this->tenantContext->method('getCurrentTenantId')->willReturn(1);

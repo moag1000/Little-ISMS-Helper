@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for AuditLogController
@@ -101,12 +102,14 @@ class AuditLogControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/audit-log/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -114,6 +117,7 @@ class AuditLogControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testIndexDisplaysForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -121,12 +125,14 @@ class AuditLogControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testStatisticsRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/audit-log/statistics');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testStatisticsRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -134,6 +140,7 @@ class AuditLogControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testStatisticsDisplaysForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -141,18 +148,21 @@ class AuditLogControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testEntityLogRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/audit-log/entity/Asset/1');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testUserLogRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/audit-log/user/testuser');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDetailRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/audit-log/1');

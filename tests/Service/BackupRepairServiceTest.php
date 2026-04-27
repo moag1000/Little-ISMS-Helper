@@ -8,6 +8,7 @@ use App\Service\BackupRepairService;
 use App\Service\RepairReport;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for BackupRepairService.
@@ -93,6 +94,7 @@ class BackupRepairServiceTest extends TestCase
     // Test: analyze on a clean backup — no issues, 100% recoverable
     // ==================================================================
 
+    #[Test]
     public function testAnalyzeCleanBackup(): void
     {
         $entityData = [
@@ -129,6 +131,7 @@ class BackupRepairServiceTest extends TestCase
     // Test: SHA-256 mismatch reported but rows are still recoverable
     // ==================================================================
 
+    #[Test]
     public function testAnalyzeSha256Mismatch(): void
     {
         $entityData = [
@@ -162,6 +165,7 @@ class BackupRepairServiceTest extends TestCase
     // Test: missing metadata fields reported, rows still recoverable
     // ==================================================================
 
+    #[Test]
     public function testAnalyzeMissingMetadata(): void
     {
         $entityData = [
@@ -195,6 +199,7 @@ class BackupRepairServiceTest extends TestCase
     // Test: malformed rows dropped, valid rows preserved
     // ==================================================================
 
+    #[Test]
     public function testRepairDropsMalformedRows(): void
     {
         $entityData = [
@@ -241,6 +246,7 @@ class BackupRepairServiceTest extends TestCase
     // Test: rows with id=null dropped
     // ==================================================================
 
+    #[Test]
     public function testRepairDropsRowsWithNullId(): void
     {
         // We need a service that knows 'Asset' has an 'id' field.
@@ -287,6 +293,7 @@ class BackupRepairServiceTest extends TestCase
     // Test: repair produces valid JSON with correct sha256
     // ==================================================================
 
+    #[Test]
     public function testRepairWritesCleanedJson(): void
     {
         $entityData = [
@@ -324,6 +331,7 @@ class BackupRepairServiceTest extends TestCase
     // Test: completely broken JSON → isRecoverable=false
     // ==================================================================
 
+    #[Test]
     public function testRepairUnrecoverable(): void
     {
         $path = $this->tmpDir . '/broken.json';
@@ -342,6 +350,7 @@ class BackupRepairServiceTest extends TestCase
     // Test: scope metadata (scope_type, tenant_scope) survives repair
     // ==================================================================
 
+    #[Test]
     public function testRepairPreservesScopeMetadata(): void
     {
         $entityData = [

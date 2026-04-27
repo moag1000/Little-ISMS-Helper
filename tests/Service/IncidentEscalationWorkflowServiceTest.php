@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Integration tests for Incident Escalation Workflow Service
@@ -66,6 +67,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testAutoEscalateLowSeverity(): void
     {
         $incident = $this->createIncident(1, 'INC-001', 'low', false);
@@ -107,6 +109,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $this->assertTrue($result['auto_notification']);
     }
 
+    #[Test]
     public function testAutoEscalateMediumSeverity(): void
     {
         $incident = $this->createIncident(2, 'INC-002', 'medium', false);
@@ -136,6 +139,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $this->assertCount(1, $result['notified_users']);
     }
 
+    #[Test]
     public function testAutoEscalateHighSeverity(): void
     {
         $incident = $this->createIncident(3, 'INC-003', 'high', false);
@@ -172,6 +176,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $this->assertContains($ciso, $result['notified_users']);
     }
 
+    #[Test]
     public function testAutoEscalateCriticalSeverity(): void
     {
         $incident = $this->createIncident(4, 'INC-004', 'critical', false);
@@ -209,6 +214,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $this->assertCount(4, $result['notified_users']);
     }
 
+    #[Test]
     public function testAutoEscalateDataBreach(): void
     {
         $incident = $this->createIncident(5, 'INC-005', 'critical', true);
@@ -253,6 +259,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $this->assertSame(['DPO', 'CISO', 'CEO'], $result['approval_required_by']);
     }
 
+    #[Test]
     public function testGdprDeadlineCalculation(): void
     {
         // Create incident with detectedAt set to current time
@@ -285,6 +292,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $this->assertLessThan(72.1, $result['hours_remaining']);
     }
 
+    #[Test]
     public function testRaceConditionPrevention(): void
     {
         $incident = $this->createIncident(7, 'INC-007', 'medium', false);
@@ -308,6 +316,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $this->assertSame('medium', $result1['escalation_level']);
     }
 
+    #[Test]
     public function testMissingRoleFallback(): void
     {
         $incident = $this->createIncident(8, 'INC-008', 'critical', true);
@@ -330,6 +339,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $this->assertTrue($result['requires_approval']);
     }
 
+    #[Test]
     public function testDuplicateEmailPrevention(): void
     {
         $incident = $this->createIncident(9, 'INC-009', 'critical', false);
@@ -360,6 +370,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         // This test documents current behavior
     }
 
+    #[Test]
     public function testWorkflowSuperseding(): void
     {
         $incident = $this->createIncident(10, 'INC-010', 'low', false);

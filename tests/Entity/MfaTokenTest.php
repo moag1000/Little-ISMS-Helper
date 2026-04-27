@@ -5,9 +5,11 @@ namespace App\Tests\Entity;
 use App\Entity\MfaToken;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class MfaTokenTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $token = new MfaToken();
@@ -21,6 +23,7 @@ class MfaTokenTest extends TestCase
         $this->assertEquals(0, $token->getUsageCount());
     }
 
+    #[Test]
     public function testUserRelationship(): void
     {
         $token = new MfaToken();
@@ -32,6 +35,7 @@ class MfaTokenTest extends TestCase
         $this->assertSame($user, $token->getUser());
     }
 
+    #[Test]
     public function testTokenType(): void
     {
         $token = new MfaToken();
@@ -43,6 +47,7 @@ class MfaTokenTest extends TestCase
         $this->assertEquals('webauthn', $token->getTokenType());
     }
 
+    #[Test]
     public function testGetTokenTypeName(): void
     {
         $token = new MfaToken();
@@ -66,6 +71,7 @@ class MfaTokenTest extends TestCase
         $this->assertEquals('Unknown', $token->getTokenTypeName());
     }
 
+    #[Test]
     public function testDeviceName(): void
     {
         $token = new MfaToken();
@@ -76,6 +82,7 @@ class MfaTokenTest extends TestCase
         $this->assertEquals('iPhone 13', $token->getDeviceName());
     }
 
+    #[Test]
     public function testTotpSecret(): void
     {
         $token = new MfaToken();
@@ -86,6 +93,7 @@ class MfaTokenTest extends TestCase
         $this->assertEquals('encrypted_totp_secret', $token->getSecret());
     }
 
+    #[Test]
     public function testBackupCodes(): void
     {
         $token = new MfaToken();
@@ -98,6 +106,7 @@ class MfaTokenTest extends TestCase
         $this->assertEquals($codes, $token->getBackupCodes());
     }
 
+    #[Test]
     public function testWebAuthnFields(): void
     {
         $token = new MfaToken();
@@ -114,6 +123,7 @@ class MfaTokenTest extends TestCase
         $this->assertEquals(5, $token->getCounter());
     }
 
+    #[Test]
     public function testIncrementCounter(): void
     {
         $token = new MfaToken();
@@ -127,6 +137,7 @@ class MfaTokenTest extends TestCase
         $this->assertEquals(2, $token->getCounter());
     }
 
+    #[Test]
     public function testPhoneNumber(): void
     {
         $token = new MfaToken();
@@ -137,6 +148,7 @@ class MfaTokenTest extends TestCase
         $this->assertEquals('+49123456789', $token->getPhoneNumber());
     }
 
+    #[Test]
     public function testIsActiveAndSetIsActive(): void
     {
         $token = new MfaToken();
@@ -147,6 +159,7 @@ class MfaTokenTest extends TestCase
         $this->assertFalse($token->isActive());
     }
 
+    #[Test]
     public function testIsPrimaryAndSetIsPrimary(): void
     {
         $token = new MfaToken();
@@ -157,6 +170,7 @@ class MfaTokenTest extends TestCase
         $this->assertTrue($token->isPrimary());
     }
 
+    #[Test]
     public function testRecordUsage(): void
     {
         $token = new MfaToken();
@@ -174,6 +188,7 @@ class MfaTokenTest extends TestCase
         $this->assertEquals(2, $token->getUsageCount());
     }
 
+    #[Test]
     public function testIsExpiredWhenNoExpirationSet(): void
     {
         $token = new MfaToken();
@@ -182,6 +197,7 @@ class MfaTokenTest extends TestCase
         $this->assertFalse($token->isExpired());
     }
 
+    #[Test]
     public function testIsExpiredWithFutureExpiration(): void
     {
         $token = new MfaToken();
@@ -192,6 +208,7 @@ class MfaTokenTest extends TestCase
         $this->assertFalse($token->isExpired());
     }
 
+    #[Test]
     public function testIsExpiredWithPastExpiration(): void
     {
         $token = new MfaToken();
@@ -202,6 +219,7 @@ class MfaTokenTest extends TestCase
         $this->assertTrue($token->isExpired());
     }
 
+    #[Test]
     public function testIsValidWhenActiveAndNotExpired(): void
     {
         $token = new MfaToken();
@@ -210,6 +228,7 @@ class MfaTokenTest extends TestCase
         $this->assertTrue($token->isValid());
     }
 
+    #[Test]
     public function testIsValidWhenInactive(): void
     {
         $token = new MfaToken();
@@ -218,6 +237,7 @@ class MfaTokenTest extends TestCase
         $this->assertFalse($token->isValid());
     }
 
+    #[Test]
     public function testIsValidWhenExpired(): void
     {
         $token = new MfaToken();
@@ -228,6 +248,7 @@ class MfaTokenTest extends TestCase
         $this->assertFalse($token->isValid());
     }
 
+    #[Test]
     public function testTimestamps(): void
     {
         $token = new MfaToken();

@@ -13,6 +13,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Phase 8M.2 — Unit-Tests für IncidentSlaConfigResolver Ceiling-Merge pro Severity.
@@ -55,6 +56,7 @@ class IncidentSlaConfigResolverTest extends TestCase
     /**
      * Root-Tenant ohne Parent: Config wird unverändert zurückgegeben.
      */
+    #[Test]
     public function testRootTenantReturnsOwnConfig(): void
     {
         $tenant = $this->makeTenant(1, []);
@@ -77,6 +79,7 @@ class IncidentSlaConfigResolverTest extends TestCase
     /**
      * Child mit LAXEREN SLAs als Parent → auf Parent-Werte gecapped.
      */
+    #[Test]
     public function testChildWithLaxerSlaIsCappedByParent(): void
     {
         $parent = $this->makeTenant(10, []);
@@ -106,6 +109,7 @@ class IncidentSlaConfigResolverTest extends TestCase
     /**
      * Child mit STRENGEREN SLAs als Parent → bleibt unverändert.
      */
+    #[Test]
     public function testChildWithStricterSlaRemainsUnchanged(): void
     {
         $parent = $this->makeTenant(10, []);
@@ -135,6 +139,7 @@ class IncidentSlaConfigResolverTest extends TestCase
     /**
      * 3-Ebenen-Hierarchie: Holding → Sub-Holding → Child.
      */
+    #[Test]
     public function testThreeLevelHierarchyCeiling(): void
     {
         $root       = $this->makeTenant(1, []);
@@ -166,6 +171,7 @@ class IncidentSlaConfigResolverTest extends TestCase
      * Nullable escalationHours/resolutionHours: null = kein Limit (unendlich lax).
      * Wenn Parent null hat und Child einen Wert — Child-Wert gewinnt (ist strenger).
      */
+    #[Test]
     public function testNullableHoursParentNullChildValueChildWins(): void
     {
         $parent = $this->makeTenant(10, []);
@@ -197,6 +203,7 @@ class IncidentSlaConfigResolverTest extends TestCase
     /**
      * Nullable: Child null, Parent hat Wert → Parent-Wert wird übernommen (ist strenger).
      */
+    #[Test]
     public function testNullableHoursChildNullParentValueParentWins(): void
     {
         $parent = $this->makeTenant(10, []);
@@ -228,6 +235,7 @@ class IncidentSlaConfigResolverTest extends TestCase
     /**
      * Child ohne eigene Config → Default + Ceiling mit Parent.
      */
+    #[Test]
     public function testChildWithoutConfigUsesDefaultThenMergesWithParent(): void
     {
         $parent = $this->makeTenant(10, []);
@@ -252,6 +260,7 @@ class IncidentSlaConfigResolverTest extends TestCase
     /**
      * Cache-Invalidation per Tenant löscht nur Einträge für diesen Tenant.
      */
+    #[Test]
     public function testCacheInvalidationPerTenant(): void
     {
         $tenant = $this->makeTenant(5, []);
@@ -278,6 +287,7 @@ class IncidentSlaConfigResolverTest extends TestCase
     /**
      * Kein Config in der gesamten Hierarchie → Default-Fallback.
      */
+    #[Test]
     public function testNoConfigAnywhereFallsBackToDefault(): void
     {
         $parent = $this->makeTenant(10, []);

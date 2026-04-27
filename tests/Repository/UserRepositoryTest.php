@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for UserRepository
@@ -122,6 +123,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test that the repository can be instantiated correctly
      */
+    #[Test]
     public function testRepositoryInstantiation(): void
     {
         $this->assertInstanceOf(UserRepository::class, $this->repository);
@@ -130,6 +132,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test that the repository implements PasswordUpgraderInterface
      */
+    #[Test]
     public function testRepositoryImplementsPasswordUpgraderInterface(): void
     {
         $this->assertInstanceOf(
@@ -141,6 +144,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test that the repository has all expected public methods
      */
+    #[Test]
     public function testRepositoryHasExpectedMethods(): void
     {
         $this->assertTrue(method_exists($this->repository, 'upgradePassword'));
@@ -157,6 +161,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test upgradePassword method signature
      */
+    #[Test]
     public function testUpgradePasswordSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'upgradePassword');
@@ -178,6 +183,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test upgradePassword throws exception for non-User instances
      */
+    #[Test]
     public function testUpgradePasswordThrowsExceptionForNonUserInstance(): void
     {
         // Create a mock that implements PasswordAuthenticatedUserInterface but is not User
@@ -194,6 +200,7 @@ class UserRepositoryTest extends TestCase
      * Note: This test verifies the logic flow, but cannot test actual persistence
      * due to Query being final. Integration tests are needed for full coverage.
      */
+    #[Test]
     public function testUpgradePasswordWithValidUser(): void
     {
         $user = $this->createMock(User::class);
@@ -218,6 +225,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test findByAzureObjectId signature
      */
+    #[Test]
     public function testFindByAzureObjectIdSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByAzureObjectId');
@@ -235,6 +243,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test findOrCreateFromAzure signature
      */
+    #[Test]
     public function testFindOrCreateFromAzureSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findOrCreateFromAzure');
@@ -252,6 +261,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test findActiveUsers signature
      */
+    #[Test]
     public function testFindActiveUsersSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findActiveUsers');
@@ -266,6 +276,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test findByRole signature
      */
+    #[Test]
     public function testFindByRoleSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByRole');
@@ -282,6 +293,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test findByCustomRole signature
      */
+    #[Test]
     public function testFindByCustomRoleSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByCustomRole');
@@ -298,6 +310,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test searchUsers signature
      */
+    #[Test]
     public function testSearchUsersSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'searchUsers');
@@ -314,6 +327,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test getUserStatistics signature
      */
+    #[Test]
     public function testGetUserStatisticsSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'getUserStatistics');
@@ -328,6 +342,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test getRecentlyActiveUsers signature
      */
+    #[Test]
     public function testGetRecentlyActiveUsersSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'getRecentlyActiveUsers');
@@ -346,6 +361,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test that the repository uses correct entity class
      */
+    #[Test]
     public function testRepositoryUsesCorrectEntityClass(): void
     {
         $reflection = new \ReflectionClass($this->repository);
@@ -360,6 +376,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test that the repository extends ServiceEntityRepository
      */
+    #[Test]
     public function testRepositoryExtendsServiceEntityRepository(): void
     {
         $reflection = new \ReflectionClass($this->repository);
@@ -375,6 +392,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test that query methods return array type
      */
+    #[Test]
     public function testQueryMethodsReturnArrayType(): void
     {
         $methods = [
@@ -405,6 +423,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test that findByAzureObjectId and findOrCreateFromAzure have correct return types
      */
+    #[Test]
     public function testAzureMethodsReturnTypes(): void
     {
         // findByAzureObjectId should return User|null
@@ -424,6 +443,7 @@ class UserRepositoryTest extends TestCase
      * Test that getUserStatistics would return the expected array structure
      * Note: Actual query execution needs integration tests
      */
+    #[Test]
     public function testGetUserStatisticsExpectedStructure(): void
     {
         // This test documents the expected return structure
@@ -444,6 +464,7 @@ class UserRepositoryTest extends TestCase
      * Test that search query methods accept and would process string parameters correctly
      * Note: Actual LIKE query execution needs integration tests
      */
+    #[Test]
     public function testSearchMethodsAcceptStringParameters(): void
     {
         // Verify searchUsers accepts string
@@ -470,6 +491,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test that getRecentlyActiveUsers has a sensible default limit
      */
+    #[Test]
     public function testGetRecentlyActiveUsersHasDefaultLimit(): void
     {
         $method = new \ReflectionMethod($this->repository, 'getRecentlyActiveUsers');
@@ -484,6 +506,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test that all custom methods are properly documented
      */
+    #[Test]
     public function testCustomMethodsAreDocumented(): void
     {
         $customMethods = [
@@ -516,6 +539,7 @@ class UserRepositoryTest extends TestCase
     /**
      * Test the repository class is properly documented
      */
+    #[Test]
     public function testRepositoryClassIsDocumented(): void
     {
         $reflection = new \ReflectionClass($this->repository);

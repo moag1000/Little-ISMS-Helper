@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -93,13 +94,9 @@ final class MrisKpiController extends AbstractController
      */
     #[Route('/mris/kpis/manual', name: 'app_mris_kpis_manual_save', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
+    #[IsCsrfTokenValid('mris_manual_kpis', tokenKey: '_token')]
     public function saveManual(Request $request): Response
     {
-        if (!$this->isCsrfTokenValid('mris_manual_kpis', (string) $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
-            return $this->redirectToRoute('app_mris_kpis');
-        }
-
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
             $this->addFlash('warning', 'Kein Mandant zugewiesen.');

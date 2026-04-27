@@ -4,6 +4,7 @@ namespace App\Tests\Service;
 
 use App\Service\SystemRequirementsChecker;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class SystemRequirementsCheckerTest extends TestCase
 {
@@ -52,6 +53,7 @@ class SystemRequirementsCheckerTest extends TestCase
         rmdir($dir);
     }
 
+    #[Test]
     public function testCheckAllReturnsAllChecks(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);
@@ -67,6 +69,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertArrayHasKey('overall', $results);
     }
 
+    #[Test]
     public function testCheckAllPopulatesResults(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);
@@ -77,6 +80,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertArrayHasKey('overall', $results);
     }
 
+    #[Test]
     public function testGetResultsEmptyBeforeCheckAll(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);
@@ -85,6 +89,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertEmpty($results);
     }
 
+    #[Test]
     public function testGetResultsAfterCheckAll(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);
@@ -94,6 +99,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertNotEmpty($results);
     }
 
+    #[Test]
     public function testIsSystemReadyRunsCheckAllIfNeeded(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);
@@ -104,6 +110,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertIsBool($isReady);
     }
 
+    #[Test]
     public function testIsSystemReadyUsesExistingResults(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);
@@ -113,6 +120,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertIsBool($isReady);
     }
 
+    #[Test]
     public function testPhpVersionCheckPasses(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);
@@ -126,6 +134,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertTrue($results['php']['critical']);
     }
 
+    #[Test]
     public function testPhpVersionCheckWithOldVersion(): void
     {
         // Create config requiring impossible future version
@@ -141,6 +150,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertStringContainsString('älter als erforderlich', $results['php']['message']);
     }
 
+    #[Test]
     public function testPhpExtensionsCheckPasses(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);
@@ -156,6 +166,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertIsArray($results['extensions']['missing']);
     }
 
+    #[Test]
     public function testPhpExtensionsCheckWithMissingExtensions(): void
     {
         // Create config requiring non-existent extensions
@@ -173,6 +184,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertContains('fake_extension', $results['extensions']['missing']);
     }
 
+    #[Test]
     public function testDatabaseCheckWithValidDatabaseUrl(): void
     {
         $_ENV['DATABASE_URL'] = 'mysql://user:pass@localhost/dbname';
@@ -189,6 +201,7 @@ class SystemRequirementsCheckerTest extends TestCase
         unset($_ENV['DATABASE_URL']);
     }
 
+    #[Test]
     public function testDatabaseCheckWithPostgresqlUrl(): void
     {
         $_ENV['DATABASE_URL'] = 'postgresql://user:pass@localhost/dbname';
@@ -202,6 +215,7 @@ class SystemRequirementsCheckerTest extends TestCase
         unset($_ENV['DATABASE_URL']);
     }
 
+    #[Test]
     public function testDatabaseCheckWithoutDatabaseUrl(): void
     {
         unset($_ENV['DATABASE_URL']);
@@ -213,6 +227,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertStringContainsString('nicht konfiguriert', $results['database']['message']);
     }
 
+    #[Test]
     public function testDirectoryPermissionsCheckAllWritable(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);
@@ -226,6 +241,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertIsArray($results['permissions']['not_writable']);
     }
 
+    #[Test]
     public function testDirectoryPermissionsCheckCreatesDirectories(): void
     {
         // Create config with non-existent directory
@@ -241,6 +257,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertTrue(is_dir($this->projectDir . '/var/new_dir'));
     }
 
+    #[Test]
     public function testMemoryLimitCheckWithSufficientMemory(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);
@@ -253,6 +270,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertFalse($results['memory']['critical']);
     }
 
+    #[Test]
     public function testMemoryLimitCheckWithUnlimitedMemory(): void
     {
         // Simulate unlimited memory
@@ -269,6 +287,7 @@ class SystemRequirementsCheckerTest extends TestCase
         ini_set('memory_limit', $originalLimit);
     }
 
+    #[Test]
     public function testMemoryLimitCheckWithLowMemory(): void
     {
         // Skip if memory_limit is unlimited (-1), as we can't simulate low memory
@@ -298,6 +317,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertStringContainsString('niedriger als empfohlen', $results['memory']['message']);
     }
 
+    #[Test]
     public function testExecutionTimeCheckWithSufficientTime(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);
@@ -310,6 +330,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertFalse($results['execution_time']['critical']);
     }
 
+    #[Test]
     public function testExecutionTimeCheckWithUnlimitedTime(): void
     {
         // Simulate unlimited execution time
@@ -325,6 +346,7 @@ class SystemRequirementsCheckerTest extends TestCase
         ini_set('max_execution_time', $originalTime);
     }
 
+    #[Test]
     public function testExecutionTimeCheckWithLowTime(): void
     {
         // Temporarily set a low execution time
@@ -347,6 +369,7 @@ class SystemRequirementsCheckerTest extends TestCase
         ini_set('max_execution_time', $originalTime);
     }
 
+    #[Test]
     public function testSymfonyVersionCheckWithoutComposerLock(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);
@@ -357,6 +380,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertTrue($results['symfony']['critical']);
     }
 
+    #[Test]
     public function testSymfonyVersionCheckWithValidVersion(): void
     {
         // Create composer.lock with Symfony 7.4
@@ -380,6 +404,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertArrayHasKey('required', $results['symfony']);
     }
 
+    #[Test]
     public function testSymfonyVersionCheckWithOldVersion(): void
     {
         // Create composer.lock with old Symfony version
@@ -402,6 +427,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertStringContainsString('älter als erforderlich', $results['symfony']['message']);
     }
 
+    #[Test]
     public function testSymfonyVersionCheckWithoutFrameworkBundle(): void
     {
         // Create composer.lock without symfony/framework-bundle
@@ -424,6 +450,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertStringContainsString('nicht gefunden', $results['symfony']['message']);
     }
 
+    #[Test]
     public function testSymfonyVersionCheckWithRcVersion(): void
     {
         // Create composer.lock with RC version
@@ -447,6 +474,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertSame('v7.4.0-RC1', $results['symfony']['current']);
     }
 
+    #[Test]
     public function testOverallStatusWithNoCriticalErrors(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);
@@ -461,6 +489,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertArrayHasKey('message', $results['overall']);
     }
 
+    #[Test]
     public function testOverallStatusCanProceedWithNoErrors(): void
     {
         // Use default config which should pass all checks
@@ -487,6 +516,7 @@ class SystemRequirementsCheckerTest extends TestCase
         unset($_ENV['DATABASE_URL']);
     }
 
+    #[Test]
     public function testOverallStatusCountsErrorsCorrectly(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);
@@ -504,6 +534,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertGreaterThanOrEqual(0, $success);
     }
 
+    #[Test]
     public function testConvertToBytesWithKilobytes(): void
     {
         file_put_contents(
@@ -519,6 +550,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertSame('128K', $results['memory']['required']);
     }
 
+    #[Test]
     public function testConvertToBytesWithMegabytes(): void
     {
         file_put_contents(
@@ -532,6 +564,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertSame('256M', $results['memory']['required']);
     }
 
+    #[Test]
     public function testConvertToBytesWithGigabytes(): void
     {
         file_put_contents(
@@ -545,6 +578,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertSame('2G', $results['memory']['required']);
     }
 
+    #[Test]
     public function testConvertToBytesWithNumericValue(): void
     {
         file_put_contents(
@@ -558,6 +592,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertSame('134217728', $results['memory']['required']);
     }
 
+    #[Test]
     public function testNormalizeVersionRemovesVPrefix(): void
     {
         file_put_contents(
@@ -579,6 +614,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertSame('v7.4.0', $results['symfony']['current']);
     }
 
+    #[Test]
     public function testConstructorLoadsConfigCorrectly(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);
@@ -590,6 +626,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $this->assertSame('8.2.0', $results['php']['required']);
     }
 
+    #[Test]
     public function testConstructorWithInvalidConfigPath(): void
     {
         // This will throw an exception when trying to parse non-existent file
@@ -598,6 +635,7 @@ class SystemRequirementsCheckerTest extends TestCase
         new SystemRequirementsChecker('/nonexistent/path');
     }
 
+    #[Test]
     public function testMultipleCallsToCheckAllReturnConsistentResults(): void
     {
         $checker = new SystemRequirementsChecker($this->projectDir);

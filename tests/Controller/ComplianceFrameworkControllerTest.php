@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for ComplianceFrameworkController
@@ -143,12 +144,14 @@ class ComplianceFrameworkControllerTest extends WebTestCase
 
     // ========== INDEX TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/compliance/framework/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -161,6 +164,7 @@ class ComplianceFrameworkControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testIndexAcceptsActiveFilter(): void
     {
         $this->loginAsUser($this->testUser);
@@ -169,6 +173,7 @@ class ComplianceFrameworkControllerTest extends WebTestCase
         $this->assertTrue($statusCode >= 200 && $statusCode < 600);
     }
 
+    #[Test]
     public function testIndexAcceptsMandatoryFilter(): void
     {
         $this->loginAsUser($this->testUser);
@@ -177,6 +182,7 @@ class ComplianceFrameworkControllerTest extends WebTestCase
         $this->assertTrue($statusCode >= 200 && $statusCode < 600);
     }
 
+    #[Test]
     public function testIndexAcceptsIndustryFilter(): void
     {
         $this->loginAsUser($this->testUser);
@@ -187,12 +193,14 @@ class ComplianceFrameworkControllerTest extends WebTestCase
 
     // ========== NEW TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/compliance/framework/new');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -200,6 +208,7 @@ class ComplianceFrameworkControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testNewDisplaysFormForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -210,12 +219,14 @@ class ComplianceFrameworkControllerTest extends WebTestCase
 
     // ========== SHOW TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/compliance/framework/' . $this->testFramework->id);
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysFrameworkForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -223,6 +234,7 @@ class ComplianceFrameworkControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testShowReturns404ForNonexistent(): void
     {
         $this->loginAsUser($this->testUser);
@@ -232,12 +244,14 @@ class ComplianceFrameworkControllerTest extends WebTestCase
 
     // ========== EDIT TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/compliance/framework/' . $this->testFramework->id . '/edit');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -245,6 +259,7 @@ class ComplianceFrameworkControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testEditDisplaysFormForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -255,12 +270,14 @@ class ComplianceFrameworkControllerTest extends WebTestCase
 
     // ========== DELETE TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/compliance/framework/' . $this->testFramework->id . '/delete');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -270,12 +287,14 @@ class ComplianceFrameworkControllerTest extends WebTestCase
 
     // ========== TOGGLE TESTS ==========
 
+    #[Test]
     public function testToggleRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/compliance/framework/' . $this->testFramework->id . '/toggle');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testToggleRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -285,12 +304,14 @@ class ComplianceFrameworkControllerTest extends WebTestCase
 
     // ========== DUPLICATE TESTS ==========
 
+    #[Test]
     public function testDuplicateRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/compliance/framework/' . $this->testFramework->id . '/duplicate');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDuplicateRequiresPost(): void
     {
         $this->loginAsUser($this->adminUser);

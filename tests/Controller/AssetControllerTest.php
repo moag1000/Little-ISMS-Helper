@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for AssetController
@@ -196,6 +197,7 @@ class AssetControllerTest extends WebTestCase
 
     // ========== INDEX ACTION TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/asset/');
@@ -203,6 +205,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexShowsAssetsForAuthenticatedUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -213,6 +216,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertSelectorExists('html');
     }
 
+    #[Test]
     public function testIndexFiltersAssetsByType(): void
     {
         $this->loginAsUser($this->testUser);
@@ -224,6 +228,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersAssetsByClassification(): void
     {
         $this->loginAsUser($this->testUser);
@@ -235,6 +240,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersAssetsByOwner(): void
     {
         $this->loginAsUser($this->testUser);
@@ -246,6 +252,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersAssetsByStatus(): void
     {
         $this->loginAsUser($this->testUser);
@@ -257,6 +264,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexSupportsOwnViewParameter(): void
     {
         $this->loginAsUser($this->testUser);
@@ -268,6 +276,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexSupportsSubsidiariesViewParameter(): void
     {
         $this->loginAsUser($this->testUser);
@@ -279,6 +288,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexSupportsInheritedViewParameter(): void
     {
         $this->loginAsUser($this->testUser);
@@ -290,6 +300,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexDefaultsToInheritedView(): void
     {
         $this->loginAsUser($this->testUser);
@@ -302,6 +313,7 @@ class AssetControllerTest extends WebTestCase
 
     // ========== NEW ACTION TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/asset/new');
@@ -309,6 +321,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewDisplaysForm(): void
     {
         $this->loginAsUser($this->testUser);
@@ -319,6 +332,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="asset"]');
     }
 
+    #[Test]
     public function testNewCreatesAssetWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -348,6 +362,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertSelectorTextContains('html', 'New Test Asset');
     }
 
+    #[Test]
     public function testNewSetsTenantFromCurrentUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -372,6 +387,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertStringContainsString('/asset/', $redirectUrl, 'Should redirect to asset show page');
     }
 
+    #[Test]
     public function testNewRejectsInvalidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -396,6 +412,7 @@ class AssetControllerTest extends WebTestCase
 
     // ========== SHOW ACTION TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/asset/' . $this->testAsset->getId());
@@ -403,6 +420,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysAssetDetails(): void
     {
         $this->loginAsUser($this->testUser);
@@ -413,6 +431,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertSelectorTextContains('html', 'Test Server');
     }
 
+    #[Test]
     public function testShowReturns404ForNonexistentAsset(): void
     {
         $this->loginAsUser($this->testUser);
@@ -422,6 +441,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    #[Test]
     public function testShowIncludesProtectionRequirementAnalysis(): void
     {
         $this->loginAsUser($this->testUser);
@@ -434,6 +454,7 @@ class AssetControllerTest extends WebTestCase
 
     // ========== EDIT ACTION TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/asset/' . $this->testAsset->getId() . '/edit');
@@ -441,6 +462,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysForm(): void
     {
         $this->loginAsUser($this->testUser);
@@ -453,6 +475,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertSelectorExists('input[name="asset[name]"]');
     }
 
+    #[Test]
     public function testEditUpdatesAssetWithValidData(): void
     {
         $this->loginAsUser($this->testUser);
@@ -474,6 +497,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertSelectorTextContains('html', 'Updated Test Server');
     }
 
+    #[Test]
     public function testEditReturns404ForNonexistentAsset(): void
     {
         $this->loginAsUser($this->testUser);
@@ -483,6 +507,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    #[Test]
     public function testEditRedirectsForInheritedAsset(): void
     {
         $uniqueId = uniqid('parent_', true);
@@ -520,6 +545,7 @@ class AssetControllerTest extends WebTestCase
 
     // ========== DELETE ACTION TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/asset/' . $this->testAsset->getId() . '/delete');
@@ -527,6 +553,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -540,6 +567,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteRedirectsWithAdminRole(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -555,6 +583,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseRedirects('/en/asset/');
     }
 
+    #[Test]
     public function testDeleteRequiresValidCsrfToken(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -572,6 +601,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertNotNull($stillExists);
     }
 
+    #[Test]
     public function testDeleteRedirectsForInheritedAsset(): void
     {
         $uniqueId = uniqid('parent_', true);
@@ -613,6 +643,7 @@ class AssetControllerTest extends WebTestCase
 
     // ========== BULK DELETE TESTS ==========
 
+    #[Test]
     public function testBulkDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/asset/bulk-delete');
@@ -620,6 +651,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testBulkDeleteRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -631,6 +663,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testBulkDeleteRemovesMultipleAssets(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -662,6 +695,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertEquals(2, $response['deleted']);
     }
 
+    #[Test]
     public function testBulkDeleteReturnsErrorForEmptyIds(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -676,6 +710,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertArrayHasKey('error', $response);
     }
 
+    #[Test]
     public function testBulkDeleteRespectsMultiTenancy(): void
     {
         $uniqueId = uniqid('other_', true);
@@ -716,6 +751,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertArrayHasKey('errors', $response);
     }
 
+    #[Test]
     public function testBulkDeleteHandlesNonexistentAssets(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -733,6 +769,7 @@ class AssetControllerTest extends WebTestCase
 
     // ========== BCM INSIGHTS ACTION TESTS ==========
 
+    #[Test]
     public function testBcmInsightsRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/asset/' . $this->testAsset->getId() . '/bcm-insights');
@@ -740,6 +777,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testBcmInsightsDisplaysAssetAnalysis(): void
     {
         $this->loginAsUser($this->testUser);
@@ -749,6 +787,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testBcmInsightsReturns404ForNonexistentAsset(): void
     {
         $this->loginAsUser($this->testUser);
@@ -758,6 +797,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    #[Test]
     public function testBcmInsightsIncludesProtectionRequirementAnalysis(): void
     {
         $this->loginAsUser($this->testUser);
@@ -770,6 +810,7 @@ class AssetControllerTest extends WebTestCase
 
     // ========== MULTI-TENANCY AND INHERITANCE TESTS ==========
 
+    #[Test]
     public function testIndexRespectsMultiTenancyIsolation(): void
     {
         $uniqueId = uniqid('other_', true);
@@ -801,6 +842,7 @@ class AssetControllerTest extends WebTestCase
         // User should only see assets from their own tenant
     }
 
+    #[Test]
     public function testIndexCalculatesDetailedStats(): void
     {
         $this->loginAsUser($this->testUser);
@@ -811,6 +853,7 @@ class AssetControllerTest extends WebTestCase
         // Detailed stats should be calculated and passed to template
     }
 
+    #[Test]
     public function testShowDisplaysInheritanceInformation(): void
     {
         $this->loginAsUser($this->testUser);
@@ -823,6 +866,7 @@ class AssetControllerTest extends WebTestCase
 
     // ========== FORM VALIDATION TESTS ==========
 
+    #[Test]
     public function testNewRequiresAssetName(): void
     {
         $this->loginAsUser($this->testUser);
@@ -845,6 +889,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="asset"]');
     }
 
+    #[Test]
     public function testNewRequiresAssetType(): void
     {
         $this->loginAsUser($this->testUser);
@@ -869,6 +914,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewRequiresOwner(): void
     {
         $this->loginAsUser($this->testUser);
@@ -893,6 +939,7 @@ class AssetControllerTest extends WebTestCase
 
     // ========== FLASH MESSAGE TESTS ==========
 
+    #[Test]
     public function testNewShowsSuccessFlashOnCreation(): void
     {
         $this->loginAsUser($this->testUser);
@@ -915,6 +962,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testEditShowsSuccessFlashOnUpdate(): void
     {
         $this->loginAsUser($this->testUser);
@@ -931,6 +979,7 @@ class AssetControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testDeleteShowsSuccessFlashOnDeletion(): void
     {
         $this->loginAsUser($this->adminUser);

@@ -10,6 +10,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for BusinessProcessRepository
@@ -108,6 +109,7 @@ class BusinessProcessRepositoryTest extends TestCase
     /**
      * Test that the repository can be instantiated correctly
      */
+    #[Test]
     public function testConstructor(): void
     {
         $this->assertInstanceOf(BusinessProcessRepository::class, $this->repository);
@@ -120,6 +122,7 @@ class BusinessProcessRepositoryTest extends TestCase
      *
      * Integration test required: Verify query filtering and ordering
      */
+    #[Test]
     public function testCriticalityLevelsConcept(): void
     {
         $criticalityLevels = ['critical', 'high', 'medium', 'low'];
@@ -148,6 +151,7 @@ class BusinessProcessRepositoryTest extends TestCase
      *
      * Integration test required: Verify threshold filtering and ordering
      */
+    #[Test]
     public function testRTOThresholdConcept(): void
     {
         // Common RTO thresholds for BCP/BCM
@@ -175,6 +179,7 @@ class BusinessProcessRepositoryTest extends TestCase
      *
      * Integration test required: Verify OR condition across impact types
      */
+    #[Test]
     public function testImpactScoringConcept(): void
     {
         // Impact scores are on 1-10 scale
@@ -200,6 +205,7 @@ class BusinessProcessRepositoryTest extends TestCase
      *
      * Integration test required: Verify actual calculation with database
      */
+    #[Test]
     public function testStatisticsStructureConcept(): void
     {
         $expectedStats = [
@@ -236,6 +242,7 @@ class BusinessProcessRepositoryTest extends TestCase
      *
      * When no processes exist, averages should default to 0
      */
+    #[Test]
     public function testStatisticsEmptyResultConcept(): void
     {
         $emptyStats = [
@@ -258,6 +265,7 @@ class BusinessProcessRepositoryTest extends TestCase
      *
      * Integration test required: Verify hierarchical query with real entities
      */
+    #[Test]
     public function testTenantHierarchyParentConcept(): void
     {
         $grandparent = $this->createMock(Tenant::class);
@@ -280,6 +288,7 @@ class BusinessProcessRepositoryTest extends TestCase
      *
      * Integration test required: Verify subsidiary aggregation with real entities
      */
+    #[Test]
     public function testTenantHierarchySubsidiaryConcept(): void
     {
         $parent = $this->createMock(Tenant::class);
@@ -305,6 +314,7 @@ class BusinessProcessRepositoryTest extends TestCase
      * - RPO: Recovery Point Objective (hours)
      * - MTPD: Maximum Tolerable Period of Disruption (hours)
      */
+    #[Test]
     public function testBIAMetricsConcept(): void
     {
         // All BIA metrics are measured in hours
@@ -333,6 +343,7 @@ class BusinessProcessRepositoryTest extends TestCase
      *
      * Integration test required: Verify join and filtering
      */
+    #[Test]
     public function testAssetDependencyConcept(): void
     {
         // Asset ID should be a positive integer
@@ -354,6 +365,7 @@ class BusinessProcessRepositoryTest extends TestCase
      * - findByAsset: ORDER BY name ASC
      * - findByTenant: ORDER BY name ASC
      */
+    #[Test]
     public function testOrderingConcept(): void
     {
         // Criticality ordering (DESC: critical > high > medium > low)
@@ -377,6 +389,7 @@ class BusinessProcessRepositoryTest extends TestCase
     /**
      * Test method signature for findCriticalProcesses
      */
+    #[Test]
     public function testFindCriticalProcessesSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findCriticalProcesses');
@@ -393,6 +406,7 @@ class BusinessProcessRepositoryTest extends TestCase
     /**
      * Test method signature for findHighAvailabilityProcesses
      */
+    #[Test]
     public function testFindHighAvailabilityProcessesSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findHighAvailabilityProcesses');
@@ -413,6 +427,7 @@ class BusinessProcessRepositoryTest extends TestCase
     /**
      * Test method signature for findByAsset
      */
+    #[Test]
     public function testFindByAssetSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByAsset');
@@ -431,6 +446,7 @@ class BusinessProcessRepositoryTest extends TestCase
     /**
      * Test method signature for getStatistics
      */
+    #[Test]
     public function testGetStatisticsSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'getStatistics');
@@ -447,6 +463,7 @@ class BusinessProcessRepositoryTest extends TestCase
     /**
      * Test method signature for findHighImpactProcesses
      */
+    #[Test]
     public function testFindHighImpactProcessesSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findHighImpactProcesses');
@@ -467,6 +484,7 @@ class BusinessProcessRepositoryTest extends TestCase
     /**
      * Test method signature for findByTenant
      */
+    #[Test]
     public function testFindByTenantSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByTenant');
@@ -486,6 +504,7 @@ class BusinessProcessRepositoryTest extends TestCase
      *
      * Verifies the second parameter is optional and nullable (deprecated)
      */
+    #[Test]
     public function testFindByTenantIncludingParentSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByTenantIncludingParent');
@@ -509,6 +528,7 @@ class BusinessProcessRepositoryTest extends TestCase
     /**
      * Test method signature for findByTenantIncludingSubsidiaries
      */
+    #[Test]
     public function testFindByTenantIncludingSubsidiariesSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByTenantIncludingSubsidiaries');
@@ -530,6 +550,7 @@ class BusinessProcessRepositoryTest extends TestCase
      * findByTenantIncludingParent() has a deprecated $parentTenant parameter
      * that should be ignored in favor of getAllAncestors()
      */
+    #[Test]
     public function testDeprecatedParentParameterConcept(): void
     {
         $parent = $this->createMock(Tenant::class);
@@ -549,6 +570,7 @@ class BusinessProcessRepositoryTest extends TestCase
      *
      * When tenant has no parent, only its own processes should be queried
      */
+    #[Test]
     public function testFindByTenantIncludingParentWithoutAncestors(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -563,6 +585,7 @@ class BusinessProcessRepositoryTest extends TestCase
      *
      * When tenant has no subsidiaries, only its own processes should be queried
      */
+    #[Test]
     public function testFindByTenantIncludingSubsidiariesWithoutSubsidiaries(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -575,6 +598,7 @@ class BusinessProcessRepositoryTest extends TestCase
     /**
      * Test that repository methods follow naming conventions
      */
+    #[Test]
     public function testRepositoryMethodNamingConventions(): void
     {
         // Repository should have standard find methods
@@ -593,6 +617,7 @@ class BusinessProcessRepositoryTest extends TestCase
     /**
      * Test tenant filtering concept
      */
+    #[Test]
     public function testTenantFilteringConcept(): void
     {
         $tenant1 = $this->createMock(Tenant::class);
@@ -608,6 +633,7 @@ class BusinessProcessRepositoryTest extends TestCase
     /**
      * Test that the repository uses correct entity class
      */
+    #[Test]
     public function testRepositoryUsesCorrectEntityClass(): void
     {
         $reflection = new \ReflectionClass($this->repository);
@@ -622,6 +648,7 @@ class BusinessProcessRepositoryTest extends TestCase
     /**
      * Test impact threshold edge cases
      */
+    #[Test]
     public function testImpactThresholdEdgeCases(): void
     {
         // Minimum valid threshold
@@ -641,6 +668,7 @@ class BusinessProcessRepositoryTest extends TestCase
     /**
      * Test RTO threshold edge cases
      */
+    #[Test]
     public function testRTOThresholdEdgeCases(): void
     {
         // Zero threshold should be valid (though uncommon)
@@ -662,6 +690,7 @@ class BusinessProcessRepositoryTest extends TestCase
      *
      * findHighImpactProcesses uses OR logic across three impact types
      */
+    #[Test]
     public function testMultiCriteriaImpactConcept(): void
     {
         $threshold = 8;
@@ -693,6 +722,7 @@ class BusinessProcessRepositoryTest extends TestCase
     /**
      * Test statistics calculation concept with real numbers
      */
+    #[Test]
     public function testStatisticsCalculationConcept(): void
     {
         // Sample statistics that should be valid
@@ -723,6 +753,7 @@ class BusinessProcessRepositoryTest extends TestCase
      *
      * Business processes track financial impact per hour and per day
      */
+    #[Test]
     public function testFinancialImpactConcept(): void
     {
         // Financial impact stored as decimal with precision 10, scale 2
@@ -742,6 +773,7 @@ class BusinessProcessRepositoryTest extends TestCase
     /**
      * Test that all custom query methods exist
      */
+    #[Test]
     public function testAllCustomMethodsExist(): void
     {
         $customMethods = [
@@ -768,6 +800,7 @@ class BusinessProcessRepositoryTest extends TestCase
      *
      * Business processes should have defined recovery strategies for BCP/BCM
      */
+    #[Test]
     public function testRecoveryStrategyConcept(): void
     {
         // Recovery strategy is stored as text (nullable)

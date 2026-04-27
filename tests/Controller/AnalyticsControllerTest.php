@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for AnalyticsController
@@ -97,12 +98,14 @@ class AnalyticsControllerTest extends WebTestCase
 
     // ========== DASHBOARD TESTS ==========
 
+    #[Test]
     public function testDashboardRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/analytics');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDashboardDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -112,12 +115,14 @@ class AnalyticsControllerTest extends WebTestCase
 
     // ========== HEAT MAP TESTS ==========
 
+    #[Test]
     public function testHeatMapRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/analytics/api/heat-map');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testHeatMapReturnsJsonForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -126,6 +131,7 @@ class AnalyticsControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
+    #[Test]
     public function testHeatMapContainsExpectedFields(): void
     {
         $this->loginAsUser($this->testUser);
@@ -138,12 +144,14 @@ class AnalyticsControllerTest extends WebTestCase
 
     // ========== COMPLIANCE RADAR TESTS ==========
 
+    #[Test]
     public function testComplianceRadarRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/analytics/api/compliance-radar');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testComplianceRadarReturnsJsonForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -152,6 +160,7 @@ class AnalyticsControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
+    #[Test]
     public function testComplianceRadarContainsExpectedFields(): void
     {
         $this->loginAsUser($this->testUser);
@@ -164,12 +173,14 @@ class AnalyticsControllerTest extends WebTestCase
 
     // ========== TRENDS TESTS ==========
 
+    #[Test]
     public function testTrendsRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/analytics/api/trends');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testTrendsReturnsJsonForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -178,6 +189,7 @@ class AnalyticsControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
     }
 
+    #[Test]
     public function testTrendsContainsExpectedFields(): void
     {
         $this->loginAsUser($this->testUser);
@@ -189,6 +201,7 @@ class AnalyticsControllerTest extends WebTestCase
         $this->assertArrayHasKey('incidents', $response);
     }
 
+    #[Test]
     public function testTrendsAcceptsPeriodParameter(): void
     {
         $this->loginAsUser($this->testUser);
@@ -202,12 +215,14 @@ class AnalyticsControllerTest extends WebTestCase
 
     // ========== EXPORT TESTS ==========
 
+    #[Test]
     public function testExportRisksRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/analytics/api/export/risks');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testExportRisksReturnsCsvForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -216,12 +231,14 @@ class AnalyticsControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'text/csv; charset=UTF-8');
     }
 
+    #[Test]
     public function testExportAssetsRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/analytics/api/export/assets');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testExportAssetsReturnsCsvForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -230,12 +247,14 @@ class AnalyticsControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'text/csv; charset=UTF-8');
     }
 
+    #[Test]
     public function testExportComplianceRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/analytics/api/export/compliance');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testExportComplianceReturnsCsvForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -244,6 +263,7 @@ class AnalyticsControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'text/csv; charset=UTF-8');
     }
 
+    #[Test]
     public function testExportHasCorrectFilenameHeader(): void
     {
         $this->loginAsUser($this->testUser);

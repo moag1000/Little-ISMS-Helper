@@ -7,9 +7,11 @@ use App\Entity\PhysicalAccessLog;
 use App\Entity\Tenant;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PersonTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $person = new Person();
@@ -21,6 +23,7 @@ class PersonTest extends TestCase
         $this->assertTrue($person->isActive());
     }
 
+    #[Test]
     public function testBasicGettersAndSetters(): void
     {
         $person = new Person();
@@ -53,6 +56,7 @@ class PersonTest extends TestCase
         $this->assertEquals('Special access required', $person->getNotes());
     }
 
+    #[Test]
     public function testLinkedUser(): void
     {
         $person = new Person();
@@ -64,6 +68,7 @@ class PersonTest extends TestCase
         $this->assertSame($user, $person->getLinkedUser());
     }
 
+    #[Test]
     public function testIsActive(): void
     {
         $person = new Person();
@@ -74,6 +79,7 @@ class PersonTest extends TestCase
         $this->assertFalse($person->isActive());
     }
 
+    #[Test]
     public function testAccessDates(): void
     {
         $person = new Person();
@@ -87,6 +93,7 @@ class PersonTest extends TestCase
         $this->assertEquals($validUntil, $person->getAccessValidUntil());
     }
 
+    #[Test]
     public function testAddAndRemoveAccessLog(): void
     {
         $person = new Person();
@@ -102,6 +109,7 @@ class PersonTest extends TestCase
         $this->assertEquals(0, $person->getAccessLogs()->count());
     }
 
+    #[Test]
     public function testTenantRelationship(): void
     {
         $person = new Person();
@@ -113,6 +121,7 @@ class PersonTest extends TestCase
         $this->assertSame($tenant, $person->getTenant());
     }
 
+    #[Test]
     public function testTimestamps(): void
     {
         $person = new Person();
@@ -128,6 +137,7 @@ class PersonTest extends TestCase
         $this->assertEquals($now, $person->getUpdatedAt());
     }
 
+    #[Test]
     public function testHasValidAccessWhenInactive(): void
     {
         $person = new Person();
@@ -136,6 +146,7 @@ class PersonTest extends TestCase
         $this->assertFalse($person->hasValidAccess());
     }
 
+    #[Test]
     public function testHasValidAccessWithFutureStartDate(): void
     {
         $person = new Person();
@@ -146,6 +157,7 @@ class PersonTest extends TestCase
         $this->assertFalse($person->hasValidAccess());
     }
 
+    #[Test]
     public function testHasValidAccessWithPastEndDate(): void
     {
         $person = new Person();
@@ -156,6 +168,7 @@ class PersonTest extends TestCase
         $this->assertFalse($person->hasValidAccess());
     }
 
+    #[Test]
     public function testHasValidAccessWhenValid(): void
     {
         $person = new Person();
@@ -168,6 +181,7 @@ class PersonTest extends TestCase
         $this->assertTrue($person->hasValidAccess());
     }
 
+    #[Test]
     public function testHasValidAccessWithNoDateRestrictions(): void
     {
         $person = new Person();
@@ -176,6 +190,7 @@ class PersonTest extends TestCase
         $this->assertTrue($person->hasValidAccess());
     }
 
+    #[Test]
     public function testGetDisplayNameWithoutCompany(): void
     {
         $person = new Person();
@@ -184,6 +199,7 @@ class PersonTest extends TestCase
         $this->assertEquals('Jane Smith', $person->getDisplayName());
     }
 
+    #[Test]
     public function testGetDisplayNameWithCompany(): void
     {
         $person = new Person();

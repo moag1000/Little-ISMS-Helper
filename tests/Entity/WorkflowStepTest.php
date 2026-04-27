@@ -5,9 +5,11 @@ namespace App\Tests\Entity;
 use App\Entity\WorkflowStep;
 use App\Entity\Workflow;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class WorkflowStepTest extends TestCase
 {
+    #[Test]
     public function testNewWorkflowStepHasDefaultValues(): void
     {
         $step = new WorkflowStep();
@@ -24,6 +26,7 @@ class WorkflowStepTest extends TestCase
         $this->assertNull($step->getDaysToComplete());
     }
 
+    #[Test]
     public function testSetAndGetWorkflow(): void
     {
         $step = new WorkflowStep();
@@ -35,6 +38,7 @@ class WorkflowStepTest extends TestCase
         $this->assertSame($workflow, $step->getWorkflow());
     }
 
+    #[Test]
     public function testSetAndGetName(): void
     {
         $step = new WorkflowStep();
@@ -43,6 +47,7 @@ class WorkflowStepTest extends TestCase
         $this->assertEquals('Manager Approval', $step->getName());
     }
 
+    #[Test]
     public function testSetAndGetDescription(): void
     {
         $step = new WorkflowStep();
@@ -51,6 +56,7 @@ class WorkflowStepTest extends TestCase
         $this->assertEquals('Requires manager approval for budget over 10k', $step->getDescription());
     }
 
+    #[Test]
     public function testSetAndGetStepOrder(): void
     {
         $step = new WorkflowStep();
@@ -59,6 +65,7 @@ class WorkflowStepTest extends TestCase
         $this->assertEquals(5, $step->getStepOrder());
     }
 
+    #[Test]
     public function testSetAndGetStepType(): void
     {
         $step = new WorkflowStep();
@@ -67,6 +74,7 @@ class WorkflowStepTest extends TestCase
         $this->assertEquals('notification', $step->getStepType());
     }
 
+    #[Test]
     public function testSetAndGetApproverRole(): void
     {
         $step = new WorkflowStep();
@@ -75,6 +83,7 @@ class WorkflowStepTest extends TestCase
         $this->assertEquals('ROLE_MANAGER', $step->getApproverRole());
     }
 
+    #[Test]
     public function testSetAndGetApproverUsers(): void
     {
         $step = new WorkflowStep();
@@ -85,6 +94,7 @@ class WorkflowStepTest extends TestCase
         $this->assertEquals($users, $step->getApproverUsers());
     }
 
+    #[Test]
     public function testSetAndGetIsRequired(): void
     {
         $step = new WorkflowStep();
@@ -98,6 +108,7 @@ class WorkflowStepTest extends TestCase
         $this->assertTrue($step->isRequired());
     }
 
+    #[Test]
     public function testSetAndGetDaysToComplete(): void
     {
         $step = new WorkflowStep();
@@ -106,6 +117,7 @@ class WorkflowStepTest extends TestCase
         $this->assertEquals(5, $step->getDaysToComplete());
     }
 
+    #[Test]
     public function testWorkflowStepTypesCanBeChanged(): void
     {
         $step = new WorkflowStep();
@@ -120,6 +132,7 @@ class WorkflowStepTest extends TestCase
         $this->assertEquals('auto_action', $step->getStepType());
     }
 
+    #[Test]
     public function testWorkflowStepCanHaveMultipleApproverUsers(): void
     {
         $step = new WorkflowStep();

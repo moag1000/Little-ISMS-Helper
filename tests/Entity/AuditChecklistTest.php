@@ -7,9 +7,11 @@ use App\Entity\ComplianceRequirement;
 use App\Entity\InternalAudit;
 use App\Entity\Tenant;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class AuditChecklistTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $checklist = new AuditChecklist();
@@ -21,6 +23,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals(0, $checklist->getComplianceScore());
     }
 
+    #[Test]
     public function testAuditRelationship(): void
     {
         $checklist = new AuditChecklist();
@@ -35,6 +38,7 @@ class AuditChecklistTest extends TestCase
         $this->assertNull($checklist->getAudit());
     }
 
+    #[Test]
     public function testRequirementRelationship(): void
     {
         $checklist = new AuditChecklist();
@@ -49,6 +53,7 @@ class AuditChecklistTest extends TestCase
         $this->assertNull($checklist->getRequirement());
     }
 
+    #[Test]
     public function testVerificationStatus(): void
     {
         $checklist = new AuditChecklist();
@@ -71,6 +76,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals('not_checked', $checklist->getVerificationStatus());
     }
 
+    #[Test]
     public function testAuditNotes(): void
     {
         $checklist = new AuditChecklist();
@@ -84,6 +90,7 @@ class AuditChecklistTest extends TestCase
         $this->assertNull($checklist->getAuditNotes());
     }
 
+    #[Test]
     public function testEvidenceFound(): void
     {
         $checklist = new AuditChecklist();
@@ -97,6 +104,7 @@ class AuditChecklistTest extends TestCase
         $this->assertNull($checklist->getEvidenceFound());
     }
 
+    #[Test]
     public function testFindings(): void
     {
         $checklist = new AuditChecklist();
@@ -110,6 +118,7 @@ class AuditChecklistTest extends TestCase
         $this->assertNull($checklist->getFindings());
     }
 
+    #[Test]
     public function testRecommendations(): void
     {
         $checklist = new AuditChecklist();
@@ -123,6 +132,7 @@ class AuditChecklistTest extends TestCase
         $this->assertNull($checklist->getRecommendations());
     }
 
+    #[Test]
     public function testComplianceScore(): void
     {
         $checklist = new AuditChecklist();
@@ -133,6 +143,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals(75, $checklist->getComplianceScore());
     }
 
+    #[Test]
     public function testComplianceScoreClampingMin(): void
     {
         $checklist = new AuditChecklist();
@@ -141,6 +152,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals(0, $checklist->getComplianceScore());
     }
 
+    #[Test]
     public function testComplianceScoreClampingMax(): void
     {
         $checklist = new AuditChecklist();
@@ -149,6 +161,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals(100, $checklist->getComplianceScore());
     }
 
+    #[Test]
     public function testAuditor(): void
     {
         $checklist = new AuditChecklist();
@@ -162,6 +175,7 @@ class AuditChecklistTest extends TestCase
         $this->assertNull($checklist->getAuditor());
     }
 
+    #[Test]
     public function testVerifiedAt(): void
     {
         $checklist = new AuditChecklist();
@@ -176,6 +190,7 @@ class AuditChecklistTest extends TestCase
         $this->assertNull($checklist->getVerifiedAt());
     }
 
+    #[Test]
     public function testTimestamps(): void
     {
         $checklist = new AuditChecklist();
@@ -194,6 +209,7 @@ class AuditChecklistTest extends TestCase
         $this->assertNull($checklist->getUpdatedAt());
     }
 
+    #[Test]
     public function testTenantRelationship(): void
     {
         $checklist = new AuditChecklist();
@@ -208,6 +224,7 @@ class AuditChecklistTest extends TestCase
         $this->assertNull($checklist->getTenant());
     }
 
+    #[Test]
     public function testGetStatusBadgeClassCompliant(): void
     {
         $checklist = new AuditChecklist();
@@ -216,6 +233,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals('success', $checklist->getStatusBadgeClass());
     }
 
+    #[Test]
     public function testGetStatusBadgeClassPartial(): void
     {
         $checklist = new AuditChecklist();
@@ -224,6 +242,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals('warning', $checklist->getStatusBadgeClass());
     }
 
+    #[Test]
     public function testGetStatusBadgeClassNonCompliant(): void
     {
         $checklist = new AuditChecklist();
@@ -232,6 +251,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals('danger', $checklist->getStatusBadgeClass());
     }
 
+    #[Test]
     public function testGetStatusBadgeClassNotApplicable(): void
     {
         $checklist = new AuditChecklist();
@@ -240,6 +260,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals('secondary', $checklist->getStatusBadgeClass());
     }
 
+    #[Test]
     public function testGetStatusBadgeClassNotChecked(): void
     {
         $checklist = new AuditChecklist();
@@ -248,6 +269,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals('info', $checklist->getStatusBadgeClass());
     }
 
+    #[Test]
     public function testGetStatusBadgeClassUnknown(): void
     {
         $checklist = new AuditChecklist();
@@ -256,6 +278,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals('secondary', $checklist->getStatusBadgeClass());
     }
 
+    #[Test]
     public function testGetStatusLabelCompliant(): void
     {
         $checklist = new AuditChecklist();
@@ -264,6 +287,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals('Konform', $checklist->getStatusLabel());
     }
 
+    #[Test]
     public function testGetStatusLabelPartial(): void
     {
         $checklist = new AuditChecklist();
@@ -272,6 +296,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals('Teilweise konform', $checklist->getStatusLabel());
     }
 
+    #[Test]
     public function testGetStatusLabelNonCompliant(): void
     {
         $checklist = new AuditChecklist();
@@ -280,6 +305,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals('Nicht konform', $checklist->getStatusLabel());
     }
 
+    #[Test]
     public function testGetStatusLabelNotApplicable(): void
     {
         $checklist = new AuditChecklist();
@@ -288,6 +314,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals('Nicht anwendbar', $checklist->getStatusLabel());
     }
 
+    #[Test]
     public function testGetStatusLabelNotChecked(): void
     {
         $checklist = new AuditChecklist();
@@ -296,6 +323,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals('Nicht geprüft', $checklist->getStatusLabel());
     }
 
+    #[Test]
     public function testGetStatusLabelUnknown(): void
     {
         $checklist = new AuditChecklist();
@@ -304,6 +332,7 @@ class AuditChecklistTest extends TestCase
         $this->assertEquals('Unbekannt', $checklist->getStatusLabel());
     }
 
+    #[Test]
     public function testMarkAsVerified(): void
     {
         $checklist = new AuditChecklist();
@@ -319,6 +348,7 @@ class AuditChecklistTest extends TestCase
         $this->assertInstanceOf(\DateTimeInterface::class, $checklist->getVerifiedAt());
     }
 
+    #[Test]
     public function testIsVerifiedWhenNotVerified(): void
     {
         $checklist = new AuditChecklist();
@@ -326,6 +356,7 @@ class AuditChecklistTest extends TestCase
         $this->assertFalse($checklist->isVerified());
     }
 
+    #[Test]
     public function testIsVerifiedWhenVerified(): void
     {
         $checklist = new AuditChecklist();
@@ -334,6 +365,7 @@ class AuditChecklistTest extends TestCase
         $this->assertTrue($checklist->isVerified());
     }
 
+    #[Test]
     public function testHasFindingsWhenEmpty(): void
     {
         $checklist = new AuditChecklist();
@@ -341,6 +373,7 @@ class AuditChecklistTest extends TestCase
         $this->assertFalse($checklist->hasFindings());
     }
 
+    #[Test]
     public function testHasFindingsWhenSet(): void
     {
         $checklist = new AuditChecklist();
@@ -349,6 +382,7 @@ class AuditChecklistTest extends TestCase
         $this->assertTrue($checklist->hasFindings());
     }
 
+    #[Test]
     public function testHasFindingsWhenNull(): void
     {
         $checklist = new AuditChecklist();
@@ -357,6 +391,7 @@ class AuditChecklistTest extends TestCase
         $this->assertFalse($checklist->hasFindings());
     }
 
+    #[Test]
     public function testFluentSetters(): void
     {
         $checklist = new AuditChecklist();

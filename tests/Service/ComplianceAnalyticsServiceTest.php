@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests for ComplianceAnalyticsService
@@ -55,6 +56,7 @@ class ComplianceAnalyticsServiceTest extends TestCase
 
     // ==================== getFrameworkComparison() Tests ====================
 
+    #[Test]
     public function testGetFrameworkComparisonWithData(): void
     {
         $tenant = $this->createTenant(1, 'Test Tenant');
@@ -83,6 +85,7 @@ class ComplianceAnalyticsServiceTest extends TestCase
         $this->assertEquals(10, $framework['not_started']); // 80 - 60 - 10
     }
 
+    #[Test]
     public function testGetFrameworkComparisonWithNoTenant(): void
     {
         $framework = $this->createFramework(1, 'ISO 27001', 'ISO27001', false);
@@ -97,6 +100,7 @@ class ComplianceAnalyticsServiceTest extends TestCase
         $this->assertEquals(0, $result['frameworks'][0]['compliance_percentage']);
     }
 
+    #[Test]
     public function testGetFrameworkComparisonWithEmptyFrameworks(): void
     {
         $tenant = $this->createTenant(1, 'Test');
@@ -111,6 +115,7 @@ class ComplianceAnalyticsServiceTest extends TestCase
         $this->assertEquals(0, $result['summary']['average_compliance']);
     }
 
+    #[Test]
     public function testGetFrameworkComparisonSortsDescending(): void
     {
         $tenant = $this->createTenant(1, 'Test');
@@ -135,6 +140,7 @@ class ComplianceAnalyticsServiceTest extends TestCase
 
     // ==================== getControlCoverageMatrix() Tests ====================
 
+    #[Test]
     public function testGetControlCoverageMatrixWithControls(): void
     {
         $framework = $this->createFramework(1, 'ISO 27001', 'ISO27001', false);
@@ -153,6 +159,7 @@ class ComplianceAnalyticsServiceTest extends TestCase
         $this->assertEquals(1, $result['total_controls']);
     }
 
+    #[Test]
     public function testGetControlCoverageMatrixWithEmptyControls(): void
     {
         $this->frameworkRepository->method('findActiveFrameworks')->willReturn([]);
@@ -166,6 +173,7 @@ class ComplianceAnalyticsServiceTest extends TestCase
 
     // ==================== getFrameworkOverlap() Tests ====================
 
+    #[Test]
     public function testGetFrameworkOverlapWithTwoFrameworks(): void
     {
         $fw1 = $this->createFramework(1, 'ISO 27001', 'ISO', false);
@@ -181,6 +189,7 @@ class ComplianceAnalyticsServiceTest extends TestCase
         $this->assertArrayHasKey('frameworks', $result);
     }
 
+    #[Test]
     public function testGetFrameworkOverlapWithSingleFramework(): void
     {
         $fw = $this->createFramework(1, 'ISO 27001', 'ISO', false);
@@ -195,6 +204,7 @@ class ComplianceAnalyticsServiceTest extends TestCase
 
     // ==================== getGapAnalysis() Tests ====================
 
+    #[Test]
     public function testGetGapAnalysisGroupsByPriority(): void
     {
         $framework = $this->createFramework(1, 'ISO', 'ISO', false);
@@ -212,6 +222,7 @@ class ComplianceAnalyticsServiceTest extends TestCase
         $this->assertEquals(2, $result['summary']['total_gaps']);
     }
 
+    #[Test]
     public function testGetGapAnalysisWithNoGaps(): void
     {
         $this->frameworkRepository->method('findActiveFrameworks')->willReturn([]);
@@ -223,6 +234,7 @@ class ComplianceAnalyticsServiceTest extends TestCase
 
     // ==================== getTransitiveCompliance() Tests ====================
 
+    #[Test]
     public function testGetTransitiveComplianceFindsMultiFrameworkControls(): void
     {
         $control = $this->createControl('A.5.1', 'Test', 'implemented');
@@ -244,6 +256,7 @@ class ComplianceAnalyticsServiceTest extends TestCase
         $this->assertGreaterThanOrEqual(1, $result['summary']['multi_framework_controls']);
     }
 
+    #[Test]
     public function testGetTransitiveComplianceWithNoImplementedControls(): void
     {
         $this->controlRepository->method('findBy')->willReturn([]);
@@ -255,6 +268,7 @@ class ComplianceAnalyticsServiceTest extends TestCase
 
     // ==================== getComplianceRoadmap() Tests ====================
 
+    #[Test]
     public function testGetComplianceRoadmapWithFrameworks(): void
     {
         $tenant = $this->createTenant(1, 'Test');
@@ -272,6 +286,7 @@ class ComplianceAnalyticsServiceTest extends TestCase
         $this->assertEquals(50.0, $result['roadmap'][0]['current_compliance']);
     }
 
+    #[Test]
     public function testGetComplianceRoadmapWithNoTenant(): void
     {
         $framework = $this->createFramework(1, 'ISO', 'ISO', false);
@@ -287,6 +302,7 @@ class ComplianceAnalyticsServiceTest extends TestCase
 
     // ==================== getExecutiveSummary() Tests ====================
 
+    #[Test]
     public function testGetExecutiveSummaryReturnsAllMetrics(): void
     {
         $tenant = $this->createTenant(1, 'Test');

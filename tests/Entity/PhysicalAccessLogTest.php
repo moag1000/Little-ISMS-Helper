@@ -8,9 +8,11 @@ use App\Entity\PhysicalAccessLog;
 use App\Entity\Tenant;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PhysicalAccessLogTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $log = new PhysicalAccessLog();
@@ -25,6 +27,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertFalse($log->isAfterHours());
     }
 
+    #[Test]
     public function testPersonRelationship(): void
     {
         $log = new PhysicalAccessLog();
@@ -39,6 +42,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertNull($log->getPerson());
     }
 
+    #[Test]
     public function testLocationEntityRelationship(): void
     {
         $log = new PhysicalAccessLog();
@@ -53,6 +57,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertNull($log->getLocationEntity());
     }
 
+    #[Test]
     public function testPersonName(): void
     {
         $log = new PhysicalAccessLog();
@@ -63,6 +68,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertEquals('John Doe', $log->getPersonName());
     }
 
+    #[Test]
     public function testBadgeId(): void
     {
         $log = new PhysicalAccessLog();
@@ -76,6 +82,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertNull($log->getBadgeId());
     }
 
+    #[Test]
     public function testLocation(): void
     {
         $log = new PhysicalAccessLog();
@@ -86,6 +93,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertEquals('Server Room', $log->getLocation());
     }
 
+    #[Test]
     public function testAccessType(): void
     {
         $log = new PhysicalAccessLog();
@@ -105,6 +113,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertEquals('entry', $log->getAccessType());
     }
 
+    #[Test]
     public function testAccessTime(): void
     {
         $log = new PhysicalAccessLog();
@@ -117,6 +126,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertEquals($newTime, $log->getAccessTime());
     }
 
+    #[Test]
     public function testAuthenticationMethod(): void
     {
         $log = new PhysicalAccessLog();
@@ -142,6 +152,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertEquals('other', $log->getAuthenticationMethod());
     }
 
+    #[Test]
     public function testPurpose(): void
     {
         $log = new PhysicalAccessLog();
@@ -155,6 +166,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertNull($log->getPurpose());
     }
 
+    #[Test]
     public function testEscortedBy(): void
     {
         $log = new PhysicalAccessLog();
@@ -168,6 +180,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertNull($log->getEscortedBy());
     }
 
+    #[Test]
     public function testCompany(): void
     {
         $log = new PhysicalAccessLog();
@@ -181,6 +194,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertNull($log->getCompany());
     }
 
+    #[Test]
     public function testIsAuthorized(): void
     {
         $log = new PhysicalAccessLog();
@@ -194,6 +208,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertTrue($log->isAuthorized());
     }
 
+    #[Test]
     public function testNotes(): void
     {
         $log = new PhysicalAccessLog();
@@ -207,6 +222,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertNull($log->getNotes());
     }
 
+    #[Test]
     public function testAlertLevel(): void
     {
         $log = new PhysicalAccessLog();
@@ -220,6 +236,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertNull($log->getAlertLevel());
     }
 
+    #[Test]
     public function testIsAfterHours(): void
     {
         $log = new PhysicalAccessLog();
@@ -233,6 +250,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertFalse($log->isAfterHours());
     }
 
+    #[Test]
     public function testDoorOrGate(): void
     {
         $log = new PhysicalAccessLog();
@@ -246,6 +264,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertNull($log->getDoorOrGate());
     }
 
+    #[Test]
     public function testExitTime(): void
     {
         $log = new PhysicalAccessLog();
@@ -260,6 +279,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertNull($log->getExitTime());
     }
 
+    #[Test]
     public function testUserRelationship(): void
     {
         $log = new PhysicalAccessLog();
@@ -274,6 +294,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertNull($log->getUser());
     }
 
+    #[Test]
     public function testTenantRelationship(): void
     {
         $log = new PhysicalAccessLog();
@@ -288,6 +309,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertNull($log->getTenant());
     }
 
+    #[Test]
     public function testCreatedAt(): void
     {
         $log = new PhysicalAccessLog();
@@ -300,6 +322,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertEquals($newDate, $log->getCreatedAt());
     }
 
+    #[Test]
     public function testSetPersonSyncsLegacyFields(): void
     {
         $log = new PhysicalAccessLog();
@@ -315,6 +338,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertEquals('Tech Corp', $log->getCompany());
     }
 
+    #[Test]
     public function testSetLocationEntitySyncsLegacyField(): void
     {
         $log = new PhysicalAccessLog();
@@ -326,6 +350,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertEquals('Data Center', $log->getLocation());
     }
 
+    #[Test]
     public function testGetEffectivePersonNameFromPersonEntity(): void
     {
         $log = new PhysicalAccessLog();
@@ -337,6 +362,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertEquals('John Smith', $log->getEffectivePersonName());
     }
 
+    #[Test]
     public function testGetEffectivePersonNameFromLegacyField(): void
     {
         $log = new PhysicalAccessLog();
@@ -345,6 +371,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertEquals('Legacy Name', $log->getEffectivePersonName());
     }
 
+    #[Test]
     public function testGetEffectivePersonNamePrefersPersonEntity(): void
     {
         $log = new PhysicalAccessLog();
@@ -357,6 +384,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertEquals('Entity Name', $log->getEffectivePersonName());
     }
 
+    #[Test]
     public function testGetEffectiveLocationFromLocationEntity(): void
     {
         $log = new PhysicalAccessLog();
@@ -368,6 +396,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertEquals('Office 1', $log->getEffectiveLocation());
     }
 
+    #[Test]
     public function testGetEffectiveLocationFromLegacyField(): void
     {
         $log = new PhysicalAccessLog();
@@ -376,6 +405,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertEquals('Legacy Location', $log->getEffectiveLocation());
     }
 
+    #[Test]
     public function testGetEffectiveLocationPrefersLocationEntity(): void
     {
         $log = new PhysicalAccessLog();
@@ -388,6 +418,7 @@ class PhysicalAccessLogTest extends TestCase
         $this->assertEquals('Entity Location', $log->getEffectiveLocation());
     }
 
+    #[Test]
     public function testFluentSetters(): void
     {
         $log = new PhysicalAccessLog();

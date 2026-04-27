@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 class InterestedPartyControllerTest extends WebTestCase
 {
@@ -112,12 +113,14 @@ class InterestedPartyControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/interested-party/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -125,12 +128,14 @@ class InterestedPartyControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/interested-party/new');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewDisplaysFormForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -139,12 +144,14 @@ class InterestedPartyControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/interested-party/' . $this->testInterestedParty->getId());
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -152,12 +159,14 @@ class InterestedPartyControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/interested-party/' . $this->testInterestedParty->getId() . '/edit');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysFormForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -166,12 +175,14 @@ class InterestedPartyControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/interested-party/' . $this->testInterestedParty->getId() . '/delete');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -179,6 +190,7 @@ class InterestedPartyControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteRequiresPost(): void
     {
         $this->client->loginUser($this->adminUser);

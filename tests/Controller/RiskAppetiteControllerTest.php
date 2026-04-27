@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 class RiskAppetiteControllerTest extends WebTestCase
 {
@@ -111,12 +112,14 @@ class RiskAppetiteControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/risk-appetite/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -124,6 +127,7 @@ class RiskAppetiteControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testNewRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -131,6 +135,7 @@ class RiskAppetiteControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testNewDisplaysFormForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -139,12 +144,14 @@ class RiskAppetiteControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/risk-appetite/' . $this->testRiskAppetite->getId());
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -152,6 +159,7 @@ class RiskAppetiteControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testEditRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -159,6 +167,7 @@ class RiskAppetiteControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testEditDisplaysFormForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -167,6 +176,7 @@ class RiskAppetiteControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testDeleteRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -174,6 +184,7 @@ class RiskAppetiteControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteRequiresPost(): void
     {
         $this->client->loginUser($this->adminUser);

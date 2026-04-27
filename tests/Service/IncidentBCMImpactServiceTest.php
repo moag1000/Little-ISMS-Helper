@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class IncidentBCMImpactServiceTest extends TestCase
@@ -41,6 +42,7 @@ class IncidentBCMImpactServiceTest extends TestCase
     // analyzeBusinessImpact Tests
     // =========================================================================
 
+    #[Test]
     public function testAnalyzeBusinessImpactReturnsCompleteStructure(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -62,6 +64,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertArrayHasKey('recommendations', $result);
     }
 
+    #[Test]
     public function testAnalyzeBusinessImpactUsesEstimatedDowntime(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -74,6 +77,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertTrue($result['downtime']['is_estimated']);
     }
 
+    #[Test]
     public function testAnalyzeBusinessImpactCalculatesFinancialImpact(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -89,6 +93,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertSame(100.0, $result['financial_impact']['per_hour_eur']);
     }
 
+    #[Test]
     public function testAnalyzeBusinessImpactDetectsRTOViolations(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -110,6 +115,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertSame(3, $violation['excess_hours']);
     }
 
+    #[Test]
     public function testAnalyzeBusinessImpactIsCompliantWhenNoRTOViolations(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -129,6 +135,7 @@ class IncidentBCMImpactServiceTest extends TestCase
     // identifyAffectedProcesses Tests
     // =========================================================================
 
+    #[Test]
     public function testIdentifyAffectedProcessesReturnsEmptyForNoAssets(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -152,6 +159,7 @@ class IncidentBCMImpactServiceTest extends TestCase
     // calculateDowntimeImpact Tests
     // =========================================================================
 
+    #[Test]
     public function testCalculateDowntimeImpactReturnsCompleteStructure(): void
     {
         $process = $this->createBusinessProcess('Test Process', 150.0, 4, 'high');
@@ -172,6 +180,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertArrayHasKey('recovery_strategy', $result);
     }
 
+    #[Test]
     public function testCalculateDowntimeImpactCalculatesFinancialImpact(): void
     {
         $process = $this->createBusinessProcess('Test Process', 100.0, 4, 'high');
@@ -182,6 +191,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertSame(1000.0, $result['financial_impact']);
     }
 
+    #[Test]
     public function testCalculateDowntimeImpactDetectsRTOViolation(): void
     {
         $process = $this->createBusinessProcess('Test Process', 100.0, 4, 'high');
@@ -194,6 +204,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertSame(50.0, $result['rto_compliance']['compliance_percentage']);
     }
 
+    #[Test]
     public function testCalculateDowntimeImpactDetectsMTPDViolation(): void
     {
         $process = $this->createBusinessProcess('Test Process', 100.0, 4, 'critical');
@@ -206,6 +217,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertSame('critical', $result['impact_severity']);
     }
 
+    #[Test]
     public function testCalculateDowntimeImpactSeverityCriticalWhenMTPDViolated(): void
     {
         // Critical severity - MTPD violated (MTPD = RTO * 3 = 4 * 3 = 12)
@@ -215,6 +227,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertSame('critical', $result['impact_severity']);
     }
 
+    #[Test]
     public function testCalculateDowntimeImpactSeverityHighWhenRTOViolated(): void
     {
         // High severity - RTO violated but MTPD not violated
@@ -224,6 +237,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertSame('high', $result['impact_severity']);
     }
 
+    #[Test]
     public function testCalculateDowntimeImpactSeverityLowWhenNoViolations(): void
     {
         // Low severity - no violations, low impact score (3 for criticality 'low')
@@ -239,6 +253,7 @@ class IncidentBCMImpactServiceTest extends TestCase
     // suggestRecoveryPriority Tests
     // =========================================================================
 
+    #[Test]
     public function testSuggestRecoveryPriorityReturnsDefaultForNoProcesses(): void
     {
         $incident = $this->createIncident('INC-001', 'high', 'open');
@@ -250,6 +265,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertNotEmpty($result['recommended_actions']);
     }
 
+    #[Test]
     public function testSuggestRecoveryPriorityImmediateForCriticalProcess(): void
     {
         $process = $this->createBusinessProcess('Critical Process', 1000.0, 4, 'critical');
@@ -263,6 +279,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertContains('Activate crisis management team', $result['recommended_actions']);
     }
 
+    #[Test]
     public function testSuggestRecoveryPriorityImmediateForLowRTO(): void
     {
         $process = $this->createBusinessProcess('Urgent Process', 500.0, 1, 'high');
@@ -276,6 +293,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertStringContainsString('RTO ≤ 1 hour', $result['reasoning']);
     }
 
+    #[Test]
     public function testSuggestRecoveryPriorityHighFor4HourRTO(): void
     {
         $process = $this->createBusinessProcess('High Priority', 200.0, 4, 'high');
@@ -288,6 +306,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertContains('Begin recovery procedures within 1 hour', $result['recommended_actions']);
     }
 
+    #[Test]
     public function testSuggestRecoveryPriorityHighForCriticalSeverityIncident(): void
     {
         $process = $this->createBusinessProcess('Normal Process', 100.0, 8, 'medium');
@@ -300,6 +319,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertStringContainsString('Critical severity incident', $result['reasoning']);
     }
 
+    #[Test]
     public function testSuggestRecoveryPriorityMediumFor24HourRTO(): void
     {
         $process = $this->createBusinessProcess('Standard Process', 50.0, 24, 'medium');
@@ -312,6 +332,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertContains('Plan recovery within business hours', $result['recommended_actions']);
     }
 
+    #[Test]
     public function testSuggestRecoveryPriorityLowForHighRTO(): void
     {
         $process = $this->createBusinessProcess('Low Priority Process', 10.0, 48, 'low');
@@ -329,6 +350,7 @@ class IncidentBCMImpactServiceTest extends TestCase
     // generateImpactReport Tests
     // =========================================================================
 
+    #[Test]
     public function testGenerateImpactReportReturnsCompleteStructure(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -349,6 +371,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertSame('high', $result['incident']['severity']);
     }
 
+    #[Test]
     public function testGenerateImpactReportExecutiveSummaryStructure(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
@@ -371,6 +394,7 @@ class IncidentBCMImpactServiceTest extends TestCase
         $this->assertArrayHasKey('key_findings', $summary);
     }
 
+    #[Test]
     public function testGenerateImpactReportChartsData(): void
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);

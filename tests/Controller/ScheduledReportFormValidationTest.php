@@ -11,6 +11,7 @@ use App\Form\ScheduledReportType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Form\FormFactoryInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * ISB MINOR-4: form-time tenant + role gate.
@@ -78,6 +79,7 @@ class ScheduledReportFormValidationTest extends KernelTestCase
         parent::tearDown();
     }
 
+    #[Test]
     public function testFormRejectsUserRoleRecipient(): void
     {
         $report = new ScheduledReport();
@@ -101,6 +103,7 @@ class ScheduledReportFormValidationTest extends KernelTestCase
         self::assertStringContainsString('role_too_low', $errors);
     }
 
+    #[Test]
     public function testFormAcceptsManagerRoleRecipient(): void
     {
         $report = new ScheduledReport();

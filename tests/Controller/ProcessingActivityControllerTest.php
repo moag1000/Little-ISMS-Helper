@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for ProcessingActivityController
@@ -141,12 +142,14 @@ class ProcessingActivityControllerTest extends WebTestCase
 
     // ========== INDEX TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/processing-activity/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -154,6 +157,7 @@ class ProcessingActivityControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexShowsTestActivity(): void
     {
         $this->loginAsUser($this->testUser);
@@ -163,12 +167,14 @@ class ProcessingActivityControllerTest extends WebTestCase
 
     // ========== NEW TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/processing-activity/new');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewDisplaysForm(): void
     {
         $this->loginAsUser($this->testUser);
@@ -179,12 +185,14 @@ class ProcessingActivityControllerTest extends WebTestCase
 
     // ========== EDIT TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/processing-activity/' . $this->testActivity->getId() . '/edit');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysForm(): void
     {
         $this->loginAsUser($this->testUser);
@@ -195,6 +203,7 @@ class ProcessingActivityControllerTest extends WebTestCase
 
     // ========== DELETE TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/processing-activity/' . $this->testActivity->getId() . '/delete');
@@ -203,12 +212,14 @@ class ProcessingActivityControllerTest extends WebTestCase
 
     // ========== STATUS TESTS ==========
 
+    #[Test]
     public function testActivateRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/processing-activity/' . $this->testActivity->getId() . '/activate');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testArchiveRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/processing-activity/' . $this->testActivity->getId() . '/archive');
@@ -217,12 +228,14 @@ class ProcessingActivityControllerTest extends WebTestCase
 
     // ========== COMPLIANCE REPORT TESTS ==========
 
+    #[Test]
     public function testComplianceReportRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/processing-activity/' . $this->testActivity->getId() . '/compliance-report');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testComplianceReportDisplays(): void
     {
         $this->loginAsUser($this->testUser);
@@ -232,6 +245,7 @@ class ProcessingActivityControllerTest extends WebTestCase
 
     // ========== EMPTY STATE TESTS ==========
 
+    #[Test]
     public function testIndexHandlesNoActivities(): void
     {
         // Remove test activity

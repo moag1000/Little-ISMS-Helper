@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Test suite for DocumentApprovalService
@@ -50,6 +51,7 @@ class DocumentApprovalServiceTest extends TestCase
     /**
      * Test policy document approval
      */
+    #[Test]
     public function testRequestApprovalPolicy(): void
     {
         // Arrange
@@ -79,6 +81,7 @@ class DocumentApprovalServiceTest extends TestCase
     /**
      * Test procedure document approval
      */
+    #[Test]
     public function testRequestApprovalProcedure(): void
     {
         // Arrange
@@ -102,6 +105,7 @@ class DocumentApprovalServiceTest extends TestCase
     /**
      * Test guideline document approval
      */
+    #[Test]
     public function testRequestApprovalGuideline(): void
     {
         // Arrange
@@ -125,6 +129,7 @@ class DocumentApprovalServiceTest extends TestCase
     /**
      * Test non-approval category (report, certificate, etc.)
      */
+    #[Test]
     public function testRequestApprovalNotRequired(): void
     {
         // Arrange
@@ -143,6 +148,7 @@ class DocumentApprovalServiceTest extends TestCase
     /**
      * Test document revision (not new document)
      */
+    #[Test]
     public function testRequestApprovalRevision(): void
     {
         // Arrange
@@ -166,6 +172,7 @@ class DocumentApprovalServiceTest extends TestCase
     /**
      * Test approval request when workflow already active
      */
+    #[Test]
     public function testRequestApprovalWorkflowAlreadyActive(): void
     {
         // Arrange
@@ -190,6 +197,7 @@ class DocumentApprovalServiceTest extends TestCase
     /**
      * Test approval request when no workflow definition exists
      */
+    #[Test]
     public function testRequestApprovalNoWorkflowDefinition(): void
     {
         // Arrange
@@ -211,6 +219,7 @@ class DocumentApprovalServiceTest extends TestCase
     /**
      * Test approval request handles exception gracefully
      */
+    #[Test]
     public function testRequestApprovalHandlesException(): void
     {
         // Arrange
@@ -233,6 +242,7 @@ class DocumentApprovalServiceTest extends TestCase
     /**
      * Test all document categories
      */
+    #[Test]
     public function testAllDocumentCategories(): void
     {
         $owner = $this->createUser('owner@test.com');

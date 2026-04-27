@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for TenantManagementController
@@ -171,6 +172,7 @@ class TenantManagementControllerTest extends WebTestCase
 
     // ========== INDEX ACTION TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/tenants');
@@ -178,6 +180,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -187,6 +190,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testIndexShowsTenantsForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -197,6 +201,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertSelectorExists('html');
     }
 
+    #[Test]
     public function testIndexFiltersActiveTenantsOnly(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -206,6 +211,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersInactiveTenantsOnly(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -217,6 +223,7 @@ class TenantManagementControllerTest extends WebTestCase
 
     // ========== SHOW ACTION TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/tenants/' . $this->targetTenant->getId());
@@ -224,6 +231,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysTenantForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -233,6 +241,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testShowReturns404OrRedirectForNonexistentTenant(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -247,6 +256,7 @@ class TenantManagementControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testShowDisplaysUserStatistics(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -258,6 +268,7 @@ class TenantManagementControllerTest extends WebTestCase
 
     // ========== NEW ACTION TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/tenants/new');
@@ -265,6 +276,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -274,6 +286,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testNewDisplaysFormForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -284,6 +297,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="tenant"]');
     }
 
+    #[Test]
     public function testNewCreatesTenantWithValidData(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -301,6 +315,7 @@ class TenantManagementControllerTest extends WebTestCase
 
     // ========== EDIT ACTION TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/tenants/' . $this->targetTenant->getId() . '/edit');
@@ -308,6 +323,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysFormForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -318,6 +334,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="tenant"]');
     }
 
+    #[Test]
     public function testEditUpdatesTenantWithValidData(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -338,6 +355,7 @@ class TenantManagementControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testEditReturns404OrRedirectForNonexistentTenant(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -354,6 +372,7 @@ class TenantManagementControllerTest extends WebTestCase
 
     // ========== TOGGLE ACTION TESTS ==========
 
+    #[Test]
     public function testToggleRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/tenants/' . $this->targetTenant->getId() . '/toggle');
@@ -361,6 +380,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testToggleChangesStatus(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -372,6 +392,7 @@ class TenantManagementControllerTest extends WebTestCase
 
     // ========== DELETE ACTION TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/tenants/' . $this->targetTenant->getId() . '/delete');
@@ -379,6 +400,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -388,6 +410,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteRemovesTenantWithValidToken(): void
     {
         $this->loginAsUser($this->superAdminUser);
@@ -415,6 +438,7 @@ class TenantManagementControllerTest extends WebTestCase
         }
     }
 
+    #[Test]
     public function testDeleteBlockedForTenantWithUsers(): void
     {
         $this->loginAsUser($this->superAdminUser);
@@ -428,6 +452,7 @@ class TenantManagementControllerTest extends WebTestCase
 
     // ========== CORPORATE STRUCTURE TESTS ==========
 
+    #[Test]
     public function testCorporateStructureRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/tenants/corporate-structure');
@@ -435,6 +460,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testCorporateStructureDisplaysForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -444,6 +470,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testCorporateStructureShowsStandaloneTenants(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -455,6 +482,7 @@ class TenantManagementControllerTest extends WebTestCase
 
     // ========== SET PARENT TESTS ==========
 
+    #[Test]
     public function testSetParentRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/tenants/' . $this->targetTenant->getId() . '/set-parent');
@@ -462,6 +490,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testSetParentAssignsParentTenant(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -474,6 +503,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testSetParentRemovesParent(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -485,6 +515,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testSetParentRejectsInvalidGovernanceModel(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -499,6 +530,7 @@ class TenantManagementControllerTest extends WebTestCase
 
     // ========== UPDATE GOVERNANCE TESTS ==========
 
+    #[Test]
     public function testUpdateGovernanceRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/admin/tenants/' . $this->targetTenant->getId() . '/update-governance');
@@ -506,6 +538,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testUpdateGovernanceRejectsInvalidModel(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -517,6 +550,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testUpdateGovernanceAcceptsValidModels(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -532,6 +566,7 @@ class TenantManagementControllerTest extends WebTestCase
 
     // ========== ORGANISATION CONTEXT TESTS ==========
 
+    #[Test]
     public function testOrganisationContextRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/tenants/' . $this->targetTenant->getId() . '/organisation-context');
@@ -539,6 +574,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testOrganisationContextDisplaysFormForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -551,6 +587,7 @@ class TenantManagementControllerTest extends WebTestCase
 
     // ========== EMPTY STATE TESTS ==========
 
+    #[Test]
     public function testShowHandlesTenantWithNoUsers(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -560,6 +597,7 @@ class TenantManagementControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testCorporateStructureHandlesEmptyState(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -571,6 +609,7 @@ class TenantManagementControllerTest extends WebTestCase
 
     // ========== FILTER TESTS ==========
 
+    #[Test]
     public function testIndexFilterAll(): void
     {
         $this->loginAsUser($this->adminUser);

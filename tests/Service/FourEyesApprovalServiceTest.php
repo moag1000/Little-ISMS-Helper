@@ -13,6 +13,7 @@ use LogicException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use ReflectionProperty;
+use PHPUnit\Framework\Attributes\Test;
 
 final class FourEyesApprovalServiceTest extends TestCase
 {
@@ -35,6 +36,7 @@ final class FourEyesApprovalServiceTest extends TestCase
         return $service;
     }
 
+    #[Test]
     public function testSelfApprovalBlocked(): void
     {
         $service = $this->createPartialService();
@@ -51,6 +53,7 @@ final class FourEyesApprovalServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testRejectRequiresMinLength(): void
     {
         $service = $this->createPartialService();
@@ -68,6 +71,7 @@ final class FourEyesApprovalServiceTest extends TestCase
         $service->reject($request, $approver, 'too short');
     }
 
+    #[Test]
     public function testApproveNonPendingFails(): void
     {
         $service = $this->createPartialService();

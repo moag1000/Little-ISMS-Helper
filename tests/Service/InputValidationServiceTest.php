@@ -4,6 +4,7 @@ namespace App\Tests\Service;
 
 use App\Service\InputValidationService;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class InputValidationServiceTest extends TestCase
 {
@@ -16,6 +17,7 @@ class InputValidationServiceTest extends TestCase
 
     // XSS Prevention Tests
 
+    #[Test]
     public function testSanitizeForOutputEscapesHtmlEntities(): void
     {
         $input = '<script>alert("XSS")</script>';
@@ -25,6 +27,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertStringContainsString('&lt;script&gt;', $result);
     }
 
+    #[Test]
     public function testSanitizeForOutputEscapesQuotes(): void
     {
         $input = 'Test "quotes" and \'apostrophes\'';
@@ -34,6 +37,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertStringContainsString('&#039;', $result);
     }
 
+    #[Test]
     public function testSanitizeForOutputPreservesUtf8(): void
     {
         $input = 'Ü ö ä € 中文';
@@ -46,6 +50,7 @@ class InputValidationServiceTest extends TestCase
 
     // Email Validation Tests
 
+    #[Test]
     public function testValidateEmailAcceptsValidEmail(): void
     {
         $validEmails = [
@@ -61,6 +66,7 @@ class InputValidationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateEmailRejectsInvalidEmail(): void
     {
         $invalidEmails = [
@@ -80,6 +86,7 @@ class InputValidationServiceTest extends TestCase
 
     // URL Validation Tests
 
+    #[Test]
     public function testValidateUrlAcceptsValidUrl(): void
     {
         $validUrls = [
@@ -95,6 +102,7 @@ class InputValidationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateUrlRejectsInvalidUrl(): void
     {
         $invalidUrls = [
@@ -112,6 +120,7 @@ class InputValidationServiceTest extends TestCase
 
     // Integer Validation Tests
 
+    #[Test]
     public function testValidateIntegerAcceptsValidIntegers(): void
     {
         $validIntegers = [0, 1, -1, 42, -42, '123', '-456'];
@@ -123,6 +132,7 @@ class InputValidationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateIntegerRejectsInvalidIntegers(): void
     {
         $invalidIntegers = ['abc', '12.5', '12a', '', null, []];
@@ -135,6 +145,7 @@ class InputValidationServiceTest extends TestCase
 
     // Float Validation Tests
 
+    #[Test]
     public function testValidateFloatAcceptsValidFloats(): void
     {
         $validFloats = [0.0, 1.5, -2.5, '3.14', '-9.99', '42'];
@@ -145,6 +156,7 @@ class InputValidationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateFloatRejectsInvalidFloats(): void
     {
         $invalidFloats = ['abc', '12.5a', '', null, []];
@@ -157,6 +169,7 @@ class InputValidationServiceTest extends TestCase
 
     // Filename Sanitization Tests (Path Traversal Prevention)
 
+    #[Test]
     public function testSanitizeFilenameRemovesPathComponents(): void
     {
         $input = '../../etc/passwd';
@@ -167,6 +180,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertStringNotContainsString('/', $result);
     }
 
+    #[Test]
     public function testSanitizeFilenameRemovesSpecialCharacters(): void
     {
         $input = 'file<>:"|?*.txt';
@@ -179,6 +193,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertStringContainsString('.txt', $result);
     }
 
+    #[Test]
     public function testSanitizeFilenamePreventsHiddenFiles(): void
     {
         $input = '.htaccess';
@@ -188,6 +203,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertEquals('_.htaccess', $result);
     }
 
+    #[Test]
     public function testSanitizeFilenameLimitsLength(): void
     {
         $input = str_repeat('a', 300) . '.txt';
@@ -196,6 +212,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertLessThanOrEqual(255, strlen($result));
     }
 
+    #[Test]
     public function testSanitizeFilenameAllowsValidCharacters(): void
     {
         $input = 'valid_file-name.2024.txt';
@@ -206,6 +223,7 @@ class InputValidationServiceTest extends TestCase
 
     // Slug Sanitization Tests
 
+    #[Test]
     public function testSanitizeSlugConvertsToLowercase(): void
     {
         $input = 'My Blog Post Title';
@@ -214,6 +232,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertEquals('my-blog-post-title', $result);
     }
 
+    #[Test]
     public function testSanitizeSlugReplacesSpacesWithDashes(): void
     {
         $input = 'hello world test';
@@ -222,6 +241,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertEquals('hello-world-test', $result);
     }
 
+    #[Test]
     public function testSanitizeSlugRemovesSpecialCharacters(): void
     {
         $input = 'hello@world#test!';
@@ -230,6 +250,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertEquals('hello-world-test', $result);
     }
 
+    #[Test]
     public function testSanitizeSlugRemovesLeadingTrailingDashes(): void
     {
         $input = '---hello-world---';
@@ -238,6 +259,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertEquals('hello-world', $result);
     }
 
+    #[Test]
     public function testSanitizeSlugLimitsLength(): void
     {
         $input = str_repeat('a', 150);
@@ -248,6 +270,7 @@ class InputValidationServiceTest extends TestCase
 
     // IP Address Validation Tests
 
+    #[Test]
     public function testValidateIpAddressAcceptsValidIpv4(): void
     {
         $validIps = ['192.168.1.1', '10.0.0.1', '127.0.0.1', '8.8.8.8'];
@@ -258,6 +281,7 @@ class InputValidationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateIpAddressAcceptsValidIpv6(): void
     {
         $validIps = ['::1', '2001:0db8:85a3:0000:0000:8a2e:0370:7334', 'fe80::1'];
@@ -268,6 +292,7 @@ class InputValidationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateIpAddressRejectsInvalidIp(): void
     {
         $invalidIps = ['256.1.1.1', '192.168.1', 'not-an-ip', ''];
@@ -280,6 +305,7 @@ class InputValidationServiceTest extends TestCase
 
     // Search Query Sanitization Tests
 
+    #[Test]
     public function testSanitizeSearchQueryRemovesControlCharacters(): void
     {
         $input = "test\x00\x01\x1F\x7Fquery";
@@ -289,6 +315,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertStringNotContainsString("\x00", $result);
     }
 
+    #[Test]
     public function testSanitizeSearchQueryRemovesSqlWildcards(): void
     {
         $input = 'test%query_search';
@@ -299,6 +326,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertStringNotContainsString('_', $result);
     }
 
+    #[Test]
     public function testSanitizeSearchQueryLimitsLength(): void
     {
         $input = str_repeat('a', 300);
@@ -307,6 +335,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertEquals(255, strlen($result));
     }
 
+    #[Test]
     public function testSanitizeSearchQueryTrimsWhitespace(): void
     {
         $input = '  test query  ';
@@ -317,6 +346,7 @@ class InputValidationServiceTest extends TestCase
 
     // Date Validation Tests
 
+    #[Test]
     public function testValidateDateAcceptsValidDate(): void
     {
         $validDates = ['2024-01-15', '2023-12-31', '2025-06-30'];
@@ -328,6 +358,7 @@ class InputValidationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateDateRejectsInvalidDate(): void
     {
         $invalidDates = ['2024-13-01', '2024-02-30', 'not-a-date', ''];
@@ -338,6 +369,7 @@ class InputValidationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateDateAcceptsCustomFormat(): void
     {
         $date = '15/01/2024';
@@ -349,6 +381,7 @@ class InputValidationServiceTest extends TestCase
 
     // HTML Sanitization Tests
 
+    #[Test]
     public function testSanitizeHtmlAllowsSafeTags(): void
     {
         $input = '<p>Test</p><strong>Bold</strong><em>Italic</em>';
@@ -359,6 +392,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertStringContainsString('<em>', $result);
     }
 
+    #[Test]
     public function testSanitizeHtmlRemovesDangerousTags(): void
     {
         $input = '<script>alert("XSS")</script><p>Safe</p>';
@@ -368,6 +402,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertStringContainsString('<p>', $result);
     }
 
+    #[Test]
     public function testSanitizeHtmlRemovesAttributes(): void
     {
         $input = '<p onclick="alert(1)">Test</p>';
@@ -379,6 +414,7 @@ class InputValidationServiceTest extends TestCase
 
     // Alphanumeric Validation Tests
 
+    #[Test]
     public function testValidateAlphanumericAcceptsValid(): void
     {
         $validInputs = ['abc123', 'ABC', '123', 'Test123'];
@@ -389,6 +425,7 @@ class InputValidationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateAlphanumericRejectsInvalid(): void
     {
         $invalidInputs = ['abc-123', 'test_123', 'hello world', 'test!', ''];
@@ -401,6 +438,7 @@ class InputValidationServiceTest extends TestCase
 
     // Length Validation Tests
 
+    #[Test]
     public function testValidateLengthAcceptsWithinRange(): void
     {
         $this->assertTrue($this->service->validateLength('hello', 1, 10));
@@ -408,12 +446,14 @@ class InputValidationServiceTest extends TestCase
         $this->assertTrue($this->service->validateLength('', 0, 10));
     }
 
+    #[Test]
     public function testValidateLengthRejectsOutsideRange(): void
     {
         $this->assertFalse($this->service->validateLength('hello', 10, 20));
         $this->assertFalse($this->service->validateLength('hello world', 1, 5));
     }
 
+    #[Test]
     public function testValidateLengthHandlesMultibyteCharacters(): void
     {
         $input = 'Ü ö ä 中文'; // 7 characters
@@ -423,6 +463,7 @@ class InputValidationServiceTest extends TestCase
 
     // JSON Sanitization Tests
 
+    #[Test]
     public function testSanitizeForJsonRemovesControlCharacters(): void
     {
         $input = "test\x00\x01\x1F\x7Fvalue";
@@ -431,6 +472,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertEquals('testvalue', $result);
     }
 
+    #[Test]
     public function testSanitizeForJsonHandlesArrays(): void
     {
         $input = ["test\x00value", "clean", "bad\x1Fdata"];
@@ -442,6 +484,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertEquals('baddata', $result[2]);
     }
 
+    #[Test]
     public function testSanitizeForJsonPreservesNonStringTypes(): void
     {
         $this->assertEquals(42, $this->service->sanitizeForJson(42));
@@ -452,6 +495,7 @@ class InputValidationServiceTest extends TestCase
 
     // CSRF Token Format Validation Tests
 
+    #[Test]
     public function testValidateCsrfTokenFormatAcceptsValid(): void
     {
         // Valid CSRF token format (43 characters, alphanumeric + - _)
@@ -461,6 +505,7 @@ class InputValidationServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testValidateCsrfTokenFormatRejectsInvalid(): void
     {
         $invalidTokens = [
@@ -478,6 +523,7 @@ class InputValidationServiceTest extends TestCase
 
     // XSS Pattern Detection Tests
 
+    #[Test]
     public function testDetectXssPatternsDetectsScriptTags(): void
     {
         $maliciousInputs = [
@@ -492,6 +538,7 @@ class InputValidationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testDetectXssPatternsDetectsJavascriptProtocol(): void
     {
         $maliciousInputs = [
@@ -506,6 +553,7 @@ class InputValidationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testDetectXssPatternsDetectsEventHandlers(): void
     {
         $maliciousInputs = [
@@ -520,6 +568,7 @@ class InputValidationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testDetectXssPatternsDetectsIframeAndObjects(): void
     {
         $maliciousInputs = [
@@ -534,6 +583,7 @@ class InputValidationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testDetectXssPatternsAcceptsSafeContent(): void
     {
         $safeInputs = [
@@ -550,6 +600,7 @@ class InputValidationServiceTest extends TestCase
 
     // SQL Injection Pattern Detection Tests
 
+    #[Test]
     public function testDetectSqlInjectionPatternsDetectsSqlKeywords(): void
     {
         $maliciousInputs = [
@@ -565,6 +616,7 @@ class InputValidationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testDetectSqlInjectionPatternsDetectsComments(): void
     {
         $maliciousInputs = [
@@ -579,6 +631,7 @@ class InputValidationServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testDetectSqlInjectionPatternsAcceptsSafeContent(): void
     {
         $safeInputs = [

@@ -20,6 +20,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Bundle\SecurityBundle\Security;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests for RoleDashboardService
@@ -72,6 +73,7 @@ class RoleDashboardServiceTest extends TestCase
 
     // ==================== getCisoDashboard() Tests ====================
 
+    #[Test]
     public function testGetCisoDashboardReturnsExpectedStructure(): void
     {
         $this->setupAllMocks();
@@ -87,6 +89,7 @@ class RoleDashboardServiceTest extends TestCase
         $this->assertArrayHasKey('pending_approvals', $result);
     }
 
+    #[Test]
     public function testGetCisoDashboardSummaryContainsExpectedKeys(): void
     {
         $this->setupAllMocks();
@@ -102,6 +105,7 @@ class RoleDashboardServiceTest extends TestCase
 
     // ==================== getRiskManagerDashboard() Tests ====================
 
+    #[Test]
     public function testGetRiskManagerDashboardReturnsExpectedStructure(): void
     {
         $this->setupAllMocks();
@@ -117,6 +121,7 @@ class RoleDashboardServiceTest extends TestCase
         $this->assertArrayHasKey('untreated_risks', $result);
     }
 
+    #[Test]
     public function testGetRiskManagerDashboardTreatmentPipeline(): void
     {
         $risk1 = $this->createRiskMock(1, 'Risk 1', 'mitigate', 12);
@@ -137,6 +142,7 @@ class RoleDashboardServiceTest extends TestCase
 
     // ==================== getAuditorDashboard() Tests ====================
 
+    #[Test]
     public function testGetAuditorDashboardReturnsExpectedStructure(): void
     {
         $this->setupAllMocks();
@@ -151,6 +157,7 @@ class RoleDashboardServiceTest extends TestCase
         $this->assertArrayHasKey('control_status', $result);
     }
 
+    #[Test]
     public function testGetAuditorDashboardEvidenceStatus(): void
     {
         $control1 = $this->createControlMock(1, 'Control 1', new \DateTime());
@@ -172,6 +179,7 @@ class RoleDashboardServiceTest extends TestCase
 
     // ==================== getBoardDashboard() Tests ====================
 
+    #[Test]
     public function testGetBoardDashboardReturnsExpectedStructure(): void
     {
         $this->setupAllMocks();
@@ -194,6 +202,7 @@ class RoleDashboardServiceTest extends TestCase
         $this->assertArrayHasKey('critical_items', $result);
     }
 
+    #[Test]
     public function testGetBoardDashboardRAGStatusStructure(): void
     {
         $this->setupAllMocks();
@@ -207,6 +216,7 @@ class RoleDashboardServiceTest extends TestCase
         $this->assertArrayHasKey('operations', $result['rag_status']);
     }
 
+    #[Test]
     public function testGetBoardDashboardMetricsStructure(): void
     {
         $this->setupAllMocks();
@@ -223,6 +233,7 @@ class RoleDashboardServiceTest extends TestCase
 
     // ==================== getRecommendedDashboard() Tests ====================
 
+    #[Test]
     public function testGetRecommendedDashboardForAdmin(): void
     {
         $user = $this->createMock(User::class);
@@ -238,6 +249,7 @@ class RoleDashboardServiceTest extends TestCase
         $this->assertEquals('ciso', $result);
     }
 
+    #[Test]
     public function testGetRecommendedDashboardForManager(): void
     {
         $user = $this->createMock(User::class);
@@ -253,6 +265,7 @@ class RoleDashboardServiceTest extends TestCase
         $this->assertEquals('risk_manager', $result);
     }
 
+    #[Test]
     public function testGetRecommendedDashboardForAuditor(): void
     {
         $user = $this->createMock(User::class);
@@ -268,6 +281,7 @@ class RoleDashboardServiceTest extends TestCase
         $this->assertEquals('auditor', $result);
     }
 
+    #[Test]
     public function testGetRecommendedDashboardForRegularUser(): void
     {
         $user = $this->createMock(User::class);
@@ -280,6 +294,7 @@ class RoleDashboardServiceTest extends TestCase
         $this->assertEquals('default', $result);
     }
 
+    #[Test]
     public function testGetRecommendedDashboardForNoUser(): void
     {
         $this->security->method('getUser')->willReturn(null);

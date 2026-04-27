@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 class AdminLicensingControllerTest extends WebTestCase
 {
@@ -93,12 +94,14 @@ class AdminLicensingControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/licensing');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexRequiresAdminPermission(): void
     {
         $this->client->loginUser($this->testUser);
@@ -106,6 +109,7 @@ class AdminLicensingControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testIndexDisplaysForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -113,12 +117,14 @@ class AdminLicensingControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testReportRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/licensing/report');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testReportRequiresAdminPermission(): void
     {
         $this->client->loginUser($this->testUser);

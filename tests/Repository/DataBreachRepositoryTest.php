@@ -15,6 +15,7 @@ use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for DataBreachRepository
@@ -56,6 +57,7 @@ class DataBreachRepositoryTest extends TestCase
      * This method calls findByTenant() and then filters using DataBreach->isComplete()
      * We can unit test the filtering logic.
      */
+    #[Test]
     public function testFindIncompleteReturnsOnlyIncompleteBreaches(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -92,6 +94,7 @@ class DataBreachRepositoryTest extends TestCase
         $this->assertNotContains($completeBreach, $result);
     }
 
+    #[Test]
     public function testFindIncompleteReturnsEmptyArrayWhenAllComplete(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -120,6 +123,7 @@ class DataBreachRepositoryTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    #[Test]
     public function testFindIncompleteReturnsEmptyArrayWhenNoBreaches(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -147,6 +151,7 @@ class DataBreachRepositoryTest extends TestCase
      * The full method should be tested via integration tests.
      * Here we document the expected behavior.
      */
+    #[Test]
     public function testGetNextReferenceNumberFormat(): void
     {
         // This test documents the expected format: BREACH-YYYY-XXX
@@ -171,6 +176,7 @@ class DataBreachRepositoryTest extends TestCase
      * - After BREACH-2024-009: BREACH-2024-010
      * - After BREACH-2024-099: BREACH-2024-100
      */
+    #[Test]
     public function testReferenceNumberIncrementLogic(): void
     {
         // Test the str_pad logic used in getNextReferenceNumber
@@ -207,6 +213,7 @@ class DataBreachRepositoryTest extends TestCase
      *
      * Verifies the substr logic used to extract the sequence number
      */
+    #[Test]
     public function testReferenceNumberExtractionLogic(): void
     {
         // Test extracting the last 3 characters from reference numbers
@@ -229,6 +236,7 @@ class DataBreachRepositoryTest extends TestCase
      * Note: Full testing requires integration tests.
      * Here we document the expected behavior.
      */
+    #[Test]
     public function testGetTotalAffectedDataSubjectsReturnsZeroWhenNull(): void
     {
         // Test the null coalescing logic: (int) ($result ?? 0)
@@ -237,6 +245,7 @@ class DataBreachRepositoryTest extends TestCase
         $this->assertEquals(0, $total);
     }
 
+    #[Test]
     public function testGetTotalAffectedDataSubjectsConvertsToInt(): void
     {
         // Test that string/float results are converted to int
@@ -255,6 +264,7 @@ class DataBreachRepositoryTest extends TestCase
      * Note: Full getDashboardStatistics() testing requires integration tests.
      * Here we test the aggregation and calculation logic.
      */
+    #[Test]
     public function testDashboardStatisticsStatusCountsInitialization(): void
     {
         // Test that status counts are initialized with all expected statuses
@@ -274,6 +284,7 @@ class DataBreachRepositoryTest extends TestCase
         $this->assertEquals(0, $statusCounts['draft']);
     }
 
+    #[Test]
     public function testDashboardStatisticsRiskCountsInitialization(): void
     {
         // Test that risk level counts are initialized with all expected levels
@@ -291,6 +302,7 @@ class DataBreachRepositoryTest extends TestCase
         $this->assertEquals(0, $riskCounts['low']);
     }
 
+    #[Test]
     public function testDashboardStatisticsCompletenessCalculation(): void
     {
         // Test the completeness rate calculation logic
@@ -321,6 +333,7 @@ class DataBreachRepositoryTest extends TestCase
         $this->assertEquals(67, $completenessRate);
     }
 
+    #[Test]
     public function testDashboardStatisticsReturnStructure(): void
     {
         // Test that the expected array structure is returned
@@ -355,6 +368,7 @@ class DataBreachRepositoryTest extends TestCase
      * Note: Full testing requires integration tests.
      * Here we test the date calculation logic.
      */
+    #[Test]
     public function testFindRecentDateCalculation(): void
     {
         $days = 30;
@@ -369,6 +383,7 @@ class DataBreachRepositoryTest extends TestCase
         $this->assertLessThanOrEqual(31, $daysDiff);
     }
 
+    #[Test]
     public function testFindRecentSupportsCustomDays(): void
     {
         // Test that different day values work correctly
@@ -388,6 +403,7 @@ class DataBreachRepositoryTest extends TestCase
      *
      * This is CRITICAL for GDPR Art. 33 compliance (72-hour deadline)
      */
+    #[Test]
     public function testAuthorityNotificationOverdueDeadlineCalculation(): void
     {
         $deadline = new DateTime('-72 hours');
@@ -401,6 +417,7 @@ class DataBreachRepositoryTest extends TestCase
         $this->assertLessThanOrEqual(73, $hoursDiff);
     }
 
+    #[Test]
     public function testAuthorityNotificationDeadlineIsInPast(): void
     {
         $deadline = new DateTime('-72 hours');

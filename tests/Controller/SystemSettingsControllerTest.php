@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 class SystemSettingsControllerTest extends WebTestCase
 {
@@ -93,12 +94,14 @@ class SystemSettingsControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/settings');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexRequiresAdminPermission(): void
     {
         $this->client->loginUser($this->testUser);
@@ -106,6 +109,7 @@ class SystemSettingsControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testIndexDisplaysForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -113,12 +117,14 @@ class SystemSettingsControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testApplicationSettingsRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/settings/application');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testApplicationSettingsDisplaysForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -127,12 +133,14 @@ class SystemSettingsControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testSecuritySettingsRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/settings/security');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testSecuritySettingsDisplaysForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -141,12 +149,14 @@ class SystemSettingsControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testFeaturesSettingsRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/settings/features');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testFeaturesSettingsDisplaysForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);

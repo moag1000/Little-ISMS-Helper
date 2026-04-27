@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 class MfaTokenControllerTest extends WebTestCase
 {
@@ -93,12 +94,14 @@ class MfaTokenControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/mfa');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexRequiresPermission(): void
     {
         $this->client->loginUser($this->testUser);
@@ -106,6 +109,7 @@ class MfaTokenControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testIndexDisplaysForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -113,12 +117,14 @@ class MfaTokenControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testSetupTotpRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/admin/mfa/user/' . $this->testUser->getId() . '/setup-totp');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testSetupTotpRequiresPermission(): void
     {
         $this->client->loginUser($this->testUser);

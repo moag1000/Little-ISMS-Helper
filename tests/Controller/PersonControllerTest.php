@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 class PersonControllerTest extends WebTestCase
 {
@@ -111,12 +112,14 @@ class PersonControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/person/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -124,12 +127,14 @@ class PersonControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/person/new');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewDisplaysFormForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -138,12 +143,14 @@ class PersonControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/person/' . $this->testPerson->getId());
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -151,12 +158,14 @@ class PersonControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/person/' . $this->testPerson->getId() . '/edit');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysFormForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -165,12 +174,14 @@ class PersonControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/person/' . $this->testPerson->getId() . '/delete');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -178,6 +189,7 @@ class PersonControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteRequiresPost(): void
     {
         $this->client->loginUser($this->adminUser);

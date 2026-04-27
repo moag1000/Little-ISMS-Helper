@@ -16,6 +16,7 @@ use App\Service\AiAgentInventoryService;
 use App\Service\MrisScoreService;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 final class MrisScoreServiceTest extends TestCase
@@ -59,6 +60,7 @@ final class MrisScoreServiceTest extends TestCase
         return $c;
     }
 
+    #[Test]
     public function testScoreReturnsZeroForEmptyTenant(): void
     {
         $score = $this->makeService()->compute(new Tenant());
@@ -66,6 +68,7 @@ final class MrisScoreServiceTest extends TestCase
         self::assertCount(5, $score['breakdown']);
     }
 
+    #[Test]
     public function testDisclaimerIsAlwaysPresentAndMentionsAuditLimit(): void
     {
         $score = $this->makeService()->compute(new Tenant());
@@ -74,6 +77,7 @@ final class MrisScoreServiceTest extends TestCase
         self::assertStringContainsString('Audit', $score['disclaimer']);
     }
 
+    #[Test]
     public function testWeightsSumToHundred(): void
     {
         $score = $this->makeService()->compute(new Tenant());
@@ -81,6 +85,7 @@ final class MrisScoreServiceTest extends TestCase
         self::assertSame(100, $totalWeight);
     }
 
+    #[Test]
     public function testStandfestShareIs100PercentWhenAllControlsAreStandfest(): void
     {
         $controls = [
@@ -92,6 +97,7 @@ final class MrisScoreServiceTest extends TestCase
         self::assertSame(100.0, $score['breakdown']['standfest']['value']);
     }
 
+    #[Test]
     public function testReibungInverseIs100PercentWhenNoReibungExists(): void
     {
         $controls = [
@@ -102,6 +108,7 @@ final class MrisScoreServiceTest extends TestCase
         self::assertSame(100.0, $score['breakdown']['reibung_inverse']['value']);
     }
 
+    #[Test]
     public function testReibungInversePenalizesReibungControls(): void
     {
         $controls = [
@@ -115,6 +122,7 @@ final class MrisScoreServiceTest extends TestCase
         self::assertSame(50.0, $score['breakdown']['reibung_inverse']['value']);
     }
 
+    #[Test]
     public function testMaturityIsAverageOfAllRequirementsCurrent(): void
     {
         $framework = new ComplianceFramework();
@@ -132,6 +140,7 @@ final class MrisScoreServiceTest extends TestCase
         self::assertSame(66.5, $score['breakdown']['maturity']['value']);
     }
 
+    #[Test]
     public function testManualKpisFillRateBasedOnTenantSettings(): void
     {
         $tenant = new Tenant();
@@ -149,12 +158,14 @@ final class MrisScoreServiceTest extends TestCase
         self::assertSame(60.0, $score['breakdown']['manual_kpis']['value']);
     }
 
+    #[Test]
     public function testAiCompletenessIsTakenFromInventoryStats(): void
     {
         $score = $this->makeService([], null, [], ['total' => 5, 'avg_completeness' => 78.5])->compute(new Tenant());
         self::assertSame(78.5, $score['breakdown']['ai_agent_doku']['value']);
     }
 
+    #[Test]
     public function testAggregateScoreCombinesAllDimensions(): void
     {
         // Setup: 100 % standfest, no reibung, all maturity managed (100), 100 % manual filled, 100 % AI doku

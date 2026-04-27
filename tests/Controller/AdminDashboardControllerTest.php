@@ -28,6 +28,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Twig\Environment;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class AdminDashboardControllerTest extends TestCase
@@ -82,6 +83,7 @@ class AdminDashboardControllerTest extends TestCase
         $this->controller->setContainer($this->container);
     }
 
+    #[Test]
     public function testIndexRendersAdminDashboard(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -160,6 +162,7 @@ class AdminDashboardControllerTest extends TestCase
         $this->assertEquals('<html>Dashboard</html>', $response->getContent());
     }
 
+    #[Test]
     public function testIndexHandlesNullTenant(): void
     {
         $user = $this->createMock(User::class);
@@ -211,6 +214,7 @@ class AdminDashboardControllerTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
     }
 
+    #[Test]
     public function testIndexIncludesInactiveUserAlert(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -258,6 +262,7 @@ class AdminDashboardControllerTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
     }
 
+    #[Test]
     public function testIndexIncludesUnverifiedUserAlert(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -303,6 +308,7 @@ class AdminDashboardControllerTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
     }
 
+    #[Test]
     public function testIndexHandlesMySQLDatabaseSize(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -369,6 +375,7 @@ class AdminDashboardControllerTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
     }
 
+    #[Test]
     public function testIndexHandlesPostgreSQLDatabaseSize(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -427,6 +434,7 @@ class AdminDashboardControllerTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
     }
 
+    #[Test]
     public function testIndexHandlesDatabaseErrors(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -473,6 +481,7 @@ class AdminDashboardControllerTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
     }
 
+    #[Test]
     public function testIndexReturnsRecentActivityLimited(): void
     {
         $tenant = $this->createMock(Tenant::class);

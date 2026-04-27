@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for AssetRepository
@@ -100,6 +101,7 @@ class AssetRepositoryTest extends TestCase
     /**
      * Test that the repository can be instantiated correctly
      */
+    #[Test]
     public function testRepositoryInstantiation(): void
     {
         $this->assertInstanceOf(AssetRepository::class, $this->repository);
@@ -110,6 +112,7 @@ class AssetRepositoryTest extends TestCase
      *
      * This verifies the repository's API surface without executing queries
      */
+    #[Test]
     public function testRepositoryHasExpectedMethods(): void
     {
         $this->assertTrue(method_exists($this->repository, 'findActiveAssets'));
@@ -126,6 +129,7 @@ class AssetRepositoryTest extends TestCase
      *
      * Uses reflection to verify parameter types and return types without executing
      */
+    #[Test]
     public function testFindByTenantSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByTenant');
@@ -144,6 +148,7 @@ class AssetRepositoryTest extends TestCase
      *
      * Verifies the second parameter is optional and nullable (deprecated)
      */
+    #[Test]
     public function testFindByTenantIncludingParentSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByTenantIncludingParent');
@@ -164,6 +169,7 @@ class AssetRepositoryTest extends TestCase
     /**
      * Test findActiveAssets signature
      */
+    #[Test]
     public function testFindActiveAssetsSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findActiveAssets');
@@ -180,6 +186,7 @@ class AssetRepositoryTest extends TestCase
     /**
      * Test countByType signature
      */
+    #[Test]
     public function testCountByTypeSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'countByType');
@@ -196,6 +203,7 @@ class AssetRepositoryTest extends TestCase
     /**
      * Test getAssetStatsByTenant signature
      */
+    #[Test]
     public function testGetAssetStatsByTenantSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'getAssetStatsByTenant');
@@ -212,6 +220,7 @@ class AssetRepositoryTest extends TestCase
     /**
      * Test findActiveAssetsByTenant signature
      */
+    #[Test]
     public function testFindActiveAssetsByTenantSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findActiveAssetsByTenant');
@@ -228,6 +237,7 @@ class AssetRepositoryTest extends TestCase
     /**
      * Test findByTenantIncludingSubsidiaries signature
      */
+    #[Test]
     public function testFindByTenantIncludingSubsidiariesSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByTenantIncludingSubsidiaries');
@@ -244,6 +254,7 @@ class AssetRepositoryTest extends TestCase
     /**
      * Test that the repository methods use correct entity class
      */
+    #[Test]
     public function testRepositoryUsesCorrectEntityClass(): void
     {
         $reflection = new \ReflectionClass($this->repository);

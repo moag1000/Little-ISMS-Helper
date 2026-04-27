@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for ManagementReviewController
@@ -120,12 +121,14 @@ class ManagementReviewControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/management-review/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -133,12 +136,14 @@ class ManagementReviewControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/management-review/new');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -146,6 +151,7 @@ class ManagementReviewControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testNewDisplaysFormForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -154,12 +160,14 @@ class ManagementReviewControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/management-review/' . $this->testReview->getId());
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -167,6 +175,7 @@ class ManagementReviewControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testShowReturns404ForNonexistent(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -174,12 +183,14 @@ class ManagementReviewControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/management-review/' . $this->testReview->getId() . '/edit');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysFormForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -188,12 +199,14 @@ class ManagementReviewControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/management-review/' . $this->testReview->getId() . '/delete');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresPost(): void
     {
         $this->client->loginUser($this->adminUser);

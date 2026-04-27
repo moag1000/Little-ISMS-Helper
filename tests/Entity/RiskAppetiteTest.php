@@ -6,9 +6,11 @@ use App\Entity\RiskAppetite;
 use App\Entity\Tenant;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class RiskAppetiteTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $appetite = new RiskAppetite();
@@ -18,6 +20,7 @@ class RiskAppetiteTest extends TestCase
         $this->assertTrue($appetite->isActive()); // Default
     }
 
+    #[Test]
     public function testGettersAndSetters(): void
     {
         $appetite = new RiskAppetite();
@@ -32,6 +35,7 @@ class RiskAppetiteTest extends TestCase
         $this->assertEquals('Maximum acceptable financial risk level', $appetite->getDescription());
     }
 
+    #[Test]
     public function testTenantRelationship(): void
     {
         $appetite = new RiskAppetite();
@@ -43,6 +47,7 @@ class RiskAppetiteTest extends TestCase
         $this->assertSame($tenant, $appetite->getTenant());
     }
 
+    #[Test]
     public function testIsActive(): void
     {
         $appetite = new RiskAppetite();
@@ -53,6 +58,7 @@ class RiskAppetiteTest extends TestCase
         $this->assertFalse($appetite->isActive());
     }
 
+    #[Test]
     public function testApprovalFields(): void
     {
         $appetite = new RiskAppetite();
@@ -69,6 +75,7 @@ class RiskAppetiteTest extends TestCase
         $this->assertEquals($approvedAt, $appetite->getApprovedAt());
     }
 
+    #[Test]
     public function testTimestamps(): void
     {
         $appetite = new RiskAppetite();
@@ -84,6 +91,7 @@ class RiskAppetiteTest extends TestCase
         $this->assertEquals($now, $appetite->getUpdatedAt());
     }
 
+    #[Test]
     public function testIsGlobal(): void
     {
         $appetite = new RiskAppetite();
@@ -98,6 +106,7 @@ class RiskAppetiteTest extends TestCase
         $this->assertTrue($appetite->isGlobal());
     }
 
+    #[Test]
     public function testGetDisplayName(): void
     {
         $appetite = new RiskAppetite();
@@ -110,6 +119,7 @@ class RiskAppetiteTest extends TestCase
         $this->assertEquals('Compliance Risk Appetite', $appetite->getDisplayName());
     }
 
+    #[Test]
     public function testGetRiskLevelClassification(): void
     {
         $appetite = new RiskAppetite();
@@ -128,6 +138,7 @@ class RiskAppetiteTest extends TestCase
         $this->assertEquals('exceeds_appetite', $appetite->getRiskLevelClassification(25));
     }
 
+    #[Test]
     public function testIsRiskAcceptable(): void
     {
         $appetite = new RiskAppetite();
@@ -139,6 +150,7 @@ class RiskAppetiteTest extends TestCase
         $this->assertFalse($appetite->isRiskAcceptable(20));
     }
 
+    #[Test]
     public function testGetAppetitePercentage(): void
     {
         $appetite = new RiskAppetite();
@@ -149,6 +161,7 @@ class RiskAppetiteTest extends TestCase
         $this->assertEquals(150.0, $appetite->getAppetitePercentage(15));
     }
 
+    #[Test]
     public function testGetAppetitePercentageWithZeroMax(): void
     {
         $appetite = new RiskAppetite();
@@ -157,6 +170,7 @@ class RiskAppetiteTest extends TestCase
         $this->assertEquals(0.0, $appetite->getAppetitePercentage(5));
     }
 
+    #[Test]
     public function testIsApprovedWhenNotApproved(): void
     {
         $appetite = new RiskAppetite();
@@ -164,6 +178,7 @@ class RiskAppetiteTest extends TestCase
         $this->assertFalse($appetite->isApproved());
     }
 
+    #[Test]
     public function testIsApprovedWithOnlyApprover(): void
     {
         $appetite = new RiskAppetite();
@@ -175,6 +190,7 @@ class RiskAppetiteTest extends TestCase
         $this->assertFalse($appetite->isApproved());
     }
 
+    #[Test]
     public function testIsApprovedWithOnlyDate(): void
     {
         $appetite = new RiskAppetite();
@@ -185,6 +201,7 @@ class RiskAppetiteTest extends TestCase
         $this->assertFalse($appetite->isApproved());
     }
 
+    #[Test]
     public function testIsApprovedWithBothFields(): void
     {
         $appetite = new RiskAppetite();

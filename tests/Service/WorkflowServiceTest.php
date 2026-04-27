@@ -17,6 +17,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Bundle\SecurityBundle\Security;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class WorkflowServiceTest extends TestCase
@@ -48,6 +49,7 @@ class WorkflowServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testStartWorkflowCreatesNewInstance(): void
     {
         $user = $this->createMock(User::class);
@@ -79,6 +81,7 @@ class WorkflowServiceTest extends TestCase
         $this->assertNotNull($instance->getDueDate());
     }
 
+    #[Test]
     public function testStartWorkflowReturnsExistingInstance(): void
     {
         $existingInstance = $this->createMock(WorkflowInstance::class);
@@ -110,6 +113,7 @@ class WorkflowServiceTest extends TestCase
         $this->assertSame($existingInstance, $instance);
     }
 
+    #[Test]
     public function testStartWorkflowReturnsNullIfNoWorkflowFound(): void
     {
         $this->workflowRepository->method('findOneBy')
@@ -120,6 +124,7 @@ class WorkflowServiceTest extends TestCase
         $this->assertNull($instance);
     }
 
+    #[Test]
     public function testStartWorkflowWithSpecificWorkflowName(): void
     {
         $user = $this->createMock(User::class);
@@ -145,6 +150,7 @@ class WorkflowServiceTest extends TestCase
         $this->assertNotNull($instance);
     }
 
+    #[Test]
     public function testApproveStepSucceeds(): void
     {
         $user = $this->createUser(1, 'John', 'Doe');
@@ -182,6 +188,7 @@ class WorkflowServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testApproveStepFailsIfNotInProgress(): void
     {
         $user = $this->createUser(1, 'John', 'Doe');
@@ -193,6 +200,7 @@ class WorkflowServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testApproveStepFailsIfNoCurrentStep(): void
     {
         $user = $this->createUser(1, 'John', 'Doe');
@@ -205,6 +213,7 @@ class WorkflowServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testApproveStepFailsIfUserCannotApprove(): void
     {
         $user = $this->createUser(1, 'John', 'Doe');
@@ -223,6 +232,7 @@ class WorkflowServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testRejectStepSucceeds(): void
     {
         $user = $this->createUser(1, 'Jane', 'Smith');
@@ -259,6 +269,7 @@ class WorkflowServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testRejectStepFailsIfNotInProgress(): void
     {
         $user = $this->createUser(1, 'John', 'Doe');
@@ -270,6 +281,7 @@ class WorkflowServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testCancelWorkflowSetsStatusAndComments(): void
     {
         $instance = $this->createMock(WorkflowInstance::class);
@@ -292,6 +304,7 @@ class WorkflowServiceTest extends TestCase
         $this->service->cancelWorkflow($instance, 'Project cancelled');
     }
 
+    #[Test]
     public function testApprovalWithSpecificUser(): void
     {
         $approver = $this->createUser(5, 'Approved', 'User');
@@ -309,6 +322,7 @@ class WorkflowServiceTest extends TestCase
         $this->assertTrue($this->service->approveStep($instance, $approver));
     }
 
+    #[Test]
     public function testWorkflowInstancePendingStatus(): void
     {
         $user = $this->createMock(User::class);

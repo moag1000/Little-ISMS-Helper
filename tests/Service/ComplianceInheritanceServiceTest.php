@@ -13,6 +13,7 @@ use LogicException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use ReflectionProperty;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Minimal contract-level tests for the inheritance service guard clauses.
@@ -20,6 +21,7 @@ use ReflectionProperty;
  */
 final class ComplianceInheritanceServiceTest extends TestCase
 {
+    #[Test]
     public function testConfirmRejectsShortComment(): void
     {
         $service = $this->createPartialService();
@@ -31,6 +33,7 @@ final class ComplianceInheritanceServiceTest extends TestCase
         $service->confirmInheritance($log, $this->createMock(User::class), 'too short');
     }
 
+    #[Test]
     public function testConfirmRejectsOnTerminalStatus(): void
     {
         $service = $this->createPartialService();
@@ -46,6 +49,7 @@ final class ComplianceInheritanceServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testOverrideRequiresDifferentApprover(): void
     {
         $service = $this->createPartialService();
@@ -66,6 +70,7 @@ final class ComplianceInheritanceServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testOverrideRejectsOutOfRangeValue(): void
     {
         $service = $this->createPartialService();

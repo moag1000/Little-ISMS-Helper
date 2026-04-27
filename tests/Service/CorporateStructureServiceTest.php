@@ -14,6 +14,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class CorporateStructureServiceTest extends TestCase
@@ -36,6 +37,7 @@ class CorporateStructureServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testIsParentOfWithDirectParent(): void
     {
         $parent = $this->createTenant(1, 'Parent');
@@ -45,6 +47,7 @@ class CorporateStructureServiceTest extends TestCase
         $this->assertFalse($this->service->isParentOf($child, $parent));
     }
 
+    #[Test]
     public function testIsParentOfWithIndirectParent(): void
     {
         $grandparent = $this->createTenant(1, 'Grandparent');
@@ -56,6 +59,7 @@ class CorporateStructureServiceTest extends TestCase
         $this->assertFalse($this->service->isParentOf($child, $grandparent));
     }
 
+    #[Test]
     public function testIsParentOfWithNoRelationship(): void
     {
         $tenant1 = $this->createTenant(1, 'Tenant 1');
@@ -65,6 +69,7 @@ class CorporateStructureServiceTest extends TestCase
         $this->assertFalse($this->service->isParentOf($tenant2, $tenant1));
     }
 
+    #[Test]
     public function testIsInSameCorporateGroupWithSameRoot(): void
     {
         $root = $this->createTenant(1, 'Root');
@@ -80,6 +85,7 @@ class CorporateStructureServiceTest extends TestCase
         $this->assertTrue($this->service->isInSameCorporateGroup($root, $subsidiary1));
     }
 
+    #[Test]
     public function testIsInSameCorporateGroupWithDifferentRoots(): void
     {
         $root1 = $this->createTenant(1, 'Root 1');
@@ -93,6 +99,7 @@ class CorporateStructureServiceTest extends TestCase
         $this->assertFalse($this->service->isInSameCorporateGroup($subsidiary, $root2));
     }
 
+    #[Test]
     public function testCanAccessTenantSameTenant(): void
     {
         $tenant = $this->createTenant(1, 'Same Tenant');
@@ -100,6 +107,7 @@ class CorporateStructureServiceTest extends TestCase
         $this->assertTrue($this->service->canAccessTenant($tenant, $tenant));
     }
 
+    #[Test]
     public function testCanAccessTenantParentAccessesChild(): void
     {
         $parent = $this->createTenant(1, 'Parent');
@@ -108,6 +116,7 @@ class CorporateStructureServiceTest extends TestCase
         $this->assertTrue($this->service->canAccessTenant($parent, $child));
     }
 
+    #[Test]
     public function testCanAccessTenantChildCannotAccessParent(): void
     {
         $parent = $this->createTenant(1, 'Parent');
@@ -128,6 +137,7 @@ class CorporateStructureServiceTest extends TestCase
         $this->assertFalse($this->service->canAccessTenant($child, $parent));
     }
 
+    #[Test]
     public function testCanAccessTenantSharedGovernanceInSameGroup(): void
     {
         $root = $this->createTenant(1, 'Root');
@@ -149,6 +159,7 @@ class CorporateStructureServiceTest extends TestCase
         $this->assertTrue($this->service->canAccessTenant($subsidiary1, $subsidiary2));
     }
 
+    #[Test]
     public function testGetEffectiveISMSContextNoParent(): void
     {
         $tenant = $this->createTenant(1, 'Standalone', null);
@@ -163,6 +174,7 @@ class CorporateStructureServiceTest extends TestCase
         $this->assertSame($context, $result);
     }
 
+    #[Test]
     public function testGetEffectiveISMSContextHierarchicalModel(): void
     {
         $parent = $this->createTenant(1, 'Parent', null);
@@ -189,6 +201,7 @@ class CorporateStructureServiceTest extends TestCase
         $this->assertSame($parentContext, $result);
     }
 
+    #[Test]
     public function testGetEffectiveISMSContextIndependentModel(): void
     {
         $parent = $this->createTenant(1, 'Parent', null);
@@ -212,6 +225,7 @@ class CorporateStructureServiceTest extends TestCase
         $this->assertSame($childContext, $result);
     }
 
+    #[Test]
     public function testValidateStructureValidTenant(): void
     {
         $tenant = $this->createTenant(1, 'Valid', null);
@@ -222,6 +236,7 @@ class CorporateStructureServiceTest extends TestCase
         $this->assertEmpty($errors);
     }
 
+    #[Test]
     public function testValidateStructureSubsidiaryWithoutGovernance(): void
     {
         $parent = $this->createTenant(1, 'Parent', null);
@@ -237,6 +252,7 @@ class CorporateStructureServiceTest extends TestCase
         $this->assertContains('Subsidiaries must have a default governance model defined', $errors);
     }
 
+    #[Test]
     public function testValidateStructureCorporateParentFlag(): void
     {
         $tenant = $this->createTenant(1, 'Parent', null);
@@ -250,6 +266,7 @@ class CorporateStructureServiceTest extends TestCase
         $this->assertContains('Tenant with subsidiaries should be marked as corporate parent', $errors);
     }
 
+    #[Test]
     public function testGetCorporateGroup(): void
     {
         $root = $this->createTenant(1, 'Root', null);

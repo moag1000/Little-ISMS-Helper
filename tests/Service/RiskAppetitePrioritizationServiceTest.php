@@ -12,6 +12,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class RiskAppetitePrioritizationServiceTest extends TestCase
@@ -34,6 +35,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGetApplicableAppetiteReturnsGlobalWhenNoCategory(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -54,6 +56,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertSame($globalAppetite, $result);
     }
 
+    #[Test]
     public function testGetApplicableAppetiteReturnsCategorySpecific(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -74,6 +77,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertSame($categoryAppetite, $result);
     }
 
+    #[Test]
     public function testGetApplicableAppetiteFallsBackToGlobal(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -94,6 +98,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertSame($globalAppetite, $result);
     }
 
+    #[Test]
     public function testGetApplicableAppetiteReturnsNullWhenNoneExists(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -106,6 +111,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testExceedsAppetiteReturnsTrueWhenExceeded(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -119,6 +125,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testExceedsAppetiteReturnsFalseWhenWithin(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -132,6 +139,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testExceedsAppetiteReturnsFalseWhenNoAppetite(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -144,6 +152,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testGetPriorityLevelReturnsAcceptableWithinAppetite(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -157,6 +166,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertSame('acceptable', $result);
     }
 
+    #[Test]
     public function testGetPriorityLevelReturnsMediumSlightlyAbove(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -170,6 +180,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertSame('medium', $result);
     }
 
+    #[Test]
     public function testGetPriorityLevelReturnsHighSignificantlyAbove(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -183,6 +194,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertSame('high', $result);
     }
 
+    #[Test]
     public function testGetPriorityLevelReturnsCriticalFarExceeds(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -196,6 +208,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertSame('critical', $result);
     }
 
+    #[Test]
     public function testGetPriorityLevelUsesAbsoluteWhenNoAppetite(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -208,6 +221,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertSame('critical', $result);
     }
 
+    #[Test]
     public function testAnalyzeRiskAppetiteReturnsCompleteAnalysis(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -230,6 +244,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertArrayHasKey('recommendation', $result);
     }
 
+    #[Test]
     public function testAnalyzeRiskAppetiteWithNoAppetite(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -245,6 +260,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertStringContainsString('No risk appetite', $result['recommendation']);
     }
 
+    #[Test]
     public function testAnalyzeRiskAppetiteWithinAppetite(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -262,6 +278,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertSame('acceptable', $result['priority']);
     }
 
+    #[Test]
     public function testFindRisksExceedingAppetiteReturnsArray(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -287,6 +304,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertArrayHasKey('priority', $result[0]);
     }
 
+    #[Test]
     public function testFindRisksExceedingAppetiteSortsByExceedance(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -306,6 +324,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertSame(5, $result[1]['exceedance']);
     }
 
+    #[Test]
     public function testGetDashboardStatisticsReturnsCompleteStats(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -330,6 +349,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertArrayHasKey('compliance_rate', $stats);
     }
 
+    #[Test]
     public function testGetDashboardStatisticsCountsPriorityLevels(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -350,6 +370,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertGreaterThanOrEqual(1, $stats['medium']);
     }
 
+    #[Test]
     public function testGetDashboardStatisticsCalculatesComplianceRate(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -369,6 +390,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertEqualsWithDelta(66.67, $stats['compliance_rate'], 0.1);
     }
 
+    #[Test]
     public function testGetDashboardStatisticsHandlesNoAppetite(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -384,6 +406,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertSame(0.0, $stats['compliance_rate']);
     }
 
+    #[Test]
     public function testGetPrioritizedRisksReturnsLimitedResults(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -403,6 +426,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertCount(5, $result);
     }
 
+    #[Test]
     public function testGetPrioritizedRisksSortsByPriorityScore(): void
     {
         $tenant = $this->createMock(Tenant::class);
@@ -423,6 +447,7 @@ class RiskAppetitePrioritizationServiceTest extends TestCase
         $this->assertGreaterThan($result[2]['score'], $result[1]['score']);
     }
 
+    #[Test]
     public function testGetPrioritizedRisksIncludesAnalysis(): void
     {
         $tenant = $this->createMock(Tenant::class);

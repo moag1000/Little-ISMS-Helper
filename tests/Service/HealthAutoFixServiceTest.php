@@ -7,6 +7,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class HealthAutoFixServiceTest extends TestCase
@@ -45,6 +46,7 @@ class HealthAutoFixServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testFixCachePermissionsWhenDirectoryDoesNotExist(): void
     {
         $result = $this->service->fixCachePermissions();
@@ -54,6 +56,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertTrue(is_writable($this->cacheDir));
     }
 
+    #[Test]
     public function testFixCachePermissionsWhenAlreadyWritable(): void
     {
         mkdir($this->cacheDir, 0775, true);
@@ -64,6 +67,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertStringContainsString('already writable', $result['message']);
     }
 
+    #[Test]
     public function testFixCachePermissionsRecursively(): void
     {
         mkdir($this->cacheDir, 0755, true);
@@ -77,6 +81,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertTrue(is_writable($this->cacheDir));
     }
 
+    #[Test]
     public function testFixLogPermissionsWhenDirectoryDoesNotExist(): void
     {
         $result = $this->service->fixLogPermissions();
@@ -86,6 +91,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertTrue(is_writable($this->logsDir));
     }
 
+    #[Test]
     public function testFixLogPermissionsWhenAlreadyWritable(): void
     {
         mkdir($this->logsDir, 0775, true);
@@ -96,6 +102,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertStringContainsString('already writable', $result['message']);
     }
 
+    #[Test]
     public function testClearCacheSuccessfully(): void
     {
         mkdir($this->cacheDir, 0775, true);
@@ -111,6 +118,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertTrue(is_dir($this->cacheDir)); // Directory should still exist
     }
 
+    #[Test]
     public function testClearCacheWithEmptyDirectory(): void
     {
         mkdir($this->cacheDir, 0775, true);
@@ -121,6 +129,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertStringContainsString('0 B', $result['message']); // No space freed
     }
 
+    #[Test]
     public function testCleanOldLogsSuccessfully(): void
     {
         mkdir($this->logsDir, 0775, true);
@@ -143,6 +152,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertFileExists($recentLog);
     }
 
+    #[Test]
     public function testCleanOldLogsWithNoOldFiles(): void
     {
         mkdir($this->logsDir, 0775, true);
@@ -156,6 +166,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertStringContainsString('Cleaned 0', $result['message']);
     }
 
+    #[Test]
     public function testCleanOldLogsWhenDirectoryNotAccessible(): void
     {
         $result = $this->service->cleanOldLogs(30);
@@ -164,6 +175,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertStringContainsString('not accessible', $result['message']);
     }
 
+    #[Test]
     public function testRotateLogsSuccessfully(): void
     {
         mkdir($this->logsDir, 0775, true);
@@ -179,6 +191,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertTrue(filesize($largeLog) === 0); // Original file should be cleared
     }
 
+    #[Test]
     public function testRotateLogsWithSmallFiles(): void
     {
         mkdir($this->logsDir, 0775, true);
@@ -192,6 +205,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertStringContainsString('Rotated 0', $result['message']);
     }
 
+    #[Test]
     public function testRotateLogsWhenDirectoryNotAccessible(): void
     {
         $result = $this->service->rotateLogs();
@@ -200,6 +214,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertStringContainsString('not accessible', $result['message']);
     }
 
+    #[Test]
     public function testOptimizeDiskSpace(): void
     {
         mkdir($this->cacheDir, 0775, true);
@@ -220,6 +235,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertCount(3, $result['details']);
     }
 
+    #[Test]
     public function testFixVarPermissions(): void
     {
         $result = $this->service->fixVarPermissions();
@@ -229,6 +245,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertTrue(is_writable($this->projectDir . '/var'));
     }
 
+    #[Test]
     public function testFixVarPermissionsWhenAlreadyWritable(): void
     {
         $varDir = $this->projectDir . '/var';
@@ -240,6 +257,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertStringContainsString('successfully', $result['message']);
     }
 
+    #[Test]
     public function testFixUploadsPermissions(): void
     {
         $uploadsDir = $this->projectDir . '/public';
@@ -251,6 +269,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertTrue(is_dir($this->projectDir . '/public/uploads'));
     }
 
+    #[Test]
     public function testFixUploadsPermissionsWhenDirectoryExists(): void
     {
         $uploadsDir = $this->projectDir . '/public/uploads';
@@ -263,6 +282,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertArrayHasKey('success', $result);
     }
 
+    #[Test]
     public function testFixSessionPermissions(): void
     {
         $result = $this->service->fixSessionPermissions();
@@ -273,6 +293,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertArrayHasKey('message', $result);
     }
 
+    #[Test]
     public function testClearOldUploads(): void
     {
         $uploadsDir = $this->projectDir . '/public/uploads';
@@ -295,6 +316,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertFileExists($recentFile);
     }
 
+    #[Test]
     public function testClearOldUploadsWhenDirectoryDoesNotExist(): void
     {
         $result = $this->service->clearOldUploads(90);
@@ -303,6 +325,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertStringContainsString('does not exist', $result['message']);
     }
 
+    #[Test]
     public function testRunComposerInstallWhenComposerNotFound(): void
     {
         $result = $this->service->runComposerInstall();
@@ -313,6 +336,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertArrayHasKey('message', $result);
     }
 
+    #[Test]
     public function testFormatBytesCorrectly(): void
     {
         $reflection = new \ReflectionClass($this->service);
@@ -324,6 +348,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertEquals('1 GB', $method->invoke($this->service, 1024 * 1024 * 1024));
     }
 
+    #[Test]
     public function testGetDirectorySizeWithEmptyDirectory(): void
     {
         mkdir($this->cacheDir, 0775, true);
@@ -336,6 +361,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertEquals(0, $size);
     }
 
+    #[Test]
     public function testGetDirectorySizeWithFiles(): void
     {
         mkdir($this->cacheDir, 0775, true);
@@ -351,6 +377,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertEquals(28, $size); // "test content 1" + "test content 2"
     }
 
+    #[Test]
     public function testCompressFileSuccessfully(): void
     {
         mkdir($this->logsDir, 0775, true);
@@ -368,6 +395,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertGreaterThan(0, filesize($destFile));
     }
 
+    #[Test]
     public function testFindComposerBinary(): void
     {
         $reflection = new \ReflectionClass($this->service);
@@ -379,6 +407,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertTrue(is_string($result) || is_null($result));
     }
 
+    #[Test]
     public function testFixDirectoryPermissionsRecursivelyWithNestedStructure(): void
     {
         mkdir($this->cacheDir, 0755, true);
@@ -396,6 +425,7 @@ class HealthAutoFixServiceTest extends TestCase
         $this->assertTrue(is_readable($this->cacheDir . '/level1/level2'));
     }
 
+    #[Test]
     public function testClearCacheHandlesException(): void
     {
         // Use non-existent cache directory that cannot be created

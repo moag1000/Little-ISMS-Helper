@@ -5,6 +5,7 @@ namespace App\Tests\Controller;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for DeploymentWizardController
@@ -34,6 +35,7 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== INDEX TESTS ==========
 
+    #[Test]
     public function testIndexAccessible(): void
     {
         $this->client->request('GET', '/en/setup/');
@@ -47,6 +49,7 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== STEP 0: WELCOME TESTS ==========
 
+    #[Test]
     public function testStep0WelcomeAccessible(): void
     {
         $this->client->request('GET', '/en/setup/step0-welcome');
@@ -59,12 +62,14 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== STEP 1: REQUIREMENTS TESTS ==========
 
+    #[Test]
     public function testStep1RequirementsAccessible(): void
     {
         $this->client->request('GET', '/en/setup/step1-requirements');
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testStep1RequirementsShowsResults(): void
     {
         $crawler = $this->client->request('GET', '/en/setup/step1-requirements');
@@ -74,6 +79,7 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== STEP 2: DATABASE CONFIG TESTS ==========
 
+    #[Test]
     public function testStep2DatabaseConfigAccessible(): void
     {
         $this->client->request('GET', '/en/setup/step2-database-config');
@@ -85,6 +91,7 @@ class DeploymentWizardControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testStep2DatabaseConfigDisplaysForm(): void
     {
         // First pass requirements check
@@ -100,6 +107,7 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== STEP 3: RESTORE BACKUP TESTS ==========
 
+    #[Test]
     public function testStep3RestoreBackupRedirectsWithoutDatabaseConfig(): void
     {
         $this->client->request('GET', '/en/setup/step3-restore-backup');
@@ -107,6 +115,7 @@ class DeploymentWizardControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testStep3RestoreBackupSkipRequiresPost(): void
     {
         $this->client->request('GET', '/en/setup/step3-restore-backup/skip');
@@ -114,18 +123,21 @@ class DeploymentWizardControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testStep3CreateSchemaRequiresPost(): void
     {
         $this->client->request('GET', '/en/setup/step3-restore-backup/create-schema');
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testStep3RestoreBackupUploadRequiresPost(): void
     {
         $this->client->request('GET', '/en/setup/step3-restore-backup/upload');
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testStep3RepairOrphansRequiresPost(): void
     {
         $this->client->request('GET', '/en/setup/step3-restore-backup/repair-orphans');
@@ -134,6 +146,7 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== STEP 4: ADMIN USER TESTS ==========
 
+    #[Test]
     public function testStep4AdminUserRedirectsWithoutDatabaseConfig(): void
     {
         $this->client->request('GET', '/en/setup/step4-admin-user');
@@ -143,6 +156,7 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== STEP 5: EMAIL CONFIG TESTS ==========
 
+    #[Test]
     public function testStep5EmailConfigRedirectsWithoutAdminUser(): void
     {
         $this->client->request('GET', '/en/setup/step5-email-config');
@@ -150,6 +164,7 @@ class DeploymentWizardControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testStep5EmailConfigSkipRequiresPost(): void
     {
         $this->client->request('GET', '/en/setup/step5-email-config/skip');
@@ -158,6 +173,7 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== STEP 6: ORGANISATION INFO TESTS ==========
 
+    #[Test]
     public function testStep6OrganisationInfoRedirectsWithoutAdminUser(): void
     {
         $this->client->request('GET', '/en/setup/step6-organisation-info');
@@ -167,6 +183,7 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== STEP 7: MODULES TESTS ==========
 
+    #[Test]
     public function testStep7ModulesRedirectsWithoutRequirements(): void
     {
         $this->client->request('GET', '/en/setup/step7-modules');
@@ -178,6 +195,7 @@ class DeploymentWizardControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testStep7ModulesSaveRequiresPost(): void
     {
         $this->client->request('GET', '/en/setup/step7-modules/save');
@@ -186,6 +204,7 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== STEP 8: COMPLIANCE FRAMEWORKS TESTS ==========
 
+    #[Test]
     public function testStep8ComplianceFrameworksRedirectsWithoutModules(): void
     {
         $this->client->request('GET', '/en/setup/step8-compliance-frameworks');
@@ -195,6 +214,7 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== STEP 9: BASE DATA TESTS ==========
 
+    #[Test]
     public function testStep9BaseDataRedirectsWithoutModules(): void
     {
         $this->client->request('GET', '/en/setup/step9-base-data');
@@ -202,6 +222,7 @@ class DeploymentWizardControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testStep9BaseDataImportRequiresPost(): void
     {
         $this->client->request('GET', '/en/setup/step9-base-data/import');
@@ -210,6 +231,7 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== STEP 10: SAMPLE DATA TESTS ==========
 
+    #[Test]
     public function testStep10SampleDataRedirectsWithoutModules(): void
     {
         $this->client->request('GET', '/en/setup/step10-sample-data');
@@ -217,12 +239,14 @@ class DeploymentWizardControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testStep10SampleDataImportRequiresPost(): void
     {
         $this->client->request('GET', '/en/setup/step10-sample-data/import');
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testStep10SampleDataSkipRequiresPost(): void
     {
         $this->client->request('GET', '/en/setup/step10-sample-data/skip');
@@ -231,6 +255,7 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== STEP 11: COMPLETE TESTS ==========
 
+    #[Test]
     public function testStep11CompleteRedirectsWithoutModules(): void
     {
         $this->client->request('GET', '/en/setup/step11-complete');
@@ -240,6 +265,7 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== RESET TESTS ==========
 
+    #[Test]
     public function testResetOnlyAllowedInDev(): void
     {
         $this->client->request('GET', '/en/setup/reset');
@@ -256,6 +282,7 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== CSRF VALIDATION TESTS ==========
 
+    #[Test]
     public function testStep3CreateSchemaRequiresCsrfToken(): void
     {
         // Set up session with database configured
@@ -273,6 +300,7 @@ class DeploymentWizardControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testStep7ModulesSaveRequiresCsrfToken(): void
     {
         $this->client->request('POST', '/en/setup/step7-modules/save');
@@ -280,6 +308,7 @@ class DeploymentWizardControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testStep9BaseDataImportRequiresCsrfToken(): void
     {
         $this->client->request('POST', '/en/setup/step9-base-data/import');
@@ -287,6 +316,7 @@ class DeploymentWizardControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
+    #[Test]
     public function testStep10SampleDataImportRequiresCsrfToken(): void
     {
         $this->client->request('POST', '/en/setup/step10-sample-data/import');
@@ -294,6 +324,7 @@ class DeploymentWizardControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
+    #[Test]
     public function testStep10SampleDataSkipRequiresCsrfToken(): void
     {
         $this->client->request('POST', '/en/setup/step10-sample-data/skip');
@@ -303,6 +334,7 @@ class DeploymentWizardControllerTest extends WebTestCase
 
     // ========== NAVIGATION FLOW TESTS ==========
 
+    #[Test]
     public function testWizardNavigationFromIndex(): void
     {
         $this->client->request('GET', '/en/setup/');
@@ -325,6 +357,7 @@ class DeploymentWizardControllerTest extends WebTestCase
         }
     }
 
+    #[Test]
     public function testStep1ToStep2Navigation(): void
     {
         // Visit step 1

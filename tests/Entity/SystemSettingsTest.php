@@ -4,9 +4,11 @@ namespace App\Tests\Entity;
 
 use App\Entity\SystemSettings;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class SystemSettingsTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $setting = new SystemSettings();
@@ -16,6 +18,7 @@ class SystemSettingsTest extends TestCase
         $this->assertFalse($setting->isEncrypted());
     }
 
+    #[Test]
     public function testGettersAndSetters(): void
     {
         $setting = new SystemSettings();
@@ -30,6 +33,7 @@ class SystemSettingsTest extends TestCase
         $this->assertEquals('SMTP server hostname', $setting->getDescription());
     }
 
+    #[Test]
     public function testValueStorage(): void
     {
         $setting = new SystemSettings();
@@ -42,6 +46,7 @@ class SystemSettingsTest extends TestCase
         $this->assertEquals($value, $setting->getValue());
     }
 
+    #[Test]
     public function testSetValueUpdatesTimestamp(): void
     {
         $setting = new SystemSettings();
@@ -54,6 +59,7 @@ class SystemSettingsTest extends TestCase
         $this->assertInstanceOf(\DateTimeInterface::class, $setting->getUpdatedAt());
     }
 
+    #[Test]
     public function testEncryptedValue(): void
     {
         $setting = new SystemSettings();
@@ -68,6 +74,7 @@ class SystemSettingsTest extends TestCase
         $this->assertTrue($setting->isEncrypted());
     }
 
+    #[Test]
     public function testSetEncryptedValueUpdatesTimestamp(): void
     {
         $setting = new SystemSettings();
@@ -80,6 +87,7 @@ class SystemSettingsTest extends TestCase
         $this->assertInstanceOf(\DateTimeInterface::class, $setting->getUpdatedAt());
     }
 
+    #[Test]
     public function testUpdatedBy(): void
     {
         $setting = new SystemSettings();
@@ -90,6 +98,7 @@ class SystemSettingsTest extends TestCase
         $this->assertEquals('admin@example.com', $setting->getUpdatedBy());
     }
 
+    #[Test]
     public function testTimestamps(): void
     {
         $setting = new SystemSettings();

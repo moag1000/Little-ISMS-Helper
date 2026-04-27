@@ -6,6 +6,7 @@ use App\Service\FileUploadSecurityService;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use PHPUnit\Framework\Attributes\Test;
 
 class FileUploadSecurityServiceTest extends TestCase
 {
@@ -33,6 +34,7 @@ class FileUploadSecurityServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateUploadedFileAcceptsValidPdf(): void
     {
         $file = $this->createTestFile('test.pdf', $this->getPdfContent());
@@ -43,6 +45,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateUploadedFileAcceptsValidJpeg(): void
     {
         $file = $this->createTestFile('test.jpg', $this->getJpegContent());
@@ -52,6 +55,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateUploadedFileAcceptsValidPng(): void
     {
         $file = $this->createTestFile('test.png', $this->getPngContent());
@@ -61,6 +65,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateUploadedFileRejectsInvalidExtension(): void
     {
         $this->expectException(FileException::class);
@@ -71,6 +76,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->service->validateUploadedFile($file);
     }
 
+    #[Test]
     public function testValidateUploadedFileRejectsOversizedFile(): void
     {
         $this->expectException(FileException::class);
@@ -83,6 +89,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->service->validateUploadedFile($file);
     }
 
+    #[Test]
     public function testValidateUploadedFileRejectsMismatchedMimeType(): void
     {
         $this->expectException(FileException::class);
@@ -93,6 +100,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->service->validateUploadedFile($file);
     }
 
+    #[Test]
     public function testValidateUploadedFileRejectsMismatchedMagicBytes(): void
     {
         $this->expectException(FileException::class);
@@ -105,6 +113,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->service->validateUploadedFile($file);
     }
 
+    #[Test]
     public function testValidateUploadedFileAcceptsDocxFile(): void
     {
         // DOCX files are ZIP-based, so we create a minimal ZIP
@@ -115,6 +124,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateUploadedFileAcceptsXlsxFile(): void
     {
         $file = $this->createTestFile('spreadsheet.xlsx', $this->getZipContent());
@@ -124,6 +134,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateUploadedFileAcceptsTextFile(): void
     {
         $file = $this->createTestFile('document.txt', 'Plain text content');
@@ -133,6 +144,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateUploadedFileAcceptsCsvFile(): void
     {
         $file = $this->createTestFile('data.csv', "Name,Email\nJohn,john@example.com");
@@ -142,6 +154,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testGenerateSafeFilenameRemovesSpecialCharacters(): void
     {
         $file = $this->createTestFile('test@#$%^file.pdf', $this->getPdfContent());
@@ -156,6 +169,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertStringNotContainsString('#', $safeName);
     }
 
+    #[Test]
     public function testGenerateSafeFilenameLimitsLength(): void
     {
         $longName = str_repeat('a', 100) . '.pdf';
@@ -167,6 +181,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertLessThan(80, strlen($safeName));
     }
 
+    #[Test]
     public function testGenerateSafeFilenameAddsUniqueIdentifier(): void
     {
         $file = $this->createTestFile('test.pdf', $this->getPdfContent());
@@ -177,6 +192,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertNotEquals($name1, $name2);
     }
 
+    #[Test]
     public function testGenerateSafeFilenamePreservesExtension(): void
     {
         $extensions = ['pdf', 'jpg', 'png', 'docx', 'xlsx', 'txt'];
@@ -188,6 +204,7 @@ class FileUploadSecurityServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testGenerateSafeFilenameHandlesPathTraversalAttempt(): void
     {
         $file = $this->createTestFile('../../etc/passwd.pdf', $this->getPdfContent());
@@ -198,6 +215,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertStringNotContainsString('/', $safeName);
     }
 
+    #[Test]
     public function testGetMaxFileSizeReturnsCorrectValue(): void
     {
         $maxSize = $this->service->getMaxFileSize();
@@ -205,6 +223,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertEquals(10 * 1024 * 1024, $maxSize);
     }
 
+    #[Test]
     public function testGetAllowedExtensionsReturnsArray(): void
     {
         $extensions = $this->service->getAllowedExtensions();
@@ -217,6 +236,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertContains('xlsx', $extensions);
     }
 
+    #[Test]
     public function testGetAllowedMimeTypesReturnsArray(): void
     {
         $mimeTypes = $this->service->getAllowedMimeTypes();
@@ -228,6 +248,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertContains('text/plain', $mimeTypes);
     }
 
+    #[Test]
     public function testValidateUploadedFileRejectsPhpFile(): void
     {
         $this->expectException(FileException::class);
@@ -238,6 +259,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->service->validateUploadedFile($file);
     }
 
+    #[Test]
     public function testValidateUploadedFileRejectsShellScript(): void
     {
         $this->expectException(FileException::class);
@@ -248,6 +270,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->service->validateUploadedFile($file);
     }
 
+    #[Test]
     public function testValidateUploadedFileRejectsExecutable(): void
     {
         $this->expectException(FileException::class);
@@ -258,6 +281,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->service->validateUploadedFile($file);
     }
 
+    #[Test]
     public function testValidateUploadedFileAcceptsGifImage(): void
     {
         $file = $this->createTestFile('image.gif', $this->getGifContent());
@@ -267,6 +291,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateUploadedFileAcceptsZipArchive(): void
     {
         $file = $this->createTestFile('archive.zip', $this->getZipContent());
@@ -276,6 +301,7 @@ class FileUploadSecurityServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateUploadedFileHandlesInvalidFile(): void
     {
         $this->expectException(FileException::class);

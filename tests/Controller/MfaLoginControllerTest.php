@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for MfaLoginController
@@ -80,6 +81,7 @@ class MfaLoginControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testMfaChallengeRedirectsWithoutPendingMfa(): void
     {
         $this->client->request('GET', '/en/mfa-challenge');
@@ -87,12 +89,14 @@ class MfaLoginControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testMfaVerifyRequiresPost(): void
     {
         $this->client->request('GET', '/en/mfa-verify');
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    #[Test]
     public function testMfaVerifyWithoutSession(): void
     {
         $this->client->request('POST', '/en/mfa-verify', ['code' => '123456']);

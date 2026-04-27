@@ -15,6 +15,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class BackupServiceTest extends TestCase
@@ -54,6 +55,7 @@ class BackupServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testCreateBackupWithDefaultOptions(): void
     {
         $user = $this->createMockUser(1, 'test@example.com');
@@ -96,6 +98,7 @@ class BackupServiceTest extends TestCase
         $this->assertArrayHasKey('created_at', $backup['metadata']);
     }
 
+    #[Test]
     public function testCreateBackupExcludesAuditLogWhenRequested(): void
     {
         $user = $this->createMockUser(1, 'test@example.com');
@@ -123,6 +126,7 @@ class BackupServiceTest extends TestCase
         $this->assertArrayNotHasKey('AuditLog', $backup['data']);
     }
 
+    #[Test]
     public function testCreateBackupIncludesUserSessionsWhenRequested(): void
     {
         $userRepository = $this->createMock(EntityRepository::class);
@@ -145,6 +149,7 @@ class BackupServiceTest extends TestCase
         $this->assertIsArray($backup['data']);
     }
 
+    #[Test]
     public function testSaveBackupToFileCreatesDirectory(): void
     {
         $backup = [
@@ -159,6 +164,7 @@ class BackupServiceTest extends TestCase
         $this->assertStringEndsWith('.gz', $filepath);
     }
 
+    #[Test]
     public function testSaveBackupToFileWithCustomFilename(): void
     {
         $backup = [
@@ -174,6 +180,7 @@ class BackupServiceTest extends TestCase
         $this->assertFileExists($filepath);
     }
 
+    #[Test]
     public function testSaveBackupToFileThrowsExceptionOnJsonError(): void
     {
         $this->expectException(\RuntimeException::class);
@@ -194,6 +201,7 @@ class BackupServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testListBackupsReturnsEmptyArrayWhenNoBackups(): void
     {
         $backups = $this->service->listBackups();
@@ -202,6 +210,7 @@ class BackupServiceTest extends TestCase
         $this->assertEmpty($backups);
     }
 
+    #[Test]
     public function testListBackupsReturnsExistingBackups(): void
     {
         $backupDir = $this->projectDir . '/var/backups';
@@ -220,6 +229,7 @@ class BackupServiceTest extends TestCase
         $this->assertArrayHasKey('created_at', $backups[0]);
     }
 
+    #[Test]
     public function testLoadBackupFromFileThrowsExceptionWhenFileNotFound(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -228,6 +238,7 @@ class BackupServiceTest extends TestCase
         $this->service->loadBackupFromFile('/nonexistent/file.json');
     }
 
+    #[Test]
     public function testLoadBackupFromFileLoadsCompressedFile(): void
     {
         $backupData = [
@@ -247,6 +258,7 @@ class BackupServiceTest extends TestCase
         $this->assertEquals($backupData, $loaded);
     }
 
+    #[Test]
     public function testLoadBackupFromFileLoadsUncompressedFile(): void
     {
         $backupData = [
@@ -264,6 +276,7 @@ class BackupServiceTest extends TestCase
         $this->assertEquals($backupData, $loaded);
     }
 
+    #[Test]
     public function testLoadBackupFromFileThrowsExceptionOnInvalidJson(): void
     {
         $this->expectException(\RuntimeException::class);
@@ -275,6 +288,7 @@ class BackupServiceTest extends TestCase
         $this->service->loadBackupFromFile($filepath);
     }
 
+    #[Test]
     public function testLoadBackupFromFileThrowsExceptionOnDecompressionFailure(): void
     {
         $this->expectException(\RuntimeException::class);
@@ -286,6 +300,7 @@ class BackupServiceTest extends TestCase
         $this->service->loadBackupFromFile($filepath);
     }
 
+    #[Test]
     public function testSerializeEntitiesExcludesSensitiveFields(): void
     {
         $user = $this->createMockUser(1, 'test@example.com');
@@ -316,6 +331,7 @@ class BackupServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testCreateBackupHandlesEntityNotFound(): void
     {
         // This test verifies that the backup handles missing entity classes gracefully
@@ -338,6 +354,7 @@ class BackupServiceTest extends TestCase
         $this->assertArrayHasKey('metadata', $backup);
     }
 
+    #[Test]
     public function testCreateBackupLogsProgress(): void
     {
         $userRepository = $this->createMock(EntityRepository::class);
@@ -361,6 +378,7 @@ class BackupServiceTest extends TestCase
     // A3 — Schema-Version + Format-Version Tests                          //
     // ------------------------------------------------------------------ //
 
+    #[Test]
     public function testCreateBackupMetadataContainsFormatVersion(): void
     {
         $repo = $this->createMock(EntityRepository::class);
@@ -389,6 +407,7 @@ class BackupServiceTest extends TestCase
         $this->assertArrayHasKey('file_count',      $backup['metadata'], 'metadata must contain file_count');
     }
 
+    #[Test]
     public function testCreateBackupFilesIncludedFalseWhenNoFilesExist(): void
     {
         $repo = $this->createMock(EntityRepository::class);
@@ -415,6 +434,7 @@ class BackupServiceTest extends TestCase
     // A1 — ZIP detection / loading tests                                  //
     // ------------------------------------------------------------------ //
 
+    #[Test]
     public function testLoadBackupFromFileDetectsZipByMagicBytes(): void
     {
         if (!class_exists(\ZipArchive::class)) {
@@ -444,6 +464,7 @@ class BackupServiceTest extends TestCase
         $this->assertArrayHasKey('_extracted_file_count', $loaded['metadata'], 'Must have _extracted_file_count after ZIP load');
     }
 
+    #[Test]
     public function testListBackupsIncludesZipFiles(): void
     {
         $backupDir = $this->projectDir . '/var/backups';
@@ -473,6 +494,7 @@ class BackupServiceTest extends TestCase
      *
      * Assert: backup['data']['User'] contains only user A's row.
      */
+    #[Test]
     public function testTenantScopedBackupExcludesOtherTenants(): void
     {
         // Create tenant mocks
@@ -549,6 +571,7 @@ class BackupServiceTest extends TestCase
      *  - tenant_scope = [10, 11, 12]
      *  - resolveScopeIds returns all three IDs
      */
+    #[Test]
     public function testHoldingScopedBackupIncludesSubsidiaries(): void
     {
         $subsidiary1 = $this->createMock(Tenant::class);
@@ -598,6 +621,7 @@ class BackupServiceTest extends TestCase
      * C1 T3: Global backup (no tenant scope) must have scope_type = 'global'
      * and an empty tenant_scope array — existing tests must remain unaffected.
      */
+    #[Test]
     public function testGlobalBackupHasGlobalScopeType(): void
     {
         $repo = $this->createMock(EntityRepository::class);
@@ -682,6 +706,7 @@ class BackupServiceTest extends TestCase
     // P1 — SHA256 integrity seal                                          //
     // ------------------------------------------------------------------ //
 
+    #[Test]
     public function testCreateBackupContainsSha256InMetadata(): void
     {
         $repo = $this->createMock(EntityRepository::class);
@@ -702,6 +727,7 @@ class BackupServiceTest extends TestCase
         $this->assertMatchesRegularExpression('/^[0-9a-f]{64}$/', $backup['metadata']['sha256'], 'sha256 must be a 64-char hex string');
     }
 
+    #[Test]
     public function testSha256HashMatchesDataSection(): void
     {
         $repo = $this->createMock(EntityRepository::class);
@@ -747,6 +773,7 @@ class BackupServiceTest extends TestCase
         return $metadata;
     }
 
+    #[Test]
     public function testSystemSettingsWithSensitiveKeyIsEncryptedInBackup(): void
     {
         // Create a minimal mock entity object (stdClass works since metadata drives serialisation)
@@ -797,6 +824,7 @@ class BackupServiceTest extends TestCase
         $this->assertSame($sensitiveValue, $decrypted);
     }
 
+    #[Test]
     public function testSystemSettingsWithNonSensitiveKeyIsNotEncrypted(): void
     {
         $setting = new \stdClass();

@@ -4,9 +4,11 @@ namespace App\Tests\Entity;
 
 use App\Entity\ISMSContext;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ISMSContextTest extends TestCase
 {
+    #[Test]
     public function testNewISMSContextHasDefaultValues(): void
     {
         $context = new ISMSContext();
@@ -30,6 +32,7 @@ class ISMSContextTest extends TestCase
         $this->assertNull($context->getUpdatedAt());
     }
 
+    #[Test]
     public function testSetAndGetOrganizationName(): void
     {
         $context = new ISMSContext();
@@ -38,6 +41,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals('Example Corporation GmbH', $context->getOrganizationName());
     }
 
+    #[Test]
     public function testSetAndGetIsmsScope(): void
     {
         $context = new ISMSContext();
@@ -48,6 +52,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals($scope, $context->getIsmsScope());
     }
 
+    #[Test]
     public function testSetAndGetScopeExclusions(): void
     {
         $context = new ISMSContext();
@@ -58,6 +63,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals($exclusions, $context->getScopeExclusions());
     }
 
+    #[Test]
     public function testSetAndGetExternalIssues(): void
     {
         $context = new ISMSContext();
@@ -68,6 +74,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals($issues, $context->getExternalIssues());
     }
 
+    #[Test]
     public function testSetAndGetInternalIssues(): void
     {
         $context = new ISMSContext();
@@ -78,6 +85,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals($issues, $context->getInternalIssues());
     }
 
+    #[Test]
     public function testSetAndGetInterestedParties(): void
     {
         $context = new ISMSContext();
@@ -88,6 +96,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals($parties, $context->getInterestedParties());
     }
 
+    #[Test]
     public function testSetAndGetInterestedPartiesRequirements(): void
     {
         $context = new ISMSContext();
@@ -98,6 +107,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals($requirements, $context->getInterestedPartiesRequirements());
     }
 
+    #[Test]
     public function testSetAndGetLegalRequirements(): void
     {
         $context = new ISMSContext();
@@ -108,6 +118,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals($legal, $context->getLegalRequirements());
     }
 
+    #[Test]
     public function testSetAndGetRegulatoryRequirements(): void
     {
         $context = new ISMSContext();
@@ -118,6 +129,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals($regulatory, $context->getRegulatoryRequirements());
     }
 
+    #[Test]
     public function testSetAndGetContractualObligations(): void
     {
         $context = new ISMSContext();
@@ -128,6 +140,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals($obligations, $context->getContractualObligations());
     }
 
+    #[Test]
     public function testSetAndGetIsmsPolicy(): void
     {
         $context = new ISMSContext();
@@ -138,6 +151,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals($policy, $context->getIsmsPolicy());
     }
 
+    #[Test]
     public function testSetAndGetRolesAndResponsibilities(): void
     {
         $context = new ISMSContext();
@@ -148,6 +162,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals($roles, $context->getRolesAndResponsibilities());
     }
 
+    #[Test]
     public function testSetAndGetLastReviewDate(): void
     {
         $context = new ISMSContext();
@@ -158,6 +173,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals($date, $context->getLastReviewDate());
     }
 
+    #[Test]
     public function testSetAndGetNextReviewDate(): void
     {
         $context = new ISMSContext();
@@ -168,6 +184,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals($date, $context->getNextReviewDate());
     }
 
+    #[Test]
     public function testSetAndGetCreatedAt(): void
     {
         $context = new ISMSContext();
@@ -178,6 +195,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals($date, $context->getCreatedAt());
     }
 
+    #[Test]
     public function testSetAndGetUpdatedAt(): void
     {
         $context = new ISMSContext();
@@ -188,6 +206,7 @@ class ISMSContextTest extends TestCase
         $this->assertEquals($date, $context->getUpdatedAt());
     }
 
+    #[Test]
     public function testISMSContextCanStoreCompleteOrganizationProfile(): void
     {
         $context = new ISMSContext();

@@ -7,9 +7,11 @@ use App\Entity\Asset;
 use App\Entity\Risk;
 use App\Entity\Document;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class SupplierTest extends TestCase
 {
+    #[Test]
     public function testNewSupplierHasDefaultValues(): void
     {
         $supplier = new Supplier();
@@ -46,6 +48,7 @@ class SupplierTest extends TestCase
         $this->assertNull($supplier->getUpdatedAt());
     }
 
+    #[Test]
     public function testSetAndGetName(): void
     {
         $supplier = new Supplier();
@@ -54,6 +57,7 @@ class SupplierTest extends TestCase
         $this->assertEquals('Cloud Services Provider GmbH', $supplier->getName());
     }
 
+    #[Test]
     public function testSetAndGetContactDetails(): void
     {
         $supplier = new Supplier();
@@ -68,6 +72,7 @@ class SupplierTest extends TestCase
         $this->assertEquals('Musterstrasse 123, 12345 Berlin', $supplier->getAddress());
     }
 
+    #[Test]
     public function testSetAndGetServiceProvided(): void
     {
         $supplier = new Supplier();
@@ -76,6 +81,7 @@ class SupplierTest extends TestCase
         $this->assertEquals('Cloud infrastructure hosting and managed services', $supplier->getServiceProvided());
     }
 
+    #[Test]
     public function testSetAndGetCriticality(): void
     {
         $supplier = new Supplier();
@@ -87,6 +93,7 @@ class SupplierTest extends TestCase
         $this->assertEquals('low', $supplier->getCriticality());
     }
 
+    #[Test]
     public function testSetAndGetStatus(): void
     {
         $supplier = new Supplier();
@@ -98,6 +105,7 @@ class SupplierTest extends TestCase
         $this->assertEquals('terminated', $supplier->getStatus());
     }
 
+    #[Test]
     public function testSetAndGetSecurityScore(): void
     {
         $supplier = new Supplier();
@@ -106,6 +114,7 @@ class SupplierTest extends TestCase
         $this->assertEquals(85, $supplier->getSecurityScore());
     }
 
+    #[Test]
     public function testSetAndGetAssessmentDates(): void
     {
         $supplier = new Supplier();
@@ -119,6 +128,7 @@ class SupplierTest extends TestCase
         $this->assertEquals($nextAssessment, $supplier->getNextAssessmentDate());
     }
 
+    #[Test]
     public function testSetAndGetContractDates(): void
     {
         $supplier = new Supplier();
@@ -132,6 +142,7 @@ class SupplierTest extends TestCase
         $this->assertEquals($endDate, $supplier->getContractEndDate());
     }
 
+    #[Test]
     public function testSetAndGetCertifications(): void
     {
         $supplier = new Supplier();
@@ -146,6 +157,7 @@ class SupplierTest extends TestCase
         $this->assertEquals('ISO 27001, ISO 22301, SOC 2 Type II', $supplier->getCertifications());
     }
 
+    #[Test]
     public function testSetAndGetDPA(): void
     {
         $supplier = new Supplier();
@@ -158,6 +170,7 @@ class SupplierTest extends TestCase
         $this->assertEquals($dpaDate, $supplier->getDpaSignedDate());
     }
 
+    #[Test]
     public function testAddAndRemoveSupportedAsset(): void
     {
         $supplier = new Supplier();
@@ -172,6 +185,7 @@ class SupplierTest extends TestCase
         $this->assertCount(0, $supplier->getSupportedAssets());
     }
 
+    #[Test]
     public function testAddSupportedAssetDoesNotDuplicate(): void
     {
         $supplier = new Supplier();
@@ -184,6 +198,7 @@ class SupplierTest extends TestCase
         $this->assertCount(1, $supplier->getSupportedAssets());
     }
 
+    #[Test]
     public function testAddAndRemoveIdentifiedRisk(): void
     {
         $supplier = new Supplier();
@@ -197,6 +212,7 @@ class SupplierTest extends TestCase
         $this->assertCount(0, $supplier->getIdentifiedRisks());
     }
 
+    #[Test]
     public function testAddAndRemoveDocument(): void
     {
         $supplier = new Supplier();
@@ -210,6 +226,7 @@ class SupplierTest extends TestCase
         $this->assertCount(0, $supplier->getDocuments());
     }
 
+    #[Test]
     public function testCalculateRiskScoreWithHighCriticalityAndNoSecurityScore(): void
     {
         $supplier = new Supplier();
@@ -221,6 +238,7 @@ class SupplierTest extends TestCase
         $this->assertEquals(100, $supplier->calculateRiskScore());
     }
 
+    #[Test]
     public function testCalculateRiskScoreWithGoodSecurityScore(): void
     {
         $supplier = new Supplier();
@@ -233,6 +251,7 @@ class SupplierTest extends TestCase
         $this->assertEquals(23, $supplier->calculateRiskScore());
     }
 
+    #[Test]
     public function testCalculateRiskScoreIsCappedAt100(): void
     {
         $supplier = new Supplier();
@@ -247,6 +266,7 @@ class SupplierTest extends TestCase
         $this->assertEquals(100, $supplier->calculateRiskScore());
     }
 
+    #[Test]
     public function testIsAssessmentOverdueReturnsFalseWhenNotOverdue(): void
     {
         $supplier = new Supplier();
@@ -255,6 +275,7 @@ class SupplierTest extends TestCase
         $this->assertFalse($supplier->isAssessmentOverdue());
     }
 
+    #[Test]
     public function testIsAssessmentOverdueReturnsTrueWhenOverdue(): void
     {
         $supplier = new Supplier();
@@ -263,6 +284,7 @@ class SupplierTest extends TestCase
         $this->assertTrue($supplier->isAssessmentOverdue());
     }
 
+    #[Test]
     public function testIsAssessmentOverdueReturnsTrueWhenNeverAssessed(): void
     {
         $supplier = new Supplier();
@@ -270,6 +292,7 @@ class SupplierTest extends TestCase
         $this->assertTrue($supplier->isAssessmentOverdue());
     }
 
+    #[Test]
     public function testGetAssessmentStatusReturnsNotAssessedWhenNeverAssessed(): void
     {
         $supplier = new Supplier();
@@ -277,6 +300,7 @@ class SupplierTest extends TestCase
         $this->assertEquals('not_assessed', $supplier->getAssessmentStatus());
     }
 
+    #[Test]
     public function testGetAssessmentStatusReturnsOverdueWhenPastDue(): void
     {
         $supplier = new Supplier();
@@ -286,6 +310,7 @@ class SupplierTest extends TestCase
         $this->assertEquals('overdue', $supplier->getAssessmentStatus());
     }
 
+    #[Test]
     public function testGetAssessmentStatusReturnsDueSoonWhenWithin30Days(): void
     {
         $supplier = new Supplier();
@@ -295,6 +320,7 @@ class SupplierTest extends TestCase
         $this->assertEquals('due_soon', $supplier->getAssessmentStatus());
     }
 
+    #[Test]
     public function testGetAssessmentStatusReturnsCurrentWhenNotDueSoon(): void
     {
         $supplier = new Supplier();
@@ -304,6 +330,7 @@ class SupplierTest extends TestCase
         $this->assertEquals('current', $supplier->getAssessmentStatus());
     }
 
+    #[Test]
     public function testGetAggregatedRiskLevelReturnsUnknownWhenNoRisks(): void
     {
         $supplier = new Supplier();
@@ -311,6 +338,7 @@ class SupplierTest extends TestCase
         $this->assertEquals('unknown', $supplier->getAggregatedRiskLevel());
     }
 
+    #[Test]
     public function testSupportsCriticalAssetsReturnsFalseWhenNoAssets(): void
     {
         $supplier = new Supplier();
@@ -318,6 +346,7 @@ class SupplierTest extends TestCase
         $this->assertFalse($supplier->supportsCriticalAssets());
     }
 
+    #[Test]
     public function testGetComplianceStatusReturnsCorrectStatus(): void
     {
         $supplier = new Supplier();
@@ -334,6 +363,7 @@ class SupplierTest extends TestCase
         $this->assertTrue($status['overall_compliant']);
     }
 
+    #[Test]
     public function testGetComplianceStatusReturnsFalseWhenNotCompliant(): void
     {
         $supplier = new Supplier();

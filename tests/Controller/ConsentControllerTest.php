@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for ConsentController
@@ -143,12 +144,14 @@ class ConsentControllerTest extends WebTestCase
 
     // ========== INDEX TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/consent/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -158,12 +161,14 @@ class ConsentControllerTest extends WebTestCase
 
     // ========== NEW TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/consent/new');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewDisplaysFormForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -174,12 +179,14 @@ class ConsentControllerTest extends WebTestCase
 
     // ========== SHOW TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/consent/' . $this->testConsent->getId());
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysConsentForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -187,6 +194,7 @@ class ConsentControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testShowReturns404ForNonexistent(): void
     {
         $this->loginAsUser($this->testUser);
@@ -196,12 +204,14 @@ class ConsentControllerTest extends WebTestCase
 
     // ========== EDIT TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/consent/' . $this->testConsent->getId() . '/edit');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysFormOrRedirectsForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -216,12 +226,14 @@ class ConsentControllerTest extends WebTestCase
 
     // ========== VERIFY TESTS ==========
 
+    #[Test]
     public function testVerifyRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/consent/' . $this->testConsent->getId() . '/verify');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testVerifyRequiresPost(): void
     {
         $this->loginAsUser($this->testUser);
@@ -231,12 +243,14 @@ class ConsentControllerTest extends WebTestCase
 
     // ========== REVOKE TESTS ==========
 
+    #[Test]
     public function testRevokeRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/consent/' . $this->testConsent->getId() . '/revoke');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testRevokeRequiresPost(): void
     {
         $this->loginAsUser($this->testUser);
@@ -246,12 +260,14 @@ class ConsentControllerTest extends WebTestCase
 
     // ========== DELETE TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/consent/' . $this->testConsent->getId() . '/delete');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresPost(): void
     {
         $this->loginAsUser($this->testUser);

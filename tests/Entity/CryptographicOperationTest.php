@@ -7,9 +7,11 @@ use App\Entity\CryptographicOperation;
 use App\Entity\Tenant;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CryptographicOperationTest extends TestCase
 {
+    #[Test]
     public function testConstructor(): void
     {
         $operation = new CryptographicOperation();
@@ -20,6 +22,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertTrue($operation->isComplianceRelevant());
     }
 
+    #[Test]
     public function testOperationType(): void
     {
         $operation = new CryptographicOperation();
@@ -51,6 +54,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertEquals('key_deletion', $operation->getOperationType());
     }
 
+    #[Test]
     public function testAlgorithm(): void
     {
         $operation = new CryptographicOperation();
@@ -61,6 +65,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertEquals('AES-256-GCM', $operation->getAlgorithm());
     }
 
+    #[Test]
     public function testKeyLength(): void
     {
         $operation = new CryptographicOperation();
@@ -74,6 +79,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertNull($operation->getKeyLength());
     }
 
+    #[Test]
     public function testKeyIdentifier(): void
     {
         $operation = new CryptographicOperation();
@@ -87,6 +93,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertNull($operation->getKeyIdentifier());
     }
 
+    #[Test]
     public function testPurpose(): void
     {
         $operation = new CryptographicOperation();
@@ -100,6 +107,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertNull($operation->getPurpose());
     }
 
+    #[Test]
     public function testDataClassification(): void
     {
         $operation = new CryptographicOperation();
@@ -113,6 +121,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertNull($operation->getDataClassification());
     }
 
+    #[Test]
     public function testUserRelationship(): void
     {
         $operation = new CryptographicOperation();
@@ -127,6 +136,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertNull($operation->getUser());
     }
 
+    #[Test]
     public function testRelatedAssetRelationship(): void
     {
         $operation = new CryptographicOperation();
@@ -141,6 +151,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertNull($operation->getRelatedAsset());
     }
 
+    #[Test]
     public function testApplicationComponent(): void
     {
         $operation = new CryptographicOperation();
@@ -154,6 +165,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertNull($operation->getApplicationComponent());
     }
 
+    #[Test]
     public function testStatus(): void
     {
         $operation = new CryptographicOperation();
@@ -170,6 +182,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertEquals('success', $operation->getStatus());
     }
 
+    #[Test]
     public function testErrorMessage(): void
     {
         $operation = new CryptographicOperation();
@@ -183,6 +196,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertNull($operation->getErrorMessage());
     }
 
+    #[Test]
     public function testTimestamp(): void
     {
         $operation = new CryptographicOperation();
@@ -195,6 +209,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertEquals($newTimestamp, $operation->getTimestamp());
     }
 
+    #[Test]
     public function testIpAddress(): void
     {
         $operation = new CryptographicOperation();
@@ -211,6 +226,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertNull($operation->getIpAddress());
     }
 
+    #[Test]
     public function testMetadata(): void
     {
         $operation = new CryptographicOperation();
@@ -225,6 +241,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertNull($operation->getMetadata());
     }
 
+    #[Test]
     public function testComplianceRelevant(): void
     {
         $operation = new CryptographicOperation();
@@ -238,6 +255,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertTrue($operation->isComplianceRelevant());
     }
 
+    #[Test]
     public function testTenantRelationship(): void
     {
         $operation = new CryptographicOperation();
@@ -252,6 +270,7 @@ class CryptographicOperationTest extends TestCase
         $this->assertNull($operation->getTenant());
     }
 
+    #[Test]
     public function testFluentSetters(): void
     {
         $operation = new CryptographicOperation();

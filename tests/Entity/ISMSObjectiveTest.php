@@ -4,9 +4,11 @@ namespace App\Tests\Entity;
 
 use App\Entity\ISMSObjective;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ISMSObjectiveTest extends TestCase
 {
+    #[Test]
     public function testNewISMSObjectiveHasDefaultValues(): void
     {
         $objective = new ISMSObjective();
@@ -28,6 +30,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertNull($objective->getUpdatedAt());
     }
 
+    #[Test]
     public function testSetAndGetTitle(): void
     {
         $objective = new ISMSObjective();
@@ -36,6 +39,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals('Achieve 99.9% system availability', $objective->getTitle());
     }
 
+    #[Test]
     public function testSetAndGetDescription(): void
     {
         $objective = new ISMSObjective();
@@ -46,6 +50,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals($description, $objective->getDescription());
     }
 
+    #[Test]
     public function testSetAndGetCategory(): void
     {
         $objective = new ISMSObjective();
@@ -54,6 +59,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals('availability', $objective->getCategory());
     }
 
+    #[Test]
     public function testSetAndGetMeasurableIndicators(): void
     {
         $objective = new ISMSObjective();
@@ -64,6 +70,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals($indicators, $objective->getMeasurableIndicators());
     }
 
+    #[Test]
     public function testSetAndGetTargetValue(): void
     {
         $objective = new ISMSObjective();
@@ -72,6 +79,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals('99.9', $objective->getTargetValue());
     }
 
+    #[Test]
     public function testSetAndGetCurrentValue(): void
     {
         $objective = new ISMSObjective();
@@ -80,6 +88,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals('98.5', $objective->getCurrentValue());
     }
 
+    #[Test]
     public function testSetAndGetUnit(): void
     {
         $objective = new ISMSObjective();
@@ -88,6 +97,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals('percent', $objective->getUnit());
     }
 
+    #[Test]
     public function testSetAndGetResponsiblePerson(): void
     {
         $objective = new ISMSObjective();
@@ -96,6 +106,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals('IT Operations Manager', $objective->getResponsiblePerson());
     }
 
+    #[Test]
     public function testSetAndGetTargetDate(): void
     {
         $objective = new ISMSObjective();
@@ -106,6 +117,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals($date, $objective->getTargetDate());
     }
 
+    #[Test]
     public function testSetAndGetStatus(): void
     {
         $objective = new ISMSObjective();
@@ -123,6 +135,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals('cancelled', $objective->getStatus());
     }
 
+    #[Test]
     public function testSetAndGetProgressNotes(): void
     {
         $objective = new ISMSObjective();
@@ -133,6 +146,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals($notes, $objective->getProgressNotes());
     }
 
+    #[Test]
     public function testSetAndGetAchievedDate(): void
     {
         $objective = new ISMSObjective();
@@ -143,6 +157,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals($date, $objective->getAchievedDate());
     }
 
+    #[Test]
     public function testSetAndGetCreatedAt(): void
     {
         $objective = new ISMSObjective();
@@ -153,6 +168,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals($date, $objective->getCreatedAt());
     }
 
+    #[Test]
     public function testSetAndGetUpdatedAt(): void
     {
         $objective = new ISMSObjective();
@@ -163,6 +179,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals($date, $objective->getUpdatedAt());
     }
 
+    #[Test]
     public function testGetProgressPercentageReturnsZeroWhenNoValues(): void
     {
         $objective = new ISMSObjective();
@@ -170,6 +187,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals(0, $objective->getProgressPercentage());
     }
 
+    #[Test]
     public function testGetProgressPercentageReturnsZeroWhenTargetIsZero(): void
     {
         $objective = new ISMSObjective();
@@ -179,6 +197,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals(0, $objective->getProgressPercentage());
     }
 
+    #[Test]
     public function testGetProgressPercentageCalculatesCorrectly(): void
     {
         $objective = new ISMSObjective();
@@ -188,6 +207,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals(75, $objective->getProgressPercentage());
     }
 
+    #[Test]
     public function testGetProgressPercentageCanExceed100(): void
     {
         $objective = new ISMSObjective();
@@ -197,6 +217,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals(120, $objective->getProgressPercentage());
     }
 
+    #[Test]
     public function testGetProgressPercentageWorksWithDecimalValues(): void
     {
         $objective = new ISMSObjective();
@@ -207,6 +228,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals(98, $objective->getProgressPercentage());
     }
 
+    #[Test]
     public function testISMSObjectiveCanTrackCompleteLifecycle(): void
     {
         $objective = new ISMSObjective();
@@ -230,6 +252,7 @@ class ISMSObjectiveTest extends TestCase
         $this->assertEquals(150, $objective->getProgressPercentage());
     }
 
+    #[Test]
     public function testISMSObjectiveAllCategories(): void
     {
         $categories = [

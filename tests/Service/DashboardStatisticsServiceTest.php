@@ -19,6 +19,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Bundle\SecurityBundle\Security;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class DashboardStatisticsServiceTest extends TestCase
@@ -64,6 +65,7 @@ class DashboardStatisticsServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGetDashboardStatisticsWithEmptyData(): void
     {
         $this->assetRepository->method('findByTenant')->willReturn([]);
@@ -86,6 +88,7 @@ class DashboardStatisticsServiceTest extends TestCase
         $this->assertSame(0, $stats['controls_implemented']);
     }
 
+    #[Test]
     public function testCompliancePercentageCalculation(): void
     {
         $this->assetRepository->method('findByTenant')->willReturn([]);
@@ -113,6 +116,7 @@ class DashboardStatisticsServiceTest extends TestCase
         $this->assertSame(3, $stats['controls_implemented']);
     }
 
+    #[Test]
     public function testCriticalAssetsCounting(): void
     {
         $criticalAsset = $this->createMockAsset(4);
@@ -140,6 +144,7 @@ class DashboardStatisticsServiceTest extends TestCase
         $this->assertSame(2, $stats['assets_critical']); // Only confidentialityValue >= 4
     }
 
+    #[Test]
     public function testHighRisksCounting(): void
     {
         $highRisk = $this->createMockRisk(15);
@@ -166,6 +171,7 @@ class DashboardStatisticsServiceTest extends TestCase
         $this->assertSame(2, $stats['risks_high']); // Only inherentRiskLevel >= 12
     }
 
+    #[Test]
     public function testOpenIncidentsCounting(): void
     {
         $incident1 = $this->createMock(Incident::class);
@@ -193,6 +199,7 @@ class DashboardStatisticsServiceTest extends TestCase
         $this->assertSame(2, $stats['incidents_open']);
     }
 
+    #[Test]
     public function testCompliancePercentageRounding(): void
     {
         $this->assetRepository->method('findByTenant')->willReturn([]);
@@ -217,6 +224,7 @@ class DashboardStatisticsServiceTest extends TestCase
         $this->assertSame(33, $stats['compliancePercentage']);
     }
 
+    #[Test]
     public function testFullDashboardStatistics(): void
     {
         $asset1 = $this->createMockAsset(5);

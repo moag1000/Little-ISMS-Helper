@@ -5,6 +5,7 @@ namespace App\Tests\Command;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use PHPUnit\Framework\Attributes\Test;
 
 class SendReviewRemindersCommandTest extends KernelTestCase
 {
@@ -19,6 +20,7 @@ class SendReviewRemindersCommandTest extends KernelTestCase
         $this->commandTester = new CommandTester($command);
     }
 
+    #[Test]
     public function testExecute(): void
     {
         $this->commandTester->execute([]);
@@ -27,6 +29,7 @@ class SendReviewRemindersCommandTest extends KernelTestCase
         $this->assertContains($this->commandTester->getStatusCode(), [0, 1]);
     }
 
+    #[Test]
     public function testCommandHasCorrectName(): void
     {
         $kernel = self::bootKernel();
@@ -36,6 +39,7 @@ class SendReviewRemindersCommandTest extends KernelTestCase
         $this->assertSame('app:review:send-reminders', $command->getName());
     }
 
+    #[Test]
     public function testCommandHasDescription(): void
     {
         $kernel = self::bootKernel();

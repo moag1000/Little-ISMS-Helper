@@ -14,6 +14,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class RiskProbabilityAdjustmentServiceTest extends TestCase
@@ -33,6 +34,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testCalculateSuggestedProbabilityReturnsNullForInsufficientData(): void
     {
         $risk = $this->createRiskWithIncidents([]);
@@ -42,6 +44,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testCalculateSuggestedProbabilityReturnsNullForOneIncident(): void
     {
         $incident = $this->createClosedIncident(new DateTime('-60 days'));
@@ -52,6 +55,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testCalculateSuggestedProbabilityReturnsNullForRecentIncidents(): void
     {
         $incident1 = $this->createClosedIncident(new DateTime('-10 days'));
@@ -63,6 +67,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testCalculateSuggestedProbabilityReturnsNullForOpenIncidents(): void
     {
         $incident1 = $this->createIncident(new DateTime('-60 days'), 'open');
@@ -74,6 +79,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testCalculateSuggestedProbabilityReturnsNullWhenCurrentProbabilityHigher(): void
     {
         $incident1 = $this->createClosedIncident(new DateTime('-60 days'));
@@ -85,6 +91,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testCalculateSuggestedProbabilityReturnsSuggestionForFrequentIncidents(): void
     {
         $incidents = [];
@@ -101,6 +108,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $this->assertLessThanOrEqual(5, $result);
     }
 
+    #[Test]
     public function testAnalyzeProbabilityAdjustmentReturnsCompleteStructure(): void
     {
         $risk = $this->createRiskWithIncidents([], 3);
@@ -121,6 +129,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $this->assertFalse($result['should_adjust']);
     }
 
+    #[Test]
     public function testAnalyzeProbabilityAdjustmentFrequencyAnalysisStructure(): void
     {
         $incident1 = $this->createClosedIncident(new DateTime('-60 days'));
@@ -134,6 +143,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $this->assertArrayHasKey('last_3_months', $result['frequency_analysis']);
     }
 
+    #[Test]
     public function testAnalyzeProbabilityAdjustmentRationaleForInsufficientData(): void
     {
         $risk = $this->createRiskWithIncidents([], 2);
@@ -144,6 +154,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $this->assertStringContainsString('need at least 2', $result['rationale']);
     }
 
+    #[Test]
     public function testApplyProbabilityAdjustmentRequiresUserConfirmation(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -156,6 +167,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $this->assertNull($result['new_probability']);
     }
 
+    #[Test]
     public function testApplyProbabilityAdjustmentValidatesRange(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -170,6 +182,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $this->assertStringContainsString('must be between 1 and 5', $result['message']);
     }
 
+    #[Test]
     public function testApplyProbabilityAdjustmentSuccessfully(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -192,6 +205,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $this->assertStringContainsString('Probability updated', $result['message']);
     }
 
+    #[Test]
     public function testApplyProbabilityAdjustmentLogsWarningOnDecrease(): void
     {
         $risk = $this->createMock(Risk::class);
@@ -215,6 +229,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $this->assertTrue($result['success']);
     }
 
+    #[Test]
     public function testFindRisksRequiringAdjustmentReturnsEmptyWhenNoAdjustmentsNeeded(): void
     {
         $riskRepository = $this->createMock(EntityRepository::class);
@@ -229,6 +244,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    #[Test]
     public function testFindRisksRequiringAdjustmentSortsByProbabilityIncrease(): void
     {
         // Create risks with different adjustment needs

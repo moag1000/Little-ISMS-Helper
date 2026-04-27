@@ -13,6 +13,7 @@ use App\Service\Import\BsiProfileXmlImporter;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for the BSI-Profile-XML importer.
@@ -25,6 +26,7 @@ final class BsiProfileXmlImporterTest extends TestCase
 {
     private const FIXTURE_VALID = __DIR__ . '/../../Fixtures/import/bsi_profile_v1_sample.xml';
 
+    #[Test]
     public function testValidFixtureProducesRows(): void
     {
         $importer = $this->buildImporter(knownFrameworks: ['BSI_GRUNDSCHUTZ', 'ISO27001']);
@@ -38,6 +40,7 @@ final class BsiProfileXmlImporterTest extends TestCase
         self::assertNotContains('error', $statuses, 'Valid rows should not be flagged as error');
     }
 
+    #[Test]
     public function testMalformedXmlProducesHeaderError(): void
     {
         $path = $this->writeTempXml('<not-a-profile version="1.0"><foo/></not-a-profile>');
@@ -52,6 +55,7 @@ final class BsiProfileXmlImporterTest extends TestCase
         }
     }
 
+    #[Test]
     public function testOutOfRangePercentageIsFlagged(): void
     {
         $xml = <<<'XML'

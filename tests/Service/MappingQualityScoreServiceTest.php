@@ -7,6 +7,7 @@ use App\Repository\ComplianceMappingRepository;
 use App\Service\MappingQualityScoreService;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class MappingQualityScoreServiceTest extends TestCase
@@ -19,6 +20,7 @@ class MappingQualityScoreServiceTest extends TestCase
         return new MappingQualityScoreService($repo);
     }
 
+    #[Test]
     public function testHighQualityMappingScoresHigh(): void
     {
         $mapping = (new ComplianceMapping())
@@ -42,6 +44,7 @@ class MappingQualityScoreServiceTest extends TestCase
         $this->assertSame(10, $result['breakdown']['lifecycle']);
     }
 
+    #[Test]
     public function testEmptyMappingScoresLow(): void
     {
         $mapping = (new ComplianceMapping())
@@ -54,6 +57,7 @@ class MappingQualityScoreServiceTest extends TestCase
         $this->assertSame(2, $result['breakdown']['lifecycle']);  // draft = 2
     }
 
+    #[Test]
     public function testDeprecatedKillsLifecycleScore(): void
     {
         $mapping = (new ComplianceMapping())
@@ -72,6 +76,7 @@ class MappingQualityScoreServiceTest extends TestCase
         $this->assertLessThan(100, $result['mqs']);
     }
 
+    #[Test]
     public function testCommunityMethodologyScoresMidRange(): void
     {
         $mapping = (new ComplianceMapping())
@@ -92,6 +97,7 @@ class MappingQualityScoreServiceTest extends TestCase
         $this->assertSame(8, $result['breakdown']['methodology']);
     }
 
+    #[Test]
     public function testConfidenceMappingsScale(): void
     {
         $base = static fn() => (new ComplianceMapping())
@@ -109,6 +115,7 @@ class MappingQualityScoreServiceTest extends TestCase
         $this->assertGreaterThan($low['breakdown']['confidence'], $medium['breakdown']['confidence']);
     }
 
+    #[Test]
     public function testLifecycleScale(): void
     {
         $base = static fn() => (new ComplianceMapping())

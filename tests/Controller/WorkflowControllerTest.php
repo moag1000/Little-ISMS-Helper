@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for WorkflowController
@@ -185,6 +186,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== INDEX ACTION TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/workflow/');
@@ -192,6 +194,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexShowsWorkflowsForAuthenticatedUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -202,6 +205,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertSelectorExists('html');
     }
 
+    #[Test]
     public function testIndexDisplaysStatistics(): void
     {
         $this->loginAsUser($this->testUser);
@@ -213,6 +217,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== DEFINITIONS ACTION TESTS ==========
 
+    #[Test]
     public function testDefinitionsRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -222,6 +227,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDefinitionsShowsWorkflowsForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -234,6 +240,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== PENDING APPROVALS TESTS ==========
 
+    #[Test]
     public function testPendingRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/workflow/pending');
@@ -241,6 +248,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testPendingShowsApprovalsForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -252,6 +260,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== ACTIVE WORKFLOWS TESTS ==========
 
+    #[Test]
     public function testActiveRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/workflow/active');
@@ -259,6 +268,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testActiveShowsWorkflowsForUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -270,6 +280,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== OVERDUE WORKFLOWS TESTS ==========
 
+    #[Test]
     public function testOverdueRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -279,6 +290,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testOverdueShowsWorkflowsForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -290,6 +302,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== INSTANCE SHOW TESTS ==========
 
+    #[Test]
     public function testShowInstanceRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/workflow/instance/' . $this->testInstance->getId());
@@ -297,6 +310,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowInstanceDisplaysInstance(): void
     {
         $this->loginAsUser($this->testUser);
@@ -306,6 +320,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testShowInstanceReturns404ForNonexistent(): void
     {
         $this->loginAsUser($this->testUser);
@@ -317,6 +332,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== INSTANCE APPROVE TESTS ==========
 
+    #[Test]
     public function testApproveInstanceRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/workflow/instance/' . $this->testInstance->getId() . '/approve');
@@ -324,6 +340,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testApproveInstanceRequiresCsrfToken(): void
     {
         $this->loginAsUser($this->testUser);
@@ -338,6 +355,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== INSTANCE REJECT TESTS ==========
 
+    #[Test]
     public function testRejectInstanceRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/workflow/instance/' . $this->testInstance->getId() . '/reject');
@@ -345,6 +363,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testRejectInstanceRequiresComments(): void
     {
         $this->loginAsUser($this->testUser);
@@ -369,6 +388,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== INSTANCE CANCEL TESTS ==========
 
+    #[Test]
     public function testCancelInstanceRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -378,6 +398,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testCancelInstanceRequiresCsrfToken(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -392,6 +413,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== DEFINITION SHOW TESTS ==========
 
+    #[Test]
     public function testShowDefinitionRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -401,6 +423,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testShowDefinitionDisplaysWorkflow(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -412,6 +435,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== DEFINITION NEW TESTS ==========
 
+    #[Test]
     public function testNewDefinitionRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -421,6 +445,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testNewDefinitionDisplaysForm(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -433,6 +458,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== DEFINITION EDIT TESTS ==========
 
+    #[Test]
     public function testEditDefinitionRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -442,6 +468,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testEditDefinitionDisplaysForm(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -454,6 +481,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== DEFINITION DELETE TESTS ==========
 
+    #[Test]
     public function testDeleteDefinitionRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -463,6 +491,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteDefinitionRequiresCsrfToken(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -482,6 +511,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== DEFINITION TOGGLE TESTS ==========
 
+    #[Test]
     public function testToggleDefinitionRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -491,6 +521,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testToggleDefinitionTogglesActiveStatus(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -521,6 +552,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== BY ENTITY TESTS ==========
 
+    #[Test]
     public function testByEntityRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/workflow/by-entity/Risk/1');
@@ -528,6 +560,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testByEntityRedirectsToInstanceIfExists(): void
     {
         $this->loginAsUser($this->testUser);
@@ -540,6 +573,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== START WORKFLOW TESTS ==========
 
+    #[Test]
     public function testStartWorkflowRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -549,6 +583,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testStartWorkflowForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
@@ -561,6 +596,7 @@ class WorkflowControllerTest extends WebTestCase
 
     // ========== BUILDER TESTS ==========
 
+    #[Test]
     public function testBuilderRequiresAdminRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -570,6 +606,7 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testBuilderDisplaysForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);

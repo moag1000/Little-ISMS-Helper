@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class EnvironmentWriterTest extends TestCase
@@ -57,6 +58,7 @@ class EnvironmentWriterTest extends TestCase
     }
 
     // Test getEnvLocalPath()
+    #[Test]
     public function testGetEnvLocalPath(): void
     {
         $path = $this->service->getEnvLocalPath();
@@ -65,11 +67,13 @@ class EnvironmentWriterTest extends TestCase
     }
 
     // Test envLocalExists()
+    #[Test]
     public function testEnvLocalExistsReturnsFalseWhenFileDoesNotExist(): void
     {
         $this->assertFalse($this->service->envLocalExists());
     }
 
+    #[Test]
     public function testEnvLocalExistsReturnsTrueWhenFileExists(): void
     {
         file_put_contents($this->testEnvFile, "APP_ENV=prod\n");
@@ -78,6 +82,7 @@ class EnvironmentWriterTest extends TestCase
     }
 
     // Test writeEnvVariables()
+    #[Test]
     public function testWriteEnvVariablesCreatesNewFile(): void
     {
         $this->service->writeEnvVariables([
@@ -91,6 +96,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('APP_SECRET=test_secret_123', $content);
     }
 
+    #[Test]
     public function testWriteEnvVariablesMergesWithExistingFile(): void
     {
         file_put_contents($this->testEnvFile, "EXISTING_VAR=value1\n");
@@ -104,6 +110,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('NEW_VAR=value2', $content);
     }
 
+    #[Test]
     public function testWriteEnvVariablesOverwritesExistingValues(): void
     {
         file_put_contents($this->testEnvFile, "APP_ENV=dev\n");
@@ -117,6 +124,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringNotContainsString('APP_ENV=dev', $content);
     }
 
+    #[Test]
     public function testWriteEnvVariablesCreatesBackup(): void
     {
         file_put_contents($this->testEnvFile, "OLD_VALUE=123\n");
@@ -129,6 +137,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('OLD_VALUE=123', $backupContent);
     }
 
+    #[Test]
     public function testWriteEnvVariablesThrowsExceptionForInvalidVariableName(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -139,6 +148,7 @@ class EnvironmentWriterTest extends TestCase
         ]);
     }
 
+    #[Test]
     public function testWriteEnvVariablesThrowsExceptionForVariableNameWithSpaces(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -149,6 +159,7 @@ class EnvironmentWriterTest extends TestCase
         ]);
     }
 
+    #[Test]
     public function testWriteEnvVariablesThrowsExceptionForVariableNameStartingWithNumber(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -158,6 +169,7 @@ class EnvironmentWriterTest extends TestCase
         ]);
     }
 
+    #[Test]
     public function testWriteEnvVariablesAcceptsLowercaseVariableNames(): void
     {
         $this->service->writeEnvVariables([
@@ -168,6 +180,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('lowercase_var=value', $content);
     }
 
+    #[Test]
     public function testWriteEnvVariablesSetsCorrectFilePermissions(): void
     {
         $this->service->writeEnvVariables(['TEST' => 'value']);
@@ -176,6 +189,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame(0600, $perms);
     }
 
+    #[Test]
     public function testWriteEnvVariablesEscapesSpecialCharacters(): void
     {
         $this->service->writeEnvVariables([
@@ -187,6 +201,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('PASSWORD="p@ssw0rd!#$&*()"', $content);
     }
 
+    #[Test]
     public function testWriteEnvVariablesEscapesPercentSigns(): void
     {
         $this->service->writeEnvVariables([
@@ -198,6 +213,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('VALUE=test%%value%%here', $content);
     }
 
+    #[Test]
     public function testWriteEnvVariablesHandlesQuotesInValues(): void
     {
         $this->service->writeEnvVariables([
@@ -209,6 +225,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('QUOTED="value with \\"quotes\\""', $content);
     }
 
+    #[Test]
     public function testWriteEnvVariablesHandlesBackslashesInValues(): void
     {
         $this->service->writeEnvVariables([
@@ -220,6 +237,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('PATH=C:\\Windows\\System32', $content);
     }
 
+    #[Test]
     public function testWriteEnvVariablesEscapesBackslashesWhenQuoted(): void
     {
         $this->service->writeEnvVariables([
@@ -233,6 +251,7 @@ class EnvironmentWriterTest extends TestCase
     }
 
     // Test readEnvLocal()
+    #[Test]
     public function testReadEnvLocalReturnsEmptyArrayWhenFileDoesNotExist(): void
     {
         $vars = $this->service->readEnvLocal();
@@ -240,6 +259,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame([], $vars);
     }
 
+    #[Test]
     public function testReadEnvLocalParsesSimpleVariables(): void
     {
         file_put_contents($this->testEnvFile, "APP_ENV=prod\nAPP_DEBUG=0\n");
@@ -249,6 +269,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame(['APP_ENV' => 'prod', 'APP_DEBUG' => '0'], $vars);
     }
 
+    #[Test]
     public function testReadEnvLocalSkipsComments(): void
     {
         file_put_contents($this->testEnvFile, "# This is a comment\nAPP_ENV=prod\n# Another comment\n");
@@ -258,6 +279,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame(['APP_ENV' => 'prod'], $vars);
     }
 
+    #[Test]
     public function testReadEnvLocalSkipsEmptyLines(): void
     {
         file_put_contents($this->testEnvFile, "APP_ENV=prod\n\n\nAPP_DEBUG=0\n");
@@ -267,6 +289,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame(['APP_ENV' => 'prod', 'APP_DEBUG' => '0'], $vars);
     }
 
+    #[Test]
     public function testReadEnvLocalRemovesQuotesFromValues(): void
     {
         file_put_contents($this->testEnvFile, "QUOTED=\"value\"\nSINGLE='value2'\n");
@@ -276,6 +299,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame(['QUOTED' => 'value', 'SINGLE' => 'value2'], $vars);
     }
 
+    #[Test]
     public function testReadEnvLocalHandlesVariablesWithEqualsInValue(): void
     {
         file_put_contents($this->testEnvFile, "DATABASE_URL=mysql://user:pass@host/db?param=value\n");
@@ -286,6 +310,7 @@ class EnvironmentWriterTest extends TestCase
     }
 
     // Test writeDatabaseConfig() - MySQL/MariaDB
+    #[Test]
     public function testWriteDatabaseConfigMysql(): void
     {
         $config = [
@@ -311,6 +336,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('mysql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}', $vars['DATABASE_URL']);
     }
 
+    #[Test]
     public function testWriteDatabaseConfigMysqlWithUnixSocket(): void
     {
         $config = [
@@ -331,6 +357,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('unix_socket=/var/run/mysqld/mysqld.sock', $vars['DATABASE_URL']);
     }
 
+    #[Test]
     public function testWriteDatabaseConfigMysqlUsesDefaultPort(): void
     {
         $config = [
@@ -347,6 +374,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame('3306', $vars['DB_PORT']);
     }
 
+    #[Test]
     public function testWriteDatabaseConfigMysqlUsesDefaultValues(): void
     {
         $config = ['type' => 'mysql'];
@@ -361,6 +389,7 @@ class EnvironmentWriterTest extends TestCase
     }
 
     // Test writeDatabaseConfig() - PostgreSQL
+    #[Test]
     public function testWriteDatabaseConfigPostgresql(): void
     {
         $config = [
@@ -382,6 +411,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('postgresql://', $vars['DATABASE_URL']);
     }
 
+    #[Test]
     public function testWriteDatabaseConfigPostgresqlUsesDefaultPort(): void
     {
         $config = [
@@ -399,6 +429,7 @@ class EnvironmentWriterTest extends TestCase
     }
 
     // Test writeDatabaseConfig() - SQLite
+    #[Test]
     public function testWriteDatabaseConfigSqlite(): void
     {
         $config = [
@@ -415,6 +446,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertArrayNotHasKey('DB_USER', $vars);
     }
 
+    #[Test]
     public function testWriteDatabaseConfigSqliteUsesDefaultName(): void
     {
         $config = ['type' => 'sqlite'];
@@ -425,6 +457,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('little_isms_helper.db', $vars['DATABASE_URL']);
     }
 
+    #[Test]
     public function testWriteDatabaseConfigThrowsExceptionForUnsupportedType(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -433,6 +466,7 @@ class EnvironmentWriterTest extends TestCase
         $this->service->writeDatabaseConfig(['type' => 'oracle']);
     }
 
+    #[Test]
     public function testWriteDatabaseConfigPasswordWithSpecialCharacters(): void
     {
         $config = [
@@ -454,6 +488,7 @@ class EnvironmentWriterTest extends TestCase
     }
 
     // Test ensureAppSecret()
+    #[Test]
     public function testEnsureAppSecretGeneratesNewSecret(): void
     {
         $this->service->ensureAppSecret();
@@ -463,6 +498,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame(64, strlen($vars['APP_SECRET'])); // 32 bytes = 64 hex chars
     }
 
+    #[Test]
     public function testEnsureAppSecretDoesNotOverwriteExistingSecret(): void
     {
         file_put_contents($this->testEnvFile, "APP_SECRET=existing_secret_123\n");
@@ -473,6 +509,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame('existing_secret_123', $vars['APP_SECRET']);
     }
 
+    #[Test]
     public function testEnsureAppSecretGeneratesUniqueSecrets(): void
     {
         $this->service->ensureAppSecret();
@@ -500,6 +537,7 @@ class EnvironmentWriterTest extends TestCase
     }
 
     // Test enrichFromDatabaseUrl()
+    #[Test]
     public function testEnrichFromDatabaseUrlWithMysqlUrl(): void
     {
         $envVars = [
@@ -517,6 +555,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame('8.0', $enriched['DB_SERVER_VERSION']);
     }
 
+    #[Test]
     public function testEnrichFromDatabaseUrlWithPostgresqlUrl(): void
     {
         $envVars = [
@@ -533,6 +572,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame('secret', $enriched['DB_PASS']);
     }
 
+    #[Test]
     public function testEnrichFromDatabaseUrlWithUrlEncodedPassword(): void
     {
         $envVars = [
@@ -544,6 +584,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame('p@ss!', $enriched['DB_PASS']);
     }
 
+    #[Test]
     public function testEnrichFromDatabaseUrlWithVariableReferences(): void
     {
         $envVars = [
@@ -562,6 +603,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame('myuser', $enriched['DB_USER']);
     }
 
+    #[Test]
     public function testEnrichFromDatabaseUrlDoesNotOverwriteExistingValues(): void
     {
         $envVars = [
@@ -576,6 +618,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame('existing_host', $enriched['DB_HOST']);
     }
 
+    #[Test]
     public function testEnrichFromDatabaseUrlReturnsUnchangedWhenNoDatabaseUrl(): void
     {
         $envVars = ['APP_ENV' => 'prod'];
@@ -585,6 +628,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame($envVars, $enriched);
     }
 
+    #[Test]
     public function testEnrichFromDatabaseUrlHandlesUrlWithoutPort(): void
     {
         $envVars = [
@@ -599,6 +643,7 @@ class EnvironmentWriterTest extends TestCase
     }
 
     // Test getCurrentDatabaseConfig()
+    #[Test]
     public function testGetCurrentDatabaseConfigReturnsNullWhenNoFile(): void
     {
         $config = $this->service->getCurrentDatabaseConfig();
@@ -606,6 +651,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertNull($config);
     }
 
+    #[Test]
     public function testGetCurrentDatabaseConfigReturnsNullWhenNoDatabaseUrl(): void
     {
         file_put_contents($this->testEnvFile, "APP_ENV=prod\n");
@@ -615,6 +661,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertNull($config);
     }
 
+    #[Test]
     public function testGetCurrentDatabaseConfigParsesMysqlUrl(): void
     {
         file_put_contents($this->testEnvFile, "DATABASE_URL=mysql://user:pass@host:3306/dbname\n");
@@ -629,6 +676,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame('dbname', $config['name']);
     }
 
+    #[Test]
     public function testGetCurrentDatabaseConfigParsesPostgresqlUrl(): void
     {
         file_put_contents($this->testEnvFile, "DATABASE_URL=postgresql://pg:secret@db.host:5432/app\n");
@@ -643,6 +691,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame('app', $config['name']);
     }
 
+    #[Test]
     public function testGetCurrentDatabaseConfigParsesSqliteUrl(): void
     {
         file_put_contents($this->testEnvFile, "DATABASE_URL=sqlite:///var/app_db.db\n");
@@ -654,6 +703,7 @@ class EnvironmentWriterTest extends TestCase
     }
 
     // Test checkWritePermissions()
+    #[Test]
     public function testCheckWritePermissionsSucceedsWhenAllOk(): void
     {
         $result = $this->service->checkWritePermissions();
@@ -662,6 +712,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame('All filesystem permissions OK', $result['message']);
     }
 
+    #[Test]
     public function testCheckWritePermissionsSucceedsWhenFileExistsAndWritable(): void
     {
         file_put_contents($this->testEnvFile, "TEST=value\n");
@@ -672,6 +723,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertTrue($result['writable']);
     }
 
+    #[Test]
     public function testCheckWritePermissionsFailsWhenFileNotWritable(): void
     {
         file_put_contents($this->testEnvFile, "TEST=value\n");
@@ -686,6 +738,7 @@ class EnvironmentWriterTest extends TestCase
         chmod($this->testEnvFile, 0644);
     }
 
+    #[Test]
     public function testCheckWritePermissionsFailsWhenVarDirNotWritable(): void
     {
         $varDir = $this->testDir . '/var';
@@ -701,6 +754,7 @@ class EnvironmentWriterTest extends TestCase
     }
 
     // Test edge cases and error conditions
+    #[Test]
     public function testWriteEnvVariablesHandlesEmptyArray(): void
     {
         $this->service->writeEnvVariables([]);
@@ -710,6 +764,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('# LOCAL ENVIRONMENT CONFIGURATION', $content);
     }
 
+    #[Test]
     public function testWriteEnvVariablesHandlesEmptyStringValues(): void
     {
         $this->service->writeEnvVariables([
@@ -720,6 +775,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('EMPTY_VAR=', $content);
     }
 
+    #[Test]
     public function testWriteEnvVariablesHandlesLongValues(): void
     {
         $longValue = str_repeat('A', 1000);
@@ -731,6 +787,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame($longValue, $vars['LONG_VAR']);
     }
 
+    #[Test]
     public function testWriteEnvVariablesPreservesDatabaseUrlOrder(): void
     {
         $this->service->writeEnvVariables([
@@ -749,6 +806,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertLessThan($databaseUrlPos, $dbPassPos);
     }
 
+    #[Test]
     public function testReadEnvLocalHandlesMalformedLines(): void
     {
         file_put_contents($this->testEnvFile, "VALID=value\ninvalid line without equals\nANOTHER_VALID=value2\n");
@@ -761,6 +819,7 @@ class EnvironmentWriterTest extends TestCase
         ], $vars);
     }
 
+    #[Test]
     public function testDatabaseUrlIsQuotedInOutput(): void
     {
         $this->service->writeDatabaseConfig([
@@ -777,6 +836,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertMatchesRegularExpression('/DATABASE_URL="[^"]*"/', $content);
     }
 
+    #[Test]
     public function testWriteDatabaseConfigMariadbType(): void
     {
         $config = [
@@ -796,6 +856,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringContainsString('mysql://', $vars['DATABASE_URL']); // MariaDB uses mysql protocol
     }
 
+    #[Test]
     public function testUnixSocketIgnoredWhenEmpty(): void
     {
         $config = [
@@ -815,6 +876,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringNotContainsString('unix_socket', $vars['DATABASE_URL']);
     }
 
+    #[Test]
     public function testUnixSocketIgnoredWhenZero(): void
     {
         $config = [
@@ -834,6 +896,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertStringNotContainsString('unix_socket', $vars['DATABASE_URL']);
     }
 
+    #[Test]
     public function testEnrichFromDatabaseUrlHandlesMariadbScheme(): void
     {
         $envVars = [
@@ -845,6 +908,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertSame('mysql', $enriched['DB_TYPE']); // MariaDB maps to mysql
     }
 
+    #[Test]
     public function testFileHeaderContainsTimestamp(): void
     {
         $this->service->writeEnvVariables(['TEST' => 'value']);
@@ -854,6 +918,7 @@ class EnvironmentWriterTest extends TestCase
         $this->assertMatchesRegularExpression('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $content);
     }
 
+    #[Test]
     public function testMultipleConsecutiveWritesWork(): void
     {
         $this->service->writeEnvVariables(['VAR1' => 'value1']);

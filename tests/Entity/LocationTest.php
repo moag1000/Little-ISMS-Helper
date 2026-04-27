@@ -4,9 +4,11 @@ namespace App\Tests\Entity;
 
 use App\Entity\Location;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class LocationTest extends TestCase
 {
+    #[Test]
     public function testNewLocationHasDefaultValues(): void
     {
         $location = new Location();
@@ -39,6 +41,7 @@ class LocationTest extends TestCase
         $this->assertNull($location->getUpdatedAt());
     }
 
+    #[Test]
     public function testSetAndGetName(): void
     {
         $location = new Location();
@@ -47,6 +50,7 @@ class LocationTest extends TestCase
         $this->assertEquals('Server Room A', $location->getName());
     }
 
+    #[Test]
     public function testSetAndGetLocationType(): void
     {
         $location = new Location();
@@ -58,6 +62,7 @@ class LocationTest extends TestCase
         $this->assertEquals('building', $location->getLocationType());
     }
 
+    #[Test]
     public function testSetAndGetCode(): void
     {
         $location = new Location();
@@ -66,6 +71,7 @@ class LocationTest extends TestCase
         $this->assertEquals('DC-01-SR-A', $location->getCode());
     }
 
+    #[Test]
     public function testSetAndGetDescription(): void
     {
         $location = new Location();
@@ -74,6 +80,7 @@ class LocationTest extends TestCase
         $this->assertEquals('Primary server room with climate control', $location->getDescription());
     }
 
+    #[Test]
     public function testSetAndGetAddress(): void
     {
         $location = new Location();
@@ -88,6 +95,7 @@ class LocationTest extends TestCase
         $this->assertEquals('12345', $location->getPostalCode());
     }
 
+    #[Test]
     public function testSetAndGetParentLocation(): void
     {
         $building = new Location();
@@ -100,6 +108,7 @@ class LocationTest extends TestCase
         $this->assertSame($building, $floor->getParentLocation());
     }
 
+    #[Test]
     public function testAddAndRemoveChildLocation(): void
     {
         $building = new Location();
@@ -119,6 +128,7 @@ class LocationTest extends TestCase
         $this->assertCount(0, $building->getChildLocations());
     }
 
+    #[Test]
     public function testAddChildLocationDoesNotDuplicate(): void
     {
         $building = new Location();
@@ -130,6 +140,7 @@ class LocationTest extends TestCase
         $this->assertCount(1, $building->getChildLocations());
     }
 
+    #[Test]
     public function testSetAndGetSecurityLevel(): void
     {
         $location = new Location();
@@ -141,6 +152,7 @@ class LocationTest extends TestCase
         $this->assertEquals('high_security', $location->getSecurityLevel());
     }
 
+    #[Test]
     public function testSetAndGetSecurityFeatures(): void
     {
         $location = new Location();
@@ -155,6 +167,7 @@ class LocationTest extends TestCase
         $this->assertTrue($location->isCameraMonitored());
     }
 
+    #[Test]
     public function testSetAndGetAccessControlSystem(): void
     {
         $location = new Location();
@@ -163,6 +176,7 @@ class LocationTest extends TestCase
         $this->assertEquals('Biometric + Badge System', $location->getAccessControlSystem());
     }
 
+    #[Test]
     public function testSetAndGetResponsiblePerson(): void
     {
         $location = new Location();
@@ -171,6 +185,7 @@ class LocationTest extends TestCase
         $this->assertEquals('Facility Manager', $location->getResponsiblePerson());
     }
 
+    #[Test]
     public function testSetAndGetCapacity(): void
     {
         $location = new Location();
@@ -179,6 +194,7 @@ class LocationTest extends TestCase
         $this->assertEquals(50, $location->getCapacity());
     }
 
+    #[Test]
     public function testSetAndGetSquareMeters(): void
     {
         $location = new Location();
@@ -187,6 +203,7 @@ class LocationTest extends TestCase
         $this->assertEquals('250.50', $location->getSquareMeters());
     }
 
+    #[Test]
     public function testSetAndGetActive(): void
     {
         $location = new Location();
@@ -197,6 +214,7 @@ class LocationTest extends TestCase
         $this->assertFalse($location->isActive());
     }
 
+    #[Test]
     public function testSetAndGetNotes(): void
     {
         $location = new Location();
@@ -205,6 +223,7 @@ class LocationTest extends TestCase
         $this->assertEquals('24/7 monitoring, restricted access after 18:00', $location->getNotes());
     }
 
+    #[Test]
     public function testGetFullPathWithNoParent(): void
     {
         $location = new Location();
@@ -213,6 +232,7 @@ class LocationTest extends TestCase
         $this->assertEquals('Building A', $location->getFullPath());
     }
 
+    #[Test]
     public function testGetFullPathWithParent(): void
     {
         $building = new Location();
@@ -225,6 +245,7 @@ class LocationTest extends TestCase
         $this->assertEquals('Building A > Floor 2', $floor->getFullPath());
     }
 
+    #[Test]
     public function testGetFullPathWithMultipleLevels(): void
     {
         $building = new Location();
@@ -241,6 +262,7 @@ class LocationTest extends TestCase
         $this->assertEquals('Building A > Floor 2 > Room 201', $room->getFullPath());
     }
 
+    #[Test]
     public function testGetDisplayNameWithoutCode(): void
     {
         $location = new Location();
@@ -249,6 +271,7 @@ class LocationTest extends TestCase
         $this->assertEquals('Server Room', $location->getDisplayName());
     }
 
+    #[Test]
     public function testGetDisplayNameWithCode(): void
     {
         $location = new Location();
@@ -258,6 +281,7 @@ class LocationTest extends TestCase
         $this->assertEquals('Server Room [SR-01]', $location->getDisplayName());
     }
 
+    #[Test]
     public function testIsHighSecurityReturnsTrueForSecureLevel(): void
     {
         $location = new Location();
@@ -266,6 +290,7 @@ class LocationTest extends TestCase
         $this->assertTrue($location->isHighSecurity());
     }
 
+    #[Test]
     public function testIsHighSecurityReturnsTrueForHighSecurityLevel(): void
     {
         $location = new Location();
@@ -274,6 +299,7 @@ class LocationTest extends TestCase
         $this->assertTrue($location->isHighSecurity());
     }
 
+    #[Test]
     public function testIsHighSecurityReturnsFalseForLowerLevels(): void
     {
         $location = new Location();
@@ -288,6 +314,7 @@ class LocationTest extends TestCase
         $this->assertFalse($location->isHighSecurity());
     }
 
+    #[Test]
     public function testLocationHierarchyCanBeBuilt(): void
     {
         // Create a complete hierarchy
@@ -328,6 +355,7 @@ class LocationTest extends TestCase
         $this->assertFalse($office->isHighSecurity());
     }
 
+    #[Test]
     public function testLocationCanStoreCompleteDatacenterInformation(): void
     {
         $datacenter = new Location();

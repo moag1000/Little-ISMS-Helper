@@ -50,6 +50,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Environment;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class ComplianceControllerTest extends TestCase
@@ -133,6 +134,7 @@ class ComplianceControllerTest extends TestCase
         $this->controller->setContainer($container);
     }
 
+    #[Test]
     public function testIndexReturnsComplianceOverview(): void
     {
         $frameworks = [$this->createFramework(1, 'ISO 27001', 'ISO27001')];
@@ -162,6 +164,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
+    #[Test]
     public function testFrameworkDashboardReturnsFrameworkDetails(): void
     {
         $framework = $this->createFramework(1, 'ISO 27001', 'ISO27001');
@@ -198,6 +201,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
+    #[Test]
     public function testFrameworkDashboardThrowsNotFoundForInvalidFramework(): void
     {
         $this->complianceFrameworkRepository->method('find')
@@ -210,6 +214,7 @@ class ComplianceControllerTest extends TestCase
         $this->controller->frameworkDashboard(999);
     }
 
+    #[Test]
     public function testGapAnalysisReturnsGapsForFramework(): void
     {
         $framework = $this->createFramework(1, 'ISO 27001', 'ISO27001');
@@ -236,6 +241,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
+    #[Test]
     public function testGapAnalysisThrowsNotFoundForInvalidFramework(): void
     {
         $this->complianceFrameworkRepository->method('find')
@@ -248,6 +254,7 @@ class ComplianceControllerTest extends TestCase
         $this->controller->gapAnalysis(999);
     }
 
+    #[Test]
     public function testDataReuseInsightsReturnsAnalysis(): void
     {
         $framework = $this->createFramework(1, 'ISO 27001', 'ISO27001');
@@ -274,6 +281,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
+    #[Test]
     public function testDataReuseInsightsThrowsNotFoundForInvalidFramework(): void
     {
         $this->complianceFrameworkRepository->method('find')
@@ -286,6 +294,7 @@ class ComplianceControllerTest extends TestCase
         $this->controller->dataReuseInsights(999);
     }
 
+    #[Test]
     public function testExportDataReuseReturnsCSVResponse(): void
     {
         $framework = $this->createFramework(1, 'ISO 27001', 'ISO27001');
@@ -317,6 +326,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertStringContainsString('text/csv', $response->headers->get('Content-Type'));
     }
 
+    #[Test]
     public function testExportDataReuseThrowsNotFoundForInvalidFramework(): void
     {
         $request = new Request();
@@ -333,6 +343,7 @@ class ComplianceControllerTest extends TestCase
         $this->controller->exportDataReuse($request, 999);
     }
 
+    #[Test]
     public function testCrossFrameworkMappingsReturnsOverview(): void
     {
         $frameworks = [
@@ -357,6 +368,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
+    #[Test]
     public function testTransitiveComplianceReturnsAnalysis(): void
     {
         $frameworks = [
@@ -377,6 +389,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
+    #[Test]
     public function testCompareFrameworksReturnsComparison(): void
     {
         $framework1 = $this->createFramework(1, 'ISO 27001', 'ISO27001');
@@ -406,6 +419,7 @@ class ComplianceControllerTest extends TestCase
     // Note: testAssessFramework is omitted as it requires flash messages
     // which need FlashBagAwareSessionInterface and are better tested with functional tests
 
+    #[Test]
     public function testAssessFrameworkThrowsNotFoundForInvalidFramework(): void
     {
         $this->complianceFrameworkRepository->method('find')
@@ -418,6 +432,7 @@ class ComplianceControllerTest extends TestCase
         $this->controller->assessFramework(999);
     }
 
+    #[Test]
     public function testManageFrameworksRedirectsToAdminIndex(): void
     {
         $response = $this->controller->manageFrameworks();
@@ -427,6 +442,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertTrue($response->isRedirect());
     }
 
+    #[Test]
     public function testCreateComparisonMappingsWithValidCSRFToken(): void
     {
         $request = new Request(
@@ -453,6 +469,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertFalse($data['success']);
     }
 
+    #[Test]
     public function testCreateComparisonMappingsWithInvalidCSRFToken(): void
     {
         $request = new Request(
@@ -477,6 +494,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertSame('Invalid CSRF token', $data['message']);
     }
 
+    #[Test]
     public function testCreateComparisonMappingsWithMissingFrameworkIds(): void
     {
         $request = new Request(
@@ -500,6 +518,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertFalse($data['success']);
     }
 
+    #[Test]
     public function testCreateComparisonMappingsWithSameFrameworkIds(): void
     {
         $request = new Request(
@@ -523,6 +542,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertFalse($data['success']);
     }
 
+    #[Test]
     public function testCreateComparisonMappingsWithNonExistentFrameworks(): void
     {
         $request = new Request(
@@ -548,6 +568,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertFalse($data['success']);
     }
 
+    #[Test]
     public function testCreateCrossFrameworkMappingsWithValidCSRFToken(): void
     {
         $iso27001 = $this->createFramework(1, 'ISO 27001', 'ISO27001');
@@ -581,6 +602,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertFalse($data['success']);
     }
 
+    #[Test]
     public function testCreateCrossFrameworkMappingsWithInvalidCSRFToken(): void
     {
         $request = new Request(
@@ -605,6 +627,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertSame('Invalid CSRF token', $data['message']);
     }
 
+    #[Test]
     public function testCreateCrossFrameworkMappingsWithoutISO27001(): void
     {
         $request = new Request(
@@ -631,6 +654,7 @@ class ComplianceControllerTest extends TestCase
         $this->assertFalse($data['success']);
     }
 
+    #[Test]
     public function testCreateCrossFrameworkMappingsWithInsufficientFrameworks(): void
     {
         $iso27001 = $this->createFramework(1, 'ISO 27001', 'ISO27001');

@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class ISMSContextServiceTest extends TestCase
@@ -43,6 +44,7 @@ class ISMSContextServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGetCurrentContextReturnsExistingContextForTenant(): void
     {
         $tenant = $this->createTenant(1, 'Test Corp');
@@ -59,6 +61,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertSame($context, $result);
     }
 
+    #[Test]
     public function testGetCurrentContextCreatesNewContextForTenant(): void
     {
         $tenant = $this->createTenant(1, 'New Corp');
@@ -79,6 +82,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertSame('New Corp', $result->getOrganizationName());
     }
 
+    #[Test]
     public function testGetCurrentContextWithoutUserTenant(): void
     {
         $context = new ISMSContext();
@@ -92,6 +96,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertSame($context, $result);
     }
 
+    #[Test]
     public function testSaveContextSyncsOrganizationName(): void
     {
         $tenant = $this->createTenant(1, 'Updated Corp');
@@ -107,6 +112,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertNotNull($context->getUpdatedAt());
     }
 
+    #[Test]
     public function testSaveContextPersistsNewContext(): void
     {
         $context = new ISMSContext();
@@ -118,6 +124,7 @@ class ISMSContextServiceTest extends TestCase
         $this->service->saveContext($context);
     }
 
+    #[Test]
     public function testSyncOrganizationNameFromTenant(): void
     {
         $tenant = $this->createTenant(1, 'Synced Corp');
@@ -130,6 +137,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertSame('Synced Corp', $context->getOrganizationName());
     }
 
+    #[Test]
     public function testSyncOrganizationNameWithoutTenant(): void
     {
         $context = new ISMSContext();
@@ -140,6 +148,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertSame('Original Name', $context->getOrganizationName());
     }
 
+    #[Test]
     public function testCalculateCompletenessAllFieldsFilled(): void
     {
         $context = $this->createFullContext();
@@ -149,6 +158,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertSame(100, $completeness);
     }
 
+    #[Test]
     public function testCalculateCompletenessNoFieldsFilled(): void
     {
         $context = new ISMSContext();
@@ -158,6 +168,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertSame(0, $completeness);
     }
 
+    #[Test]
     public function testCalculateCompletenessPartiallyFilled(): void
     {
         $context = new ISMSContext();
@@ -172,6 +183,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertSame(36, $completeness);
     }
 
+    #[Test]
     public function testIsReviewDueWithNullDate(): void
     {
         $context = new ISMSContext();
@@ -180,6 +192,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertTrue($this->service->isReviewDue($context));
     }
 
+    #[Test]
     public function testIsReviewDueWithPastDate(): void
     {
         $context = new ISMSContext();
@@ -188,6 +201,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertTrue($this->service->isReviewDue($context));
     }
 
+    #[Test]
     public function testIsReviewDueWithFutureDate(): void
     {
         $context = new ISMSContext();
@@ -196,6 +210,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertFalse($this->service->isReviewDue($context));
     }
 
+    #[Test]
     public function testIsReviewDueWithTodayDate(): void
     {
         $context = new ISMSContext();
@@ -204,6 +219,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertTrue($this->service->isReviewDue($context));
     }
 
+    #[Test]
     public function testGetDaysUntilReviewWithNullDate(): void
     {
         $context = new ISMSContext();
@@ -212,6 +228,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertNull($this->service->getDaysUntilReview($context));
     }
 
+    #[Test]
     public function testGetDaysUntilReviewWithFutureDate(): void
     {
         $context = new ISMSContext();
@@ -223,6 +240,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertLessThanOrEqual(10, $days);
     }
 
+    #[Test]
     public function testGetDaysUntilReviewWithPastDate(): void
     {
         $context = new ISMSContext();
@@ -233,6 +251,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertLessThan(0, $days);
     }
 
+    #[Test]
     public function testScheduleNextReviewFromToday(): void
     {
         $context = new ISMSContext();
@@ -249,6 +268,7 @@ class ISMSContextServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testScheduleNextReviewFromLastReview(): void
     {
         $context = new ISMSContext();
@@ -261,6 +281,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertSame('2025-01-01', $nextReview->format('Y-m-d'));
     }
 
+    #[Test]
     public function testScheduleNextReviewFromCustomDate(): void
     {
         $context = new ISMSContext();
@@ -272,6 +293,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertSame('2025-06-15', $nextReview->format('Y-m-d'));
     }
 
+    #[Test]
     public function testValidateContextWithAllRequiredFields(): void
     {
         $context = new ISMSContext();
@@ -285,6 +307,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertEmpty($errors);
     }
 
+    #[Test]
     public function testValidateContextWithMissingRequiredFields(): void
     {
         $context = new ISMSContext();
@@ -298,6 +321,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertStringContainsString('roles_and_responsibilities_required', $errors[3]);
     }
 
+    #[Test]
     public function testValidateContextWithPartialFields(): void
     {
         $context = new ISMSContext();
@@ -309,6 +333,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertCount(2, $errors);
     }
 
+    #[Test]
     public function testGetEffectiveContextWithoutCorporateService(): void
     {
         $translator = $this->createMock(TranslatorInterface::class);
@@ -329,6 +354,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertSame($context, $result);
     }
 
+    #[Test]
     public function testGetEffectiveContextWithoutTenant(): void
     {
         $context = new ISMSContext();
@@ -339,6 +365,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertSame($context, $result);
     }
 
+    #[Test]
     public function testGetEffectiveContextWithInheritedContext(): void
     {
         $tenant = $this->createTenant(1, 'Child Corp');
@@ -356,6 +383,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertSame($parentContext, $result);
     }
 
+    #[Test]
     public function testCanEditContextOwnContext(): void
     {
         $tenant = $this->createTenant(1, 'My Corp');
@@ -371,6 +399,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testCanEditContextInheritedContext(): void
     {
         $parentTenant = $this->createTenant(1, 'Parent Corp');
@@ -389,6 +418,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testCanEditContextWithoutSecurity(): void
     {
         $translator = $this->createMock(TranslatorInterface::class);
@@ -408,6 +438,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testGetContextInheritanceInfoOwnContext(): void
     {
         $tenant = $this->createTenant(1, 'My Corp');
@@ -424,6 +455,7 @@ class ISMSContextServiceTest extends TestCase
         $this->assertSame($context, $info['ownContext']);
     }
 
+    #[Test]
     public function testGetContextInheritanceInfoInheritedContext(): void
     {
         $parentTenant = $this->createTenant(1, 'Parent Corp');

@@ -12,6 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for RiskRepository
@@ -108,6 +109,7 @@ class RiskRepositoryTest extends TestCase
     /**
      * Test that the repository can be instantiated correctly
      */
+    #[Test]
     public function testRepositoryInstantiation(): void
     {
         $this->assertInstanceOf(RiskRepository::class, $this->repository);
@@ -119,6 +121,7 @@ class RiskRepositoryTest extends TestCase
      *
      * This verifies the repository's API surface without executing queries
      */
+    #[Test]
     public function testRepositoryHasExpectedMethods(): void
     {
         $this->assertTrue(method_exists($this->repository, 'findHighRisks'));
@@ -133,6 +136,7 @@ class RiskRepositoryTest extends TestCase
     /**
      * Test findHighRisks method signature
      */
+    #[Test]
     public function testFindHighRisksSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findHighRisks');
@@ -165,6 +169,7 @@ class RiskRepositoryTest extends TestCase
     /**
      * Test countByTreatmentStrategy method signature
      */
+    #[Test]
     public function testCountByTreatmentStrategySignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'countByTreatmentStrategy');
@@ -185,6 +190,7 @@ class RiskRepositoryTest extends TestCase
     /**
      * Test findByTenant method signature
      */
+    #[Test]
     public function testFindByTenantSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByTenant');
@@ -207,6 +213,7 @@ class RiskRepositoryTest extends TestCase
      *
      * Verifies the second parameter is optional and nullable (deprecated)
      */
+    #[Test]
     public function testFindByTenantIncludingParentSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByTenantIncludingParent');
@@ -234,6 +241,7 @@ class RiskRepositoryTest extends TestCase
     /**
      * Test getRiskStatsByTenant method signature
      */
+    #[Test]
     public function testGetRiskStatsByTenantSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'getRiskStatsByTenant');
@@ -256,6 +264,7 @@ class RiskRepositoryTest extends TestCase
      * While we can't test actual database results, we can verify the expected
      * structure is documented in the method's PHPDoc
      */
+    #[Test]
     public function testGetRiskStatsByTenantReturnStructure(): void
     {
         $method = new \ReflectionMethod($this->repository, 'getRiskStatsByTenant');
@@ -273,6 +282,7 @@ class RiskRepositoryTest extends TestCase
      *
      * This tests the business logic used in getRiskStatsByTenant
      */
+    #[Test]
     public function testRiskScoreCalculationLogic(): void
     {
         // High risk: score >= 12
@@ -302,6 +312,7 @@ class RiskRepositoryTest extends TestCase
     /**
      * Test risk classification thresholds match ISO 27005 standards
      */
+    #[Test]
     public function testRiskClassificationThresholds(): void
     {
         // Default high risk threshold from findHighRisks
@@ -323,6 +334,7 @@ class RiskRepositoryTest extends TestCase
     /**
      * Test findHighRisksByTenant method signature
      */
+    #[Test]
     public function testFindHighRisksByTenantSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findHighRisksByTenant');
@@ -355,6 +367,7 @@ class RiskRepositoryTest extends TestCase
     /**
      * Test findByTenantIncludingSubsidiaries method signature
      */
+    #[Test]
     public function testFindByTenantIncludingSubsidiariesSignature(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByTenantIncludingSubsidiaries');
@@ -375,6 +388,7 @@ class RiskRepositoryTest extends TestCase
     /**
      * Test that the repository uses correct entity class
      */
+    #[Test]
     public function testRepositoryUsesCorrectEntityClass(): void
     {
         $reflection = new \ReflectionClass($this->repository);
@@ -391,6 +405,7 @@ class RiskRepositoryTest extends TestCase
     /**
      * Test that all methods mention multi-tenant support in documentation
      */
+    #[Test]
     public function testMethodsDocumentTenantSupport(): void
     {
         // Methods that should explicitly handle tenants
@@ -415,6 +430,7 @@ class RiskRepositoryTest extends TestCase
     /**
      * Test hierarchical query method documentation mentions ancestors
      */
+    #[Test]
     public function testFindByTenantIncludingParentDocumentation(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByTenantIncludingParent');
@@ -428,6 +444,7 @@ class RiskRepositoryTest extends TestCase
     /**
      * Test subsidiary aggregation method documentation mentions subsidiaries
      */
+    #[Test]
     public function testFindByTenantIncludingSubsidiariesDocumentation(): void
     {
         $method = new \ReflectionMethod($this->repository, 'findByTenantIncludingSubsidiaries');
@@ -441,6 +458,7 @@ class RiskRepositoryTest extends TestCase
     /**
      * Test that risk score thresholds are consistent across methods
      */
+    #[Test]
     public function testConsistentThresholdDefaults(): void
     {
         // Both methods should use the same default threshold
@@ -466,6 +484,7 @@ class RiskRepositoryTest extends TestCase
      *
      * The countByTreatmentStrategy method should handle all valid treatment strategies
      */
+    #[Test]
     public function testTreatmentStrategyValues(): void
     {
         // These are the valid values from Risk entity's @Assert\Choice constraint

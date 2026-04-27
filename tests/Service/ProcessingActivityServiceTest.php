@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use RuntimeException;
 use Symfony\Bundle\SecurityBundle\Security;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class ProcessingActivityServiceTest extends TestCase
@@ -61,6 +62,7 @@ class ProcessingActivityServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testCreateSetsRequiredFields(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -79,6 +81,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->assertSame($processingActivity, $result);
     }
 
+    #[Test]
     public function testUpdateSetsUpdatedBy(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -95,6 +98,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->assertSame($processingActivity, $result);
     }
 
+    #[Test]
     public function testDeleteRemovesAndFlushes(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -107,6 +111,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->service->delete($processingActivity);
     }
 
+    #[Test]
     public function testFindAllReturnsTenantActivities(): void
     {
         $activities = [
@@ -124,6 +129,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->assertSame($activities, $result);
     }
 
+    #[Test]
     public function testFindActiveReturnsTenantActiveActivities(): void
     {
         $activities = [$this->createMock(ProcessingActivity::class)];
@@ -137,6 +143,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->assertCount(1, $result);
     }
 
+    #[Test]
     public function testValidateReturnsErrorsForMissingRequiredFields(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -162,6 +169,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->assertContains('Legal basis for processing is required (Art. 6 GDPR)', $errors);
     }
 
+    #[Test]
     public function testValidateReturnsEmptyForCompleteActivity(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -185,6 +193,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->assertEmpty($errors);
     }
 
+    #[Test]
     public function testValidateRequiresLegitimateInterestsDetails(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -208,6 +217,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->assertContains('Legitimate interests must be detailed and documented (Art. 6(1)(f))', $errors);
     }
 
+    #[Test]
     public function testValidateRequiresDPIAWhenRequired(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -231,6 +241,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->assertContains('Data Protection Impact Assessment (DPIA) is required for this processing activity (Art. 35)', $errors);
     }
 
+    #[Test]
     public function testIsCompliantReturnsTrueForValidActivity(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -253,6 +264,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testGenerateComplianceReportReturnsCorrectStructure(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -295,6 +307,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->assertSame(85, $report['completeness_percentage']);
     }
 
+    #[Test]
     public function testActivateThrowsExceptionForInvalidActivity(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -318,6 +331,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->service->activate($processingActivity);
     }
 
+    #[Test]
     public function testMarkForReviewSetsNextReviewDate(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -334,6 +348,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->service->markForReview($processingActivity, $reviewDate);
     }
 
+    #[Test]
     public function testMarkForReviewDefaultsTo12Months(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -351,6 +366,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->service->markForReview($processingActivity);
     }
 
+    #[Test]
     public function testCompleteReviewUpdatesReviewDates(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -364,6 +380,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->service->completeReview($processingActivity);
     }
 
+    #[Test]
     public function testArchiveSetsStatusAndEndDate(): void
     {
         $processingActivity = $this->createMock(ProcessingActivity::class);
@@ -378,6 +395,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->service->archive($processingActivity);
     }
 
+    #[Test]
     public function testCalculateComplianceScoreReturnsCorrectStructure(): void
     {
         $this->processingActivityRepository->method('findByTenant')
@@ -398,6 +416,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->assertSame(0, $result['total_activities']);
     }
 
+    #[Test]
     public function testCalculateComplianceScoreWithActivities(): void
     {
         $activity1 = $this->createMock(ProcessingActivity::class);

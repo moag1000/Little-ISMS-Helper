@@ -7,6 +7,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ComplianceMappingControllerTest extends WebTestCase
 {
@@ -72,12 +73,14 @@ class ComplianceMappingControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/compliance/mapping/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -85,12 +88,14 @@ class ComplianceMappingControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/compliance/mapping/new');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewDisplaysFormForUser(): void
     {
         $this->client->loginUser($this->testUser);

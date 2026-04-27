@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for DataBreachController
@@ -213,6 +214,7 @@ class DataBreachControllerTest extends WebTestCase
 
     // ========== INDEX ACTION TESTS ==========
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/data-breach');
@@ -220,6 +222,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexShowsBreachesForAuthenticatedUser(): void
     {
         $this->loginAsUser($this->testUser);
@@ -230,6 +233,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertSelectorExists('html');
     }
 
+    #[Test]
     public function testIndexFiltersByDraftStatus(): void
     {
         $this->loginAsUser($this->testUser);
@@ -239,6 +243,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersByUnderAssessmentStatus(): void
     {
         $this->loginAsUser($this->testUser);
@@ -248,6 +253,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersByAuthorityNotifiedStatus(): void
     {
         $this->loginAsUser($this->testUser);
@@ -257,6 +263,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersByClosedStatus(): void
     {
         $this->loginAsUser($this->testUser);
@@ -266,6 +273,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersByHighRisk(): void
     {
         $this->loginAsUser($this->testUser);
@@ -275,6 +283,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersByCriticalRisk(): void
     {
         $this->loginAsUser($this->testUser);
@@ -284,6 +293,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersByOverdue(): void
     {
         $this->loginAsUser($this->testUser);
@@ -293,6 +303,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersByPendingAuthority(): void
     {
         $this->loginAsUser($this->testUser);
@@ -302,6 +313,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersByPendingSubjects(): void
     {
         $this->loginAsUser($this->testUser);
@@ -311,6 +323,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersBySpecialCategories(): void
     {
         $this->loginAsUser($this->testUser);
@@ -320,6 +333,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexFiltersByIncomplete(): void
     {
         $this->loginAsUser($this->testUser);
@@ -331,6 +345,7 @@ class DataBreachControllerTest extends WebTestCase
 
     // ========== DASHBOARD ACTION TESTS ==========
 
+    #[Test]
     public function testDashboardRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/data-breach/dashboard');
@@ -342,6 +357,7 @@ class DataBreachControllerTest extends WebTestCase
      * Note: Dashboard test skipped - requires incident fixture setup
      * The template accesses breach.incident.detectedAt which causes errors when no incident is linked
      */
+    #[Test]
     public function testDashboardDisplaysStatistics(): void
     {
         $this->markTestSkipped('Dashboard requires incident fixtures to avoid template errors');
@@ -349,6 +365,7 @@ class DataBreachControllerTest extends WebTestCase
 
     // ========== SHOW ACTION TESTS ==========
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/data-breach/' . $this->testBreach->getId());
@@ -356,6 +373,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysBreachDetails(): void
     {
         $this->loginAsUser($this->testUser);
@@ -366,6 +384,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertSelectorTextContains('html', 'Test Data Breach');
     }
 
+    #[Test]
     public function testShowReturns404ForNonexistentBreach(): void
     {
         $this->loginAsUser($this->testUser);
@@ -377,6 +396,7 @@ class DataBreachControllerTest extends WebTestCase
 
     // ========== NEW ACTION TESTS ==========
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/data-breach/new');
@@ -384,6 +404,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewRequiresAuditorRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -393,6 +414,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testNewDisplaysFormForAuditor(): void
     {
         $this->loginAsUser($this->auditorUser);
@@ -405,6 +427,7 @@ class DataBreachControllerTest extends WebTestCase
 
     // ========== EDIT ACTION TESTS ==========
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/data-breach/' . $this->testBreach->getId() . '/edit');
@@ -412,6 +435,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditRequiresAuditorRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -421,6 +445,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testEditDisplaysFormForAuditor(): void
     {
         $this->loginAsUser($this->auditorUser);
@@ -431,6 +456,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="data_breach"]');
     }
 
+    #[Test]
     public function testEditRedirectsForNonDraftStatus(): void
     {
         // Set breach to closed status
@@ -444,6 +470,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditReturns404ForNonexistentBreach(): void
     {
         $this->loginAsUser($this->auditorUser);
@@ -455,6 +482,7 @@ class DataBreachControllerTest extends WebTestCase
 
     // ========== DELETE ACTION TESTS ==========
 
+    #[Test]
     public function testDeleteRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/data-breach/' . $this->testBreach->getId() . '/delete');
@@ -462,6 +490,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDeleteRequiresManagerRole(): void
     {
         $this->loginAsUser($this->auditorUser);
@@ -475,6 +504,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteRedirectsWithManagerRole(): void
     {
         $this->loginAsUser($this->managerUser);
@@ -489,6 +519,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects('/en/data-breach');
     }
 
+    #[Test]
     public function testDeleteRequiresValidCsrfToken(): void
     {
         $this->loginAsUser($this->managerUser);
@@ -508,6 +539,7 @@ class DataBreachControllerTest extends WebTestCase
 
     // ========== WORKFLOW ACTION TESTS ==========
 
+    #[Test]
     public function testSubmitForAssessmentRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/data-breach/' . $this->testBreach->getId() . '/submit-for-assessment');
@@ -515,6 +547,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testSubmitForAssessmentRequiresAuditorRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -528,6 +561,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testSubmitForAssessmentRedirectsForAuditor(): void
     {
         $this->loginAsUser($this->auditorUser);
@@ -541,6 +575,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNotifyAuthorityRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/data-breach/' . $this->testBreach->getId() . '/notify-authority');
@@ -548,6 +583,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNotifyAuthorityRequiresAuditorRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -563,6 +599,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testNotifyAuthorityRequiresParameters(): void
     {
         $this->loginAsUser($this->auditorUser);
@@ -578,6 +615,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNotifySubjectsRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/data-breach/' . $this->testBreach->getId() . '/notify-subjects');
@@ -585,6 +623,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNotifySubjectsRequiresAuditorRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -600,6 +639,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testNotifySubjectsRequiresParameters(): void
     {
         $this->loginAsUser($this->auditorUser);
@@ -615,6 +655,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testSubjectNotificationExemptionRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/data-breach/' . $this->testBreach->getId() . '/subject-notification-exemption');
@@ -622,6 +663,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testSubjectNotificationExemptionRequiresAuditorRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -636,6 +678,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testSubjectNotificationExemptionRequiresReason(): void
     {
         $this->loginAsUser($this->auditorUser);
@@ -651,6 +694,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testCloseRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/data-breach/' . $this->testBreach->getId() . '/close');
@@ -658,6 +702,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testCloseRequiresAuditorRole(): void
     {
         $this->loginAsUser($this->testUser);
@@ -671,6 +716,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testReopenRequiresAuthentication(): void
     {
         $this->client->request('POST', '/en/data-breach/' . $this->testBreach->getId() . '/reopen');
@@ -678,6 +724,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testReopenRequiresManagerRole(): void
     {
         $this->loginAsUser($this->auditorUser);
@@ -692,6 +739,7 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testReopenRequiresReason(): void
     {
         // First close the breach
@@ -713,6 +761,7 @@ class DataBreachControllerTest extends WebTestCase
 
     // ========== EXPORT PDF ACTION TESTS ==========
 
+    #[Test]
     public function testExportPdfRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/data-breach/' . $this->testBreach->getId() . '/export/pdf');
@@ -724,11 +773,13 @@ class DataBreachControllerTest extends WebTestCase
      * Note: PDF export test skipped - requires incident fixture setup
      * The template accesses breach.incident.detectedAt which causes errors when no incident is linked
      */
+    #[Test]
     public function testExportPdfGeneratesPdfFile(): void
     {
         $this->markTestSkipped('PDF export requires incident fixtures to avoid template errors');
     }
 
+    #[Test]
     public function testExportPdfReturns404ForNonexistentBreach(): void
     {
         $this->loginAsUser($this->testUser);
@@ -740,6 +791,7 @@ class DataBreachControllerTest extends WebTestCase
 
     // ========== MULTI-TENANCY TESTS ==========
 
+    #[Test]
     public function testIndexRespectsMultiTenancyIsolation(): void
     {
         $uniqueId = uniqid('other_', true);
@@ -781,6 +833,7 @@ class DataBreachControllerTest extends WebTestCase
 
     // ========== CSRF VALIDATION TESTS ==========
 
+    #[Test]
     public function testWorkflowActionsRequireValidCsrfToken(): void
     {
         $this->loginAsUser($this->auditorUser);

@@ -16,6 +16,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class SessionManagerTest extends TestCase
@@ -44,6 +45,7 @@ class SessionManagerTest extends TestCase
         );
     }
 
+    #[Test]
     public function testCreateSessionWhenTableNotAvailable(): void
     {
         $this->mockTableNotExists();
@@ -54,6 +56,7 @@ class SessionManagerTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testCreateSessionSuccessfully(): void
     {
         $this->mockTableExists();
@@ -72,6 +75,7 @@ class SessionManagerTest extends TestCase
         $this->assertInstanceOf(UserSession::class, $result);
     }
 
+    #[Test]
     public function testCreateSessionEnforcesSessionLimit(): void
     {
         $this->mockTableExists();
@@ -104,6 +108,7 @@ class SessionManagerTest extends TestCase
         $this->assertInstanceOf(UserSession::class, $result);
     }
 
+    #[Test]
     public function testCreateSessionHandlesException(): void
     {
         $this->mockTableExists();
@@ -124,6 +129,7 @@ class SessionManagerTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testUpdateActivityWhenTableNotAvailable(): void
     {
         $this->mockTableNotExists();
@@ -134,6 +140,7 @@ class SessionManagerTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testUpdateActivitySuccessfully(): void
     {
         $this->mockTableExists();
@@ -148,6 +155,7 @@ class SessionManagerTest extends TestCase
         $this->service->updateActivity('session123');
     }
 
+    #[Test]
     public function testUpdateActivityDoesNotUpdateInactiveSession(): void
     {
         $this->mockTableExists();
@@ -161,6 +169,7 @@ class SessionManagerTest extends TestCase
         $this->service->updateActivity('session123');
     }
 
+    #[Test]
     public function testEndSessionSuccessfully(): void
     {
         $this->mockTableExists();
@@ -192,6 +201,7 @@ class SessionManagerTest extends TestCase
         $this->service->endSession('session123', 'logout');
     }
 
+    #[Test]
     public function testTerminateSessionSuccessfully(): void
     {
         $this->mockTableExists();
@@ -211,6 +221,7 @@ class SessionManagerTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testTerminateSessionReturnsFalseWhenNotFound(): void
     {
         $this->mockTableExists();
@@ -222,6 +233,7 @@ class SessionManagerTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testTerminateSessionReturnsFalseWhenInactive(): void
     {
         $this->mockTableExists();
@@ -236,6 +248,7 @@ class SessionManagerTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testTerminateUserSessionsSuccessfully(): void
     {
         $this->mockTableExists();
@@ -263,6 +276,7 @@ class SessionManagerTest extends TestCase
         $this->assertEquals(3, $count);
     }
 
+    #[Test]
     public function testTerminateUserSessionsReturnsZeroWhenTableNotAvailable(): void
     {
         $this->mockTableNotExists();
@@ -273,6 +287,7 @@ class SessionManagerTest extends TestCase
         $this->assertEquals(0, $count);
     }
 
+    #[Test]
     public function testIsSessionValidReturnsTrueForActiveSession(): void
     {
         $this->mockTableExists();
@@ -288,6 +303,7 @@ class SessionManagerTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testIsSessionValidReturnsFalseForInactiveSession(): void
     {
         $this->mockTableExists();
@@ -302,6 +318,7 @@ class SessionManagerTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testIsSessionValidReturnsFalseForExpiredSession(): void
     {
         $this->mockTableExists();
@@ -323,6 +340,7 @@ class SessionManagerTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testIsSessionValidReturnsFalseWhenNotFound(): void
     {
         $this->mockTableExists();
@@ -334,6 +352,7 @@ class SessionManagerTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testGetUserActiveSessionsReturnsArray(): void
     {
         $this->mockTableExists();
@@ -351,6 +370,7 @@ class SessionManagerTest extends TestCase
         $this->assertCount(2, $result);
     }
 
+    #[Test]
     public function testGetUserActiveSessionsReturnsEmptyWhenTableNotAvailable(): void
     {
         $this->mockTableNotExists();
@@ -362,6 +382,7 @@ class SessionManagerTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    #[Test]
     public function testGetAllActiveSessionsReturnsArray(): void
     {
         $this->mockTableExists();
@@ -379,6 +400,7 @@ class SessionManagerTest extends TestCase
         $this->assertCount(3, $result);
     }
 
+    #[Test]
     public function testGetAllActiveSessionsWithFilters(): void
     {
         $this->mockTableExists();
@@ -395,6 +417,7 @@ class SessionManagerTest extends TestCase
         $this->assertCount(1, $result);
     }
 
+    #[Test]
     public function testGetStatisticsReturnsData(): void
     {
         $this->mockTableExists();
@@ -414,6 +437,7 @@ class SessionManagerTest extends TestCase
         $this->assertEquals(75, $result['inactive_sessions']);
     }
 
+    #[Test]
     public function testGetStatisticsReturnsZerosWhenTableNotAvailable(): void
     {
         $this->mockTableNotExists();
@@ -425,6 +449,7 @@ class SessionManagerTest extends TestCase
         $this->assertEquals(0, $result['inactive_sessions']);
     }
 
+    #[Test]
     public function testCleanupExpiredSessionsReturnsCount(): void
     {
         $this->mockTableExists();
@@ -436,6 +461,7 @@ class SessionManagerTest extends TestCase
         $this->assertEquals(15, $count);
     }
 
+    #[Test]
     public function testCleanupExpiredSessionsReturnsZeroWhenTableNotAvailable(): void
     {
         $this->mockTableNotExists();
@@ -445,6 +471,7 @@ class SessionManagerTest extends TestCase
         $this->assertEquals(0, $count);
     }
 
+    #[Test]
     public function testGetMaxConcurrentSessionsReturnsCorrectValue(): void
     {
         $max = $this->service->getMaxConcurrentSessions();
@@ -452,6 +479,7 @@ class SessionManagerTest extends TestCase
         $this->assertEquals(5, $max);
     }
 
+    #[Test]
     public function testGetSessionLifetimeReturnsCorrectValue(): void
     {
         $lifetime = $this->service->getSessionLifetime();
@@ -459,6 +487,7 @@ class SessionManagerTest extends TestCase
         $this->assertEquals(3600, $lifetime);
     }
 
+    #[Test]
     public function testCreateSessionCachesTableExistence(): void
     {
         $connection = $this->createMock(Connection::class);

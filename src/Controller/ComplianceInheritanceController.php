@@ -88,9 +88,9 @@ final class ComplianceInheritanceController extends AbstractController
     }
 
     #[Route('/activate/{frameworkCode}', name: 'activate', methods: ['POST'])]
+    #[IsGranted(ComplianceInheritanceVoter::CREATE_SUGGESTIONS)]
     public function activate(string $frameworkCode): Response
     {
-        $this->denyAccessUnlessGranted(ComplianceInheritanceVoter::CREATE_SUGGESTIONS);
 
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
@@ -114,9 +114,9 @@ final class ComplianceInheritanceController extends AbstractController
     }
 
     #[Route('/bulk-confirm/{frameworkCode}', name: 'bulk_confirm', methods: ['POST'])]
+    #[IsGranted(ComplianceInheritanceVoter::CONFIRM)]
     public function bulkConfirm(string $frameworkCode, Request $request): Response
     {
-        $this->denyAccessUnlessGranted(ComplianceInheritanceVoter::CONFIRM);
 
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {

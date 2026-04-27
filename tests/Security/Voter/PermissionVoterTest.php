@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class PermissionVoterTest extends TestCase
@@ -51,6 +52,7 @@ class PermissionVoterTest extends TestCase
         return new UsernamePasswordToken($user, 'main', $user->getRoles());
     }
 
+    #[Test]
     public function testSuperAdminHasAllPermissions(): void
     {
         $user = $this->createUser(['ROLE_SUPER_ADMIN']);
@@ -61,6 +63,7 @@ class PermissionVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testSuperAdminCanBackupRestore(): void
     {
         $user = $this->createUser(['ROLE_SUPER_ADMIN']);
@@ -71,6 +74,7 @@ class PermissionVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testAdminHasAdminAccess(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -81,6 +85,7 @@ class PermissionVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testAdminCannotBackupRestore(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -91,6 +96,7 @@ class PermissionVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testUserWithPermissionCanAccess(): void
     {
         $user = $this->createUser(['ROLE_USER'], [PermissionVoter::USER_VIEW]);
@@ -101,6 +107,7 @@ class PermissionVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserWithoutPermissionCannotAccess(): void
     {
         $user = $this->createUser(['ROLE_USER'], []);
@@ -111,6 +118,7 @@ class PermissionVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testVoterAbstainsForUnsupportedAttribute(): void
     {
         $user = $this->createUser(['ROLE_USER']);
@@ -121,6 +129,7 @@ class PermissionVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_ABSTAIN, $result);
     }
 
+    #[Test]
     public function testGetAllPermissionsReturnsCategories(): void
     {
         $permissions = PermissionVoter::getAllPermissions();
@@ -138,6 +147,7 @@ class PermissionVoterTest extends TestCase
         $this->assertArrayHasKey('backup', $permissions);
     }
 
+    #[Test]
     public function testAdminPermissionsExist(): void
     {
         $permissions = PermissionVoter::getAllPermissions();

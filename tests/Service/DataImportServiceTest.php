@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\HttpKernel\KernelInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class DataImportServiceTest extends TestCase
@@ -59,6 +60,7 @@ class DataImportServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testImportBaseDataWithNoData(): void
     {
         $this->moduleConfigService->method('getBaseData')
@@ -72,6 +74,7 @@ class DataImportServiceTest extends TestCase
         $this->assertEmpty($result['results']);
     }
 
+    #[Test]
     public function testImportBaseDataSkipsWhenModuleNotActive(): void
     {
         $baseData = [
@@ -93,6 +96,7 @@ class DataImportServiceTest extends TestCase
         $this->assertStringContainsString('Erforderliche Module nicht aktiv', $result['results'][0]['message']);
     }
 
+    #[Test]
     public function testImportBaseDataWithCommandReturnsError(): void
     {
         // Skip command tests - they require full Symfony Application setup
@@ -103,6 +107,7 @@ class DataImportServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testImportBaseDataWithFile(): void
     {
         // Create test YAML file
@@ -136,6 +141,7 @@ class DataImportServiceTest extends TestCase
         $this->assertSame('Assets', $result['results'][0]['name']);
     }
 
+    #[Test]
     public function testImportSampleDataWithSelectedSamples(): void
     {
         $testFile = 'data/sample.yaml';
@@ -179,6 +185,7 @@ class DataImportServiceTest extends TestCase
         $this->assertSame('Sample Assets', $result['results'][0]['name']);
     }
 
+    #[Test]
     public function testImportSampleDataWithNonexistentSample(): void
     {
         $this->moduleConfigService->method('getSampleData')
@@ -195,6 +202,7 @@ class DataImportServiceTest extends TestCase
         $this->assertStringContainsString('nicht gefunden', $result['results'][0]['message']);
     }
 
+    #[Test]
     public function testImportSampleDataSkipsInactiveModules(): void
     {
         $sampleData = [
@@ -214,6 +222,7 @@ class DataImportServiceTest extends TestCase
         $this->assertSame('skipped', $result['results'][0]['status']);
     }
 
+    #[Test]
     public function testCheckDatabaseStatusWithExistingTables(): void
     {
         $connection = $this->createMock(Connection::class);
@@ -244,6 +253,7 @@ class DataImportServiceTest extends TestCase
         $this->assertEmpty($result['missing_tables']);
     }
 
+    #[Test]
     public function testCheckDatabaseStatusWithMissingTables(): void
     {
         $connection = $this->createMock(Connection::class);
@@ -265,6 +275,7 @@ class DataImportServiceTest extends TestCase
         $this->assertContains('control', $result['missing_tables']);
     }
 
+    #[Test]
     public function testCheckDatabaseStatusWithException(): void
     {
         $this->entityManager->method('getConnection')
@@ -277,6 +288,7 @@ class DataImportServiceTest extends TestCase
         $this->assertStringContainsString('Connection failed', $result['error']);
     }
 
+    #[Test]
     public function testRunMigrationsReturnsErrorWithoutKernel(): void
     {
         // Skip migration tests - they require full Symfony Application setup
@@ -286,6 +298,7 @@ class DataImportServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGetImportLogReturnsArray(): void
     {
         $log = $this->service->getImportLog();
@@ -293,6 +306,7 @@ class DataImportServiceTest extends TestCase
         $this->assertIsArray($log);
     }
 
+    #[Test]
     public function testExportModuleDataWithNonexistentModule(): void
     {
         $this->moduleConfigService->method('getModule')
@@ -306,6 +320,7 @@ class DataImportServiceTest extends TestCase
         $this->assertStringContainsString('nicht gefunden', $result['error']);
     }
 
+    #[Test]
     public function testExportModuleDataWithValidModule(): void
     {
         $module = [
@@ -333,6 +348,7 @@ class DataImportServiceTest extends TestCase
         $this->assertSame(0, $result['count']);
     }
 
+    #[Test]
     public function testImportLogIsPopulatedDuringImport(): void
     {
         // Create a test file
@@ -366,6 +382,7 @@ class DataImportServiceTest extends TestCase
         $this->assertArrayHasKey('message', $result['log'][0]);
     }
 
+    #[Test]
     public function testImportBaseDataHandlesMultipleItems(): void
     {
         $testFile1 = 'data/test1.yaml';
@@ -403,6 +420,7 @@ class DataImportServiceTest extends TestCase
         $this->assertCount(2, $result['results']);
     }
 
+    #[Test]
     public function testImportFromFileWithNonexistentFile(): void
     {
         $baseData = [

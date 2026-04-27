@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class ISMSObjectiveServiceTest extends TestCase
@@ -28,6 +29,7 @@ class ISMSObjectiveServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGetStatisticsWithNoObjectives(): void
     {
         $this->objectiveRepository->method('findAll')->willReturn([]);
@@ -43,6 +45,7 @@ class ISMSObjectiveServiceTest extends TestCase
         $this->assertSame(0, $stats['at_risk']);
     }
 
+    #[Test]
     public function testGetStatisticsWithMixedObjectives(): void
     {
         $achieved = $this->createObjective('achieved', new \DateTime('+30 days'));
@@ -66,6 +69,7 @@ class ISMSObjectiveServiceTest extends TestCase
         $this->assertSame(1, $stats['at_risk']); // +15 days is within 30 days
     }
 
+    #[Test]
     public function testGetOverdueObjectives(): void
     {
         $overdue = $this->createObjective('in_progress', new \DateTime('-5 days'));
@@ -81,6 +85,7 @@ class ISMSObjectiveServiceTest extends TestCase
         $this->assertSame($overdue, reset($overdueObjectives));
     }
 
+    #[Test]
     public function testGetAtRiskObjectives(): void
     {
         $atRisk = $this->createObjective('in_progress', new \DateTime('+15 days'));
@@ -96,6 +101,7 @@ class ISMSObjectiveServiceTest extends TestCase
         $this->assertSame($atRisk, reset($atRiskObjectives));
     }
 
+    #[Test]
     public function testCalculateOverallProgressWithNoObjectives(): void
     {
         $this->objectiveRepository->method('findAll')->willReturn([]);
@@ -105,6 +111,7 @@ class ISMSObjectiveServiceTest extends TestCase
         $this->assertSame(0.0, $progress);
     }
 
+    #[Test]
     public function testCalculateOverallProgressWithObjectives(): void
     {
         $obj1 = $this->createObjectiveWithProgress(50);
@@ -120,6 +127,7 @@ class ISMSObjectiveServiceTest extends TestCase
         $this->assertSame(75.0, $progress);
     }
 
+    #[Test]
     public function testCalculateOverallProgressIgnoresObjectivesWithoutValues(): void
     {
         $withProgress = $this->createObjectiveWithProgress(80);
@@ -134,6 +142,7 @@ class ISMSObjectiveServiceTest extends TestCase
         $this->assertSame(80.0, $progress);
     }
 
+    #[Test]
     public function testGetObjectivesByCategory(): void
     {
         $securityObjectives = [
@@ -151,6 +160,7 @@ class ISMSObjectiveServiceTest extends TestCase
         $this->assertSame($securityObjectives, $result);
     }
 
+    #[Test]
     public function testUpdateObjectiveSetsUpdatedAt(): void
     {
         $objective = $this->createMock(ISMSObjective::class);
@@ -166,6 +176,7 @@ class ISMSObjectiveServiceTest extends TestCase
         $this->service->updateObjective($objective);
     }
 
+    #[Test]
     public function testUpdateObjectiveSetsAchievedDateWhenStatusIsAchieved(): void
     {
         $objective = $this->createMock(ISMSObjective::class);
@@ -183,6 +194,7 @@ class ISMSObjectiveServiceTest extends TestCase
         $this->service->updateObjective($objective);
     }
 
+    #[Test]
     public function testUpdateObjectiveDoesNotOverwriteExistingAchievedDate(): void
     {
         $existingDate = new \DateTime('-10 days');
@@ -200,6 +212,7 @@ class ISMSObjectiveServiceTest extends TestCase
         $this->service->updateObjective($objective);
     }
 
+    #[Test]
     public function testCreateObjectivePersistsAndFlushes(): void
     {
         $objective = $this->createMock(ISMSObjective::class);
@@ -218,6 +231,7 @@ class ISMSObjectiveServiceTest extends TestCase
         $this->service->createObjective($objective);
     }
 
+    #[Test]
     public function testDeleteObjectiveRemovesAndFlushes(): void
     {
         $objective = $this->createMock(ISMSObjective::class);
@@ -232,6 +246,7 @@ class ISMSObjectiveServiceTest extends TestCase
         $this->service->deleteObjective($objective);
     }
 
+    #[Test]
     public function testAtRiskCountExcludesOverdueObjectives(): void
     {
         // Overdue objective should not be counted as "at risk"
@@ -248,6 +263,7 @@ class ISMSObjectiveServiceTest extends TestCase
         $this->assertSame(1, $stats['delayed']); // Overdue is delayed
     }
 
+    #[Test]
     public function testMultipleDelayedObjectives(): void
     {
         $delayed1 = $this->createObjective('in_progress', new \DateTime('-10 days'));

@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class MfaServiceTest extends TestCase
@@ -39,6 +40,7 @@ class MfaServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testGenerateTotpSecretCreatesToken(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -65,6 +67,7 @@ class MfaServiceTest extends TestCase
         $this->assertCount(10, $token->temporaryBackupCodes);
     }
 
+    #[Test]
     public function testGenerateTotpSecretWithDefaultDeviceName(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -77,6 +80,7 @@ class MfaServiceTest extends TestCase
         $this->assertSame('Authenticator App', $token->getDeviceName());
     }
 
+    #[Test]
     public function testGenerateTotpSecretBackupCodesAreHashed(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -96,6 +100,7 @@ class MfaServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testGenerateTotpSecretBackupCodeFormat(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -114,6 +119,7 @@ class MfaServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testGenerateQrCodeForTotpToken(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -129,6 +135,7 @@ class MfaServiceTest extends TestCase
         $this->assertStringStartsWith("\x89PNG", $decoded);
     }
 
+    #[Test]
     public function testGenerateQrCodeThrowsForNonTotpToken(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -140,6 +147,7 @@ class MfaServiceTest extends TestCase
         $this->service->generateQrCode($token);
     }
 
+    #[Test]
     public function testVerifyTotpThrowsForNonTotpToken(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -151,6 +159,7 @@ class MfaServiceTest extends TestCase
         $this->service->verifyTotp($token, '123456');
     }
 
+    #[Test]
     public function testVerifyTotpRateLimiting(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -170,6 +179,7 @@ class MfaServiceTest extends TestCase
         $this->service->verifyTotp($token, '123456');
     }
 
+    #[Test]
     public function testVerifyTotpNoRateLimitAfterSufficientTime(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -187,6 +197,7 @@ class MfaServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testVerifyBackupCodeSuccess(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -219,6 +230,7 @@ class MfaServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testVerifyBackupCodeFailure(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -233,6 +245,7 @@ class MfaServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testVerifyBackupCodeEmptyCodes(): void
     {
         $token = $this->createMock(MfaToken::class);
@@ -243,6 +256,7 @@ class MfaServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testVerifyBackupCodeNullCodes(): void
     {
         $token = $this->createMock(MfaToken::class);
@@ -253,6 +267,7 @@ class MfaServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testVerifyBackupCodeWarnsWhenLow(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -278,6 +293,7 @@ class MfaServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testRegenerateBackupCodes(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -308,6 +324,7 @@ class MfaServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testGetUserMfaTokensReturnsActiveTokens(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -329,6 +346,7 @@ class MfaServiceTest extends TestCase
         $this->assertSame($tokens, $result);
     }
 
+    #[Test]
     public function testUserHasMfaEnabledTrue(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -339,6 +357,7 @@ class MfaServiceTest extends TestCase
         $this->assertTrue($this->service->userHasMfaEnabled($user));
     }
 
+    #[Test]
     public function testUserHasMfaEnabledFalse(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -349,6 +368,7 @@ class MfaServiceTest extends TestCase
         $this->assertFalse($this->service->userHasMfaEnabled($user));
     }
 
+    #[Test]
     public function testDisableMfaToken(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -381,6 +401,7 @@ class MfaServiceTest extends TestCase
         $this->service->disableMfaToken($token);
     }
 
+    #[Test]
     public function testGenerateTotpSecretCreatesUniqueSecrets(): void
     {
         $user = $this->createUser(1, 'user@example.com');
@@ -394,6 +415,7 @@ class MfaServiceTest extends TestCase
         $this->assertNotSame($token1->getSecret(), $token2->getSecret());
     }
 
+    #[Test]
     public function testBackupCodesAreUnique(): void
     {
         $user = $this->createUser(1, 'user@example.com');

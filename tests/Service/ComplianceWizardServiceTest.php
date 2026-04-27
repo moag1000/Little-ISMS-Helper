@@ -5,6 +5,7 @@ namespace App\Tests\Service;
 use App\Service\ComplianceWizardService;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests for ComplianceWizardService
@@ -45,6 +46,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         }
     }
 
+    #[Test]
     public function testGetAvailableWizardsReturnsArray(): void
     {
         $this->requireDatabase();
@@ -52,6 +54,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->assertIsArray($wizards);
     }
 
+    #[Test]
     public function testAvailableWizardsHaveRequiredKeys(): void
     {
         $this->requireDatabase();
@@ -72,6 +75,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         }
     }
 
+    #[Test]
     public function testIsWizardAvailableReturnsBool(): void
     {
         $this->requireDatabase();
@@ -82,6 +86,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testGetWizardConfigReturnsNullForInvalidWizard(): void
     {
         $this->requireDatabase();
@@ -89,6 +94,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->assertNull($config);
     }
 
+    #[Test]
     public function testGetWizardConfigReturnsArrayForValidWizard(): void
     {
         $this->requireDatabase();
@@ -104,6 +110,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         }
     }
 
+    #[Test]
     public function testRunAssessmentReturnsSuccessArray(): void
     {
         $this->requireDatabase();
@@ -121,6 +128,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->assertTrue($result['success']);
     }
 
+    #[Test]
     public function testRunAssessmentReturnsExpectedKeys(): void
     {
         $this->requireDatabase();
@@ -153,6 +161,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         }
     }
 
+    #[Test]
     public function testRunAssessmentFailsForUnavailableWizard(): void
     {
         $this->requireDatabase();
@@ -164,6 +173,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->assertArrayHasKey('error', $result);
     }
 
+    #[Test]
     public function testOverallScoreIsWithinRange(): void
     {
         $this->requireDatabase();
@@ -180,6 +190,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->assertLessThanOrEqual(100, $result['overall_score']);
     }
 
+    #[Test]
     public function testStatusIsValidValue(): void
     {
         $this->requireDatabase();
@@ -196,6 +207,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->assertContains($result['status'], $validStatuses);
     }
 
+    #[Test]
     public function testCategoriesHaveExpectedStructure(): void
     {
         $this->requireDatabase();
@@ -218,6 +230,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         }
     }
 
+    #[Test]
     public function testAssessedAtIsDateTimeInterface(): void
     {
         $this->requireDatabase();
@@ -233,6 +246,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->assertInstanceOf(\DateTimeInterface::class, $result['assessed_at']);
     }
 
+    #[Test]
     public function testCriticalGapCountMatchesArray(): void
     {
         $this->requireDatabase();
@@ -251,6 +265,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
     /**
      * Test all available wizards can run without errors
      */
+    #[Test]
     public function testAllAvailableWizardsCanRun(): void
     {
         $this->requireDatabase();

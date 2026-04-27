@@ -5,9 +5,11 @@ namespace App\Tests\Entity;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ComplianceFrameworkTest extends TestCase
 {
+    #[Test]
     public function testNewFrameworkHasDefaultValues(): void
     {
         $framework = new ComplianceFramework();
@@ -22,6 +24,7 @@ class ComplianceFrameworkTest extends TestCase
         $this->assertCount(0, $framework->requirements);
     }
 
+    #[Test]
     public function testSetAndGetName(): void
     {
         $framework = new ComplianceFramework();
@@ -30,6 +33,7 @@ class ComplianceFrameworkTest extends TestCase
         $this->assertEquals('ISO 27001:2022', $framework->getName());
     }
 
+    #[Test]
     public function testSetAndGetCode(): void
     {
         $framework = new ComplianceFramework();
@@ -38,6 +42,7 @@ class ComplianceFrameworkTest extends TestCase
         $this->assertEquals('ISO27001', $framework->getCode());
     }
 
+    #[Test]
     public function testSetAndGetDescription(): void
     {
         $framework = new ComplianceFramework();
@@ -46,6 +51,7 @@ class ComplianceFrameworkTest extends TestCase
         $this->assertEquals('Information security management system standard', $framework->getDescription());
     }
 
+    #[Test]
     public function testSetAndGetVersion(): void
     {
         $framework = new ComplianceFramework();
@@ -54,6 +60,7 @@ class ComplianceFrameworkTest extends TestCase
         $this->assertEquals('2022', $framework->getVersion());
     }
 
+    #[Test]
     public function testSetAndGetApplicableIndustry(): void
     {
         $framework = new ComplianceFramework();
@@ -62,6 +69,7 @@ class ComplianceFrameworkTest extends TestCase
         $this->assertEquals('General', $framework->getApplicableIndustry());
     }
 
+    #[Test]
     public function testSetAndGetRegulatoryBody(): void
     {
         $framework = new ComplianceFramework();
@@ -70,6 +78,7 @@ class ComplianceFrameworkTest extends TestCase
         $this->assertEquals('ISO/IEC', $framework->getRegulatoryBody());
     }
 
+    #[Test]
     public function testSetAndGetMandatory(): void
     {
         $framework = new ComplianceFramework();
@@ -81,6 +90,7 @@ class ComplianceFrameworkTest extends TestCase
         $this->assertFalse($framework->isMandatory());
     }
 
+    #[Test]
     public function testAddAndRemoveRequirement(): void
     {
         $framework = new ComplianceFramework();
@@ -99,6 +109,7 @@ class ComplianceFrameworkTest extends TestCase
         $this->assertFalse($framework->requirements->contains($requirement));
     }
 
+    #[Test]
     public function testAddRequirementDoesNotDuplicate(): void
     {
         $framework = new ComplianceFramework();

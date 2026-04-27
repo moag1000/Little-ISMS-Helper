@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class AssetVoterTest extends TestCase
@@ -45,6 +46,7 @@ class AssetVoterTest extends TestCase
         return new UsernamePasswordToken($user, 'main', $user->getRoles());
     }
 
+    #[Test]
     public function testAdminCanViewAnyAsset(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -56,6 +58,7 @@ class AssetVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testAdminCanEditAnyAsset(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -67,6 +70,7 @@ class AssetVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testAdminCanDeleteAnyAsset(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -78,6 +82,7 @@ class AssetVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCanViewOwnTenantAsset(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -89,6 +94,7 @@ class AssetVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCannotViewOtherTenantAsset(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -100,6 +106,7 @@ class AssetVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testUserCanEditOwnTenantAsset(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -111,6 +118,7 @@ class AssetVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCannotEditOtherTenantAsset(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -122,6 +130,7 @@ class AssetVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testUserCannotDeleteAsset(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -133,6 +142,7 @@ class AssetVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testVoterAbstainsForNonAssetSubject(): void
     {
         $user = $this->createUser(['ROLE_USER']);
@@ -143,6 +153,7 @@ class AssetVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_ABSTAIN, $result);
     }
 
+    #[Test]
     public function testVoterAbstainsForUnsupportedAttribute(): void
     {
         $user = $this->createUser(['ROLE_USER']);

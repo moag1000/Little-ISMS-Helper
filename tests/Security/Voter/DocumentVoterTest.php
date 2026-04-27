@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class DocumentVoterTest extends TestCase
@@ -45,6 +46,7 @@ class DocumentVoterTest extends TestCase
         return new UsernamePasswordToken($user, 'main', $user->getRoles());
     }
 
+    #[Test]
     public function testAdminCanViewAnyDocument(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -57,6 +59,7 @@ class DocumentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testAdminCanEditAnyDocument(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -69,6 +72,7 @@ class DocumentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testAdminCanDeleteAnyDocument(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -81,6 +85,7 @@ class DocumentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCanViewOwnDocument(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -92,6 +97,7 @@ class DocumentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCanViewSameTenantDocument(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -104,6 +110,7 @@ class DocumentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCannotViewOtherTenantDocument(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -116,6 +123,7 @@ class DocumentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testUserCanEditOwnDocument(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -127,6 +135,7 @@ class DocumentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCannotEditOthersDocument(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -139,6 +148,7 @@ class DocumentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testUserCannotDeleteDocument(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -150,6 +160,7 @@ class DocumentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testVoterAbstainsForNonDocumentSubject(): void
     {
         $user = $this->createUser(['ROLE_USER']);
@@ -160,6 +171,7 @@ class DocumentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_ABSTAIN, $result);
     }
 
+    #[Test]
     public function testSubsidiaryCanViewInheritableHoldingDocument(): void
     {
         // Phase 9.P2.1: holding-owned document marked inheritable=true
@@ -184,6 +196,7 @@ class DocumentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $document, [DocumentVoter::VIEW]));
     }
 
+    #[Test]
     public function testSubsidiaryCannotViewNonInheritableHoldingDocument(): void
     {
         $holding = (new Tenant())->setCode('holding');
@@ -206,6 +219,7 @@ class DocumentVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $document, [DocumentVoter::VIEW]));
     }
 
+    #[Test]
     public function testSubsidiaryCannotEditInheritableHoldingDocument(): void
     {
         // Inheritance is read-only; edit must go through the holding

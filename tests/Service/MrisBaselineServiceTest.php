@@ -17,6 +17,7 @@ use DomainException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 final class MrisBaselineServiceTest extends TestCase
@@ -46,6 +47,7 @@ final class MrisBaselineServiceTest extends TestCase
         return new MrisBaselineService($em, $frameworkRepo, $reqRepo, $maturity, $this->projectDir);
     }
 
+    #[Test]
     public function testListBaselinesReturnsAllFourBranchProfiles(): void
     {
         $service = $this->makeService();
@@ -75,6 +77,7 @@ final class MrisBaselineServiceTest extends TestCase
     }
 
     #[DataProvider('baselineIdsProvider')]
+    #[Test]
     public function testLoadBaselineFindsByIdOrFilename(string $idOrFile): void
     {
         $service = $this->makeService();
@@ -93,6 +96,7 @@ final class MrisBaselineServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testLoadBaselineThrowsForUnknownId(): void
     {
         $service = $this->makeService();
@@ -100,6 +104,7 @@ final class MrisBaselineServiceTest extends TestCase
         $service->loadBaseline('nonexistent-baseline-xyz');
     }
 
+    #[Test]
     public function testApplyBaselineWithoutFrameworkThrows(): void
     {
         $service = $this->makeService(null);
@@ -107,6 +112,7 @@ final class MrisBaselineServiceTest extends TestCase
         $service->applyBaseline(new Tenant(), 'kritis');
     }
 
+    #[Test]
     public function testApplyBaselineDryRunReportsAllAppliedAndZeroMissing(): void
     {
         $framework = new ComplianceFramework();
@@ -128,6 +134,7 @@ final class MrisBaselineServiceTest extends TestCase
         self::assertEmpty($result['missing_mhcs']);
     }
 
+    #[Test]
     public function testApplyBaselineReportsMissingMhcs(): void
     {
         $framework = new ComplianceFramework();
@@ -148,6 +155,7 @@ final class MrisBaselineServiceTest extends TestCase
         self::assertCount(8, $result['missing_mhcs']);
     }
 
+    #[Test]
     public function testFinanceBaselineHasManagedTargetForTlpt(): void
     {
         $service = $this->makeService();
@@ -156,6 +164,7 @@ final class MrisBaselineServiceTest extends TestCase
         self::assertSame('managed', $baseline['mhc_targets']['MHC-12']['target']);
     }
 
+    #[Test]
     public function testSaasBaselineHasManagedTargetForSbom(): void
     {
         $service = $this->makeService();

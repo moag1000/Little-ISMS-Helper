@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 class RiskTreatmentPlanControllerTest extends WebTestCase
 {
@@ -141,12 +142,14 @@ class RiskTreatmentPlanControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/risk-treatment-plan/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -154,12 +157,14 @@ class RiskTreatmentPlanControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testNewRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/risk-treatment-plan/new');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testNewDisplaysFormForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -168,12 +173,14 @@ class RiskTreatmentPlanControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testShowRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/risk-treatment-plan/' . $this->testPlan->getId());
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testShowDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -181,12 +188,14 @@ class RiskTreatmentPlanControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testEditRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/risk-treatment-plan/' . $this->testPlan->getId() . '/edit');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testEditDisplaysFormForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -195,6 +204,7 @@ class RiskTreatmentPlanControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
     public function testDeleteRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -202,6 +212,7 @@ class RiskTreatmentPlanControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testDeleteRequiresPost(): void
     {
         $this->client->loginUser($this->adminUser);

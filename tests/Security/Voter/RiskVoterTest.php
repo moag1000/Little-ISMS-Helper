@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class RiskVoterTest extends TestCase
@@ -45,6 +46,7 @@ class RiskVoterTest extends TestCase
         return new UsernamePasswordToken($user, 'main', $user->getRoles());
     }
 
+    #[Test]
     public function testAdminCanViewAnyRisk(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -56,6 +58,7 @@ class RiskVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testAdminCanEditAnyRisk(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -67,6 +70,7 @@ class RiskVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testAdminCanDeleteAnyRisk(): void
     {
         $user = $this->createUser(['ROLE_ADMIN']);
@@ -78,6 +82,7 @@ class RiskVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCanViewOwnTenantRisk(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -89,6 +94,7 @@ class RiskVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCannotViewOtherTenantRisk(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -100,6 +106,7 @@ class RiskVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testUserCannotDeleteRisk(): void
     {
         $user = $this->createUser(['ROLE_USER'], $this->tenant);
@@ -111,6 +118,7 @@ class RiskVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testVoterAbstainsForNonRiskSubject(): void
     {
         $user = $this->createUser(['ROLE_USER']);
@@ -121,6 +129,7 @@ class RiskVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_ABSTAIN, $result);
     }
 
+    #[Test]
     public function testGroupCisoCanViewSubsidiaryRisk(): void
     {
         // Phase 9.P1.6: Group-CISO/Konzern-ISB reads across the holding tree.
@@ -141,6 +150,7 @@ class RiskVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($token, $risk, [RiskVoter::VIEW]));
     }
 
+    #[Test]
     public function testGroupCisoCannotEditSubsidiaryRisk(): void
     {
         $holding = (new Tenant())->setCode('holding');
@@ -160,6 +170,7 @@ class RiskVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $risk, [RiskVoter::EDIT]));
     }
 
+    #[Test]
     public function testGroupCisoCannotViewSiblingTenantRisk(): void
     {
         // Siblings of the user's tenant are NOT in the subtree, so even a
@@ -182,6 +193,7 @@ class RiskVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($token, $risk, [RiskVoter::VIEW]));
     }
 
+    #[Test]
     public function testUserWithoutGroupCisoCannotViewSubsidiaryRisk(): void
     {
         // ROLE_MANAGER alone does not grant read-across. GROUP_CISO is required.

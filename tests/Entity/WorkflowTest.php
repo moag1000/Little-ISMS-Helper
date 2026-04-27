@@ -5,9 +5,11 @@ namespace App\Tests\Entity;
 use App\Entity\Workflow;
 use App\Entity\WorkflowStep;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class WorkflowTest extends TestCase
 {
+    #[Test]
     public function testNewWorkflowHasDefaultValues(): void
     {
         $workflow = new Workflow();
@@ -22,6 +24,7 @@ class WorkflowTest extends TestCase
         $this->assertCount(0, $workflow->getSteps());
     }
 
+    #[Test]
     public function testSetAndGetName(): void
     {
         $workflow = new Workflow();
@@ -30,6 +33,7 @@ class WorkflowTest extends TestCase
         $this->assertEquals('Risk Approval', $workflow->getName());
     }
 
+    #[Test]
     public function testSetAndGetDescription(): void
     {
         $workflow = new Workflow();
@@ -38,6 +42,7 @@ class WorkflowTest extends TestCase
         $this->assertEquals('Approval process for high-risk items', $workflow->getDescription());
     }
 
+    #[Test]
     public function testSetAndGetEntityType(): void
     {
         $workflow = new Workflow();
@@ -46,6 +51,7 @@ class WorkflowTest extends TestCase
         $this->assertEquals('Risk', $workflow->getEntityType());
     }
 
+    #[Test]
     public function testSetAndGetIsActive(): void
     {
         $workflow = new Workflow();
@@ -59,6 +65,7 @@ class WorkflowTest extends TestCase
         $this->assertTrue($workflow->isActive());
     }
 
+    #[Test]
     public function testSetUpdatedAt(): void
     {
         $workflow = new Workflow();
@@ -68,6 +75,7 @@ class WorkflowTest extends TestCase
         $this->assertEquals($now, $workflow->getUpdatedAt());
     }
 
+    #[Test]
     public function testAddAndRemoveStep(): void
     {
         $workflow = new Workflow();
@@ -87,6 +95,7 @@ class WorkflowTest extends TestCase
         $this->assertFalse($workflow->getSteps()->contains($step));
     }
 
+    #[Test]
     public function testAddStepDoesNotDuplicat(): void
     {
         $workflow = new Workflow();
@@ -100,6 +109,7 @@ class WorkflowTest extends TestCase
         $this->assertCount(1, $workflow->getSteps());
     }
 
+    #[Test]
     public function testStepsAreOrderedByStepOrder(): void
     {
         $workflow = new Workflow();

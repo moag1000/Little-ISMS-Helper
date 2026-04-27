@@ -17,6 +17,7 @@ use App\Service\SiemExportService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class SiemExportServiceTest extends TestCase
@@ -45,6 +46,7 @@ class SiemExportServiceTest extends TestCase
         );
     }
 
+    #[Test]
     public function testExportToCefWithIncidents(): void
     {
         // Skip this test because Incident entity doesn't have getSource() and getIncidentType() methods
@@ -52,6 +54,7 @@ class SiemExportServiceTest extends TestCase
         $this->markTestSkipped('Incident entity missing required methods: getSource(), getIncidentType()');
     }
 
+    #[Test]
     public function testExportToCefWithThreats(): void
     {
         $threat = $this->createMockThreat();
@@ -65,6 +68,7 @@ class SiemExportServiceTest extends TestCase
         $this->assertStringContainsString('CVE-2024-1234', $result[0]);
     }
 
+    #[Test]
     public function testExportToCefWithCryptoOperations(): void
     {
         $crypto = $this->createMockCryptoOperation();
@@ -78,6 +82,7 @@ class SiemExportServiceTest extends TestCase
         $this->assertStringContainsString('AES-256', $result[0]);
     }
 
+    #[Test]
     public function testExportToCefWithPhysicalAccess(): void
     {
         $access = $this->createMockPhysicalAccess();
@@ -91,18 +96,21 @@ class SiemExportServiceTest extends TestCase
         $this->assertStringContainsString('John Doe', $result[0]);
     }
 
+    #[Test]
     public function testExportToCefWithAuditLogs(): void
     {
         // Skip this test because AuditLog entity doesn't have getUser() method
         $this->markTestSkipped('AuditLog entity missing getUser() method');
     }
 
+    #[Test]
     public function testExportToJsonWithIncidents(): void
     {
         // Skip this test because Incident entity doesn't have required methods
         $this->markTestSkipped('Incident entity missing required methods: getSource(), getIncidentType()');
     }
 
+    #[Test]
     public function testExportToJsonWithThreats(): void
     {
         $threat = $this->createMockThreat();
@@ -116,6 +124,7 @@ class SiemExportServiceTest extends TestCase
         $this->assertEquals(10, $decoded['events'][0]['cvss_score']);
     }
 
+    #[Test]
     public function testExportToJsonWithCryptoOperations(): void
     {
         $crypto = $this->createMockCryptoOperation();
@@ -129,6 +138,7 @@ class SiemExportServiceTest extends TestCase
         $this->assertEquals('AES-256', $decoded['events'][0]['algorithm']);
     }
 
+    #[Test]
     public function testExportToJsonWithDateRange(): void
     {
         $startDate = new \DateTime('2024-01-01');
@@ -143,6 +153,7 @@ class SiemExportServiceTest extends TestCase
         $this->assertEquals('2024-12-31T00:00:00+00:00', $decoded['date_range']['end']);
     }
 
+    #[Test]
     public function testExportToSyslogWithIncidents(): void
     {
         $incident = $this->createMockIncident();
@@ -157,6 +168,7 @@ class SiemExportServiceTest extends TestCase
         $this->assertStringContainsString('INCIDENT id=1', $result[0]);
     }
 
+    #[Test]
     public function testExportToSyslogWithThreats(): void
     {
         $threat = $this->createMockThreat();
@@ -169,6 +181,7 @@ class SiemExportServiceTest extends TestCase
         $this->assertStringContainsString('CVE-2024-1234', $result[0]);
     }
 
+    #[Test]
     public function testExportToSyslogWithCryptoOperations(): void
     {
         $crypto = $this->createMockCryptoOperation();
@@ -181,6 +194,7 @@ class SiemExportServiceTest extends TestCase
         $this->assertStringContainsString('operation=encryption', $result[0]);
     }
 
+    #[Test]
     public function testGetSecurityStatistics(): void
     {
         $this->incidentRepository->method('findAll')->willReturn([]);
@@ -211,6 +225,7 @@ class SiemExportServiceTest extends TestCase
         $this->assertEquals(10, $result['threats']['total']);
     }
 
+    #[Test]
     public function testGetSecurityStatisticsWithDateRange(): void
     {
         $startDate = new \DateTime('2024-01-01');
@@ -229,6 +244,7 @@ class SiemExportServiceTest extends TestCase
         $this->assertEquals('2024-12-31T00:00:00+00:00', $result['period']['end']);
     }
 
+    #[Test]
     public function testExportToJsonWithEmptyEvents(): void
     {
         $this->incidentRepository->method('findAll')->willReturn([]);
@@ -240,12 +256,14 @@ class SiemExportServiceTest extends TestCase
         $this->assertEmpty($decoded['events']);
     }
 
+    #[Test]
     public function testCefFormatSanitizesSpecialCharacters(): void
     {
         // Skip because Incident entity doesn't have required methods
         $this->markTestSkipped('Incident entity missing required methods');
     }
 
+    #[Test]
     public function testSyslogFormatLimitsFieldLength(): void
     {
         $incident = $this->createMock(Incident::class);
@@ -262,6 +280,7 @@ class SiemExportServiceTest extends TestCase
         $this->assertLessThan(1024, strlen($result[0]));
     }
 
+    #[Test]
     public function testExportUnknownEventTypeReturnsCefWithUnknown(): void
     {
         $result = $this->service->exportToCef('unknown_type');
@@ -270,12 +289,14 @@ class SiemExportServiceTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    #[Test]
     public function testCefSeverityMappingForIncidents(): void
     {
         // Skip because Incident entity doesn't have required methods
         $this->markTestSkipped('Incident entity missing required methods');
     }
 
+    #[Test]
     public function testPhysicalAccessForcedEntrySeverity(): void
     {
         $access = $this->createMock(PhysicalAccessLog::class);

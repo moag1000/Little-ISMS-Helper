@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class UserVoterTest extends TestCase
@@ -39,6 +40,7 @@ class UserVoterTest extends TestCase
         return new UsernamePasswordToken($user, 'main', $user->getRoles());
     }
 
+    #[Test]
     public function testAdminCanViewAnyUser(): void
     {
         $currentUser = $this->createUser(1, ['ROLE_ADMIN']);
@@ -50,6 +52,7 @@ class UserVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testAdminCanEditAnyUser(): void
     {
         $currentUser = $this->createUser(1, ['ROLE_ADMIN']);
@@ -61,6 +64,7 @@ class UserVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCanViewThemselves(): void
     {
         $user = $this->createUser(1, ['ROLE_USER'], true, []);
@@ -71,6 +75,7 @@ class UserVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCanEditThemselves(): void
     {
         $user = $this->createUser(1, ['ROLE_USER'], true, []);
@@ -81,6 +86,7 @@ class UserVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserCannotDeleteThemselves(): void
     {
         $user = $this->createUser(1, ['ROLE_USER'], true, ['user.delete']);
@@ -91,6 +97,7 @@ class UserVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testUserWithPermissionCanViewOthers(): void
     {
         $currentUser = $this->createUser(1, ['ROLE_USER'], true, ['user.view']);
@@ -102,6 +109,7 @@ class UserVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserWithoutPermissionCannotViewOthers(): void
     {
         $currentUser = $this->createUser(1, ['ROLE_USER'], true, []);
@@ -113,6 +121,7 @@ class UserVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testCannotDeleteInitialAdmin(): void
     {
         $currentUser = $this->createUser(1, ['ROLE_USER'], true, ['user.delete']);
@@ -126,6 +135,7 @@ class UserVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testInactiveUserCannotPerformActions(): void
     {
         $currentUser = $this->createUser(1, ['ROLE_USER'], false, ['user.view']);
@@ -137,6 +147,7 @@ class UserVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testUserWithPermissionCanCreate(): void
     {
         $user = $this->createUser(1, ['ROLE_USER'], true, ['user.create']);
@@ -147,6 +158,7 @@ class UserVoterTest extends TestCase
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testUserWithPermissionCanManageRoles(): void
     {
         $user = $this->createUser(1, ['ROLE_USER'], true, ['user.manage_roles']);

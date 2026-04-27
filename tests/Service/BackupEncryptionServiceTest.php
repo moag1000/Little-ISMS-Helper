@@ -5,6 +5,7 @@ namespace App\Tests\Service;
 use App\Service\BackupEncryptionService;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use PHPUnit\Framework\Attributes\Test;
 
 class BackupEncryptionServiceTest extends TestCase
 {
@@ -20,6 +21,7 @@ class BackupEncryptionServiceTest extends TestCase
     // Round-trip                                                          //
     // ------------------------------------------------------------------ //
 
+    #[Test]
     public function testEncryptDecryptRoundTrip(): void
     {
         $plaintext = 'super-secret-password-123!';
@@ -29,6 +31,7 @@ class BackupEncryptionServiceTest extends TestCase
         $this->assertSame($plaintext, $decrypted);
     }
 
+    #[Test]
     public function testEncryptProducesExpectedEnvelopeKeys(): void
     {
         $envelope = $this->service->encryptValue('value');
@@ -42,6 +45,7 @@ class BackupEncryptionServiceTest extends TestCase
         $this->assertArrayHasKey('ciphertext', $envelope);
     }
 
+    #[Test]
     public function testEachEncryptCallProducesDifferentIv(): void
     {
         $a = $this->service->encryptValue('same');
@@ -51,6 +55,7 @@ class BackupEncryptionServiceTest extends TestCase
         $this->assertNotSame($a['iv'], $b['iv']);
     }
 
+    #[Test]
     public function testRoundTripPreservesEmptyString(): void
     {
         $envelope  = $this->service->encryptValue('');
@@ -58,6 +63,7 @@ class BackupEncryptionServiceTest extends TestCase
         $this->assertSame('', $decrypted);
     }
 
+    #[Test]
     public function testRoundTripPreservesUnicodeValue(): void
     {
         $plaintext = 'Ünïcödé sécret — パスワード';
@@ -69,6 +75,7 @@ class BackupEncryptionServiceTest extends TestCase
     // Wrong-key scenario                                                  //
     // ------------------------------------------------------------------ //
 
+    #[Test]
     public function testDecryptWithWrongKeyThrowsRuntimeException(): void
     {
         $envelope = $this->service->encryptValue('my-api-key-abc123');
@@ -81,6 +88,7 @@ class BackupEncryptionServiceTest extends TestCase
         $wrongService->decryptValue($envelope);
     }
 
+    #[Test]
     public function testDecryptWithCorruptedCiphertextThrows(): void
     {
         $envelope               = $this->service->encryptValue('sensitive');
@@ -91,6 +99,7 @@ class BackupEncryptionServiceTest extends TestCase
         $wrongService->decryptValue($envelope);
     }
 
+    #[Test]
     public function testDecryptWithInvalidBase64Throws(): void
     {
         $this->expectException(RuntimeException::class);
@@ -107,32 +116,38 @@ class BackupEncryptionServiceTest extends TestCase
     // isEncrypted                                                         //
     // ------------------------------------------------------------------ //
 
+    #[Test]
     public function testIsEncryptedReturnsTrueForEnvelope(): void
     {
         $envelope = $this->service->encryptValue('value');
         $this->assertTrue($this->service->isEncrypted($envelope));
     }
 
+    #[Test]
     public function testIsEncryptedReturnsFalseForPlainString(): void
     {
         $this->assertFalse($this->service->isEncrypted('plain-string'));
     }
 
+    #[Test]
     public function testIsEncryptedReturnsFalseForNull(): void
     {
         $this->assertFalse($this->service->isEncrypted(null));
     }
 
+    #[Test]
     public function testIsEncryptedReturnsFalseForInteger(): void
     {
         $this->assertFalse($this->service->isEncrypted(42));
     }
 
+    #[Test]
     public function testIsEncryptedReturnsFalseForArrayWithoutMarker(): void
     {
         $this->assertFalse($this->service->isEncrypted(['cipher' => 'aes-256-gcm']));
     }
 
+    #[Test]
     public function testIsEncryptedReturnsFalseWhenMarkerIsFalse(): void
     {
         $this->assertFalse($this->service->isEncrypted(['__encrypted' => false, 'ciphertext' => 'x']));
@@ -143,6 +158,7 @@ class BackupEncryptionServiceTest extends TestCase
     // ------------------------------------------------------------------ //
 
     #[\PHPUnit\Framework\Attributes\DataProvider('sensitiveKeyProvider')]
+    #[Test]
     public function testIsSensitiveKeyReturnsTrueForKnownPatterns(string $key): void
     {
         $this->assertTrue($this->service->isSensitiveKey($key), "Expected $key to be sensitive");
@@ -166,6 +182,7 @@ class BackupEncryptionServiceTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('nonSensitiveKeyProvider')]
+    #[Test]
     public function testIsSensitiveKeyReturnsFalseForNonSensitiveKeys(string $key): void
     {
         $this->assertFalse($this->service->isSensitiveKey($key), "Expected $key to be non-sensitive");

@@ -13,6 +13,7 @@ use App\Service\AiAgentInventoryService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 final class AiAgentInventoryServiceTest extends TestCase
@@ -29,6 +30,7 @@ final class AiAgentInventoryServiceTest extends TestCase
         return $agent;
     }
 
+    #[Test]
     public function testCompletenessForEmptyAgentIsZero(): void
     {
         $result = $this->makeService()->complianceCompleteness($this->makeAgent());
@@ -39,6 +41,7 @@ final class AiAgentInventoryServiceTest extends TestCase
         self::assertCount(9, $result['missing']);
     }
 
+    #[Test]
     public function testCompletenessForFullyDocumentedHighRiskAgent(): void
     {
         $agent = $this->makeAgent();
@@ -59,6 +62,7 @@ final class AiAgentInventoryServiceTest extends TestCase
         self::assertEmpty($result['missing']);
     }
 
+    #[Test]
     public function testCompletenessIgnoresNonAiAssets(): void
     {
         $asset = new Asset();
@@ -69,6 +73,7 @@ final class AiAgentInventoryServiceTest extends TestCase
         self::assertSame(0.0, $result['percentage']);
     }
 
+    #[Test]
     public function testEmptyArrayCounted_AsMissing(): void
     {
         $agent = $this->makeAgent();
@@ -80,6 +85,7 @@ final class AiAgentInventoryServiceTest extends TestCase
         self::assertSame(1, $result['filled']);
     }
 
+    #[Test]
     public function testIsAiAgentHelper(): void
     {
         $agent = new Asset();
@@ -91,6 +97,7 @@ final class AiAgentInventoryServiceTest extends TestCase
         self::assertFalse($other->isAiAgent());
     }
 
+    #[Test]
     public function testInvalidClassificationIsRejectedByEntityValidator(): void
     {
         // Validator-Constraint testen: Choice-Liste muss greifen
@@ -102,6 +109,7 @@ final class AiAgentInventoryServiceTest extends TestCase
         self::assertCount(4, $allowed);
     }
 
+    #[Test]
     public function testCompletenessMissingListContainsLegalReferences(): void
     {
         $agent = $this->makeAgent();
@@ -124,6 +132,7 @@ final class AiAgentInventoryServiceTest extends TestCase
      *
      * Quelle: Peddi, R. (2026). MRIS v1.5 MHC-13. Lizenz: CC BY 4.0.
      */
+    #[Test]
     public function testFindHighRiskWithoutDpiaCountsAsIncomplete(): void
     {
         $tenant = new Tenant();

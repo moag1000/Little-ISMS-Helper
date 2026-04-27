@@ -13,6 +13,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Phase 8M.1 — Unit-Tests für RiskApprovalConfigResolver Ceiling-Merge.
@@ -68,6 +69,7 @@ class RiskApprovalConfigResolverTest extends TestCase
     /**
      * Root-Tenant ohne Parent: Config wird unverändert zurückgegeben.
      */
+    #[Test]
     public function testRootTenantNoParentReturnsOwnConfig(): void
     {
         $tenant = $this->makeTenant(1, []);
@@ -90,6 +92,7 @@ class RiskApprovalConfigResolverTest extends TestCase
     /**
      * Child mit LAXEREN Schwellwerten als Parent → auf Parent-Werte gecapped.
      */
+    #[Test]
     public function testChildWithLaxerThresholdsIsCappedByParent(): void
     {
         $parent = $this->makeTenant(10, []);
@@ -118,6 +121,7 @@ class RiskApprovalConfigResolverTest extends TestCase
     /**
      * Child mit STRENGEREN Schwellwerten als Parent → bleibt unverändert.
      */
+    #[Test]
     public function testChildWithStricterThresholdsRemainsUnchanged(): void
     {
         $parent = $this->makeTenant(10, []);
@@ -147,6 +151,7 @@ class RiskApprovalConfigResolverTest extends TestCase
      * 3-Ebenen-Hierarchie: Holding → Sub-Holding → Child.
      * Root setzt das absolute Maximum; alle Descendants werden gecapped.
      */
+    #[Test]
     public function testThreeLevelHierarchyCeiling(): void
     {
         $root       = $this->makeTenant(1, []);
@@ -178,6 +183,7 @@ class RiskApprovalConfigResolverTest extends TestCase
      * Child ohne eigene Config erbt komplett vom ersten Ancestor mit Config.
      * Default (3/7/25) wird mit Parent-Ceiling geclippt.
      */
+    #[Test]
     public function testChildWithoutConfigInheritsFromAncestor(): void
     {
         $parent = $this->makeTenant(10, []);
@@ -205,6 +211,7 @@ class RiskApprovalConfigResolverTest extends TestCase
     /**
      * Cache-Invalidation: nach invalidate() wird erneut aus Repository geladen.
      */
+    #[Test]
     public function testCacheInvalidationCausesReload(): void
     {
         $tenant = $this->makeTenant(1, []);
@@ -230,6 +237,7 @@ class RiskApprovalConfigResolverTest extends TestCase
     /**
      * Kein Ancestor mit Config und kein eigener Eintrag → Service-Defaults.
      */
+    #[Test]
     public function testNoConfigAnywhereFallsBackToDefaults(): void
     {
         $parent = $this->makeTenant(10, []);

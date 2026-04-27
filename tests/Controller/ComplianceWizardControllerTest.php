@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests for ComplianceWizardController
@@ -134,12 +135,14 @@ class ComplianceWizardControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testIndexRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/compliance-wizard');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testIndexRequiresManagerRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -147,6 +150,7 @@ class ComplianceWizardControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testIndexDisplaysForManager(): void
     {
         $this->client->loginUser($this->managerUser);
@@ -154,6 +158,7 @@ class ComplianceWizardControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testIndexDisplaysForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
@@ -161,6 +166,7 @@ class ComplianceWizardControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testStartWizardWithInvalidWizard(): void
     {
         $this->client->loginUser($this->managerUser);
@@ -173,12 +179,14 @@ class ComplianceWizardControllerTest extends WebTestCase
         );
     }
 
+    #[Test]
     public function testApiAssessRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/compliance-wizard/iso27001/api/assess');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testApiAssessRequiresManagerRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -186,6 +194,7 @@ class ComplianceWizardControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Test]
     public function testApiAssessReturnsJson(): void
     {
         $this->client->loginUser($this->managerUser);
@@ -211,6 +220,7 @@ class ComplianceWizardControllerTest extends WebTestCase
         }
     }
 
+    #[Test]
     public function testIndexShowsAvailableWizards(): void
     {
         $this->client->loginUser($this->managerUser);

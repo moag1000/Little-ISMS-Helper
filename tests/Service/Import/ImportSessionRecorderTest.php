@@ -12,6 +12,7 @@ use App\Repository\ImportRowEventRepository;
 use App\Service\Import\ImportSessionRecorder;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for ImportSessionRecorder (ISB MINOR-1).
@@ -88,6 +89,7 @@ final class ImportSessionRecorderTest extends KernelTestCase
         parent::tearDown();
     }
 
+    #[Test]
     public function testOpenSessionComputesSha256(): void
     {
         $expected = hash_file('sha256', $this->fixtureFile);
@@ -106,6 +108,7 @@ final class ImportSessionRecorderTest extends KernelTestCase
         self::assertSame('sample.csv', $session->getOriginalFilename());
     }
 
+    #[Test]
     public function testRecordRowAggregatesCountsOnClose(): void
     {
         $session = $this->recorder->openSession(
@@ -150,6 +153,7 @@ final class ImportSessionRecorderTest extends KernelTestCase
         self::assertSame(ImportRowEvent::DECISION_IMPORT, $byTarget[0]->getDecision());
     }
 
+    #[Test]
     public function testJsonPayloadTruncatedAtFourKb(): void
     {
         $session = $this->recorder->openSession(

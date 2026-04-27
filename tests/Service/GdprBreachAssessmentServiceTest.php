@@ -4,6 +4,7 @@ namespace App\Tests\Service;
 
 use App\Service\GdprBreachAssessmentService;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Test suite for GDPR Breach Assessment Service
@@ -23,6 +24,7 @@ class GdprBreachAssessmentServiceTest extends TestCase
     /**
      * Test low risk: Basic personal data, small scale
      */
+    #[Test]
     public function testAssessBreachRiskLowRisk(): void
     {
         // Arrange
@@ -42,6 +44,7 @@ class GdprBreachAssessmentServiceTest extends TestCase
     /**
      * Test medium risk: Financial data, large scale
      */
+    #[Test]
     public function testAssessBreachRiskMediumRisk(): void
     {
         // Arrange: financial (2 points) * 0.6 + scale (3) * 0.4 = 1.2 + 1.2 = 2.4 (low)
@@ -60,6 +63,7 @@ class GdprBreachAssessmentServiceTest extends TestCase
     /**
      * Test high risk: Health data + financial, large scale
      */
+    #[Test]
     public function testAssessBreachRiskHighRisk(): void
     {
         // Arrange: (3+2) * 0.6 + 3 * 0.4 = 3.0 + 1.2 = 4.2 (not quite)
@@ -79,6 +83,7 @@ class GdprBreachAssessmentServiceTest extends TestCase
     /**
      * Test very high risk: Special category data (Art. 9 GDPR), massive scale
      */
+    #[Test]
     public function testAssessBreachRiskVeryHighRisk(): void
     {
         // Arrange: Need score >= 7 for very_high
@@ -99,6 +104,7 @@ class GdprBreachAssessmentServiceTest extends TestCase
     /**
      * Test GDPR Art. 9 special category data triggers high risk
      */
+    #[Test]
     public function testSpecialCategoryDataAlwaysHighRisk(): void
     {
         // Arrange: 4 * 0.6 + 1 * 0.4 = 2.4 + 0.4 = 2.8 (still low with small scale)
@@ -116,6 +122,7 @@ class GdprBreachAssessmentServiceTest extends TestCase
     /**
      * Test reportability threshold at boundary (score = 5)
      */
+    #[Test]
     public function testReportabilityThresholdBoundary(): void
     {
         // Test with combination that results in score near threshold
@@ -135,6 +142,7 @@ class GdprBreachAssessmentServiceTest extends TestCase
     /**
      * Test empty data types array
      */
+    #[Test]
     public function testEmptyDataTypes(): void
     {
         // Arrange
@@ -154,6 +162,7 @@ class GdprBreachAssessmentServiceTest extends TestCase
     /**
      * Test all available data types are recognized
      */
+    #[Test]
     public function testAllDataTypesRecognized(): void
     {
         $allDataTypes = [
@@ -178,6 +187,7 @@ class GdprBreachAssessmentServiceTest extends TestCase
     /**
      * Test all scale options are recognized
      */
+    #[Test]
     public function testAllScaleOptionsRecognized(): void
     {
         $allScales = ['under_100', '100_to_1000', '1001_to_10000', 'over_10000'];
@@ -193,6 +203,7 @@ class GdprBreachAssessmentServiceTest extends TestCase
     /**
      * Test score increases with scale
      */
+    #[Test]
     public function testScoreIncreasesWithScale(): void
     {
         // Arrange
@@ -214,6 +225,7 @@ class GdprBreachAssessmentServiceTest extends TestCase
     /**
      * Test score increases with more sensitive data types
      */
+    #[Test]
     public function testScoreIncreasesWithDataTypeSensitivity(): void
     {
         // Arrange: Data types in increasing sensitivity order
@@ -280,6 +292,7 @@ class GdprBreachAssessmentServiceTest extends TestCase
     /**
      * Test various risk scenarios
      */
+    #[Test]
     public function testVariousRiskScenarios(): void
     {
         $scenarios = self::riskScenarioProvider();
@@ -304,6 +317,7 @@ class GdprBreachAssessmentServiceTest extends TestCase
     /**
      * Test recommendation matches risk level
      */
+    #[Test]
     public function testRecommendationMatchesRiskLevel(): void
     {
         // Low risk, not reportable

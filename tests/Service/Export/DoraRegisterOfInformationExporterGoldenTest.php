@@ -10,6 +10,7 @@ use App\Repository\SupplierRepository;
 use App\Service\Export\DoraRegisterOfInformationExporter;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Golden-file test for the DORA ITS Register-of-Information export (MINOR-6).
@@ -24,6 +25,7 @@ final class DoraRegisterOfInformationExporterGoldenTest extends TestCase
 {
     private const string FIXTURE_PATH = __DIR__ . '/../../Fixtures/dora/register_of_information_golden.csv';
 
+    #[Test]
     public function testGeneratedCsvMatchesGoldenFixtureByteExact(): void
     {
         $repository = $this->createMock(SupplierRepository::class);

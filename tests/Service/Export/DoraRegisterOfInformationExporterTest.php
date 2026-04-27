@@ -11,6 +11,7 @@ use App\Repository\SupplierRepository;
 use App\Service\Export\DoraRegisterOfInformationExporter;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit tests for DORA ITS Register-of-Information CSV exporter (MINOR-6).
@@ -31,6 +32,7 @@ final class DoraRegisterOfInformationExporterTest extends TestCase
         $this->tenant->setCode('test-bank');
     }
 
+    #[Test]
     public function testCsvBeginsWithUtf8Bom(): void
     {
         $this->repository->method('findByTenant')->willReturn([]);
@@ -39,6 +41,7 @@ final class DoraRegisterOfInformationExporterTest extends TestCase
         self::assertStringStartsWith("\xEF\xBB\xBF", $csv, 'CSV must start with UTF-8 BOM.');
     }
 
+    #[Test]
     public function testHeaderRowMatchesItsSpec(): void
     {
         $this->repository->method('findByTenant')->willReturn([]);
@@ -56,6 +59,7 @@ final class DoraRegisterOfInformationExporterTest extends TestCase
         self::assertCount(19, DoraRegisterOfInformationExporter::COLUMNS);
     }
 
+    #[Test]
     public function testRowCountMatchesSupplierCount(): void
     {
         $this->repository->method('findByTenant')->willReturn([
@@ -71,6 +75,7 @@ final class DoraRegisterOfInformationExporterTest extends TestCase
         self::assertCount(4, $rows, 'Expect 1 header + 3 data rows.');
     }
 
+    #[Test]
     public function testFieldFormattingRules(): void
     {
         $this->repository->method('findByTenant')->willReturn([$this->buildSupplierFull()]);
@@ -104,6 +109,7 @@ final class DoraRegisterOfInformationExporterTest extends TestCase
         self::assertSame('2024-02-15', $row[18]);
     }
 
+    #[Test]
     public function testNullsRenderAsEmptyAndBoolsAsN(): void
     {
         $this->repository->method('findByTenant')->willReturn([$this->buildSupplierEmpty()]);

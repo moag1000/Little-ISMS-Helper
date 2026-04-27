@@ -5,6 +5,7 @@ namespace App\Tests\Service;
 use App\Service\SecurityAuditService;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Process;
+use PHPUnit\Framework\Attributes\Test;
 
 class SecurityAuditServiceTest extends TestCase
 {
@@ -31,6 +32,7 @@ class SecurityAuditServiceTest extends TestCase
         }
     }
 
+    #[Test]
     public function testGenerateReportsThrowsExceptionWhenScriptNotFound(): void
     {
         $this->expectException(\RuntimeException::class);
@@ -39,6 +41,7 @@ class SecurityAuditServiceTest extends TestCase
         $this->service->generateReports();
     }
 
+    #[Test]
     public function testGenerateReportsExecutesScriptSuccessfully(): void
     {
         // Create a mock script that creates empty report files
@@ -62,6 +65,7 @@ PHP;
         $this->assertTrue($result['reports']['owasp_2021']['exists']);
     }
 
+    #[Test]
     public function testGenerateReportsHandlesCriticalFindings(): void
     {
         // Create a mock script that exits with code 1 (critical findings)
@@ -83,6 +87,7 @@ PHP;
         $this->assertTrue($result['reports']['owasp_2021']['exists']);
     }
 
+    #[Test]
     public function testGenerateReportsHandlesScriptFailure(): void
     {
         // Create a mock script that fails
@@ -102,6 +107,7 @@ PHP;
         $this->assertFalse($result['reports']['owasp_2021']['exists']);
     }
 
+    #[Test]
     public function testGenerateReportsIncludesReportMetadata(): void
     {
         // Create a mock script
@@ -124,6 +130,7 @@ PHP;
         $this->assertNotNull($result['reports']['owasp_2025']['updated_at']);
     }
 
+    #[Test]
     public function testGetReportsStatusReturnsNonExistentReports(): void
     {
         $status = $this->service->getReportsStatus();
@@ -136,6 +143,7 @@ PHP;
         $this->assertNull($status['owasp_2021']['updated_at']);
     }
 
+    #[Test]
     public function testGetReportsStatusReturnsExistingReports(): void
     {
         // Create test reports
@@ -156,6 +164,7 @@ PHP;
         $this->assertNotNull($status['owasp_2021']['updated_at']);
     }
 
+    #[Test]
     public function testGetReportsStatusReturnsCorrectTimestamps(): void
     {
         $report2025Path = $this->projectDir . '/docs/reports/security-audit-owasp-2025-rc1.md';
@@ -170,6 +179,7 @@ PHP;
         $this->assertEquals($expectedTime, $actualTime);
     }
 
+    #[Test]
     public function testGenerateReportsReturnsOutputFromScript(): void
     {
         $scriptPath = $this->projectDir . '/scripts/generate-security-audit.php';
@@ -189,6 +199,7 @@ PHP;
         $this->assertStringContainsString('Generating OWASP 2021', $result['output']);
     }
 
+    #[Test]
     public function testGenerateReportsReturnsErrorOutput(): void
     {
         $scriptPath = $this->projectDir . '/scripts/generate-security-audit.php';
@@ -206,6 +217,7 @@ PHP;
         $this->assertStringContainsString('Warning: Some issue detected', $result['error_output']);
     }
 
+    #[Test]
     public function testGenerateReportsHasTimeout(): void
     {
         // Create a script that would run longer than timeout
@@ -225,6 +237,7 @@ PHP;
         $this->assertTrue($result['success']);
     }
 
+    #[Test]
     public function testGenerateReportsChecksOwasp2025Report(): void
     {
         $scriptPath = $this->projectDir . '/scripts/generate-security-audit.php';
@@ -241,6 +254,7 @@ PHP;
         $this->assertStringEndsWith('security-audit-owasp-2025-rc1.md', $result['reports']['owasp_2025']['path']);
     }
 
+    #[Test]
     public function testGenerateReportsChecksOwasp2021Report(): void
     {
         $scriptPath = $this->projectDir . '/scripts/generate-security-audit.php';

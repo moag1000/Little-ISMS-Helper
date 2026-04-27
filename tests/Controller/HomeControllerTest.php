@@ -7,6 +7,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for HomeController
@@ -79,12 +80,14 @@ class HomeControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    #[Test]
     public function testHomeRedirectsToLogin(): void
     {
         $this->client->request('GET', '/');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testHomeRedirectsToDashboardWhenAuthenticated(): void
     {
         $this->client->loginUser($this->testUser);
@@ -92,12 +95,14 @@ class HomeControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDashboardRequiresAuthentication(): void
     {
         $this->client->request('GET', '/en/dashboard');
         $this->assertResponseRedirects();
     }
 
+    #[Test]
     public function testDashboardDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
@@ -105,6 +110,7 @@ class HomeControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testDashboardGermanLocale(): void
     {
         $this->client->loginUser($this->testUser);

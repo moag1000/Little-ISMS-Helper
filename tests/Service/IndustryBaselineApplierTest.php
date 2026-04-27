@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Input\ArrayInput;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Sanity check that the seeded industry baselines apply cleanly to a
@@ -43,6 +44,7 @@ final class IndustryBaselineApplierTest extends KernelTestCase
         ];
     }
 
+    #[Test]
     public function testSeededBaselinesExist(): void
     {
         ['em' => $em] = $this->bootServices();
@@ -55,6 +57,7 @@ final class IndustryBaselineApplierTest extends KernelTestCase
         self::assertContains('BL-KRITIS-HEALTH-v1', $codes, 'KRITIS-Health baseline should be seeded');
     }
 
+    #[Test]
     public function testApplyIsIdempotent(): void
     {
         ['applier' => $applier, 'em' => $em] = $this->bootServices();
@@ -101,6 +104,7 @@ final class IndustryBaselineApplierTest extends KernelTestCase
         }
     }
 
+    #[Test]
     public function testApplyRecursivePropagatesToSubsidiaries(): void
     {
         ['applier' => $applier, 'em' => $em] = $this->bootServices();
@@ -158,6 +162,7 @@ final class IndustryBaselineApplierTest extends KernelTestCase
         }
     }
 
+    #[Test]
     public function testInheritedBaselinesExcludeDirectlyApplied(): void
     {
         ['em' => $em] = $this->bootServices();
