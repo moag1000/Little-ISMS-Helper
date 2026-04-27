@@ -7,11 +7,14 @@ namespace App\Form;
 use App\Entity\Asset;
 use App\Entity\User;
 use App\Entity\Incident;
+use App\Enum\IncidentSeverity;
+use App\Enum\IncidentStatus;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -53,17 +56,13 @@ class IncidentType extends AbstractType
                 'required' => true,
                     'choice_translation_domain' => 'incident',
             ])
-            ->add('severity', ChoiceType::class, [
+            ->add('severity', EnumType::class, [
                 'label' => 'incident.field.severity',
-                'choices' => [
-                    'incident.severity.low' => 'low',
-                    'incident.severity.medium' => 'medium',
-                    'incident.severity.high' => 'high',
-                    'incident.severity.critical' => 'critical',
-                ],
+                'class' => IncidentSeverity::class,
+                'choice_label' => fn(IncidentSeverity $s): string => 'incident.severity.' . $s->value,
                 'required' => true,
                 'help' => 'incident.help.severity',
-                    'choice_translation_domain' => 'incident',
+                'choice_translation_domain' => 'incident',
             ])
             ->add('dataBreachOccurred', ChoiceType::class, [
                 'label' => 'incident.field.data_breach_occurred',
@@ -105,17 +104,12 @@ class IncidentType extends AbstractType
                     'placeholder' => 'incident.placeholder.reported_by',
                 ],
             ])
-            ->add('status', ChoiceType::class, [
+            ->add('status', EnumType::class, [
                 'label' => 'incident.field.status',
-                'choices' => [
-                    'incident.status.reported' => 'reported',
-                    'incident.status.in_investigation' => 'in_investigation',
-                    'incident.status.in_resolution' => 'in_resolution',
-                    'incident.status.resolved' => 'resolved',
-                    'incident.status.closed' => 'closed',
-                ],
+                'class' => IncidentStatus::class,
+                'choice_label' => fn(IncidentStatus $s): string => 'incident.status.' . $s->value,
                 'required' => true,
-                    'choice_translation_domain' => 'incident',
+                'choice_translation_domain' => 'incident',
             ])
             ->add('affectedSystems', TextareaType::class, [
                 'label' => 'incident.field.affected_systems',

@@ -17,6 +17,9 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
+use App\Enum\IncidentSeverity;
+use App\Enum\RiskStatus;
+use App\Enum\TreatmentStrategy;
 use App\Repository\RiskRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -218,13 +221,9 @@ class Risk
     #[Assert\Range(notInRangeMessage: 'Residual impact must be between { min } and { max }', min: 1, max: 5)]
     private ?int $residualImpact = 1;
 
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(type: 'string', length: 50, nullable: true, enumType: TreatmentStrategy::class)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\Choice(
-        choices: ['accept', 'mitigate', 'transfer', 'avoid'],
-        message: 'Treatment strategy must be one of: { choices }'
-    )]
-    private ?string $treatmentStrategy = 'mitigate';
+    private ?TreatmentStrategy $treatmentStrategy = TreatmentStrategy::Mitigate;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
@@ -242,14 +241,10 @@ class Risk
     #[Assert\NotNull(message: 'risk.validation.risk_owner_required')]
     private ?User $user = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(type: 'string', length: 50, enumType: RiskStatus::class)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\NotBlank(message: 'Status is required')]
-    #[Assert\Choice(
-        choices: ['identified', 'assessed', 'treated', 'monitored', 'closed', 'accepted'],
-        message: 'Status must be one of: { choices }'
-    )]
-    private ?string $status = 'identified';
+    #[Assert\NotNull(message: 'Status is required')]
+    private ?RiskStatus $status = RiskStatus::Identified;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
@@ -550,12 +545,12 @@ class Risk
         return $this;
     }
 
-    public function getTreatmentStrategy(): ?string
+    public function getTreatmentStrategy(): ?TreatmentStrategy
     {
         return $this->treatmentStrategy;
     }
 
-    public function setTreatmentStrategy(string $treatmentStrategy): static
+    public function setTreatmentStrategy(?TreatmentStrategy $treatmentStrategy): static
     {
         $this->treatmentStrategy = $treatmentStrategy;
         return $this;
@@ -593,12 +588,12 @@ class Risk
         return $this->user?->getFullName();
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?RiskStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(?RiskStatus $status): static
     {
         $this->status = $status;
         return $this;
@@ -757,7 +752,7 @@ class Risk
         // Compare with average incident severity
         $criticalIncidents = 0;
         foreach ($this->incidents as $incident) {
-            if (in_array($incident->getSeverity(), ['critical', 'high'])) {
+            if (in_array($incident->getSeverity(), [IncidentSeverity::Critical, IncidentSeverity::High])) {
                 $criticalIncidents++;
             }
         }
@@ -882,7 +877,7 @@ class Risk
     #[Groups(['risk:read'])]
     public function isAcceptanceApprovalRequired(): bool
     {
-        return $this->treatmentStrategy === 'accept' && !$this->formallyAccepted;
+        return $this->treatmentStrategy === TreatmentStrategy::Accept && !$this->formallyAccepted;
     }
 
     /**
@@ -900,7 +895,7 @@ class Risk
     #[Groups(['risk:read'])]
     public function isAcceptanceComplete(): bool
     {
-        if ($this->treatmentStrategy !== 'accept') {
+        if ($this->treatmentStrategy !== TreatmentStrategy::Accept) {
             return true; // Not applicable
         }
 
@@ -916,7 +911,7 @@ class Risk
     #[Groups(['risk:read'])]
     public function getAcceptanceStatus(): string
     {
-        if ($this->treatmentStrategy !== 'accept') {
+        if ($this->treatmentStrategy !== TreatmentStrategy::Accept) {
             return 'not_applicable';
         }
 

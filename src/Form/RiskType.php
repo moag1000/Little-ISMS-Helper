@@ -12,11 +12,14 @@ use App\Entity\Supplier;
 use App\Entity\ThreatIntelligence;
 use App\Entity\User;
 use App\Entity\Vulnerability;
+use App\Enum\RiskStatus;
+use App\Enum\TreatmentStrategy;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -237,18 +240,14 @@ class RiskType extends AbstractType
                     'class' => 'form-select',
                 ],
             ])
-            ->add('treatmentStrategy', ChoiceType::class, [
+            ->add('treatmentStrategy', EnumType::class, [
                 'label' => 'risk.field.treatment_strategy',
-                'choices' => [
-                    'risk.treatment.mitigate' => 'mitigate',
-                    'risk.treatment.transfer' => 'transfer',
-                    'risk.treatment.accept' => 'accept',
-                    'risk.treatment.avoid' => 'avoid',
-                ],
+                'class' => TreatmentStrategy::class,
+                'choice_label' => fn(TreatmentStrategy $t): string => 'risk.treatment.' . $t->value,
                 'placeholder' => 'risk.placeholder.treatment_strategy',
                 'required' => false,
                 'help' => 'risk.help.treatment',
-                    'choice_translation_domain' => 'risk',
+                'choice_translation_domain' => 'risk',
             ])
             ->add('treatmentDescription', TextareaType::class, [
                 'label' => 'risk.field.treatment_description',
@@ -292,18 +291,12 @@ class RiskType extends AbstractType
                 ],
                 'help' => 'risk.help.acceptance_justification',
             ])
-            ->add('status', ChoiceType::class, [
+            ->add('status', EnumType::class, [
                 'label' => 'risk.field.status',
-                'choices' => [
-                    'risk.status.identified' => 'identified',
-                    'risk.status.assessed' => 'assessed',
-                    'risk.status.treated' => 'treated',
-                    'risk.status.monitored' => 'monitored',
-                    'risk.status.closed' => 'closed',
-                    'risk.status.accepted' => 'accepted',
-                ],
+                'class' => RiskStatus::class,
+                'choice_label' => fn(RiskStatus $s): string => 'risk.status.' . $s->value,
                 'required' => true,
-                    'choice_translation_domain' => 'risk',
+                'choice_translation_domain' => 'risk',
             ])
             ->add('reviewDate', DateType::class, [
                 'label' => 'risk.field.review_date',

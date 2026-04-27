@@ -671,6 +671,28 @@ class DataImportService
                 continue;
             }
 
+            // Enum-Strings: wenn der Setter einen BackedEnum-Typ erwartet,
+            // String-Wert über ::tryFrom() konvertieren. Sonst wirft PHP
+            // TypeError, der vom outer try/catch geschluckt wird → Property
+            // bleibt null → DB-NotNullConstraint-Violation beim flush().
+            if (is_string($value)) {
+                try {
+                    $reflection = new \ReflectionMethod($entity, $setter);
+                    $paramType = $reflection->getParameters()[0]?->getType();
+                    $typeName = $paramType instanceof \ReflectionNamedType ? $paramType->getName() : null;
+                    if ($typeName !== null && enum_exists($typeName)) {
+                        $enumValue = $typeName::tryFrom($value);
+                        if ($enumValue === null) {
+                            $this->addLog("Skipped {$entityClass}::{$setter} — '{$value}' nicht in enum {$typeName}");
+                            continue;
+                        }
+                        $value = $enumValue;
+                    }
+                } catch (\ReflectionException) {
+                    // Kein Setter-Reflection — fallthrough
+                }
+            }
+
             // Datum-Strings: je nach Doctrine-Column-Type DateTimeImmutable
             // oder DateTime konstruieren. Setter-Reflection allein reicht
             // nicht (Property-Typ ist meist DateTimeInterface), Doctrine

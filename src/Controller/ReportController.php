@@ -165,8 +165,8 @@ class ReportController extends AbstractController
                 $risk->getProbability(),
                 $risk->getImpact(),
                 $risk->getRiskScore(),
-                $risk->getTreatmentStrategy() ? substr((string) $risk->getTreatmentStrategy(), 0, 50) : '-',
-                $risk->getStatus(),
+                $risk->getTreatmentStrategy() ? substr($risk->getTreatmentStrategy()->value, 0, 50) : '-',
+                $risk->getStatus()?->value,
                 $risk->getRiskOwner() ? $risk->getRiskOwner()->getEmail() : '-',
             ];
         }
@@ -294,9 +294,9 @@ class ReportController extends AbstractController
             $data[] = [
                 $incident->getId(),
                 $incident->getTitle(),
-                $incident->getSeverity(),
+                $incident->getSeverity()?->value,
                 $incident->getCategory(),
-                $incident->getStatus(),
+                $incident->getStatus()?->value,
                 $incident->getDetectedAt()->format('Y-m-d'),
                 $incident->getResolvedAt() ? $incident->getResolvedAt()->format('Y-m-d') : 'Open',
                 $incident->getReportedBy() ? $incident->getReportedBy()->getEmail() : '-',

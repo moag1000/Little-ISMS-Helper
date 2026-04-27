@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Enum\RiskStatus;
+use App\Enum\TreatmentStrategy;
 use DateTime;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Traversable;
@@ -115,11 +117,11 @@ class RiskController extends AbstractController
         }
 
         if ($status) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === $status);
+            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getStatus()?->value === $status);
         }
 
         if ($treatment) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy() === $treatment);
+            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy()?->value === $treatment);
         }
 
         if ($owner) {
@@ -204,11 +206,11 @@ class RiskController extends AbstractController
         }
 
         if ($status) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === $status);
+            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getStatus()?->value === $status);
         }
 
         if ($treatment) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy() === $treatment);
+            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy()?->value === $treatment);
         }
 
         if ($owner) {
@@ -368,11 +370,11 @@ class RiskController extends AbstractController
         }
 
         if ($status) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === $status);
+            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getStatus()?->value === $status);
         }
 
         if ($treatment) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy() === $treatment);
+            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy()?->value === $treatment);
         }
 
         if ($owner) {
@@ -414,12 +416,12 @@ class RiskController extends AbstractController
 
         // Add status breakdown
         $statusMetrics = [
-            'Identifiziert' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === 'identified')),
-            'Bewertet' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === 'assessed')),
-            'Behandelt' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === 'treated')),
-            'Überwacht' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === 'monitored')),
-            'Geschlossen' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === 'closed')),
-            'Akzeptiert' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === 'accepted')),
+            'Identifiziert' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Identified)),
+            'Bewertet' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Assessed)),
+            'Behandelt' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Treated)),
+            'Überwacht' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Monitored)),
+            'Geschlossen' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Closed)),
+            'Akzeptiert' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Accepted)),
         ];
 
         $this->excelExportService->addSummarySection($worksheet, $statusMetrics, $nextRow, 'Status-Verteilung');
@@ -468,20 +470,20 @@ class RiskController extends AbstractController
                 $residualScore,
                 $residualLevel,
                 match($risk->getTreatmentStrategy()) {
-                    'accept' => 'Akzeptieren',
-                    'mitigate' => 'Mindern',
-                    'transfer' => 'Übertragen',
-                    'avoid' => 'Vermeiden',
-                    default => $risk->getTreatmentStrategy()
+                    TreatmentStrategy::Accept => 'Akzeptieren',
+                    TreatmentStrategy::Mitigate => 'Mindern',
+                    TreatmentStrategy::Transfer => 'Übertragen',
+                    TreatmentStrategy::Avoid => 'Vermeiden',
+                    default => $risk->getTreatmentStrategy()?->value
                 },
                 match($risk->getStatus()) {
-                    'identified' => 'Identifiziert',
-                    'assessed' => 'Bewertet',
-                    'treated' => 'Behandelt',
-                    'monitored' => 'Überwacht',
-                    'closed' => 'Geschlossen',
-                    'accepted' => 'Akzeptiert',
-                    default => $risk->getStatus()
+                    RiskStatus::Identified => 'Identifiziert',
+                    RiskStatus::Assessed => 'Bewertet',
+                    RiskStatus::Treated => 'Behandelt',
+                    RiskStatus::Monitored => 'Überwacht',
+                    RiskStatus::Closed => 'Geschlossen',
+                    RiskStatus::Accepted => 'Akzeptiert',
+                    default => $risk->getStatus()?->value
                 },
                 $risk->getRiskOwner() ? $risk->getRiskOwner()->getFullName() : '-',
                 $risk->getCreatedAt() ? $risk->getCreatedAt()->format('d.m.Y') : '-',
@@ -628,11 +630,11 @@ class RiskController extends AbstractController
         }
 
         if ($status) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === $status);
+            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getStatus()?->value === $status);
         }
 
         if ($treatment) {
-            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy() === $treatment);
+            $risks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy()?->value === $treatment);
         }
 
         if ($owner) {
@@ -653,12 +655,12 @@ class RiskController extends AbstractController
 
         // Status breakdown
         $statusBreakdown = [
-            'identified' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === 'identified')),
-            'assessed' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === 'assessed')),
-            'treated' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === 'treated')),
-            'monitored' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === 'monitored')),
-            'closed' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === 'closed')),
-            'accepted' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === 'accepted')),
+            'identified' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Identified)),
+            'assessed' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Assessed)),
+            'treated' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Treated)),
+            'monitored' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Monitored)),
+            'closed' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Closed)),
+            'accepted' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Accepted)),
         ];
         // Remove zero counts
         $statusBreakdown = array_filter($statusBreakdown, fn(int $count): bool => $count > 0);
@@ -978,7 +980,7 @@ class RiskController extends AbstractController
         $user = $this->security->getUser();
 
         // Check if risk has "accept" treatment strategy
-        if ($risk->getTreatmentStrategy() !== 'accept') {
+        if ($risk->getTreatmentStrategy() !== TreatmentStrategy::Accept) {
             $this->addFlash('error', $this->translator->trans('risk.acceptance.error.wrong_strategy'));
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Enum\IncidentSeverity;
+use App\Enum\IncidentStatus;
+use App\Enum\TreatmentStrategy;
 use DateTime;
 use App\Entity\Incident;
 use App\Repository\AssetRepository;
@@ -148,7 +151,7 @@ class DoraComplianceController extends AbstractController
         $totalIctRisks = count($ictRisks);
         $highIctRisks = count(array_filter($ictRisks, fn($r) => $r->getInherentRiskLevel() >= 12));
         $criticalIctRisks = count(array_filter($ictRisks, fn($r) => $r->getInherentRiskLevel() >= 16));
-        $treatedIctRisks = count(array_filter($ictRisks, fn($r) => $r->getTreatmentStrategy() !== null && $r->getTreatmentStrategy() !== ''));
+        $treatedIctRisks = count(array_filter($ictRisks, fn($r) => $r->getTreatmentStrategy() !== null));
         $treatmentRate = $totalIctRisks > 0 ? round(($treatedIctRisks / $totalIctRisks) * 100) : 100;
 
         // ICT Assets inventory (Art. 8)
@@ -228,17 +231,17 @@ class DoraComplianceController extends AbstractController
         $totalIctIncidents = count($ictIncidents);
 
         // Major incidents (high/critical severity)
-        $majorIncidents = array_filter($ictIncidents, fn($i) => in_array($i->getSeverity(), ['critical', 'high'], true));
+        $majorIncidents = array_filter($ictIncidents, fn($i) => in_array($i->getSeverity(), [IncidentSeverity::Critical, IncidentSeverity::High], true));
         $totalMajorIncidents = count($majorIncidents);
 
         // Incidents this year
         $incidentsThisYear = array_filter($ictIncidents, fn($i) => $i->getDetectedAt() !== null && $i->getDetectedAt()->format('Y') === $thisYear
         );
-        $majorIncidentsYtd = count(array_filter($incidentsThisYear, fn($i) => in_array($i->getSeverity(), ['critical', 'high'], true)));
+        $majorIncidentsYtd = count(array_filter($incidentsThisYear, fn($i) => in_array($i->getSeverity(), [IncidentSeverity::Critical, IncidentSeverity::High], true)));
 
         // Open incidents
-        $openIncidents = array_filter($ictIncidents, fn($i) => $i->getStatus() === 'open' || $i->getStatus() === 'investigating');
-        $openMajorIncidents = array_filter($majorIncidents, fn($i) => $i->getStatus() === 'open' || $i->getStatus() === 'investigating');
+        $openIncidents = array_filter($ictIncidents, fn($i) => in_array($i->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
+        $openMajorIncidents = array_filter($majorIncidents, fn($i) => in_array($i->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
 
         // 4h initial notification compliance (Art. 19)
         $reportedIn4h = count(array_filter($majorIncidents, function ($i) {
@@ -270,7 +273,7 @@ class DoraComplianceController extends AbstractController
         }
 
         // Incident classification compliance
-        $classifiedIncidents = count(array_filter($ictIncidents, fn($i) => $i->getSeverity() !== null && $i->getSeverity() !== ''));
+        $classifiedIncidents = count(array_filter($ictIncidents, fn($i) => $i->getSeverity() !== null));
         $classificationRate = $totalIctIncidents > 0 ? round(($classifiedIncidents / $totalIctIncidents) * 100) : 100;
 
         return [

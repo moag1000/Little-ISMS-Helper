@@ -7,6 +7,8 @@ namespace App\Service;
 use App\Entity\Incident;
 use App\Entity\Risk;
 use App\Entity\User;
+use App\Enum\IncidentSeverity;
+use App\Enum\IncidentStatus;
 use App\Repository\RiskRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -55,7 +57,7 @@ class IncidentRiskFeedbackService
     public function processIncidentFeedback(Incident $incident, User $user): int
     {
         // Only process closed incidents
-        if ($incident->getStatus() !== 'closed') {
+        if ($incident->getStatus() !== IncidentStatus::Closed) {
             return 0;
         }
 
@@ -105,12 +107,12 @@ class IncidentRiskFeedbackService
     private function shouldTriggerRiskReEvaluation(Incident $incident, Risk $risk): bool
     {
         // Always trigger for high/critical incidents
-        if (in_array($incident->getSeverity(), ['high', 'critical'], true)) {
+        if (in_array($incident->getSeverity(), [IncidentSeverity::High, IncidentSeverity::Critical], true)) {
             return true;
         }
 
         // Medium severity: trigger if controls failed
-        if ($incident->getSeverity() === 'medium') {
+        if ($incident->getSeverity() === IncidentSeverity::Medium) {
             $failedControls = $incident->getFailedControls();
             if (!$failedControls->isEmpty()) {
                 return true;
@@ -118,7 +120,7 @@ class IncidentRiskFeedbackService
         }
 
         // Low severity: check if multiple related incidents
-        if ($incident->getSeverity() === 'low') {
+        if ($incident->getSeverity() === IncidentSeverity::Low) {
             $relatedIncidentCount = $this->countRelatedIncidents($risk);
             return $relatedIncidentCount >= 3; // Threshold: 3+ low-severity incidents
         }
@@ -191,7 +193,7 @@ class IncidentRiskFeedbackService
             (new DateTimeImmutable())->format('Y-m-d H:i'),
             $incident->getIncidentNumber(),
             $incident->getId(),
-            $incident->getSeverity(),
+            $incident->getSeverity()?->value,
             $incident->getDetectedAt()?->format('Y-m-d H:i') ?? 'Unknown',
             substr($incident->getDescription(), 0, 200) // First 200 chars
         );
@@ -215,7 +217,7 @@ class IncidentRiskFeedbackService
             ->where('r.id = :risk_id')
             ->andWhere('i.status = :status')
             ->setParameter('risk_id', $risk->getId())
-            ->setParameter('status', 'closed');
+            ->setParameter('status', IncidentStatus::Closed);
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
@@ -229,10 +231,10 @@ class IncidentRiskFeedbackService
     public function getRecommendedLikelihoodIncrease(Incident $incident): int
     {
         return match ($incident->getSeverity()) {
-            'critical' => 2, // Increase likelihood by 2 levels
-            'high' => 2,
-            'medium' => 1,
-            'low' => 0,  // No automatic increase for low severity
+            IncidentSeverity::Critical => 2, // Increase likelihood by 2 levels
+            IncidentSeverity::High => 2,
+            IncidentSeverity::Medium => 1,
+            IncidentSeverity::Low => 0,  // No automatic increase for low severity
             default => 0,
         };
     }
