@@ -88,7 +88,11 @@
                                         {% endif %}
                                     </td>
                                     <td class="text-end">
-                                        {% if sample.imported and sample.removable %}
+                                        {# Entfernen-Button wird auch gezeigt wenn Tracking-Rows existieren
+                                           (sample.count > 0), nicht nur bei sample.imported. So lassen
+                                           sich auch verwaiste Reste aus früheren Imports bereinigen,
+                                           selbst wenn der Status-Badge gerade "nicht importiert" anzeigt. #}
+                                        {% if (sample.imported or sample.count > 0) and sample.removable %}
                                             <form method="post"
                                                   action="{{ path('admin_sample_data_remove', {sampleKey: sample.key}) }}"
                                                   class="d-inline"
