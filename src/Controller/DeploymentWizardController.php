@@ -372,6 +372,23 @@ class DeploymentWizardController extends AbstractController
     #[Route('/setup/step3-restore-backup', name: 'setup_step3_restore_backup')]
     public function step3RestoreBackup(SessionInterface $session): Response
     {
+        // Docker-Standalone: DATABASE_URL ist von init-mysql.sh in .env.local geschrieben.
+        // Session-Persistenz kann fehlschlagen (var/sessions-Permissions, Volume-
+        // Mounts ohne TTL). Re-derive direkt aus File-System statt nur Session,
+        // sonst entsteht Redirect-Loop step2 ↔ step3.
+        if (!$session->get('setup_database_configured')) {
+            $isDockerStandalone = @file_exists('/run/mysqld/mysqld.sock') || @file_exists('/.dockerenv');
+            $envLocalPath = $this->environmentWriter->getEnvLocalPath();
+            if ($isDockerStandalone && file_exists($envLocalPath)) {
+                $envVars = $this->environmentWriter->readEnvLocal();
+                if (!empty($envVars['DATABASE_URL'])) {
+                    // Session-Flags re-rehydrieren so dass nachfolgende Steps konsistent sind.
+                    $session->set('setup_database_configured', true);
+                    $session->set('setup_schema_created', true);
+                }
+            }
+        }
+
         // Check if database is configured
         if (!$session->get('setup_database_configured')) {
             $this->addFlash('error', $this->translator->trans('setup.error.configure_database_first'));
