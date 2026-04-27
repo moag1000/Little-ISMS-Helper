@@ -87,7 +87,7 @@ class SampleDataController extends AbstractController
             if (isset($data['command']) && isset($commandFrameworkMap[$data['command']])) {
                 $framework = $frameworkRepo->findOneBy(['code' => $commandFrameworkMap[$data['command']]]);
                 if ($framework !== null) {
-                    $reqCount = $reqRepo->count(['framework' => $framework]);
+                    $reqCount = $reqRepo->count(['complianceFramework' => $framework]);
                     $rawCount = $reqCount;
                     $imported = $reqCount > 0;
                 }
