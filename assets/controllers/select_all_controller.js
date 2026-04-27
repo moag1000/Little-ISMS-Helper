@@ -4,9 +4,9 @@ import { Controller } from '@hotwired/stimulus';
  * Generic "select all" master checkbox.
  *
  * Reads the target-selector from the plain data-attribute
- * `data-select-all-selector` (NOT a Stimulus value, to dodge a
- * `getAttributeNameForKey` error seen with longform value definitions
- * in this app's bundled Stimulus build).
+ * `data-select-all-selector` and resolves the master element from the
+ * action event's currentTarget rather than `this.element` to dodge a
+ * Stimulus base-class binding glitch we hit on this app's bundled build.
  *
  * Usage:
  *   <input type="checkbox"
@@ -15,48 +15,76 @@ import { Controller } from '@hotwired/stimulus';
  *          data-select-all-selector="input[name^='items['][type='checkbox']:not([disabled])">
  */
 export default class extends Controller {
+    static targets = ['__placeholder__'];
+
     connect() {
-        this.boundUpdate = () => this.updateMasterState();
-        this.scope().forEach((cb) => cb.addEventListener('change', this.boundUpdate));
+        // Defer the wire-up: in some builds `this.element` resolves to
+        // undefined inside connect(); a microtask gives the runtime a
+        // chance to finalise the controller instance.
+        queueMicrotask(() => this.wireUp());
+    }
+
+    wireUp() {
+        const master = this.masterElement();
+        if (!master) {
+            return;
+        }
+        this._master = master;
+        this._boundUpdate = () => this.updateMasterState();
+        this.scope().forEach((cb) => cb.addEventListener('change', this._boundUpdate));
         this.updateMasterState();
     }
 
     disconnect() {
-        if (this.boundUpdate) {
-            this.scope().forEach((cb) => cb.removeEventListener('change', this.boundUpdate));
+        if (this._boundUpdate) {
+            this.scope().forEach((cb) => cb.removeEventListener('change', this._boundUpdate));
         }
     }
 
     toggle(event) {
-        const checked = event.target.checked;
-        this.scope().forEach((cb) => {
+        const master = event.currentTarget;
+        const checked = master.checked;
+        this.scope(master).forEach((cb) => {
             cb.checked = checked;
         });
     }
 
     updateMasterState() {
-        const boxes = this.scope();
+        const master = this._master;
+        if (!master) return;
+        const boxes = this.scope(master);
         if (boxes.length === 0) {
-            this.element.checked = false;
-            this.element.indeterminate = false;
+            master.checked = false;
+            master.indeterminate = false;
             return;
         }
         const checkedCount = boxes.filter((cb) => cb.checked).length;
         if (checkedCount === 0) {
-            this.element.checked = false;
-            this.element.indeterminate = false;
+            master.checked = false;
+            master.indeterminate = false;
         } else if (checkedCount === boxes.length) {
-            this.element.checked = true;
-            this.element.indeterminate = false;
+            master.checked = true;
+            master.indeterminate = false;
         } else {
-            this.element.checked = false;
-            this.element.indeterminate = true;
+            master.checked = false;
+            master.indeterminate = true;
         }
     }
 
-    scope() {
-        const root = this.element.closest('form') || document;
-        const selector = this.element.dataset.selectAllSelector || 'input[type="checkbox"]:not(#' + this.element.id + ')';
-        return Array.from(root.querySelectorAll(selector)).filter((cb) => cb !== this.element);
+    masterElement() {
+        try {
+            if (this.element) return this.element;
+        } catch (_e) { /* getter throws in some builds */ }
+        if (this.context && this.context.element) return this.context.element;
+        // Last resort: find the only element with our controller marker.
+        return document.querySelector('[data-controller~="select-all"]');
+    }
+
+    scope(masterArg) {
+        const master = masterArg || this._master || this.masterElement();
+        if (!master) return [];
+        const root = master.closest('form') || document;
+        const selector = master.dataset.selectAllSelector || 'input[type="checkbox"]';
+        return Array.from(root.querySelectorAll(selector)).filter((cb) => cb !== master);
     }
 }
