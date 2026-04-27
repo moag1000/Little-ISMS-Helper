@@ -123,14 +123,12 @@ opcache.validate_timestamps=0
 opcache.revalidate_freq=0
 EOF
 
-# Configure PHP-FPM to use Unix socket for better performance
-RUN sed -i 's|listen = .*|listen = /run/php-fpm.sock|' /usr/local/etc/php-fpm.d/www.conf && \
-    sed -i 's|;listen.owner|listen.owner|' /usr/local/etc/php-fpm.d/www.conf && \
-    sed -i 's|;listen.group|listen.group|' /usr/local/etc/php-fpm.d/www.conf && \
-    sed -i 's|;listen.mode = 0660|listen.mode = 0660|' /usr/local/etc/php-fpm.d/www.conf && \
-    sed -i 's|listen = 9000|listen = /run/php-fpm.sock|' /usr/local/etc/php-fpm.d/zz-docker.conf && \
-    mkdir -p /run/php-fpm && \
-    chown www-data:www-data /run/php-fpm
+# Configure PHP-FPM to listen on TCP 127.0.0.1:9000 (matches nginx upstream).
+# Unix-socket variant had race + ENOENT in supervisor-managed scenarios; TCP
+# is loopback-only so the perf hit is negligible and the wire-up is robust.
+RUN sed -i 's|listen = .*|listen = 127.0.0.1:9000|' /usr/local/etc/php-fpm.d/www.conf \
+    && (test -f /usr/local/etc/php-fpm.d/zz-docker.conf && \
+        sed -i 's|listen = .*|listen = 127.0.0.1:9000|' /usr/local/etc/php-fpm.d/zz-docker.conf || true)
 
 # Configure MariaDB for standalone deployment
 # Note: Data is stored in /var/www/html/var/mysql (part of app volume), not /var/lib/mysql
