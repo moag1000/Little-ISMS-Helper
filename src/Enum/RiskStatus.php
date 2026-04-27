@@ -8,8 +8,11 @@ enum RiskStatus: string
 {
     case Identified = 'identified';
     case Assessed = 'assessed';
+    case InTreatment = 'in_treatment';
     case Treated = 'treated';
+    case Mitigated = 'mitigated';
     case Monitored = 'monitored';
     case Closed = 'closed';
     case Accepted = 'accepted';
+    case Open = 'open';
 }

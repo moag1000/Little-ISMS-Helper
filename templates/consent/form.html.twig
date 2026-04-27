@@ -6,7 +6,7 @@
 {% block body %}
 <div class="container-fluid py-4">
     <div class="row">
-        <div class="col-lg-10 col-xl-9 mx-auto">
+        <div class="col-12">
             <nav aria-label="breadcrumb" class="mb-3">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
@@ -36,6 +36,8 @@
                 </a>
             </div>
 
+            <div class="row">
+            <div class="col-lg-8">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header">
@@ -192,6 +194,39 @@
                     {{ form_end(form) }}
                 {% endblock %}
             {% endembed %}
+            </div>{# /col-lg-8 #}
+
+            <div class="col-lg-4">
+                {% embed '_components/_card.html.twig' %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="h5 mb-0">
+                                <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
+                                {{ 'consent.sidebar.title'|trans({}, 'consent') }}
+                            </h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <h3 class="h6 text-primary">{{ 'consent.sidebar.valid_title'|trans({}, 'consent') }}</h3>
+                        <p class="small">{{ 'consent.sidebar.valid_text'|trans({}, 'consent') }}</p>
+
+                        <h3 class="h6 text-primary">{{ 'consent.sidebar.conditions_title'|trans({}, 'consent') }}</h3>
+                        <ul class="list-unstyled small">
+                            <li class="mb-1"><i class="fa-icon fa-icon--status-ok text-success me-1" aria-hidden="true"></i> {{ 'consent.sidebar.condition_1'|trans({}, 'consent') }}</li>
+                            <li class="mb-1"><i class="fa-icon fa-icon--status-ok text-success me-1" aria-hidden="true"></i> {{ 'consent.sidebar.condition_2'|trans({}, 'consent') }}</li>
+                            <li class="mb-1"><i class="fa-icon fa-icon--status-ok text-success me-1" aria-hidden="true"></i> {{ 'consent.sidebar.condition_3'|trans({}, 'consent') }}</li>
+                            <li class="mb-1"><i class="fa-icon fa-icon--status-ok text-success me-1" aria-hidden="true"></i> {{ 'consent.sidebar.condition_4'|trans({}, 'consent') }}</li>
+                        </ul>
+
+                        <h3 class="h6 text-primary">{{ 'consent.sidebar.methods_title'|trans({}, 'consent') }}</h3>
+                        <p class="small">{{ 'consent.sidebar.methods_text'|trans({}, 'consent') }}</p>
+
+                        <h3 class="h6 text-primary">{{ 'consent.sidebar.proof_title'|trans({}, 'consent') }}</h3>
+                        <p class="small mb-0">{{ 'consent.sidebar.proof_text'|trans({}, 'consent') }}</p>
+                    {% endblock %}
+                {% endembed %}
+            </div>{# /col-lg-4 #}
+            </div>{# /row #}
         </div>
     </div>
 </div>
