@@ -46,6 +46,32 @@ class SampleDataController extends AbstractController
         $activeModules = $this->moduleConfigurationService->getActiveModules();
         $availableSamples = $this->moduleConfigurationService->getSampleData();
         $importedCounts = $this->sampleImportRepository->countsByKey($tenant);
+
+        // TEMP-DEBUG: Trace why $importedCounts comes back empty in some
+        // sessions even though the DB has tracking rows. Logs once per
+        // request to var/log/dev.log.
+        if (function_exists('error_log')) {
+            $em = $this->sampleImportRepository->getEntityManager();
+            $f = $em->getFilters();
+            $filterParam = 'n/a';
+            if ($f->isEnabled('tenant_filter')) {
+                try {
+                    $filterParam = (string) $f->getFilter('tenant_filter')->getParameter('tenant_id');
+                } catch (\Throwable) {
+                    $filterParam = 'NOT-SET';
+                }
+            } else {
+                $filterParam = 'DISABLED';
+            }
+            error_log(sprintf(
+                '[sample-data-debug] tenant=%d (%s) | importedCounts.count=%d keys=[%s] | tenant_filter=%s',
+                $tenant->getId() ?? 0,
+                $tenant->getName() ?? '?',
+                count($importedCounts),
+                implode(',', array_keys($importedCounts)),
+                $filterParam,
+            ));
+        }
         // Defensive: PHP coerces numeric string keys to int when storing in
         // arrays, but if the DB driver returns sample_key as a non-numeric
         // string for any reason the lookup `$importedCounts[$key]` (with
