@@ -219,6 +219,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=sha
             type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
           labels: |
             org.opencontainers.image.title=Little ISMS Helper
             org.opencontainers.image.description=Webbasierte ISMS-Lösung für ISO 27001:2022 Compliance, Risiko- und BCM-Management
