@@ -210,11 +210,11 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
     public function testGetISO27005ComplianceWithAcceptedRisks(): void
     {
         $risk1 = $this->createMock(Risk::class);
-        $risk1->method('getTreatmentStrategy')->willReturn('accept');
+        $risk1->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Accept);
         $risk1->method('isAcceptanceApprovalRequired')->willReturn(false);
 
         $risk2 = $this->createMock(Risk::class);
-        $risk2->method('getTreatmentStrategy')->willReturn('mitigate');
+        $risk2->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Mitigate);
 
         $this->riskRepository->method('findAll')->willReturn([$risk1, $risk2]);
 
@@ -230,7 +230,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
     public function testGetISO27005ComplianceWithPendingApprovals(): void
     {
         $risk1 = $this->createMock(Risk::class);
-        $risk1->method('getTreatmentStrategy')->willReturn('accept');
+        $risk1->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Accept);
         $risk1->method('isAcceptanceApprovalRequired')->willReturn(true);
 
         $this->riskRepository->method('findAll')->willReturn([$risk1]);
@@ -377,7 +377,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
         $risk->method('isAcceptanceApprovalRequired')->willReturn(true);
         $risk->method('getTitle')->willReturn('Test Risk');
         $risk->method('getInherentRiskLevel')->willReturn(16);
-        $risk->method('getTreatmentStrategy')->willReturn('accept');
+        $risk->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Accept);
 
         $this->supplierRepository->method('findOverdueAssessments')->willReturn([]);
         $this->supplierRepository->method('findCriticalSuppliers')->willReturn([]);
@@ -437,7 +437,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
             ->willReturn(['total' => 10, 'pending_approval' => 2, 'overdue' => 0]);
 
         $risk = $this->createMock(Risk::class);
-        $risk->method('getTreatmentStrategy')->willReturn('mitigate');
+        $risk->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Mitigate);
         $risk->method('isAcceptanceApprovalRequired')->willReturn(false);
         $this->riskRepository->method('findAll')->willReturn([$risk]);
 
@@ -478,7 +478,7 @@ class ISOComplianceIntelligenceServiceTest extends TestCase
             ->willReturn(['total' => 10, 'pending_approval' => 2, 'overdue' => 0]);
 
         $risk = $this->createMock(Risk::class);
-        $risk->method('getTreatmentStrategy')->willReturn('mitigate');
+        $risk->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Mitigate);
         $risk->method('isAcceptanceApprovalRequired')->willReturn(false);
         $this->riskRepository->method('findAll')->willReturn([$risk]);
     }

@@ -101,13 +101,13 @@ class ThreatIntelligenceTest extends TestCase
 
         $this->assertEquals('medium', $threat->getSeverity());
 
-        $threat->setSeverity('critical');
+        $threat->setSeverity(\App\Enum\IncidentSeverity::Critical);
         $this->assertEquals('critical', $threat->getSeverity());
 
-        $threat->setSeverity('high');
+        $threat->setSeverity(\App\Enum\IncidentSeverity::High);
         $this->assertEquals('high', $threat->getSeverity());
 
-        $threat->setSeverity('low');
+        $threat->setSeverity(\App\Enum\IncidentSeverity::Low);
         $this->assertEquals('low', $threat->getSeverity());
 
         $threat->setSeverity('informational');
@@ -431,7 +431,7 @@ class ThreatIntelligenceTest extends TestCase
             ->setTitle('Test Threat')
             ->setDescription('Test Description')
             ->setThreatType('malware')
-            ->setSeverity('critical')
+            ->setSeverity(\App\Enum\IncidentSeverity::Critical)
             ->setStatus('analyzing')
             ->setAffectsOrganization(true)
             ->setCvssScore(9)

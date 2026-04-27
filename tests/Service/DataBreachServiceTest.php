@@ -110,7 +110,7 @@ class DataBreachServiceTest extends TestCase
         $incident = $this->createMock(Incident::class);
         $incident->method('getId')->willReturn(42);
         $incident->method('getTitle')->willReturn('Security Incident');
-        $incident->method('getSeverity')->willReturn('high');
+        $incident->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::High);
 
         $user = $this->createMock(User::class);
         $user->method('getEmail')->willReturn('user@example.com');
@@ -140,7 +140,7 @@ class DataBreachServiceTest extends TestCase
         $incident = $this->createMock(Incident::class);
         $incident->method('getId')->willReturn(1);
         $incident->method('getTitle')->willReturn('Test');
-        $incident->method('getSeverity')->willReturn('medium');
+        $incident->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::Medium);
 
         $user = $this->createMock(User::class);
         $user->method('getEmail')->willReturn('user@example.com');

@@ -162,8 +162,8 @@ class RiskControllerTest extends WebTestCase
         $this->testRisk->setImpact(4);
         $this->testRisk->setResidualProbability(2);
         $this->testRisk->setResidualImpact(2);
-        $this->testRisk->setTreatmentStrategy('mitigate');
-        $this->testRisk->setStatus('identified');
+        $this->testRisk->setTreatmentStrategy(\App\Enum\TreatmentStrategy::Mitigate);
+        $this->testRisk->setStatus(\App\Enum\RiskStatus::Identified);
         $this->testRisk->setRiskOwner($this->testUser);
         $this->testRisk->setTenant($this->testTenant);
         $this->entityManager->persist($this->testRisk);
@@ -446,7 +446,7 @@ class RiskControllerTest extends WebTestCase
         $riskRepository = $this->entityManager->getRepository(Risk::class);
         $updatedRisk = $riskRepository->find($this->testRisk->getId());
         $this->assertEquals('Updated Risk Title', $updatedRisk->getTitle());
-        $this->assertEquals('assessed', $updatedRisk->getStatus());
+        $this->assertEquals(\App\Enum\RiskStatus::Assessed, $updatedRisk->getStatus());
     }
 
     #[Test]
@@ -677,8 +677,8 @@ class RiskControllerTest extends WebTestCase
         $risk2->setDescription('Test description 2');
         $risk2->setProbability(2);
         $risk2->setImpact(2);
-        $risk2->setTreatmentStrategy('mitigate');
-        $risk2->setStatus('identified');
+        $risk2->setTreatmentStrategy(\App\Enum\TreatmentStrategy::Mitigate);
+        $risk2->setStatus(\App\Enum\RiskStatus::Identified);
         $risk2->setRiskOwner($this->testUser);
         $risk2->setTenant($this->testTenant);
         $this->entityManager->persist($risk2);
@@ -766,7 +766,7 @@ class RiskControllerTest extends WebTestCase
         $this->entityManager->persist($managerUser);
 
         // Set risk to accept strategy
-        $this->testRisk->setTreatmentStrategy('accept');
+        $this->testRisk->setTreatmentStrategy(\App\Enum\TreatmentStrategy::Accept);
         $this->entityManager->flush();
 
         $this->loginAsUser($managerUser);
@@ -793,7 +793,7 @@ class RiskControllerTest extends WebTestCase
         $this->entityManager->persist($managerUser);
 
         // Set risk to mitigate strategy (not accept)
-        $this->testRisk->setTreatmentStrategy('mitigate');
+        $this->testRisk->setTreatmentStrategy(\App\Enum\TreatmentStrategy::Mitigate);
         $this->entityManager->flush();
 
         $this->loginAsUser($managerUser);

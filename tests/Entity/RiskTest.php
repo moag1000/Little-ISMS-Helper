@@ -147,9 +147,9 @@ class RiskTest extends TestCase
         $risk->setImpact(5); // inherent = 20 (high risk)
 
         $incident1 = new Incident();
-        $incident1->setSeverity('critical');
+        $incident1->setSeverity(\App\Enum\IncidentSeverity::Critical);
         $incident2 = new Incident();
-        $incident2->setSeverity('high');
+        $incident2->setSeverity(\App\Enum\IncidentSeverity::High);
 
         $risk->addIncident($incident1);
         $risk->addIncident($incident2);
@@ -179,7 +179,7 @@ class RiskTest extends TestCase
         $risk->setImpact(2); // inherent = 2 (low risk)
 
         $incident = new Incident();
-        $incident->setSeverity('critical');
+        $incident->setSeverity(\App\Enum\IncidentSeverity::Critical);
 
         $risk->addIncident($incident);
 
@@ -195,7 +195,7 @@ class RiskTest extends TestCase
         $risk->setImpact(5); // inherent = 25 (high risk)
 
         $incident = new Incident();
-        $incident->setSeverity('low');
+        $incident->setSeverity(\App\Enum\IncidentSeverity::Low);
 
         $risk->addIncident($incident);
 

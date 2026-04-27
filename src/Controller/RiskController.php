@@ -578,7 +578,7 @@ class RiskController extends AbstractController
         $response = new Response($content);
         $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
-        $response->headers->set('Content-Length', strlen($content));
+        $response->headers->set('Content-Length', (string) strlen($content));
 
         return $response;
     }
@@ -686,7 +686,7 @@ class RiskController extends AbstractController
         $response = new Response($pdfContent);
         $response->headers->set('Content-Type', 'application/pdf');
         $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
-        $response->headers->set('Content-Length', strlen($pdfContent));
+        $response->headers->set('Content-Length', (string) strlen($pdfContent));
 
         return $response;
     }

@@ -9,6 +9,8 @@ use App\Entity\BusinessProcess;
 use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Enum\RiskStatus;
+use App\Enum\TreatmentStrategy;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -309,6 +311,8 @@ class LoadConnectedDemoDataCommand
         $existing = $this->entityManager->getRepository(Risk::class)
             ->findOneBy(['title' => $title, 'tenant' => $tenant]);
 
+        $strategyEnum = TreatmentStrategy::tryFrom($treatmentStrategy) ?? TreatmentStrategy::Mitigate;
+
         if ($existing instanceof Risk) {
             if ($update) {
                 $existing->setDescription($description)
@@ -316,7 +320,7 @@ class LoadConnectedDemoDataCommand
                     ->setVulnerability($vulnerability)
                     ->setProbability($probability)
                     ->setImpact($impact)
-                    ->setTreatmentStrategy($treatmentStrategy)
+                    ->setTreatmentStrategy($strategyEnum)
                     ->setAsset($asset)
                     ->setRiskOwner($riskOwner)
                     ->setCategory($category);
@@ -339,12 +343,12 @@ class LoadConnectedDemoDataCommand
             ->setImpact($impact)
             ->setResidualProbability(2)
             ->setResidualImpact($impact > 1 ? $impact - 1 : 1)
-            ->setTreatmentStrategy($treatmentStrategy)
+            ->setTreatmentStrategy($strategyEnum)
             ->setTreatmentDescription('Massnahmen werden im Risikobehandlungsplan definiert')
             ->setAsset($asset)
             ->setRiskOwner($riskOwner)
             ->setCategory($category)
-            ->setStatus('assessed')
+            ->setStatus(RiskStatus::Assessed)
             ->setReviewDate(new \DateTime('+90 days'));
 
         $this->entityManager->persist($risk);

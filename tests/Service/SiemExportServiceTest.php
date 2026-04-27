@@ -271,7 +271,7 @@ class SiemExportServiceTest extends TestCase
         $incident = $this->createMock(Incident::class);
         $incident->method('getId')->willReturn(1);
         $incident->method('getTitle')->willReturn(str_repeat('A', 300));
-        $incident->method('getSeverity')->willReturn('low');
+        $incident->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::Low);
         $incident->method('getDetectedAt')->willReturn(new \DateTime());
 
         $this->incidentRepository->method('findAll')->willReturn([$incident]);
@@ -322,7 +322,7 @@ class SiemExportServiceTest extends TestCase
         $incident = $this->createMock(Incident::class);
         $incident->method('getId')->willReturn(1);
         $incident->method('getTitle')->willReturn('Security Incident');
-        $incident->method('getSeverity')->willReturn('high');
+        $incident->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::High);
         $incident->method('getStatus')->willReturn('open');
         $incident->method('getCategory')->willReturn('security');
         $incident->method('getReportedBy')->willReturn('admin');
@@ -336,7 +336,7 @@ class SiemExportServiceTest extends TestCase
         $threat->method('getId')->willReturn(1);
         $threat->method('getTitle')->willReturn('Critical Vulnerability');
         $threat->method('getThreatType')->willReturn('vulnerability');
-        $threat->method('getSeverity')->willReturn('critical');
+        $threat->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::Critical);
         $threat->method('getCveId')->willReturn('CVE-2024-1234');
         $threat->method('getCvssScore')->willReturn(10);
         $threat->method('getStatus')->willReturn('new');

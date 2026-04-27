@@ -13,6 +13,7 @@ use Exception;
 use App\Entity\Risk;
 use App\Entity\User;
 use App\Entity\Tenant;
+use App\Enum\RiskStatus;
 use App\Enum\TreatmentStrategy;
 use App\Repository\UserRepository;
 use App\Service\RiskApprovalConfigResolver;
@@ -215,7 +216,7 @@ class RiskAcceptanceWorkflowService
         $risk->setFormallyAccepted(true);
         $risk->setAcceptanceApprovedBy($user->getFullName() . ' (automatic)');
         $risk->setAcceptanceApprovedAt($now);
-        $risk->setStatus('accepted');
+        $risk->setStatus(RiskStatus::Accepted);
 
         $this->entityManager->persist($risk);
         $this->entityManager->flush();
@@ -300,7 +301,7 @@ class RiskAcceptanceWorkflowService
     private function createManualApprovalRequest(Risk $risk, User $user, string $approvalLevel): array
     {
         // Set status to indicate pending approval
-        $risk->setStatus('assessed'); // Keep in assessed until approved
+        $risk->setStatus(RiskStatus::Assessed); // Keep in assessed until approved
 
         $this->entityManager->persist($risk);
         $this->entityManager->flush();
@@ -377,7 +378,7 @@ class RiskAcceptanceWorkflowService
         $risk->setFormallyAccepted(true);
         $risk->setAcceptanceApprovedBy($user->getFullName());
         $risk->setAcceptanceApprovedAt($now);
-        $risk->setStatus('accepted');
+        $risk->setStatus(RiskStatus::Accepted);
 
         $this->entityManager->persist($risk);
         $this->entityManager->flush();
@@ -427,7 +428,7 @@ class RiskAcceptanceWorkflowService
      */
     public function rejectAcceptance(Risk $risk, User $user, string $reason): array
     {
-        $risk->setStatus('assessed'); // Return to assessed status
+        $risk->setStatus(RiskStatus::Assessed); // Return to assessed status
         $risk->setFormallyAccepted(false);
 
         $this->entityManager->persist($risk);

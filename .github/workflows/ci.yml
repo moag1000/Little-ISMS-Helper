@@ -13,6 +13,13 @@ permissions:
   security-events: write  # Required for Trivy SARIF upload
   actions: read
 
+env:
+  # Opt into Node.js 24 for all actions that haven't migrated yet.
+  # Removes the persistent "actions/checkout@v4 running on Node 20"
+  # deprecation warnings from Security Checks / Code Quality / Tests
+  # / Docker Build & Push. Becomes default on June 2nd 2026.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   tests:
     name: Tests (PHP ${{ matrix.php-version }})
