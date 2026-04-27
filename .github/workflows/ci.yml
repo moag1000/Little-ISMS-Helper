@@ -165,6 +165,10 @@ jobs:
             echo "A11y audit script not found — skipping"
           fi
 
+      # DQL Field Mismatch Gate — catches QueryBuilder references to non-existent entity fields
+      - name: DQL Field Mismatch Check
+        run: php scripts/quality/check-dql-mismatches.php
+
   security:
     name: Security Checks
     runs-on: ubuntu-latest

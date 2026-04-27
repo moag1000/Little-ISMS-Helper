@@ -201,8 +201,8 @@ class RiskRepository extends ServiceEntityRepository
     public function findDueForReview(?Tenant $tenant = null, DateTimeInterface $asOf = new DateTime()): array
     {
         $qb = $this->createQueryBuilder('r')
-            ->where('r.nextReviewDate IS NOT NULL')
-            ->andWhere('r.nextReviewDate <= :asOf')
+            ->where('r.reviewDate IS NOT NULL')
+            ->andWhere('r.reviewDate <= :asOf')
             ->setParameter('asOf', $asOf);
 
         if ($tenant !== null) {
@@ -210,7 +210,7 @@ class RiskRepository extends ServiceEntityRepository
                 ->setParameter('tenant', $tenant);
         }
 
-        return $qb->orderBy('r.nextReviewDate', 'ASC')
+        return $qb->orderBy('r.reviewDate', 'ASC')
             ->getQuery()
             ->getResult();
     }
