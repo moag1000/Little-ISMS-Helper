@@ -47,8 +47,8 @@ class SampleDataController extends AbstractController
         $availableSamples = $this->moduleConfigurationService->getSampleData();
         $importedCounts = $this->sampleImportRepository->countsByKey($tenant);
 
-        // TEMP DEBUG (please paste relevant lines from var/log/dev.log when
-        // reporting UI counts mismatching CLI). Remove once root cause known.
+        // TEMP DEBUG: write a snapshot directly to var/log/sample-data-debug.log
+        // (independent of monolog config) so the operator can paste it back.
         $em = $this->sampleImportRepository->getEntityManager();
         $f = $em->getFilters();
         $filterParam = 'DISABLED';
@@ -59,21 +59,20 @@ class SampleDataController extends AbstractController
                 $filterParam = 'NOT-SET';
             }
         }
-        $rawSql = $em->createQueryBuilder()
-            ->select('s.sampleKey AS k, COUNT(s.id) AS c')
-            ->from(\App\Entity\SampleDataImport::class, 's')
-            ->where('s.tenant = :t')->setParameter('t', $tenant)
-            ->groupBy('s.sampleKey')
-            ->getQuery()->getSQL();
-        error_log(sprintf(
-            '[sd] tenant=%d em-hash=%s tenant_filter=%s | importedCounts.count=%d keys=[%s] | sql=%s',
+        $rawCount = $em->getRepository(\App\Entity\SampleDataImport::class)->count(['tenant' => $tenant]);
+        $logLine = sprintf(
+            "[%s] tenant=%d (%s) tenant_filter=%s | countsByKey returned %d entries keys=[%s] | repo->count=%d\n",
+            date('Y-m-d H:i:s'),
             $tenant->getId() ?? 0,
-            spl_object_hash($em),
+            $tenant->getName() ?? '?',
             $filterParam,
             count($importedCounts),
             implode(',', array_map(fn($k) => var_export($k, true), array_keys($importedCounts))),
-            preg_replace('/\s+/', ' ', $rawSql),
-        ));
+            $rawCount,
+        );
+        $logPath = $this->sampleImportRepository->getEntityManager()->getConnection()
+            ->getParams()['driver'] ? __DIR__ . '/../../../var/log/sample-data-debug.log' : '/tmp/sd-debug.log';
+        @file_put_contents($logPath, $logLine, FILE_APPEND);
 
         // Defensive: PHP coerces numeric string keys to int when storing in
         // arrays, but if the DB driver returns sample_key as a non-numeric
