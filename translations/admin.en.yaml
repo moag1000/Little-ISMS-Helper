@@ -438,6 +438,20 @@ admin:
             risks_treatment_plan_without_controls_hint: 'These risks have a treatment description but no controls linked. Link at least one ISO 27001 control to document the treatment.'
             risks_past_review_date: 'Past Review Date'
             risks_past_review_date_hint: 'These risks have a review date in the past and are not closed or treated. Please review and update these risks.'
+        compliance_health:
+            title: 'Compliance Health (GDPR / Art. 30)'
+            all_ok: 'No compliance health issues found — all privacy data is correctly configured.'
+            issues_found: '%count% compliance issue(s) found. Immediate review required.'
+            assets_without_cia: 'Assets Without CIA Values'
+            assets_without_cia_hint: 'These assets have no confidentiality, integrity, or availability classification. Assign CIA values to ensure proper risk scoping per ISO 27001 Annex A.8.2.'
+            breaches_overdue_72h: 'Breaches Overdue 72h Notification'
+            breaches_overdue_72h_hint: 'These data breaches require supervisory authority notification (Art. 33 GDPR) but are past the 72-hour deadline without a notification date recorded.'
+            dsr_overdue_30d: 'DSR Past 30-Day Deadline'
+            dsr_overdue_30d_hint: 'These data subject requests are past their Art. 12(3) GDPR response deadline and are not yet completed or rejected. Immediate action required.'
+            dpia_without_dpo: 'DPIA Approved Without DPO Consultation'
+            dpia_without_dpo_hint: 'These DPIAs have been approved but no DPO consultation date is recorded. Art. 35(2) GDPR requires DPO consultation before approval when a DPO is appointed.'
+            vvt_incomplete: 'Active VVT Entries Incomplete (Art. 30)'
+            vvt_incomplete_hint: 'These active processing activities are missing mandatory Art. 30 fields: name, purpose(s), or legal basis. Complete them to maintain a valid Record of Processing Activities.'
     modules:
         title: Title
         dependency_graph: 'Dependency Graph'

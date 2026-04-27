@@ -438,6 +438,20 @@ admin:
             risks_treatment_plan_without_controls_hint: 'Diese Risiken haben eine Behandlungsbeschreibung, aber keine verknüpfte ISO-27001-Maßnahme. Bitte mindestens eine Maßnahme verknüpfen.'
             risks_past_review_date: 'Überprüfungsdatum überschritten'
             risks_past_review_date_hint: 'Diese Risiken haben ein Überprüfungsdatum in der Vergangenheit und sind noch nicht abgeschlossen oder behandelt. Bitte prüfen und aktualisieren.'
+        compliance_health:
+            title: 'Compliance-Gesundheit (DSGVO / Art. 30)'
+            all_ok: 'Keine Compliance-Probleme gefunden — alle Datenschutz-Daten sind korrekt konfiguriert.'
+            issues_found: '%count% Compliance-Problem(e) gefunden. Sofortige Prüfung erforderlich.'
+            assets_without_cia: 'Assets ohne CIA-Werte'
+            assets_without_cia_hint: 'Diese Assets haben keine Vertraulichkeits-, Integritäts- oder Verfügbarkeitsklassifizierung. CIA-Werte gemäß ISO 27001 Anhang A.8.2 zuweisen.'
+            breaches_overdue_72h: 'Datenpannen — 72h-Meldepflicht überschritten'
+            breaches_overdue_72h_hint: 'Diese Datenpannen erfordern eine Meldung an die Aufsichtsbehörde (Art. 33 DSGVO), sind aber älter als 72 Stunden ohne eingetragenes Meldedatum.'
+            dsr_overdue_30d: 'Betroffenenanfragen — 30-Tage-Frist überschritten'
+            dsr_overdue_30d_hint: 'Diese Betroffenenanfragen haben die 30-Tage-Antwortfrist gemäß Art. 12(3) DSGVO überschritten und sind noch nicht abgeschlossen oder abgelehnt. Sofortiger Handlungsbedarf.'
+            dpia_without_dpo: 'DSFA ohne DSB-Konsultation genehmigt'
+            dpia_without_dpo_hint: 'Diese DPIAs wurden genehmigt, ohne dass ein DSB-Konsultationsdatum eingetragen wurde. Gemäß Art. 35(2) DSGVO ist bei bestelltem DSB eine Konsultation vor der Genehmigung erforderlich.'
+            vvt_incomplete: 'Aktive VVT-Einträge unvollständig (Art. 30)'
+            vvt_incomplete_hint: 'Diese aktiven Verarbeitungstätigkeiten fehlen Pflichtfelder gemäß Art. 30 DSGVO: Name, Zweck(e) oder Rechtsgrundlage. Vervollständigen, um ein gültiges Verarbeitungsverzeichnis zu führen.'
     modules:
         title: Modul-Verwaltung
         dependency_graph: Abhängigkeitsgraph

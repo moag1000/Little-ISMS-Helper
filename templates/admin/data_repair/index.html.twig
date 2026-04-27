@@ -1259,6 +1259,248 @@
         {% endblock %}
     {% endembed %}
 
+    {# ────────────────────────────────────────────────────────────────────────
+       Compliance Health (GDPR / Art. 30 VVT)
+       Five critical checks for privacy-related data completeness.
+    ──────────────────────────────────────────────────────────────────────── #}
+    {% set totalComplianceIssues = 0 %}
+    {% for issueGroup in complianceHealthIssues %}{% set totalComplianceIssues = totalComplianceIssues + issueGroup|length %}{% endfor %}
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4 border-' ~ (totalComplianceIssues > 0 ? 'danger' : 'success') } %}
+        {% block card_header %}
+            <div class="card-header {{ totalComplianceIssues > 0 ? 'bg-danger-subtle text-danger' : '' }}">
+                <h2 class="mb-0">
+                    <i class="fa-icon fa-icon--{{ totalComplianceIssues > 0 ? 'status-critical' : 'ui-check-circle' }}" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.compliance_health.title'|trans({}, 'admin') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+            {% if totalComplianceIssues == 0 %}
+                {{ _fa_alert.render({ variant: 'success', class: 'mb-0', body: 'admin.data_repair.compliance_health.all_ok'|trans({}, 'admin') }) }}
+            {% else %}
+                {{ _fa_alert.render({ variant: 'danger', body: '<strong>' ~ 'common.error'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.compliance_health.issues_found'|trans({'%count%': totalComplianceIssues}, 'admin') }) }}
+
+                {# Summary metric grid — 5 checks #}
+                <div class="row row-cols-2 row-cols-md-5 g-3 mb-4">
+                    {% set complianceCheckKeys = [
+                        'assets_without_cia',
+                        'breaches_overdue_72h',
+                        'dsr_overdue_30d',
+                        'dpia_without_dpo',
+                        'vvt_incomplete'
+                    ] %}
+                    {% for checkKey in complianceCheckKeys %}
+                        {% set items = complianceHealthIssues[checkKey] is defined ? complianceHealthIssues[checkKey] : [] %}
+                        <div class="col">
+                            {% embed '_components/_card.html.twig' with { class: 'text-center h-100 ' ~ (items|length > 0 ? 'bg-danger bg-opacity-10' : 'bg-success bg-opacity-10') } %}
+                                {% block card_body %}
+                                    <h3 class="text-{{ items|length > 0 ? 'danger' : 'success' }} mb-1">{{ items|length }}</h3>
+                                    <p class="mb-0 small">{{ ('admin.data_repair.compliance_health.' ~ checkKey)|trans({}, 'admin') }}</p>
+                                {% endblock %}
+                            {% endembed %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {# Check 1: Assets without CIA values #}
+                {% if complianceHealthIssues.assets_without_cia is defined and complianceHealthIssues.assets_without_cia|length > 0 %}
+                <details class="mb-4">
+                    <summary class="fw-semibold cursor-pointer text-danger">
+                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.compliance_health.assets_without_cia'|trans({}, 'admin') }}
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: complianceHealthIssues.assets_without_cia|length } only %}
+                    </summary>
+                    <div class="mt-2">
+                    <p class="text-muted small">{{ 'admin.data_repair.compliance_health.assets_without_cia_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'asset.label.type'|trans({}, 'asset') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for asset in complianceHealthIssues.assets_without_cia %}
+                            <tr class="table-danger">
+                                <td>{{ asset.id }}</td>
+                                <td>{{ asset.name }}{% if asset.tenant %}<br><small class="text-muted">{{ asset.tenant.name }}</small>{% endif %}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: asset.assetType } only %}</td>
+                                <td>
+                                    <a href="{{ path('app_asset_edit', {id: asset.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                        {{ 'common.edit'|trans({}, 'messages') }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                    </div>
+                </details>
+                {% endif %}
+
+                {# Check 2: Data Breaches overdue 72h notification #}
+                {% if complianceHealthIssues.breaches_overdue_72h is defined and complianceHealthIssues.breaches_overdue_72h|length > 0 %}
+                <details class="mb-4">
+                    <summary class="fw-semibold cursor-pointer text-danger">
+                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.compliance_health.breaches_overdue_72h'|trans({}, 'admin') }}
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: complianceHealthIssues.breaches_overdue_72h|length } only %}
+                    </summary>
+                    <div class="mt-2">
+                    <p class="text-muted small">{{ 'admin.data_repair.compliance_health.breaches_overdue_72h_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.date'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for breach in complianceHealthIssues.breaches_overdue_72h %}
+                            <tr class="table-danger">
+                                <td>{{ breach.id }}</td>
+                                <td>{{ breach.title ?? breach.referenceNumber ?? ('#' ~ breach.id) }}{% if breach.tenant %}<br><small class="text-muted">{{ breach.tenant.name }}</small>{% endif %}</td>
+                                <td>
+                                    {% if breach.detectedAt %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: breach.detectedAt|date('d.m.Y H:i') } only %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ path('app_data_breach_show', {id: breach.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                        {{ 'common.view'|trans({}, 'messages') }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                    </div>
+                </details>
+                {% endif %}
+
+                {# Check 3: DSR past 30-day deadline #}
+                {% if complianceHealthIssues.dsr_overdue_30d is defined and complianceHealthIssues.dsr_overdue_30d|length > 0 %}
+                <details class="mb-4">
+                    <summary class="fw-semibold cursor-pointer text-danger">
+                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.compliance_health.dsr_overdue_30d'|trans({}, 'admin') }}
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: complianceHealthIssues.dsr_overdue_30d|length } only %}
+                    </summary>
+                    <div class="mt-2">
+                    <p class="text-muted small">{{ 'admin.data_repair.compliance_health.dsr_overdue_30d_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for dsr in complianceHealthIssues.dsr_overdue_30d %}
+                            <tr class="table-danger">
+                                <td>{{ dsr.id }}</td>
+                                <td>{{ dsr.requestType ?? ('#' ~ dsr.id) }}{% if dsr.tenant %}<br><small class="text-muted">{{ dsr.tenant.name }}</small>{% endif %}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'warning', content: dsr.status } only %}</td>
+                                <td>
+                                    <a href="{{ path('app_data_subject_request_show', {id: dsr.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                        {{ 'common.view'|trans({}, 'messages') }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                    </div>
+                </details>
+                {% endif %}
+
+                {# Check 4: DPIA approved without DPO consultation #}
+                {% if complianceHealthIssues.dpia_without_dpo is defined and complianceHealthIssues.dpia_without_dpo|length > 0 %}
+                <details class="mb-4">
+                    <summary class="fw-semibold cursor-pointer text-danger">
+                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.compliance_health.dpia_without_dpo'|trans({}, 'admin') }}
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: complianceHealthIssues.dpia_without_dpo|length } only %}
+                    </summary>
+                    <div class="mt-2">
+                    <p class="text-muted small">{{ 'admin.data_repair.compliance_health.dpia_without_dpo_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for dpia in complianceHealthIssues.dpia_without_dpo %}
+                            <tr class="table-danger">
+                                <td>{{ dpia.id }}</td>
+                                <td>{{ dpia.title ?? ('#' ~ dpia.id) }}{% if dpia.tenant %}<br><small class="text-muted">{{ dpia.tenant.name }}</small>{% endif %}</td>
+                                <td>
+                                    <a href="{{ path('app_dpia_show', {id: dpia.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                        {{ 'common.view'|trans({}, 'messages') }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                    </div>
+                </details>
+                {% endif %}
+
+                {# Check 5: Active processing activities incomplete (Art. 30) #}
+                {% if complianceHealthIssues.vvt_incomplete is defined and complianceHealthIssues.vvt_incomplete|length > 0 %}
+                <details class="mb-4">
+                    <summary class="fw-semibold cursor-pointer text-danger">
+                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.compliance_health.vvt_incomplete'|trans({}, 'admin') }}
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: complianceHealthIssues.vvt_incomplete|length } only %}
+                    </summary>
+                    <div class="mt-2">
+                    <p class="text-muted small">{{ 'admin.data_repair.compliance_health.vvt_incomplete_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for pa in complianceHealthIssues.vvt_incomplete %}
+                            <tr class="table-danger">
+                                <td>{{ pa.id }}</td>
+                                <td>{{ pa.name ?? ('#' ~ pa.id) }}{% if pa.tenant %}<br><small class="text-muted">{{ pa.tenant.name }}</small>{% endif %}</td>
+                                <td>
+                                    <a href="{{ path('app_processing_activity_edit', {id: pa.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                        {{ 'common.edit'|trans({}, 'messages') }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                    </div>
+                </details>
+                {% endif %}
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+
     {# Broken References #}
     {% if brokenReferences|length > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
