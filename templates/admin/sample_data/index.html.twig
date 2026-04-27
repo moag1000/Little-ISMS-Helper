@@ -9,6 +9,8 @@
 {% endblock %}
 
 {% block admin_content %}
+{# Disable Turbo-cache: status badges depend on fresh DB count after each import. #}
+<meta name="turbo-cache-control" content="no-cache">
 <div class="container-fluid">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
