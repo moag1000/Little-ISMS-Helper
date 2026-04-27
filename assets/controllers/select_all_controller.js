@@ -1,26 +1,20 @@
 import { Controller } from '@hotwired/stimulus';
 
 /*
- * Generic "select all" checkbox.
+ * Generic "select all" master checkbox.
+ *
+ * Reads the target-selector from the plain data-attribute
+ * `data-select-all-selector` (NOT a Stimulus value, to dodge a
+ * `getAttributeNameForKey` error seen with longform value definitions
+ * in this app's bundled Stimulus build).
  *
  * Usage:
  *   <input type="checkbox"
  *          data-controller="select-all"
  *          data-action="change->select-all#toggle"
- *          data-select-all-target-selector-value="input[name^='items['][type='checkbox']:not([disabled])">
- *
- * Behavior:
- *   - Master checkbox toggles all matched checkboxes within the closest <form>
- *     (or document if no form).
- *   - Listens to changes on matched checkboxes to update the master state
- *     (checked / unchecked / indeterminate) so the UI stays consistent when the
- *     user toggles individual rows.
+ *          data-select-all-selector="input[name^='items['][type='checkbox']:not([disabled])">
  */
 export default class extends Controller {
-    static values = {
-        targetSelector: { type: String, default: 'input[type="checkbox"]' },
-    };
-
     connect() {
         this.boundUpdate = () => this.updateMasterState();
         this.scope().forEach((cb) => cb.addEventListener('change', this.boundUpdate));
@@ -62,7 +56,7 @@ export default class extends Controller {
 
     scope() {
         const root = this.element.closest('form') || document;
-        const selector = this.targetSelectorValue || 'input[type="checkbox"]';
-        return Array.from(root.querySelectorAll(selector));
+        const selector = this.element.dataset.selectAllSelector || 'input[type="checkbox"]:not(#' + this.element.id + ')';
+        return Array.from(root.querySelectorAll(selector)).filter((cb) => cb !== this.element);
     }
 }
