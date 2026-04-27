@@ -122,21 +122,11 @@ final class SampleDataPurgeCommand
                 }
             }
             foreach ($retryItems as $item) {
-                try {
-                    $entity = $this->entityManager->find($item['class'], $item['id']);
-                    if ($entity === null) {
-                        $retryRemoved++; // already gone
-                        continue;
-                    }
-                    $this->entityManager->remove($entity);
-                    $this->entityManager->flush();
+                $entityRemoved = $this->tryRemoveWithCascade($item['class'], $item['id'], $io);
+                if ($entityRemoved) {
                     $retryRemoved++;
-                } catch (\Throwable $e) {
-                    $persistentFailures[] = sprintf('%s#%d: %s', $item['class'], $item['id'], $e->getMessage());
-                    if (!$this->entityManager->isOpen() && $this->managerRegistry !== null) {
-                        $this->managerRegistry->resetManager();
-                        $this->entityManager = $this->managerRegistry->getManager();
-                    }
+                } else {
+                    $persistentFailures[] = sprintf('%s#%d: still blocked after cascade-attempt', $item['class'], $item['id']);
                 }
             }
             $io->writeln(sprintf('  Retry-pass: removed=%d, still-failing=%d', $retryRemoved, count($persistentFailures)));
@@ -154,5 +144,54 @@ final class SampleDataPurgeCommand
         }
         $io->success(sprintf('Purge complete: %d entities removed, %d still-failing.', $totalRemoved, $totalErrors));
         return Command::SUCCESS;
+    }
+
+    /**
+     * Try to remove an entity. On FK-violation, parse the offending child
+     * table + column from the SQL error, raw-DELETE the blockers, retry.
+     * Repeats up to 3× to chase multi-level FK chains.
+     */
+    private function tryRemoveWithCascade(string $entityClass, int $entityId, SymfonyStyle $io): bool
+    {
+        for ($attempt = 0; $attempt < 3; $attempt++) {
+            try {
+                $entity = $this->entityManager->find($entityClass, $entityId);
+                if ($entity === null) {
+                    return true;
+                }
+                $this->entityManager->remove($entity);
+                $this->entityManager->flush();
+                return true;
+            } catch (\Throwable $e) {
+                if (!$this->entityManager->isOpen() && $this->managerRegistry !== null) {
+                    $this->managerRegistry->resetManager();
+                    $this->entityManager = $this->managerRegistry->getManager();
+                }
+                // Parse "table `db`.`childtable`, CONSTRAINT … FOREIGN KEY (`col`)"
+                $msg = $e->getMessage();
+                if (!preg_match('/`[^`]+`\.`([a-z_]+)`,\s*CONSTRAINT[^(]*\(`([a-z_]+)`\)/i', $msg, $m)) {
+                    return false;
+                }
+                $childTable = $m[1];
+                $childCol = $m[2];
+                try {
+                    $conn = $this->entityManager->getConnection();
+                    $deleted = $conn->executeStatement(
+                        sprintf('DELETE FROM %s WHERE %s = ?',
+                            $conn->quoteIdentifier($childTable),
+                            $conn->quoteIdentifier($childCol)
+                        ),
+                        [$entityId]
+                    );
+                    $io->writeln(sprintf('    <comment>orphan-purge: %d row(s) from %s.%s pointing to %s#%d</comment>',
+                        $deleted, $childTable, $childCol, $entityClass, $entityId));
+                } catch (\Throwable $rawErr) {
+                    $io->writeln(sprintf('    <error>cascade-delete failed for %s.%s: %s</error>',
+                        $childTable, $childCol, $rawErr->getMessage()));
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 }
