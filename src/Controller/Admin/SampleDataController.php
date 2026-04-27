@@ -93,6 +93,11 @@ class SampleDataController extends AbstractController
                 }
             }
 
+            // Removable: file-Samples via Tracking-Rows, Command-Samples
+            // (TISAX/DORA) via Framework-Cascade-Delete (siehe remove()).
+            $isCommandWithMappedFramework = isset($data['command'])
+                && isset($commandFrameworkMap[$data['command']]);
+
             $samples[$key] = [
                 'key' => (string) $key,
                 'name' => $data['name'] ?? (string) $key,
@@ -101,7 +106,7 @@ class SampleDataController extends AbstractController
                 'modules_ok' => $modulesOk,
                 'count' => $rawCount,
                 'imported' => $imported,
-                'removable' => isset($data['file']),  // Commands können wir (noch) nicht entfernen
+                'removable' => isset($data['file']) || ($isCommandWithMappedFramework && $imported),
             ];
         }
 
@@ -157,6 +162,40 @@ class SampleDataController extends AbstractController
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
             $this->addFlash('error', $this->translator->trans('admin.sample_data.no_tenant', [], 'admin'));
+            return $this->redirectToRoute('admin_sample_data_index');
+        }
+
+        // Command-Samples (TISAX/DORA): Framework cascade-deletet alle
+        // ComplianceRequirements (entity has cascade=remove on the OneToMany).
+        $availableSamples = $this->moduleConfigurationService->getSampleData();
+        $sampleConfig = $availableSamples[$sampleKey] ?? $availableSamples[(int) $sampleKey] ?? null;
+        $commandFrameworkMap = [
+            'app:load-tisax-requirements' => 'TISAX',
+            'app:load-dora-requirements'  => 'DORA',
+        ];
+        if ($sampleConfig !== null && isset($sampleConfig['command'])
+            && isset($commandFrameworkMap[$sampleConfig['command']])) {
+            $code = $commandFrameworkMap[$sampleConfig['command']];
+            $framework = $this->em->getRepository(\App\Entity\ComplianceFramework::class)
+                ->findOneBy(['code' => $code]);
+            if ($framework === null) {
+                $this->addFlash('warning', sprintf('Framework %s nicht gefunden — nichts zu entfernen.', $code));
+                return $this->redirectToRoute('admin_sample_data_index');
+            }
+            $reqCount = $this->em->getRepository(\App\Entity\ComplianceRequirement::class)
+                ->count(['complianceFramework' => $framework]);
+            try {
+                $this->em->remove($framework);
+                $this->em->flush();
+                $this->addFlash('success', sprintf(
+                    '%s entfernt: Framework + %d Anforderungen.',
+                    $code, $reqCount
+                ));
+            } catch (\Throwable $e) {
+                $this->addFlash('error', sprintf(
+                    'Konnte %s nicht entfernen: %s', $code, $e->getMessage()
+                ));
+            }
             return $this->redirectToRoute('admin_sample_data_index');
         }
 
