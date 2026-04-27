@@ -9,6 +9,7 @@ use DateTimeImmutable;
 use Exception;
 use App\Entity\Incident;
 use App\Repository\IncidentRepository;
+use App\Repository\UserRepository;
 use App\Service\EmailNotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -49,8 +50,14 @@ class Nis2NotificationCommand
     private const array DETAILED_NOTIFICATION_THRESHOLDS = [4, 2, 1]; // 68h, 70h, 71h
     private const array FINAL_REPORT_THRESHOLDS = [168, 72, 24]; // 7 days, 3 days, 1 day (in hours)
 
-    public function __construct(private readonly IncidentRepository $incidentRepository, private readonly EmailNotificationService $emailNotificationService, private readonly EntityManagerInterface $entityManager, private readonly TranslatorInterface $translator, private readonly LoggerInterface $logger)
-    {
+    public function __construct(
+        private readonly IncidentRepository $incidentRepository,
+        private readonly EmailNotificationService $emailNotificationService,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly LoggerInterface $logger,
+        private readonly UserRepository $userRepository
+    ) {
     }
 
     public function __invoke(#[Option(name: 'dry-run', description: 'Simulate notifications without sending')]
@@ -272,7 +279,14 @@ class Nis2NotificationCommand
                 $recipients[] = $incident->getReportedBy();
             }
 
-            // TODO: Add logic to fetch CISO/admin emails from User repository
+            // Fetch CISO and admin users as additional recipients
+            $cisoUsers = $this->userRepository->findByRole('ROLE_CISO');
+            $adminUsers = $this->userRepository->findByRole('ROLE_ADMIN');
+            foreach (array_merge($cisoUsers, $adminUsers) as $privilegedUser) {
+                if (!in_array($privilegedUser, $recipients, true)) {
+                    $recipients[] = $privilegedUser;
+                }
+            }
 
             $this->emailNotificationService->sendGenericNotification(
                 subject: sprintf('[NIS2 Alert] %s', $subject),

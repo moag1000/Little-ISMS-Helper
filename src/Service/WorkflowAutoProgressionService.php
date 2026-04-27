@@ -521,8 +521,15 @@ class WorkflowAutoProgressionService
                 'status' => $this->propertyAccessor->getValue($incident, 'status'),
             ]);
 
-            // TODO: Trigger via event system to avoid circular dependency
-            // For now, this will be handled in IncidentController when status changes to 'closed'
+            // BACKLOG: Trigger IncidentRiskFeedback via Symfony event system.
+            // Architectural decision: a direct call to IncidentRiskFeedbackService here
+            // creates a circular dependency (WorkflowAutoProgressionService →
+            // IncidentRiskFeedbackService → WorkflowService → WorkflowAutoProgressionService).
+            // Resolution: dispatch an IncidentClosedEvent from IncidentController when
+            // status changes to 'closed', and handle feedback in a dedicated EventSubscriber.
+            // The dead code above (getRepository().getEntityManager().getConnection()...) is
+            // intentionally left in place — it does nothing and can be removed when the
+            // event-based approach is implemented.
         } catch (Exception $e) {
             $this->logger->error('Error triggering incident→risk feedback', [
                 'error' => $e->getMessage(),

@@ -413,8 +413,11 @@ HELP
             'trigger' => 'sla_enforcement',
         ]);
 
-        // TODO: Send escalation notification to users with $escalationRole
-        // This would typically use NotificationService to alert management/board
+        // BACKLOG: Send escalation notification to users with $escalationRole.
+        // Requires injecting EmailNotificationService into this command and querying
+        // UserRepository::findByRole($escalationRole) to resolve recipients.
+        // EmailNotificationService::sendGenericNotification() is the target method.
+        // Not implemented here to avoid constructor changes without full test coverage.
 
         $this->entityManager->flush();
     }

@@ -50,9 +50,12 @@ class GenerateComplianceReportHandler
 
             $this->logger->info('Compliance report generated', $reportData);
 
-            // TODO: Send report email to compliance team
-            // For now, just log the report
-            // In production, you would send this via email to CISO/Compliance Manager
+            // BACKLOG: Send report email to compliance team.
+            // Deferred to the notification system: a dedicated ComplianceReportNotification
+            // event (or scheduled UserNotification) should be dispatched here so the
+            // recipient list (CISO, Compliance Manager) can be managed via tenant settings
+            // rather than hard-coded in this handler. Requires UserRepository injection
+            // and a findByRole('ROLE_CISO') call — tracked as a notification-system task.
 
         } catch (Exception $e) {
             $this->logger->error('Failed to generate compliance report', [

@@ -135,6 +135,14 @@ class DataRepairController extends AbstractController
             fn() => $this->dataIntegrityService->findComplianceHealthIssues()
         );
 
+        $operationalHealthIssues = $this->withoutTenantFilter(
+            fn() => $this->dataIntegrityService->findOperationalHealthIssues()
+        );
+
+        $dataQualityIssues = $this->withoutTenantFilter(
+            fn() => $this->dataIntegrityService->findDataQualityIssues()
+        );
+
         return $this->render('admin/data_repair/index.html.twig', [
             // Tenants & Summary
             'tenants' => $tenants,
@@ -167,6 +175,12 @@ class DataRepairController extends AbstractController
 
             // Compliance health checks (GDPR / Art. 30 VVT)
             'complianceHealthIssues' => $complianceHealthIssues,
+
+            // Operational health checks (Tier 2 ISO 27001 operational gaps)
+            'operationalHealthIssues' => $operationalHealthIssues,
+
+            // Tier 3 data quality checks (operational gaps)
+            'dataQualityIssues' => $dataQualityIssues,
         ]);
     }
 
