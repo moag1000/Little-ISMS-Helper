@@ -286,9 +286,31 @@ jobs:
           # Build and start services (this will reuse cached layers from previous builds)
           echo "Starting Docker Compose services..."
           COMPOSE_HTTP_TIMEOUT=600 docker compose up -d --wait --wait-timeout 540 || {
-            echo "Docker Compose failed to start services. Showing logs:"
+            echo "::error::Docker Compose --wait failed; dumping deep diagnostics"
             docker compose ps
-            docker compose logs --tail=100
+            echo "=== APP CONTAINER LOGS (last 200) ==="
+            docker compose logs app --tail=200
+            echo "=== DB LOGS ==="
+            docker compose logs db --tail=50
+            echo "=== APP CONTAINER STATE ==="
+            docker inspect isms-app --format '{{json .State}}' || true
+            echo "=== HEALTHCHECK LAST OUTPUT ==="
+            docker inspect isms-app --format '{{range .State.Health.Log}}--- exit={{.ExitCode}} @ {{.Start}} ---{{"\n"}}{{.Output}}{{"\n"}}{{end}}' || true
+            echo "=== PROCESSES IN APP ==="
+            docker compose exec -T app ps aux || true
+            echo "=== NGINX ERROR LOG ==="
+            docker compose exec -T app cat /var/log/nginx/error.log 2>&1 || true
+            echo "=== NGINX ACCESS LOG (last 50) ==="
+            docker compose exec -T app tail -50 /var/log/nginx/access.log 2>&1 || true
+            echo "=== PHP-FPM LOGS ==="
+            docker compose exec -T app sh -c 'cat /var/log/php*.log 2>&1 || true; cat /var/log/supervisor/*.log 2>&1 || true' || true
+            echo "=== APP .ENV.LOCAL ==="
+            docker compose exec -T app cat /var/www/html/.env.local 2>&1 || true
+            echo "=== APP DATABASE_URL FROM ENV ==="
+            docker compose exec -T app sh -c 'echo "DATABASE_URL=$DATABASE_URL"; echo "EMBEDDED_DB=$EMBEDDED_DB"' || true
+            echo "=== TRY HEALTH MANUALLY ==="
+            docker compose exec -T app curl -i http://localhost/de/health 2>&1 || true
+            docker compose exec -T app curl -i http://localhost/health 2>&1 || true
             exit 1
           }
 
