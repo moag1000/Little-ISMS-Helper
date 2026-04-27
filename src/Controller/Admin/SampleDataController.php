@@ -31,6 +31,7 @@ class SampleDataController extends AbstractController
         private readonly SampleDataImportRepository $sampleImportRepository,
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator,
+        private readonly \Doctrine\ORM\EntityManagerInterface $em,
     ) {
     }
 
@@ -56,6 +57,16 @@ class SampleDataController extends AbstractController
             $countsByStringKey[(string) $k] = (int) $v;
         }
 
+        // Command-basierte Samples (TISAX, DORA) erzeugen keine Tracking-Rows.
+        // Status-Erkennung: Framework-Existenz im DB prüfen. Map command →
+        // ComplianceFramework-Code.
+        $commandFrameworkMap = [
+            'app:load-tisax-requirements' => 'TISAX',
+            'app:load-dora-requirements'  => 'DORA',
+        ];
+        $frameworkRepo = $this->em->getRepository(\App\Entity\ComplianceFramework::class);
+        $reqRepo       = $this->em->getRepository(\App\Entity\ComplianceRequirement::class);
+
         // Ein normalisiertes Array pro Sample (Key, name, description, required-modules,
         // bereits-importiert-Flag, Entry-Count, Remove-fähig).
         $samples = [];
@@ -69,15 +80,28 @@ class SampleDataController extends AbstractController
                 }
             }
 
+            $rawCount = $importedCounts[$key] ?? $countsByStringKey[(string) $key] ?? 0;
+            $imported = $rawCount > 0;
+
+            // Command-Sample? Status statt aus Tracking aus Framework-Existenz lesen.
+            if (isset($data['command']) && isset($commandFrameworkMap[$data['command']])) {
+                $framework = $frameworkRepo->findOneBy(['code' => $commandFrameworkMap[$data['command']]]);
+                if ($framework !== null) {
+                    $reqCount = $reqRepo->count(['framework' => $framework]);
+                    $rawCount = $reqCount;
+                    $imported = $reqCount > 0;
+                }
+            }
+
             $samples[$key] = [
                 'key' => (string) $key,
                 'name' => $data['name'] ?? (string) $key,
                 'description' => $data['description'] ?? '',
                 'required_modules' => $requiredModules,
                 'modules_ok' => $modulesOk,
-                'count' => $importedCounts[$key] ?? $countsByStringKey[(string) $key] ?? 0,
-                'imported' => ($importedCounts[$key] ?? $countsByStringKey[(string) $key] ?? 0) > 0,
-                'removable' => isset($data['file']),  // Commands können wir (noch) nicht tracken
+                'count' => $rawCount,
+                'imported' => $imported,
+                'removable' => isset($data['file']),  // Commands können wir (noch) nicht entfernen
             ];
         }
 
