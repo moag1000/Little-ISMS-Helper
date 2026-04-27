@@ -52,13 +52,16 @@
     {% set avgResolutionDays = allIncidents|filter(i => i.status == 'resolved')|length > 0
         ? ((allIncidents|filter(i => i.status == 'resolved')|reduce((carry, i) => carry + (i.resolvedAt ? (i.resolvedAt.diff(i.occurredAt).days) : 0), 0)) / (allIncidents|filter(i => i.status == 'resolved')|length))|round(1)
         : 0 %}
-    {{ _fa_feature_card.render({
-        icon: 'clock-history',
-        label: 'incident.kpi.avg_resolution'|trans({}, 'incident'),
-        value: avgResolutionDays,
-        unit: 'incident.kpi.unit.days'|trans({}, 'incident'),
-        variant: 'primary'
-    }) }}
+    <div class="position-relative">
+        {{ _fa_feature_card.render({
+            icon: 'clock-history',
+            label: 'incident.kpi.avg_resolution'|trans({}, 'incident'),
+            value: avgResolutionDays,
+            unit: 'incident.kpi.unit.days'|trans({}, 'incident'),
+            variant: 'primary'
+        }) }}
+        <a href="{{ path('app_help_glossary') }}#glossary-mttr" class="text-muted position-absolute top-0 end-0 m-1" title="{{ 'common.glossary_link'|trans({}, 'messages') }}" data-bs-toggle="tooltip"><i class="bi bi-question-circle" aria-hidden="true" style="font-size: 0.75rem;"></i></a>
+    </div>
 </div>
 
 {# Status Overview #}

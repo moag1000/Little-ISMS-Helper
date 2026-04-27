@@ -37,7 +37,15 @@
                     <table class="table table-hover align-middle">
                         <thead>
                             <tr>
-                                <th scope="col" style="width: 40px;"></th>
+                                <th scope="col" style="width: 40px;">
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           id="sample_select_all"
+                                           data-controller="select-all"
+                                           data-action="change->select-all#toggle"
+                                           data-select-all-target-selector-value="input[name^='samples['][type='checkbox']:not([disabled])"
+                                           aria-label="{{ 'admin.sample_data.select_all'|trans({}, 'admin') }}">
+                                </th>
                                 <th scope="col">{{ 'admin.sample_data.col_name'|trans({}, 'admin') }}</th>
                                 <th scope="col">{{ 'admin.sample_data.col_description'|trans({}, 'admin') }}</th>
                                 <th scope="col">{{ 'admin.sample_data.col_modules'|trans({}, 'admin') }}</th>

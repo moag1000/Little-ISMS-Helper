@@ -46,7 +46,7 @@
                     'fields': ['residualProbability', 'residualImpact']
                 },
                 'treatment': {
-                    'label': 'risk.section.treatment'|trans({}, 'risk'),
+                    'label': 'risk.section.treatment'|trans({}, 'risk') ~ '<a href="' ~ path('app_help_glossary') ~ '#glossary-treatment-strategy" class="text-muted ms-1" title="' ~ 'common.glossary_link'|trans({}, 'messages') ~ '" data-bs-toggle="tooltip"><i class="bi bi-question-circle" aria-hidden="true" style="font-size: 0.75rem;"></i></a>',
                     'fields': ['treatmentStrategy', 'riskOwner', 'treatmentDescription']
                 },
                 'acceptance': {

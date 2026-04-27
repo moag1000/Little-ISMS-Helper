@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="turbo-cache-control" content="no-cache">
+    <title>{% block title %}{{ 'app.title'|trans({}, 'messages') }}{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+
+    {# PWA Support - Phase 8A #}
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#06b6d4">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ISMS Helper">
+    <link rel="apple-touch-icon" href="{{ asset('icons/icon-192x192.png') }}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('icons/icon-152x152.png') }}">
+    <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('icons/icon-192x192.png') }}">
+    <link rel="apple-touch-icon" sizes="512x512" href="{{ asset('icons/icon-512x512.png') }}">
+    <meta name="msapplication-TileImage" content="{{ asset('icons/icon-144x144.png') }}">
+    <meta name="msapplication-TileColor" content="#0d1117">
+
+    {# Skip Link Styles - WCAG 2.1 AA Requirement #}
+    <style>
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            z-index: 10000;
+            padding: 0.5rem 1rem;
+            background: var(--color-primary, #0d6efd);
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 0 0 0.25rem 0;
+            transition: top 0.2s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+            outline: 3px solid var(--color-warning, #ffc107);
+            outline-offset: 2px;
+        }
+    </style>
+
+    {% block importmap %}
+        {# Import map in head with data-turbo-permanent to prevent reload on navigation #}
+        <div data-turbo-permanent id="importmap-container">
+            {{ importmap(['app', 'styles']) }}
+        </div>
+    {% endblock %}
+
+    {% block stylesheets %}
+        {# Bootstrap CSS - Loaded locally to avoid CDN certificate issues #}
+        <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+
+        {# Bootstrap Icons - Loaded locally to avoid CDN certificate issues #}
+        <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}">
+
+        {# Custom styles #}
+        <style>
+            /* Turbo Progress Bar - Cyberpunk Style */
+            .turbo-progress-bar {
+                position: fixed;
+                display: block;
+                top: 0;
+                left: 0;
+                height: 3px;
+                background: linear-gradient(90deg, #06b6d4, #ec4899, #8b5cf6);
+                z-index: var(--z-turbo-bar);
+                transition: width 300ms ease-out, opacity 150ms 150ms ease-in;
+                transform: translate3d(0, 0, 0);
+                box-shadow: 0 0 10px rgba(6, 182, 212, 0.6),
+                            0 0 20px rgba(236, 72, 153, 0.4),
+                            0 0 30px rgba(139, 92, 246, 0.3);
+            }
+
+            /* Loading state for body */
+            body.turbo-loading {
+                cursor: wait;
+            }
+
+            body.turbo-loading * {
+                pointer-events: none;
+            }
+
+            /* Alert auto-fade */
+            #notifications .alert {
+                transition: opacity 0.15s linear;
+            }
+
+            #notifications .alert.fade:not(.show) {
+                opacity: 0;
+            }
+
+            /* PWA Offline Indicator */
+            body.offline::before {
+                content: 'Offline';
+                position: fixed;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, #ef4444, #dc2626);
+                color: white;
+                padding: 4px 16px;
+                border-radius: 0 0 8px 8px;
+                font-size: 12px;
+                font-weight: 600;
+                z-index: 10001;
+                box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4);
+            }
+
+            /* PWA Install Button */
+            .pwa-install-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 6px 12px;
+                background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+                color: white;
+                border: none;
+                border-radius: 6px;
+                font-size: 13px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+
+            .pwa-install-btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+            }
+        </style>
+    {% endblock %}
+</head>
+{% set is_setup_route = app.request.attributes.get('_route') starts with 'setup_' %}
+<body data-turbo="true" data-controller="modal-manager{{ is_setup_route ? '' : ' sidebar-toggle mega-menu session-reminder' }}"
+      data-session-reminder-warning-value="3300000"
+      data-session-reminder-timeout-value="3600000">
+    {# Skip Links for Accessibility - WCAG 2.4.1 #}
+    <a href="#main-content" class="skip-link">{{ 'accessibility.skip_to_content'|trans({}, 'messages') }}</a>
+    <a href="#main-navigation" class="skip-link">{{ 'accessibility.skip_to_navigation'|trans({}, 'messages') }}</a>
+
+    <header class="header" role="banner">
+        <div class="header-container">
+            <div class="header-logo">
+                {% if not is_setup_route %}
+                <button class="mobile-menu-btn"
+                        data-action="click->sidebar-toggle#toggle"
+                        aria-label="{{ 'nav.toggle_menu'|trans({}, 'nav') }}"
+                        aria-expanded="false"
+                        data-sidebar-toggle-target="menuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                {% endif %}
+                <img src="{{ asset('favicon.svg') }}" alt="Little ISMS Helper Logo" width="40" height="40">
+                <div>
+                    <h1>{{ 'app.title'|trans({}, 'messages') }}</h1>
+                    <p>{{ 'app.subtitle'|trans({}, 'messages') }}</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                {# PWA Install Button - Hidden by default, shown when installable #}
+                <button id="pwa-install-btn" class="pwa-install-btn d-none" title="{{ 'pwa.install'|trans({}, 'messages') }}">
+                    <i class="bi bi-download" aria-hidden="true"></i>
+                    <span class="d-none d-md-inline">{{ 'pwa.install'|trans({}, 'messages') }}</span>
+                </button>
+
+                {# Global Search Component (Button + Modal) #}
+                {% include '_components/_global_search.html.twig' %}
+
+                {# Notification Bell (moved to header) #}
+                {% if not is_setup_route %}
+                    {% include '_components/_notification_bell.html.twig' %}
+                {% endif %}
+
+                {% set current_route = app.request.attributes.get('_route') %}
+                {% if current_route %}
+                <div class="language-switcher">
+                    <a href="{{ path(current_route, (app.request.attributes.get('_route_params') ?? {})|merge({'_locale': 'de'})) }}"
+                       class="lang-btn {% if app.request.locale == 'de' %}active{% endif %}">DE</a>
+                    <a href="{{ path(current_route, (app.request.attributes.get('_route_params') ?? {})|merge({'_locale': 'en'})) }}"
+                       class="lang-btn {% if app.request.locale == 'en' %}active{% endif %}">EN</a>
+                </div>
+                {% endif %}
+
+                {# User Menu with Dropdown #}
+                {% if app.user %}
+                <div class="user-menu">
+                    {% set firstName = app.user.firstName|default('') %}
+                    {% set lastName = app.user.lastName|default('') %}
+                    {% set initials = (firstName|length > 0 ? firstName|slice(0, 1) : '') ~ (lastName|length > 0 ? lastName|slice(0, 1) : '') %}
+                    {% if initials|length == 0 %}
+                        {% set initials = app.user.fullName|slice(0, 2) %}
+                    {% endif %}
+                    <button class="user-avatar"
+                            title="{{ app.user.fullName }}"
+                            aria-label="{{ 'nav.user_menu'|trans({}, 'nav') }}"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                        {{ initials|upper }}
+                    </button>
+                    <div class="user-dropdown" role="menu">
+                        <div class="user-dropdown-header">
+                            <span class="user-dropdown-name">{{ app.user.fullName }}</span>
+                            <span class="user-dropdown-email">{{ app.user.email }}</span>
+                        </div>
+                        <div class="user-dropdown-divider"></div>
+                        <a href="{{ path('app_profile') }}" class="user-dropdown-item" role="menuitem">
+                            <i class="bi bi-person" aria-hidden="true"></i>
+                            {{ 'nav.my_profile'|trans({}, 'nav') }}
+                        </a>
+                        <a href="{{ path('app_profile_mfa_index') }}" class="user-dropdown-item" role="menuitem">
+                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                            {{ 'nav.security'|trans({}, 'nav') }}
+                        </a>
+                        <div class="user-dropdown-divider"></div>
+                        <a href="{{ path('app_logout') }}" class="user-dropdown-item user-dropdown-logout fairy-logout" role="menuitem">
+                            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                            <span>{{ 'nav.logout'|trans({}, 'nav') }}</span>
+                            <span class="fairy-logout-sparkle">✦</span>
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    {% set current_route = app.request.attributes.get('_route') %}
+
+    {# Skip to Content Link - WCAG 2.1 AA (Issue 13.1) #}
+    <a href="#main-content" class="skip-link">
+        {{ 'accessibility.skip_to_content'|trans({}, 'messages') }}
+    </a>
+
+    {# Main App Layout with Sidebar #}
+    <div class="app-layout">
+        {% if not is_setup_route %}
+        {# Mobile Sidebar Backdrop #}
+        <div class="sidebar-backdrop" data-sidebar-toggle-target="backdrop" data-action="click->sidebar-toggle#close"></div>
+        {% endif %}
+
+        {# Mega Menu Navigation - Controller wraps both sidebar triggers and body-level panel #}
+        {# Hide navigation during setup to avoid database access before DB is configured #}
+        {% if not is_setup_route %}
+        <aside class="app-sidebar" role="complementary" aria-label="{{ 'nav.main_navigation'|trans({}, 'nav') }}" data-sidebar-toggle-target="sidebar">
+            {# Two-Level Mega Menu - Triggers only #}
+            <nav id="main-navigation" role="navigation">
+                {{ include('_components/_mega_menu.html.twig') }}
+            </nav>
+        </aside>
+        {% endif %}
+
+        {# Main Content Area #}
+        <main id="main-content" class="app-main" role="main">
+            <div class="container" data-controller="turbo">
+                <div class="content">
+                    {# Flash Messages Container #}
+                    <div id="flash-messages" aria-live="polite" aria-atomic="true">
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                                    {% if message is iterable %}
+                                        {{ message|join(', ') }}
+                                    {% else %}
+                                        {{ message|raw }}
+                                    {% endif %}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+
+                    {% block body %}{% endblock %}
+                </div>
+            </div>
+        </main>
+    </div>
+
+    {# Mega Menu Panel - Outside sidebar/app-layout to escape z-index stacking context #}
+    {# Note: mega-menu controller is on body element, so no closing div needed here #}
+    {% if not is_setup_route %}
+        {{ include('_components/_mega_menu_panel_only.html.twig') }}
+    {% endif %}
+
+    <footer class="footer" role="contentinfo">
+        <p>{{ 'app.footer'|trans({}, 'messages') }}</p>
+        <p class="footer-smallall">
+            {%- set symfonyVersion = constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') -%}
+            {{ 'app.powered_by'|trans({'%version%': symfonyVersion}, 'messages') }}
+            <span class="opacity-50">• Press <kbd>?</kbd> for shortcuts • <kbd>⌘K</kbd> to search</span>
+            <span class="opacity-70"> • <a href="{{ path('app_reports_overview') }}" class="text-inherit text-decoration-none"><i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i> Reports</a></span>
+        </p>
+    </footer>
+
+    {# ==================== Modern UI/UX Components ==================== #}
+
+    {# Command Palette (⌘P) #}
+    {% include '_components/_command_palette.html.twig' %}
+
+    {# Global Search is now included in the header #}
+
+    {# Quick View Modal (Paket B - Premium) #}
+    {% include '_components/_quick_view_modal.html.twig' %}
+
+    {# Theme Toggle (Paket C - Premium) #}
+    {% include '_components/_theme_toggle.html.twig' %}
+
+    {# Preferences Modal (Paket C - Premium) #}
+    {% include '_components/_preferences_modal.html.twig' %}
+
+    {# Notification Center (Paket C - Premium) #}
+    {% include '_components/_notification_center.html.twig' %}
+
+    {# Toast Notifications Container #}
+    <div class="toast-container" data-controller="toast" data-toast-target="container" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    {# Keyboard Shortcuts Help #}
+    {% include '_components/_keyboard_shortcuts.html.twig' %}
+
+    {# Bulk Delete Confirmation Dialog #}
+    {% include '_components/_bulk_delete_confirmation.html.twig' %}
+
+    {# Global translations for JavaScript #}
+    <script>
+        window.translations = {
+            dashboard: {
+                settings_imported: "{{ 'dashboard.success.settings_imported'|trans({}, 'dashboard')|raw }}",
+                import_failed: "{{ 'dashboard.error.import_failed'|trans({}, 'dashboard')|raw }}"
+            },
+            preferences: {
+                imported: "{{ 'preferences.success.imported'|trans({}, 'messages')|raw }}",
+                import_failed: "{{ 'preferences.error.import_failed'|trans({}, 'messages')|raw }}"
+            },
+            bulk_delete: {
+                confirm_count: "{{ 'bulk_delete.confirm_count'|trans({}, 'bulk_delete')|raw }}",
+                success: "{{ 'bulk_delete.success'|trans({}, 'bulk_delete')|raw }}",
+                error: "{{ 'bulk_delete.error'|trans({}, 'bulk_delete')|raw }}"
+            },
+            common: {
+                yes: "{{ 'common.yes'|trans({}, 'messages')|raw }}",
+                no: "{{ 'common.no'|trans({}, 'messages')|raw }}",
+                cancel: "{{ 'common.cancel'|trans({}, 'messages')|raw }}",
+                confirm: "{{ 'common.confirm'|trans({}, 'messages')|raw }}",
+                save: "{{ 'common.save'|trans({}, 'messages')|raw }}",
+                delete: "{{ 'common.delete'|trans({}, 'messages')|raw }}",
+                export: "{{ 'common.export'|trans({}, 'messages')|raw }}",
+                loading: "{{ 'common.loading'|trans({}, 'messages')|raw }}",
+                error: "{{ 'common.error'|trans({}, 'messages')|raw }}",
+                success: "{{ 'common.success'|trans({}, 'messages')|raw }}"
+            }
+        };
+    </script>
+
+    {% block javascripts %}
+        {# Import map moved to head section to prevent Turbo reload conflicts #}
+    {% endblock %}
+
+    {# PWA Service Worker Registration #}
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                    .then((registration) => {
+                        console.log('[PWA] Service Worker registered:', registration.scope);
+
+                        // Check for updates periodically
+                        setInterval(() => {
+                            registration.update();
+                        }, 60 * 60 * 1000); // Every hour
+                    })
+                    .catch((error) => {
+                        console.error('[PWA] Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+        // PWA Install Prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+
+            // Show install button if it exists
+            const installBtn = document.getElementById('pwa-install-btn');
+            if (installBtn) {
+                installBtn.classList.remove('d-none');
+                installBtn.addEventListener('click', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        console.log('[PWA] Install prompt outcome:', outcome);
+                        deferredPrompt = null;
+                        installBtn.classList.add('d-none');
+                    }
+                });
+            }
+        });
+
+        // Online/Offline status indicator
+        window.addEventListener('online', () => {
+            document.body.classList.remove('offline');
+            console.log('[PWA] Back online');
+        });
+
+        window.addEventListener('offline', () => {
+            document.body.classList.add('offline');
+            console.log('[PWA] Went offline');
+        });
+    </script>
+</body>
+</html>

@@ -310,6 +310,7 @@ admin:
         tenant_label: 'Aktueller Mandant'
         total_imported: '%count% Beispiel-Einträge insgesamt importiert'
         import_section: 'Verfügbare Datensätze'
+        select_all: 'Alle auswählen'
         col_name: 'Datensatz'
         col_description: 'Beschreibung'
         col_modules: 'Module'

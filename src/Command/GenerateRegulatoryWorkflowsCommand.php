@@ -614,6 +614,21 @@ HELP
                         'fields' => ['completedAt'],
                     ],
                 ],
+                [
+                    'name' => 'Deadline Extension (Art. 12(3))',
+                    'description' => 'If complex request requires more time: notify data subject of extension within original 30-day period. Extension adds up to 60 additional days.',
+                    'stepType' => 'notification',
+                    'approverRole' => 'ROLE_DPO',
+                    'daysToComplete' => 0,
+                    'sortOrder' => 5,
+                    'isRequired' => false,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'DataSubjectRequest',
+                        'fields' => ['extensionReason', 'extendedDeadlineAt'],
+                        'condition' => 'extensionReason != null',
+                    ],
+                ],
             ],
         ];
     }
@@ -1089,7 +1104,10 @@ HELP
             'description' => 'Periodic document review with revision and re-approval workflow',
             'entityType' => 'Document',
             'isActive' => true,
-            'metadata' => ['slaEnforcement' => false],
+            'metadata' => [
+                'slaEnforcement' => false,
+                'autoTrigger' => true, // Auto-start when document review date passes
+            ],
             'steps' => [
                 [
                     'name' => 'Review Required',

@@ -385,7 +385,7 @@ class DataImportService
                     continue;
                 }
                 $track = new SampleDataImport();
-                $track->setSampleKey($ctx['sampleKey']);
+                $track->setSampleKey((string) $ctx['sampleKey']);
                 $track->setEntityClass($entity::class);
                 $track->setEntityId((int) $entity->getId());
                 $track->setTenant($ctx['tenant']);
