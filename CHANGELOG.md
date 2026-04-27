@@ -7,6 +7,173 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 _Noch keine Aenderungen._
 
+## [3.2.1] — 2026-04-27
+
+### Patch-Release: Sample-Data-Import komplett überarbeitet + kritischer TenantFilter-Bug behoben
+
+v3.2.0 hatte zwei strukturelle Issues, die das Sample-Data-Modul für reale Nutzer
+unbenutzbar machten und potentiell andere tenant-gefilterte Bereiche beeinflussten.
+v3.2.1 bringt 47 Folge-Commits aus einem ausgedehnten Diagnose- und Fix-Sprint zusammen.
+
+**v3.2.0 ist als kaputt markiert und wurde aus den Releases entfernt.**
+
+#### TenantFilter — kritischer SQL-Filter-Bug (5cd4ab5f)
+
+`Doctrine\ORM\Query\Filter\SQLFilter::getParameter()` liefert den Wert bereits
+quotiert vom Connection-`quote()`. Der Sentinel-String `'null'` (vom
+`TenantFilterSubscriber` für super-admins ohne Tenant gesetzt) kam darum als
+SQL-Fragment `'null'` zurück, nicht als nackter String. Der bisherige Vergleich
+`=== 'null'` schlug fehl, der Filter generierte:
+
+```sql
+WHERE tenant_id = 'null'
+```
+
+Das matcht nie eine Integer-Spalte. Konsequenz: jeder authentifizierte User
+ohne explizites Tenant (oder im Default-Tenant-Fallback) bekam Tenant-gefilterte
+Tabellen leer zurück — nicht nur Sample-Data, sondern potentiell auch
+Risiken/Audits/Schulungen-Listen je nach User-Setup. Im Sample-Data-Index hieß
+das: alles als „nicht importiert" markiert, Aktionen-Spalte leer.
+
+Fix: outer Quotes vor der Sentinel-Prüfung trimmen, leeren String als zweite
+Bypass-Form akzeptieren. CLI war nie betroffen (kein Subscriber → kein
+Parameter → InvalidArgumentException-Branch greift sauber).
+
+#### Sample-Data-Import — vollständig überarbeitet
+
+Der ursprüngliche Import-Service hatte mehrere stille Failure-Modes, die in
+unterschiedlichen Kombinationen sichtbar wurden. Alle gefixt:
+
+* **Date-Type-Detection** (55c7cdef): Setter-Reflection allein reicht nicht —
+  Doctrine-Column-Type wird jetzt aus `ClassMetadata::fieldMappings` gelesen.
+  `DATE_MUTABLE` → `DateTime`, `*_immutable` → `DateTimeImmutable`. Brach
+  Sample 8 (Schulungen).
+* **Enum-String-Konversion** (71461740): YAML liefert Strings (`'high'`,
+  `'critical'`), Setter erwartet `BackedEnum`. Reflection auf Setter, dann
+  `$enumClass::tryFrom($value)`. Brach Sample 5 (Incidents).
+* **Idempotenz: Merge statt Skip** (4782cca2): Bestehende Entities mit gleichem
+  Natural-Key werden jetzt mit YAML-Daten gemerged statt verworfen. Verhindert
+  „orphan-with-NULL-asset"-Szenarien aus früher fehlgeschlagenen Imports.
+* **Singular-Aliase + Plural→Singular-Map** (b88a56d9): YAML-Top-Level-Keys
+  sind plural (`data_breaches`, `people`, `processing_activities`),
+  `referenceNaturalKeys()` keys singular. `rtrim('s')` brach bei irregulären
+  Plurals → Idempotenz-Check fehlte → Duplicate-Key-Constraint. Brach Sample 11
+  (Datenschutzverletzungen) und 20 (Personen).
+* **EM-Reset zwischen Samples** (71461740): `ManagerRegistry::resetManager()`
+  nach Constraint-Violation, Tenant + User auf frischem EM neu binden.
+  Verhindert Cascade-Failure nach einem fehlgeschlagenen Sample.
+* **Idempotente Tracking-Rows** (429fe47f): Re-Import des selben Samples
+  erzeugt nicht mehr neue Tracking-Records pro Klick (vorher: 130 Rows für
+  10 Assets). Lookup vor `persist`.
+* **Backfill-Pass für Refs** (cd487aa5): Nach jedem `importSampleData()`
+  iteriert alle bisherigen Tracking-Rows, lädt das zugehörige YAML, setzt
+  vorher unauflösbare `ref:`-Felder jetzt auf, falls Ziel-Entity inzwischen
+  importiert wurde. User kann Samples in beliebiger Reihenfolge importieren
+  und Beziehungen werden nachträglich geknüpft.
+* **Unresolved-Refs im Flash** (169471c3): Wenn `ref:asset:X` nicht aufgelöst
+  werden kann, taucht das jetzt explizit im Result-Message auf statt still
+  in der Log-Datei.
+
+#### Sample-Data-Purge — robuste Cleanup-Pipeline
+
+Der Purge-Pfad hatte ähnliche Cascade-Issues + FK-Order-Probleme:
+
+* **Reverse-Index-Reihenfolge** (c7e75a68): BCPlans (Sample 15) vor
+  BusinessProcess (Sample 2) löschen, sonst FK-Violation.
+* **Per-Entity-Flush + EM-Reset auf Remove** (283e0fad): Single FK-Failure
+  reißt nicht mehr alle übrigen Entities mit.
+* **Cascade-Delete für Orphan-FK-Blocker** (da465f3d): FK-Violation-Message
+  wird geparst, das blockierende Child-Row direkt per raw-SQL gelöscht,
+  dann Retry. Mehrstufige FK-Ketten werden in bis zu 3 Iterationen abgebaut.
+* **Orphan-Tracking-Cleanup** (ce40005c): Tracking-Rows die auf nicht mehr
+  existierende Entities zeigen, werden nach jeder Purge-Pass entfernt.
+  Verhindert die Sample 2 = 15-statt-10 Inflation aus mehrfachen Purge-Läufen.
+* **Retry-Pass** (94fe6f27): Failed `Class#Id` aus den Per-Sample-Errors
+  parsen, am Ende erneut versuchen wenn alle Dependencies durchgelaufen sind.
+
+Neuer Console-Command `app:sample-data:purge` exposiert die komplette Pipeline
+mit Dry-Run-Option. Hidden Diagnose-Command `app:debug:sample-data-status`
+zeigt die UI-Sicht aus Repository-Perspektive zur Verifikation.
+
+#### TISAX/DORA — Status + UI-Removal
+
+Command-basierte Sample-Loader (`app:load-tisax-requirements`,
+`app:load-dora-requirements`) schreiben keine Tracking-Rows. Die UI zeigte
+sie darum permanent als „nicht importiert", auch wenn 114 TISAX- + 131
+DORA-Anforderungen längst geladen waren.
+
+Fix:
+
+* Status (f24fd051, c1c273b3): Command-Sample → Framework-Code-Lookup
+  (`'TISAX'`, `'DORA'`) → ComplianceRequirement-Count → Badge zeigt
+  „114 importiert".
+* Removal (d19666a1): UI-Entfernen-Button für Command-Samples, Action-Route
+  cascade-deletet das Framework (`cascade: ['remove']` auf der OneToMany).
+
+#### UI-Hilfsmittel
+
+* **Select-All-Checkbox** (92686b86): Master-Checkbox in der ersten Spalte
+  toggelt alle aktiven Sample-Checkboxen. Eigener Stimulus-Controller
+  `select_all_controller.js` mit defensiv resolvierter `this.element`-Referenz
+  (umgeht eine Stimulus-Build-Quirk in dieser App).
+* **Entfernen-Button bei jedem Sample mit Tracking-Rows** (17592146): Vorher
+  nur sichtbar wenn `imported=true` — das versteckte den Button bei
+  Status-Drift-Szenarien. Jetzt: Button erscheint sobald `count > 0`.
+* **Turbo-Cache disabled** (b30e2d6e): Status-Badges hängen vom Live-DB-Stand
+  ab, nicht von Turbo-Snapshot vor dem Import.
+* **Defensive Int-vs-String-Lookup** (b71dcb1e): Doppelte Lookup-Tabellen
+  für `$importedCounts` (int- und string-keyed) damit DB-Driver-Quirks
+  keine UI-„nicht importiert"-Fehlanzeige produzieren.
+
+#### Admin Health-Checks
+
+`b229bc70a` und `fb5cb724` bringen 8 weitere Health-Checks ins Data-Repair-
+Modul (Duplicate-Merge, Risk-Health, GDPR/ISO Compliance-Checks). `e2549576`
+ergänzt Tier 2+3 Checks und räumt offene TODOs auf.
+
+#### Bug-Fixes (kleinere)
+
+* `5cd4ab5f` TenantFilter: siehe oben (kritisch)
+* `c6848b44`, `ee46bd05`, `3dfc40d3`, `f8dcddd6`: temporäre Diagnose-
+  error_logs zur Bug-Hunt — wieder entfernt.
+* `303347c2`, `6c05ab0e`: zwei i18n-Tippfehler im `admin.de.yaml`,
+  YAML-Parse-Fehler verursacht.
+* `b0a7a44f`: Patch-Show + Help-Sidebars + RiskStatus-Enum-Cases
+  re-apply nach Linter-Revert.
+* `d3599cad`: 27 Templates für PHP-Enum-Integration aktualisiert.
+
+#### Verifikation
+
+End-to-End Test gegen frische dev-DB (Mordor Inc.):
+
+| Sample | YAML | DB |
+|---|---|---|
+| Beispiel-Assets | 10 | 10 ✓ |
+| Beispiel-Risiken | 10 | 10 ✓ |
+| Beispiel-Geschäftsprozesse | 10 | 10 ✓ |
+| TISAX Requirements | — | 114 ✓ |
+| DORA Requirements | — | 131 ✓ |
+| Beispiel-Incidents | 7 | 7 ✓ |
+| Beispiel-Dokumente | 9 | 9 ✓ |
+| Beispiel-Schulungen | 8 | 8 ✓ |
+| Beispiel-Management-Reviews | 4 | 4 ✓ |
+| Beispiel-Verarbeitungstätigkeiten | 8 | 8 ✓ |
+| Beispiel-Datenschutzverletzungen | 5 | 5 ✓ |
+| Beispiel-Einwilligungen | 6 | 6 ✓ |
+| Beispiel-DPIAs | 4 | 4 ✓ |
+| Beispiel-Betroffenenanfragen | 6 | 6 ✓ |
+| Beispiel-BC-Pläne | 5 | 5 ✓ |
+| Beispiel-BC-Übungen | 6 | 6 ✓ |
+| Beispiel-Krisenstäbe | 3 | 3 ✓ |
+| Beispiel-Lieferanten | 10 | 10 ✓ |
+| Beispiel-Standorte | 5 | 5 ✓ |
+| Beispiel-Personen | 8 | 8 ✓ |
+| Beispiel-Interessierte Parteien | 8 | 8 ✓ |
+| Beispiel-ISMS-Ziele | 6 | 6 ✓ |
+| Beispiel-Risikoappetit | 4 | 4 ✓ |
+
+Risk → Asset Verknüpfungen: 9/10 (1 Risk ist semantisch person-basiert).
+
 ## [3.2.0] — 2026-04-26
 
 ### Headline-Feature: MRIS-Integration v1.5 — Gen-AI-Bedrohungslage im ISMS
