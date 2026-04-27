@@ -407,6 +407,14 @@ admin:
             more: weitere
             refresh: 'Status aktualisieren'
             actions_desc: 'Status neu laden oder manuell überprüfen.'
+            run_migrations: 'Migrationen ausführen'
+            run_reconcile: 'Schema reconcilen'
+            show_sql: 'SQL anzeigen'
+            migrations_applied: '%count% Migration(en) erfolgreich ausgeführt.'
+            migrations_failed: 'Migrationen fehlgeschlagen: %error%'
+            reconcile_applied: 'Schema-Reconcile erfolgreich (%count% Statements ausgeführt).'
+            reconcile_failed: 'Schema-Reconcile fehlgeschlagen: %error%'
+            reconcile_blocked: 'Schema-Reconcile blockiert (%reason%). Bitte zuerst die ausstehenden Migrationen ausführen.'
         duplicates_merged: '%count% doppelter %type%-Datensatz/-Datensätze entfernt (ältester behalten).'
     duplicates:
         title: 'Duplikat-Reparatur'
@@ -430,14 +438,6 @@ admin:
         risks_treatment_plan_without_controls_hint: 'Diese Risiken haben eine Behandlungsbeschreibung, aber keine verknüpfte ISO-27001-Maßnahme. Bitte mindestens eine Maßnahme verknüpfen.'
         risks_past_review_date: 'Überprüfungsdatum überschritten'
         risks_past_review_date_hint: 'Diese Risiken haben ein Überprüfungsdatum in der Vergangenheit und sind noch nicht abgeschlossen oder behandelt. Bitte prüfen und aktualisieren.'
-            run_migrations: 'Migrationen ausführen'
-            run_reconcile: 'Schema reconcilen'
-            show_sql: 'SQL anzeigen'
-            migrations_applied: '%count% Migration(en) erfolgreich ausgeführt.'
-            migrations_failed: 'Migrationen fehlgeschlagen: %error%'
-            reconcile_applied: 'Schema-Reconcile erfolgreich (%count% Statements ausgeführt).'
-            reconcile_failed: 'Schema-Reconcile fehlgeschlagen: %error%'
-            reconcile_blocked: 'Schema-Reconcile blockiert (%reason%). Bitte zuerst die ausstehenden Migrationen ausführen.'
     modules:
         title: Modul-Verwaltung
         dependency_graph: Abhängigkeitsgraph
