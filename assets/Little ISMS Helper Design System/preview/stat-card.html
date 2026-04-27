@@ -1,0 +1,20 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_base.css"></head>
+<body style="background:#0f172a;">
+<style>
+.stat{background:#1e293b;border:2px solid #334155;border-radius:12px;padding:22px;position:relative;overflow:hidden;color:#f1f5f9;box-shadow:0 0 20px rgba(6,182,212,.15);}
+.stat::before{content:'✨';position:absolute;top:10px;right:12px;opacity:.25;font-size:18px;}
+.icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px;color:#fff;}
+.i-cyan{background:linear-gradient(135deg,#06b6d4,#8b5cf6);box-shadow:0 0 15px rgba(6,182,212,.4);}
+.i-green{background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 0 15px rgba(16,185,129,.4);}
+.i-pink{background:linear-gradient(135deg,#ec4899,#db2777);box-shadow:0 0 15px rgba(236,72,153,.4);}
+.title{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;margin-bottom:6px;}
+.val{font-size:30px;font-weight:700;line-height:1;}
+.chg{font-size:12px;margin-top:6px;color:#10b981;}
+</style>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+  <div class="stat"><div class="icon i-cyan"><i class="bi bi-shield-check"></i></div><div class="title">ISMS Health Score</div><div class="val">94<span style="font-size:16px;color:#94a3b8;">/100</span></div><div class="chg"><i class="bi bi-arrow-up"></i> +2 seit letztem Audit</div></div>
+  <div class="stat"><div class="icon i-green"><i class="bi bi-check2-all"></i></div><div class="title">Annex A Controls</div><div class="val">87<span style="font-size:16px;color:#94a3b8;">/93</span></div><div class="chg">93,5% umgesetzt</div></div>
+  <div class="stat"><div class="icon i-pink"><i class="bi bi-magic"></i></div><div class="title">Auto-Mappings</div><div class="val">790+</div><div class="chg" style="color:#ec4899;">✦ 23 Frameworks</div></div>
+</div>
+</body></html>

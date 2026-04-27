@@ -469,9 +469,9 @@ html[data-theme="dark"] .fa-card--premium {
    so we need to outrank Bootstrap's base rules. Specificity here uses
    :where() + class-stacking to stay authoritative without resorting to
    !important:
-     .fa-cyber-input__frame .fa-cyber-input__field, .fa-cyber-input__frame .fa-cyber-input__input  → 0,2,0 beats Bootstrap 0,1,0
+     .fa-cyber-input__frame .fa-cyber-input__input  → 0,2,0 beats Bootstrap 0,1,0
    Also handle Bootstrap classes rendered inside our frame as aliases. */
-.fa-cyber-input__frame .fa-cyber-input__field, .fa-cyber-input__frame .fa-cyber-input__input,
+.fa-cyber-input__frame .fa-cyber-input__input,
 .fa-cyber-input__frame > .form-control,
 .fa-cyber-input__frame > .form-select,
 .fa-cyber-input__frame > textarea {
@@ -490,13 +490,13 @@ html[data-theme="dark"] .fa-card--premium {
     min-height: auto;
     height: auto;
 }
-.fa-cyber-input__frame .fa-cyber-input__field, .fa-cyber-input__frame .fa-cyber-input__input::placeholder,
+.fa-cyber-input__frame .fa-cyber-input__input::placeholder,
 .fa-cyber-input__frame > .form-control::placeholder {
     color: var(--fg-3);
 }
 /* :focus state: Bootstrap sets border-color + box-shadow with hardcoded blue.
    Our frame owns the focus-glow — kill Bootstrap's input-level focus. */
-.fa-cyber-input__frame .fa-cyber-input__field, .fa-cyber-input__frame .fa-cyber-input__input:focus,
+.fa-cyber-input__frame .fa-cyber-input__input:focus,
 .fa-cyber-input__frame > .form-control:focus,
 .fa-cyber-input__frame > .form-select:focus,
 .fa-cyber-input__frame > textarea:focus {
@@ -506,7 +506,7 @@ html[data-theme="dark"] .fa-card--premium {
     background-color: transparent;
     color: var(--fg);
 }
-.fa-cyber-input__frame .fa-cyber-input__field, .fa-cyber-input__frame .fa-cyber-input__input:disabled,
+.fa-cyber-input__frame .fa-cyber-input__input:disabled,
 .fa-cyber-input__frame > .form-control:disabled,
 .fa-cyber-input__frame > .form-select:disabled {
     color: var(--fg-3);
@@ -516,7 +516,7 @@ html[data-theme="dark"] .fa-card--premium {
 /* Select appearance: strip native OS chevron so our frame stays clean */
 .fa-cyber-input__frame > select,
 .fa-cyber-input__frame > .form-select,
-select.fa-cyber-input__field, select.fa-cyber-input__input {
+select.fa-cyber-input__input {
     appearance: none;
     -webkit-appearance: none;
     cursor: pointer;
@@ -594,6 +594,176 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 .fa-status-pill--warning { background: var(--warning-glow); color: var(--warning-text); border-color: var(--warning); }
 .fa-status-pill--danger  { background: var(--danger-glow);  color: var(--danger);  border-color: var(--danger); }
 .fa-status-pill--neutral { background: var(--surface-2);    color: var(--fg-2);    border-color: var(--border); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   ENTITY-BADGE — ISMS-Entitäts-Marker (Finding, Risk, Control, …)
+   Größer als status-pill, für Listen-Header und Detail-Marker.
+   Komposition: <span class="fa-entity-badge fa-entity-badge--risk">
+                  <span class="fa-icon fa-icon--risk-register"></span>
+                  Risk
+                </span>
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-entity-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+    background: var(--surface-2);
+    color: var(--fg-2);
+    border-color: var(--border);
+    white-space: nowrap;
+    line-height: 1;
+}
+.fa-entity-badge .fa-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+/* Entity-Type-Tones (folgen Aurora-Semantik) */
+.fa-entity-badge--finding       { background: var(--warning-glow); color: var(--warning-text); border-color: var(--warning); }
+.fa-entity-badge--nonconformity { background: var(--danger-glow);  color: var(--danger);       border-color: var(--danger); }
+.fa-entity-badge--risk          { background: var(--accent-tint);  color: var(--accent);       border-color: var(--accent); }
+.fa-entity-badge--control       { background: var(--primary-tint); color: var(--primary);      border-color: var(--primary); }
+.fa-entity-badge--evidence      { background: var(--success-glow); color: var(--success);      border-color: var(--success); }
+.fa-entity-badge--policy        { background: var(--surface-2);    color: var(--fg);           border-color: var(--border-strong); }
+.fa-entity-badge--asset         { background: var(--primary-tint); color: var(--primary);      border-color: var(--primary); }
+.fa-entity-badge--incident      { background: var(--danger-glow);  color: var(--danger);       border-color: var(--danger); }
+.fa-entity-badge--audit         { background: var(--accent-tint);  color: var(--accent);       border-color: var(--accent); }
+.fa-entity-badge--training      { background: var(--success-glow); color: var(--success);      border-color: var(--success); }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ENTITY-CARD — Listen-Item-Card mit Entity-Icon links, Meta rechts
+   Komposition:
+     <article class="fa-entity-card">
+       <div class="fa-entity-card__icon"><span class="fa-icon fa-icon--finding"></span></div>
+       <div class="fa-entity-card__body">
+         <h4 class="fa-entity-card__title">F-2026-014 Lückenhafte Logging-Konfig</h4>
+         <div class="fa-entity-card__meta">
+           <span>ISO 27001 A.8.15</span> · <span>fällig 12.05.</span>
+         </div>
+       </div>
+       <div class="fa-entity-card__status">
+         <span class="fa-status-pill fa-status-pill--warning">Offen</span>
+       </div>
+     </article>
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-entity-card {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 18px;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+    position: relative;
+}
+.fa-entity-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px -8px rgba(0, 0, 0, 0.3);
+}
+
+/* Linke Akzent-Leiste optional (für Entity-Type) */
+.fa-entity-card--finding       { border-left: 3px solid var(--warning); }
+.fa-entity-card--nonconformity { border-left: 3px solid var(--danger); }
+.fa-entity-card--risk          { border-left: 3px solid var(--accent); }
+.fa-entity-card--control       { border-left: 3px solid var(--primary); }
+.fa-entity-card--evidence      { border-left: 3px solid var(--success); }
+.fa-entity-card--incident      { border-left: 3px solid var(--danger); }
+.fa-entity-card--audit         { border-left: 3px solid var(--accent); }
+
+.fa-entity-card__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.fa-entity-card__icon .fa-icon {
+    width: 22px;
+    height: 22px;
+    background-color: var(--fg-2);
+}
+
+/* Icon-Color-Variants — kann zusätzlich gesetzt werden */
+.fa-entity-card--finding       .fa-entity-card__icon .fa-icon { background-color: var(--warning); }
+.fa-entity-card--nonconformity .fa-entity-card__icon .fa-icon { background-color: var(--danger); }
+.fa-entity-card--risk          .fa-entity-card__icon .fa-icon { background-color: var(--accent); }
+.fa-entity-card--control       .fa-entity-card__icon .fa-icon { background-color: var(--primary); }
+.fa-entity-card--evidence      .fa-entity-card__icon .fa-icon { background-color: var(--success); }
+.fa-entity-card--incident      .fa-entity-card__icon .fa-icon { background-color: var(--danger); }
+.fa-entity-card--audit         .fa-entity-card__icon .fa-icon { background-color: var(--accent); }
+
+.fa-entity-card__body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.fa-entity-card__title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.fa-entity-card__meta {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--fg-2);
+    line-height: 1.4;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.fa-entity-card__meta > span + span::before {
+    content: "·";
+    margin-right: 6px;
+    opacity: 0.5;
+}
+.fa-entity-card__status {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Compact-Variante für dichte Listen */
+.fa-entity-card--compact {
+    padding: 10px 14px;
+    gap: 12px;
+}
+.fa-entity-card--compact .fa-entity-card__icon {
+    width: 32px; height: 32px; border-radius: 8px;
+}
+.fa-entity-card--compact .fa-entity-card__icon .fa-icon {
+    width: 16px; height: 16px;
+}
+.fa-entity-card--compact .fa-entity-card__title { font-size: 13px; }
+.fa-entity-card--compact .fa-entity-card__meta  { font-size: 11px; }
+
 
 /* Alva-Character-Styles wandern nach FA-4: assets/styles/alva.css
    (9-Mood-SVG-Engine mit Aura, Bob, Wings, Face, Decorations, Reduced-Motion) */
@@ -4062,85 +4232,4 @@ button.fa-filter-chip.fa-filter-chip--active {
 .form-label:not(.fa-cyber-input__label) {
     color: var(--fg-2);
     font-weight: 500;
-}
-
-
-/* ==========================================================================
-   Aurora v4 — Tom-Select Theme-Override
-   ==========================================================================
-   Tom-Select lib ships `tom-select.default.min.css` with hardcoded #303030
-   text + light grey borders. Aurora tokens must win — override with matching
-   specificity (.ts-* alone = 0,1,0; selector-stacking = 0,2,0).
-   ========================================================================== */
-.ts-wrapper.ts-wrapper,
-.ts-control.ts-control,
-.ts-dropdown.ts-dropdown {
-    color: var(--fg);
-    font-family: var(--font-sans);
-    background-color: var(--surface);
-}
-.ts-wrapper.ts-wrapper .ts-control {
-    background-color: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    color: var(--fg);
-    min-height: 40px;
-    padding: 6px 10px;
-    box-shadow: none;
-}
-.ts-wrapper.ts-wrapper .ts-control:hover { border-color: var(--border-strong); }
-.ts-wrapper.ts-wrapper.focus .ts-control,
-.ts-wrapper.ts-wrapper .ts-control:focus-within {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px var(--primary-glow);
-}
-.ts-wrapper.ts-wrapper.disabled .ts-control {
-    background-color: var(--surface-2);
-    color: var(--fg-3);
-    cursor: not-allowed;
-}
-/* Input inside control (search field of select) */
-.ts-control > input {
-    color: var(--fg);
-    background: transparent !important;
-}
-.ts-control > input::placeholder { color: var(--fg-3); }
-/* Selected-items chips in multi-select */
-.ts-wrapper.ts-wrapper .ts-control > .item {
-    background-color: var(--primary-tint);
-    color: var(--primary-strong);
-    border: 1px solid var(--primary);
-    border-radius: var(--r-sm);
-    padding: 2px 8px;
-    margin: 2px;
-}
-.ts-wrapper.ts-wrapper .ts-control > .item.active {
-    background-color: var(--primary);
-    color: var(--on-primary);
-}
-/* Dropdown panel */
-.ts-dropdown.ts-dropdown {
-    background-color: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    color: var(--fg);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    margin-top: 4px;
-}
-.ts-dropdown .option { color: var(--fg); padding: 8px 12px; }
-.ts-dropdown .option:hover,
-.ts-dropdown .option.active { background-color: var(--primary-tint); color: var(--primary-strong); }
-.ts-dropdown .option.selected { background-color: var(--primary); color: var(--on-primary); }
-.ts-dropdown .no-results,
-.ts-dropdown .create {
-    color: var(--fg-3);
-    padding: 10px 12px;
-}
-/* Inside our cyber-input frame: flatten Tom-Select's own border — frame owns it */
-.fa-cyber-input__frame .ts-wrapper .ts-control,
-.fa-cyber-input__frame > .ts-wrapper .ts-control {
-    border: 0;
-    box-shadow: none;
-    min-height: auto;
-    padding: 6px 10px;
 }

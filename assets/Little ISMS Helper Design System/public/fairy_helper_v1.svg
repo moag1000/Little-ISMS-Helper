@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="50 80 300 160" width="300" height="160">
+  
+  <defs>
+    <filter id="neonGlowSmall" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"></feGaussianBlur>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"></feComposite>
+    </filter>
+    <linearGradient id="wingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00f2ff;stop-opacity:1"></stop>
+      <stop offset="100%" style="stop-color:#3d5afe;stop-opacity:0.9"></stop>
+    </linearGradient>
+    <linearGradient id="magicGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff00ff;stop-opacity:1"></stop>
+      <stop offset="100%" style="stop-color:#9d00ff;stop-opacity:1"></stop>
+    </linearGradient>
+    <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1"></stop>
+      <stop offset="100%" style="stop-color:#e0f7fa;stop-opacity:1"></stop>
+    </linearGradient>
+  </defs>
+  <g class="fairy-root">
+    <g class="fairy-wings" filter="url(#neonGlowSmall)">
+      <path d="M 195 175 Q 120 120 70 140 Q 40 160 195 185" fill="url(#wingGradient)" stroke="#ffffff" stroke-width="1.5"></path>
+      <path d="M 205 175 Q 280 120 330 140 Q 360 160 205 185" fill="url(#wingGradient)" stroke="#ffffff" stroke-width="1.5"></path>
+      <path d="M 195 190 Q 140 230 100 215 Q 80 200 195 190" fill="url(#magicGradient)" stroke="#ffffff" stroke-width="1"></path>
+      <path d="M 205 190 Q 260 230 300 215 Q 320 200 205 190" fill="url(#magicGradient)" stroke="#ffffff" stroke-width="1"></path>
+    </g>
+    <g class="fairy-body" filter="url(#neonGlowSmall)">
+      <path d="M 200 150 Q 220 150 220 180 Q 220 200 200 210 Q 180 200 180 180 Q 180 150 200 150" fill="url(#bodyGradient)" stroke="#00f2ff" stroke-width="2"></path>
+      <circle cx="200" cy="135" r="22" fill="url(#bodyGradient)" stroke="#00f2ff" stroke-width="2"></circle>
+      <circle cx="192" cy="135" r="4" fill="#0f172a"></circle>
+      <circle cx="208" cy="135" r="4" fill="#0f172a"></circle>
+      <path d="M 197 142 Q 200 145 203 142" fill="none" stroke="#0f172a" stroke-width="1.5" stroke-linecap="round"></path>
+      <path d="M 190 115 Q 185 100 195 90" fill="none" stroke="#ff00ff" stroke-width="2.5" stroke-linecap="round"></path>
+      <path d="M 210 115 Q 215 100 205 90" fill="none" stroke="#ff00ff" stroke-width="2.5" stroke-linecap="round"></path>
+      <path d="M 195 85 L 197 90 L 202 91 L 198 94 L 199 99 L 195 96 L 191 99 L 192 94 L 188 91 L 193 90 Z" fill="#ffea00"></path>
+      <path d="M 205 85 L 207 90 L 212 91 L 208 94 L 209 99 L 205 96 L 201 99 L 202 94 L 198 91 L 203 90 Z" fill="#ffea00"></path>
+      <g class="fairy-wand">
+        <path d="M 180 180 L 135 150" stroke="#ff00ff" stroke-width="4" stroke-linecap="round"></path>
+        <path d="M 180 180 L 135 150" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.9"></path>
+        <g class="fairy-wand-tip">
+          <circle cx="135" cy="150" r="7" fill="#ffffff" filter="url(#neonGlowSmall)"></circle>
+          <circle cx="135" cy="150" r="5" fill="#00f2ff"></circle>
+          <path d="M 135 140 L 138 147 L 145 147 L 140 152 L 142 160 L 135 155 L 128 160 L 130 152 L 125 147 L 132 147 Z" fill="#ffea00">
+            
+          </path>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

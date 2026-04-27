@@ -191,6 +191,7 @@ common:
     active: Active
     not_active: 'Not Active'
     skip: Skip
+    glossary_link: 'Look up in glossary'
     more: More
     confirm_delete_entity: 'Do you really want to delete this %entity%?'
     all: All

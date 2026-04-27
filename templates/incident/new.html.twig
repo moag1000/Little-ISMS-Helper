@@ -23,7 +23,8 @@
             </div>
 
             {# NIS2 Reporting Alert Banner #}
-            <div id="nis2-alert" class="fa-alert fa-alert--warning d-none mb-4" role="alert">
+            <div id="nis2-alert" class="fa-alert fa-alert--warning d-none mb-4" role="alert"
+                 data-incident-nis2-target="alertBanner">
                 <div class="fa-alert__title">
                     <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'incident.nis2_alert.title'|trans({}, 'incident') }}
                 </div>
@@ -43,7 +44,8 @@
                 {% endblock %}
                 {% block card_body %}
                 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-                <div data-controller="incident-escalation-preview"
+                <div data-controller="incident-escalation-preview incident-nis2"
+                     data-incident-nis2-affected-users-threshold-value="100"
                      data-incident-escalation-preview-preview-url-value="{{ path('app_incident_escalation_preview') }}"
                      data-incident-escalation-preview-translations-value="{{ {
                          title: 'incident.escalation_preview.title'|trans({}, 'incident'),
@@ -97,7 +99,8 @@
                                 {{ form_row(form.severity, {
                                     'attr': {
                                         'data-incident-escalation-preview-target': 'severitySelect',
-                                        'data-action': 'change->incident-escalation-preview#updatePreview'
+                                        'data-incident-nis2-target': 'severitySelect',
+                                        'data-action': 'change->incident-escalation-preview#updatePreview change->incident-nis2#checkNis2Relevance'
                                     }
                                 }) }}
                             </div>
@@ -177,14 +180,17 @@
                     </fieldset>
 
                     {# NIS2 Reporting Section - Conditionally Displayed #}
-                    <fieldset id="nis2-section" class="mb-4 d-none nis2-fieldset">
+                    <fieldset id="nis2-section" class="mb-4 d-none nis2-fieldset"
+                              data-incident-nis2-target="nis2Section">
                         <legend class="h5 mb-3 bg-warning-subtle text-warning nis2-legend">
                             <div class="d-flex justify-content-between align-items-center">
                                 <span>
                                     <i class="fa-icon fa-icon--incident" aria-hidden="true"></i>
                                     {{ 'incident.section.nis2_reporting'|trans({}, 'incident') }}
                                 </span>
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" id="hide-nis2-btn">
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" id="hide-nis2-btn"
+                                        data-incident-nis2-target="hideButton"
+                                        data-action="click->incident-nis2#hide">
                                     <i class="fa-icon fa-icon--ui-eye-off" aria-hidden="true"></i> {{ 'incident.nis2_toggle.hide'|trans({}, 'incident') }}
                                 </button>
                             </div>
@@ -195,7 +201,9 @@
                             <div class="col-md-6">
                                 {{ form_row(form.nis2Category) }}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6"
+                                 data-incident-nis2-target="crossBorderRadios"
+                                 data-action="change->incident-nis2#checkNis2Relevance">
                                 {{ form_row(form.crossBorderImpact) }}
                             </div>
                         </div>
@@ -218,7 +226,12 @@
                         {# Impact Assessment #}
                         <div class="row mt-3">
                             <div class="col-md-4">
-                                {{ form_row(form.affectedUsersCount) }}
+                                {{ form_row(form.affectedUsersCount, {
+                                    'attr': {
+                                        'data-incident-nis2-target': 'affectedUsersInput',
+                                        'data-action': 'input->incident-nis2#checkNis2Relevance'
+                                    }
+                                }) }}
                             </div>
                             <div class="col-md-4">
                                 {{ form_row(form.estimatedFinancialImpact) }}
@@ -237,8 +250,11 @@
                     </fieldset>
 
                     {# Manual NIS2 Toggle Button #}
-                    <div id="show-nis2-container" class="text-center mb-4 d-none">
-                        <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" id="show-nis2-btn">
+                    <div id="show-nis2-container" class="text-center mb-4 d-none"
+                         data-incident-nis2-target="showButtonContainer">
+                        <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" id="show-nis2-btn"
+                                data-incident-nis2-target="showButton"
+                                data-action="click->incident-nis2#show">
                             <i class="fa-icon fa-icon--incident" aria-hidden="true"></i> {{ 'incident.nis2_toggle.show'|trans({}, 'incident') }}
                         </button>
                     </div>
@@ -269,126 +285,4 @@
     {% include 'incident/_gdpr_breach_wizard_modal.html.twig' %}
 </div>
 
-<script>
-let manualOverrideNis2 = false;
-
-function initializeIncidentNIS2() {
-    const severityField = document.getElementById('incident_severity');
-    const affectedUsersField = document.getElementById('incident_affectedUsersCount');
-    const crossBorderField = document.querySelectorAll('input[name="incident[crossBorderImpact]"]');
-    const nis2Section = document.getElementById('nis2-section');
-    const nis2Alert = document.getElementById('nis2-alert');
-    const showNis2Container = document.getElementById('show-nis2-container');
-    const showNis2Btn = document.getElementById('show-nis2-btn');
-    const hideNis2Btn = document.getElementById('hide-nis2-btn');
-
-    if (!severityField) return; // Elements not present on page
-
-    function checkNIS2Criteria() {
-        if (manualOverrideNis2) return; // User manually toggled
-
-        const severity = severityField ? severityField.value : '';
-        const affectedUsers = affectedUsersField ? parseInt(affectedUsersField.value) || 0 : 0;
-        let crossBorder = false;
-
-        crossBorderField.forEach(radio => {
-            if (radio.checked && radio.value === '1') {
-                crossBorder = true;
-            }
-        });
-
-        // Criteria for showing NIS2 fields
-        const shouldShowNIS2 =
-            severity === 'critical' ||
-            (severity === 'high' && (affectedUsers > 100 || crossBorder));
-
-        // Criteria for showing alert (more strict)
-        const shouldShowAlert =
-            severity === 'critical' ||
-            (severity === 'high' && (affectedUsers > 100 || crossBorder));
-
-        if (shouldShowNIS2) {
-            nis2Section.classList.remove('d-none');
-            showNis2Container.classList.add('d-none');
-        } else {
-            nis2Section.classList.add('d-none');
-            showNis2Container.classList.remove('d-none');
-        }
-
-        if (shouldShowAlert) {
-            nis2Alert.classList.remove('d-none');
-        } else {
-            nis2Alert.classList.add('d-none');
-        }
-    }
-
-    // Manual show NIS2 section
-    if (showNis2Btn && showNis2Btn.dataset.initialized !== 'true') {
-        showNis2Btn.dataset.initialized = 'true';
-        showNis2Btn.addEventListener('click', function() {
-            manualOverrideNis2 = true;
-            nis2Section.classList.remove('d-none');
-            showNis2Container.classList.add('d-none');
-        });
-    }
-
-    // Manual hide NIS2 section
-    if (hideNis2Btn && hideNis2Btn.dataset.initialized !== 'true') {
-        hideNis2Btn.dataset.initialized = 'true';
-        hideNis2Btn.addEventListener('click', function() {
-            manualOverrideNis2 = false;
-            nis2Section.classList.add('d-none');
-            showNis2Container.classList.remove('d-none');
-            checkNIS2Criteria();
-        });
-    }
-
-    // Event listeners (only add if not already initialized)
-    if (severityField && severityField.dataset.nis2Initialized !== 'true') {
-        severityField.dataset.nis2Initialized = 'true';
-        severityField.addEventListener('change', checkNIS2Criteria);
-    }
-    if (affectedUsersField && affectedUsersField.dataset.nis2Initialized !== 'true') {
-        affectedUsersField.dataset.nis2Initialized = 'true';
-        affectedUsersField.addEventListener('input', checkNIS2Criteria);
-    }
-    crossBorderField.forEach(radio => {
-        if (radio.dataset.nis2Initialized !== 'true') {
-            radio.dataset.nis2Initialized = 'true';
-            radio.addEventListener('change', checkNIS2Criteria);
-        }
-    });
-
-    // Initial check
-    checkNIS2Criteria();
-}
-
-// Cleanup before Turbo caches the page to allow re-initialization on back navigation
-document.addEventListener('turbo:before-cache', function() {
-    const showNis2Btn = document.getElementById('show-nis2-btn');
-    const hideNis2Btn = document.getElementById('hide-nis2-btn');
-    const severityField = document.getElementById('incident_severity');
-    const affectedUsersField = document.getElementById('incident_affectedUsersCount');
-    const crossBorderField = document.querySelectorAll('input[name="incident[crossBorderImpact]"]');
-
-    if (showNis2Btn) delete showNis2Btn.dataset.initialized;
-    if (hideNis2Btn) delete hideNis2Btn.dataset.initialized;
-    if (severityField) delete severityField.dataset.nis2Initialized;
-    if (affectedUsersField) delete affectedUsersField.dataset.nis2Initialized;
-    crossBorderField.forEach(radio => delete radio.dataset.nis2Initialized);
-});
-
-// Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
-document.addEventListener('DOMContentLoaded', initializeIncidentNIS2);
-document.addEventListener('turbo:load', initializeIncidentNIS2);
-</script>
-
-<style>
-.help-text {
-    display: block;
-    margin-top: 0.25rem;
-    font-size: 0.875rem;
-    color: var(--fg-3);
-}
-</style>
 {% endblock %}

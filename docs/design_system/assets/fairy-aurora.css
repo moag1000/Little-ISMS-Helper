@@ -173,7 +173,6 @@
     --alva-primary: var(--primary);
     --alva-accent:  var(--accent);
     --alva-aura:    var(--fairy-aura);
-    --alva-celebrating: #ec4899;  /* Pink — Milestone/Confetti-Mood */
     --alva-fg:      #f4f7ff;  /* fast-weiß für Body/Kopf */
     --alva-ink:     #1e1b4b;  /* Aurora-dark-navy für Face-Features */
 }

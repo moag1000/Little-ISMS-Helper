@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<title>Fee & Farb-Varianten — Little ISMS Helper</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  html,body{margin:0;padding:0;background:#f0eee9;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="./design-canvas.jsx"></script>
+<script type="text/babel" src="./Fairies.jsx"></script>
+<script type="text/babel" src="./Variant.jsx"></script>
+<script type="text/babel" src="./Faces.jsx"></script>
+<script type="text/babel">
+const { useState } = React;
+
+// Google Fonts
+const link = document.createElement('link');
+link.rel = 'stylesheet';
+link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap';
+document.head.appendChild(link);
+
+const W = 720, H = 520;
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection
+        id="mascot-variants"
+        title="Fee & Farb-Varianten"
+        subtitle="Drei komplette Richtungen · je Dark + Light Mode · wähle eine zum Iterieren"
+      >
+        <DCArtboard id="vault-dark" label="01 · Terminal — Dark" width={W} height={H}>
+          <Variant id="vault" tone="dark" glowIntensity={30} />
+        </DCArtboard>
+        <DCArtboard id="vault-light" label="01 · Terminal — Light" width={W} height={H}>
+          <Variant id="vault" tone="light" glowIntensity={30} />
+        </DCArtboard>
+        <DCArtboard id="aurora-dark" label="02 · Aurora — Dark (Favorit)" width={W} height={H}>
+          <Variant id="aurora" tone="dark" glowIntensity={30} />
+        </DCArtboard>
+        <DCArtboard id="aurora-light" label="02 · Aurora — Light (Favorit)" width={W} height={H}>
+          <Variant id="aurora" tone="light" glowIntensity={30} />
+        </DCArtboard>
+        <DCArtboard id="signal-dark" label="03 · Console — Dark" width={W} height={H}>
+          <Variant id="signal" tone="dark" glowIntensity={30} />
+        </DCArtboard>
+        <DCArtboard id="signal-light" label="03 · Console — Light" width={W} height={H}>
+          <Variant id="signal" tone="light" glowIntensity={30} />
+        </DCArtboard>
+
+        <DCPostIt top={-44} left={W * 3 + 230} rotate={-3} width={200}>
+          Jede Variante: Fee-Mascot + Stat-Card + Fee-Suggestion + Buttons + Badges + Palette-Strip · klick Expand für Detail.
+        </DCPostIt>
+      </DCSection>
+
+      <DCSection
+        id="aurora-face"
+        title="Aurora · Face-Exploration"
+        subtitle="Drei Varianten des Gesichts — alle dezent lächelnd"
+      >
+        <DCArtboard id="pixel-smile" label="A · Pixel + Lächeln (aktuell)" width={360} height={420}>
+          <FacePortrait
+            variant="pixel-smile"
+            tokens={PALETTES.aurora.dark.fairyTokens}
+            label="Pixel-Augen + dezente Kurve"
+            note="8-Bit-Wink, aber mit subtilem Lächeln statt 3-Punkt-Mund"
+          />
+        </DCArtboard>
+        <DCArtboard id="dignified" label="B · Dot-Eyes + Kurve (das was ich zeigen wollte)" width={360} height={420}>
+          <FacePortrait
+            variant="dignified"
+            tokens={PALETTES.aurora.dark.fairyTokens}
+            label="Weiche Punkt-Augen + serene Kurve"
+            note="Die ursprüngliche, dignified Richtung — weicher, weniger tech"
+          />
+        </DCArtboard>
+        <DCArtboard id="pixel-3dot" label="C · Pixel + 3-Punkt-Mund (vorherige Version)" width={360} height={420}>
+          <FacePortrait
+            variant="pixel-3dot"
+            tokens={PALETTES.aurora.dark.fairyTokens}
+            label="Pixel-Augen + 3 Pixel-Punkte"
+            note="Konsequent 8-Bit, kein Lächeln — zum Vergleich"
+          />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

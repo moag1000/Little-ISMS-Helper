@@ -310,6 +310,7 @@ admin:
         tenant_label: 'Current tenant'
         total_imported: '%count% sample records imported in total'
         import_section: 'Available datasets'
+        select_all: 'Select all'
         col_name: 'Dataset'
         col_description: 'Description'
         col_modules: 'Modules'
