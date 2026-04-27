@@ -7,7 +7,9 @@
 {% block body %}
 <div class="container-fluid py-4">
     <div class="row">
-        <div class="col-lg-10 col-xl-9 mx-auto">
+        <div class="col-lg-10 col-xl-9 mx-auto"
+             data-controller="incident-nis2"
+             data-incident-nis2-affected-users-threshold-value="100">
             {% include '_components/_breadcrumb.html.twig' with {
                 breadcrumbs: [
                     { label: 'nav.incidents'|trans({}, 'nav'), url: path('app_incident_index') },
@@ -44,8 +46,7 @@
                 {% endblock %}
                 {% block card_body %}
                 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-                <div data-controller="incident-escalation-preview incident-nis2"
-                     data-incident-nis2-affected-users-threshold-value="100"
+                <div data-controller="incident-escalation-preview"
                      data-incident-escalation-preview-preview-url-value="{{ path('app_incident_escalation_preview') }}"
                      data-incident-escalation-preview-translations-value="{{ {
                          title: 'incident.escalation_preview.title'|trans({}, 'incident'),
