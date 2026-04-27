@@ -637,17 +637,34 @@ class DataImportService
                     $trackUser = $managedUser;
                 }
             }
+            $sampleKeyStr = (string) $ctx['sampleKey'];
+            // Existierende Tracking-Records dieses Samples laden, damit wir
+            // sie nicht duplizieren (siehe Bug: 130 Rows für 10 Assets).
+            $existingTracks = $this->sampleImportRepository->findBy([
+                'sampleKey' => $sampleKeyStr,
+                'tenant' => $trackTenant,
+            ]);
+            $trackedKeys = [];
+            foreach ($existingTracks as $existingTrack) {
+                $trackedKeys[$existingTrack->getEntityClass() . '#' . $existingTrack->getEntityId()] = true;
+            }
+
             foreach ($created as $entity) {
                 if (!method_exists($entity, 'getId') || $entity->getId() === null) {
                     continue;
                 }
+                $entityKey = $entity::class . '#' . $entity->getId();
+                if (isset($trackedKeys[$entityKey])) {
+                    continue; // Re-import: Tracking-Row existiert bereits
+                }
                 $track = new SampleDataImport();
-                $track->setSampleKey((string) $ctx['sampleKey']);
+                $track->setSampleKey($sampleKeyStr);
                 $track->setEntityClass($entity::class);
                 $track->setEntityId((int) $entity->getId());
                 $track->setTenant($trackTenant);
                 $track->setImportedBy($trackUser);
                 $this->entityManager->persist($track);
+                $trackedKeys[$entityKey] = true;
             }
             try {
                 $this->entityManager->flush();
