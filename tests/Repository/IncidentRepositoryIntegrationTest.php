@@ -134,7 +134,8 @@ class IncidentRepositoryIntegrationTest extends KernelTestCase
 
         $bySeverity = [];
         foreach ($results as $row) {
-            $bySeverity[$row['severity']] = (int) $row['count'];
+            $key = $row['severity'] instanceof \App\Enum\IncidentSeverity ? $row['severity']->value : (string) $row['severity'];
+            $bySeverity[$key] = (int) $row['count'];
         }
 
         $this->assertSame(2, $bySeverity['critical']);
@@ -245,8 +246,9 @@ class IncidentRepositoryIntegrationTest extends KernelTestCase
         $incident->setTitle($title);
         $incident->setDescription('Test description for ' . $title);
         $incident->setCategory($category);
-        $incident->setSeverity($severity);
-        $incident->setStatus($status);
+        $incident->setSeverity(\App\Enum\IncidentSeverity::from($severity));
+        $statusValue = $status === 'investigating' ? 'in_investigation' : ($status === 'new' ? 'reported' : ($status === 'open' ? 'reported' : $status));
+        $incident->setStatus(\App\Enum\IncidentStatus::from($statusValue));
         $incident->setReportedBy('Integration Test');
         $incident->setDetectedAt(new DateTimeImmutable());
         $incident->setDataBreachOccurred(false);
@@ -275,7 +277,7 @@ class IncidentRepositoryIntegrationTest extends KernelTestCase
         $incident->setTitle($title);
         $incident->setDescription('Test description for ' . $title);
         $incident->setCategory($category);
-        $incident->setSeverity($severity);
+        $incident->setSeverity(\App\Enum\IncidentSeverity::from($severity));
         // Use 'reported' as a placeholder that passes entity validation
         $incident->setStatus(\App\Enum\IncidentStatus::Reported);
         $incident->setReportedBy('Integration Test');

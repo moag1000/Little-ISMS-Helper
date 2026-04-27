@@ -549,7 +549,7 @@ class RiskForecastServiceTest extends TestCase
         $risk->method('getId')->willReturn($id);
         $risk->method('getTitle')->willReturn($title);
         $risk->method('getInherentRiskLevel')->willReturn($inherentLevel);
-        $risk->method('getStatus')->willReturn($status);
+        $risk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom($status));
         $risk->method('getCreatedAt')->willReturn($createdAt);
         $risk->method('getUpdatedAt')->willReturn(null);
         return $risk;
@@ -561,7 +561,7 @@ class RiskForecastServiceTest extends TestCase
         $risk->method('getId')->willReturn($id);
         $risk->method('getTitle')->willReturn($title);
         $risk->method('getInherentRiskLevel')->willReturn($inherentLevel);
-        $risk->method('getStatus')->willReturn($status);
+        $risk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom($status));
         $risk->method('getCreatedAt')->willReturn($createdAt);
         $risk->method('getUpdatedAt')->willReturn($updatedAt);
         return $risk;
@@ -573,7 +573,7 @@ class RiskForecastServiceTest extends TestCase
         $risk->method('getId')->willReturn($id);
         $risk->method('getTitle')->willReturn($title);
         $risk->method('getInherentRiskLevel')->willReturn($inherentLevel);
-        $risk->method('getStatus')->willReturn($status);
+        $risk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom($status));
         $risk->method('getCreatedAt')->willReturn(new \DateTime()); // createdAt typically not null
         $risk->method('getUpdatedAt')->willReturn(null);
         return $risk;

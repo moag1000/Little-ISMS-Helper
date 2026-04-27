@@ -47,11 +47,11 @@ class AssetRiskCalculatorTest extends TestCase
         $asset->setAvailabilityValue(2);
 
         $risk1 = new Risk();
-        $risk1->setStatus('active');
+        $risk1->setStatus(\App\Enum\RiskStatus::Open);
         $risk2 = new Risk();
-        $risk2->setStatus('active');
+        $risk2->setStatus(\App\Enum\RiskStatus::Open);
         $risk3 = new Risk();
-        $risk3->setStatus('closed'); // Should not count
+        $risk3->setStatus(\App\Enum\RiskStatus::Closed); // Should not count
 
         $asset->addRisk($risk1);
         $asset->addRisk($risk2);
@@ -100,13 +100,13 @@ class AssetRiskCalculatorTest extends TestCase
         $asset->setAvailabilityValue(5);
 
         $risk1 = new Risk();
-        $risk1->setStatus('active');
+        $risk1->setStatus(\App\Enum\RiskStatus::Open);
         $risk2 = new Risk();
-        $risk2->setStatus('active');
+        $risk2->setStatus(\App\Enum\RiskStatus::Open);
         $risk3 = new Risk();
-        $risk3->setStatus('active');
+        $risk3->setStatus(\App\Enum\RiskStatus::Open);
         $risk4 = new Risk();
-        $risk4->setStatus('active');
+        $risk4->setStatus(\App\Enum\RiskStatus::Open);
 
         $asset->addRisk($risk1);
         $asset->addRisk($risk2);
@@ -134,11 +134,11 @@ class AssetRiskCalculatorTest extends TestCase
         $asset3->setAvailabilityValue(3);
 
         $risk5 = new Risk();
-        $risk5->setStatus('active');
+        $risk5->setStatus(\App\Enum\RiskStatus::Open);
         $risk6 = new Risk();
-        $risk6->setStatus('active');
+        $risk6->setStatus(\App\Enum\RiskStatus::Open);
         $risk7 = new Risk();
-        $risk7->setStatus('active');
+        $risk7->setStatus(\App\Enum\RiskStatus::Open);
 
         $asset3->addRisk($risk5);
         $asset3->addRisk($risk6);
@@ -157,7 +157,7 @@ class AssetRiskCalculatorTest extends TestCase
         $asset = new Asset();
 
         $risk1 = new Risk();
-        $risk1->setStatus('active');
+        $risk1->setStatus(\App\Enum\RiskStatus::Open);
 
         $asset->addRisk($risk1);
         // No controls, but has active risk
@@ -171,9 +171,9 @@ class AssetRiskCalculatorTest extends TestCase
         $asset = new Asset();
 
         $risk1 = new Risk();
-        $risk1->setStatus('active');
+        $risk1->setStatus(\App\Enum\RiskStatus::Open);
         $risk2 = new Risk();
-        $risk2->setStatus('active');
+        $risk2->setStatus(\App\Enum\RiskStatus::Open);
 
         $control1 = new Control();
 
@@ -191,7 +191,7 @@ class AssetRiskCalculatorTest extends TestCase
         $asset = new Asset();
 
         $risk1 = new Risk();
-        $risk1->setStatus('active');
+        $risk1->setStatus(\App\Enum\RiskStatus::Open);
 
         $control1 = new Control();
         $control2 = new Control();
@@ -252,7 +252,7 @@ class AssetRiskCalculatorTest extends TestCase
         // Add many risks
         for ($i = 0; $i < 10; $i++) {
             $risk = new Risk();
-            $risk->setStatus('active');
+            $risk->setStatus(\App\Enum\RiskStatus::Open);
             $asset->addRisk($risk);
         }
 

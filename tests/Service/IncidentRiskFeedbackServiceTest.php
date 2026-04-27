@@ -184,8 +184,8 @@ class IncidentRiskFeedbackServiceTest extends TestCase
         ?ArrayCollection $realizedRisks = null
     ): MockObject {
         $incident = $this->createMock(Incident::class);
-        $incident->method('getStatus')->willReturn($status);
-        $incident->method('getSeverity')->willReturn($severity);
+        $incident->method('getStatus')->willReturn(\App\Enum\IncidentStatus::tryFrom($status));
+        $incident->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::tryFrom($severity));
         $incident->method('getRealizedRisks')->willReturn($realizedRisks ?? new ArrayCollection());
 
         return $incident;

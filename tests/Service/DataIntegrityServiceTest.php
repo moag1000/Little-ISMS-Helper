@@ -379,7 +379,7 @@ class DataIntegrityServiceTest extends TestCase
     public function testFindInconsistentDataDetectsResolvedIncidentWithoutDate(): void
     {
         $incident = $this->createMock(Incident::class);
-        $incident->method('getStatus')->willReturn('resolved');
+        $incident->method('getStatus')->willReturn(\App\Enum\IncidentStatus::tryFrom('resolved'));
         $incident->method('getResolvedAt')->willReturn(null);
 
         $this->auditRepository->method('findAll')->willReturn([]);

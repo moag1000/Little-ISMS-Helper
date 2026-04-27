@@ -118,7 +118,7 @@ class RiskControllerLinkMatrixTest extends WebTestCase
         $this->vulnA->setDescription('Remote code execution via crafted payloads.');
         $this->vulnA->setSeverity("critical");
         $this->vulnA->setSource('internal');
-        $this->vulnA->setStatus(\App\Enum\RiskStatus::Open);
+        $this->vulnA->setStatus('open');
         $this->vulnA->setDiscoveredDate(new \DateTimeImmutable());
         $this->entityManager->persist($this->vulnA);
 
@@ -130,7 +130,7 @@ class RiskControllerLinkMatrixTest extends WebTestCase
         $this->vulnB->setDescription('This MUST NOT leak into another tenant.');
         $this->vulnB->setSeverity("high");
         $this->vulnB->setSource('internal');
-        $this->vulnB->setStatus(\App\Enum\RiskStatus::Open);
+        $this->vulnB->setStatus('open');
         $this->vulnB->setDiscoveredDate(new \DateTimeImmutable());
         $this->entityManager->persist($this->vulnB);
 

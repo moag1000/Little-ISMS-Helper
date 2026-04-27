@@ -51,7 +51,7 @@ class IncidentTest extends TestCase
         // Add risks to make it high-risk (base 50 + 20 = 70)
         for ($i = 0; $i < 4; $i++) {
             $risk = new Risk();
-            $risk->setStatus('active');
+            $risk->setStatus(\App\Enum\RiskStatus::Open);
             $asset->addRisk($risk);
         }
 
@@ -78,7 +78,7 @@ class IncidentTest extends TestCase
         $asset2->setAvailabilityValue(5);
         for ($i = 0; $i < 4; $i++) {
             $risk = new Risk();
-            $risk->setStatus('active');
+            $risk->setStatus(\App\Enum\RiskStatus::Open);
             $asset2->addRisk($risk);
         }
 
@@ -260,7 +260,12 @@ class IncidentTest extends TestCase
         $incident = new Incident();
 
         // Test valid severity values
-        $validSeverities = ['critical', 'high', 'medium', 'low'];
+        $validSeverities = [
+            \App\Enum\IncidentSeverity::Critical,
+            \App\Enum\IncidentSeverity::High,
+            \App\Enum\IncidentSeverity::Medium,
+            \App\Enum\IncidentSeverity::Low,
+        ];
 
         foreach ($validSeverities as $severity) {
             $incident->setSeverity($severity);
@@ -273,8 +278,13 @@ class IncidentTest extends TestCase
     {
         $incident = new Incident();
 
-        // Test valid status values
-        $validStatuses = ['open', 'investigating', 'resolved', 'closed'];
+        // Test valid status values (using enum cases)
+        $validStatuses = [
+            \App\Enum\IncidentStatus::Reported,
+            \App\Enum\IncidentStatus::InInvestigation,
+            \App\Enum\IncidentStatus::Resolved,
+            \App\Enum\IncidentStatus::Closed,
+        ];
 
         foreach ($validStatuses as $status) {
             $incident->setStatus($status);
