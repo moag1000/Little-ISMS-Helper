@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Tenant;
+use App\Enum\IncidentStatus;
+use App\Enum\TreatmentStrategy;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
@@ -457,13 +459,13 @@ class DataIntegrityService
         // Incidents with resolved status but no resolution date
         $incidents = $this->incidentRepository->findAll();
         foreach ($incidents as $incident) {
-            if ($incident->getStatus() === 'resolved' && !$incident->getResolvedAt()) {
+            if ($incident->getStatus() === IncidentStatus::Resolved && !$incident->getResolvedAt()) {
                 $inconsistent['incidents_resolved_without_date'][] = $incident;
             }
         }
 
         // Risk status validation
-        $validRiskStatuses = ['identified', 'assessed', 'treated', 'monitored', 'closed', 'accepted'];
+        $validRiskStatuses = \App\Enum\RiskStatus::cases();
         try {
             $invalidRiskStatuses = $this->riskRepository->createQueryBuilder('r')
                 ->where('r.status NOT IN (:valid)')->setParameter('valid', $validRiskStatuses)
@@ -476,7 +478,7 @@ class DataIntegrityService
         }
 
         // Risk: accept without formal acceptance
-        $unacceptedAccepts = array_filter($risks, fn($r) => $r->getTreatmentStrategy() === 'accept' && !$r->isFormallyAccepted());
+        $unacceptedAccepts = array_filter($risks, fn($r) => $r->getTreatmentStrategy() === TreatmentStrategy::Accept && !$r->isFormallyAccepted());
         if (count($unacceptedAccepts) > 0) {
             $inconsistent['accept_without_formal'] = array_values($unacceptedAccepts);
         }
@@ -543,6 +545,133 @@ class DataIntegrityService
         }
 
         return $inconsistent;
+    }
+
+    /**
+     * Risk-specific health checks (ISO 27005 / ISO 27001 Clause 6.1.2).
+     *
+     * Returns four keyed arrays, each an array of Risk objects:
+     *   - 'risks_missing_treatment_strategy': status not 'identified' but no treatment strategy set
+     *   - 'risks_residual_exceeds_inherent': residual risk level > inherent (mathematically impossible)
+     *   - 'risks_treatment_plan_without_controls': treatmentDescription filled but no controls linked
+     *   - 'risks_past_review_date': reviewDate is in the past and risk is not closed/treated
+     */
+    public function findRiskHealthIssues(): array
+    {
+        $issues = [];
+        $now = new \DateTimeImmutable();
+
+        // Terminal statuses where review/treatment checks no longer apply
+        $terminalStatuses = [
+            \App\Enum\RiskStatus::Closed,
+            \App\Enum\RiskStatus::Treated,
+        ];
+
+        $risks = $this->riskRepository->findAll();
+
+        $missingStrategy = [];
+        $residualExceedsInherent = [];
+        $treatmentWithoutControls = [];
+        $pastReviewDate = [];
+
+        foreach ($risks as $risk) {
+            $status = $risk->getStatus();
+
+            // Check 1: Non-identified status but no treatment strategy set
+            if (
+                $status !== \App\Enum\RiskStatus::Identified
+                && $risk->getTreatmentStrategy() === null
+                && !in_array($status, $terminalStatuses, true)
+            ) {
+                $missingStrategy[] = $risk;
+            }
+
+            // Check 2: Residual risk > inherent risk (impossible in a correctly assessed risk)
+            if ($risk->getResidualRiskLevel() > $risk->getInherentRiskLevel()) {
+                $residualExceedsInherent[] = $risk;
+            }
+
+            // Check 3: Treatment description filled but no controls linked
+            if (
+                !empty($risk->getTreatmentDescription())
+                && $risk->getControls()->isEmpty()
+                && !in_array($status, $terminalStatuses, true)
+            ) {
+                $treatmentWithoutControls[] = $risk;
+            }
+
+            // Check 4: Review date in the past and risk not in a terminal status
+            $reviewDate = $risk->getReviewDate();
+            if (
+                $reviewDate !== null
+                && $reviewDate < $now
+                && !in_array($status, $terminalStatuses, true)
+            ) {
+                $pastReviewDate[] = $risk;
+            }
+        }
+
+        if (count($missingStrategy) > 0) {
+            $issues['risks_missing_treatment_strategy'] = $missingStrategy;
+        }
+        if (count($residualExceedsInherent) > 0) {
+            $issues['risks_residual_exceeds_inherent'] = $residualExceedsInherent;
+        }
+        if (count($treatmentWithoutControls) > 0) {
+            $issues['risks_treatment_plan_without_controls'] = $treatmentWithoutControls;
+        }
+        if (count($pastReviewDate) > 0) {
+            $issues['risks_past_review_date'] = $pastReviewDate;
+        }
+
+        return $issues;
+    }
+
+    /**
+     * Merge duplicate entities for a given entity type, keeping the entity
+     * with the lowest ID (oldest) and removing the rest.
+     *
+     * Returns the number of deleted duplicate entities.
+     *
+     * Supported entity types: audits, assets, risks, incidents, documents
+     */
+    public function mergeDuplicates(string $entityType): int
+    {
+        $duplicates = $this->findDuplicateEntities();
+
+        if (!isset($duplicates[$entityType]) || count($duplicates[$entityType]) === 0) {
+            return 0;
+        }
+
+        $deleted = 0;
+
+        foreach ($duplicates[$entityType] as $group) {
+            // Normalise: groups for audits/assets/risks have an 'entities' key;
+            // incidents/documents groups are plain entity arrays.
+            $entities = is_array($group) && isset($group['entities'])
+                ? $group['entities']
+                : (array) $group;
+
+            if (count($entities) < 2) {
+                continue;
+            }
+
+            // Sort ascending by ID so the oldest survives
+            usort($entities, fn($a, $b) => ($a->getId() ?? 0) <=> ($b->getId() ?? 0));
+
+            // Keep the first (lowest ID), delete the rest
+            $toDelete = array_slice($entities, 1);
+            foreach ($toDelete as $entity) {
+                $this->entityManager->remove($entity);
+                $deleted++;
+            }
+        }
+
+        if ($deleted > 0) {
+            $this->entityManager->flush();
+        }
+
+        return $deleted;
     }
 
     /**
