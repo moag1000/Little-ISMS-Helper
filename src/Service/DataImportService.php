@@ -405,10 +405,13 @@ class DataImportService
                                 }
                                 $existing = $this->entityManager->getRepository($entityClass)->findOneBy($criteria);
                                 if ($existing !== null) {
-                                    $this->addLog("Skipped duplicate {$entityClass} where {$naturalKeyField}={$keyValue} — re-tracking as imported");
-                                    // Auch existierende Entities tracken, damit das Status-Badge
-                                    // im Sample-Data-Index die Sample als "importiert" zeigt — sonst
-                                    // führt eine Idempotenz-Skip dazu, dass count=0 ausgewiesen wird.
+                                    // Bestehende Entity mit YAML-Daten mergen, damit
+                                    // Re-Imports kaputte Felder (z. B. asset_id=NULL aus
+                                    // einem früher fehlgeschlagenen Import) reparieren.
+                                    // Ohne das würde die NEUE Entity verworfen und die
+                                    // existierende, kaputte überleben.
+                                    $this->createEntity($entityClass, $entityData, $existing);
+                                    $this->addLog("Refreshed existing {$entityClass} where {$naturalKeyField}={$keyValue}");
                                     $created[] = $existing;
                                     $count++;
                                     continue;
@@ -719,9 +722,11 @@ class DataImportService
      * Unterstützt scalar values, Datum-Strings (Reflection auf Setter-Typ),
      * ref:-Strings (Entity-Lookup per Natural-Key) und Collections.
      */
-    private function createEntity(string $entityClass, array $data): object
+    private function createEntity(string $entityClass, array $data, ?object $target = null): object
     {
-        $entity = new $entityClass();
+        // Wenn $target gesetzt: bestehende Entity wird mit YAML-Werten
+        // aktualisiert (Re-Import-Repair). Sonst: frische Entity.
+        $entity = $target ?? new $entityClass();
         $shortName = (new \ReflectionClass($entity))->getShortName();
 
         foreach ($data as $property => $value) {
