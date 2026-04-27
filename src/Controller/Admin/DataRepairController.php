@@ -127,6 +127,10 @@ class DataRepairController extends AbstractController
         // Both are read-only here; the corresponding apply-routes are POST.
         $maintenance = $this->schemaMaintenanceService->getMaintenanceStatus();
 
+        $riskHealthIssues = $this->withoutTenantFilter(
+            fn() => $this->dataIntegrityService->findRiskHealthIssues()
+        );
+
         return $this->render('admin/data_repair/index.html.twig', [
             // Tenants & Summary
             'tenants' => $tenants,
@@ -153,6 +157,9 @@ class DataRepairController extends AbstractController
             'allAssets' => $allAssets,
             'controlsWithoutRisks' => $controlsWithoutRisks,
             'controlsWithoutAssets' => $controlsWithoutAssets,
+
+            // Risk health checks (ISO 27005)
+            'riskHealthIssues' => $riskHealthIssues,
         ]);
     }
 
@@ -659,6 +666,52 @@ class DataRepairController extends AbstractController
         $this->addFlash('success', $this->translator->trans('admin.data_repair.fixed_mismatches', [
             '%count%' => $fixedCount,
         ], 'admin'));
+
+        return $this->redirectToRoute('admin_data_repair_index');
+    }
+
+    /**
+     * Merges duplicate entities for a given entity type.
+     * Keeps the entity with the lowest ID (oldest) and removes newer duplicates.
+     *
+     * Supported entity types: audits, assets, risks, incidents, documents
+     */
+    #[Route('/admin/data-repair/fix-duplicates/{entityType}', name: 'admin_data_repair_fix_duplicates', methods: ['POST'])]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    public function fixDuplicates(Request $request, string $entityType): Response
+    {
+        $allowedTypes = ['audits', 'assets', 'risks', 'incidents', 'documents'];
+
+        if (!$this->isCsrfTokenValid('fix_duplicates_' . $entityType, $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        if (!in_array($entityType, $allowedTypes, true)) {
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.invalid_entity_type'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $deleted = $this->withoutTenantFilter(
+            fn() => $this->dataIntegrityService->mergeDuplicates($entityType)
+        );
+
+        $user = $this->getUser();
+        $actor = (is_object($user) && method_exists($user, 'getEmail')) ? (string) $user->getEmail() : 'admin';
+        $this->auditLogger->logCustom(
+            'admin.data_repair.duplicates_merged',
+            $entityType,
+            0,
+            [],
+            ['entity_type' => $entityType, 'deleted_count' => $deleted, 'actor' => $actor],
+            sprintf('Merged duplicates for entity type "%s": %d record(s) deleted (oldest kept).', $entityType, $deleted),
+        );
+
+        $this->addFlash('success', $this->translator->trans(
+            'admin.data_repair.duplicates_merged',
+            ['%count%' => $deleted, '%type%' => $entityType],
+            'admin',
+        ));
 
         return $this->redirectToRoute('admin_data_repair_index');
     }
