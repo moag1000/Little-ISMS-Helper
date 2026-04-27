@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Enum\IncidentSeverity;
 use DateTime;
 use App\Entity\Risk;
 use App\Entity\Asset;
@@ -366,10 +367,10 @@ class AnalyticsController extends AbstractController
             });
 
             // Count by severity
-            $low = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === 'low'));
-            $medium = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === 'medium'));
-            $high = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === 'high'));
-            $critical = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === 'critical'));
+            $low = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::Low));
+            $medium = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::Medium));
+            $high = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::High));
+            $critical = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === IncidentSeverity::Critical));
 
             $trend[] = [
                 'month' => $date->format('M Y'),

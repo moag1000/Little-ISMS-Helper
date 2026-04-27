@@ -6,6 +6,8 @@ namespace App\Controller;
 
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Enum\IncidentSeverity;
+use App\Enum\IncidentStatus;
 use Exception;
 use DateTime;
 use App\Entity\Incident;
@@ -112,7 +114,7 @@ class IncidentController extends AbstractController
 
         // Apply filters
         if ($severity) {
-            $allIncidents = array_filter($allIncidents, fn(Incident $incident): bool => $incident->getSeverity() === $severity);
+            $allIncidents = array_filter($allIncidents, fn(Incident $incident): bool => $incident->getSeverity()?->value === $severity);
         }
 
         if ($category) {
@@ -120,7 +122,7 @@ class IncidentController extends AbstractController
         }
 
         if ($status) {
-            $allIncidents = array_filter($allIncidents, fn(Incident $incident): bool => $incident->getStatus() === $status);
+            $allIncidents = array_filter($allIncidents, fn(Incident $incident): bool => $incident->getStatus()?->value === $status);
         }
 
         if ($dataBreachOnly === '1') {
@@ -230,7 +232,7 @@ class IncidentController extends AbstractController
             $this->entityManager->flush();
 
             // Send notification for high/critical severity incidents
-            if (in_array($incident->getSeverity(), ['high', 'critical'])) {
+            if (in_array($incident->getSeverity(), [IncidentSeverity::High, IncidentSeverity::Critical])) {
                 $admins = $this->userRepository->findByRole('ROLE_ADMIN');
                 $this->emailNotificationService->sendIncidentNotification($incident, $admins);
             }
@@ -376,7 +378,7 @@ class IncidentController extends AbstractController
             // Send notification if status changed
             if ($originalStatus !== $incident->getStatus()) {
                 $admins = $this->userRepository->findByRole('ROLE_ADMIN');
-                $changeDescription = "Status changed from {$originalStatus} to {$incident->getStatus()}";
+                $changeDescription = "Status changed from {$originalStatus?->value} to {$incident->getStatus()?->value}";
                 $this->emailNotificationService->sendIncidentUpdateNotification($incident, $admins, $changeDescription);
             }
 
@@ -386,7 +388,7 @@ class IncidentController extends AbstractController
                 $this->workflowAutoProgressionService->checkAndProgressWorkflow($incident, $currentUser);
 
                 // Trigger Incident→Risk feedback loop if incident was closed
-                if ($incident->getStatus() === 'closed' && $originalStatus !== 'closed') {
+                if ($incident->getStatus() === IncidentStatus::Closed && $originalStatus !== IncidentStatus::Closed) {
                     $triggeredCount = $this->incidentRiskFeedbackService->processIncidentFeedback($incident, $currentUser);
                     if ($triggeredCount > 0) {
                         $this->addFlash('info', $this->translator->trans(

@@ -17,6 +17,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
+use App\Enum\IncidentSeverity;
+use App\Enum\IncidentStatus;
 use App\Repository\IncidentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -120,23 +122,15 @@ class Incident
     #[Assert\Length(max: 100, maxMessage: 'Category cannot exceed { limit } characters')]
     private ?string $category = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(type: 'string', length: 50, nullable: true, enumType: IncidentSeverity::class)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\NotBlank(message: 'Severity is required')]
-    #[Assert\Choice(
-        choices: ['low', 'medium', 'high', 'critical'],
-        message: 'Severity must be one of: { choices }'
-    )]
-    private ?string $severity = null;
+    #[Assert\NotNull(message: 'Severity is required')]
+    private ?IncidentSeverity $severity = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(type: 'string', length: 50, enumType: IncidentStatus::class)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\NotBlank(message: 'Status is required')]
-    #[Assert\Choice(
-        choices: ['reported', 'in_investigation', 'in_resolution', 'resolved', 'closed'],
-        message: 'Status must be one of: { choices }'
-    )]
-    private ?string $status = 'reported';
+    #[Assert\NotNull(message: 'Status is required')]
+    private ?IncidentStatus $status = IncidentStatus::Reported;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['incident:read', 'incident:write'])]
@@ -419,23 +413,23 @@ class Incident
         return $this;
     }
 
-    public function getSeverity(): ?string
+    public function getSeverity(): ?IncidentSeverity
     {
         return $this->severity;
     }
 
-    public function setSeverity(string $severity): static
+    public function setSeverity(?IncidentSeverity $severity): static
     {
         $this->severity = $severity;
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?IncidentStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(?IncidentStatus $status): static
     {
         $this->status = $status;
         return $this;
@@ -1083,7 +1077,7 @@ class Incident
         }
 
         // High and critical incidents, or incidents with cross-border impact
-        return in_array($this->severity, ['high', 'critical']) ||
+        return in_array($this->severity, [IncidentSeverity::High, IncidentSeverity::Critical]) ||
                $this->crossBorderImpact ||
                $this->nis2Category !== null;
     }
