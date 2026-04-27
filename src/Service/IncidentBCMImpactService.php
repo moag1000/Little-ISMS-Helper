@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Enum\IncidentSeverity;
 use DateTimeImmutable;
 use DateTimeInterface;
 use App\Entity\Incident;
@@ -94,8 +95,8 @@ class IncidentBCMImpactService
         return [
             'incident_id' => $incident->getId(),
             'incident_number' => $incident->getIncidentNumber(),
-            'severity' => $incident->getSeverity(),
-            'status' => $incident->getStatus(),
+            'severity' => $incident->getSeverity()?->value,
+            'status' => $incident->getStatus()?->value,
 
             'downtime' => [
                 'actual_hours' => $downtimeHours,
@@ -316,7 +317,7 @@ class IncidentBCMImpactService
                 'Notify process owners and stakeholders',
                 'Monitor RTO compliance continuously',
             ];
-        } elseif ($lowestRTO <= 4 || $incident->getSeverity() === 'critical') {
+        } elseif ($lowestRTO <= 4 || $incident->getSeverity() === IncidentSeverity::Critical) {
             $level = 'high';
             $reasoning[] = $lowestRTO <= 4
                 ? "Process '{$mostCriticalProcess->getName()}' has RTO ≤ 4 hours"
@@ -369,8 +370,8 @@ class IncidentBCMImpactService
             'incident' => [
                 'number' => $incident->getIncidentNumber(),
                 'title' => $incident->getTitle(),
-                'severity' => $incident->getSeverity(),
-                'status' => $incident->getStatus(),
+                'severity' => $incident->getSeverity()?->value,
+                'status' => $incident->getStatus()?->value,
                 'detected_at' => $incident->getDetectedAt(),
                 'resolved_at' => $incident->getResolvedAt(),
             ],

@@ -76,7 +76,7 @@ class IncidentRiskFeedbackService
             'incident_id' => $incident->getId(),
             'incident_number' => $incident->getIncidentNumber(),
             'related_risks' => $realizedRisks->count(),
-            'severity' => $incident->getSeverity(),
+            'severity' => $incident->getSeverity()?->value,
         ]);
 
         foreach ($realizedRisks as $risk) {
@@ -140,7 +140,7 @@ class IncidentRiskFeedbackService
             'risk_id' => $risk->getId(),
             'risk_title' => $risk->getTitle(),
             'incident_id' => $incident->getId(),
-            'incident_severity' => $incident->getSeverity(),
+            'incident_severity' => $incident->getSeverity()?->value,
         ]);
 
         // Add incident reference to risk notes

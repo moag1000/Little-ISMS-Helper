@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Enum\IncidentSeverity;
 use DateTime;
 use DateTimeImmutable;
 use App\Entity\Risk;
@@ -599,7 +600,7 @@ class ManagementReportService
                 return $detected !== null && $detected >= $monthStart && $detected <= $monthEnd;
             });
 
-            $highSeverity = array_filter($incidentsInMonth, fn(Incident $inc): bool => in_array($inc->getSeverity(), ['high', 'critical']));
+            $highSeverity = array_filter($incidentsInMonth, fn(Incident $inc): bool => in_array($inc->getSeverity(), [IncidentSeverity::High, IncidentSeverity::Critical]));
 
             $trends[] = [
                 'month' => $monthStart->format('Y-m'),

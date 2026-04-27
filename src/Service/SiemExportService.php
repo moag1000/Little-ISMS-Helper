@@ -167,7 +167,7 @@ class SiemExportService
     private function buildCefFromIncident($incident): array
     {
         $severityMap = ['critical' => 10, 'high' => 8, 'medium' => 5, 'low' => 3, 'info' => 1];
-        $severity = $severityMap[$incident->getSeverity()] ?? 0;
+        $severity = $severityMap[$incident->getSeverity()?->value] ?? 0;
 
         $extensions = sprintf(
             'src=%s suser=%s cat=%s cs1=%s cs1Label=IncidentType cs2=%s cs2Label=Status rt=%s',
@@ -175,7 +175,7 @@ class SiemExportService
             $incident->getReportedBy() ?? 'system',
             $incident->getCategory() ?? 'security',
             $incident->getIncidentType() ?? 'general',
-            $incident->getStatus() ?? 'open',
+            $incident->getStatus()?->value ?? 'open',
             $incident->getDetectedAt()?->format('c') ?? ''
         );
 
@@ -312,8 +312,8 @@ class SiemExportService
             'event_type' => 'incident',
             'id' => $incident->getId(),
             'title' => $incident->getTitle(),
-            'severity' => $incident->getSeverity(),
-            'status' => $incident->getStatus(),
+            'severity' => $incident->getSeverity()?->value,
+            'status' => $incident->getStatus()?->value,
             'category' => $incident->getCategory(),
             'incident_type' => $incident->getIncidentType(),
             'detected_at' => $incident->getDetectedAt()?->format('c'),
@@ -429,7 +429,7 @@ class SiemExportService
         return match ($eventType) {
             'incidents' => sprintf('INCIDENT id=%d severity=%s title="%s"',
                 $event->getId(),
-                $event->getSeverity(),
+                $event->getSeverity()?->value ?? '',
                 $this->sanitizeSyslogField($event->getTitle())
             ),
             'threats' => sprintf('THREAT id=%d type=%s severity=%s cve=%s',

@@ -128,7 +128,7 @@
                     <span class="badge badge-high">High</span>
                     {% endif %}
                 </td>
-                <td>{{ risk.treatmentStrategy|default('-')|slice(0, 20) }}</td>
+                <td>{{ (risk.treatmentStrategy ? risk.treatmentStrategy.value : '-')|slice(0, 20) }}</td>
                 <td>{{ risk.riskOwner ? risk.riskOwner.email|slice(0, 20) : '-' }}</td>
             </tr>
             {% endfor %}
@@ -212,7 +212,7 @@
                     <span class="badge badge-low">Low</span>
                     {% endif %}
                 </td>
-                <td>{{ risk.status }}</td>
+                <td>{{ risk.status ? risk.status.value : '' }}</td>
             </tr>
             {% endfor %}
         </table>

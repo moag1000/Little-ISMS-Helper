@@ -121,7 +121,7 @@
         <div class="field-group">
             <div class="field-label">{{ 'dora.ict_incident_report.classification.type'|trans({}, 'dora') }}</div>
             <div class="field-value">
-                {% if incident.severity in ['high', 'critical'] %}
+                {% if incident.severity and incident.severity.value in ['high', 'critical'] %}
                     <span class="badge badge-major">{{ 'dora.ict_incident_report.classification.major'|trans({}, 'dora') }}</span>
                 {% else %}
                     <span class="badge badge-non-major">{{ 'dora.ict_incident_report.classification.non_major'|trans({}, 'dora') }}</span>
@@ -133,7 +133,7 @@
             <div class="field-label">{{ 'dora.ict_incident_report.classification.criteria'|trans({}, 'dora') }}</div>
             <div class="field-value">
                 <ul class="criteria-list">
-                    <li class="{% if incident.severity in ['high', 'critical'] %}criteria-met{% else %}criteria-not-met{% endif %}">
+                    <li class="{% if incident.severity and incident.severity.value in ['high', 'critical'] %}criteria-met{% else %}criteria-not-met{% endif %}">
                         {{ 'dora.ict_incident_report.classification.criteria_severity'|trans({}, 'dora') }}
                     </li>
                     <li class="{% if incident.crossBorderImpact %}criteria-met{% else %}criteria-not-met{% endif %}">

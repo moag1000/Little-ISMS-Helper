@@ -31,7 +31,7 @@
 
             <div class="field">
                 <span class="label">{{ 'emails.incident.severity'|trans({}, 'emails') }}:</span>
-                <span class="value severity-{{ incident.severity|lower }}">{{ incident.severity|upper }}</span>
+                <span class="value severity-{{ incident.severity ? incident.severity.value|lower : '' }}">{{ incident.severity ? incident.severity.value|upper : '' }}</span>
             </div>
 
             <div class="field">
@@ -53,7 +53,7 @@
 
             <div class="field">
                 <span class="label">{{ 'emails.incident.status'|trans({}, 'emails') }}:</span>
-                <span class="value">{{ incident.status|upper }}</span>
+                <span class="value">{{ incident.status ? incident.status.value|upper : '' }}</span>
             </div>
         </div>
 

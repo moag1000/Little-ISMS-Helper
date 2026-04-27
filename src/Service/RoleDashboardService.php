@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Tenant;
+use App\Enum\TreatmentStrategy;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
@@ -489,8 +490,8 @@ class RoleDashboardService
             'id' => $r->getId(),
             'title' => $r->getTitle(),
             'level' => $r->getInherentRiskLevel(),
-            'status' => $r->getStatus(),
-            'treatment' => $r->getTreatmentStrategy(),
+            'status' => $r->getStatus()?->value,
+            'treatment' => $r->getTreatmentStrategy()?->value,
         ], array_slice($criticalRisks, 0, $limit));
     }
 
@@ -520,8 +521,8 @@ class RoleDashboardService
         return array_map(fn($i) => [
             'id' => $i->getId(),
             'title' => $i->getTitle(),
-            'severity' => $i->getSeverity(),
-            'status' => $i->getStatus(),
+            'severity' => $i->getSeverity()?->value,
+            'status' => $i->getStatus()?->value,
             'detected_at' => $i->getDetectedAt(),
         ], array_slice($incidents, 0, $limit));
     }
@@ -540,8 +541,8 @@ class RoleDashboardService
         ];
 
         foreach ($risks as $risk) {
-            $strategy = $risk->getTreatmentStrategy();
-            if (empty($strategy)) {
+            $strategy = $risk->getTreatmentStrategy()?->value;
+            if ($strategy === null) {
                 $byStrategy['untreated']++;
             } elseif (isset($byStrategy[$strategy])) {
                 $byStrategy[$strategy]++;
@@ -615,7 +616,7 @@ class RoleDashboardService
     {
         $risks = $this->riskRepository->findAll();
 
-        $untreated = array_filter($risks, fn($r) => empty($r->getTreatmentStrategy()));
+        $untreated = array_filter($risks, fn($r) => $r->getTreatmentStrategy() === null);
 
         usort($untreated, fn($a, $b) => $b->getInherentRiskLevel() <=> $a->getInherentRiskLevel());
 

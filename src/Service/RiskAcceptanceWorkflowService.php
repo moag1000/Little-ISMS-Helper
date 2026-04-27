@@ -13,6 +13,7 @@ use Exception;
 use App\Entity\Risk;
 use App\Entity\User;
 use App\Entity\Tenant;
+use App\Enum\TreatmentStrategy;
 use App\Repository\UserRepository;
 use App\Service\RiskApprovalConfigResolver;
 use App\Service\RiskApprovalConfigView;
@@ -104,9 +105,9 @@ class RiskAcceptanceWorkflowService
     private function validateRiskForAcceptance(Risk $risk): void
     {
         // Check if risk has "accept" treatment strategy
-        if ($risk->getTreatmentStrategy() !== 'accept') {
+        if ($risk->getTreatmentStrategy() !== TreatmentStrategy::Accept) {
             throw new DomainException(
-                'Risk must have "accept" treatment strategy. Current strategy: ' . $risk->getTreatmentStrategy()
+                'Risk must have "accept" treatment strategy. Current strategy: ' . $risk->getTreatmentStrategy()?->value
             );
         }
 

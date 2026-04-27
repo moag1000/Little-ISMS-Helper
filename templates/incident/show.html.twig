@@ -118,8 +118,8 @@
             <div class="card-header">
                 <h2 class="h5">Incident #{{ incident.incidentNumber }}</h2>
                 <div class="badges">
-                    <span class="{{ badge_severity(incident.severity) }}">{{ incident.severity|upper }}</span>
-                    <span class="{{ badge_status(incident.status) }}">{{ incident.status|upper|replace({'_': ' '}) }}</span>
+                    <span class="{{ badge_severity(incident.severity) }}">{{ incident.severity.value|upper }}</span>
+                    <span class="{{ badge_status(incident.status) }}">{{ incident.status.value|upper|replace({'_': ' '}) }}</span>
                     {% if is_nis2_active() and incident.requiresNis2Reporting %}
                         {% set nis2Status = incident.nis2ComplianceStatus %}
                         <span class="{{ badge_nis2(nis2Status) }}">

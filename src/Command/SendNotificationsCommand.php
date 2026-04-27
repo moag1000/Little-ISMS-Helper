@@ -223,7 +223,7 @@ class SendNotificationsCommand
                 $daysOpen = $incident->getDetectedDate()->diff(new DateTime())->days;
                 $symfonyStyle->text(sprintf('  - Incident "%s" [%s] open for %d days → %d recipients',
                     $incident->getTitle(),
-                    strtoupper((string) $incident->getSeverity()),
+                    strtoupper($incident->getSeverity()?->value ?? ''),
                     $daysOpen,
                     count($recipients)
                 ));

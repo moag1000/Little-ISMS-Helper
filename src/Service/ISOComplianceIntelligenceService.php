@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Risk;
+use App\Enum\TreatmentStrategy;
 use App\Repository\BCExerciseRepository;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Repository\ChangeRequestRepository;
@@ -146,7 +147,7 @@ class ISOComplianceIntelligenceService
     public function getISO27005Compliance(): array
     {
         $risks = $this->riskRepository->findAll();
-        $acceptedRisks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy() === 'accept');
+        $acceptedRisks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy() === TreatmentStrategy::Accept);
         $pendingApproval = array_filter($acceptedRisks, fn(Risk $risk): bool => $risk->isAcceptanceApprovalRequired());
 
         $score = 100;

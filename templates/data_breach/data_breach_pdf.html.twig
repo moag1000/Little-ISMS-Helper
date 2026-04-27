@@ -248,8 +248,8 @@
         <h2>2. Linked Security Incident & Processing Activity</h2>
         <p><strong>Security Incident:</strong> {{ breach.incident.referenceNumber }} - {{ breach.incident.title }}</p>
         <p><strong>Incident Severity:</strong>
-            {% set sev_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.incident.severity] %}
-            <span class="badge badge-{{ sev_class }}">{{ breach.incident.severity|upper }}</span>
+            {% set sev_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.incident.severity ? breach.incident.severity.value : ''] %}
+            <span class="badge badge-{{ sev_class }}">{{ breach.incident.severity ? breach.incident.severity.value|upper : '' }}</span>
         </p>
         {% if breach.processingActivity %}
             <p><strong>Processing Activity (VVT - Art. 30):</strong> {{ breach.processingActivity.name }}</p>

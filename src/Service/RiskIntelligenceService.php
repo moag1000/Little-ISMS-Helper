@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Incident;
 use App\Entity\Risk;
+use App\Enum\IncidentSeverity;
 use App\Repository\IncidentRepository;
 
 /**
@@ -185,7 +186,7 @@ class RiskIntelligenceService
             $trends['by_category'][$category]++;
 
             // Severity Trend
-            $severity = $incident->getSeverity();
+            $severity = $incident->getSeverity()?->value ?? 'unknown';
             if (!isset($trends['by_severity'][$severity])) {
                 $trends['by_severity'][$severity] = 0;
             }
@@ -244,13 +245,13 @@ class RiskIntelligenceService
         return 1;
     }
 
-    private function mapSeverityToImpact(string $severity): int
+    private function mapSeverityToImpact(?IncidentSeverity $severity): int
     {
         return match($severity) {
-            'critical' => 5,
-            'high' => 4,
-            'medium' => 3,
-            'low' => 2,
+            IncidentSeverity::Critical => 5,
+            IncidentSeverity::High => 4,
+            IncidentSeverity::Medium => 3,
+            IncidentSeverity::Low => 2,
             default => 1
         };
     }

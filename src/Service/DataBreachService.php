@@ -83,7 +83,7 @@ class DataBreachService
 
         // Pre-populate from incident (data reuse!)
         $dataBreach->setTitle(sprintf('Data Breach: %s', $incident->getTitle()));
-        $dataBreach->setSeverity($incident->getSeverity());
+        $dataBreach->setSeverity($incident->getSeverity()?->value);
 
         // Link processing activity if provided
         if ($processingActivity instanceof ProcessingActivity) {

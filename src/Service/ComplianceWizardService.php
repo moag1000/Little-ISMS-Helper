@@ -437,7 +437,7 @@ class ComplianceWizardService
 
         foreach ($risks as $risk) {
             $treatment = $risk->getTreatmentStrategy();
-            if ($treatment && $treatment !== 'none') {
+            if ($treatment !== null) {
                 $treatedRisks++;
             } else {
                 $riskLevel = $risk->getInherentRiskLevel();

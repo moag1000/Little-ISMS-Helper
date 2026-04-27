@@ -304,8 +304,8 @@ class RiskController extends AbstractController
                 $risk->getResidualImpact(),
                 $residualScore,
                 $residualRiskLevel,
-                $treatmentMap[$risk->getTreatmentStrategy()] ?? $risk->getTreatmentStrategy(),
-                $statusMap[$risk->getStatus()] ?? $risk->getStatus(),
+                $treatmentMap[$risk->getTreatmentStrategy()?->value] ?? $risk->getTreatmentStrategy()?->value,
+                $statusMap[$risk->getStatus()?->value] ?? $risk->getStatus()?->value,
                 $risk->getRiskOwner() ? $risk->getRiskOwner()->getFullName() : '-',
                 $risk->getCreatedAt() ? $risk->getCreatedAt()->format('Y-m-d H:i') : '-',
                 $risk->getReviewDate() ? $risk->getReviewDate()->format('Y-m-d') : '-',
@@ -543,20 +543,20 @@ class RiskController extends AbstractController
                     $residualScore,
                     $residualLevel,
                     match($criticalHighRisk->getTreatmentStrategy()) {
-                        'accept' => 'Akzeptieren',
-                        'mitigate' => 'Mindern',
-                        'transfer' => 'Übertragen',
-                        'avoid' => 'Vermeiden',
-                        default => $criticalHighRisk->getTreatmentStrategy()
+                        TreatmentStrategy::Accept => 'Akzeptieren',
+                        TreatmentStrategy::Mitigate => 'Mindern',
+                        TreatmentStrategy::Transfer => 'Übertragen',
+                        TreatmentStrategy::Avoid => 'Vermeiden',
+                        default => $criticalHighRisk->getTreatmentStrategy()?->value
                     },
                     match($criticalHighRisk->getStatus()) {
-                        'identified' => 'Identifiziert',
-                        'assessed' => 'Bewertet',
-                        'treated' => 'Behandelt',
-                        'monitored' => 'Überwacht',
-                        'closed' => 'Geschlossen',
-                        'accepted' => 'Akzeptiert',
-                        default => $criticalHighRisk->getStatus()
+                        RiskStatus::Identified => 'Identifiziert',
+                        RiskStatus::Assessed => 'Bewertet',
+                        RiskStatus::Treated => 'Behandelt',
+                        RiskStatus::Monitored => 'Überwacht',
+                        RiskStatus::Closed => 'Geschlossen',
+                        RiskStatus::Accepted => 'Akzeptiert',
+                        default => $criticalHighRisk->getStatus()?->value
                     },
                     $criticalHighRisk->getRiskOwner() ? $criticalHighRisk->getRiskOwner()->getFullName() : '-',
                     $criticalHighRisk->getCreatedAt() ? $criticalHighRisk->getCreatedAt()->format('d.m.Y') : '-',

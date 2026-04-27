@@ -41,7 +41,7 @@
         href: '#filter-open'
     }) }}
 
-    {% set criticalIncidents = allIncidents|filter(i => i.severity == 'critical')|length %}
+    {% set criticalIncidents = allIncidents|filter(i => i.severity.value == 'critical')|length %}
     {{ _fa_feature_card.render({
         icon: 'shield-fill-exclamation',
         label: 'incident.kpi.critical'|trans({}, 'incident'),
@@ -49,8 +49,8 @@
         variant: 'warning'
     }) }}
 
-    {% set avgResolutionDays = allIncidents|filter(i => i.status == 'resolved')|length > 0
-        ? ((allIncidents|filter(i => i.status == 'resolved')|reduce((carry, i) => carry + (i.resolvedAt ? (i.resolvedAt.diff(i.occurredAt).days) : 0), 0)) / (allIncidents|filter(i => i.status == 'resolved')|length))|round(1)
+    {% set avgResolutionDays = allIncidents|filter(i => i.status.value == 'resolved')|length > 0
+        ? ((allIncidents|filter(i => i.status.value == 'resolved')|reduce((carry, i) => carry + (i.resolvedAt ? (i.resolvedAt.diff(i.occurredAt).days) : 0), 0)) / (allIncidents|filter(i => i.status.value == 'resolved')|length))|round(1)
         : 0 %}
     <div class="position-relative">
         {{ _fa_feature_card.render({
@@ -81,7 +81,7 @@
                 'closed': { label: 'incident.status.closed'|trans({}, 'incident'), icon: 'bi-check-circle-fill', color: 'secondary' }
             } %}
             {% for status, data in statuses %}
-                {% set count = allIncidents|filter(i => i.status == status)|length %}
+                {% set count = allIncidents|filter(i => i.status.value == status)|length %}
                 <div class="col-md-3 mb-3">
                     <div class="status-card status-{{ status }}">
                         <div class="status-icon text-{{ data.color }}" aria-hidden="true">
@@ -120,7 +120,7 @@
                 'low': { label: 'incident.severity.low'|trans({}, 'incident'), icon: '<i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>', color: 'success' }
             } %}
             {% for severity, data in severities %}
-                {% set count = allIncidents|filter(i => i.severity == severity)|length %}
+                {% set count = allIncidents|filter(i => i.severity.value == severity)|length %}
                 <div class="col-md-3 mb-3">
                     <div class="severity-badge severity-{{ severity }}">
                         <div class="severity-icon">{{ data.icon|raw }}</div>
@@ -228,8 +228,8 @@
         {% block table_body %}
             {% for incident in allIncidents %}
             <tr data-incident-id="{{ incident.id }}"
-                data-incident-status="{{ incident.status }}"
-                data-incident-severity="{{ incident.severity }}">
+                data-incident-status="{{ incident.status.value }}"
+                data-incident-severity="{{ incident.severity ? incident.severity.value : '' }}">
                 <td>
                     <input type="checkbox"
                            class="form-check-input"
@@ -242,7 +242,7 @@
                     {% if incident.description %}
                     <br><small class="text-muted">{{ incident.description|length > 60 ? incident.description|slice(0, 60) ~ '...' : incident.description }}</small>
                     {% endif %}
-                    {% if incident.status == 'reported' %}
+                    {% if incident.status.value == 'reported' %}
                         {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-2', content: 'common.new'|trans({}, 'messages') } %}
                     {% endif %}
                 </td>
@@ -260,7 +260,7 @@
                         'medium': 'info',
                         'low': 'success'
                     } %}
-                    {% include '_components/_badge.html.twig' with { variant: severityColors[incident.severity] ?? 'secondary', content: ('incident.severity.' ~ incident.severity)|trans({}, 'incident') } %}
+                    {% include '_components/_badge.html.twig' with { variant: severityColors[incident.severity ? incident.severity.value : ''] ?? 'secondary', content: ('incident.severity.' ~ (incident.severity ? incident.severity.value : ''))|trans({}, 'incident') } %}
                 </td>
                 <td>
                     {% set statusIcons = {
@@ -270,8 +270,8 @@
                         'resolved': 'bi-check-circle text-success',
                         'closed': 'bi-check-circle-fill text-secondary'
                     } %}
-                    <i class="bi {{ statusIcons[incident.status] ?? 'bi-circle' }}" aria-hidden="true"></i>
-                    {{ ('incident.status.' ~ incident.status)|trans({}, 'incident') }}
+                    <i class="bi {{ statusIcons[incident.status.value] ?? 'bi-circle' }}" aria-hidden="true"></i>
+                    {{ ('incident.status.' ~ incident.status.value)|trans({}, 'incident') }}
                 </td>
                 <td>
                     {{ incident.detectedAt|date('d.m.Y H:i') }}
@@ -310,7 +310,7 @@
                            title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                             <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                         </a>
-                        {% if is_granted('ROLE_USER') and incident.status != 'closed' %}
+                        {% if is_granted('ROLE_USER') and incident.status.value != 'closed' %}
                         <a href="{{ path('app_incident_edit', {id: incident.id}) }}"
                            class="fa-cyber-btn fa-cyber-btn--ghost"
                            data-turbo-action="advance"

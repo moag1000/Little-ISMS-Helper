@@ -191,7 +191,7 @@ class SearchController extends AbstractController
             'title' => $incident->getTitle(),
             'description' => $this->truncate($incident->getDescription(), 100),
             'url' => $this->generateUrl('app_incident_show', ['id' => $incident->getId()]),
-            'badge' => $incident->getSeverity()
+            'badge' => $incident->getSeverity()?->value
         ], $incidents);
     }
     private function searchTrainings(string $query): array

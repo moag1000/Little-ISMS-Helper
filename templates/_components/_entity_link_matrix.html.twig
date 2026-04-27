@@ -141,7 +141,7 @@
                             <a href="{{ path('app_incident_show', {id: incident.id}) }}" data-turbo-action="advance">
                                 <strong>{{ incident.title }}</strong>
                             </a>
-                            {% set sev = incident.severity|default('low') %}
+                            {% set sev = incident.severity ? incident.severity.value : 'low' %}
                             {% set sevVariant = sev == 'critical' ? 'danger' : (sev == 'high' ? 'warning' : 'secondary') %}
                             {% include '_components/_badge.html.twig' with { variant: sevVariant, content: sev|upper } only %}
                             {% if incident.detectedAt %}

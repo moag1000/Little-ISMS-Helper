@@ -33,12 +33,12 @@
 
             <div class="field">
                 <span class="label">{{ 'emails.incident.current_status'|trans({}, 'emails') }}:</span>
-                <span class="value">{{ incident.status|upper }}</span>
+                <span class="value">{{ incident.status ? incident.status.value|upper : '' }}</span>
             </div>
 
             <div class="field">
                 <span class="label">{{ 'emails.incident.severity'|trans({}, 'emails') }}:</span>
-                <span class="value">{{ incident.severity|upper }}</span>
+                <span class="value">{{ incident.severity ? incident.severity.value|upper : '' }}</span>
             </div>
         </div>
 

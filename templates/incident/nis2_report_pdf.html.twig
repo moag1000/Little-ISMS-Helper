@@ -177,7 +177,7 @@
             </tr>
             <tr>
                 <td>Severity Level:</td>
-                <td><strong>{{ incident.severity|upper }}</strong></td>
+                <td><strong>{{ incident.severity ? incident.severity.value|upper : '' }}</strong></td>
             </tr>
             {% if incident.authorityReferenceNumber %}
             <tr>
@@ -211,8 +211,8 @@
             <tr>
                 <td>{{ ('incident.category.' ~ incident.category)|trans({}, 'incident') }}</td>
                 <td>{{ incident.nis2Category ? ('incident.nis2_category.' ~ incident.nis2Category)|trans : 'N/A' }}</td>
-                <td>{{ ('incident.severity.' ~ incident.severity)|trans({}, 'incident') }}</td>
-                <td>{{ ('incident.status.' ~ incident.status)|trans({}, 'incident') }}</td>
+                <td>{{ ('incident.severity.' ~ (incident.severity ? incident.severity.value : ''))|trans({}, 'incident') }}</td>
+                <td>{{ ('incident.status.' ~ (incident.status ? incident.status.value : ''))|trans({}, 'incident') }}</td>
             </tr>
         </table>
     </div>

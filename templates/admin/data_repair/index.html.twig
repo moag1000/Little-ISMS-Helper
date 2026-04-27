@@ -595,7 +595,7 @@
                             <tr>
                                 <td>{{ incident.id }}</td>
                                 <td>{{ incident.title }}</td>
-                                <td>{{ incident.severity }}</td>
+                                <td>{{ incident.severity ? incident.severity.value : '' }}</td>
                                 <td>
                                     <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'incident', id: incident.id}) }}" class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ incident.id) }}">

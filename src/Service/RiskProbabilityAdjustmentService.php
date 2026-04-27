@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Enum\IncidentStatus;
 use DateMalformedStringException;
 use DateTime;
 use App\Entity\Risk;
@@ -99,7 +100,7 @@ class RiskProbabilityAdjustmentService
 
         foreach ($risk->getIncidents() as $incident) {
             // Safe Guard 1: Must be closed
-            if ($incident->getStatus() !== 'closed') {
+            if ($incident->getStatus() !== IncidentStatus::Closed) {
                 continue;
             }
 

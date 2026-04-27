@@ -119,7 +119,7 @@ class WorkflowAutoTriggerListener
             $this->logger->info('Auto-triggering incident workflows', [
                 'incident_id' => $incident->getId(),
                 'incident_number' => $incident->getIncidentNumber(),
-                'severity' => $incident->getSeverity(),
+                'severity' => $incident->getSeverity()?->value,
                 'is_new' => $isNew,
                 'changed_fields' => array_keys($changeSet),
             ]);

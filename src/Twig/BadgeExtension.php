@@ -170,12 +170,15 @@ class BadgeExtension
     /**
      * Get Bootstrap badge class for severity level
      *
-     * @param string|int $severity Severity level (critical/high/medium/low or 1-5)
+     * @param string|int|\BackedEnum $severity Severity level (critical/high/medium/low or 1-5 or backed enum)
      * @return string BC-aliased badge classes: "badge bg-{color} fa-status-pill fa-status-pill--{variant}"
      */
     #[AsTwigFunction('badge_severity')]
-    public function getSeverityBadgeClass(string|int $severity): string
+    public function getSeverityBadgeClass(string|int|\BackedEnum $severity): string
     {
+        if ($severity instanceof \BackedEnum) {
+            $severity = $severity->value;
+        }
         $severity = is_string($severity) ? strtolower($severity) : $severity;
         $color = self::SEVERITY_MAP[$severity] ?? 'secondary';
         return $this->buildBadgeClasses($color);
@@ -184,12 +187,15 @@ class BadgeExtension
     /**
      * Get Bootstrap badge class for status
      *
-     * @param string $status Status value
+     * @param string|\BackedEnum $status Status value or backed enum
      * @return string BC-aliased badge classes
      */
     #[AsTwigFunction('badge_status')]
-    public function getStatusBadgeClass(string $status): string
+    public function getStatusBadgeClass(string|\BackedEnum $status): string
     {
+        if ($status instanceof \BackedEnum) {
+            $status = $status->value;
+        }
         $status = strtolower($status);
         $color = self::STATUS_MAP[$status] ?? 'secondary';
         return $this->buildBadgeClasses($color);

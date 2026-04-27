@@ -7,6 +7,9 @@ namespace App\Service;
 use App\Entity\Asset;
 use App\Entity\Risk;
 use App\Entity\Tenant;
+use App\Enum\IncidentSeverity;
+use App\Enum\IncidentStatus;
+use App\Enum\RiskStatus;
 use App\Repository\AssetRepository;
 use App\Repository\BCExerciseRepository;
 use App\Repository\BusinessContinuityPlanRepository;
@@ -1119,7 +1122,7 @@ class DashboardStatisticsService
         $totalRisks = count($allRisks);
         $highRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= 12));
         $criticalRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= 16));
-        $treatedRisks = count(array_filter($allRisks, fn($r): bool => $r->getTreatmentStrategy() !== null && $r->getTreatmentStrategy() !== ''));
+        $treatedRisks = count(array_filter($allRisks, fn($r): bool => $r->getTreatmentStrategy() !== null));
         $treatmentRate = $totalRisks > 0 ? round(($treatedRisks / $totalRisks) * 100) : 0;
 
         // A3: Residual Risk Exposure — sum of all residual risk levels, plus counts by severity
@@ -1261,8 +1264,8 @@ class DashboardStatisticsService
             ? $this->getAllAccessibleIncidents($tenant)
             : $this->incidentRepository->findAll();
 
-        $openIncidents = array_filter($allIncidents, fn($i): bool => $i->getStatus() === 'open');
-        $resolvedIncidents = array_filter($allIncidents, fn($i): bool => $i->getStatus() === 'resolved' || $i->getStatus() === 'closed');
+        $openIncidents = array_filter($allIncidents, fn($i): bool => in_array($i->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
+        $resolvedIncidents = array_filter($allIncidents, fn($i): bool => $i->getStatus() === IncidentStatus::Resolved || $i->getStatus() === IncidentStatus::Closed);
 
         // Calculate MTTR (Mean Time To Resolve) for resolved incidents this year
         $thisYear = (new \DateTime())->format('Y');
@@ -1283,8 +1286,8 @@ class DashboardStatisticsService
                     $hours = ($diff->days * 24) + $diff->h;
                     $totalHours += $hours;
                     $validCount++;
-                    $sev = $incident->getSeverity();
-                    if (isset($mttrBySeverity[$sev])) {
+                    $sev = $incident->getSeverity()?->value;
+                    if ($sev !== null && isset($mttrBySeverity[$sev])) {
                         $mttrBySeverity[$sev][] = $hours;
                     }
                 }
@@ -1691,7 +1694,7 @@ class DashboardStatisticsService
         // Major ICT incidents (high severity)
         $majorIncidents = array_filter(
             $allIncidents,
-            fn($i): bool => method_exists($i, 'getSeverity') && ($i->getSeverity() === 'critical' || $i->getSeverity() === 'high')
+            fn($i): bool => method_exists($i, 'getSeverity') && in_array($i->getSeverity(), [IncidentSeverity::Critical, IncidentSeverity::High], true)
         );
 
         // Check for 4h initial reporting compliance
