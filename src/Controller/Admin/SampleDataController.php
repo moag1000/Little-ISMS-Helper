@@ -60,15 +60,28 @@ class SampleDataController extends AbstractController
             }
         }
         $rawCount = $em->getRepository(\App\Entity\SampleDataImport::class)->count(['tenant' => $tenant]);
+        $totalRowsAllTenants = $em->getRepository(\App\Entity\SampleDataImport::class)->count([]);
+        $conn = $em->getConnection();
+        $params = $conn->getParams();
+        $dbInfo = sprintf('%s@%s/%s',
+            $params['user'] ?? '?',
+            $params['host'] ?? '?',
+            $params['dbname'] ?? '?'
+        );
+        $env = $_SERVER['APP_ENV'] ?? '?';
         $logLine = sprintf(
-            "[%s] tenant=%d (%s) tenant_filter=%s | countsByKey returned %d entries keys=[%s] | repo->count=%d\n",
+            "[%s] APP_ENV=%s db=%s | tenant=%d (%s) tenant_filter=%s | countsByKey returned %d entries keys=[%s] | repo->count(tenant=%d)=%d | repo->count(all)=%d\n",
             date('Y-m-d H:i:s'),
+            $env,
+            $dbInfo,
             $tenant->getId() ?? 0,
             $tenant->getName() ?? '?',
             $filterParam,
             count($importedCounts),
             implode(',', array_map(fn($k) => var_export($k, true), array_keys($importedCounts))),
+            $tenant->getId() ?? 0,
             $rawCount,
+            $totalRowsAllTenants,
         );
         $logPath = $this->sampleImportRepository->getEntityManager()->getConnection()
             ->getParams()['driver'] ? __DIR__ . '/../../../var/log/sample-data-debug.log' : '/tmp/sd-debug.log';
