@@ -17,7 +17,9 @@ import { Controller } from '@hotwired/stimulus';
  *     user toggles individual rows.
  */
 export default class extends Controller {
-    static values = { targetSelector: String };
+    static values = {
+        targetSelector: { type: String, default: 'input[type="checkbox"]' },
+    };
 
     connect() {
         this.boundUpdate = () => this.updateMasterState();
