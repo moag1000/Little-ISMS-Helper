@@ -46,47 +46,6 @@ class SampleDataController extends AbstractController
         $activeModules = $this->moduleConfigurationService->getActiveModules();
         $availableSamples = $this->moduleConfigurationService->getSampleData();
         $importedCounts = $this->sampleImportRepository->countsByKey($tenant);
-
-        // TEMP DEBUG: write a snapshot directly to var/log/sample-data-debug.log
-        // (independent of monolog config) so the operator can paste it back.
-        $em = $this->sampleImportRepository->getEntityManager();
-        $f = $em->getFilters();
-        $filterParam = 'DISABLED';
-        if ($f->isEnabled('tenant_filter')) {
-            try {
-                $filterParam = (string) $f->getFilter('tenant_filter')->getParameter('tenant_id');
-            } catch (\Throwable) {
-                $filterParam = 'NOT-SET';
-            }
-        }
-        $rawCount = $em->getRepository(\App\Entity\SampleDataImport::class)->count(['tenant' => $tenant]);
-        $totalRowsAllTenants = $em->getRepository(\App\Entity\SampleDataImport::class)->count([]);
-        $conn = $em->getConnection();
-        $params = $conn->getParams();
-        $dbInfo = sprintf('%s@%s/%s',
-            $params['user'] ?? '?',
-            $params['host'] ?? '?',
-            $params['dbname'] ?? '?'
-        );
-        $env = $_SERVER['APP_ENV'] ?? '?';
-        $logLine = sprintf(
-            "[%s] APP_ENV=%s db=%s | tenant=%d (%s) tenant_filter=%s | countsByKey returned %d entries keys=[%s] | repo->count(tenant=%d)=%d | repo->count(all)=%d\n",
-            date('Y-m-d H:i:s'),
-            $env,
-            $dbInfo,
-            $tenant->getId() ?? 0,
-            $tenant->getName() ?? '?',
-            $filterParam,
-            count($importedCounts),
-            implode(',', array_map(fn($k) => var_export($k, true), array_keys($importedCounts))),
-            $tenant->getId() ?? 0,
-            $rawCount,
-            $totalRowsAllTenants,
-        );
-        $logPath = $this->sampleImportRepository->getEntityManager()->getConnection()
-            ->getParams()['driver'] ? __DIR__ . '/../../../var/log/sample-data-debug.log' : '/tmp/sd-debug.log';
-        @file_put_contents($logPath, $logLine, FILE_APPEND);
-
         // Defensive: PHP coerces numeric string keys to int when storing in
         // arrays, but if the DB driver returns sample_key as a non-numeric
         // string for any reason the lookup `$importedCounts[$key]` (with
