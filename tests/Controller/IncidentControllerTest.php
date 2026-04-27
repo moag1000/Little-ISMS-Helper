@@ -992,8 +992,8 @@ class IncidentControllerTest extends TestCase
         $statusEnum   = \App\Enum\IncidentStatus::tryFrom($statusValue);
         $incident = $this->createMock(Incident::class);
         $incident->method('getId')->willReturn($id);
-        $incident->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::tryFrom($severityEnum));
-        $incident->method('getStatus')->willReturn(\App\Enum\IncidentStatus::tryFrom($statusEnum));
+        $incident->method('getSeverity')->willReturn($severityEnum);
+        $incident->method('getStatus')->willReturn($statusEnum);
         $incident->method('isDataBreachOccurred')->willReturn($dataBreach);
         $incident->method('getIncidentNumber')->willReturn("INC-2025-000{$id}");
         $incident->method('getTitle')->willReturn("Test Incident {$id}");

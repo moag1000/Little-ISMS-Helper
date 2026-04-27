@@ -215,7 +215,7 @@ class ISOComplianceIntelligenceService
         $iso27005 = $this->getISO27005Compliance()['score'];
         $iso31000 = $this->getISO31000Compliance()['score'];
 
-        return round(($iso27001 + $iso22301 + $iso27005 + $iso31000) / 4);
+        return (int) round(($iso27001 + $iso22301 + $iso27005 + $iso31000) / 4);
     }
 
     /**
@@ -337,7 +337,7 @@ class ISOComplianceIntelligenceService
             $totalReadiness += $bcPlan->getReadinessScore();
         }
 
-        return round($totalReadiness / count($bcPlans));
+        return (int) round($totalReadiness / count($bcPlans));
     }
 
     /**

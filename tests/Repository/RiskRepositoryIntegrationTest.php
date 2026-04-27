@@ -172,7 +172,10 @@ class RiskRepositoryIntegrationTest extends KernelTestCase
         // Index by treatmentStrategy for easy assertion
         $byStrategy = [];
         foreach ($results as $row) {
-            $byStrategy[$row['treatmentStrategy']] = (int) $row['count'];
+            $key = $row['treatmentStrategy'] instanceof \App\Enum\TreatmentStrategy
+                ? $row['treatmentStrategy']->value
+                : (string) $row['treatmentStrategy'];
+            $byStrategy[$key] = (int) $row['count'];
         }
 
         $this->assertSame(2, $byStrategy['mitigate']);

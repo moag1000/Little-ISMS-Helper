@@ -555,7 +555,7 @@ class RoleDashboardServiceTest extends TestCase
         $risk = $this->createMock(Risk::class);
         $risk->method('getId')->willReturn($id);
         $risk->method('getTitle')->willReturn($title);
-        $risk->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::tryFrom($treatmentStrategy));
+        $risk->method('getTreatmentStrategy')->willReturn($treatmentStrategy === null ? null : (is_string($treatmentStrategy) ? \App\Enum\TreatmentStrategy::tryFrom($treatmentStrategy) : $treatmentStrategy));
         $risk->method('getInherentRiskLevel')->willReturn($level);
         $risk->method('getCategory')->willReturn('General');
         $risk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('active'));

@@ -336,7 +336,7 @@ class SiemExportServiceTest extends TestCase
         $threat->method('getId')->willReturn(1);
         $threat->method('getTitle')->willReturn('Critical Vulnerability');
         $threat->method('getThreatType')->willReturn('vulnerability');
-        $threat->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::Critical);
+        $threat->method('getSeverity')->willReturn('critical');
         $threat->method('getCveId')->willReturn('CVE-2024-1234');
         $threat->method('getCvssScore')->willReturn(10);
         $threat->method('getStatus')->willReturn('new');
