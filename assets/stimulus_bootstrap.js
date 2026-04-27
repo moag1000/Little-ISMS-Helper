@@ -2,6 +2,7 @@ import { startStimulusApp } from '@symfony/stimulus-bundle';
 import AsyncJobController from './controllers/async_job_controller.js';
 import WizardBusyController from './controllers/wizard_busy_controller.js';
 import AlvaDockController from './controllers/alva_dock_controller.js';
+import SelectAllController from './controllers/select_all_controller.js';
 
 const app = startStimulusApp();
 
@@ -15,3 +16,4 @@ app.debug = false;
 app.register('async-job', AsyncJobController);
 app.register('wizard-busy', WizardBusyController);
 app.register('alva-dock', AlvaDockController);
+app.register('select-all', SelectAllController);
