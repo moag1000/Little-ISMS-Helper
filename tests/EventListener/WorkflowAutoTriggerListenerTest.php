@@ -323,7 +323,7 @@ class WorkflowAutoTriggerListenerTest extends TestCase
         $incident = $this->createMock(Incident::class);
         $incident->method('getId')->willReturn($id);
         $incident->method('getIncidentNumber')->willReturn($incidentNumber);
-        $incident->method('getSeverity')->willReturn($severity);
+        $incident->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::tryFrom($severity));
         $incident->method('isDataBreachOccurred')->willReturn(false);
         return $incident;
     }

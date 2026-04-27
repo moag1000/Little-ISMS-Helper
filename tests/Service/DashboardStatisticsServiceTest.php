@@ -177,11 +177,11 @@ class DashboardStatisticsServiceTest extends TestCase
     public function testOpenIncidentsCounting(): void
     {
         $incident1 = $this->createMock(Incident::class);
-        $incident1->method('getStatus')->willReturn('open');
+        $incident1->method('getStatus')->willReturn(\App\Enum\IncidentStatus::tryFrom('open'));
         $incident1->method('getId')->willReturn(1);
 
         $incident2 = $this->createMock(Incident::class);
-        $incident2->method('getStatus')->willReturn('open');
+        $incident2->method('getStatus')->willReturn(\App\Enum\IncidentStatus::tryFrom('open'));
         $incident2->method('getId')->willReturn(2);
 
         $this->assetRepository->method('findByTenant')->willReturn([]);
@@ -256,7 +256,7 @@ class DashboardStatisticsServiceTest extends TestCase
         $this->riskRepository->method('findByTenantIncludingSubsidiaries')->willReturn([]);
 
         $incident1 = $this->createMock(Incident::class);
-        $incident1->method('getStatus')->willReturn('open');
+        $incident1->method('getStatus')->willReturn(\App\Enum\IncidentStatus::tryFrom('open'));
         $incident1->method('getId')->willReturn(1);
 
         $this->incidentRepository->method('findByTenant')->willReturn([

@@ -263,7 +263,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $risk->expects($this->once())->method('setFormallyAccepted')->with(true);
         $risk->expects($this->once())->method('setAcceptanceApprovedBy')->with('John Doe');
         $risk->expects($this->once())->method('setAcceptanceApprovedAt');
-        $risk->expects($this->once())->method('setStatus')->with('accepted');
+        $risk->expects($this->once())->method('setStatus')->with(\App\Enum\RiskStatus::Accepted);
 
         $this->entityManager->expects($this->once())->method('persist')->with($risk);
         $this->entityManager->expects($this->once())->method('flush');
@@ -286,7 +286,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $user->method('getFullName')->willReturn('Jane Doe');
         $user->method('getEmail')->willReturn('jane@example.com');
 
-        $risk->expects($this->once())->method('setStatus')->with('assessed');
+        $risk->expects($this->once())->method('setStatus')->with(\App\Enum\RiskStatus::Assessed);
         $risk->expects($this->once())->method('setFormallyAccepted')->with(false);
 
         $this->entityManager->expects($this->once())->method('persist')->with($risk);

@@ -89,7 +89,7 @@ class RiskIntelligenceServiceTest extends TestCase
             $incident->method('getTitle')->willReturn('Test Incident');
             $incident->method('getIncidentNumber')->willReturn('INC-001');
             $incident->method('getCategory')->willReturn('test');
-            $incident->method('getSeverity')->willReturn($severity);
+            $incident->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::tryFrom($severity));
             $incident->method('getRootCause')->willReturn('Test cause');
 
             $this->incidentRepo = $this->createMock(IncidentRepository::class);

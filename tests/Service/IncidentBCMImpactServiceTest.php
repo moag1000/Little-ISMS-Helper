@@ -426,8 +426,8 @@ class IncidentBCMImpactServiceTest extends TestCase
         $incident = $this->createMock(Incident::class);
         $incident->method('getId')->willReturn(1);
         $incident->method('getIncidentNumber')->willReturn($number);
-        $incident->method('getSeverity')->willReturn($severity);
-        $incident->method('getStatus')->willReturn($status);
+        $incident->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::tryFrom($severity));
+        $incident->method('getStatus')->willReturn(\App\Enum\IncidentStatus::tryFrom($status));
         $incident->method('getDetectedAt')->willReturn(new DateTimeImmutable('-1 day'));
         $incident->method('getResolvedAt')->willReturn(null);
         $incident->method('getAffectedAssets')->willReturn(new ArrayCollection());
@@ -441,8 +441,8 @@ class IncidentBCMImpactServiceTest extends TestCase
         $incident = $this->createMock(Incident::class);
         $incident->method('getId')->willReturn(1);
         $incident->method('getIncidentNumber')->willReturn($number);
-        $incident->method('getSeverity')->willReturn($severity);
-        $incident->method('getStatus')->willReturn($status);
+        $incident->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::tryFrom($severity));
+        $incident->method('getStatus')->willReturn(\App\Enum\IncidentStatus::tryFrom($status));
         $incident->method('getDetectedAt')->willReturn(new DateTimeImmutable('-1 day'));
         $incident->method('getResolvedAt')->willReturn(null);
         $incident->method('getAffectedAssets')->willReturn(new ArrayCollection());

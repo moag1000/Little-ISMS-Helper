@@ -125,7 +125,7 @@ class ReviewReminderServiceTest extends TestCase
     {
         $acceptedRisk = $this->createMock(Risk::class);
         $acceptedRisk->method('getReviewDate')->willReturn(new DateTime('-1 week'));
-        $acceptedRisk->method('getStatus')->willReturn('accepted');
+        $acceptedRisk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('accepted'));
 
         $this->riskRepository->method('findAll')->willReturn([$acceptedRisk]);
 
@@ -319,11 +319,11 @@ class ReviewReminderServiceTest extends TestCase
     {
         $upcomingRisk = $this->createMock(Risk::class);
         $upcomingRisk->method('getReviewDate')->willReturn(new DateTime('+7 days'));
-        $upcomingRisk->method('getStatus')->willReturn('open');
+        $upcomingRisk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('open'));
 
         $farFutureRisk = $this->createMock(Risk::class);
         $farFutureRisk->method('getReviewDate')->willReturn(new DateTime('+60 days'));
-        $farFutureRisk->method('getStatus')->willReturn('open');
+        $farFutureRisk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('open'));
 
         $this->riskRepository->method('findAll')->willReturn([$upcomingRisk, $farFutureRisk]);
         $this->bcPlanRepository->method('findBy')->willReturn([]);
@@ -364,7 +364,7 @@ class ReviewReminderServiceTest extends TestCase
         // 1 high risk that is overdue
         $highRisk = $this->createMock(Risk::class);
         $highRisk->method('getReviewDate')->willReturn(new DateTime('-3 days'));
-        $highRisk->method('getStatus')->willReturn('open');
+        $highRisk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('open'));
         $highRisk->method('isHighRisk')->willReturn(true);
         $this->riskRepository->method('findAll')->willReturn([$highRisk]);
 
@@ -383,22 +383,22 @@ class ReviewReminderServiceTest extends TestCase
     {
         $risk3Days = $this->createMock(Risk::class);
         $risk3Days->method('getReviewDate')->willReturn(new DateTime('-3 days'));
-        $risk3Days->method('getStatus')->willReturn('open');
+        $risk3Days->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('open'));
         $risk3Days->method('isHighRisk')->willReturn(false);
 
         $risk15Days = $this->createMock(Risk::class);
         $risk15Days->method('getReviewDate')->willReturn(new DateTime('-15 days'));
-        $risk15Days->method('getStatus')->willReturn('open');
+        $risk15Days->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('open'));
         $risk15Days->method('isHighRisk')->willReturn(false);
 
         $risk60Days = $this->createMock(Risk::class);
         $risk60Days->method('getReviewDate')->willReturn(new DateTime('-60 days'));
-        $risk60Days->method('getStatus')->willReturn('open');
+        $risk60Days->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('open'));
         $risk60Days->method('isHighRisk')->willReturn(false);
 
         $risk120Days = $this->createMock(Risk::class);
         $risk120Days->method('getReviewDate')->willReturn(new DateTime('-120 days'));
-        $risk120Days->method('getStatus')->willReturn('open');
+        $risk120Days->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('open'));
         $risk120Days->method('isHighRisk')->willReturn(false);
 
         $this->riskRepository->method('findAll')
@@ -432,7 +432,7 @@ class ReviewReminderServiceTest extends TestCase
     {
         $risk = $this->createMock(Risk::class);
         $risk->method('getReviewDate')->willReturn(new DateTime('-1 week'));
-        $risk->method('getStatus')->willReturn('open');
+        $risk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('open'));
         return $risk;
     }
 
@@ -440,7 +440,7 @@ class ReviewReminderServiceTest extends TestCase
     {
         $risk = $this->createMock(Risk::class);
         $risk->method('getReviewDate')->willReturn(new DateTime('+1 month'));
-        $risk->method('getStatus')->willReturn('open');
+        $risk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('open'));
         return $risk;
     }
 
@@ -448,7 +448,7 @@ class ReviewReminderServiceTest extends TestCase
     {
         $risk = $this->createMock(Risk::class);
         $risk->method('getReviewDate')->willReturn(new DateTime('-1 week'));
-        $risk->method('getStatus')->willReturn('closed');
+        $risk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('closed'));
         return $risk;
     }
 
@@ -456,7 +456,7 @@ class ReviewReminderServiceTest extends TestCase
     {
         $risk = $this->createMock(Risk::class);
         $risk->method('getReviewDate')->willReturn(null);
-        $risk->method('getStatus')->willReturn('open');
+        $risk->method('getStatus')->willReturn(\App\Enum\RiskStatus::tryFrom('open'));
         return $risk;
     }
 

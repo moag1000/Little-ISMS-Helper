@@ -67,7 +67,7 @@ class ControlTest extends TestCase
         // Add risks to make it high-risk (base 50 + 20 = 70)
         for ($i = 0; $i < 4; $i++) {
             $risk = new \App\Entity\Risk();
-            $risk->setStatus('active');
+            $risk->setStatus(\App\Enum\RiskStatus::Open);
             $asset1->addRisk($risk);
         }
 

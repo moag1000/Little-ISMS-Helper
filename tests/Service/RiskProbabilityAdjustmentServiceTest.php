@@ -291,7 +291,7 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
     private function createIncident(DateTime $detectedAt, string $status): MockObject
     {
         $incident = $this->createMock(Incident::class);
-        $incident->method('getStatus')->willReturn($status);
+        $incident->method('getStatus')->willReturn(\App\Enum\IncidentStatus::tryFrom($status));
         $incident->method('getDetectedAt')->willReturn($detectedAt);
 
         return $incident;
