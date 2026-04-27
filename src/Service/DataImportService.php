@@ -267,10 +267,149 @@ class DataImportService
             }
         }
 
+        // Nach Abschluss aller selected Samples: vorher unauflösbare Refs
+        // nachträglich auflösen. Use-case: User importiert Risks zuerst,
+        // dann Assets — die Risks haben jetzt asset_id=NULL, aber die
+        // Assets sind in der DB. Backfill setzt die Verbindungen nach.
+        $repaired = $this->repairUnresolvedReferences($tenant);
+        if ($repaired > 0) {
+            $results[] = [
+                'name' => 'Backfill',
+                'status' => 'success',
+                'message' => sprintf('%d nachträgliche Beziehungen aufgelöst', $repaired),
+                'removable' => false,
+            ];
+        }
+
         return [
             'results' => $results,
             'log' => $this->importLog,
         ];
+    }
+
+    /**
+     * Iteriert alle bisher importierten Sample-Entities und versucht,
+     * nicht-aufgelöste ref:-Beziehungen aus der zugehörigen YAML-Datei
+     * jetzt zu setzen — falls die Ziel-Entity inzwischen importiert wurde.
+     * Greift idempotent: setzt Werte nur wenn das aktuelle Property null
+     * ist, ändert nichts an bereits gesetzten Beziehungen.
+     */
+    private function repairUnresolvedReferences(?Tenant $tenant): int
+    {
+        if ($tenant === null) {
+            return 0;
+        }
+        $this->resetEntityManagerIfClosed();
+        $tracking = $this->sampleImportRepository->findBy(['tenant' => $tenant]);
+        if ($tracking === []) {
+            return 0;
+        }
+
+        $sampleData = $this->moduleConfigurationService->getSampleData();
+        $repaired = 0;
+
+        // Build sampleKey → YAML data once.
+        $loaded = [];
+        foreach ($tracking as $t) {
+            $key = $t->getSampleKey();
+            if (!array_key_exists($key, $loaded)) {
+                $cfg = $sampleData[$key] ?? $sampleData[(int) $key] ?? null;
+                if ($cfg === null || !isset($cfg['file'])) {
+                    $loaded[$key] = null;
+                    continue;
+                }
+                $path = $this->projectDir . '/' . $cfg['file'];
+                if (!file_exists($path)) {
+                    $loaded[$key] = null;
+                    continue;
+                }
+                try {
+                    $loaded[$key] = Yaml::parseFile($path);
+                } catch (\Throwable) {
+                    $loaded[$key] = null;
+                }
+            }
+        }
+
+        foreach ($tracking as $t) {
+            $yaml = $loaded[$t->getSampleKey()] ?? null;
+            if (!is_array($yaml)) {
+                continue;
+            }
+            $entity = $this->entityManager->find($t->getEntityClass(), $t->getEntityId());
+            if ($entity === null) {
+                continue;
+            }
+            // YAML hat eine Top-Level-Liste pro Entity-Typ. Such die
+            // einzelne YAML-Row anhand des Natural-Keys.
+            $shortName = (new \ReflectionClass($entity))->getShortName();
+            $entityType = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $shortName)) . 's';
+            $rows = $yaml[$entityType] ?? null;
+            if (!is_array($rows)) {
+                // Manche YAML-Files nutzen abweichende Plurale (people,
+                // dpias, …). Iteriere alle Top-Level-Keys.
+                foreach ($yaml as $candidate) {
+                    if (is_array($candidate)) {
+                        $rows = $candidate;
+                        break;
+                    }
+                }
+            }
+            if (!is_array($rows)) {
+                continue;
+            }
+            // Match by natural-key field (title/name/etc).
+            $keys = $this->referenceNaturalKeys();
+            $keyField = $keys[rtrim($entityType, 's')] ?? $keys[$entityType] ?? null;
+            $entityKeyVal = null;
+            if ($keyField !== null && method_exists($entity, 'get' . ucfirst($keyField))) {
+                $entityKeyVal = $entity->{'get' . ucfirst($keyField)}();
+            }
+            $row = null;
+            foreach ($rows as $r) {
+                if (is_array($r) && isset($r[$keyField]) && $r[$keyField] === $entityKeyVal) {
+                    $row = $r;
+                    break;
+                }
+            }
+            if ($row === null) {
+                continue;
+            }
+            // Walk row; for each ref:- value, only set if entity-property
+            // is currently null and ref now resolves.
+            foreach ($row as $prop => $value) {
+                if (!is_string($value) || !str_starts_with($value, 'ref:')) {
+                    continue;
+                }
+                $getter = 'get' . ucfirst(lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $prop)))));
+                $setter = 'set' . ucfirst(lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $prop)))));
+                if (!method_exists($entity, $getter) || !method_exists($entity, $setter)) {
+                    continue;
+                }
+                if ($entity->$getter() !== null) {
+                    continue;
+                }
+                $resolved = $this->resolveReference($value);
+                if ($resolved !== null) {
+                    try {
+                        $entity->$setter($resolved);
+                        $repaired++;
+                    } catch (\TypeError) {
+                        // Setter-Type passt nicht — überspringen
+                    }
+                }
+            }
+        }
+
+        if ($repaired > 0) {
+            try {
+                $this->entityManager->flush();
+            } catch (Exception $e) {
+                $this->addLog('Repair-flush failed: ' . $e->getMessage());
+                return 0;
+            }
+        }
+        return $repaired;
     }
 
     /**
