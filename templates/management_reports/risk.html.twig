@@ -197,7 +197,7 @@
                             <td>
                                 {% include '_components/_badge.html.twig' with { variant: risk.riskScore >= 20 ? 'danger' : 'warning', content: risk.riskScore >= 20 ? 'management_reports.risk_level.critical'|trans({}, 'management_reports') : 'management_reports.risk_level.high'|trans({}, 'management_reports') } %}
                             </td>
-                            <td>{{ risk.treatmentStrategy|default('-') }}</td>
+                            <td>{{ risk.treatmentStrategy ? risk.treatmentStrategy.value : '-' }}</td>
                             <td>{{ risk.riskOwner ? risk.riskOwner.email : '-' }}</td>
                         </tr>
                         {% endfor %}

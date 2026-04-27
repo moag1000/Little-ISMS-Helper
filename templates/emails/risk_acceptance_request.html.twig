@@ -54,7 +54,7 @@
 
             <div class="field">
                 <span class="label">{{ 'risk.field.treatment_strategy'|trans({}, 'risk') }}:</span>
-                <span class="value">{{ risk.treatmentStrategy|upper }}</span>
+                <span class="value">{{ risk.treatmentStrategy ? risk.treatmentStrategy.value|upper : '' }}</span>
             </div>
 
             {% if risk.riskOwner %}

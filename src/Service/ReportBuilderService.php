@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\CustomReport;
 use App\Entity\User;
+use App\Enum\RiskStatus;
 use App\Repository\CustomReportRepository;
 use App\Repository\RiskRepository;
 use App\Repository\ControlRepository;
@@ -653,7 +654,7 @@ class ReportBuilderService
         $overdue = 0;
 
         foreach ($risks as $risk) {
-            if ($risk->getStatus() !== 'closed' && $risk->getReviewDate() && $risk->getReviewDate() < $now) {
+            if ($risk->getStatus() !== RiskStatus::Closed && $risk->getReviewDate() && $risk->getReviewDate() < $now) {
                 $overdue++;
             }
         }
@@ -939,8 +940,8 @@ class ReportBuilderService
             $rows[] = [
                 'id' => $incident->getId(),
                 'title' => $incident->getTitle(),
-                'severity' => $incident->getSeverity(),
-                'status' => $incident->getStatus(),
+                'severity' => $incident->getSeverity()?->value,
+                'status' => $incident->getStatus()?->value,
                 'detected_at' => $incident->getDetectedAt()?->format('Y-m-d'),
             ];
         }

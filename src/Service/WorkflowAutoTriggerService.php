@@ -51,7 +51,7 @@ class WorkflowAutoTriggerService
         $this->logger->info('Triggering incident workflows', [
             'incident_id' => $incident->getId(),
             'incident_number' => $incident->getIncidentNumber(),
-            'severity' => $incident->getSeverity(),
+            'severity' => $incident->getSeverity()?->value,
             'is_new' => $isNew,
         ]);
 
@@ -174,7 +174,7 @@ class WorkflowAutoTriggerService
         $this->logger->info('Triggering risk acceptance workflow', [
             'risk_id' => $risk->getId(),
             'risk_score' => $risk->getRiskScore(),
-            'treatment_strategy' => $risk->getTreatmentStrategy(),
+            'treatment_strategy' => $risk->getTreatmentStrategy()?->value,
         ]);
 
         $results = [];

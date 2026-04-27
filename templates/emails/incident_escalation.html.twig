@@ -62,7 +62,7 @@
 
             <div class="field">
                 <span class="label">{{ 'incident.field.status'|trans({}, 'incident') }}:</span>
-                <span class="value">{{ ('incident.status.' ~ incident.status|lower)|trans({}, 'incident') }}</span>
+                <span class="value">{{ ('incident.status.' ~ (incident.status ? incident.status.value|lower : ''))|trans({}, 'incident') }}</span>
             </div>
 
             {% if incident.category %}

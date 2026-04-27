@@ -79,13 +79,13 @@ class RiskAggregationService
             $byCategory[$category] = ($byCategory[$category] ?? 0) + 1;
 
             // By treatment strategy
-            $treatment = $risk->getTreatmentStrategy() ?? 'mitigate';
+            $treatment = $risk->getTreatmentStrategy()?->value ?? 'mitigate';
             if (isset($byTreatment[$treatment])) {
                 $byTreatment[$treatment]++;
             }
 
             // By status
-            $status = $risk->getStatus() ?? 'identified';
+            $status = $risk->getStatus()?->value ?? 'identified';
             $byStatus[$status] = ($byStatus[$status] ?? 0) + 1;
 
             // Accumulate score for average

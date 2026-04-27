@@ -510,8 +510,8 @@ class ScheduledReportService
                 $risk->getImpact(),
                 $score,
                 $level,
-                $risk->getTreatmentStrategy() ?? '-',
-                $risk->getStatus(),
+                $risk->getTreatmentStrategy()?->value ?? '-',
+                $risk->getStatus()?->value,
                 $risk->getRiskOwner() ? $risk->getRiskOwner()->getEmail() : '-',
             ];
         }

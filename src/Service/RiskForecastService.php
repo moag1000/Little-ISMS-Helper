@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\Risk;
 use App\Entity\Incident;
 use App\Entity\Asset;
+use App\Enum\RiskStatus;
 use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\AssetRepository;
@@ -74,8 +75,8 @@ class RiskForecastService
             $critical = count(array_filter($monthRisks, fn(Risk $r) => $r->getInherentRiskLevel() >= 20));
 
             // Count open vs closed
-            $open = count(array_filter($monthRisks, fn(Risk $r) => $r->getStatus() !== 'closed'));
-            $closed = count(array_filter($monthRisks, fn(Risk $r) => $r->getStatus() === 'closed'));
+            $open = count(array_filter($monthRisks, fn(Risk $r) => $r->getStatus() !== RiskStatus::Closed));
+            $closed = count(array_filter($monthRisks, fn(Risk $r) => $r->getStatus() === RiskStatus::Closed));
 
             $data[] = [
                 'month' => $date->format('Y-m'),
@@ -280,7 +281,7 @@ class RiskForecastService
 
         $newRisks = count(array_filter($risks, fn(Risk $r) => $r->getCreatedAt() >= $thirtyDaysAgo));
         $closedRisks = count(array_filter($risks, fn(Risk $r) =>
-            $r->getStatus() === 'closed' &&
+            $r->getStatus() === RiskStatus::Closed &&
             $r->getUpdatedAt() &&
             $r->getUpdatedAt() >= $thirtyDaysAgo
         ));
@@ -291,7 +292,7 @@ class RiskForecastService
         $ninetyDaysAgo = (clone $now)->modify('-90 days');
         $newRisks90 = count(array_filter($risks, fn(Risk $r) => $r->getCreatedAt() >= $ninetyDaysAgo));
         $closedRisks90 = count(array_filter($risks, fn(Risk $r) =>
-            $r->getStatus() === 'closed' &&
+            $r->getStatus() === RiskStatus::Closed &&
             $r->getUpdatedAt() &&
             $r->getUpdatedAt() >= $ninetyDaysAgo
         ));

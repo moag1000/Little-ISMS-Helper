@@ -40,7 +40,7 @@
             </tr>
             <tr>
                 <td style="padding: 8px 0; font-weight: bold;">Treatment Strategy:</td>
-                <td style="padding: 8px 0;">{{ risk.treatmentStrategy|capitalize }}</td>
+                <td style="padding: 8px 0;">{{ risk.treatmentStrategy ? risk.treatmentStrategy.value|capitalize : '' }}</td>
             </tr>
             {% if due_date %}
             <tr>

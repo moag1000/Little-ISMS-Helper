@@ -333,7 +333,7 @@ final class GroupReportController extends AbstractController
         $severityBuckets = ['critical' => 0, 'high' => 0, 'medium' => 0, 'low' => 0];
         $byTenant = [];
         foreach ($visible as $incident) {
-            $sev = (string) $incident->getSeverity();
+            $sev = $incident->getSeverity()?->value ?? '';
             if (isset($severityBuckets[$sev])) {
                 $severityBuckets[$sev]++;
             }

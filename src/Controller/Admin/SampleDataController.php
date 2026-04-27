@@ -46,6 +46,15 @@ class SampleDataController extends AbstractController
         $activeModules = $this->moduleConfigurationService->getActiveModules();
         $availableSamples = $this->moduleConfigurationService->getSampleData();
         $importedCounts = $this->sampleImportRepository->countsByKey($tenant);
+        // Defensive: PHP coerces numeric string keys to int when storing in
+        // arrays, but if the DB driver returns sample_key as a non-numeric
+        // string for any reason the lookup `$importedCounts[$key]` (with
+        // int $key from foreach) misses. Build a string-keyed mirror so both
+        // forms work.
+        $countsByStringKey = [];
+        foreach ($importedCounts as $k => $v) {
+            $countsByStringKey[(string) $k] = (int) $v;
+        }
 
         // Ein normalisiertes Array pro Sample (Key, name, description, required-modules,
         // bereits-importiert-Flag, Entry-Count, Remove-fähig).

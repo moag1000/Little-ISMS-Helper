@@ -11,18 +11,18 @@
 
             <dt class="col-sm-4">{{ 'incident.field.severity'|trans({}, 'incident') }}:</dt>
             <dd class="col-sm-8">
-                {% set severityClass = incident.severity == 'critical' ? 'danger' : (incident.severity == 'high' ? 'warning' : 'info') %}
+                {% set severityClass = incident.severity.value == 'critical' ? 'danger' : (incident.severity.value == 'high' ? 'warning' : 'info') %}
                 {% include '_components/_badge.html.twig' with {
                     variant: severityClass,
-                    content: ('incident.severity.' ~ incident.severity)|trans({}, 'incident')
+                    content: ('incident.severity.' ~ incident.severity.value)|trans({}, 'incident')
                 } %}
             </dd>
 
             <dt class="col-sm-4">{{ 'incident.field.status'|trans({}, 'incident') }}:</dt>
             <dd class="col-sm-8">
                 {% include '_components/_badge.html.twig' with {
-                    variant: incident.status == 'closed' ? 'success' : 'warning',
-                    content: ('incident.status.' ~ incident.status)|trans({}, 'incident')
+                    variant: incident.status.value == 'closed' ? 'success' : 'warning',
+                    content: ('incident.status.' ~ incident.status.value)|trans({}, 'incident')
                 } %}
             </dd>
 

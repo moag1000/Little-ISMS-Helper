@@ -169,8 +169,8 @@ class ManagementReportController extends AbstractController
                 $risk->getImpact(),
                 $score,
                 $level,
-                $risk->getTreatmentStrategy() ? substr((string) $risk->getTreatmentStrategy(), 0, 50) : '-',
-                $risk->getStatus(),
+                $risk->getTreatmentStrategy() ? substr($risk->getTreatmentStrategy()->value, 0, 50) : '-',
+                $risk->getStatus()?->value,
                 $risk->getRiskOwner() ? $risk->getRiskOwner()->getEmail() : '-',
             ];
         }

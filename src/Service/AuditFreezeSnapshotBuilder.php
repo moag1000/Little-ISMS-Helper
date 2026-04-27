@@ -167,8 +167,8 @@ class AuditFreezeSnapshotBuilder
                 'title' => (string) $risk->getTitle(),
                 'inherent_level' => $risk->getInherentRiskLevel(),
                 'residual_level' => $risk->getResidualRiskLevel(),
-                'treatment_strategy' => (string) $risk->getTreatmentStrategy(),
-                'status' => (string) $risk->getStatus(),
+                'treatment_strategy' => $risk->getTreatmentStrategy()?->value ?? '',
+                'status' => $risk->getStatus()?->value ?? '',
             ];
         }
         usort($rows, static fn (array $a, array $b): int => $a['id'] <=> $b['id']);

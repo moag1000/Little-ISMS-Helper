@@ -278,12 +278,12 @@
                                     <td>{{ risk.title }}</td>
                                     <td>
                                         <span class="{{ badge_status(risk.status) }}">
-                                            {{ risk.status }}
+                                            {{ risk.status ? risk.status.value : '' }}
                                         </span>
                                     </td>
                                     <td>{{ risk.inherentRiskLevel }}</td>
                                     <td>{{ risk.residualRiskLevel }}</td>
-                                    <td>{{ risk.treatmentStrategy }}</td>
+                                    <td>{{ risk.treatmentStrategy ? risk.treatmentStrategy.value : '' }}</td>
                                 </tr>
                             {% endfor %}
                         {% endblock %}

@@ -59,14 +59,14 @@
         </thead>
         <tbody>
             {% for incident in incidents %}
-            <tr class="severity-{{ incident.severity }}">
+            <tr class="severity-{{ incident.severity ? incident.severity.value : '' }}">
                 <td>{{ incident.id }}</td>
                 <td>{{ incident.title|slice(0, 30) }}{% if incident.title|length > 30 %}...{% endif %}</td>
-                <td><strong>{{ incident.severity|upper }}</strong></td>
+                <td><strong>{{ incident.severity ? incident.severity.value|upper : '' }}</strong></td>
                 <td>{{ incident.category }}</td>
                 <td>{{ incident.detectedDate|date('Y-m-d') }}</td>
                 <td>{{ incident.resolvedDate ? incident.resolvedDate|date('Y-m-d') : 'pdf.common.open'|trans({}, 'reports') }}</td>
-                <td>{{ incident.status }}</td>
+                <td>{{ incident.status ? incident.status.value : '' }}</td>
                 <td>{{ incident.reportedBy ? incident.reportedBy.email|slice(0, 20) : '-' }}</td>
             </tr>
             {% endfor %}

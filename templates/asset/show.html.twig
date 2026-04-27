@@ -470,7 +470,7 @@
                                 <span class="{{ badge_score(risk.inherentRiskLevel, 16, 9) }}">
                                     {{ 'asset.risk_item.risk_level'|trans({'%value%': risk.inherentRiskLevel}, 'asset') }}
                                 </span>
-                                <small>{{ 'asset.risk_item.status'|trans({'%value%': risk.status|upper}, 'asset') }}</small>
+                                <small>{{ 'asset.risk_item.status'|trans({'%value%': (risk.status ? risk.status.value : '')|upper}, 'asset') }}</small>
                             </div>
                         {% endfor %}
                     </div>
@@ -486,7 +486,7 @@
                             <div class="incident-item">
                                 <strong>{{ incident.title }}</strong>
                                 <span class="{{ badge_severity(incident.severity) }}">
-                                    {{ incident.severity|upper }}
+                                    {{ incident.severity ? incident.severity.value|upper : '' }}
                                 </span>
                                 <small>{{ incident.detectedAt|date('Y-m-d') }}</small>
                             </div>

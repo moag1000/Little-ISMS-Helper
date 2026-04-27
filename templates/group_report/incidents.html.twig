@@ -82,7 +82,7 @@
                     </thead>
                     <tbody>
                         {% for incident in incidents %}
-                            {% set sev = incident.severity %}
+                            {% set sev = incident.severity ? incident.severity.value : '' %}
                             {% set sevBadge = {
                                 'critical': 'bg-danger',
                                 'high': 'bg-warning-subtle text-warning',
@@ -105,7 +105,7 @@
                                     {% endif %}
                                 </td>
                                 <td><span class="badge {{ sevBadge }}">{{ sev }}</span></td>
-                                <td><code class="small">{{ incident.status }}</code></td>
+                                <td><code class="small">{{ incident.status ? incident.status.value : '' }}</code></td>
                             </tr>
                         {% else %}
                             <tr><td colspan="5" class="text-center text-muted py-3">{{ 'group_report.incidents.none'|trans({}, 'group_report') }}</td></tr>

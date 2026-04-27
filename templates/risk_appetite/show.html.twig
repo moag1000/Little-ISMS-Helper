@@ -181,7 +181,7 @@
                     </td>
                     <td>
                         {% if risk.treatmentStrategy %}
-                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: risk.treatmentStrategy } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: risk.treatmentStrategy ? risk.treatmentStrategy.value : '' } %}
                         {% else %}
                             <span class="text-muted">-</span>
                         {% endif %}
@@ -247,7 +247,7 @@
                         </div>
                     </td>
                     <td>
-                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: risk.status } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: risk.status ? risk.status.value : '' } %}
                     </td>
                     <td class="text-center">
                         <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}">

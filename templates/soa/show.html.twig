@@ -240,7 +240,7 @@
                     <span class="{{ badge_score(risk.inherentRiskLevel, 16, 9) }}">
                         {{ 'soa.field.risk_level'|trans({}, 'soa') }}: {{ risk.inherentRiskLevel }}
                     </span>
-                    <small>{{ 'soa.field.status'|trans({}, 'soa') }}: {{ risk.status|upper }}</small>
+                    <small>{{ 'soa.field.status'|trans({}, 'soa') }}: {{ (risk.status ? risk.status.value : '')|upper }}</small>
                 </div>
             {% endfor %}
         </div>
@@ -261,7 +261,7 @@
                 <div class="data-reuse-item">
                     <strong>{{ incident.title }}</strong>
                     <span class="{{ badge_severity(incident.severity) }}">
-                        {{ incident.severity|upper }}
+                        {{ incident.severity ? incident.severity.value|upper : '' }}
                     </span>
                     <small>{{ incident.detectedAt|date('Y-m-d') }}</small>
                 </div>

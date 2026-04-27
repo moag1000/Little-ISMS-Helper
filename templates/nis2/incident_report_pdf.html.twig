@@ -102,20 +102,20 @@
         <div class="meta-row">
             <div class="meta-label">{{ 'nis2.incident_report.severity'|trans({}, 'nis2') }}</div>
             <div class="meta-value">
-                {% if incident.severity == 'critical' %}
-                    <span class="badge badge-danger">{{ incident.severity|upper }}</span>
-                {% elseif incident.severity == 'high' %}
-                    <span class="badge badge-warning">{{ incident.severity|upper }}</span>
-                {% elseif incident.severity == 'medium' %}
-                    <span class="badge badge-info">{{ incident.severity|upper }}</span>
+                {% if incident.severity and incident.severity.value == 'critical' %}
+                    <span class="badge badge-danger">{{ incident.severity.value|upper }}</span>
+                {% elseif incident.severity and incident.severity.value == 'high' %}
+                    <span class="badge badge-warning">{{ incident.severity.value|upper }}</span>
+                {% elseif incident.severity and incident.severity.value == 'medium' %}
+                    <span class="badge badge-info">{{ incident.severity.value|upper }}</span>
                 {% else %}
-                    <span class="badge badge-success">{{ incident.severity|upper }}</span>
+                    <span class="badge badge-success">{{ incident.severity ? incident.severity.value|upper : '' }}</span>
                 {% endif %}
             </div>
         </div>
         <div class="meta-row">
             <div class="meta-label">{{ 'nis2.incident_report.status'|trans({}, 'nis2') }}</div>
-            <div class="meta-value">{{ incident.status }}</div>
+            <div class="meta-value">{{ incident.status ? incident.status.value : '' }}</div>
         </div>
         <div class="meta-row">
             <div class="meta-label">{{ 'nis2.incident_report.nis2_category'|trans({}, 'nis2') }}</div>
@@ -153,7 +153,7 @@
         <div class="field-group">
             <div class="field-label">{{ 'nis2.incident_report.section1.initial_classification'|trans({}, 'nis2') }}</div>
             <div class="field-value">
-                {% if incident.severity in ['high', 'critical'] %}
+                {% if incident.severity and incident.severity.value in ['high', 'critical'] %}
                     <span class="badge badge-danger">{{ 'nis2.incident_report.section1.significant'|trans({}, 'nis2') }}</span>
                 {% else %}
                     <span class="badge badge-info">{{ 'nis2.incident_report.section1.non_significant'|trans({}, 'nis2') }}</span>

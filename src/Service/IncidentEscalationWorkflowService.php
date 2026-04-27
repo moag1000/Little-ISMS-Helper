@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Enum\IncidentSeverity;
 use DateMalformedStringException;
 use DateTimeImmutable;
 use App\Entity\WorkflowInstance;
@@ -41,10 +42,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class IncidentEscalationWorkflowService
 {
     // Escalation thresholds based on ISO 27035-2:2016
-    private const string SEVERITY_LOW = 'low';
-    private const string SEVERITY_MEDIUM = 'medium';
-    private const string SEVERITY_HIGH = 'high';
-    private const string SEVERITY_CRITICAL = 'critical';
+    private const IncidentSeverity SEVERITY_LOW = IncidentSeverity::Low;
+    private const IncidentSeverity SEVERITY_MEDIUM = IncidentSeverity::Medium;
+    private const IncidentSeverity SEVERITY_HIGH = IncidentSeverity::High;
+    private const IncidentSeverity SEVERITY_CRITICAL = IncidentSeverity::Critical;
 
     // GDPR breach notification deadline (hours)
     private const int GDPR_BREACH_DEADLINE_HOURS = 72;
@@ -92,7 +93,7 @@ class IncidentEscalationWorkflowService
         $this->logger->info('Auto-escalating incident', [
             'incident_id' => $incident->getId(),
             'incident_number' => $incident->getIncidentNumber(),
-            'severity' => $incident->getSeverity(),
+            'severity' => $incident->getSeverity()?->value,
             'data_breach' => $incident->isDataBreachOccurred(),
         ]);
 
