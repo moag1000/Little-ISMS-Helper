@@ -496,31 +496,56 @@ class DataImportService
      */
     public function removeSampleData(string $sampleKey, Tenant $tenant): array
     {
-        $trackedImports = $this->sampleImportRepository->findByKey($sampleKey, $tenant);
+        // Falls EM von vorigem Sample-Remove geschlossen wurde — neu öffnen,
+        // sonst cascadet jeder weitere Aufruf mit "EntityManager is closed".
+        $this->resetEntityManagerIfClosed();
+        // Tenant + Repository nach evtl. Reset auf den AKTUELLEN EM neu binden.
+        if ($tenant->getId() !== null) {
+            $managed = $this->entityManager->find(get_class($tenant), $tenant->getId());
+            if ($managed instanceof Tenant) {
+                $tenant = $managed;
+            }
+        }
+        $trackingRepo = $this->entityManager->getRepository(SampleDataImport::class);
+        $trackedImports = $trackingRepo->findBy(['sampleKey' => $sampleKey, 'tenant' => $tenant]);
         // Umgekehrt sortieren → FK-sicherer, neueste Inserts zuerst gelöscht.
         usort($trackedImports, fn(SampleDataImport $a, SampleDataImport $b) => $b->getId() <=> $a->getId());
 
         $removed = 0;
         $errors = [];
 
+        // Pro Entity einzeln flushen, damit ein FK-Constraint-Violation auf
+        // entity#N nicht alle übrigen mitreißt. Nach Flush-Fehler wird der EM
+        // zurückgesetzt + Entity übersprungen, dann mit Entity#N+1 weiter.
         foreach ($trackedImports as $track) {
             try {
                 $entity = $this->entityManager->find($track->getEntityClass(), $track->getEntityId());
                 if ($entity !== null) {
                     $this->entityManager->remove($entity);
+                }
+                // Re-fetch des Tracking-Records auf dem aktuellen EM
+                // (kann nach Reset detached worden sein).
+                $managedTrack = $this->entityManager->find(SampleDataImport::class, $track->getId()) ?? $track;
+                if ($this->entityManager->contains($managedTrack)) {
+                    $this->entityManager->remove($managedTrack);
+                }
+                $this->entityManager->flush();
+                if ($entity !== null) {
                     $removed++;
                 }
-                $this->entityManager->remove($track);
             } catch (Exception $e) {
                 $errors[] = sprintf('%s#%d: %s', $track->getEntityClass(), $track->getEntityId(), $e->getMessage());
+                // Nach Flush-Fehler: EM zurücksetzen + Tenant neu binden, sonst
+                // ist alles Folgende tot. Tracking-Record bleibt — User sieht
+                // den Fehler und kann manuell nachfassen.
+                $this->resetEntityManagerIfClosed();
+                if ($tenant->getId() !== null) {
+                    $managed = $this->entityManager->find(get_class($tenant), $tenant->getId());
+                    if ($managed instanceof Tenant) {
+                        $tenant = $managed;
+                    }
+                }
             }
-        }
-
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            $errors[] = 'Flush: ' . $e->getMessage();
-            return ['success' => false, 'removed' => 0, 'errors' => $errors];
         }
 
         return ['success' => empty($errors), 'removed' => $removed, 'errors' => $errors];
