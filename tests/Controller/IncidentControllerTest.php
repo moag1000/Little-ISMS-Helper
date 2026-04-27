@@ -10,6 +10,8 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\ComplianceFramework;
 use App\Entity\BusinessProcess;
+use App\Enum\IncidentSeverity;
+use App\Enum\IncidentStatus;
 use App\Form\IncidentType;
 use App\Repository\AuditLogRepository;
 use App\Repository\ComplianceFrameworkRepository;
@@ -229,7 +231,7 @@ class IncidentControllerTest extends TestCase
                 $this->callback(function ($params) {
                     // Only high severity should be included after filtering
                     return count($params['allIncidents']) === 1
-                        && $params['allIncidents'][0]->getSeverity() === 'high';
+                        && $params['allIncidents'][0]->getSeverity() === \App\Enum\IncidentSeverity::High;
                 })
             )
             ->willReturn('rendered');
@@ -402,7 +404,7 @@ class IncidentControllerTest extends TestCase
         $this->formFactory->method('create')->willReturnCallback(function ($type, $incident) use ($form) {
             // The controller creates a new Incident and passes it to createForm
             // We need to modify this incident to have critical severity
-            $incident->setSeverity('critical');
+            $incident->setSeverity(\App\Enum\IncidentSeverity::Critical);
             $incident->setTitle('Critical Incident');
             $incident->setDescription('Test Description');
             $incident->setCategory('security');
@@ -422,7 +424,7 @@ class IncidentControllerTest extends TestCase
             ->method('sendIncidentNotification')
             ->with(
                 $this->callback(function ($incident) {
-                    return $incident->getSeverity() === 'critical';
+                    return $incident->getSeverity() === \App\Enum\IncidentSeverity::Critical;
                 }),
                 $admins
             );
@@ -532,8 +534,8 @@ class IncidentControllerTest extends TestCase
 
         // Create a real Incident object for this test
         $incident = new Incident();
-        $incident->setStatus('investigating'); // Original status
-        $incident->setSeverity('high');
+        $incident->setStatus(\App\Enum\IncidentStatus::InInvestigation); // Original status
+        $incident->setSeverity(\App\Enum\IncidentSeverity::High);
         $incident->setTenant($tenant);
         $incident->setTitle('Test Incident');
         $incident->setDescription('Test Description');
@@ -546,7 +548,7 @@ class IncidentControllerTest extends TestCase
         $this->formFactory->method('create')->willReturn($form);
         $form->method('handleRequest')->willReturnCallback(function () use ($incident, $form) {
             // Simulate form changing the status
-            $incident->setStatus('resolved');
+            $incident->setStatus(\App\Enum\IncidentStatus::Resolved);
             return $form;
         });
         $form->method('isSubmitted')->willReturn(true);
@@ -985,10 +987,13 @@ class IncidentControllerTest extends TestCase
      */
     private function createIncident(int $id, string $severity, string $status, bool $dataBreach = false): Incident
     {
+        $severityEnum = \App\Enum\IncidentSeverity::tryFrom($severity);
+        $statusValue  = $status === 'investigating' ? 'in_investigation' : ($status === 'new' ? 'reported' : $status);
+        $statusEnum   = \App\Enum\IncidentStatus::tryFrom($statusValue);
         $incident = $this->createMock(Incident::class);
         $incident->method('getId')->willReturn($id);
-        $incident->method('getSeverity')->willReturn($severity);
-        $incident->method('getStatus')->willReturn($status);
+        $incident->method('getSeverity')->willReturn($severityEnum);
+        $incident->method('getStatus')->willReturn($statusEnum);
         $incident->method('isDataBreachOccurred')->willReturn($dataBreach);
         $incident->method('getIncidentNumber')->willReturn("INC-2025-000{$id}");
         $incident->method('getTitle')->willReturn("Test Incident {$id}");

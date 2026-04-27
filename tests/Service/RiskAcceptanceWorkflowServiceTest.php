@@ -127,7 +127,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
     public function testRequestAcceptanceThrowsExceptionForNonAcceptStrategy(): void
     {
         $risk = $this->createRisk();
-        $risk->method('getTreatmentStrategy')->willReturn('mitigate');
+        $risk->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Mitigate);
 
         $user = $this->createUser();
 
@@ -141,7 +141,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
     public function testRequestAcceptanceThrowsExceptionWithoutProbability(): void
     {
         $risk = $this->createRisk();
-        $risk->method('getTreatmentStrategy')->willReturn('accept');
+        $risk->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Accept);
         $risk->method('getProbability')->willReturn(null);
         $risk->method('getImpact')->willReturn(3);
 
@@ -157,7 +157,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
     public function testRequestAcceptanceThrowsExceptionWithoutImpact(): void
     {
         $risk = $this->createRisk();
-        $risk->method('getTreatmentStrategy')->willReturn('accept');
+        $risk->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Accept);
         $risk->method('getProbability')->willReturn(3);
         $risk->method('getImpact')->willReturn(null);
 
@@ -173,7 +173,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
     public function testRequestAcceptanceThrowsExceptionWithoutResidualProbability(): void
     {
         $risk = $this->createRisk();
-        $risk->method('getTreatmentStrategy')->willReturn('accept');
+        $risk->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Accept);
         $risk->method('getProbability')->willReturn(3);
         $risk->method('getImpact')->willReturn(3);
         $risk->method('getResidualProbability')->willReturn(null);
@@ -191,7 +191,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
     public function testRequestAcceptanceThrowsExceptionIfAlreadyAccepted(): void
     {
         $risk = $this->createRisk();
-        $risk->method('getTreatmentStrategy')->willReturn('accept');
+        $risk->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Accept);
         $risk->method('getProbability')->willReturn(3);
         $risk->method('getImpact')->willReturn(3);
         $risk->method('getResidualProbability')->willReturn(2);
@@ -337,7 +337,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
     private function createValidRiskForAcceptance(): MockObject
     {
         $risk = $this->createRisk();
-        $risk->method('getTreatmentStrategy')->willReturn('accept');
+        $risk->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Accept);
         $risk->method('getProbability')->willReturn(3);
         $risk->method('getImpact')->willReturn(3);
         $risk->method('getResidualProbability')->willReturn(2);

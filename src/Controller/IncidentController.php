@@ -212,13 +212,13 @@ class IncidentController extends AbstractController
                 // Map inherent risk level → incident severity
                 $level = $sourceRisk->getInherentRiskLevel();
                 $severity = match (true) {
-                    $level >= 20 => 'critical',
-                    $level >= 12 => 'high',
-                    $level >= 6 => 'medium',
-                    default => 'low',
+                    $level >= 20 => IncidentSeverity::Critical,
+                    $level >= 12 => IncidentSeverity::High,
+                    $level >= 6 => IncidentSeverity::Medium,
+                    default => IncidentSeverity::Low,
                 };
                 $incident->setSeverity($severity);
-                $incident->setStatus('reported');
+                $incident->setStatus(IncidentStatus::Reported);
                 // Link back to the originating risk via realizedRisks
                 $incident->addRealizedRisk($sourceRisk);
             }
@@ -484,7 +484,7 @@ class IncidentController extends AbstractController
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
-            'Content-Length' => strlen($pdf),
+            'Content-Length' => (string) strlen($pdf),
         ]);
     }
     /**
@@ -614,7 +614,7 @@ class IncidentController extends AbstractController
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
-            'Content-Length' => strlen($pdf),
+            'Content-Length' => (string) strlen($pdf),
         ]);
     }
     /**
@@ -645,7 +645,7 @@ class IncidentController extends AbstractController
 
         // Create temporary incident object for preview
         $incident = new Incident();
-        $incident->setSeverity($severity);
+        $incident->setSeverity(IncidentSeverity::from($severity));
         $incident->setDataBreachOccurred((bool) $dataBreachOccurred);
 
         // Get preview from escalation service

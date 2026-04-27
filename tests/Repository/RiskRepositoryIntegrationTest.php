@@ -240,7 +240,7 @@ class RiskRepositoryIntegrationTest extends KernelTestCase
         $risk->setResidualProbability(1);
         $risk->setResidualImpact(1);
         $risk->setTreatmentStrategy($treatmentStrategy);
-        $risk->setStatus('identified');
+        $risk->setStatus(\App\Enum\RiskStatus::Identified);
         $this->em->persist($risk);
         return $risk;
     }

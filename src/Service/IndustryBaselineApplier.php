@@ -10,6 +10,8 @@ use App\Entity\IndustryBaseline;
 use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Enum\RiskStatus;
+use App\Enum\TreatmentStrategy;
 use App\Repository\AppliedBaselineRepository;
 use App\Repository\AssetRepository;
 use App\Repository\ComplianceFrameworkRepository;
@@ -73,8 +75,8 @@ class IndustryBaselineApplier
                 ->setDescription((string) ($data['description'] ?? ''))
                 ->setProbability((int) ($data['inherent_likelihood'] ?? 3))
                 ->setImpact((int) ($data['inherent_impact'] ?? 3))
-                ->setTreatmentStrategy((string) ($data['treatment_strategy'] ?? 'mitigate'))
-                ->setStatus('identified');
+                ->setTreatmentStrategy(TreatmentStrategy::tryFrom((string) ($data['treatment_strategy'] ?? 'mitigate')) ?? TreatmentStrategy::Mitigate)
+                ->setStatus(RiskStatus::Identified);
             if (!empty($data['threat'])) {
                 $risk->setThreat((string) $data['threat']);
             }

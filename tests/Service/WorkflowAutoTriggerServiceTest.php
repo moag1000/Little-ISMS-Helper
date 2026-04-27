@@ -253,7 +253,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $risk = $this->createMock(Risk::class);
         $risk->method('getId')->willReturn(13);
         $risk->method('getRiskScore')->willReturn(75);
-        $risk->method('getTreatmentStrategy')->willReturn('accept');
+        $risk->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Accept);
 
         $requester = $this->createMock(User::class);
         $justification = 'Business decision - low impact';
@@ -282,7 +282,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
         $risk = $this->createMock(Risk::class);
         $risk->method('getId')->willReturn(14);
         $risk->method('getRiskScore')->willReturn(80);
-        $risk->method('getTreatmentStrategy')->willReturn('accept');
+        $risk->method('getTreatmentStrategy')->willReturn(\App\Enum\TreatmentStrategy::Accept);
 
         $requester = $this->createMock(User::class);
         $justification = 'Test justification';

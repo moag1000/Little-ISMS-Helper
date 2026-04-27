@@ -52,7 +52,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $incident->method('getTitle')->willReturn('Data Breach');
         $incident->method('getIncidentNumber')->willReturn('INC-001');
         $incident->method('getCategory')->willReturn('data_breach');
-        $incident->method('getSeverity')->willReturn('high');
+        $incident->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::High);
         $incident->method('getRootCause')->willReturn('Phishing attack');
 
         $this->incidentRepo->method('findAll')->willReturn([$incident]);
@@ -110,7 +110,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $incident->method('getTitle')->willReturn('Recurring Issue');
         $incident->method('getIncidentNumber')->willReturn('INC-001');
         $incident->method('getCategory')->willReturn('cyber_attack');
-        $incident->method('getSeverity')->willReturn('medium');
+        $incident->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::Medium);
         $incident->method('getRootCause')->willReturn('Known vulnerability');
 
         $this->incidentRepo->method('findAll')->willReturn([$incident]);
@@ -366,17 +366,17 @@ class RiskIntelligenceServiceTest extends TestCase
     {
         $incident1 = $this->createMock(Incident::class);
         $incident1->method('getCategory')->willReturn('cyber_attack');
-        $incident1->method('getSeverity')->willReturn('high');
+        $incident1->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::High);
         $incident1->method('getDetectedAt')->willReturn(new \DateTime('2024-01-15'));
 
         $incident2 = $this->createMock(Incident::class);
         $incident2->method('getCategory')->willReturn('cyber_attack');
-        $incident2->method('getSeverity')->willReturn('medium');
+        $incident2->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::Medium);
         $incident2->method('getDetectedAt')->willReturn(new \DateTime('2024-01-20'));
 
         $incident3 = $this->createMock(Incident::class);
         $incident3->method('getCategory')->willReturn('data_breach');
-        $incident3->method('getSeverity')->willReturn('critical');
+        $incident3->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::Critical);
         $incident3->method('getDetectedAt')->willReturn(new \DateTime('2024-02-10'));
 
         $this->incidentRepo->method('findAll')->willReturn([$incident1, $incident2, $incident3]);
@@ -392,17 +392,17 @@ class RiskIntelligenceServiceTest extends TestCase
     {
         $incident1 = $this->createMock(Incident::class);
         $incident1->method('getCategory')->willReturn('test');
-        $incident1->method('getSeverity')->willReturn('high');
+        $incident1->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::High);
         $incident1->method('getDetectedAt')->willReturn(new \DateTime('2024-01-15'));
 
         $incident2 = $this->createMock(Incident::class);
         $incident2->method('getCategory')->willReturn('test');
-        $incident2->method('getSeverity')->willReturn('high');
+        $incident2->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::High);
         $incident2->method('getDetectedAt')->willReturn(new \DateTime('2024-01-20'));
 
         $incident3 = $this->createMock(Incident::class);
         $incident3->method('getCategory')->willReturn('test');
-        $incident3->method('getSeverity')->willReturn('medium');
+        $incident3->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::Medium);
         $incident3->method('getDetectedAt')->willReturn(new \DateTime('2024-02-10'));
 
         $this->incidentRepo->method('findAll')->willReturn([$incident1, $incident2, $incident3]);
@@ -418,17 +418,17 @@ class RiskIntelligenceServiceTest extends TestCase
     {
         $incident1 = $this->createMock(Incident::class);
         $incident1->method('getCategory')->willReturn('test');
-        $incident1->method('getSeverity')->willReturn('high');
+        $incident1->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::High);
         $incident1->method('getDetectedAt')->willReturn(new \DateTime('2024-01-15'));
 
         $incident2 = $this->createMock(Incident::class);
         $incident2->method('getCategory')->willReturn('test');
-        $incident2->method('getSeverity')->willReturn('high');
+        $incident2->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::High);
         $incident2->method('getDetectedAt')->willReturn(new \DateTime('2024-01-20'));
 
         $incident3 = $this->createMock(Incident::class);
         $incident3->method('getCategory')->willReturn('test');
-        $incident3->method('getSeverity')->willReturn('medium');
+        $incident3->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::Medium);
         $incident3->method('getDetectedAt')->willReturn(new \DateTime('2024-02-10'));
 
         $this->incidentRepo->method('findAll')->willReturn([$incident1, $incident2, $incident3]);
@@ -447,7 +447,7 @@ class RiskIntelligenceServiceTest extends TestCase
         for ($i = 0; $i < 5; $i++) {
             $incident = $this->createMock(Incident::class);
             $incident->method('getCategory')->willReturn('cyber_attack');
-            $incident->method('getSeverity')->willReturn('high');
+            $incident->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::High);
             $incident->method('getDetectedAt')->willReturn(new \DateTime('2024-01-15'));
             $incidents[] = $incident;
         }
@@ -456,7 +456,7 @@ class RiskIntelligenceServiceTest extends TestCase
         for ($i = 0; $i < 2; $i++) {
             $incident = $this->createMock(Incident::class);
             $incident->method('getCategory')->willReturn('data_breach');
-            $incident->method('getSeverity')->willReturn('medium');
+            $incident->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::Medium);
             $incident->method('getDetectedAt')->willReturn(new \DateTime('2024-01-15'));
             $incidents[] = $incident;
         }
@@ -476,17 +476,17 @@ class RiskIntelligenceServiceTest extends TestCase
     {
         $incident1 = $this->createMock(Incident::class);
         $incident1->method('getCategory')->willReturn('test');
-        $incident1->method('getSeverity')->willReturn('high');
+        $incident1->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::High);
         $incident1->method('getDetectedAt')->willReturn(new \DateTime('2024-03-15'));
 
         $incident2 = $this->createMock(Incident::class);
         $incident2->method('getCategory')->willReturn('test');
-        $incident2->method('getSeverity')->willReturn('medium');
+        $incident2->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::Medium);
         $incident2->method('getDetectedAt')->willReturn(new \DateTime('2024-01-20'));
 
         $incident3 = $this->createMock(Incident::class);
         $incident3->method('getCategory')->willReturn('test');
-        $incident3->method('getSeverity')->willReturn('low');
+        $incident3->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::Low);
         $incident3->method('getDetectedAt')->willReturn(new \DateTime('2024-02-10'));
 
         $this->incidentRepo->method('findAll')->willReturn([$incident1, $incident2, $incident3]);

@@ -277,7 +277,7 @@ class IncidentRepositoryIntegrationTest extends KernelTestCase
         $incident->setCategory($category);
         $incident->setSeverity($severity);
         // Use 'reported' as a placeholder that passes entity validation
-        $incident->setStatus('reported');
+        $incident->setStatus(\App\Enum\IncidentStatus::Reported);
         $incident->setReportedBy('Integration Test');
         $incident->setDetectedAt(new DateTimeImmutable());
         $incident->setDataBreachOccurred(false);

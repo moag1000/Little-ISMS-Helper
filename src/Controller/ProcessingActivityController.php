@@ -261,7 +261,7 @@ class ProcessingActivityController extends AbstractController
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
-            'Content-Length' => strlen($pdf),
+            'Content-Length' => (string) strlen($pdf),
         ]);
     }
 

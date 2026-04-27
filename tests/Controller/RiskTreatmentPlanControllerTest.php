@@ -125,8 +125,8 @@ class RiskTreatmentPlanControllerTest extends WebTestCase
         $this->testRisk->setImpact(3);
         $this->testRisk->setResidualProbability(2);
         $this->testRisk->setResidualImpact(2);
-        $this->testRisk->setTreatmentStrategy('mitigate');
-        $this->testRisk->setStatus('open');
+        $this->testRisk->setTreatmentStrategy(\App\Enum\TreatmentStrategy::Mitigate);
+        $this->testRisk->setStatus(\App\Enum\RiskStatus::Open);
         $this->testRisk->setCreatedAt(new \DateTimeImmutable());
         $this->entityManager->persist($this->testRisk);
 
