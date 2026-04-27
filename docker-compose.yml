@@ -68,7 +68,7 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost"]
       interval: 30s
       timeout: 10s
-      retries: 10
+      retries: 5
       start_period: 300s
     # Security: Resource Limits
     deploy:
