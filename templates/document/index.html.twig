@@ -168,7 +168,7 @@
 
     {# Document List with Bulk Actions #}
     {% embed '_components/_card.html.twig' %}
-        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/document"{% endblock %}
+        {% block card_attrs %}data-controller="bulk-actions document-filter" data-bulk-actions-endpoint-value="/document"{% endblock %}
         {% block card_header %}
             <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0">
@@ -181,7 +181,9 @@
 
             {# Filter Controls #}
             <div class="d-flex gap-2">
-                <select class="form-select form-select-sm" id="categoryFilter" class="w-auto">
+                <select class="form-select form-select-sm" id="categoryFilter"
+                        data-document-filter-target="categoryFilter"
+                        data-action="change->document-filter#filter">
                     <option value="">{{ 'document.filter.all_categories'|trans({}, 'document') }}</option>
                 {% set categories = [] %}
                     {% for doc in documents %}
@@ -198,7 +200,9 @@
                 <input type="search"
                        class="form-control form-control-sm w-250px"
                        id="documentSearch"
-                       placeholder="{{ 'document.filter.search_placeholder'|trans({}, 'document') }}">
+                       placeholder="{{ 'document.filter.search_placeholder'|trans({}, 'document') }}"
+                       data-document-filter-target="searchInput"
+                       data-action="input->document-filter#filter">
             </div>
             </div>
         {% endblock %}
@@ -227,11 +231,12 @@
                         <th scope="col" class="w-180px text-right">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
-                {% block table_body_attrs %}id="documentTableBody"{% endblock %}
+                {% block table_body_attrs %}id="documentTableBody" data-document-filter-target="tableBody"{% endblock %}
                 {% block table_body %}
                     {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                     {% for document in documents %}
                     <tr class="document-row"
+                        data-document-filter-target="row"
                         data-category="{{ document.category|lower }}"
                         data-name="{{ document.originalFilename|lower }}">
                         <td class="bulk-select-column">
@@ -307,7 +312,7 @@
             {% endembed %}
 
             {# No Results Message #}
-            <div id="noResults" class="text-center p-5 d-none">
+            <div id="noResults" class="text-center p-5 d-none" data-document-filter-target="noResults">
                 <i class="fa-icon fa-icon--ui-search icon-search-empty" aria-hidden="true"></i>
                 <p class="text-muted mt-3">{{ 'document.message.no_results'|trans({}, 'document') }}</p>
             </div>
@@ -371,97 +376,4 @@
 }
 </style>
 
-<script>
-function initializeDocumentFilters() {
-    const categoryFilter = document.getElementById('categoryFilter');
-    const searchInput = document.getElementById('documentSearch');
-    const documentRows = document.querySelectorAll('.document-row');
-    const noResults = document.getElementById('noResults');
-    const tableBody = document.getElementById('documentTableBody');
-
-    if (!categoryFilter && !searchInput) return; // Elements not present on page
-
-    function filterDocuments() {
-        const categoryValue = categoryFilter ? categoryFilter.value.toLowerCase() : '';
-        const searchValue = searchInput ? searchInput.value.toLowerCase() : '';
-        let visibleCount = 0;
-
-        documentRows.forEach(row => {
-            const category = row.dataset.category;
-            const name = row.dataset.name;
-
-            const matchesCategory = !categoryValue || category === categoryValue;
-            const matchesSearch = !searchValue || name.includes(searchValue);
-
-            if (matchesCategory && matchesSearch) {
-                row.style.display = '';
-                visibleCount++;
-            } else {
-                row.style.display = 'none';
-            }
-        });
-
-        // Show/hide no results message
-        if (noResults && tableBody) {
-            if (visibleCount === 0 && documentRows.length > 0) {
-                tableBody.style.display = 'none';
-                noResults.style.display = 'block';
-            } else {
-                tableBody.style.display = '';
-                noResults.style.display = 'none';
-            }
-        }
-    }
-
-    // Attach event listeners (prevent duplicates)
-    if (categoryFilter && categoryFilter.dataset.initialized !== 'true') {
-        categoryFilter.dataset.initialized = 'true';
-        categoryFilter.addEventListener('change', filterDocuments);
-    }
-
-    if (searchInput && searchInput.dataset.initialized !== 'true') {
-        searchInput.dataset.initialized = 'true';
-        searchInput.addEventListener('input', filterDocuments);
-    }
-
-    // Update badge visibility when selection changes
-    const bulkActionsController = document.querySelector('[data-controller="bulk-actions"]');
-    if (bulkActionsController && bulkActionsController.dataset.badgeInitialized !== 'true') {
-        bulkActionsController.dataset.badgeInitialized = 'true';
-        const countBadge = document.querySelector('[data-bulk-actions-target="countBadge"]');
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.target.classList.contains('bulk-actions-target') && mutation.target.dataset.bulkActionsTarget === 'count') {
-                    const count = parseInt(mutation.target.textContent);
-                    if (countBadge) {
-                        countBadge.style.display = count > 0 ? 'inline-block' : 'none';
-                    }
-                }
-            });
-        });
-
-        const countTarget = document.querySelector('[data-bulk-actions-target="count"]');
-        if (countTarget && countBadge) {
-            observer.observe(countTarget, { childList: true, characterData: true, subtree: true });
-            // Initial state
-            countBadge.style.display = 'none';
-        }
-    }
-}
-
-// Cleanup before Turbo caches the page to allow re-initialization on back navigation
-document.addEventListener('turbo:before-cache', function() {
-    const categoryFilter = document.getElementById('categoryFilter');
-    const searchInput = document.getElementById('documentSearch');
-    const bulkActionsController = document.querySelector('[data-controller="bulk-actions"]');
-
-    if (categoryFilter) delete categoryFilter.dataset.initialized;
-    if (searchInput) delete searchInput.dataset.initialized;
-    if (bulkActionsController) delete bulkActionsController.dataset.badgeInitialized;
-});
-
-// Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
-document.addEventListener('DOMContentLoaded', initializeDocumentFilters);
-document.addEventListener('turbo:load', initializeDocumentFilters);
-</script>
 {% endblock %}
